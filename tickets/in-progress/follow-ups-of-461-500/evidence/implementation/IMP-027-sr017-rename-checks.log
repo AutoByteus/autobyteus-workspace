@@ -1,0 +1,24 @@
+# IMP-027 IR-010 (SR-017 D-15): checks on the merged + renamed state 686f715446
+# macOS Darwin 25.5.0, Node v22; 2026-11-18 local
+
+## pnpm -C autobyteus-server-ts typecheck
+[typecheck] production errors: 0; test-file errors: 1006 in 315 files (baseline 1006 in 315 files)
+[typecheck] PASS
+
+## node autobyteus-web/scripts/typecheck.mjs
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS
+
+## focused: migration, order and release tests (attachment links, 461-era order tests, remove-skill-improvement, unit/app-data-migrations, release)
+Tests 89 passed | 1 skipped (90)
+
+## cd autobyteus-server-ts && npx vitest run --no-watch --testTimeout=60000 --hookTimeout=60000 tests/unit tests/agent-work-journal tests/app-data-migrations tests/architecture tests/release
+ Test Files  1031 passed | 6 skipped (1037)
+      Tests  8479 passed | 10 skipped (8489)
+
+## cd autobyteus-web && npx vitest run
+ Test Files  772 passed (772)
+      Tests  5822 passed | 2 skipped (5824)
+
+## released-migration-order.json: 46 IDs = the old 45 + 20261118_remove_retired_built_in_agents = the base RELEASED list at 1f835e3e7f (compared)
+## not run: delegated-run-own-attachment-links-startup.e2e (gated, 'Tests 1 skipped') and MO-1 in the users' order (API/E2E)

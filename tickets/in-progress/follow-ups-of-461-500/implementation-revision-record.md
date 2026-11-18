@@ -251,3 +251,26 @@
   - E2E suites for messaging (local and peer, by run id) and for the startup migration order on the merge are API/E2E's
     next round.
   - FU-500-02 still covers `getProcessRunningAgentsListing`, a throwing process getter.
+
+## IR-010 (SR-017 / D-15: migration IDs after v1.5.14-beta.1)
+
+- **Trigger:** the Delivery Engineer's Design Impact (`ab212b4fb1`): v1.5.14-beta.1 released 491's
+  `20261118_remove_retired_built_in_agents` ahead of this ticket's two unreleased migrations. Solution Designer SR-017
+  (D-15), ARCH-REV-010 Pass.
+- **Prior result:** IR-009, Pass (CRR-017 / CRR-018); API-REV-007 Pass. **Current result:** implemented; to source
+  review, then API/E2E MO-1 in the users' order.
+- **Upstream revisions:** SR-017, ARCH-REV-010. CRR / API-REV / DR: as before.
+- **Code delta:**
+  - `8a9b1a0aec`: the merge of `origin/personal` after beta.1.
+    - The registry-order test resolves to the JSON-reading test, and the hand list is removed.
+    - `released-migration-order.json` holds beta.1's 46 IDs.
+  - `686f715446`: the two migrations are renamed `20261119_*` and appended after 491's.
+    - The follow-up's prerequisite names the new main ID; the backup folder follows the ID.
+    - The late-predecessor table lists 491's as `none`.
+    - The tests, the startup e2e and the module doc follow.
+- **Focused validation:** IMP-27.
+  - Both type gates pass.
+  - Migration and order tests: 89 passed.
+  - Server units, migrations, architecture and release: 8479 passed, 0 failed.
+  - Web: 5822 passed.
+- **Limitations:** the gated startup e2e and MO-1 in the users' order (491 first, then ours) are API/E2E's.

@@ -1,8 +1,8 @@
 # Implementation Handoff: follow-ups-of-461-500 (delivery 1 + 2)
 
-Status: **IR-009 (the eighth delivery base refresh: `origin/personal` `53b72018ad`, autobyteus-491 and -492, merged in
-`5eb8246076`) ready for the code reviewer's merge review, then an API/E2E round on messaging and the migration order.**
-See "IR-009: 491 and 492" below; IR-008 was the watcher-test refresh. Decided earlier at SR-014 (ARCH-REV-007):
+Status: **IR-010 (SR-017 / D-15, ARCH-REV-010: the attachment-link migrations renamed after v1.5.14-beta.1 released
+491's first; `origin/personal` merged in `8a9b1a0aec`, the rename `686f715446`) ready for source review, then API/E2E's
+MO-1 in the users' order.** See "IR-010: migration IDs after beta.1" below. Decided earlier at SR-014 (ARCH-REV-007):
 - **FU-035 step 0 (REQ-010, AC-007), D-14:** not in this package. It runs as a later implementation round once Grok's
   24-hour usage window resets, with branch A or B and its own code review. Nothing is waived; FU-035 stays open.
 - **FU-021 (REQ-008, AC-005), D-13b:** done. A hang guard whose probe got nothing is ENVIRONMENT; one whose probe got
@@ -35,7 +35,7 @@ See "IR-009: 491 and 492" below; IR-008 was the watcher-test refresh. Decided ea
 
 - Implementation cycle: `Rework` (CRR-001 Local Fix)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-009` (deltas in `implementation-revision-record.md`; IR-001 is the baseline)
+- Current implementation revision ID: `IR-010` (deltas in `implementation-revision-record.md`; IR-001 is the baseline)
 - Related solution revision IDs: SR-006 … SR-014
 - Related architecture-review revision IDs: ARCH-REV-001, ARCH-REV-003, ARCH-REV-005, ARCH-REV-006, ARCH-REV-007
 - Related code-review revision IDs: CRR-001 (CR-500-001, CR-500-002), CRR-002 (Pass), CRR-003 (CR-500-003 … CR-500-005),
@@ -73,6 +73,7 @@ Commits, oldest first, by the design's Change Sequence:
 | G-5 fix | `d8ffc77c8b` | the 8 s model-list budget is `MODEL_LIST_READ_MS` in `read-deadline.ts`; `llm-management` no longer imports `available-agent-runtimes` (found by the full unit run) |
 | 8 | evidence only | FU-035 step 0: blocked by the Grok usage limit (IMP-011); a later round per D-14 |
 | IR-004 merge | `39325a1e50` | `origin/personal` `ff13782f36` merged (beta.8, beta.9, 448 part 1, 483, 458, 514, 515, 508); 4 conflicts resolved |
+| IR-010 | `8a9b1a0aec`, `686f715446` | merge of `origin/personal` (v1.5.14-beta.1); `released-migration-order.json` = beta.1's 46; the two migrations renamed `20261119_*` and appended after 491's (D-15) |
 | IR-009 merge | `5eb8246076` | `origin/personal` `53b72018ad` merged (491 migration, 492 running agents and run-id messaging); 18 conflicts |
 | IR-008 merge | `bb42531c7d` | `origin/personal` `75048cbaf4` merged (v1.5.13 records, 517 FU-002 / FU-003); the watcher test's two wait designs combined; TESTING.md's rule names the sentinel check |
 | IR-007 merge | `eecb228bd6` | `origin/personal` `24d438fa31` merged (beta.10, 517, 524 round 2, 526); 2 conflicts resolved |
@@ -138,6 +139,28 @@ Not reworded this round: the other `send_message_to` / `delegate_task` results, 
 I reviewed them: their texts already say what happened and what to do, which `refusal-texts-vocabulary.test.ts` and
 `result-catalogue.test.ts` check. The Save refusal (`run-model-selection-refusal.ts`, "Refresh the model list and choose
 again. Saved settings were not changed.") is kept, because in the Settings it already names the next step.
+
+## IR-010: migration IDs after beta.1 (SR-017, D-15)
+
+- **Why:** `v1.5.14-beta.1` (autobyteus-538) released 46 migrations ending with 491's
+  `20261118_remove_retired_built_in_agents`. This ticket's two migrations are unreleased, so they move after it.
+- **Merge** (`8a9b1a0aec`): `origin/personal` after beta.1. One conflict, `app-data-migration-registry-order.test.ts`,
+  resolved to this ticket's JSON-reading test (G-1); the base's hand-kept `RELEASED` list is removed.
+  `released-migration-order.json` is now exactly beta.1's 46 IDs in its order: the base's list at `1f835e3e7f`, which
+  equals the old 45 plus `20261118_remove_retired_built_in_agents` (checked). The record test now expects at least 46.
+- **Rename** (`686f715446`):
+  - `20261117_delegated_run_own_attachment_links` becomes `20261119_delegated_run_own_attachment_links`, and
+    `…_after_task_agent_own_run` becomes `20261119_…_after_task_agent_own_run`. The follow-up's prerequisites name the
+    new main ID, through the constant.
+  - The backup folder follows the ID: `app-data-migration-backups/<id>/`, built from `this.id` (M-5).
+  - The registry appends both after 491's entry, main migration first.
+  - Every reference outside the ticket folder follows: the source, the registration and 461-era order tests, the
+    startup e2e, and `docs/modules/standalone_agent_run_root.md`.
+- **491 against M-7: `none`.** The late-predecessor table lists it with its reason: it deletes two agent-definition
+  folders under `<agentsDir>`, writes no trace and selects nothing by an attachment link. That is disjoint from the
+  traces under `memory/` that ours read and write.
+- **Not run by me:** `delegated-run-own-attachment-links-startup.e2e` (gated, skipped here) and MO-1 in the users'
+  order (491 already applied as on beta.1, then ours). Both are API/E2E's.
 
 ## IR-009: 491 and 492 (eighth base refresh)
 
@@ -533,6 +556,7 @@ again. Saved settings were not changed.") is kept, because in the Settings it al
 | IMP-24 | IR-008 AC-005 gate: Docker `node:22-bookworm` Linux, git archive of `bb42531c7d`, frozen install, `test:integration:prepare`, the watcher file ×5 | `bb42531c7d` | Linux 6.12 linuxkit aarch64, 10 vCPU | FU-021 test after the merge | AC-005 | Pass | `IMP-024-watcher-linux-5of5.log`, `IMP-024-watcher-linux-run{1..5}.log` | "Tests 14 passed (14)" ×5; labels=0 ×5 |
 | IMP-25 | IR-008 Mac: server and web type gates; `tests/unit tests/agent-work-journal tests/architecture` + restart-resume; the watcher file once (evidence only) | `bb42531c7d` | macOS, load 34–137 | everything, with the base | all | Pass, except the untouched folder watcher | `IMP-025-seventh-merge-mac-checks.log` | type gates at baseline; "Tests 3 failed \| 7769 passed", 3 in `agent-package-folder-watcher`; watcher file: 8 ENVIRONMENT + 2 INCONCLUSIVE, none unlabelled |
 | IMP-26 | IR-009 on the merged state: both type gates (baseline shrunk by 1); `npx vitest run --testTimeout=60000 --hookTimeout=60000 tests/unit tests/agent-work-journal tests/app-data-migrations tests/architecture tests/integration tests/release` (server); `npx vitest run` (web); size recount against `53b72018ad` | `5eb8246076` (+ `8e8c21c2c4`) | macOS, load 59–98 | everything with 491 / 492 | all | Pass, except file-event waits | `IMP-026-eighth-merge-checks.log` | server type gate "production errors: 0; test-file errors: 1006 in 315 files (baseline 1006 in 315 files)"; web 87 in 37; server "Tests 10 failed \| 8937 passed": 1 this ticket's registration test (fixed, 8/8), the rest OS file events (watcher 1 ENVIRONMENT + 6 INCONCLUSIVE); web "Tests 5780 passed" |
+| IMP-27 | IR-010: type gates; migration / order / release tests; `npx vitest run --testTimeout=60000 --hookTimeout=60000 tests/unit tests/agent-work-journal tests/app-data-migrations tests/architecture tests/release` (server); `npx vitest run` (web) | `686f715446` | macOS | the renamed migrations, the registry, the order record | SR-017 / D-15 | Pass | `IMP-027-sr017-rename-checks.log` | type gates at baseline; focused "Tests 89 passed \| 1 skipped (90)"; server "Tests 8479 passed \| 10 skipped (8489)"; web "Tests 5822 passed" |
 | IMP-13 | watcher test after the D-13b labels, 1 run | `a4e7f18e6d` | macOS, load 120–190 | FU-021 labels | FU-021 / D-13b | Fails as designed under load: labels only | `IMP-013-watcher-sr014-labels.log`, `IMP-013-watcher-sr014.full.log` | "env=1 inconclusive=6 other=0"; no "Timed out waiting for event (hang guard)" line |
 
 - Note for API/E2E (IMP-18): `tests/unit/e2e-helpers/team-stream-clients-wait-for-connected.test.ts` fails on API/E2E's
