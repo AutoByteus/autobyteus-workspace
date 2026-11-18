@@ -15,3 +15,12 @@
 | 2026-11-18 08:02 | V-03 | Completed | Fail | clean run: live 2 → 3 cards, reload 2; replies once; "07:58 CET" for "06:58 UTC" |
 | 2026-11-18 08:09 | V-05/V-06 | Completed | Pass | RR-01..06, RR-10, RR-11 pass; typecheck at baseline after typing ConversationItem |
 | 2026-11-18 08:15 | V | Completed | Fail | F-1 (live duplicate reminder card), report and API-REV-001 written |
+| 2026-11-18 09:20 | R2 | Started | | round 2 (CRR-002 Pass, SR-002 one identity per notice, IR-002, tested at ee5e87495f); head dist + phone bundle built |
+| 2026-11-18 09:31 | R2-03 | Completed | Pass | new platform-notice-identity.e2e.test.ts PNI-01..03: message_id on agent stream, team stream (with agent_run_id), Org view agent_presentation; equal to the stored messageId; reconnect adds none |
+| 2026-11-18 09:33 | R2-04 | Completed | Pass | PNI-04 live Claude: "Background task completed" notice, same id live and stored |
+| 2026-11-18 09:58 | R2-02 | Completed | Pass | RR-01..06, RR-10, RR-11 (base rebuilt in a temporary worktree) |
+| 2026-11-18 10:40 | R2-01 | Completed | Pass | phone MSP-75 1/2/2 cards (F-1 resolved), MSP-76 Team coordinator and MSP-77 Org member: notice once live and after reload (after fixing my module: pairing before any run, list navigation after a reload; shared-stack setup timeouts under load) |
+| 2026-11-18 10:42 | R2-05 | Started | | isolated desktop instance of ee5e87495f (building) |
+| 2026-11-18 10:58 | R2-05 | Completed | Pass | desktop: 1 card after one restart, live and after a reload of the live run; 2 after two; replies once; Claude notice once live and after reload; one restart hit the server's 10 s shutdown budget (load) |
+| 2026-11-18 11:02 | R2-06 | Completed | Pass | server typecheck at baseline with the new suite |
+| 2026-11-18 11:10 | R2 | Completed | Pass | report round 2, API-REV-002 |

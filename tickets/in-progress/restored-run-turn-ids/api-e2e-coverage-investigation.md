@@ -29,3 +29,12 @@
 ## Outcome
 
 - Executed as planned. Fail: F-1, see `api-e2e-execution-coverage-report.md`.
+
+## Round 2 (SR-002)
+
+- Plan, by impact:
+  - Rerun round 1's cases.
+  - Prove the identity on every route: agent stream, team stream, Org view / collaboration presentation, Claude.
+  - Prove each Team, Org and Claude notice shows once, live and after a reload.
+- New durable tests: `platform-notice-identity.e2e.test.ts` (PNI-01..04) and phone cases MSP-76 and MSP-77.
+- Outcome: Pass. See the report.

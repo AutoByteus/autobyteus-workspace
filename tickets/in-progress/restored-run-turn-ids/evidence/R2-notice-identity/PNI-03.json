@@ -1,0 +1,22 @@
+{
+  "orgRunId": "pni_org_b234ecb8_cfc0de7f8f304af78e15f121a6c9cfda",
+  "workerRunId": "pni_164d0a5e_28c9970191784efe8924f56dc8c75e6b",
+  "live": [
+    {
+      "messageId": "2b381ff7-3be8-4197-b382-f91c3df62444",
+      "agentRunId": null,
+      "content": "[Platform notice — background tasks finished]\n\n- pid 92651 `sleep 3; echo built`: exit code 0 after 3s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/pni_164d0a5e_28c9970191784efe8924f56dc8c75e6b/call-1794991180153-92621.log. Last lines:\n    built",
+      "at": 1794991185209
+    }
+  ],
+  "stored": [
+    {
+      "messageId": "2b381ff7-3be8-4197-b382-f91c3df62444",
+      "content": "[Platform notice — background tasks finished]\n\n- pid 92651 `sleep 3; echo built`: exit code 0 after 3s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/pni_164d0a5e_28c9970191784efe8924f56dc8c75e6b/call-1794991180153-92621.log. Last lines:\n    built"
+    }
+  ],
+  "wrapper": {
+    "type": "ROOT_EXECUTION_EVENT",
+    "payload": "{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"pni_org_b234ecb8_cfc0de7f8f304af78e15f121a6c9cfda\",\"change_sequence\":58,\"event\":{\"kind\":\"agent_presentation\",\"member_address\":\"/worker\",\"agent_run_id\":\"pni_164d0a5e_28c9970191784efe8924f56dc8c75e6b\",\"message\":{\"type\":\"SYSTEM_TASK_NOTIFICATION\",\"payload\":{\"sender\":{\"kind\":\"system\"},\"content\":\"[Platform notice — background tasks finished]\\n\\n- pid 92651 `sleep 3; echo built`: exit code 0 after 3s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/pni_164d0a5e_28c9970191784efe8924f56dc8c75e6b/call-1794991180153-92621.log. Last lines:\\n    built\",\"message_id\":\"2b381ff7-3be8-4197-b382-f91c3df62444\"}}}}"
+  }
+}
