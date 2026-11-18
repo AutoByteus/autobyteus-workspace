@@ -1,0 +1,59 @@
+{
+  "teamRunId": "sm_live_team_1cb92211_c38fb60ca35f4651a09e649ea1001182",
+  "keeperRunId": "sm_live_keeper_codex_1cb92211_53bad8bc5ef74538802fce1208216d2c",
+  "reply": "SMCODE-CODEX-1cb92211",
+  "tools": [
+    "run_bash {\"command\":\"/bin/bash -lc \\\"ls -la /Users/normy/.autobyteus-e2e/semantic-memory-live-X2RdWg/app-data/memory/semantic/sm-live-keeper-codex-1cb92211 && rg -i 'deploy|codeword' /Users/normy/.autobyteus-e2e/semantic-memory-live-X2RdWg/app-data/memory/semantic/sm-live-keeper-codex-1cb92211\\\"\",\"cwd\":\"/Use"
+  ],
+  "approvals": [],
+  "wire": [
+    {
+      "method": "thread/resume",
+      "sandbox": "workspace-write",
+      "approvalPolicy": "on-request",
+      "cwd": "/Users/normy/.autobyteus-e2e/semantic-memory-live-X2RdWg/ws-codex-a",
+      "configKeys": [
+        "mcp_servers",
+        "sandbox_workspace_write"
+      ],
+      "sandbox_workspace_write": {
+        "writable_roots": [
+          "/Users/normy/.autobyteus-e2e/semantic-memory-live-X2RdWg/app-data/memory/semantic/sm-live-keeper-codex-1cb92211"
+        ]
+      },
+      "semanticSection": "## Semantic Memory\n\nYour semantic memory is the folder `/Users/normy/.autobyteus-e2e/semantic-memory-live-X2RdWg/app-data/memory/semantic/sm-live-keeper-codex-1cb92211`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.\n\n## Long-Running Commands\n\n- Start a long build or test suite once with `exec_command`. When it outlasts its wait, it keeps running in its session.\n- To wait for it, call `write_stdin` on that same session with empty input and a long `yield_time_ms`, as often as needed, instead of starting it again.\n- Do not wait with loops of `sleep` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+    },
+    {
+      "method": "thread/start",
+      "sandbox": "workspace-write",
+      "approvalPolicy": "on-request",
+      "cwd": "/Users/normy/.autobyteus-e2e/semantic-memory-live-X2RdWg/ws-codex-team",
+      "configKeys": [
+        "mcp_servers",
+        "sandbox_workspace_write"
+      ],
+      "sandbox_workspace_write": {
+        "writable_roots": [
+          "/Users/normy/.autobyteus-e2e/semantic-memory-live-X2RdWg/app-data/memory/semantic/sm-live-keeper-codex-1cb92211"
+        ]
+      },
+      "semanticSection": "## Semantic Memory\n\nYour semantic memory is the folder `/Users/normy/.autobyteus-e2e/semantic-memory-live-X2RdWg/app-data/memory/semantic/sm-live-keeper-codex-1cb92211`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.\n\n## Long-Running Commands\n\n- Start a long build or test suite once with `exec_command`. When it outlasts its wait, it keeps running in its session.\n- To wait for it, call `write_stdin` on that same session with empty input and a long `yield_time_ms`, as often as needed, instead of starting it again.\n- Do not wait with loops of `sleep` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+    },
+    {
+      "method": "thread/start",
+      "sandbox": "workspace-write",
+      "approvalPolicy": "on-request",
+      "cwd": "/Users/normy/.autobyteus-e2e/semantic-memory-live-X2RdWg/ws-codex-a",
+      "configKeys": [
+        "mcp_servers",
+        "sandbox_workspace_write"
+      ],
+      "sandbox_workspace_write": {
+        "writable_roots": [
+          "/Users/normy/.autobyteus-e2e/semantic-memory-live-X2RdWg/app-data/memory/semantic/sm-live-keeper-codex-1cb92211"
+        ]
+      },
+      "semanticSection": "## Semantic Memory\n\nYour semantic memory is the folder `/Users/normy/.autobyteus-e2e/semantic-memory-live-X2RdWg/app-data/memory/semantic/sm-live-keeper-codex-1cb92211`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.\n\n## Long-Running Commands\n\n- Start a long build or test suite once with `exec_command`. When it outlasts its wait, it keeps running in its session.\n- To wait for it, call `write_stdin` on that same session with empty input and a long `yield_time_ms`, as often as needed, instead of starting it again.\n- Do not wait with loops of `sleep` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+    }
+  ]
+}
