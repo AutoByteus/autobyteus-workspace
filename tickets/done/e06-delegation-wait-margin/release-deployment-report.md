@@ -45,7 +45,8 @@
 - Hygiene: `python3 scripts/check_repository_artifact_hygiene.py` before the push.
 - Secret Gate: `scripts/check_secrets.sh origin/personal..codex/e06-delegation-wait-margin` before the first push.
 - Method: `finalize/e06-delegation-wait-margin` from `origin/personal`, `git merge --no-ff codex/e06-delegation-wait-margin`, pushed to `origin/personal`.
-- The commits and the user's-checkout result are given in the Delivery Completed message and in the record commit after the merge.
+- Result: hygiene exit 0; Secret Gate PASS (6 commits, and again over the merge); ticket branch pushed; merge commit `0c7f60865d` pushed to `origin/personal` (fast-forward from `53b72018ad`). Ticket code `88525bc56a`, `b1b95ea158`; delivery docs `5bfb7d9219`.
+- The user's checkout: fast-forwarded with `git merge --ff-only origin/personal` only, uncommitted work untouched (result in the Delivery Completed message).
 
 ## Release / Deployment
 
