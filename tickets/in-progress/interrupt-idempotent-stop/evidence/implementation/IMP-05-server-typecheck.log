@@ -1,0 +1,10 @@
+# IMP-05 server typecheck
+# command: pnpm -C autobyteus-server-ts typecheck
+# commit: server code as of ff16e5de85
+# env: macOS, Node v22.23.1
+# date: 2026-11-18
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 10.7s
+[typecheck] server tests (tsconfig.tests.json): 1012 errors, exit 2, 35.6s
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS

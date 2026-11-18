@@ -91,6 +91,8 @@ try {
   await attachToBrowserContext(context);
   const page = await context.newPage();
   const errors = []; page.on('pageerror', (e) => errors.push(e.message));
+  const consoleLog = fs.createWriteStream(path.join(outputDir, 'console.log')); page.on('console', (m) => consoleLog.write(`${Date.now()} ${m.type()} ${m.text()}\n`));
+  page.on('websocket', (w) => { consoleLog.write(`${Date.now()} ws-open ${w.url()}\n`); w.on('framesent', (f) => { if (String(f.payload).includes('SEND_MESSAGE') || String(f.payload).includes('INTERRUPT')) consoleLog.write(`${Date.now()} sent ${String(f.payload).slice(0, 160)}\n`); }); w.on('framereceived', (f) => { const t = String(f.payload); if (/AGENT_STATUS|COMMAND_ACK|CONNECTED|TURN_/.test(t)) consoleLog.write(`${Date.now()} recv ${t.slice(0, 200)}\n`); }); w.on('close', () => consoleLog.write(`${Date.now()} ws-close ${w.url()}\n`)); });
   evidence.sockets = []; page.on('websocket', (w) => evidence.sockets.push(w.url()));
   await page.goto(`${stack.frontendUrl}/workspace`, { waitUntil: 'networkidle', timeout: 180000 });
   await sleep(3000);

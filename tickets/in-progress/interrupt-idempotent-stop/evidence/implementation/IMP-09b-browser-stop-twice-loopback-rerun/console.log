@@ -1,0 +1,119 @@
+1794998913678 debug [vite] connecting...
+1794998913687 ws-open ws://127.0.0.1:57398/_nuxt/?token=<redacted>
+1794998913690 debug [vite] connected.
+1794998916265 log serverStore: Initializing server config
+1794998916265 log serverStore: Not in Electron environment. Skipping server initialization.
+1794998916271 info <Suspense> is an experimental feature and its API will likely change.
+1794998916283 ws-open ws://127.0.0.1:57397/ws/agent-package-definitions
+1794998916289 ws-open ws://127.0.0.1:57397/ws/update-notifications
+1794998916660 log Workspace.vue: Mounted. Fetching server settings and loading profiles...
+1794998916693 log [useTerminalSession] Connecting to: ws://127.0.0.1:57397/ws/terminal/dc3b7388-ce7e-4d12-b8ed-ffe974a0bd9e
+1794998916710 ws-open ws://127.0.0.1:57397/ws/terminal/dc3b7388-ce7e-4d12-b8ed-ffe974a0bd9e
+1794998916716 log [useTerminalSession] Connected
+1794998916781 ws-open ws://127.0.0.1:57397/ws/agent/stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937
+1794998916784 log Agent WebSocket connected
+1794998916785 recv {"type":"CONNECTED","payload":{"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937","session_id":"34f994e2-ea13-4169-a227-d00616363b62"}}
+1794998916785 recv {"type":"AGENT_STATUS","payload":{"status":"idle","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"}}
+1794998920277 ws-close ws://127.0.0.1:57398/_nuxt/?token=<redacted>
+1794998920277 ws-close ws://127.0.0.1:57397/ws/agent-package-definitions
+1794998920277 ws-close ws://127.0.0.1:57397/ws/update-notifications
+1794998920277 ws-close ws://127.0.0.1:57397/ws/terminal/dc3b7388-ce7e-4d12-b8ed-ffe974a0bd9e
+1794998920277 ws-close ws://127.0.0.1:57397/ws/agent/stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937
+1794998920302 debug [vite] connecting...
+1794998920307 ws-open ws://127.0.0.1:57398/_nuxt/?token=<redacted>
+1794998920313 debug [vite] connected.
+1794998921115 log serverStore: Initializing server config
+1794998921115 log serverStore: Not in Electron environment. Skipping server initialization.
+1794998921122 info <Suspense> is an experimental feature and its API will likely change.
+1794998921124 ws-open ws://127.0.0.1:57397/ws/agent-package-definitions
+1794998921136 ws-open ws://127.0.0.1:57397/ws/update-notifications
+1794998921203 log Workspace.vue: Mounted. Fetching server settings and loading profiles...
+1794998921217 log [useTerminalSession] Connecting to: ws://127.0.0.1:57397/ws/terminal/555d8661-7460-40db-b615-9f4f2a9e5e9a
+1794998921224 ws-open ws://127.0.0.1:57397/ws/terminal/555d8661-7460-40db-b615-9f4f2a9e5e9a
+1794998921226 log [useTerminalSession] Connected
+1794998921260 ws-open ws://127.0.0.1:57397/ws/agent/stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937
+1794998921260 log Agent WebSocket connected
+1794998921260 recv {"type":"CONNECTED","payload":{"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937","session_id":"2cac3a2d-daac-49dd-944f-b90a3636a17b"}}
+1794998921260 recv {"type":"AGENT_STATUS","payload":{"status":"idle","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"}}
+1794998922029 ws-open ws://127.0.0.1:57397/ws/agent-collaboration/stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937
+1794998922039 recv {"type":"CONNECTED","payload":{"root_subject_kind":"agent","root_run_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937","session_id":"bbb62c9b-c846-4e77-8ddb-d06214ccb700"}}
+1794998922166 ws-close ws://127.0.0.1:57397/ws/terminal/555d8661-7460-40db-b615-9f4f2a9e5e9a
+1794998922166 log [useTerminalSession] Disconnected: 1005 
+1794998925337 sent {"type":"SEND_MESSAGE","payload":{"content":"hello","context_file_paths":[],"image_urls":[],"message_id":"client_dcec9867-5dce-4263-baf9-e0a81a203997","dedupe_k
+1794998925341 recv {"type":"AGENT_STATUS","payload":{"status":"initializing","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"},"sequence":2}
+1794998925343 recv {"type":"AGENT_COMMAND_ACK","payload":{"command_type":"SEND_MESSAGE","run_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937","message_id":"client_dcec9867-5dce-4263-baf9-e0a81a203997","dedupe_key":"a
+1794998925345 recv {"type":"AGENT_STATUS","payload":{"status":"running","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"},"sequence":4}
+1794998925346 recv {"type":"TURN_STARTED","payload":{"turn_id":"aee09a19-27ea-4dc7-832a-c838306e062f"},"sequence":5}
+1794998925369 recv {"type":"TURN_COMPLETED","payload":{"turn_id":"aee09a19-27ea-4dc7-832a-c838306e062f","provider_status":"SUCCESS"},"sequence":11}
+1794998925371 recv {"type":"AGENT_STATUS","payload":{"status":"idle","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"},"sequence":12}
+1794998929386 sent {"type":"SEND_MESSAGE","payload":{"content":"HOLD_TURN gap0","context_file_paths":[],"image_urls":[],"message_id":"client_7c852ebb-5b9e-487b-9e0b-0e1d6bb201d9",
+1794998929495 recv {"type":"AGENT_STATUS","payload":{"status":"initializing","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"},"sequence":14}
+1794998929495 recv {"type":"AGENT_COMMAND_ACK","payload":{"command_type":"SEND_MESSAGE","run_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937","message_id":"client_7c852ebb-5b9e-487b-9e0b-0e1d6bb201d9","dedupe_key":"a
+1794998929496 recv {"type":"AGENT_STATUS","payload":{"status":"running","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"},"sequence":16}
+1794998929496 recv {"type":"TURN_STARTED","payload":{"turn_id":"2b6ee820-b389-4441-9d61-1ffc9bfe4b68"},"sequence":17}
+1794998930359 sent {"type":"INTERRUPT_GENERATION","payload":{"command_id":"client_interrupt_acfe26a5-2157-4999-8150-6919b27532d1"}}
+1794998930400 recv {"type":"TURN_INTERRUPTED","payload":{"turn_id":"2b6ee820-b389-4441-9d61-1ffc9bfe4b68"},"sequence":21}
+1794998930402 recv {"type":"AGENT_STATUS","payload":{"status":"offline","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"},"sequence":22}
+1794998930424 recv {"type":"AGENT_COMMAND_ACK","payload":{"command_type":"INTERRUPT_GENERATION","command_id":"client_interrupt_acfe26a5-2157-4999-8150-6919b27532d1","target":{"target_kind":"standalone_run","run_id":"sto
+1794998931120 log Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm
+1794998931269 ws-close ws://127.0.0.1:57397/ws/agent/stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937
+1794998939006 ws-open ws://127.0.0.1:57397/ws/agent/stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937
+1794998939006 log Agent WebSocket connected
+1794998939006 recv {"type":"CONNECTED","payload":{"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937","session_id":"5fb8bd7e-f1e4-4375-96e4-f3bd36f8f51c"}}
+1794998939006 recv {"type":"AGENT_STATUS","payload":{"status":"offline","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"}}
+1794998939049 sent {"type":"SEND_MESSAGE","payload":{"content":"HOLD_TURN gap60","context_file_paths":[],"image_urls":[],"message_id":"client_718d7049-39ba-46c8-8cee-f9a0e677794c"
+1794998939051 recv {"type":"AGENT_STATUS","payload":{"status":"initializing","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"}}
+1794998939227 recv {"type":"AGENT_COMMAND_ACK","payload":{"command_type":"SEND_MESSAGE","run_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937","message_id":"client_718d7049-39ba-46c8-8cee-f9a0e677794c","dedupe_key":"a
+1794998939231 recv {"type":"AGENT_STATUS","payload":{"status":"initializing","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"},"sequence":2}
+1794998939233 recv {"type":"AGENT_STATUS","payload":{"status":"running","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"},"sequence":4}
+1794998939233 recv {"type":"TURN_STARTED","payload":{"turn_id":"26fac615-690b-44ec-b53f-40e0f93e5222"},"sequence":5}
+1794998940129 sent {"type":"INTERRUPT_GENERATION","payload":{"command_id":"client_interrupt_72d765b7-df0f-439a-a932-5dc86a1e123a"}}
+1794998940211 recv {"type":"TURN_INTERRUPTED","payload":{"turn_id":"26fac615-690b-44ec-b53f-40e0f93e5222"},"sequence":9}
+1794998940211 recv {"type":"AGENT_STATUS","payload":{"status":"offline","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"},"sequence":10}
+1794998940229 recv {"type":"AGENT_COMMAND_ACK","payload":{"command_type":"INTERRUPT_GENERATION","command_id":"client_interrupt_72d765b7-df0f-439a-a932-5dc86a1e123a","target":{"target_kind":"standalone_run","run_id":"sto
+1794998941269 ws-close ws://127.0.0.1:57397/ws/agent/stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937
+1794998948839 ws-open ws://127.0.0.1:57397/ws/agent/stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937
+1794998948840 log Agent WebSocket connected
+1794998948840 recv {"type":"CONNECTED","payload":{"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937","session_id":"a71dc035-3d6b-4020-9941-8156d38e631e"}}
+1794998948840 recv {"type":"AGENT_STATUS","payload":{"status":"offline","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"}}
+1794998948880 sent {"type":"SEND_MESSAGE","payload":{"content":"HOLD_TURN gap150","context_file_paths":[],"image_urls":[],"message_id":"client_69f2c334-2fd7-489d-945e-247945cd8cea
+1794998948882 recv {"type":"AGENT_STATUS","payload":{"status":"initializing","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"}}
+1794998949092 recv {"type":"AGENT_COMMAND_ACK","payload":{"command_type":"SEND_MESSAGE","run_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937","message_id":"client_69f2c334-2fd7-489d-945e-247945cd8cea","dedupe_key":"a
+1794998949097 recv {"type":"AGENT_STATUS","payload":{"status":"initializing","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"},"sequence":2}
+1794998949098 recv {"type":"AGENT_STATUS","payload":{"status":"running","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"},"sequence":4}
+1794998949098 recv {"type":"TURN_STARTED","payload":{"turn_id":"d853323c-894d-4ad5-9151-742e82cda1a8"},"sequence":5}
+1794998949942 sent {"type":"INTERRUPT_GENERATION","payload":{"command_id":"client_interrupt_1bdce325-cfb6-4d47-b390-5a4e1741358f"}}
+1794998949972 recv {"type":"TURN_INTERRUPTED","payload":{"turn_id":"d853323c-894d-4ad5-9151-742e82cda1a8"},"sequence":9}
+1794998949974 recv {"type":"AGENT_STATUS","payload":{"status":"offline","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"},"sequence":10}
+1794998949995 recv {"type":"AGENT_COMMAND_ACK","payload":{"command_type":"INTERRUPT_GENERATION","command_id":"client_interrupt_1bdce325-cfb6-4d47-b390-5a4e1741358f","target":{"target_kind":"standalone_run","run_id":"sto
+1794998951267 ws-close ws://127.0.0.1:57397/ws/agent/stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937
+1794998958672 ws-open ws://127.0.0.1:57397/ws/agent/stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937
+1794998958672 log Agent WebSocket connected
+1794998958672 recv {"type":"CONNECTED","payload":{"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937","session_id":"d7783bb0-887c-4cb1-b715-199877a8d33d"}}
+1794998958672 recv {"type":"AGENT_STATUS","payload":{"status":"offline","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"}}
+1794998958712 sent {"type":"SEND_MESSAGE","payload":{"content":"HOLD_TURN gap300","context_file_paths":[],"image_urls":[],"message_id":"client_6bde516d-00a1-4f06-a9b7-f8a3c6472eb4
+1794998958713 recv {"type":"AGENT_STATUS","payload":{"status":"initializing","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"}}
+1794998958895 recv {"type":"AGENT_COMMAND_ACK","payload":{"command_type":"SEND_MESSAGE","run_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937","message_id":"client_6bde516d-00a1-4f06-a9b7-f8a3c6472eb4","dedupe_key":"a
+1794998958899 recv {"type":"AGENT_STATUS","payload":{"status":"initializing","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"},"sequence":2}
+1794998958902 recv {"type":"AGENT_STATUS","payload":{"status":"running","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"},"sequence":4}
+1794998958902 recv {"type":"TURN_STARTED","payload":{"turn_id":"6cce4609-c42b-4ac9-8773-a0620c4005da"},"sequence":5}
+1794998959757 sent {"type":"INTERRUPT_GENERATION","payload":{"command_id":"client_interrupt_227a4d6c-1a68-44a4-b342-1589bd8e3459"}}
+1794998959786 recv {"type":"TURN_INTERRUPTED","payload":{"turn_id":"6cce4609-c42b-4ac9-8773-a0620c4005da"},"sequence":9}
+1794998959787 recv {"type":"AGENT_STATUS","payload":{"status":"offline","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"},"sequence":10}
+1794998959808 recv {"type":"AGENT_COMMAND_ACK","payload":{"command_type":"INTERRUPT_GENERATION","command_id":"client_interrupt_227a4d6c-1a68-44a4-b342-1589bd8e3459","target":{"target_kind":"standalone_run","run_id":"sto
+1794998961265 ws-close ws://127.0.0.1:57397/ws/agent/stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937
+1794998968655 ws-open ws://127.0.0.1:57397/ws/agent/stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937
+1794998968655 log Agent WebSocket connected
+1794998968655 recv {"type":"CONNECTED","payload":{"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937","session_id":"72908f58-8e41-435b-9c95-927d923ea8c6"}}
+1794998968655 recv {"type":"AGENT_STATUS","payload":{"status":"offline","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"}}
+1794998968693 sent {"type":"SEND_MESSAGE","payload":{"content":"HOLD_TURN gap600","context_file_paths":[],"image_urls":[],"message_id":"client_aacf48ce-2811-45c2-abae-8885bba84ce5
+1794998968695 recv {"type":"AGENT_STATUS","payload":{"status":"initializing","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"}}
+1794998968840 recv {"type":"AGENT_COMMAND_ACK","payload":{"command_type":"SEND_MESSAGE","run_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937","message_id":"client_aacf48ce-2811-45c2-abae-8885bba84ce5","dedupe_key":"a
+1794998968843 recv {"type":"AGENT_STATUS","payload":{"status":"initializing","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"},"sequence":2}
+1794998968844 recv {"type":"AGENT_STATUS","payload":{"status":"running","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"},"sequence":4}
+1794998968844 recv {"type":"TURN_STARTED","payload":{"turn_id":"8a8e82c9-1ac6-4b53-b525-0ced47b0831d"},"sequence":5}
+1794998969692 sent {"type":"INTERRUPT_GENERATION","payload":{"command_id":"client_interrupt_1dc6421e-a353-438a-b39a-b8d4433486f0"}}
+1794998969732 recv {"type":"TURN_INTERRUPTED","payload":{"turn_id":"8a8e82c9-1ac6-4b53-b525-0ced47b0831d"},"sequence":9}
+1794998969733 recv {"type":"AGENT_STATUS","payload":{"status":"offline","background_tasks_running":0,"recoverableBlock":null,"agent_id":"stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937"},"sequence":10}
+1794998969755 recv {"type":"AGENT_COMMAND_ACK","payload":{"command_type":"INTERRUPT_GENERATION","command_id":"client_interrupt_1dc6421e-a353-438a-b39a-b8d4433486f0","target":{"target_kind":"standalone_run","run_id":"sto
+1794998971266 ws-close ws://127.0.0.1:57397/ws/agent/stopper_64e0_cb142913fb1e4b53b1bec593d4a6d937

@@ -1,0 +1,62 @@
+{
+  "latencyMs": 150,
+  "gaps": [
+    0,
+    150,
+    300,
+    450,
+    700,
+    1000
+  ],
+  "cases": {
+    "gap0": {
+      "firstClickMs": 69,
+      "second": "Stopping… at 242ms",
+      "toasts": ""
+    },
+    "gap150": {
+      "firstClickMs": 112,
+      "second": "Stopping… at 190ms",
+      "toasts": ""
+    },
+    "gap300": {
+      "firstClickMs": 129,
+      "second": "Stopping… at 496ms",
+      "toasts": ""
+    },
+    "gap450": {
+      "firstClickMs": 91,
+      "second": "Stopping… at 495ms",
+      "toasts": ""
+    },
+    "gap700": {
+      "firstClickMs": 134,
+      "second": "Send message at 774ms",
+      "toasts": ""
+    },
+    "gap1000": {
+      "firstClickMs": 66,
+      "second": "Send message at 1013ms",
+      "toasts": ""
+    }
+  },
+  "sockets": [
+    "ws://127.0.0.1:58588/_nuxt/?token=<redacted>",
+    "ws://127.0.0.1:58620/ws/agent-package-definitions",
+    "ws://127.0.0.1:58620/ws/update-notifications",
+    "ws://127.0.0.1:58620/ws/terminal/993de8f2-94d9-48d7-ab85-a9d264de3576",
+    "ws://127.0.0.1:58620/ws/agent/stopper_f1d7_7e74bef113be4c54951c85ba279d3bdb",
+    "ws://127.0.0.1:58588/_nuxt/?token=<redacted>",
+    "ws://127.0.0.1:58620/ws/agent-package-definitions",
+    "ws://127.0.0.1:58620/ws/update-notifications",
+    "ws://127.0.0.1:58620/ws/terminal/ea225608-dd34-4d96-a7ca-15455d88a872",
+    "ws://127.0.0.1:58620/ws/agent/stopper_f1d7_7e74bef113be4c54951c85ba279d3bdb",
+    "ws://127.0.0.1:58620/ws/agent-collaboration/stopper_f1d7_7e74bef113be4c54951c85ba279d3bdb",
+    "ws://127.0.0.1:58620/ws/agent/stopper_f1d7_7e74bef113be4c54951c85ba279d3bdb",
+    "ws://127.0.0.1:58620/ws/agent/stopper_f1d7_7e74bef113be4c54951c85ba279d3bdb",
+    "ws://127.0.0.1:58620/ws/agent/stopper_f1d7_7e74bef113be4c54951c85ba279d3bdb",
+    "ws://127.0.0.1:58620/ws/agent/stopper_f1d7_7e74bef113be4c54951c85ba279d3bdb",
+    "ws://127.0.0.1:58620/ws/agent/stopper_f1d7_7e74bef113be4c54951c85ba279d3bdb"
+  ],
+  "errors": []
+}

@@ -1,0 +1,22 @@
+# IMP-01 server reproduction on the base (before the fix)
+# command: env -i PATH=... HOME=<temp> TMPDIR=... RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs INTERRUPT_REPRO_EVIDENCE=<file> pnpm exec vitest run tests/e2e/agent-run/interrupt-twice-repro.e2e.test.ts --no-watch
+# commit: ab7e4c8967 (code = base origin/personal bd2053ee51)
+# env: macOS, Node v22.23.1, scripted AGY
+# date: 2026-11-18
+# result: FAIL (2 failed): standalone 7 non-accepted acks; Team member gap20/gap100 failed:NO_ACTIVE_TURN
+
+standalone idleRunNoTurn: failed:NO_ACTIVE_TURN
+standalone gap0: accepted:None, accepted:None
+standalone gap5: accepted:None, rejected:RUN_NOT_FOUND
+standalone gap20: accepted:None, rejected:RUN_NOT_FOUND
+standalone gap50: accepted:None, rejected:RUN_NOT_FOUND
+standalone gap100: accepted:None, rejected:RUN_NOT_FOUND
+standalone gap250: accepted:None, rejected:RUN_NOT_FOUND
+standalone gap600: accepted:None, rejected:RUN_NOT_FOUND
+teamMember idleMemberNoTurn: accepted:None
+teamMember gap0: accepted:None, accepted:None
+teamMember gap20: accepted:None, failed:NO_ACTIVE_TURN
+teamMember gap100: accepted:None, failed:NO_ACTIVE_TURN
+
+Vitest assertion (Team member):
+AssertionError: every Stop to a Team member is accepted (AC-004): expected [ 'gap20:failed:NO_ACTIVE_TURN', …(1) ] to deeply equal []

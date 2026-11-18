@@ -1,0 +1,18 @@
+# IMP-02 durable server e2e stop-nothing-to-stop
+# command: env -i PATH=... HOME=<temp> TMPDIR=... RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts --no-watch
+# commit: 45cae5ebd2 (server code as of ff16e5de85)
+# env: macOS, Node v22.23.1
+# date: 2026-11-18T11:34:45Z
+
+stderr | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts > autobyteus-533: a Stop with nothing to stop is accepted (scripted AGY) > Team member
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-1mxFSG/workspace
+Reusing registered workspace ID: agent_ws_fe1fe8c5378062bd684e418fa5e243a8e94301bd47aaae211315d4cff50ae2b5
+AGY compaction detection off for run stop_manager_e9212f_f2472b8fe33344619e7962e5091efb67: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+stderr | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts > autobyteus-533: a Stop with nothing to stop is accepted (scripted AGY) > Team member
+ ✓ tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts (2 tests) 55411ms
+     ✓ standalone agent run  27196ms
+     ✓ Team member  2437ms
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  12:34:47
+   Duration  71.91s (transform 11.51s, setup 89ms, import 15.76s, tests 55.41s, environment 0ms)
