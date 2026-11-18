@@ -39,3 +39,9 @@ The ticket's own updates in its areas (15 files, against the merged base `f7b4d6
 ## Follow-ups
 
 Delivery added none; FU-500-01 … FU-500-13 stand.
+
+## Recheck On The Final Merged State (2026-11-18)
+
+- Base `53b72018ad` (491, 492) merged as `5eb8246076` (IR-009, CRR-017).
+- Removed-names check rerun against `53b72018ad`: 3,427 doc identifiers, **0** that exist in the base's source and not in the branch's.
+- For the Solution Designer at closure (its documents, not long-lived docs): the FU-030 SIR-001 row "superseded by 492 DEC-001"; `design-spec.md` FU-021 "the guard stays at 60 s" → the project's 30 s (CRR-015, CRR-017).
