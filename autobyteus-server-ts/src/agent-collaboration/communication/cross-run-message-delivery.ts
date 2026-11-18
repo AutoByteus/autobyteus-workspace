@@ -16,6 +16,8 @@ import {
   taskReactivationRejectionCode,
   type TaskExecutionResourcePort,
 } from "../execution/task/task-execution-resource-port.js";
+import type { RunningAgents } from "../running/running-agents.js";
+import type { CrossRunAcceptInput } from "./cross-run-accept-input.js";
 
 /** The sender's root: it prepares a message to another run and records it in its own log once delivered. */
 export type CrossRunSenderRoot = Readonly<{
@@ -25,8 +27,7 @@ export type CrossRunSenderRoot = Readonly<{
 }>;
 /** The receiver's root: in its gate it re-checks, writes its own log, and wakes and delivers (restored when stopped). */
 export type CrossRunReceiverRoot = Readonly<{
-  acceptFromRun(input: Readonly<{ message: CollaborationCommunicationMessage; senderIdentity: CollaborationMemberExecutionIdentity;
-    senderDisplayName: string; senderAddress: string | null; assertAllowed(): void }>): Promise<AgentOperationResult | RecordedRunRefusal>;
+  acceptFromRun(input: CrossRunAcceptInput): Promise<AgentOperationResult | RecordedRunRefusal>;
 }>;
 
 export type CrossRunMessageInput = Readonly<{
@@ -40,8 +41,6 @@ export type CrossRunMessageInput = Readonly<{
   shownAs?: string;
 }>;
 
-/** The refusal of a message between two runs of different Tasks (contract §2.2), as today. */
-export const OTHER_TASK_REFUSAL = "You can't message this agent: it works on a different Task.";
 /** Base's refusal of the assigner's message to a run whose Task was deleted (`task-assignment-eligibility.ts`, REQ-009). */
 export const DELETED_TASK_REFUSAL = "The Task was deleted, so its task agent cannot continue.";
 const refusal = (code: string, message: string): AgentOperationResult => ({ accepted: false, code, message });
@@ -52,20 +51,29 @@ const errorMessage = (error: unknown): string => error instanceof Error ? error.
 const sameRun = (a: RootExecutionIdentity, b: RootExecutionIdentity): boolean => rootExecutionIdentityKey(a) === rootExecutionIdentityKey(b);
 
 /**
+ * The admission of a message between two runs (autobyteus-492): `related` by today's Task rule (`canMessage`), `reopened`
+ * by the assigner's continuation, or `unrelated`: every other pair of runs, which the run ID alone admits while the
+ * receiver runs (CM-13). A run whose Tasks are all closed throws `TASK_AGENT_RESOURCE_CLOSED`, whoever sends.
+ */
+type Admission = "related" | "reopened" | "unrelated";
+
+/**
  * `send_message_to(run ID)` to an agent of another run on this node (design DS-2, `CrossRunMessageDelivery`). It owns
- * the order of one message between two runs; the rule is the `DelegationIndex`'s (`canMessage`, contract §2.2):
+ * the order of one message between two runs, and the Task admission of a message to a run (the `DelegationIndex`'s rule,
+ * `canMessage`, contract §2.2):
  * 1. the receiver's run (`runOfAgent`), from memory (nothing is resumed to find it, also after a restart);
  * 2. admission: the rule, else the assigner's continuation of the receiver's last entry (it must be an `assigned` entry
- *    the sender assigned, whose Task is not DONE or CANCELLED: the Task side reopens it), else the refusal: closed when the
- *    two runs are related by a Task, else a different Task;
+ *    the sender assigned, whose Task is not DONE or CANCELLED: the Task side reopens it), else closed when the receiver's
+ *    Tasks are all closed, else unrelated (autobyteus-492 DS-003: the run ID is the address);
  * 3. the sender's root prepares the message (no state change), the receiver's root accepts it in its gate (it re-checks
  *    "open" from the Task side, writes its own log, wakes and delivers), then the sender's root writes its own log with
  *    the same message ID. A refusal writes nothing (CM-9, AR-013), except one after the receiver's durable write: the
  *    receiver's log keeps it (REQ-012), so the sender's records it too (SR-076, TC-13).
- * A target no Task relates to the sender's run (not in the tree, or the sender's own run) is not this route's: `null`;
- * except an agent of a delegated run (an agent run, or a team run's member) whose Task was deleted, messaged by the delegator
- * its run's own file names: base's
- * `TASK_NOT_FOUND` (CR-461-058, CR-461-065, SR-071: base's texts).
+ * A related receiver is restored when it is stopped (DEC-001 of autobyteus-461); an unrelated one is delivered only while
+ * it runs (`RunningAgents`), in its live root, and is never woken (DEC-003): otherwise `null`, and the router answers
+ * "not running". An agent no Task names is unrelated, except an agent of a delegated run whose Task was deleted, messaged
+ * by the delegator its run's own file names: base's `TASK_NOT_FOUND` (CR-461-058, CR-461-065, SR-071: base's texts).
+ * A run on a peer node is not this route's (`null`), unless this node's Tasks of it are all closed (AR-007).
  */
 export class CrossRunMessageDelivery {
   constructor(private readonly dependencies: Readonly<{
@@ -75,6 +83,10 @@ export class CrossRunMessageDelivery {
     senderRoot(run: RootExecutionIdentity): CrossRunSenderRoot | null;
     /** The receiver's root, restored when it is stopped (DEC-001: a message wakes a stopped run). */
     receiverRoot(run: RootExecutionIdentity): Promise<CrossRunReceiverRoot | null>;
+    /** The receiver's active root as it is now, never restored (an unrelated message, DS-003, G-2). */
+    activeReceiverRoot(run: RootExecutionIdentity): CrossRunReceiverRoot | null;
+    /** Which live root runs an agent now (autobyteus-492). */
+    runningAgents: Pick<RunningAgents, "rootOf">;
     /** The sender's own address when, from the receiver, it reaches the sender (contract §2.4); null otherwise. */
     senderAddress(input: Readonly<{ sender: CollaborationMemberExecutionIdentity; receiverRun: RootExecutionIdentity; receiverAgentRunId: string }>): Promise<string | null>;
     /** The own record of the delegation of the run an agent is in (its file's `delegatedFrom`): an agent run's, or its team run's. */
@@ -87,19 +99,23 @@ export class CrossRunMessageDelivery {
     const tree = this.dependencies.tree();
     const receiverRun = await tree.runOfAgent(input.targetAgentRunId);
     const senderRun = input.sender.root;
-    if (!receiverRun) return this.deletedTaskRefusal(input);
+    if (!receiverRun) return await this.deletedTaskRefusal(input) ?? this.deliverUnrelated(input);
     if (sameRun(receiverRun, senderRun)) return null;
-    // A run on a peer node is reached through the sender root's peer endpoints (CM-11).
+    // A run on a peer node is reached through the sender root's peer endpoints (CM-11), or with `node` (DS-004); the
+    // node that holds its Tasks refuses it for every sender here once they are all closed (AR-007, DEC-011).
     const receiverReference = runReferenceOf(receiverRun);
-    if (receiverReference && tree.tasksOf(receiverReference).some((entry) => entry.nodeId !== undefined)) return null;
-    let reactivated: boolean;
+    const peerEntry = receiverReference ? tree.tasksOf(receiverReference).find((entry) => entry.nodeId !== undefined) : undefined;
+    if (peerEntry) return this.closedPeerRunRefusal({ nodeId: peerEntry.nodeId!, agentRunId: input.targetAgentRunId });
+    let admission: Admission;
     try {
-      reactivated = await this.admit(tree, senderRun, receiverRun, input.sender.agentRunId);
+      admission = await this.admit(tree, senderRun, receiverRun, input.sender.agentRunId);
     } catch (error) {
       const code = error instanceof TaskDelegationError ? error.code : taskReactivationRejectionCode(error);
       if (code) return refusal(code, errorMessage(error));
       throw error;
     }
+    if (admission === "unrelated") return this.deliverUnrelated(input);
+    const reactivated = admission === "reopened";
     const sender = this.dependencies.senderRoot(senderRun);
     if (!sender) return refusal("COLLABORATION_ROOT_NOT_ACTIVE", ROOT_NOT_ACTIVE_MESSAGE);
     const prepared = sender.prepareSendToRun({ senderIdentity: input.sender, receiverAgentRunId: input.targetAgentRunId, content: input.content,
@@ -114,18 +130,58 @@ export class CrossRunMessageDelivery {
     catch (error) { return refusal("TARGET_RUN_NOT_AVAILABLE", `The run of ${input.targetAgentRunId} could not be resumed: ${errorMessage(error)}`); }
     // A run with no files (deleted while this message was past the tree): R-11, as for any unknown run ID (SR-067).
     if (!receiver) return refusal("TARGET_AGENT_RUN_NOT_ACTIVE", `No running agent has the run id '${input.targetAgentRunId}', so the message was not sent.`);
+    return this.exchange(input, sender, prepared.message, receiverRun, receiver, { reactivated, related: true });
+  }
+
+  /**
+   * The Task admission of a message to a run on a peer node that this node's tree holds (AR-001, AR-007; DEC-011): when
+   * every Task entry of that run on that node is closed, `TASK_AGENT_RESOURCE_CLOSED` for any sender here, with or
+   * without `node`, as the linking root's own check answers; `null` otherwise (no entry, or one is open). Reads only.
+   */
+  async closedPeerRunRefusal(target: Readonly<{ nodeId: string; agentRunId: string }>): Promise<AgentOperationResult | null> {
+    const tree = this.dependencies.tree();
+    const run = await tree.runOfAgent(target.agentRunId);
+    const reference = run ? runReferenceOf(run) : null;
+    const entries = reference ? tree.tasksOf(reference).filter((entry) => entry.nodeId === target.nodeId) : [];
+    return entries.length && entries.every((entry) => !entry.open) ? refusal("TASK_AGENT_RESOURCE_CLOSED", ASSIGNER_ONLY_REACTIVATION_MESSAGE) : null;
+  }
+
+  /**
+   * DS-003: a message no Task relates to the two runs. Delivered only while the receiver runs, in its live root (never
+   * restored, DEC-003); `null` when no live root of this node runs it (the router answers "not running").
+   */
+  private async deliverUnrelated(input: CrossRunMessageInput): Promise<AgentOperationResult | null> {
+    const running = this.dependencies.runningAgents.rootOf(input.targetAgentRunId);
+    if (!running || sameRun(running.root, input.sender.root)) return null;
+    const receiver = this.dependencies.activeReceiverRoot(running.root);
+    if (!receiver) return null;
+    const sender = this.dependencies.senderRoot(input.sender.root);
+    if (!sender) return refusal("COLLABORATION_ROOT_NOT_ACTIVE", ROOT_NOT_ACTIVE_MESSAGE);
+    const prepared = sender.prepareSendToRun({ senderIdentity: input.sender, receiverAgentRunId: input.targetAgentRunId, content: input.content,
+      messageType: input.messageType, referenceFiles: input.referenceFiles });
+    if (!prepared.ok) return prepared.refusal;
+    return this.exchange(input, sender, prepared.message, running.root, receiver, { reactivated: false, related: false });
+  }
+
+  /**
+   * Step 3: the receiver's root accepts in its gate (its log first), then the sender's root records it (CM-9). Only a
+   * related message enters run views; an unrelated one stays in the two agents' conversations and logs (G-1, DEC-014).
+   */
+  private async exchange(input: CrossRunMessageInput, sender: CrossRunSenderRoot, message: CollaborationCommunicationMessage,
+    receiverRun: RootExecutionIdentity, receiver: CrossRunReceiverRoot, kind: Readonly<{ reactivated: boolean; related: boolean }>): Promise<AgentOperationResult> {
+    const { reactivated } = kind;
     const senderAddress = await this.dependencies.senderAddress({ sender: input.sender, receiverRun, receiverAgentRunId: input.targetAgentRunId });
-    const accepted = await receiver.acceptFromRun({ message: prepared.message, senderIdentity: input.sender, senderDisplayName: input.senderDisplayName,
-      senderAddress, assertAllowed: () => this.assertStillOpen(receiverRun) });
+    const accepted = await receiver.acceptFromRun({ message, senderIdentity: input.sender, senderDisplayName: input.senderDisplayName,
+      senderAddress, assertAllowed: () => this.assertStillOpen(receiverRun), publishToViews: kind.related });
     if (!accepted.accepted) {
       let refused: AgentOperationResult = accepted;
       if (isRecordedRunRefusal(accepted)) {
-        await sender.commitSentToRun(prepared.message);
+        await sender.commitSentToRun(message);
         refused = { accepted: false, code: accepted.code, message: accepted.message };
       }
       return reactivated ? notDeliveredAfterReopen(refused, input.targetAgentRunId) : refused;
     }
-    await sender.commitSentToRun(prepared.message);
+    await sender.commitSentToRun(message);
     // Today's text (REQ-009, contract §2): by address it names the address; by run ID, "Message delivered." (CR-461-017).
     const delivered = accepted.message ?? (input.shownAs ? `Delivered message to ${input.shownAs}.` : MESSAGE_DELIVERED_TEXT);
     return { ...accepted, agentRunId: input.targetAgentRunId, message: reactivated ? `${delivered} ${input.targetAgentRunId} continues with its conversation.` : delivered };
@@ -137,10 +193,10 @@ export class CrossRunMessageDelivery {
     return own?.delegatedFrom.delegatorAgentRunId === input.sender.agentRunId ? refusal("TASK_NOT_FOUND", DELETED_TASK_REFUSAL) : null;
   }
 
-  /** Step 2 (`model.py` `_admit`); `true` when this call reopened the receiver's assignment. Refusals throw. */
+  /** Step 2 (`model.py` `_admit`). Refusals throw. */
   private async admit(tree: Pick<DelegationIndex, "canMessage" | "tasksOf">, senderRun: RootExecutionIdentity, receiverRun: RootExecutionIdentity,
-    senderAgentRunId: string): Promise<boolean> {
-    if (tree.canMessage(senderRun, receiverRun)) return false;
+    senderAgentRunId: string): Promise<Admission> {
+    if (tree.canMessage(senderRun, receiverRun)) return "related";
     const receiverReference = runReferenceOf(receiverRun);
     const receiverEntries = receiverReference ? [...tree.tasksOf(receiverReference)].sort((a, b) => a.linkedAt.localeCompare(b.linkedAt)) : [];
     // The assigner's continuation: the receiver's last entry only.
@@ -153,14 +209,14 @@ export class CrossRunMessageDelivery {
       const unrestorable = await this.dependencies.restorability.refusal(receiverRun);
       if (unrestorable) throw new TaskDelegationError(unrestorable.code, unrestorable.message);
       const { reopened } = await this.dependencies.tasks().reopenAssignment(reopen);
-      return reopened;
+      return reopened ? "reopened" : "related";
     }
-    // R-8 before R-7, as base answered the closed target first (SR-071): a receiver whose Tasks are all closed is refused
-    // as closed, whoever sends; only then are runs of different open Tasks refused.
+    // A receiver whose Tasks are all closed is refused as closed, whoever sends (R-8, DEC-011); any other pair of runs is
+    // unrelated: a different Task is no reason to refuse (autobyteus-492 DEC-001).
     if (receiverEntries.length && receiverEntries.every((entry) => !entry.open)) {
       throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", ASSIGNER_ONLY_REACTIVATION_MESSAGE);
     }
-    throw new TaskDelegationError("TASK_AGENT_RESOURCE_CONFLICT", OTHER_TASK_REFUSAL);
+    return "unrelated";
   }
 
   /** The gate-head re-check reads the authority, the Task side, not the tree (AR-017). A run no Task names is not checked. */
@@ -170,4 +226,3 @@ export class CrossRunMessageDelivery {
     if (!this.dependencies.tasks().isOpen(reference)) throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", ASSIGNER_ONLY_REACTIVATION_MESSAGE);
   }
 }
-

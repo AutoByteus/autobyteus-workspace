@@ -7,14 +7,20 @@ import {
   type SendMessageTargetSelector,
 } from "../domain/send-message-target-selector.js";
 
+import { SEND_MESSAGE_TO_NODE_WITH_ADDRESS } from "../../agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
+
 type SendMessageToValidationError = {
-  code: "TARGET_SELECTOR_INVALID" | "UNSUPPORTED_TARGET_SELECTOR_ALIAS" | "INVALID_MESSAGE_CONTENT" | "INVALID_REFERENCE_FILES";
+  code: "TARGET_SELECTOR_INVALID" | "UNSUPPORTED_TARGET_SELECTOR_ALIAS" | "INVALID_MESSAGE_CONTENT" | "INVALID_REFERENCE_FILES" | "INVALID_TOOL_ARGUMENTS";
   message: string;
 };
 
 export type SendMessageToToolArguments = {
   recipientAddress: string | null;
   targetAgentRunId: string | null;
+  /** autobyteus-492: the peer node of the target run, trimmed; `null` when not given. */
+  node: string | null;
+  /** `node` was given but is not a non-empty string. */
+  nodeInvalid: boolean;
   target: SendMessageTargetSelector | null;
   unsupportedTargetSelectorFields: string[];
   content: string | null;
@@ -53,9 +59,13 @@ export const parseSendMessageToToolArguments = (
     targetAgentRunId,
   });
 
+  const node = toolArguments.node;
+  const nodeGiven = node !== undefined && node !== null;
   return {
     recipientAddress,
     targetAgentRunId,
+    node: nodeGiven && typeof node === "string" && node.trim() ? node.trim() : null,
+    nodeInvalid: nodeGiven && (typeof node !== "string" || !node.trim()),
     target: targetResult.ok ? targetResult.target : null,
     unsupportedTargetSelectorFields: unsupportedTargetSelectorAliases(toolArguments),
     content: readString(toolArguments.content),
@@ -88,6 +98,12 @@ export const validateParsedSendMessageToToolArguments = (
       code: "TARGET_SELECTOR_INVALID",
       message: targetResult.message,
     };
+  }
+  if (input.nodeInvalid) {
+    return { code: "INVALID_TOOL_ARGUMENTS", message: `${toolName} node must be the name of a peer node registered on this node; leave it out for an agent of this node.` };
+  }
+  if (input.node !== null && targetResult.target.kind === "recipient_address") {
+    return { code: "INVALID_TOOL_ARGUMENTS", message: SEND_MESSAGE_TO_NODE_WITH_ADDRESS };
   }
   if (!input.content?.trim()) {
     return {

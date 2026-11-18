@@ -20,6 +20,12 @@ export const buildSendMessageToParameterSchema = (): ParameterSchema =>
       required: false,
     }),
     new ParameterDefinition({
+      name: "node",
+      type: ParameterType.STRING,
+      description: SEND_MESSAGE_TO_FIELD_DESCRIPTIONS.node,
+      required: false,
+    }),
+    new ParameterDefinition({
       name: "content",
       type: ParameterType.STRING,
       description: SEND_MESSAGE_TO_FIELD_DESCRIPTIONS.content,

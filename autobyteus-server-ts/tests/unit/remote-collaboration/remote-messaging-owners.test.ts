@@ -6,7 +6,7 @@ import {
   createCollaborationMemberExecutionIdentity,
   createTeamRootExecutionIdentity,
 } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import { delegatedRunEndpoint, delegatedTeamEndpoints, delegatorEndpoint } from "../../../src/agent-collaboration/execution/remote/remote-endpoint.js";
+import { delegatedRunEndpoint, delegatedTeamEndpoints, delegatorEndpoint, unlinkedRunEndpoint } from "../../../src/agent-collaboration/execution/remote/remote-endpoint.js";
 import { RemoteMessageSend } from "../../../src/agent-collaboration/execution/remote/remote-message-send.js";
 import { RemoteRunLinks } from "../../../src/agent-collaboration/execution/remote/remote-run-links.js";
 import type { RemoteRunChannel } from "../../../src/agent-collaboration/execution/remote/remote-run-channel.js";
@@ -39,11 +39,9 @@ describe("remote endpoint kinds (AR-006)", () => {
     expect(endpoint).toMatchObject({ kind: "delegated_run", reference: { nodeId: PEER_NODE, agentRunId: REMOTE }, displayName: "publisher" });
     expect([...endpoint.pairedAgentRunIds]).toEqual([DELEGATOR]);
     expect([endpoint.allowsSender(DELEGATOR), endpoint.allowsSender("other"), endpoint.allowsTarget(DELEGATOR), endpoint.allowsTarget("other")]).toEqual([true, false, true, false]);
-    expect(endpoint.ownershipChain()).toEqual([{ agentRunId: REMOTE }]);
     expect(endpoint.transmission(message(DELEGATOR, REMOTE))).toEqual({ nodeId: PEER_NODE, kind: "message", messageId: "collabmsg_1",
       senderAgentRunId: DELEGATOR, targetRoot: { kind: "agent", runId: REMOTE }, targetAgentRunId: REMOTE, content: "hello", messageType: "agent_message",
       createdAt: "2026-10-20T10:01:00.000Z" });
-    expect(endpoint.refusals.notPermitted).toMatchObject({ accepted: false, code: "REMOTE_TARGET_NOT_PERMITTED" });
   });
 
   it("autobyteus-247 G-1: a delegated Team is one endpoint per member; only its delegator, the Team's Task, the Team as the root there", () => {
@@ -53,7 +51,6 @@ describe("remote endpoint kinds (AR-006)", () => {
     for (const endpoint of endpoints) {
       expect([...endpoint.pairedAgentRunIds]).toEqual([DELEGATOR]);
       expect([endpoint.allowsSender(DELEGATOR), endpoint.allowsSender("other"), endpoint.allowsTarget(DELEGATOR), endpoint.allowsTarget("other")]).toEqual([true, false, true, false]);
-      expect(endpoint.ownershipChain()).toEqual([{ teamRunId: "team_b" }]);
     }
     expect(endpoints[1]!.transmission(message(DELEGATOR, "writer_b"))).toMatchObject({ nodeId: PEER_NODE,
       targetRoot: { kind: "agent_team", runId: "team_b" }, targetAgentRunId: "writer_b" });
@@ -64,7 +61,6 @@ describe("remote endpoint kinds (AR-006)", () => {
     expect(endpoint).toMatchObject({ kind: "delegator", reference: { nodeId: "srv_node_a", agentRunId: DELEGATOR } });
     expect([...endpoint.pairedAgentRunIds]).toEqual([HOST]);
     expect([endpoint.allowsSender(HOST), endpoint.allowsSender("child"), endpoint.allowsTarget(HOST), endpoint.allowsTarget("child")]).toEqual([true, false, true, false]);
-    expect(endpoint.ownershipChain()).toEqual([]);
     expect(endpoint.transmission(message(HOST, DELEGATOR))).toMatchObject({ nodeId: "srv_node_a", targetRoot: { kind: "agent_team", runId: "team_a" } });
     expect(endpoint.admitsWorkPacket("srv_node_a", DELEGATOR, HOST)).toBe(true);
     expect(endpoint.admitsWorkPacket("srv_other", DELEGATOR, HOST)).toBe(false);
@@ -77,6 +73,14 @@ describe("remote endpoint kinds (AR-006)", () => {
     expect([endpoint.allowsSender("lead_b"), endpoint.allowsSender("writer_b"), endpoint.allowsTarget("writer_b"), endpoint.allowsTarget("copy_b")]).toEqual([true, true, true, false]);
     expect(endpoint.admitsWorkPacket("srv_node_a", DELEGATOR, "lead_b")).toBe(true);
     expect(endpoint.admitsWorkPacket("srv_node_a", DELEGATOR, "copy_b")).toBe(false);
+  });
+
+  it("autobyteus-492: an unlinked run is named by node and run ID only, pairs with the one local agent of its message, and asks for a run_message (no root)", () => {
+    const endpoint = unlinkedRunEndpoint({ nodeId: PEER_NODE, agentRunId: "pm_b", pairedAgentRunId: DELEGATOR });
+    expect(endpoint).toMatchObject({ kind: "unlinked_run", reference: { nodeId: PEER_NODE, agentRunId: "pm_b" }, displayName: "pm_b" });
+    expect([endpoint.allowsSender(DELEGATOR), endpoint.allowsSender("other"), endpoint.allowsTarget(DELEGATOR)]).toEqual([true, false, true]);
+    expect(endpoint.transmission(message(DELEGATOR, "pm_b"))).toEqual({ nodeId: PEER_NODE, kind: "run_message", messageId: "collabmsg_1",
+      senderAgentRunId: DELEGATOR, targetAgentRunId: "pm_b", content: "hello", messageType: "agent_message", createdAt: "2026-10-20T10:01:00.000Z" });
   });
 
   it("RemoteRunLinks holds membership only: both kinds by run ID, and the inbound link check by node, sender and target", () => {
@@ -128,11 +132,26 @@ describe("RemoteMessageSend: the one owner of the outbound sequence (AR-005, AR-
     expect(h.channel.deliverMessage).toHaveBeenCalledWith(expect.objectContaining({ nodeId: PEER_NODE, kind: "message", messageId: "collabmsg_1" }));
   });
 
-  it("refuses by the kind's pair rule before anything else", async () => {
+  it("autobyteus-492 DS-006: a sender the link does not pair (a teammate of the delegator) is sent as an unlinked run_message to the same run on the same node", async () => {
     const h = harness();
     const other = { ...sender, agentRunId: "not_the_delegator" };
-    await expect(h.send.send({ sender: other, endpoint, content: "hello" })).resolves.toMatchObject({ accepted: false, code: "REMOTE_TARGET_NOT_PERMITTED" });
-    expect(h.calls).toEqual([]);
+    await expect(h.send.send({ sender: other, endpoint, content: "hello" })).resolves.toMatchObject({ accepted: true });
+    expect(h.engine.prepareRemoteSend).toHaveBeenCalledWith(expect.objectContaining({ endpoint: expect.objectContaining({ kind: "unlinked_run",
+      reference: { nodeId: PEER_NODE, agentRunId: REMOTE } }) }));
+    expect(h.calls).toEqual(["prepare", "deliver", "commit"]);
+  });
+
+  it("autobyteus-492 DS-004: sendToPeerRun uses the root's link when the sender is paired on that node, else an unlinked endpoint", async () => {
+    const linked = harness();
+    await linked.send.sendToPeerRun({ sender, nodeId: PEER_NODE, targetAgentRunId: REMOTE, content: "hello" });
+    expect(linked.engine.prepareRemoteSend).toHaveBeenCalledWith(expect.objectContaining({ endpoint: expect.objectContaining({ kind: "delegated_run" }) }));
+    const otherNode = harness();
+    await otherNode.send.sendToPeerRun({ sender, nodeId: "srv_other", targetAgentRunId: REMOTE, content: "hello" });
+    expect(otherNode.engine.prepareRemoteSend).toHaveBeenCalledWith(expect.objectContaining({ endpoint: expect.objectContaining({ kind: "unlinked_run",
+      reference: { nodeId: "srv_other", agentRunId: REMOTE } }) }));
+    const unknown = harness();
+    await unknown.send.sendToPeerRun({ sender, nodeId: PEER_NODE, targetAgentRunId: "pm_b", content: "hello" });
+    expect(unknown.engine.prepareRemoteSend).toHaveBeenCalledWith(expect.objectContaining({ endpoint: expect.objectContaining({ kind: "unlinked_run" }) }));
   });
 
   it("returns the engine's refusal and sends nothing", async () => {

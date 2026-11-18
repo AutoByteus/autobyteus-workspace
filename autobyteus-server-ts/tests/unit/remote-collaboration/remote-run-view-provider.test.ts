@@ -46,7 +46,7 @@ const harness = () => {
   const gateway = new PeerGateway({
     ownNodeId: async () => SELF, capability: { isEnabled: () => true },
     peers: { findByNodeId: async (nodeId) => [ALPHA, OTHER].find((peer) => peer.nodeId === nodeId) ?? null },
-    delegatedRuns: {} as never, messages: {} as never, availableAgents: {} as never, runViews: provider,
+    delegatedRuns: {} as never, messages: {} as never, availableAgents: {} as never, runningAgents: {} as never, runViews: provider,
   });
   return { access, storedLinkCheck, views, provider, gateway, observation,
     emitLead: (event: unknown) => leadListeners.forEach((listener) => listener(event)), emit: (...args: Parameters<PairedAgentPresentationListener>) => listener?.(...args),

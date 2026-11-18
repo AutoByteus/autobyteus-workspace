@@ -194,7 +194,7 @@ Entry forms, all through the engine:
    log write and the slot commit (REQ-012). The saved record stays and is shown
    in the root view (when the form publishes), the recipient never gets the
    input, and the root keeps working. The sender gets the same Task refusal
-   `{ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" | "TASK_AGENT_RESOURCE_CONFLICT", message }`
+   `{ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message }`
    it gets before the slot is held, or
    `{ accepted: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: "AgentRun is not accepting input." }`.
    Only a failure of the list update, the publish or the presentation itself
@@ -217,7 +217,9 @@ engine's list.
 
 ## `target_agent_run_id` Global Direct Route
 
-`target_agent_run_id` has three paths, chosen in order by `GlobalAgentRunMessageRouter`.
+`target_agent_run_id` has these paths, chosen in order by `GlobalAgentRunMessageRouter`. The run ID is the
+address (CM-13, autobyteus-492): any running agent is reached by its run ID, on this node, or with `node` on a
+paired peer (below).
 
 **Same-root path.** When the sender has a member collaboration context and the
 target AgentRun is one of the sender's own run's agents (`hasAgentExecution`),
@@ -225,8 +227,8 @@ delivery goes through that root's `deliverExactAgentMessage` as ordinary root
 communication. A delegated run is never an agent of the run that delegated to it
 (autobyteus-461): it is reached by the next path.
 
-**Cross-run path** (`CrossRunMessageDelivery`, design DS-2). A target in another
-run that a Task relates to the sender's run goes from root to root:
+**Cross-run path** (`CrossRunMessageDelivery`, design DS-2, DS-003). A target in another
+run of this node goes from root to root:
 
 1. the receiver's run is found from the Task entries (`DelegationIndex.runOfAgent`),
    in memory, also after a restart;
@@ -235,13 +237,22 @@ run that a Task relates to the sender's run goes from root to root:
    the assigner's continuation of the receiver's closed `assigned` entry (its Task
    not DONE or CANCELLED: the Task side reopens it, and the accepted `message`
    ends with "<run id> continues with its conversation.", see
-   [Reactivation](projects.md#reactivation)); else it is refused with
-   `TASK_AGENT_RESOURCE_CLOSED` (the runs are related by a closed Task) or the
-   different-Task refusal;
+   [Reactivation](projects.md#reactivation)); else a receiver whose Tasks are all
+   closed is refused with `TASK_AGENT_RESOURCE_CLOSED`, whoever sends; any other pair
+   of runs is **unrelated** (a different Task, or a run no Task names);
 3. the sender's root prepares the message, the receiver's root accepts it in its
    gate (re-checking "open" from the Task side, writing its own log, waking a
-   stopped run with its conversation and delivering), then the sender's root
+   stopped related run with its conversation and delivering), then the sender's root
    writes its own log with the same message ID. A refusal writes nothing (CM-9).
+4. an unrelated message goes the same way only while the receiver runs
+   (`RunningAgents.rootOf`, from each root's own live statuses), in its active
+   root (`CollaborationRootResolver.resolveActive`, never restored): a stopped run
+   is not woken, and the router answers "not running". It stays out of run views
+   (`publishToViews: false`, DEC-014), like a message with another node; both
+   agents' conversations and both logs hold it.
+5. a run on a peer that this node's tree holds is the peer path's; when all its
+   Task entries on that node are closed, `closedPeerRunRefusal` answers
+   `TASK_AGENT_RESOURCE_CLOSED` for every sender here, with or without `node`.
 
 The receiver sees the sender's address only when it can use that address to reach
 the sender (contract §2.5); otherwise the run ID only.
@@ -251,6 +262,15 @@ path, the router asks every active root (`ActiveCollaborationRootDirectory.findT
 whether the ID is one of its team run IDs; if so it refuses with `TARGET_IS_TEAM_RUN`
 and the coordinator's agent run ID to use.
 
+**Peer path (`node`, DS-004).** `send_message_to(target_agent_run_id, node)` finds the peer by this
+node's name for it (`RemoteRunChannel.findPeer`: the refusals of `delegate_task` with `node`), applies this
+node's closed-Task admission (`closedPeerRunRefusal`), then hands the message to the sender's root
+(`deliverToPeerRun`), whose `RemoteMessageSend` uses the root's link when the sender is paired with that run,
+else a one-message `unlinked_run` endpoint (`/rest/remote/run-messages`). The peer delivers it only to an
+agent that runs there and never wakes it; a team run's ID is refused with its coordinator's run ID. `node`
+goes only with `target_agent_run_id`, and needs a sender in a collaboration run. The receiver's header names
+the sender's node, and it answers with that `node`. See [Remote Collaboration](remote_collaboration.md).
+
 **Global live-only path.** Every other target must be the canonical
 server-side `AgentRun.runId` of a run that is active at delivery time.
 Dispatch flows through:
@@ -258,7 +278,10 @@ Dispatch flows through:
 `SendMessageToDispatcher -> GlobalAgentRunMessageRouter -> AgentRunManager.getActiveRun(...) -> AgentRun.postUserMessage(...)`
 
 If `AgentRunManager.getActiveRun(targetAgentRunId)` returns no active run, the
-delivery fails closed with `TARGET_AGENT_RUN_NOT_ACTIVE`. This path must not
+delivery fails closed with `TARGET_AGENT_RUN_NOT_ACTIVE` ("No running agent has the run id …",
+saying that a stopped agent is not woken and to pass `node` for another node). A live run with a member
+context that the cross-run path did not deliver to runs in no live root, so a collaboration sender gets
+the same refusal; the direct post serves only senders or targets without a collaboration root. This path must not
 search team rosters, scan `AgentTeamRunManager`, consult task-agent recovery
 caches, use metadata-only lookup, resurrect inactive runs, or lazy-start
 preallocated members.
@@ -344,9 +367,10 @@ of the new run.
 Runs the user started are never checked against Task data among their own agents.
 Every delegated run is Task-owned: an `assigned` entry (a Project Task, or a Task
 with no Project its description-only delegation created) or `subWork` of its
-delegator's current Task. Two runs may message each other by run ID only when they
-share an open Task or one is the other's assigner (contract §2.2); the refusal (a
-different Task, or a closed Task) is returned to the sender as
+delegator's current Task. Two runs are related when they share an open Task or one
+is the other's assigner (contract §2.2): a message between them may wake the
+receiver. Any other running agent is reached by run ID too (CM-13), but never
+woken. The refusal of a closed Task is returned to the sender as
 `{accepted: false, code, message}` so the agent reads the next step. The receiver's
 root re-checks the Task side in its gate, so a Task closed while the message waits
 refuses it too.

@@ -12,7 +12,7 @@ import type { MemberLogicalMessageInput } from "../../agent-collaboration/execut
 import type { TaskDelegationContext } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { DelegationSource } from "../../agent-collaboration/execution/task/member-task-capability.js";
 import { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
-import type { ActiveRootMessageBoundary, ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
+import type { ActiveRootMessageBoundary, ExactAgentMessageInput, PeerRunMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { RunViewStream } from "../../agent-collaboration/delegation/run-view-stream.js";
 import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
 import type { CollaborationAgentPlatformBindingChange } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
@@ -196,6 +196,14 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   commitSentToRun(message: Parameters<RootCommunicationEngine["commitSentToRun"]>[0]) { return this.communication.commitSentToRun(message); }
   acceptRemoteMessage(input: RemoteInboundMessage): Promise<AgentOperationResult> {
     return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.acceptRemoteMessage(input); });
+  }
+  /** autobyteus-492 DS-004: a peer agent's message by run ID only, while that agent runs (never woken). */
+  acceptPeerRunMessage(input: RemoteInboundMessage): Promise<AgentOperationResult> {
+    return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.acceptPeerRunMessage(input); });
+  }
+  /** autobyteus-492 DS-004: to an agent of a peer node by its run ID. */
+  deliverToPeerRun(input: PeerRunMessageInput): Promise<AgentOperationResult> {
+    return this.operationGate.run(() => this.delivery.deliverToPeerRun(input));
   }
 
   /** What this Org answers when one of its agents delegates, in its gate (SR-049); the delegation is the tool path's. */

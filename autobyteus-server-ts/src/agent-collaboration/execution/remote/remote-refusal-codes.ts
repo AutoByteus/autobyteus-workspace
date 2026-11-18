@@ -17,6 +17,8 @@ export const REMOTE_REFUSAL = Object.freeze({
   SAVED_TASK_NOT_SUPPORTED: "REMOTE_SAVED_TASK_NOT_SUPPORTED",
   TARGET_NOT_PERMITTED: "REMOTE_TARGET_NOT_PERMITTED",
   TARGET_NOT_FOUND: "REMOTE_TARGET_NOT_FOUND",
+  /** autobyteus-492: no running agent of that node has the run ID of a message sent by run ID only (`run_message`). */
+  TARGET_NOT_RUNNING: "REMOTE_TARGET_NOT_RUNNING",
   BAD_REQUEST: "REMOTE_REQUEST_INVALID",
   /** autobyteus-290: this node's or the peer's identity is waiting for its data migration (capability `node_identity`). */
   NODE_IDENTITY_NOT_MIGRATED: "NODE_IDENTITY_NOT_MIGRATED",
@@ -29,8 +31,14 @@ export const REMOTE_ROOT_REFUSAL_TEXT = Object.freeze({
   off: "Remote collaboration is turned off on this node, so nothing was sent to another node.",
   attachments: "Files (reference_files) can't be sent to an agent on another node yet, so nothing was sent.",
   savedTask: "A saved Task (task_id) can't be given to an agent on another node yet, so nothing was started. Delegate with a description instead.",
-  notPermitted: "That run is on another node and is not linked with you: only the agent that delegated to it, and the run itself, can message each other. The message was not sent.",
 });
+
+/**
+ * autobyteus-492: a root's answer to a message by run ID only (`run_message`) for an agent of its own that does not run
+ * now (never woken, DEC-003); the sending node words it with this node's name.
+ */
+export const remoteTargetNotRunning = (agentRunId: string): Readonly<{ accepted: false; code: string; message: string }> =>
+  Object.freeze({ accepted: false as const, code: REMOTE_REFUSAL.TARGET_NOT_RUNNING, message: `No running agent has the run id '${agentRunId}'.` });
 
 /** The result of a message a peer accepted (CM-11: results name the other run's node). */
 export const remoteDeliveredText = (agentRunId: string, peerName: string): string =>

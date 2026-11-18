@@ -17,6 +17,11 @@ import { AgentRunMetadataStore } from "./agent-run-metadata-store.js";
  * entry agent (an agent run itself; a team run's coordinator).
  */
 export type RunOwnDelegationRecord = Readonly<{ delegatedFrom: RunDelegatedFrom; address: string | null; definition: CatalogDefinitionRef; entryAgentRunId: string }>;
+/** A live root's facts for `list_running_agents`, from its own file (autobyteus-492 REQ-002); a Team's are its coordinator's. */
+export type RunListingFacts =
+  | Readonly<{ kind: "agent"; startedByPerson: boolean; definitionId: string; startedAt: string | null; workspace: string | null }>
+  | Readonly<{ kind: "agent_team"; startedByPerson: boolean; definitionId: string; definitionName: string; startedAt: string | null;
+      workspace: string | null; coordinatorAgentRunId: string }>;
 /** A local delegation with its delegator recorded; `null` for a run a peer started or an old run that never recorded it. */
 const localDelegation = (from: DelegatedFrom | undefined): RunDelegatedFrom | null => from && from.nodeId === undefined && from.delegatorAgentRunId
   ? { delegatingRun: { rootSubjectKind: from.delegatingRun.kind, rootRunId: from.delegatingRun.runId }, delegatorAgentRunId: from.delegatorAgentRunId } : null;
@@ -125,6 +130,25 @@ export class RunOwnAgentsReader implements RunFilesReader {
     const coordinator = tree?.rootTeam.members.find((member) => member.address === tree.rootTeam.coordinatorAddress);
     return tree && delegatedFrom && coordinator && "agentRunId" in coordinator && coordinator.agentRunId ? { delegatedFrom, address: null,
       definition: { kind: "agent_team", definitionId: tree.rootTeam.teamDefinitionId }, entryAgentRunId: coordinator.agentRunId } : null;
+  }
+
+  /**
+   * What `list_running_agents` reads of a run's own file (autobyteus-492): whether a person started it (no `delegatedFrom`,
+   * neither a local delegation nor a peer's), its definition, its start time and its workspace (an Agent's own; a Team's
+   * coordinator's launch), and a Team's coordinator. `null` for an Org run or when the file is absent.
+   */
+  async listingFactsOf(run: RootExecutionIdentity): Promise<RunListingFacts | null> {
+    if (run.rootSubjectKind === "agent") {
+      const metadata = await this.stores.agents.readMetadata(run.rootRunId);
+      return metadata ? { kind: "agent", startedByPerson: !metadata.delegatedFrom, definitionId: metadata.agentDefinitionId,
+        startedAt: metadata.startedAt ?? null, workspace: metadata.workspaceRootPath || null } : null;
+    }
+    if (run.rootSubjectKind !== "agent_team") return null;
+    const tree = await this.stores.team.read(this.layout.getTeamDirPath({ rootTeamRunId: run.rootRunId, ancestorTeamRunIds: [] }), run.rootRunId);
+    const coordinator = tree?.rootTeam.members.find((member) => member.address === tree.rootTeam.coordinatorAddress);
+    return tree && coordinator?.agentRunId ? { kind: "agent_team", startedByPerson: !tree.delegatedFrom, definitionId: tree.rootTeam.teamDefinitionId,
+      definitionName: tree.rootTeam.teamDefinitionName, startedAt: tree.createdAt, workspace: coordinator.launchConfiguration.workspaceRootPath || null,
+      coordinatorAgentRunId: coordinator.agentRunId } : null;
   }
 
   /**

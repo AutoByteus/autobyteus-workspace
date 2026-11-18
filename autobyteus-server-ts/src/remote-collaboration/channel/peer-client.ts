@@ -16,6 +16,8 @@ import type {
   RemoteTargetRoot,
 } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import { remoteAgentLaunchesOf as launchesOf, remoteAgentProjectionOf, remoteRunSummariesOf } from "./peer-run-view-answers.js";
+import { runningAgentsOf } from "./peer-running-agents-answer.js";
+import type { RunningAgentEntry } from "../../agent-collaboration/running/running-agent-entry.js";
 import { openPeerRunObservation, type OpenWebSocket } from "./peer-run-observation-client.js";
 import type { DelegatingRunRef } from "../../run-history/store/agent-run-metadata-types.js";
 import type { PeerNode } from "../domain/peer-node.js";
@@ -32,9 +34,12 @@ import {
   REMOTE_MESSAGES_PATH,
   REMOTE_OWNER_COMMANDS_PATH,
   REMOTE_RUN_OBSERVATIONS_PATH,
+  REMOTE_RUN_MESSAGES_PATH,
   REMOTE_RUN_SUMMARIES_PATH,
+  REMOTE_RUNNING_AGENTS_PATH,
   type AgentProjectionRequest,
   type DeliverRemoteMessageRequest,
+  type DeliverRunMessageRequest,
   type OwnerCommandRequest,
   type RemoteRefusalTarget,
   type RunSummariesRequest,
@@ -187,7 +192,24 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe, PeerPair
     });
   }
 
+  /** autobyteus-492: the peer's running runs a person started; a malformed answer is unreachable ("without its list"). */
+  runningAgents(nodeId: string): Promise<Readonly<{ accepted: true; agents: readonly RunningAgentEntry[] }> | PeerRefusal> {
+    return this.call(nodeId, REMOTE_RUNNING_AGENTS_PATH, (envelope) => ({ ...envelope }), "did not answer in time", (answer, peer) => {
+      const agents = runningAgentsOf(answer.agents);
+      return agents ? Object.freeze({ accepted: true as const, agents })
+        : refusal(REMOTE_REFUSAL.PEER_UNREACHABLE, peerRefusalText(peer.name, REMOTE_REFUSAL.PEER_UNREACHABLE, "it answered without its list"));
+    });
+  }
+
+  /** A linked message or work packet (`messages`, its root named), or a message by run ID only (`run-messages`, autobyteus-492). */
   async deliverMessage(input: RemoteMessageTransmission): Promise<RemoteDeliveryReceipt> {
+    const timeoutText = "did not answer in time; the message may have been delivered";
+    if (input.kind === "run_message") {
+      return this.call(input.nodeId, REMOTE_RUN_MESSAGES_PATH, (envelope): DeliverRunMessageRequest => ({
+        ...envelope, messageId: input.messageId, sender: { agentRunId: input.senderAgentRunId }, target: { agentRunId: input.targetAgentRunId },
+        content: input.content, messageType: input.messageType, createdAt: input.createdAt,
+      }), timeoutText, () => Object.freeze({ accepted: true as const }));
+    }
     return this.call(input.nodeId, REMOTE_MESSAGES_PATH, (envelope): DeliverRemoteMessageRequest => ({
       ...envelope,
       kind: input.kind,
@@ -198,7 +220,7 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe, PeerPair
       content: input.content,
       messageType: input.messageType,
       createdAt: input.createdAt,
-    }), "did not answer in time; the message may have been delivered", () => Object.freeze({ accepted: true as const }));
+    }), timeoutText, () => Object.freeze({ accepted: true as const }));
   }
 
   /** autobyteus-278: titles and statuses of runs this node's delegation started on that peer; a malformed answer is unreachable. */

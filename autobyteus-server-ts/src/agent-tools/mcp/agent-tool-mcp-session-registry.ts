@@ -135,4 +135,5 @@ const cloneRuntimeExposure = (
   publishArtifactsEnabled: exposure.publishArtifactsEnabled,
   listAvailableAgentsEnabled: exposure.listAvailableAgentsEnabled,
   listPeerNodesEnabled: exposure.listPeerNodesEnabled,
+  listRunningAgentsEnabled: exposure.listRunningAgentsEnabled,
 });
