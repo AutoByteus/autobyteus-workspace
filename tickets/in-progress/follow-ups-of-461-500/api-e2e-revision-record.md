@@ -127,3 +127,30 @@ None open from round 3.
 - Origin: test-side and present on base `0570c47fd9` too (the code reviewer reproduced it there). 493's episodic catalog rebuilds at start when the previous server stopped before its refresh; my earlier base pass was timing.
 - Fix: OT-2's "a read writes nothing" leaves the derived `memory/episodic/` out. OT-1 … OT-3 3/3. FU-500-13 records 493's start-pass timing for its area.
 - Result: `Pass` / 95%.
+
+### API-REV-005: round 5, the fourth merged state (CRR-013): Pass
+
+- Triggering role, report path, and round: `/code_reviewer`, `code-review-report.md` (round 7, CRR-013 Pass on IR-007; head `d141a2e783`), API/E2E round 5.
+- Triggering finding or case IDs: the merge of `24d438fa31` (524's process resources and file-watch stop at exit; 526's whole restart notice message with this ticket's `readyAgent`).
+- Why this revision was recorded: validation of the fourth merged state.
+- Coverage decisions or durable test paths changed:
+  - `restart-reminder-built-server.e2e.test.ts`: new RR-12 (a Team member at an update restart: woken once, its next input carries nothing, the notice shown once);
+  - `skill-improvement-removal-cases.mjs` SIR-002: leaves 448's `restart-resume/` runtime records out of the byte-identity check, beside `memory/episodic/`.
+  - Scope: proportional to the merge's two conflicts. The full folder was not rerun; rounds 3–4 ran it to the end.
+
+#### Prior Failure Resolution
+
+None open (F-4 resolved in round 4).
+
+- Canonical artifacts and sections updated: the execution report (Round, Routing, Result); the progress log; `evidence/api-e2e/API-r5-runs.txt`.
+- Prior result and confidence: `Pass` / 95% (round 4)
+- Current result and confidence: `Pass` / 95%
+- New or remaining failure IDs: none
+- Recommended owner: the Code Reviewer, for the proportional test-code review of RR-12 and the SIR-002 change, then delivery.
+- Remaining risks, blocked evidence, or untested scope:
+  - RR-07…09 live and RR-11 (they need a build from before 526) not run;
+  - quiet macOS;
+  - M-6 cold cache;
+  - the founder's own data;
+  - LM Studio and Ollama emulated;
+  - FU-500-09 … 13.

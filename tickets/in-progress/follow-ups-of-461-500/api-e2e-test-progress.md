@@ -48,3 +48,7 @@ My progress log while tests run. Read it first when picking the run back up. Row
 | 2026-11-18 11:05 | ROUND 4 | Completed | Fail | F-4 to the code reviewer |
 | 2026-11-18 11:16 | F-4 (r4) | Completed | Pass | OT-2 leaves derived memory/episodic out (CRR-011); OT-1..3 3/3; FU-500-13 |
 | 2026-11-18 11:16 | ROUND 4 | Completed | Pass | 95% |
+| 2026-11-18 12:56 | ROUND 5 | Started | | CRR-013 merge of 24d438fa31 (head d141a2e783, merge eecb228bd6); dist rebuilt; RR suite 8/8 with new RR-12 (Team member); shutdown x3 clean, compositions 17/17 |
+| 2026-11-18 12:56 | FOCUS, TS, PROBES (r5) | Started | | chain /tmp/api500/r5/chain.log |
+| 2026-11-18 13:36 | FOCUS, TS, PROBES (r5) | Completed | Pass after one test fix | 87 passed; USR load (8/8 alone); TS-008/009, G5, DLP-005, DCP-004 Pass; SIR-002 leaves restart-resume/ out, Pass |
+| 2026-11-18 13:36 | ROUND 5 | Completed | Pass | 95% |
