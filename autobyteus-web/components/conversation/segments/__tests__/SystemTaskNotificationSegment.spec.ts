@@ -12,6 +12,7 @@ const mountSegment = (content: string, senderId = 'system') => mount(SystemTaskN
       type: 'system_task_notification',
       senderId,
       content,
+      messageId: null,
     },
   },
 });
@@ -196,7 +197,7 @@ describe('SystemTaskNotificationSegment', () => {
           expect(text).toContain('The application restarted at 18 Nov 2026, 06:41 CET (reason: a restart).');
           expect(text).not.toContain('05:41 UTC');
         }
-        const segment = { type: 'system_task_notification', senderId: 'system.restart_resume', content: REMINDER } as const;
+        const segment = { type: 'system_task_notification', senderId: 'system.restart_resume', content: REMINDER, messageId: 'n1' } as const;
         mount(SystemTaskNotificationSegment, { props: { segment } });
         expect(segment.content).toContain('2026-11-18 05:41 UTC');
       });

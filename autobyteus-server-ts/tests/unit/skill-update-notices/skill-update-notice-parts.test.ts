@@ -223,13 +223,13 @@ describe("skill update notice text and message", () => {
   });
 
   it("builds the busy-run message as a SYSTEM, notice-only platform message without a native auto-notification", () => {
-    const message = buildSkillUpdateNoticeMessage("notice text");
+    const message = buildSkillUpdateNoticeMessage("notice text", "notice-1");
     expect(message.senderType).toBe(SenderType.SYSTEM);
     expect(message.metadata).toMatchObject({
       skill_update_notice: true, sender_id: SKILL_UPDATE_NOTICE_SENDER_ID, suppress_system_task_notification: true,
     });
     expect(readPlatformInputPreface(message.metadata)).toEqual({
-      content: "notice text", senderId: SKILL_UPDATE_NOTICE_SENDER_ID, originalContent: null,
+      content: "notice text", senderId: SKILL_UPDATE_NOTICE_SENDER_ID, originalContent: null, noticeId: "notice-1",
     });
   });
 });

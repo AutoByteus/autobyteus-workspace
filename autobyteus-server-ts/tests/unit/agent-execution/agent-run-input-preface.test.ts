@@ -112,7 +112,8 @@ describe("AgentRun input preface (DS-003)", () => {
     expect(dispatch.message.senderType).toBe(SenderType.AGENT);
     expect(dispatch.message.metadata.input_origin).toBe("inter_agent_delivery");
     expect(readPlatformInputPreface(dispatch.message.metadata)).toEqual({
-      content: NOTICE, senderId: SENDER, originalContent: "Please review PR 12.",
+      // autobyteus-526: the notice's one id is the preface's: on the message, and on the published notice below.
+      content: NOTICE, senderId: SENDER, originalContent: "Please review PR 12.", noticeId: "preface-1",
     });
     expect(port.prefaceDelivered).toHaveBeenCalledWith(harness.run, expect.objectContaining({ id: "preface-1" }), "turn-1");
     expect(port.prefaceReturned).not.toHaveBeenCalled();
@@ -122,7 +123,7 @@ describe("AgentRun input preface (DS-003)", () => {
     // The notice is published as the run's system notice in that turn.
     await vi.waitFor(() => expect(harness.published.some((value) => value.eventType === AgentRunEventType.SYSTEM_TASK_NOTIFICATION)).toBe(true));
     expect(harness.published.find((value) => value.eventType === AgentRunEventType.SYSTEM_TASK_NOTIFICATION)!.payload)
-      .toEqual({ sender_id: SENDER, content: NOTICE, turn_id: "turn-1" });
+      .toEqual({ sender_id: SENDER, content: NOTICE, message_id: "preface-1", turn_id: "turn-1" });
   });
 
   it("combines the notice into an append when the next input arrives mid-turn on an append-capable runtime", async () => {
@@ -210,7 +211,7 @@ describe("AgentRun input preface (DS-003)", () => {
     const port = createPrefacePort();
     const harness = createHarness({ inputPreface: port });
     const noticeOnly = new AgentInputUserMessage("another notice", SenderType.SYSTEM, null,
-      platformInputPrefaceMetadata({ content: "another notice", senderId: SENDER, originalContent: null }));
+      platformInputPrefaceMetadata({ content: "another notice", senderId: SENDER, originalContent: null, noticeId: "notice-only" }));
 
     await harness.run.postUserMessage(noticeOnly);
 

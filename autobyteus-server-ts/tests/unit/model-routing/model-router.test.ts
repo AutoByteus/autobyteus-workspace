@@ -16,13 +16,13 @@ const fakeAgent = (sessions: ModelRoutingSessions, behaviour: Behaviour = "answe
   let idle = true;
   const listeners = new Set<() => void>();
   const setIdle = (value: boolean) => { idle = value; listeners.forEach((listener) => listener()); };
-  const posted: { requestId: string; text: string; senderId: unknown }[] = [];
+  const posted: { requestId: string; text: string; senderId: unknown; metadata: Record<string, unknown> }[] = [];
   const run = {
     runId: "router_run_1",
     publishEvent: vi.fn(async () => undefined),
     postUserMessage: vi.fn(async (message: { content: string; metadata: Record<string, unknown> }, options: { lifecycleObserver?: AgentRunInputLifecycleObserver }) => {
       const requestId = /^Routing request (\S+)\./.exec(message.content)![1]!;
-      posted.push({ requestId, text: message.content, senderId: message.metadata.sender_id });
+      posted.push({ requestId, text: message.content, senderId: message.metadata.sender_id, metadata: message.metadata });
       setIdle(false);
       queueMicrotask(() => {
         options.lifecycleObserver?.({ kind: "forwarded", dispatchKind: "start_turn", turnId: `turn_${posted.length}` });
@@ -116,6 +116,10 @@ describe("ModelRouter (DS-003)", () => {
     // The request shows in the agent's conversation as a system notice once it is forwarded.
     expect(run.publishEvent).toHaveBeenCalledWith(expect.objectContaining({ eventType: "SYSTEM_TASK_NOTIFICATION",
       payload: expect.objectContaining({ sender_id: MODEL_ROUTER_REQUEST_SENDER_ID, turn_id: "turn_1" }) }));
+    // autobyteus-526: the published notice carries the request message's one notice id.
+    const noticeId = (posted[0]!.metadata.platform_input_preface as { notice_id?: unknown }).notice_id;
+    expect(noticeId).toEqual(expect.any(String));
+    expect(run.publishEvent).toHaveBeenCalledWith(expect.objectContaining({ payload: expect.objectContaining({ message_id: noticeId }) }));
   });
 
   it("QR-001: no valid answer within 40 s is a router failure", async () => {
