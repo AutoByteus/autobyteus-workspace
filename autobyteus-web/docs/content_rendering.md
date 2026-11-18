@@ -209,7 +209,7 @@ File explorer and artifact viewers intentionally follow the shared **Settings ->
 - Markdown code blocks are kept on root-scale-compatible sizing so prose and code grow together.
 - `MonacoEditor.vue` consumes the shared resolved editor metrics from `appFontSizeStore` because Monaco does not inherit CSS font sizing automatically.
 - This keeps file explorer viewing and artifact viewing aligned with the same app-wide accessibility setting.
-- On the phone page (`/mobile`) the same owner, `appFontSizeStore`, takes the phone's **Text size** step (chosen in **On this phone** on the run list) as its source instead of the Display preset: the root size and the Monaco size (14 px × step/17, rounded) follow the step, and the phone never reads **Settings -> Display**. The desktop never reads the phone step. See [Phone Access](./remote_access.md).
+- On the phone page (`/mobile`) the same owner, `appFontSizeStore`, takes the phone's **Text size** step (Standard, Large or Largest, chosen under **Text size** in the run list's ⋮ menu) as its source instead of the Display preset: the root size and the Monaco size (14 px × step/17, rounded) follow the step, and the phone never reads **Settings -> Display**. The desktop never reads the phone step. See [Phone Access](./remote_access.md).
 
 ## Markdown Rendering
 

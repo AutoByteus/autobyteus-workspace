@@ -1,0 +1,5 @@
+# IMP-07 probe console lines (commit a8f2680e2a, macOS headless Chrome, 2026-11-18)
+[mobile-shell] MSP-08 Pass
+[mobile-shell] MSP-60 Pass
+[mobile-shell] MSP-67 Pass
+mobile-shell probe: Pass
