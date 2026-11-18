@@ -1,0 +1,7 @@
+# DEL-05 (autobyteus-524 r2 delivery): the AAR E2E with the DeepSeek Harness CLI installed, on the merged state (AC-001)
+# Command: env -i PATH="$PATH:$HOME/.local/bin" HOME=<temp> TMPDIR=<temp> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts --no-watch; ~/.local/bin/dsh exists (-rwxr-xr-x, Nov 17 14:24) and 'command -v dsh' resolves it under that PATH
+# Commit: be94117935; 2026-11-18
+
+ ✓ tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts (6 tests) 34284ms
+ Test Files  1 passed (1)
+      Tests  6 passed (6)

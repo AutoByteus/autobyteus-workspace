@@ -183,7 +183,10 @@ or because Gradle's cache already holds a dependency the runner must download.
   watch events arrive seconds late or never, and closing a recursive `fs.watch` blocks Node's main
   thread for seconds, so those tests time out for a reason outside the code. Before diagnosing such
   a timeout, check `fseventsd` and measure: the time from writing a file in a watched temp folder to
-  its event, and how long `close()` of that watcher blocks.
+  its event, and how long `close()` of that watcher blocks. A built server's process shutdown no
+  longer pays that close: it ends the package and skill folder watchers and lets the exit release
+  their OS watches, so a slow built-server stop is not explained by this rule. An in-process server
+  that a test closes still closes them.
 - **Green server suites.** Server `test:unit`, `test:integration` and `typecheck` are kept
   passing. Every failure there is a real failure: find its cause and fix or report it
   (Rule 9). Run `test:integration:prepare` once per worktree and after changing server or
