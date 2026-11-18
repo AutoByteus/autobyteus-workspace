@@ -1,0 +1,38 @@
+# IMP-023 IR-007: checks on the merged state (origin/personal 24d438fa31 merged in eecb228bd6)
+# Commit: eecb228bd6; macOS Darwin 25.5.0, Node v22; 2026-11-18 local; load average 80-158
+
+## pnpm -C autobyteus-server-ts typecheck (after the amended merge)
+[typecheck] production errors: 0; test-file errors: 1010 in 316 files (baseline 1010 in 316 files)
+[typecheck] PASS
+(the first run on the unamended resolution: "production errors: 2", TS1128 at build-studio-server.ts:102, a stray '};' from the resolution; amended into the merge)
+
+## node autobyteus-web/scripts/typecheck.mjs
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS
+
+## cd autobyteus-server-ts && npx vitest run --no-watch --testTimeout=60000 --hookTimeout=60000 tests/unit tests/agent-work-journal tests/app-data-migrations tests/architecture tests/integration
+⎯⎯⎯⎯⎯⎯ Failed Tests 16 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  3 failed | 1107 passed | 25 skipped (1135)
+      Tests  16 failed | 8880 passed | 78 skipped (8974)
+   3  FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts
+   9  FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts
+   4  FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts
+Labels:
+   1 Error: Condition not met within 5000 ms; last value: 0
+   1 Error: Condition not met within 5000 ms; last value: ["agent
+   1 Error: Condition not met within 5000 ms; last value: undefin
+   4 Error: ENVIRONMENT: the OS delivered no file event within 10
+   5 Error: INCONCLUSIVE: the watcher saw no change; a fresh fs.w
+   4 Error: Timed out waiting for the monitor.
+
+## The restart-resume tests and tests/unit/compositions, with package-auto-refresh, rerun alone
+restart-resume and compositions: all pass; package-auto-refresh: 6 of its tests fail, 'Condition not met within 5000 ms'
+
+## Raw OS check right after (node /tmp/r500/fsprobe.mjs: fs.watch on 5 fresh temp dirs, one write each, 10 s each)
+[7889,3925,null,null,null]  (ms to the event; null = no event in 10 s)
+The OS delivered no file event in 3 of 5 tries and was late in the other 2; the watcher tests (D-13b labels) and package-auto-refresh (5 s waits) cannot pass meanwhile.
+git diff 24d438fa31 HEAD over the code package-auto-refresh builds (compositions/host-definition-services, agent-package-definition-feed-composition, agent-package-definitions, agent-packages, agent-definition, agent-team-definition, the test): empty, the base's code.
+
+## cd autobyteus-web && npx vitest run
+ Test Files  768 passed (768)
+      Tests  5776 passed | 2 skipped (5778)

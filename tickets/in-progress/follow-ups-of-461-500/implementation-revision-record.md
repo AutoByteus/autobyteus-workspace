@@ -172,3 +172,28 @@
   - No changed source file is over 500.
 - **Limitations:** server E2E suites were not run on the merge; they're for API/E2E round 4, which the Delivery Engineer
   asked to target what the merge touches.
+
+## IR-007 (fourth delivery base refresh)
+
+- **Trigger:** the Delivery Engineer's fourth refresh (`92780698b9`): merging `origin/personal` `24d438fa31` conflicted
+  in 2 files. A Local Fix.
+- **Prior result:** IR-006, Pass (CRR-010); API/E2E round 4. **Current result:** merged and checked; to the code
+  reviewer's merge review, then API/E2E on a built server's stop and restart resume with its notice.
+- **Upstream revisions:** CRR-010 … CRR-012, API/E2E round 4, the delivery report. SR / ARCH-REV: unchanged.
+- **Code delta:**
+  - `eecb228bd6`: the merge.
+    - `restart-resumer.ts`: 526's whole-message observer argument, with `readyAgent`.
+    - `build-studio-server.ts`: 524 round 2's move of `closeStudioProcessResources` and 500's move of
+      `createStudioPackageServices` both stay. 500 never changed the close function.
+    - Detail in the handoff, "IR-007: fourth base refresh".
+  - The first resolution left a stray `};`; it was amended into the merge commit.
+- **Focused validation:** IMP-23.
+  - Both type gates pass.
+  - Server: 8880 passed. The 16 failures are all file-event waits; a raw `fs.watch` probe got no event in 3 of 5 tries.
+  - The code under `package-auto-refresh` is the base's, unchanged by this ticket.
+  - Restart-resume and composition tests pass.
+  - Web: 5776 passed.
+  - No changed source file is over 500 (studio 428).
+- **Limitations:**
+  - The file-event tests couldn't pass while the OS dropped events; they're for API/E2E's Linux / quiet-machine runs.
+  - Built-server stop and restart-resume E2E are API/E2E's.

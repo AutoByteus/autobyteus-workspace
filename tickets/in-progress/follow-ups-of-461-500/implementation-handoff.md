@@ -1,8 +1,8 @@
 # Implementation Handoff: follow-ups-of-461-500 (delivery 1 + 2)
 
-Status: **IR-006 (the third delivery base refresh: `origin/personal` `0570c47fd9` merged, `e93671cce0`) ready for the
-code reviewer's merge review, then API/E2E on the merged state.** See "IR-006: third base refresh" below; IR-004 / IR-005
-are the second refresh and its Local Fix. Decided earlier at SR-014 (ARCH-REV-007):
+Status: **IR-007 (the fourth delivery base refresh: `origin/personal` `24d438fa31` merged, `eecb228bd6`) ready for the
+code reviewer's merge review, then API/E2E on what the two conflict files carry (a built server's stop, restart resume
+and its notice).** See "IR-007: fourth base refresh" below; IR-006 was the third. Decided earlier at SR-014 (ARCH-REV-007):
 - **FU-035 step 0 (REQ-010, AC-007), D-14:** not in this package. It runs as a later implementation round once Grok's
   24-hour usage window resets, with branch A or B and its own code review. Nothing is waived; FU-035 stays open.
 - **FU-021 (REQ-008, AC-005), D-13b:** done. A hang guard whose probe got nothing is ENVIRONMENT; one whose probe got
@@ -35,18 +35,19 @@ are the second refresh and its Local Fix. Decided earlier at SR-014 (ARCH-REV-00
 
 - Implementation cycle: `Rework` (CRR-001 Local Fix)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-006` (deltas in `implementation-revision-record.md`; IR-001 is the baseline)
+- Current implementation revision ID: `IR-007` (deltas in `implementation-revision-record.md`; IR-001 is the baseline)
 - Related solution revision IDs: SR-006 … SR-014
 - Related architecture-review revision IDs: ARCH-REV-001, ARCH-REV-003, ARCH-REV-005, ARCH-REV-006, ARCH-REV-007
 - Related code-review revision IDs: CRR-001 (CR-500-001, CR-500-002), CRR-002 (Pass), CRR-003 (CR-500-003 … CR-500-005),
   CRR-004 (Pass), CRR-005 / CRR-006 (API/E2E test code), CRR-007 (IR-004 merge review: CR-500-007), CRR-008 (Pass),
-  CRR-009 (API-REV-003 test code). API/E2E: API-REV-003 (round 3, Pass).
+  CRR-009 (API-REV-003 test code), CRR-010 (IR-006 Pass), CRR-011 / CRR-012 (recorded by delivery). API/E2E: API-REV-003
+  (round 3, Pass), round 4 on IR-006.
 - Related API/E2E revision IDs: API-REV-001 (F-1 … F-3), API-REV-002 (Pass).
 - Delivery: the Delivery Engineer's blocked report (`release-deployment-report.md`, `2f8a463a11`), a Local Fix to integrate
   the latest base.
 - Related solution / architecture revisions for IR-003: SR-015, SR-016; ARCH-REV-008, ARCH-REV-009.
 - Branch: `codex/follow-ups-of-461-500`, with `origin/personal` `ff13782f36` merged in `39325a1e50` (IR-004) and
-  `0570c47fd9` in `e93671cce0` (IR-006).
+  `0570c47fd9` in `e93671cce0` (IR-006) and `24d438fa31` in `eecb228bd6` (IR-007).
 
 Commits, oldest first, by the design's Change Sequence:
 
@@ -71,6 +72,7 @@ Commits, oldest first, by the design's Change Sequence:
 | G-5 fix | `d8ffc77c8b` | the 8 s model-list budget is `MODEL_LIST_READ_MS` in `read-deadline.ts`; `llm-management` no longer imports `available-agent-runtimes` (found by the full unit run) |
 | 8 | evidence only | FU-035 step 0: blocked by the Grok usage limit (IMP-011); a later round per D-14 |
 | IR-004 merge | `39325a1e50` | `origin/personal` `ff13782f36` merged (beta.8, beta.9, 448 part 1, 483, 458, 514, 515, 508); 4 conflicts resolved |
+| IR-007 merge | `eecb228bd6` | `origin/personal` `24d438fa31` merged (beta.10, 517, 524 round 2, 526); 2 conflicts resolved |
 | IR-006 merge | `e93671cce0` | `origin/personal` `0570c47fd9` merged (522, 524, 448 part 2, 493, 525); 13 conflicts resolved |
 | IR-006 fix | `4db98c6d1a` | the FU-011 host-owners test's complete supervisor input includes 493's `episodicCatalog` |
 | IR-005 | `eb741a097e` | CR-500-007: `createStudioPackageServices` moves to `compositions/studio-package-services.ts`; `build-studio-server.ts` 502 → 485 on the merged base |
@@ -133,6 +135,27 @@ Not reworded this round: the other `send_message_to` / `delegate_task` results, 
 I reviewed them: their texts already say what happened and what to do, which `refusal-texts-vocabulary.test.ts` and
 `result-catalogue.test.ts` check. The Save refusal (`run-model-selection-refusal.ts`, "Refresh the model list and choose
 again. Saved settings were not changed.") is kept, because in the Settings it already names the next step.
+
+## IR-007: fourth base refresh (delivery Local Fix)
+
+- **Merge:** `git merge --no-ff origin/personal` (`24d438fa31`: `v1.5.13-beta.10`, 517, 524 round 2, 526), commit
+  `eecb228bd6`. No rebase. The base added no app-data migration (the Delivery Engineer's check).
+- **`restart-resume/restart-resumer.ts`:** 526 (`6517199e36`, one notice ID on every copy) passes the whole notice
+  `message` to `restartNoticeLifecycleObserver`. Its merged signature takes `Pick<AgentInputUserMessage, "content" |
+  "metadata">`. Kept with 500's `readyAgent`: `restartNoticeLifecycleObserver(() => readyAgent ??
+  this.dependencies.liveRuns.getActiveRun(entry.agentRunId), message)`.
+- **`compositions/build-studio-server.ts`:** a paired removal.
+  - 524 round 2 (`2e5b0198e2`) moved `closeStudioProcessResources` unchanged into `studio-process-resources.ts`, next
+    to its new process-exit stop of the file watches.
+  - 500 (IR-005, CR-500-007) had moved `createStudioPackageServices` into `studio-package-services.ts`.
+  - Git showed the two removed blocks as one hunk. 500 never changed the close function: its text at `0570c47fd9` and
+    on this branch is identical (diffed). So both stay moved and the hunk is dropped. 524's process-exit path
+    (`stopFileWatchesForProcessExit`) came in by the auto-merge.
+  - My first resolution left a stray `};` (TS1128, 2 production errors). I caught it at the type gate and amended it
+    into the merge commit before anything else ran on it.
+  - Now 428 effective lines.
+- **No renamed name returns.** The merged tree has no `PairedAgent*`, `transient_execution`, `ensureHostReady`,
+  `findProcessRemoteRunChannel`, …
 
 ## IR-006: third base refresh (delivery Local Fix)
 
@@ -426,6 +449,7 @@ again. Saved settings were not changed.") is kept, because in the Settings it al
 | IMP-20 | IR-004 on the merged state: server and web type gates; restart-resume tests; `npx vitest run tests/unit tests/agent-work-journal tests/app-data-migrations tests/architecture` (server); `npx vitest run` (web) | `bfeea63612` | macOS, load 126–150 | everything, with the base | all | Pass, except timeouts under load | `IMP-020-merged-state-checks.log` | server type gate "production errors: 0; test-file errors: 1010 in 316 files (baseline 1010 in 316 files)"; web type gate "production errors: 0; test-file errors: 87 in 37 files"; restart-resume 58/58; server "Tests 14 failed \| 8322 passed", all timeouts or folder-watcher timing, the rest pass rerun (with 60 s timeouts for three); web "Tests 2 failed \| 5730 passed", two 5 s timeouts, 3/3 alone |
 | IMP-21 | IR-005: `pnpm -C autobyteus-server-ts typecheck`; `npx vitest run --testTimeout=60000 tests/architecture tests/unit/compositions <restart-resume tests> tests/unit/application-platform tests/unit/application-packages tests/unit/llm-management`; size recount against `ff13782f36` | `eb741a097e` | macOS | the studio composition | CR-500-007 | Pass | console | "production errors: 0; test-file errors: 1010 in 316 files (baseline 1010 in 316 files)"; "Test Files 57 passed (57)", "Tests 378 passed (378)"; `build-studio-server.ts` 485 |
 | IMP-22 | IR-006 on the merged state: server and web type gates; `npx vitest run --testTimeout=60000 --hookTimeout=60000 tests/unit tests/agent-work-journal tests/app-data-migrations tests/architecture tests/integration` (server); `npx vitest run` (web); size recount against `0570c47fd9` | `4db98c6d1a` | macOS, load 27–55 | everything, with the base | all | Pass, except watcher timing | `IMP-022-third-merge-checks.log` | server type gate "production errors: 0; test-file errors: 1010 in 316 files (baseline 1010 in 316 files)"; web type gate 87 in 37 = baseline; server "Tests 7 failed \| 8876 passed": `file-system-watcher` 1 ENVIRONMENT + 4 INCONCLUSIVE (D-13b) and the two untouched folder watchers; web "Tests 5767 passed"; no changed source file over 500 (studio 492) |
+| IMP-23 | IR-007 on the merged state: server and web type gates; `npx vitest run --testTimeout=60000 --hookTimeout=60000 tests/unit tests/agent-work-journal tests/app-data-migrations tests/architecture tests/integration` (server); restart-resume, compositions and package-auto-refresh rerun; a raw `fs.watch` probe; `npx vitest run` (web); size recount against `24d438fa31` | `eecb228bd6` | macOS, load 80–158 | everything, with the base | all | Pass, except file-event tests while the OS delivered no events | `IMP-023-fourth-merge-checks.log` | server type gate "production errors: 0; test-file errors: 1010 in 316 files (baseline …)"; web 87 in 37; server "Tests 16 failed \| 8880 passed", all file-event waits (file-system-watcher 4 ENVIRONMENT + 5 INCONCLUSIVE, folder watcher, package-auto-refresh); raw probe "[7889,3925,null,null,null]"; restart-resume and compositions pass; web "Tests 5776 passed"; studio 428 |
 | IMP-13 | watcher test after the D-13b labels, 1 run | `a4e7f18e6d` | macOS, load 120–190 | FU-021 labels | FU-021 / D-13b | Fails as designed under load: labels only | `IMP-013-watcher-sr014-labels.log`, `IMP-013-watcher-sr014.full.log` | "env=1 inconclusive=6 other=0"; no "Timed out waiting for event (hang guard)" line |
 
 - Note for API/E2E (IMP-18): `tests/unit/e2e-helpers/team-stream-clients-wait-for-connected.test.ts` fails on API/E2E's
