@@ -1,0 +1,5 @@
+# API-03 server typecheck; commit a8f2680e2a; 2026-11-18T10:45:53Z; command: pnpm -C autobyteus-server-ts typecheck
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 17.6s
+[typecheck] server tests (tsconfig.tests.json): 1012 errors, exit 2, 58.5s
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS

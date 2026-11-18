@@ -168,8 +168,8 @@
 //                  `mobile-restored-run-cases.mjs` (its own node delta).
 //   MSP-60…66, MSP-74 autobyteus-458/506/525  The readable phone conversation at 412 and 360 px (body width − 24, 17 px / 1.5, one
 //                  avatar and speaker line per turn, composer 8 px above the bottom; another agent's message keeps its arrow
-//                  and type line, as on the desktop); the run list's ⋮ → On this phone → Text size (the whole phone at
-//                  16 × step/17 px, the conversation 15/19/21 px, kept over a reload) and every phone screen at Largest;
+//                  and type line, as on the desktop); the run list's ⋮ → Text size (three steps; the whole phone at
+//                  16 × step/17 px, the conversation 17/19/21 px, kept over a reload) and every phone screen at Largest;
 //                  ⋮ → Settings on a stopped Team member (Runtime → Grok Build, its model, Save back, the node holds it,
 //                  the run continues on it), a refused Save (the run woken before Save: the node's words in the red card), a
 //                  live idle and a working run (the red stop icon, one tap, the rows open): `mobile-run-settings-cases.mjs`
@@ -1447,7 +1447,7 @@ const runCases = async () => {
     await menuOpen(page, 'files');
     const remoteFiles = (await page.locator(sel('mobile-files-remote')).innerText().catch(() => '')).trim();
     await toList(page);
-    // autobyteus-458 UIS-002: Settings follows Activity (the Text size block below the divider is no menu item).
+    // autobyteus-458 UIS-002, autobyteus-534 REQ-005: Settings is the last entry (no VNC Viewer on alpha).
     assert(JSON.stringify(items.map(([id]) => id)) === JSON.stringify(['mobile-run-menu-artifacts', 'mobile-run-menu-files', 'mobile-run-menu-messages', 'mobile-run-menu-activity', 'mobile-run-menu-settings']), 'the member\'s ⋮ items in order', items);
     assert(artifacts.direct === 1 && artifacts.list === 0 && artifacts.text, 'one artifact shown directly', artifacts);
     assert(['docs', 'src', 'README.md'].every(name => filesTop.some(text => text.includes(name))) && filters === 0 && pathLine.includes('docs'), 'the Files tree, its path line, no filters', { filesTop, filters, pathLine });
