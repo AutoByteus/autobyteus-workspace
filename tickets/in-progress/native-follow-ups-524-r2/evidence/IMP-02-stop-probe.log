@@ -1,0 +1,29 @@
+# IMP-02 built-server stop probe, before and after FU-007 (AC-002)
+# Command: node tickets/in-progress/native-follow-ups-524-r2/evidence/built-server-stop-probe.mjs <worktree> 10 3000 (server built in the worktree)
+# Commit: before: 0570c47fd9 build; after: 2e5b0198e2 build
+# Environment: macOS (darwin 25.5), Node v22.23.1; load average 72-86 (before), 67-82 (after), from other processes
+# Date: 2026-11-18
+
+## before (stopMs per round)
+{"round": 1, "stopMs": 4008, "outcome": "exit 0", "exitCode": 0, "signal": null}
+{"round": 2, "stopMs": 1921, "outcome": "exit 0", "exitCode": 0, "signal": null}
+{"round": 3, "stopMs": 2381, "outcome": "exit 0", "exitCode": 0, "signal": null}
+{"round": 4, "stopMs": 1272, "outcome": "exit 0", "exitCode": 0, "signal": null}
+{"round": 5, "stopMs": 640, "outcome": "exit 0", "exitCode": 0, "signal": null}
+{"round": 6, "stopMs": 3826, "outcome": "exit 0", "exitCode": 0, "signal": null}
+{"round": 7, "stopMs": 1952, "outcome": "exit 0", "exitCode": 0, "signal": null}
+{"round": 8, "stopMs": 1041, "outcome": "exit 0", "exitCode": 0, "signal": null}
+{"round": 9, "stopMs": 2244, "outcome": "exit 0", "exitCode": 0, "signal": null}
+{"round": 10, "stopMs": 2374, "outcome": "exit 0", "exitCode": 0, "signal": null}
+
+## after
+{"round": 1, "stopMs": 66, "outcome": "exit 0", "exitCode": 0, "signal": null}
+{"round": 2, "stopMs": 74, "outcome": "exit 0", "exitCode": 0, "signal": null}
+{"round": 3, "stopMs": 51, "outcome": "exit 0", "exitCode": 0, "signal": null}
+{"round": 4, "stopMs": 48, "outcome": "exit 0", "exitCode": 0, "signal": null}
+{"round": 5, "stopMs": 56, "outcome": "exit 0", "exitCode": 0, "signal": null}
+{"round": 6, "stopMs": 56, "outcome": "exit 0", "exitCode": 0, "signal": null}
+{"round": 7, "stopMs": 52, "outcome": "exit 0", "exitCode": 0, "signal": null}
+{"round": 8, "stopMs": 59, "outcome": "exit 0", "exitCode": 0, "signal": null}
+{"round": 9, "stopMs": 58, "outcome": "exit 0", "exitCode": 0, "signal": null}
+{"round": 10, "stopMs": 76, "outcome": "exit 0", "exitCode": 0, "signal": null}

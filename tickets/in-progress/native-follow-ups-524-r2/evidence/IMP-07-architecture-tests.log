@@ -1,0 +1,9 @@
+# IMP-07 server architecture tests (they read source by path; a file was split)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/architecture --no-watch
+# Commit: 2e5b0198e2
+# Environment: macOS (darwin 25.5), Node v22.23.1; 
+# Date: 2026-11-18
+
+ Test Files  13 passed (13)
+      Tests  71 passed (71)
+(Before the commit: tracked-imports failed only because studio-process-resources.ts was not yet tracked.)
