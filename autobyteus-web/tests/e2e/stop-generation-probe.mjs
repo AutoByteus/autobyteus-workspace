@@ -201,6 +201,9 @@ try {
   });
   page = await context.newPage();
   page.on('pageerror', (e) => evidence.browserErrors.push(`pageerror: ${e.message}`));
+  // The page's own console (warnings and logs of its streams), for the cause of a case's result.
+  const consoleLog = fs.createWriteStream(path.join(outputDir, 'console.log'));
+  page.on('console', (m) => consoleLog.write(`${new Date().toISOString()} ${m.type()} ${redactCredentials(m.text()).slice(0, 600)}\n`));
   // A cold Nuxt dev server may reload once for dependency optimization: not app errors.
   page.on('console', (m) => { if (m.type() === 'error' && !/Outdated Optimize Dep|dynamically imported module|error caught during app initialization|Failed to load resource/.test(m.text())) evidence.browserErrors.push(redactCredentials(m.text())); });
   await page.goto(`${stack.frontendUrl}/workspace`, { waitUntil: 'networkidle', timeout: 240_000 });
@@ -379,7 +382,8 @@ try {
       wire.cut('the page\'s path is down');
       await sleep(250);
       const offered = { label: await primary().getAttribute('aria-label'), enabled: await primary().isEnabled() };
-      if (offered.label === STOP && offered.enabled) await primary().click();
+      // The button can change between reading it and the press (a status arriving): a press on a disabled button is none.
+      if (offered.label === STOP && offered.enabled) offered.pressed = await primary().click({ timeout: 2000 }).then(() => true, () => false);
       await sleep(1500);
       const a = { offered, ...(await observed(from, since)) };
       await page.screenshot({ path: path.join(outputDir, `${failId}-a-not-sent.png`) });
@@ -389,7 +393,7 @@ try {
       from = wire.log.length; since = Date.now();
       await open(target);
       const offeredOnOpen = { label: await primary().getAttribute('aria-label'), enabled: await primary().isEnabled() };
-      if (offeredOnOpen.label === STOP && offeredOnOpen.enabled) await primary().click();
+      if (offeredOnOpen.label === STOP && offeredOnOpen.enabled) offeredOnOpen.pressed = await primary().click({ timeout: 2000 }).then(() => true, () => false);
       await sleep(1500);
       const a2 = { offeredOnOpen, ...(await observed(from, since)) };
       await page.screenshot({ path: path.join(outputDir, `${failId}-a2-opened-not-sent.png`) });
@@ -419,12 +423,12 @@ try {
       wire.refuseStops = false;
       await settle();
       const details = { a, a2, b };
-      const notSent = (x, offeredState) => x.stops === 0 && (offeredState.label === STOP && offeredState.enabled
+      const notSent = (x, offeredState) => x.stops === 0 && (offeredState.pressed
         ? x.toasts.length === 1 && x.toasts[0] === NOT_SENT
         : x.toasts.length === 0);
       assert(notSent(a, a.offered), '(a) path down: nothing sent; one plain "not sent" message when Stop could be pressed, else nothing to press', details);
       assert(notSent(a2, a2.offeredOnOpen), '(a2) opened while not connected: nothing sent; one plain "not sent" message when Stop could be pressed', details);
-      assert([a.offered, a2.offeredOnOpen].some((o) => o.label === STOP && o.enabled), '(a, a2) Stop pressed while not connected at least once', details);
+      assert([a.offered, a2.offeredOnOpen].some((o) => o.pressed), '(a, a2) Stop pressed while not connected at least once', details);
       assert(b.stops === 1 && b.toasts.length === 1 && b.named && b.toasts[0] === couldNotStop(b.named) && b.nameShownAt.length > 0,
         '(b) one plain message naming the agent as the view shows it', details);
       const words = [...a.toasts, ...a2.toasts, ...b.toasts].flatMap((t) => internalWords(t, target.runIds));

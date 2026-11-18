@@ -34,6 +34,8 @@ const summarize = (frame) => {
     message: typeof p.message === 'string' ? p.message.slice(0, 200) : null,
     status: p.status ?? p.new_status ?? p.payload?.status ?? null,
     agentRunId: p.agent_run_id ?? p.target_agent_run_id ?? p.target?.agent_run_id ?? p.target?.run_id ?? p.run_id ?? null,
+    // A frame's place in its stream (an agent stream's `sequence`, a Team view's change sequence).
+    seq: frame?.sequence ?? p.sequence ?? p.change_sequence ?? p.changeSequence ?? p.base_change_sequence ?? null,
   };
 };
 
