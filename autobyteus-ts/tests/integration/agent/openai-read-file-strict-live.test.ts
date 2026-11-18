@@ -32,6 +32,7 @@ import { LLMConfig } from '../../../src/llm/utils/llm-config.js';
 import { MessageRole } from '../../../src/llm/utils/messages.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
+import { AgentToolSearch } from '../../../src/agent/tool-search/agent-tool-search.js';
 import { registerReadFileTool } from '../../../src/tools/file/read-file.js';
 import { registerWriteFileTool } from '../../../src/tools/file/write-file.js';
 import type { ToolDefinition } from '../../../src/tools/registry/tool-definition.js';
@@ -117,6 +118,8 @@ live.describe(`OpenAI ${modelName} tool arguments through a native agent (live, 
     state.memoryManager = memoryManager;
     state.llmInstance = llm;
     state.toolInstances = { read_file: registerReadFileTool(), write_file: registerWriteFileTool() };
+    // The agent factory sets every agent's tool search (autobyteus-515); a runtime built by hand sets it as the factory does.
+    state.toolSearch = new AgentToolSearch(null, Object.keys(state.toolInstances));
     const config = new AgentConfig(
       'OpenAIStrictLive',
       'assistant',
