@@ -11,9 +11,9 @@
 - Finalization target remote / branch: `origin/personal`
 - Bootstrap result: worktree created from the freshly fetched `origin/personal`
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-003`
 - Authorities read (requirements reading gate, 2026-11-18): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md`
-- Investigation status: requirements investigation complete; architecture investigation follows approval
+- Investigation status: requirements and architecture investigation complete
 
 ## Initial Request And Clarifications
 
@@ -129,7 +129,17 @@
 
 ## Architecture Investigation Findings
 
-Added after requirements approval.
+Read 2026-11-18 (all `Read` unless noted); the design spec cites file and line for each.
+
+- Router order and R-9: `agent-communication/services/global-agent-run-message-router.ts:56-176`; dispatcher `send-message-to-dispatcher.ts:65-73`.
+- Cross-run admission and its CONFLICT throw: `agent-collaboration/communication/cross-run-message-delivery.ts:86-164`; `DelegationIndex.canMessage` `delegation/delegation-index.ts:360-368`; composition `compositions/collaboration-composition.ts:206-263`.
+- Remote send order and pair rule: `execution/remote/remote-message-send.ts:33-46`, `remote-endpoint.ts:10-136`, `remote-run-links.ts:113-158`; engine `execution/communication/root-communication-engine.ts:154-295` (Task check only the closed-Task fence: `standalone-agent-run-root.ts:294-301`).
+- Inbound: `remote-collaboration/inbound/remote-message-receiver.ts:68-126`; gateway one handler per kind `channel/peer-gateway.ts:55-80, 200-296`; contract `domain/remote-requests.ts`; client `channel/peer-client.ts:190`.
+- Live roots: `execution/services/active-collaboration-root-directory.ts` (no list method); live statuses per kind: `standalone-paired-agent-access.ts:95-100`, `AgentOrgAgentStatuses`, Team access; idle shutdown keeps a delegated Agent's root but ends its host (`delegated-run-idle-shutdown.ts:66-74`).
+- Run files: `run-history/store/run-own-agents-reader.ts` (`delegationOf` ignores peer-started runs, l. 21-22); start times: agent `startedAt`, team/org `createdAt`.
+- Header names a peer sender's node: `execution/communication/received-message-header.ts:6-11`.
+- Agent-facing texts: `agent-collaboration/domain/agent-team-collaboration-llm-contract.ts:12-41`.
+- Unknowns: none for design; the live two-node behaviour is verified by the two-server E2E in the build (UNK-001).
 
 ## Requirement Implications
 
@@ -140,4 +150,4 @@ Added after requirements approval.
 
 ## Notes For Architecture Design
 
-To be completed after approval.
+See `design-spec.md` (SR-003).
