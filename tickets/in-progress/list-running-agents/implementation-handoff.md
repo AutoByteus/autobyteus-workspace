@@ -19,7 +19,7 @@
 - Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-007`, `SR-008`, `SR-009`
 - Related architecture-review revision IDs: `ARCH-REV-003`, `ARCH-REV-004`
-- Related code-review revision IDs: `CRR-001` (`code-review-report.md`, `code-review-revision-record.md`)
+- Related code-review revision IDs: `CRR-001` (Fail: CR-001, CR-002), `CRR-002` (Pass on IR-002; `code-review-report.md`, `code-review-revision-record.md`)
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
 - Triggering finding IDs: CR-001, CR-002 (IR-002)
