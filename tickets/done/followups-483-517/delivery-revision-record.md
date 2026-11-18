@@ -13,7 +13,7 @@
 - Delivery round and trigger: first delivery round; API/E2E handoff after `API-REV-001` (direct low-risk route, `task_size: Small`, `architectural_risk: Low`; code review and test-code review `Not Applicable`).
 - Triggering upstream report, verification, or evidence: `api-e2e-execution-coverage-report.md` (final confidence 95.1%, no category below 92%), `api-e2e-revision-record.md`, `implementation-handoff.md` (IR-001, IR-002), `requirements-doc.md` and `design-spec.md` at SR-001 and SR-002 (AC-001 refined after a Design Impact).
 - Prior authoritative result: N/A
-- Current authoritative result: verified from evidence and finalized on `personal`; docs synced; no release. The finalization commits are in `release-deployment-report.md`.
+- Current authoritative result: verified from evidence and finalized on `personal`; docs synced; no release. `--no-ff` merge `0f90abd33c` pushed to `origin/personal` (`f7b4d68711..0f90abd33c`), followed by the record commit; details in `release-deployment-report.md`.
 - Docs sync report: `docs-sync-report.md` (Updated: `agent_execution.md`, `antigravity_cli_runtime.md`, `TESTING.md`; `settings.md` and `agent_execution_architecture.md` by the ticket, confirmed)
 - Handoff summary: `handoff-summary.md`
 - Release/publication/deployment report: `release-deployment-report.md`
