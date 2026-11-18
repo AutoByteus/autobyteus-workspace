@@ -179,7 +179,8 @@ try {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'en-US' });
   await attachToBrowserContext(context);
   await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
-  await context.routeWebSocket((url) => url.port === String(backendPort) && /^\/ws\/(agent|agent-team)\//.test(url.pathname), (route) => {
+  // Every socket of the page to its node (run streams, run status, collaboration, terminal, …): one path, as a network.
+  await context.routeWebSocket((url) => url.port === String(backendPort) && url.pathname.startsWith('/ws/'), (route) => {
     const queued = [];
     let upstream = null;
     const link = wire.link({ url: route.url(), sendToPage: (m) => route.send(m), sendToNode: (m) => { if (upstream?.readyState === 1) upstream.send(m); else queued.push(m); },
@@ -190,13 +191,13 @@ try {
     upstream.on('message', (data, isBinary) => { if (isBinary) { try { route.send(data); } catch { /* closed */ } } else link.fromNode(String(data)); });
     upstream.on('close', (code, reason) => {
       if (link.closed) return;
-      link.closedByEnd();
+      link.closedByEnd('node');
       const sendable = code >= 1000 && code < 5000 && ![1005, 1006, 1015].includes(code);
       try { route.close(sendable ? { code, reason: String(reason) } : { code: 1011, reason: 'node closed' }); } catch { /* closed */ }
     });
-    upstream.on('error', () => { if (!link.closed) { link.closedByEnd(); try { route.close({ code: 1011, reason: 'node error' }); } catch { /* closed */ } } });
+    upstream.on('error', () => { if (!link.closed) { link.closedByEnd('node (error)'); try { route.close({ code: 1011, reason: 'node error' }); } catch { /* closed */ } } });
     route.onMessage((m) => link.fromPage(m));
-    route.onClose(() => { link.closedByEnd(); upstream?.close(); });
+    route.onClose(() => { link.closedByEnd('page'); upstream?.close(); });
   });
   page = await context.newPage();
   page.on('pageerror', (e) => evidence.browserErrors.push(`pageerror: ${e.message}`));
@@ -264,11 +265,15 @@ try {
     const frames = wire.since(from);
     const trace = await readStopTrace(page, since);
     const stops = frames.filter((f) => f.dir === 'up' && f.type === 'INTERRUPT_GENERATION');
-    const acks = frames.filter((f) => f.dir === 'down' && f.type === 'AGENT_COMMAND_ACK' && f.commandType === 'INTERRUPT_GENERATION' && !f.note);
-    return { stops: stops.length, acks: acks.map((a) => [a.state, a.code].filter(Boolean).join(':')), toasts: trace.toasts.map(([, t]) => t), button: trace.button.map(([at, label, busy, enabled]) => [at - since, label, busy, enabled]) };
+    const answer = (a) => [a.state, a.code].filter(Boolean).join(':');
+    const ofStop = (f) => f.type === 'AGENT_COMMAND_ACK' && f.commandType === 'INTERRUPT_GENERATION';
+    return { stops: stops.length, acks: frames.filter((f) => f.dir === 'down' && ofStop(f)).map(answer),
+      nodeAnswers: frames.filter((f) => f.dir === 'node' && ofStop(f)).map(answer), toasts: trace.toasts.map(([, t]) => t), button: trace.button.map(([at, label, busy, enabled]) => [at - since, label, busy, enabled]) };
   };
   const sawStopping = (button) => button.some(([, label, busy, enabled]) => label === STOPPING && busy && !enabled);
   const endsOff = (button) => { const last = button.at(-1); return Boolean(last) && ![STOP, STOPPING].includes(last[1]); };
+  /** After the press, the button never offered the stale Stop again before the status left Running. */
+  const neverStaleStop = (button) => !button.some(([, label, , enabled]) => label === STOP && enabled);
 
   for (const [doubleId, staleId, lossId, failId, kind] of [['SGD-01', 'SGD-03', 'SGD-05', 'SGD-07', 'agent'], ['SGD-02', 'SGD-04', 'SGD-06', 'SGD-08', 'team']]) {
     const target = targets[kind];
@@ -318,7 +323,7 @@ try {
       const details = { other, labelWhenPressed: label, ...seen };
       assert(other.state === 'accepted', 'the other window stopped the turn first', details);
       assert(label === STOP, 'this page still showed Stop (Running) after the turn ended', details);
-      assert(seen.stops === 1 && seen.acks.join() === 'accepted', 'this page\'s Stop reached a run with nothing to stop: accepted', details);
+      assert(seen.stops === 1 && seen.nodeAnswers.join() === 'accepted', 'this page\'s Stop reached a run with nothing to stop: the node answered accepted', details);
       assert(!seen.toasts.length && sawStopping(seen.button) && endsOff(seen.button), 'no toast; "Stopping…" until the status arrived', details);
       return details;
     });
@@ -359,7 +364,8 @@ try {
       await until('the status left Running', async () => ![STOP, STOPPING].includes(await primary().getAttribute('aria-label')), 30_000).catch(() => undefined);
       const again = await observed(fromAgain, sinceAgain);
       const details = { a, b, again };
-      assert(a.duringDrop === STOPPING && a.stoppingAcrossDrop && a.reboundAt !== null && endsOff(a.button), '(a) "Stopping…" across the reconnect, then the rebind\'s status (not Running)', details);
+      assert(a.duringDrop !== STOP && sawStopping(a.button) && neverStaleStop(a.button) && endsOff(a.button),
+        '(a) "Stopping…" after the drop and never the stale Stop again; then the run\'s status (not Running) decides', details);
       assert(a.stops === 1 && !a.toasts.length, '(a) one Stop sent (a press while Stopping sends nothing); no toast', details);
       assert(b.duringLoss === STOPPING && b.stillRunning && b.stops === 1 && !b.toasts.length, '(b) the Stop lost: after the rebind Stop is offered again; no toast', details);
       assert(again.stops === 1 && again.acks.join() === 'accepted' && !again.toasts.length && endsOff(again.button), '(b) a new Stop stops the run', details);

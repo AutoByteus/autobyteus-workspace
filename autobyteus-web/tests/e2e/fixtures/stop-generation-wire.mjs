@@ -66,7 +66,11 @@ export const createStopWire = () => {
     loseNextStop: false,
     dropAfterNextStop: false,
     refuseStops: false,
-    /** `{ at, link, dir: 'up' | 'down', url, ...summary, note? }`: 'up' is page → node. */
+    /**
+     * `{ at, link, dir, url, ...summary, note? }`: `up` page → node (when the page sent it), `down` node → page (when the page
+     * received it), `node` a command answer as the node sent it (when it reached the wire, before any delay: the node's
+     * answer even if the page never receives it).
+     */
     log: [],
     /** Times a frame toward the page carried the scripted AGY's held step (`sleep 600 # HOLD_TURN`): a turn is running. */
     holds: [],
@@ -108,7 +112,13 @@ export const createStopWire = () => {
       try { closePage(1011, reason); } catch { /* closed */ }
       try { closeNode(); } catch { /* closed */ }
     };
-    link.closedByEnd = () => { link.closed = true; wire.links.delete(link); };
+    /** The socket ended by one side (`'page'` or `'node'`), not by the wire. */
+    link.closedByEnd = (by) => {
+      if (link.closed) return;
+      link.closed = true;
+      wire.links.delete(link);
+      wire.log.push({ at: Date.now(), link: link.id, dir: 'down', url: path, type: `CLOSED by the ${by ?? 'other side'}` });
+    };
     link.fromPage = (text) => {
       if (link.closed) return;
       let frame = null;
@@ -126,7 +136,7 @@ export const createStopWire = () => {
       if (frame?.type === 'INTERRUPT_GENERATION' && wire.loseNextStop) {
         wire.loseNextStop = false;
         record(link, 'up', frame, 'lost on the way');
-        setTimeout(() => link.drop('the path dropped with the Stop on it'), 30);
+        setTimeout(() => wire.blip('the path dropped with the Stop on it'), 30);
         return;
       }
       record(link, 'up', frame);
@@ -135,7 +145,7 @@ export const createStopWire = () => {
       schedule('up', () => {
         if (link.closed) return;
         sendToNode(text);
-        if (dropAfter) link.drop('the path dropped after the Stop reached the node');
+        if (dropAfter) wire.blip('the path dropped after the Stop reached the node');
       }, 0);
     };
     link.fromNode = (text) => {
@@ -143,6 +153,7 @@ export const createStopWire = () => {
       if (String(text).includes('sleep 600 # HOLD_TURN')) wire.holds.push({ at: Date.now(), link: link.id, url: path });
       let frame = null;
       try { frame = JSON.parse(String(text)); } catch { /* not JSON */ }
+      if (frame?.type === 'AGENT_COMMAND_ACK') record(link, 'node', frame);
       schedule('down', () => {
         if (link.closed) return;
         record(link, 'down', frame);
@@ -153,6 +164,8 @@ export const createStopWire = () => {
     return link;
   };
 
+  /** A blip: every open socket drops at once (the whole path, as a network drop); new ones connect again. */
+  wire.blip = (reason) => { for (const link of [...wire.links]) link.drop(reason); };
   /** Path down: every open socket drops; new ones are refused until `up()`. */
   wire.cut = (reason = 'the path is down') => {
     wire.down = true;

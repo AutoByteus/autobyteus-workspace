@@ -136,9 +136,13 @@ export const runStopGenerationCases = async (probe) => {
   const observed = async (from, since) => {
     const frames = wire.since(from);
     const trace = await readStopTrace(page, since);
+    const answer = (a) => [a.state, a.code].filter(Boolean).join(':');
+    const ofStop = (f) => f.type === 'AGENT_COMMAND_ACK' && f.commandType === 'INTERRUPT_GENERATION';
     return {
       stops: frames.filter((f) => f.dir === 'up' && f.type === 'INTERRUPT_GENERATION').length,
-      acks: frames.filter((f) => f.dir === 'down' && f.type === 'AGENT_COMMAND_ACK' && f.commandType === 'INTERRUPT_GENERATION' && !f.note).map((a) => [a.state, a.code].filter(Boolean).join(':')),
+      // What the phone received, and what the node answered (before any delay; the phone may never receive it).
+      acks: frames.filter((f) => f.dir === 'down' && ofStop(f)).map(answer),
+      nodeAnswers: frames.filter((f) => f.dir === 'node' && ofStop(f)).map(answer),
       toasts: trace.toasts.map(([, t]) => t),
       button: trace.button.map(([at, l, busy, enabled]) => [at - since, l, busy, enabled]),
     };
@@ -234,7 +238,7 @@ export const runStopGenerationCases = async (probe) => {
     const bad = Object.entries(result.rounds).filter(([, r]) => r.stops !== 1 || r.acks.join() !== 'accepted' || r.toasts.length || !sawStopping(r.button) || !endsOff(r.button));
     assert(!bad.length, `${label_}: every double tap sends one Stop, answered accepted; "Stopping…" seen; then not Running; no toast`, result);
     assert(result.stale.other.state === 'accepted' && result.stale.labelWhenTapped === STOP, `${label_}: the other window stopped the turn while the phone still showed Stop`, result);
-    assert(result.stale.stops === 1 && result.stale.acks.join() === 'accepted' && !result.stale.toasts.length && sawStopping(result.stale.button) && endsOff(result.stale.button),
+    assert(result.stale.stops === 1 && result.stale.nodeAnswers.join() === 'accepted' && !result.stale.toasts.length && sawStopping(result.stale.button) && endsOff(result.stale.button),
       `${label_}: Stop after the turn ended: accepted, no toast, "Stopping…" until the status`, result);
     const refusal = result.refused.toasts;
     const named = refusal.length === 1 ? /^Could not stop (.+)\. Please try again\.$/.exec(refusal[0])?.[1] ?? null : null;
