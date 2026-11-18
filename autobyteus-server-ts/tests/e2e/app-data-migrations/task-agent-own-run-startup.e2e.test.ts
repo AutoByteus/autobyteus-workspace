@@ -44,7 +44,9 @@ const LATER = [APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID, DELEGATED_COPY_OWN_FILE
   "20261114_preserved_items_after_task_agent_own_run_v1", "20261114_preserved_items_after_own_file_complete_v1", "20261114_preserved_items_after_append_only_logs_v1",
   "20261114_preserved_items_after_team_run_execution_tree_v1", "20261114_preserved_items_after_team_run_execution_tree_v2",
   "20261114_preserved_items_after_org_flat_team_families_v1", "20261114_preserved_items_after_collaborators_to_delegated_runs_v1",
-  "20261114_preserved_items_after_team_run_history_index_v2", "20261114_preserved_items_after_remove_skill_improvement_data"];
+  "20261114_preserved_items_after_team_run_history_index_v2", "20261114_preserved_items_after_remove_skill_improvement_data",
+  // autobyteus-491: the removal of the retired built-in agents' folders.
+  "20261118_remove_retired_built_in_agents"];
 const AGY_CLI = path.resolve("tests/fixtures/agy-failure-cli.mjs");
 /** SR-078 c: the follow-ups of the predecessors TAU-2's blocked move leaves unfinished (20261017, and 20261019 that waits on it). */
 const WAITING_FOLLOW_UPS = ["20261114_preserved_items_after_task_agent_own_run_v1", "20261114_preserved_items_after_own_file_complete_v1"];

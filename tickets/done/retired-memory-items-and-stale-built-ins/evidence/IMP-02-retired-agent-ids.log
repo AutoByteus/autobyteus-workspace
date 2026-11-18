@@ -1,0 +1,54 @@
+# IMP-02 Dependency Rules grep: the retired agent ids in current code
+# command: git grep -nE 'autobyteus-skill-evolver|autobyteus-memory-compactor' -- . ':!tickets' ':!**/tickets/**' ':!**/dist/**'
+# commit: ef0e56caf3
+# date: 2026-11-18T07:39:07Z
+
+autobyteus-server-ts/scripts/smoke-built-in-agents-bootstrap.mjs:60:  const staleCompactorAgentDir = path.join(agentsDir, 'autobyteus-memory-compactor');
+autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts:176:      { itemId: "skillSelfEvolverDir", dirPath: path.join(config.getAgentsDir(), "autobyteus-skill-evolver") },
+autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts:177:      { itemId: "memoryCompactorDir", dirPath: path.join(config.getAgentsDir(), "autobyteus-memory-compactor") },
+autobyteus-server-ts/src/app-data-migrations/migrations/remove-retired-built-in-agents/remove-retired-built-in-agents-migration.ts:48: * (`<agentsDir>/autobyteus-skill-evolver`, with its own skill) an
+autobyteus-server-ts/src/app-data-migrations/migrations/remove-retired-built-in-agents/remove-retired-built-in-agents-migration.ts:49: * (`<agentsDir>/autobyteus-memory-compactor`). The registry resol
+autobyteus-server-ts/src/app-data-migrations/migrations/remove-retired-built-in-agents/remove-retired-built-in-agents-migration.ts:57:    "Permanently deletes the retired built-in agents Skill Self-Ev
+autobyteus-server-ts/tests/app-data-migrations/remove-retired-built-in-agents/remove-retired-built-in-agents-migration.test.ts:66:    evolverDir = path.join(agentsDir, "autobyteus-skill-evolver");
+autobyteus-server-ts/tests/app-data-migrations/remove-retired-built-in-agents/remove-retired-built-in-agents-migration.test.ts:67:    compactorDir = path.join(agentsDir, "autobyteus-memory-compactor")
+autobyteus-server-ts/tests/app-data-migrations/remove-retired-built-in-agents/remove-retired-built-in-agents-migration.test.ts:81:      "Permanently deletes the retired built-in agents Skill Self-Evol
+autobyteus-server-ts/tests/app-data-migrations/remove-retired-built-in-agents/remove-retired-built-in-agents-migration.test.ts:138:      "agents/autobyteus-skill-evolver-2/agent.md": "a user's own sim
+autobyteus-server-ts/tests/app-data-migrations/remove-retired-built-in-agents/remove-retired-built-in-agents-migration.test.ts:140:      "memory/agents/memory_compactor_1a2b3c4d/run_metadata.json": "{
+autobyteus-server-ts/tests/app-data-migrations/remove-retired-built-in-agents/remove-retired-built-in-agents-migration.test.ts:151:    const removedPrefixes = ["agents/autobyteus-skill-evolver/", "age
+autobyteus-server-ts/tests/app-data-migrations/remove-skill-improvement-data/remove-skill-improvement-data-migration.test.ts:82:    expect(unchanged).toHaveProperty(["agents/autobyteus-skill-evolver/a
+autobyteus-server-ts/tests/app-data-migrations/remove-skill-improvement-data/remove-skill-improvement-data-migration.test.ts:214:      await writeRun(memory, COMPACTOR_RUN, "autobyteus-memory-compacto
+autobyteus-server-ts/tests/app-data-migrations/remove-skill-improvement-data/remove-skill-improvement-data-migration.test.ts:216:      await put(path.join(memory, "run_history_index.json"), [...rows, 
+autobyteus-server-ts/tests/app-data-migrations/remove-skill-improvement-data/remove-skill-improvement-data-migration.test.ts:234:      await writeRun(memory, evolverOnly, "autobyteus-skill-evolver");
+autobyteus-server-ts/tests/app-data-migrations/remove-skill-improvement-data/remove-skill-improvement-data-migration.test.ts:236:      await put(path.join(memory, "run_history_index.json"), [...rows, 
+autobyteus-server-ts/tests/e2e/app-data-migrations/remove-retired-built-in-agents-startup.e2e.test.ts:22:const EVOLVER_ID = "autobyteus-skill-evolver";
+autobyteus-server-ts/tests/e2e/app-data-migrations/remove-retired-built-in-agents-startup.e2e.test.ts:23:const COMPACTOR_ID = "autobyteus-memory-compactor";
+autobyteus-server-ts/tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts:140:    const startupDeleted = [...paths.deleted, "agents/autobyteus-skill-evolver"];
+autobyteus-server-ts/tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts:143:    await writeRun(path.join(root, "memory"), COMPACTOR_RUN, "autobyteus-memory-compactor", { l
+autobyteus-server-ts/tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts:144:    await put(indexPath, [...JSON.parse(await fs.readFile(indexPath, "utf8")), historyRow(COMPA
+autobyteus-server-ts/tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts:185:    expect(agents).not.toContain("autobyteus-skill-evolver");
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:297:  agentDefinitionId: "autobyteus-memory-compactor",
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:836:          agentDefinitionId: "autobyteus-memory-compactor",
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:852:            agentDefinitionId: "autobyteus-memory-compactor",
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:869:    agentDefinitionId: "autobyteus-memory-compactor",
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:958:          agentDefinitionId: "autobyteus-memory-compactor",
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:969:            agentDefinitionId: "autobyteus-memory-compactor",
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:1138:            agentDefinitionId: "autobyteus-memory-compactor",
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:1149:              agentDefinitionId: "autobyteus-memory-compactor",
+autobyteus-server-ts/tests/fixtures/app-data-migrations/skill-improvement-data-fixtures.ts:120:    historyRow(EVOLVER_RUNS[0]!, "autobyteus-skill-evolver", "Skill Self-Evolver"),
+autobyteus-server-ts/tests/fixtures/app-data-migrations/skill-improvement-data-fixtures.ts:129:  await put(path.join(agents, "autobyteus-skill-evolver", "agent.md"), "---\nname: Skill Self-Evolver\n--
+autobyteus-server-ts/tests/unit/application-platform/application-platform-runtime-isolation.test.ts:74:      const legacyPath = path.join(root, 'agents', 'autobyteus-memory-compactor', 'agent-config.j
+autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts:14:const MEMORY_COMPACTOR_AGENT_DEFINITION_ID = "autobyteus-memory-compactor";
+autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-templates.test.ts:7:   expect(JSON.stringify(BUILT_IN_AGENT_DEFINITIONS)).not.toContain('autobyteus-memory-compactor');
+autobyteus-web/tests/e2e/skill-improvement-removal-cases.mjs:244:        fx.historyRow(fx.EVOLVER_RUNS[0], 'autobyteus-skill-evolver', 'Skill Self-Evolver')], null, 2)}\n`)
+autobyteus-web/tests/e2e/skill-improvement-removal-cases.mjs:250:      await fx.put(path.join(agentsDir, 'autobyteus-skill-evolver', 'agent.md'), '---\nname: Skill Self-Evolver\ndescription: Evolves s
+autobyteus-web/tests/e2e/skill-improvement-removal-cases.mjs:258:        `agents/${fx.IMPROVER_ID}`, 'agents/autobyteus-skill-evolver']
+autobyteus-web/tests/e2e/skill-improvement-removal-cases.mjs:299:    assert(!r.agentIds.some((d) => d.id === 'autobyteus-skill-evolver' || d.id === fx.IMPROVER_ID), 'definitions: the Self-Evolver and 
+
+# Classification against design-spec Dependency Rules (expected exceptions, ids used as data):
+# - the new migration, its registry entry and its tests (unit, startup E2E)
+# - the 20261020 migration's tests and fixtures (unit, startup E2E, skill-improvement-data-fixtures.ts) and the web
+#   removal case that drives the same upgrade (skill-improvement-removal-cases.mjs)
+# - built-in-agent-bootstrapper.test.ts, built-in-agent-templates.test.ts, scripts/smoke-built-in-agents-bootstrap.mjs
+# - application-platform-runtime-isolation.test.ts
+# - team-run-v1-production-upgrade.e2e.test.ts (fixture ids)
+# No other current code names either id. Result: Pass.

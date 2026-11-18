@@ -162,8 +162,8 @@ request plus a summary instruction when the model's catalog entry selects it
 summary. Every attempt is a single-attempt provider generation validated against
 the exact nine-heading Markdown envelope (see
 `autobyteus-ts/docs/agent_memory_design.md`). It does not launch a child agent,
-select a registered strategy, repair JSON category arrays or write
-episodic/semantic/lineage output. There is no separate compaction-model setting.
+select a registered strategy, repair JSON category arrays or write the retired
+item files or lineage. There is no separate compaction-model setting.
 
 The accepted snapshot `{agent_id, messages}` is the continuation authority. Raw
 archive preparation precedes atomic snapshot replacement; in-memory installation

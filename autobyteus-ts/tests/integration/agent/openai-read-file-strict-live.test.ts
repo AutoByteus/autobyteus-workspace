@@ -31,8 +31,8 @@ import { LLMProvider } from '../../../src/llm/providers.js';
 import { LLMConfig } from '../../../src/llm/utils/llm-config.js';
 import { MessageRole } from '../../../src/llm/utils/messages.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
-import { MemoryType } from '../../../src/memory/models/memory-types.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
+import { AgentToolSearch } from '../../../src/agent/tool-search/agent-tool-search.js';
 import { registerReadFileTool } from '../../../src/tools/file/read-file.js';
 import { registerWriteFileTool } from '../../../src/tools/file/write-file.js';
 import type { ToolDefinition } from '../../../src/tools/registry/tool-definition.js';
@@ -118,6 +118,8 @@ live.describe(`OpenAI ${modelName} tool arguments through a native agent (live, 
     state.memoryManager = memoryManager;
     state.llmInstance = llm;
     state.toolInstances = { read_file: registerReadFileTool(), write_file: registerWriteFileTool() };
+    // The agent factory sets every agent's tool search (autobyteus-515); a runtime built by hand sets it as the factory does.
+    state.toolSearch = new AgentToolSearch(null, Object.keys(state.toolInstances));
     const config = new AgentConfig(
       'OpenAIStrictLive',
       'assistant',
@@ -137,15 +139,15 @@ live.describe(`OpenAI ${modelName} tool arguments through a native agent (live, 
       expect(await waitFor(() => context.currentStatus === AgentStatus.IDLE || context.currentStatus === AgentStatus.ERROR, 15000)).toBe(true);
       await runtime.submitEvent(new UserMessageReceivedEvent(new AgentInputUserMessage(prompt)));
       const settled = await waitFor(
-        () => state.activeTurn === null && memoryManager.store.list(MemoryType.RAW_TRACE).some((item: any) => item.traceType === 'tool_call'),
+        () => state.activeTurn === null && memoryManager.store.listTurnRawTracesOrdered().some((item: any) => item.traceType === 'tool_call'),
         180000,
       );
       const calls = memoryManager.store
-        .list(MemoryType.RAW_TRACE)
+        .listTurnRawTracesOrdered()
         .filter((item: any) => item.traceType === 'tool_call')
         .map((item: any) => ({ name: item.toolName as string, args: (item.toolArgs ?? {}) as Record<string, unknown> }));
       const results = memoryManager.store
-        .list(MemoryType.RAW_TRACE)
+        .listTurnRawTracesOrdered()
         .filter((item: any) => item.traceType === 'tool_result')
         .map((item: any) => ({ name: item.toolName as string, error: item.toolError ?? null }));
       const answer = memoryManager

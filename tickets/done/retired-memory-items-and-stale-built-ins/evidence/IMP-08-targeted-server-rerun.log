@@ -1,0 +1,14 @@
+# IMP-08 targeted server rerun after the registry-tail pin updates
+# command: pnpm -C autobyteus-server-ts exec vitest run tests/app-data-migrations/remove-retired-built-in-agents tests/app-data-migrations/remove-skill-improvement-data tests/app-data-migrations/collaborators-to-delegated-runs-v1 tests/app-data-migrations/delegated-copy-own-file-complete-v1 tests/unit/app-data-migrations tests/architecture/app-data-migration-boundaries.test.ts tests/architecture/tracked-imports.test.ts tests/unit/agent-memory tests/unit/built-in-agents --no-watch
+# commit: 91ee1603a5
+# date: 2026-11-18T08:00:54Z
+     × lists only agents with memory and groups runs by agent definition 5006ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/unit/agent-memory/agent-memory-explorer-service.test.ts > AgentMemoryExplorerService > lists only agents with memory and groups runs by agent definition
+ Test Files  1 failed | 32 passed (33)
+      Tests  1 failed | 255 passed (256)
+
+# rerun alone (cause check: 5,006 ms = the 5 s test timeout under host load 43-53; passed in IMP-06's full run)
+# command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-memory/agent-memory-explorer-service.test.ts --no-watch
+ Test Files  1 passed (1)
+      Tests  4 passed (4)

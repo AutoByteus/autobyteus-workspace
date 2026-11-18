@@ -55,7 +55,7 @@
   "tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts": 1,
   "tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts": 1,
   "tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts": 1,
-  "tests/fixtures/accepted-attachment-message.ts": 2,
+  "tests/fixtures/accepted-attachment-message.ts": 1,
   "tests/fixtures/agent-run-manager-infrastructure-fixtures.ts": 1,
   "tests/fixtures/standalone-run-roots-fixture.ts": 1,
   "tests/helpers/org-migration-continuation-fixtures.ts": 3,

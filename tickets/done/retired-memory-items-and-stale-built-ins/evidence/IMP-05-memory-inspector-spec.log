@@ -1,0 +1,5 @@
+# IMP-05 web MemoryInspector spec
+# command: pnpm -C autobyteus-web test:nuxt run components/memory/__tests__/MemoryInspector.spec.ts
+# commit: 91ee1603a5
+ Test Files  1 passed (1)
+      Tests  7 passed (7)

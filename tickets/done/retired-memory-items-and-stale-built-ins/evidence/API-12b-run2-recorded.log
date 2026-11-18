@@ -1,0 +1,44 @@
+# API-12b live openai-read-file-strict-live, run 2 with OPENAI_STRICT_LIVE_RECORD | commit 24582b576c | Node v22.23.1 | 2026-11-18T09:22:06Z
+AgentRuntimeState initialized for agent_id 'openai_strict_live'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentStatusManager initialized for agent_id 'openai_strict_live'. Initial status: uninitialized. Notifier provided: true
+AgentStatusDeriver initialized with status 'uninitialized'.
+Agent 'openai_strict_live': Runtime init completed (status deriver initialized).
+AgentExternalEventNotifier (NotifierID: b2c03f2f-7e93-4e06-acb6-f62fa8e8a241, AgentID: openai_strict_live) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b2c03f2f-7e93-4e06-acb6-f62fa8e8a241, AgentID: openai_strict_live) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b2c03f2f-7e93-4e06-acb6-f62fa8e8a241, AgentID: openai_strict_live) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b2c03f2f-7e93-4e06-acb6-f62fa8e8a241, AgentID: openai_strict_live) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b2c03f2f-7e93-4e06-acb6-f62fa8e8a241, AgentID: openai_strict_live) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b2c03f2f-7e93-4e06-acb6-f62fa8e8a241, AgentID: openai_strict_live) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b2c03f2f-7e93-4e06-acb6-f62fa8e8a241, AgentID: openai_strict_live) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b2c03f2f-7e93-4e06-acb6-f62fa8e8a241, AgentID: openai_strict_live) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b2c03f2f-7e93-4e06-acb6-f62fa8e8a241, AgentID: openai_strict_live) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b2c03f2f-7e93-4e06-acb6-f62fa8e8a241, AgentID: openai_strict_live) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentRuntimeState initialized for agent_id 'openai_strict_live'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentExternalEventNotifier initialized for agent_id 'openai_strict_live' (NotifierID: bb0fd609-6b7a-4292-ac96-7c6eaaa61bb0).
+AgentStatusManager initialized for agent_id 'openai_strict_live'. Initial status: uninitialized. Notifier provided: true
+AgentStatusDeriver initialized with status 'uninitialized'.
+Agent 'openai_strict_live': Runtime init completed (status deriver initialized).
+AgentExternalEventNotifier (NotifierID: bb0fd609-6b7a-4292-ac96-7c6eaaa61bb0, AgentID: openai_strict_live) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bb0fd609-6b7a-4292-ac96-7c6eaaa61bb0, AgentID: openai_strict_live) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ × tests/integration/agent/openai-read-file-strict-live.test.ts > OpenAI gpt-5.4-mini tool arguments through a native agent (live, strict: false) > reads a synthesized image through read_file with only path and names its color 180257ms
+   → the turn did not finish; status idle: expected false to be true // Object.is equality
+AgentExternalEventNotifier (NotifierID: bb0fd609-6b7a-4292-ac96-7c6eaaa61bb0, AgentID: openai_strict_live) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bb0fd609-6b7a-4292-ac96-7c6eaaa61bb0, AgentID: openai_strict_live) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bb0fd609-6b7a-4292-ac96-7c6eaaa61bb0, AgentID: openai_strict_live) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bb0fd609-6b7a-4292-ac96-7c6eaaa61bb0, AgentID: openai_strict_live) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bb0fd609-6b7a-4292-ac96-7c6eaaa61bb0, AgentID: openai_strict_live) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bb0fd609-6b7a-4292-ac96-7c6eaaa61bb0, AgentID: openai_strict_live) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bb0fd609-6b7a-4292-ac96-7c6eaaa61bb0, AgentID: openai_strict_live) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bb0fd609-6b7a-4292-ac96-7c6eaaa61bb0, AgentID: openai_strict_live) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bb0fd609-6b7a-4292-ac96-7c6eaaa61bb0, AgentID: openai_strict_live) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ × tests/integration/agent/openai-read-file-strict-live.test.ts > OpenAI gpt-5.4-mini tool arguments through a native agent (live, strict: false) > calls write_file with an absolute path without inventing base_dir 180208ms
+   → the turn did not finish; status idle: expected false to be true // Object.is equality
+AssertionError: the turn did not finish; status idle: expected false to be true // Object.is equality
+- Expected
+    159|       expect(settled, `the turn did not finish; status ${context.curre…
+AssertionError: the turn did not finish; status idle: expected false to be true // Object.is equality
+- Expected
+    159|       expect(settled, `the turn did not finish; status ${context.curre…
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+exit 1

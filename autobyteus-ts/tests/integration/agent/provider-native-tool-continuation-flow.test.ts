@@ -27,7 +27,6 @@ import { LLMConfig } from '../../../src/llm/utils/llm-config.js';
 import { Message, MessageRole } from '../../../src/llm/utils/messages.js';
 import { ChunkResponse, CompleteResponse } from '../../../src/llm/utils/response-types.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
-import { MemoryType } from '../../../src/memory/models/memory-types.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
 import { ParameterDefinition, ParameterSchema, ParameterType } from '../../../src/utils/parameter-schema.js';
 import { FunctionalTool } from '../../../src/tools/functional-tool.js';
@@ -440,7 +439,7 @@ describe('provider-native tool continuation integration flow', () => {
           'call_b'
         ]);
 
-        const rawTraceCorpus = memoryManager.store.list(MemoryType.RAW_TRACE);
+        const rawTraceCorpus = memoryManager.store.listTurnRawTracesOrdered();
         const rawToolCalls = rawTraceCorpus.filter((item: any) => item.traceType === 'tool_call');
         const rawToolResults = rawTraceCorpus.filter((item: any) => item.traceType === 'tool_result');
         expect(rawToolCalls.map((item: any) => item.toolCallId)).toEqual(['call_a', 'call_b']);
