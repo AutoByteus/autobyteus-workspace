@@ -16,6 +16,11 @@ export type PlatformInputPreface = Readonly<{
   senderId: string;
   /** The input's own content before the notice was combined in; null when the message is only the notice. */
   originalContent: string | null;
+  /**
+   * The notice's one id (autobyteus-526): the same on the message, its stored trace and its published notice, so a
+   * conversation shows it once. Every producer gives one; a message stored before this change reads `null`.
+   */
+  noticeId: string | null;
 }>;
 
 const nonEmpty = (value: unknown): value is string => typeof value === 'string' && value.trim().length > 0;
@@ -26,6 +31,7 @@ export const platformInputPrefaceMetadata = (preface: PlatformInputPreface): Rec
     content: preface.content,
     sender_id: preface.senderId,
     original_content: preface.originalContent,
+    notice_id: preface.noticeId,
   },
 });
 
@@ -39,7 +45,8 @@ export const readPlatformInputPreface = (
   if (!nonEmpty(record.content) || !nonEmpty(record.sender_id)) return null;
   const original = record.original_content;
   if (original !== null && typeof original !== 'string') return null;
-  return Object.freeze({ content: record.content, senderId: record.sender_id, originalContent: original });
+  return Object.freeze({ content: record.content, senderId: record.sender_id, originalContent: original,
+    noticeId: nonEmpty(record.notice_id) ? record.notice_id : null });
 };
 
 /**

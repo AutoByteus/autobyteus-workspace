@@ -141,7 +141,7 @@ export class BackgroundTaskNoticeService implements AgentRunInputPreface, AgentR
     const settle = (fact: "forwarded" | "returned" | "cancelled", turnId: string | null = null): void => {
       if (!this.isCurrent(tracked) || tracked.inFlightId !== id) return;
       if (fact === "forwarded") {
-        void run.publishEvent(buildBackgroundTaskNoticeEvent(run.runId, text, turnId))
+        void run.publishEvent(buildBackgroundTaskNoticeEvent(run.runId, text, turnId, id))
           .catch((error) => logger.warn(`BACKGROUND_TASK_NOTICE_EVENT_FAILED:${run.runId}: ${String(error)}`));
         this.delivered(tracked);
       } else if (fact === "returned") {
@@ -152,7 +152,7 @@ export class BackgroundTaskNoticeService implements AgentRunInputPreface, AgentR
       }
     };
     try {
-      const result = await run.postUserMessage(buildBackgroundTaskNoticeMessage(text), {
+      const result = await run.postUserMessage(buildBackgroundTaskNoticeMessage(text, id), {
         lifecycleObserver: (fact: AgentRunInputLifecycle) => {
           if (fact.kind === "forwarded") settle("forwarded", fact.turnId);
           else if (fact.kind === "failed") settle("returned");
