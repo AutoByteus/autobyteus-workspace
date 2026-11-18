@@ -188,9 +188,13 @@ describe("20261117_delegated_run_own_attachment_links", () => {
 });
 
 describe("the follow-up after 20261017_task_agent_own_run_v1 (M-7, S-3b)", () => {
-  it("is registered last, after the migration, required on startup, with no capability held back", () => {
+  it("is registered right after the migration, both after every 461 migration, required on startup, with no capability held back", () => {
     const ids = new AppDataMigrationRegistry().listDefinitions().map((definition) => definition.id);
-    expect(ids.slice(-2)).toEqual([DELEGATED_RUN_OWN_ATTACHMENT_LINKS_MIGRATION_ID, DELEGATED_RUN_OWN_ATTACHMENT_LINKS_AFTER_TASK_AGENT_OWN_RUN_MIGRATION_ID]);
+    const at = ids.indexOf(DELEGATED_RUN_OWN_ATTACHMENT_LINKS_MIGRATION_ID);
+    expect(ids.slice(at - 1, at + 2)).toEqual(["20261114_preserved_items_after_remove_skill_improvement_data",
+      DELEGATED_RUN_OWN_ATTACHMENT_LINKS_MIGRATION_ID, DELEGATED_RUN_OWN_ATTACHMENT_LINKS_AFTER_TASK_AGENT_OWN_RUN_MIGRATION_ID]);
+    // Only later-dated unreleased migrations follow (autobyteus-491's deletes definition folders, nothing these read).
+    expect(ids.slice(at + 2)).toEqual(["20261118_remove_retired_built_in_agents"]);
     expect(new AppDataMigrationRegistry().getDefinition(DELEGATED_RUN_OWN_ATTACHMENT_LINKS_AFTER_TASK_AGENT_OWN_RUN_MIGRATION_ID)).toMatchObject({
       requiredOnStartup: true, prerequisiteMigrationIds: ["20261017_task_agent_own_run_v1", DELEGATED_RUN_OWN_ATTACHMENT_LINKS_MIGRATION_ID] });
     expect(new AppDataMigrationRegistry().getDefinition(DELEGATED_RUN_OWN_ATTACHMENT_LINKS_MIGRATION_ID)?.holdsBackCapabilities).toBeUndefined();
