@@ -14,6 +14,8 @@
 | CRR-010 | `code-review-report.md` | Merge review, round 6 (Targeted Delta) / IR-006, base `0570c47fd9` | Pass (CRR-009) | Pass | None |
 | CRR-011 | `code-review-report.md` | API/E2E failure-origin review / API-REV-004 (F-4) | Pass (CRR-010) | Test-side (also on base) → API/E2E | None (source) |
 | CRR-012 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-004 (696acc408c, 8d14de45e3) | Test-side (CRR-011) | Pass | None |
+| CRR-013 | `code-review-report.md` | Merge review, round 7 (Targeted Delta) / IR-007, base `24d438fa31` | Pass (CRR-012) | Pass | None |
+| CRR-014 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-005 (16559affdd) | Pass (CRR-013) | Pass | None |
 
 ### CRR-001: Implementation review of IR-001: Fail, Local Fix
 
@@ -337,3 +339,52 @@
 - Material score or classification changes: N/A
 - Recommended recipient: `/delivery_engineer`
 - Remaining risks or uncertainty: FU-500-13 (OT-2's base-side timing); BTS-04/05 need the live Claude/Codex gates and weren't run; the residual risks as in CRR-006
+
+### CRR-013: Merge review of IR-007 (the base `24d438fa31`): Pass
+
+- Review entry point and round: implementation review, round 7 (the fourth delivery base refresh)
+- Review scope: Targeted Delta, the merge `eecb228bd6` (2 conflicts)
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer, `implementation-handoff.md` (IR-007, IMP-023); Delivery (`92780698b9`)
+- Relevant solution revision IDs: SR-016 (unchanged)
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: IR-007
+- Relevant API/E2E revision IDs: API-REV-004
+- Relevant delivery revision IDs: the fourth integration refresh
+- Prior authoritative result: Pass (CRR-012)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - The restart notice uses 526's whole-message observer with this ticket's `readyAgent`.
+  - 524's moved close function is identical to the base, and this ticket's package-services move stays.
+  - beta.8 … beta.10 shipped no migration, so the recorded order holds.
+  - No file is over 500.
+- Supported product scenario / material-premise basis changes: none
+- Prior finding resolution: N/A
+- New or remaining finding IDs: none
+- Material score or classification changes: none
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: `origin/personal` moved again (`0ce426bc9f`, 534); the member handle is at 500
+
+### CRR-014: Proportional test-code review after API-REV-005 (fourth merged state): Pass
+
+- Review entry point and round: successful API/E2E test-code review (round 5)
+- Review scope: `16559affdd` (RR-12; SIR-002's `restart-resume/` exclusion)
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-005)
+- Relevant solution revision IDs: N/A
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: IR-007
+- Relevant API/E2E revision IDs: API-REV-005
+- Relevant delivery revision IDs: the fourth integration refresh
+- Prior authoritative result: Pass (CRR-013)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - RR-12 proves the merged resumer's member path (an update restart, the notice once with its reason, the next input clean) through a real previous-release start.
+  - SIR-002 also leaves out 448's runtime `restart-resume/` record, with its reason.
+- Supported product scenario / material-premise basis changes: none
+- Prior finding resolution: N/A
+- New or remaining finding IDs: none
+- Material score or classification changes: N/A
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty:
+  - RR-07 … 09 (live) and RR-11 (needs a pre-526 build) weren't run;
+  - `origin/personal` moved again (534);
+  - the residual risks as in CRR-006 and FU-500-09 … -13.

@@ -1,6 +1,31 @@
 # Code Review Report: follow-ups-of-461-500 (autobyteus-500)
 
-The latest result is **CRR-011: the failure-origin review of API-REV-004 (F-4). The origin is test-side and also present on base, and it goes to API/E2E.** It comes first, then round 6 (CRR-010) and the earlier rounds. The test reviews CRR-005, CRR-006 and CRR-009 are in `api-e2e-test-review-report.md`.
+The latest result is round 7, **CRR-013: Pass** (IR-007, the fourth base refresh, `24d438fa31`). It comes first, then CRR-011, round 6 (CRR-010) and the earlier rounds. The test reviews CRR-005, CRR-006, CRR-009 and CRR-012 are in `api-e2e-test-review-report.md`.
+
+## Round 7: Merge Review Of IR-007, The Base `24d438fa31` (CRR-013)
+
+- **Scope:** `Targeted Delta Review` of the merge `eecb228bd6` (parents `92780698b9` and `24d438fa31`, no rebase). The base adds v1.5.13-beta.10, 517, 524 round 2 and 526.
+- **Released order:**
+  - `src/app-data-migrations` is identical between beta.7's base `9695d310c5` and the tag `v1.5.13-beta.10`, so beta.8 … beta.10 shipped no migration;
+  - `released-migration-order.json` (45 IDs) is still the released list;
+  - the base adds no migration.
+- **Remerge diff:** only the two conflict files.
+  - **`restart-resumer.ts`:** 526's whole-message observer, `restartNoticeLifecycleObserver(…, message)`, whose signature takes `Pick<AgentInputUserMessage, "content" | "metadata">` (`restart-notice.ts:88-91`), with this ticket's `readyAgent`. Correct.
+  - **`build-studio-server.ts`:** two removals shown as one hunk, and both stay removed.
+    - 524 moved `closeStudioProcessResources` to `studio-process-resources.ts`, and that file is identical to the base (`git diff 24d438fa31 HEAD` is empty);
+    - this ticket's `createStudioPackageServices` stays moved;
+    - 524's `stopStudioFileWatchesForProcessExit` came in through the auto-merge;
+    - none of the lookups this ticket removed reappear in either file.
+    - The stray `};` the type gate caught was amended into the merge.
+- **Sizes against `24d438fa31`:** the member handle 500 (the base has 494; at the limit, not over), the AutoByteus backend factory 496, the studio 428.
+- **Checks:** I didn't rerun IMP-023, which ran on the merged tree.
+  - Type gates at their baselines; web 5776 passed.
+  - Server 8880 passed. The 16 failures are file-event waits, and the implementer's raw `fs.watch` probe got no event in 3 of 5 tries. package-auto-refresh is base code, unchanged.
+- **For delivery:** `origin/personal` has moved again since this merge (`0ce426bc9f`, 534's phone text size), so whether to refresh once more is delivery's call.
+- **Findings:** none.
+- **Routing:** `Pass`, to `/api_e2e_engineer`: a built server's stop (524's moved close and file-watch stop) and restart resume with its notice (526's message), then the test review, then delivery.
+
+---
 
 ## API/E2E Failure-Origin Review Of API-REV-004, F-4 (CRR-011)
 

@@ -1,6 +1,26 @@
 # API/E2E Test Review Report: follow-ups-of-461-500 (autobyteus-500)
 
-The latest result is **CRR-012: Pass** (API-REV-004, the third merged state). CRR-009, CRR-006 and CRR-005 follow as history.
+The latest result is **CRR-014: Pass** (API-REV-005, the fourth merged state). CRR-012, CRR-009, CRR-006 and CRR-005 follow as history.
+
+## API-REV-005 (CRR-014)
+
+- **Scope:** `16559affdd`. Docs are in `da35a5d301`.
+- **RR-12** (`restart-reminder-built-server.e2e.test.ts`, added):
+  - **The trigger:** a real update restart, from the previous release's build to this one, of a native Team member that is idle with a background task. The user's input goes on the Team stream after its `CONNECTED`, so FU-036's rule is respected.
+  - **What it asserts positively:**
+    - the record entry (`idle`, `backgroundTasks: true`) and `shutdownAt`;
+    - the reminder reaches the member's model once, as the user's message, with the header, "an update to v<this release>" and the background line;
+    - the next input carries no header;
+    - the pending reminders are empty;
+    - the conversation shows the notice exactly once.
+  - The one fixed wait (8 s) is a bounded window for a duplicate notice, checked by `toHaveLength(1)`. A missing value (`orNull`) fails the positive assertions loudly.
+  - It covers the merged resumer's member path with 526's whole notice message.
+- **SIR-002** (`skill-improvement-removal-cases.mjs`): the byte-identity check also leaves out `restart-resume/` (448's runtime record, written live and at every graceful stop), with its reason, beside `memory/episodic/` and the run history index. That is narrow: every other file is still compared, and a second start changes nothing.
+- **The temporary stop test** was removed after its run (evidence only), as it should be.
+- **Checks:** names and intent clear; assertions prove the requirement; setup reuses the file's helpers (`previousReleaseOf`, `newNode`, the scripted model); no skips beyond the file's live gates.
+- **Result: Pass.** No findings. Recipient: `/delivery_engineer`.
+
+---
 
 ## API-REV-004 (CRR-012)
 
