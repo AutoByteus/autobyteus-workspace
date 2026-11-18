@@ -167,6 +167,23 @@ describe("AutoByteusAgentRunBackend", () => {
     });
   });
 
+  it.each(["no_active_turn", "already_settled", "turn_mismatch"])(
+    "answers the native %s interrupt result as NO_ACTIVE_TURN (autobyteus-533 AC-005)",
+    async (status) => {
+      const { backend } = createBackend({
+        agent: { currentStatus: "running", interrupt: vi.fn().mockResolvedValue({ accepted: false, status, turnId: null, message: "gone" }) },
+      });
+      await expect(backend.interrupt("turn-1")).resolves.toEqual({ accepted: false, code: "NO_ACTIVE_TURN", message: "gone", turnId: null });
+    },
+  );
+
+  it("keeps any other native refusal a real failure", async () => {
+    const { backend } = createBackend({
+      agent: { currentStatus: "running", interrupt: vi.fn().mockResolvedValue({ accepted: false, turnId: "turn-1", message: "x" }) },
+    });
+    await expect(backend.interrupt("turn-1")).resolves.toMatchObject({ accepted: false, code: "INTERRUPT_REJECTED" });
+  });
+
   it("maps stale native tool approval results without treating them as command failures", async () => {
     const { backend } = createBackend({
       agent: {

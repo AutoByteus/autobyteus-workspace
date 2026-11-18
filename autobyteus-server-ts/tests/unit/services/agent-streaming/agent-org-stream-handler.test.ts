@@ -270,6 +270,31 @@ describe("AgentOrgStreamHandler", () => {
     });
   });
 
+  it.each([
+    ["INTERRUPT_GENERATION", "NO_ACTIVE_TURN", { state: "accepted", code: null }],
+    ["INTERRUPT_GENERATION", "RUN_NOT_ACTIVE", { state: "accepted", code: null }],
+    ["INTERRUPT_GENERATION", "RUNTIME_COMMAND_FAILED", { state: "rejected", code: "RUNTIME_COMMAND_FAILED" }],
+    ["APPROVE_TOOL", "RUN_NOT_ACTIVE", { state: "rejected", code: "RUN_NOT_ACTIVE" }],
+  ] as const)("answers a live agent's %s result %s with %o (autobyteus-533 AC-004)", async (type, code, ack) => {
+    const test = harness(); const client = connection();
+    test.executeAgentCommand.mockResolvedValueOnce({ accepted: false, code, message: "detail" } as never);
+    const sessionId = await test.handler.connect(client.socket, orgRunId);
+    await test.handler.handleMessage(sessionId!, JSON.stringify({ type, payload: {
+      root_subject_kind: "agent_org", root_run_id: orgRunId, target_agent_run_id: agent.agentRunId, command_id: "c-r",
+      ...(type === "APPROVE_TOOL" ? { invocation_id: "tool-1", reason: "safe" } : {}) } }));
+    expect(JSON.parse(client.sent.at(-1) ?? "{}")).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { command_id: "c-r", ...ack } });
+  });
+
+  it("answers a peer row's Stop that is not running on its node as accepted (autobyteus-533 AC-004)", async () => {
+    const test = harness(); const client = connection();
+    const peer = { kind: "agent" as const, runId: "peer-run", postMessage: vi.fn(), interrupt: vi.fn(async () => ({ accepted: false, code: "RUN_NOT_ACTIVE", message: "AgentRun 'peer-run' is not running." })) };
+    (test.feed.rows as { peerRunOf: unknown }).peerRunOf = (id: string) => id === "peer-run" ? peer : null;
+    const sessionId = await test.handler.connect(client.socket, orgRunId);
+    await test.handler.handleMessage(sessionId!, JSON.stringify({ type: "INTERRUPT_GENERATION", payload: { root_subject_kind: "agent_org", root_run_id: orgRunId,
+      target_agent_run_id: "peer-run", command_id: "c-peer" } }));
+    expect(JSON.parse(client.sent.at(-1)!)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { command_id: "c-peer", state: "accepted", code: null } });
+  });
+
   it("sends pending reply text before the stopped Org's stored snapshot, and keeps the stream (autobyteus-139, SR-046)", async () => {
     const test = harness(); const client = connection();
     expect(await test.handler.connect(client.socket, orgRunId)).toBeTruthy();
@@ -411,12 +436,16 @@ describe("AgentOrgStreamHandler", () => {
       test.handler.disconnect(sessionId!);
     });
 
-    it("an interrupt for an agent of the stopped Org is refused and restores nothing; a message to it restores the Org, then one live snapshot", async () => {
+    it("a Stop for an agent of the stopped Org finds nothing to stop and an approval is refused, restoring nothing; a message to it restores the Org, then one live snapshot", async () => {
       const test = harness(undefined, { stopped: true }); const client = connection();
       const sessionId = await test.handler.connect(client.socket, orgRunId);
       await test.handler.handleMessage(sessionId!, JSON.stringify({ type: "INTERRUPT_GENERATION", payload: {
         root_subject_kind: "agent_org", root_run_id: orgRunId, target_agent_run_id: agent.agentRunId, command_id: "c-1" } }));
-      expect(parse(client).at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { state: "rejected", code: "AGENT_ORG_STOPPED" } });
+      // autobyteus-533 AC-003: nothing to stop is accepted.
+      expect(parse(client).at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { command_id: "c-1", state: "accepted", code: null, message: null } });
+      await test.handler.handleMessage(sessionId!, JSON.stringify({ type: "APPROVE_TOOL", payload: {
+        root_subject_kind: "agent_org", root_run_id: orgRunId, target_agent_run_id: agent.agentRunId, command_id: "c-a", invocation_id: "tool-1", reason: "safe" } }));
+      expect(parse(client).at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { command_id: "c-a", state: "rejected", code: "AGENT_ORG_STOPPED" } });
       expect(test.service.restoreForInput).not.toHaveBeenCalled();
       await test.handler.handleMessage(sessionId!, JSON.stringify({ type: "SEND_MESSAGE", payload: {
         root_subject_kind: "agent_org", root_run_id: orgRunId, target_agent_run_id: agent.agentRunId, command_id: "c-2",

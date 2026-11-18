@@ -1,7 +1,7 @@
 import type { AgentRunBackend } from "../backends/agent-run-backend.js";
 import type { AgentRunEventDispatchQueue } from "../events/agent-run-event-dispatch-queue.js";
 import type { AgentTurnLifecycleState } from "../events/processors/lifecycle-status/agent-turn-lifecycle-state.js";
-import type { AgentOperationResult } from "./agent-operation-result.js";
+import { NO_ACTIVE_TURN, type AgentOperationResult } from "./agent-operation-result.js";
 
 type InterruptReservation = {
   turnId: string | null;
@@ -59,7 +59,7 @@ export class AgentRunInterruptState {
       kind: "rejected",
       result: {
         accepted: false,
-        code: "NO_ACTIVE_TURN",
+        code: NO_ACTIVE_TURN,
         message: `AgentRun '${this.options.runId}' has no canonical active turn to interrupt.`,
       },
     };

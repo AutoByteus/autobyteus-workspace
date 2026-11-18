@@ -7,6 +7,7 @@ const createBackend = (overrides: Record<string, unknown> = {}) => {
   const session = {
     isActive: vi.fn().mockReturnValue(true),
     sessionId: "claude-session-1",
+    activeTurnId: "turn-1",
     getStatusSnapshotSource: vi.fn().mockReturnValue({
       currentStatus: "IDLE",
       activeTurnId: null,
@@ -37,6 +38,20 @@ const createBackend = (overrides: Record<string, unknown> = {}) => {
 };
 
 describe("ClaudeAgentRunBackend", () => {
+  it.each([
+    ["the turn already settled", null],
+    ["another turn is active", "turn-2"],
+  ])("answers NO_ACTIVE_TURN without calling the session when %s (autobyteus-533 AC-005)", async (_case, activeTurnId) => {
+    const { backend, session } = createBackend({ activeTurnId });
+    await expect(backend.interrupt("turn-1")).resolves.toMatchObject({ accepted: false, code: "NO_ACTIVE_TURN" });
+    expect(session.interrupt).not.toHaveBeenCalled();
+  });
+
+  it("keeps a session failure on the active turn a real failure", async () => {
+    const { backend } = createBackend({ interrupt: vi.fn().mockRejectedValue(new Error("SDK refused")) });
+    await expect(backend.interrupt("turn-1")).resolves.toMatchObject({ accepted: false, code: "RUNTIME_COMMAND_FAILED" });
+  });
+
   it("delegates to the Claude session and exposes current session state", async () => {
     const { backend, session } = createBackend();
     const listener = vi.fn();

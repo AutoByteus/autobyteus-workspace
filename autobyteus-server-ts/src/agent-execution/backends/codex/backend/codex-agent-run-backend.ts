@@ -3,7 +3,7 @@ import type { CodexThread } from "../thread/codex-thread.js";
 import {
   CodexThreadEventConverter,
 } from "../events/codex-thread-event-converter.js";
-import type { AgentOperationResult } from "../../../domain/agent-operation-result.js";
+import { NO_ACTIVE_TURN, type AgentOperationResult } from "../../../domain/agent-operation-result.js";
 import type {
   AgentRunBackend,
   AgentRunSourceEventBatchListener,
@@ -190,9 +190,12 @@ export class CodexAgentRunBackend implements AgentRunBackend {
     if (!turnId) {
       return {
         accepted: false,
-        code: "NO_ACTIVE_TURN",
+        code: NO_ACTIVE_TURN,
         message: "Codex interrupt requires the canonical active turn id from AgentRun.",
       };
+    }
+    if (this.codexThread.activeTurnId !== turnId) {
+      return { accepted: false, code: NO_ACTIVE_TURN, message: `Codex turn '${turnId}' is no longer the active turn.` };
     }
     try {
       await this.interruptRun(turnId);

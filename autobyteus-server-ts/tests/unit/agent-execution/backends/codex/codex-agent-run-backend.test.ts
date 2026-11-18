@@ -242,6 +242,32 @@ describe("CodexAgentRunBackend", () => {
     });
   });
 
+  it("interrupts the active turn through turn/interrupt", async () => {
+    const { backend, codexThread } = createBackend();
+    codexThread.markTurnStarted("turn-active");
+    (codexThread.client as any).request.mockResolvedValue({});
+    await expect(backend.interrupt("turn-active")).resolves.toEqual({ accepted: true, turnId: "turn-active" });
+    expect((codexThread.client as any).request).toHaveBeenCalledWith("turn/interrupt", expect.objectContaining({ turnId: "turn-active" }));
+  });
+
+  it.each([
+    ["no turn is active", null],
+    ["another turn is active", "turn-other"],
+  ])("answers NO_ACTIVE_TURN without a provider call when %s (autobyteus-533 AC-005)", async (_case, activeTurn) => {
+    const { backend, codexThread } = createBackend();
+    if (activeTurn) codexThread.markTurnStarted(activeTurn);
+    (codexThread.client as any).request.mockClear();
+    await expect(backend.interrupt("turn-active")).resolves.toMatchObject({ accepted: false, code: "NO_ACTIVE_TURN" });
+    expect((codexThread.client as any).request).not.toHaveBeenCalledWith("turn/interrupt", expect.anything());
+  });
+
+  it("keeps a provider failure of turn/interrupt a real failure", async () => {
+    const { backend, codexThread } = createBackend();
+    codexThread.markTurnStarted("turn-active");
+    (codexThread.client as any).request.mockRejectedValueOnce(new Error("app-server refused"));
+    await expect(backend.interrupt("turn-active")).resolves.toMatchObject({ accepted: false, code: "RUNTIME_COMMAND_FAILED" });
+  });
+
   it("maps the explicit append command to exact turn/steer", async () => {
     const { backend, codexThread } = createBackend();
     codexThread.markTurnStarted("turn-active");

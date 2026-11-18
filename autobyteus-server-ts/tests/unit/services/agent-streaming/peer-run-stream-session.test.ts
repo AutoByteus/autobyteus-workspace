@@ -72,6 +72,19 @@ describe("PeerRunStreamSession", () => {
     error.mockRestore();
   });
 
+  it.each([
+    ["RUN_NOT_ACTIVE", { state: "accepted" }],
+    ["NO_ACTIVE_TURN", { state: "accepted" }],
+    ["RUNTIME_COMMAND_FAILED", { state: "failed", code: "RUNTIME_COMMAND_FAILED", message: "detail" }],
+  ] as const)("relays node B's Stop answer %s as %o (autobyteus-533 AC-004)", async (code, ack) => {
+    const h = harness();
+    await h.answer(snapshot(0));
+    h.channel.ownerCommand.mockResolvedValueOnce({ accepted: false, code, message: "detail" } as never);
+    await h.session.handleMessage(JSON.stringify({ type: "INTERRUPT_GENERATION", payload: { command_id: "c-r" } }));
+    expect(h.sent.filter((message) => message.type === "AGENT_COMMAND_ACK").at(-1)?.payload).toEqual({
+      command_type: "INTERRUPT_GENERATION", command_id: "c-r", target: { target_kind: "standalone_run", run_id: "member-b" }, ...ack });
+  });
+
   it("a message and an interrupt go to the agent through the owner commands, each answered with its ACK", async () => {
     const h = harness();
     await h.answer(snapshot(0));

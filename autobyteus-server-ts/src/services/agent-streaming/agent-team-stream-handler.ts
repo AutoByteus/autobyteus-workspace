@@ -18,6 +18,7 @@ import { AgentSessionManager } from "./agent-session-manager.js";
 import { parseCommandAgentRunId, TEAM_COMMAND_INVALID_TARGET_CODE, TEAM_COMMAND_INVALID_TARGET_MESSAGE } from "./team-agent-run-command-parser.js";
 import { handleTeamInterruptGenerationCommand } from "./team-interrupt-generation-command-handler.js";
 import { handleTeamToolApprovalCommand } from "./team-tool-approval-command-handler.js";
+import { NOTHING_TO_INTERRUPT } from "./user-interrupt-outcome.js";
 import { AgentStreamWebSocketEgress, type AgentStreamServerMessageSink } from "./websocket-egress/agent-stream-websocket-egress.js";
 import { createSequencedStreamEgressControlComposition } from "./websocket-egress/agent-stream-egress-control-composition.js";
 import { teamStreamSequencedShape } from "./websocket-egress/team-stream-sequenced-shape.js";
@@ -128,7 +129,7 @@ export class AgentTeamStreamHandler {
         if (message.type === "SEND_MESSAGE") {
           await this.handleSendMessage(session.view, message.payload, session.egress);
         } else if (message.type === "INTERRUPT_GENERATION") {
-          await handleTeamInterruptGenerationCommand({ teamRunId, payload: message.payload, sink: session.egress, activeRun: routed });
+          await handleTeamInterruptGenerationCommand({ payload: message.payload, sink: session.egress, activeRun: routed });
         } else {
           await handleTeamToolApprovalCommand({
             teamRunId, payload: message.payload, approved: message.type === "APPROVE_TOOL", sink: session.egress, activeRun: routed,
@@ -160,6 +161,8 @@ export class AgentTeamStreamHandler {
     const refusal = command.kind === "interrupt" ? null : await this.sources.closedTasks.refusal(createTeamRootExecutionIdentity(teamRunId));
     if (refusal) return refusal;
     const live = this.teamRunService.getActiveTeamRun(teamRunId);
+    // A Stop to a member of a stopped team finds nothing to stop (autobyteus-533 REQ-001); an approval is refused.
+    if (!live && command.kind === "interrupt") return NOTHING_TO_INTERRUPT;
     if (!live && command.kind !== "post_message") {
       return { accepted: false, code: "TEAM_RUN_STOPPED", message: `Team run '${teamRunId}' is stopped. A message to one of its members starts it.` };
     }

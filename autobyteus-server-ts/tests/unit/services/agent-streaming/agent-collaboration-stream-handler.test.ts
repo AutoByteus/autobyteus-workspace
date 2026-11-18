@@ -79,6 +79,24 @@ describe("AgentCollaborationStreamHandler", () => {
     }
   });
 
+  it.each([
+    ["NO_ACTIVE_TURN", { state: "accepted", code: null }],
+    ["RUN_NOT_ACTIVE", { state: "accepted", code: null }],
+    ["REMOTE_NODE_UNREACHABLE", { state: "rejected", code: "REMOTE_NODE_UNREACHABLE" }],
+  ] as const)("answers a peer row's Stop result %s with %o (autobyteus-533 AC-004)", async (code, ack) => {
+    const feed = followTestChildRows();
+    const root = fakeRoot(feed, false);
+    const peer = { kind: "agent" as const, runId: "peer-run", interrupt: vi.fn(async () => ({ accepted: false, code, message: "detail" })), postMessage: vi.fn() };
+    const wire: CollaborationStreamServerMessage[] = [];
+    const handler = new AgentCollaborationStreamHandler({ resolveRoot: async () => root as never, getActive: () => root as never },
+      { ...feed.rows, peerRunOf: (id) => id === "peer-run" ? peer as never : null });
+    const sessionId = (await handler.connect({ send: (raw) => wire.push(CollaborationStreamServerMessageSchema.parse(JSON.parse(raw))), close: vi.fn() }, HOST))!;
+    await handler.handleMessage(sessionId, JSON.stringify({ type: "INTERRUPT_GENERATION", payload: {
+      root_subject_kind: "agent", root_run_id: HOST, target_agent_run_id: "peer-run", command_id: "c-r",
+    } }));
+    expect(wire.at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { command_type: "INTERRUPT_GENERATION", command_id: "c-r", ...ack } });
+  });
+
   it("SR-066: a peer row's command goes to its handle, never through the root; @ mentions to it and a local run are refused", async () => {
     const feed = followTestChildRows();
     const root = fakeRoot(feed, false);

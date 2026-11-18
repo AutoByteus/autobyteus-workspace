@@ -1,6 +1,6 @@
 import type { AgentPresentationMessage, RemoteAgentStatus } from "@autobyteus/agent-presentation-contracts";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
+import { RUN_NOT_ACTIVE, type AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import type { RemoteOwnerCommand } from "./remote-run-channel.js";
 
 /** One presentation message of one of the run's own agents (an Agent's host, a Team's members). */
@@ -55,4 +55,4 @@ const pathRefusal = (code: string, message: string): AgentOperationResult => Obj
 export const notPairedRefusal = (agentRunId: string): AgentOperationResult =>
   pathRefusal("TARGET_NOT_PERMITTED", `AgentRun '${agentRunId}' is not one of this run's own agents.`);
 export const notLiveRefusal = (agentRunId: string): AgentOperationResult =>
-  pathRefusal("RUN_NOT_ACTIVE", `AgentRun '${agentRunId}' is not running.`);
+  pathRefusal(RUN_NOT_ACTIVE, `AgentRun '${agentRunId}' is not running.`);

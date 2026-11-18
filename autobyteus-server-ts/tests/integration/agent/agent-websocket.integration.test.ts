@@ -614,12 +614,18 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
   it("returns exact same-socket interrupt acknowledgements without publishing lifecycle state", async () => {
     const runId = "agent-interrupt-ack";
     const activeRun = new FakeRuntimeRun(runId, { initialStatus: "running" });
+    // A Stop that finds no active turn is nothing to stop, so accepted (autobyteus-533 REQ-001); a real refusal fails.
     (activeRun.interrupt as ReturnType<typeof vi.fn>)
       .mockResolvedValueOnce({ accepted: true })
       .mockResolvedValueOnce({
         accepted: false,
         code: "NO_ACTIVE_TURN",
         message: "The provider has no active turn to interrupt.",
+      })
+      .mockResolvedValueOnce({
+        accepted: false,
+        code: "RUNTIME_COMMAND_FAILED",
+        message: "The provider could not interrupt the turn.",
       });
     const harness = await startAgentWsHarness({ runId, activeRun, metadata: buildMetadata(runId) });
     const socket = new WebSocket(`${harness.baseUrl}/ws/agent/${runId}`);
@@ -649,6 +655,24 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
 
       socket.send(JSON.stringify({
         type: "INTERRUPT_GENERATION",
+        payload: { command_id: "client_interrupt_no_turn" },
+      }));
+      const nothingToStop = await waitForMessageMatching(
+        messages,
+        (message) =>
+          message.type === "AGENT_COMMAND_ACK" &&
+          message.payload.command_id === "client_interrupt_no_turn",
+        3,
+      );
+      expect(nothingToStop.payload).toEqual({
+        command_type: "INTERRUPT_GENERATION",
+        command_id: "client_interrupt_no_turn",
+        state: "accepted",
+        target: { target_kind: "standalone_run", run_id: runId },
+      });
+
+      socket.send(JSON.stringify({
+        type: "INTERRUPT_GENERATION",
         payload: { command_id: "client_interrupt_provider_reject" },
       }));
       const failed = await waitForMessageMatching(
@@ -656,17 +680,17 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
         (message) =>
           message.type === "AGENT_COMMAND_ACK" &&
           message.payload.command_id === "client_interrupt_provider_reject",
-        3,
+        4,
       );
       expect(failed.payload).toEqual({
         command_type: "INTERRUPT_GENERATION",
         command_id: "client_interrupt_provider_reject",
         state: "failed",
-        code: "NO_ACTIVE_TURN",
-        message: "The provider has no active turn to interrupt.",
+        code: "RUNTIME_COMMAND_FAILED",
+        message: "The provider could not interrupt the turn.",
         target: { target_kind: "standalone_run", run_id: runId },
       });
-      expect(activeRun.interrupt).toHaveBeenCalledTimes(2);
+      expect(activeRun.interrupt).toHaveBeenCalledTimes(3);
       expect(messages.slice(2).some((message) => message.type === "AGENT_STATUS")).toBe(false);
       expect(activeRun.getStatusSnapshot()).toEqual({ status: "running", background_tasks_running: 0, agent_id: runId, recoverableBlock: null });
     } finally {
@@ -702,9 +726,7 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
       expect(ack.payload).toEqual({
         command_type: "INTERRUPT_GENERATION",
         command_id: "client_interrupt_inactive",
-        state: "rejected",
-        code: "RUN_NOT_FOUND",
-        message: `Agent run '${runId}' is not active.`,
+        state: "accepted",
         target: { target_kind: "standalone_run", run_id: runId },
       });
       // CONNECTED, the status, the stopped run's stored snapshot (SR-087) and the ACK.

@@ -9,6 +9,7 @@ import {
   TEAM_COMMAND_INVALID_TARGET_CODE,
   TEAM_COMMAND_INVALID_TARGET_MESSAGE,
 } from "./team-agent-run-command-parser.js";
+import { userInterruptOutcome } from "./user-interrupt-outcome.js";
 import type { AgentStreamServerMessageSink } from "./websocket-egress/agent-stream-websocket-egress.js";
 
 type Payload = Extract<
@@ -17,10 +18,9 @@ type Payload = Extract<
 >["payload"];
 
 export const handleTeamInterruptGenerationCommand = async (input: {
-  teamRunId: string;
   payload: Payload;
   sink: AgentStreamServerMessageSink<TeamStreamServerMessage> | null;
-  activeRun: Pick<RootTeamRun, "executeAgentCommand"> | null;
+  activeRun: Pick<RootTeamRun, "executeAgentCommand">;
 }): Promise<void> => {
   const agentRunId = parseCommandAgentRunId(input.payload);
   const reject = (code: string, message: string, state: "rejected" | "failed" = "rejected") =>
@@ -39,12 +39,8 @@ export const handleTeamInterruptGenerationCommand = async (input: {
     reject(TEAM_COMMAND_INVALID_TARGET_CODE, TEAM_COMMAND_INVALID_TARGET_MESSAGE);
     return;
   }
-  if (!input.activeRun) {
-    reject("RUN_NOT_FOUND", `Team run '${input.teamRunId}' is not active.`);
-    return;
-  }
   try {
-    const result = await input.activeRun.executeAgentCommand(agentRunId, { kind: "interrupt" });
+    const result = userInterruptOutcome(await input.activeRun.executeAgentCommand(agentRunId, { kind: "interrupt" }));
     if (!result.accepted) {
       reject(
         result.code?.trim() || "RUNTIME_REJECTED",
