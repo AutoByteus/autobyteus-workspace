@@ -6,5 +6,5 @@
 - **Desktop:** with **Settings > Updates > Receive beta updates** on, the app updates itself to this beta.
 
 ## Good to know
-- Going back to 1.5.13 is possible: 1.5.13 does not use the two removed agents, and they do not come back.
+- Going back to an older version after this update has not been checked. If you need to go back, contact support instead of installing an older version. The two removed agents do not come back.
 - `list_running_agents` is given to no agent until you select it in that agent's tool list.
