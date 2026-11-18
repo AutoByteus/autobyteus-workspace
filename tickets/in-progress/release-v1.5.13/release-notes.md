@@ -4,10 +4,11 @@
 - **Docker nodes:** run
 
   ```bash
-  autobyteus-docker upgrade --all --tag latest
+  autobyteus-docker upgrade --all
   ```
 
-  This moves your nodes to 1.5.13 and keeps all your volumes and data. To get the launcher's new progress messages for `setup-code` and `new-container`, run its install command again first (the command in the Docker guide); your nodes and their setup codes are not touched.
+  Each node keeps its track: nodes on the stable track (the default) get 1.5.13, and nodes on the beta track get it too and stay on the beta track. Your volumes and data are kept. `autobyteus-docker update --all` updates the nodes in place instead. To get the launcher's new progress messages for `setup-code` and `new-container`, run its install command again first (the command in the Docker guide); your nodes and their setup codes are not touched.
+- **Beta-track Docker nodes that should go back to stable:** run `autobyteus-docker upgrade --all --tag latest`. It is safe now: this release is at least as new as every 1.5.13 beta.
 - **Android:** install this release's APK (`AutoByteus_personal_android-1.5.13-release.apk`). Downloading files on the phone needs it; it also brings full screen under the camera cutout, and a phone that reopens on the same run and screen.
 - **The first start builds the agents' run catalogs once,** in the background: new files under `episodic/` in the memory folder only, about 12 seconds for around 4,000 runs. Nothing in any run folder changes, and the catalogs can be deleted at any time. On a long-used installation, the server log can show, at each start, one warning for each old team run saved without its team structure; those runs are left out of the catalogs.
 - **Reviewing tool calls on the AutoByteus runtime:** a tool other than the four base tools now asks for approval twice, first for the search, then for the tool. Running tools automatically is unchanged.
@@ -63,5 +64,5 @@
 - Delegating a task to an agent's own address is refused with a clear message.
 
 ## Upgrade Notes
-- **Docker.** The server image is `autobyteus/autobyteus-server:1.5.13`; `:latest` and `:beta` point to it. If you follow the beta track, `autobyteus-docker upgrade --all --tag latest` returns your nodes to stable: this release is newer than every 1.5.13 beta.
+- **Docker.** The server image is `autobyteus/autobyteus-server:1.5.13`; `:latest` and `:beta` point to it. Beta-track nodes stay on the beta track with a plain `autobyteus-docker upgrade --all`; `autobyteus-docker upgrade --all --tag latest` returns them to stable, which is safe now because this release is at least as new as every 1.5.13 beta.
 - **Desktop.** Installs on the beta track that already have a 1.5.13 beta are offered this release as an update too.
