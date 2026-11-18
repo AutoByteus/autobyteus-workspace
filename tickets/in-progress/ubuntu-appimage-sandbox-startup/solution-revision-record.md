@@ -145,3 +145,5 @@ Implementation intake: lone AppImage cannot embed its final-byte attestation. Bo
 Informational receipt: ARCH-REV-003 passed DS-003 / SR-014 on the SR-012 requirements. Reviewer delivered primary implementation handoff; IR-001 hold cleared. No duplicate forwarding or release.
 
 DS-003 implementation clarification (same reviewed U2/manual path): manual-install-failure-clarification.md. No changed intent or architecture route.
+
+DS-003 implementation clarification: stage-lifetime-clarification.md specifies transaction-lifetime expiry (not a wall-clock TTL), loss recovery and retry eligibility without changing approved quit/security rules. No new product decision.
