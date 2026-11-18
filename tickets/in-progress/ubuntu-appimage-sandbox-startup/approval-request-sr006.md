@@ -1,3 +1,5 @@
+> Historical, superseded. No action requested here. Current basis: approved SR-012 requirements and SR-013 / DS-002 design review.
+
 # SR-006 — Historical Decision Hold (updated status 2026-11-17)
 
 **Superseded for readiness by SR-007:** user requires fully unattended routine upgrades after opt-in, with no recurring administrator prompt or Install click. Requirements are now Draft pending update-path feasibility/authorization and distribution choice. The A/B discussion below is historical; no architecture or package selection was approved. See current requirements-doc.md, investigation-notes.md and solution-revision-record.md.

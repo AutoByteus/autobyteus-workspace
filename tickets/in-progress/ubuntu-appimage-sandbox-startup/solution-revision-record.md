@@ -133,3 +133,6 @@ User agreed to the proposed installed copy at a specific location like other Ubu
 
 ## SR-012 — Approved baseline and DS-001
 Prior Draft → Approved for design/implementation subject to independent architecture review. User authorized proceeding with one-time scoped protected installation; designer informed user of consolidated approval after SR-012 mechanism feasibility. All BEH/REQ/AC preserved or revised to chosen path, historical A/B material archived. Design DS-001 Large/High, first-install and update trust/OS matrix explicit risk gates. No new release or host modification. Refreshed personal source. See design-spec, investigation notes and probe evidence.
+
+## SR-013 — DS-002 / ARCH-REV-001 recovery
+Design-only revision from Fail to ready for independent re-review, not a claimed reviewer pass. SR-012 intended behavior and approval unchanged. AR-001 bounded Noble VM witness and explicit one-shot credential/resource custody; AR-002 verified-stage vs manual restart vs normal quit including opt-out, stop and recovery ownership; AR-003 signed record and same-inode committed identity, two successive upgrades/refusal. REQ-001/003/005/007; AC-001/003/004/006/008. Investigation, inventory, historical labels refreshed. Large/High unchanged. No implementation/release.

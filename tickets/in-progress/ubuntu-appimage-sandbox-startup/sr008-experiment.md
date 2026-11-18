@@ -1,3 +1,5 @@
+> Historical, superseded. No action requested here. Current basis: approved SR-012 requirements and SR-013 / DS-002 design review.
+
 # autobyteus-5 / ubuntu-appimage-sandbox-startup — SR-008
 Blocked (User/External Prerequisite): cannot load a temporary profile without interactive admin authentication. This is an experiment, not a completed solution. See requirements-doc.md (Draft), investigation-notes.md, solution-revision-record.md and evidence/sr-008/ in this ticket. No design yet.
 Goal: AppImage normal direct/desktop startup with renderer sandbox, and genuinely unattended routine upgrades after opt-in. User authorized this temporary experiment only. No global weakening, no production data or release. No implementation started. Isolated branch fix/ubuntu-appimage-sandbox-startup based on personal 1138e8fbef; eventual integration personal, no publication.
