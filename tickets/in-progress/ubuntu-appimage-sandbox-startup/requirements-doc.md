@@ -1,6 +1,9 @@
 # Ubuntu AppImage Sandbox Startup — Requirements Document
 
-## Current authority — SR-008 (2026-11-18), Draft
+## Current product direction — SR-011
+User explicitly agrees to the protected installed-copy experience presented after SR-010. On affected Ubuntu, ordinary first launch can authorize a fixed, administrator-protected AutoByteus installation using Ubuntu's prompt; subsequent launches use that copy with Chromium isolation, including via the menu or original download. No rule for Downloads, no global bypass, no root GUI. After opt-in, only authenticated AutoByteus upgrades may replace the protected copy without per-version interaction, at a safe lifecycle point. Initial refusal must not downgrade. Preserve the portable path without prompting where sandbox already works. This resolves DEC-003 and the user-facing authorization scope of DEC-007; no separate DEB, privileged generic updater or publication approved. A specific path under /opt is an illustration, not a product decision. User decision recorded; full implementation-ready baseline still awaits technical feasibility for trusted updates. No further user confirmation requested on location.
+
+## Earlier direction — SR-008 (2026-11-18), Draft
 User selected the **AppImage-first investigation**, not native distribution or automatic loss of isolation. Target UC-001/002/004: open the AppImage normally with real Chromium renderer protection on affected Ubuntu; after opt-in, update without recurring clicks or elevation. UC-005/SCN-005 is now a candidate one-time scoped AppImage setup rather than a required DEB installation. Refusal must not silently downgrade. AC-001–004 and AC-006/008 must cover this AppImage path if it is adopted. Only a temporary exact-path configuration experiment is authorized. Permanent exception, path trust and updater lifecycle remain unapproved/unproven. No architecture handoff. The earlier A/B branches below are historical alternatives, **not the current selection or an approval request**.
 
 ## Prior SR-007 baseline (archived rationale within this document)

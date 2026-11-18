@@ -127,3 +127,6 @@ User-run SR-008 external prerequisite cleared. See investigation SR-009 and evid
 
 ## SR-010 — First-start experience and security decision
 User accepts one-time system password prompt for scoped setup and expects no repeated involvement. Draft → Draft, current first-run intended behavior confirmed; previous SR-009 proof stands. REQ-001–003/005/007, AC-001/004/008 updated. Bundled updater path semantics read. Security/operational choice (account-writable path exception vs protected installation with authenticated unattended updates) remains material. No design/implementation approval or release.
+
+## SR-011 — Protected installation chosen
+User agreed to the proposed installed copy at a specific location like other Ubuntu applications. Current product direction at top of requirements supersedes open SR-010 location question. UC-001/002/004/005; REQ-001–003/005/007. No new test, no global security or release authorization. Feasibility of protected unattended updates remains open, not a request for another location approval.
