@@ -1,5 +1,6 @@
-// A native run restarted twice, on the phone (autobyteus-526). A case of `pnpm -C autobyteus-web test:e2e:mobile-shell`,
-// run by `mobile-shell-probe.mjs` after its own cases (`--cases=MSP-75` runs only this one).
+// Platform notices of native runs on the phone (autobyteus-526): a run restarted twice, and a Team's and an Org's agent
+// told that its background build ended. Cases of `pnpm -C autobyteus-web test:e2e:mobile-shell`, run by
+// `mobile-shell-probe.mjs` after its own cases (`--cases=MSP-75,MSP-76,MSP-77` runs only these).
 //
 // Stack (owned by the case, removed at its end, inside the probe's temp root):
 // - delta, one more node from this worktree's `autobyteus-server-ts/dist/app.js`, whose LM Studio provider is a scripted
@@ -18,6 +19,10 @@
 //                  the viewer's zone (`DD Mon YYYY, HH:MM CET`, the agent's UTC time converted); after a reload, the same.
 //                  The agent received each reminder with its UTC time. Before autobyteus-526 the turns after a restart
 //                  reused `turn_0001`: the view grouped them with the first turn, showing a reminder twice and hiding a reply.
+//   MSP-76 AC-002 (SR-002)  A Team's coordinator (native) starts a short background build from the phone and goes idle;
+//                  the build ends and the platform's notice wakes it. The phone, open on the coordinator, shows the notice
+//                  once and each reply once, live and after a reload.
+//   MSP-77 AC-002 (SR-002)  The same for an Org's member (native), opened from the Org's row.
 import { createServer } from 'node:http';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
@@ -75,13 +80,15 @@ const localOf = (utc) => {
  */
 export const runRestoredRunCases = async (probe) => {
   const { runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, sleep, waitFor, assert, redact } = probe;
-  if (probe.selected && !probe.selected.has('MSP-75')) return;
+  const ids = ['MSP-75', 'MSP-76', 'MSP-77'];
+  if (probe.selected && !ids.some(id => probe.selected.has(id))) return;
   const model = scriptedModel();
   const modelOrigin = await model.listen();
   const tag = `MSP75_${randomUUID().slice(0, 8)}`;
   const delta = await serverAt('delta', await freePort(), { LMSTUDIO_HOSTS: modelOrigin });
   const phoneOrigin = `http://${PHONE_HOST}:${delta.port}`;
   let browser = null;
+  let currentCase = 'restored-run-setup';
   /** Browser lines while delta is down on purpose (and shortly after, while the phone reconnects) are expected. */
   let downUntil = 0;
   const restartDelta = async () => {
@@ -91,77 +98,91 @@ export const runRestoredRunCases = async (probe) => {
     downUntil = Date.now() + 15_000;
   };
   try {
+    // ---- delta's native model and definitions -------------------------------------------------------------------
+    const models = (await delta.gql('mutation{reloadProviderModelCatalog(providerId:"LMSTUDIO",runtimeKind:"autobyteus"){llmModels{modelIdentifier}}}'))
+      .reloadProviderModelCatalog.llmModels.map(entry => entry.modelIdentifier);
+    const llmModelIdentifier = models.find(id => id.startsWith(MODEL_KEY));
+    assert(llmModelIdentifier, 'delta lists the scripted LM Studio model', { models });
+    const definition = async (name) => (await delta.gql('mutation($i:CreateAgentDefinitionInput!){createAgentDefinition(input:$i){id}}', { i: { name,
+      role: 'engineer', description: 'restored run (phone probe)', instructions: 'Run the commands you are asked to run.', toolNames: ['run_bash'], skillNames: [] } })).createAgentDefinition.id;
+    const workspace = path.join(delta.dataDir, '..', 'workspace');
+    await fs.mkdir(workspace, { recursive: true });
+    const native = { workspaceRootPath: workspace, llmModelIdentifier, autoExecuteTools: true, runtimeKind: 'autobyteus' };
+    const build = { name: 'run_bash', args: { command: `${JSON.stringify(process.execPath)} -e "setInterval(()=>{},1000)" ${tag}`, run_in_background: true } };
+
+    // ---- the phone, paired, in Europe/Berlin ----------------------------------------------------------------------
+    browser = await chromium.launch({ headless: true, executablePath, args: ['--no-sandbox', '--disable-dev-shm-usage', `--host-resolver-rules=MAP ${PHONE_HOST} 127.0.0.1`] });
+    const settings = await delta.rest('PUT', '/remote-access/settings', { phoneAccessEnabled: true });
+    assert(settings.status === 200, 'delta Phone Access on', settings);
+    const pairing = await delta.rest('POST', '/remote-access/pairing-sessions', { connectionWay: 'local_network', serverBaseUrl: phoneOrigin, serverName: 'Delta Test Node', trustedPrivateHttpAcknowledged: true });
+    assert(pairing.status === 201 && pairing.body.mobileUrl, 'delta pairing session', pairing.status);
+    const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2, locale: 'en-US', timezoneId: ZONE });
+    const page = await context.newPage();
+    const browserError = (text, sourceUrl = '') => {
+      const line = redact(`phone-delta console: ${text}`);
+      const cause = Date.now() <= downUntil ? 'delta restarted on purpose; the phone reconnects'
+        // The browser's own `/favicon.ico` request at the origin root carries no credential: 401 before any route (NA-1).
+        : /status of 401 \(Unauthorized\)$/.test(line) && sourceUrl.startsWith(phoneOrigin) && new URL(sourceUrl).pathname === '/favicon.ico'
+          ? 'the browser\'s favicon request at the origin root (401 /favicon.ico, no credential)' : null;
+      evidence.browserErrors.push({ case: currentCase, line, known: Boolean(cause), ...(cause ? { cause } : {}) });
+    };
+    page.on('console', message => { if (message.type() === 'error') browserError(message.text(), message.location()?.url ?? ''); });
+    page.on('pageerror', error => browserError(`pageerror ${error.message}`));
+    await page.goto(pairing.body.mobileUrl, { waitUntil: 'domcontentloaded', timeout: 120_000 });
+    await page.locator('[data-testid="mobile-pair-button"]').click({ timeout: 60_000 });
+    // Paired: the pairing page goes; delta has no run yet, so the phone shows its empty list until a case makes one.
+    await page.locator('[data-testid="mobile-pair-button"]').waitFor({ state: 'detached', timeout: 60_000 });
+    const screen = () => page.evaluate(() => {
+      const node = document.querySelector('[data-testid="mobile-run-screen"]');
+      return { state: node?.getAttribute('data-state') ?? null, query: location.search };
+    });
+    /** Opens the run of a list row (`agent:<id>`, `team:<id>` its coordinator, `org:<id>` its member); a reload keeps an open run open. */
+    const openRun = async (key, runId) => {
+      await sleep(1_500);
+      const now = await screen();
+      if (now.state === 'open' && now.query.includes(runId)) return;
+      // The list, opened at the phone's own address: after a reload the screen's back follows the browser history, which
+      // here starts at the pairing link. The pairing is kept in the phone's storage.
+      if (now.state === 'open' || !(await page.locator('[data-testid="mobile-run-tree"]:visible').count())) {
+        await page.goto(`${phoneOrigin}/mobile/`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+      }
+      const rowOpen = `[data-testid="mobile-run-row-${key}"] [data-testid="mobile-run-open"]`;
+      await page.locator('[data-testid="mobile-run-tree"]').waitFor({ timeout: 60_000 });
+      await waitFor(`row ${key} in the phone's list`, async () => (await page.locator(rowOpen).count()) > 0, 60_000);
+      await page.locator(rowOpen).click();
+      await waitFor(`the run screen of ${key}`, async () => (await screen()).state === 'open', 30_000);
+    };
+    /** A failing case's screen, kept for its evidence. */
+    const failShot = name => page.screenshot({ path: path.join(outputDir, `${name}-at-failure.png`) }).catch(() => undefined);
+    const conversation = () => page.evaluate(() => document.querySelector('[data-testid="mobile-run-conversation"]')?.innerText ?? '');
+    const send = async (text) => {
+      const box = page.locator('[data-testid="mobile-run-conversation"] textarea').last();
+      const button = page.locator('[data-testid="mobile-run-conversation"] button[aria-label="Send message"]').last();
+      await waitFor(`Send enabled for "${text}"`, async () => {
+        if (!(await box.inputValue().catch(() => ''))) await box.fill(text).catch(() => undefined);
+        return (await button.count()) > 0 && await button.isEnabled();
+      }, 60_000);
+      await button.click();
+    };
+    /** The notice cards whose text includes `marker`, as the phone shows them now. */
+    const cardsWith = marker => page.locator('[data-testid="mobile-run-conversation"] [data-testid="system-task-notification-segment"]').evaluateAll((nodes, text) => nodes
+      .map(node => node.innerText.replace(/\s+/g, ' ').trim()).filter(line => line.includes(text)), marker);
+    const count = async needle => (await conversation()).split(needle).length - 1;
+
+    currentCase = 'MSP-75';
     await runCase('MSP-75', async () => {
-      // ---- a native run on delta ------------------------------------------------------------------------------------
-      const models = (await delta.gql('mutation{reloadProviderModelCatalog(providerId:"LMSTUDIO",runtimeKind:"autobyteus"){llmModels{modelIdentifier}}}'))
-        .reloadProviderModelCatalog.llmModels.map(entry => entry.modelIdentifier);
-      const llmModelIdentifier = models.find(id => id.startsWith(MODEL_KEY));
-      assert(llmModelIdentifier, 'delta lists the scripted LM Studio model', { models });
-      const definitionId = (await delta.gql('mutation($i:CreateAgentDefinitionInput!){createAgentDefinition(input:$i){id}}', { i: { name: 'Build Runner',
-        role: 'engineer', description: 'restored run (phone probe)', instructions: 'Run the commands you are asked to run.', toolNames: ['run_bash'], skillNames: [] } })).createAgentDefinition.id;
-      const workspace = path.join(delta.dataDir, '..', 'workspace');
-      await fs.mkdir(workspace, { recursive: true });
-      const created = (await delta.gql('mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}', { i: { agentDefinitionId: definitionId,
-        workspaceRootPath: workspace, llmModelIdentifier, autoExecuteTools: true, runtimeKind: 'autobyteus' } })).createAgentRun;
+      const created = (await delta.gql('mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}', { i: { agentDefinitionId: await definition('Build Runner'), ...native } })).createAgentRun;
       assert(created.success, created.message);
       const runId = created.runId;
-      const build = { name: 'run_bash', args: { command: `${JSON.stringify(process.execPath)} -e "setInterval(()=>{},1000)" ${tag}`, run_in_background: true } };
+      const first = model.requests.length;
       model.steps.push({ toolCalls: [build] }, { text: 'REPLY_ONE' }, { toolCalls: [build] }, { text: 'REPLY_TWO' }, { text: 'REPLY_THREE' });
-
-      // ---- the phone, paired, in Europe/Berlin ----------------------------------------------------------------------
-      browser = await chromium.launch({ headless: true, executablePath, args: ['--no-sandbox', '--disable-dev-shm-usage', `--host-resolver-rules=MAP ${PHONE_HOST} 127.0.0.1`] });
-      const settings = await delta.rest('PUT', '/remote-access/settings', { phoneAccessEnabled: true });
-      assert(settings.status === 200, 'delta Phone Access on', settings);
-      const pairing = await delta.rest('POST', '/remote-access/pairing-sessions', { connectionWay: 'local_network', serverBaseUrl: phoneOrigin, serverName: 'Delta Test Node', trustedPrivateHttpAcknowledged: true });
-      assert(pairing.status === 201 && pairing.body.mobileUrl, 'delta pairing session', pairing.status);
-      const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2, locale: 'en-US', timezoneId: ZONE });
-      const page = await context.newPage();
-      const browserError = (text, sourceUrl = '') => {
-        const line = redact(`phone-delta console: ${text}`);
-        const cause = Date.now() <= downUntil ? 'delta restarted on purpose; the phone reconnects'
-          // The browser's own `/favicon.ico` request at the origin root carries no credential: 401 before any route (NA-1).
-          : /status of 401 \(Unauthorized\)$/.test(line) && sourceUrl.startsWith(phoneOrigin) && new URL(sourceUrl).pathname === '/favicon.ico'
-            ? 'the browser\'s favicon request at the origin root (401 /favicon.ico, no credential)' : null;
-        evidence.browserErrors.push({ case: 'MSP-75', line, known: Boolean(cause), ...(cause ? { cause } : {}) });
-      };
-      page.on('console', message => { if (message.type() === 'error') browserError(message.text(), message.location()?.url ?? ''); });
-      page.on('pageerror', error => browserError(`pageerror ${error.message}`));
-      await page.goto(pairing.body.mobileUrl, { waitUntil: 'domcontentloaded', timeout: 120_000 });
-      await page.locator('[data-testid="mobile-pair-button"]').click({ timeout: 60_000 });
-      await page.locator('[data-testid="mobile-run-tree"]').waitFor({ timeout: 60_000 });
-      const rowOpen = `[data-testid="mobile-run-row-agent:${runId}"] [data-testid="mobile-run-open"]`;
-      const screenOpen = async () => (await page.evaluate(() => document.querySelector('[data-testid="mobile-run-screen"]')?.getAttribute('data-state'))) === 'open';
-      const openRun = async () => {
-        // A reload keeps the open run on screen (its address); otherwise the run is opened from the list.
-        await sleep(1_500);
-        if (await screenOpen()) return;
-        await page.locator('[data-testid="mobile-run-tree"]').waitFor({ timeout: 60_000 });
-        await waitFor('the run in the phone\'s list', async () => (await page.locator(rowOpen).count()) > 0, 60_000);
-        await page.locator(rowOpen).click();
-        await waitFor('the run screen', async () => (await page.evaluate(() => document.querySelector('[data-testid="mobile-run-screen"]')?.getAttribute('data-state'))) === 'open', 30_000);
-      };
-      const conversation = () => page.evaluate(() => document.querySelector('[data-testid="mobile-run-conversation"]')?.innerText ?? '');
-      const send = async (text) => {
-        const box = page.locator('[data-testid="mobile-run-conversation"] textarea').last();
-        const button = page.locator('[data-testid="mobile-run-conversation"] button[aria-label="Send message"]').last();
-        await waitFor(`Send enabled for "${text}"`, async () => {
-          if (!(await box.inputValue().catch(() => ''))) await box.fill(text).catch(() => undefined);
-          return (await button.count()) > 0 && await button.isEnabled();
-        }, 60_000);
-        await button.click();
-      };
       /** What the phone shows now: the reminder cards' text, and how often each input and reply appears. */
-      const shown = async () => {
-        const text = await conversation();
-        const count = needle => text.split(needle).length - 1;
-        const cards = await page.locator('[data-testid="mobile-run-conversation"] [data-testid="system-task-notification-segment"]').evaluateAll(nodes => nodes
-          .map(node => node.innerText.replace(/\s+/g, ' ').trim()).filter(line => line.includes('application restarted')));
-        return { cards, inputs: [count('Start the build in the background.'), count('Start the build again.'), count('And now?')],
-          replies: [count('REPLY_ONE'), count('REPLY_TWO'), count('REPLY_THREE')] };
-      };
-      const backgroundStarted = (index) => waitFor(`background start ${index + 1}`, async () => model.requests[index]?.toolResults[0]?.includes('"status":"running"') ?? false, 60_000);
+      const shown = async () => ({ cards: await cardsWith('application restarted'),
+        inputs: [await count('Start the build in the background.'), await count('Start the build again.'), await count('And now?')],
+        replies: [await count('REPLY_ONE'), await count('REPLY_TWO'), await count('REPLY_THREE')] });
+      const backgroundStarted = (index) => waitFor(`background start ${index + 1}`, async () => model.requests[first + index]?.toolResults[0]?.includes('"status":"running"') ?? false, 60_000);
 
-      await openRun();
+      await openRun(`agent:${runId}`, runId);
       await send('CASE:MSP-75 Start the build in the background.');
       await waitFor('REPLY_ONE on the phone', async () => (await conversation()).includes('REPLY_ONE'), 90_000);
       await backgroundStarted(1);
@@ -180,15 +201,15 @@ export const runRestoredRunCases = async (probe) => {
       const live = await shown();
       await page.screenshot({ path: path.join(outputDir, 'MSP-75-live-after-two-restarts.png') }).catch(() => undefined);
       await page.reload({ waitUntil: 'domcontentloaded' });
-      await openRun();
+      await openRun(`agent:${runId}`, runId);
       await waitFor('the conversation loaded after the reload', async () => (await conversation()).includes('REPLY_THREE'), 60_000);
       await sleep(2_000);
       const reloaded = await shown();
       await page.screenshot({ path: path.join(outputDir, 'MSP-75-after-reload.png') }).catch(() => undefined);
       // The first request of each turn (no tool results yet) carries the input with its reminder; later ones repeat it.
-      const agentTimes = model.requests.filter(request => request.toolResults.length === 0 && request.lastUser.includes(HEADER)).map(request => /restarted at (\d{4}-\d\d-\d\d \d\d:\d\d UTC)/.exec(request.lastUser)?.[1] ?? null);
+      const agentTimes = model.requests.slice(first).filter(request => request.toolResults.length === 0 && request.lastUser.includes(HEADER)).map(request => /restarted at (\d{4}-\d\d-\d\d \d\d:\d\d UTC)/.exec(request.lastUser)?.[1] ?? null);
       const expectedCards = agentTimes.map(utc => localOf(utc));
-      const facts = { runId, agentTimes, expectedCards, afterFirst, live, reloaded, requests: model.requests.length };
+      const facts = { runId, agentTimes, expectedCards, afterFirst, live, reloaded, requests: model.requests.length - first };
       evidence.restoredRun = facts;
 
       assert(agentTimes.length === 2 && agentTimes.every(Boolean), 'the agent received each reminder once, with its UTC time', facts);
@@ -196,11 +217,69 @@ export const runRestoredRunCases = async (probe) => {
       const right = (state, restarts) => state.cards.length === restarts
         && state.cards.every((card, index) => card.includes(`The application restarted at ${expectedCards[index]} (reason: a restart).`))
         && state.cards.every(card => !card.includes(' UTC'))
-        && state.inputs.slice(0, restarts + 1).every(count => count === 1) && state.replies.slice(0, restarts + 1).every(count => count === 1);
+        && state.inputs.slice(0, restarts + 1).every(n => n === 1) && state.replies.slice(0, restarts + 1).every(n => n === 1);
       assert(right(afterFirst, 1), 'live after the first restart: one card in the viewer\'s time, every input and reply once', facts);
       assert(right(live, 2), 'live after the second restart: one card per restart in the viewer\'s time, every input and reply once', facts);
       assert(right(reloaded, 2), 'after a reload: the same', facts);
       return facts;
+    });
+
+    /**
+     * A background build of a Team's coordinator or an Org's member ends while it is idle: the platform's notice wakes it.
+     * The phone, open on that agent, shows the notice once live and once after a reload, and each reply once.
+     */
+    const noticeOnce = async (caseId, key, runId, shot) => {
+      try { return await noticeOnceSteps(caseId, key, runId, shot); } catch (error) { await failShot(shot); throw error; }
+    };
+    const noticeOnceSteps = async (caseId, key, runId, shot) => {
+      const first = model.requests.length;
+      const short = { name: 'run_bash', args: { command: `sleep 4; echo ${caseId}_BUILT`, run_in_background: true } };
+      model.steps.push({ toolCalls: [short] }, { text: `${caseId}_STARTED` }, { text: `${caseId}_NOTED` });
+      await openRun(key, runId);
+      await send(`CASE:${caseId} Start the build in the background.`);
+      await waitFor(`${caseId}_NOTED on the phone`, async () => (await conversation()).includes(`${caseId}_NOTED`), 120_000);
+      await sleep(2_000);
+      const marker = 'background tasks finished';
+      const live = { cards: await cardsWith(marker), started: await count(`${caseId}_STARTED`), noted: await count(`${caseId}_NOTED`) };
+      await page.screenshot({ path: path.join(outputDir, `${shot}-live.png`) }).catch(() => undefined);
+      await page.reload({ waitUntil: 'domcontentloaded' });
+      await openRun(key, runId);
+      await waitFor(`${caseId} conversation after the reload`, async () => (await conversation()).includes(`${caseId}_NOTED`), 60_000);
+      await sleep(2_000);
+      const reloaded = { cards: await cardsWith(marker), started: await count(`${caseId}_STARTED`), noted: await count(`${caseId}_NOTED`) };
+      await page.screenshot({ path: path.join(outputDir, `${shot}-after-reload.png`) }).catch(() => undefined);
+      const facts = { key, runId, live, reloaded, requests: model.requests.length - first, noticeReachedAgent: model.requests.slice(first).some(request => request.lastUser.includes(`${caseId}_BUILT`)) };
+      evidence[`noticeOnce${caseId}`] = facts;
+      assert(facts.noticeReachedAgent, `${caseId}: the agent received the notice`, facts);
+      for (const [label, state] of [['live', live], ['after a reload', reloaded]]) {
+        assert(state.cards.length === 1 && state.cards[0].includes(`${caseId}_BUILT`), `${caseId} ${label}: the notice once`, facts);
+        assert(state.started === 1 && state.noted === 1, `${caseId} ${label}: each reply once`, facts);
+      }
+      return facts;
+    };
+
+    currentCase = 'MSP-76';
+    await runCase('MSP-76', async () => {
+      const lead = await definition('Build Lead');
+      const mate = await definition('Build Mate');
+      const teamDef = (await delta.gql('mutation($i:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$i){id}}', { i: { name: 'Build Team',
+        description: 'notices (phone probe)', instructions: 'Follow your instructions.', coordinatorMemberName: 'lead',
+        nodes: [{ memberName: 'lead', ref: lead, refScope: 'SHARED' }, { memberName: 'mate', ref: mate, refScope: 'SHARED' }] } })).createAgentTeamDefinition.id;
+      const team = (await delta.gql('mutation($i:CreateAgentTeamRunInput!){createAgentTeamRun(input:$i){success message teamRunId}}', { i: { teamDefinitionId: teamDef,
+        teamConfigs: [{ teamAddress: '/', ...native }], memberConfigs: [{ memberAddress: '/lead', agentDefinitionId: lead, ...native }, { memberAddress: '/mate', agentDefinitionId: mate, ...native }] } })).createAgentTeamRun;
+      assert(team.success, team.message);
+      return noticeOnce('MSP-76', `team:${team.teamRunId}`, team.teamRunId, 'MSP-76-team-lead');
+    });
+
+    currentCase = 'MSP-77';
+    await runCase('MSP-77', async () => {
+      const worker = await definition('Build Worker');
+      const orgDef = (await delta.gql('mutation($i:CreateAgentOrgDefinitionInput!){createAgentOrgDefinition(input:$i){id}}', { i: { name: 'Build Org', description: 'notices (phone probe)',
+        instructions: 'Deliver.', handoffs: [], members: [{ memberName: 'worker', ref: worker, refType: 'AGENT', refScope: 'SHARED' }] } })).createAgentOrgDefinition.id;
+      const org = (await delta.gql('mutation($i:CreateAgentOrgRunInput!){createAgentOrgRun(input:$i){success message agentOrgRunId}}',
+        { i: { agentOrgDefinitionId: orgDef, rootConfiguration: { ...native, llmConfig: null }, agentOverrides: [], teamOverrides: [] } })).createAgentOrgRun;
+      assert(org.success, org.message);
+      return noticeOnce('MSP-77', `org:${org.agentOrgRunId}`, org.agentOrgRunId, 'MSP-77-org-member');
     });
   } finally {
     if (browser) await browser.close().catch(() => undefined);

@@ -162,7 +162,9 @@
 //                  no draft: `mobile-context-file-size-cases.mjs` (its own node eta).
 //   MSP-75 autobyteus-526  A native run restarted twice (each time with a background build running), on the phone in
 //                  Europe/Berlin: live and after a reload, every input and reply once and one reminder card per restart, its
-//                  time in the viewer's zone; the agent got UTC: `mobile-restored-run-cases.mjs` (its own node delta).
+//                  time in the viewer's zone; the agent got UTC. MSP-76, MSP-77 (SR-002): a Team's coordinator and an Org's
+//                  member told that their background build ended show that notice once, live and after a reload:
+//                  `mobile-restored-run-cases.mjs` (its own node delta).
 //   MSP-60…66, MSP-74 autobyteus-458/506/525  The readable phone conversation at 412 and 360 px (body width − 24, 17 px / 1.5, one
 //                  avatar and speaker line per turn, composer 8 px above the bottom; another agent's message keeps its arrow
 //                  and type line, as on the desktop); the run list's ⋮ → On this phone → Text size (the whole phone at
@@ -203,7 +205,7 @@ import { runFileOpenCases } from './mobile-file-open-cases.mjs';
 // base merge; those IDs are autobyteus-workspace-6's context-file size cases).
 import { runStoppedDelegatorCases } from './mobile-stopped-delegator-cases.mjs';
 import { runContextFileSizeCases } from './mobile-context-file-size-cases.mjs';
-// MSP-75 (autobyteus-526 AC-002, AC-003): a native run restarted twice on its own node, on the phone in Europe/Berlin.
+// MSP-75..77 (autobyteus-526): platform notices of native runs on the phone (its own node, Europe/Berlin).
 import { runRestoredRunCases } from './mobile-restored-run-cases.mjs';
 import { runFileZoomCases } from './mobile-file-zoom-cases.mjs';
 import { runLiveFileRefreshCases } from './mobile-live-file-refresh-cases.mjs';
