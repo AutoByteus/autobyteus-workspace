@@ -340,6 +340,48 @@ describe("AgentPackageFolderWatcher catch-up request", () => {
     expect(recorded.reconciles).toEqual([]);
   });
 
+  // autobyteus-524 FU-007: at process exit the watches end without their OS close; any other close releases them.
+  const armWithPresence = async (rootPath: string) => {
+    const recorded = recordingSink();
+    const watches: FakeWatch[] = [];
+    const presence: Array<{ close: ReturnType<typeof vi.fn> }> = [];
+    monitor = new AgentPackageFolderWatcher({
+      sink: recorded.sink,
+      createWatcher: () => { const watch = new FakeWatch(); watches.push(watch); return watch; },
+      createParentFolderWatch: () => { const watch = { close: vi.fn() }; presence.push(watch); return watch; },
+      logger: { warn: () => undefined },
+    });
+    await monitor.syncPackageFolders([rootAt(rootPath)]);
+    return { recorded, watches, presence };
+  };
+
+  it("stops for a process exit without closing its OS watches, handles no event after it, and a later close() does nothing", async () => {
+    const rootPath = path.join(base, "pkg");
+    await fs.mkdir(path.join(rootPath, "agents", "a"), { recursive: true });
+    const { recorded, watches, presence } = await armWithPresence(rootPath);
+    expect(watches).toHaveLength(1); expect(presence).toHaveLength(1);
+    watches[0]!.emit("ready");
+
+    monitor!.stopForProcessExit();
+    watches[0]!.emit("all", "change", path.join(rootPath, "agents", "a", "agent.md"));
+    await advance(5_000);
+    await monitor!.close();
+
+    expect(watches[0]!.close).not.toHaveBeenCalled();
+    expect(presence[0]!.close).not.toHaveBeenCalled();
+    expect([recorded.folders, recorded.reconciles, recorded.roots]).toEqual([[], [], []]);
+    expect(monitor!.getPackageFolderWatchStatus(rootPath)).toBeNull();
+  });
+
+  it("closes its OS watches on close() without a process-exit stop", async () => {
+    const rootPath = path.join(base, "pkg");
+    await fs.mkdir(path.join(rootPath, "agents"), { recursive: true });
+    const { watches, presence } = await armWithPresence(rootPath);
+    await monitor!.close();
+    expect(watches[0]!.close).toHaveBeenCalledOnce();
+    expect(presence[0]!.close).toHaveBeenCalledOnce();
+  });
+
   it("asks for nothing once the package folder is missing", async () => {
     const rootPath = path.join(base, "pkg");
     await fs.mkdir(path.join(rootPath, "agents"), { recursive: true });

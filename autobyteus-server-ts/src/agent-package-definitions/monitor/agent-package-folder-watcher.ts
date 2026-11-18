@@ -173,6 +173,22 @@ export class AgentPackageFolderWatcher {
     });
   }
 
+  /**
+   * Process exit only: ends event handling at once (no catch-up timer, entry or watch callback stays active) without
+   * closing the OS watches, whose close can block the main thread for seconds on a busy Mac; the process exit
+   * releases them. `close()` after it does nothing more.
+   */
+  stopForProcessExit(): void {
+    this.closed = true;
+    for (const entry of this.entries.values()) {
+      entry.generation += 1; // a late callback of the dropped watches is ignored
+      this.clearCatchUp(entry);
+      entry.watcher = null;
+      entry.presenceWatch = null;
+    }
+    this.entries.clear();
+  }
+
   private serial(operation: () => Promise<void>): Promise<void> {
     const run = this.chain.then(operation);
     this.chain = run.catch((error) => this.logger.warn("AGENT_PACKAGE_FOLDER_WATCHER_FAILED", error));

@@ -1,0 +1,18 @@
+# IMP-03 FU-007 unit cases (AC-003): both watchers' process-exit stop, their ordinary close, the studio's exit operation, and the server-runtime cleanup order
+# Command: pnpm -C autobyteus-server-ts exec vitest run <skill-folder-watcher, agent-package-folder-watcher, studio-file-watch-exit> --reporter=verbose -t 'process exit|process-exit|exit stop|without the exit stop'; pnpm -C autobyteus-server-ts exec vitest run tests/unit/server-runtime-app-data-migration-gate.test.ts
+# Commit: 2e5b0198e2 + the migration-gate test update (committed with this evidence)
+# Environment: macOS (darwin 25.5), Node v22.23.1; after an app restart
+# Date: 2026-11-18
+
+ ✓ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > stops for a process exit without closing its OS watches, handles no event after it, and a later close() does nothing 7ms
+ ✓ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > closes its OS watches on close() without a process-exit stop 2ms
+ ✓ tests/unit/compositions/studio-file-watch-exit.test.ts > studio file watches at process exit > stops both watchers for the exit before the close; the close then finds them stopped 201ms
+ ✓ tests/unit/compositions/studio-file-watch-exit.test.ts > studio file watches at process exit > closes both watchers normally (OS watches released) when the studio is closed without the exit stop 1427ms
+ ✓ tests/unit/skill-update-notices/skill-folder-watcher.test.ts > SkillFolderWatcher > stops for a process exit without closing its OS watches, reports no change after it, and a later close() does nothing 3ms
+ ✓ tests/unit/skill-update-notices/skill-folder-watcher.test.ts > SkillFolderWatcher > closes every OS watch on close() without a process-exit stop 0ms
+ Test Files  3 passed (3)
+      Tests  6 passed | 27 skipped (33)
+
+## server-runtime-app-data-migration-gate (record -> stopFileWatchesForProcessExit -> app.close)
+ Test Files  1 passed (1)
+      Tests  21 passed (21)

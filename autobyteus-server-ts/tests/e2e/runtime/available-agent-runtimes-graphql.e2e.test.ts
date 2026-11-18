@@ -47,14 +47,19 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 const fake = await vi.hoisted(async () => {
   const { prepareFakeRuntimes } = await import("../helpers/agent-runtimes-e2e-harness.js");
   const prepared = prepareFakeRuntimes({ label: "available-agent-runtimes-e2e", grokInstalled: true });
-  // No local model server answers: Ollama and LM Studio offer no models, so neither is listed.
-  const previous = { ollama: process.env.OLLAMA_HOSTS, lmstudio: process.env.LMSTUDIO_HOSTS };
+  // No local model server answers: Ollama and LM Studio offer no models, so neither is listed. The DeepSeek
+  // Harness is not installed, whatever this host has on its PATH (`dsh`), so it is not listed either.
+  const previous = {
+    ollama: process.env.OLLAMA_HOSTS, lmstudio: process.env.LMSTUDIO_HOSTS, dsh: process.env.DEEPSEEK_HARNESS_COMMAND,
+  };
   process.env.OLLAMA_HOSTS = "http://127.0.0.1:9";
   process.env.LMSTUDIO_HOSTS = "http://lmstudio.e2e.test:1234";
+  process.env.DEEPSEEK_HARNESS_COMMAND = `${prepared.root}/not-installed/dsh`;
   return {
     ...prepared,
     dispose: () => {
-      for (const [key, value] of [["OLLAMA_HOSTS", previous.ollama], ["LMSTUDIO_HOSTS", previous.lmstudio]] as const) {
+      for (const [key, value] of [["OLLAMA_HOSTS", previous.ollama], ["LMSTUDIO_HOSTS", previous.lmstudio],
+        ["DEEPSEEK_HARNESS_COMMAND", previous.dsh]] as const) {
         if (value === undefined) delete process.env[key]; else process.env[key] = value;
       }
       prepared.dispose();

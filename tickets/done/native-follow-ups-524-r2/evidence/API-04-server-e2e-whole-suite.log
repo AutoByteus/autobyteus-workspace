@@ -1,0 +1,62 @@
+# API-04 (autobyteus-524 round 2, API/E2E): whole server E2E (AC-001, AC-004), then each failing file alone on branch and base
+# Whole run: env -i PATH HOME=<temp> TMPDIR pnpm test:e2e ; head f1b61d0c52 (server dist from 2e5b0198e2); Node v22.23.1; 2026-11-18 07:24-07:52; full log not committed
+start 07:24:37  7:24  up 29 days, 17:03, 10 users, load averages: 58.81 55.47 53.57
+ Test Files  8 failed | 119 passed | 148 skipped (275)
+      Tests  9 failed | 555 passed | 705 skipped (1269)
+EXIT=1 end 07:52:50  7:52  up 29 days, 17:31, 10 users, load averages: 60.87 59.69 58.88
+AC-001:  ✓ tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts (6 tests)   (dsh at ~/.local/bin/dsh)
+Shutdown failures (TEST_SERVER_EXITED_NONZERO / TEST_SERVER_STOP_TIMEOUT / forcing exit) in the whole log: 0
+
+== each failure, first error line
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-
+      -> AssertionError: expected 7904 to be less than 5000
+ FAIL  tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, 
+      -> Error: Timed out waiting for FILE_SYSTEM_CHANGE for live-added.txt. Seen: 
+ FAIL  tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > downloads the active model (Preparing with bytes, not
+      -> Error: Test timed out in 5000ms.
+ FAIL  tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > switches the active model through the setting, prepar
+      -> AssertionError: expected { …(6) } to match object { state: 'NOT_INDEXED', total: 3 }
+ FAIL  tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP: selected default host executes equivalent compact mutat
+      -> Error: Test timed out in 5000ms.
+ FAIL  tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts > provider and Gemini one-vault GraphQL E2E > keeps Gemini configuration independent and 
+      -> Error: Test timed out in 5000ms.
+ FAIL  tests/e2e/tool-management/mcp-bulk-import.e2e.test.ts > MCP bulk import through GraphQL > imports the content of the app's own mcps.json, keeping its own reference
+      -> Error: Test timed out in 5000ms.
+ FAIL  tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and c
+      -> AssertionError: expected [ '## Agent Identity', …(5) ] to deeply equal [ '## Agent Identity', …(4) ]
+ FAIL  tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > lists the Grok Build catalog from 
+      -> Error: [{"message":"Grok CLI version or agent mode is unsupported; update to 1.0.41 or later and retry.","locations":[{"line":2,"column":7}],"path":["providerModelCatalogSnapshots"]}]
+
+== each failing file alone, branch
+branch 07:54:28 [52.74 55.74 57.34] tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts ::    1       Tests  8 passed | 2 skipped (10) 
+branch 07:54:42 [50.98 55.20 57.12] tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts ::    1       Tests  1 failed | 2 passed (3)    1 Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/file-explorer-ws-e2e-appdata-FOCXCL/.env    1 Error: Timed out waiting for FILE_SYSTEM_CHANGE
+branch 07:55:00 [47.52 54.25 56.75] tests/e2e/projects/embedding-settings.e2e.test.ts ::    1       Tests  6 passed (6) 
+branch 07:55:28 [45.97 53.33 56.33] tests/e2e/projects/project-task-boundaries.e2e.test.ts ::    1       Tests  18 passed (18) 
+branch 07:55:37 [44.62 52.92 56.17] tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts ::    1       Tests  1 failed | 3 passed (4)    1 AssertionError: expected [ '## Agent Identity', …(5) ] to deeply equal [ '## Agent Identity', …(4) ] 
+branch 07:56:01 [45.92 52.44 55.90] tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts ::    1       Tests  1 failed | 5 passed (6)    1 Error in createAgentRun: AgentCreationError: Grok Build: Authentication required: no auth method id provided    1 Error: [{"message":"Grok CLI version or agent mode is unsupported; update to 1.0.41 or later and retry.","locations":[{"line
+branch 07:56:07 [47.53 52.67 55.96] tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts ::    1       Tests  6 passed (6) 
+branch 07:56:22 [51.99 53.32 56.13] tests/e2e/tool-management/mcp-bulk-import.e2e.test.ts ::    1       Tests  1 failed | 1 passed (2)    1 Error: Test timed out in 5000ms. 
+
+== still-failing files against the base (0570c47fd9) source (src swap; mcp-bulk-import against a base dist build; restored and rebuilt after)
+base-src 07:56:56 [48.47 52.35 55.66] tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts ::    1       Tests  1 failed | 2 passed (3)    1 Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/file-explorer-ws-e2e-appdata-potUVV/.env    1 Error: Timed out waiting for FILE_SYSTEM_CHAN
+base-src 07:57:05 [50.45 52.64 55.73] tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts ::    1       Tests  1 failed | 3 passed (4)    1 AssertionError: expected [ '## Agent Identity', …(5) ] to deeply equal [ '## Agent Identity', …(4) ] 
+base-src 07:57:21 [46.41 51.66 55.32] tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts ::    1       Tests  6 passed (6)    1 Error in createAgentRun: AgentCreationError: Grok Build: Authentication required: no auth method id provided 
+base build exit 0
+base-dist 07:57:51 [50.40 52.24 55.42] tests/e2e/tool-management/mcp-bulk-import.e2e.test.ts ::    1       Tests  2 passed (2) 
+restored: []
+restore build exit 0 calls=1
+branch-dist-again 07:58:21 [57.82 53.96 55.93] tests/e2e/tool-management/mcp-bulk-import.e2e.test.ts ::    1       Tests  2 passed (2) 
+
+== grok-build-runtime-replay alternated, base vs branch source
+base 08:00:16 [44.52 50.66 54.43]  Tests 6 passed (6)
+branch 08:00:42 [52.18 52.06 54.83]  Tests 1 failed | 5 passed (6)
+base 08:01:07 [52.43 52.10 54.76]  Tests 1 failed | 5 passed (6)
+branch 08:01:23 [54.02 52.54 54.86]  Tests 6 passed (6)
+base 08:01:50 [60.80 54.38 55.46]  Tests 6 passed (6)
+branch 08:02:21 [58.43 54.49 55.46]  Tests 6 passed (6)
+base 08:03:05 [50.88 53.12 54.91]  Tests 1 failed | 5 passed (6)
+branch 08:03:24 [56.65 54.23 55.26]  Tests 6 passed (6)
+restored: []
+== temporary probe log (reverted) at a branch failure: DIAG-GROK-PROBE {"args":["--version"],"ms":5651,"code":"GROK_CLI_UNSUPPORTED","exitCode":null,"outputHead":""}; the fake CLI answers --version in 40-55 ms alone. The probe's own 3 s bound fired 2.6 s late (main thread stalled) before the CLI answered, and its own bound reads as an unsupported CLI (grok-build-capability.ts runProbe). FU-002.
+== configured-skill-on-demand-loading: received headings add '## Long-Running Commands' (added by autobyteus-483, 30aec70770, long-running-command-sections.ts); the test's expected list predates it; same on base. FU-001.
+== file-explorer-websocket-lifecycle: FILE_SYSTEM_CHANGE never arrives (file-explorer watcher, untouched; same on base; fseventsd). live-refresh, embedding-settings, project-task-boundaries, provider-secret-lifecycle, mcp-bulk-import: pass alone (5 s limits under load).

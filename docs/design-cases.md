@@ -304,3 +304,13 @@ Principles 1 (several kinds) and 13 (one owner for a sequence).
 - **The fix (SR-003):** one owner, `RunWorkspaceSkills`, holds the run's links from preparation to release, owns a `closed` flag and its single in-flight add, and is the only release path: `release()` sets `closed`, awaits the add, then releases.
 - **Why it mattered:** a leaked link in a shared folder stays visible to every other run in that workspace for the life of the process.
 - **Notice it by:** a guard named by meaning ("active", "running", "open") used to order work against a teardown, without citing who sets it and when, relative to the step it must precede, on every runtime or kind; two lists of the same resources (one for preparation, one for the run).
+
+### Case 23: A Caller Check That Stopped One Level Up (autobyteus-524 round 2, DI-001)
+
+Principle 1 (count callers at their call sites).
+
+- **The design said:** at process shutdown, skip closing the package and skill folder watchers' OS watches (closing them blocks the main thread for seconds on a loaded Mac), and wire that into `agentPackageDefinitionFeed.close()` and `skillUpdateNotices.close()`, because "both are called only from process shutdown". That was checked one level up: each has one caller, `closeStudioProcessResources`.
+- **What the code does:** that caller runs inside `closeProcessResources`, which Fastify's `onClose`, the startup-failure path and the shutdown handover all call. In-process studio servers in 120 test files run `onClose` while their process keeps running, so they would have kept every watch open.
+- **The fix:** the process-shutdown owner (`server-runtime.ts`'s cleanup, and the handover close) calls one studio operation that stops the watchers for the exit before `app.close()`; every other close still releases the watches.
+- **Why it mattered:** a "process is exiting" shortcut taken on a path that is not exit-only leaks resources in every long-lived process that uses the same path.
+- **Notice it by:** a behavior justified by "only called from X" where the check stopped at the first caller; an exit-only shortcut placed in a close that a framework hook also runs. Follow the callers up to the entry points (hooks, tests, failure paths), or put the decision at the owner that knows the condition.
