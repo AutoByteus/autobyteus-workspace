@@ -1,6 +1,30 @@
 # Code Review Report: follow-ups-of-461-500 (autobyteus-500)
 
-The latest result is round 7, **CRR-013: Pass** (IR-007, the fourth base refresh, `24d438fa31`). It comes first, then CRR-011, round 6 (CRR-010) and the earlier rounds. The test reviews CRR-005, CRR-006, CRR-009 and CRR-012 are in `api-e2e-test-review-report.md`.
+The latest result is round 8, **CRR-015: Pass** (IR-008, the seventh base refresh, `75048cbaf4`). It comes first, then round 7 (CRR-013), CRR-011, round 6 (CRR-010) and the earlier rounds. The test reviews CRR-005, CRR-006, CRR-009, CRR-012 and CRR-014 are in `api-e2e-test-review-report.md`.
+
+## Round 8: Merge Review Of IR-008, The Base `75048cbaf4` (CRR-015)
+
+- **Scope:** `Targeted Delta Review` of the merge `bb42531c7d` (parents `50faf1c629` and `75048cbaf4`). The base adds the v1.5.13 release records and 517's FU-002 / FU-003 (shared OS-latency limits for tests). Delivery's earlier clean merge (`f5a7d789c9`) needed no resolution.
+- **Released order:**
+  - `src/app-data-migrations` is identical between beta.7's base `9695d310c5` and `75048cbaf4`, which holds the tag `v1.5.13`. So v1.5.13 shipped beta.7's 45 migrations, and `released-migration-order.json` still records the released list.
+  - G-1's recorder isn't on personal yet, which is why those releases didn't write it.
+- **Remerge diff:** only `file-system-watcher.integration.test.ts` (one conflict, 19 hunks) and `TESTING.md`.
+- **The watcher test: a deliberate combination, correct.**
+  - **500's structure stays:** outcome waits under one guard per test (`guardEndsAt`), the sentinel "no event" checks (11 uses), and the raw `fs.watch` probe's ENVIRONMENT / INCONCLUSIVE labels. AC-005 rests on these.
+  - 517's quiet windows aren't taken. No 800 ms or quiet-window wait remains; the sentinel proves "no event" without one.
+  - **517's shared limits set the numbers,** as its `TESTING.md` rule requires: the guard is `OS_FILE_EVENT_WAIT_MS` (30 s); all 14 tests take `{ timeout: FILE_EVENT_TEST_TIMEOUT_MS + ENVIRONMENT_PROBE_MS }` (55 s), so the probe still labels before the test times out; the start and close hooks take `IN_PROCESS_SERVER_HOOK_TIMEOUT_MS`.
+  - **Deviation, and its reason holds:** the guard is 30 s rather than SR-013's 60 s. The project's newer test rule (517, `TESTING.md`) sets it, and no wait got longer (SR-013's "no longer waits").
+    - What changes is that an event arriving after 30 s is labelled rather than awaited. AC-005's proof stays "5/5 where the OS delivers events", and Linux shows events in milliseconds.
+    - **For the Solution Designer at closure:** `design-spec.md`'s FU-021 text ("the guard stays at 60 s") should name the project limit. That's documentation alignment, not a design question.
+- **`TESTING.md`:** the busy-Mac rule now names the sentinel alternative next to the quiet window, says what ENVIRONMENT and INCONCLUSIVE mean ("neither is a product verdict"), and gives the proof ("a run where the OS delivers events, such as Linux in a container from the worktree"). Accurate, and the right place for it.
+- **Evidence:**
+  - IMP-024, AC-005 on the merged commit: Docker `node:22-bookworm`, Linux 6.12 aarch64, a `git archive` of the commit, a frozen install, `test:integration:prepare`, then 5 runs. Each was "Tests 14 passed (14)" with 0 labels.
+  - IMP-025, on the Mac: type gates at baseline; units 7769 passed, with 3 failures in the untouched package-folder watcher. The loaded-Mac watcher runs were all labelled, none unlabelled (evidence only).
+- **For delivery:** `origin/personal` has moved again since this merge (`be11a62449`).
+- **Findings:** none.
+- **Routing:** `Pass`, to `/api_e2e_engineer` for its Linux watcher run on the merged state, then the test review, then delivery.
+
+---
 
 ## Round 7: Merge Review Of IR-007, The Base `24d438fa31` (CRR-013)
 

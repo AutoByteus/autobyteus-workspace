@@ -1,6 +1,19 @@
 # API/E2E Test Review Report: follow-ups-of-461-500 (autobyteus-500)
 
-The latest result is **CRR-014: Pass** (API-REV-005, the fourth merged state). CRR-012, CRR-009, CRR-006 and CRR-005 follow as history.
+The latest result is **CRR-016: Not Applicable** (API-REV-006, the seventh merged state). CRR-014, CRR-012, CRR-009, CRR-006 and CRR-005 follow as history.
+
+## API-REV-006 (CRR-016)
+
+- **Scope:** `94376f166d..2c03613d36`. No durable test file changed; `2c03613d36` touches only ticket documents (`git diff --name-only` outside `tickets/` is empty).
+- **The round's evidence, for delivery:**
+  - AC-005: the merged watcher test (517's limits) passes 5/5 on Linux, 14/14 each, with 0 labels.
+  - 517's areas pass in Linux: package live refresh, the background-task status counts, the Grok replay, the Antigravity background transport and monitor, and the skill folder watcher.
+  - The phone probe's guard finds 76 IDs and 0 duplicates.
+  - Container-only failures are root-user artifacts (chmod-unreadable folders, EACCES, 403); they pass on the Mac.
+  - FU-500-14: two of 517's own rename cases time out on a loaded Mac and pass in Linux. Their files are identical to base.
+- **Result: Not Applicable** (no durable test change). Recipient: `/delivery_engineer`.
+
+---
 
 ## API-REV-005 (CRR-014)
 

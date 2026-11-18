@@ -16,6 +16,8 @@
 | CRR-012 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-004 (696acc408c, 8d14de45e3) | Test-side (CRR-011) | Pass | None |
 | CRR-013 | `code-review-report.md` | Merge review, round 7 (Targeted Delta) / IR-007, base `24d438fa31` | Pass (CRR-012) | Pass | None |
 | CRR-014 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-005 (16559affdd) | Pass (CRR-013) | Pass | None |
+| CRR-015 | `code-review-report.md` | Merge review, round 8 (Targeted Delta) / IR-008, base `75048cbaf4` | Pass (CRR-014) | Pass | None |
+| CRR-016 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-006 (no test change) | Pass (CRR-015) | Not Applicable | None |
 
 ### CRR-001: Implementation review of IR-001: Fail, Local Fix
 
@@ -388,3 +390,54 @@
   - RR-07 … 09 (live) and RR-11 (needs a pre-526 build) weren't run;
   - `origin/personal` moved again (534);
   - the residual risks as in CRR-006 and FU-500-09 … -13.
+
+### CRR-015: Merge review of IR-008 (the base `75048cbaf4`): Pass
+
+- Review entry point and round: implementation review, round 8 (the seventh delivery base refresh)
+- Review scope: Targeted Delta, the merge `bb42531c7d` (the watcher test and `TESTING.md`)
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer, `implementation-handoff.md` (IR-008, IMP-024, IMP-025); Delivery (`50faf1c629`)
+- Relevant solution revision IDs: SR-013, SR-014 (FU-021)
+- Relevant architecture-review revision IDs: ARCH-REV-006, ARCH-REV-007
+- Relevant implementation revision IDs: IR-008
+- Relevant API/E2E revision IDs: API-REV-005
+- Relevant delivery revision IDs: refreshes 5 to 7
+- Prior authoritative result: Pass (CRR-014)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - The watcher test keeps 500's outcome waits, sentinel checks and labels, and takes 517's shared limits: a 30 s guard, and a 55 s test timeout that includes the probe.
+  - The 30 s guard deviates from SR-013's 60 s, following the newer project rule, with no longer waits. The reason holds.
+  - AC-005 is 5/5 on Linux on the merged commit.
+  - v1.5.13 shipped beta.7's migrations, so the recorded order holds.
+- Supported product scenario / material-premise basis changes: none
+- Prior finding resolution: N/A
+- New or remaining finding IDs: none
+- Material score or classification changes: none
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty:
+  - the design spec's FU-021 "60 s" text needs aligning with the project limit (the Solution Designer, at closure);
+  - `origin/personal` moved again (`be11a62449`).
+
+### CRR-016: Proportional test-code review after API-REV-006 (seventh merged state): Not Applicable
+
+- Review entry point and round: successful API/E2E test-code review (round 6)
+- Review scope: `94376f166d..2c03613d36`. No durable test file changed (ticket documents only).
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-006)
+- Relevant solution revision IDs: SR-013, SR-014 (FU-021)
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: IR-008
+- Relevant API/E2E revision IDs: API-REV-006
+- Relevant delivery revision IDs: refreshes 5 to 7
+- Prior authoritative result: Pass (CRR-015)
+- Current authoritative result: Not Applicable (the package passes to delivery)
+- What changed in the review result and why: no test-code change to review. The merged state's AC-005 gate is 5/5 on Linux, and 517's areas pass in Linux.
+- Supported product scenario / material-premise basis changes: none
+- Prior finding resolution: N/A
+- New or remaining finding IDs: none
+- Material score or classification changes: N/A
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty:
+  - the quiet macOS was not tested;
+  - FU-500-14 (517's rename cases on a loaded Mac);
+  - `origin/personal` moved again (`be11a62449`);
+  - the design spec's FU-021 "60 s" text needs aligning (the Solution Designer, at closure);
+  - the residual risks as in CRR-006.
