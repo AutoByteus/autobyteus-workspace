@@ -154,6 +154,11 @@ const normalizeTarget = (kind, command) => kind === 'standalone'
 // member's stored projection is empty (its live context is built in the page).
 const graphqlAnswers = {
   GetRunFileChanges: () => ({ getRunFileChanges: [] }),
+  // Baseline fix (autobyteus-533): the window also reads the node's update-checks setting and the member's file changes.
+  GetUpdateChecksCapability: () => ({
+    updateChecksCapability: { enabled: true, settingKey: 'ENABLE_UPDATE_CHECKS', source: 'DEFAULT_ENABLED' },
+  }),
+  GetTeamMemberFileChanges: () => ({ getTeamMemberFileChanges: [] }),
   GetTeamMemberRunProjection: () => ({
     getTeamMemberRunProjection: {
       agentRunId: TEAM_MEMBER_RUN_ID,
@@ -355,6 +360,8 @@ try {
       evidence.frames.push({ direction: 'connect', kind: 'agent-package-definitions' });
       ws.send(JSON.stringify({ type: 'connected' }));
     });
+    // Baseline fix (autobyteus-533): the window also opens the update-notifications stream (autobyteus-210).
+    await context.routeWebSocket(/\/ws\/update-notifications(\?|$)/, () => undefined);
     await context.route('**/graphql', (route) => {
       const operationName = route.request().postDataJSON()?.operationName ?? null;
       evidence.graphqlOperations.push(operationName);
