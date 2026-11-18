@@ -83,5 +83,7 @@ updates and must not be published. Production signing is isolated behind the
 `desktop-release-signing` environment and uses a dedicated desktop key, never
 the server key. Release administration must configure and protect that
 environment and its public/secret material; absent provisioning fails the build.
+Keep the private key only as that environment's secret, not a repository- or
+organization-wide secret. Build jobs receive only the public repository variable.
 Trust-root/writer upgrades require authenticated administrator maintenance, not
 an ordinary app payload. Final release operations follow root `RELEASE.md`.

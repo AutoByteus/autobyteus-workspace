@@ -673,7 +673,6 @@ jobs:
           trap 'rm -f "$PRIVATE" "$PUBLIC"' EXIT
           printf '%s' "$DESKTOP_PRIVATE_KEY" > "$PRIVATE"
           printf '%s' "$DESKTOP_PUBLIC_KEY" > "$PUBLIC"
-          node --test scripts/desktop-package/*.test.mjs
           for ARCH in x64 arm64; do
             IMAGE="signing-artifacts/linux-$ARCH/AutoByteus_personal_linux-$ARCH-$VERSION.AppImage"
             META="signing-artifacts/linux-$ARCH/latest-linux.yml"

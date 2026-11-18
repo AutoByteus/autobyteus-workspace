@@ -1,58 +1,95 @@
-# Implementation Handoff
+# Implementation Handoff — IR-002
 
-## Upstream Artifact Package
-- Worktree: `/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup`; branch `fix/ubuntu-appimage-sandbox-startup`; final target `personal`.
-- Requirements: `requirements-doc.md`, approved SR-012.
-- Investigation/history: `investigation-notes.md`, `solution-revision-record.md`.
-- Received design: DS-002 / SR-013 in `design-spec.md` at `ead5fafcb474ee1a9b4001fe0422f73b008c412f`.
-- Selected independent review: `design-review-report.md`, `architecture-review-revision-record.md`, ARCH-REV-002 Pass. Reviewer-owned files preserved; not rewritten.
-- Current recovery: designer added DS-003 / SR-014, `first-launch-record-handoff.md`; dependent implementation explicitly held pending delta review.
-- No behavior-defining visual supplement.
+## Upstream artifact package
+- Worktree: `/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup`
+- Branch: `fix/ubuntu-appimage-sandbox-startup`; final integration target **personal**. Base `f7b4d687`, integration merge `bc87bef825`; no merge/release performed here.
+- Approved requirements: `requirements-doc.md`, SR-012; canonical investigation/history: `investigation-notes.md`, `solution-revision-record.md`.
+- Design: DS-003 / SR-014 `design-spec.md`; selected independent architecture review **ARCH-REV-003 Pass**, `design-review-report.md` and `architecture-review-revision-record.md`. Reviewer-owned artifacts preserved with the package.
+- Designer implementation clarifications: `manual-install-failure-clarification.md` (703b1bef5c), `stage-lifetime-clarification.md` (e76616b482); both explicitly authorized proceeding within reviewed U1/U2, no renewed hold.
+- No separate visual-design supplement. Existing notification components/styles reused.
 
-## Current Implementation Summary
-Initial intake, IR-001 in `implementation-revision-record.md`. **Design Impact — awaiting delta review, not implementation complete.** No production files changed. Related SR-012/013/014 and ARCH-REV-002; CRR/API-REV/DR N/A. Triggering intake finding IMP-DI-001: initial-launch acquisition of final-byte signed sidecars was absent from L2. Designer responded with a concrete design delta; do not reopen the unchanged custody/lifecycle decisions.
+## Current implementation summary
+IR-002 is the initial implementation after IR-001's input-acquisition gap was resolved by DS-003 / ARCH-REV-003. Development checkpoints: 73c7e24c24 (native/session foundation), 4c58622f6a (release gates/UI), f1a88a2672 (transaction lifetime), 4c6950c757 (final menu/metadata fixes and evidence). Current source is authoritative, not the earlier feasibility artifacts.
 
-## Routing Classification
-- task_size: **Large**; architectural_risk: **High**, confirmed against design classification.
-- Security-sensitive native provisioning, release authentication, protected writer and application quit ownership remain structural changes; no downgrade.
-- Selected route: **Solution Designer**, Design Impact rule returned by get_handoff_rules.
-- Direct-route self-review: Not Applicable.
+Native AppRun observes only the specific early pre-main sandbox fatal, preserves the real Electron ELF/Node path, and selects protected per-user installations. Consent precedes exact tagged signed-record acquisition and one-shot Ubuntu authorization of a parent-held sealed native provisioner. Root consumes bytes and fixed compiled resources only. A separate nonroot socket writer verifies signed upgrades and commits code plus signed xattrs on one inode. One managed session owns quit/activation: automatic staging never initiates shutdown or reopening; explicit restart uses the canonical outer AppImage. Receipt loss and manual refusal are distinct from permanent automatic failure.
 
-## Reviewed Behavior Implementation Trace
-| Behavior | Production path | Current outcome |
+Linux packaging pins native trust/custody assets; production signing is a separate protected CI job and fails closed absent provisioned desktop trust. Build-only trust is disposable. No production private key was obtained or used, and nothing was published.
+
+- Implementation cycle: Initial (post-intake recovery); revision record `implementation-revision-record.md`, **IR-002**.
+- Related SR: 012/013/014; ARCH-REV: 003 (001–003 findings resolved upstream); CRR / API-REV / DR: N/A.
+- Trigger: IMP-DI-001 resolved; later manual-outcome and stage-lifetime clarifications recorded above.
+- **Current result: Implementation Complete — Ready for independent Code Review**, not acceptance/release sign-off. Final native repackage/layout/signature/metadata checks passed.
+
+## Routing classification
+**Large / High — confirmed**, from DS-003 “Acceptance gates, risks and classification.” This changes pre-main execution, authentication/custody, installed trust, persistent executable identity and quit ownership. No downgrade. Selected rule: **Code Review** (first completion rule returned by get_handoff_rules); direct-route self-review N/A. No remaining intended-behavior decision identified. Final acceptance/release remains blocked on the real host/update matrix, not waived by this source handoff.
+
+## Reviewed behavior implementation trace
+| Behavior | Approved outcome and actual production path | Implementation result / limits |
 | --- | --- | --- |
-| BEH-001 | AppRun launcher → first-install input → provisioner | IMP-DI-001; DS-003 now specifies acquisition, review pending |
-| BEH-002 | Capable-host ordinary sandboxed launch | Not implemented; unchanged |
-| BEH-003 | Real Electron Node/server invocation | Not implemented; unchanged |
-| BEH-004 | Signed build → writer → managed session → quit/restart | Not implemented; unchanged |
-| BEH-005 | Consent/authentication/refusal/uninstall | Acquisition refusal now specified upstream; not implemented |
-Scope guardrail respected: yes. No permission, data, package format, production key or release change.
+| BEH-001 / L1-L2 | `build/scripts/linuxInstallPack.ts` → native `cmd/launcher` → `internal/launch`, `acquire`, `sealed` → `cmd/provision`, `internal/install` → canonical outer image | Protected redirect, precise fatal/readiness classification, signed opened-file precheck and repeated root verification; root never executes payload. Full current x64 package built; real restricted-host production GUI/auth acceptance not claimed. |
+| BEH-002 / L1 | AppRun supervised ordinary launch; no acquisition/auth on capable, managed or redirect paths; explicit safe generated desktop arguments | Final package has native AppRun, real `autobyteus` ELF and no implicit desktop sandbox bypass. Real renderer namespace/seccomp evidence across host versions remains required. |
+| BEH-003 / L3 | Launcher `ELECTRON_RUN_AS_NODE` directly execs unchanged ELF; early main readiness helper only in GUI main | Actual packaged Node argv, exit 23 and SIGTERM→exit 42 passed. Embedded server full operational journey remains downstream. |
+| BEH-004 / U1-U2 | Signed final-byte release assets → native client → peer-checked nonroot writer/store → `ManagedUpdateSession` → `ApplicationShutdown` → canonical relaunch/ordinary quit | Same-inode verification and atomic activation; managed native install-on-quit/immediate install disabled; preferences/generation rechecked before dispatch. Unchanged stages survive long sessions; typed receipt loss only retries after verified old-baseline status. Two genuine full signed updates/data preservation not yet proven. |
+| BEH-005 / L2-U2 | Consent/Ubuntu agent, sealed helper, compiled profile/service resources, owned removal; existing notification record/row | Cancellation/refusal paths fail closed; manual failure safely localized, persisted before old-version relaunch; unknown commit does not reopen. Modified menu left intact, ordinary valid menu not rewritten. Prior VM tty witness is inert and not graphical acceptance. |
 
-## Finding / Key Areas / Assumptions
-**IMP-DI-001**: DS-002 L2 requires the parent to stream a signed final-byte record, signature and AppImage, but first-start user input is a single downloaded image. Final-byte hashing prevents embedding its own complete attestation; U1 sidecar publication does not define L2 acquisition. Build repository selection currently lives in `build/scripts/build.ts:114–133`; publication in `.github/workflows/release-desktop.yml:667–700`. This was a missing architecture path, not evidence that signed installation is impossible.
+Scope Guardrail respected: **Yes**. No global host policy, package-format, app-data migration, Mac/Windows/node-update policy or production-release change. App data remains the original user identity; native privileged code does not operate on it.
 
-Designer response (DS-003): compile exact official release identity into launcher; acquire bounded HTTPS sidecars only after install choice, before authentication; independently verify local bytes; no reliance on local filename, latest, runtime origin/key override or root networking; offline/invalid refuse without changes. Hold dependent implementation until review passes. See current authoritative design for exact limits.
+## Key ownership boundaries and review focus
+- `autobyteus-web/linux-install/`: Go native launcher, provisioner, writer/client; canonical release contract and shared byte fixtures. Root resources/trust outside writer-writable store. Hard bounds and fail-closed identity checks.
+- `electron/application/managedUpdateSession.ts`: only managed will-quit/stop/activation owner; settings snapshots passed by AppUpdater avoid a composition cycle. Lost ACK queries authenticated actual installed identity. No re-stage during shutdown.
+- `electron/updater/linuxManagedInstall.ts`: verified managed context and unprivileged native adapter. No renderer privilege API.
+- `appUpdater.ts`, automatic policy/error reporter, notification record: native policy preserved elsewhere; readiness only after verified receipt; typed transient receipt loss clears matching provisional markers, preserves independent retry blocks. Manual refusal is never `AUTO_FAILED`.
+- `shared/appUpdateTypes.ts`, store, existing notification/About components, en/zh messages: explicit activation mode and correct quit-only/readiness copy.
+- `.github/workflows/release-desktop.yml`, `scripts/desktop-package/`, metadata validator: final-byte signing/validation, public-only build jobs, dedicated protected production signing job, assets before existing feed publication.
+- `docs/linux-managed-desktop.md` and root `GLOSSARY.md`: install/refusal/removal/update semantics. Delivery owns RELEASE.md synchronization and key-environment administration; no production key provisioning performed.
 
-## Task Design Health Assessment Implementation Check
-Missing protected-install boundary and managed transaction refactor remain valid. Implementation matched assessment: not yet implemented. Additional incomplete first-install spine routed as Design Impact; no workaround or weakened trust introduced.
+## Design health, compatibility and size checks
+Reviewed missing Linux install/privilege boundary and necessary managed-transaction refactor confirmed. New native/service concerns are not folded into the oversized-adjacent application/updater owners. No compatibility wrappers or alternate managed native-install fallback. Old portable/Mac/Windows branches remain because those supported paths are explicitly preserved, not as a migration shim. Error reporting extracted from AppUpdater instead of growing it beyond the guardrail. No unrelated dead-code cleanup or follow-up discovered.
 
-## Legacy / Compatibility Removal Check
-No source edits, dead-code removals, wrappers, compatibility branches, new shared structures or size-guardrail changes. Existing desktop sandbox bypass remains unfixed, not accepted as the final result. No unrelated follow-up identified. Shared design guidance applied to the incomplete production spine; no deviation.
+Shared guidance reapplied. All changed source implementation files remain ≤500 nonempty lines: AppUpdater 489, ElectronApplication 477, build.ts 467. The >220-line new provision/store deltas were assessed: each is one bounded transaction owner; templates, byte identity, protocol and release admission are separate owned modules. Splitting their ordered mutation/rollback sequence across peer coordinators would obscure authority. No design-principle deviation required.
 
-## Persisted Data Transition Check
-Approved app data: Directly Usable — No Migration; pending stages Discard or Rebuild; signed installation identity new state. No state modified, migrated or tested in this round.
+## Persisted-data transition
+**Directly Usable — No Migration** for existing app preferences/notification record and user data; **Discard or Rebuild** for pending writer files. New executable identity is signed same-inode metadata, not a second version database. Optional manual evidence tolerates absence/invalid values. No historical-version branch or migration. Restart/cached retry tests exercise actual notification serialization and old-version reconciliation; user data itself was never used for testing.
 
-## Environment / Dependency Notes
-Worktree has no installed node_modules; host `go` unavailable. Shared checkout builder 25.1.8 source inspected read-only to confirm AppImage assembly and desktop default, not used as changed-build evidence. These are setup observations, not impossibility claims. No build dependencies installed and no guest or host policy changed.
+## Environment and dependency notes
+Ubuntu 26.04 x64 host, Node 22.23.2; packaged Electron 42.11.16 / Node 24.19.0. Go 1.27.4 verified official distribution in `/tmp/autobyteus-5-toolchain/go/bin/go`; pnpm shim `/tmp/autobyteus-5-toolchain/bin`. Full build initially stopped because host `make` was absent. Ubuntu archive make/GCC15 were extracted to `/tmp/autobyteus-5-toolchain/cxx`, not installed into the host; compilation was resumed at the failed native rebuild and subsequent packaging steps. This is **not a fresh-clone/clean-CI result**.
 
-## Checks Run
-| ID | Steps | Commit | Environment / code | Criteria | Result | Evidence / look for |
-| --- | --- | --- | --- | --- | --- | --- |
-| IMP-01 | `git show HEAD:<path>`; numbered source/design trace | ead5fafcb474ee1a9b4001fe0422f73b008c412f | Linux x64; DS-002, build.ts, release workflow | REQ-001/003; AC-001/003/004 | Pass (trace only) | `evidence/IMP-01-first-install-input-trace.txt`: “CONFIRMED DS-002 requires detached final-byte record input but does not specify first-launch acquisition.” |
-No executable tests, builds, typechecks or rendered checks run: no implementation and dependent path held for design review. No API/E2E sign-off.
+Disposable key/assets: `/tmp/autobyteus-5-native` (never publish private key or these test-trust images). Stopped disposable Ubuntu 24 VM resources: `/tmp/autobyteus-5-vm`; owned installed resources removed in guest. No VM, fixture server, preview browser or Nuxt preview remains running. Retained test-only files can be reused for downstream investigation or cleaned after evidence retention. Do not disturb unrelated user desktop processes.
 
-## Frontend Rendered-Result Check
-Not Applicable to this source-inspection round. Future setup explanation/authentication and updater states still require real rendered inspection; none claimed here.
+## Checks run (implementation scope, not API/E2E sign-off)
+All evidence paths below are under this ticket's `evidence/`. Reuse unchanged results; do not repeat whole suites for documentation-only changes.
 
-## Remaining Coverage / Next Step
-Resume against reviewed DS-003 when handed back. Start production native boundary and exact helper/profile proof as designed, then packaging, managed session and release tooling. Preserve all existing gates: Ubuntu 22/24/26, native x64/ARM64, real graphical authorization, no cached grants, two genuine signed updates, sandbox/process evidence and synthetic data continuity. DS-003 additionally needs renamed download, exact sidecars, offline/404/redirect/size refusal before auth and no acquisition on capable/installed routes. Broader executable validation remains API/E2E ownership. No release or publication authorized.
+| ID | Command / steps; commit | Code / criteria | Result and evidence / look for |
+| --- | --- | --- | --- |
+| IMP-01 | Intake source/design trace, ead5fafcb4 | L2 input gap | Pass trace only; `IMP-01-first-install-input-trace.txt`; recovered by ARCH-REV-003, not current failure. |
+| IMP-05/06 | Native Go + actual builder inert failure fixture, sealed pkexec + pkttyagent install/status/removal in owned Ubuntu24 VM; working snapshot after 703b1bef5c | L2 custody/resources, AC-003/004 mechanism only | Pass narrow witness; `IMP-05-artifact-identities.txt`, `IMP-05-native-*`, `IMP-06-native-*`: two separate **ONE-SHOT** grants and **PASS-owned-installation-removed**. Subsequent source changes mean this is not final-binary/auth-UI proof. |
+| IMP-07/08 | Electron updater suite and both typechecks, 73c7e24c24 | Existing portable updater, TS baseline | Pass 36 tests; web 0 production/87 test baseline, server 0/1012 baseline. Superseded by affected later rows; logs retained. |
+| IMP-09 | Focused Electron + Nuxt component/store tests, working source later 4c58622f6a | Managed readiness/ordinary quit/manual failure/copy | Pass 63 Electron; 15 web initially + corrected selector case 1 pass. `IMP-09-managed-feedback.log` retains failed selector and successful focused rerun; not a product failure. |
+| IMP-10 | `pnpm -C autobyteus-web build:electron:linux:x64`, targeted native rebuild/resume; 4c58622f6a→f1a88a2672 | Actual renderer/server/native/package pipeline, build guards | Pass after environment repair; `IMP-10-package-build.log` includes **not found: make**, **Rebuild Complete**, **Build completed**. Not clean CI. |
+| IMP-11 | `node --test scripts/desktop-package/release-pipeline.test.mjs`; Go `test -v ./internal/launch` | Signature encoding, pinned/disposable trust, early fatal/readiness/argv classification | Pass 3 pipeline tests and 6 inert classifier cases; `IMP-11-boundary-units.log`. |
+| IMP-12 | Go `test ./...`, store `test -v`, focused Electron suites; f1a88a2672 source | Signed/store refusals, long-session receipt lifecycle, lost receipt, old-baseline reconciliation/cache re-stage | Pass Go packages; 66 Electron + newly added cached-retry case 1 pass. `IMP-12-stage-lifetime.log`: **67 cumulative tests**, no synthetic automatic failure/block after confirmed loss. |
+| IMP-13 | `verify-layout.mjs`, disposable signing, metadata CLI; actual packaged AppRun Node argv and signal; f1a88a2672 | AC-005, package/trust layout | Pass; `IMP-13-packaged-layout.log`: native ELF/Exec verified, signed final bytes/metadata verified, expected exit23 and **SIGTERM handled by real ELF, exit 42**. Menu delta later repacked by IMP-18. |
+| IMP-14 | Normal Nuxt temporary fixture importing real affected components + owned Chrome; f1a88a2672 | UI feedback, en/zh, readiness/manual refusal/lost receipt | Pass; `IMP-14-rendered-inspection.json`, driver/page, server log, five screenshots. Zero page errors/overflow, keyboard toggle/action forwarding; page/browser/server cleaned. Fixture IPC/feeds, not native E2E. |
+| IMP-15 | Both root-required typechecks after stage-lifetime edits, f1a88a2672 | All web/Electron/build + server TS | Pass; `IMP-15-final-typechecks.log`: web **0 / 87 baseline**, server **0 / 1012 baseline**, both **[typecheck] PASS**. No TS source changed afterwards. |
+| IMP-16 | Pipeline unit CLI + actual final-package metadata, source later 4c6950c757 | Exact record, hash/size, version/arch, top-level feed path/digest | Pass 3 Node tests and actual metadata; `IMP-16-metadata-final.log`. Attempted guessed Python unittest module is absent (setup error recorded); no legacy Python suite pass claimed. |
+| IMP-17 | Go menu unit in synthetic HOME; JS shared golden vectors, source later 4c6950c757 | Idempotent owned menu/refusal to overwrite custom file; shared signed bytes | Pass menu case and 12 vectors; `IMP-17-ownership-and-vectors.log`. |
+| IMP-18 | Repackage native menu-only delta with unchanged renderer/server, 4c6950c757; final native/layout/signature/metadata checks | Final native package snapshot | Pass; `IMP-18-final-package.log`: **Build completed**, native layout/signature/metadata verified. Final SHA256 `5594b3be1fb81f7fb993e531c9fd413ba6a450c8b61613b7be3ea67e99056a26`. |
+
+| IMP-19 | Static YAML assertions, 4c6950c757 + final signer scope clarification | Release graph/trust isolation | Pass; `IMP-19-workflow-boundaries.txt`: only protected signer references private key; no fixture tests or AppImage execution in key-bearing step. Not live CI. |
+
+Initial missing `.nuxt` test setup was repaired using project setup commands. An initial Go invocation from the monorepo root (not module) failed setup; correct module invocation passed. These are not concealed successful executions.
+
+## Frontend rendered-result check
+Existing NotificationRow/AutoUpdateSwitch/About copy reviewed alongside approved DS-002 and manual-failure clarification. Nuxt fixture renders production components with synthetic app state and fixture action boundaries, as TESTING.md's browser-preview pattern permits. Inspected 1100×800 and 390×844: en/zh, ready, refusal and retryable receipt loss, switch keyboard Space, install/download actions. Corrected managed copy that previously promised self-restart; distinct failure alert omits automatic-not-retried claims. Viewed screenshots directly: wrapping, hierarchy, spacing, button visibility and focus/action behavior are consistent with existing styles; no clipping. About copy shares the same localized ready-on-quit phrase; whole About page and OS consent/authentication UI not rendered here.
+
+## Important assumptions, remaining risks and required downstream coverage
+This package is for **independent source review**, not final acceptance. Mandatory unproved gates remain:
+1. Current production-built package/helper and **real graphical Ubuntu authentication UI** on disposable affected hosts; initial current-source custody must be demonstrated, not inferred from IMP-05/06's inert older fixture.
+2. Ubuntu22 capable direct/menu renderer sandbox, default Ubuntu24/26 restricted enrollment/direct/menu/reopen/reboot/repair/cancellation/removal; actual renderer seccomp/namespaces and real embedded-server readiness; no host global changes.
+3. Native x64 **and ARM64** clean release builds; build-only CI on this branch (not run/pushed here), packaged terminal checks and all required platform gates. Local dependency-prepared build does not substitute.
+4. Two genuine signed full updates with no cached authorization, synthetic profile/settings/work continuity, auto opted-in active work indefinitely (including a controlled clock-shifted long-session host check; unit coverage uses old file timestamps/no wall-clock TTL), ordinary quit no reopen, explicit canonical restart, opt-out/channel generations, portable/Mac/Windows regressions.
+5. Bad key/bytes/target/replay/downgrade/channel, peer UID/socket permissions, disk/xattr/fsync interruption and lost ACK, writer restart/supersession, staging timeout and installer rollback/removal. No claim of power-loss durability from unit rename checks.
+6. DS-003 real renamed full package, exact tagged signed test assets, offline/404/oversized/redirect/signature refusal **before authentication**, no network on excluded launch paths. `buildNative({testOrigin})` is an explicit compile-time loopback-only test build; production binaries have no runtime origin/key override. Use separate disposable trust, never production secrets.
+7. Production release administration must configure the dedicated desktop public anchor and protected signing environment/secret (environment-scoped private key only, not repo/org-wide). Review that boundary and sync RELEASE.md through Delivery. No key rotation, release, tag, publication or deployment authorized by this task.
+
+Synthetic checks intentionally do not test user data. All unmet acceptance gates must remain visible through Code Review → API/E2E → Delivery. Final integration/cleanup/user checkout update belongs to Delivery.

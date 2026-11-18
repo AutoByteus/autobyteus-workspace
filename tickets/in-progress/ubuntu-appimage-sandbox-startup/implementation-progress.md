@@ -1,6 +1,6 @@
-# Active implementation checkpoint — not a downstream handoff
+# Historical implementation checkpoints — current authority is implementation-handoff.md
 
-2026-11-18. IR-001 hold cleared by ARCH-REV-003 / SR-014 / DS-003. Current implementation round IR-002 is IN PROGRESS, Large/High. `manual-install-failure-clarification.md` is the designer's subsequent approved implementation clarification, not a new hold.
+2026-11-18. IR-001 hold cleared by ARCH-REV-003 / SR-014 / DS-003. At this checkpoint IR-002 was in progress. It is now complete for independent Code Review, Large/High; current handoff/record supersede these development notes. `manual-install-failure-clarification.md` is the designer's subsequent approved implementation clarification, not a new hold.
 
 Implemented so far (not final validation): native release verification/canonical fixtures, bounded initial acquisition, sealed helper custody, one-shot polkit enrollment/removal, nonroot writer with same-inode metadata, native client, native build/sign scripts, AppRun packaging hook/readiness handshake, managed session/coordinator wiring, deferred automatic policy and distinct manual refusal record/row. No release workflow signing/metadata gates yet. Test-only key/origin compilation is excluded from production default build.
 
@@ -30,3 +30,5 @@ Local results so far: Go package tests passed including release vectors, payload
 ## Final validation checkpoint
 Stage lifetime clarification implemented through existing owners: no wall-clock expiry; typed STAGE_GONE with verified old baseline clears matching provisional markers, not independent blocks. Tests cover restart/cache re-stage. Current native build needs only the final menu-preservation delta repacked; full x64 production pipeline already built with disposable trust (IMP-10/13). No host policy/user data changes.
 Both typechecks now pass again on f1a88a2672 (IMP-15). Real component rendering/keyboard/actions at wide and narrow en/zh passed (IMP-14), preview route removed, browser and Nuxt server stopped. Package actual AppRun/Electron ELF/desktop Exec, signed final bytes, metadata, real Node args/exits/signals passed. New validator Python unittest guessed name does not exist; its real CLI is covered by Node pipeline units + actual package, not claimed as a passed legacy suite. Broad host/auth GUI/update/data/architecture/clean-CI acceptance remains downstream and unproved.
+
+Final native repackage IMP-18 passed at 4c6950c757. Current handoff/IR-002 carry the route and mandatory remaining acceptance gates.
