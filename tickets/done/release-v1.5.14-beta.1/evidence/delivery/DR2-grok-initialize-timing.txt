@@ -1,0 +1,6 @@
+Grok ACP initialize timing (`grok agent --no-leader stdio`, one JSON-RPC initialize, 2026-11-18 18:25, load ~52):
+run 1: initialize answered in 15196 ms, models: 2
+run 2: initialize answered in 3197 ms, models: 1
+run 3: initialize answered in 4587 ms, models: 1
+Probes at the same load: grok --version 0.04-0.10 s, grok agent --help 0.04-0.05 s (exit 0).
+The server's handshake bound DISCOVERY_TIMEOUT_MS = 15_000 (acp-discovery-handshake.ts), unchanged since v1.5.13 (git diff v1.5.13 HEAD on runtime-management/acp and grok: empty).

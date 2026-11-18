@@ -1,6 +1,6 @@
 # Release Report — release-v1.5.14-beta.1 (autobyteus-538): beta v1.5.14-beta.1
 
-Status: **in progress (checks before tagging).**
+Status: **checks before tagging passed on the merged state (DR2); cutting.**
 
 ## Scope
 
@@ -51,3 +51,19 @@ Status: **in progress (checks before tagging).**
 - Corrected classification: **not a regression of this beta**; a pre-existing timing margin of the test under this machine's load (platform-shaped, but a failing case). Delivery's earlier "ours" rested on the "second identical failure" rule, not on a cause in the code.
 - Only the founder's words can excuse a failing case: the Solution Designer is asking him (its recommendation: release, with a follow-up giving E06's wait room for the child's cold start, a test-only change). Delivery holds the cut until his words arrive.
 - **The founder's decision on E06** (relayed by the Solution Designer, 2026-11-18): "make the time a little bit loose and then fix it in the tickets directly". Fix first: ticket `e06-delegation-wait-margin` (E06's waits to 90 s and 60 s, test only) is with the implementation engineer. Delivery holds; when it is on `personal`, delivery re-checks the base, merges `personal` into the release branch, reruns the checks before tagging and the smoke (a clean E06 expected), then cuts. Grok stays under his "Waive for grok".
+
+## Checks Before Tagging Again, With The E06 Fix (DR2, on `1f835e3e7f`)
+
+- `origin/personal` @ `05dde06bb4` (e06-delegation-wait-margin merged as `0c7f60865d`, its record `05dde06bb4`) merged into `codex/release-next-beta-538` as `23ee80d978`, no conflicts. No migration came in (the e06 change has none); the `RELEASED` comment now names the base `05dde06bb4` (`1f835e3e7f`).
+- `pnpm install --frozen-lockfile`, server `prebuild`: exit 0. Typechecks: server `production errors: 0; test-file errors: 1008 in 315 files (baseline 1008 in 315 files)`, web `… 87 in 37 files (baseline 87 in 37 files)`, both PASS (`evidence/delivery/DR2-pretag-typechecks.log`). Registry-order test 3/3 (`DR2-pretag-migration-order.log`). `check_licensing.py` exit 0, `check_repository_artifact_hygiene.py` exit 0, `check_secrets.sh v1.5.13..HEAD` PASS (`DR2-pretag-{licensing,hygiene,secrets}.log`).
+- `release_smoke.py` (load average 49–54), `DR2-pretag-release-smoke-summary.log`:
+
+| Case | Result |
+| --- | --- |
+| Claude 3, Codex 3, Antigravity (live) 2, AutoByteus 2 | PASS |
+| `agy-linked-skills-transport.e2e.test.ts` (scripted), whole file | PASS 10/10; **E06 PASS in 29.8 s** (the old 30 s wait would have had 0.2 s to spare; the new one is 90 s) (`DR2-smoke-antigravity-results.log`) |
+| Grok, all three | FAIL `Grok Build model discovery timed out; check the CLI and retry.` (`DR2-smoke-live-results.log`) |
+
+- Grok triage (`DR2-grok-initialize-timing.txt`): `grok --version` and `grok agent --help` answer in 0.04–0.10 s; the ACP `initialize` that the server's discovery waits for answered in 15.2 s, 3.2 s and 4.6 s at the same load, against the handshake's 15 s bound (`DISCOVERY_TIMEOUT_MS`, unchanged since v1.5.13; no change to `runtime-management/acp` or `grok` since v1.5.13). The same failure as run 2 above, which the founder answered with "Waive for grok". **Waived under that word**; not a change of this beta. A follow-up is proposed to the Solution Designer: Grok's discovery handshake bound has the same load margin as Antigravity's had (FU, release record only).
+- Every other case passes, E06 included. Cleared to cut.
+
