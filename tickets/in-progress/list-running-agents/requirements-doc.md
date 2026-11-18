@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-006`
+- Current solution revision ID: `SR-007`
 - Package identifier: `list-running-agents`
 - Request / ticket: Project Task `autobyteus-492`, Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), for the founder

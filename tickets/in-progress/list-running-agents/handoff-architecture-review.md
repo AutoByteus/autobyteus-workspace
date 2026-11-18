@@ -2,7 +2,7 @@
 
 - Result: `Architecture Design Complete`, `task_size=Large`, `architectural_risk=High` → independent architecture review.
 - Package: `list-running-agents`; Project Task `autobyteus-492` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`), delegated by `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`) for the founder.
-- Current revision: `SR-006`, for ARCH-REV-002 (ARCH-REV-001 reviewed SR-005: Fail). Responses to AR-001 … AR-006 and the founder's entry fields: `solution-revision-record.md` § SR-006.
+- Current revision: `SR-007`, for ARCH-REV-003 (ARCH-REV-001 reviewed SR-005: Fail; ARCH-REV-002 reviewed SR-006: Fail, AR-007, fixed in SR-007). Responses to AR-001 … AR-006 and the founder's entry fields: `solution-revision-record.md` § SR-006.
 - Worktree / branch: `/Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents`, `codex/list-running-agents`; base `origin/personal` at `bd2053ee51`; finalization target `origin/personal`. Release only on the founder's word.
 - Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/tickets/in-progress/list-running-agents/`
 

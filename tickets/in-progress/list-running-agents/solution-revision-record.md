@@ -94,3 +94,11 @@
 - Intended behavior changed: `Yes` (entry fields; the fenced-run outcome is stated, matching today's fence).
 - Classification unchanged: `Large` / `High`.
 - Next action: ARCH-REV-002.
+
+### SR-007 — The closed-Task admission without `node` too (ARCH-REV-002 AR-007)
+
+- Phase and classification: Design (`Design Impact`, Low).
+- Trigger: ARCH-REV-002, AR-007: a sender in a root that does not link a fenced peer run, sending without `node`, left `CrossRunMessageDelivery.route` at its peer-run branch (`cross-run-message-delivery.ts:92-94`) and got "not running … also pass node" instead of CLOSED (MP-004), against REQ-011 and AC-008.
+- Response: the reviewer's fix (a). The peer-run branch calls the same owner's `closedPeerRunRefusal` before returning `null`. The bounded spine, entry-form row 13, the Ownership Map and the test list are updated. Requirements unchanged.
+- Intended behavior changed: `No`. Classification unchanged (`Large` / `High`).
+- Next action: ARCH-REV-003.
