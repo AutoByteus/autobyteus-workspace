@@ -1,0 +1,8 @@
+turn_0001 user "Use run_bash with run_in_background set to true to run exactly: sleep "
+turn_0001 assistant "FIRST_REPLY_STARTED"
+turn_0002 system_task_notification "[Platform notice \u2014 application restarted]\n\nThe application restarted a"
+turn_0002 user "Start the nightly build again with run_bash and run_in_background set "
+turn_0002 assistant "SECOND_REPLY"
+turn_0003 system_task_notification "[Platform notice \u2014 application restarted]\n\nThe application restarted a"
+turn_0003 user "Is it still running now? Reply exactly THIRD_REPLY and end your turn."
+turn_0003 assistant "THIRD_REPLY"

@@ -1,0 +1,215 @@
+{
+  "serverDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/api526-base-2e9ac1e65b/autobyteus-server-ts",
+  "runId": "restart_reminder_5886e8af_f2813d1d0d2b4dcd96d2d0e5496a1731",
+  "live": [
+    [
+      "turn_0001"
+    ],
+    [
+      "turn_0001"
+    ],
+    [
+      "turn_0001"
+    ]
+  ],
+  "files": [
+    "memory/agents/restart_reminder_5886e8af_f2813d1d0d2b4dcd96d2d0e5496a1731/raw_traces_active.jsonl"
+  ],
+  "traces": [
+    {
+      "turnId": null,
+      "type": "system_instruction",
+      "content": "## Agent Identity\n\n- Name: restart-reminder-5886e8af\n- Description: restart remi"
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "user",
+      "content": "CASE:RR-10 Start the build in the background."
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "assistant",
+      "content": ""
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "tool_call",
+      "content": ""
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "tool_result",
+      "content": ""
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "assistant",
+      "content": "REPLY_ONE"
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "system_task_notification",
+      "content": "[Platform notice — application restarted]\n\nThe application restarted at 2026-11-"
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "user",
+      "content": "CASE:RR-10 Start the build again."
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "assistant",
+      "content": ""
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "tool_call",
+      "content": ""
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "tool_result",
+      "content": ""
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "assistant",
+      "content": "REPLY_TWO"
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "system_task_notification",
+      "content": "[Platform notice — application restarted]\n\nThe application restarted at 2026-11-"
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "user",
+      "content": "CASE:RR-10 And now?"
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "assistant",
+      "content": "REPLY_THREE"
+    }
+  ],
+  "shown": [
+    "user:Start the build in the background.",
+    "assistant:REPLY_ONE@turn_0001",
+    "reminder",
+    "user:Start the build again.",
+    "assistant:REPLY_TWO@turn_0001",
+    "reminder",
+    "user:And now?",
+    "assistant:REPLY_THREE@turn_0001"
+  ],
+  "conversation": [
+    {
+      "kind": "message",
+      "role": "user",
+      "turnId": null,
+      "content": "CASE:RR-10 Start the build in the background."
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "turnId": "turn_0001",
+      "content": ""
+    },
+    {
+      "kind": "tool_call",
+      "role": null,
+      "turnId": "turn_0001",
+      "content": ""
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "turnId": "turn_0001",
+      "content": "REPLY_ONE"
+    },
+    {
+      "kind": "system_task_notification",
+      "role": null,
+      "turnId": null,
+      "content": "[Platform notice — application restarted]\n\nThe application restarted at 2026-11-"
+    },
+    {
+      "kind": "message",
+      "role": "user",
+      "turnId": null,
+      "content": "CASE:RR-10 Start the build again."
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "turnId": "turn_0001",
+      "content": ""
+    },
+    {
+      "kind": "tool_call",
+      "role": null,
+      "turnId": "turn_0001",
+      "content": ""
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "turnId": "turn_0001",
+      "content": "REPLY_TWO"
+    },
+    {
+      "kind": "system_task_notification",
+      "role": null,
+      "turnId": null,
+      "content": "[Platform notice — application restarted]\n\nThe application restarted at 2026-11-"
+    },
+    {
+      "kind": "message",
+      "role": "user",
+      "turnId": null,
+      "content": "CASE:RR-10 And now?"
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "turnId": "turn_0001",
+      "content": "REPLY_THREE"
+    }
+  ],
+  "requests": [
+    {
+      "at": 1794982558600,
+      "lastRole": "user",
+      "lastUser": "CASE:RR-10 Start the build in the background.",
+      "toolResults": []
+    },
+    {
+      "at": 1794982558758,
+      "lastRole": "tool",
+      "lastUser": "CASE:RR-10 Start the build in the background.",
+      "toolResults": [
+        "{\"pid\":62498,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-reminder-e2e-OXMxAK/workspace\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/restart_reminder_5886e8af_f2813d1d0d2b4dcd96d2d0e5496a1731/call-1794982558740-62468.log\"}"
+      ]
+    },
+    {
+      "at": 1794982570288,
+      "lastRole": "user",
+      "lastUser": "[Platform notice — application restarted]\n\nThe application restarted at 2026-11-18 06:16 UTC (reason: a restart).\nIf you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.\n\nCASE:RR-10 Start the build again.",
+      "toolResults": []
+    },
+    {
+      "at": 1794982570447,
+      "lastRole": "tool",
+      "lastUser": "[Platform notice — application restarted]\n\nThe application restarted at 2026-11-18 06:16 UTC (reason: a restart).\nIf you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.\n\nCASE:RR-10 Start the build again.",
+      "toolResults": [
+        "{\"pid\":62760,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-reminder-e2e-OXMxAK/workspace\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/restart_reminder_5886e8af_f2813d1d0d2b4dcd96d2d0e5496a1731/call-1794982570423-62730.log\"}"
+      ]
+    },
+    {
+      "at": 1794982594648,
+      "lastRole": "user",
+      "lastUser": "[Platform notice — application restarted]\n\nThe application restarted at 2026-11-18 06:16 UTC (reason: a restart).\nIf you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.\n\nCASE:RR-10 And now?",
+      "toolResults": []
+    }
+  ]
+}
