@@ -1,5 +1,104 @@
 # Code Review Report
 
+## Latest Round: Implementation Review, round 2 (CRR-002) — Pass
+
+### Meta
+
+- Review Entry Point: `Implementation Review` (SR-002 "One identity per notice"; first source review of this ticket, which became Medium / High after ARCH-REV-001)
+- Requirements: `requirements-doc.md` (SR-001 basis; REQ-002 / AC-002 drive SR-002)
+- Design: `design-spec.md` SR-002 section; `design-review-report.md` ARCH-REV-001 Pass (residuals R-1..R-4); `architecture-review-revision-record.md`
+- Implementation: `implementation-handoff.md` (IR-002), `implementation-revision-record.md`
+- Prior round: `1` (CRR-001, failure-origin, Design Impact → resolved by SR-002)
+- Review Scope: `Full Review` of `2e9ac1e65b..ee5e87495f`:
+  - SR-002: `6517199e36` (autobyteus-ts, server producers, memory, projection, wire, contract + dist), `289e3e1539` (web), `491395b89f` (docs), `ee5e87495f` (documents, evidence);
+  - SR-001: `10217e9a0b`, `cbea910d08`, read again as part of the full range.
+- Task size / risk: `Medium` / `High`, confirmed (a strict wire contract field, every notice producer, memory, projection and the web)
+
+### Behavior basis
+
+| Behavior | Status | Evidence |
+| --- | --- | --- |
+| BEH-001 / REQ-001 | Confirmed | `MemoryManager` reads the stored corpus once and seeds `TurnTracker.continuingAfter(turnIds)`; the same list feeds `ToolTraceLifecycleState`. AC-001 unit-proven, RR-10 |
+| BEH-002 / REQ-002 | Confirmed (was Contradicted in CRR-001) | Each notice has one id on every copy. The preface dispatch uses `preface.id` for both the message metadata `notice_id` and the published `message_id`. Native memory stores it from the preface (`memory-ingest-input-processor`); external runtimes record it from the event (`runtime-memory-event-accumulator`, writer). The trace keeps `message_id` for notice traces (`RawTraceItem`), and the normalizer and projection carry it (`messageId`) to the conversation entry. Mapper, presentation adapter, team projector and contract carry it on the wire. In the web, `handleSystemTaskNotification` adds nothing when the conversation already shows that id, and hydration sets it. The snapshot keeps turn-less stored notices and replays turn frames through the same handler (`agent-stream-snapshot.ts` L25-35, `AgentStreamingService.ts` L265-270), so the stored copy plus the replayed or live frame gives one card. MSP-75 passes (1, 2, 2 cards; failed on base and on SR-001) |
+| BEH-003 / REQ-003 | Confirmed | `restartReminderLocalTime` in the card; the agent's text stays UTC |
+
+Producers traced, each one id per notice:
+- **Preface:** `preface.id`.
+- **Tool-list, skill and background-task services:** the in-flight `id`, passed to both the message builder and the event builder. A returned or retried notice takes a new in-flight id, and an undelivered one was never stored.
+- **Restart wake:** its deterministic `restart-resume:<restartedAt>:<run>`. The observer reads it back from the message's metadata. A refused wake falls back to a preface with a new id, never stored twice.
+- **Model Router:** one `randomUUID()` per request.
+- **Claude background notice:** one per notice, through the converter to the recorder.
+- **R-1, the two non-platform producers:** the native unsuppressed SYSTEM emit and the task-delegation notice send `null`. This is recorded as choice 5, and the reason holds: neither has a stored and a live copy of one platform notice.
+
+### Candidate gate
+
+| Candidate | Observation | Disposition | Reason |
+| --- | --- | --- | --- |
+| C-07 | `memory-manager.ts`: 498 → 501 non-empty lines counting comments, 494 → 495 effective (non-blank, non-comment) | Reject | Under the 500 limit on the effective measure. The growth is one code line plus a two-line comment. Noted: the file has no room left |
+| C-08 | The show-once check scans every message per notice | Reject | O(messages), only per notice frame; trivial |
+| C-09 | A legitimately repeated notice id would be hidden | Reject | Every producer makes a fresh id per notice instance (traced above); no supported scenario repeats one |
+| C-10 | Stored notices from before this change have no id, so they are not deduped against a live copy | Reject | Their runs have no live copy (design R-4, accepted) |
+| C-11 | R-3's smaller snapshot-side alternative | Reject | The design completes 461's existing contract (notices matched by `messageId`); a preferred structure is not a finding |
+
+### Structural / design checks
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Task design health | Pass | Missing invariant (turn ids) at its source; notice identity given at each producer |
+| Matches artifacts | Pass | Steps 1–7 of SR-002 implemented as tabled; R-1 and R-2 handled as the review asked |
+| Data-flow spine | Pass | producer → message/trace/projection/wire → one web handler |
+| Ownership | Pass | Each producer owns its notice's id; the web handler owns the show-once rule (one place; hydration only reads) |
+| Off-spine concerns / reuse | Pass | Reuses `RawTraceItem.messageId`, the preface metadata and the 461 `messageId` matching |
+| Shared-structure tightness | Pass | One field, `messageId` / `message_id` / `notice_id`, by each layer's casing. `notice_id` names the preface-metadata key, which is distinct from the message's own `message_id`. The restart wake uses the same value for both, intentionally |
+| Repeated coordination / empty indirection | Pass | No new layer |
+| Visible dependencies (P16) | Pass | Ids are passed as arguments to the builders; no lookup |
+| Authoritative boundary / dependency direction | Pass | — |
+| Interface clarity | Pass | Builders take `noticeId`; the observer takes the message |
+| Naming / one vocabulary | Pass | "notice id" throughout |
+| No duplication / patch-on-patch | Pass | — |
+| Dead code in touched files | Pass | The default `new TurnTracker()` and the second corpus read were replaced; nothing left |
+| Tests requirement-aligned | Pass | `platform-notice-identity.test.ts` follows the id across copies. Also tested: preface memory and dispatch, restart notice and resumer, model router, Claude session and converter, recorder, native skill history, and the web handler (repeat, stored-copy, null ids) and hydration |
+| No stale tests | Pass | Updated fixtures carry `message_id` |
+| API/E2E readiness | Pass | — |
+
+### Size, legacy, persisted data
+
+- Sizes: every delta is small. The largest file, `memory-manager.ts`, is 495 effective lines (C-07).
+- Legacy: no compatibility path. The strict contract field is required and nullable (DESIGN.md rule 9); older preface metadata and traces read `null`, which is a generic tolerant read.
+- Persisted: notice traces gain an existing optional field, `Directly Usable — No Migration`, as reviewed.
+
+### Scorecard
+
+- Overall: `9.38/10`
+
+| # | Category | Score | Note |
+| --- | --- | --- | --- |
+| 1 | Data-Flow Spine | 9.5 | One id from producer to the one web rule |
+| 2 | Ownership / Boundaries | 9.5 | Producers own ids; one show-once owner |
+| 3 | API / Interface | 9.4 | Required-nullable field, explicit builder parameters |
+| 4 | Separation / Placement | 9.4 | — |
+| 5 | Data-Model Tightness | 9.3 | Three spellings by layer casing (documented). Weak: none material |
+| 6 | Naming / Readability | 9.3 | — |
+| 7 | API/E2E Readiness | 9.3 | MSP-75 green. Weak: the desktop V-04 reload of a live run and the live team, Org and Claude paths remain for API/E2E |
+| 8 | Runtime Correctness | 9.4 | Every producer traced; the snapshot interplay checked |
+| 9 | No Backward Compatibility | 9.4 | — |
+| 10 | Cleanup | 9.4 | — |
+
+### Findings
+
+None.
+
+### Result
+
+- Review Decision: `Pass`
+- Supported Product Scenario Gate: `Pass`; Material-Premise Gate: `Pass` (BEH-002 now rests on the established cause)
+- Recommended Recipient: API/E2E engineer (`/api_e2e_engineer`), for the desktop V-04 (incl. step 5, reload of a live run) on an isolated instance with a real model, DEC-003, the team, Org and Claude notice paths live, and the round's regression set. Then the informational notice to the implementation engineer.
+- Notes: `memory-manager.ts` has no room left for growth (C-07).
+
+---
+
+## Earlier Round: API/E2E Failure-Origin Review, round 1 (CRR-001) — Design Impact
+
 ## Review Round Meta
 
 - Review Entry Point: `API/E2E Failure-Origin Review`
