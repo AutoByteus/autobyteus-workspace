@@ -1,6 +1,6 @@
 # Release Report — release-v1.5.14-beta.1 (autobyteus-538): beta v1.5.14-beta.1
 
-Status: **checks before tagging passed on the merged state (DR2); cutting.**
+Status: **published and verified (2026-11-18).**
 
 ## Scope
 
@@ -66,4 +66,34 @@ Status: **checks before tagging passed on the merged state (DR2); cutting.**
 
 - Grok triage (`DR2-grok-initialize-timing.txt`): `grok --version` and `grok agent --help` answer in 0.04–0.10 s; the ACP `initialize` that the server's discovery waits for answered in 15.2 s, 3.2 s and 4.6 s at the same load, against the handshake's 15 s bound (`DISCOVERY_TIMEOUT_MS`, unchanged since v1.5.13; no change to `runtime-management/acp` or `grok` since v1.5.13). The same failure as run 2 above, which the founder answered with "Waive for grok". **Waived under that word**; not a change of this beta. A follow-up is proposed to the Solution Designer: Grok's discovery handshake bound has the same load margin as Antigravity's had (FU, release record only).
 - Every other case passes, E06 included. Cleared to cut.
+
+## The Cut
+
+- The two untracked build-output folders the prebuild left (`autobyteus-application-backend-sdk/dist/`, `autobyteus-application-sdk-contracts/dist/`, nothing tracked in them) were removed so the script's clean-tree check passes.
+- `scripts/desktop-release.sh beta --branch codex/release-next-beta-538 --no-push` → `2eb195603a` `chore(release): bump workspace release version to 1.5.14-beta.1`, annotated tag `v1.5.14-beta.1`.
+- Secret Gate `origin/personal..HEAD` PASS; `git push origin HEAD:personal` (fast-forward `05dde06bb4` → `2eb195603a`) and `git push origin v1.5.14-beta.1` at 17:26:57Z.
+
+## Pipelines
+
+| Workflow | Run | Result |
+| --- | --- | --- |
+| Server Docker Release | `44358782062` | success, attempt 1 (amd64 7.3 min, arm64 7.6 min, publish 0.4 min, packages 1.6 min) |
+| Android APK Release | `44358782245` | success, attempt 1 |
+| Desktop Release | `44358781953` | success, attempt 2: attempt 1's `Build macOS ARM64` was cancelled at 17:43Z with "The job was not acquired by Runner of type hosted even after multiple attempts" and GitHub's notice "Due to capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times"; `gh run rerun --failed` after the run ended (17:52Z); the job got a runner at 17:57Z and passed at 18:20Z; Publish GitHub Release 18:20–18:23Z |
+| iOS App Store Connect Release | `44358782422` | success, attempt 3: attempts 1 and 2 `Build And Test iOS App` cancelled, same message (17:43Z, 17:58Z); rerun `--failed` each time at once; attempt 3 built 18:00–18:08Z and uploaded to App Store Connect 18:10–18:16Z |
+
+- Classification of the cancellations: **platform** (no hosted macOS arm64 runner was assigned; the job never started a step). githubstatus.com at 18:00Z: no unresolved incident, Actions operational; the capacity notice is the only statement. Rerun at once each time; only the cancelled jobs were rerun.
+- The poll checked every job every 60–90 s and stopped on any non-success (it stopped at each cancellation).
+
+## Verification
+
+- GitHub release `v1.5.14-beta.1`: pre-release `true`, draft `false`; GitHub's Latest stays `v1.5.13`.
+- 23 assets: the Android APK and its `.sha256` (17:35Z); the six server packages (`autobyteus-server-1.5.14-beta.1-linux-{arm64,x64}.{tar.gz,json,json.sig}`, last at 17:36:43Z); the desktop builds (two AppImages, macOS arm64 and x64 `.dmg`/`.zip` with blockmaps, the Windows `.exe`, 18:23:13Z); then the four `latest*.yml` (`latest-linux-arm64.yml`, `latest-linux.yml`, `latest-mac.yml`, `latest.yml`, 18:23:40Z), **after the six server packages**.
+- Docker (registry API): `autobyteus/autobyteus-server:1.5.14-beta.1` = `:beta` = index `sha256:25c7ea85295f…`, exactly two images, linux/amd64 `sha256:c539d8245d07…` and linux/arm64 `sha256:24c29c02db3b…`, the digests the two Publish Server Package jobs used (their logs: `autobyteus-server@sha256:c539d8245d076b5c7594b6bd123456ab801d9c32bd0f347abd5f5c4f444487f4`, `…@sha256:24c29c02db3b3ee53a253c124eefe63fb0338fb0a50dc44120eb38c10cb3c679`). `:latest` = `1.5.13` = `sha256:13df73db926a…`, unchanged.
+- Notes: the generated notes (the `v1.5.13...v1.5.14-beta.1` changelog link) with `release-notes.md` prepended (`gh release edit --notes-file`); the body starts with "## What you need to do"; pre-release kept.
+
+## Follow-Ups
+
+- Grok's discovery handshake bound (`DISCOVERY_TIMEOUT_MS = 15_000`, `acp-discovery-handshake.ts`) is as tight under this machine's load as Antigravity's was: `initialize` answered in 15.2 s once (`DR2-grok-initialize-timing.txt`). Proposed to the Solution Designer as a follow-up, like `e06-delegation-wait-margin`.
+- Repeated macOS arm64 runner capacity cancellations (two workflows, three cancellations, about 30 minutes lost): recorded, no change proposed; the rerun at once worked.
 
