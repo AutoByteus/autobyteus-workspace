@@ -124,7 +124,7 @@ export class RootCommunicationEngine {
       return { accepted: false, code: "COLLABORATION_SELF_TARGET_REJECTED", message: "You can't send a message to yourself." };
     }
     const assertAllowed = () => this.port.assertDeliveryAllowed(input.senderIdentity.agentRunId, input.receiverIdentity.agentRunId);
-    // The Task-scope refusal (a different Task, or a closed one) is an ordinary refusal the agent reads
+    // The Task-scope refusal (a closed Task) is an ordinary refusal the agent reads
     // (SR-003 T-4). The same refusal is given when the scope closes under the lock or after the save (DEC-005).
     const scope = this.refuseOutsideTaskScope(assertAllowed);
     if (scope) return scope;

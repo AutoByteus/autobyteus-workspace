@@ -323,9 +323,14 @@ class World:
             local, peer = (a, b) if self.file_of(a).get("delegatedFrom", {}).get("nodeId") is None else (b, a)
             pf = self.file_of(peer)["delegatedFrom"]
             other = receiver if peer == a else sender
-            # autobyteus-492 (CM-13): any other agent reaches the run by its run ID while it runs (DS-006)
-            if pf["delegatorAgentRunId"] != other: return "unrelated"
             entry = [e for t, e in self.entries(local[0]) if "nodeId" in e and self.run_key_of_entry(e) == (peer[1], peer[2])]
+            if pf["delegatorAgentRunId"] != other:
+                # autobyteus-492 (CM-13, DEC-011): any other agent reaches the run by its run ID while it runs (DS-006), except
+                # that the node holding its Task entries refuses every sender of its own once they are all closed (row 13,
+                # AR-001, AR-007); a sender on the run's own node cannot know the closure (row 14)
+                if a[0] == local[0] and entry and all(e["closedAt"] is not None for e in entry):
+                    raise Refused("TASK_AGENT_RESOURCE_CLOSED", CLOSED)
+                return "unrelated"
             if not entry or entry[-1]["closedAt"] is not None:
                 raise Refused("TASK_AGENT_RESOURCE_CLOSED", CLOSED)
             return
