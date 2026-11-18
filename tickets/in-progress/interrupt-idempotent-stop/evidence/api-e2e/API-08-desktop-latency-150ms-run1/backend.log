@@ -1,0 +1,414 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/.env
+◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/.env // tip: ◈ encrypted .env [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:52034
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:52034
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "development.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/db/development.db"
+
+SQLite database development.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/db/development.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:72294) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-18T12:50:42.309Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 34 predefined settings
+AgentRunManager initialized.
+Node access: local control socket not opened. The node's local control socket path is 110 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/node-access/local-control.sock. Use a shorter data folder path.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1795006242956,"pid":72294,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:52147"}
+{"level":30,"time":1795006242985,"pid":72294,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:52034"}
+[2026-11-18T12:50:42.985Z] [INFO] [server.runtime] Server listening on 127.0.0.1:52034
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Hub Staging Sweep' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace.
+Created and registered workspace ID: agent_ws_74ed3ed1ad6cabceebb7eddd926f36e449e5b89582c138ad686cb146b388eb96
+Agent Definition created successfully with ID: stopper-3427
+Agent Definition created successfully with ID: stop-lead-3427
+Agent Definition created successfully with ID: stop-mate-3427
+Agent Team Definition created successfully with ID: stop-team-3427
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace.
+Reusing registered workspace ID: agent_ws_74ed3ed1ad6cabceebb7eddd926f36e449e5b89582c138ad686cb146b388eb96
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace.
+Reusing registered workspace ID: agent_ws_74ed3ed1ad6cabceebb7eddd926f36e449e5b89582c138ad686cb146b388eb96
+AGY compaction detection off for run stopper_3427_0ed3eca66fa14325a583b9739ac4766c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace.
+Reusing registered workspace ID: agent_ws_74ed3ed1ad6cabceebb7eddd926f36e449e5b89582c138ad686cb146b388eb96
+Created terminal session 3f579172-4550-402f-92fe-7118a86063da using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/home
+Terminal WebSocket connected: 3f579172-4550-402f-92fe-7118a86063da
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/home
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Agent websocket attached for run stopper_3427_0ed3eca66fa14325a583b9739ac4766c
+Created agent session f1309d0e-3ff8-46cc-8f2d-ee0a139d52e5 for run stopper_3427_0ed3eca66fa14325a583b9739ac4766c
+Agent WebSocket connected: session=f1309d0e-3ff8-46cc-8f2d-ee0a139d52e5, run=stopper_3427_0ed3eca66fa14325a583b9739ac4766c
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agent_teams/stop_team_3427_5ada9519c59f471692ba06dbddd6319d/stop_lead_3427_e79a662890844f90b01d75198a674ed8/raw_traces_manifest.json
+Created agent session 045bb76d-5fb7-4091-a420-5eed045f32c8 for run stop_team_3427_5ada9519c59f471692ba06dbddd6319d
+Agent team websocket attached for team run stop_team_3427_5ada9519c59f471692ba06dbddd6319d
+Agent Team WebSocket connected: session=045bb76d-5fb7-4091-a420-5eed045f32c8, run=stop_team_3427_5ada9519c59f471692ba06dbddd6319d
+Closed agent session 045bb76d-5fb7-4091-a420-5eed045f32c8
+Closed agent session f1309d0e-3ff8-46cc-8f2d-ee0a139d52e5
+Agent WebSocket disconnected: f1309d0e-3ff8-46cc-8f2d-ee0a139d52e5
+Closed PTY session 3f579172-4550-402f-92fe-7118a86063da
+Terminal WebSocket disconnected: 3f579172-4550-402f-92fe-7118a86063da
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Agent websocket attached for run stopper_3427_0ed3eca66fa14325a583b9739ac4766c
+Created agent session d292eaa5-b4b7-43fb-b803-ef2be0be3917 for run stopper_3427_0ed3eca66fa14325a583b9739ac4766c
+Agent WebSocket connected: session=d292eaa5-b4b7-43fb-b803-ef2be0be3917, run=stopper_3427_0ed3eca66fa14325a583b9739ac4766c
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agent_teams/stop_team_3427_5ada9519c59f471692ba06dbddd6319d/stop_lead_3427_e79a662890844f90b01d75198a674ed8/raw_traces_manifest.json
+Created agent session a4ecf5df-1179-4e5f-a99b-f92150d492f7 for run stop_team_3427_5ada9519c59f471692ba06dbddd6319d
+Agent team websocket attached for team run stop_team_3427_5ada9519c59f471692ba06dbddd6319d
+Agent Team WebSocket connected: session=a4ecf5df-1179-4e5f-a99b-f92150d492f7, run=stop_team_3427_5ada9519c59f471692ba06dbddd6319d
+Created terminal session b367e0b2-f652-4035-89d6-b89921ec9e85 using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/home
+Terminal WebSocket connected: b367e0b2-f652-4035-89d6-b89921ec9e85
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/home
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Closed PTY session b367e0b2-f652-4035-89d6-b89921ec9e85
+Terminal WebSocket disconnected: b367e0b2-f652-4035-89d6-b89921ec9e85
+Closed agent session d292eaa5-b4b7-43fb-b803-ef2be0be3917
+Agent WebSocket disconnected: d292eaa5-b4b7-43fb-b803-ef2be0be3917
+Agent websocket attached for run stopper_3427_0ed3eca66fa14325a583b9739ac4766c
+Created agent session 76feae0e-cf69-4c0f-bdfa-4be30bc9f800 for run stopper_3427_0ed3eca66fa14325a583b9739ac4766c
+Agent WebSocket connected: session=76feae0e-cf69-4c0f-bdfa-4be30bc9f800, run=stopper_3427_0ed3eca66fa14325a583b9739ac4766c
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace.
+Reusing registered workspace ID: agent_ws_74ed3ed1ad6cabceebb7eddd926f36e449e5b89582c138ad686cb146b388eb96
+AGY compaction detection off for run stopper_3427_0ed3eca66fa14325a583b9739ac4766c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace.
+Reusing registered workspace ID: agent_ws_74ed3ed1ad6cabceebb7eddd926f36e449e5b89582c138ad686cb146b388eb96
+AGY compaction detection off for run stopper_3427_0ed3eca66fa14325a583b9739ac4766c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace.
+Reusing registered workspace ID: agent_ws_74ed3ed1ad6cabceebb7eddd926f36e449e5b89582c138ad686cb146b388eb96
+AGY compaction detection off for run stopper_3427_0ed3eca66fa14325a583b9739ac4766c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace.
+Reusing registered workspace ID: agent_ws_74ed3ed1ad6cabceebb7eddd926f36e449e5b89582c138ad686cb146b388eb96
+AGY compaction detection off for run stopper_3427_0ed3eca66fa14325a583b9739ac4766c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace.
+Reusing registered workspace ID: agent_ws_74ed3ed1ad6cabceebb7eddd926f36e449e5b89582c138ad686cb146b388eb96
+AGY compaction detection off for run stopper_3427_0ed3eca66fa14325a583b9739ac4766c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace.
+Reusing registered workspace ID: agent_ws_74ed3ed1ad6cabceebb7eddd926f36e449e5b89582c138ad686cb146b388eb96
+AGY compaction detection off for run stopper_3427_0ed3eca66fa14325a583b9739ac4766c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Agent websocket attached for run stopper_3427_0ed3eca66fa14325a583b9739ac4766c
+Created agent session 319d6f79-3ef6-49c0-8ce8-536a7e61cab3 for run stopper_3427_0ed3eca66fa14325a583b9739ac4766c
+Agent WebSocket connected: session=319d6f79-3ef6-49c0-8ce8-536a7e61cab3, run=stopper_3427_0ed3eca66fa14325a583b9739ac4766c
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Closed agent session 319d6f79-3ef6-49c0-8ce8-536a7e61cab3
+Agent WebSocket disconnected: 319d6f79-3ef6-49c0-8ce8-536a7e61cab3
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace.
+Reusing registered workspace ID: agent_ws_74ed3ed1ad6cabceebb7eddd926f36e449e5b89582c138ad686cb146b388eb96
+AGY compaction detection off for run stopper_3427_0ed3eca66fa14325a583b9739ac4766c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Closed agent session 76feae0e-cf69-4c0f-bdfa-4be30bc9f800
+Agent WebSocket disconnected: 76feae0e-cf69-4c0f-bdfa-4be30bc9f800
+Closed agent session a4ecf5df-1179-4e5f-a99b-f92150d492f7
+Created agent session 477a169c-b80a-46c5-825c-beb8dab32050 for run stop_team_3427_5ada9519c59f471692ba06dbddd6319d
+Agent team websocket attached for team run stop_team_3427_5ada9519c59f471692ba06dbddd6319d
+Agent websocket attached for run stopper_3427_0ed3eca66fa14325a583b9739ac4766c
+Created agent session d228d301-31aa-434b-8b62-49a57f0de787 for run stopper_3427_0ed3eca66fa14325a583b9739ac4766c
+Agent WebSocket connected: session=d228d301-31aa-434b-8b62-49a57f0de787, run=stopper_3427_0ed3eca66fa14325a583b9739ac4766c
+Agent Team WebSocket connected: session=477a169c-b80a-46c5-825c-beb8dab32050, run=stop_team_3427_5ada9519c59f471692ba06dbddd6319d
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace.
+Reusing registered workspace ID: agent_ws_74ed3ed1ad6cabceebb7eddd926f36e449e5b89582c138ad686cb146b388eb96
+AGY compaction detection off for run stopper_3427_0ed3eca66fa14325a583b9739ac4766c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Closed agent session d228d301-31aa-434b-8b62-49a57f0de787
+Agent WebSocket disconnected: d228d301-31aa-434b-8b62-49a57f0de787
+Closed agent session 477a169c-b80a-46c5-825c-beb8dab32050
+Created agent session 746694e9-1071-4290-8117-51fd09c4cfd6 for run stop_team_3427_5ada9519c59f471692ba06dbddd6319d
+Agent team websocket attached for team run stop_team_3427_5ada9519c59f471692ba06dbddd6319d
+Agent Team WebSocket connected: session=746694e9-1071-4290-8117-51fd09c4cfd6, run=stop_team_3427_5ada9519c59f471692ba06dbddd6319d
+Agent websocket attached for run stopper_3427_0ed3eca66fa14325a583b9739ac4766c
+Created agent session d3cb3a9b-5730-40fe-8c26-c1b488fde52d for run stopper_3427_0ed3eca66fa14325a583b9739ac4766c
+Agent WebSocket connected: session=d3cb3a9b-5730-40fe-8c26-c1b488fde52d, run=stopper_3427_0ed3eca66fa14325a583b9739ac4766c
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace.
+Reusing registered workspace ID: agent_ws_74ed3ed1ad6cabceebb7eddd926f36e449e5b89582c138ad686cb146b388eb96
+AGY compaction detection off for run stopper_3427_0ed3eca66fa14325a583b9739ac4766c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Closed agent session d3cb3a9b-5730-40fe-8c26-c1b488fde52d
+Agent WebSocket disconnected: d3cb3a9b-5730-40fe-8c26-c1b488fde52d
+Closed agent session 746694e9-1071-4290-8117-51fd09c4cfd6
+Created agent session beb61521-aa1d-4e60-9721-a712b0a9f79b for run stop_team_3427_5ada9519c59f471692ba06dbddd6319d
+Agent team websocket attached for team run stop_team_3427_5ada9519c59f471692ba06dbddd6319d
+Agent Team WebSocket connected: session=beb61521-aa1d-4e60-9721-a712b0a9f79b, run=stop_team_3427_5ada9519c59f471692ba06dbddd6319d
+Agent websocket attached for run stopper_3427_0ed3eca66fa14325a583b9739ac4766c
+Created agent session 1643de1a-40cd-4a58-892c-2c17d548ebb6 for run stopper_3427_0ed3eca66fa14325a583b9739ac4766c
+Agent WebSocket connected: session=1643de1a-40cd-4a58-892c-2c17d548ebb6, run=stopper_3427_0ed3eca66fa14325a583b9739ac4766c
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace.
+Reusing registered workspace ID: agent_ws_74ed3ed1ad6cabceebb7eddd926f36e449e5b89582c138ad686cb146b388eb96
+AGY compaction detection off for run stop_lead_3427_e79a662890844f90b01d75198a674ed8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agent_teams/stop_team_3427_5ada9519c59f471692ba06dbddd6319d/stop_lead_3427_e79a662890844f90b01d75198a674ed8/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace.
+Reusing registered workspace ID: agent_ws_74ed3ed1ad6cabceebb7eddd926f36e449e5b89582c138ad686cb146b388eb96
+AGY compaction detection off for run stop_lead_3427_e79a662890844f90b01d75198a674ed8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agent_teams/stop_team_3427_5ada9519c59f471692ba06dbddd6319d/stop_lead_3427_e79a662890844f90b01d75198a674ed8/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace.
+Reusing registered workspace ID: agent_ws_74ed3ed1ad6cabceebb7eddd926f36e449e5b89582c138ad686cb146b388eb96
+AGY compaction detection off for run stop_lead_3427_e79a662890844f90b01d75198a674ed8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agent_teams/stop_team_3427_5ada9519c59f471692ba06dbddd6319d/stop_lead_3427_e79a662890844f90b01d75198a674ed8/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace.
+Reusing registered workspace ID: agent_ws_74ed3ed1ad6cabceebb7eddd926f36e449e5b89582c138ad686cb146b388eb96
+AGY compaction detection off for run stop_lead_3427_e79a662890844f90b01d75198a674ed8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agent_teams/stop_team_3427_5ada9519c59f471692ba06dbddd6319d/stop_lead_3427_e79a662890844f90b01d75198a674ed8/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace.
+Reusing registered workspace ID: agent_ws_74ed3ed1ad6cabceebb7eddd926f36e449e5b89582c138ad686cb146b388eb96
+AGY compaction detection off for run stop_lead_3427_e79a662890844f90b01d75198a674ed8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agent_teams/stop_team_3427_5ada9519c59f471692ba06dbddd6319d/stop_lead_3427_e79a662890844f90b01d75198a674ed8/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace.
+Reusing registered workspace ID: agent_ws_74ed3ed1ad6cabceebb7eddd926f36e449e5b89582c138ad686cb146b388eb96
+AGY compaction detection off for run stop_lead_3427_e79a662890844f90b01d75198a674ed8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agent_teams/stop_team_3427_5ada9519c59f471692ba06dbddd6319d/stop_lead_3427_e79a662890844f90b01d75198a674ed8/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace.
+Reusing registered workspace ID: agent_ws_74ed3ed1ad6cabceebb7eddd926f36e449e5b89582c138ad686cb146b388eb96
+AGY compaction detection off for run stop_lead_3427_e79a662890844f90b01d75198a674ed8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agent_teams/stop_team_3427_5ada9519c59f471692ba06dbddd6319d/stop_lead_3427_e79a662890844f90b01d75198a674ed8/raw_traces_manifest.json
+Created agent session 23741775-cf49-4d38-b5b3-668719796491 for run stop_team_3427_5ada9519c59f471692ba06dbddd6319d
+Agent team websocket attached for team run stop_team_3427_5ada9519c59f471692ba06dbddd6319d
+Agent Team WebSocket connected: session=23741775-cf49-4d38-b5b3-668719796491, run=stop_team_3427_5ada9519c59f471692ba06dbddd6319d
+Closed agent session 23741775-cf49-4d38-b5b3-668719796491
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace.
+Reusing registered workspace ID: agent_ws_74ed3ed1ad6cabceebb7eddd926f36e449e5b89582c138ad686cb146b388eb96
+AGY compaction detection off for run stop_lead_3427_e79a662890844f90b01d75198a674ed8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agent_teams/stop_team_3427_5ada9519c59f471692ba06dbddd6319d/stop_lead_3427_e79a662890844f90b01d75198a674ed8/raw_traces_manifest.json
+Closed agent session beb61521-aa1d-4e60-9721-a712b0a9f79b
+Closed agent session 1643de1a-40cd-4a58-892c-2c17d548ebb6
+Agent WebSocket disconnected: 1643de1a-40cd-4a58-892c-2c17d548ebb6
+Created agent session 0fd294f6-4eb1-426f-ad23-7486c59c93ff for run stop_team_3427_5ada9519c59f471692ba06dbddd6319d
+Agent team websocket attached for team run stop_team_3427_5ada9519c59f471692ba06dbddd6319d
+Agent websocket attached for run stopper_3427_0ed3eca66fa14325a583b9739ac4766c
+Created agent session a6377fe0-bc76-4a34-ba8d-e0a0dca075b9 for run stopper_3427_0ed3eca66fa14325a583b9739ac4766c
+Agent WebSocket connected: session=a6377fe0-bc76-4a34-ba8d-e0a0dca075b9, run=stopper_3427_0ed3eca66fa14325a583b9739ac4766c
+Agent Team WebSocket connected: session=0fd294f6-4eb1-426f-ad23-7486c59c93ff, run=stop_team_3427_5ada9519c59f471692ba06dbddd6319d
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agents/stopper_3427_0ed3eca66fa14325a583b9739ac4766c/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agent_teams/stop_team_3427_5ada9519c59f471692ba06dbddd6319d/stop_lead_3427_e79a662890844f90b01d75198a674ed8/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/workspace.
+Reusing registered workspace ID: agent_ws_74ed3ed1ad6cabceebb7eddd926f36e449e5b89582c138ad686cb146b388eb96
+AGY compaction detection off for run stop_lead_3427_e79a662890844f90b01d75198a674ed8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-generation-yAUApd/memory/agent_teams/stop_team_3427_5ada9519c59f471692ba06dbddd6319d/stop_lead_3427_e79a662890844f90b01d75198a674ed8/raw_traces_manifest.json
+Closed agent session 0fd294f6-4eb1-426f-ad23-7486c59c93ff
+Closed agent session a6377fe0-bc76-4a34-ba8d-e0a0dca075b9
+Agent WebSocket disconnected: a6377fe0-bc76-4a34-ba8d-e0a0dca075b9
+Recorded 2 busy run(s) for the restart reminder
