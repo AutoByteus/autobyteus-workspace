@@ -11,6 +11,9 @@
 | CRR-007 | `code-review-report.md` | Merge review, round 4 (Targeted Delta) / IR-004, base `ff13782f36` | Pass (CRR-006) | Fail: Local Fix | CR-500-007 new |
 | CRR-008 | `code-review-report.md` | Recheck, round 5 (Targeted Delta) / IR-005 | Fail (CRR-007) | Pass | CR-500-007 resolved |
 | CRR-009 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-003 (merged state; d600a2af71) | Pass (CRR-008) | Pass | None |
+| CRR-010 | `code-review-report.md` | Merge review, round 6 (Targeted Delta) / IR-006, base `0570c47fd9` | Pass (CRR-009) | Pass | None |
+| CRR-011 | `code-review-report.md` | API/E2E failure-origin review / API-REV-004 (F-4) | Pass (CRR-010) | Test-side (also on base) → API/E2E | None (source) |
+| CRR-012 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-004 (696acc408c, 8d14de45e3) | Test-side (CRR-011) | Pass | None |
 
 ### CRR-001: Implementation review of IR-001: Fail, Local Fix
 
@@ -264,3 +267,73 @@
 - Material score or classification changes: N/A
 - Recommended recipient: `/delivery_engineer`
 - Remaining risks or uncertainty: the quiet macOS (1/5 at a loaded fseventsd, every failure INCONCLUSIVE, evidence only); FU-500-09 and FU-500-12 (base); the residual risks as in CRR-006
+
+### CRR-010: Merge review of IR-006 (the base `0570c47fd9`): Pass
+
+- Review entry point and round: implementation review, round 6 (the third delivery base refresh)
+- Review scope: Targeted Delta, the merge `e93671cce0` (13 conflicts) and `4db98c6d1a`
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer, `implementation-handoff.md` (IR-006, IMP-022); Delivery, `release-deployment-report.md` (`0af5a64677`)
+- Relevant solution revision IDs: SR-016 (unchanged)
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: IR-006
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: the third integration refresh
+- Prior authoritative result: Pass (CRR-009)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - 448 part 2's background-task count is carried through 500's run-agent names on the server, the peer and the web. The modify/delete is applied to the renamed file.
+  - 493's episodic catalog is in the composition with this ticket's remote channel; the removed collaboration-folder constant stays removed.
+  - No migration and no release came from the base.
+  - Every file is at or under 500 lines; the member handle is exactly at 500.
+- Supported product scenario / material-premise basis changes: none
+- Prior finding resolution: N/A (all earlier findings stay resolved)
+- New or remaining finding IDs: none
+- Material score or classification changes: none (overall 9.4)
+- Recommended recipient: `/api_e2e_engineer` (round 4 on the merged state)
+- Remaining risks or uncertainty: the merged state's e2e is API/E2E's round 4; the member handle is at the limit
+
+### CRR-011: Failure-origin review of API-REV-004 (F-4): test-side, also on base
+
+- Review entry point and round: API/E2E failure-origin review (API round 4, the third merged state)
+- Review scope: F-4, OT-2 (and OT-3) in `open-task-tree-upgrade-startup.e2e.test.ts`; the round's test changes `696acc408c`
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-004), F-4
+- Relevant solution revision IDs: N/A
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: IR-006
+- Relevant API/E2E revision IDs: API-REV-004
+- Relevant delivery revision IDs: the third integration refresh
+- Prior authoritative result: Pass (CRR-010)
+- Current authoritative result: the failure is test-side and also present on base; the source review stands
+- What changed in the review result and why:
+  - A temporary probe of OT-1 … OT-3 showed the same thing on the branch and on base `0570c47fd9`: OT-2's start writes four `memory/episodic/*/catalog.md` files and rewrites `index.md`. That is 493's start pass, after OT-1's server stopped before its 5 s refresh, and OT-2 and OT-3 fail the same way on both.
+  - The fix is test-side, as for SIR-002: OT-2's fingerprint leaves out the derived `memory/episodic/`.
+  - The round's test changes (TS-009, SIR-002) are sound.
+- Supported product scenario / material-premise basis changes: none
+- Prior finding resolution: N/A
+- New or remaining finding IDs: none against source
+- Material score or classification changes: none
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: the base-side flakiness of OT-2 under load, a follow-up for 493's area
+
+### CRR-012: Proportional test-code review after API-REV-004 (third merged state): Pass
+
+- Review entry point and round: successful API/E2E test-code review (round 4, after the F-4 fix)
+- Review scope: `696acc408c` (TS-009, SIR-002) and `8d14de45e3` (OT-2)
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-004 final)
+- Relevant solution revision IDs: N/A
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: IR-006
+- Relevant API/E2E revision IDs: API-REV-004
+- Relevant delivery revision IDs: the third integration refresh
+- Prior authoritative result: test-side failure routed to API/E2E (CRR-011)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - TS-009 proves the Org rows' background-task state, and its return to Idle, through a real trigger.
+  - SIR-002 and OT-2 leave out only the derived `memory/episodic/`, with their reasons, and still compare every other file.
+  - OT-1 … OT-3 pass 3/3.
+- Supported product scenario / material-premise basis changes: none
+- Prior finding resolution: N/A (F-4 was not a source finding)
+- New or remaining finding IDs: none
+- Material score or classification changes: N/A
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty: FU-500-13 (OT-2's base-side timing); BTS-04/05 need the live Claude/Codex gates and weren't run; the residual risks as in CRR-006

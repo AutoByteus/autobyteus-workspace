@@ -1,6 +1,64 @@
 # Code Review Report: follow-ups-of-461-500 (autobyteus-500)
 
-The latest result is round 5, **CRR-008: Pass** (IR-005, CR-500-007's fix on the merged state). It comes first, then round 4 (CRR-007), round 3 (CRR-004), CRR-003 (the failure-origin review), round 2 (CRR-002) and round 1 (CRR-001) follow as history, with their finding IDs reused. The test reviews CRR-005 and CRR-006 are in `api-e2e-test-review-report.md`.
+The latest result is **CRR-011: the failure-origin review of API-REV-004 (F-4). The origin is test-side and also present on base, and it goes to API/E2E.** It comes first, then round 6 (CRR-010) and the earlier rounds. The test reviews CRR-005, CRR-006 and CRR-009 are in `api-e2e-test-review-report.md`.
+
+## API/E2E Failure-Origin Review Of API-REV-004, F-4 (CRR-011)
+
+- **Failing scenario:** `tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts` OT-2, "reading the trees wrote nothing" (`:247`), and OT-3, which needs OT-2's run.
+- **Code:** the third merged state `44fec882bc` (merge `e93671cce0`). API/E2E saw the branch fail on the Mac and in Linux, and base `0570c47fd9` pass once (Mac alone).
+- **My method:** a temporary probe copy of the file, untracked and removed afterwards. It logged `memory/episodic/` before OT-2's start and after its reads, and ran once on each worktree at load around 100.
+  - **Branch:** before, only `episodic/index.md`; after, `index.md` changed and `ot-writer`, `ot-researcher`, `ot-manager` and `ot-checker` `catalog.md` are new.
+  - **Base `0570c47fd9`:** exactly the same, with the same two failures: "reading the trees wrote nothing: expected { …(122) } to deeply equal { …(118) }", then OT-3's "the temporary Task's record: expected '' to be truthy". A first base attempt failed earlier, in OT-1, on an AGY discovery timeout from the load.
+- **Cause, from the code** (`agent-episodic-catalog/services/episodic-catalog.ts`, 493, unchanged by this merge):
+  - every server start runs `startPass` (a full discovery, writing the catalogs);
+  - between starts, a journal change asks for a refresh 5 s later (at most 30 s);
+  - `stop()` drops a pending refresh.
+  - OT-1 creates its runs and stops its server; when it stops before a refresh has run, which depends on timing and load, the runs' catalogs aren't written until OT-2's start, inside OT-2's "a read writes nothing" window.
+  - That is 493's designed behavior: the catalog is derived data, rebuilt at start. The test's fingerprint covers all of `memory/`, derived catalogs included.
+- **Not caused by this ticket:** the branch and base behave the same under load. The catalog's wiring is the same on both sides (API/E2E checked), and discovery (`run-folder-discovery.ts`) is unchanged by the merge. The branch reproduced more readily, probably from timing (G-5's check adds a read at activation), but the failure mechanism is base's.
+- **Classification: test-side, and also present on base.**
+  - The required change matches the one API/E2E already made for SIR-002 in this round: OT-2's fingerprint leaves out `memory/episodic/` (derived, rewritten at start), as it would the run history index. That applies at `:247` and at the later `after` fingerprint (`:292`) if it compares beyond the own files.
+  - It is a small fix to a test in this ticket's gate, so do it here. Record the base-side flakiness (it fails on `0570c47fd9` under load) as a follow-up for 493's area.
+- **This round's test changes (`696acc408c`) are sound:**
+  - TS-009 drives a real scripted background step in an Org run, asserts both rows ("Background task running", the active dot that doesn't pulse) and their return to Idle, and keeps details on failure;
+  - SIR-002 leaves out the derived `memory/episodic/` with its reason.
+  - They'll be finalized in the test review after the round passes.
+- **Routing:** to `/api_e2e_engineer`: fix OT-2's fingerprint, rerun OT-1 … OT-3, then the proportional test-code review, then delivery. Source is unaffected; CRR-010 stands.
+
+---
+
+## Round 6: Merge Review Of IR-006, The Base `0570c47fd9` (CRR-010)
+
+- **Scope:** `Targeted Delta Review` of the merge `e93671cce0` (parents `0af5a64677` and `0570c47fd9`, no rebase; `origin/personal` is an ancestor) and `4db98c6d1a`.
+- **Method:** `git show --remerge-diff e93671cce0` shows 17 files beyond git's automatic merge, which are the 13 conflicts and their renames. The base (522, 524, 448 part 2, 493, 525) adds no app-data migration and no release, so the released order stays beta.7's.
+- **Resolutions: correct.** Each keeps both sides.
+  - **448 part 2's background-task count goes into 500's run-agent names (N2).**
+    - `RunAgentStatusEntry` gains `backgroundTasksRunning`.
+    - `runAgentStatusFrame(status, backgroundTasksRunning)` writes it.
+    - The base's new `peer-run-calls.ts` and `remote-run-observation.ts` use `RunAgentStatusEntry`.
+    - `TeamRunAgentAccess` sends `("offline", 0)` on idle shutdown.
+    - `RemoteRunViewProvider` passes `live?.backgroundTasksRunning ?? 0`.
+    - `run-status-service.ts` keeps 448's `answerOfFrame` / `answerOf(status, count)` with 500's `observeRunAgents` / `runAgentStatuses`. I read the merged lines; they match the base's logic.
+  - **The modify/delete:** `standalone-paired-agent-access.ts` stays deleted, and 448's change (the run's `background_tasks_running` in its status entry) is applied in `standalone-run-agent-access.ts`.
+  - **Web:** `AgentOrgRunMemberTree.vue` keeps 448's `backgroundTasksRunning` on both rows with 500's `delegatedRun: null`. 448's new `WorkspaceRowsBackgroundTasks.spec.ts` follows N5.
+  - **493:**
+    - `agent-memory-layout.ts` keeps 493's `definitionFolderName`. `AGENT_RUN_COLLABORATION_DIR_NAME` stays removed (N6); nothing outside the frozen layout reads it.
+    - `build-studio-server.ts` keeps 493's `episodicCatalog` with this ticket's `remote.channel`. The process lookup this ticket removed doesn't come back.
+- **`4db98c6d1a`: correct.** 493 made `episodicCatalog` a required supervisor input, so the FU-011 test's complete input includes it.
+- **Names:** the implementer's grep (PairedAgent\*, transient\*, host names, `execution_tree.host`) finds nothing outside frozen code.
+- **Sizes against `0570c47fd9`:**
+  - `build-studio-server.ts` 492;
+  - `configured-agent-execution-handle.ts` 500, at the limit and not over;
+  - the AutoByteus backend factory 496.
+  - The member handle's next change needs a split. That is already recorded as a residual risk.
+- **Checks:** I didn't rerun IMP-022, which ran on `4db98c6d1a`.
+  - Type gates at their baselines.
+  - Server units, work journal, app-data migrations, architecture and integration: 8876 passed. The 7 failures are watcher timing, with the D-13b labels.
+  - Web: 5767 passed.
+- **Findings:** none.
+- **Routing:** `Pass`, to `/api_e2e_engineer` for round 4 on the merged state (requested by delivery), then the test review, then delivery.
+
+---
 
 ## Round 5: Recheck Of IR-005 (CRR-008)
 

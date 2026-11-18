@@ -1,6 +1,22 @@
 # API/E2E Test Review Report: follow-ups-of-461-500 (autobyteus-500)
 
-The latest result is **CRR-009: Pass** (API-REV-003, the merged state). CRR-006 and CRR-005 follow as history.
+The latest result is **CRR-012: Pass** (API-REV-004, the third merged state). CRR-009, CRR-006 and CRR-005 follow as history.
+
+## API-REV-004 (CRR-012)
+
+- **Scope:** `696acc408c` (TS-009; SIR-002's exclusion) and `8d14de45e3` (OT-2's fingerprint). Docs are in `1dbdab9b61`. The failure-origin review of F-4 is CRR-011 in `code-review-report.md`.
+- **TS-009** (`team-status-live-probe.mjs`):
+  - It enters through the real trigger, a scripted background step sent to an Org run's manager and to a member of its mounted Team.
+  - It asserts positively: the Org agent row's label carries "Background task running" with the active dot that doesn't pulse; the Org Team row ends with ". Background task running"; both return to Idle ("…, idle, …" and ". Team status: Idle").
+  - It keeps the labels as details on a failure.
+  - It covers 448 part 2's merged rows (`AgentOrgRunMemberTree.vue`).
+- **SIR-002** (`skill-improvement-removal-cases.mjs`): the byte-identity check leaves out the derived `memory/episodic/`, with its reason, as it already did the run history index. That is narrow: every other file is still compared.
+- **OT-2** (`open-task-tree-upgrade-startup.e2e.test.ts`): "reading the trees wrote nothing" compares `memory/` without `episodic/`, with a comment naming CRR-011's mechanism. Every other file is still compared. The later comparison (`:292`) checks only the runs' own files and one run folder, so it rightly stays as it is. OT-1 … OT-3 pass 3/3 at load 66–85.
+- **FU-500-13** records OT-2's base-side failure under load (493's start-pass timing).
+- **Checks:** names and intent clear; assertions prove the requirement; exclusions narrow and explained; no skips; real triggers.
+- **Result: Pass.** No findings. Recipient: `/delivery_engineer`.
+
+---
 
 ## API-REV-003 (CRR-009)
 
