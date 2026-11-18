@@ -1,6 +1,24 @@
 # API/E2E Test Review Report: follow-ups-of-461-500 (autobyteus-500)
 
-The latest result is **CRR-006: Pass**. CR-500-006 is resolved, and the package goes to delivery. CRR-005 follows as history.
+The latest result is **CRR-009: Pass** (API-REV-003, the merged state). CRR-006 and CRR-005 follow as history.
+
+## API-REV-003 (CRR-009)
+
+- **Scope:** `d600a2af71`, `project-task-boundaries.e2e.test.ts` E-007 (+8 / −2). Docs are in `cfbbd1af8e`.
+- **The change:**
+  - E-007 releases the process Task service mid-test to read the Task entries on disk "as a restart reads them". Before, the lazy getter rebuilt the service; FU-011 removed that getter.
+  - The test now composes the Task side again from disk with the hosts' own `composeTaskSide`, plus the shared `NO_RUN_SIDE_TASK_PORTS` (no running roots), and initializes the process instance.
+  - That is the real restart path, not a fake, and the file's reset (`releaseComposedProjectTaskService`) releases it afterwards.
+  - 18/18; the type gate is at baseline.
+- **Checks:** names and intent are clear (the comment says why); the assertions are unchanged; the setup reuses the shared helper; nothing stale or skipped.
+- **The merged state's evidence (API-REV-003):**
+  - This ticket's cases pass in the full server E2E run: ALM-1, RSE-1, ODM-1, LTI-1, E-002, SCP, DCM, DTL, DLC, RC 46/46, and the G-5 and FU-011 suites.
+  - Each remaining failure was classified alone, on the branch and on base `ff13782f36`: load, FSEvents, or the same on base (FU-500-09, FU-500-12).
+  - AC-005: Linux 5/5 on the merged state.
+  - Browser cases: 8/8, and the composer 12/12.
+- **Result: Pass.** No findings. Recipient: `/delivery_engineer`.
+
+---
 
 ## Recheck (CRR-006)
 

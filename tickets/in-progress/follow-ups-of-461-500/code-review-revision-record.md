@@ -10,6 +10,7 @@
 | CRR-006 | `api-e2e-test-review-report.md` | Proportional test-code recheck / CR-500-006 fix (73bfba186c) | Fail (CRR-005) | Pass | CR-500-006 resolved |
 | CRR-007 | `code-review-report.md` | Merge review, round 4 (Targeted Delta) / IR-004, base `ff13782f36` | Pass (CRR-006) | Fail: Local Fix | CR-500-007 new |
 | CRR-008 | `code-review-report.md` | Recheck, round 5 (Targeted Delta) / IR-005 | Fail (CRR-007) | Pass | CR-500-007 resolved |
+| CRR-009 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-003 (merged state; d600a2af71) | Pass (CRR-008) | Pass | None |
 
 ### CRR-001: Implementation review of IR-001: Fail, Local Fix
 
@@ -243,3 +244,23 @@
 - Material score or classification changes: SoC & File Placement back to 9.3; overall 9.4
 - Recommended recipient: `/delivery_engineer`
 - Remaining risks or uncertainty: the merged state's e2e suites and `release:test` are delivery's; the residual risks are as in CRR-006
+
+### CRR-009: Proportional test-code review after API-REV-003 (merged state): Pass
+
+- Review entry point and round: successful API/E2E test-code review (round 3, the merged state `eb741a097e`)
+- Review scope: `d600a2af71` (`project-task-boundaries.e2e.test.ts` E-007)
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-003)
+- Relevant solution revision IDs: SR-016 (unchanged)
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: IR-004, IR-005
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: DEL-01 (the merged-state check that asked for this round)
+- Prior authoritative result: Pass (CRR-008)
+- Current authoritative result: Pass
+- What changed in the review result and why: E-007 composes the Task side again from disk with the hosts' `composeTaskSide` (FU-011 removed the lazy instance it relied on). That is the restart path itself, and it's released by the file's reset. The merged state's failures are classified as load, FSEvents, or the same on base.
+- Supported product scenario / material-premise basis changes: none
+- Prior finding resolution: N/A
+- New or remaining finding IDs: none
+- Material score or classification changes: N/A
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty: the quiet macOS (1/5 at a loaded fseventsd, every failure INCONCLUSIVE, evidence only); FU-500-09 and FU-500-12 (base); the residual risks as in CRR-006
