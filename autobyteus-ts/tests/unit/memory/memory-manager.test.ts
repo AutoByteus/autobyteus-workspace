@@ -5,7 +5,6 @@ import path from 'node:path';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
 import { WorkingContext } from '../../../src/memory/working-context.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
-import { MemoryType } from '../../../src/memory/models/memory-types.js';
 import { RawTraceItem } from '../../../src/memory/models/raw-trace-item.js';
 import { LLMUserMessage } from '../../../src/llm/user-message.js';
 import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../../../src/llm/utils/messages.js';
@@ -59,7 +58,7 @@ describe('MemoryManager', () => {
       manager.ingestUserMessage(new LLMUserMessage({ content: 'hello' }), turnId, 'LLMUserMessageReadyEvent', []);
       manager.ingestAssistantResponse({ content: 'hi', reasoning: null } as any, turnId, 'LLMCompleteResponseReceivedEvent');
 
-      const rawItems = store.list(MemoryType.RAW_TRACE) as RawTraceItem[];
+      const rawItems = store.listTurnRawTracesOrdered() as RawTraceItem[];
       expect(rawItems).toHaveLength(2);
       expect(rawItems[0].seq).toBe(1);
       expect(rawItems[1].seq).toBe(2);
@@ -176,7 +175,7 @@ describe('MemoryManager', () => {
       const payload = snapshot[0].tool_payload as ToolCallPayload;
       expect(payload.toolCalls.map((call) => call.id)).toEqual(['call_1', 'call_2']);
 
-      const rawItems = store.list(MemoryType.RAW_TRACE) as RawTraceItem[];
+      const rawItems = store.listTurnRawTracesOrdered() as RawTraceItem[];
       expect(rawItems).toHaveLength(2);
       expect(rawItems.map((item) => item.traceType)).toEqual(['tool_call', 'tool_call']);
     } finally {
@@ -258,7 +257,7 @@ describe('MemoryManager', () => {
         MessageRole.ASSISTANT, MessageRole.TOOL, MessageRole.TOOL,
       ]);
       expect(messages.slice(1).map((message) => (message.tool_payload as any).toolCallId)).toEqual(['call_A', 'call_B']);
-      const rawItems = store.list(MemoryType.RAW_TRACE) as RawTraceItem[];
+      const rawItems = store.listTurnRawTracesOrdered() as RawTraceItem[];
       expect(rawItems.filter((item) => item.traceType === 'tool_result').map((item) => item.sourceEvent)).toEqual([
         'native_api_ordered_batch',
         'native_api_ordered_batch'
@@ -287,7 +286,7 @@ describe('MemoryManager', () => {
 
       expect(manager.getWorkingContextMessages()).toHaveLength(0);
 
-      const rawItems = store.list(MemoryType.RAW_TRACE) as RawTraceItem[];
+      const rawItems = store.listTurnRawTracesOrdered() as RawTraceItem[];
       expect(rawItems).toHaveLength(1);
       expect(rawItems[0].traceType).toBe('assistant');
       expect(rawItems[0].content).toBe('tool planning text');

@@ -6,7 +6,6 @@ import { LLMRequestAssembler } from '../../../src/agent/llm-request-assembler.js
 import { LLMUserMessage } from '../../../src/llm/user-message.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
-import { MemoryType } from '../../../src/memory/models/memory-types.js';
 import { createLmstudioLLM, hasLmstudioConfig } from '../helpers/lmstudio-llm-helper.js';
 
 const runIntegration = hasLmstudioConfig() ? describe : describe.skip;
@@ -50,7 +49,7 @@ runIntegration('Memory assembler with LM Studio', () => {
 
       memoryManager.ingestAssistantResponse(response, turnId, 'LLMCompleteResponseReceivedEvent');
 
-      const rawItems = store.list(MemoryType.RAW_TRACE);
+      const rawItems = store.listTurnRawTracesOrdered();
       expect(rawItems).toHaveLength(2);
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });

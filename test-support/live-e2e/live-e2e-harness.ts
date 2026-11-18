@@ -9,7 +9,6 @@ import {
   FileMemoryStore,
   LLMFactory,
   LLMRuntime,
-  MemoryType,
   NativeCommandProcessScope,
 } from '../../autobyteus-ts/src/index.js';
 import { COMPACTION_SUMMARY_INSTRUCTION, COMPACTION_SUMMARY_PROMPT } from '../../autobyteus-ts/src/memory/compaction/compaction-summary-prompt.js';
@@ -1000,9 +999,7 @@ export class LiveE2eScenarioExecution {
       }
       const persistedFileNames = await fs.readdir(memoryStore.agentDir);
       if (memoryStore.readArchiveRawTraces().length < 1
-          || ['episodic.jsonl', 'semantic.jsonl', 'compaction_lineage.jsonl'].some((name) => persistedFileNames.includes(name))
-          || memoryStore.list(MemoryType.EPISODIC).length !== 0
-          || memoryStore.list(MemoryType.SEMANTIC).length !== 0) {
+          || ['episodic.jsonl', 'semantic.jsonl', 'compaction_lineage.jsonl'].some((name) => persistedFileNames.includes(name))) {
         throw new Error('LIVE_E2E_SUMMARY_PERSISTENCE_INVALID');
       }
       const snapshot = new WorkingContextSnapshotStore(memoryDirectory, runId, {
