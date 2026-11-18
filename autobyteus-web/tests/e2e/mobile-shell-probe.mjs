@@ -1439,7 +1439,7 @@ const runCases = async () => {
     await menuOpen(page, 'files');
     const remoteFiles = (await page.locator(sel('mobile-files-remote')).innerText().catch(() => '')).trim();
     await toList(page);
-    // autobyteus-458 UIS-002: Settings follows Activity (the Text size block below the divider is no menu item).
+    // autobyteus-458 UIS-002, autobyteus-534 REQ-005: Settings is the last entry (no VNC Viewer on alpha).
     assert(JSON.stringify(items.map(([id]) => id)) === JSON.stringify(['mobile-run-menu-artifacts', 'mobile-run-menu-files', 'mobile-run-menu-messages', 'mobile-run-menu-activity', 'mobile-run-menu-settings']), 'the member\'s ⋮ items in order', items);
     assert(artifacts.direct === 1 && artifacts.list === 0 && artifacts.text, 'one artifact shown directly', artifacts);
     assert(['docs', 'src', 'README.md'].every(name => filesTop.some(text => text.includes(name))) && filters === 0 && pathLine.includes('docs'), 'the Files tree, its path line, no filters', { filesTop, filters, pathLine });
