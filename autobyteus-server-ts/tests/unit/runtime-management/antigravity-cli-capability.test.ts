@@ -18,7 +18,8 @@ appendFileSync(process.env.AGY_FAKE_COMMAND_LOG, arg + '\\n');
 if (process.env.AGY_FAKE_PID_LOG) appendFileSync(process.env.AGY_FAKE_PID_LOG, arg + ' ' + process.pid + '\\n');
 if (arg === '--version') {
   // Only the compaction-detection probe reads the version; admission (help + models) never does.
-  if (process.env.AGY_FAKE_VERSION_OUTPUT === undefined) throw new Error('Version probing must not be used for admission');
+  if (mode === 'hang-version') { setInterval(() => {}, 1000); }
+  else if (process.env.AGY_FAKE_VERSION_OUTPUT === undefined) throw new Error('Version probing must not be used for admission');
   process.stdout.write(process.env.AGY_FAKE_VERSION_OUTPUT);
 } else if (arg === '--help') {
   if (mode === 'hang-help') { setInterval(() => {}, 1000); }
@@ -53,6 +54,15 @@ if (arg === '--version') {
 
 afterEach(() => vi.unstubAllEnvs());
 afterAll(async () => { await rm(directory, { recursive: true, force: true }); });
+
+/** The fake CLI has started `command` (it logs its argument first): the parent's timer for it is set by then. */
+const commandStarted = async (command: string) => {
+  const deadline = performance.now() + 10_000;
+  while (!(await readFile(path.join(directory, "commands.log"), "utf8")).split("\n").includes(command)) {
+    if (performance.now() > deadline) throw new Error(`the fake CLI never started ${command}`);
+    await new Promise((resolve) => setImmediate(resolve));
+  }
+};
 
 const capability = async (mode: string) => {
   vi.stubEnv("ANTIGRAVITY_CLI_COMMAND", fakeCli);
@@ -158,14 +168,38 @@ describe("bounded AGY CLI discovery", () => {
     if (mode === "bad-flags") expect(await readFile(path.join(directory, "commands.log"), "utf8")).toBe("--help\n");
   });
 
-  it.each([["hang-help", 5_000], ["hang-models", 17_000]] as const)(
-    "bounds %s and returns a sanitized timeout rather than hanging", async (mode, limit) => {
+  // e06-delegation-wait-margin REQ-003: without a caller's deadline, `--help` and `--version` get 10 s and `models` 30 s
+  // (room for a busy computer); a hung CLI still ends in a sanitized timeout. Only the timers are fake: the CLI is real.
+  it.each([
+    ["hang-help", "--help", 10_000],
+    ["hang-models", "models", 30_000],
+  ] as const)("bounds %s (`%s`) at %d ms and returns a sanitized timeout rather than hanging", async (mode, command, bound) => {
     const { listAntigravityModels } = await capability(mode);
-    const started = Date.now();
-    const error = await listAntigravityModels().catch((value: unknown) => value);
-    expect(error).toMatchObject({ diagnostic: { code: "AGY_MODEL_DISCOVERY_TIMEOUT" } });
-    expect(Date.now() - started).toBeLessThan(limit);
-  }, 20_000);
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    try {
+      let outcome: unknown = "pending";
+      void listAntigravityModels().then((value) => { outcome = value; }, (error: unknown) => { outcome = error; });
+      await commandStarted(command);
+      await vi.advanceTimersByTimeAsync(bound - 1);
+      expect(outcome).toBe("pending");
+      await vi.advanceTimersByTimeAsync(1);
+      expect(outcome).toMatchObject({ diagnostic: { code: "AGY_MODEL_DISCOVERY_TIMEOUT" } });
+    } finally { vi.useRealTimers(); }
+  });
+
+  it("bounds a hung `--version` at 10 s and reads no version", async () => {
+    const { readAntigravityCliVersion } = await capability("hang-version");
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    try {
+      let outcome: unknown = "pending";
+      void readAntigravityCliVersion().then((value) => { outcome = value; });
+      await commandStarted("--version");
+      await vi.advanceTimersByTimeAsync(9_999);
+      expect(outcome).toBe("pending");
+      await vi.advanceTimersByTimeAsync(1);
+      expect(outcome).toBeNull();
+    } finally { vi.useRealTimers(); }
+  });
 
   it("shares one step deadline across --help and models: a hanging second command ends by it and is killed (AR-002)", async () => {
     const { listAntigravityModels } = await capability("hang-models");
@@ -176,7 +210,7 @@ describe("bounded AGY CLI discovery", () => {
     const started = Date.now();
     const error = await listAntigravityModels({ deadline: createReadDeadline(1_500) }).catch((value: unknown) => value);
     expect(error).toMatchObject({ diagnostic: { code: "AGY_MODEL_DISCOVERY_TIMEOUT" } });
-    // Without the deadline `models` alone may run 15 s; with it the whole step ends at 1.5 s.
+    // Without the deadline `models` alone may run 30 s; with it the whole step ends at 1.5 s.
     expect(Date.now() - started).toBeLessThan(3_000);
     const modelsPid = Number((await readFile(pidLog, "utf8")).split("\n").find((line) => line.startsWith("models "))?.split(" ")[1]);
     expect(modelsPid).toBeGreaterThan(0);
