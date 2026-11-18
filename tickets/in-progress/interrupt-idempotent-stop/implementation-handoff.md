@@ -21,7 +21,7 @@
 - Current implementation revision ID: `IR-002` (Local Fix CR-001; IR-001 initial)
 - Related solution revision IDs: `SR-003` (requirements `SR-002`)
 - Related architecture-review revision IDs: `ARCH-REV-002`
-- Related code-review revision IDs: `CRR-001`
+- Related code-review revision IDs: `CRR-001` (Fail, CR-001); `CRR-002` Pass on IR-002 (`code-review-report.md`, commit `a0d81bbe18`); routed to API/E2E by the Code Reviewer
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
 - Triggering finding IDs: `CR-001`
