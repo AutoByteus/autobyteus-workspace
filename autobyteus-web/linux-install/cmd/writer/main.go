@@ -3,6 +3,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net"
 	"os"
@@ -84,6 +85,9 @@ func handle(connection net.Conn, uid uint32, images *store.Store) {
 	}
 	if err != nil {
 		response = protocol.Response{Error: err.Error()}
+		if errors.Is(err, store.ErrStageGone) {
+			response.Code = protocol.StageGone
+		}
 	}
 	json.NewEncoder(connection).Encode(response)
 }

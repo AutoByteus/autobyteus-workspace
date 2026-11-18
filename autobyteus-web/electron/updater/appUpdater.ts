@@ -490,6 +490,11 @@ export class AppUpdater implements AppUpdateController {
   private managedEvent(event: ManagedUpdateEvent): void {
     if (event.type === 'invalidated') {
       this.applyState({ updateStaged: false, ...(this.state.status === 'downloaded' ? { status: 'available' } : {}) });
+    } else if (event.type === 'stage-gone') {
+      this.notificationRecord?.clearLostStageAttempt(event.version);
+      if (!event.automatic) this.notificationRecord?.recordManualInstallFailure(event.version, 'stage-gone');
+      this.applyState({ updateStaged: false, status: 'available', notification: this.currentNotification(),
+        message: 'The pending update must be verified again. Download it again or wait for the next automatic check.' });
     } else if (event.type === 'ready') {
       this.applyState({ status: 'downloaded', updateStaged: true, availableVersion: event.version,
         downloadPercent: 100, message: 'Ready for your next quit.' });

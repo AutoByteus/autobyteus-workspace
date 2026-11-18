@@ -11,7 +11,7 @@ type AutomaticInstall = { version: string; startedAt: string };
 /** An automatic download or install of `version` failed; an install failure blocks that version (REQ-004). */
 type AutomaticFailure = { version: string; step: 'download' | 'install'; reason: string };
 
-type ManualFailure = { version: string; reason: 'refused' | 'not-running' };
+type ManualFailure = { version: string; reason: 'refused' | 'not-running' | 'stage-gone' };
 
 type StoredRecord = {
   manualInstall: string | null;
@@ -45,7 +45,7 @@ const toAutomaticFailure = (value: unknown): AutomaticFailure | null => {
 
 const toManualFailure = (value: unknown): ManualFailure | null => {
   const candidate = value as ManualFailure | null;
-  return candidate && nonEmpty(candidate.version) && (candidate.reason === 'refused' || candidate.reason === 'not-running')
+  return candidate && nonEmpty(candidate.version) && (candidate.reason === 'refused' || candidate.reason === 'not-running' || candidate.reason === 'stage-gone')
     ? { version: candidate.version, reason: candidate.reason } : null;
 };
 
@@ -108,9 +108,17 @@ export class AppUpdateNotificationRecord {
   }
 
   /** A confirmed refusal does not change the separate automatic retry/block evidence. */
-  recordManualInstallFailure(version: string): boolean {
+  recordManualInstallFailure(version: string, reason: ManualFailure['reason'] = 'refused'): boolean {
     return this.save({ ...this.waitingRecordOf(version), manualInstall: null,
-      manualFailure: { version, reason: 'refused' }, read: false });
+      manualFailure: { version, reason }, read: false });
+  }
+
+  /** Confirmed old baseline and absent receipt: drop only this attempt, never independent failure history. */
+  clearLostStageAttempt(version: string): void {
+    const current = this.record;
+    if (!current) return;
+    this.save({ ...current, automatic: current.automatic?.version === version ? null : current.automatic,
+      manualInstall: current.manualInstall === version ? null : current.manualInstall });
   }
 
   /**

@@ -1,0 +1,49 @@
+IMP-11, 2026-11-18 Ubuntu26 x64 Node22.23.2 Go1.27.4; 4c58622f6a + signature encoding check and inert classifier tests
+TAP version 13
+# Subtest: production trust cannot use absent provisioning or a build-only key implicitly
+ok 1 - production trust cannot use absent provisioning or a build-only key implicitly
+  ---
+  duration_ms: 109.364802
+  type: 'test'
+  ...
+# Subtest: build-only trust is fresh, separate from supplied production public key
+ok 2 - build-only trust is fresh, separate from supplied production public key
+  ---
+  duration_ms: 34.170071
+  type: 'test'
+  ...
+# Subtest: signing/metadata CLI binds exact final bytes, canonical asset, version, arch and key
+ok 3 - signing/metadata CLI binds exact final bytes, canonical asset, version, arch and key
+  ---
+  duration_ms: 394.928192
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 606.767674
+=== RUN   TestEarlyFatalClassification
+=== RUN   TestEarlyFatalClassification/sandbox-fatal
+FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:158] Rather than run without sandboxing I'm aborting now.
+=== RUN   TestEarlyFatalClassification/already-ready
+FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:158] Rather than run without sandboxing I'm aborting now.
+=== RUN   TestEarlyFatalClassification/unrelated-crash
+unrelated
+=== RUN   TestEarlyFatalClassification/normal-error
+FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:158] Rather than run without sandboxing I'm aborting now.
+=== RUN   TestEarlyFatalClassification/normal-exit
+=== RUN   TestEarlyFatalClassification/argv
+--- PASS: TestEarlyFatalClassification (0.36s)
+    --- PASS: TestEarlyFatalClassification/sandbox-fatal (0.11s)
+    --- PASS: TestEarlyFatalClassification/already-ready (0.13s)
+    --- PASS: TestEarlyFatalClassification/unrelated-crash (0.12s)
+    --- PASS: TestEarlyFatalClassification/normal-error (0.00s)
+    --- PASS: TestEarlyFatalClassification/normal-exit (0.00s)
+    --- PASS: TestEarlyFatalClassification/argv (0.00s)
+PASS
+ok  	autobyteus.local/desktop/linux-install/internal/launch	0.360s

@@ -68,7 +68,7 @@
 
     <p v-if="row.kind === 'app' && row.state !== 'handled' && row.outcome === 'MANUAL_INSTALL_FAILED'" class="mt-1.5 rounded-md bg-red-50 px-2.5 py-1.5 text-xs leading-5 text-red-800" role="alert" data-testid="notification-row-manual-install-failed">
       {{ $t('settings.notifications.outcome.manualFailed') }}
-      <span class="block text-red-700">{{ $t(row.outcomeReason === 'refused' ? 'settings.notifications.outcome.manualRefused' : 'settings.notifications.outcome.manualNotRunning') }}</span>
+      <span class="block text-red-700">{{ $t(row.outcomeReason === 'stage-gone' ? 'settings.notifications.outcome.manualStageGone' : row.outcomeReason === 'refused' ? 'settings.notifications.outcome.manualRefused' : 'settings.notifications.outcome.manualNotRunning') }}</span>
     </p>
 
     <div v-if="expanded" :id="detailsId" class="mt-1.5 space-y-1 text-xs leading-5 text-gray-600" data-testid="notification-row-details">

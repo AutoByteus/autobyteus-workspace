@@ -51,6 +51,10 @@ test('signing/metadata CLI binds exact final bytes, canonical asset, version, ar
     await signRelease({ image, version: '1.5.14', arch: 'x64', privateKey: keys.privateKey, expectedPublicKey: keys.publicKey });
     const verify = () => command('verify-release.mjs', [image, '1.5.14', 'x64', publicPath]);
     assert.equal(verify().status, 0);
+    const signature = readFileSync(`${image}.release.json.sig`);
+    const nonAscii = Buffer.from(signature); nonAscii[0] |= 0x80;
+    writeFileSync(`${image}.release.json.sig`, nonAscii); assert.notEqual(verify().status, 0);
+    writeFileSync(`${image}.release.json.sig`, signature);
     assert.notEqual(command('verify-release.mjs', [image, '1.5.14', 'arm64', publicPath]).status, 0);
     const digest = createHash('sha512').update(bytes).digest('base64');
     const metadata = join(tmp, 'latest-linux.yml');

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { ManagedUpdateSession } from '../managedUpdateSession'
 import { ApplicationShutdown } from '../applicationShutdown'
-import type { ManagedStage } from '../../updater/linuxManagedInstall'
+import { ManagedStageGone, type ManagedStage } from '../../updater/linuxManagedInstall'
 
 function deferred<T>() { let resolve!: (value: T) => void; const promise = new Promise<T>(r => { resolve = r }); return { promise, resolve } }
 const candidate: ManagedStage = { id: 'stage', baseline: 'old', identity: { version: '1.5.14', sha256: 'new' }, channel: 'stable' }
@@ -64,6 +64,22 @@ describe('managed update session ownership', () => {
     await s.session.stageDownloaded('/cache/update', '1.5.14'); s.session.requestRestart()
     await vi.waitFor(() => expect(s.hooks.report).toHaveBeenCalled())
     expect(s.writer.activate).not.toHaveBeenCalled(); expect(s.hooks.relaunch).not.toHaveBeenCalled()
+  })
+  it('treats known receipt loss with confirmed old baseline as retryable, without reopening ordinary quit', async () => {
+    const s = setup(); s.writer.activate.mockRejectedValue(new ManagedStageGone('gone'))
+    await s.session.stageDownloaded('/cache/update', '1.5.14'); s.session.willQuit({ preventDefault() {} })
+    await vi.waitFor(() => expect(s.hooks.quit).toHaveBeenCalledOnce())
+    expect(s.events).toContainEqual({ type: 'stage-gone', version: '1.5.14', automatic: true })
+    expect(s.events.some(e => (e as {type:string}).type === 'activation-failed')).toBe(false)
+    expect(s.hooks.relaunch).not.toHaveBeenCalled(); expect(s.writer.stage).toHaveBeenCalledOnce()
+  })
+  it('does not label receipt loss retryable when the installed baseline is changed', async () => {
+    const s = setup(false); s.writer.activate.mockRejectedValue(new ManagedStageGone('gone'))
+    s.writer.status.mockResolvedValue({ version: '1.5.15', sha256: 'different' })
+    await s.session.stageDownloaded('/cache/update', '1.5.14'); s.session.requestRestart()
+    await vi.waitFor(() => expect(s.hooks.report).toHaveBeenCalled())
+    expect(s.events.some(e => (e as {type:string}).type === 'stage-gone')).toBe(false)
+    expect(s.hooks.relaunch).not.toHaveBeenCalled()
   })
   it('keeps unknown commit outcome distinct from definite refusal', async () => {
     const s = setup(false); s.writer.activate.mockRejectedValue(new Error('lost')); s.writer.status.mockRejectedValue(new Error('unavailable'))

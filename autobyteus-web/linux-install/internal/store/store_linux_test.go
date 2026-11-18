@@ -4,10 +4,12 @@ import (
 	"bytes"
 	"crypto/ed25519"
 	"crypto/sha256"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"autobyteus.local/desktop/linux-install/internal/imagefile"
 	"autobyteus.local/desktop/linux-install/internal/protocol"
@@ -66,12 +68,17 @@ func TestAuthenticatedInodeTransactions(t *testing.T) {
 		if err != nil || current.SHA256 != baseline.SHA256 {
 			t.Fatal("staging changed live identity", err)
 		}
+		// File age is deliberately irrelevant to a current transaction, even days later.
+		oldTime := time.Now().Add(-72 * time.Hour)
+		if err = os.Chtimes(s.stage.file, oldTime, oldTime); err != nil {
+			t.Fatal(err)
+		}
 		activation := protocol.Request{Operation: "activate", StageID: receipt.StageID, ExpectedDigest: baseline.SHA256, Channel: "beta"}
 		if _, err = s.Handle(activation, bytes.NewReader(nil)); err != nil {
 			t.Fatal(err)
 		}
-		if _, err = s.Handle(activation, bytes.NewReader(nil)); err == nil {
-			t.Fatal("replayed stage accepted")
+		if _, err = s.Handle(activation, bytes.NewReader(nil)); !errors.Is(err, ErrStageGone) {
+			t.Fatal("consumed receipt was not reported gone", err)
 		}
 		current, _, err = s.current()
 		if err != nil || current.SHA256 != candidate.SHA256 {
@@ -112,8 +119,27 @@ func TestAuthenticatedInodeTransactions(t *testing.T) {
 	}
 	_, request, payload := signed(t, private, "1.5.15")
 	request.ExpectedDigest = baseline.SHA256
-	if _, err = s.Handle(request, bytes.NewReader(payload)); err != nil {
+	receipt, err := s.Handle(request, bytes.NewReader(payload))
+	if err != nil {
 		t.Fatal(err)
+	}
+	activation := protocol.Request{Operation: "activate", StageID: receipt.StageID, ExpectedDigest: baseline.SHA256, Channel: "beta"}
+	if _, err = s.Handle(protocol.Request{Operation: "discard", StageID: receipt.StageID}, bytes.NewReader(nil)); err != nil {
+		t.Fatal(err)
+	}
+	if _, err = s.Handle(activation, bytes.NewReader(nil)); !errors.Is(err, ErrStageGone) {
+		t.Fatal("discard did not invalidate receipt", err)
+	}
+	if _, err = s.Handle(request, bytes.NewReader(payload)); err != nil {
+		t.Fatal("same release cannot re-stage", err)
+	}
+	if _, err = s.Handle(activation, bytes.NewReader(nil)); !errors.Is(err, ErrStageGone) {
+		t.Fatal("superseded receipt accepted", err)
+	}
+	wrongChannel := activation
+	wrongChannel.Channel = "stable"
+	if _, err = s.Handle(wrongChannel, bytes.NewReader(nil)); err == nil || errors.Is(err, ErrStageGone) {
+		t.Fatal("channel refusal treated as retryable", err)
 	}
 	s.Close()
 	reopened, err := Open(directory, "x64", public)
@@ -121,6 +147,9 @@ func TestAuthenticatedInodeTransactions(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer reopened.Close()
+	if _, err = reopened.Handle(activation, bytes.NewReader(nil)); !errors.Is(err, ErrStageGone) {
+		t.Fatal("reset receipt accepted", err)
+	}
 	pending, _ := filepath.Glob(filepath.Join(directory, ".pending-*"))
 	if len(pending) != 0 {
 		t.Fatal("orphan stage survived restart")

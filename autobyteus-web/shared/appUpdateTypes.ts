@@ -75,7 +75,7 @@ export interface AppUpdateNotification {
    * explicit-install refusal (independent of automatic retry policy); null otherwise.
    */
   outcome: AppUpdateOutcome | null;
-  /** Automatic failure text, or safe manual-failure code (`refused` / `not-running`); null otherwise. */
+  /** Automatic failure text, or safe manual-failure code (`refused` / `not-running` / `stage-gone`); null otherwise. */
   outcomeReason: string | null;
   /** Which automatic step failed when `outcome` is `AUTO_FAILED` (`install`: not tried again for this version); null otherwise. */
   outcomeStep: 'download' | 'install' | null;

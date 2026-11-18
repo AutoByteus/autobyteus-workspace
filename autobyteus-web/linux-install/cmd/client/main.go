@@ -135,7 +135,7 @@ func run() (protocol.Response, error) {
 		}
 		response, err := exchange(p.Socket, protocol.Request{Operation: "activate", StageID: args[1], ExpectedDigest: args[2], Channel: args[3]}, nil)
 		if err != nil {
-			return empty, err
+			return response, err
 		}
 		_, err = authenticated(response, key, identity.Arch)
 		return response, err
@@ -151,6 +151,10 @@ func run() (protocol.Response, error) {
 func main() {
 	response, err := run()
 	if err != nil {
+		if response.Code == protocol.StageGone && response.Error != "" {
+			json.NewEncoder(os.Stdout).Encode(response)
+			return
+		}
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}

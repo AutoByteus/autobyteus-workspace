@@ -12,6 +12,7 @@ import (
 )
 
 const MaxHeader = 8192
+const StageGone = "STAGE_GONE"
 
 type Request struct {
 	Operation      string `json:"operation"`
@@ -23,6 +24,7 @@ type Request struct {
 }
 
 type Response struct {
+	Code           string `json:"code,omitempty"`
 	ExpectedDigest string `json:"expectedDigest,omitempty"`
 	Error          string `json:"error,omitempty"`
 	StageID        string `json:"stageID,omitempty"`

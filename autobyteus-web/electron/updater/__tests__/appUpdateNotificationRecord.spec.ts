@@ -51,6 +51,20 @@ describe('AppUpdateNotificationRecord', () => {
     } finally { stderr.mockRestore(); }
   });
 
+  it('clears a lost provisional attempt without creating or removing an independent automatic block', () => {
+    const record = new AppUpdateNotificationRecord(dir, '1.5.13');
+    record.recordAutomaticInstall('1.5.14'); record.clearLostStageAttempt('1.5.14');
+    let restarted = new AppUpdateNotificationRecord(dir, '1.5.13');
+    expect(restarted.toNotification(noLink)?.outcome).toBeNull();
+    expect(restarted.blocksAutomatic('1.5.14')).toBe(false);
+    restarted.recordAutomaticFailure('1.5.14', 'install', 'Independent refusal');
+    restarted.recordManualInstall('1.5.14'); restarted.clearLostStageAttempt('1.5.14');
+    restarted.recordManualInstallFailure('1.5.14', 'stage-gone');
+    restarted = new AppUpdateNotificationRecord(dir, '1.5.13');
+    expect(restarted.blocksAutomatic('1.5.14')).toBe(true);
+    expect(restarted.toNotification(noLink)).toMatchObject({ outcome: 'MANUAL_INSTALL_FAILED', outcomeReason: 'stage-gone' });
+  });
+
   it('manual failure does not create an automatic block and a newer release clears its display', () => {
     const record = new AppUpdateNotificationRecord(dir, '1.5.13');
     record.recordManualInstallFailure('1.5.14');

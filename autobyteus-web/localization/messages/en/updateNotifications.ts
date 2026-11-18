@@ -92,6 +92,7 @@ const updateNotificationsMessages = {
   'settings.notifications.outcome.from': 'From {{version}}',
   'settings.notifications.outcome.failed': 'Automatic update failed. Nothing was changed.',
   'settings.notifications.outcome.manualFailed': 'Update failed',
+  'settings.notifications.outcome.manualStageGone': 'The pending update is no longer ready. Your installed version is unchanged. Download it again, or let the next automatic check retry.',
   'settings.notifications.outcome.manualRefused': 'The update was refused. Your previous version is still installed. Download the update again to retry.',
   'settings.notifications.outcome.manualNotRunning': 'The requested version is not running. Check for updates and try again.',
   'settings.notifications.outcome.notRetried': 'It won’t be tried again automatically. You can still install it yourself.',

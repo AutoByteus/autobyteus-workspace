@@ -1,5 +1,5 @@
 import type { ApplicationShutdown } from './applicationShutdown'
-import type { ManagedStage, LinuxManagedInstall } from '../updater/linuxManagedInstall'
+import { ManagedStageGone, type ManagedStage, type LinuxManagedInstall } from '../updater/linuxManagedInstall'
 
 type Settings = Readonly<{ automaticUpdate: boolean; updateChannel: 'stable' | 'beta' }>
 type SessionOptions = Readonly<{
@@ -16,6 +16,7 @@ type SessionOptions = Readonly<{
 export type ManagedUpdateEvent =
   | { type: 'ready'; version: string }
   | { type: 'invalidated' }
+  | { type: 'stage-gone'; version: string; automatic: boolean }
   | { type: 'activating'; version: string; automatic: boolean }
   | { type: 'stage-failed'; version: string; error: unknown }
   | { type: 'activation-failed'; version: string; error: unknown; automatic: boolean; confirmedOld: boolean }
@@ -94,7 +95,10 @@ export class ManagedUpdateSession {
         } catch (error) {
           // Lost reply is ambiguous; status hashes the live inode before reporting old or new.
           const actual = await this.options.writer.status()
-          if (actual.sha256 !== stage.identity.sha256) {
+          if (actual.sha256 === stage.baseline && error instanceof ManagedStageGone) {
+            this.pending = null; ++this.generation
+            this.emit({ type: 'stage-gone', version: stage.identity.version, automatic })
+          } else if (actual.sha256 !== stage.identity.sha256) {
             this.emit({ type: 'activation-failed', version: stage.identity.version, error, automatic, confirmedOld: actual.sha256 === stage.baseline })
             if (actual.sha256 !== stage.baseline) throw new Error('Activation outcome requires repair')
           }

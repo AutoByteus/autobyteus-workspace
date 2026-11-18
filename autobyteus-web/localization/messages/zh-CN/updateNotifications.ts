@@ -92,6 +92,7 @@ const updateNotificationsMessages = {
   'settings.notifications.outcome.from': '原版本 {{version}}',
   'settings.notifications.outcome.failed': '自动更新失败，未做任何更改。',
   'settings.notifications.outcome.manualFailed': '更新失败',
+  'settings.notifications.outcome.manualStageGone': '待安装的更新已失效，当前安装版本未变。请重新下载，或等待下次自动检查重试。',
   'settings.notifications.outcome.manualRefused': '更新被拒绝，之前的版本仍已安装。请重新下载更新后重试。',
   'settings.notifications.outcome.manualNotRunning': '请求的版本尚未运行。请检查更新并重试。',
   'settings.notifications.outcome.notRetried': '此版本不会再自动尝试。你仍可以手动安装。',

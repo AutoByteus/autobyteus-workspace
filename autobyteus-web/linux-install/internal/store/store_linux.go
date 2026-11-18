@@ -5,12 +5,12 @@ import (
 	"crypto/ed25519"
 	"crypto/rand"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"io"
 	"os"
 	"path/filepath"
 	"syscall"
-	"time"
 
 	"autobyteus.local/desktop/linux-install/internal/imagefile"
 	"autobyteus.local/desktop/linux-install/internal/protocol"
@@ -19,8 +19,9 @@ import (
 
 type pending struct {
 	id, file, baseline, channel string
-	expires                     time.Time
 }
+
+var ErrStageGone = errors.New("verified stage is no longer present")
 
 // The service serializes all calls. Directory is fixed by its root-owned service instance.
 type Store struct {
@@ -162,15 +163,18 @@ func (s *Store) receive(q protocol.Request, in io.Reader) (protocol.Response, er
 	if _, err = rand.Read(nonce[:]); err != nil {
 		return protocol.Response{}, err
 	}
-	s.stage = &pending{hex.EncodeToString(nonce[:]), f.Name(), current.SHA256, q.Channel, time.Now().Add(time.Hour)}
+	s.stage = &pending{hex.EncodeToString(nonce[:]), f.Name(), current.SHA256, q.Channel}
 	committed = true
 	return protocol.Response{StageID: s.stage.id, Record: q.Record, Signature: q.Signature, ExpectedDigest: current.SHA256}, nil
 }
 
 func (s *Store) activate(q protocol.Request) (protocol.Response, error) {
 	p := s.stage
-	if p == nil || p.id != q.StageID || time.Now().After(p.expires) || p.channel != q.Channel || p.baseline != q.ExpectedDigest {
+	if (q.Channel != "stable" && q.Channel != "beta") || (p != nil && (p.channel != q.Channel || p.baseline != q.ExpectedDigest)) {
 		return protocol.Response{}, fmt.Errorf("stale activation request")
+	}
+	if p == nil || p.id != q.StageID {
+		return protocol.Response{}, ErrStageGone
 	}
 	current, _, err := s.current()
 	if err != nil {

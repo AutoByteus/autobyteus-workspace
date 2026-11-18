@@ -5,7 +5,8 @@ import { promisify } from 'node:util'
 
 export type ManagedIdentity = Readonly<{ version: string; sha256: string }>
 export type ManagedStage = Readonly<{ id: string; baseline: string; identity: ManagedIdentity; channel: 'stable' | 'beta' }>
-type Receipt = { error?: string; stageID?: string; expectedDigest?: string; record?: string }
+export class ManagedStageGone extends Error {}
+type Receipt = { code?: string; error?: string; stageID?: string; expectedDigest?: string; record?: string }
 const execute = promisify(execFile)
 
 /** The native client owns signed downloads and the authenticated writer protocol. No shell or elevation. */
@@ -14,7 +15,10 @@ export class LinuxManagedInstall {
   private async command(args: string[]): Promise<Receipt> {
     const { stdout } = await execute(this.client, args, { timeout: 210_000, maxBuffer: 8192 })
     const receipt = JSON.parse(stdout) as Receipt
-    if (receipt.error) throw new Error(receipt.error)
+    if (receipt.error) {
+      if (receipt.code === 'STAGE_GONE') throw new ManagedStageGone(receipt.error)
+      throw new Error(receipt.error)
+    }
     return receipt
   }
   private identity(receipt: Receipt): ManagedIdentity {
