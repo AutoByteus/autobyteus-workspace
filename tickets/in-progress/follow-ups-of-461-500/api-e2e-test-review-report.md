@@ -1,6 +1,32 @@
 # API/E2E Test Review Report: follow-ups-of-461-500 (autobyteus-500)
 
-The latest result is **CRR-016: Not Applicable** (API-REV-006, the seventh merged state). CRR-014, CRR-012, CRR-009, CRR-006 and CRR-005 follow as history.
+The latest result is **CRR-018: Pass** (API-REV-007, the eighth merged state). CRR-016, CRR-014, CRR-012, CRR-009, CRR-006 and CRR-005 follow as history.
+
+## API-REV-007 (CRR-018)
+
+- **Scope:** `d33103b732`. Docs are in `7b27e7fb9b`.
+- **MO-1** (`delegated-run-own-attachment-links-startup.e2e.test.ts`, added to ALM-1):
+  - **Setup:** the same released-shape data also holds 491's retired copies and a real AGY run of the Memory Compactor, and their ledger rows are removed so the removal runs again. That reproduces an install upgrading from a build before 491.
+  - **Assertions, all positive:**
+    - 491's removal is `SUCCEEDED`, attempt 1, "Scanned 2; migrated 2";
+    - the order by timestamps: the attachment-link migration ends before its follow-up starts, and both end before 491's starts;
+    - both copies are gone, and the run stays on disk and listed;
+    - its continuation is refused `ACTIVATION_FAILED` with nothing answered;
+    - a second start runs none of the three again.
+  - The runtime's own not-found code (AGY's `AGY_AGENT_DEFINITION_MISSING` against AutoByteus' `RUN_NOT_FOUND`) is the same on base, recorded as FU-500-15 (b), and asserted as it is.
+- **LRN-1/2** (`list-running-agents-native-and-mcp.e2e.test.ts`, new):
+  - **Real triggers:** two built Studios paired by invite with signed peer requests; the native tool is called by an AutoByteus run (an emulated LM Studio makes the real tool call), and the MCP route by the scripted AGY CLI.
+  - **LRN-1 assertions:** each route's local list (without the caller), entries identical across routes and without `node`; the peer list with `node` on each entry; the "turned off" refusal with `node` when the switch is off, with the local list still answering.
+  - **LRN-2** (the application host) asserts 492's same-senders rule: each route's outcome equals `list_available_agents`', and never a peer's list. It is the same on base; FU-500-15 (a) records that the host's "off" value is reached only by units.
+  - The one fixed wait (2 s) is teardown grace before `SIGKILL`.
+  - **Note, not a finding:** `mcpCall` counts `CALLED:` replies, the pattern RC-19 outgrew. LRN's runs make a few calls, far from the 100-event window, so it's sound here.
+- **`remote-delegation-two-server.e2e` `calls()`:**
+  - It waits for the newest reply entry not in the view before the call, instead of a count. The cause is evidenced: the run view keeps the last 100 events (`RECENT_RUN_PROJECTION_EVENT_LIMIT`), so a long-lived delegator's count stopped growing, and RC-19 timed out with its reply present.
+  - No assertion changed; the failure message now names the entries in view. The file is 49/49, and RC-19 takes 740 ms.
+- **Checks:** names and intent clear; assertions prove the requirements (the migration order, the discovery on both routes, the same-senders rule); helpers reused (`pairNodes`, the built-server launch); no skips beyond the env gate.
+- **Result: Pass.** No findings. Recipient: `/delivery_engineer`.
+
+---
 
 ## API-REV-006 (CRR-016)
 

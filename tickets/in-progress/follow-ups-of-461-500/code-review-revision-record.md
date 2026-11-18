@@ -18,6 +18,8 @@
 | CRR-014 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-005 (16559affdd) | Pass (CRR-013) | Pass | None |
 | CRR-015 | `code-review-report.md` | Merge review, round 8 (Targeted Delta) / IR-008, base `75048cbaf4` | Pass (CRR-014) | Pass | None |
 | CRR-016 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-006 (no test change) | Pass (CRR-015) | Not Applicable | None |
+| CRR-017 | `code-review-report.md` | Merge review, round 9 (Targeted Delta) / IR-009, base `53b72018ad` (491, 492) | Not Applicable (CRR-016) | Pass | None |
+| CRR-018 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-007 (d33103b732) | Pass (CRR-017) | Pass | None |
 
 ### CRR-001: Implementation review of IR-001: Fail, Local Fix
 
@@ -440,4 +442,58 @@
   - FU-500-14 (517's rename cases on a loaded Mac);
   - `origin/personal` moved again (`be11a62449`);
   - the design spec's FU-021 "60 s" text needs aligning (the Solution Designer, at closure);
+  - the residual risks as in CRR-006.
+
+### CRR-017: Merge review of IR-009 (the base `53b72018ad`, 491 and 492): Pass
+
+- Review entry point and round: implementation review, round 9 (the eighth delivery base refresh)
+- Review scope: Targeted Delta, the merge `5eb8246076` (18 conflicts, 31 files in the remerge diff) and `8e8c21c2c4`
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer, `implementation-handoff.md` (IR-009, IMP-026); Delivery (`04d44b5cd0`)
+- Relevant solution revision IDs: SR-006 (FU-030), SR-016 (unchanged)
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: IR-009
+- Relevant API/E2E revision IDs: API-REV-006
+- Relevant delivery revision IDs: the eighth integration refresh
+- Prior authoritative result: Not Applicable (CRR-016)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - 491's unreleased `20261118` migration is appended after this ticket's two `20261117` ones. The released record is unchanged, since no tag holds 491's migration, and the two don't share any stored data.
+  - 492's DEC-001 (delivering messages between unrelated runs) supersedes FU-030's SIR-001 refusal, so the base's side is taken.
+  - 492's running agents use this ticket's names, and `list_running_agents` now takes the host's `PeerDiscoveryAccess` (FU-011), with the off value answering it.
+  - The type-check baseline is not raised.
+- Supported product scenario / material-premise basis changes: SIR-001's refusal no longer applies (superseded by 492 DEC-001)
+- Prior finding resolution: N/A
+- New or remaining finding IDs: none
+- Material score or classification changes: none
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty:
+  - the FU-030 SIR-001 row in the handoff and requirements needs a "superseded by 492 DEC-001" note at closure;
+  - the member handle is at 500.
+
+### CRR-018: Proportional test-code review after API-REV-007 (eighth merged state): Pass
+
+- Review entry point and round: successful API/E2E test-code review (round 7)
+- Review scope: `d33103b732` (MO-1; LRN-1/2; the RC suite's `calls()`)
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-007)
+- Relevant solution revision IDs: SR-016 (unchanged)
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: IR-009
+- Relevant API/E2E revision IDs: API-REV-007
+- Relevant delivery revision IDs: the eighth integration refresh
+- Prior authoritative result: Pass (CRR-017)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - MO-1 proves the merged migration order and 491's removal on one first start.
+  - LRN-1/2 prove `list_running_agents` with the host's discovery on both routes and two nodes, and the application host's same-senders rule.
+  - The RC suite's reply wait follows the run view's 100-event window, with its cause evidenced and no assertion changed.
+- Supported product scenario / material-premise basis changes: none
+- Prior finding resolution: N/A
+- New or remaining finding IDs: none
+- Material score or classification changes: N/A
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty:
+  - FU-500-15 (a), the host's "off" answer reached by units only;
+  - FU-500-15 (b), the runtimes' not-found codes differ, as on base;
+  - FU-500-10 is resolved by 492;
+  - the closure doc notes (SIR-001 superseded; the FU-021 guard text);
   - the residual risks as in CRR-006.

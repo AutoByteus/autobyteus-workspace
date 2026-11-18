@@ -1,6 +1,44 @@
 # Code Review Report: follow-ups-of-461-500 (autobyteus-500)
 
-The latest result is round 8, **CRR-015: Pass** (IR-008, the seventh base refresh, `75048cbaf4`). It comes first, then round 7 (CRR-013), CRR-011, round 6 (CRR-010) and the earlier rounds. The test reviews CRR-005, CRR-006, CRR-009, CRR-012 and CRR-014 are in `api-e2e-test-review-report.md`.
+The latest result is round 9, **CRR-017: Pass** (IR-009, the eighth base refresh, `53b72018ad`: 491 and 492). It comes first, then round 8 (CRR-015) and the earlier rounds. The test reviews CRR-005, CRR-006, CRR-009, CRR-012, CRR-014 and CRR-016 are in `api-e2e-test-review-report.md`.
+
+## Round 9: Merge Review Of IR-009, The Base `53b72018ad` (CRR-017)
+
+- **Scope:**
+  - `Targeted Delta Review` of the merge `5eb8246076` (parents `04d44b5cd0` and `53b72018ad`; `origin/personal` is the second parent) and `8e8c21c2c4`.
+  - 18 conflicts; `git show --remerge-diff` lists 31 files.
+  - The merge commit was amended before any push, to include unstaged resolution edits. The implementer diffed the rebuilt tree against the old tip plus those edits, and the type gate passes on the committed state.
+- **1. Migration order: correct.**
+  - 491's `20261118_remove_retired_built_in_agents` is unreleased: the commit that adds it (`25a7ad3940`) is in no tag. The newest tag is still v1.5.13, which shipped beta.7's 45 migrations.
+  - So `released-migration-order.json` is unchanged, and the registry is: the 45 released IDs, then this ticket's two `20261117` migrations, then 491's `20261118`. That is append-only and in date order, so the order test's rules hold.
+  - **No interaction:** this ticket's migrations rewrite only raw-trace files under `memory/`, and 491's deletes two definition folders under `agents/` and keeps their runs, so neither is the other's late predecessor. The registry comment says so.
+  - **Tests:** the three 461-era order tests list all three; `8e8c21c2c4` makes this ticket's registration test assert that the pair sits right after the last 461 migration, with only 491's after it.
+- **2. 492's DEC-001 supersedes FU-030's SIR-001: correct to take 492's side.**
+  - Runs no Task relates are now delivered while the receiver runs (`deliverUnrelated`), so this ticket's refusal text `otherTaskRefusal` and its router branch are gone.
+  - `cross-run-message-delivery.ts`, `global-agent-run-message-router.ts`, their tests, `result-catalogue`, `contract-states.json` and `collaboration-prompt-wording.e2e` take the base's side.
+  - **Docs alignment for the Solution Designer and delivery at closure:** the FU-030 table's SIR-001 row (handoff, `requirements-doc.md` D-4 / AC-004 scope) no longer applies. It is superseded by 492's DEC-001, not a regression.
+- **3. 492's running agents, with this ticket's names (N2) and owners (FU-011): correct.**
+  - `RunningAgents` reads `RunAgentAccess.runAgentStatuses` / `RunAgentStatusEntry`. `remote-message-receiver`, the remote composition and `standalone-root-message-delivery` use `runAgents`, `isRunAgent` and `agentIdentity()`, with 492's `liveRoot`.
+  - **`list_running_agents`** had used `findProcessPeerDiscoveryChannel()`, which FU-011 removed. It now takes the host's `PeerDiscoveryAccess` like the other two discovery tools:
+    - `listRunningAgentsFor(context, args, discovery, { listing? })`;
+    - the native tool through `boundPeerDiscovery` (which refuses an unbound tool before reading the binding);
+    - `ListRunningAgentsMcpAdapterProvider(peerDiscovery)` from the default providers and the tool resolver;
+    - `REMOTE_COLLABORATION_OFF_DISCOVERY.listRunningAgents` answers the "off" refusal.
+  - The local listing (`getProcessRunningAgentsListing()`) is a process getter that throws when uncomposed, FU-500-02's kind and not a silent lookup.
+  - `build-studio-server.ts` keeps 492's `running` with this ticket's `remote.channel`; it is at 434 lines.
+- **4. Others: correct.**
+  - The web `skill-improvement-removal-cases.mjs` takes the base's released-shape sessions plus this ticket's derived-files exclusion.
+  - `typecheck-baseline.json` (server 1010 → 1006): against the branch's last head, nothing is raised. Against the base, the one "added" entry is this ticket's renamed `run-agent-access.test.ts`, which carries the base's paired test's 2 errors.
+- **Names:** no renamed or removed name comes back (PairedAgent\*, transient\*, `ensureHostReady`, `findProcess*Channel`, `OTHER_TASK_REFUSAL`, `isHost(`, `Copy*`).
+- **Sizes against `53b72018ad`:** the member handle 500 (at the limit), the AutoByteus backend factory 496, the studio 434.
+- **Checks:** I didn't rerun IMP-026.
+  - Type gates at their baselines (server 1006 in 315; web 87 in 37).
+  - Server 8937 passed. The nine remaining failures are OS file-event waits with their labels; the registration test is fixed (8/8).
+  - Web: 5780 passed.
+- **Findings:** none.
+- **Routing:** `Pass`, to `/api_e2e_engineer` for the round delivery asked for: messaging (492's unrelated-run delivery and `list_running_agents`, local, peer and with remote off) and the migration order (all three new migrations on one first start, and the order test), then the test review, then delivery.
+
+---
 
 ## Round 8: Merge Review Of IR-008, The Base `75048cbaf4` (CRR-015)
 
