@@ -1,7 +1,7 @@
 # API/E2E evidence — autobyteus-534, round 1 (API-REV-001)
 
-Commit tested: code `d4a14666a4` (branch `codex/phone-text-size-three-steps-534`; HEAD `7aef58aac3` adds only ticket docs).
-Date: 2026-11-18. macOS 26 arm64, Node v22.23.1, Chrome headless via playwright-core 1.58.2; host load average 60–85.
+Commits tested: IR-001 code `d4a14666a4` (API-05…07) and IR-002 code `a8f2680e2a`, HEAD `6df3a5c12f` (API-02, API-03, API-08, API-09); branch `codex/phone-text-size-three-steps-534`.
+Date: 2026-11-18. macOS 26 arm64, Node v22.23.1, Chrome headless via playwright-core 1.58.2; host load average 60–140.
 The JSON and PNG files are raw outputs; this README is their header. Scripts in `scripts/` (temporary, ticket-owned; copied
 from autobyteus-525's API/E2E harness with this worktree's paths; `screens.mjs` gained `small-upgrade` and `menu-zh`;
 `pixeldiff.py` takes a `DIFF_PREFIX`).
