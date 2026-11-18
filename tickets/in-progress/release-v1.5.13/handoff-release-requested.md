@@ -59,7 +59,7 @@ Merges on personal since `v1.5.12` (47 first-parent merges; the betas' notes and
 - Curated, user-facing, ONE set for everything since v1.5.12. No internal ticket IDs, review rounds or file paths. Format `.github/release-notes/template.md`; sources `.github/release-notes/release-notes.md` and the tickets' `release-notes.md`.
 - Start with `## What you need to do`, which says plainly:
   - this stable cannot be rolled back (app data is converted: delegated runs; the episodic catalogs are written on the first start, about 12 s);
-  - Docker launcher users move with `autobyteus-docker upgrade --all --tag latest`.
+  - Docker launcher users (corrected 2026-11-18 from the launcher's own help, `scripts/public/docker/autobyteus-docker.d/bash/core.sh:62-79`, after the founder's question): each node keeps its saved track. Nodes on `latest` (stable, the default) get 1.5.13 with a plain `autobyteus-docker upgrade --all` (or the in-place `autobyteus-docker update --all`). Nodes on `beta` get 1.5.13 with the same plain command and stay on the beta track. `autobyteus-docker upgrade --all --tag latest` only switches every node back to the stable track: safe now, because 1.5.13 is at least as new as every beta. Do NOT tell every user to run `--tag latest`: it would move beta users off their track.
 - Known issues, stated plainly:
   - runs restored before the turn-id fix keep their already-merged older replies;
   - Codex, Grok and DeepSeek show Idle while a background task runs (no live count);
