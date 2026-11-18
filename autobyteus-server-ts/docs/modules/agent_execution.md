@@ -1131,8 +1131,9 @@ now, and `AgentBackgroundTaskEventStream.tasks` carries them
 started therefore sees it at once; later changes still arrive as
 `BACKGROUND_TASK_UPDATED`. Claude lists its registry's view (running and ended
 tasks until the process ends), AutoByteus its `BackgroundProcessManager.list()`
-(none while the run has no manager), Antigravity the tasks running now (its
-monitor keeps no ended ones). The web client seeds its store from the answer:
+(none while the run has no manager), Antigravity its monitor's tasks (running
+and ended, each as its latest snapshot with its exit code or `run_ended`, for the
+life of the run; autobyteus-517). The web client seeds its store from the answer:
 an unknown task is added, a running one takes an end the answer shows, and an
 ended one is never replaced, so an older answer cannot undo a newer event.
 

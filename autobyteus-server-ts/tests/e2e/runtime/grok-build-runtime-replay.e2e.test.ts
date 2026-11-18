@@ -6,6 +6,7 @@ import { randomUUID } from "node:crypto";
 import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { IN_PROCESS_SERVER_HOOK_TIMEOUT_MS } from "../../helpers/os-latency-under-load.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
@@ -93,7 +94,8 @@ describe("Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)",
     restoreEnv?.();
     if (fakeGrok) await fs.rm(fakeGrok.dir, { recursive: true, force: true });
     if (dataDir) await fs.rm(dataDir, { recursive: true, force: true });
-  });
+    // Closing the in-process server closes its folder watchers on the main thread: seconds under an FSEvents backlog.
+  }, IN_PROCESS_SERVER_HOOK_TIMEOUT_MS);
 
   const createGrokRun = async (input: { fixture: string; autoExecuteTools: boolean; env?: Record<string, string | undefined> }) => {
     const workspace = await fs.mkdtemp(path.join(dataDir, "workspace-"));

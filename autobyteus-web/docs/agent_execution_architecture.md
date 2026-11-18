@@ -1385,6 +1385,46 @@ workspace shapes that survive in owners this design did not replace:
 Views, `runMemberTree` and `components/run-settings/*` never import
 `WorkspaceSelectionState` or `TeamWorkspaceSelection`.
 
+#### Run Workspace Choice On Start Surfaces
+
+New chat (Agents and Agent Teams) and the Org launch page (Agent Orgs) choose
+the workspace with the chat **Workspace** control (`ChatWorkspaceMenu`). Its
+value is one `RunWorkspaceChoice`: an existing workspace or an absolute folder
+path. A start defaults to the temp workspace; **+** copies the source run's
+workspace. A typed folder is not loaded when entered: at launch
+`resolveRunWorkspaceChoice` (`services/workspace/runWorkspaceChoice.ts`)
+creates or reuses its workspace once, and a failure keeps the start page and its
+values. The bound server remains authoritative for interpreting and
+canonicalizing an absolute path.
+
+In **Open another folder**, local embedded-node Electron windows offer
+**Browse…** beside the editable path. Choose a directory in the native dialog,
+then explicitly press **Use folder**: choosing a directory only fills the input,
+not the selected workspace. Manual typing remains available. Browser, remote-node
+and mobile-runtime contexts keep manual server-side path entry without Browse;
+a narrow desktop window alone does not disable it.
+
+While the chooser is open, Browse shows **Opening…** and Browse/Use folder are
+disabled. Native Cancel/Escape or an empty result preserves the path and current
+workspace silently. Failure shows a localized inline error without replacing
+either; retry or type the path instead. Selection focuses the input; cancel or
+failure returns focus to Browse. Typing clears stale feedback.
+
+The same interaction serves editable Org-root and placed-Team rows, including
+allowed stopped saved-Org member edits. Browse never registers a workspace,
+sends a message, starts a run or saves configuration. **Use folder** changes only
+the existing setting/draft owner; saved-Org member changes still require
+**Save**. Saved Agent/Team/Org root locks and active/read-only member restrictions
+are unchanged. See the [native input contract](#native-folder-input-contract).
+
+A Team started from New chat uses one workspace for the whole Team: the chat's
+choice is applied to the root and every member (`buildChatTeamLaunchConfig`),
+and `chatLaunchService.launchTeamChat` creates the Team launch draft in
+`teamRunConfigStore` and sends the first message through
+`agentTeamRunStore.sendMessageToFocusedMember()`. Only an Org's placed Team can
+choose its own workspace (Member settings drawer); it is kept only where it
+differs from the Org's. See [Agent Orgs](./agent_orgs.md#org-launch-page).
+
 #### Native Folder Input Contract
 
 `ChatWorkspaceMenu.vue` owns this input aid across Chat, `RunSettingsCard` and
@@ -1413,7 +1453,7 @@ Only **Use folder** emits the existing `RunWorkspaceChoice`. The existing Chat,
 Org-root/addressed-member and saved-config owners retain draft, registration,
 locking and explicit Send/Run/Save policy. Saved roots do not become editable.
 This replaces the shared form's text-only presentation, not its owners or the
-retired configuration-form stack. See [workspace settings](./settings.md#run-workspace-choice-on-start-surfaces)
+retired configuration-form stack. See [Run Workspace Choice On Start Surfaces](#run-workspace-choice-on-start-surfaces)
 and the [native-picker regression probe](../tests/e2e/workspace-folder-picker-probe.mjs)
 for user behavior and the separate native/controlled test boundaries.
 

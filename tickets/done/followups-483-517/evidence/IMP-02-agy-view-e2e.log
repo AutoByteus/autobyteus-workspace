@@ -1,0 +1,18 @@
+# IMP-02 scripted-AGY suites that read the background-task view (AC-002 regression)
+# command: env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/background-task-status-count.e2e.test.ts tests/e2e/projects/background-step-stop-own-view.e2e.test.ts --no-watch
+# commit: 807951b6e0; node v22.23.1; load: 66.37 66.17 79.30; 2026-11-18T11:55:27Z
+ ↓ tests/e2e/runtime/background-task-status-count.e2e.test.ts (6 tests | 6 skipped)
+ ✓ tests/e2e/projects/background-step-stop-own-view.e2e.test.ts (1 test) 40285ms
+ Test Files  1 passed | 1 skipped (2)
+      Tests  1 passed | 6 skipped (7)
+
+## background-task-status-count with its gate (BTS-01..03; BTS-04/05 need real Claude/Codex and stay skipped)
+# command: env -i PATH="$PATH" HOME=<throwaway> TMPDIR="$TMPDIR" RUN_BACKGROUND_TASK_STATUS_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs AGY_FAKE_CASE=linked_skills pnpm exec vitest run tests/e2e/runtime/background-task-status-count.e2e.test.ts --no-watch
+# load: 60.58 64.97 77.91; 2026-11-18T11:56:33Z
+ ✓ tests/e2e/runtime/background-task-status-count.e2e.test.ts (6 tests | 2 skipped) 70143ms
+     ✓ BTS-01: native: the example sequence on the stream and the feed, a reconnect snapshot, a message delivered at once, counts 2, 1, 0  23934ms
+     ✓ BTS-02: a Team: each member's status carries its own count; the feed's Team run state carries the sum  10631ms
+     ✓ BTS-03: Antigravity: an open daemon step reads idle 1, then idle 0 when it exits  10359ms
+     ✓ BTS-06: autobyteus-483's ends beside the count: exit code, signal and the run's end each bring it down  6227ms
+ Test Files  1 passed (1)
+      Tests  4 passed | 2 skipped (6)

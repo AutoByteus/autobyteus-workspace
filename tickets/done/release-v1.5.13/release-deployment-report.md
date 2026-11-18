@@ -1,6 +1,6 @@
 # Release Report — release-v1.5.13 (autobyteus-535): stable v1.5.13
 
-Status: **in progress: cutting (the founder waived Grok).**
+Status: **Completed: stable v1.5.13 published as GitHub Latest (4/4 workflows on the first attempt, 23/23 assets).**
 
 ## Scope
 
@@ -37,4 +37,37 @@ Status: **in progress: cutting (the founder waived Grok).**
 
 - Grok's free usage is now exhausted (rolling 24 h), so a further rerun cannot give a clean Grok result today. Evidence: `evidence/delivery/DR1-pretag-*`.
 - **The founder's Grok decision** (to delivery directly, 2026-11-18): "Waive for grok quota limit thanks". Delivery's reading, stated to him before the cut: the Grok runtime is waived for v1.5.13, all three cases (two failed solely on the quota; the third, `ACP_REQUEST_TIMEOUT: initialize did not respond in time`, cannot be rerun cleanly while the quota is exhausted). The other runtimes passed.
+
+## Cutting
+
+- Base re-checked at the cut: `origin/personal` `0ce426bc9f`; the tagged code is identical to the smoke-checked `5bb41f0dd1` apart from ticket documents.
+- `bash scripts/desktop-release.sh release 1.5.13 --release-notes tickets/done/release-v1.5.13/release-notes.md --branch codex/release-v1.5.13 --no-push` → release commit `f7b4d68711` (`chore(release): bump workspace release version to 1.5.13`: `autobyteus-web/package.json` and `.github/release-notes/release-notes.md`, identical to the ticket's notes), annotated tag `v1.5.13`. Android versionCode `10051399`. Secret Gate `85a414c14c..HEAD` PASS. Pushed `0ce426bc9f..f7b4d68711 HEAD -> personal` and the tag at 12:17:30Z.
+
+## Rollout
+
+- Android APK Release `44302514748`, iOS App Store Connect Release `44302514563`, Server Docker Release `44302514536`, Desktop Release `44302514508`: **all success on attempt 1**; the poll (every 75 s, stopping on any non-success) never stopped.
+- macOS ARM64 took 50.1 min (beta.10: 21): its build step ran 12:23:30–13:06:48Z, electron-builder began only at 12:49:58Z (about 26 min building the app on a slow runner), signing 1 min, notarization 12:52:49–13:01:28Z (9 min; `notarization successful`, no retry). GitHub reported capacity constraints for macOS arm64 runners at the time (an unrelated build-only Desktop run, `44306459004` on `codex/follow-ups-of-461-500`, started by hand at 12:42Z, had its macOS ARM64 job cancelled with "The job was not acquired by Runner of type hosted even after multiple attempts"). Notarization passed: the Apple agreement is in effect. `evidence/delivery/DR1-macos-arm64-timeline.log`.
+
+| Failed Run And Job | Classification | Log Lines | Action | Result |
+| --- | --- | --- | --- | --- |
+| None | — | — | — | — |
+
+## Published
+
+- GitHub release `v1.5.13`: `isPrerelease: false`, not a draft, **23 assets**; `/releases/latest` → `v1.5.13`. The body is the curated notes (identical apart from one trailing blank line; `evidence/delivery/DR1-published-release-notes.md`).
+- Order: the six `autobyteus-server-1.5.13-linux-{x64,arm64}.{tar.gz,json,json.sig}` files by 12:27:03Z; every `latest*.yml` from 13:11:56Z (`evidence/delivery/DR1-release-asset-order.tsv`).
+- Docker: `autobyteus/autobyteus-server:1.5.13` = `:latest` = `:beta`, the index `sha256:13df73db926a…` (12:25Z), with exactly two images, amd64 `sha256:b595bcf370c6…` and arm64 `sha256:6545f7ed682c…`, the digests the two Publish Server Package jobs used (`…b595bcf370c62de051219ed9e7239a3616a4cc78fae0ee351d8fde029d29a522`, `…6545f7ed682c43c502e2c5d5d456b03c30742d09ab6c84efc27ad2b5d6a17fbb`).
+
+### Times (tag push to the workflow's end)
+
+| Workflow | beta.10 | v1.5.13 |
+| --- | --- | --- |
+| Server Docker Release | 10 min | 10 min (amd64 7.2, arm64 6.9, publish 0.4, packages 1.4 / 1.7) |
+| Desktop Release | 24 min | 54 min (macOS ARM64 50.1 on a slow runner; Intel 21.5; Windows 12.9; Linux 7.9 / 7.4; publish 2.9) |
+| Android APK Release | 6 min | 6 min |
+| iOS App Store Connect Release | 20 min | 25 min |
+
+## Final Status
+
+- Verification (the guide's checks; the founder's Grok waiver): `Yes`. Repository finalization: `Yes` (`personal` at `f7b4d68711`, then this record). Release: `Completed`. Blocker: `None`. Cleanup: after this record is pushed.
 

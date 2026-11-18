@@ -11,6 +11,7 @@ import {
   FileSystemChangeEvent,
 } from "../../../src/file-explorer/file-system-changes.js";
 import { WorkspaceFileExplorer } from "../../../src/file-explorer/file-explorer.js";
+import { FILE_EVENT_TEST_TIMEOUT_MS, IN_PROCESS_SERVER_HOOK_TIMEOUT_MS, OS_FILE_EVENT_WAIT_MS } from "../../helpers/os-latency-under-load.js";
 
 const createTempWorkspace = async (): Promise<string> => {
   const base = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-server-ts-watch-"));
@@ -20,11 +21,14 @@ const createTempWorkspace = async (): Promise<string> => {
 /**
  * autobyteus-500 FU-021: the tests assert outcomes, not timing. Under CPU contention an event can arrive late and a rename
  * can come as a delete and an add in separate batches, so every wait collects changes until the expected one appears,
- * under one hang guard; a "no event" check uses a sentinel change instead of a quiet window. The guard is one 60 s budget
- * per test, shared by its waits, so the environment probe still runs (and labels the failure) before the test timeout.
+ * under one hang guard; a "no event" check uses a sentinel change instead of a quiet window. The guard is one budget per
+ * test, shared by its waits: the shared OS file-event limit (autobyteus-517 `os-latency-under-load.ts`, TESTING.md "File
+ * watching on a busy Mac"). The test timeout is the helper's file-event test timeout plus the 10 s environment probe that
+ * runs when the guard is reached, so the probe still runs (and labels the failure) before it.
  */
-const HANG_GUARD_MS = 60_000;
-const TEST_TIMEOUT_MS = 90_000;
+const HANG_GUARD_MS = OS_FILE_EVENT_WAIT_MS;
+const ENVIRONMENT_PROBE_MS = 10_000;
+const TEST_TIMEOUT_MS = FILE_EVENT_TEST_TIMEOUT_MS + ENVIRONMENT_PROBE_MS;
 let guardEndsAt = 0;
 const HANG_GUARD_MESSAGE = "Timed out waiting for event (hang guard)";
 
@@ -33,7 +37,6 @@ const HANG_GUARD_MESSAGE = "Timed out waiting for event (hang guard)";
  * `fs.watch` on a fresh temp dir, one write, at most 10 s; none of our watcher code. The OS can drop events under load
  * (FSEvents; investigation notes "FU-021, continued"), and then a watcher result says nothing about the watcher.
  */
-const ENVIRONMENT_PROBE_MS = 10_000;
 const osDeliversFileEvents = async (): Promise<boolean> => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-watch-probe-"));
   try {
@@ -156,12 +159,12 @@ describe("FileSystemWatcher integration", () => {
     await explorer.buildWorkspaceDirectoryTree();
     await explorer.startWatcher();
     guardEndsAt = Date.now() + HANG_GUARD_MS;
-  });
+  }, IN_PROCESS_SERVER_HOOK_TIMEOUT_MS);
 
   afterEach(async () => {
     await explorer.close();
     await fs.rm(workspace, { recursive: true, force: true });
-  });
+  }, IN_PROCESS_SERVER_HOOK_TIMEOUT_MS);
 
   it(
     "does not emit events for pre-existing root .gitignore excluded directories",
