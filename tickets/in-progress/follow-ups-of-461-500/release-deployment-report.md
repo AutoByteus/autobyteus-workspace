@@ -34,3 +34,12 @@ Deliver `codex/follow-ups-of-461-500` (Project Task `autobyteus-500`, follow-ups
 - Post-integration check by delivery: server E2E folder on the merged state (`2dffa26760`, code `eb741a097e`, Node 22): stopped at the 2-hour background limit; 105 files reported, 21 with failures (48 tests), 12 of them not on API/E2E round 1's base-side list. Evidence `evidence/delivery/DEL-01-*`. **Delivery blocked**; routed to API/E2E (`Evidence Too Weak`: validate the merged state, separate branch / base / load).
 - Docs sync so far: `RELEASE.md` "Cutting The Release" now describes G-1 (the script records `released-migration-order.json`), replacing the manual step from 461; the data migration guideline's matching sentence (`9314d13f48`). Release notes written (`fa4ac92497`).
 - AC-008's user-only part (the migration on the user's own data) is not a finalization blocker: merging runs nothing on his data; it applies when a release carrying it reaches his machine (his decision), with M-5 backups.
+
+## Third integration refresh (2026-11-18)
+
+- API/E2E round 3 (API-REV-003) passed on the merged state `eb741a097e`; test-code review CRR-009 Pass (`d600a2af71`). Then `origin/personal` had moved again, `ff13782f36` → `0570c47fd9` (95 commits; merged tickets 522, 524, 448 part 2, 493, 525; no release, no change under `src/app-data-migrations/`, so `released-migration-order.json` stays the released list).
+- Checkpoint `90a316cc88` (CRR-009 records). Merge attempt: **13 conflicts**, aborted; branch clean.
+  - autobyteus-448 part 2: `remote-run-channel.ts`, `run-status-service.ts`, `remote-run-view-provider.ts`, `standalone-paired-agent-access.ts` (modify/delete: this ticket deleted it), `run-status-service.test.ts`, `remote-run-view-provider.test.ts`, web `AgentOrgRunMemberTree.vue`.
+  - autobyteus-493: `agent-memory-layout.ts`, `build-studio-server.ts`, `e2e-run-history-services.ts`, `agent-org-run-service-model-selection.test.ts`.
+  - also `run-agent-access.ts`, `team-run-agent-access.ts`.
+- **Blocked**, routed to the implementation engineer (Local Fix), then the code reviewer's merge review and an API/E2E round on the merged state, as in the second pass.
