@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Requirements | Initial coherent baseline (Task autobyteus-492 with the founder's comments of 2026-11-18 and the PM's message on roots) | PRB-001, PRB-002 | N/A | Ready for Approval | BEH-001…008, REQ-001…012, AC-001…009 | Four decisions put to the founder |
 | SR-002 | Requirements | The founder's two answers in the Solution Designer's conversation, 2026-11-18 | DEC-001, DEC-002 | Ready for Approval | Approved | BEH-003…005, UC-003/004, REQ-008…011, AC-005…008, SCN-003…006, DEC-001…004, DEC-011 | "The run ID is the address"; approved |
+| SR-003 | Mixed | The founder's third and fourth messages, 2026-11-18 (clarifications 5, 6); design draft | DEC-012 | Approved (SR-002) → Ready for Approval (clarification 5) | Approved; design Ready | BEH-006, REQ-002, REQ-011, REQ-013, AC-002, AC-010, DEC-004, DEC-006, DEC-012 | Team run ID reaches its coordinator; list only user-started; design complete |
 
 ## Revision Entries
 
@@ -42,3 +43,15 @@
 - Supplements: None.
 - Design basis: none yet. Classification: N/A before design.
 - Next action: architecture investigation and design.
+
+### SR-003 — A team run ID reaches the team; design complete
+
+- Phase and classification: Mixed (`Refinement` of requirements; design baseline).
+- Trigger: the founder, 2026-11-18 (voice). First (clarification 5) he seemed to narrow the new targets to the listed runs; I recorded it and set the requirements back to Ready for Approval. Then (clarification 6): "if you know the agent run ID or the agent team run ID, then you should be able to use send_message_to … reach … your task agent or your task agent team or your standalone agents or your standalone agent team … list_running_agents should only return the standalone ones." That restores SR-002's rule and adds team run IDs.
+- Finding IDs: DEC-012 (new), DEC-006 superseded.
+- Prior status: Approved (SR-002), briefly Ready for Approval. Current: Approved; design `Ready`.
+- IDs affected: BEH-006, REQ-002 (no `message_run_id`; one `run_id` per run), REQ-011 (team-run-ID refusal no longer preserved), REQ-013 (new), AC-002, AC-010 (new), DEC-004, DEC-006, DEC-012.
+- Intended behavior changed: `Yes` (team run IDs).
+- Approval: the founder (`User`), his words above; reference this conversation.
+- Design: `design-spec.md` written (SR-003 basis); classification `Large` / `High`.
+- Next action: handoff per the rules (architecture review expected for Large/High).
