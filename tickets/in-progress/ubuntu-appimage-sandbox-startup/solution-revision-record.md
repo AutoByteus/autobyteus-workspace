@@ -141,3 +141,7 @@ Informational receipt: ARCH-REV-002 passed SR-013 / DS-002; reviewer delivered p
 
 ## SR-014 — DS-003 exact-release sidecars at initial enrollment
 Implementation intake: lone AppImage cannot embed its final-byte attestation. Bounded Design Impact on L2 / REQ-001/003, AC-001/003/004; SR-012 approval unchanged. DS-003 specifies build-pinned release identity, normal-user bounded GET, refusal before auth, filename-independent matching and independent root re-verification. ARCH-REV-002 covers DS-002; re-review this delta before implementing it. Large/High unchanged.
+
+Informational receipt: ARCH-REV-003 passed DS-003 / SR-014 on the SR-012 requirements. Reviewer delivered primary implementation handoff; IR-001 hold cleared. No duplicate forwarding or release.
+
+DS-003 implementation clarification (same reviewed U2/manual path): manual-install-failure-clarification.md. No changed intent or architecture route.
