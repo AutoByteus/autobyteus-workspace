@@ -219,3 +219,35 @@
   - IMP-025: both type gates pass; server units, architecture and restart-resume pass except the untouched folder
     watcher; on the loaded Mac every watcher failure is labelled.
 - **Limitations:** a quiet macOS run is still "when available" (D-13b).
+
+## IR-009 (eighth delivery base refresh: 491 and 492)
+
+- **Trigger:** the Delivery Engineer's "Seventh integration refresh" (`04d44b5cd0`): merging `origin/personal`
+  `53b72018ad` (autobyteus-491, autobyteus-492) conflicted in 18 files. A Local Fix.
+- **Prior result:** IR-008, Pass (CRR-015). **Current result:** merged and checked; to the merge review, then an
+  API/E2E round on messaging and the migration order.
+- **Upstream revisions:** CRR-015, the delivery report. SR / ARCH-REV: unchanged.
+- **Code delta:**
+  - `5eb8246076`: the merge.
+    - The migration order: 500's two 20261117 migrations before 491's 20261118. Nothing shared: raw traces versus
+      definition folders.
+    - 492 DEC-001 supersedes FU-030 SIR-001: `otherTaskRefusal` is removed and its tests and fixtures take 492's side.
+    - 492's running agents use 500's run-agent names.
+    - `list_running_agents` takes the host's `PeerDiscoveryAccess` (FU-011); there is no `findProcessPeerDiscoveryChannel`.
+    - 492's peer-run acceptance uses 500's standalone names.
+    - The baseline is shrunk by 1.
+    - Detail in the handoff, "IR-009: 491 and 492".
+  - `8e8c21c2c4`: the attachment-link registration test allows later-dated unreleased migrations after the pair.
+- **Process note:** my first merge commit left the post-resolution edits unstaged (the renames in 492's files, the
+  delivery fix, the two tests, the baseline). The checks had run on the working tree, which had them. Before anything
+  was pushed, I amended them into the merge (now `5eb8246076`) and replayed the test fix and the docs on top. The rebuilt
+  tree equals the old tip plus exactly those edits (diffed), and the type gate passes on the committed state.
+- **Focused validation:** IMP-26.
+  - Both type gates pass.
+  - Server: 8937 passed. After the registration test's fix, only OS file-event waits fail; the watcher labels them.
+  - Web: 5780 passed.
+  - No changed source file is over 500.
+- **Limitations:**
+  - E2E suites for messaging (local and peer, by run id) and for the startup migration order on the merge are API/E2E's
+    next round.
+  - FU-500-02 still covers `getProcessRunningAgentsListing`, a throwing process getter.

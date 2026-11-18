@@ -1,0 +1,33 @@
+# IMP-026 IR-009: checks on the merged state (origin/personal 53b72018ad, 491 + 492, merged in 5eb8246076; test fix 8e8c21c2c4)
+# macOS Darwin 25.5.0, Node v22; 2026-11-18 local; load average 59-98
+
+## server type gate (after typecheck:update-baseline: standalone-remote-delegation 4 -> 3)
+[typecheck] production errors: 0; test-file errors: 1006 in 315 files (baseline 1006 in 315 files)
+[typecheck] PASS
+
+## web type gate
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS
+
+## cd autobyteus-server-ts && npx vitest run --no-watch --testTimeout=60000 --hookTimeout=60000 tests/unit tests/agent-work-journal tests/app-data-migrations tests/architecture tests/integration tests/release (on 5eb8246076)
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  4 failed | 1111 passed | 26 skipped (1141)
+      Tests  10 failed | 8937 passed | 79 skipped (9026)
+   1  FAIL  tests/app-data-migrations/delegated-run-own-attachment-links/delegated-run-own-attachment-links-app-data-migration.test.ts
+   1  FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts
+   7  FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts
+   1  FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts
+Labels / errors:
+   1 AssertionError: expected [ …(2) ] to deeply equal [ …(2) ]
+   1 Error: Condition not met within 30000 ms; last value: "FOLDER_MISSING"
+   1 Error: ENVIRONMENT: the OS delivered no file event within 10 s (FSEven
+   6 Error: INCONCLUSIVE: the watcher saw no change; a fresh fs.watch strea
+   1 Error: Timed out waiting for the monitor.
+- delegated-run-own-attachment-links (the AssertionError): this ticket's registration test expected its pair to be the registry's last two; 491's 20261118 follows them. Fixed in 8e8c21c2c4: 'Tests 8 passed (8)'.
+- the rest wait on OS file events at load 60-98: file-system-watcher 1 ENVIRONMENT + 6 INCONCLUSIVE (D-13b), package-auto-refresh 'Condition not met within 30000 ms', the folder watcher.
+
+## cd autobyteus-web && npx vitest run
+ Test Files  768 passed (768)
+      Tests  5780 passed | 2 skipped (5782)
+
+## sizes against 53b72018ad: none over 500 (handle 500, AutoByteus backend factory 496, studio 434)
