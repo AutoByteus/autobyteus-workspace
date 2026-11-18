@@ -1,0 +1,13 @@
+# API-02 (autobyteus-524 round 2, API/E2E): desktop quit path, shutdown IPC message to the built server (SCN-A1, AC-002)
+# Command: env -i PATH HOME=<temp> TMPDIR node evidence/API-02-ipc-shutdown-probe.mjs <worktree> 10 3000
+# server dist built from 2e5b0198e2; Node v22.23.1; 2026-11-18 ~06:46; fseventsd ~160 % CPU. Mutation and restored rows: API-01-sigterm-stop-probe.log
+{"round":1,"load":[54,55,60],"startedMs":2763,"httpStatus":401,"replyMs":38,"reply":"complete","exitMs":55,"exitCode":0,"signal":null}
+{"round":2,"load":[56,55,60],"startedMs":2923,"httpStatus":401,"replyMs":44,"reply":"complete","exitMs":59,"exitCode":0,"signal":null}
+{"round":3,"load":[56,55,60],"startedMs":2402,"httpStatus":401,"replyMs":40,"reply":"complete","exitMs":54,"exitCode":0,"signal":null}
+{"round":4,"load":[55,55,60],"startedMs":2516,"httpStatus":401,"replyMs":42,"reply":"complete","exitMs":54,"exitCode":0,"signal":null}
+{"round":5,"load":[54,55,59],"startedMs":2303,"httpStatus":401,"replyMs":38,"reply":"complete","exitMs":53,"exitCode":0,"signal":null}
+{"round":6,"load":[53,55,59],"startedMs":2716,"httpStatus":401,"replyMs":42,"reply":"complete","exitMs":64,"exitCode":0,"signal":null}
+{"round":7,"load":[52,55,59],"startedMs":2601,"httpStatus":401,"replyMs":41,"reply":"complete","exitMs":56,"exitCode":0,"signal":null}
+{"round":8,"load":[51,54,59],"startedMs":2509,"httpStatus":401,"replyMs":35,"reply":"complete","exitMs":51,"exitCode":0,"signal":null}
+{"round":9,"load":[51,54,59],"startedMs":2525,"httpStatus":401,"replyMs":47,"reply":"complete","exitMs":60,"exitCode":0,"signal":null}
+{"round":10,"load":[52,54,59],"startedMs":2398,"httpStatus":401,"replyMs":56,"reply":"complete","exitMs":71,"exitCode":0,"signal":null}

@@ -1,0 +1,35 @@
+# API-01 (autobyteus-524 round 2, API/E2E): built-server SIGTERM stop probe (AC-002, QR-001), the E2E harness / node-stop path
+# Command: env -i PATH HOME=<temp> TMPDIR node evidence/built-server-stop-probe.mjs <worktree> 10 3000 (startBuiltTestServer, idle 3 s, stop())
+# server dist built from 2e5b0198e2; Node v22.23.1; 2026-11-18
+load 45.50 53.67 59.54 fseventsd 168.5% at 06:44:55
+{"root":"native-follow-ups-524-r2","round":1,"startedMs":3015,"stopMs":56,"outcome":"exit 0","exitCode":0,"signal":null,"shutdownLines":["Background task 'Memory Hub Staging Sweep' completed successfully."]}
+{"root":"native-follow-ups-524-r2","round":2,"startedMs":3915,"stopMs":54,"outcome":"exit 0","exitCode":0,"signal":null,"shutdownLines":["Background task 'Memory Hub Staging Sweep' completed successfully."]}
+{"root":"native-follow-ups-524-r2","round":3,"startedMs":3481,"stopMs":71,"outcome":"exit 0","exitCode":0,"signal":null,"shutdownLines":["Background task 'Memory Hub Staging Sweep' completed successfully."]}
+{"root":"native-follow-ups-524-r2","round":4,"startedMs":2894,"stopMs":62,"outcome":"exit 0","exitCode":0,"signal":null,"shutdownLines":["Background task 'Memory Hub Staging Sweep' completed successfully."]}
+{"root":"native-follow-ups-524-r2","round":5,"startedMs":4051,"stopMs":56,"outcome":"exit 0","exitCode":0,"signal":null,"shutdownLines":["Background task 'Memory Hub Staging Sweep' completed successfully."]}
+{"root":"native-follow-ups-524-r2","round":6,"startedMs":3750,"stopMs":59,"outcome":"exit 0","exitCode":0,"signal":null,"shutdownLines":["Background task 'Memory Hub Staging Sweep' completed successfully."]}
+{"root":"native-follow-ups-524-r2","round":7,"startedMs":2646,"stopMs":47,"outcome":"exit 0","exitCode":0,"signal":null,"shutdownLines":["Background task 'Memory Hub Staging Sweep' completed successfully."]}
+{"root":"native-follow-ups-524-r2","round":8,"startedMs":2647,"stopMs":57,"outcome":"exit 0","exitCode":0,"signal":null,"shutdownLines":["Background task 'Memory Hub Staging Sweep' completed successfully."]}
+{"root":"native-follow-ups-524-r2","round":9,"startedMs":2248,"stopMs":53,"outcome":"exit 0","exitCode":0,"signal":null,"shutdownLines":["Background task 'Memory Hub Staging Sweep' completed successfully."]}
+{"root":"native-follow-ups-524-r2","round":10,"startedMs":2287,"stopMs":57,"outcome":"exit 0","exitCode":0,"signal":null,"shutdownLines":["Background task 'Memory Hub Staging Sweep' completed successfully."]}
+load 54.73 55.24 59.75 at 06:45:57
+
+# Temporary mutation (both probes): the one call studioServer.stopFileWatchesForProcessExit() removed from server-runtime.ts, rebuilt; then restored, rebuilt (dist contains the call again) and rechecked:
+== MUTATION (exit stop call removed) 06:47:52 fseventsd 159.7%
+{"root":"native-follow-ups-524-r2","round":1,"startedMs":3191,"stopMs":8346,"outcome":"exit 0","exitCode":0,"signal":null
+{"root":"native-follow-ups-524-r2","round":2,"startedMs":3386,"stopMs":354,"outcome":"exit 0","exitCode":0,"signal":null
+{"root":"native-follow-ups-524-r2","round":3,"startedMs":3370,"stopMs":5093,"outcome":"exit 0","exitCode":0,"signal":null
+{"root":"native-follow-ups-524-r2","round":4,"startedMs":2608,"stopMs":10201,"outcome":"TEST_SERVER_EXITED_NONZERO","exitCode":1,"signal":null
+{"root":"native-follow-ups-524-r2","round":5,"startedMs":2568,"stopMs":12462,"outcome":"TEST_SERVER_EXITED_NONZERO","exitCode":1,"signal":null
+{"round":1,"load":[53,57,60],"startedMs":2613,"httpStatus":401,"replyMs":17298,"reply":"failed","exitMs":17315,"exitCode":1,"signal":null
+{"round":2,"load":[51,56,59],"startedMs":2562,"httpStatus":401,"replyMs":5048,"reply":"complete","exitMs":5060,"exitCode":0,"signal":null
+{"round":3,"load":[56,57,60],"startedMs":2455,"httpStatus":401,"replyMs":2413,"reply":"complete","exitMs":2431,"exitCode":0,"signal":null
+{"round":4,"load":[60,58,60],"startedMs":2402,"httpStatus":401,"replyMs":17008,"reply":"failed","exitMs":17020,"exitCode":1,"signal":null
+{"round":5,"load":[55,57,60],"startedMs":2400,"httpStatus":401,"replyMs":8765,"reply":"complete","exitMs":8792,"exitCode":0,"signal":null
+== RESTORED build 06:50:50 fseventsd 146.1%
+{"root":"native-follow-ups-524-r2","round":1,"startedMs":3921,"stopMs":49,"outcome":"exit 0","exitCode":0,"signal":null
+{"root":"native-follow-ups-524-r2","round":2,"startedMs":3155,"stopMs":60,"outcome":"exit 0","exitCode":0,"signal":null
+{"root":"native-follow-ups-524-r2","round":3,"startedMs":3051,"stopMs":52,"outcome":"exit 0","exitCode":0,"signal":null
+{"round":1,"load":[54,57,59],"startedMs":2877,"httpStatus":401,"replyMs":39,"reply":"complete","exitMs":54,"exitCode":0,"signal":null
+{"round":2,"load":[56,57,59],"startedMs":2761,"httpStatus":401,"replyMs":45,"reply":"complete","exitMs":58,"exitCode":0,"signal":null
+{"round":3,"load":[57,57,59],"startedMs":1821,"httpStatus":401,"replyMs":43,"reply":"complete","exitMs":64,"exitCode":0,"signal":null
