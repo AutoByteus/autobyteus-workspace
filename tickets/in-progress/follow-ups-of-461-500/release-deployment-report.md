@@ -63,3 +63,28 @@ Deliver `codex/follow-ups-of-461-500` (Project Task `autobyteus-500`, follow-ups
 - Build-only release run on `f5a7d789c9` (run 44306459004): Windows, Linux x64, Linux ARM64, macOS Intel success; **macOS ARM64 cancelled**: "The job was not acquired by Runner of type hosted even after multiple attempts" with the ARM64 capacity annotation. Classification: **platform** (RELEASE.md's own example). Not rerun on this commit, because refresh 6 supersedes it; to run on the final merged commit.
 - Docs sync: `Updated` (`docs-sync-report.md`, `00f7a4bc7b`); handoff summary and release-notes fix `241b6718ad`.
 - Refresh 6: `origin/personal` `f7b4d68711` → `75048cbaf4` (v1.5.13's release records and the merges that followed its tag: 517 FU-002/FU-003). No change under `src/app-data-migrations/`. Merge attempt: **1 conflict, 19 hunks**, in `autobyteus-server-ts/tests/integration/file-explorer/file-system-watcher.integration.test.ts`: this ticket's FU-021 (outcome waits under one 60 s hang guard, the ENVIRONMENT / INCONCLUSIVE probe; AC-005's Linux 5/5 gate) against 517's `b55ce60b5e` (waits take the shared `OS_FILE_EVENT_WAIT_MS` from `tests/helpers/os-latency-under-load.ts`). Aborted; branch clean at `00f7a4bc7b`. Routed to the implementation engineer.
+
+## Seventh integration refresh (2026-11-18)
+
+- The seventh merged state passed: merge `bb42531c7d` of `75048cbaf4` (CRR-015 Pass), API/E2E round 6 (API-REV-006) Pass at 95%, AC-005 5/5 on Linux; CRR-016 Not Applicable (no test changes).
+- `origin/personal` moved again, `75048cbaf4` → `53b72018ad`: autobyteus-491 (retired memory items and stale built-ins; **new app-data migration `20261118_remove_retired_built_in_agents`**, unreleased) and autobyteus-492 (list running agents: the run ID is the address; `send_message_to` reaches any running agent by run ID). 311 base files, 54 overlapping.
+- Merge attempt: **18 conflicts**, aborted; branch clean. The registry conflict needs the unreleased order: this ticket's `20261117_delegated_run_own_attachment_links` and its follow-up before 491's `20261118_…` (the order test: entries after the released ones in date order). Conflicts:
+  - `autobyteus-server-ts/src/agent-collaboration/communication/cross-run-message-delivery.ts`
+  - `autobyteus-server-ts/src/agent-communication/services/global-agent-run-message-router.ts`
+  - `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.ts`
+  - `autobyteus-server-ts/src/agent-tools/mcp/providers/default-agent-tool-mcp-adapter-providers.ts`
+  - `autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts`
+  - `autobyteus-server-ts/src/compositions/build-studio-server.ts`
+  - `autobyteus-server-ts/src/compositions/remote-collaboration-composition.ts`
+  - `autobyteus-server-ts/src/remote-collaboration/inbound/remote-message-receiver.ts`
+  - `autobyteus-server-ts/tests/app-data-migrations/collaborators-to-delegated-runs-v1/collaborators-to-delegated-runs-v1-app-data-migration.test.ts`
+  - `autobyteus-server-ts/tests/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts`
+  - `autobyteus-server-ts/tests/app-data-migrations/remove-skill-improvement-data/remove-skill-improvement-data-migration.test.ts`
+  - `autobyteus-server-ts/tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts`
+  - `autobyteus-server-ts/tests/fixtures/collaboration-contract/contract-states.json`
+  - `autobyteus-server-ts/tests/unit/agent-collaboration/delegation/cross-run-message-delivery.test.ts`
+  - `autobyteus-server-ts/tests/unit/agent-collaboration/result-catalogue.test.ts`
+  - `autobyteus-server-ts/tests/unit/agent-communication/global-agent-run-message-router.test.ts`
+  - `autobyteus-server-ts/typecheck-baseline.json`
+  - `autobyteus-web/tests/e2e/skill-improvement-removal-cases.mjs`
+- Routed to the implementation engineer (Local Fix); this one needs a full API/E2E round on messaging and the migration order, not a short check.
