@@ -62,6 +62,7 @@ describe("AutoByteus server-owned send_message_to", () => {
     expect(schema.parameters.map(({ name, required }) => ({ name, required }))).toEqual([
       { name: "recipient_address", required: false },
       { name: "target_agent_run_id", required: false },
+      { name: "node", required: false },
       { name: "content", required: true },
       { name: "message_type", required: false },
       { name: "reference_files", required: false },

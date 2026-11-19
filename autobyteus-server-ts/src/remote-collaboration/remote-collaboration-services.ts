@@ -9,6 +9,7 @@ import {
   type DelegatedRunHandler,
   type RemoteMessageHandler,
   type RemoteRunViewHandler,
+  type RunningAgentsHandler,
 } from "./channel/peer-gateway.js";
 import { PeerNodeDiscovery } from "./discovery/peer-node-discovery.js";
 import { PeerAddressResolver } from "./settings/peer-address-resolver.js";
@@ -57,7 +58,7 @@ export const composeRemoteCollaboration = (input: Readonly<{
   runsInContainer?(): boolean;
   handlers(services: Omit<RemoteCollaborationServices, "gateway" | "discovery" | "addresses" | "pairing" | "peerRequestVerifier">): Readonly<{
     delegatedRuns: DelegatedRunHandler; messages: RemoteMessageHandler; availableAgents: AvailableAgentsHandler;
-    runViews: RemoteRunViewHandler;
+    runningAgents: RunningAgentsHandler; runViews: RemoteRunViewHandler;
   }>;
 }>): RemoteCollaborationServices => {
   const capability = new RemoteCollaborationCapability(input.settings);
@@ -116,9 +117,7 @@ export const releaseProcessRemoteCollaboration = (services: RemoteCollaborationS
   if (processServices === services) processServices = null;
 };
 
-/** The process's remote collaboration (API edge); `null` where it is not composed. */
-export const findProcessRemoteCollaboration = (): RemoteCollaborationServices | null => processServices;
-
+/** The process's remote collaboration, for the GraphQL resolvers (framework edge, FU-500-02); it throws where none is composed. */
 export const getProcessRemoteCollaboration = (): RemoteCollaborationServices => {
   if (!processServices) throw new Error("Remote collaboration is not available on this server.");
   return processServices;

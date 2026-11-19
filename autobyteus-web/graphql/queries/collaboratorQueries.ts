@@ -28,8 +28,8 @@ export const GetAgentRunCollaboration = gql`
 `
 
 export const GetAgentRunCollaborationMemberProjection = gql`
-  query GetAgentRunCollaborationMemberProjection($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {
-    agentRunCollaborationMemberProjection(hostRunId: $hostRunId, memberAddress: $memberAddress, agentRunId: $agentRunId) {
+  query GetAgentRunCollaborationMemberProjection($runId: String!, $memberAddress: String!, $agentRunId: String!) {
+    agentRunCollaborationMemberProjection(runId: $runId, memberAddress: $memberAddress, agentRunId: $agentRunId) {
       agentRunId
       memberAddress
       conversation

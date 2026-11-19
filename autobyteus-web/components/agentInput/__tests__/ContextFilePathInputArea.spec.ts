@@ -33,7 +33,7 @@ const activeContextStoreMock = reactive({
   /** A delegated child of a standalone run (Agent copy or Team-copy member), when set. */
   delegatedChild: null as null | {
     kind: 'agent_run_task_agent' | 'agent_run_task_team_member';
-    hostRunId: string;
+    runId: string;
     access: 'live' | 'read_only';
   },
   get activeWorkspaceTarget(): any {
@@ -45,7 +45,7 @@ const activeContextStoreMock = reactive({
         kind: this.delegatedChild.kind,
         context,
         access: this.delegatedChild.access,
-        host: { hostRunId: this.delegatedChild.hostRunId },
+        viewRun: { runId: this.delegatedChild.runId },
         address: CHILD_MEMBER,
         agentRunId: context.state.runId,
         browse: this.delegatedChild.kind === 'agent_run_task_agent' ? { kind: 'run', runId: context.state.runId }
@@ -466,7 +466,7 @@ describe('ContextFilePathInputArea', () => {
     ) => {
       const context = createContext('child-run');
       selectContext(context);
-      activeContextStoreMock.delegatedChild = { kind, hostRunId: 'host-run', access };
+      activeContextStoreMock.delegatedChild = { kind, runId: 'host-run', access };
       return context;
     };
     const pasteFiles = async (wrapper: ReturnType<typeof mountComposer>, files: File[], text = '') => {

@@ -1,0 +1,27 @@
+# IMP-04 the branch failures left in IMP-03, run one file at a time, with their causes
+# commit: 807951b6e0 (branch); node v22.23.1; macOS 26.5.2, 10 cores; 2026-11-18 (UTC times below); machine load from other processes
+#
+# 1. file-system-watcher.integration.test.ts alone (12:26, load 73.51 89.78 108.95)
+#    Tests  3 failed | 11 passed (14)
+#    - "emits add + modify + delete events", "emits folder creation and deletion events": Error: Timed out waiting for event
+#      (after the full 30 s OS_FILE_EVENT_WAIT_MS) -> the event never reached the watcher within 30 s.
+#    - "emits move/rename event": AssertionError: expected [ 'move', 'rename' ] to include 'delete' (:275:52)
+#      -> the rename reached the watcher as a separate unlink and add, too far apart for the watcher to pair them
+#      into one move; the first event is a delete. A product pairing-window behaviour under load, not a wait.
+#
+# 2. agent-package-definitions-live-refresh.e2e.test.ts -t DCF-E2E-002 alone (12:29, load 61.50 79.12 101.40)
+#    Tests  1 passed | 9 skipped (10)
+#    In IMP-03 (load > 100) it failed at :365 (toMatchObject on the broken-Team diagnostic: code, definitionPath,
+#    usingLastGood). Not reproduced alone. Likely cause, NOT established: the test writes team.md and team-config.json
+#    in two writes and waitFor accepts the first broken-team diagnostic, which under load can be read between them.
+#    DCF-E2E-005 in IMP-03: Test timed out in 60000ms (its own 60 s budget, unchanged; several steps under load).
+#
+# 3. grok-build-runtime-replay.e2e.test.ts alone, twice (12:30 and 12:34, load 73-107)
+#    Tests  6 passed (6); Error: Hook timed out in 60000ms at :81:3 (the afterAll with IN_PROCESS_SERVER_HOOK_TIMEOUT_MS)
+#    Timing run (12:48-12:53, load 63.52 -> 59.57; afterAll temporarily at 600 s with timing written to a file;
+#    the change was reverted with git checkout afterwards):
+#      app.close start at 79 ms
+#      app.close done at 296921 ms
+#      hook done at 296971 ms
+#    -> closing the in-process server took ~297 s: a product stall in closing its folder watchers under an FSEvents
+#       backlog, minutes rather than the seconds the design assumed. No hook timeout of a test can reasonably cover it.

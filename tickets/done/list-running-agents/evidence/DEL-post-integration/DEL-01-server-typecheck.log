@@ -1,0 +1,7 @@
+# Command (worktree root): pnpm -C autobyteus-server-ts typecheck
+# Merged state df6992e0c1 (origin/personal 75048cbaf4 merged into codex/list-running-agents)
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 43.9s
+[typecheck] server tests (tsconfig.tests.json): 1009 errors, exit 2, 78.3s
+[typecheck] production errors: 0; test-file errors: 1009 in 315 files (baseline 1009 in 315 files)
+[typecheck] PASS
+exit=0

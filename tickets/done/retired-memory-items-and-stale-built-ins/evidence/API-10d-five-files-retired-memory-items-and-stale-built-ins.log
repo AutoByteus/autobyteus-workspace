@@ -1,0 +1,33 @@
+# API-10d five branch-only failures, alone, worktree retired-memory-items-and-stale-built-ins (984e04707f) | Node v22.23.1 | 2026-11-18T12:50:45Z | load 75.17 94.46 88.28
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Agent semantic memory at the real server boundary > SM-01 (AC-007): a user's own agent is switched on and off in its agent-config.json, other fields kept, and reads create no folder 200ms
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Agent semantic memory at the real server boundary > SM-02 (AC-007, DEC-012): a package agent's switch is a personal setting with a reset; a package that declares it reads on 98ms
+ ✓ tests/e2e/context-files/context-file-size-limits-built-server.e2e.test.ts > context-file size limits on the built server (small limits) > BS-01: the limits come from the environment; at the limit is accepted and one byte over is refused with the limit in bytes 98ms
+ ✓ tests/e2e/context-files/context-file-size-limits-built-server.e2e.test.ts > context-file size limits on the built server (small limits) > BS-02: the owner and a paired phone read the limits and upload; a forged credential is refused 93ms
+ ✓ tests/e2e/context-files/context-file-size-limits-built-server.e2e.test.ts > context-file size limits on the built server (small limits) > BS-04: invalid values are refused on save and change nothing 28ms
+ ✓ tests/e2e/context-files/context-file-size-limits-built-server.e2e.test.ts > context-file size limits on the built server (small limits) > BS-05: an unsupported type is refused 415; a dropped connection leaves no file and the node keeps serving 11ms
+ ✓ tests/e2e/context-files/context-file-size-limits-built-server.e2e.test.ts > context-file size limits on the built server (small limits) > BS-06: a large draft is read back whole at its locator 34ms
+ ✓ tests/e2e/context-files/context-file-size-limits-built-server.e2e.test.ts > context-file size limits on the built server (small limits) > BS-03: a setting changed through GraphQL applies to the next upload with no restart 80ms
+ ✓ tests/e2e/context-files/context-file-size-limits-built-server.e2e.test.ts > context-file size limits on the built server (small limits) > BS-07: /upload-file still refuses above 25 MiB 59ms
+ ✓ tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries > answers exact matches at once, reports preparation, then adds meaning matches without a new query text 4635ms
+ ✓ tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries > POF-SEARCH-001: search_project_tasks shows partOf and parts by key, parts in numeric key order, no long Task ID 347ms
+ ✓ tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries > CMT-SEARCH-001: a word only in a comment finds its Task as an exact match, on the board's query and the tool; commentCount only when > 0 196ms
+ ✓ tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries > validates the active-model setting and offers Retry only for an unavailable model 13ms
+ ✓ tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts > run history stored with the removed skillAccessMode through the running server > opens stored agent, team and agent-org history through a GraphQL contract that no longer has the field 27637ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-15 NAS-17 refuses a foreign or null (opaque HTML preview) Origin on every WebSocket route family before the route runs (AC-001) 16ms
+ × tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts each allowed-origin class and refuses near misses (AC-002) 5006ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses foreign-origin HTTP and preflights and grants CORS only to allowed origins (AC-003) 6ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-09 refuses a phone credential on WebSocket routes the phone does not offer (AC-004) 12ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-05 accepts a phone credential on every phone WebSocket route (AC-005) 1226ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-29 logs every refusal once with its code, redacted URL and client address, and never a credential (AC-006) 5ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-10 keeps today's refusal of a phone credential when Phone Access is disabled 19ms
+ × tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses a request addressed to a name that is not the node's on every entry form, before any route (416 AC-001) 1123ms
+   → expected [ …(20) ] to have a length of 14 but got 20
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts every allowed-host class, configured name and paired-phone host, and refuses other public names (416 AC-002, AC-003) 833ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > warns once at start about invalid entries of the two settings (416 AC-003) 0ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses unlisted localhost pages on HTTP, WebSockets and /mcp/gateway, and accepts the listed one (416 AC-005) 4ms
+Error: Hook timed out in 10000ms.
+Error: Test timed out in 5000ms.
+AssertionError: expected [ …(20) ] to have a length of 14 but got 20
+ Test Files  2 failed | 3 passed (5)
+      Tests  2 failed | 23 passed | 8 skipped (33)
+exit 1

@@ -13,7 +13,7 @@ export type MemberInstructionDefinition = Readonly<{ kind: "agent_team" | "agent
 
 /**
  * What an agent is for the prompt it reads (collaboration-prompt-wording): a standalone agent (the
- * Agent-root host), a task agent (created by a delegation, not a member of a team), a member of an
+ * a standalone run's agent), a task agent (created by a delegation, not a member of a team), a member of an
  * agent team, or a direct agent of an organization.
  */
 export type MemberCollaborationRole = "standalone_agent" | "task_agent" | "team_member" | "org_agent";

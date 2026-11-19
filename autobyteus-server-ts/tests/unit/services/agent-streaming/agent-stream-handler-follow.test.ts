@@ -17,13 +17,14 @@ import { createAgentRootExecutionIdentity } from "../../../../src/agent-collabor
 const RUN = "child-run";
 const stopped = { status: "offline", isActive: false, shouldConnectStream: false, lastKnownStatus: "IDLE",
   statusSource: "HISTORICAL_METADATA", statusPayload: { status: "offline", agent_id: RUN } };
-const boundary = { hasAgentExecution: () => true, deliverExactAgentMessage: async () => ({ accepted: true as const }) };
+const boundary = { hasAgentExecution: () => true, deliverExactAgentMessage: async () => ({ accepted: true as const }), deliverToPeerRun: async () => ({ accepted: true as const }) };
 
 const fakeRun = () => {
   const listeners = new Set<(event: unknown) => void>();
   return {
     runId: RUN, runtimeKind: "autobyteus",
     getStatusSnapshot: () => ({ status: "running" }),
+    getInputStateSnapshot: () => ({ run_instance_id: `${RUN}-instance`, revision: 0, entries: [], recoverableBlock: null }),
     subscribeToEvents: vi.fn((listener: (event: unknown) => void) => { listeners.add(listener); return () => listeners.delete(listener); }),
     emit: (delta: string) => listeners.forEach((listener) => listener({ runId: RUN, eventType: AgentRunEventType.SEGMENT_CONTENT,
       payload: { id: "item-1", delta, segment_type: "text" }, statusHint: null })),
@@ -38,8 +39,8 @@ const setup = () => {
   const hostReady = new Set<(run: never) => void>();
   let live: ReturnType<typeof fakeRun> | null = null;
   const root = {
-    activeHostRun: () => live as never,
-    onHostReady: (listener: (run: never) => void) => { hostReady.add(listener); return () => hostReady.delete(listener); },
+    activeAgentRun: () => live as never,
+    onAgentReady: (listener: (run: never) => void) => { hostReady.add(listener); return () => hostReady.delete(listener); },
   };
   let registered = false;
   const agentRunService = { getAgentRun: vi.fn(() => live), recordRunActivity: vi.fn() };

@@ -43,12 +43,12 @@
         <span class="truncate font-semibold">{{ label(display.row.address) }}</span>
       </button>
       <!-- A run this Org delegated, here or on another node (SR-084): the shared delegated row, as in every view (FU-031). -->
-      <WorkspaceTransientExecutionRow
+      <WorkspaceDelegatedRunRow
         v-else
-        :row="display.transient!"
+        :row="display.delegatedRun!"
         :team-status="display.teamStatus ?? undefined"
-        :is-selected="display.transient!.agentRunId !== null && isMemberSelected(display.row.address, display.transient!.agentRunId)"
-        :has-children="display.transient!.hasChildren"
+        :is-selected="display.delegatedRun!.agentRunId !== null && isMemberSelected(display.row.address, display.delegatedRun!.agentRunId)"
+        :has-children="display.delegatedRun!.hasChildren"
         :expanded="display.expanded"
         :continuing-ancestor-depths="[...display.continuingAncestorDepths]"
         :has-following-sibling="display.hasFollowingSibling"
@@ -67,7 +67,7 @@ import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
 import StatusDot from '~/components/workspace/common/StatusDot.vue'
 import TeamAggregateStatusDot from './TeamAggregateStatusDot.vue'
 import WorkspaceHierarchyBranches from './WorkspaceHierarchyBranches.vue'
-import WorkspaceTransientExecutionRow from './WorkspaceTransientExecutionRow.vue'
+import WorkspaceDelegatedRunRow from './WorkspaceDelegatedRunRow.vue'
 import type { DelegatedRoot } from '~/services/runConfigEditing/delegatedLaunchSelectionClient'
 import type { RunListSectionActions, RunListSectionState } from '~/components/runList/runListSectionContracts'
 import { useLocalization } from '~/composables/useLocalization'
@@ -76,7 +76,7 @@ import { AgentStatus } from '~/types/agent/AgentStatus'
 import type { TeamStatus } from '~/utils/workspaceTeamAggregateStatus'
 import { useLeavingTreeRows } from './useLeavingTreeRows'
 import type { RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts'
-import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
+import type { RunHistoryDelegatedRunRow } from '~/stores/runHistoryTypes'
 import { useRunTreeStore } from '~/stores/runTreeStore'
 import { useRunStatusStore } from '~/stores/runStatusStore'
 import { isTeamRow, runTreeDisplayRows } from '~/utils/runTree/runTreeDisplayRows'
@@ -119,7 +119,7 @@ type OrgTeamRow = Readonly<{ key: string; kind: 'team'; address: string; teamRun
 type OrgDisplayRow = Readonly<{
   row: OrgAgentRow | OrgTeamRow | Readonly<{ key: string; kind: 'delegated'; address: string }>
   tree: RunTreeRowDto
-  transient: RunHistoryTransientExecutionRow | null
+  delegatedRun: RunHistoryDelegatedRunRow | null
   teamStatus: TeamStatus | null
   expanded: boolean
   continuingAncestorDepths: readonly number[]
@@ -142,14 +142,14 @@ const rows = computed<OrgDisplayRow[]>(() => runTreeDisplayRows({
     const status = resolveTeamStatus(tree.statusIds.map(statusOf), true)
     return { ...base, row: { key: tree.key, kind: 'team', address: tree.address ?? '', teamRunId: tree.key.slice('org_team:'.length), status,
       backgroundTasksRunning: runStatus.treeRowBackgroundTasksOf(tree, tree.key), depth: display.row.depth },
-      transient: null, teamStatus: null }
+      delegatedRun: null, teamStatus: null }
   }
   if (isOwn(tree)) {
     return { ...base, row: { key: tree.key, kind: 'agent', address: tree.address ?? '', agentRunId: tree.openTarget!.agentRunId,
       status: statusOf(tree.statusIds[0]!), backgroundTasksRunning: runStatus.backgroundTasksOf(tree.statusIds[0]!), depth: display.row.depth },
-      transient: null, teamStatus: null }
+      delegatedRun: null, teamStatus: null }
   }
-  return { ...base, row: { key: tree.key, kind: 'delegated', address: tree.address ?? '' }, transient: display.row, teamStatus: display.teamStatus }
+  return { ...base, row: { key: tree.key, kind: 'delegated', address: tree.address ?? '' }, delegatedRun: display.row, teamStatus: display.teamStatus }
 }))
 const selectTeam = (address: string) => {
   props.state.toggleAgentOrgTeam?.(props.run.rootRunId, address)

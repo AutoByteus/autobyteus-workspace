@@ -2,8 +2,6 @@ import type { PeerAgentRunLink, PeerTeamRunLink } from "./peer-run-link.js";
 import type { PeerDelegatedFrom } from "../../../run-history/store/agent-run-metadata-types.js";
 import { getAgentTeamAddressBasename } from "../../domain/agent-team-address.js";
 import type { CollaborationCommunicationMessage } from "../communication/collaboration-communication-message.js";
-import type { TaskExecutionReference } from "../task/task-execution-reference.js";
-import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "./remote-refusal-codes.js";
 import type { RemoteMessageTransmission, RemoteTargetRoot } from "./remote-run-channel.js";
 import type { RemoteRunReference } from "./remote-run-reference.js";
 
@@ -18,21 +16,20 @@ type RemoteEndpointCore = Readonly<{
   pairedAgentRunIds: ReadonlySet<string>;
   /** The name a local agent sees in results: the target address's name, or the run ID. */
   displayName: string;
-  /** The pair rule, outbound: may this local agent send to the endpoint? */
+  /**
+   * The pair rule, outbound: does this local agent message the endpoint through its link? Any other agent messages the
+   * same run by its run ID only (`unlinked_run`, autobyteus-492 DS-006).
+   */
   allowsSender(agentRunId: string): boolean;
   /** The pair rule, inbound: may the endpoint send to this local agent? */
   allowsTarget(agentRunId: string): boolean;
-  /** The Task ownership of the endpoint's messages on this node (`assertDeliveryAllowed`). */
-  ownershipChain(): readonly TaskExecutionReference[];
-  /** The refusals of the kind's rules, as the agent reads them. */
-  refusals: Readonly<{ notPermitted: Readonly<{ accepted: false; code: string; message: string }> }>;
-  /** The request that carries a prepared message from a paired agent to the endpoint, naming its root there. */
+  /** The request that carries a prepared message from a paired agent to the endpoint. */
   transmission(message: CollaborationCommunicationMessage): RemoteMessageTransmission;
 }>;
 
 /**
  * On the delegating node (A): an Agent run this root delegated to a peer, built from its Task entry (`PeerRunLink`).
- * Only its delegator messages it; it belongs to the Task the link was recorded under (item 5).
+ * Its delegator messages it through the link; it belongs to the Task the link was recorded under (item 5).
  */
 export type DelegatedRunEndpoint = RemoteEndpointCore & Readonly<{
   kind: "delegated_run";
@@ -41,8 +38,8 @@ export type DelegatedRunEndpoint = RemoteEndpointCore & Readonly<{
 
 /**
  * On the delegating node (A): one member of a Team run this root delegated to a peer (autobyteus-247), one endpoint
- * per member run ID of the Team link (the coordinator included). Only the delegator messages it; it belongs to
- * the Team's Task.
+ * per member run ID of the Team link (the coordinator included). Its delegator messages it through the link; it belongs
+ * to the Team's Task.
  */
 export type DelegatedTeamEndpoint = RemoteEndpointCore & Readonly<{
   kind: "delegated_team";
@@ -51,22 +48,27 @@ export type DelegatedTeamEndpoint = RemoteEndpointCore & Readonly<{
 
 /**
  * On the node that runs a delegated run (B): its delegator on the peer, built from the root's `delegatedFrom`.
- * Its rules apply to every local agent the back-link pairs with (the host of a standalone root; every member of
+ * Its rules apply to every local agent the back-link pairs with (the agent of a standalone run; every member of
  * a Team root); there is no Task on this node (N-11). Its messages name the coordinating run as their root.
  */
 export type DelegatorEndpoint = RemoteEndpointCore & Readonly<{
   kind: "delegator";
   delegatedFrom: PeerDelegatedFrom;
-  /** N-6: the work packet comes from the delegator on its node, for a paired agent (the host, or the coordinator). */
+  /** N-6: the work packet comes from the delegator on its node, for a paired agent (a run's own agent, or the coordinator). */
   admitsWorkPacket(fromNodeId: string, senderAgentRunId: string, targetAgentRunId: string): boolean;
 }>;
 
-export type RemoteEndpoint = DelegatedRunEndpoint | DelegatedTeamEndpoint | DelegatorEndpoint;
+/**
+ * autobyteus-492: a running agent of a peer node named only by `{nodeId, agentRunId}`, with no Task link (the run ID is
+ * the address, CM-13). Built for one message, outbound or inbound, and paired with that message's local agent only;
+ * never stored, so a root's links never return it. Its request names no root: the peer finds the running agent itself
+ * (`run_message`), and never wakes it.
+ */
+export type UnlinkedRunEndpoint = RemoteEndpointCore & Readonly<{ kind: "unlinked_run" }>;
 
-/** The pair rule's refusal: only the delegator and the delegated run (or Team) message each other. */
-const pairRefusals = Object.freeze({
-  notPermitted: Object.freeze({ accepted: false as const, code: REMOTE_REFUSAL.TARGET_NOT_PERMITTED, message: REMOTE_ROOT_REFUSAL_TEXT.notPermitted }),
-});
+/** A root's own endpoints, built from its Task entries and its back-link (`RemoteRunLinks`). */
+export type LinkedRemoteEndpoint = DelegatedRunEndpoint | DelegatedTeamEndpoint | DelegatorEndpoint;
+export type RemoteEndpoint = LinkedRemoteEndpoint | UnlinkedRunEndpoint;
 
 /** The pair rule from the one representation (N-301). */
 const pairRule = (paired: readonly string[]) => {
@@ -96,8 +98,6 @@ export const delegatedRunEndpoint = (link: PeerAgentRunLink): DelegatedRunEndpoi
     reference: Object.freeze({ nodeId: link.nodeId, agentRunId: link.agentRunId }),
     ...pairRule([link.delegatorAgentRunId]),
     displayName: getAgentTeamAddressBasename(link.address) ?? link.agentRunId,
-    refusals: pairRefusals,
-    ownershipChain: () => Object.freeze([Object.freeze({ agentRunId: link.agentRunId })]),
     transmission: (message: CollaborationCommunicationMessage) => messageRequest(link.nodeId, targetRoot, message),
   });
 };
@@ -112,8 +112,6 @@ export const delegatedTeamEndpoints = (link: PeerTeamRunLink): readonly Delegate
     reference: Object.freeze({ nodeId: link.nodeId, agentRunId: member.agentRunId }),
     ...rule,
     displayName: getAgentTeamAddressBasename(member.address) ?? member.agentRunId,
-    refusals: pairRefusals,
-    ownershipChain: () => Object.freeze([Object.freeze({ teamRunId: link.teamRunId })]),
     transmission: (message: CollaborationCommunicationMessage) => messageRequest(link.nodeId, targetRoot, message),
   })));
 };
@@ -126,11 +124,31 @@ export const delegatorEndpoint = (pairedAgentRunIds: readonly string[], delegate
     reference: Object.freeze({ nodeId: delegatedFrom.nodeId, agentRunId: delegatedFrom.delegatorAgentRunId }),
     ...rule,
     displayName: delegatedFrom.delegatorAgentRunId,
-    refusals: pairRefusals,
-    ownershipChain: () => Object.freeze([]),
     // The delegating node receives it in the delegating run it named at start.
     transmission: (message: CollaborationCommunicationMessage) => messageRequest(delegatedFrom.nodeId, delegatedFrom.delegatingRun, message),
     admitsWorkPacket: (fromNodeId: string, senderAgentRunId: string, targetAgentRunId: string) =>
       fromNodeId === delegatedFrom.nodeId && senderAgentRunId === delegatedFrom.delegatorAgentRunId && rule.allowsTarget(targetAgentRunId),
   });
 };
+
+/**
+ * The one-message endpoint of a peer's running agent (autobyteus-492 DS-004 … DS-006): `{nodeId, agentRunId}` is the run
+ * on the peer; `pairedAgentRunId` the local agent that sends (outbound) or receives (inbound) this message.
+ */
+export const unlinkedRunEndpoint = (input: Readonly<{ nodeId: string; agentRunId: string; pairedAgentRunId: string }>): UnlinkedRunEndpoint =>
+  Object.freeze({
+    kind: "unlinked_run" as const,
+    reference: Object.freeze({ nodeId: input.nodeId, agentRunId: input.agentRunId }),
+    ...pairRule([input.pairedAgentRunId]),
+    displayName: input.agentRunId,
+    transmission: (message: CollaborationCommunicationMessage): RemoteMessageTransmission => Object.freeze({
+      nodeId: input.nodeId,
+      kind: "run_message",
+      messageId: message.messageId,
+      senderAgentRunId: message.senderAgentRunId,
+      targetAgentRunId: message.receiverAgentRunId,
+      content: message.content,
+      messageType: message.messageType,
+      createdAt: message.createdAt,
+    }),
+  });

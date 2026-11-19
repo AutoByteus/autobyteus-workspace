@@ -8,10 +8,10 @@ import { CancelPreparedAgentRun, PrepareAgentRun, TerminateAgentRun } from '~/gr
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import {
   AgentStreamingService,
-  type InterruptGenerationCommandAckPayload,
-  type InterruptCommandTransportFailure,
+  type InterruptOutcome,
   type SendMessageCommandAckPayload,
 } from '~/services/agentStreaming';
+import { INTERRUPT_NOT_SENT } from '~/services/agentStreaming/interruptCommandAdmission';
 import { createAgentRunStream, type AgentRunStream } from '~/services/agentStreaming/agentRunStreamReconnection';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useWorkspaceStore } from '~/stores/workspace';
@@ -28,7 +28,7 @@ import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { ConnectionState } from '~/services/agentStreaming';
 import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState';
-import { CollaboratorAddRejection } from '~/services/collaborators/collaboratorAddFailures';
+import { MessageNotDeliveredError } from '~/services/runSubmission/messageNotDelivered';
 import {
   acceptLocalSubmission,
   beginLocalUserSubmission,
@@ -36,8 +36,6 @@ import {
   finalizeLocalSubmissionAttachments,
   retargetLocalUserSubmission,
 } from '~/services/runSubmission/localUserSubmission';
-import { useToasts } from '~/composables/useToasts';
-import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 import { createRandomId } from '~/utils/randomId';
 import { sameRunInstance } from '~/utils/runInstanceOwnership';
 
@@ -55,25 +53,6 @@ const createClientMessageId = (): string => `client_${createRandomId()}`;
 
 const createClientInterruptCommandId = (): string =>
   createClientMessageId().replace(/^client_/, 'client_interrupt_');
-
-const showInterruptCommandResult = (ack: InterruptGenerationCommandAckPayload): void => {
-  if (ack.state === 'accepted') return;
-  useToasts().addToast(localizationRuntime.translate('agents.store.interrupt.failed', {
-    target: ack.target.target_kind === 'standalone_run'
-      ? ack.target.run_id
-      : ack.target.agent_run_id,
-    detail: ack.message,
-  }), 'error');
-};
-
-const showInterruptTransportFailure = (failure: InterruptCommandTransportFailure): void => {
-  useToasts().addToast(localizationRuntime.translate('agents.store.interrupt.transportFailed', {
-    target: failure.target.target_kind === 'standalone_run'
-      ? failure.target.run_id
-      : failure.target.agent_run_id,
-    detail: failure.reason.message,
-  }), 'error');
-};
 
 // Each agent run's stream: its streaming service and its reconnection (autobyteus-434)
 const streamingServices = new Map<string, AgentRunStream>();
@@ -171,6 +150,7 @@ export const useAgentRunStore = defineStore('agentRun', {
         attachments: draftAttachments,
         navigationTarget: { kind: 'standalone', runId },
         mentions,
+        draft: { requirement: userText, requestedSkillNames: currentAgent.requestedSkillNames },
       });
 
       let preparedRunId: string | null = null;
@@ -259,14 +239,17 @@ export const useAgentRunStore = defineStore('agentRun', {
           );
           acceptLocalSubmission(localSubmission);
         } else {
-          service.sendMessage(messageContent, submissionPlan.executable.contextFilePaths, submissionPlan.executable.imageUrls, command);
+          // Resolves at the node's answer; a message the node never took ends `MessageNotDeliveredError` (autobyteus-540).
+          await service.sendMessage(messageContent, submissionPlan.executable.contextFilePaths, submissionPlan.executable.imageUrls, command);
         }
         preparedRunId = null;
         runHistoryStore.refreshTreeQuietly();
       } catch (error: any) {
         console.error('Error sending user input:', error);
         if (activationPendingRunId) this.clearActivationPending(activationPendingRunId);
-        if (preparedRunId) {
+        // A message that did not reach the node keeps its prepared run: the draft comes back to be sent again on it, and
+        // an `unknown` one may already have started it (autobyteus-540 REQ-003).
+        if (preparedRunId && !(error instanceof MessageNotDeliveredError)) {
           getApolloClient().mutate({
             mutation: CancelPreparedAgentRun,
             variables: { agentRunId: preparedRunId },
@@ -274,13 +257,9 @@ export const useAgentRunStore = defineStore('agentRun', {
             console.warn(`Failed to cancel prepared agent run '${preparedRunId}'.`, cancelError);
           });
         }
-        // A rejected add posted nothing: the notice shows and the draft stays as typed.
-        if (localSubmission.held && error instanceof CollaboratorAddRejection) {
-          failLocalSubmission(localSubmission, error);
-          return;
-        }
-        applyOfflineOrTerminalCleanup(localSubmission.context, AgentStatus.Error);
-        failLocalSubmission(localSubmission, error);
+        // A rejected add posted nothing (the draft stays as typed); a message that did not reach the node comes back to
+        // the box with its notice (autobyteus-540). Neither changes the run's status.
+        failLocalSubmission(localSubmission, error, { failedStatus: AgentStatus.Error });
 
         // We do NOT re-throw here because we've handled it by showing it in the UI.
         // If we re-throw, parent catch blocks might try to handle it again (e.g. log it).
@@ -307,8 +286,6 @@ export const useAgentRunStore = defineStore('agentRun', {
       }
 
       const stream = createAgentRunStream(runId, useWindowNodeContextStore().getBoundEndpoints().agentWs, {
-        onInterruptCommandResult: showInterruptCommandResult,
-        onInterruptCommandTransportFailure: showInterruptTransportFailure,
         onSendMessageCommandAck: (ack: SendMessageCommandAckPayload) => {
           // A rejected send never activates the run.
           if (!ack.accepted) this.clearActivationPending(ack.run_id || runId);
@@ -335,25 +312,14 @@ export const useAgentRunStore = defineStore('agentRun', {
       return streamingServices.get(runId)?.service.connectionState === ConnectionState.CONNECTED;
     },
 
+    /** The run's stream, once bound (the node's `CONNECTED`): a send leaves only then (autobyteus-540 D-1). */
     async ensureAgentStreamConnected(runId: string): Promise<AgentStreamingService> {
       const service = this.connectToAgentStream(runId);
       if (!service) {
         throw new Error(`Unable to connect agent stream for run '${runId}'.`);
       }
-      const isConnected = () => service.connectionState === ConnectionState.CONNECTED;
-      if (isConnected()) {
-        return service;
-      }
-
-      const timeoutAt = Date.now() + 10000;
-      while (Date.now() < timeoutAt) {
-        if (isConnected()) {
-          return service;
-        }
-        await new Promise((resolve) => setTimeout(resolve, 50));
-      }
-
-      throw new Error(`Timed out waiting for agent stream connection for run '${runId}'.`);
+      await service.whenBound(10_000);
+      return service;
     },
 
     disconnectAgentStream(runId: string): void {
@@ -389,20 +355,21 @@ export const useAgentRunStore = defineStore('agentRun', {
       }
     },
 
-    interruptGeneration(runId?: string): boolean {
+    /** Sends one Stop to the run's stream; resolves with its outcome (`not_sent` without a stream). */
+    interruptGeneration(runId?: string): Promise<InterruptOutcome> {
       const agentContextsStore = useAgentContextsStore();
       const resolvedRunId =
         (runId && runId.trim()) || agentContextsStore.activeRun?.state.runId;
 
       if (!resolvedRunId) {
         console.warn("Cannot interrupt generation: no active run ID.");
-        return false;
+        return Promise.resolve(INTERRUPT_NOT_SENT);
       }
 
       const service = streamingServices.get(resolvedRunId)?.service;
       if (!service) {
         console.warn(`Cannot interrupt generation: no streaming service for run '${resolvedRunId}'.`);
-        return false;
+        return Promise.resolve(INTERRUPT_NOT_SENT);
       }
 
       return service.interruptGeneration(createClientInterruptCommandId());
@@ -445,9 +412,9 @@ export const useAgentRunStore = defineStore('agentRun', {
         return true;
       }
 
-      let hostStop: ReturnType<ReturnType<typeof useAgentRunCollaborationStore>['beginHostTermination']> | undefined;
+      let runTermination: ReturnType<ReturnType<typeof useAgentRunCollaborationStore>['beginRunTermination']> | undefined;
       try {
-        hostStop = useAgentRunCollaborationStore().beginHostTermination(runId);
+        runTermination = useAgentRunCollaborationStore().beginRunTermination(runId);
         const client = getApolloClient();
         const { data, errors } = await client.mutate({
           mutation: TerminateAgentRun,
@@ -464,7 +431,7 @@ export const useAgentRunStore = defineStore('agentRun', {
         }
 
         if (!ownsRequest()) return false;
-        hostStop.confirm();
+        runTermination.confirm();
         if (context?.config.runtimeKind === 'autobyteus' && state) {
           state.compactionStatus = activities.applyConfirmedNativeTermination(runId,
             [...activityIds, ...activities.getNativeCompactionActivityIds(runId)], state.compactionStatus);
@@ -477,7 +444,7 @@ export const useAgentRunStore = defineStore('agentRun', {
         console.error(`Error terminating run '${runId}':`, error);
         return false;
       } finally {
-        hostStop?.finish();
+        runTermination?.finish();
       }
     },
 

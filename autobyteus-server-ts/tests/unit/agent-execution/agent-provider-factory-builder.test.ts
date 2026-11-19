@@ -4,6 +4,7 @@ import {
   type AgentProviderFactoryBuilderProcessInput,
 } from "../../../src/agent-execution/providers/agent-provider-factory-builder.js";
 import { createProcessAgentProviderFactoryBuilder } from "../../../src/compositions/create-process-agent-provider-factory-builder.js";
+import { OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
 
 const createProcessInput = (): AgentProviderFactoryBuilderProcessInput => ({
   workspaceManager: { marker: "workspace" } as never,
@@ -165,14 +166,14 @@ describe("AgentProviderFactoryBuilder", () => {
     const capabilityB = { marker: "application-capability-b" };
     const integrationRunAccess = { environmentForRun: vi.fn(async () => ({})), integrationsStartingOnRestart: vi.fn(async () => []) };
     const providerRelayAccess = { prepareForRun: vi.fn(), relayBaseUrl: vi.fn(), observe: vi.fn() };
-    const first = builder.createForExecution({
+    const first = builder.createForExecution({ peerDiscovery: OFF_DISCOVERY,
       agentDefinitionService: definitionA as never,
       agentToolMcpRunSessions: runSessionsA as never,
       applicationAgentTools: capabilityA as never,
       integrationRunAccess,
       providerRelayAccess,
     });
-    const second = builder.createForExecution({
+    const second = builder.createForExecution({ peerDiscovery: OFF_DISCOVERY,
       agentDefinitionService: definitionB as never,
       agentToolMcpRunSessions: runSessionsB as never,
       applicationAgentTools: capabilityB as never,
@@ -245,7 +246,7 @@ describe("AgentProviderFactoryBuilder", () => {
 
   it("keeps general execution application capability explicitly null", () => {
     const factory = createAgentProviderFactoryBuilder(createProcessInput())
-      .createForExecution({
+      .createForExecution({ peerDiscovery: OFF_DISCOVERY,
         agentDefinitionService: {} as never,
         agentToolMcpRunSessions: { activateForRun: vi.fn() } as never,
         applicationAgentTools: null,

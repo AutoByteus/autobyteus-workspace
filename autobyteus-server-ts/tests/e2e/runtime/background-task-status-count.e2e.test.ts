@@ -10,7 +10,8 @@
  *           (AC-006) and its turn reads running 1; a second task gives 2; the ends bring it to 1, then 0
  *   BTS-02  native Team: one member idle with a task, one idle without: each member's team-stream status carries its own
  *           count; the feed's Team run state carries the sum (1), then 0
- *   BTS-03  Antigravity (scripted CLI, an open daemon step): idle 1, then idle 0 when the step exits
+ *   BTS-03  Antigravity (scripted CLI, an open daemon step): idle 1, then idle 0 when the step exits (code 3); the view
+ *           then still lists the task, failed with exit code 3 (autobyteus-517 FU-003)
  *   BTS-04  (live) Claude idle with a background Bash command: idle 1, then 0
  *   BTS-05  (live) Codex idle with a background terminal: its view is a snapshot, so the count stays 0 (Idle; design risk)
  *   BTS-06  native, autobyteus-483's ends beside the count: of three tasks, one exits with code 3, one is killed from
@@ -273,14 +274,22 @@ const path_ = (list: Status[]) => list.map((entry) => `${entry.status}:${entry.c
   it.skipIf(!SCRIPTED_AGY)("BTS-03: Antigravity: an open daemon step reads idle 1, then idle 0 when it exits", async () => {
     const runId = await createRun(await harness.createDefinition("bts-agy", "Follow the request.", []), "antigravity_cli", "gemini-3.8-flash-low");
     const frames = await agentChannel(runId);
-    sendE2eSendMessageCommand(socketOf(frames), { content: 'BACKGROUND_STEP:{"seconds":8}' });
+    sendE2eSendMessageCommand(socketOf(frames), { content: 'BACKGROUND_STEP:{"seconds":8,"exitCode":3}' });
     await until(() => statuses(frames).some((entry) => entry.status === "idle" && entry.count === 1), "idle 1", 90_000);
     const runStatus = await feed([{ kind: "agent", runId }]);
     await until(() => statuses(frames).at(-1)?.status === "idle" && statuses(frames).at(-1)?.count === 0, "idle 0 after the step exits", 60_000);
     await wait(2_000);
-    await record("BTS-03", { runId, path: path_(statuses(frames)), fed: feedAgent(runStatus, runId) });
+    // autobyteus-517 FU-003: a viewer that opens the run after the step exited (the panel's or the phone's seed) still
+    // gets the task from the view, ended with its exit code, as for Claude and native runs.
+    const view = (await harness.gql<{ agentBackgroundTaskView: Json }>(
+      "query($id: String!) { agentBackgroundTaskView(agentRunId: $id) { __typename ... on AgentBackgroundTaskEventStream { tasks { command status endReason exitCode } } } }",
+      { id: runId })).agentBackgroundTaskView;
+    await record("BTS-03", { runId, path: path_(statuses(frames)), fed: feedAgent(runStatus, runId), view });
     expect(path_(statuses(frames))).toEqual(expect.arrayContaining(["idle:1", "idle:0"]));
     expect(feedAgent(runStatus, runId).map((entry) => `${entry.status}:${entry.count}`)).toEqual(expect.arrayContaining(["idle:1", "idle:0"]));
+    expect(view.__typename).toBe("AgentBackgroundTaskEventStream");
+    expect(view.tasks).toEqual([expect.objectContaining({ status: "failed", endReason: null, exitCode: 3,
+      command: expect.stringContaining("background step") })]);
   }, 300_000);
 
   it("BTS-06: autobyteus-483's ends beside the count: exit code, signal and the run's end each bring it down", async () => {

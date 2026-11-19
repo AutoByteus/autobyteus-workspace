@@ -1,4 +1,5 @@
 import type { AgentToolMcpAdapterProvider } from "../agent-tool-mcp-adapter.js";
+import type { PeerDiscoveryAccess } from "../../../agent-collaboration/execution/remote/peer-discovery-channel.js";
 import { BrowserToolsMcpAdapterProvider } from "./browser-tools-mcp-adapter-provider.js";
 import { MediaToolsMcpAdapterProvider } from "./media-tools-mcp-adapter-provider.js";
 import { PublishArtifactsMcpAdapterProvider } from "./publish-artifacts-mcp-adapter-provider.js";
@@ -7,21 +8,24 @@ import { TaskDelegationToolsMcpAdapterProvider } from "./task-delegation-tools-m
 import { GetHandoffRulesMcpAdapterProvider } from "./get-handoff-rules-mcp-adapter-provider.js";
 import { ListAvailableAgentsMcpAdapterProvider } from "./list-available-agents-mcp-adapter-provider.js";
 import { ListPeerNodesMcpAdapterProvider } from "./list-peer-nodes-mcp-adapter-provider.js";
+import { ListRunningAgentsMcpAdapterProvider } from "./list-running-agents-mcp-adapter-provider.js";
 import { ListAvailableAgentRuntimesMcpAdapterProvider } from "./list-available-agent-runtimes-mcp-adapter-provider.js";
 import { ModelRoutingToolsMcpAdapterProvider } from "./model-routing-tools-mcp-adapter-provider.js";
 
 import { ProjectTaskToolsMcpAdapterProvider } from "./project-task-tools-mcp-adapter-provider.js";
 import { MemoryToolsMcpAdapterProvider } from "./memory-tools-mcp-adapter-provider.js";
 
-export const buildDefaultAgentToolMcpAdapterProviders = (): AgentToolMcpAdapterProvider[] => [
+/** The static adapters of a host's Agent Tools MCP; the discovery tools read the host's discovery (autobyteus-500). */
+export const buildDefaultAgentToolMcpAdapterProviders = (input: Readonly<{ peerDiscovery: PeerDiscoveryAccess }>): AgentToolMcpAdapterProvider[] => [
   new SendMessageToMcpAdapterProvider(),
   new GetHandoffRulesMcpAdapterProvider(),
   new BrowserToolsMcpAdapterProvider(),
   new MediaToolsMcpAdapterProvider(),
   new TaskDelegationToolsMcpAdapterProvider(),
   new PublishArtifactsMcpAdapterProvider(),
-  new ListAvailableAgentsMcpAdapterProvider(),
-  new ListPeerNodesMcpAdapterProvider(),
+  new ListAvailableAgentsMcpAdapterProvider(input.peerDiscovery),
+  new ListPeerNodesMcpAdapterProvider(input.peerDiscovery),
+  new ListRunningAgentsMcpAdapterProvider(input.peerDiscovery),
   new ListAvailableAgentRuntimesMcpAdapterProvider(),
   new ModelRoutingToolsMcpAdapterProvider(),
   new ProjectTaskToolsMcpAdapterProvider(),

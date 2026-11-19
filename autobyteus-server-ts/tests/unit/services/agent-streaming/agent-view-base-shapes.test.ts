@@ -23,15 +23,18 @@ const pathsOf = (value: unknown, prefix = ""): string[] => {
  * by run ID), and so do its delegated rows and closed set (its tree's). Every other key path is base's.
  */
 const isExceptedPath = (path: string) => /\.(agent_statuses|agent_input_states|taskExecutions|closed_task_executions|remote_task_executions)(\.|\[|$)/.test(path);
+/** autobyteus-500 (FU-006, naming N2): base's `execution_tree.host` is the run's own agent, now named `execution_tree.agent`. */
+const renamedFromBase = (path: string) => path.replace(/\.execution_tree\.host(?=\.|$)/, ".execution_tree.agent");
 const same = (actual: unknown, expected: unknown) =>
-  expect([...new Set(pathsOf(actual).filter((path) => !isExceptedPath(path)))].sort()).toEqual([...new Set(pathsOf(expected).filter((path) => !isExceptedPath(path)))].sort());
+  expect([...new Set(pathsOf(actual).filter((path) => !isExceptedPath(path)))].sort())
+    .toEqual([...new Set(pathsOf(expected).filter((path) => !isExceptedPath(path)).map(renamedFromBase))].sort());
 
-const host = { address: "/research_assistant" as never, agentRunId: "host", agentDefinitionId: "research-assistant" };
+const agent = { address: "/research_assistant" as never, agentRunId: "agent-run", agentDefinitionId: "research-assistant" };
 
 describe("an agent run's view in base's shapes (rule 3)", () => {
   it("the snapshot: its own parts", () => {
-    const snapshot = projectAgentCollaborationView({ hostRunId: "host", isActive: true, baseChangeSequence: 0, liveSequenceId: "live", lastMessageChangeSequence: 0,
-      snapshot: { host, createdAt: "2026-11-01T00:00:00.000Z" } });
+    const snapshot = projectAgentCollaborationView({ agentRunId: "agent-run", isActive: true, baseChangeSequence: 0, liveSequenceId: "live", lastMessageChangeSequence: 0,
+      snapshot: { agent, createdAt: "2026-11-01T00:00:00.000Z" } });
     same(snapshot, base.snapshot);
   });
 

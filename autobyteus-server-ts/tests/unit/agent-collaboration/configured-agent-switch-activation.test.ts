@@ -10,6 +10,7 @@ import {
 } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { MemberCollaborationContext, MemberExecutionContext } from "../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 import type { PendingRuntimeSwitch } from "../../../src/run-history/store/agent-run-metadata-types.js";
+import { OFFERED_STORED_MODEL_CHECKS } from "../../helpers/explicit-host-collaborators.js";
 
 /**
  * autobyteus-348 (REQ-003, REQ-004, REQ-005, AC-005, AC-006, AC-007, M-6, M-7): the shared configured-agent handle runs the
@@ -56,7 +57,7 @@ const build = (input: { target?: RuntimeKind; history?: "none" | "present" | "in
   const commitPlatformBindingChange = vi.fn(async (_change: unknown) => { order.push("commit"); });
   const releaseExactRun = vi.fn(async () => ({ accepted: true }));
   const pending = input.pending === null ? undefined : input.pending ?? PENDING;
-  const handle = new ConfiguredAgentExecutionHandle({
+  const handle = new ConfiguredAgentExecutionHandle({ storedModelChecks: OFFERED_STORED_MODEL_CHECKS,
     identity, physicalScope: scope, memoryPlacement: runPartPlacement(scope),
     execution: {
       agentDefinitionId: "agent-definition", llmModelIdentifier: "gpt-5", llmConfig: null, autoExecuteTools: false,

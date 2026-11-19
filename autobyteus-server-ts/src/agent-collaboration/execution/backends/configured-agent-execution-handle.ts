@@ -1,4 +1,5 @@
 import { readRunProjectContext, type RunProjectRoot } from "../../../agent-execution/domain/run-project-context.js";
+import { StoredModelNotOfferedError, storedModelStartRefusal, type StoredModelStartChecks } from "../../../llm-management/services/run-model-selection-refusal.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { readPlatformInputPreface } from "autobyteus-ts/agent/message/platform-input-preface-metadata.js";
 import type { ApplicationExecutionContext } from "../../../application-orchestration/domain/models.js";
@@ -97,6 +98,7 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
     runtimeSwitchMemory?: RuntimeSwitchMemory;
     workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
     assertInputAllowed?: () => void;
+    storedModelChecks: StoredModelStartChecks; // G-5: the definition, then the stored model's offer, before each start
   }) {
     this.identity = cloneCollaborationMemberExecutionIdentity(options.identity);
     this.physicalScope = createRootExecutionPhysicalScope(options.physicalScope);
@@ -432,6 +434,10 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
     try {
       const config = await this.buildAgentRunConfig();
       this.assertInputAllowed();
+      // G-5 (REQ-016): a member whose saved model its runtime no longer offers is refused before its runtime starts.
+      const refusal = await storedModelStartRefusal(this.options.storedModelChecks,
+        { ...this.execution, agentName: this.identity.memberAddress.split("/").at(-1) || this.identity.agentRunId });
+      if (refusal) throw new StoredModelNotOfferedError(refusal.message);
       const begun = this.planner.begin(config, this.platformAgentRunId, this.activationMode, this.execution.pendingRuntimeSwitch);
       this.activationOperation = begun.operation;
       this.switchAttempt = begun.switching;

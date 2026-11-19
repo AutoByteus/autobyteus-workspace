@@ -371,8 +371,8 @@ try {
       const cold = await timedSelection(`cold-frontend-store-${repeat}`);
       const coldReadsEnd = requests.length;
       const warm = await timedSelection(`warm-reselection-${repeat}`);
-      cold.roleRevealRequests = requests.slice(coldReadsStart, coldReadsEnd).filter(r => r.operationName === 'GetAgentRunCollaborationMemberProjection' && r.variables.hostRunId === setup.hostId).length;
-      cold.roleRevealArtifactReads = requests.slice(coldReadsStart, coldReadsEnd).filter(r => r.operationName === 'GetAgentRunCollaborationMemberFileChanges' && r.variables.hostRunId === setup.hostId).length;
+      cold.roleRevealRequests = requests.slice(coldReadsStart, coldReadsEnd).filter(r => r.operationName === 'GetAgentRunCollaborationMemberProjection' && r.variables.runId === setup.hostId).length;
+      cold.roleRevealArtifactReads = requests.slice(coldReadsStart, coldReadsEnd).filter(r => r.operationName === 'GetAgentRunCollaborationMemberFileChanges' && r.variables.runId === setup.hostId).length;
       samples.push({ cold, warm });
       await save();
     }

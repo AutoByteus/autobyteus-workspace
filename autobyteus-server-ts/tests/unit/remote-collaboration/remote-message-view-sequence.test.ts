@@ -114,7 +114,7 @@ describe("messages with a remote endpoint keep the root view stream consecutive 
       kind: "Agent root (standalone)",
       root: createAgentRootExecutionIdentity(LEAD),
       build: (root: RootExecutionIdentity, publisher: RunViewStream<StandaloneRootEvent>) => createStandaloneRootCommunicationPort({
-        root, persistence: persistence() as never, initial: { schemaVersion: 1, subjectKind: "agent", hostRunId: LEAD, messages: [] },
+        root, persistence: persistence() as never, initial: { schemaVersion: 1, subjectKind: "agent", agentRunId: LEAD, messages: [] },
         isOpen: () => true, isCurrentAgent: () => true, messageLogOwnerOf: () => OWN_RUN_LOG, assertDeliveryAllowed: () => undefined,
         reserveRecipientInput: vi.fn(async (agentRunId: string) => ({ reserved: true as const, reservation: reservation(agentRunId) })),
         messageFeed: messageFeedInto(publisher, (message) => ({ kind: "communication" as const, message })), presentCommittedMessage: vi.fn(),

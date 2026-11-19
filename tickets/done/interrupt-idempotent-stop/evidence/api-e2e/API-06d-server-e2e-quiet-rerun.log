@@ -1,0 +1,606 @@
+# API-06d the three files still failing in API-06c on AGY discovery timeouts, rerun at a lower load; commit 6744d786c6 (code a0d81bbe18); 2026-11-18T17:04:51Z; Node v22.23.1; load 20.63 38.17 43.84
+# env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<fixture> pnpm -C autobyteus-server-ts exec vitest run --fileParallelism=false tests/e2e/runtime/agy-background-task-transport.e2e.test.ts tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:90374) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts [2m([22m[2m3 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[33m 15081[2mms[22m[39m
+     [33m[2m✓[22m[39m OT-1 a closure removes the run from the tree (never stored in the tree file); token total and Memory page keep it [33m 12285[2mms[22m[39m
+[31m     [31m×[31m OT-2 an upgraded data root: admitted at start; trees hold open runs only; a read writes nothing; a load reads no closed run; the first save keeps only what it must[39m[33m 2695[2mms[22m[39m
+[31m     [31m×[31m OT-3 a Task record that cannot be read hides its run with a warning naming the Task; restored, the run is back[39m[32m 10[2mms[22m[39m
+(node:92063) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-WNYOjH
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-WNYOjH/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-WNYOjH/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-WNYOjH/.env // tip: ◈ secrets for agents [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-WNYOjH
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-WNYOjH/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-WNYOjH/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-WNYOjH/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-WNYOjH/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mNode access: local control socket not opened. The node's local control socket path is 105 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-WNYOjH/node-access/local-control.sock. Use a shorter data folder path.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-WNYOjH/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-WNYOjH/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-WNYOjH/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mSuccessfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mSuccessfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mRegistered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstderr[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mAgent Definition created successfully with ID: agy-background-5b0a71f2-78db-46a7-956e-9c6fc6377d5a
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history[2m > [22m[2mcloses a never-finished daemon step as a succeeded background task before TURN_COMPLETED and replays it
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-WNYOjH/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-WNYOjH/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history[2m > [22m[2mcloses a never-finished daemon step as a succeeded background task before TURN_COMPLETED and replays it
+[22m[39mCreated and registered workspace ID: agent_ws_ab3633fb1d674919a14c222add3aacf90e5cef056c7e78c0153a1c9c2487efbc
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history[2m > [22m[2mcloses a never-finished daemon step as a succeeded background task before TURN_COMPLETED and replays it
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-WNYOjH/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-WNYOjH/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history[2m > [22m[2mcloses a never-finished daemon step as a succeeded background task before TURN_COMPLETED and replays it
+[22m[39mReusing registered workspace ID: agent_ws_ab3633fb1d674919a14c222add3aacf90e5cef056c7e78c0153a1c9c2487efbc
+
+[90mstderr[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history[2m > [22m[2mcloses a never-finished daemon step as a succeeded background task before TURN_COMPLETED and replays it
+[22m[39mError in createAgentRun: AgyDiscoveryError: Antigravity model discovery timed out; check the CLI and retry.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history[2m > [22m[2mkeeps Stop during a daemon turn as an interruption, never a background success
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-WNYOjH/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-WNYOjH/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history[2m > [22m[2mkeeps Stop during a daemon turn as an interruption, never a background success
+[22m[39mReusing registered workspace ID: agent_ws_ab3633fb1d674919a14c222add3aacf90e5cef056c7e78c0153a1c9c2487efbc
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history[2m > [22m[2mkeeps Stop during a daemon turn as an interruption, never a background success
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-WNYOjH/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-WNYOjH/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history[2m > [22m[2mkeeps Stop during a daemon turn as an interruption, never a background success
+[22m[39mReusing registered workspace ID: agent_ws_ab3633fb1d674919a14c222add3aacf90e5cef056c7e78c0153a1c9c2487efbc
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history[2m > [22m[2mkeeps Stop during a daemon turn as an interruption, never a background success
+[22m[39mAGY compaction detection off for run agy_background_5b0a71f2_78db_46a7_956e_9c6fc6377_07b7c539219245e0b08712a6d6822af2: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history[2m > [22m[2mkeeps Stop during a daemon turn as an interruption, never a background success
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-WNYOjH/memory/agents/agy_background_5b0a71f2_78db_46a7_956e_9c6fc6377_07b7c539219245e0b08712a6d6822af2/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history[2m > [22m[2mkeeps Stop during a daemon turn as an interruption, never a background success
+[22m[39mAgent websocket attached for run agy_background_5b0a71f2_78db_46a7_956e_9c6fc6377_07b7c539219245e0b08712a6d6822af2
+Created agent session 9091ae6d-c1b6-47a0-9690-ef5039b2f8d2 for run agy_background_5b0a71f2_78db_46a7_956e_9c6fc6377_07b7c539219245e0b08712a6d6822af2
+Agent WebSocket connected: session=9091ae6d-c1b6-47a0-9690-ef5039b2f8d2, run=agy_background_5b0a71f2_78db_46a7_956e_9c6fc6377_07b7c539219245e0b08712a6d6822af2
+
+[90mstderr[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history[2m > [22m[2mkeeps Stop during a daemon turn as an interruption, never a background success
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-WNYOjH/memory/agents/agy_background_5b0a71f2_78db_46a7_956e_9c6fc6377_07b7c539219245e0b08712a6d6822af2/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history[2m > [22m[2mkeeps Stop during a daemon turn as an interruption, never a background success
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-WNYOjH/memory/agents/agy_background_5b0a71f2_78db_46a7_956e_9c6fc6377_07b7c539219245e0b08712a6d6822af2/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22m[2mAGY background (daemon) tool steps through app WebSocket and history
+[22m[39mClosed agent session 9091ae6d-c1b6-47a0-9690-ef5039b2f8d2
+Agent WebSocket disconnected: 9091ae6d-c1b6-47a0-9690-ef5039b2f8d2
+
+ [31m❯[39m tests/e2e/runtime/agy-background-task-transport.e2e.test.ts [2m([22m[2m2 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 16094[2mms[22m[39m
+[31m     [31m×[31m closes a never-finished daemon step as a succeeded background task before TURN_COMPLETED and replays it[39m[33m 3302[2mms[22m[39m
+     [33m[2m✓[22m[39m keeps Stop during a daemon turn as an interruption, never a background success [33m 647[2mms[22m[39m
+[90mstdout[2m | write (/Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-ts/src/utils/logger.ts:75:24)
+[22m[39mAgent Definition with ID agy-background-5b0a71f2-78db-46a7-956e-9c6fc6377d5a deleted successfully.
+
+(node:92814) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-y9cdjM
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-y9cdjM/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-y9cdjM/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-y9cdjM/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-y9cdjM
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-y9cdjM/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-y9cdjM/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-y9cdjM/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-y9cdjM/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mNode access: local control socket not opened. The node's local control socket path is 111 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-y9cdjM/node-access/local-control.sock. Use a shorter data folder path.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-y9cdjM/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-y9cdjM/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-y9cdjM/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mSuccessfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mAgent Definition created successfully with ID: work-journal-restore-ddc8976f-0e23-4370-a276-f776c807e88d
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore[2m > [22m[2mupdates the open file per turn, writes the closed file once, and regenerates both after restore
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-y9cdjM/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-y9cdjM/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore[2m > [22m[2mupdates the open file per turn, writes the closed file once, and regenerates both after restore
+[22m[39mCreated and registered workspace ID: agent_ws_9c587a82a9929d58f4ed638caa63fc39bc702ce016e9780eebf18c470a076943
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore[2m > [22m[2mupdates the open file per turn, writes the closed file once, and regenerates both after restore
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-y9cdjM/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-y9cdjM/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore[2m > [22m[2mupdates the open file per turn, writes the closed file once, and regenerates both after restore
+[22m[39mReusing registered workspace ID: agent_ws_9c587a82a9929d58f4ed638caa63fc39bc702ce016e9780eebf18c470a076943
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore[2m > [22m[2mupdates the open file per turn, writes the closed file once, and regenerates both after restore
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-y9cdjM/memory/agents/work_journal_restore_ddc8976f_0e23_4370_a276_f77_3f63d3958a3c418889c262ec9c73745d/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore[2m > [22m[2mupdates the open file per turn, writes the closed file once, and regenerates both after restore
+[22m[39mAgent websocket attached for run work_journal_restore_ddc8976f_0e23_4370_a276_f77_3f63d3958a3c418889c262ec9c73745d
+Created agent session a2d6e356-950f-41e0-a203-d4e8069ec8fc for run work_journal_restore_ddc8976f_0e23_4370_a276_f77_3f63d3958a3c418889c262ec9c73745d
+Agent WebSocket connected: session=a2d6e356-950f-41e0-a203-d4e8069ec8fc, run=work_journal_restore_ddc8976f_0e23_4370_a276_f77_3f63d3958a3c418889c262ec9c73745d
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore[2m > [22m[2mupdates the open file per turn, writes the closed file once, and regenerates both after restore
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-y9cdjM/memory/agents/work_journal_restore_ddc8976f_0e23_4370_a276_f77_3f63d3958a3c418889c262ec9c73745d/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore[2m > [22m[2mupdates the open file per turn, writes the closed file once, and regenerates both after restore
+[22m[39mClosed agent session a2d6e356-950f-41e0-a203-d4e8069ec8fc
+Agent WebSocket disconnected: a2d6e356-950f-41e0-a203-d4e8069ec8fc
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore[2m > [22m[2mupdates the open file per turn, writes the closed file once, and regenerates both after restore
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-y9cdjM/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-y9cdjM/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore[2m > [22m[2mupdates the open file per turn, writes the closed file once, and regenerates both after restore
+[22m[39mReusing registered workspace ID: agent_ws_9c587a82a9929d58f4ed638caa63fc39bc702ce016e9780eebf18c470a076943
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore[2m > [22m[2mupdates the open file per turn, writes the closed file once, and regenerates both after restore
+[22m[39mAgent websocket attached for run work_journal_restore_ddc8976f_0e23_4370_a276_f77_3f63d3958a3c418889c262ec9c73745d
+Created agent session a2fc274a-8c6c-4584-a516-d2ecbf7caa8e for run work_journal_restore_ddc8976f_0e23_4370_a276_f77_3f63d3958a3c418889c262ec9c73745d
+Agent WebSocket connected: session=a2fc274a-8c6c-4584-a516-d2ecbf7caa8e, run=work_journal_restore_ddc8976f_0e23_4370_a276_f77_3f63d3958a3c418889c262ec9c73745d
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mClosed agent session a2fc274a-8c6c-4584-a516-d2ecbf7caa8e
+Agent WebSocket disconnected: a2fc274a-8c6c-4584-a516-d2ecbf7caa8e
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mAgent Definition with ID work-journal-restore-ddc8976f-0e23-4370-a276-f776c807e88d deleted successfully.
+
+ [31m❯[39m tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 17539[2mms[22m[39m
+     [33m[2m✓[22m[39m updates the open file per turn, writes the closed file once, and regenerates both after restore [33m 3100[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Suites 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22mAGY background (daemon) tool steps through app WebSocket and history
+[31m[1mError[22m: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".[39m
+[36m [2m❯[22m tests/e2e/runtime/agy-background-task-transport.e2e.test.ts:[2m64:3[22m[39m
+    [90m 62|[39m     definitionId [33m=[39m created[33m.[39mcreateAgentDefinition[33m.[39mid[33m;[39m
+    [90m 63|[39m   })[33m;[39m
+    [90m 64|[39m   [34mafterAll[39m([35masync[39m () [33m=>[39m {
+    [90m   |[39m   [31m^[39m
+    [90m 65|[39m     for (const socket of sockets) if (socket.readyState === WebSocket.…
+    [90m 66|[39m     [35mif[39m (url) {
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[31m[1mError[22m: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".[39m
+[36m [2m❯[22m tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts:[2m75:3[22m[39m
+    [90m 73|[39m         instructions: "Reply briefly.", category: "runtime-e2e", toolN…
+    [90m 74|[39m   })[33m;[39m
+    [90m 75|[39m   [34mafterAll[39m([35masync[39m () [33m=>[39m {
+    [90m   |[39m   [31m^[39m
+    [90m 76|[39m     for (const socket of sockets) if (socket.readyState === WebSocket.…
+    [90m 77|[39m     [35mif[39m (url) {
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯[22m[39m
+
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 3 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts[2m > [22mA top run's tree is built from its open Tasks: upgrade, start, load, save and restarts (built server, scripted AGY)[2m > [22mOT-2 an upgraded data root: admitted at start; trees hold open runs only; a read writes nothing; a load reads no closed run; the first save keeps only what it must
+[31m[1mAssertionError[22m: reading the trees wrote nothing: expected { …(122) } to deeply equal { …(118) }[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -112,9 +112,13 @@[39m
+[2m    "agents/ot_writer_ae2897_8e308c164f8b4f9292ad3273bb31c97a/run_metadata.json": "76e16f07a3a931157d788bbfa26b447318ff183b0fb82f6b567e8ec931f267c0",[22m
+[2m    "agents/ot_writer_ae2897_8e308c164f8b4f9292ad3273bb31c97a/seen_skill_versions.json": "1410831f099de6212dcd908b62d62df171dfccda3b7cbfbde9f5dda4ff608dfc",[22m
+[2m    "agents/ot_writer_ae2897_8e308c164f8b4f9292ad3273bb31c97a/seen_tool_names.json": "67add5bab1640afefcabc3df47048d7fd0cbfc32802c0128846d87adaf135cc4",[22m
+[2m    "agents/ot_writer_ae2897_8e308c164f8b4f9292ad3273bb31c97a/work_journal/work_journal_active.md": "1a1b9ee57feda0720a06c6517bb2a9b76787e2397b2eed810eebe918feb1c4bf",[22m
+[2m    "agents/ot_writer_ae2897_8e308c164f8b4f9292ad3273bb31c97a/work_journal/work_journal_manifest.json": "a2ed2bbc06aebab5c5ce1554e8f20a21ce4e7294a88400c446609ec097e092be",[22m
+[32m-   "episodic/index.md": "6a10bb4ece5f34d7118c87ea85848b8f106e1a9149a5b8154ddd462a01394377",[39m
+[31m+   "episodic/index.md": "ce41a4c1da8d1be30664f7f07005bc67c6f8853b9ff852fbda51cf1b0bf2168c",[39m
+[31m+   "episodic/ot-checker-ae2897/catalog.md": "1752c5f625531f9cc76a4aef01750a637312f5fee105051418ef93fcae6bb4e5",[39m
+[31m+   "episodic/ot-manager-ae2897/catalog.md": "436ee9c9458efda9ac662480b923efb572611699354725a30de0198278cd96b4",[39m
+[31m+   "episodic/ot-researcher-ae2897/catalog.md": "abad9d8acb9f2b143597e20c7cb4c53e06d7fff09aaacc280882d24f98268bc5",[39m
+[31m+   "episodic/ot-writer-ae2897/catalog.md": "097aefae61abbc2aa50bf9a7d7554c06636f72d1fe4bd93683f60445239d1ffa",[39m
+[2m    "run_history_index.json": "171df0757d9b97621d054be3fdfe126ae0a687b7cf2621ac4a0b02a9b1fb20a4",[22m
+[2m    "team_run_history_index.json": "5db8764be376b92982d35ff456aff612f3965cabb3faab4c4c8fa122e585a0ad",[22m
+[2m  }[22m
+
+[36m [2m❯[22m tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts:[2m247:74[22m[39m
+    [90m245|[39m       for (const gone of [run.rc, run.rg]) expect(ids, `${r.kind}: ${g…
+    [90m246|[39m     }
+    [90m247|[39m     expect(await fingerprint(memory), "reading the trees wrote nothing…
+    [90m   |[39m                                                                          [31m^[39m
+    [90m248|[39m
+    [90m249|[39m     // AC-010: loading and using the top runs reads no file of a close…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts[2m > [22mA top run's tree is built from its open Tasks: upgrade, start, load, save and restarts (built server, scripted AGY)[2m > [22mOT-3 a Task record that cannot be read hides its run with a warning naming the Task; restored, the run is back
+[31m[1mAssertionError[22m: the temporary Task's record: expected '' to be truthy[39m
+
+[32m- Expected:[39m
+true
+
+[31m+ Received:[39m
+""
+
+[36m [2m❯[22m tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts:[2m321:55[22m[39m
+    [90m319|[39m     [35mlet[39m recordFile [33m=[39m [32m""[39m[33m;[39m
+    [90m320|[39m     for (const file of records) if ((await fs.readFile(file, "utf8")).…
+    [90m321|[39m     [34mexpect[39m(recordFile[33m,[39m [32m"the temporary Task's record"[39m)[33m.[39m[34mtoBeTruthy[39m()[33m;[39m
+    [90m   |[39m                                                       [31m^[39m
+    [90m322|[39m     agentRuns[33m.[39mrnTask [33m=[39m path[33m.[39m[34mbasename[39m(path[33m.[39m[34mdirname[39m(recordFile))[33m;[39m
+    [90m323|[39m     [35mconst[39m bytes [33m=[39m [35mawait[39m fs[33m.[39m[34mreadFile[39m(recordFile)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/agy-background-task-transport.e2e.test.ts[2m > [22mAGY background (daemon) tool steps through app WebSocket and history[2m > [22mcloses a never-finished daemon step as a succeeded background task before TURN_COMPLETED and replays it
+[31m[1mAssertionError[22m: AgyDiscoveryError: Antigravity model discovery timed out; check the CLI and retry.: expected false to be true // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+[36m [2m❯[22m openRun tests/e2e/runtime/agy-background-task-transport.e2e.test.ts:[2m83:76[22m[39m
+    [90m 81|[39m         llmModelIdentifier[33m:[39m [32m"gemini-3.8-flash-low"[39m[33m,[39m llmConfig[33m:[39m [35mnull[39m[33m,[39m
+    [90m 82|[39m         autoExecuteTools[33m:[39m [35mtrue[39m[33m,[39m runtimeKind[33m:[39m [32m"antigravity_cli"[39m } })[33m;[39m
+    [90m 83|[39m     expect(started.createAgentRun.success, started.createAgentRun.mess…
+    [90m   |[39m                                                                            [31m^[39m
+    [90m 84|[39m     [35mconst[39m runId [33m=[39m started[33m.[39mcreateAgentRun[33m.[39mrunId[33m![39m[33m;[39m
+    [90m 85|[39m     runIds[33m.[39m[34mpush[39m(runId)[33m;[39m
+[90m [2m❯[22m tests/e2e/runtime/agy-background-task-transport.e2e.test.ts:[2m106:17[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m3 failed[39m[22m[90m (3)[39m
+[2m      Tests [22m [1m[31m3 failed[39m[22m[2m | [22m[1m[32m3 passed[39m[22m[90m (6)[39m
+[2m   Start at [22m 18:04:52
+[2m   Duration [22m 69.30s[2m (transform 7.47s, setup 106ms, import 14.47s, tests 48.71s, environment 0ms)[22m
+
+rerun exit 1

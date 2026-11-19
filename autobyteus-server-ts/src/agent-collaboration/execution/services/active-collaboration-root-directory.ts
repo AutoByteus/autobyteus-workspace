@@ -22,9 +22,24 @@ export interface ActiveRootMessageBoundary {
   prepareSendToRun?(input: import("../communication/root-communication-engine.js").RunSendInput): import("../communication/root-communication-engine.js").PreparedRunSend;
   commitSentToRun?(message: import("../communication/collaboration-communication-message.js").CollaborationCommunicationMessage): Promise<void>;
   deliverExactAgentMessage(input: ExactAgentMessageInput): Promise<AgentOperationResult>;
+  /**
+   * autobyteus-492 DS-004: `send_message_to(node, run ID)` from an agent of this root to an agent of a peer node, named by
+   * its run ID only: the sender's check and lease here, the endpoint choice and the order in `RemoteMessageSend`.
+   */
+  deliverToPeerRun(input: PeerRunMessageInput): Promise<AgentOperationResult>;
   /** The coordinator agent run of this team run, or of a peer team run it delegated to; `null` otherwise. Reads only. */
   teamCoordinatorOf?(teamRunId: string): string | null;
 }
+
+/** A message from an agent of a root to an agent of a peer node, by the peer's node ID and the agent's run ID (DS-004). */
+export type PeerRunMessageInput = Readonly<{
+  sender: ActiveRootMessageSender;
+  nodeId: string;
+  targetAgentRunId: string;
+  content: string;
+  messageType?: string | null;
+  referenceFiles?: readonly string[] | null;
+}>
 
 /** Where a live agent run sits in its own root: a standalone run's agent, or a Team or Org member (autobyteus-461 DS-9). */
 export type CollaborationRunPlace = "host" | "member";
@@ -103,6 +118,11 @@ export class ActiveCollaborationRootDirectory {
     return entry && sameRootExecutionIdentity(entry.root, root) ? entry.boundary : null;
   }
 
+  /** Every registered root, by identity (autobyteus-492: `RunningAgents` and the running-agents listing). Reads only. */
+  liveRoots(): readonly RootExecutionIdentity[] {
+    return Object.freeze([...this.active.values()].map(({ root }) => cloneRootExecutionIdentity(root)));
+  }
+
   /**
    * The coordinator agent run of the team run with this ID, as an active root knows it (its own, or a peer team run it
    * delegated to), for `send_message_to` guidance (it reaches agents only); `null` when no active root knows it.
@@ -118,7 +138,7 @@ export class ActiveCollaborationRootDirectory {
   /**
    * The active root holding this agent run and its place there (autobyteus-285, restart resume); `null` when no
    * active root holds it (application- or system-owned runs). Reads only. One root holds a run; if several boundaries
-   * claim it, that is logged and the host claim wins.
+   * claim it, that is logged and the run's own agent's claim wins.
    */
   placeOf(agentRunIdInput: string): Readonly<{ root: RootExecutionIdentity; place: CollaborationRunPlace }> | null {
     const agentRunId = agentRunIdInput.trim();

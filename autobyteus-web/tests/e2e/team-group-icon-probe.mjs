@@ -42,7 +42,7 @@ const evidence = { startedAt: new Date().toISOString(), layer: 'Renderer browser
   platform: `${process.platform}-${process.arch}`, node: process.version, cases: {}, events: [], cleanup: {} };
 evidence.sourceFiles = {};
 for (const relative of ['tests/e2e/team-group-icon-probe.mjs', 'tests/e2e/fixtures/team-group-icon.page.vue',
-  'components/workspace/history/WorkspaceTransientExecutionRow.vue', 'components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue',
+  'components/workspace/history/WorkspaceDelegatedRunRow.vue', 'components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue',
   'components/projects/ProjectTaskWorkers.vue', 'components/memory/CollaborationMemoryDetail.vue']) {
   evidence.sourceFiles[relative] = createHash('sha256').update(await fs.readFile(path.join(web, relative))).digest('hex');
 }
@@ -190,7 +190,7 @@ try {
   await runCase('B02', 'Org configured/collaborator/delegated group and exact disclosure/inspect intent', async () => {
     // autobyteus-461 FU-031: an Org's delegated Team rows are the shared row (its people-group icon in `[data-team-icon]`); the
     // Org's own mounted Team keeps its row.
-    const ORG_TASK_TEAMS = '[data-preview="org"] [data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]';
+    const ORG_TASK_TEAMS = '[data-preview="org"] [data-test="workspace-team-transient-execution-row"][data-delegated-run-kind="task_team"]';
     const icons = await checkIcons(`${ORG_TASK_TEAMS} [data-team-icon] svg, [data-test="agent-org-team-row-team-configured"] > svg.h-4.w-4`, [16,16,16]);
     // CR-461-108: opening the delegated Team row reveals it (expanded, never folded on open); its chevron folds it.
     const org = page.locator(ORG_TASK_TEAMS).first();

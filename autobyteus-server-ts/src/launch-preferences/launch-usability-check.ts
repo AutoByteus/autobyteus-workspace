@@ -28,10 +28,13 @@ export type LaunchVerdict =
   | Readonly<{ usable: "runtime_only"; runtimeKind: string }>
   | Readonly<{ usable: false; reason: LaunchConfigurationFallbackReason; detail: string }>;
 
-/** The inherited launch's model check: usable with its canonical launch, or the reason it is not. */
+/**
+ * The inherited launch's model check: usable with its canonical launch, or the reason it is not; `modelNoLongerOffered`
+ * when its runtime's list no longer has the model (the refusal says so in its own words, autobyteus-500 SR-015 R3).
+ */
 export type InheritedLaunchVerdict =
   | Readonly<{ usable: true; launch: AgentLaunchConfiguration }>
-  | Readonly<{ usable: false; detail: string }>;
+  | Readonly<{ usable: false; modelNoLongerOffered: boolean; detail: string }>;
 
 export type LaunchUsabilityResult = Readonly<{
   /** One per candidate, in order. */
@@ -61,6 +64,9 @@ const canonicalLaunch = (launch: AgentLaunchConfiguration, selection: RunModelSe
 /** The runnability wording for a model check that did not pass (the same for the inherited layer); unavailable kinds use the one refusal wording. */
 export const invalidModelMessage = (launch: AgentLaunchConfiguration, result: RunModelSelectionValidationResult | undefined): string =>
   !result ? "Its model could not be checked."
+    // FU-030 (DLP-003 ... DLP-005): a configured model its runtime dropped is said as it is; the note or the refusal adds
+    // what runs instead and what to do.
+    : result.kind === "model_unavailable" ? `'${launch.llmModelIdentifier}' is no longer offered by ${agentRuntimeName(launch.runtimeKind)}.`
     : isUnavailableModelSelection(result)
       ? runModelSelectionRefusal({ result, llmModelIdentifier: launch.llmModelIdentifier, runtimeKind: launch.runtimeKind,
         savedSettingsUnchanged: false }).message
@@ -182,7 +188,8 @@ export class LaunchUsabilityCheck {
     const inherited: InheritedLaunchVerdict | null = !input.inherited ? null
       : inheritedResult?.kind === "valid"
         ? Object.freeze({ usable: true, launch: canonicalLaunch(input.inherited, inheritedResult.selection) })
-        : Object.freeze({ usable: false, detail: invalidModelMessage(input.inherited, inheritedResult) });
+        : Object.freeze({ usable: false, modelNoLongerOffered: inheritedResult?.kind === "model_unavailable",
+          detail: invalidModelMessage(input.inherited, inheritedResult) });
     return Object.freeze({ verdicts: Object.freeze(verdicts as LaunchVerdict[]), inherited });
   }
 

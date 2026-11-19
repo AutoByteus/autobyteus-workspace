@@ -1,0 +1,31 @@
+API/E2E round 8: CRR-019 (head 70a98c72d8: merge 8a9b1a0aec after v1.5.14-beta.1, rename 686f715446; SR-017 D-15)
+Environment: macOS 26 arm64, load 18-33. autobyteus-ts and server dist rebuilt from 70a98c72d8 (exit 0; dist holds the
+20261119 IDs). E2E: env -i PATH HOME=<fresh temp> TMPDIR, RUN_AGY_FAILURE_E2E=1, scripted AGY. Raw logs: /tmp/api500/r8/.
+
+§1 delegated-run-own-attachment-links-startup.e2e.test.ts (ALM-1 with MO-1 and the new MO-2; alm3.log, the final file)
+  Both journeys: the product writes own links (uploads to a delegated Agent and a delegated Team's lead), a real run of the
+  retired Memory Compactor's installed copy; with the server down the links get the released host-scoped shape.
+  MO-1, from a release before beta.1 (all three ledger rows removed). One first start, in this order:
+    20261118_remove_retired_built_in_agents                              SUCCEEDED               18:12:02.431 -> .435  "Scanned 2; migrated 2; skipped 0; failed 0."
+    20261119_delegated_run_own_attachment_links                          SUCCEEDED_WITH_WARNINGS 18:12:02.436 -> .472  "Scanned 4; migrated 2; skipped 2; failed 0."
+    20261119_delegated_run_own_attachment_links_after_task_agent_own_run SUCCEEDED_WITH_WARNINGS 18:12:02.474 -> .482  "Scanned 4; migrated 0; skipped 4; failed 0."
+  MO-2, from beta.1 (491's removal ran in an earlier start of this build with only its row pending, as beta.1's start does:
+  18:12:14.337 -> .340, "Scanned 2; migrated 2", copies gone; then the links get the released shape and our two rows go):
+    the first start runs only ours: main 18:12:16.283 -> .318 "migrated 2", follow-up .320 -> .323 "migrated 0";
+    491's record is beta.1's, unchanged (attempts 1, startedAt and completedAt equal).
+  Both: converted trace files byte-identical to what the current code wrote; backups under
+  app-data-migration-backups/20261119_delegated_run_own_attachment_links/memory/… hold the released bytes (one per converted
+  file); none under the follow-up's ID; no folder under the former 20261117_ IDs; every converted link opens (200, the bytes);
+  the removed route 404; the removed file's link kept host-scoped; the compactor's run listed and its continuation answered
+  ACTIVATION_FAILED "AGY_AGENT_DEFINITION_MISSING: autobyteus-memory-compactor"; the second start leaves all three records,
+  the traces and the backups unchanged.
+  Result: "✓ ALM-1 / MO-1 from a release before beta.1 …", "✓ ALM-1 / MO-2 from beta.1 …", "Tests 2 passed (2)".
+  (alm.log and alm2.log: the same 2/2 before the former-ID folder assertion was added.)
+
+§2 Order and migration units (units.log): tests/unit/app-data-migrations (the registry order test reading
+  released-migration-order.json, G-1), tests/app-data-migrations/delegated-run-own-attachment-links, remove-retired-built-in-agents,
+  collaborators-to-delegated-runs-v1, delegated-copy-own-file-complete-v1: "Test Files 9 passed (9)", "Tests 77 passed (77)".
+  No source or test names the former 20261117 IDs (git grep; only untracked old logs under tests/.tmp).
+
+§3 Gates: server typecheck "production errors: 0; test-file errors: 1006 in 315 files (baseline 1006 in 315 files)", PASS;
+  team-stream-clients-wait-for-connected "Tests 3 passed (3)".

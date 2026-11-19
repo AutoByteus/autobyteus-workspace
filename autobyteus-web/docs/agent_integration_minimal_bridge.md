@@ -104,7 +104,8 @@ These handlers update the agent context and mark messages complete. In the curre
 - The interrupt/stop affordance follows the status word: Stop only for `running`
   (`resolveAgentPrimaryAction`). `isSending` is only local submit-flight state and
   must not grant interrupt authority by itself; a running background task does not
-  either.
+  either. After a press the run's `interruptPending` flag turns the control into
+  the disabled "Stopping…" state until the run's status is no longer `running`.
 - Refresh/reopen/recovery should preserve a selected live `initializing` or
   `running` single run or focused team member while that stream remains
   authoritative, but terminal `offline` or `error` projections must always replace
@@ -178,11 +179,13 @@ Agent teams use the same streaming protocol but connect to a different WebSocket
   client command id. Register the exact target before sending, match the
   acknowledgement by command id plus target, and intercept a team interrupt
   acknowledgement before generic member/task projection.
-- Treats interrupt `accepted` as admission only. `rejected`/`failed` server
-  results and local not-connected/send/disconnect completion produce one
-  target-aware error toast, but no interrupt result may synthesize status,
-  mutate transcript content, retry automatically, or fabricate a server
-  acknowledgement.
+- Settles each Stop once as an `InterruptOutcome` (`accepted`, `not_sent`,
+  `connection_lost`, `refused`) and presents nothing itself: `runInterrupt` owns
+  the "Stopping…" state and the one message a `not_sent` or `refused` Stop shows
+  (see Interrupt dispatch in `agent_execution_architecture.md`). `accepted`
+  means the node stopped a turn or found nothing to stop; no interrupt result may
+  synthesize status, mutate transcript content, retry automatically, or fabricate
+  a server acknowledgement.
 - Treats member `AGENT_STATUS` as the source for each member's status and
   background task count; root `TEAM_RUN_LIFECYCLE { team_run_id, is_active }` updates
   only team liveness, while connection/subscription state remains separate.

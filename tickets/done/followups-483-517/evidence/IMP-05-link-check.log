@@ -1,0 +1,11 @@
+# IMP-05 doc link check (AC-004)
+# command: python3 tickets/in-progress/followups-483-517/evidence/check-doc-anchors.py .
+# commit: working tree on 24d438fa31 with the FU-005 doc changes; 2026-11-18T10:50:22Z
+## negative control (a temporary file with the old link, removed after): the check fails as it should
+BROKEN autobyteus-web/docs/_tmp_anchor_check.md:1: ./settings.md#run-workspace-choice-on-start-surfaces (no such heading) / RESULT FAIL (1 broken)
+## base (stash of the change):
+checked 55 links into settings.md / agent_execution_architecture.md
+RESULT PASS
+## branch:
+checked 50 links into settings.md / agent_execution_architecture.md
+RESULT PASS

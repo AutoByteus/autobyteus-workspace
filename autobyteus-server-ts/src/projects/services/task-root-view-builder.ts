@@ -52,18 +52,18 @@ const openTargetOfEntry = (entry: TaskExecutionResource): TaskRootView["openTarg
   return { runKind: "agent_team", runId: entry.execution.teamRunId, agentRunId: entry.teamCoordinatorAgentRunId, ...node };
 };
 
-export const buildTaskRootView = (entry: TaskExecutionResource, resolve: TaskWorkerStatusResolver, topOf: TaskTopRunResolver | null,
-  nameOf: TaskDisplayNameResolver | null = null): TaskRootView => {
+export const buildTaskRootView = (entry: TaskExecutionResource, resolve: TaskWorkerStatusResolver, topOf: TaskTopRunResolver,
+  nameOf: TaskDisplayNameResolver): TaskRootView => {
   const team = "teamRunId" in entry.execution;
-  const top = topOf ? topOf(entry.execution) : null;
+  const top = topOf(entry.execution);
   return {
     kind: team ? "team" : "agent",
     recipientAddress: entry.recipientAddress ?? null,
-    displayName: nameOf ? nameOf(entry.recipientAddress ?? null) : null,
+    displayName: nameOf(entry.recipientAddress ?? null),
     ingressAgentRunId: "agentRunId" in entry.execution ? entry.execution.agentRunId : entry.teamCoordinatorAgentRunId!,
     teamRunId: "teamRunId" in entry.execution ? entry.execution.teamRunId : null,
     delegatingRun: { kind: entry.delegatedFrom.delegatingRun.rootSubjectKind, runId: entry.delegatedFrom.delegatingRun.rootRunId },
-    topRun: top && { kind: top.rootSubjectKind, runId: top.rootRunId },
+    topRun: { kind: top.rootSubjectKind, runId: top.rootRunId },
     openTarget: openTargetOfEntry(entry),
     start: entry.start,
     startError: entry.startError ? { code: entry.startError.code, message: entry.startError.message } : null,

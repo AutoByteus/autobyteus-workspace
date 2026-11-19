@@ -1,4 +1,4 @@
-import type { AgentOperationResult } from "../../../domain/agent-operation-result.js";
+import { NO_ACTIVE_TURN, type AgentOperationResult } from "../../../domain/agent-operation-result.js";
 import type {
   AgentRunBackend,
   AgentRunSourceEventBatchListener,
@@ -144,9 +144,12 @@ export class ClaudeAgentRunBackend implements AgentRunBackend {
     if (!turnId) {
       return {
         accepted: false,
-        code: "NO_ACTIVE_TURN",
+        code: NO_ACTIVE_TURN,
         message: "Claude interrupt requires the canonical active turn id from AgentRun.",
       };
+    }
+    if (this.session.activeTurnId !== turnId) {
+      return { accepted: false, code: NO_ACTIVE_TURN, message: `Claude turn '${turnId}' is no longer the active turn.` };
     }
     try {
       await this.session.interrupt(turnId);

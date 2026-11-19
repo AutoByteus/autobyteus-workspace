@@ -26,7 +26,9 @@ export type AgentRunActivationErrorCode =
   | "AGENT_RUN_PREVIOUS_RUNTIME_RELEASE_PENDING"
   | "STANDALONE_AGENT_RUN_ACTIVATION_COMMIT_INDETERMINATE"
   | "PLATFORM_AGENT_RUN_RESTORE_FAILED"
-  | "PLATFORM_AGENT_RUN_BINDING_INVALID";
+  | "PLATFORM_AGENT_RUN_BINDING_INVALID"
+  /** G-5: the run's saved model is no longer offered by its runtime. */
+  | "RUN_MODEL_NOT_OFFERED";
 
 export class AgentRunActivationError extends AgentExecutionError {
   constructor(

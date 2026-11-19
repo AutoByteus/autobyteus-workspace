@@ -1,0 +1,32 @@
+{
+  "runId": "bts_agy_78c9b170_8ebc8d3dab91456bb41cb459a2a498cf",
+  "path": [
+    "idle:0",
+    "initializing:0",
+    "running:0",
+    "running:1",
+    "idle:1",
+    "idle:0"
+  ],
+  "fed": [
+    {
+      "status": "idle",
+      "count": 1
+    },
+    {
+      "status": "idle",
+      "count": 0
+    }
+  ],
+  "view": {
+    "__typename": "AgentBackgroundTaskEventStream",
+    "tasks": [
+      {
+        "command": "sleep 8 # background step 11",
+        "status": "failed",
+        "endReason": null,
+        "exitCode": 3
+      }
+    ]
+  }
+}

@@ -4,6 +4,7 @@ import { SEND_MESSAGE_TO_TOOL_NAME } from "../../../../agent-communication/servi
 import { GET_HANDOFF_RULES_TOOL_NAME } from "../../../../agent-communication/services/get-handoff-rules-tool-contract.js";
 import { LIST_AVAILABLE_AGENTS_TOOL_NAME } from "../../../../agent-tools/agent-discovery/list-available-agents-contract.js";
 import { LIST_PEER_NODES_TOOL_NAME } from "../../../../agent-tools/agent-discovery/list-peer-nodes-contract.js";
+import { LIST_RUNNING_AGENTS_TOOL_NAME } from "../../../../agent-tools/agent-discovery/list-running-agents-contract.js";
 import type { RuntimeAgentToolExposure } from "../../../shared/runtime-agent-tool-exposure.js";
 import { buildClaudeAgentToolsMcpToolName } from "../agent-tools-mcp/claude-agent-tools-mcp-tool-name.js";
 
@@ -18,6 +19,7 @@ export type ClaudeSessionToolingOptions = {
   publishArtifactsToolingEnabled: boolean;
   listAvailableAgentsToolingEnabled: boolean;
   listPeerNodesToolingEnabled: boolean;
+  listRunningAgentsToolingEnabled: boolean;
   agentToolsMcpToolingRequested: boolean;
   agentToolsMcpEnabledToolNames: string[];
   allowedTools: string[];
@@ -52,6 +54,9 @@ export const resolveClaudeSessionToolingOptions = (input: {
   // The same availability rule as list_available_agents (autobyteus-261).
   const listPeerNodesToolingEnabled = input.runtimeToolExposure.listPeerNodesEnabled
     && Boolean(input.memberExecutionContext?.collaboration.listAvailableAgents);
+  // autobyteus-492: the same availability rule as list_available_agents.
+  const listRunningAgentsToolingEnabled = input.runtimeToolExposure.listRunningAgentsEnabled
+    && Boolean(input.memberExecutionContext?.collaboration.listAvailableAgents);
   const configuredAgentToolsMcpToolNames = collectConfiguredAgentToolsMcpToolNames({
     sendMessageToToolingEnabled,
     getHandoffRulesToolingEnabled,
@@ -63,6 +68,7 @@ export const resolveClaudeSessionToolingOptions = (input: {
     publishArtifactsToolingEnabled,
     listAvailableAgentsToolingEnabled,
     listPeerNodesToolingEnabled,
+    listRunningAgentsToolingEnabled,
   });
   const agentToolsMcpEnabledToolNames = normalizeToolNames(
     input.agentToolsMcpEnabledToolNames ?? configuredAgentToolsMcpToolNames,
@@ -82,6 +88,7 @@ export const resolveClaudeSessionToolingOptions = (input: {
     publishArtifactsToolingEnabled,
     listAvailableAgentsToolingEnabled,
     listPeerNodesToolingEnabled,
+    listRunningAgentsToolingEnabled,
     agentToolsMcpToolingRequested: agentToolsMcpEnabledToolNames.length > 0,
     agentToolsMcpEnabledToolNames,
     allowedTools,
@@ -99,6 +106,7 @@ const collectConfiguredAgentToolsMcpToolNames = (input: {
   publishArtifactsToolingEnabled: boolean;
   listAvailableAgentsToolingEnabled: boolean;
   listPeerNodesToolingEnabled: boolean;
+  listRunningAgentsToolingEnabled: boolean;
 }): string[] => {
   const toolNames = new Set<string>();
   if (input.sendMessageToToolingEnabled) {
@@ -127,6 +135,9 @@ const collectConfiguredAgentToolsMcpToolNames = (input: {
   }
   if (input.listPeerNodesToolingEnabled) {
     toolNames.add(LIST_PEER_NODES_TOOL_NAME);
+  }
+  if (input.listRunningAgentsToolingEnabled) {
+    toolNames.add(LIST_RUNNING_AGENTS_TOOL_NAME);
   }
   return [...toolNames];
 };

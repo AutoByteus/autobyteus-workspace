@@ -1,0 +1,80 @@
+# API-06b the 21 files that failed in API-06, rerun one file at a time; commit 6744d786c6 (code a0d81bbe18); 2026-11-18T16:15:16Z; Node v22.23.1; load 46.17 49.67 45.39
+# env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<fixture> pnpm -C autobyteus-server-ts exec vitest run --fileParallelism=false tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts tests/e2e/agent-definitions/internal-agents.e2e.test.ts tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts tests/e2e/node-access/node-access-model.e2e.test.ts tests/e2e/personal-settings/package-personal-settings.e2e.test.ts tests/e2e/projects/collaboration-contract-stories.e2e.test.ts tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts tests/e2e/projects/project-task-parts-live.e2e.test.ts tests/e2e/projects/project-task-search.e2e.test.ts tests/e2e/projects/task-agent-several-tasks.e2e.test.ts tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts tests/e2e/projects/team-tab-subtree-messages.e2e.test.ts tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts tests/e2e/runtime/agy-background-task-transport.e2e.test.ts tests/e2e/runtime/agy-switch-back-built-server.e2e.test.ts tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts 
+# Excerpt of API-06b-server-e2e-failed-files-rerun.log (full log gzipped beside it: API-06b-server-e2e-failed-files-rerun.log.gz): the summary, the files, and each failed test with its first error line.
+
+ ✓ tests/e2e/projects/collaboration-contract-stories.e2e.test.ts (3 tests) 1551860ms
+ ❯ tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts (1 test | 1 failed) 213779ms
+ ✓ tests/e2e/personal-settings/package-personal-settings.e2e.test.ts (7 tests) 96064ms
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts (14 tests) 53876ms
+ ❯ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts (10 tests | 3 failed) 127300ms
+ ✓ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts (3 tests) 34181ms
+ ✓ tests/e2e/projects/task-agent-several-tasks.e2e.test.ts (4 tests) 97222ms
+ ❯ tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts (8 tests | 3 failed) 57578ms
+ ❯ tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts (3 tests | 2 failed) 31495ms
+ ✓ tests/e2e/projects/project-task-parts-live.e2e.test.ts (3 tests) 19807ms
+ ✓ tests/e2e/agent-definitions/internal-agents.e2e.test.ts (5 tests) 21102ms
+ ✓ tests/e2e/projects/team-tab-subtree-messages.e2e.test.ts (1 test) 17891ms
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+stderr | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+stderr | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts (6 tests) 4162ms
+ ✓ tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts (2 tests) 15463ms
+ ❯ tests/e2e/runtime/agy-background-task-transport.e2e.test.ts (2 tests | 1 failed) 23928ms
+ ✓ tests/e2e/node-access/node-access-model.e2e.test.ts (23 tests) 14703ms
+ ❯ tests/e2e/projects/project-task-search.e2e.test.ts (4 tests | 1 failed) 10213ms
+ ✓ tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts (1 test) 1918ms
+ ❯ tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts (1 test) 15433ms
+ ❯ tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts (5 tests | 1 failed) 67916ms
+ ✓ tests/e2e/runtime/agy-switch-back-built-server.e2e.test.ts (3 tests) 27688ms
+ ❯ tests/e2e/runtime/agy-background-task-transport.e2e.test.ts:64:3
+ ❯ tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts:75:3
+ ❯ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts:361:25
+ ❯ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts:406:18
+ ❯ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts:687:30
+ ❯ tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts:238:3
+ ❯ tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts:268:3
+ ❯ tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts:397:56
+ ❯ tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts:247:74
+ ❯ tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts:321:55
+ ❯ tests/e2e/projects/project-task-search.e2e.test.ts:80:3
+ ❯ tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts:560:44
+ ❯ tests/e2e/runtime/agy-background-task-transport.e2e.test.ts:106:17
+ ❯ tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts:551:80
+ Test Files  8 failed | 13 passed (21)
+      Tests  12 failed | 97 passed (109)
+   Duration  2565.88s (transform 8.62s, setup 588ms, import 58.93s, tests 2503.58s, environment 1ms)
+rerun exit 1
+
+## Failed tests, first error line
+ FAIL  tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+    -> Error: Hook timed out in 10000ms.
+ FAIL  tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts > Work Journal kept current, closed files written once, and rebuilt for an older run on restore
+    -> Error: Hook timed out in 10000ms.
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-002 (AC-001…005, AC-007, REQ-009, REQ-014): an imported package's files on disk reach Gr
+    -> Error: invalid Team diagnostic: not met within 5000 ms; last value: []
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-003 (AC-011, AC-012, REQ-015): a package folder moved away keeps its definitions and repor
+    -> Error: WATCHING again: not met within 5000 ms; last value: {"packageId":"local:%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fagent-package-definitions-e2e-Z6Lzka%2Fmovable-package-40da15","path":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definiti
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the r
+    -> AssertionError: expected [ 'Daily Assistant', …(9) ] to include 'APAR Fresh Scout'
+ FAIL  tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts > Registered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY) > RPE-001 (AC-001, REQ-001, REQ-00
+    -> Error: Test timed out in 5000ms.
+ FAIL  tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts > Registered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY) > RPE-002 (AC-003): a stale revisi
+    -> Error: Test timed out in 5000ms.
+ FAIL  tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts > Registered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY) > RPE-008 (AC-001, REQ-001): a sav
+    -> AssertionError: [{"message":"Failed to update agent team definition: The definition changed after this draft was loaded. Refresh it and apply the draft again.","locations":[{"line":1,"column":50}],"path":["updateAgentTeamDefinition"],"extensions":{"code":"DEFINITION_REVISION_CONFLICT"}}]: expected [
+ FAIL  tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts > A top run's tree is built from its open Tasks: upgrade, start, load, save and restarts (built server, scripted AGY) > OT-2 an upgraded data root: admitted at start; trees hold open runs 
+    -> AssertionError: reading the trees wrote nothing: expected { …(122) } to deeply equal { …(118) }
+ FAIL  tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts > A top run's tree is built from its open Tasks: upgrade, start, load, save and restarts (built server, scripted AGY) > OT-3 a Task record that cannot be read hides its run with a warning 
+    -> AssertionError: the temporary Task's record: expected '' to be truthy
+ FAIL  tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries > answers exact matches at once, reports preparation, then adds meaning matches without a new query text
+    -> Error: Test timed out in 5000ms.
+ FAIL  tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts > Idle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor) > background copies outlive the grace period and are 
+    -> AssertionError: expected [ Array(1) ] to deeply equal []
+ FAIL  tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history > closes a never-finished daemon step as a succeeded background task before TURN_COMPLETED and replays it
+    -> AssertionError: AgyDiscoveryError: Antigravity model discovery timed out; check the CLI and retry.: expected false to be true // Object.is equality
+ FAIL  tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts > agent runtime switch of Org members and delegated copies: failed starts, restarts, Grok and native targets > EX-05: a Team member's saves before its first input: a second save 
+    -> AssertionError: second save before the first input: expected { success: false, …(3) } to match object { success: true, outcome: 'UPDATED' }

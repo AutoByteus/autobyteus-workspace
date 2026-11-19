@@ -5,7 +5,7 @@
     <div class="flex flex-wrap items-start gap-4">
       <section class="w-[320px] rounded-lg bg-white p-2" data-preview="transient">
         <h2 class="mb-2 font-semibold">Shared row: delegated / collaborator / leaf</h2>
-        <WorkspaceTransientExecutionRow v-for="row in rows" :key="row.rowKey" :row="row" :has-children="row.hasChildren" :expanded="expanded[row.rowKey]" :is-selected="selected === row.rowKey" @toggle="expanded[row.rowKey] = !expanded[row.rowKey]" @select="selected = row.rowKey; selections++" />
+        <WorkspaceDelegatedRunRow v-for="row in rows" :key="row.rowKey" :row="row" :has-children="row.hasChildren" :expanded="expanded[row.rowKey]" :is-selected="selected === row.rowKey" @toggle="expanded[row.rowKey] = !expanded[row.rowKey]" @select="selected = row.rowKey; selections++" />
       </section>
       <section class="w-[320px] rounded-lg bg-white p-2" data-preview="agent-parent">
         <h2 class="mb-2 font-semibold">Agent parent: collaborator and delegated copy</h2>
@@ -43,7 +43,7 @@ import { buildMultiTeamContext, multiTeamView } from '~/services/agentCollaborat
 import { useRunTreeStore } from '~/stores/runTreeStore';
 import { multiTeamTree, seedOrgRunTrees, type RecordedOrgTree } from '~/test-support/runTreeFixtures';
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
-import WorkspaceTransientExecutionRow from '~/components/workspace/history/WorkspaceTransientExecutionRow.vue';
+import WorkspaceDelegatedRunRow from '~/components/workspace/history/WorkspaceDelegatedRunRow.vue';
 import WorkspaceAgentOrgHistoryCollection from '~/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue';
 import ProjectTaskWorkers from '~/components/projects/ProjectTaskWorkers.vue';
 import CollaborationMemoryDetail from '~/components/memory/CollaborationMemoryDetail.vue';
@@ -51,14 +51,14 @@ import { taskBearingRecordedTree, taskBearingView } from '~/services/agentOrgExe
 import { useWorkspaceHistoryTreeState } from '~/composables/useWorkspaceHistoryTreeState';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
-import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes';
+import type { RunHistoryDelegatedRunRow } from '~/stores/runHistoryTypes';
 import type { TaskRootView } from '~/types/project';
 import type { CollaborationMemoryGroup, CollaborationRunMemoryRow } from '~/types/memory';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 definePageMeta({ layout: false });
 const selections = ref(0), inspections = ref(0), selected = ref('');
-const rows: RunHistoryTransientExecutionRow[] = ['Delegated Team', 'Collaborator Team', 'Leaf Team', 'Release Writer'].map((name, index) => ({
-  kind: 'transient_execution', transientKind: index === 3 ? 'task_agent' : 'task_team',
+const rows: RunHistoryDelegatedRunRow[] = ['Delegated Team', 'Collaborator Team', 'Leaf Team', 'Release Writer'].map((name, index) => ({
+  kind: 'delegated_run', delegatedRunKind: index === 3 ? 'task_agent' : 'task_team',
   rowKey: `preview-${index}`, teamRunId: 'preview-host', memberAddress: `/preview_${index}`, agentRunId: index === 3 ? 'preview-agent' : null,
   teamRunIdForNode: index === 3 ? null : `preview-team-${index}`, memberKind: index === 3 ? 'agent' : 'agent_team',
   displayName: name, currentStatus: index === 3 ? AgentStatus.Idle : null, delegatedBy: index === 1 ? null : 'manager',
@@ -76,7 +76,7 @@ const teamExpanded = reactive<Record<string, boolean>>({});
 // These supported public row props exercise the production parent tree, not another renderer copy.
 const team = { teamRunId: 'preview-host', lastActivityAt: '2026-10-08T00:00:00Z', focusedAgentRunId: null,
   executionRows: [
-    ...rows.slice(0, 2).flatMap((row, index) => [row, { ...rows[3], rowKey: `child-${index}`, memberAddress: `/preview_${index}/lead`, agentRunId: `lead-${index}`, transientKind: 'task_team_child', depth: 1 }]),
+    ...rows.slice(0, 2).flatMap((row, index) => [row, { ...rows[3], rowKey: `child-${index}`, memberAddress: `/preview_${index}/lead`, agentRunId: `lead-${index}`, delegatedRunKind: 'task_team_child', depth: 1 }]),
   ],
 } as any;
 const teamAvatars = { showTeamMemberAvatar: () => false, getTeamMemberInitials: () => 'LD' } as any;

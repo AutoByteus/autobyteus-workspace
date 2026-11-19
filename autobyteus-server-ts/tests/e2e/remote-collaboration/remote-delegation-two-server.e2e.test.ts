@@ -14,6 +14,9 @@ import { buildE2eClientCommandIds } from "../helpers/websocket-command-helpers.j
 import { signPeerRequest } from "../../../src/remote-collaboration/channel/peer-request-signature.js";
 import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
 import { pairNodes } from "../helpers/pair-nodes.js";
+import { LIST_RUNNING_AGENTS_TOOL_DESCRIPTION } from "../../../src/agent-tools/agent-discovery/list-running-agents-contract.js";
+import { SEND_MESSAGE_TO_LLM_DESCRIPTION, SEND_MESSAGE_TO_NODE_DESCRIPTION, targetAgentNotRunningText }
+  from "../../../src/agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
 
 /**
  * Remote collaboration (autobyteus-191 slice 1: remote delegation, text only; autobyteus-245: no publishing;
@@ -73,6 +76,17 @@ import { pairNodes } from "../helpers/pair-nodes.js";
  *   stays out and refused while beta shows internal agents (455 REQ-002).
  * 455: RC-42 beta's owner gives its Daily Assistant a runtime and model (a personal setting); alpha's agent lists it and
  *   delegates /daily_assistant on beta: it starts in beta's temp workspace and reports back to alpha's delegator.
+ * 492 (the run ID is the address; list_running_agents): RC-47 on alpha alone — the opt-in tool and its texts, the exact list
+ *   of running roots a person started (Org, task agents, stopped roots and members left out), filters, two roots messaging each
+ *   other by run ID (PRB-002), an Org agent and a task agent as senders, a stopped root and a never-started member refused and not
+ *   woken, and run views (G-1, DEC-014): an unrelated message in no view live or after a reload (new snapshot, the Team tab's
+ *   stored read), a Task-related one in its view; RC-48 alpha lists beta's running roots with node, picks beta's Project Task
+ *   Manager by name and Project, messages it with node and gets its answer (both logs), and beta's stopped root, never-started
+ *   member, unknown run ID and team run ID are refused; both new routes refused unsigned, with the owner's credential, with a
+ *   wrong secret, unpaired, and meant for another node (QR-003); RC-49 rows 13/14 — a fenced run on beta is refused CLOSED to
+ *   every sender of alpha with and without node, and reached from beta and from a third node zeta (paired with beta only)
+ *   while it runs; RC-06/RC-22 a teammate of the delegator reaches the remote run unlinked (DS-006); RC-27/RC-28 the running
+ *   list's refusals equal list_available_agents' (and its 20 s bound); RC-20 audits both new routes.
  * Beta's agents (245): the shared Agents Publisher (scripted AGY default), Blank Slate (no default), Half Set (runtime only),
  * Codex Writer (a Codex default; Codex is unavailable on beta) and Fragile (a model AGY does not offer); a shared Team, an
  * Agent Org, and a file-authored Team with the team-local Agent "Local Scout" (a complete default). Nothing is published.
@@ -104,7 +118,9 @@ const LABEL = { alpha: "alpha-node", beta: "beta-node" } as const;
 const PATHS = { runs: "/rest/remote/delegated-runs", messages: "/rest/remote/messages", status: "/rest/remote-access/status",
   availability: "/rest/remote/availability", availableAgents: "/rest/remote/available-agents",
   runSummaries: "/rest/remote/run-summaries", agentProjection: "/rest/remote/agent-projection", ownerCommands: "/rest/remote/owner-commands",
-  runObservations: "/rest/remote/run-observations", agentStreamSnapshot: "/rest/remote/agent-stream-snapshot" } as const;
+  runObservations: "/rest/remote/run-observations", agentStreamSnapshot: "/rest/remote/agent-stream-snapshot",
+  // autobyteus-492: a message to a running agent by its run ID only, and the running runs a person started.
+  runMessages: "/rest/remote/run-messages", runningAgents: "/rest/remote/running-agents" } as const;
 /** The Brief Studio sample application's importable package (`pnpm -C autobyteus-server-ts test:integration:prepare`):
  * beta loads it, so beta has an application-owned Agent Team that discovery must not list (261 AC-402). */
 const BRIEF_STUDIO_PACKAGE = path.resolve(import.meta.dirname, "../../../../applications/brief-studio/dist/importable-package");
@@ -119,6 +135,10 @@ const TEXT_261 = {
   notFound: (node: string, address: string) => `Node "${node}" has no Agent or Agent Team at ${address} that can be delegated to. If you have list_available_agents, call it with this node to see what it offers.`,
   blankNode: "node must be the name of a peer node registered on this node; leave it out to list this node's agents and agent teams.",
 } as const;
+const ISO_TIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/;
+/** autobyteus-492 REQ-002: the fields a running-runs entry may have (every one but kind, name, the run IDs and state is optional; `node` only on the asking node). */
+const RUNNING_AGENT_FIELDS = ["kind", "name", "address", "agent_run_id", "workspace", "state", "started_at", "project"];
+const RUNNING_TEAM_FIELDS = ["kind", "name", "address", "team_run_id", "team_coordinator_agent_run_id", "workspace", "state", "started_at", "project"];
 const CANARY = { alpha: `sk-canary-alpha-${randomUUID()}`, beta: `sk-canary-beta-${randomUUID()}` };
 
 type Rec = Record<string, any>;
@@ -154,8 +174,13 @@ const toolListsIn = (conversation: unknown): string[] => (Array.isArray(conversa
 });
 /** The text an agent reads in a tool result (a refusal's message, or the result's text). */
 const textOf = (result: Rec): string => String(result.message ?? result.text ?? JSON.stringify(result));
-/** The same-node refusal for a run ID the sender's root does not know (unchanged by this slice). */
-const liveOnlyRefusal = (runId: string) => `No running agent has the run id '${runId}', so the message was not sent. Use an exact run id you were given: a sender run id (from a message or your new task), or a run id delegate_task returned to you.`;
+/**
+ * The same-node refusal for a run ID no running agent of the sender's node has (autobyteus-492 REQ-010/REQ-012: a stopped
+ * agent is not woken; the agent may find run IDs with list_running_agents, and passes node for another node's agent).
+ */
+const notRunningRefusal = (runId: string) => `No running agent has the run id '${runId}', so the message was not sent. A stopped agent is not woken. Use an exact run id you were given: a sender run id (from a message or your new task), a run id delegate_task returned to you, or one list_running_agents lists. For an agent on another node, also pass node.`;
+/** autobyteus-492 row 8: the peer found no running agent with that run ID; A words it with its name for the node. */
+const peerNotRunningRefusal = (runId: string, node: string) => `No running agent has the run id '${runId}' on node "${node}", so the message was not sent. A stopped agent is not woken. If you have list_running_agents, call it with node "${node}" to see what runs there.`;
 const getFreePort = async (): Promise<number> => new Promise((resolve, reject) => {
   const server = net.createServer();
   server.once("error", reject);
@@ -395,7 +420,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
   const remoteRequests = (since = 0) => captured.filter((entry) => entry.seq > since && entry.path.startsWith("/rest/remote/"));
   /** Requests that send work or a message (starts, packets, messages, owner commands); since autobyteus-278 an open
    * root view also reads its remote runs' summaries, which a "nothing was sent" check does not count. */
-  const sentRequests = (since = 0) => remoteRequests(since).filter((entry) => entry.path === PATHS.runs || entry.path === PATHS.messages || entry.path === PATHS.ownerCommands);
+  const sentRequests = (since = 0) => remoteRequests(since).filter((entry) => entry.path === PATHS.runs || entry.path === PATHS.messages
+    || entry.path === PATHS.runMessages || entry.path === PATHS.ownerCommands);
 
   const connect = async (node: NodeServer, route: string, id: string, ready: (frames: Frame[]) => boolean) => {
     const socket = new WebSocket(`ws://127.0.0.1:${node.port}/ws/${route}/${id}`);
@@ -438,16 +464,23 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
         command_id: randomUUID(), message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] } }));
     },
   });
-  /** The actor calls one actual agent tool; returns the tool result it reports and how long the call took. */
+  /**
+   * The actor calls one actual agent tool; returns the tool result it reports and how long the call took. The run view
+   * holds only the most recent events (`RECENT_RUN_PROJECTION_EVENT_LIMIT`), so a long-lived actor's count of results can
+   * stay the same as old entries leave the window: the new result is the newest reply entry that was not there before.
+   */
   const calls = async (actor: Actor, name: string, args: Rec, ms = 90_000): Promise<Rec & { elapsedMs: number }> => {
-    const before = calledResults(await actor.conversation()).length;
+    const replies = (conversation: unknown) => (Array.isArray(conversation) ? conversation : [])
+      .filter((entry) => stringsOf(entry).some((value) => value.includes("CALLED:"))).map((entry) => JSON.stringify(entry));
+    const before = new Set(replies(await actor.conversation()));
     const started = Date.now();
     await actor.send(callTool(name, args));
-    let results: string[] = [];
-    await until(async () => { results = calledResults(await actor.conversation()); return results.length > before; },
+    let fresh: string[] = [];
+    await until(async () => { fresh = replies(await actor.conversation()).filter((entry) => !before.has(entry)); return fresh.length > 0; },
       `${actor.label} result of ${name} ${JSON.stringify(args).slice(0, 160)}`, ms)
-      .catch(async (error) => { throw new Error(`${error}; conversation tail: ${JSON.stringify(stringsOf(await actor.conversation()).slice(-6)).slice(0, 1500)}`); });
-    return { ...toolResult(results[before]!), elapsedMs: Date.now() - started };
+      .catch(async (error) => { const now = await actor.conversation();
+        throw new Error(`${error}; entries in view: ${Array.isArray(now) ? now.length : 0}; conversation tail: ${JSON.stringify(stringsOf(now).slice(-6)).slice(0, 1500)}`); });
+    return { ...toolResult(calledResults([JSON.parse(fresh[0]!)])[0]!), elapsedMs: Date.now() - started };
   };
   /** 269: a run's title in beta's history (`summary`), as beta's run history lists it; `null` when the run is not listed. */
   const betaTitle = async (kind: "agent" | "team", id: string): Promise<string | null> => {
@@ -753,6 +786,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     defs.scout = await agentDefinition(alpha, "Scout", ["list_peer_nodes", "list_available_agents"]);
     // 290 REQ-906: a definition that still selects the tool's former name (as a stored agent config may).
     defs.oldNameScout = await agentDefinition(alpha, "Old Name Scout", ["list_available_nodes"]);
+    // 492: an agent that selects list_running_agents (send_message_to and its node come with every agent).
+    defs.runningScout = await agentDefinition(alpha, "Running Scout", ["list_peer_nodes", "list_running_agents"]);
     defs.team = (await alpha.gql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`,
       { input: { name: "Remote Squad", description: "Team delegator", instructions: "Follow requests.", coordinatorMemberName: "lead",
         nodes: [{ memberName: "lead", ref: defs.delegator, refScope: "SHARED" }, { memberName: "mate", ref: defs.delegator, refScope: "SHARED" }] } })).createAgentTeamDefinition.id;
@@ -768,6 +803,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     defs.codex = await agentDefinition(beta, "Codex Writer", [], { runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-5.5", llmConfig: null });
     defs.fragile = await agentDefinition(beta, "Fragile", [], agyDefault("no-such-model"));
     defs.bystander = await agentDefinition(beta, "Bystander");
+    // 492: beta's Project Task Manager, started by beta's owner under a Project in RC-48.
+    defs.betaPm = await agentDefinition(beta, "Project Task Manager");
     // Beta's shared Teams (247).
     defs.checker = await agentDefinition(beta, "Checker");
     const betaTeamDefinition = async (name: string, nodes: Array<[string, string]>, defaultLaunchConfig: Rec | null) => (await beta.gql(
@@ -958,7 +995,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       ["/half_set", "NO_DEFAULT_RUNTIME", `There is no default runtime configured for the target agent Half Set on node "${node}", and Model Routing is off on node "${node}".`],
       // AC-203: the default's runtime is unavailable on beta; the default's model is not offered there.
       ["/codex_writer", "AGENT_CANNOT_RUN", new RegExp(`^The Agent Codex Writer on node "${node}" cannot run there: .+`)],
-      ["/fragile", "AGENT_CANNOT_RUN", `The Agent Fragile on node "${node}" cannot run there: 'no-such-model' is not offered by Antigravity CLI now. Refresh the model list and choose again, and Model Routing is off on node "${node}".`],
+      // autobyteus-500 FU-030: a peer's refusal keeps only the peer's reason (its next step names the peer's settings).
+      ["/fragile", "AGENT_CANNOT_RUN", `The Agent Fragile on node "${node}" cannot run there: its default model cannot be used: 'no-such-model' is no longer offered by Antigravity CLI, and Model Routing is off on node "${node}".`],
       // AC-204: the Model Router (never a collaborator, 455 REQ-002), an Agent Org, a team-local Agent and an unknown address
       // are not delegable targets.
       ["/model_router", "AGENT_NOT_FOUND", notFound("/model_router")],
@@ -1057,7 +1095,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     record("RC-05", { titleBeforeOwner, delegated, metadata, packet, link: links[0], taskResource: resources[0], reply, received, followUp, atBeta, replyLogs, followUpLogs, sequences });
   }, 240_000);
 
-  it("RC-06 AC-104/105/107: a Team coordinator delegates; messages both ways with the Team view open; a later local message appears; the other member is not permitted", async () => {
+  it("RC-06 AC-104/105/107, 492 DS-006: a Team coordinator delegates; messages both ways with the Team view open; a later local message appears; the other member reaches the remote run unlinked while it runs", async () => {
     const created = (await alpha.gql(`mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}`,
       { input: { teamDefinitionId: defs.team, teamConfigs: [{ teamAddress: "/", ...runConfig(alpha) }], memberConfigs: [
         { memberAddress: "/lead", agentDefinitionId: defs.delegator, ...runConfig(alpha) },
@@ -1091,13 +1129,19 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await receives(mate, "LOCAL-AFTER-REMOTE-TEAM");
     await until(() => view.frames.some((frame) => frame.type === "TEAM_COMMUNICATION_MESSAGE" && JSON.stringify(frame.payload).includes("LOCAL-AFTER-REMOTE-TEAM")), "local message on the Team view", 20_000);
 
-    // Same root, not the delegator: refused by the pair rule; nothing sent.
+    // Same root, not the delegator (autobyteus-492 DS-006, design row 6): the run ID is the address, so the message goes to
+    // the remote run unlinked (`run-messages`, no root named) while it runs; the link (`messages`) stays the delegator's.
     const sentBefore = captured.length;
-    const notPermitted = await calls(mate, "send_message_to", { target_agent_run_id: r2, content: "MATE-TO-REMOTE" });
-    expect(notPermitted.accepted, JSON.stringify(notPermitted)).toBe(false);
-    expect(textOf(notPermitted)).toBe("That run is on another node and is not linked with you: only the agent that delegated to it, and the run itself, can message each other. The message was not sent.");
-    expect(sentRequests(sentBefore), "nothing sent").toEqual([]);
-    await neverReceives(remote, "MATE-TO-REMOTE", 2_000);
+    const mateUnlinked = await calls(mate, "send_message_to", { target_agent_run_id: r2, content: "MATE-TO-REMOTE" });
+    expect(mateUnlinked, JSON.stringify(mateUnlinked)).toMatchObject({ accepted: true, target_agent_run_id: r2 });
+    expect(textOf(mateUnlinked)).toBe(`Delivered message to ${r2} on node "${LABEL.beta}".`);
+    expect(await receives(remote, "MATE-TO-REMOTE")).toContain(`You received a message from the agent with sender run id "${mate.runId}" on node "${LABEL.alpha}".`);
+    const mateSent = sentRequests(sentBefore);
+    expect(mateSent.map((entry) => `${entry.via} ${entry.path} ${(entry.answer as Rec)?.accepted}`), "one unlinked message, accepted").toEqual([`toBeta ${PATHS.runMessages} true`]);
+    expect(mateSent[0]!.body).toMatchObject({ fromNodeId: alpha.nodeId, toNodeId: beta.nodeId, sender: { agentRunId: mate.runId }, target: { agentRunId: r2 }, content: "MATE-TO-REMOTE" });
+    const mateLogs = await assertBothLogs("MATE-TO-REMOTE", mate, remote);
+    expect(mateLogs.files, "each side logs it in its own run's log").toEqual({ alpha: `memory/agent_teams/${teamRunId}/team_communication_messages_active.jsonl`,
+      beta: `memory/agents/${r2}/communication_messages_active.jsonl` });
 
     const teamLinks = await linksOf("agent_team", teamRunId);
     expect(teamLinks).toEqual([{ address: "/publisher", agentRunId: r2, nodeId: beta.nodeId, delegatorAgentRunId: lead.runId, startedAt: expect.any(String) }]);
@@ -1108,7 +1152,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(view.closed(), "the Team view stays open").toBeNull();
     const remoteInView = view.frames.filter((frame) => frame.type === "TEAM_COMMUNICATION_MESSAGE" && JSON.stringify(frame.payload).includes(r2));
     expect(remoteInView, "remote-endpoint messages are not on the Team view").toEqual([]);
-    record("RC-06", { teamRunId, delegated, link: teamLinks[0], replyLogs, notPermitted: textOf(notPermitted), sequences, frameTypes: view.frames.map((frame) => frame.type) });
+    record("RC-06", { teamRunId, delegated, link: teamLinks[0], replyLogs, mateUnlinked: textOf(mateUnlinked), mateRequest: mateSent[0], mateLogs, sequences, frameTypes: view.frames.map((frame) => frame.type) });
   }, 300_000);
 
   it("RC-07 AC-104/105: an Org member delegates; messages both ways with the Org view open; a later local message appears", async () => {
@@ -1151,21 +1195,22 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     record("RC-07", { orgRunId, delegated, link: orgLinks[0], replyLogs, sequences, frameTypes: view.frames.map((frame) => frame.type) });
   }, 300_000);
 
-  it("RC-08 AC-107: unlinked senders are refused on both nodes and the target receives nothing", async () => {
+  it("RC-08 AC-107, 492 REQ-010: without node, unlinked senders get the not-running refusal on both nodes; forged linked messages are refused; the target receives nothing", async () => {
     const other = await createStandalone(alpha, defs.delegator, "alpha other root");
     ids.other = other.runId;
     const sentBefore = captured.length;
     const otherRoot = await calls(other, "send_message_to", { target_agent_run_id: ids.r1, content: "OTHER-ROOT-TO-REMOTE" });
     expect(otherRoot.accepted, JSON.stringify(otherRoot)).toBe(false);
-    // Today's live-only refusal (design § Ownership Boundaries: a run ID that is neither local nor linked keeps it).
-    expect(textOf(otherRoot)).toBe(liveOnlyRefusal(ids.r1));
+    // Without node, a run ID that no agent of this node runs and the sender's root does not link is "not running" here
+    // (autobyteus-492 row 4: the refusal names node for an agent on another node; RC-48 sends with node).
+    expect(textOf(otherRoot)).toBe(notRunningRefusal(ids.r1));
     expect(sentRequests(sentBefore), "the live-only path never reaches a peer").toEqual([]);
 
     const bystander = await createStandalone(beta, defs.bystander, "beta bystander");
     ids.bystander = bystander.runId;
     const fromBystander = await calls(bystander, "send_message_to", { target_agent_run_id: ids.solo, content: "BYSTANDER-TO-ALPHA" });
     expect(fromBystander.accepted, JSON.stringify(fromBystander)).toBe(false);
-    expect(textOf(fromBystander)).toBe(liveOnlyRefusal(ids.solo));
+    expect(textOf(fromBystander)).toBe(notRunningRefusal(ids.solo));
     expect(sentRequests(sentBefore)).toEqual([]);
 
     // Requests a peer could send for runs that are not linked: refused at the receiving root, nothing written.
@@ -1218,6 +1263,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
 
   it("RC-10 AC-109: a task agent on a Project Task delegates remotely; the remote run is a run of that Task; after DONE its messages are not delivered", async () => {
     const manager = await createStandalone(alpha, defs.manager, "alpha manager");
+    ids.manager = manager.runId;
     const projectId = (await alpha.gql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`, { input: { name: "RC-10 project" } })).createProject.projectId as string;
     const taskId = (await alpha.gql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`, { input: { projectId, title: "Delegate the project work to beta",
       description: callTool("delegate_task", { node: LABEL.beta, recipient_address: "/publisher", description: "Project work. Marker PROJECT-PACKET." }) } })).createProjectTask.taskId as string;
@@ -1285,6 +1331,405 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     record("RC-11", { r4, taskId: delegated.task_id, toRemote: textOf(toRemote), fromRemote: textOf(fromRemote) });
   }, 240_000);
 
+  // ---- autobyteus-492: the run ID is the address; list_running_agents (RC-47 one node, RC-48 two nodes, RC-49 rows 13/14) ----
+  /** Warms a run a person started: one owner message, answered by the scripted CLI ("OK"), so its agent runs. */
+  const warm = async (actor: Actor) => {
+    const okCount = async () => stringsOf(await actor.conversation()).filter((value) => value.trim() === "OK").length;
+    const before = await okCount();
+    await actor.send("Hello.");
+    await until(async () => (await okCount()) > before, `${actor.label} answers its owner`, 60_000);
+  };
+  const terminateRun = async (node: NodeServer, runId: string) =>
+    (await node.gql(`mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}`, { id: runId })).terminateAgentRun as Rec;
+  /** A message between two runs of one node: one line in each run's own log, under one message ID (CM-9). */
+  const assertLocalLogs = async (content: string, from: Actor, to: Actor) => {
+    const messageId = await messageIdOf(from.node, content);
+    let lines: Awaited<ReturnType<typeof logLines>> = [];
+    await until(async () => (lines = await logLines(from.node, messageId)).length >= 2, `both logs of ${content}`, 20_000);
+    expect(lines, `${content}: once in each run's log`).toHaveLength(2);
+    for (const { line } of lines) {
+      expect(line).toMatchObject({ messageId, senderAgentRunId: from.runId, receiverAgentRunId: to.runId, content });
+      expect(sortedKeys(line)).toEqual(["content", "createdAt", "messageId", "messageType", "receiverAgentRunId", "referenceFiles", "senderAgentRunId"]);
+    }
+    expect(new Set(lines.map((entry) => entry.file)).size, "two different run logs").toBe(2);
+    return { messageId, files: lines.map((entry) => entry.file).sort() };
+  };
+  /** The message frames a run view carried after its snapshot (TEAM_COMMUNICATION_MESSAGE, ROOT_EXECUTION_EVENT) that hold `marker`. */
+  const viewMessagesWith = (view: { frames: Frame[] }, marker: string) => view.frames
+    .filter((frame) => (frame.type === "TEAM_COMMUNICATION_MESSAGE" || frame.type === "ROOT_EXECUTION_EVENT") && JSON.stringify(frame.payload).includes(marker));
+  /** The Team tab's stored read of one participant (`collaborationParticipantMessages`), as the window reads it after a reload. */
+  const teamTab = async (node: NodeServer, rootKind: "agent" | "agent_team" | "agent_org", rootRunId: string, agentRunId: string) =>
+    (await node.gql(`query($k:String!,$r:String!,$a:String!){collaborationParticipantMessages(rootKind:$k,rootRunId:$r,agentRunId:$a)}`,
+      { k: rootKind, r: rootRunId, a: agentRunId })).collaborationParticipantMessages as { messages: Rec[]; pastParticipants: Rec[] };
+  const teamTabHas = async (node: NodeServer, rootKind: "agent" | "agent_team" | "agent_org", rootRunId: string, agentRunId: string, marker: string) =>
+    (await teamTab(node, rootKind, rootRunId, agentRunId)).messages.some((message) => String(message.content).includes(marker));
+  /** An agent's launches on a node (the scripted CLI's argv log, one line per process start). */
+  const launchesOf = async (node: NodeServer, runId: string) => (await node.launches()).filter((launch) => launch.cwd.includes(runId)).length;
+  /** A request on a raw socket: the test process attaches the owner credential to every loopback fetch, so an unsigned request needs its own socket. */
+  const rawPost = (port: number, route: string, body: string) => new Promise<{ status: number; answer: Rec }>((resolve, reject) => {
+    const socket = net.connect(port, "127.0.0.1", () => socket.write([`POST ${route} HTTP/1.1`, `Host: 127.0.0.1:${port}`, "content-type: application/json",
+      `content-length: ${Buffer.byteLength(body)}`, "connection: close", "", body].join("\r\n")));
+    const chunks: Buffer[] = [];
+    socket.on("data", (chunk: Buffer) => chunks.push(chunk));
+    socket.on("error", reject);
+    socket.on("end", () => {
+      const text = Buffer.concat(chunks).toString("utf8");
+      const head = text.slice(0, text.indexOf("\r\n\r\n"));
+      let payload = text.slice(text.indexOf("\r\n\r\n") + 4);
+      if (/transfer-encoding:\s*chunked/i.test(head)) payload = payload.split("\r\n").filter((_, index) => index % 2 === 1).join("");
+      let answer: Rec;
+      try { answer = JSON.parse(payload) as Rec; } catch { answer = { raw: payload.slice(0, 300) }; }
+      resolve({ status: Number(head.split(" ")[1]), answer });
+    });
+  });
+  /** The fields of one running-runs entry, checked exactly (REQ-002): absent values are left out. */
+  const expectAgentEntry = (entry: Rec | undefined, expected: Rec) => {
+    expect(entry, JSON.stringify(expected)).toBeTruthy();
+    expect(entry).toEqual({ kind: "agent", state: expect.stringMatching(/^(running|idle)$/), started_at: expect.stringMatching(ISO_TIME), ...expected });
+  };
+  const expectTeamEntry = (entry: Rec | undefined, expected: Rec) => {
+    expect(entry, JSON.stringify(expected)).toBeTruthy();
+    expect(entry).toEqual({ kind: "agent_team", state: expect.stringMatching(/^(running|idle)$/), started_at: expect.stringMatching(ISO_TIME), ...expected });
+  };
+
+  it("RC-47 492 AC-001/002/003/005/007/008, REQ-012, DEC-014: on one node an agent lists the running roots a person started; any agent messages any running agent by run ID and is answered; a stopped root and an unstarted member are refused and not woken; unrelated messages stay out of run views live and after a reload, a Task-related one does not", async () => {
+    const solo = standaloneActor(alpha, ids.solo, "alpha standalone delegator");
+    const other = standaloneActor(alpha, ids.other, "alpha other root");
+    const lead = teamActor(alpha, ids.team.teamRunId, ids.team.lead, "alpha team lead");
+    const orgMate = orgActor(alpha, ids.org.orgRunId, "/mate", ids.org.mate, "alpha org mate");
+    const scout = await createStandalone(alpha, defs.runningScout, "alpha running scout");
+    ids.runningScout = scout.runId;
+
+    // REQ-012 / AC-009: the texts the agent reads over Agent Tools MCP; the tool is opt-in (AC-001: without it, no tool).
+    const scoutTools = await toolsOf(scout);
+    const tool = (tools: Rec[], name: string) => tools.find((entry) => entry.name === name);
+    expect(tool(scoutTools, "list_running_agents")?.description).toBe(LIST_RUNNING_AGENTS_TOOL_DESCRIPTION);
+    for (const phrase of ["this list is for messages only: to start work, use delegate_task", "team_coordinator_agent_run_id",
+      "you pass the same node to send_message_to", "Stopped runs are not listed, and a message never wakes them"]) {
+      expect(tool(scoutTools, "list_running_agents")?.description, phrase).toContain(phrase);
+    }
+    expect(Object.keys(tool(scoutTools, "list_running_agents")?.inputSchema?.properties ?? {}).sort()).toEqual(["address", "node", "state"]);
+    expect(tool(scoutTools, "send_message_to")?.description).toBe(SEND_MESSAGE_TO_LLM_DESCRIPTION);
+    expect(tool(scoutTools, "send_message_to")?.inputSchema?.properties?.node?.description).toBe(SEND_MESSAGE_TO_NODE_DESCRIPTION);
+    expect(notRunningRefusal("x"), "the suite's not-running text is the wording authority's").toBe(targetAgentNotRunningText("x"));
+    expect((await toolsOf(solo)).map((entry) => entry.name), "an agent that does not select it does not have it").not.toContain("list_running_agents");
+
+    // Runs a person started that are not running: a stopped root, and a Team whose second member never started.
+    const sleeper = await createStandalone(alpha, defs.worker, "alpha sleeper");
+    await warm(sleeper);
+    expect(await terminateRun(alpha, sleeper.runId), "the owner stops the sleeper").toMatchObject({ success: true });
+    await until(async () => !(await processLive(sleeper.runId)), "the sleeper's process ends", 30_000);
+    const squad = (await alpha.gql(`mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}`,
+      { input: { teamDefinitionId: defs.team, teamConfigs: [{ teamAddress: "/", ...runConfig(alpha) }], memberConfigs: [
+        { memberAddress: "/lead", agentDefinitionId: defs.delegator, ...runConfig(alpha) },
+        { memberAddress: "/mate", agentDefinitionId: defs.delegator, ...runConfig(alpha) }] } })).createAgentTeamRun;
+    expect(squad.success, squad.message).toBe(true);
+    const squadMembers = Object.fromEntries(flattenE2eConfiguredAgentExecutions((await alpha.gql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`,
+      { id: squad.teamRunId })).getTeamRunResumeConfig.executionTree).map((member) => [member.memberAddress, member.agentRunId]));
+    const squadLead = teamActor(alpha, squad.teamRunId, squadMembers["/lead"]!, "alpha second squad lead");
+    await warm(squadLead);
+    const unstartedMate = squadMembers["/mate"]!;
+
+    // A Task of the G-1 delegator: a local task agent (delegated, so never listed).
+    const g1 = await createStandalone(alpha, defs.delegator, "alpha G-1 delegator");
+    const g1Task = await calls(g1, "delegate_task", { recipient_address: "/remote_worker", description: "Reply OK. Marker G1-PACKET." });
+    expect(g1Task, JSON.stringify(g1Task)).toMatchObject({ delegated: true, target_kind: "agent" });
+    const worker = standaloneActor(alpha, g1Task.target_agent_run_id as string, "alpha G-1 task agent");
+    await receives(worker, "G1-PACKET");
+
+    // AC-001/AC-002: exactly the running Agent and Team runs a person started, the caller's own left out; the Org, the task
+    // agents (RC-10's, the G-1 one), the stopped sleeper and the Team members are never entries.
+    const listed = await calls(scout, "list_running_agents", {});
+    expect(listed.isError, JSON.stringify(listed)).toBe(false);
+    const entries = listed.agents as Rec[];
+    const idOf = (entry: Rec) => String(entry.kind === "agent_team" ? entry.team_run_id : entry.agent_run_id);
+    expect(entries.map(idOf).sort(), JSON.stringify(entries)).toEqual([ids.solo, ids.other, ids.manager, g1.runId, ids.team.teamRunId, squad.teamRunId].sort());
+    const byId = (id: string) => entries.find((entry) => idOf(entry) === id);
+    for (const id of [ids.solo, ids.other, g1.runId]) expectAgentEntry(byId(id), { name: "Delegator", address: "/delegator", agent_run_id: id, workspace: alpha.workspace });
+    expectAgentEntry(byId(ids.manager), { name: "Remote Manager", address: "/remote_manager", agent_run_id: ids.manager, workspace: alpha.workspace });
+    expectTeamEntry(byId(ids.team.teamRunId), { name: "Remote Squad", address: "/remote_squad", team_run_id: ids.team.teamRunId,
+      team_coordinator_agent_run_id: ids.team.lead, workspace: alpha.workspace });
+    expectTeamEntry(byId(squad.teamRunId), { name: "Remote Squad", address: "/remote_squad", team_run_id: squad.teamRunId,
+      team_coordinator_agent_run_id: squadMembers["/lead"], workspace: alpha.workspace });
+    expect(JSON.stringify(entries), "no title or conversation text (REQ-007)").not.toMatch(/Marker|STANDALONE-PACKET|Hello\./);
+    // AC-003: the filters.
+    const squads = await calls(scout, "list_running_agents", { address: "/remote_squad" });
+    expect((squads.agents as Rec[]).map(idOf).sort()).toEqual([ids.team.teamRunId, squad.teamRunId].sort());
+    const idle = await calls(scout, "list_running_agents", { state: "idle" });
+    expect((idle.agents as Rec[]).every((entry) => entry.state === "idle"), JSON.stringify(idle)).toBe(true);
+    expect((idle.agents as Rec[]).map(idOf).sort()).toEqual(entries.filter((entry) => entry.state === "idle").map(idOf).sort());
+    // Unknown address: an empty list. The platform tool-result rule (autobyteus-ts `toToolResultJson`, autobyteus-260) leaves
+    // out empty fields, so the agent reads `{}`: an absent `agents` means none.
+    const nobody = await calls(scout, "list_running_agents", { address: "/nobody" });
+    expect(nobody, JSON.stringify(nobody)).toEqual({ isError: false, elapsedMs: expect.any(Number) });
+
+    // AC-005 (PRB-002 on the built server): two roots a person started message each other by run ID; one log line each.
+    const toOther = await calls(scout, "send_message_to", { target_agent_run_id: ids.other, content: "AC005-SCOUT-TO-OTHER" });
+    expect(toOther, JSON.stringify(toOther)).toMatchObject({ accepted: true, target_agent_run_id: ids.other });
+    const atOther = await receives(other, "AC005-SCOUT-TO-OTHER");
+    expect(atOther).toContain(`You received a message from the agent with sender run id "${scout.runId}".`);
+    const reply = await calls(other, "send_message_to", { target_agent_run_id: scout.runId, content: "AC005-OTHER-TO-SCOUT" });
+    expect(reply, JSON.stringify(reply)).toMatchObject({ accepted: true, target_agent_run_id: scout.runId });
+    expect(await receives(scout, "AC005-OTHER-TO-SCOUT")).toContain(`You received a message from the agent with sender run id "${ids.other}".`);
+    const ac005Logs = { toOther: await assertLocalLogs("AC005-SCOUT-TO-OTHER", scout, other), reply: await assertLocalLogs("AC005-OTHER-TO-SCOUT", other, scout) };
+
+    // Row 3: an Org agent and a task agent (of an open Task) reach running agents outside their runs (AC-008, local).
+    expect(await calls(orgMate, "send_message_to", { target_agent_run_id: ids.other, content: "ROW3-ORG-TO-OTHER" })).toMatchObject({ accepted: true });
+    await receives(other, "ROW3-ORG-TO-OTHER");
+    await assertLocalLogs("ROW3-ORG-TO-OTHER", orgMate, other);
+
+    // G-1 (DEC-014) with the windows open: the Team's view, the G-1 delegator's view and the other root's view.
+    const teamView = await connect(alpha, "agent-team", ids.team.teamRunId, (frames) => frames.some((frame) => frame.type === "TEAM_EXECUTION_VIEW_SNAPSHOT"));
+    const g1View = await connect(alpha, "agent-collaboration", g1.runId, (frames) => frames.some((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"));
+    const otherView = await connect(alpha, "agent-collaboration", ids.other, (frames) => frames.some((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"));
+    // Unrelated: a Team member → another root a person started; the task agent → a root outside its Task.
+    expect(await calls(lead, "send_message_to", { target_agent_run_id: ids.other, content: "G1-UNRELATED-LEAD-TO-OTHER" })).toMatchObject({ accepted: true });
+    await receives(other, "G1-UNRELATED-LEAD-TO-OTHER");
+    const fromTaskAgent = await calls(worker, "send_message_to", { target_agent_run_id: ids.solo, content: "G1-UNRELATED-TASKAGENT-TO-SOLO" });
+    expect(fromTaskAgent, JSON.stringify(fromTaskAgent)).toMatchObject({ accepted: true, target_agent_run_id: ids.solo });
+    await receives(solo, "G1-UNRELATED-TASKAGENT-TO-SOLO");
+    // Related: the task agent → its delegator (its Task).
+    expect(await calls(worker, "send_message_to", { target_agent_run_id: g1.runId, content: "G1-RELATED-TASKAGENT-TO-DELEGATOR" })).toMatchObject({ accepted: true });
+    await receives(g1, "G1-RELATED-TASKAGENT-TO-DELEGATOR");
+    await until(() => viewMessagesWith(g1View, "G1-RELATED-TASKAGENT-TO-DELEGATOR").length > 0, "the related message in the delegator's view", 20_000);
+    await wait(2_000);
+    const live = {
+      teamViewUnrelated: viewMessagesWith(teamView, "G1-UNRELATED-LEAD-TO-OTHER").length > 0,
+      otherViewUnrelated: viewMessagesWith(otherView, "G1-UNRELATED-LEAD-TO-OTHER").length > 0,
+      g1ViewUnrelated: viewMessagesWith(g1View, "G1-UNRELATED-TASKAGENT-TO-SOLO").length > 0,
+      g1ViewRelated: viewMessagesWith(g1View, "G1-RELATED-TASKAGENT-TO-DELEGATOR").length > 0,
+    };
+    expect(live, "live: unrelated messages in no run view; the Task-related one in its view").toEqual({ teamViewUnrelated: false, otherViewUnrelated: false, g1ViewUnrelated: false, g1ViewRelated: true });
+    // After a reload: the views' new snapshots, and the Team tab's stored read of each participant.
+    const reloaded = [await connect(alpha, "agent-team", ids.team.teamRunId, (frames) => frames.some((frame) => frame.type === "TEAM_EXECUTION_VIEW_SNAPSHOT")),
+      await connect(alpha, "agent-collaboration", ids.other, (frames) => frames.some((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT")),
+      await connect(alpha, "agent-collaboration", g1.runId, (frames) => frames.some((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"))];
+    for (const view of reloaded) expect(JSON.stringify(view.frames), "no unrelated message in a reloaded view").not.toMatch(/G1-UNRELATED/);
+    const stored = {
+      leadTab: await teamTabHas(alpha, "agent_team", ids.team.teamRunId, ids.team.lead, "G1-UNRELATED-LEAD-TO-OTHER"),
+      otherTab: await teamTabHas(alpha, "agent", ids.other, ids.other, "G1-UNRELATED-LEAD-TO-OTHER"),
+      g1TabUnrelated: await teamTabHas(alpha, "agent", g1.runId, worker.runId, "G1-UNRELATED-TASKAGENT-TO-SOLO"),
+      soloTab: await teamTabHas(alpha, "agent", ids.solo, ids.solo, "G1-UNRELATED-TASKAGENT-TO-SOLO"),
+      g1TabRelated: await teamTabHas(alpha, "agent", g1.runId, g1.runId, "G1-RELATED-TASKAGENT-TO-DELEGATOR"),
+    };
+    expect(stored, "stored: the same rule as live").toEqual({ leadTab: false, otherTab: false, g1TabUnrelated: false, soloTab: false, g1TabRelated: true });
+    // Each agent's own conversation and both message logs keep the unrelated messages (CM-9).
+    const g1Logs = { leadToOther: await assertLocalLogs("G1-UNRELATED-LEAD-TO-OTHER", lead, other),
+      taskAgentToSolo: await assertLocalLogs("G1-UNRELATED-TASKAGENT-TO-SOLO", worker, solo) };
+
+    // AC-007 / row 4: a stopped root and a member that never started are refused "not running" and are not woken.
+    const sentBefore = captured.length;
+    const sleeperLaunches = await launchesOf(alpha, sleeper.runId);
+    const toSleeper = await calls(other, "send_message_to", { target_agent_run_id: sleeper.runId, content: "AC007-TO-STOPPED" });
+    const toUnstarted = await calls(other, "send_message_to", { target_agent_run_id: unstartedMate, content: "ROW4-TO-UNSTARTED-MEMBER" });
+    for (const [result, id] of [[toSleeper, sleeper.runId], [toUnstarted, unstartedMate]] as const) {
+      expect(result.accepted, JSON.stringify(result)).toBe(false);
+      expect(textOf(result)).toBe(notRunningRefusal(id));
+      expect(result.target_agent_run_id, "a refusal names no receiver").toBeUndefined();
+    }
+    await wait(3_000);
+    expect(await processLive(sleeper.runId), "the stopped root is not woken").toBe(false);
+    expect(await launchesOf(alpha, sleeper.runId), "no new process for the stopped root").toBe(sleeperLaunches);
+    expect(await launchesOf(alpha, unstartedMate), "the never-started member is not started").toBe(0);
+    expect(stringsOf(await sleeper.conversation()).some((value) => value.includes("AC007-TO-STOPPED")), "the stopped root got nothing").toBe(false);
+    expect(sentRequests(sentBefore), "nothing left alpha").toEqual([]);
+    const listedAfter = await calls(scout, "list_running_agents", {});
+    expect((listedAfter.agents as Rec[]).map(idOf), "still not listed").not.toContain(sleeper.runId);
+
+    expect(await terminateRun(alpha, g1.runId)).toMatchObject({ success: true });
+    expect((await alpha.gql(`mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}`, { id: squad.teamRunId })).terminateAgentTeamRun).toMatchObject({ success: true });
+    record("RC-47", { scout: scout.runId, entries, filters: { squads: squads.agents, idle: idle.agents }, ac005: { toOther, atOther, reply: textOf(reply), logs: ac005Logs },
+      g1: { live, stored, logs: g1Logs, fromTaskAgent }, notRunning: { toSleeper: textOf(toSleeper), toUnstarted: textOf(toUnstarted) }, toolTexts: {
+        listRunningAgents: tool(scoutTools, "list_running_agents")?.description, sendMessageToNode: tool(scoutTools, "send_message_to")?.inputSchema?.properties?.node?.description } });
+  }, 600_000);
+
+  it("RC-48 492 AC-004/AC-006/AC-007, rows 8/11, QR-003: an agent on alpha lists beta's running roots with node, finds beta's Project Task Manager by name and Project, messages it with node and gets its answer; beta's stopped root, unstarted member and team run ID are refused; unsigned and wrongly signed requests to both new routes are refused at the gate", async () => {
+    const scout = standaloneActor(alpha, ids.runningScout, "alpha running scout");
+    const bystander = standaloneActor(beta, ids.bystander, "beta bystander");
+    // Beta: a Project Task Manager a person started under a Project, a Team a person started (coordinator running, checker
+    // never started), and a root its owner stopped.
+    const projectId = (await beta.gql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`, { input: { name: "Beta Project" } })).createProject.projectId as string;
+    const pmCreated = (await beta.gql(`mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}`,
+      { input: { agentDefinitionId: defs.betaPm, ...runConfig(beta), projectId } })).createAgentRun;
+    expect(pmCreated.success, pmCreated.message).toBe(true);
+    const pm = standaloneActor(beta, pmCreated.runId as string, "beta project task manager");
+    await warm(pm);
+    const studio = (await beta.gql(`mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}`,
+      { input: { teamDefinitionId: defs.studioTeam, teamConfigs: [{ teamAddress: "/", ...runConfig(beta) }], memberConfigs: [
+        { memberAddress: "/lead", agentDefinitionId: defs.publisher, ...runConfig(beta) },
+        { memberAddress: "/checker", agentDefinitionId: defs.checker, ...runConfig(beta) }] } })).createAgentTeamRun;
+    expect(studio.success, studio.message).toBe(true);
+    const studioMembers = Object.fromEntries(flattenE2eConfiguredAgentExecutions((await beta.gql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`,
+      { id: studio.teamRunId })).getTeamRunResumeConfig.executionTree).map((member) => [member.memberAddress, member.agentRunId]));
+    const studioLead = teamActor(beta, studio.teamRunId, studioMembers["/lead"]!, "beta owner's studio lead");
+    await warm(studioLead);
+    const unstartedChecker = studioMembers["/checker"]!;
+    const stoppedB = await createStandalone(beta, defs.bystander, "beta stopped root");
+    await warm(stoppedB);
+    expect(await terminateRun(beta, stoppedB.runId)).toMatchObject({ success: true });
+    await until(async () => !(await processLive(stoppedB.runId)), "beta's stopped root ends", 30_000);
+
+    // AC-004: the list of beta's running roots a person started, each with node; beta's delegated runs (from alpha), the
+    // stopped root and the Team's members are never entries.
+    const sentBefore = captured.length;
+    const listed = await calls(scout, "list_running_agents", { node: LABEL.beta });
+    expect(listed.isError, JSON.stringify(listed)).toBe(false);
+    const entries = listed.agents as Rec[];
+    const idOf = (entry: Rec) => String(entry.kind === "agent_team" ? entry.team_run_id : entry.agent_run_id);
+    expect(entries.map(idOf).sort(), JSON.stringify(entries)).toEqual([ids.bystander, pm.runId, studio.teamRunId].sort());
+    const byId = (id: string) => entries.find((entry) => idOf(entry) === id);
+    expectAgentEntry(byId(pm.runId), { name: "Project Task Manager", address: "/project_task_manager", agent_run_id: pm.runId, workspace: beta.workspace,
+      project: "Beta Project", node: LABEL.beta });
+    expectAgentEntry(byId(ids.bystander), { name: "Bystander", address: "/bystander", agent_run_id: ids.bystander, workspace: beta.workspace, node: LABEL.beta });
+    expectTeamEntry(byId(studio.teamRunId), { name: "Studio Team", address: "/studio_team", team_run_id: studio.teamRunId,
+      team_coordinator_agent_run_id: studioMembers["/lead"], workspace: beta.workspace, node: LABEL.beta });
+    const wire = remoteRequests(sentBefore).filter((entry) => entry.path === PATHS.runningAgents);
+    expect(wire.map((entry) => `${entry.via} ${entry.status}`), "one signed request, asked now").toEqual(["toBeta 200"]);
+    expect(wire[0]!.body).toEqual({ fromNodeId: alpha.nodeId, toNodeId: beta.nodeId });
+    expect((wire[0]!.answer as Rec).agents.every((entry: Rec) => !("node" in entry)), "beta's answer has no node; alpha adds its name").toBe(true);
+    expect((await calls(scout, "list_running_agents", { node: LABEL.beta, address: "/project_task_manager" })).agents).toEqual([byId(pm.runId)]);
+
+    // AC-006 / RU-1: the scout picks the PM by name and Project and messages it with node; the PM answers with the node its
+    // header names; one log line on each node under one message ID.
+    const chosen = entries.find((entry) => entry.name === "Project Task Manager" && entry.project === "Beta Project")!;
+    const toPm = await calls(scout, "send_message_to", { node: chosen.node, target_agent_run_id: chosen.agent_run_id, content: "RU1-SCOUT-TO-BETA-PM" });
+    expect(toPm, JSON.stringify(toPm)).toMatchObject({ accepted: true, target_agent_run_id: pm.runId });
+    expect(textOf(toPm)).toBe(`Delivered message to ${pm.runId} on node "${LABEL.beta}".`);
+    const atPm = await receives(pm, "RU1-SCOUT-TO-BETA-PM");
+    expect(atPm).toContain(`You received a message from the agent with sender run id "${scout.runId}" on node "${LABEL.alpha}".`);
+    const answer = await calls(pm, "send_message_to", { node: LABEL.alpha, target_agent_run_id: scout.runId, content: "RU1-BETA-PM-TO-SCOUT" });
+    expect(answer, JSON.stringify(answer)).toMatchObject({ accepted: true, target_agent_run_id: scout.runId });
+    expect(textOf(answer)).toBe(`Delivered message to ${scout.runId} on node "${LABEL.alpha}".`);
+    expect(await receives(scout, "RU1-BETA-PM-TO-SCOUT")).toContain(`You received a message from the agent with sender run id "${pm.runId}" on node "${LABEL.beta}".`);
+    const ru1Logs = { toPm: await assertBothLogs("RU1-SCOUT-TO-BETA-PM", scout, pm), answer: await assertBothLogs("RU1-BETA-PM-TO-SCOUT", pm, scout) };
+    const ru1Wire = remoteRequests(sentBefore).filter((entry) => entry.path === PATHS.runMessages);
+    expect(ru1Wire.map((entry) => `${entry.via} ${(entry.answer as Rec)?.accepted}`)).toEqual(["toBeta true", "toAlpha true"]);
+    expect(remoteRequests(sentBefore).filter((entry) => entry.path === PATHS.messages), "no linked message: nothing links the two runs").toEqual([]);
+    // A Team on beta is messaged through the coordinator the list gives.
+    const toStudio = await calls(scout, "send_message_to", { node: LABEL.beta, target_agent_run_id: byId(studio.teamRunId)!.team_coordinator_agent_run_id, content: "RU1-SCOUT-TO-STUDIO-LEAD" });
+    expect(toStudio, JSON.stringify(toStudio)).toMatchObject({ accepted: true });
+    expect(await receives(studioLead, "RU1-SCOUT-TO-STUDIO-LEAD")).toContain(`sender run id "${scout.runId}" on node "${LABEL.alpha}"`);
+    // Any sender of alpha reaches a running agent of beta with node: an Org agent and a Team member.
+    expect(await calls(orgActor(alpha, ids.org.orgRunId, "/lead", ids.org.lead, "alpha org lead"), "send_message_to",
+      { node: LABEL.beta, target_agent_run_id: ids.bystander, content: "ROW7-ORG-TO-BYSTANDER" })).toMatchObject({ accepted: true });
+    expect(await receives(bystander, "ROW7-ORG-TO-BYSTANDER")).toContain(`sender run id "${ids.org.lead}" on node "${LABEL.alpha}"`);
+
+    // Rows 8 and 11, AC-007 on the peer: refused by beta, nothing woken or started.
+    const stoppedLaunches = await launchesOf(beta, stoppedB.runId);
+    const toStopped = await calls(scout, "send_message_to", { node: LABEL.beta, target_agent_run_id: stoppedB.runId, content: "ROW8-TO-STOPPED" });
+    const toChecker = await calls(scout, "send_message_to", { node: LABEL.beta, target_agent_run_id: unstartedChecker, content: "ROW8-TO-UNSTARTED" });
+    const toUnknown = await calls(scout, "send_message_to", { node: LABEL.beta, target_agent_run_id: "agent_run_never_was_000", content: "ROW8-TO-NOBODY" });
+    for (const [result, id] of [[toStopped, stoppedB.runId], [toChecker, unstartedChecker], [toUnknown, "agent_run_never_was_000"]] as const) {
+      expect(result.accepted, JSON.stringify(result)).toBe(false);
+      expect(textOf(result)).toBe(peerNotRunningRefusal(id, LABEL.beta));
+    }
+    const toTeamRun = await calls(scout, "send_message_to", { node: LABEL.beta, target_agent_run_id: studio.teamRunId, content: "ROW11-TO-TEAM-RUN" });
+    expect(toTeamRun.accepted, JSON.stringify(toTeamRun)).toBe(false);
+    expect(textOf(toTeamRun)).toBe(`${studio.teamRunId} is a task agent team's run id, and send_message_to talks with agents. To talk with the team, use its coordinator's run id: ${studioMembers["/lead"]}. The team runs on node "${LABEL.beta}": send to its coordinator with node "${LABEL.beta}".`);
+    const toUnknownNode = await calls(scout, "send_message_to", { node: "nowhere-node", target_agent_run_id: pm.runId, content: "ROW9-UNKNOWN-NODE" });
+    expect(textOf(toUnknownNode)).toBe(TEXT_261.unknownNode("nowhere-node"));
+    await wait(3_000);
+    expect(await processLive(stoppedB.runId), "beta's stopped root is not woken").toBe(false);
+    expect(await launchesOf(beta, stoppedB.runId)).toBe(stoppedLaunches);
+    expect(await launchesOf(beta, unstartedChecker), "the never-started member is not started").toBe(0);
+    const refusalWire = remoteRequests(sentBefore).filter((entry) => entry.path === PATHS.runMessages && (entry.answer as Rec)?.accepted === false);
+    expect(refusalWire.map((entry) => (entry.answer as Rec).code).sort()).toEqual(["REMOTE_TARGET_NOT_RUNNING", "REMOTE_TARGET_NOT_RUNNING", "REMOTE_TARGET_NOT_RUNNING", "TARGET_IS_TEAM_RUN"]);
+
+    // QR-003: both routes sit behind the signed peer gate and PeerGateway admission.
+    const gate: Rec = {};
+    for (const route of [PATHS.runMessages, PATHS.runningAgents]) {
+      const body = route === PATHS.runningAgents ? { fromNodeId: alpha.nodeId, toNodeId: beta.nodeId }
+        : { fromNodeId: alpha.nodeId, toNodeId: beta.nodeId, messageId: `collabmsg_${randomUUID()}`, sender: { agentRunId: scout.runId },
+          target: { agentRunId: pm.runId }, content: "QR003-FORGED", messageType: "agent_message", createdAt: new Date().toISOString() };
+      const text = JSON.stringify(body);
+      const unsigned = await rawPost(beta.port, route, text);
+      const ownerBearer = await fetch(`${beta.baseUrl}${route}`, { method: "POST", headers: { "content-type": "application/json" }, body: text })
+        .then(async (response) => ({ status: response.status, answer: await response.json() as Rec }));
+      const wrongSecret = await fetch(`${beta.baseUrl}${route}`, { method: "POST", body: text, headers: { "content-type": "application/json",
+        ...signPeerRequest({ secret: randomBytes(32).toString("base64url"), method: "POST", pathWithQuery: route, fromNodeId: alpha.nodeId, toNodeId: beta.nodeId, body: text }) } })
+        .then(async (response) => ({ status: response.status, answer: await response.json() as Rec }));
+      const notPaired = await beta.post(route, { ...body, fromNodeId: "srv_unregistered_00000000000000000000000" });
+      const wrongTo = await beta.post(route, { ...body, toNodeId: "srv_someone_else_000000000000000000000" });
+      expect(unsigned, `${route} unsigned`).toMatchObject({ status: 401, answer: { code: "NODE_CREDENTIAL_REQUIRED" } });
+      expect(ownerBearer, `${route} with the owner's credential (not a peer)`).toMatchObject({ status: 403, answer: { code: "NODE_ROUTE_NOT_PERMITTED" } });
+      expect(wrongSecret, `${route} signed with a secret beta does not hold`).toMatchObject({ status: 401, answer: { code: "NODE_CREDENTIAL_INVALID" } });
+      expect(notPaired, `${route} from a node that is not paired`).toMatchObject({ status: 401, answer: { code: "NODE_CREDENTIAL_INVALID" } });
+      expect(wrongTo, `${route} meant for another node`).toEqual({ status: 200, answer: { accepted: false, nodeId: beta.nodeId, code: "PEER_IDENTITY_MISMATCH", message: "This request was meant for another node." } });
+      gate[route] = { unsigned, ownerBearer, wrongSecret, notPaired, wrongTo };
+    }
+    const malformed = await beta.post(PATHS.runMessages, { fromNodeId: alpha.nodeId, toNodeId: beta.nodeId, sender: { agentRunId: scout.runId }, target: { agentRunId: pm.runId },
+      content: "x", messageType: "agent_message", createdAt: new Date().toISOString() });
+    expect(malformed, "a run message without messageId").toMatchObject({ status: 400, answer: { accepted: false, nodeId: beta.nodeId, code: "REMOTE_REQUEST_INVALID" } });
+    await neverReceives(pm, "QR003-FORGED", 1_000);
+
+    expect(await terminateRun(beta, pm.runId)).toMatchObject({ success: true });
+    expect((await beta.gql(`mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}`, { id: studio.teamRunId })).terminateAgentTeamRun).toMatchObject({ success: true });
+    record("RC-48", { entries, wire: wire[0], toPm: textOf(toPm), atPm, answer: textOf(answer), ru1Logs, ru1Wire: ru1Wire.map((entry) => ({ body: entry.body, answer: entry.answer })),
+      refusals: { toStopped: textOf(toStopped), toChecker: textOf(toChecker), toUnknown: textOf(toUnknown), toTeamRun: textOf(toTeamRun), toUnknownNode: textOf(toUnknownNode) },
+      gate, malformed });
+  }, 600_000);
+
+  it("RC-49 492 AC-008 rows 13/14, DEC-011: after alpha's delegator closes its Task, every other sender of alpha is refused CLOSED with and without node and nothing is sent; an agent of beta and an agent of a third node reach the fenced run while it runs", async () => {
+    // A third node that knows beta only (it cannot know alpha's Task).
+    const zeta = new NodeServer("zeta", root, await getFreePort());
+    let paired = false;
+    try {
+      await zeta.start();
+      await zeta.gql(`mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}`);
+      await pairNodes({ inviter: (query, variables) => zeta.gql(query, variables), accepter: (query, variables) => beta.gql(query, variables),
+        inviterName: "zeta-node", accepterName: LABEL.beta });
+      paired = true;
+      const zetaAgent = await createStandalone(zeta, await agentDefinition(zeta, "Zeta Agent"), "zeta agent");
+      await warm(zetaAgent);
+
+      const fenceDelegator = await createStandalone(alpha, defs.delegator, "alpha fence delegator");
+      const delegated = await delegateRemote(fenceDelegator, "Fence work. Marker FENCE-PACKET.");
+      expect(delegated, JSON.stringify(delegated)).toMatchObject({ delegated: true, node: LABEL.beta });
+      const r6 = delegated.target_agent_run_id as string;
+      const fenced = composeOnBeta(r6);
+      await receives(fenced, "FENCE-PACKET");
+      const done = await calls(fenceDelegator, "update_task", { task_id: delegated.task_id, status: "DONE" });
+      expect(done, JSON.stringify(done)).toMatchObject({ task: { taskId: delegated.task_id, status: "DONE" } });
+
+      // Row 14 first (the fenced run keeps running until its idle grace): the node that runs it and a third node deliver.
+      const fromBeta = await calls(standaloneActor(beta, ids.bystander, "beta bystander"), "send_message_to", { target_agent_run_id: r6, content: "ROW14-BETA-TO-FENCED" });
+      expect(fromBeta, JSON.stringify(fromBeta)).toMatchObject({ accepted: true, target_agent_run_id: r6 });
+      expect(await receives(fenced, "ROW14-BETA-TO-FENCED")).toContain(`sender run id "${ids.bystander}"`);
+      const fromZeta = await calls(zetaAgent, "send_message_to", { node: LABEL.beta, target_agent_run_id: r6, content: "ROW14-ZETA-TO-FENCED" });
+      expect(fromZeta, JSON.stringify(fromZeta)).toMatchObject({ accepted: true, target_agent_run_id: r6 });
+      expect(await receives(fenced, "ROW14-ZETA-TO-FENCED")).toContain(`You received a message from the agent with sender run id "${zetaAgent.runId}" on node "zeta-node".`);
+
+      // Row 13: every sender on alpha, in any root, with and without node: CLOSED from alpha's Task record, before any send.
+      const sentBefore = captured.length;
+      const senders: Array<[string, Actor, Rec]> = [
+        ["delegator with node", fenceDelegator, { node: LABEL.beta }],
+        ["other root with node", standaloneActor(alpha, ids.other, "alpha other root"), { node: LABEL.beta }],
+        ["other root without node", standaloneActor(alpha, ids.other, "alpha other root"), {}],
+        ["running scout with node", standaloneActor(alpha, ids.runningScout, "alpha running scout"), { node: LABEL.beta }],
+        ["Team member without node", teamActor(alpha, ids.team.teamRunId, ids.team.mate, "alpha team mate"), {}],
+        ["Org agent with node", orgActor(alpha, ids.org.orgRunId, "/mate", ids.org.mate, "alpha org mate"), { node: LABEL.beta }],
+      ];
+      const closed: Rec = {};
+      for (const [label, actor, extra] of senders) {
+        const result = await calls(actor, "send_message_to", { ...extra, target_agent_run_id: r6, content: `ROW13-${label.replace(/ /g, "-").toUpperCase()}` });
+        expect(result.accepted, `${label}: ${JSON.stringify(result)}`).toBe(false);
+        expect(result.code, label).toBe("TASK_AGENT_RESOURCE_CLOSED");
+        expect(textOf(result), label).toMatch(/DONE or CANCELLED|closed/i);
+        closed[label] = textOf(result);
+      }
+      expect(sentRequests(sentBefore), "nothing was sent to the fenced run from alpha").toEqual([]);
+      await neverReceives(fenced, "ROW13-", 2_000);
+      record("RC-49", { r6, taskId: delegated.task_id, fromBeta, fromZeta, closed, zeta: { nodeId: zeta.nodeId, agent: zetaAgent.runId } });
+    } finally {
+      if (paired) await beta.gql(`mutation($id:String!){removePeerNode(nodeId:$id)}`, { id: zeta.nodeId }).catch(() => undefined);
+      await zeta.stop();
+      const dir = process.env["REMOTE_E2E_EVIDENCE_DIR"];
+      if (dir) await fsp.mkdir(dir, { recursive: true }).then(() => fsp.copyFile(zeta.logFile, path.join(dir, `remote-two-server-${zeta.name}-server.log`))).catch(() => undefined);
+    }
+    const betaPeers = ((await beta.gql(`{ peerNodes { name } }`)).peerNodes as Rec[]).map((peer) => peer.name);
+    expect(betaPeers, "only alpha stays registered on beta").toEqual([LABEL.alpha]);
+  }, 600_000);
+
   it("RC-21 247 AC-301: a Team member on alpha delegates beta's shared Studio Team; beta starts a Team run whose members use their own or the Team's default, and only its coordinator starts", async () => {
     const lead = teamActor(alpha, ids.team.teamRunId, ids.team.lead, "alpha team lead");
     const view = await connect(alpha, "agent-team", ids.team.teamRunId, (frames) => frames.some((frame) => frame.type === "TEAM_EXECUTION_VIEW_SNAPSHOT"));
@@ -1341,7 +1786,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     record("RC-21", { delegated, teamLink, taskResource: resources[0], betaTree, memberRecords, launches, listed });
   }, 240_000);
 
-  it("RC-22 247 AC-303: the delegator and any member of the remote Team message each other; a never-started member starts; the team run ID gets the coordinator guidance; unlinked senders are refused", async () => {
+  it("RC-22 247 AC-303: the delegator and any member of the remote Team message each other; a never-started member starts; the team run ID gets the coordinator guidance; another root without node is refused not running; another member of the delegating root reaches the coordinator unlinked (492 DS-006)", async () => {
     const lead = teamActor(alpha, ids.team.teamRunId, ids.team.lead, "alpha team lead");
     const mate = teamActor(alpha, ids.team.teamRunId, ids.team.mate, "alpha team mate");
     const other = standaloneActor(alpha, ids.other, "alpha other root");
@@ -1367,18 +1812,27 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     }
     expect(logs["FROM-CHECKER-1"].files).toEqual({ beta: `memory/agent_teams/${ids.studio.teamRunId}/team_communication_messages_active.jsonl`,
       alpha: `memory/agent_teams/${ids.team.teamRunId}/team_communication_messages_active.jsonl` });
-    // Refusals: the team run ID (coordinator guidance), another member of the delegating root (not permitted), another root (live-only).
+    // Refusals: the team run ID (coordinator guidance); another root without node (not running here, autobyteus-492 row 4).
     const sentBefore = captured.length;
     const toTeamRun = await calls(lead, "send_message_to", { target_agent_run_id: ids.studio.teamRunId, content: "TO-TEAM-RUN" });
     expect(toTeamRun.accepted, JSON.stringify(toTeamRun)).toBe(false);
     expect(textOf(toTeamRun)).toBe(`${ids.studio.teamRunId} is a task agent team's run id, and send_message_to talks with agents. To talk with the team, use its coordinator's run id: ${ids.studio.coord}.`);
-    const fromMate = await calls(mate, "send_message_to", { target_agent_run_id: ids.studio.coord, content: "MATE-TO-STUDIO" });
-    expect(textOf(fromMate)).toBe("That run is on another node and is not linked with you: only the agent that delegated to it, and the run itself, can message each other. The message was not sent.");
     const fromOther = await calls(other, "send_message_to", { target_agent_run_id: ids.studio.checker, content: "OTHER-TO-STUDIO" });
-    expect(textOf(fromOther)).toBe(liveOnlyRefusal(ids.studio.checker));
+    expect(fromOther.accepted, JSON.stringify(fromOther)).toBe(false);
+    expect(textOf(fromOther)).toBe(notRunningRefusal(ids.studio.checker));
     expect(sentRequests(sentBefore), "none of the refused messages was sent").toEqual([]);
-    await neverReceives(coordinator, "MATE-TO-STUDIO", 1_000);
-    await neverReceives(checker, "OTHER-TO-STUDIO", 0);
+    await neverReceives(checker, "OTHER-TO-STUDIO", 1_000);
+    // Another member of the delegating root (autobyteus-492 DS-006): delivered to the running coordinator unlinked
+    // (`run-messages`), logged once on each node; the link stays the delegator's.
+    const mateSentBefore = captured.length;
+    const fromMate = await calls(mate, "send_message_to", { target_agent_run_id: ids.studio.coord, content: "MATE-TO-STUDIO" });
+    expect(fromMate, JSON.stringify(fromMate)).toMatchObject({ accepted: true, target_agent_run_id: ids.studio.coord });
+    expect(textOf(fromMate)).toBe(`Delivered message to ${ids.studio.coord} on node "${LABEL.beta}".`);
+    expect(await receives(coordinator, "MATE-TO-STUDIO")).toContain(`You received a message from the agent with sender run id "${mate.runId}" on node "${LABEL.alpha}".`);
+    expect(sentRequests(mateSentBefore).map((entry) => `${entry.via} ${entry.path} ${(entry.answer as Rec)?.accepted}`)).toEqual([`toBeta ${PATHS.runMessages} true`]);
+    logs["MATE-TO-STUDIO"] = await assertBothLogs("MATE-TO-STUDIO", mate, coordinator);
+    expect(logs["MATE-TO-STUDIO"].files).toEqual({ alpha: `memory/agent_teams/${ids.team.teamRunId}/team_communication_messages_active.jsonl`,
+      beta: `memory/agent_teams/${ids.studio.teamRunId}/team_communication_messages_active.jsonl` });
     // The delegating Team's view stayed open and contiguous while remote Team messages flowed (CR-001).
     const view = ids.teamView as { frames: Frame[]; closed(): unknown };
     const sequences = sequenceCheck(view.frames, "TEAM_EXECUTION_VIEW_SNAPSHOT");
@@ -1501,7 +1955,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const liveSeen = opened.liveSince(beforeLive, "RC31-LIVE-ANSWER");
 
     // DS-003: the stored conversation of the remote agent, read through alpha.
-    const projected = JSON.stringify((await alpha.gql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
+    const projected = JSON.stringify((await alpha.gql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(runId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
       { h: delegator.runId, a: "/publisher", r: r9 })).agentRunCollaborationMemberProjection?.conversation ?? null);
     expect(projected).toContain("TREE-PACKET");
     expect(projected).toContain("LIVE-FROM-BETA-OWNER");
@@ -1520,7 +1974,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       `the owner's heading, then the message: ${JSON.stringify(ownerEntries[0]!.content)}`).toBe(true);
     const ownerEntry = ownerEntries[0];
     await until(() => opened.liveSince(beforeOwner, "RC31-OWNER-ANSWER"), "the owner's answer live on alpha's /ws/peer-run", 15_000);
-    const reread = JSON.stringify((await alpha.gql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
+    const reread = JSON.stringify((await alpha.gql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(runId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
       { h: delegator.runId, a: "/publisher", r: r9 })).agentRunCollaborationMemberProjection?.conversation ?? null);
     expect(reread.split("OWNER-FROM-ALPHA").length - 1, "N-405: one user message in alpha's view of it").toBe(1);
     const logsAfter = await Promise.all([alpha, beta].map(async (node) => (await walkFiles(node.memory)).filter((file) => /communication_messages.*\.jsonl$/.test(file)).map((file) => fs.readFileSync(file, "utf8")).join("\n")));
@@ -1679,7 +2133,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const interrupted = await ackOf(soloView, rootCommand(soloView, soloRoot, "INTERRUPT_GENERATION", a1));
     expect(interrupted, JSON.stringify(interrupted)).toMatchObject({ command_type: "INTERRUPT_GENERATION", state: "accepted" });
     // The stored conversation, read through alpha with the delegator stopped.
-    const stored = JSON.stringify((await alpha.gql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
+    const stored = JSON.stringify((await alpha.gql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(runId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
       { h: solo.runId, a: "/publisher", r: a1 })).agentRunCollaborationMemberProjection?.conversation ?? null);
     expect(stored).toContain("A16-OWNER-SOLO");
     // The owner's message to the peer Team's coordinator.
@@ -2046,7 +2500,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const daily = (await beta.gql(`query($id:String!){agentDefinition(id:$id){name description}}`, { id: "autobyteus-daily-assistant" })).agentDefinition as Rec;
     expect(daily, "beta has the built-in Daily Assistant").toMatchObject({ name: "Daily Assistant" });
     const expected = [
-      ...["Publisher", "Blank Slate", "Half Set", "Codex Writer", "Fragile", "Bystander", "Checker"].map((name) => agent(name, `${name} (remote collaboration E2E)`)),
+      ...["Publisher", "Blank Slate", "Half Set", "Codex Writer", "Fragile", "Bystander", "Checker", "Project Task Manager"].map((name) => agent(name, `${name} (remote collaboration E2E)`)),
       agent("Plain Helper", null),
       agent("Daily Assistant", String(daily.description)),
       ...["Studio Team", "Hollow Team", "Codex Team"].map((name) => team(name, `${name} (remote Teams E2E)`)),
@@ -2292,13 +2746,19 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
         { name: names.delta, status: "unavailable" }, { name: names.epsilon, status: "unavailable" }]);
       expect(listed.elapsedMs, "answered well within the 20 s bound").toBeLessThan(20_000);
       const reasons: Rec = {};
+      // 492 AC-004: list_running_agents with node gives the same reason as list_available_agents (and delegate_task).
+      const runningScout = standaloneActor(alpha, ids.runningScout, "alpha running scout");
       for (const name of Object.values(names)) {
         const listing = await calls(scout, "list_available_agents", { node: name });
         const delegation = await calls(scout, "delegate_task", { node: name, recipient_address: "/publisher", description: "Probe." });
-        reasons[name] = { listing: textOf(listing), delegation: textOf(delegation), listingIsError: listing.isError };
+        const running = await calls(runningScout, "list_running_agents", { node: name });
+        reasons[name] = { listing: textOf(listing), delegation: textOf(delegation), listingIsError: listing.isError, running: textOf(running), runningIsError: running.isError };
         expect(listing.agents, `${name}: no list`).toBeUndefined();
+        expect(running.agents, `${name}: no running list`).toBeUndefined();
+        expect(running.isError, `${name}: a refusal is a tool error`).toBe(listing.isError);
         expect(delegation.delegated).toBe(false);
         expect(textOf(listing), `${name}: the same reason as a delegation`).toBe(textOf(delegation));
+        expect(textOf(running), `${name}: list_running_agents gives the same reason`).toBe(textOf(listing));
       }
       expect((reasons[names.gamma] as Rec).listing).toMatch(new RegExp(`^Node "${names.gamma}" could not be reached \\(`));
       expect((reasons[names.delta] as Rec).listing).toBe(`Remote collaboration is turned off on node "${names.delta}", so it refused the request.`);
@@ -2314,17 +2774,23 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       let held: Rec & { elapsedMs: number };
       toBeta.mode = "blackhole";
       let heldPage: Rec & { elapsedMs: number };
+      let heldRunning: Rec & { elapsedMs: number };
       try {
         held = await calls(scout, "list_peer_nodes", {}, 90_000);
         heldPage = await peerNodeOffer(alpha, beta.nodeId);
+        // 492 QR-001: a remote list of a peer that does not answer ends within the 20 s bound, with the unreachable reason.
+        heldRunning = await calls(runningScout, "list_running_agents", { node: LABEL.beta }, 90_000);
       } finally { toBeta.mode = "forward"; toBeta.releaseHeld(); }
+      expect(textOf(heldRunning), JSON.stringify(heldRunning)).toMatch(new RegExp(`^Node "${LABEL.beta}" could not be reached \\(`));
+      expect(heldRunning.elapsedMs, "492 QR-001: within the 20 s peer bound (plus the agent's turn)").toBeLessThan(30_000);
       expect(heldPage.offer, "267: the page's query for a black-holed peer").toEqual({ entries: null, refusalCode: "PEER_UNREACHABLE" });
       expect(heldPage.elapsedMs, "267: within the 20 s bound").toBeLessThan(25_000);
       expect((held.nodes as Rec[])[0], JSON.stringify(held)).toEqual({ name: LABEL.beta, status: "unavailable" });
       expect(held.elapsedMs, "within the 20 s peer bound (plus the agent's turn)").toBeLessThan(30_000);
       const again = await calls(scout, "list_peer_nodes", {});
       expect((again.nodes as Rec[])[0], "beta is available again").toEqual({ name: LABEL.beta, status: "available" });
-      record("RC-27", { listed: { nodes: listed.nodes, elapsedMs: listed.elapsedMs }, reasons, heldElapsedMs: held.elapsedMs, held: held.nodes, pageCodes, heldPage });
+      record("RC-27", { listed: { nodes: listed.nodes, elapsedMs: listed.elapsedMs }, reasons, heldElapsedMs: held.elapsedMs, held: held.nodes, pageCodes, heldPage,
+        heldRunning: { text: textOf(heldRunning), elapsedMs: heldRunning.elapsedMs } });
     } finally {
       for (const nodeId of added) await alpha.gql(`mutation($id:String!){removePeerNode(nodeId:$id)}`, { id: nodeId }).catch(() => undefined);
       await Promise.all(Object.values(extra).map((node) => node.stop()));
@@ -2340,19 +2806,30 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const off = "Remote collaboration is turned off on this node, so nothing was sent to another node.";
     const sentBefore = captured.length;
     await alpha.gql(`mutation{setRemoteCollaborationEnabled(enabled:false){enabled}}`);
-    let nodesOff: Rec, agentsOff: Rec;
+    const runningScout = standaloneActor(alpha, ids.runningScout, "alpha running scout");
+    let nodesOff: Rec, agentsOff: Rec, runningOff: Rec, sendOff: Rec;
     try {
       nodesOff = await calls(scout, "list_peer_nodes", {});
       agentsOff = await calls(scout, "list_available_agents", { node: LABEL.beta });
+      // 492 AC-004/AC-006: the same refusal for the running list and for a message with node.
+      runningOff = await calls(runningScout, "list_running_agents", { node: LABEL.beta });
+      sendOff = await calls(runningScout, "send_message_to", { node: LABEL.beta, target_agent_run_id: ids.bystander, content: "OFF-NEVER-SENT" });
     } finally { await alpha.gql(`mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}`); }
     expect(textOf(nodesOff)).toBe(off);
     expect(textOf(agentsOff)).toBe(off);
-    expect([nodesOff.isError, agentsOff.isError], "refusals are tool errors").toEqual([true, true]);
+    expect(textOf(runningOff)).toBe(off);
+    expect(textOf(sendOff)).toBe(off);
+    expect(sendOff.accepted, JSON.stringify(sendOff)).toBe(false);
+    expect([nodesOff.isError, agentsOff.isError, runningOff.isError], "refusals are tool errors").toEqual([true, true, true]);
     expect(remoteRequests(sentBefore), "nothing left alpha").toEqual([]);
     const unknownList = await calls(scout, "list_available_agents", { node: "nowhere-node" });
     const unknownDelegation = await calls(scout, "delegate_task", { node: "nowhere-node", recipient_address: "/publisher", description: "Probe." });
     expect(textOf(unknownList)).toBe(TEXT_261.unknownNode("nowhere-node"));
     expect(textOf(unknownDelegation)).toBe(TEXT_261.unknownNode("nowhere-node"));
+    const unknownRunning = await calls(runningScout, "list_running_agents", { node: "nowhere-node" });
+    expect(textOf(unknownRunning), "492: the same node-list hint").toBe(TEXT_261.unknownNode("nowhere-node"));
+    const blankRunning = await calls(runningScout, "list_running_agents", { node: "" });
+    expect(textOf(blankRunning)).toContain("node must be the name of a peer node registered on this node; leave it out to list what runs on this node.");
     const blank = await calls(scout, "list_available_agents", { node: "" });
     expect(textOf(blank)).toContain(TEXT_261.blankNode);
     const nullNode = await calls(scout, "list_available_agents", { node: null });
@@ -2365,7 +2842,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       expect(entry.description, `${entry.address}: no empty description (DEC-405)`).not.toBe("");
     }
     expect(remoteRequests(sentBefore), "the refusals and the local list sent nothing").toEqual([]);
-    record("RC-28", { nodesOff: textOf(nodesOff), agentsOff: textOf(agentsOff), unknown: textOf(unknownList), blank: textOf(blank),
+    record("RC-28", { nodesOff: textOf(nodesOff), agentsOff: textOf(agentsOff), runningOff: textOf(runningOff), sendOff: textOf(sendOff),
+      unknownRunning: textOf(unknownRunning), blankRunning: textOf(blankRunning), unknown: textOf(unknownList), blank: textOf(blank),
       nullNode: { isError: nullNode.isError, text: textOf(nullNode) }, local: entries });
   }, 240_000);
 
@@ -2419,7 +2897,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       expect(unreachableRow.peer, JSON.stringify(unreachableRow)).toMatchObject({ nodeName: LABEL.beta });
       expect((unreachableRow.peer as Rec).reachable, "not reachable (false, or no answer yet)").not.toBe(true);
       const projectionStarted = Date.now();
-      const read = await alpha.gqlRaw(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
+      const read = await alpha.gqlRaw(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(runId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
         { h: delegatorId, a: "/publisher", r: r9 });
       projectionError = { errors: read.errors?.map((error) => error.message), data: read.data, elapsedMs: Date.now() - projectionStarted };
       expect(Date.now() - projectionStarted, "the read answers within the bound").toBeLessThan(25_000);
@@ -2680,7 +3158,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(updated.defaultLaunchConfig).toEqual({ runtimeKind: "antigravity_cli", llmModelIdentifier: "retired-model" });
     const runsBefore = await remoteRunDirs();
     const refused = await delegateRemote(solo, "After the default changed.");
-    expect(textOf(refused)).toBe(`The Agent Publisher on node "${LABEL.beta}" cannot run there: 'retired-model' is not offered by Antigravity CLI now. Refresh the model list and choose again, and Model Routing is off on node "${LABEL.beta}".`);
+    // autobyteus-500 FU-030: a peer's refusal keeps only the peer's reason.
+    expect(textOf(refused)).toBe(`The Agent Publisher on node "${LABEL.beta}" cannot run there: its default model cannot be used: 'retired-model' is no longer offered by Antigravity CLI, and Model Routing is off on node "${LABEL.beta}".`);
     expect(await remoteRunDirs()).toEqual(runsBefore);
     expect(await calls(solo, "send_message_to", { target_agent_run_id: ids.r1, content: "AFTER-DEFAULT-CHANGE-FOLLOWUP" })).toMatchObject({ accepted: true });
     await receives(composeOnBeta(ids.r1), "AFTER-DEFAULT-CHANGE-FOLLOWUP");
@@ -2742,7 +3221,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
 
   it("RC-20 AC-111/REQ-113/REQ-114, 437 NAS-20: every captured request between the nodes carries only its peer signature (never the secret, no other credential) and only the contract's fields", () => {
     const allowed = new Set([PATHS.runs, PATHS.messages, PATHS.status, PATHS.availability, PATHS.availableAgents,
-      PATHS.runSummaries, PATHS.agentProjection, PATHS.ownerCommands, PATHS.runObservations, PATHS.agentStreamSnapshot]);
+      PATHS.runSummaries, PATHS.agentProjection, PATHS.ownerCommands, PATHS.runObservations, PATHS.agentStreamSnapshot,
+      PATHS.runMessages, PATHS.runningAgents]);
     expect(captured.filter((entry) => !allowed.has(entry.path)).map((entry) => entry.path)).toEqual([]);
     const keysByKind: Record<string, string[]> = {
       [PATHS.runs]: ["address", "delegatingRun", "delegator", "fromNodeId", "task", "toNodeId"],
@@ -2755,6 +3235,9 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       [PATHS.ownerCommands]: ["agentRunId", "command", "fromNodeId", "targetRoot", "toNodeId"],
       // 461 G-D1 (SR-088): one agent's own snapshot, by its run and agent.
       [PATHS.agentStreamSnapshot]: ["agentRunId", "fromNodeId", "targetRoot", "toNodeId"],
+      // 492 QR-002/QR-003: a message by run IDs only (no root named), and the running-runs list (the envelope only).
+      [PATHS.runMessages]: ["content", "createdAt", "fromNodeId", "messageId", "messageType", "sender", "target", "toNodeId"],
+      [PATHS.runningAgents]: ["fromNodeId", "toNodeId"],
       work_packet: ["content", "createdAt", "fromNodeId", "kind", "messageType", "sender", "target", "targetRoot", "toNodeId"],
       toBeta: ["content", "createdAt", "fromNodeId", "kind", "messageId", "messageType", "sender", "target", "targetRoot", "toNodeId"],
       toAlpha: ["content", "createdAt", "fromNodeId", "kind", "messageId", "messageType", "sender", "target", "targetRoot", "toNodeId"],
@@ -2780,7 +3263,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       const body = entry.body as Rec;
       expect(secretLike(JSON.stringify(body)), `secret-like text in request ${entry.seq}: ${JSON.stringify(body).slice(0, 300)}`).toBe(false);
       const kind = [PATHS.runs, PATHS.availability, PATHS.availableAgents, PATHS.runSummaries, PATHS.agentProjection, PATHS.ownerCommands,
-        PATHS.agentStreamSnapshot].includes(entry.path as never) ? entry.path
+        PATHS.agentStreamSnapshot, PATHS.runMessages, PATHS.runningAgents].includes(entry.path as never) ? entry.path
         : body.kind === "work_packet" ? "work_packet" : entry.via;
       // 261 REQ-403: an accepted discovery answer carries only the contract's fields.
       const answer = entry.answer as Rec | undefined;
@@ -2789,11 +3272,24 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
         expect(sortedKeys(answer), `answer ${entry.seq}`).toEqual(["accepted", "agents", "nodeId"]);
         for (const agent of answer.agents as Rec[]) expect(Object.keys(agent).filter((key) => !["name", "kind", "address", "description"].includes(key)), `entry fields in answer ${entry.seq}`).toEqual([]);
       }
+      // 492 REQ-002/REQ-007/QR-002: an accepted running-runs answer carries only the entry fields (no node, title or content).
+      if (entry.path === PATHS.runningAgents && answer?.accepted === true) {
+        expect(sortedKeys(answer), `answer ${entry.seq}`).toEqual(["accepted", "agents", "nodeId"]);
+        for (const agent of answer.agents as Rec[]) {
+          const fields = agent.kind === "agent_team" ? RUNNING_TEAM_FIELDS : RUNNING_AGENT_FIELDS;
+          expect(Object.keys(agent).filter((key) => !fields.includes(key)), `entry fields in answer ${entry.seq}`).toEqual([]);
+        }
+        counts.runningAgentsEntries = (counts.runningAgentsEntries ?? 0) + (answer.agents as Rec[]).length;
+      }
+      if (entry.path === PATHS.runMessages) expect(sortedKeys(answer ?? {}), `answer ${entry.seq}`).toEqual(
+        (answer as Rec)?.accepted === true ? ["accepted", "nodeId"] : ["accepted", "code", "message", "nodeId"]);
       expect(sortedKeys(body), `fields of request ${entry.seq} (${kind})`).toEqual(keysByKind[kind]);
       expect(entry.method).toBe("POST");
       counts[kind] = (counts[kind] ?? 0) + 1;
     }
     expect(counts.status ?? 0, "the identity checks were captured").toBeGreaterThan(0);
+    expect(counts[PATHS.runMessages] ?? 0, "492: unlinked messages were captured and audited").toBeGreaterThan(0);
+    expect(counts.runningAgentsEntries ?? 0, "492: running-runs answers with entries were captured and audited").toBeGreaterThan(0);
     expect(evidence.nodes.alpha.canaryKeySaved, "the canary key was saved on alpha").toBe(true);
     expect(evidence.nodes.beta.canaryKeySaved, "the canary key was saved on beta").toBe(true);
     record("RC-20", { total: captured.length, counts, headerNames: [...new Set(captured.flatMap((entry) => Object.keys(entry.headers)))].sort() });

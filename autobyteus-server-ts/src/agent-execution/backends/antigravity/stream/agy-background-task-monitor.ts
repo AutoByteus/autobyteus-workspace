@@ -28,7 +28,10 @@ const DEFAULT_POLL_INTERVAL_MS = 2_000;
  * unreadable or unknown message format therefore never produces a false completion.
  */
 export class AgyBackgroundTaskMonitor {
-  private readonly running = new Map<number, AgentBackgroundTask>();
+  /** Every task of this run by step, as its latest snapshot, in start order (running and ended). */
+  private readonly tasks = new Map<number, AgentBackgroundTask>();
+  /** The steps of `tasks` still running. */
+  private readonly running = new Set<number>();
   private readonly settledFiles = new Set<string>();
   /** Exit messages seen so far by step; a step can exit before its turn reports it open. */
   private readonly exits = new Map<number, AgyTaskExitMessage>();
@@ -51,7 +54,7 @@ export class AgyBackgroundTaskMonitor {
     if (this.stopped) return;
     const started: AgentBackgroundTask[] = [];
     for (const step of steps) {
-      if (this.running.has(step.stepIndex)) continue;
+      if (this.tasks.has(step.stepIndex)) continue;
       const task: AgentBackgroundTask = Object.freeze({
         taskId: `${this.options.conversationId}/task-${step.stepIndex}`,
         kind: step.toolName === "run_command" ? "shell" : "other",
@@ -63,7 +66,8 @@ export class AgyBackgroundTaskMonitor {
         exitCode: null,
         startedAt: this.now().toISOString(),
       });
-      this.running.set(step.stepIndex, task);
+      this.tasks.set(step.stepIndex, task);
+      this.running.add(step.stepIndex);
       started.push(task);
     }
     if (started.length === 0) return;
@@ -71,16 +75,15 @@ export class AgyBackgroundTaskMonitor {
     this.schedule(0);
   }
 
-  /** The tasks running now (an ended task is no longer kept). */
-  list(): readonly AgentBackgroundTask[] { return [...this.running.values()]; }
+  /** Every task of this run, running and ended, each as its latest snapshot (a late viewer starts from them). */
+  list(): readonly AgentBackgroundTask[] { return [...this.tasks.values()]; }
 
   /** AGY stopped: every running task becomes stopped because the run ended, and the monitor stays inert. */
   stopAll(): void {
     if (this.stopped) return;
     this.stopped = true;
     this.clearTimer();
-    const stopped = [...this.running.values()].map((task) => Object.freeze({ ...task, status: "stopped" as const, endReason: "run_ended" as const }));
-    this.running.clear();
+    const stopped = [...this.running].map((stepIndex) => this.end(stepIndex, { status: "stopped", endReason: "run_ended" }));
     if (stopped.length > 0) this.options.emit(stopped);
   }
 
@@ -100,16 +103,23 @@ export class AgyBackgroundTaskMonitor {
       console.warn(`AGY_BACKGROUND_TASK_MESSAGES_UNREADABLE run=${this.options.runId} problem=${scan.problem}`);
     }
     const finished: AgentBackgroundTask[] = [];
-    for (const [stepIndex, task] of this.running) {
+    for (const stepIndex of [...this.running]) {
       const exit = this.exits.get(stepIndex);
       if (!exit) continue;
-      this.running.delete(stepIndex);
-      finished.push(Object.freeze({
-        ...task, status: exit.exitCode === 0 ? "completed" : "failed", summary: exit.summary, exitCode: exit.exitCode,
+      finished.push(this.end(stepIndex, {
+        status: exit.exitCode === 0 ? "completed" : "failed", summary: exit.summary, exitCode: exit.exitCode,
       }));
     }
     if (finished.length > 0) this.options.emit(finished);
     if (this.running.size > 0 && !this.stopped) this.schedule(this.pollIntervalMs);
+  }
+
+  /** Ends a running step: stores its final snapshot, which stays in `list()`. */
+  private end(stepIndex: number, change: Partial<AgentBackgroundTask>): AgentBackgroundTask {
+    const ended = Object.freeze({ ...this.tasks.get(stepIndex)!, ...change });
+    this.tasks.set(stepIndex, ended);
+    this.running.delete(stepIndex);
+    return ended;
   }
 
   private schedule(delayMs: number): void {

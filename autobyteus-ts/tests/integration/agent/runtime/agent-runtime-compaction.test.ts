@@ -21,7 +21,6 @@ import {COMPACTION_SUMMARY_INSTRUCTION,COMPACTION_SUMMARY_PROMPT} from '../../..
 import {COMPACTION_SUMMARY_HEADINGS} from '../../../../src/memory/compaction/compaction-summary-parser.js';
 import {createEnabledMemoryCompactionConfiguration} from '../../../../src/memory/compaction/memory-compaction-configuration.js';
 import {CompactionPolicy} from '../../../../src/memory/policies/compaction-policy.js';
-import {MemoryType} from '../../../../src/memory/models/memory-types.js';
 import {resetAgentFactory,waitForCondition,waitForStatus} from './runtime-test-harness.js';
 import { CompactionAttempts } from '../../../helpers/compaction-summary-request.js';
 type SummaryRequest = { attempt: number; messages: Array<Record<string, unknown>>; kwargs: Record<string, unknown>; options: Record<string, unknown> };
@@ -130,8 +129,9 @@ describe('compaction on the agent\'s own model, narrow runtime integration',()=>
    expect(new Set(events.map(e=>e.compaction_operation_id)).size).toBe(1);
    const manager=agent.context.state.memoryManager!;
    expect(manager.hasPendingCompaction()).toBe(false);
-   expect(manager.store.list(MemoryType.EPISODIC)).toEqual([]);
-   expect(manager.store.list(MemoryType.SEMANTIC)).toEqual([]);
+   // Compaction writes only the summary: no retired episodic/semantic item file appears anywhere in the memory folder.
+   const written=(fs.readdirSync(dir,{recursive:true}) as string[]).map(file=>path.basename(file));
+   expect(written.filter(file=>file==='episodic.jsonl'||file==='semantic.jsonl')).toEqual([]);
    expect(main.requests[4]?.some(message=>String(message.content).includes('No deployment approved'))).toBe(true);
   }finally{if(agent.isRunning)await agent.stop(2);await main.cleanup();fs.rmSync(dir,{recursive:true,force:true});}
  },30000);

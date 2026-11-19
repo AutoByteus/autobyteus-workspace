@@ -84,8 +84,6 @@ const sameDraftOwner = (
         && right.memberAddress === left.memberAddress;
     case 'org_member_draft':
       return right.kind === left.kind && right.orgRunId === left.orgRunId && right.agentRunId === left.agentRunId;
-    case 'agent_collaboration_member_draft':
-      return right.kind === left.kind && right.hostRunId === left.hostRunId && right.agentRunId === left.agentRunId;
     default: {
       const unsupported: never = left;
       throw new Error(`Unsupported draft owner kind '${(unsupported as { kind: string }).kind}'.`);

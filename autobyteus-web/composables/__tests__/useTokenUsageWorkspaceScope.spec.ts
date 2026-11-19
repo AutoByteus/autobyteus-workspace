@@ -15,7 +15,7 @@ vi.mock('~/stores/activeContextStore', () => ({ useActiveContextStore: () => ({
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: vi.fn() }));
 const target = (kind: ActiveAgentWorkspaceTarget['kind'], runId: string, status = AgentStatus.Running) => {
   const context = { state: { runId, currentStatus: status }, config: { agentDefinitionName: runId, llmModelIdentifier: 'config-alias' } };
-  return { kind, context, root: { orgRunId: 'org' }, host: { hostRunId: 'host' }, address: '/member',
+  return { kind, context, root: { orgRunId: 'org' }, viewRun: { runId: 'host' }, address: '/member',
     team: { rootRunId: 'team', listMembers: () => [{ agentRunId: runId, context, address: '/member' }] },
   } as unknown as ActiveAgentWorkspaceTarget;
 };

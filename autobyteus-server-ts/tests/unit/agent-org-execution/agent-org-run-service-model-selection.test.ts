@@ -5,6 +5,7 @@ import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definit
 import { AgentOrgRunService } from "../../../src/agent-org-execution/services/agent-org-run-service.js";
 import { RunModelSelectionService } from "../../../src/llm-management/services/run-model-selection-service.js";
 import { AgyDiscoveryError } from "../../../src/runtime-management/antigravity-cli-capability.js";
+import { NO_ON_DEMAND_MODELS } from "../../helpers/explicit-host-collaborators.js";
 
 const view = (rows: any[]) => ({ offeredModels: rows,
   findExactCurrent: (id: string) => rows.find((row) => row.model_identifier === id) ?? null });
@@ -33,7 +34,7 @@ const harness = (large = false) => {
   const create = vi.fn(async (tree) => ({ orgRunId: tree.rootOrg.orgRunId, getExecutionTreeSnapshot: () => tree }));
   let identitySequence = 0;
   const allocate = vi.fn(async (id: string) => `run-${id}-${++identitySequence}`);
-  const validator = new RunModelSelectionService(catalog as never, capacity);
+  const validator = new RunModelSelectionService(catalog as never, NO_ON_DEMAND_MODELS, capacity);
   const service = new AgentOrgRunService({ workGuard: noWorkGuard(), episodicCatalog: noEpisodicCatalog(),
     manager: { create },
     admission: { requireAvailable: async () => ({ definition }) },

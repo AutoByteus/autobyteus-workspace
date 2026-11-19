@@ -52,7 +52,7 @@ describe('agentRunCollaborationStore', () => {
     await store.inspect('host-run')
     expect(stream.instances).toHaveLength(0)
     expect(store.childTargetFor('host-run')).toBeNull()
-    expect(store.hostMessagesView('host-run')).toMatchObject({ rootKind: 'agent', focusedAgentRunId: 'host-run' })
+    expect(store.runMessagesView('host-run')).toMatchObject({ rootKind: 'agent', focusedAgentRunId: 'host-run' })
     expect(store.selectTreeRow('host-run', rowOf('team_member:team-run:pp-run'))).toBe(true)
     expect(store.selectedRowKey('host-run')).toBe('team_member:team-run:pp-run')
     expect(store.selectedChild('host-run')).toBe('pp-run')
@@ -63,7 +63,7 @@ describe('agentRunCollaborationStore', () => {
     own.contexts.set('pp-run', member)
     expect(store.isSelectedChildOpening('host-run')).toBe(false)
     expect(store.childTargetFor('host-run')).toMatchObject({
-      kind: 'agent_run_task_team_member', host: { hostRunId: 'host-run' }, address: '/product_team/prototyper', agentRunId: 'pp-run', access: 'live',
+      kind: 'agent_run_task_team_member', viewRun: { runId: 'host-run' }, address: '/product_team/prototyper', agentRunId: 'pp-run', access: 'live',
       collaborationMessages: { focusedAgentRunId: 'pp-run' }, workspaceRootPath: '/own-ws', context: member,
     })
     expect(store.selectTreeRow('host-run', rowOf('agent:cua-run'))).toBe(true)
@@ -109,7 +109,7 @@ describe('agentRunCollaborationStore', () => {
     const store = useAgentRunCollaborationStore()
     await store.inspect('host-run')
     useRunTreeStore().streamSnapshot(HOST, [rowOf('agent:host-run')])
-    expect(store.hostMessagesView('host-run')).toBeNull()
+    expect(store.runMessagesView('host-run')).toBeNull()
   })
 
   it('ensureStoredView reads a run with collaboration once, and never one without', async () => {
@@ -139,20 +139,20 @@ describe('agentRunCollaborationStore', () => {
     const store = useAgentRunCollaborationStore()
     await store.inspect('host-run')
     hydration.read.mockClear()
-    store.syncHost('host-run', false)
-    store.syncHost('host-run', false)
+    store.syncRun('host-run', false)
+    store.syncRun('host-run', false)
     expect(stream.instances).toHaveLength(1)
     expect(stream.instances[0]!.connect).toHaveBeenCalledOnce()
     expect(store.contextFor('host-run')!.isActive).toBe(false)
-    store.syncHost('host-run', true)
+    store.syncRun('host-run', true)
     expect(store.contextFor('host-run')!.isActive).toBe(true)
-    store.syncHost('host-run', false)
+    store.syncRun('host-run', false)
     expect(stream.instances).toHaveLength(1)
     expect(stream.instances[0]!.disconnect).not.toHaveBeenCalled()
     expect(hydration.read).not.toHaveBeenCalled()
     // A Stop leaves the service; the server ended the view's stream, so its end reconnects the view to the stopped run's
     // fresh one (CR-461-111): its tree stays live, and a later Save's row change is shown.
-    const stop = store.beginHostTermination('host-run')
+    const stop = store.beginRunTermination('host-run')
     expect(stop.confirm()).toBe(true)
     expect(stream.instances[0]!.connect).toHaveBeenCalledOnce()
     stop.finish()

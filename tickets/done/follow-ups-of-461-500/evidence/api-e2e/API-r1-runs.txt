@@ -1,0 +1,112 @@
+autobyteus-500 API/E2E round 1 (API-REV-001), on CRR-002 (Pass). Code under test: codex/follow-ups-of-461-500 at cc8dbce099
+(merge base with origin/personal: 9695d310c5). Server dist rebuilt from cc8dbce099 at 13:44. Clean environment per run
+(env -i, a throwaway HOME); never the user's app or ~/.autobyteus. The Mac's load average was 60-100 the whole day (other
+worktrees' suites); the Linux runs are in Docker (node:22-bookworm, arm64 linuxkit kernel 6.12, 10 vCPU). Raw logs:
+/tmp/api500 (kept). Paths shortened to ~.
+
+What to look for: §1 AC-005's gate; §3 the three branch-caused failures (E-002, DLC/DLP-005, SCP-E2E-006) with their base
+comparison; §4 the new durable tests passing; §5 the C-6 cost.
+
+§1 WATCH-LINUX (AC-005, D-13b): file-system-watcher.integration.test.ts 5 of 5 on Linux inotify
+  git archive of cc8dbce099 into the container; pnpm install --frozen-lockfile (exit 0); pnpm -C autobyteus-server-ts
+  test:integration:prepare (exit 0); the file 5 times:
+    run 1..5: Test Files 1 passed (1); Tests 14 passed (14); 20.5 / 20.5 / 20.7 / 19.8 / 20.5 s; container load ~6
+    no "ENVIRONMENT:" or "INCONCLUSIVE:" line in any run (grep count 0 in each)              /tmp/api500/watch/run1..5.log
+  Quiet macOS: Not Tested (load 60-100 all day; D-13b "when available").
+
+§2 Gates and repository checks (on cc8dbce099 plus this round's test-only changes)
+  - mobile-shell-probe duplicate guard (its own scan, run alone): 11 sources, 58 case IDs, duplicates 0    gates.log
+  - agent-runtime-names.test.mjs: tests 2, pass 2, fail 0
+  - web typecheck from a fresh .nuxt (rm -rf .nuxt; pnpm typecheck): production errors 0; test-file errors 87 in 37 files
+    (baseline 87 in 37); cross-package 0; PASS                                                          web-typecheck.log
+  - server typecheck: production 0; test-file errors 1010 in 316 files (baseline 1010); PASS, also with the new test files
+  - migration tests: delegated-run-own-attachment-links 8/8; team-run-history-index-v2 3+1; run-stream-not-ready 9/9;
+    app-data-migration-registry-order 6/6 (the recorder test is gated; IMP-07 shows it refuses a reordering)
+
+§3 Full server E2E folder (RUN_AGY_FAILURE_E2E=1, scripted AGY), once, plus reruns
+  Part 1 (all files, parallel; stopped by the tool's 2 h limit at 15:47): 99 of 271 files done: 62 passed, 37 skipped, 0 failed.
+  Part 2 (the other 172 files): 95 passed, 39 skipped, 38 failed (55 tests), 5737 s.
+  The 38 rerun one file at a time (Mac): 9 pass. Batch 2 (after test updates) and the Linux container (16 load suspects:
+  13 pass) separate the rest. Base 9695d310c5 (own worktree, install and build) ran the unclear files.
+
+  Branch-caused (fail on the branch every time, pass or differ on base):
+  a. E-002 remove-built-in-project-task-manager-startup: continuing the retired Project Task Manager's old run.
+     Expected (base): ack { state: failed, code: RUN_NOT_FOUND, message: "AgentDefinition with ID … not found" }.
+     Branch: { code: "ACTIVATION_FAILED", message: "autobyteus-project-task-manager can't start: its saved model
+     'retired-ptm-fixture:lmstudio@127.0.0.1:<port>' is not offered by AutoByteus now. Stop it, then choose a runtime and model
+     for autobyteus-project-task-manager in Settings." }. The run is still refused, but the reason and the repair are wrong for
+     an agent that no longer exists: G-5's check (restoreStarted, before buildConfig, design G-5) runs before the definition
+     is resolved. Branch 4/4 (part 2, rerun, batch 2, debug run); base 1/1 pass.
+  b. delegated-launch-config-defaults "Agent root: with the root's model retired, an agent that needs the inherited layer
+     cannot be delegated": expected (FU-030 DLP-005, the test the implementation updated) "DLC worker … can't be delegated to:
+     its default model cannot be used: 'dlc-retiring-model' is no longer offered by Antigravity CLI. Choose another model for
+     DLC worker … in its settings"; received "DLC worker … can't be delegated to: 'dlc-retiring-model' is no longer offered by
+     Antigravity CLI." No next step (REQ-007: what to do). Source: collaborator-launch-resolver.ts:173 throws
+     CollaboratorAddError(plan.name, verdicts.inherited.detail) without a next step; the FU-030 wording is only at :328 (an
+     agent's own default layer). Branch 3/3.
+  c. get-project-task-worker-scope SCP-E2E-006 (MP-003): after the restart with one copy's Task file damaged, the native mate
+     (AutoByteus over emulated LM Studio, on no Task) is sent get_project_task through the team view: no answer at all for 90 s:
+     no model request, no ack, no error frame, no status frame, no server log line naming the mate (diagnostic run). Branch
+     0/6 (part 2, rerun, batch 2, Linux container, two diagnostic runs); base 9695d310c5 2/2 (6/6 tests).
+
+  Stale tests this ticket made untrue, updated (test-side, this stage) and passing:
+  - FU-011: the process Task service getter throws before a composition: projects-graphql (13/13 pass),
+    project-task-titles-startup (pass; the tool-writer fixture composes its Task side), embedding-settings,
+    project-task-search, project-task-search-model-unavailable, project-task-boundaries (their reset releases only a composed
+    service: tests/helpers/explicit-host-collaborators.ts releaseComposedProjectTaskService). In Linux all four pass except
+    project-task-boundaries (search_memory, base-side, below).
+  - FU-020: append-only-message-logs-startup read a context file through the removed hub route: now the run's own route
+    (200) and the removed route (404): 2/2 pass.
+  - G-5: delegated-copy-model-change DCM-007 (11/11), delegated-team-lazy-member-activation (pass),
+    removed-remote-provider-saved-selection (two expectations; the second updated after the Linux run): the refusal is now
+    G-5's text, the runtime is not started.
+  - FU-030: remote-delegation-two-server RC-04, RC-17: a peer's refusal keeps the peer's reason only: 46/46 pass.
+
+  Fail on base 9695d310c5 too (not this ticket; follow-ups): available-agent-runtimes-graphql (deepseek_harness listed),
+  configured-skill-on-demand-loading and project-task-boundaries (the default search_memory tool), terminal-websocket-lifecycle
+  (the macOS bash banner). Partly on base too: team-run-v1-production-upgrade (passes in Linux), agent-package-definitions-
+  live-refresh (FSEvents), agy-linked-skills-transport (1 case), agy-switch-back (passes in Linux), registered-package-
+  definition-edit (passes in Linux).
+  Load only (pass alone, in batch 2 or in Linux): the rest of the 38.
+
+§4 New and updated durable tests
+  - ALM-1 delegated-run-own-attachment-links-startup.e2e.test.ts (AC-008): pass (rerun and batch). First start: both
+    migrations SUCCEEDED_WITH_WARNINGS in the same start ("Scanned 3; migrated 2; skipped 1; failed 0." and
+    "Scanned 3; migrated 0; skipped 3; failed 0."); converted files byte-identical to what the current code wrote; backups
+    hold the released bytes; links open through /rest/runs/… and /rest/team-runs/…/agent-runs/…; the removed route 404;
+    the removed file's link kept; a second start changes nothing.
+  - RSE-1 run-stream-early-command.e2e.test.ts (AC-006, REQ-009): pass. A command sent on open, 8 rounds per stream:
+    org ["ACK:accepted:", "SESSION_NOT_READY", "SESSION_NOT_READY", "ACK:accepted:", "SESSION_NOT_READY" ×4],
+    collaboration ["SESSION_NOT_READY" ×8]: every command answered once, none dropped.
+  - LTI-1 late-team-history-index-v2-startup (AC-010): the user-started team's row is kept after a late v2 (asserted): pass.
+
+§5 C-6 / M-6: the first start's cost of both passes (temporary test, removed after the run)
+  Synthesized data shaped like IMP-005 (no user data): 7523 trace files, 8.66 GB, 155 candidates, 84 convertible.
+  Built server, first start: 20261117_delegated_run_own_attachment_links 14.3 s (migrated 84), its follow-up 12.3 s
+  (migrated 0): both passes in the same start, 26.6 s together; server ready after 45 s (with the other migrations);
+  backups 182 MB. Warm cache only (no sudo for purge), load ~85. A first try had a generator bug (cut last lines: only 3
+  converted, the rest unparseable as designed); fixed and rerun. Data removed.
+
+§6 Browser probes (real Chrome, Nuxt dev, the built server; scripted AGY and Grok; probe-owned roots and HOME)
+  delegated-launch-defaults-probe (G5 cases added: autobyteus-web/tests/e2e/stored-model-not-offered-cases.mjs)
+  - probe1 (G5-001..003, DLP-005, DLP-003, DLP-004, DCP-004, SIR-001, SIR-002): SIR-002 Pass (G-3 / AC-011). DLP-005 Fail:
+    the conversation shows `{"delegated":false,"message":"Plain 7eee can't be delegated to: 'dlc-retiring-model' is no longer
+    offered by Antigravity CLI."}` (F-2; API-r1-F2-DLP-005-inherited-text.png). SIR-001 Fail, same on base (probe-base1:
+    "standalone → standalone should be DELIVERED"; FU-500-10). The other five failed on my new case's selectors or regex
+    and on three stale probe lines (DLP-003/004 reason regexes; DCP-004's match of the old Save text): fixed.
+  - probe2 + probe3 after the fixes: G5-001 Pass, G5-002 Pass, G5-003 Pass, DCP-004 Pass, DLP-003 Pass, DLP-004 Pass.
+    G5-001: Team settings → Members: the manager row's card "No longer offered by Antigravity CLI. Choose another model
+      before this run resumes."; the worker row has none; the message → "manager can't start: its saved model
+      'dlc-retiring-model' is not offered by Antigravity CLI now. Stop it, then choose a runtime and model for manager in
+      Settings."; AGY launches of the manager 1 → 1.     API-r1-G5-001-settings-member-note-1280.png, API-r1-G5-001-refusal-1280.png
+    G5-002: the standalone run's Settings note; the message that restores it → "writer-9c6a can't start: …"; launches 1 → 1.
+                                                         API-r1-G5-002-settings-note-1280.png, API-r1-G5-002-refusal-1280.png
+    G5-003: `agy models` slower than the budget: no G-5 refusal; AGY's own start fails "Antigravity model discovery timed out;
+      check the CLI and retry." after 23.5 s with 2 list reads (G-5's, at most 8 s, then AGY's own); `agy models` failing at
+      once: AGY's own "Not signed in on this node. Run `agy` to sign in." after 0.7 s. AGY needs its list to launch, so the
+      start goes on exactly as without the check.         API-r1-G5-003-hang-1280.png, API-r1-G5-003-fail-1280.png
+  composer-context-file-removal-probe: Pass, 12/12 (CF-001..008, CF-011..014), with the delegated run's own draft owner.
+
+§7 Last check: removed-remote-provider-saved-selection-graphql after its second G-5 update, in the Linux container (a
+  tarball of the worktree, fresh install and build): "Tests 2 passed (2)" (container load ~9). On the Mac the same file
+  timed out in a hook / at a server stop twice (load 65-90).

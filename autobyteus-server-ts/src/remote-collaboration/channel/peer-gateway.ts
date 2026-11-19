@@ -17,20 +17,23 @@ import type {
   AvailableAgentsAnswer,
   DeliverRemoteMessageAnswer,
   DeliverRemoteMessageRequest,
+  DeliverRunMessageRequest,
   OwnerCommandAnswer,
   OwnerCommandRequest,
   RemoteEnvelope,
   RemoteModelRoutingState,
   RemoteRefusalTarget,
   RunObservationOpening,
+  RunningAgentsAnswer,
   RunSummariesAnswer,
   RunSummariesRequest,
   StartDelegatedRunAnswer,
   StartDelegatedRunRequest,
 } from "../domain/remote-requests.js";
 import type { AvailableCollaboratorEntry } from "../../agent-collaboration/collaborators/available-collaborator-entry.js";
+import type { RunningAgentEntry } from "../../agent-collaboration/running/running-agent-entry.js";
 import type { RemoteAgentLaunch, RemoteAgentProjection, RemoteOwnerCommand, RemoteRunSummary } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
-import type { PairedAgentObservation } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
+import type { RunAgentObservation } from "../../agent-collaboration/execution/remote/run-agent-access.js";
 import type { RunObservationSink } from "../inbound/remote-run-view-provider.js";
 
 /** The answer of one inbound request: HTTP 200 with an accepted or refused answer, or 400 for a malformed body. */
@@ -62,10 +65,16 @@ export type DelegatedRunHandler = Readonly<{
 }>;
 export type RemoteMessageHandler = Readonly<{
   accept(request: DeliverRemoteMessageRequest, from: PeerNode): Promise<Readonly<{ accepted: true }> | PeerHandlerRefusal>;
+  /** autobyteus-492: a message by run ID only, for a running agent of this node. */
+  acceptRunMessage(request: DeliverRunMessageRequest, from: PeerNode): Promise<Readonly<{ accepted: true }> | PeerHandlerRefusal>;
 }>;
 /** autobyteus-261: what this node offers a peer for delegation. */
 export type AvailableAgentsHandler = Readonly<{
   list(): Promise<Readonly<{ accepted: true; agents: readonly AvailableCollaboratorEntry[] }> | PeerHandlerRefusal>;
+}>;
+/** autobyteus-492: this node's running runs a person started, for a peer (`RunningAgentsListing` with no caller). */
+export type RunningAgentsHandler = Readonly<{
+  list(): Promise<Readonly<{ accepted: true; agents: readonly RunningAgentEntry[] }> | PeerHandlerRefusal>;
 }>;
 
 /**
@@ -76,10 +85,10 @@ export type RemoteRunViewHandler = Readonly<{
   summaries(request: RunSummariesRequest, from: PeerNode): Promise<Readonly<{ accepted: true; runs: readonly RemoteRunSummary[] }> | PeerHandlerRefusal>;
   projection(request: AgentProjectionRequest, from: PeerNode): Promise<Readonly<{ accepted: true; projection: RemoteAgentProjection }> | PeerHandlerRefusal>;
   command(request: OwnerCommandRequest, from: PeerNode): Promise<Readonly<{ accepted: true }> | PeerHandlerRefusal>;
-  observe(opening: RunObservationOpening, from: PeerNode, sink: RunObservationSink): Promise<Readonly<{ accepted: true; observation: PairedAgentObservation }> | PeerHandlerRefusal>;
+  observe(opening: RunObservationOpening, from: PeerNode, sink: RunObservationSink): Promise<Readonly<{ accepted: true; observation: RunAgentObservation }> | PeerHandlerRefusal>;
   /** autobyteus-461 SR-088: one agent's own stream snapshot, and its numbered frames. */
   agentStreamSnapshot(request: AgentProjectionRequest, from: PeerNode): Promise<Readonly<{ accepted: true; snapshot: unknown; status: unknown }> | PeerHandlerRefusal>;
-  observeAgentStream(opening: RunObservationOpening & Readonly<{ agentRunId: string }>, from: PeerNode, sink: RunObservationSink): Promise<Readonly<{ accepted: true; observation: PairedAgentObservation }> | PeerHandlerRefusal>;
+  observeAgentStream(opening: RunObservationOpening & Readonly<{ agentRunId: string }>, from: PeerNode, sink: RunObservationSink): Promise<Readonly<{ accepted: true; observation: RunAgentObservation }> | PeerHandlerRefusal>;
 }>;
 
 class MalformedRequestError extends Error {}
@@ -132,6 +141,21 @@ const parseMessageRequest = (value: unknown): DeliverRemoteMessageRequest => {
     ...(body.kind === "message" ? { messageId: field(() => requiredString(body.messageId, "messageId")) } : {}),
     sender: runRef(body.sender, "sender"),
     targetRoot: runRefOf(body.targetRoot, "targetRoot"),
+    target: runRef(body.target, "target"),
+    content: body.content,
+    messageType: field(() => requiredString(body.messageType, "messageType")),
+    createdAt: field(() => isoTimestamp(body.createdAt, "createdAt")),
+  };
+};
+
+/** autobyteus-492: a message by run IDs only; no `targetRoot`, no `kind`. */
+const parseRunMessageRequest = (value: unknown): DeliverRunMessageRequest => {
+  const body = field(() => objectRecord(value, "request"));
+  if (typeof body.content !== "string") throw new MalformedRequestError("content must be a string.");
+  return {
+    ...parseEnvelope(body),
+    messageId: field(() => requiredString(body.messageId, "messageId")),
+    sender: runRef(body.sender, "sender"),
     target: runRef(body.target, "target"),
     content: body.content,
     messageType: field(() => requiredString(body.messageType, "messageType")),
@@ -209,6 +233,7 @@ export class PeerGateway {
     delegatedRuns: DelegatedRunHandler;
     messages: RemoteMessageHandler;
     availableAgents: AvailableAgentsHandler;
+    runningAgents: RunningAgentsHandler;
     runViews: RemoteRunViewHandler;
   }>) {}
 
@@ -231,6 +256,16 @@ export class PeerGateway {
 
   deliverMessage(body: unknown, caller: ClientIdentity | null): Promise<PeerGatewayResponse<DeliverRemoteMessageAnswer>> {
     return this.admit(body, caller, parseMessageRequest, (request, peer) => this.dependencies.messages.accept(request, peer));
+  }
+
+  /** autobyteus-492: a message to a running agent of this node by its run ID only (`/rest/remote/run-messages`). */
+  deliverRunMessage(body: unknown, caller: ClientIdentity | null): Promise<PeerGatewayResponse<DeliverRemoteMessageAnswer>> {
+    return this.admit(body, caller, parseRunMessageRequest, (request, peer) => this.dependencies.messages.acceptRunMessage(request, peer));
+  }
+
+  /** autobyteus-492: this node's running runs a person started (read-only; nothing is started or written). */
+  listRunningAgents(body: unknown, caller: ClientIdentity | null): Promise<PeerGatewayResponse<RunningAgentsAnswer>> {
+    return this.admit(body, caller, parseEnvelopeRequest, () => this.dependencies.runningAgents.list());
   }
 
   /** autobyteus-278: the titles and statuses of runs the caller's delegation started (read-only). */

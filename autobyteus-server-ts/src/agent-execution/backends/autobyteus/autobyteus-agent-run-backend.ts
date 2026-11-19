@@ -2,7 +2,7 @@ import type { CompactionRetryRequest, CompactionRecoveryBlock } from "autobyteus
 import { AgentEventStream, getBackgroundManager, type BackgroundProcessManager } from "autobyteus-ts";
 import type { AgentContext } from "autobyteus-ts/agent/context/agent-context.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import type { AgentOperationResult } from "../../domain/agent-operation-result.js";
+import { NO_ACTIVE_TURN, type AgentOperationResult } from "../../domain/agent-operation-result.js";
 import type { AgentRunContext, RuntimeAgentRunContext } from "../../domain/agent-run-context.js";
 import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import type {
@@ -98,6 +98,9 @@ const buildRunNotFoundResult = (runId: string): AgentOperationResult => ({
   code: "RUN_NOT_FOUND",
   message: `Run '${runId}' is not active.`,
 });
+
+/** The native runtime's answers that `turnId` is not (or no longer) its active turn. */
+const TURN_GONE_STATUSES: ReadonlySet<string | undefined> = new Set(["no_active_turn", "already_settled", "turn_mismatch"]);
 
 const buildCommandFailure = (operation: string, error: unknown): AgentOperationResult => ({
   accepted: false,
@@ -298,6 +301,11 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
         turnId,
         reason: "user_interrupt",
       });
+      // The turn asked for is gone. The runtime's turn id (another turn's, for turn_mismatch) is not this Stop's
+      // turn, so it is not passed on: the AgentRun would read it as a protocol violation.
+      if (!result.accepted && TURN_GONE_STATUSES.has(result.status)) {
+        return { accepted: false, code: NO_ACTIVE_TURN, message: result.message };
+      }
       return {
         accepted: result.accepted,
         code: result.accepted ? result.status : (result.status ?? "INTERRUPT_REJECTED"),

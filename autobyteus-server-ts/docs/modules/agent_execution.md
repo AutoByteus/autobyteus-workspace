@@ -559,9 +559,14 @@ caller policy is used.
 exact team-member requests carry a fresh client `command_id`; the originating
 WebSocket receives one discriminated `AGENT_COMMAND_ACK` with `accepted`,
 `rejected`, or `failed`, the same command id, and the exact standalone-run or
-team-member target. Missing/inactive targets and provider rejection are result
-arms rather than fabricated lifecycle events. Accepted means only that the
-runtime accepted the interrupt request: later `TURN_INTERRUPTED`/terminal
+team-member target. A Stop with nothing to stop (no active turn, the turn
+already ended in the runtime, or the run not running) is `accepted`; a malformed
+command or a target that is not a member stays `rejected`, and a runtime failure
+is `failed`. These are result arms rather than fabricated lifecycle events (see
+"A user's Stop with nothing to stop is accepted" in
+[Agent WebSocket Streaming Protocol](../design/agent_websocket_streaming_protocol.md)).
+Accepted means the runtime accepted the interrupt request or there was nothing
+to stop: later `TURN_INTERRUPTED`/terminal
 `AGENT_STATUS` remains responsible for clearing running/Stop state. A closed
 socket cannot receive a server result, so client disconnect completion is a
 separate local transport failure, not a synthetic acknowledgement.
@@ -1131,8 +1136,9 @@ now, and `AgentBackgroundTaskEventStream.tasks` carries them
 started therefore sees it at once; later changes still arrive as
 `BACKGROUND_TASK_UPDATED`. Claude lists its registry's view (running and ended
 tasks until the process ends), AutoByteus its `BackgroundProcessManager.list()`
-(none while the run has no manager), Antigravity the tasks running now (its
-monitor keeps no ended ones). The web client seeds its store from the answer:
+(none while the run has no manager), Antigravity its monitor's tasks (running
+and ended, each as its latest snapshot with its exit code or `run_ended`, for the
+life of the run; autobyteus-517). The web client seeds its store from the answer:
 an unknown task is added, a running one takes an end the answer shows, and an
 ended one is never replaced, so an older answer cannot undo a newer event.
 

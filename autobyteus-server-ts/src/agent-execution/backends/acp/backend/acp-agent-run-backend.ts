@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import type { AgentOperationResult } from "../../../domain/agent-operation-result.js";
+import { NO_ACTIVE_TURN, type AgentOperationResult } from "../../../domain/agent-operation-result.js";
 import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
 import type { AgentRuntimeLifecycleSnapshot } from "../../../domain/agent-runtime-lifecycle-snapshot.js";
 import type { AgentRunBackendInputDispatch, AgentRunBackendInputDispatchResult } from "../../../input/agent-run-input-contract.js";
@@ -167,12 +167,12 @@ export class AcpAgentRunBackend implements AgentRunBackend {
   }
 
   async interrupt(turnId: string | null): Promise<AgentOperationResult> {
-    if (!turnId) return { accepted: false, code: "NO_ACTIVE_TURN", message: "Interrupt requires the active turn id." };
+    if (!turnId) return { accepted: false, code: NO_ACTIVE_TURN, message: "Interrupt requires the active turn id." };
     const session = this.input.owner.session;
-    if (!session) return { accepted: false, code: "NO_ACTIVE_TURN", message: "No matching active turn." };
+    if (!session) return { accepted: false, code: NO_ACTIVE_TURN, message: "No matching active turn." };
     try {
       if (!(await session.cancel(turnId))) {
-        return { accepted: false, code: "NO_ACTIVE_TURN", message: "No matching active turn." };
+        return { accepted: false, code: NO_ACTIVE_TURN, message: "No matching active turn." };
       }
       return { accepted: true, turnId };
     } catch (error) {

@@ -29,7 +29,6 @@ import { buildLlmTokenUsageObservation } from '../../../src/llm/utils/llm-token-
 import { Message, MessageRole, leadingSystemMessages } from '../../../src/llm/utils/messages.js';
 import { ChunkResponse, CompleteResponse } from '../../../src/llm/utils/response-types.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
-import { MemoryType } from '../../../src/memory/models/memory-types.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
 import { OUTPUT_LIMIT_RECOVERY_TRACE_TYPE } from '../../../src/memory/output-limit-recovery-trace.js';
 import { ParameterDefinition, ParameterSchema, ParameterType } from '../../../src/utils/parameter-schema.js';
@@ -137,7 +136,7 @@ const startAgent = async (llm: BaseLLM, tempDir: string) => {
     expect(await waitFor(() => completedTurns.length >= expectedCompletedTurns && state.activeTurn === null)).toBe(true);
   };
   const statusEvents = () => state.eventStore?.allEvents().map((envelope) => envelope.event) ?? [];
-  const rawTraces = () => memoryManager.store.list(MemoryType.RAW_TRACE) as any[];
+  const rawTraces = () => memoryManager.store.listTurnRawTracesOrdered() as any[];
   const finalResponses = () => statusEvents().filter((event) => event instanceof LLMCompleteResponseReceivedEvent) as LLMCompleteResponseReceivedEvent[];
   return { runtime, context, state, memoryManager, errors, usages, send, statusEvents, rawTraces, finalResponses };
 };

@@ -1,0 +1,13 @@
+# IMP-06 server unit suite (full)
+# command: pnpm -C autobyteus-server-ts test:unit
+# commit: ef0e56caf3 (before the registry-tail pin updates of ae5f267d2e)
+# environment: macOS, node v22.23.1
+# date: 2026-11-18
+      Tests  5 failed | 8342 passed | 9 skipped (8356)
+ FAIL  tests/app-data-migrations/collaborators-to-delegated-runs-v1/collaborators-to-delegated-runs-v1-app-data-migration.test.ts > 20261015_collaborators_to_delegated_runs_v1 > is registered right before task-agent-own-run (then the append-only log conversion), required on startup and startup-only
+ FAIL  tests/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts > 20261019_delegated_copy_own_file_complete_v1 > is registered after every released run-tree migration (then the Skill Improvement data removal, the autobyteus-290 stored-name renames, the raw-trace manifest runtime names, and autobyteus-461's conversion), required on startup and startup-only
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > moves a root to FOLDER_MISSING when it is renamed away and resumes watching when it returns
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > re-arms a root whose folder was replaced in place (GitHub update rename swap)
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > starts a registered root that is missing as FOLDER_MISSING and arms it when it appears
+ Test Files  3 failed | 1013 passed | 5 skipped (1021)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯

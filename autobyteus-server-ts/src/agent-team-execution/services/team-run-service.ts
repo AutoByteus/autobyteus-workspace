@@ -27,8 +27,8 @@ import type { TeamRunSelectionPatch } from "./team-run-selection-mutator.js";
 import type { RunModelConfigUpdateResult } from "../../run-history/domain/run-model-config.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import { DefinitionAdmissionService } from "../../collaboration-definition-admission/services/definition-admission-service.js";
-import type { PairedAgentAccess } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
-import { TeamPairedAgentAccess } from "./team-paired-agent-access.js";
+import type { RunAgentAccess } from "../../agent-collaboration/execution/remote/run-agent-access.js";
+import { TeamRunAgentAccess } from "./team-run-agent-access.js";
 import { projectNewRunLlmConfig } from "../../llm-management/services/new-run-llm-config-projection.js";
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 
@@ -88,7 +88,7 @@ export class TeamRunService {
   private readonly definitions: AgentTeamDefinitionService;
   private readonly manager: AgentTeamRunManager;
   /** autobyteus-278: a Team run a peer started, as this node serves that peer's owner (behind `RemoteRootDirectory`). */
-  readonly pairedAgents: PairedAgentAccess = new TeamPairedAgentAccess({
+  readonly runAgents: RunAgentAccess = new TeamRunAgentAccess({
     getManagedTeamRun: (teamRunId) => this.getManagedTeamRun(teamRunId),
     resolveManagedTeamRun: (teamRunId) => this.resolveManagedTeamRun(teamRunId),
     subscribeToLifecycle: (teamRunId, listener) => this.manager.subscribeToLifecycle(teamRunId, listener),

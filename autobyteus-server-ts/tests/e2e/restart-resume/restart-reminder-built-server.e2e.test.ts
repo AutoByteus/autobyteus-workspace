@@ -18,6 +18,9 @@
  *   RR-04  update with a run mid-turn that also has a background task: one reminder with the interrupted-turn line
  *          (AC-002)
  *   RR-05  update, input sent the moment the node answers: exactly one reminder between the wake and the input (AC-004)
+ *   RR-12  update with a native Team member idle with a background task: the member is woken once with the update
+ *          notice, its next input carries nothing, its conversation shows the notice once (autobyteus-500 round 5: the
+ *          member path of the restart resumer, with 526's whole notice message)
  *   RR-06  Antigravity idle with an open daemon step (its background task): recorded, reminded with its next input
  *          (AC-003)
  *   RR-10  a native run restarted twice (a background build running at each restart): every turn has its own id, in the
@@ -517,6 +520,83 @@ describe.skipIf(!ENABLED)("Restart reminder across real restarts of the built se
     expect(reminded).toHaveLength(1);
     expect(model.of("RR-05").slice(2).filter((request) => request.lastUser.includes("Status?")).length).toBe(1);
     expect(result.reminders?.reminders ?? []).toEqual([]);
+  }, 300_000);
+
+  /** A Team run whose one member (its coordinator) is a native agent on the scripted model; returns the team and member runs. */
+  const nativeTeamMember = async (session: Session, node: TestNode) => {
+    const models = (await session.gql(`mutation{reloadProviderModelCatalog(providerId:"LMSTUDIO",runtimeKind:"autobyteus"){llmModels{modelIdentifier}}}`))
+      .reloadProviderModelCatalog.llmModels.map((entry: Json) => entry.modelIdentifier as string);
+    const modelIdentifier = models.find((id: string) => id.startsWith(MODEL_KEY));
+    expect(modelIdentifier, models.join(", ")).toBeTruthy();
+    const unique = randomUUID().slice(0, 8);
+    const definitionId = (await session.gql(`mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}`,
+      { input: { name: `restart-reminder-member-${unique}`, role: "engineer", description: "restart reminder E2E member",
+        instructions: "Run the commands you are asked to run.", toolNames: ["run_bash"], skillNames: [] } })).createAgentDefinition.id;
+    const teamDefinitionId = (await session.gql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`,
+      { input: { name: `restart-reminder-team-${unique}`, description: "restart reminder E2E team", instructions: "Work.", coordinatorMemberName: "builder",
+        nodes: [{ memberName: "builder", ref: definitionId, refScope: "SHARED" }] } })).createAgentTeamDefinition.id;
+    const config = { workspaceRootPath: node.workspace, llmModelIdentifier: modelIdentifier, autoExecuteTools: true, runtimeKind: "autobyteus" };
+    const created = (await session.gql(`mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}`,
+      { input: { teamDefinitionId, teamConfigs: [{ teamAddress: "/", ...config }], memberConfigs: [{ memberAddress: "/builder", agentDefinitionId: definitionId, ...config }] } })).createAgentTeamRun;
+    expect(created.success, created.message).toBe(true);
+    const tree = (await session.gql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: created.teamRunId })).getTeamRunResumeConfig.executionTree as Json;
+    return { teamRunId: created.teamRunId as string, memberRunId: (tree.root_team.members as Json[]).find((member) => member.address === "/builder")!.agent_run_id as string };
+  };
+  /** The user's input to a Team member, on the Team's stream (after its CONNECTED). */
+  const teamChannelOf = async (session: Session, teamRunId: string, memberRunId: string) => {
+    const socket = new WebSocket(`${session.url.replace(/^http/, "ws")}/ws/agent-team/${teamRunId}`);
+    const frames: Channel["frames"] = [];
+    socket.on("message", (raw: unknown) => {
+      try { const parsed = JSON.parse(String(raw)) as Json; if (typeof parsed.type === "string") frames.push({ type: parsed.type, payload: parsed.payload ?? {}, at: Date.now() }); } catch { /* ignore */ }
+    });
+    await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });
+    await until(() => frames.some((frame) => frame.type === "CONNECTED"), "the Team stream's CONNECTED", 30_000);
+    const send = (content: string) => socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: {
+      agent_run_id: memberRunId, message_id: `e2e-${randomUUID()}`, dedupe_key: `agent_run_input:e2e:${randomUUID()}`, content, context_file_paths: [], image_urls: [] } }));
+    return { frames, send, close: () => socket.terminate() };
+  };
+
+  it("RR-12: update: a Team member idle with a background task is woken once with 'an update to' this release; its next input carries nothing (autobyteus-500 round 5, the member path of the merged restart resumer)", async () => {
+    const tag = `RR12_${randomUUID().slice(0, 8)}`;
+    tags.push(tag);
+    const previous = await previousReleaseOf(SERVER_DIR);
+    cleanups.push(() => fs.rm(previous, { recursive: true, force: true }));
+    const node = await newNode();
+    let session = await node.start(previous);
+    model.script("RR-12", [() => ({ toolCalls: [background(tagged(tag))] }), text("Started."), text("Restarting the build."), text("Fine.")]);
+    const { teamRunId, memberRunId } = await nativeTeamMember(session, node);
+    const channel = await teamChannelOf(session, teamRunId, memberRunId);
+    channel.send("CASE:RR-12 Start the build in the background.");
+    await expectBackgroundStarted("RR-12");
+    const entry = await orNull(recordEntry(node, memberRunId));
+    channel.close();
+    await node.stop(session, "SIGTERM");
+    const stopped = await readJson(node.busyRuns);
+    session = await node.start();
+    const woken = await orNull(until(() => model.reminded("RR-12")[0], "the reminder reaches the member's model", 45_000));
+    await wait(8_000);
+    const reminders = await readJson(node.reminders);
+    const version = (await readJson(path.join(SERVER_DIR, "dist", "release-identity.json")))?.version as string;
+    const next = await teamChannelOf(session, teamRunId, memberRunId);
+    next.send("CASE:RR-12 And now?");
+    const after = await until(() => model.of("RR-12").find((request) => request.lastUser.includes("And now?")), "the member's next input", 60_000);
+    const conversation = ((await session.gql(`query($t:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$t,agentRunId:$a){conversation}}`,
+      { t: teamRunId, a: memberRunId })).getTeamMemberRunProjection?.conversation ?? []) as Json[];
+    const noticesShown = conversation.filter((item) => String(item.content ?? "").includes(HEADER)).length;
+    await record("RR-12", { teamRunId, memberRunId, entry, stopped, reminders, version, noticesShown, requests: digest("RR-12") });
+    next.close();
+    await node.stop(session, "SIGTERM");
+
+    expect(entry).toMatchObject({ agentRunId: memberRunId, status: "idle", backgroundTasks: true });
+    expect(stopped?.shutdownAt).toEqual(expect.any(String));
+    expect(woken?.lastRole).toBe("user");
+    expect(woken?.lastUser.startsWith(HEADER)).toBe(true);
+    expect(woken?.lastUser).toContain(`(reason: an update to v${version.replace(/^v/, "")}).`);
+    expect(woken?.lastUser).toContain(BACKGROUND_LINE);
+    expect(after.lastUser).not.toContain(HEADER);
+    expect(model.reminded("RR-12")).toHaveLength(1);
+    expect(reminders?.reminders ?? []).toEqual([]);
+    expect(noticesShown, "the member's conversation shows the notice once").toBe(1);
   }, 300_000);
 
   it("RR-06: Antigravity idle with an open daemon step is recorded and reminded with its next input", async () => {

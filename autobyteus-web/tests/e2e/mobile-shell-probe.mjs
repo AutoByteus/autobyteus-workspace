@@ -113,9 +113,10 @@
 //                  a folder (same file, after MSP-31).
 //   MSP-43 autobyteus-472  Touch zoom (pinch, scroll, double tap) of a PDF and an image in the phone viewer, the page itself
 //                  never zooming, and Download: `mobile-file-zoom-cases.mjs` (on the phone page, right after MSP-16).
-//   MSP-47…49, MSP-59 autobyteus-473, autobyteus-483  Background tasks: on the phone's Activity (a task started before it
-//                  opened, its end with its end line, a task started while open, a task the run's end stopped) and on the
-//                  desktop after a reload: `mobile-background-tasks-cases.mjs` (after MSP-43).
+//   MSP-47…49, MSP-59, MSP-78 autobyteus-473, autobyteus-483, autobyteus-517  Background tasks: on the phone's Activity
+//                  (a task started before it opened, its end with its end line, a task started while open, a task the
+//                  run's end stopped, a task that ended before it opened) and on the desktop after a reload:
+//                  `mobile-background-tasks-cases.mjs` (after MSP-43).
 //   MSP-33 autobyteus-435 REQ-005  A reload reopens the same subject on the same screen, after "Opening…" and never the
 //                  list first (a phone of its own): an agent run's Activity, a Team run's Messages, a Team member, a delegated
 //                  task agent (its host's rows read first); a row no node lists gives the list. New run → Create run: a
@@ -173,6 +174,15 @@
 //                  the run continues on it), a refused Save (the run woken before Save: the node's words in the red card), a
 //                  live idle and a working run (the red stop icon, one tap, the rows open): `mobile-run-settings-cases.mjs`
 //                  (on the paired phone, before MSP-13).
+//   MSP-80…84 autobyteus-533  Stop generation on the phone for every run kind (a standalone run, a Team member, an Org
+//                  member and an Org Team member, a delegated agent and a delegated Team member, a run on beta): a double
+//                  tap sends one Stop and shows "Stopping…" with no toast; Stop after the turn ended is quiet; a refusal
+//                  and "not connected" show one plain message naming the agent; beta stopping under an open run:
+//                  `mobile-stop-generation-cases.mjs` (after 522's cases, before MSP-13; about 6 minutes).
+//   MSP-85…88 autobyteus-540  A message sent from the phone is never lost silently: messages right after Stops and after
+//                  reconnects start their turns (a standalone run); a lost message shows text (a) or (b) with its text back
+//                  (a standalone run, an Org member, a run on beta, whose not-bound send waits 10 s):
+//                  `mobile-send-delivery-cases.mjs` (after 533's cases, before MSP-13; about 5 minutes).
 //   MSP-67…72 autobyteus-522  Settings for every run the phone opens, decided by the run that holds the opened agent: a
 //                  PTM's task team member (the founder's case) and task agent, a Team lead's task agent (its own settings, not
 //                  the lead's), an Org's task agent and task team member (each stop stops that delegated run, not the Org),
@@ -214,6 +224,9 @@ import { runHeadingLinksCases } from './mobile-heading-links-cases.mjs';
 import { runCodeWrapCases } from './mobile-code-wrap-cases.mjs';
 import { runRunSettingsCases } from './mobile-run-settings-cases.mjs';
 import { runEveryRunSettingsCases } from './mobile-every-run-settings-cases.mjs';
+import { runStopGenerationCases } from './mobile-stop-generation-cases.mjs';
+import { runSendDeliveryCases } from './mobile-send-delivery-cases.mjs';
+import { createStopWire } from './fixtures/stop-generation-wire.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -541,6 +554,11 @@ const phoneOrigin = () => `http://${PHONE_HOST}:${alpha.port}`;
 const phoneNet = [];
 /** Every WebSocket a phone opened to its node: which context, the URL, when it opened and closed, the node's close code. */
 const phoneSockets = [];
+/**
+ * The phones' path for their run sockets (autobyteus-533): plain by default; the Stop generation cases slow it, drop it
+ * and read its log (`fixtures/stop-generation-wire.mjs`).
+ */
+const phoneWire = createStopWire();
 /** Every HTTP answer 401/403 a phone got from its node (GraphQL or REST): which context, which case, when, the path. */
 const phoneRefused = [];
 /**
@@ -549,6 +567,9 @@ const phoneRefused = [];
  * `localhost:8000` any more.
  */
 const EXPECTED_BY_CASE = {
+  // autobyteus-540: a standalone run's not-delivered send still logs its detail with the agent store's existing
+  // `console.error` before the notice (implementation handoff, Known Risks); the case loses a message on purpose.
+  'MSP-86': /Error sending user input: MessageNotDeliveredError/,
   // The three refused folder paths (autobyteus-426 D-08): the workspace store logs each refused registration.
   'MSP-07': /Error creating workspace metadata: ApolloError: (No folder exists at the workspace path|The workspace path is a file, not a folder|Workspace path must be an absolute path)\./,
   // autobyteus-436 AC-004: the missing node file (404 NODE_FILE_NOT_FOUND) and the folder (400 NODE_FILE_IS_FOLDER).
@@ -598,14 +619,19 @@ const openPhone = async ({ width = 390, height = 844, storageState, label = 'pho
     const socket = { label, case: currentCase, url: ws.url(), at: Date.now(), closedAt: null, closeCode: null };
     phoneSockets.push(socket);
     const closed = () => { socket.closedAt ??= Date.now(); };
-    const upstream = new PhoneUpstreamWebSocket(ws.url().replace(wsOrigin, alpha.baseUrl.replace(/^http/, 'ws')), { headers: { origin: phoneOrigin(), host: phoneHost } });
     const queued = [];
+    let upstream = null;
+    const link = phoneWire.link({ url: ws.url(), sendToPage: message => ws.send(message),
+      sendToNode: (message) => { if (upstream?.readyState === 1) upstream.send(message); else queued.push(message); },
+      closePage: (code, reason) => { socket.closeCode ??= code; closed(); ws.close({ code, reason }); }, closeNode: () => upstream?.terminate() });
+    if (!link) { socket.closeCode = 1011; closed(); ws.close({ code: 1011, reason: 'path down' }); return; }
+    upstream = new PhoneUpstreamWebSocket(ws.url().replace(wsOrigin, alpha.baseUrl.replace(/^http/, 'ws')), { headers: { origin: phoneOrigin(), host: phoneHost } });
     upstream.on('open', () => { for (const message of queued.splice(0)) upstream.send(message); });
-    upstream.on('message', (data, isBinary) => { try { ws.send(isBinary ? data : String(data)); } catch { /* closed */ } });
-    upstream.on('close', (code) => { socket.closeCode ??= code; closed(); try { ws.close(); } catch { /* closed */ } });
-    upstream.on('error', () => { closed(); try { ws.close(); } catch { /* closed */ } });
-    ws.onMessage(message => { if (upstream.readyState === 1) upstream.send(message); else queued.push(message); });
-    ws.onClose(() => { closed(); upstream.close(); });
+    upstream.on('message', (data, isBinary) => { if (isBinary) { try { ws.send(data); } catch { /* closed */ } } else link.fromNode(String(data)); });
+    upstream.on('close', (code) => { if (link.closed) return; link.closedByEnd(); socket.closeCode ??= code; closed(); try { ws.close(); } catch { /* closed */ } });
+    upstream.on('error', () => { if (link.closed) return; link.closedByEnd(); closed(); try { ws.close(); } catch { /* closed */ } });
+    ws.onMessage(message => link.fromPage(message));
+    ws.onClose(() => { link.closedByEnd(); closed(); upstream.close(); });
   });
   const page = await context.newPage();
   // The URL behind a "Failed to load resource" console line (the console line names none).
@@ -689,7 +715,7 @@ const storedHas = async (node, ids, marker) => {
   const reads = [];
   if (ids.runId) reads.push(['query($id:String!){getRunProjection(runId:$id){conversation}}', { id: ids.runId }, data => data.getRunProjection?.conversation]);
   if (ids.teamRunId && ids.agentRunId) reads.push(['query($id:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$a){conversation}}', { id: ids.teamRunId, a: ids.agentRunId }, data => data.getTeamMemberRunProjection?.conversation]);
-  if (ids.hostRunId) reads.push(['query($h:String!,$m:String!,$a:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$m,agentRunId:$a){conversation}}', { h: ids.hostRunId, m: ids.memberAddress, a: ids.agentRunId }, data => data.agentRunCollaborationMemberProjection?.conversation]);
+  if (ids.runId) reads.push(['query($h:String!,$m:String!,$a:String!){agentRunCollaborationMemberProjection(runId:$h,memberAddress:$m,agentRunId:$a){conversation}}', { h: ids.runId, m: ids.memberAddress, a: ids.agentRunId }, data => data.agentRunCollaborationMemberProjection?.conversation]);
   if (ids.orgRunId) reads.push(['query($id:String!,$a:String!,$m:String!){getAgentOrgMemberRunProjection(orgRunId:$id,memberAddress:$m,agentRunId:$a){conversation}}', { id: ids.orgRunId, a: ids.agentRunId, m: ids.memberAddress }, data => data.getAgentOrgMemberRunProjection?.conversation]);
   for (const [query, variables, pick] of reads) {
     const text = JSON.stringify(pick(await node.gql(query, variables).catch(() => ({}))) ?? '');
@@ -974,7 +1000,7 @@ const runCases = async () => {
       // autobyteus-461 rule 2: a delegated agent run is its own run; its conversation is read by its own run ID.
       { kind: 'task agent', key: () => `${ptmKey}/agent:${stack.writerRun}`, name: 'release notes writer', parent: 'Project Task Manager', ids: { runId: stack.writerRun } },
       { kind: 'task-team member', key: async () => childRow(await rowsOf(page), squadKey, 'reviewer', 2)?.key, name: 'reviewer', parent: 'docs review team',
-        ids: { hostRunId: stack.ptm, memberAddress: '/docs_review_team/reviewer', agentRunId: stack.reviewer, teamRunId: stack.squadRun } },
+        ids: { runId: stack.ptm, memberAddress: '/docs_review_team/reviewer', agentRunId: stack.reviewer, teamRunId: stack.squadRun } },
       { kind: 'Team run (its coordinator)', key: () => `team:${stack.delivery}`, name: 'lead', parent: 'Delivery Team', ids: { teamRunId: stack.delivery, agentRunId: stack.deliveryLead, runId: stack.deliveryLead } },
       { kind: 'Org run (its first member)', key: () => `org:${stack.org}`, name: 'planner', parent: 'Delivery Org', ids: { orgRunId: stack.org, agentRunId: stack.orgPlanner, memberAddress: '/planner', runId: stack.orgPlanner } },
       { kind: 'Org run (first member a Team: its coordinator)', key: () => `org:${stack.reviewOrg}`, name: 'reviewer', parent: '(squad|Review Org)',
@@ -2543,6 +2569,10 @@ const runCases = async () => {
     openPhone, pairingFor, phoneOrigin });
   // autobyteus-522: Settings for every run the phone opens (`mobile-every-run-settings-cases.mjs`), before MSP-13 too.
   await runEveryRunSettingsCases({ runCase, page, stack, alpha, sel, toList, openRow, ensureUnfolded, rowsOf, menuOpen, runScreen, shot, sendOver, waitFor, sleep, assert, selected });
+  // autobyteus-533: Stop generation on the phone for every run kind (`mobile-stop-generation-cases.mjs`), before MSP-13.
+  await runStopGenerationCases({ runCase, page, stack, alpha, beta, peer: PEER, sel, toList, openRow, ensureUnfolded, rowsOf, runScreen, shot, waitFor, sleep, assert, selected, phoneWire });
+  // autobyteus-540: messages are never lost silently on the phone (`mobile-send-delivery-cases.mjs`), before MSP-13.
+  await runSendDeliveryCases({ runCase, page, stack, alpha, peer: PEER, sel, toList, openRow, ensureUnfolded, rowsOf, runScreen, shot, waitFor, sleep, assert, selected, phoneWire });
 
   await runCase('MSP-13', async () => {
     // A credential the node does not know (401, REMOTE_ACCESS_AUTH_INVALID: the node's pairing data was reset): the next

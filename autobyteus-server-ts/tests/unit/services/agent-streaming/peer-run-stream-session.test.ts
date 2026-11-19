@@ -9,7 +9,7 @@ import { PeerRunStreamSession } from "../../../../src/services/agent-streaming/p
 const frame = (sequence: number | undefined, delta = `d${sequence}`) => ({ type: "SEGMENT_CONTENT", ...(sequence === undefined ? {} : { sequence }),
   payload: { id: "s1", turn_id: "t1", segment_type: "text", delta } });
 const snapshot = (base: number, liveSequenceId: string | null = "live-1") => ({ accepted: true as const,
-  snapshot: { stored: { conversation: [] }, turn_frames: [], base_sequence: base, live_sequence_id: liveSequenceId },
+  snapshot: { stored: { conversation: [] }, input_state: null, turn_frames: [], base_sequence: base, live_sequence_id: liveSequenceId },
   status: { type: "AGENT_STATUS", payload: { status: "running" } } });
 
 const harness = () => {
@@ -70,6 +70,19 @@ describe("PeerRunStreamSession", () => {
     expect(h.deltas()).toEqual([]);
     expect(error).toHaveBeenCalledWith(expect.stringContaining("has no sequence"));
     error.mockRestore();
+  });
+
+  it.each([
+    ["RUN_NOT_ACTIVE", { state: "accepted" }],
+    ["NO_ACTIVE_TURN", { state: "accepted" }],
+    ["RUNTIME_COMMAND_FAILED", { state: "failed", code: "RUNTIME_COMMAND_FAILED", message: "detail" }],
+  ] as const)("relays node B's Stop answer %s as %o (autobyteus-533 AC-004)", async (code, ack) => {
+    const h = harness();
+    await h.answer(snapshot(0));
+    h.channel.ownerCommand.mockResolvedValueOnce({ accepted: false, code, message: "detail" } as never);
+    await h.session.handleMessage(JSON.stringify({ type: "INTERRUPT_GENERATION", payload: { command_id: "c-r" } }));
+    expect(h.sent.filter((message) => message.type === "AGENT_COMMAND_ACK").at(-1)?.payload).toEqual({
+      command_type: "INTERRUPT_GENERATION", command_id: "c-r", target: { target_kind: "standalone_run", run_id: "member-b" }, ...ack });
   });
 
   it("a message and an interrupt go to the agent through the owner commands, each answered with its ACK", async () => {

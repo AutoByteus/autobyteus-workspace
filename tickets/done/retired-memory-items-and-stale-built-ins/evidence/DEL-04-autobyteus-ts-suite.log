@@ -1,0 +1,489 @@
+
+> autobyteus-ts@1.0.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/retired-memory-items-and-stale-built-ins/autobyteus-ts
+> vitest run
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/retired-memory-items-and-stale-built-ins/autobyteus-ts
+
+Tool 'fail' failed: 'Error executing tool fail: dummy failure'
+mcp test server: exiting at start (mode exit-at-start)
+mcp test server: exiting at start (mode exit-at-start)
+stdout | tests/integration/agent/memory-llm-flow.test.ts > Memory assembler with LM Studio > ingests memory around LLM responses
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+ ❯ tests/integration/agent/memory-llm-flow.test.ts (1 test | 1 failed) 20068ms
+     × ingests memory around LLM responses 20062ms
+(node:21674) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:23255) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+Successfully registered tool definition: 'write_file'
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'dualagenta_tester_1619'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'dualagenta_tester_1619': LLM instance 'LMStudioLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'dualagenta_tester_1619'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'dualagenta_tester_1619' with config: 'DualAgentA'.
+AgentWorker initialized for agent_id 'dualagenta_tester_1619'.
+Registered AgentContext for agent_id 'dualagenta_tester_1619'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'dualagenta_tester_1619'. Context registered.
+Agent facade initialized for agent_id 'dualagenta_tester_1619'.
+Agent 'dualagenta_tester_1619' created and stored successfully.
+AgentRuntimeState initialized for agent_id 'dualagentb_tester_3533'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'dualagentb_tester_3533': LLM instance 'LMStudioLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'dualagentb_tester_3533'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'dualagentb_tester_3533' with config: 'DualAgentB'.
+AgentWorker initialized for agent_id 'dualagentb_tester_3533'.
+Registered AgentContext for agent_id 'dualagentb_tester_3533'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'dualagentb_tester_3533'. Context registered.
+Agent facade initialized for agent_id 'dualagentb_tester_3533'.
+Agent 'dualagentb_tester_3533' created and stored successfully.
+Agent 'dualagenta_tester_1619' requesting runtime to start.
+AgentRuntime for 'dualagenta_tester_1619': Starting worker.
+AgentWorker 'dualagenta_tester_1619': Starting...
+AgentWorker 'dualagenta_tester_1619' asyncRun(): Starting.
+Agent 'dualagenta_tester_1619': Runtime init completed (event store initialized).
+Agent 'dualagenta_tester_1619': Runtime init completed (status deriver initialized).
+Agent 'dualagenta_tester_1619': Runtime init completed (AgentEventInbox initialized).
+Agent 'dualagenta_tester_1619': Runtime init completed (AgentEventScheduler initialized).
+Agent 'dualagentb_tester_3533' requesting runtime to start.
+AgentRuntime for 'dualagentb_tester_3533': Starting worker.
+AgentWorker 'dualagentb_tester_3533': Starting...
+AgentWorker 'dualagentb_tester_3533' asyncRun(): Starting.
+Agent 'dualagentb_tester_3533': Runtime init completed (event store initialized).
+Agent 'dualagentb_tester_3533': Runtime init completed (status deriver initialized).
+Agent 'dualagentb_tester_3533': Runtime init completed (AgentEventInbox initialized).
+Agent 'dualagentb_tester_3533': Runtime init completed (AgentEventScheduler initialized).
+Agent 'dualagenta_tester_1619': Starting direct runtime bootstrap lifecycle.
+Agent 'dualagentb_tester_3533': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 7256fc83-4cd9-4d02-8595-5636c497eacc, AgentID: dualagenta_tester_1619) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ce033ff7-ce2f-4dfb-8589-8f76d91c4312, AgentID: dualagentb_tester_3533) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+Agent 'dualagenta_tester_1619': Bootstrapper starting direct lifecycle execution.
+Agent 'dualagenta_tester_1619': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'dualagenta_tester_1619': Executing McpServerPrewarmingStep.
+Agent 'dualagentb_tester_3533': Bootstrapper starting direct lifecycle execution.
+Agent 'dualagentb_tester_3533': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'dualagentb_tester_3533': Executing McpServerPrewarmingStep.
+Agent 'dualagenta_tester_1619': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'dualagenta_tester_1619': Executing SystemPromptProcessingStep.
+Agent 'dualagenta_tester_1619': No configured skills. Skipping skill catalog.
+Agent 'dualagenta_tester_1619': Final processed system prompt configured and captured. Trace ID: rt_1795008308894_2f92a863-c8fb-4873-b867-67ec0a1e2cef. Final length: 28.
+Agent 'dualagentb_tester_3533': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'dualagentb_tester_3533': Executing SystemPromptProcessingStep.
+Agent 'dualagentb_tester_3533': No configured skills. Skipping skill catalog.
+Agent 'dualagentb_tester_3533': Final processed system prompt configured and captured. Trace ID: rt_1795008308897_34d5e37d-efd4-4311-8a9c-6963ad2b4f2b. Final length: 28.
+Agent 'dualagenta_tester_1619': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+Agent 'dualagentb_tester_3533': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentExternalEventNotifier (NotifierID: 7256fc83-4cd9-4d02-8595-5636c497eacc, AgentID: dualagenta_tester_1619) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ce033ff7-ce2f-4dfb-8589-8f76d91c4312, AgentID: dualagentb_tester_3533) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentWorker 'dualagenta_tester_1619' initialized successfully. Entering main event scheduler loop.
+AgentWorker 'dualagentb_tester_3533' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentExternalEventNotifier (NotifierID: 7256fc83-4cd9-4d02-8595-5636c497eacc, AgentID: dualagenta_tester_1619) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ce033ff7-ce2f-4dfb-8589-8f76d91c4312, AgentID: dualagentb_tester_3533) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7256fc83-4cd9-4d02-8595-5636c497eacc, AgentID: dualagenta_tester_1619) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ce033ff7-ce2f-4dfb-8589-8f76d91c4312, AgentID: dualagentb_tester_3533) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentExternalEventNotifier (NotifierID: 7256fc83-4cd9-4d02-8595-5636c497eacc, AgentID: dualagenta_tester_1619) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ce033ff7-ce2f-4dfb-8589-8f76d91c4312, AgentID: dualagentb_tester_3533) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentExternalEventNotifier (NotifierID: 7256fc83-4cd9-4d02-8595-5636c497eacc, AgentID: dualagenta_tester_1619) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentExternalEventNotifier (NotifierID: 7256fc83-4cd9-4d02-8595-5636c497eacc, AgentID: dualagenta_tester_1619) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentExternalEventNotifier (NotifierID: 7256fc83-4cd9-4d02-8595-5636c497eacc, AgentID: dualagenta_tester_1619) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentExternalEventNotifier (NotifierID: 7256fc83-4cd9-4d02-8595-5636c497eacc, AgentID: dualagenta_tester_1619) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentExternalEventNotifier (NotifierID: 7256fc83-4cd9-4d02-8595-5636c497eacc, AgentID: dualagenta_tester_1619) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentExternalEventNotifier (NotifierID: 7256fc83-4cd9-4d02-8595-5636c497eacc, AgentID: dualagenta_tester_1619) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+Agent 'dualagenta_tester_1619' requesting runtime to stop (timeout: 5s).
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentExternalEventNotifier (NotifierID: 7256fc83-4cd9-4d02-8595-5636c497eacc, AgentID: dualagenta_tester_1619) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentWorker 'dualagenta_tester_1619': Stop requested.
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentExternalEventNotifier (NotifierID: 7256fc83-4cd9-4d02-8595-5636c497eacc, AgentID: dualagenta_tester_1619) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentExternalEventNotifier (NotifierID: 7256fc83-4cd9-4d02-8595-5636c497eacc, AgentID: dualagenta_tester_1619) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'dualagenta_tester_1619' asyncRun() loop has finished.
+AgentWorker 'dualagenta_tester_1619': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentWorker 'dualagenta_tester_1619': Shutdown resource cleanup completed successfully.
+AgentWorker 'dualagenta_tester_1619': Shutdown sequence completed.
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+Unregistered AgentContext for agent_id 'dualagenta_tester_1619'.
+AgentRuntime for 'dualagenta_tester_1619': Context unregistered.
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentRuntime for 'dualagenta_tester_1619' stop() method completed.
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+Agent 'dualagentb_tester_3533' requesting runtime to stop (timeout: 5s).
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentExternalEventNotifier (NotifierID: ce033ff7-ce2f-4dfb-8589-8f76d91c4312, AgentID: dualagentb_tester_3533) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentWorker 'dualagentb_tester_3533': Stop requested.
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentExternalEventNotifier (NotifierID: ce033ff7-ce2f-4dfb-8589-8f76d91c4312, AgentID: dualagentb_tester_3533) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentExternalEventNotifier (NotifierID: ce033ff7-ce2f-4dfb-8589-8f76d91c4312, AgentID: dualagentb_tester_3533) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentExternalEventNotifier (NotifierID: ce033ff7-ce2f-4dfb-8589-8f76d91c4312, AgentID: dualagentb_tester_3533) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentExternalEventNotifier (NotifierID: ce033ff7-ce2f-4dfb-8589-8f76d91c4312, AgentID: dualagentb_tester_3533) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentExternalEventNotifier (NotifierID: ce033ff7-ce2f-4dfb-8589-8f76d91c4312, AgentID: dualagentb_tester_3533) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'dualagentb_tester_3533' asyncRun() loop has finished.
+AgentWorker 'dualagentb_tester_3533': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentWorker 'dualagentb_tester_3533': Shutdown resource cleanup completed successfully.
+AgentWorker 'dualagentb_tester_3533': Shutdown sequence completed.
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentExternalEventNotifier (NotifierID: ce033ff7-ce2f-4dfb-8589-8f76d91c4312, AgentID: dualagentb_tester_3533) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+Unregistered AgentContext for agent_id 'dualagentb_tester_3533'.
+AgentRuntime for 'dualagentb_tester_3533': Context unregistered.
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AgentRuntime for 'dualagentb_tester_3533' stop() method completed.
+
+stdout | tests/integration/agent/agent-dual-flow.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/agent/agent-dual-flow.test.ts (1 test | 1 failed) 21354ms
+     × runs two agents concurrently and executes tool calls 21352ms
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+Successfully registered tool definition: 'run_bash'
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'lmstudiorunbashagent_workspace_setup_tester_3214'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'lmstudiorunbashagent_workspace_setup_tester_3214': LLM instance 'LMStudioLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'lmstudiorunbashagent_workspace_setup_tester_3214'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'lmstudiorunbashagent_workspace_setup_tester_3214' with config: 'LmstudioRunBashAgent'.
+AgentWorker initialized for agent_id 'lmstudiorunbashagent_workspace_setup_tester_3214'.
+Registered AgentContext for agent_id 'lmstudiorunbashagent_workspace_setup_tester_3214'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'lmstudiorunbashagent_workspace_setup_tester_3214'. Context registered.
+Agent facade initialized for agent_id 'lmstudiorunbashagent_workspace_setup_tester_3214'.
+Agent 'lmstudiorunbashagent_workspace_setup_tester_3214' created and stored successfully.
+Agent 'lmstudiorunbashagent_workspace_setup_tester_3214' requesting runtime to start.
+AgentRuntime for 'lmstudiorunbashagent_workspace_setup_tester_3214': Starting worker.
+AgentWorker 'lmstudiorunbashagent_workspace_setup_tester_3214': Starting...
+AgentWorker 'lmstudiorunbashagent_workspace_setup_tester_3214' asyncRun(): Starting.
+Agent 'lmstudiorunbashagent_workspace_setup_tester_3214': Runtime init completed (event store initialized).
+Agent 'lmstudiorunbashagent_workspace_setup_tester_3214': Runtime init completed (status deriver initialized).
+Agent 'lmstudiorunbashagent_workspace_setup_tester_3214': Runtime init completed (AgentEventInbox initialized).
+Agent 'lmstudiorunbashagent_workspace_setup_tester_3214': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+Agent 'lmstudiorunbashagent_workspace_setup_tester_3214': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+AgentExternalEventNotifier (NotifierID: 85fe80c5-83af-47f4-afc2-7e513a35583d, AgentID: lmstudiorunbashagent_workspace_setup_tester_3214) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+Agent 'lmstudiorunbashagent_workspace_setup_tester_3214': Bootstrapper starting direct lifecycle execution.
+Agent 'lmstudiorunbashagent_workspace_setup_tester_3214': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'lmstudiorunbashagent_workspace_setup_tester_3214': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+Agent 'lmstudiorunbashagent_workspace_setup_tester_3214': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'lmstudiorunbashagent_workspace_setup_tester_3214': Executing SystemPromptProcessingStep.
+Agent 'lmstudiorunbashagent_workspace_setup_tester_3214': No configured skills. Skipping skill catalog.
+Agent 'lmstudiorunbashagent_workspace_setup_tester_3214': Final processed system prompt configured and captured. Trace ID: rt_1795008306875_20b16abf-f148-4daa-9254-98c8f3972cd6. Final length: 91.
+
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+Agent 'lmstudiorunbashagent_workspace_setup_tester_3214': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+AgentExternalEventNotifier (NotifierID: 85fe80c5-83af-47f4-afc2-7e513a35583d, AgentID: lmstudiorunbashagent_workspace_setup_tester_3214) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+AgentWorker 'lmstudiorunbashagent_workspace_setup_tester_3214' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+AgentExternalEventNotifier (NotifierID: 85fe80c5-83af-47f4-afc2-7e513a35583d, AgentID: lmstudiorunbashagent_workspace_setup_tester_3214) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+AgentExternalEventNotifier (NotifierID: 85fe80c5-83af-47f4-afc2-7e513a35583d, AgentID: lmstudiorunbashagent_workspace_setup_tester_3214) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+AgentExternalEventNotifier (NotifierID: 85fe80c5-83af-47f4-afc2-7e513a35583d, AgentID: lmstudiorunbashagent_workspace_setup_tester_3214) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+AgentExternalEventNotifier (NotifierID: 85fe80c5-83af-47f4-afc2-7e513a35583d, AgentID: lmstudiorunbashagent_workspace_setup_tester_3214) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+AgentExternalEventNotifier (NotifierID: 85fe80c5-83af-47f4-afc2-7e513a35583d, AgentID: lmstudiorunbashagent_workspace_setup_tester_3214) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+AgentExternalEventNotifier (NotifierID: 85fe80c5-83af-47f4-afc2-7e513a35583d, AgentID: lmstudiorunbashagent_workspace_setup_tester_3214) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+AgentExternalEventNotifier (NotifierID: 85fe80c5-83af-47f4-afc2-7e513a35583d, AgentID: lmstudiorunbashagent_workspace_setup_tester_3214) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+AgentExternalEventNotifier (NotifierID: 85fe80c5-83af-47f4-afc2-7e513a35583d, AgentID: lmstudiorunbashagent_workspace_setup_tester_3214) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+AgentExternalEventNotifier (NotifierID: 85fe80c5-83af-47f4-afc2-7e513a35583d, AgentID: lmstudiorunbashagent_workspace_setup_tester_3214) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+Agent 'lmstudiorunbashagent_workspace_setup_tester_3214' requesting runtime to stop (timeout: 20s).
+
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+AgentExternalEventNotifier (NotifierID: 85fe80c5-83af-47f4-afc2-7e513a35583d, AgentID: lmstudiorunbashagent_workspace_setup_tester_3214) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+AgentWorker 'lmstudiorunbashagent_workspace_setup_tester_3214': Stop requested.
+
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+AgentExternalEventNotifier (NotifierID: 85fe80c5-83af-47f4-afc2-7e513a35583d, AgentID: lmstudiorunbashagent_workspace_setup_tester_3214) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+AgentExternalEventNotifier (NotifierID: 85fe80c5-83af-47f4-afc2-7e513a35583d, AgentID: lmstudiorunbashagent_workspace_setup_tester_3214) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'lmstudiorunbashagent_workspace_setup_tester_3214' asyncRun() loop has finished.
+AgentWorker 'lmstudiorunbashagent_workspace_setup_tester_3214': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+AgentWorker 'lmstudiorunbashagent_workspace_setup_tester_3214': Shutdown resource cleanup completed successfully.
+AgentWorker 'lmstudiorunbashagent_workspace_setup_tester_3214': Shutdown sequence completed.
+
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+Unregistered AgentContext for agent_id 'lmstudiorunbashagent_workspace_setup_tester_3214'.
+AgentRuntime for 'lmstudiorunbashagent_workspace_setup_tester_3214': Context unregistered.
+
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+AgentRuntime for 'lmstudiorunbashagent_workspace_setup_tester_3214' stop() method completed.
+
+stdout | tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts (2 tests | 1 failed | 1 skipped) 120521ms
+     × uses native LM Studio tool calling to create a realistic nested workspace fixture 120520ms
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+Successfully registered tool definition: 'write_file'
+
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'singleagent_tester_9982'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'singleagent_tester_9982': LLM instance 'LMStudioLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'singleagent_tester_9982'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'singleagent_tester_9982' with config: 'SingleAgent'.
+AgentWorker initialized for agent_id 'singleagent_tester_9982'.
+Registered AgentContext for agent_id 'singleagent_tester_9982'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'singleagent_tester_9982'. Context registered.
+Agent facade initialized for agent_id 'singleagent_tester_9982'.
+Agent 'singleagent_tester_9982' created and stored successfully.
+Agent 'singleagent_tester_9982' requesting runtime to start.
+AgentRuntime for 'singleagent_tester_9982': Starting worker.
+AgentWorker 'singleagent_tester_9982': Starting...
+AgentWorker 'singleagent_tester_9982' asyncRun(): Starting.
+Agent 'singleagent_tester_9982': Runtime init completed (event store initialized).
+Agent 'singleagent_tester_9982': Runtime init completed (status deriver initialized).
+Agent 'singleagent_tester_9982': Runtime init completed (AgentEventInbox initialized).
+Agent 'singleagent_tester_9982': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+Agent 'singleagent_tester_9982': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+AgentExternalEventNotifier (NotifierID: 795b1a6e-4d1c-47eb-9e0b-3fc038f468a2, AgentID: singleagent_tester_9982) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+Agent 'singleagent_tester_9982': Bootstrapper starting direct lifecycle execution.
+Agent 'singleagent_tester_9982': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'singleagent_tester_9982': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+Agent 'singleagent_tester_9982': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'singleagent_tester_9982': Executing SystemPromptProcessingStep.
+Agent 'singleagent_tester_9982': No configured skills. Skipping skill catalog.
+Agent 'singleagent_tester_9982': Final processed system prompt configured and captured. Trace ID: rt_1795008325852_c770e5d1-c3d4-4d98-ab83-3af4ced565e4. Final length: 28.
+
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+Agent 'singleagent_tester_9982': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+AgentExternalEventNotifier (NotifierID: 795b1a6e-4d1c-47eb-9e0b-3fc038f468a2, AgentID: singleagent_tester_9982) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+AgentWorker 'singleagent_tester_9982' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+AgentExternalEventNotifier (NotifierID: 795b1a6e-4d1c-47eb-9e0b-3fc038f468a2, AgentID: singleagent_tester_9982) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+AgentExternalEventNotifier (NotifierID: 795b1a6e-4d1c-47eb-9e0b-3fc038f468a2, AgentID: singleagent_tester_9982) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+AgentExternalEventNotifier (NotifierID: 795b1a6e-4d1c-47eb-9e0b-3fc038f468a2, AgentID: singleagent_tester_9982) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+AgentExternalEventNotifier (NotifierID: 795b1a6e-4d1c-47eb-9e0b-3fc038f468a2, AgentID: singleagent_tester_9982) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+AgentExternalEventNotifier (NotifierID: 795b1a6e-4d1c-47eb-9e0b-3fc038f468a2, AgentID: singleagent_tester_9982) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+AgentExternalEventNotifier (NotifierID: 795b1a6e-4d1c-47eb-9e0b-3fc038f468a2, AgentID: singleagent_tester_9982) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+AgentExternalEventNotifier (NotifierID: 795b1a6e-4d1c-47eb-9e0b-3fc038f468a2, AgentID: singleagent_tester_9982) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+AgentExternalEventNotifier (NotifierID: 795b1a6e-4d1c-47eb-9e0b-3fc038f468a2, AgentID: singleagent_tester_9982) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+AgentExternalEventNotifier (NotifierID: 795b1a6e-4d1c-47eb-9e0b-3fc038f468a2, AgentID: singleagent_tester_9982) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+Agent 'singleagent_tester_9982' requesting runtime to stop (timeout: 20s).
+
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+AgentExternalEventNotifier (NotifierID: 795b1a6e-4d1c-47eb-9e0b-3fc038f468a2, AgentID: singleagent_tester_9982) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+AgentWorker 'singleagent_tester_9982': Stop requested.
+
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+AgentExternalEventNotifier (NotifierID: 795b1a6e-4d1c-47eb-9e0b-3fc038f468a2, AgentID: singleagent_tester_9982) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+AgentExternalEventNotifier (NotifierID: 795b1a6e-4d1c-47eb-9e0b-3fc038f468a2, AgentID: singleagent_tester_9982) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'singleagent_tester_9982' asyncRun() loop has finished.
+AgentWorker 'singleagent_tester_9982': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+AgentWorker 'singleagent_tester_9982': Shutdown resource cleanup completed successfully.
+AgentWorker 'singleagent_tester_9982': Shutdown sequence completed.
+
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+Unregistered AgentContext for agent_id 'singleagent_tester_9982'.
+AgentRuntime for 'singleagent_tester_9982': Context unregistered.
+
+stdout | tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+AgentRuntime for 'singleagent_tester_9982' stop() method completed.
+
+stdout | tests/integration/agent/agent-single-flow.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/agent/agent-single-flow.test.ts (1 test | 1 failed) 120913ms
+     × executes a tool call end-to-end for a single agent 120910ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/integration/agent/agent-dual-flow.test.ts:149:24
+    147|         waitForFile(filePathB, 20000, 100)
+    148|       ]);
+    149|       expect(createdA).toBe(true);
+       |                        ^
+    150|       expect(createdB).toBe(true);
+    151|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+AssertionError: expected null not to be null
+ ❯ tests/integration/agent/agent-single-flow.test.ts:180:36
+    178|       if (!created) {
+    179|         const discoveredPath = await findFileContainingContent(tempDir…
+    180|         expect(discoveredPath).not.toBeNull();
+       |                                    ^
+    181|         filePath = discoveredPath as string;
+    182|       }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts:145:32
+    143|         100,
+    144|       );
+    145|       expect(artifactsCreated).toBe(true);
+       |                                ^
+    146|
+    147|       expect(toolSucceededPayloads).toHaveLength(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/integration/agent/memory-llm-flow.test.ts > Memory assembler with LM Studio > ingests memory around LLM responses
+Error: Test timed out in 20000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/integration/agent/memory-llm-flow.test.ts:14:3
+     12|
+     13| runIntegration('Memory assembler with LM Studio', () => {
+     14|   it('ingests memory around LLM responses', async () => {
+       |   ^
+     15|     const llm = await createLmstudioLLM();
+     16|     if (!llm) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  4 failed | 402 passed | 23 skipped (429)
+      Tests  4 failed | 2495 passed | 107 skipped (2606)
+   Start at  14:24:10
+   Duration  288.44s (transform 33.13s, setup 27.37s, import 226.28s, tests 873.43s, environment 62ms)
+
+ ELIFECYCLE  Test failed. See above for more details.
+=== DEL-04-autobyteus-ts-suite exit 1

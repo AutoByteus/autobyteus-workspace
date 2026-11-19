@@ -31,7 +31,7 @@ export const validateTaskReferenceFiles = async (values: readonly string[]): Pro
 /** A saved Project Task's identity in the worker's first message (REQ-017): the Task key and its Project. */
 export type DelegatedProjectTask = Readonly<{ taskKey: string; projectId: string }>;
 
-/** The one Task line both first messages of a saved Task carry (new copy and existing copy). */
+/** The one Task line both first messages of a saved Task carry (a new delegated run and an existing one). */
 const taskIdentityLines = (task: DelegatedProjectTask): string[] => [
   `Task: ${task.taskKey} in Project ${task.projectId}`,
   "If you have get_project_task, it reads this Task again, including comments added later.",
@@ -92,7 +92,7 @@ const otherOpenTasksSentence = (others: readonly string[]): string => others.len
  * header already names the sender and gives the ID). The reference files travel as the message's
  * reference files (listed by the delivery, not repeated here).
  */
-export const buildExistingCopyTaskMessage = (input: {
+export const buildExistingDelegatedRunTaskMessage = (input: {
   /** The Task's agent-facing ID (a Project Task's key). */
   taskReference: string;
   /** The Task's Project (with the key, the Task line). */

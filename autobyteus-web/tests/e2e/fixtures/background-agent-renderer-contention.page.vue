@@ -373,8 +373,8 @@ const inspectHierarchy = () => {
     rows: team?.executionRows.map((row) => ({
       kind: row.kind, memberAddress: row.memberAddress, agentRunId: row.agentRunId, depth: row.depth,
       hasChildren: row.hasChildren,
-      transientKind: row.kind === 'transient_execution' ? row.transientKind : null,
-      status: row.kind === 'transient_execution' ? row.currentStatus : row.row.currentStatus,
+      delegatedRunKind: row.kind === 'delegated_run' ? row.delegatedRunKind : null,
+      status: row.kind === 'delegated_run' ? row.currentStatus : row.row.currentStatus,
     })) ?? [],
   };
 };

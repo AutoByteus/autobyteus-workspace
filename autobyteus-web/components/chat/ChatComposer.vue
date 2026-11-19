@@ -106,6 +106,7 @@ const primaryAction = computed(() => {
     hasContext: Boolean(context),
     status: context?.state.currentStatus ?? AgentStatus.Offline,
     submissionPending: context?.submissionPending ?? false,
+    interruptPending: context?.interruptPending ?? false,
     isUploading: contextFileUploadStore.isUploading,
     // Send is enabled by text or a skill tag; context files alone are not sendable.
     hasDraft: context ? hasSendableDraft(context) : false,

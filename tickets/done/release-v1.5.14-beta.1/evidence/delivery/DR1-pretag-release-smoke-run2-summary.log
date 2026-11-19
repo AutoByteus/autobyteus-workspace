@@ -1,0 +1,23 @@
+Release smoke check
+runtime     scenario                                                      result  reason
+claude      new run + restore, linked workspace                           PASS
+claude      brand-new team member                                         PASS
+claude      different same-named skill                                    PASS
+codex       new run + restore, linked workspace                           PASS
+codex       brand-new team member                                         PASS
+codex       different same-named skill                                    PASS
+grok        new run + restore, linked workspace                           FAIL    skipped: Error: [{"message":"Grok Build model discovery timed out; check the CLI and retry.","locations":[{"line":1,"column":21}],"path":["providerModelCatalogSnapshots"]}]
+grok        brand-new team member                                         FAIL    skipped: Error: [{"message":"Grok Build model discovery timed out; check the CLI and retry.","locations":[{"line":1,"column":21}],"path":["providerModelCatalogSnapshots"]}]
+grok        different same-named skill                                    FAIL    skipped: Error: [{"message":"Grok Build model discovery timed out; check the CLI and retry.","locations":[{"line":1,"column":21}],"path":["providerModelCatalogSnapshots"]}]
+antigravity brand-new run, linked workspace                               PASS
+antigravity brand-new team member, linked workspace                       PASS
+autobyteus  brand-new run, linked workspace                               PASS
+autobyteus  brand-new team member, linked workspace                       PASS
+other       E06: a child started by an AGY agent's delegate_task call, c  FAIL    failed: Error: Timed out waiting for delegation result: ntRunId":"helper_0093e5bc_3b083bfa7a7e41808c18b0ca17f6b9ac"},"statusIds":["helper_0093e5bc_3b083bfa7a7e41808c18b0ca17f6b9ac"]}]}},{"type":"TEAM_RUN_LIFECYCLE","payload":{"is_active":true}},{"type":"AGENT_STATUS","payload":{"recoverableBlock":null,"stat
+
+commit    0c5d7e13dff070ef689bacd4f2847a507fd4e97d
+models    {"claude": "haiku", "codex": "gpt-5.6-luna"}
+duration  live 204s, antigravity 125s, autobyteus 9s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-mcl58ocg
+smoke exit 1

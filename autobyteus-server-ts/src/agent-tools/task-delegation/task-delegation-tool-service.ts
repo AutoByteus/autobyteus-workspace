@@ -19,7 +19,7 @@ export class TaskDelegationToolService {
   async delegateTask(context: TaskDelegationToolContext, input: DelegateTaskToolInput): Promise<DelegateTaskResult> {
     const source = await context.commands.delegationSource(context.identity);
     if (!("sender" in source)) return toDelegateTaskResult(source);
-    if (input.subject === "existing_copy") {
+    if (input.subject === "existing_delegated_run") {
       return toDelegateTaskResult(await this.delegations.delegation.toExistingRun({ sender: source.sender, senderRun: source.senderRun, assign: input.input }));
     }
     const spawn = input.input;

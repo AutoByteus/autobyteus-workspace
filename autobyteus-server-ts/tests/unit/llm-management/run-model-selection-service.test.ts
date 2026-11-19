@@ -3,6 +3,7 @@ import { RuntimeKind } from '../../../src/runtime-management/runtime-kind-enum.j
 import { RunModelSelectionService } from '../../../src/llm-management/services/run-model-selection-service.js';
 import { AgyDiscoveryError } from '../../../src/runtime-management/antigravity-cli-capability.js';
 import { GrokBuildDiscoveryError } from '../../../src/runtime-management/grok/grok-build-capability.js';
+import { NO_ON_DEMAND_MODELS } from "../../helpers/explicit-host-collaborators.js";
 
 const catalogView = (rows: any[]) => ({ offeredModels: rows,
   findExactCurrent: (id: string) => rows.find((row) => row.model_identifier === id) ?? null });
@@ -11,7 +12,7 @@ const selection = { llmModelIdentifier: 'target', llmConfig: null };
 const harness = (current: number | null = 128000, target: number | null = 128000) => {
   const catalog = { runtimeModelSelectionCatalog: vi.fn().mockResolvedValue(catalogView(['current', 'target'].map(model_identifier => ({ model_identifier, config_schema: null })))) };
   const nativeCapacity = { resolveMany: vi.fn().mockReturnValue({ current, target }) };
-  return { service: new RunModelSelectionService(catalog, nativeCapacity), catalog, nativeCapacity };
+  return { service: new RunModelSelectionService(catalog, NO_ON_DEMAND_MODELS, nativeCapacity), catalog, nativeCapacity };
 };
 
 describe('RunModelSelectionService', () => {
@@ -20,7 +21,7 @@ describe('RunModelSelectionService', () => {
     const sibling = { model_identifier: 'opus', config_schema: raw.config_schema };
     const catalog = { runtimeModelSelectionCatalog: vi.fn(async () => ({ offeredModels: [sibling],
       findExactCurrent: (id: string) => id === 'default' ? raw : id === 'opus' ? sibling : null })) };
-    const service = new RunModelSelectionService(catalog);
+    const service = new RunModelSelectionService(catalog, NO_ON_DEMAND_MODELS);
     const savedDefault = { ...context, runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, currentModelIdentifier: 'default' };
     const options = await service.listOptions(savedDefault);
     expect(options.currentModel?.llmModelIdentifier).toBe('default');

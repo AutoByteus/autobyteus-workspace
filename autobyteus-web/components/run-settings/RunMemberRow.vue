@@ -135,6 +135,7 @@
         :locked="node.locked ?? locked"
         :runtime-locked="runtimeLocked || Boolean((node.locked ?? locked).model)"
         :locked-models="lockedModelsFor?.(node.key) ?? null"
+        :model-unavailable="modelUnavailableFor?.(node.key) ?? false"
         :resettable="!readOnly"
         :test-suffix="node.key"
         @change="emit('change', node.key, $event)"
@@ -161,6 +162,7 @@
             :locked="locked"
             :runtime-locked="runtimeLocked"
             :locked-models-for="lockedModelsFor"
+            :model-unavailable-for="modelUnavailableFor"
             :read-only="readOnly"
             @toggle="emit('toggle', $event)"
             @change="(key, change) => emit('change', key, change)"
@@ -202,9 +204,11 @@ const props = withDefaults(defineProps<{
   runtimeLocked?: boolean
   /** Saved runs: the models each scope may switch to. */
   lockedModelsFor?: ((key: string) => readonly ChatModelOption[] | null) | null
+  /** G-5 (REQ-016): whether a member's saved model is no longer offered by its runtime; the card shows the note. */
+  modelUnavailableFor?: ((key: string) => boolean) | null
   /** Saved runs show what a member sets itself but offer no reset. */
   readOnly?: boolean
-}>(), { locked: () => ({}), runtimeLocked: false, lockedModelsFor: null, readOnly: false })
+}>(), { locked: () => ({}), runtimeLocked: false, lockedModelsFor: null, modelUnavailableFor: null, readOnly: false })
 
 const emit = defineEmits<{
   (event: 'toggle', key: string): void
@@ -216,7 +220,7 @@ const emit = defineEmits<{
 const presentation = useRunSettingsPresentation()
 const { t } = useLocalization()
 const BADGE_KEY: Readonly<Record<NonNullable<RunMemberNode['badge']>, string>> = {
-  delegated_copy: 'runSettings.delegated.copy',
+  delegated_run: 'runSettings.delegated.delegatedRun',
 }
 const { noteTexts, sourceLabel, openDecision } = useRunMemberFacts(() => props.node)
 /** A copy Team: collapsed, it counts the notes below it; expanded, it shows its own notes once. */

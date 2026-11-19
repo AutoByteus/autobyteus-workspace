@@ -3073,8 +3073,8 @@ export type QueryAgentRunCollaborationArgs = {
 
 export type QueryAgentRunCollaborationMemberProjectionArgs = {
   agentRunId: Scalars['String']['input'];
-  hostRunId: Scalars['String']['input'];
   memberAddress: Scalars['String']['input'];
+  runId: Scalars['String']['input'];
 };
 
 
@@ -5554,7 +5554,7 @@ export type GetAgentRunCollaborationQueryVariables = Exact<{
 export type GetAgentRunCollaborationQuery = { __typename?: 'Query', agentRunCollaboration?: any | null };
 
 export type GetAgentRunCollaborationMemberProjectionQueryVariables = Exact<{
-  hostRunId: Scalars['String']['input'];
+  runId: Scalars['String']['input'];
   memberAddress: Scalars['String']['input'];
   agentRunId: Scalars['String']['input'];
 }>;
@@ -11621,9 +11621,9 @@ export function useGetAgentRunCollaborationLazyQuery(variables?: GetAgentRunColl
 }
 export type GetAgentRunCollaborationQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentRunCollaborationQuery, GetAgentRunCollaborationQueryVariables>;
 export const GetAgentRunCollaborationMemberProjectionDocument = gql`
-    query GetAgentRunCollaborationMemberProjection($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {
+    query GetAgentRunCollaborationMemberProjection($runId: String!, $memberAddress: String!, $agentRunId: String!) {
   agentRunCollaborationMemberProjection(
-    hostRunId: $hostRunId
+    runId: $runId
     memberAddress: $memberAddress
     agentRunId: $agentRunId
   ) {
@@ -11650,7 +11650,7 @@ export const GetAgentRunCollaborationMemberProjectionDocument = gql`
  *
  * @example
  * const { result, loading, error } = useGetAgentRunCollaborationMemberProjectionQuery({
- *   hostRunId: // value for 'hostRunId'
+ *   runId: // value for 'runId'
  *   memberAddress: // value for 'memberAddress'
  *   agentRunId: // value for 'agentRunId'
  * });

@@ -42,6 +42,7 @@ vi.mock("../../../src/agent-execution/backends/codex/history/codex-thread-histor
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
 import { setE2eRunHistoryServices } from "../helpers/e2e-run-history-services.js";
+import { NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
 
 const STANDALONE_RUN_ID = "run-codex-toolcalls-graphql";
 const STANDALONE_THREAD_ID = "thread-standalone-toolcalls";
@@ -197,7 +198,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
     try {
       AgentTeamRunManager.getInstance();
     } catch {
-      ownedAgentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+      ownedAgentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
         memoryDir,
         flatTeamExecutionFactory: {} as never,
         memberExecutionContextBuilder: {} as never,

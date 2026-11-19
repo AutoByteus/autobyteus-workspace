@@ -14,7 +14,6 @@ import {
   type AgentToolsMcpInputSchema,
   type AgentToolsMcpOutputSchema,
 } from "./agent-tools-mcp-schema-mapper.js";
-import { buildDefaultAgentToolMcpAdapterProviders } from "./providers/default-agent-tool-mcp-adapter-providers.js";
 import {
   ConfiguredMcpAgentToolSourceResolver,
 } from "./configured-mcp/configured-mcp-agent-tool-source-resolver.js";
@@ -52,22 +51,11 @@ export type AgentToolMcpCallAvailability =
   | { ok: false; reason: "unknown_tool" | "tool_not_enabled" };
 
 export class AgentToolMcpCatalog {
-  private static instance: AgentToolMcpCatalog | null = null;
   private readonly adaptersByName: Map<string, AgentToolMcpToolAdapter>;
   private readonly schemaMapper: AgentToolsMcpSchemaMapper;
   private readonly configuredMcpSourceResolver: ConfiguredMcpAgentToolSourceResolver;
   private readonly registry: Pick<ToolRegistry, "getToolDefinition" | "createTool">;
 
-  static getInstance(): AgentToolMcpCatalog {
-    if (!AgentToolMcpCatalog.instance) {
-      AgentToolMcpCatalog.instance = new AgentToolMcpCatalog();
-    }
-    return AgentToolMcpCatalog.instance;
-  }
-
-  static resetInstance(): void {
-    AgentToolMcpCatalog.instance = null;
-  }
 
   constructor(input: {
     providers?: AgentToolMcpAdapterProvider[];
@@ -81,8 +69,9 @@ export class AgentToolMcpCatalog {
     this.configuredMcpSourceResolver = input.configuredMcpSourceResolver ?? new ConfiguredMcpAgentToolSourceResolver({
       registry: this.registry,
     });
-    const adapters = input.adapters ?? (input.providers ?? buildDefaultAgentToolMcpAdapterProviders())
-      .flatMap((provider) => provider.getAdapters());
+    // The adapters come from the host's composition (its providers, with its discovery; autobyteus-500 FU-011).
+    if (!input.adapters && !input.providers) throw new Error("AgentToolMcpCatalog needs its adapters or providers.");
+    const adapters = input.adapters ?? input.providers!.flatMap((provider) => provider.getAdapters());
     this.adaptersByName = new Map();
     for (const adapter of adapters) {
       const toolName = adapter.definition.name;
@@ -374,12 +363,7 @@ export class AgentToolMcpCatalog {
   }
 }
 
-export const getAgentToolMcpCatalog = (): AgentToolMcpCatalog =>
-  AgentToolMcpCatalog.getInstance();
 
-export const resetAgentToolMcpCatalogForTests = (): void => {
-  AgentToolMcpCatalog.resetInstance();
-};
 
 const normalizeToolNames = (toolNames: Iterable<string>): string[] => [
   ...new Set(

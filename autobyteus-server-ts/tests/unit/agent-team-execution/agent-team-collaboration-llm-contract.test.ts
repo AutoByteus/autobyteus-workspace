@@ -10,10 +10,12 @@ import {
   DELEGATE_TASK_TARGET_AGENT_RUN_ID_DESCRIPTION,
   DELEGATE_TASK_TARGET_TEAM_RUN_ID_DESCRIPTION,
   SEND_MESSAGE_TO_LLM_DESCRIPTION,
+  SEND_MESSAGE_TO_NODE_DESCRIPTION,
   SEND_MESSAGE_TO_RECIPIENT_ADDRESS_DESCRIPTION,
   SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION,
 } from "../../../src/agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
 import { LIST_AVAILABLE_AGENTS_TOOL_DESCRIPTION } from "../../../src/agent-tools/agent-discovery/list-available-agents-contract.js";
+import { LIST_RUNNING_AGENTS_TOOL_DESCRIPTION } from "../../../src/agent-tools/agent-discovery/list-running-agents-contract.js";
 import { GET_HANDOFF_RULES_TOOL_DESCRIPTION } from "../../../src/agent-communication/services/get-handoff-rules-tool-contract.js";
 import { PROJECT_TASK_TOOL_DESCRIPTIONS } from "../../../src/agent-tools/project-tasks/project-task-tool-contract.js";
 
@@ -30,6 +32,7 @@ describe("approved collaboration tool descriptions", () => {
       sendTool: sha256(SEND_MESSAGE_TO_LLM_DESCRIPTION),
       sendRecipient: sha256(SEND_MESSAGE_TO_RECIPIENT_ADDRESS_DESCRIPTION),
       sendExactRun: sha256(SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION),
+      sendNode: sha256(SEND_MESSAGE_TO_NODE_DESCRIPTION),
       delegateTool: sha256(DELEGATE_TASK_LLM_DESCRIPTION),
       delegateRecipient: sha256(DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION),
       delegateTeamId: sha256(DELEGATE_TASK_TARGET_TEAM_RUN_ID_DESCRIPTION),
@@ -40,9 +43,11 @@ describe("approved collaboration tool descriptions", () => {
       delegateNode: sha256(DELEGATE_TASK_NODE_DESCRIPTION),
     }).toEqual({
       // autobyteus-260: a refused message leaves target_agent_run_id out (no "null").
-      sendTool: "147726f394b4442a4154a56de437dabfeca6f651234831b395fc2e4f5f225b1a",
+      // autobyteus-492 (REQ-012): the run ID is the address: any running agent, `node` for another node, never woken.
+      sendTool: "b04c7e4a81f5f09895b669c08cd9b2c953184bc3a7396d011bd0a4947a219371",
       sendRecipient: "6be9ed29689ec44cf8775b00e0d34ab473126416a1330a63aa3ccef2b6d14806",
-      sendExactRun: "9a9c650c745f2fcaca353a639339f712e9d9bba60e3de0f3bbad5d43e1cc8b5f",
+      sendExactRun: "6a94fca2a5bb4b1cf65e4b621ac5f7e82fa015c1c7759418cc5b7d98aaa27909",
+      sendNode: "d8a16736ffbd8b9374606bc3e963b999cd68cecea83d0dd537a541257bad013f",
       // `node` (DEC-111, autobyteus-191): a new task agent on a registered peer node; "agent or agent team" (autobyteus-261 DEC-406).
       // task-agent-several-tasks (autobyteus-275): mode (3) also while the task agent holds other open Tasks.
       delegateTool: "78be9b1ac468f3ba11bef98bafe645204af8338877caad02299784a8f5a2a404",
@@ -62,9 +67,9 @@ describe("approved collaboration tool descriptions", () => {
   });
 
   it("states how each tool works, each fact once: messaging never creates an agent, a delegation with an address always creates one", () => {
-    expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("send_message_to never creates an agent; to have work done by a new agent, use delegate_task.");
+    expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("send_message_to never creates an agent and never wakes a stopped one; to have work done by a new agent, use delegate_task.");
     expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("Use exactly one selector, never both:");
-    expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("For a task agent team, use its coordinator's run id; a team's own run id is refused.");
+    expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("the run id of any running agent. For an agent team, use its coordinator's run id; a team's own run id is refused. For an agent on another node, also pass node.");
     expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("Delegating to yourself, a teammate or your own team is refused.");
     expect(DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION).toContain("Every call with an address creates another task agent or task agent team.");
     expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("together with your run id");
@@ -86,6 +91,7 @@ describe("approved collaboration tool descriptions", () => {
       DELEGATE_TASK_LLM_DESCRIPTION, DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION, DELEGATE_TASK_TARGET_TEAM_RUN_ID_DESCRIPTION,
       DELEGATE_TASK_TARGET_AGENT_RUN_ID_DESCRIPTION, DELEGATE_TASK_ID_DESCRIPTION, DELEGATE_TASK_DESCRIPTION_FIELD_DESCRIPTION,
       DELEGATE_TASK_REFERENCE_FILES_DESCRIPTION, DELEGATE_TASK_NODE_DESCRIPTION, LIST_AVAILABLE_AGENTS_TOOL_DESCRIPTION, GET_HANDOFF_RULES_TOOL_DESCRIPTION,
+      SEND_MESSAGE_TO_NODE_DESCRIPTION, LIST_RUNNING_AGENTS_TOOL_DESCRIPTION,
       PROJECT_TASK_TOOL_DESCRIPTIONS.update_task, PROJECT_TASK_TOOL_DESCRIPTIONS.list_project_tasks,
     ];
     for (const text of texts) {

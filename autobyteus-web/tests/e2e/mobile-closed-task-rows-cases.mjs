@@ -441,7 +441,7 @@ export const runClosedTaskRowsCases = async (probe) => {
         await waitFor('the plain run open in the window', async () => new URL(page.url()).searchParams.get('id') === plain, 30_000);
         const ptmRow = `[data-test="run-list-row"][data-run-id="${stack.ptm}"]`;
         // Task B's Team row under the PTM: a delegated Team row carries the delegating host's ID and the Team's address.
-        const teamRow = `${ptmRow} [data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"][data-member-address="/docs_review_team"]`;
+        const teamRow = `${ptmRow} [data-test="workspace-team-transient-execution-row"][data-delegated-run-kind="task_team"][data-member-address="/docs_review_team"]`;
         const desktopListed = async () => (await page.locator(teamRow).count()) > 0;
         // Unfold the PTM's row with its disclosure only (a click on a row itself opens that run).
         const disclosure = page.locator(`${ptmRow} [data-test="run-list-disclosure"]`).first();

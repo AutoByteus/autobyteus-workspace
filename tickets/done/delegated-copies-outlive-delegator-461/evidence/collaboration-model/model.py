@@ -12,12 +12,12 @@ NOT_FOUND = lambda a: (f"No agent or agent team you can talk with has the addres
                        "use send_message_to with target_agent_run_id set to the sender run id. To have a task done by a new agent, use delegate_task.")
 CLOSED = ("This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, "
           "then message the task agent's run id (for a task agent team, its coordinator's run id).")
-OTHER_TASK = "You can't message this agent: it works on a different Task."
 
 DELEGATED_WORK = lambda action, names: (f"This run can't be {action} while a run it delegated to is working ({names}). "
                                         "Try again when it has finished, or stop it first.")
-NOT_RUNNING = lambda r: (f"No running agent has the run id '{r}', so the message was not sent. Use an exact run id you were given: "
-                         "a sender run id (from a message or your new task), or a run id delegate_task returned to you.")
+NOT_RUNNING = lambda r: (f"No running agent has the run id '{r}', so the message was not sent. A stopped agent is not woken. Use an exact run id you were given: "
+                         "a sender run id (from a message or your new task), a run id delegate_task returned to you, or one list_running_agents lists. "
+                         "For an agent on another node, also pass node.")
 
 TEAM_RUN_ID = lambda r, c: (f"{r} is a task agent team's run id, and send_message_to talks with agents. "
                             f"To talk with the team, use its coordinator's run id: {c}.")
@@ -298,13 +298,13 @@ class World:
 
     # ---------- messages
     def _log(self, run, line): self.disk.setdefault(self.log_path(*run), []).append(line)
-    def _deliver(self, sender, receiver, content, message_type, message_id, at, shown_as):
+    def _deliver(self, sender, receiver, content, message_type, message_id, at, shown_as, wake=True):
         a, b = self.run_of(sender), self.run_of(receiver)
         line = {"messageId": message_id, "senderAgentRunId": sender, "receiverAgentRunId": receiver, "content": content,
                 "messageType": message_type, "referenceFiles": [], "createdAt": at}
         self._log(a, dict(line))
         if b != a: self._log(b, dict(line))
-        self.activate(receiver)
+        if wake: self.activate(receiver)
         addr = self.reaching_address(receiver, sender)
         if a[0] != b[0]:
             self.receiver_sees = f'You received a message from the agent with sender run id "{sender}" on node "{self.node_names[a[0]]}".'
@@ -323,8 +323,14 @@ class World:
             local, peer = (a, b) if self.file_of(a).get("delegatedFrom", {}).get("nodeId") is None else (b, a)
             pf = self.file_of(peer)["delegatedFrom"]
             other = receiver if peer == a else sender
-            if pf["delegatorAgentRunId"] != other: raise Refused("TASK_AGENT_RESOURCE_CONFLICT", OTHER_TASK)
             entry = [e for t, e in self.entries(local[0]) if "nodeId" in e and self.run_key_of_entry(e) == (peer[1], peer[2])]
+            if pf["delegatorAgentRunId"] != other:
+                # autobyteus-492 (CM-13, DEC-011): any other agent reaches the run by its run ID while it runs (DS-006), except
+                # that the node holding its Task entries refuses every sender of its own once they are all closed (row 13,
+                # AR-001, AR-007); a sender on the run's own node cannot know the closure (row 14)
+                if a[0] == local[0] and entry and all(e["closedAt"] is not None for e in entry):
+                    raise Refused("TASK_AGENT_RESOURCE_CLOSED", CLOSED)
+                return "unrelated"
             if not entry or entry[-1]["closedAt"] is not None:
                 raise Refused("TASK_AGENT_RESOURCE_CLOSED", CLOSED)
             return
@@ -346,11 +352,18 @@ class World:
         shared = {t for t, e in self.entries_of(node, a)} & {t for t, e in self.entries_of(node, b)}
         assigned_by = any((a[1], a[2]) in self.assigners(node, t) for t, e in self.entries_of(node, b))
         if shared or assigned_by: raise Refused("TASK_AGENT_RESOURCE_CLOSED", CLOSED)
-        raise Refused("TASK_AGENT_RESOURCE_CONFLICT", OTHER_TASK)
+        # autobyteus-492 (CM-13, the run ID is the address): runs of different Tasks are unrelated, not refused
+        return "unrelated"
+    def _send(self, sender, receiver, content, message_type, message_id, at, shown_as):
+        """Admission, then delivery; an unrelated receiver only while it runs, never woken (autobyteus-492 DEC-003)."""
+        if self._admit(sender, receiver) == "unrelated":
+            r = self.row(*self.run_of(receiver))
+            if r is None or r["terminatedAt"] is not None: raise Refused("TARGET_AGENT_RUN_NOT_ACTIVE", NOT_RUNNING(receiver))
+            return self._deliver(sender, receiver, content, message_type, message_id, at, shown_as, wake=False)
+        self._deliver(sender, receiver, content, message_type, message_id, at, shown_as)
     def send_by_address(self, sender, address, content, message_id, at, message_type="agent_message"):
         receiver, step = self.resolve(sender, address)
-        self._admit(sender, receiver)
-        self._deliver(sender, receiver, content, message_type, message_id, at, address); return step
+        self._send(sender, receiver, content, message_type, message_id, at, address); return step
     def send_by_run_id(self, sender, receiver, content, message_id, at, message_type="agent_message"):
         if receiver not in self.runs:
             # a team run's ID is answered with its coordinator's, whether the team runs or not (R-12; base's text)
@@ -358,8 +371,7 @@ class World:
             if self.run_file(node, "agent_team", receiver) in self.disk:
                 raise Refused("TARGET_IS_TEAM_RUN", TEAM_RUN_ID(receiver, self.entry_agent((node, "agent_team", receiver))))
             raise Refused("TARGET_AGENT_RUN_NOT_ACTIVE", NOT_RUNNING(receiver))  # e.g. a deleted run (R-11)
-        self._admit(sender, receiver)
-        self._deliver(sender, receiver, content, message_type, message_id, at, None)
+        self._send(sender, receiver, content, message_type, message_id, at, None)
     def handoff_rules(self, agent_id):
         node, kind, run_id = self.run_of(agent_id); own = self.agent_info(agent_id)[0]; f = self.file_of((node, kind, run_id))
         return {"handoffs": [{"when": h["rules"][0], "recipient_address": h["to"]} for h in f.get("handoffs", []) if h["from"] == own]}

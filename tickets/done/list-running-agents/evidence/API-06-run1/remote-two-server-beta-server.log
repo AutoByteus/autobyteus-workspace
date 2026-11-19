@@ -1,0 +1,664 @@
+--- start 2026-11-18T11:26:31.846Z pid 83637
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/.env
+◇ injected env (1) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:63339
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:63339
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/db/test.db"
+
+SQLite database test.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/db/test.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+(node:83637) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+AgentRunManager initialized.
+Node access: local control socket not opened. The node's local control socket path is 129 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/node-access/local-control.sock. Use a shorter data folder path.
+AgentRunManager initialized.
+Overwriting existing tool definition for name: 'search_web'
+Node request refused NODE_CREDENTIAL_INVALID /rest/remote/delegated-runs from 127.0.0.1
+{"level":40,"time":1795001216663,"pid":83637,"hostname":"MacBookPro","reqId":"req-h","method":"POST","url":"/rest/remote/delegated-runs","statusCode":401,"elapsedMs":1.7692500000011933,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_INVALID /rest/remote/messages from 127.0.0.1
+{"level":40,"time":1795001216674,"pid":83637,"hostname":"MacBookPro","reqId":"req-i","method":"POST","url":"/rest/remote/messages","statusCode":401,"elapsedMs":1.1354170000013255,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_INVALID /rest/remote/messages from 127.0.0.1
+{"level":40,"time":1795001225246,"pid":83637,"hostname":"MacBookPro","reqId":"req-k","method":"POST","url":"/rest/remote/messages","statusCode":401,"elapsedMs":2.372458000005281,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_INVALID /rest/remote/delegated-runs from 127.0.0.1
+{"level":40,"time":1795001225475,"pid":83637,"hostname":"MacBookPro","reqId":"req-t","method":"POST","url":"/rest/remote/delegated-runs","statusCode":401,"elapsedMs":0.5420410000006086,"msg":"http request completed"}
+{"level":40,"time":1795001225480,"pid":83637,"hostname":"MacBookPro","reqId":"req-u","method":"POST","url":"/rest/remote/delegated-runs","statusCode":400,"elapsedMs":0.8490420000016456,"msg":"http request completed"}
+{"level":40,"time":1795001225483,"pid":83637,"hostname":"MacBookPro","reqId":"req-v","method":"POST","url":"/rest/remote/messages","statusCode":400,"elapsedMs":0.555000000000291,"msg":"http request completed"}
+{"level":40,"time":1795001225491,"pid":83637,"hostname":"MacBookPro","reqId":"req-w","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":3.033000000003085,"msg":"http request completed"}
+{"level":40,"time":1795001225497,"pid":83637,"hostname":"MacBookPro","reqId":"req-x","method":"POST","url":"/rest/remote/delegated-runs","statusCode":400,"elapsedMs":0.8807919999962905,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_f7fdfc5e81db465485f8ddbc48c32176/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_f7fdfc5e81db465485f8ddbc48c32176/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_f7fdfc5e81db465485f8ddbc48c32176/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_f7fdfc5e81db465485f8ddbc48c32176/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_f7fdfc5e81db465485f8ddbc48c32176/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_f7fdfc5e81db465485f8ddbc48c32176/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_f7fdfc5e81db465485f8ddbc48c32176/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_f7fdfc5e81db465485f8ddbc48c32176/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_f7fdfc5e81db465485f8ddbc48c32176/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/bystander_23b1d2ba95a64583b57d2c6776eebc7e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/bystander_23b1d2ba95a64583b57d2c6776eebc7e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/bystander_23b1d2ba95a64583b57d2c6776eebc7e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/bystander_23b1d2ba95a64583b57d2c6776eebc7e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/bystander_23b1d2ba95a64583b57d2c6776eebc7e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/bystander_23b1d2ba95a64583b57d2c6776eebc7e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/bystander_23b1d2ba95a64583b57d2c6776eebc7e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/bystander_23b1d2ba95a64583b57d2c6776eebc7e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_144b038ce08c430ea8a296c1ec3d65c2/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_144b038ce08c430ea8a296c1ec3d65c2/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_144b038ce08c430ea8a296c1ec3d65c2/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_144b038ce08c430ea8a296c1ec3d65c2/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_144b038ce08c430ea8a296c1ec3d65c2/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_144b038ce08c430ea8a296c1ec3d65c2/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_144b038ce08c430ea8a296c1ec3d65c2/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_144b038ce08c430ea8a296c1ec3d65c2/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_144b038ce08c430ea8a296c1ec3d65c2/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_144b038ce08c430ea8a296c1ec3d65c2/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_144b038ce08c430ea8a296c1ec3d65c2/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_144b038ce08c430ea8a296c1ec3d65c2/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_144b038ce08c430ea8a296c1ec3d65c2/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_144b038ce08c430ea8a296c1ec3d65c2/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_c729c0af48f24c3e87d752e1cf7e6cbc/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_c729c0af48f24c3e87d752e1cf7e6cbc/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_c729c0af48f24c3e87d752e1cf7e6cbc/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_c729c0af48f24c3e87d752e1cf7e6cbc/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_c729c0af48f24c3e87d752e1cf7e6cbc/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_c729c0af48f24c3e87d752e1cf7e6cbc/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_c729c0af48f24c3e87d752e1cf7e6cbc/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_c729c0af48f24c3e87d752e1cf7e6cbc/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_c729c0af48f24c3e87d752e1cf7e6cbc/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/project_task_manager_243537fb150d422ca45f8d698f52bc00/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/project_task_manager_243537fb150d422ca45f8d698f52bc00/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/project_task_manager_243537fb150d422ca45f8d698f52bc00/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/project_task_manager_243537fb150d422ca45f8d698f52bc00/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/project_task_manager_243537fb150d422ca45f8d698f52bc00/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_f8868d3294e248f9888dbe1175e6e04d/publisher_9c05341e488d444898dd2550e2f2ef8b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_f8868d3294e248f9888dbe1175e6e04d/publisher_9c05341e488d444898dd2550e2f2ef8b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_f8868d3294e248f9888dbe1175e6e04d/publisher_9c05341e488d444898dd2550e2f2ef8b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_f8868d3294e248f9888dbe1175e6e04d/publisher_9c05341e488d444898dd2550e2f2ef8b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_f8868d3294e248f9888dbe1175e6e04d/publisher_9c05341e488d444898dd2550e2f2ef8b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/bystander_862e24e1c3574e7c8694c4f189a3c845/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/bystander_862e24e1c3574e7c8694c4f189a3c845/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/bystander_862e24e1c3574e7c8694c4f189a3c845/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/bystander_862e24e1c3574e7c8694c4f189a3c845/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/bystander_862e24e1c3574e7c8694c4f189a3c845/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/project_task_manager_243537fb150d422ca45f8d698f52bc00/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/project_task_manager_243537fb150d422ca45f8d698f52bc00/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/project_task_manager_243537fb150d422ca45f8d698f52bc00/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/project_task_manager_243537fb150d422ca45f8d698f52bc00/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/project_task_manager_243537fb150d422ca45f8d698f52bc00/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/project_task_manager_243537fb150d422ca45f8d698f52bc00/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/project_task_manager_243537fb150d422ca45f8d698f52bc00/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_f8868d3294e248f9888dbe1175e6e04d/publisher_9c05341e488d444898dd2550e2f2ef8b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/bystander_23b1d2ba95a64583b57d2c6776eebc7e/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /rest/remote/run-messages from 127.0.0.1
+{"level":40,"time":1795001264026,"pid":83637,"hostname":"MacBookPro","reqId":"req-4b","method":"POST","url":"/rest/remote/run-messages","statusCode":401,"elapsedMs":0.5198749999981374,"msg":"http request completed"}
+Node request refused NODE_ROUTE_NOT_PERMITTED /rest/remote/run-messages from 127.0.0.1
+{"level":40,"time":1795001264035,"pid":83637,"hostname":"MacBookPro","reqId":"req-4c","method":"POST","url":"/rest/remote/run-messages","statusCode":403,"elapsedMs":6.940374999991036,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_INVALID /rest/remote/run-messages from 127.0.0.1
+{"level":40,"time":1795001264040,"pid":83637,"hostname":"MacBookPro","reqId":"req-4d","method":"POST","url":"/rest/remote/run-messages","statusCode":401,"elapsedMs":1.7344580000062706,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_INVALID /rest/remote/run-messages from 127.0.0.1
+{"level":40,"time":1795001264045,"pid":83637,"hostname":"MacBookPro","reqId":"req-4e","method":"POST","url":"/rest/remote/run-messages","statusCode":401,"elapsedMs":2.693833999990602,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /rest/remote/running-agents from 127.0.0.1
+{"level":40,"time":1795001264050,"pid":83637,"hostname":"MacBookPro","reqId":"req-4g","method":"POST","url":"/rest/remote/running-agents","statusCode":401,"elapsedMs":0.2232090000034077,"msg":"http request completed"}
+Node request refused NODE_ROUTE_NOT_PERMITTED /rest/remote/running-agents from 127.0.0.1
+{"level":40,"time":1795001264051,"pid":83637,"hostname":"MacBookPro","reqId":"req-4h","method":"POST","url":"/rest/remote/running-agents","statusCode":403,"elapsedMs":0.22349999999278225,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_INVALID /rest/remote/running-agents from 127.0.0.1
+{"level":40,"time":1795001264052,"pid":83637,"hostname":"MacBookPro","reqId":"req-4i","method":"POST","url":"/rest/remote/running-agents","statusCode":401,"elapsedMs":0.3444160000071861,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_INVALID /rest/remote/running-agents from 127.0.0.1
+{"level":40,"time":1795001264058,"pid":83637,"hostname":"MacBookPro","reqId":"req-4j","method":"POST","url":"/rest/remote/running-agents","statusCode":401,"elapsedMs":0.26779199999873526,"msg":"http request completed"}
+{"level":40,"time":1795001264070,"pid":83637,"hostname":"MacBookPro","reqId":"req-4l","method":"POST","url":"/rest/remote/run-messages","statusCode":400,"elapsedMs":0.5130000000062864,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/project_task_manager_243537fb150d422ca45f8d698f52bc00/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_7706ba96984049a5a127a9ea7a4d0de0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_7706ba96984049a5a127a9ea7a4d0de0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/bystander_23b1d2ba95a64583b57d2c6776eebc7e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/bystander_23b1d2ba95a64583b57d2c6776eebc7e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/bystander_23b1d2ba95a64583b57d2c6776eebc7e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/bystander_23b1d2ba95a64583b57d2c6776eebc7e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_7706ba96984049a5a127a9ea7a4d0de0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_7706ba96984049a5a127a9ea7a4d0de0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_7706ba96984049a5a127a9ea7a4d0de0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/checker_abe5358537f94ee3901c7e3d65f76100/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/checker_abe5358537f94ee3901c7e3d65f76100/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/checker_abe5358537f94ee3901c7e3d65f76100/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/checker_abe5358537f94ee3901c7e3d65f76100/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/checker_abe5358537f94ee3901c7e3d65f76100/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/checker_abe5358537f94ee3901c7e3d65f76100/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/checker_abe5358537f94ee3901c7e3d65f76100/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/checker_abe5358537f94ee3901c7e3d65f76100/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_fc6062e3d2d141c19343eaacc0f669d6/publisher_2606783c185645ea95071b2da4bc1184/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_fc6062e3d2d141c19343eaacc0f669d6/publisher_2606783c185645ea95071b2da4bc1184/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_fc6062e3d2d141c19343eaacc0f669d6/publisher_2606783c185645ea95071b2da4bc1184/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_fc6062e3d2d141c19343eaacc0f669d6/publisher_2606783c185645ea95071b2da4bc1184/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_fc6062e3d2d141c19343eaacc0f669d6/publisher_2606783c185645ea95071b2da4bc1184/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_fc6062e3d2d141c19343eaacc0f669d6/publisher_2606783c185645ea95071b2da4bc1184/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_1b0ec3a67f6842e58c97ba164baf2aab/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_1b0ec3a67f6842e58c97ba164baf2aab/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_a3e273199d8745ef974cd679cc187e6f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_a3e273199d8745ef974cd679cc187e6f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_1b0ec3a67f6842e58c97ba164baf2aab/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_1b0ec3a67f6842e58c97ba164baf2aab/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_1b0ec3a67f6842e58c97ba164baf2aab/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_1b0ec3a67f6842e58c97ba164baf2aab/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_1b0ec3a67f6842e58c97ba164baf2aab/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_1b0ec3a67f6842e58c97ba164baf2aab/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_1b0ec3a67f6842e58c97ba164baf2aab/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_1b0ec3a67f6842e58c97ba164baf2aab/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_12eda7c805c64ede89996d74676f492c/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_12eda7c805c64ede89996d74676f492c/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/checker_abe5358537f94ee3901c7e3d65f76100/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/checker_abe5358537f94ee3901c7e3d65f76100/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/checker_abe5358537f94ee3901c7e3d65f76100/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_f7fdfc5e81db465485f8ddbc48c32176/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_51f09564bbd142f58264725abc491e5a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_51f09564bbd142f58264725abc491e5a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_12bc6a8db0234430b2ffec5ff0d4b9be/publisher_416df717e2414174acc6db53cb9dc749/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_12bc6a8db0234430b2ffec5ff0d4b9be/publisher_416df717e2414174acc6db53cb9dc749/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_51f09564bbd142f58264725abc491e5a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_51f09564bbd142f58264725abc491e5a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_51f09564bbd142f58264725abc491e5a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_12bc6a8db0234430b2ffec5ff0d4b9be/publisher_416df717e2414174acc6db53cb9dc749/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_8323d7bd1a4e4050995427ef9f8551e2/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_8323d7bd1a4e4050995427ef9f8551e2/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_8323d7bd1a4e4050995427ef9f8551e2/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_8323d7bd1a4e4050995427ef9f8551e2/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_8323d7bd1a4e4050995427ef9f8551e2/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_ad3c175b185344e8bda70577c4d473f1/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_ad3c175b185344e8bda70577c4d473f1/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_ad3c175b185344e8bda70577c4d473f1/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_ad3c175b185344e8bda70577c4d473f1/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_769ebcdc758d408d9c31878e34976a9d/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_769ebcdc758d408d9c31878e34976a9d/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_769ebcdc758d408d9c31878e34976a9d/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_769ebcdc758d408d9c31878e34976a9d/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/checker_abe5358537f94ee3901c7e3d65f76100/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_a3e273199d8745ef974cd679cc187e6f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_a3e273199d8745ef974cd679cc187e6f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_a3e273199d8745ef974cd679cc187e6f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_a3e273199d8745ef974cd679cc187e6f/raw_traces_manifest.json
+--- start 2026-11-18T11:31:04.234Z pid 12543
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/.env // tip: ◈ secrets for agents [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:63339
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:63339
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/db/test.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.34                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+(node:12543) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+AgentRunManager initialized.
+Node access: local control socket not opened. The node's local control socket path is 129 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/node-access/local-control.sock. Use a shorter data folder path.
+AgentRunManager initialized.
+Overwriting existing tool definition for name: 'search_web'
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_f7fdfc5e81db465485f8ddbc48c32176/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_f7fdfc5e81db465485f8ddbc48c32176/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_f7fdfc5e81db465485f8ddbc48c32176/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_f7fdfc5e81db465485f8ddbc48c32176/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_f7fdfc5e81db465485f8ddbc48c32176/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_f7fdfc5e81db465485f8ddbc48c32176/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_f7fdfc5e81db465485f8ddbc48c32176/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_f7fdfc5e81db465485f8ddbc48c32176/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_f7fdfc5e81db465485f8ddbc48c32176/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_f7fdfc5e81db465485f8ddbc48c32176/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_f7fdfc5e81db465485f8ddbc48c32176/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_f7fdfc5e81db465485f8ddbc48c32176/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_6f46cc1a8293430384ec2620c5d7e255/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_e70293ce6b864490b1e4359b124a8bff/publisher_712e2618c91349339c9a56ed81ccaa5b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_26d7e79e589b446481eed7711e8ebd46/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/field_team_60e4e1912fdf48a48076a2f94f039547/local_scout_0366f441f4004a8e8377877a657839d7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_33adc3cea60a468aa64b4e81c74a3359/publisher_4a1b089933494c4a82dcfb6002cb4dd5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/hidden_helper_db7d5da4e1d447bcab5fcd94fb2fb60a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/daily_assistant_bb8628db72764f128d0139d1b4db1f7e/raw_traces_manifest.json
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/model_router_e683a880c09b496d98621a1cf614fad4/raw_traces_manifest.json
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/blank_slate_dfbfc32e1d804a858e9c0e40dd3d496b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/blank_slate_dfbfc32e1d804a858e9c0e40dd3d496b/raw_traces_manifest.json
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/hollow_team_8293b7acf9a744299b7f626ad41a29f6/blank_slate_c4c60812fed1471d911436ed29662e97/raw_traces_manifest.json
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/blank_slate_3ddd277d1a784daabfd3aff2cf1e4d93/raw_traces_manifest.json
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_56e4a94059cd4316b4a265a85f0fc783/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_35ce12e055c546eaafd89477bfff1fbb/publisher_dfc48ebd7f514ed8ac2df13144f7d9f2/raw_traces_manifest.json
+--- start 2026-11-18T11:34:39.556Z pid 20982
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/.env
+◇ injected env (7) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:63339
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:63339
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/db/test.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+(node:20982) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+AgentRunManager initialized.
+Node access: local control socket not opened. The node's local control socket path is 129 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/node-access/local-control.sock. Use a shorter data folder path.
+AgentRunManager initialized.
+Overwriting existing tool definition for name: 'search_web'
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_966b6b1459b8477998ff69e20d9d17d5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_966b6b1459b8477998ff69e20d9d17d5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_966b6b1459b8477998ff69e20d9d17d5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_966b6b1459b8477998ff69e20d9d17d5/raw_traces_manifest.json
+--- start 2026-11-18T11:34:44.287Z pid 21476
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/.env
+◇ injected env (7) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:63339
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:63339
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/db/test.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+(node:21476) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+AgentRunManager initialized.
+Node access: local control socket not opened. The node's local control socket path is 129 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/node-access/local-control.sock. Use a shorter data folder path.
+AgentRunManager initialized.
+Overwriting existing tool definition for name: 'search_web'
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_b3d3ed3fe3f64b6dbd7753755617456f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_214845ad06434256a4ac645fd9c9a915/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_214845ad06434256a4ac645fd9c9a915/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_b3d3ed3fe3f64b6dbd7753755617456f/raw_traces_manifest.json
+--- start 2026-11-18T11:34:48.641Z pid 22010
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/.env
+◇ injected env (7) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/.env // tip: ⌁ auth for agents [www.vestauth.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:63339
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:63339
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/db/test.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+(node:22010) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+AgentRunManager initialized.
+Node access: local control socket not opened. The node's local control socket path is 129 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/node-access/local-control.sock. Use a shorter data folder path.
+AgentRunManager initialized.
+Overwriting existing tool definition for name: 'search_web'
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_214845ad06434256a4ac645fd9c9a915/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_214845ad06434256a4ac645fd9c9a915/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_214845ad06434256a4ac645fd9c9a915/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_636c974fb41747e09cc43820d7ec922d/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_636c974fb41747e09cc43820d7ec922d/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_12bb36c4d1d840baa999c5852a48f010/publisher_13afc06480f84b9ca8aa4a15bf3b2e89/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_12bb36c4d1d840baa999c5852a48f010/publisher_13afc06480f84b9ca8aa4a15bf3b2e89/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_636c974fb41747e09cc43820d7ec922d/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_636c974fb41747e09cc43820d7ec922d/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_636c974fb41747e09cc43820d7ec922d/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_636c974fb41747e09cc43820d7ec922d/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_12bb36c4d1d840baa999c5852a48f010/checker_c1fea294c3c646a1813061b5f6d1ad4d/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_12bb36c4d1d840baa999c5852a48f010/checker_c1fea294c3c646a1813061b5f6d1ad4d/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_12bb36c4d1d840baa999c5852a48f010/checker_c1fea294c3c646a1813061b5f6d1ad4d/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agent_teams/studio_team_12bb36c4d1d840baa999c5852a48f010/checker_c1fea294c3c646a1813061b5f6d1ad4d/raw_traces_manifest.json
+--- start 2026-11-18T11:34:59.580Z pid 22283
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/.env
+◇ injected env (7) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:63339
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:63339
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/db/test.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+(node:22283) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+AgentRunManager initialized.
+Node access: local control socket not opened. The node's local control socket path is 129 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/node-access/local-control.sock. Use a shorter data folder path.
+AgentRunManager initialized.
+Overwriting existing tool definition for name: 'search_web'
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_3be79c64df5b44f983df9013db6c8f64/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_3be79c64df5b44f983df9013db6c8f64/raw_traces_manifest.json
+--- start 2026-11-18T11:36:16.063Z pid 23645
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/.env
+◇ injected env (7) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/.env // tip: ◈ secrets for agents [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:63339
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:63339
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/db/test.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+(node:23645) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+AgentRunManager initialized.
+Node access: local control socket not opened. The node's local control socket path is 129 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/node-access/local-control.sock. Use a shorter data folder path.
+AgentRunManager initialized.
+Overwriting existing tool definition for name: 'search_web'
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_INVALID /rest/remote/messages from 127.0.0.1
+{"level":40,"time":1795001781562,"pid":23645,"hostname":"MacBookPro","reqId":"req-q","method":"POST","url":"/rest/remote/messages","statusCode":401,"elapsedMs":0.5169999999998254,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uwIfuo/beta/data/memory/agents/publisher_10607aecbe8343df8fe39e1b60bab879/raw_traces_manifest.json

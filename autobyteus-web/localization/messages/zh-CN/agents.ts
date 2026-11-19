@@ -100,8 +100,12 @@ const messages = {
   'agents.components.agents.GroupableTagInput.loading': '加载中...',
   'agents.components.agents.GroupableTagInput.add': '添加',
   'agents.components.agents.GroupableTagInput.remove': '移除',
-  'agents.store.interrupt.failed': '无法停止 {{target}}：{{detail}}',
-  'agents.store.interrupt.transportFailed': '无法向 {{target}} 发送停止命令：{{detail}}',
+  'agents.send.notDelivered.notSent': '消息未发送：未连接到节点。消息已放回输入框，请重新发送。',
+  'agents.send.notDelivered.unknown': '发送时与节点的连接中断。消息已放回输入框；如果它没有出现在对话中，请重新发送。',
+  'agents.send.notDelivered.dismiss': '关闭',
+  'agents.interrupt.stopping': '正在停止…',
+  'agents.interrupt.notSent': '停止指令未发送：未连接到节点。请检查连接后重试。',
+  'agents.interrupt.failed': '无法停止 {{name}}，请重试。',
 } satisfies TranslationCatalog;
 
 export default messages;

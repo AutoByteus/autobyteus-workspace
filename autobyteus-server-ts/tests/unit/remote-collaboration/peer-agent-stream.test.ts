@@ -36,6 +36,8 @@ describe("node B's agent stream for the peer that started its run", () => {
     const memberSnapshot = await peerAgentStreamSnapshot(sequences, "member-b", stored("member-b"));
     expect(coordinatorSnapshot).toMatchObject({ base_sequence: 1, turn_frames: [{ type: "SEGMENT_START", sequence: 1 }],
       stored: { conversation: [{ content: "the task" }] } });
+    // autobyteus-540 D-8: the relay has no input-state read, so the peer's page settles a lost send as unknown.
+    expect(coordinatorSnapshot.input_state).toBeNull();
     expect(memberSnapshot).toMatchObject({ base_sequence: 0, turn_frames: [] });
     coordinator.emit(segment("coordinator-b", "t1", "planning ")[1]!);
     segment("member-b", "t2", "building").forEach((event) => member.emit(event));
@@ -53,7 +55,7 @@ describe("node B's agent stream for the peer that started its run", () => {
     first.emit(segment("member-b", "t1", "a")[0]!);
     const firstSequence = frames[0]!.liveSequenceId;
     detach();
-    expect(await peerAgentStreamSnapshot(sequences, "member-b", stored("member-b"))).toMatchObject({ live_sequence_id: null, turn_frames: [], base_sequence: 0 });
+    expect(await peerAgentStreamSnapshot(sequences, "member-b", stored("member-b"))).toMatchObject({ live_sequence_id: null, input_state: null, turn_frames: [], base_sequence: 0 });
     const restored = fakeRun("member-b");
     sequences.attachToRun(restored.run as never, recorder);
     restored.emit(segment("member-b", "t2", "b")[0]!);

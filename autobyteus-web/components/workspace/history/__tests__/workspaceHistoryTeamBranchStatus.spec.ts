@@ -5,7 +5,7 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import type {
   RunHistoryStableExecutionRow,
   RunHistoryTeamExecutionRow,
-  RunHistoryTransientExecutionRow,
+  RunHistoryDelegatedRunRow,
   TeamMemberTreeRow,
   TeamTreeNode,
 } from '~/stores/runHistoryTypes';
@@ -57,10 +57,10 @@ const taskAgentRow = (
   key: string,
   depth: number,
   status: AgentStatus | string | null,
-  transientKind: RunHistoryTransientExecutionRow['transientKind'] = 'task_agent',
-): RunHistoryTransientExecutionRow => ({
-  kind: 'transient_execution',
-  transientKind,
+  delegatedRunKind: RunHistoryDelegatedRunRow['delegatedRunKind'] = 'task_agent',
+): RunHistoryDelegatedRunRow => ({
+  kind: 'delegated_run',
+  delegatedRunKind,
   rowKey: `task-agent:${key}`,
   teamRunId: 'root-team-run',
   memberAddress: `/${key}`,
@@ -78,9 +78,9 @@ const taskTeamRow = (
   key: string,
   depth: number,
   status: AgentStatus | string | null,
-): RunHistoryTransientExecutionRow => ({
-  kind: 'transient_execution',
-  transientKind: 'task_team',
+): RunHistoryDelegatedRunRow => ({
+  kind: 'delegated_run',
+  delegatedRunKind: 'task_team',
   rowKey: `task-team:${key}`,
   teamRunId: 'root-team-run',
   memberAddress: `/${key}`,

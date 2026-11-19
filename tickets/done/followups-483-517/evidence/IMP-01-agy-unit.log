@@ -1,0 +1,5 @@
+# IMP-01 AGY unit tests (FU-003)
+# command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/antigravity --no-watch
+# commit: 807951b6e0; 2026-11-18T11:54:54Z
+ Test Files  21 passed | 4 skipped (25)
+      Tests  327 passed | 6 skipped (333)

@@ -34,14 +34,14 @@ standalone path (`AgentRunService.resolveCommandReadyAgentRun` and the lifecycle
   root lifecycle (`activating → active → terminating → terminated`, or `fail_stop`) and the public
   API. Delivery, addressing, admission and child commands are in
   `services/standalone-root-message-delivery.ts`.
-- **`StandaloneHostAgentHandle`** (`domain/standalone-host-agent-handle.ts`): the host's single
+- **`StandaloneRunAgentHandle`** (`domain/standalone-run-agent-handle.ts`): the host's single
   execution, like a configured member's handle. `ensureReady()` activates a prepared run,
   restores a stopped or crashed one, or returns the live run; concurrent callers join one attempt.
   Every root path to the host (user command, child message, stream connect) goes through it, so
   host crash recovery works like a configured member's. Its backend is
-  `StandaloneAgentRunLifecycleService.activateHost(runId, {memberExecutionContext})` (the only
-  writer of `run_metadata.json`) and `terminateHost(runId)`. The lifecycle never calls back into
-  the root, so the lock order is always the root gate, then the lifecycle lane. `activateHost` of
+  `StandaloneAgentRunLifecycleService.activateRunAgent(runId, {memberExecutionContext})` (the only
+  writer of `run_metadata.json`) and `terminateRunAgent(runId)`. The lifecycle never calls back into
+  the root, so the lock order is always the root gate, then the lifecycle lane. `activateRunAgent` of
   an eligible run without its root-built member context throws: a bypass is a loud error.
 - **`StandaloneAgentRunRootManager`** (`services/standalone-agent-run-root-manager.ts`): the
   process registry of roots, bound once by the general process run supervisor (no statics).
@@ -57,7 +57,7 @@ standalone path (`AgentRunService.resolveCommandReadyAgentRun` and the lifecycle
   `StandaloneRunCommandPort` (the command coordinator's eligible-run post: host ready,
   `onActiveRunReady` binding the host stream, mention admission, then the post with the caller's
   options unchanged) and `StandaloneRunLifecyclePort` (`AgentRunService`: create, activate,
-  restore and resolve go through `resolveRootAndEnsureHost`; `terminateAgentRun` goes through
+  restore and resolve go through `resolveRootAndEnsureAgent`; `terminateAgentRun` goes through
   `stopRoot`). Interrupt and tool approval act on a live host only and never start it.
   The lifecycle port also carries `refreshInheritedLaunch(runId)`: a saved edit of the stopped
   host (`AgentRunService.updateStoppedSelection`, result `UPDATED`) reaches the registered or
@@ -96,8 +96,9 @@ operation gate: the host's own address (refused as yourself); when that misses, 
 Task continues in its `CollaborationTree` (`resolve`) with the standing agents of the runs that assigned
 its Tasks (contract §2.3 step 2); any other address is `COLLABORATION_TARGET_NOT_FOUND` and nothing is
 created. A message to another run goes by run ID
-through `CrossRunMessageDelivery` (allowed when both runs work on one open Task, or one is the other's
-assigner). `delegate_task(address)` refuses the sender's own address
+through `CrossRunMessageDelivery`: it may wake a stopped receiver when both runs work on one open Task or
+one is the other's assigner, and it reaches any other running agent without waking it (CM-13,
+autobyteus-492). `delegate_task(address)` refuses the sender's own address
 (`COLLABORATION_SELF_TARGET_REJECTED`, "you can't delegate to yourself", autobyteus-435), then
 delegates to a catalog Agent or Agent Team. `listAvailableAgents(sender)` serves
 `list_available_agents` and never writes, so a run that only lists has no `hasCollaboration` flag
@@ -147,7 +148,7 @@ message ID (CM-9); the run's view shows the messages of its own log.
 
 - **`@` resolution.** A host SEND_MESSAGE with `mentions` on `/ws/agent/:runId` is resolved by the
   root after the host is ready (`AgentRunCommandCoordinator.post` →
-  `StandaloneAgentRunRoot.postHostUserMessage` → `StandaloneRootMessageDelivery.postToHost`); a
+  `StandaloneAgentRunRoot.postAgentUserMessage` → `StandaloneRootMessageDelivery.postToAgent`); a
   child's SEND_MESSAGE with `mentions` on the run's view stream is resolved for the focused child
   (`resolveCollaboratorMentions`). Resolution adds nothing; the posted message carries the note
   steering the agent to `delegate_task`. An ineligible mention rejects the send with
@@ -169,23 +170,22 @@ message ID (CM-9); the run's view shows the messages of its own log.
   nodes (each by its Task entry, with its node, without statuses); it never restores or starts a run.
   A child on this node is a run of its own and is read by its own identity (its run, or its team
   run's member: conversation, trace pages, Agent Artifacts and file content; autobyteus-461
-  CR-461-022). `agentRunCollaborationMemberProjection(hostRunId, memberAddress, agentRunId)` reads a
+  CR-461-022). `agentRunCollaborationMemberProjection(runId, memberAddress, agentRunId)` reads a
   child on a peer node through this run, from its node (`StandaloneRootMemberViewProjectionService`,
   which answers only this run's peer children); a peer child's trace and files stay on its node.
   `collaboratorMentionCandidates(rootSubjectKind: "agent", rootRunId, focusedAgentRunId)` lists
-  the `@` options for one focused agent (the host or a child). `focusedAgentRunId` is required
+  the `@` options for one focused agent (the run's own agent or a child). `focusedAgentRunId` is required
   for Agent roots.
   `getStandaloneRunTokenUsageSummary(runId)` rolls the run's token usage up over the runs it
   delegated to (see [Token Usage](./token_usage.md#standalone-run-roll-up)).
-- **Context files.** A child's files use the owner kinds `agent_collaboration_member_draft` /
-  `agent_collaboration_member_final` (`{hostRunId, agentRunId}`), located among the runs this run
-  delegated to; the bytes live in the child's own run folder. Draft locators have the form
-  `/rest/drafts/agent-collaborations/:host/agent-runs/:agent/context-files/:file` and are read
-  and deleted through the universal `GET`/`DELETE /rest/drafts/*` routes (see
-  [File Rendering And Media Pipeline](../FILE_RENDERING_AND_MEDIA_PIPELINE.md#url--serving-strategy)).
-  Final files are served from `/rest/agent-collaborations/:host/agent-runs/:agent/context-files/:file`.
-  The host keeps the ordinary standalone owners.
-- **Message references.** `/rest/agent-collaborations/:host/communication/messages/:messageId/references/:referenceId/content`.
+- **Context files.** A delegated run's files are its own: an agent run's under `agent_draft` /
+  `agent_final` (`/rest/runs/:runId/context-files/:file`), a delegated team's members' under the
+  team-member owners (`/rest/team-runs/:teamRunId/agent-runs/:agentRunId/context-files/:file`), never
+  through the run that delegated it. The host-scoped owner kind and its
+  `/rest/agent-collaborations/…/context-files/…` routes are gone (autobyteus-500 FU-020); the stored
+  links of that form are converted by `20261119_delegated_run_own_attachment_links` and its follow-up,
+  with a backup of each rewritten trace file.
+- **Message references.** `/rest/agent-collaborations/:runId/communication/messages/:messageId/references/:referenceId/content`.
 
 ## Native Compaction And Stop
 
@@ -213,7 +213,7 @@ peer's run in that delegation's Task entry (`nodeId`). See [Remote Collaboration
 ## TS Source
 
 - `src/standalone-agent-run-root/domain/standalone-agent-run-root.ts`
-- `src/standalone-agent-run-root/domain/standalone-host-agent-handle.ts`
+- `src/standalone-agent-run-root/domain/standalone-run-agent-handle.ts`
 - `src/standalone-agent-run-root/services/standalone-agent-run-root-manager.ts`
 - `src/standalone-agent-run-root/services/standalone-root-message-delivery.ts`
 - `src/standalone-agent-run-root/services/standalone-root-builder.ts`

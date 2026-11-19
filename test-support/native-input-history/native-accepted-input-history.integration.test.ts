@@ -70,8 +70,8 @@ describe('native-produced saved history joins actual hosted pending input', () =
       const hydrate = async () => {
         // The run delegates nothing to other nodes (autobyteus-278 added the remote runs to the view's input).
         const view = AgentRootExecutionViewDtoSchema.parse(projectAgentCollaborationView({ ...(await f.manager.getInspection(HOST))!, remoteTaskExecutions: [] })).root_agent;
-        const context = await buildAgentRunCollaborationContext({ hostRunId: HOST, view });
-        expect(await hydrateAgentRunCollaborationChild({ hostRunId: HOST, collaboration: context, agentRunId: f.run.runId,
+        const context = await buildAgentRunCollaborationContext({ agentRunId: HOST, view });
+        expect(await hydrateAgentRunCollaborationChild({ agentRunId: HOST, collaboration: context, agentRunId: f.run.runId,
           isPublished: () => true, liveToolAuthority: () => false })).toBe('hydrated');
         return context.getAgentContext(f.run.runId)!;
       };

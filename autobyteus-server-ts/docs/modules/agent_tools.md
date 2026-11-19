@@ -193,13 +193,13 @@ the same strict shape.
 
 ## Server-Owned Agent Discovery Tools
 
-`list_available_agents` and `list_peer_nodes` (`src/agent-tools/agent-discovery/`,
+`list_available_agents`, `list_peer_nodes` and `list_running_agents` (`src/agent-tools/agent-discovery/`,
 registered together by `register-agent-discovery-tools.ts`) are **opt-in** tools
-(REQ-001; autobyteus-261 DEC-401): they are registered in the tool registry
+(REQ-001; autobyteus-261 DEC-401; autobyteus-492): they are registered in the tool registry
 (category Agent Communication) so they appear in the tool picker, and an agent gets
-one only when its definition's `toolNames` select it. Neither is ever added
-automatically. `RuntimeAgentToolExposure.listAvailableAgentsEnabled` and
-`listPeerNodesEnabled` record the selection. Both have the same availability:
+one only when its definition's `toolNames` select it. None is ever added
+automatically. `RuntimeAgentToolExposure.listAvailableAgentsEnabled`,
+`listPeerNodesEnabled` and `listRunningAgentsEnabled` record the selection. All have the same availability:
 a sender whose member context can list (a run that can delegate).
 
 - `list_available_agents` takes an optional `node` and returns
@@ -233,7 +233,20 @@ a sender whose member context can list (a run that can delegate).
   is not listed. `available` means the peer answers and
   takes this node's requests; anything else is `unavailable`, and
   `list_available_agents` with that node gives the reason.
-- Both need this node's remote collaboration switch on: with it off the agent gets
+- `list_running_agents` (autobyteus-492, CM-13) takes optional `node`, `address` (a catalog address) and
+  `state` (`running` or `idle`) and returns `{ agents: [entry] }`: the Agent and Team runs a person started
+  (no `delegatedFrom`) that run now (their entry agent's live status: an Agent's own agent, a Team's
+  coordinator), except the caller's own run. An Agent entry is `{kind: "agent", name, address?, agent_run_id,
+  workspace?, state, started_at?, project?}`; a Team entry `{kind: "agent_team", name, address?, team_run_id,
+  team_coordinator_agent_run_id, workspace?, state, started_at?, project?}`, its `workspace` and `state` its
+  coordinator's (`state`: `running` for working or starting, `idle`, `error`). With `node`, every entry also
+  has `node`. A field without a value is left out; there is never a title, content or member. Org runs,
+  Team members and delegated runs are not listed. The list is for messages: an Agent is messaged by
+  `agent_run_id`, a Team through `team_coordinator_agent_run_id`, with the same `node`. Without `node`, the
+  process's `RunningAgentsListing` answers (bound by the collaboration composition); with `node`, the peer's
+  listing through `PeerDiscoveryChannel.listRunningAgents` (`/rest/remote/running-agents`), read strictly and
+  filtered here by the same rule.
+- With `node`, the tools need this node's remote collaboration switch on: with it off the agent gets
   "Remote collaboration is turned off on this node, so nothing was sent to another
   node." A refusal from or about a peer has the same text as for `delegate_task`
   (REQ-109 of 191). On AutoByteus a refusal is the tool's error; over Agent Tools MCP it

@@ -74,7 +74,7 @@ describe("RootMessageAppend", () => {
     }
   });
 
-  it.each(["TASK_AGENT_RESOURCE_CLOSED", "TASK_AGENT_RESOURCE_CONFLICT"] as const)(
+  it.each(["TASK_AGENT_RESOURCE_CLOSED"] as const)(
     "C-2: a %s scope error under the lock is the refusal with the error's own text; the slot is dropped", (code) => {
     const s = subject();
     s.scope.error = new TaskDelegationError(code, `Refused: ${code}`);

@@ -16,6 +16,9 @@ import { useAgentTeamContextsStore } from './agentTeamContextsStore'
 import { useAgentTeamRunStore } from './agentTeamRunStore'
 import { useWorkspaceStore } from './workspace'
 import { createPeerRunStreams } from '~/services/peerRuns/peerRunStreams'
+import { INTERRUPT_NOT_SENT } from '~/services/agentStreaming/interruptCommandAdmission'
+import { MessageNotDeliveredError } from '~/services/runSubmission/messageNotDelivered'
+import { showMessageNotDelivered } from '~/services/runSubmission/localUserSubmission'
 import { useWindowNodeContextStore } from './windowNodeContextStore'
 import { createRandomId } from '~/utils/randomId'
 
@@ -123,7 +126,7 @@ export const useDelegatedRunsStore = defineStore('delegatedRuns', () => {
       return Object.freeze({
         // The composer writes the draft on the run's own context; its own send reads it there.
         send: async () => { await runs.sendUserInputAndSubscribe(subject.agentRunId) },
-        interrupt: async () => { runs.interruptGeneration(subject.agentRunId) },
+        interrupt: () => runs.interruptGeneration(subject.agentRunId),
         decideTool: async (invocationId: string, approved: boolean, reason: string | null) => {
           await runs.postToolExecutionApproval(subject.agentRunId, invocationId, approved, reason)
         },
@@ -135,7 +138,7 @@ export const useDelegatedRunsStore = defineStore('delegatedRuns', () => {
       send: async (content: string, paths: readonly ContextFilePath[]) => {
         await teams.sendMessageToFocusedMember(content, [...paths], { member })
       },
-      interrupt: async () => { teams.interruptFocusedMemberGeneration(member) },
+      interrupt: () => teams.interruptFocusedMemberGeneration(member),
       decideTool: async (invocationId: string, approved: boolean, reason: string | null, target?: ToolApprovalTarget | null) => {
         await teams.postToolExecutionApproval(invocationId, approved, reason, target ?? null, subject.teamRunId)
       },
@@ -144,14 +147,28 @@ export const useDelegatedRunsStore = defineStore('delegatedRuns', () => {
 
   /** A peer's run: a message and an interrupt go to its node through its stream; no tool approval, as at base. */
   const peerInteractionOf = (subject: PeerSubject): AgentInteractionPort => Object.freeze({
+    // The draft stays in the box until the node takes the message; nothing is shown before (autobyteus-540 D-1, D-4).
     send: async (content: string) => {
       const stream = peers.streamOf(subject)
       if (!stream) throw new Error('This peer run is not open.')
       const messageId = `peer_msg_${createRandomId()}`
-      await stream.service.sendMessageAwaitingAdmission(content, [], [], { messageId, dedupeKey: messageId })
+      stream.context.messageNotDelivered = null
+      try {
+        await stream.service.whenBound(10_000)
+        await stream.service.sendMessageAwaitingAdmission(content, [], [], { messageId, dedupeKey: messageId })
+      } catch (error) {
+        if (!(error instanceof MessageNotDeliveredError)) throw error
+        console.warn(`Message to a peer run not delivered (${error.certainty}): ${error.message}`)
+        showMessageNotDelivered(stream.context, error.certainty)
+        return
+      }
       stream.context.requirement = ''
     },
-    interrupt: async () => { peers.streamOf(subject)?.service.interruptGeneration(`peer_interrupt_${createRandomId()}`) },
+    interrupt: async () => {
+      const stream = peers.streamOf(subject)
+      if (!stream) return INTERRUPT_NOT_SENT
+      return stream.service.interruptGeneration(`peer_interrupt_${createRandomId()}`)
+    },
     decideTool: async () => undefined,
   })
 

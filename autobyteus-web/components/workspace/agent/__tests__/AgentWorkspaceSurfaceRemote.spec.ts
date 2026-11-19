@@ -22,7 +22,7 @@ const mountFor = (runId: string) => mount(AgentWorkspaceSurface, {
   props: {
     showHeaderActions: true,
     target: {
-      kind: 'agent_run_task_agent', host: { hostRunId: 'manager-run' }, address: '/market_researcher',
+      kind: 'agent_run_task_agent', viewRun: { runId: 'manager-run' }, address: '/market_researcher',
       context: { config: { agentDefinitionId: '', agentDefinitionName: 'market researcher', agentAvatarUrl: null },
         state: { runId, currentStatus: 'idle', conversation: { messages: [] }, eventMonitorPresentationRevision: 0, hasEarlierActiveTraceEvents: false } },
       browse: { kind: 'peerRun', nodeId: 'srv_docker', runId, agentRunId: runId },

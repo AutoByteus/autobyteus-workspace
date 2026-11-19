@@ -57,12 +57,11 @@ describe('context-file-owner-types', () => {
       { kind: 'agent_draft', draftRunId: 'temp-run-1' },
       { kind: 'team_member_draft', teamDraftId: 'team-1', memberAddress: '/C/D' as never },
       { kind: 'org_member_draft', orgRunId: 'org-1', agentRunId: 'agent-1' },
-      { kind: 'agent_collaboration_member_draft', hostRunId: 'host-1', agentRunId: 'child-1' },
     ];
 
     it('covers every draft owner kind', () => {
       expect(owners.map((owner) => owner.kind).sort()).toEqual([
-        'agent_collaboration_member_draft', 'agent_draft', 'org_member_draft', 'team_member_draft',
+        'agent_draft', 'org_member_draft', 'team_member_draft',
       ]);
     });
 
@@ -76,13 +75,14 @@ describe('context-file-owner-types', () => {
         '/rest/drafts/agent-runs/temp-run-1/context-files/ctx_a__b.txt',
         '/rest/drafts/team-runs/team-1/members/%2FC%2FD/context-files/ctx_a__b.txt',
         '/rest/drafts/agent-org-runs/org-1/agent-runs/agent-1/context-files/ctx_a__b.txt',
-        '/rest/drafts/agent-collaborations/host-1/agent-runs/child-1/context-files/ctx_a__b.txt',
       ]);
     });
 
     it.each([
       '/rest/runs/run-1/context-files/ctx_a__b.txt',
       '/rest/agent-collaborations/host/agent-runs/child/context-files/ctx_a__b.txt',
+      // autobyteus-500 FU-020: the host-scoped owner kind is gone.
+      '/rest/drafts/agent-collaborations/host-1/agent-runs/child-1/context-files/ctx_a__b.txt',
       '/rest/drafts/unknown-runs/x/context-files/ctx_a__b.txt',
       '/rest/drafts/agent-runs/x/context-files',
       '/rest/drafts/agent-runs/x/files/ctx_a__b.txt',
@@ -101,7 +101,6 @@ describe('context-file-owner-types', () => {
       '/rest/drafts/agent-runs/x/context-files/%E0%A4%A',
       '/rest/drafts/team-runs/team-1/members/no-root/context-files/ctx_a__b.txt',
       '/rest/drafts/agent-org-runs/org/agent-runs/%2E%2E/context-files/ctx_a__b.txt',
-      '/rest/drafts/agent-collaborations/host/agent-runs/a%2Fb/context-files/ctx_a__b.txt',
       '/rest/drafts/agent-runs/..%2Fagent-runs%2Fvictim/context-files/ctx_a__b.txt',
       '/rest/drafts/agent-runs/%2E%2E/context-files/ctx_a__b.txt',
       '/rest/drafts/agent-runs/..%2F..%2Fx/context-files/ctx_a__b.txt',
@@ -128,11 +127,9 @@ describe('context-file-owner-types', () => {
       { parse: parseDraftContextFileOwnerDescriptor, base: { kind: 'agent_draft' }, fields: ['draftRunId'] },
       { parse: parseDraftContextFileOwnerDescriptor, base: { kind: 'team_member_draft', memberAddress: '/team/lead' }, fields: ['teamDraftId'] },
       { parse: parseDraftContextFileOwnerDescriptor, base: { kind: 'org_member_draft' }, fields: ['orgRunId', 'agentRunId'] },
-      { parse: parseDraftContextFileOwnerDescriptor, base: { kind: 'agent_collaboration_member_draft' }, fields: ['hostRunId', 'agentRunId'] },
       { parse: parseFinalContextFileOwnerDescriptor, base: { kind: 'agent_final' }, fields: ['runId'] },
       { parse: parseFinalContextFileOwnerDescriptor, base: { kind: 'team_member_final' }, fields: ['teamRunId', 'agentRunId'] },
       { parse: parseFinalContextFileOwnerDescriptor, base: { kind: 'org_member_final' }, fields: ['orgRunId', 'agentRunId'] },
-      { parse: parseFinalContextFileOwnerDescriptor, base: { kind: 'agent_collaboration_member_final' }, fields: ['hostRunId', 'agentRunId'] },
     ];
     const valid = (owner: (typeof owners)[number], id: string) =>
       Object.fromEntries([...Object.entries(owner.base), ...owner.fields.map((field) => [field, id])]);

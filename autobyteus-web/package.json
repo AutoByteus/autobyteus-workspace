@@ -1,6 +1,6 @@
 {
   "name": "autobyteus",
-  "version": "1.5.13",
+  "version": "1.5.14-beta.1",
   "packageManager": "pnpm@10.28.1",
   "description": "AutoByteus Desktop Application",
   "license": "AGPL-3.0-only",
@@ -79,6 +79,8 @@
     "test:e2e:codex-command-failure-detail": "node tests/e2e/codex-command-failure-detail-probe.mjs",
     "test:e2e:standalone-agent-error-stop": "node tests/e2e/standalone-agent-error-stop-probe.mjs",
     "test:e2e:interrupt-result-presentation": "node tests/e2e/interrupt-result-presentation-probe.mjs",
+    "test:e2e:stop-generation": "node tests/e2e/stop-generation-probe.mjs",
+    "test:e2e:send-delivery": "node tests/e2e/send-delivery-probe.mjs",
     "test:e2e:projects-navigation": "node tests/e2e/projects-primary-navigation-probe.mjs",
     "test:e2e:projects": "node tests/e2e/projects-feature-probe.mjs",
     "test:e2e:embedding-settings": "node tests/e2e/embedding-settings-probe.mjs",

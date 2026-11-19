@@ -227,7 +227,7 @@ const serve = async (handlers: {
   const app = fastify();
   await app.register(websocket);
   const unused = { connect: async () => null, handleMessage: async () => undefined, disconnect: async () => undefined };
-  await registerAgentWebsocket(app, unused as never, (handlers.teamHandler ?? unused) as never, handlers.orgHandler);
+  await registerAgentWebsocket(app, unused as never, (handlers.teamHandler ?? unused) as never, (handlers.orgHandler ?? unused) as never, unused as never);
   const address = new URL(await app.listen({ port: 0, host: "127.0.0.1" }));
   return { baseUrl: `ws://${address.hostname}:${address.port}`, close: async () => { await app.close(); } };
 };

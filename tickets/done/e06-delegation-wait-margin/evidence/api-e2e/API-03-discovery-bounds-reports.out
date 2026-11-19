@@ -1,0 +1,4 @@
+# id: API-03-discovery-bounds-reports; 2026-11-18T17:09:33Z
+{"variant":"slow5","load":[66,54,49],"runtimeAvailability":{"ms":5382,"enabled":true,"reason":null},"availableAgentRuntimes":{"ms":4043,"antigravity":"{\"checkedAt\":\"2026-11-18T17:09:41.759Z\",\"age
+{"variant":"slow12","load":[68,55,50],"runtimeAvailability":{"ms":10010,"enabled":false,"reason":"Antigravity model discovery timed out; check the CLI and retry."},"availableAgentRuntimes":{"ms":4048,
+# exit: 0

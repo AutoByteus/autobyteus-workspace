@@ -12,7 +12,7 @@ commands, segment/error semantics, presentation cadence, and close behavior.
 - standalone Agent: `/ws/agent/:runId` (the Agent's own chat);
 - AgentTeam: `/ws/agent-team/:teamRunId` (`@autobyteus/team-stream-contracts`);
 - AgentOrg: `/ws/agent-org/:orgRunId`, and
-- delegated agents of a standalone run: `/ws/agent-collaboration/:hostRunId`,
+- delegated agents of a standalone run: `/ws/agent-collaboration/:runId`,
   both with the `ROOT_EXECUTION_EVENT` envelope of
   `@autobyteus/collaboration-stream-contracts`.
 
@@ -200,7 +200,8 @@ run to serve a view.
   sent, live root followed), and only then is the message posted, so the
   `MEMBER_INPUT_MESSAGE` echo that settles the web's send arrives as an ordinary live
   event (SR-048); the Org stream acknowledges `SEND_MESSAGE` (`AGENT_COMMAND_ACK`).
-  An interrupt or a tool approval for an agent of a stopped run is refused
+  An interrupt for an agent of a stopped run finds nothing to stop and is
+  answered `accepted` (it restores nothing); a tool approval is refused
   (`TEAM_RUN_STOPPED` on the team stream, `AGENT_ORG_STOPPED` on the Org stream).
 - **Delegated runs' output.** A view carries no delegated run's output: each
   delegated run's statuses, output and commands are on its own stream (rule 2),
@@ -341,6 +342,20 @@ is `RETRY_PEERS` on `/ws/run-status` (it replaced `REFRESH_REMOTE_TASK_EXECUTION
 command. Acceptance confirms request admission; later runtime events own
 terminal status.
 
+**A user's Stop with nothing to stop is accepted** (autobyteus-533), on every
+stream that takes `INTERRUPT_GENERATION` (`/ws/agent`, `/ws/agent-team`,
+`/ws/agent-org`, `/ws/agent-collaboration`, `/ws/peer-run`): the run has no
+active turn, its turn ended in the runtime before the interrupt reached it
+(every backend answers `NO_ACTIVE_TURN` then), or the run, Team or Org is not
+running (`RUN_NOT_ACTIVE`, or not active on this node). Its goal, nothing
+generating, holds, so the answer is `accepted` and the run is not started or
+restored. One rule applies it at these command boundaries
+(`userInterruptOutcome`, `services/agent-streaming/user-interrupt-outcome.ts`);
+the domain `AgentRun.interrupt()` keeps answering `NO_ACTIVE_TURN` to its
+internal callers (termination, the root shutdown fence). Every other answer that
+is not `accepted` is a real failure. A malformed command or a target that is not
+a member of the addressed root stays rejected.
+
 ## Connection And Restore
 
 A standalone connection binds to the durable run ID, emits `CONNECTED`, projects
@@ -355,6 +370,19 @@ fresh snapshot is read, preventing create/restore/termination races.
 If a send materializes or restores a runtime, the existing socket is rebound to
 that stream. Command overlays remain until command-correlated runtime evidence
 or coordinator failure replaces them.
+
+A standalone run's stream takes commands only after its `CONNECTED`: a command
+sent while the session connects is answered `ERROR` `SESSION_NOT_READY`, so a
+client sends only on a bound stream and waits for the command's
+`AGENT_COMMAND_ACK` (autobyteus-540). Its `AGENT_STREAM_SNAPSHOT` (on every
+connection, including a rebind) carries `input_state`: for an active run the
+run's current input state, which includes a message the run holds until its
+running turn ends (queued, forwarded or held input stays in it until that turn's
+end); `null` for a stopped run and for a peer's relay of the run, which cannot
+tell. A client whose send lost its answer with the connection reads the
+snapshot's stored part, its `input_state` and its turn frames: a message found
+in any of them was delivered; a message missing from a snapshot that has an
+`input_state` was not; a missing message with `input_state: null` is unknown.
 
 Manager lookup distinguishes a command-**active** root from a **managed** root
 still owned during initialization, Stop, or a nonterminal Stop failure. The

@@ -98,7 +98,7 @@ export interface TaskExecutionResourcePort {
    * Where a new local copy of this Project's Task runs: its first linked folder, or `null` when it has none (the copy
    * inherits). Rejects `TASK_PROJECT_FOLDER_UNAVAILABLE` when that link is not an existing folder on this node.
    */
-  projectFolderForNewCopy(projectId: string): Promise<string | null>;
+  projectFolderForNewDelegatedRun(projectId: string): Promise<string | null>;
   markStarted(execution: TaskExecutionReference): Promise<void>;
   markFailed(execution: TaskExecutionReference, error: Readonly<{ code: string; message: string }>): Promise<void>;
   /** Every readable Task that has entries (a damaged Task is left out; `load()` reported it). Throws before the records are loaded. */

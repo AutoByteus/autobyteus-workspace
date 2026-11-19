@@ -66,6 +66,7 @@ export class SendMessageToDispatcher {
       return this.globalRouter.deliver({
         sender: input.sender,
         targetAgentRunId: parsed.target.targetAgentRunId,
+        ...(parsed.node !== null ? { node: parsed.node } : {}),
         content,
         messageType: parsed.messageType,
         referenceFiles: parsed.referenceFiles,

@@ -6,15 +6,17 @@ import {
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { ToolApprovalTarget } from '~/types/segments';
 import { WebSocketClient, ConnectionState, type IWebSocketClient } from './transport';
-import type {
-  InterruptGenerationCommandAckPayload,
-  InterruptCommandTransportFailure,
-  PendingInterruptCommand,
-} from './protocol';
+import type { InterruptOutcome, PendingInterruptCommand } from './protocol';
 import { dispatchAgentStreamMessage } from './agentStreamMessageProjector';
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
-import { drainPendingInterruptTransportFailures, tryAdmitInterruptCommand } from './interruptCommandAdmission';
+import {
+  admitInterruptCommand,
+  INTERRUPT_NOT_SENT,
+  holdPendingInterrupts,
+  settlePendingInterruptAck,
+} from './interruptCommandAdmission';
+import { HeldUntilRebind } from './heldUntilRebind';
 import { TeamToolApprovalTargetTracker } from './TeamToolApprovalTargetTracker';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
@@ -52,8 +54,6 @@ export type TeamStreamRecoveryNotice = Readonly<{
 
 export interface TeamStreamingServiceOptions {
   wsClient?: IWebSocketClient;
-  onInterruptCommandResult?: (ack: InterruptGenerationCommandAckPayload) => void;
-  onInterruptCommandTransportFailure?: (failure: InterruptCommandTransportFailure) => void;
   onStreamRecoveryRequired?: (notice: TeamStreamRecoveryNotice) => void;
 }
 
@@ -63,9 +63,9 @@ export class TeamStreamingService {
   private readonly wsClient: IWebSocketClient;
   private readonly wsEndpoint: string;
   private readonly pendingInterruptCommands = new Map<string, PendingInterruptCommand>();
+  /** Stops lost with a connection this service recovers: settled once the snapshot that makes it ready is applied. */
+  private readonly interruptsAwaitingRebind = new HeldUntilRebind();
   private readonly teamSends = new TeamSendAdmissions();
-  private readonly onInterruptCommandResult: (ack: InterruptGenerationCommandAckPayload) => void;
-  private readonly onInterruptCommandTransportFailure: (failure: InterruptCommandTransportFailure) => void;
   private readonly onStreamRecoveryRequired: (notice: TeamStreamRecoveryNotice) => void;
   private readonly approvalTracker = new TeamToolApprovalTargetTracker();
   private teamContext: AgentTeamContext | null = null;
@@ -88,8 +88,6 @@ export class TeamStreamingService {
   constructor(wsEndpoint: string, options: TeamStreamingServiceOptions = {}) {
     this.wsClient = options.wsClient || new WebSocketClient();
     this.wsEndpoint = wsEndpoint;
-    this.onInterruptCommandResult = options.onInterruptCommandResult ?? (() => undefined);
-    this.onInterruptCommandTransportFailure = options.onInterruptCommandTransportFailure ?? (() => undefined);
     this.onStreamRecoveryRequired = options.onStreamRecoveryRequired ?? (() => undefined);
   }
 
@@ -132,7 +130,7 @@ export class TeamStreamingService {
   disconnect(): void {
     if (this.teamContext) useRunTreeStore().streamEnded(this.treeRefOf(this.teamContext));
     this.rejectCandidate(new Error('Candidate Team stream was disposed before readiness.'));
-    this.drainPendingInterruptCommands('Interrupt was cancelled because the stream disconnected.');
+    this.settleInterruptsNow();
     this.teamSends.drain('Team message admission was interrupted because the stream disconnected.');
     this.reconnect.dispose();
     this.unbindListeners();
@@ -167,20 +165,20 @@ export class TeamStreamingService {
     this.sendToolDecision('DENY_TOOL', invocationId, target, reason);
   }
 
-  interruptGeneration(commandId: string, target: TeamInterruptGenerationTarget): boolean {
+  /** Stops a member's generation; resolves with the Stop's outcome (`not_sent` while the stream is not ready). */
+  interruptGeneration(commandId: string, target: TeamInterruptGenerationTarget): Promise<InterruptOutcome> {
+    if (!this.isReady) {
+      console.warn(`Stop was not sent: the Team stream is ${this.phase}.`);
+      return Promise.resolve(INTERRUPT_NOT_SENT);
+    }
     const normalizedCommandId = commandId.trim();
     const agentRunId = this.requireCurrentAgentRun(target.agentRunId);
-    const rootTeamRunId = this.teamContext!.view.getRootTeamRunId();
-    const entry: PendingInterruptCommand = {
-      commandId: normalizedCommandId,
-      target: { target_kind: 'team_member', team_run_id: rootTeamRunId, agent_run_id: agentRunId },
-    };
-    return tryAdmitInterruptCommand({
+    return admitInterruptCommand({
       pending: this.pendingInterruptCommands,
-      entry,
+      commandId: normalizedCommandId,
+      target: { target_kind: 'team_member', team_run_id: this.teamContext!.view.getRootTeamRunId(), agent_run_id: agentRunId },
       getConnectionState: () => this.wsClient.state,
       send: () => this.wsClient.send(serializeTeamStreamClientMessage(createTeamInterruptMessage({ commandId: normalizedCommandId, agentRunId }))),
-      onTransportFailure: this.onInterruptCommandTransportFailure,
     });
   }
 
@@ -271,6 +269,8 @@ export class TeamStreamingService {
     const candidate = this.candidateReadiness !== null;
     if (candidate) this.failCandidate(new Error(reason || 'Candidate Team stream disconnected before readiness.'));
     this.markTransportLost(reason);
+    // No recovery follows: Stops lost with the connection end now (autobyteus-533 D-W7).
+    if (candidate || this.isReopenRequired || !retryable) this.interruptsAwaitingRebind.settle();
     if (candidate || this.isReopenRequired) return;
     if (retryable) this.reconnect.connectionLost();
     else this.reconnect.startOver();
@@ -282,7 +282,8 @@ export class TeamStreamingService {
     // Meanwhile the Team's tree is read, as a listed run's is (SR-084).
     if (this.teamContext) useRunTreeStore().streamEnded(this.treeRefOf(this.teamContext));
     if (!this.isReopenRequired) this.phase = 'disconnected';
-    this.drainPendingInterruptCommands(reason || 'Interrupt result was lost because the stream disconnected.');
+    // Their answers are gone with the socket: held until the snapshot of the next connection (or a final close).
+    holdPendingInterrupts(this.interruptsAwaitingRebind, this.pendingInterruptCommands);
     this.teamSends.drain(reason || 'Team message admission was lost because the stream disconnected.');
   }
 
@@ -292,14 +293,13 @@ export class TeamStreamingService {
   };
 
   private handleInterruptAck(message: Extract<TeamStreamServerMessage, { type: 'AGENT_COMMAND_ACK' }>): void {
-    const pending = this.pendingInterruptCommands.get(message.payload.command_id);
-    if (!pending || pending.target.target_kind !== 'team_member'
-      || pending.target.agent_run_id !== message.payload.agent_run_id) return;
-    this.pendingInterruptCommands.delete(message.payload.command_id);
-    const target = pending.target;
-    this.onInterruptCommandResult(message.payload.state === 'accepted'
-      ? { command_type: 'INTERRUPT_GENERATION', command_id: message.payload.command_id, state: 'accepted', target }
-      : { command_type: 'INTERRUPT_GENERATION', command_id: message.payload.command_id, state: message.payload.state, code: message.payload.code, message: message.payload.message, target });
+    const ack = message.payload;
+    settlePendingInterruptAck(this.pendingInterruptCommands, {
+      commandId: ack.command_id,
+      target: { target_kind: 'team_member', team_run_id: this.teamContext!.view.getRootTeamRunId(), agent_run_id: ack.agent_run_id },
+      accepted: ack.state === 'accepted',
+      detail: ack.state === 'accepted' ? '' : `[${ack.code}] ${ack.message}`,
+    });
   }
 
   private dispatchMessage(message: TeamStreamServerMessage, context: AgentTeamContext): void {
@@ -324,6 +324,8 @@ export class TeamStreamingService {
       this.expectedBaseChangeSequence = null;
       this.reconnect.connected();
       this.resolveCandidate();
+      // The rebind's statuses are on the view: Stops lost with the old connection end, and the status decides.
+      this.interruptsAwaitingRebind.settle();
       return;
     }
     if (message.type === 'RUN_TREE_SNAPSHOT') {
@@ -430,7 +432,8 @@ export class TeamStreamingService {
     this.phase = 'reopen_required';
     this.expectedBaseChangeSequence = null;
     this.rejectCandidate(new Error('Candidate Team stream requires a new recovery attempt.'));
-    this.drainPendingInterruptCommands('Interrupt was cancelled because Team stream recovery is required.');
+    // This service never reconnects (the store replaces it): its Stops end now.
+    this.settleInterruptsNow();
     this.teamSends.drain('Team message admission was cancelled because Team stream recovery is required.');
     this.approvalTracker.clear();
     this.reconnect.startOver();
@@ -463,11 +466,9 @@ export class TeamStreamingService {
     readiness?.reject(error);
   }
 
-  private drainPendingInterruptCommands(message: string): void {
-    drainPendingInterruptTransportFailures({
-      pending: this.pendingInterruptCommands,
-      reason: { code: 'INTERRUPT_TRANSPORT_DISCONNECTED', connectionState: this.wsClient.state, message },
-      onTransportFailure: this.onInterruptCommandTransportFailure,
-    });
+  /** The stream is closed for good: every waiting or held Stop settles as `connection_lost` now. */
+  private settleInterruptsNow(): void {
+    holdPendingInterrupts(this.interruptsAwaitingRebind, this.pendingInterruptCommands);
+    this.interruptsAwaitingRebind.settle();
   }
 }

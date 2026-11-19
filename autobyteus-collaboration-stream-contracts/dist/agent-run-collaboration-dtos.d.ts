@@ -1,18 +1,18 @@
 import { z } from "zod";
 /**
- * The collaboration package of one standalone Agent run (root kind `agent`): its host Agent. The runs it delegated are
+ * The collaboration package of one standalone Agent run (root kind `agent`): its own agent. The runs it delegated are
  * its tree's rows (`RUN_TREE_SNAPSHOT`, autobyteus-461 SR-084).
  */
 export declare const agentRunCollaborationTreeDtoSchema: z.ZodObject<{
     subjectKind: z.ZodLiteral<"agent">;
     createdAt: z.ZodString;
-    host: z.ZodObject<{
+    agent: z.ZodObject<{
         address: z.ZodString;
         agentRunId: z.ZodString;
         agentDefinitionId: z.ZodString;
     }, z.core.$strict>;
 }, z.core.$strict>;
-/** The host's view; the host reports on its own Agent stream, its delegated runs on `/ws/run-status` (SR-083). */
+/** The run's view; its agent reports on its own Agent stream, its delegated runs on `/ws/run-status` (SR-083). */
 export declare const agentRunCollaborationViewDtoSchema: z.ZodObject<{
     base_change_sequence: z.ZodNumber;
     live_sequence_id: z.ZodNullable<z.ZodString>;
@@ -21,7 +21,7 @@ export declare const agentRunCollaborationViewDtoSchema: z.ZodObject<{
     execution_tree: z.ZodObject<{
         subjectKind: z.ZodLiteral<"agent">;
         createdAt: z.ZodString;
-        host: z.ZodObject<{
+        agent: z.ZodObject<{
             address: z.ZodString;
             agentRunId: z.ZodString;
             agentDefinitionId: z.ZodString;
@@ -29,7 +29,7 @@ export declare const agentRunCollaborationViewDtoSchema: z.ZodObject<{
     }, z.core.$strict>;
 }, z.core.$strict>;
 /**
- * The Agent root view's events: its messages and its tree's changes. Its host presents on its own Agent stream, and each
+ * The Agent root view's events: its messages and its tree's changes. Its agent presents on its own Agent stream, and each
  * run it delegated on its own (rule 2; a peer's run through `/ws/peer-run`, SR-086 G-D1).
  */
 export declare const agentRunCollaborationEventDtoSchema: z.ZodDiscriminatedUnion<[z.ZodObject<{

@@ -1,4 +1,5 @@
 import { NativeCommandShutdown } from "../compositions/native-command-shutdown.js";
+import { REMOTE_COLLABORATION_OFF_DISCOVERY } from "../agent-tools/agent-discovery/agent-discovery-refusal.js";
 import "reflect-metadata";
 import type { FastifyInstance } from "fastify";
 import { initializePrisma, shutdownPrisma } from "repository_prisma";
@@ -68,6 +69,7 @@ import { composeCollaboration, composeTaskSide, type Collaboration } from "../co
 import { createEpisodicCatalog, type EpisodicCatalog } from "../agent-episodic-catalog/services/episodic-catalog.js";
 import { getWorkJournalService } from "../agent-work-journal/services/work-journal-service.js";
 import { createCollaborationRootResolver } from "../compositions/collaboration-root-resolver.js";
+import { composeRunningAgents } from "../compositions/running-agents-composition.js";
 import { getActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { createPlatformNoticeSources, type PlatformNoticeSources } from "../compositions/platform-notice-sources.js";
 import { AgentRunPlatformNotices } from "../agent-execution/domain/agent-run-platform-notices.js";
@@ -225,13 +227,15 @@ export const startStandaloneApplicationHost = async (
       baseUrl: processResources.appConfig.getBaseUrl(),
     });
     agentToolsMcpHost = createAgentToolsMcpHost({
+      // This host composes no remote collaboration (autobyteus-500 FU-011: an explicit value, not a missing binding).
+      peerDiscovery: () => REMOTE_COLLABORATION_OFF_DISCOVERY,
       loggingConfig: processResources.loggingConfig,
     });
     const agentProviderFactoryBuilder = createProcessAgentProviderFactoryBuilder({
       workspaceManager, nativeCommandProcessScope: nativeShutdown.scope,
     });
     const modelCatalogService = getModelCatalogService();
-    const modelSelectionValidator = new RunModelSelectionService(modelCatalogService);
+    const modelSelectionValidator = new RunModelSelectionService(modelCatalogService, getModelAvailabilityService());
     const generalAssembly = agentToolsMcpHost.sessionAuthorities.begin({
       scopeIdentity: "general-process",
     });
@@ -275,6 +279,9 @@ export const startStandaloneApplicationHost = async (
         episodicCatalog: currentEpisodicCatalog,
         // One notice slot: tool list updates, skill notices, then background task notices (one notice per input).
         platformInputNotices: new AgentRunPlatformNotices(platformNotices.sources),
+        // No peer nodes on this host (ARCH-REV-027; autobyteus-500 FU-011).
+        remoteChannel: () => null,
+        peerDiscovery: () => REMOTE_COLLABORATION_OFF_DISCOVERY,
       });
     generalProcessAuthority = null;
     collaboration = await composeCollaboration({ memoryDir: processResources.appConfig.getMemoryDir(), taskSide, runs: generalProcessRunSupervisor,
@@ -283,7 +290,10 @@ export const startStandaloneApplicationHost = async (
       activeRoots: getActiveCollaborationRootDirectory(),
       // This host has no peer nodes (ARCH-REV-027: its real equivalent, as at base).
       remoteChannel: () => null,
-      episodicCatalog: currentEpisodicCatalog });
+      episodicCatalog: currentEpisodicCatalog,
+      // autobyteus-492: this node's running agents (messages by run ID and list_running_agents).
+      running: composeRunningAgents({ memoryDir: processResources.appConfig.getMemoryDir(), tempWorkspaceDir: processResources.appConfig.getTempWorkspaceDir(),
+        activeRoots: getActiveCollaborationRootDirectory(), runs: generalProcessRunSupervisor, agentDefinitions: hostDefinitionServices.agentDefinitionService }) });
     currentEpisodicCatalog.start({ taskTitles: collaboration.tasks });
     const applicationRuntime = buildApplicationPlatformRuntime({
       appConfig: processResources.appConfig,
@@ -302,6 +312,9 @@ export const startStandaloneApplicationHost = async (
       modelSelectionValidator,
       providerRelayAccess: null,
       runPasses: null,
+      // No peer nodes on this host (autobyteus-500 FU-011).
+      remoteChannel: () => null,
+      peerDiscovery: () => REMOTE_COLLABORATION_OFF_DISCOVERY,
       modelAvailabilityService: getModelAvailabilityService(),
       llmProviderService: getLlmProviderService(),
       codexClientManager: getCodexAppServerClientManager(),

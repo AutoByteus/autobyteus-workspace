@@ -28,6 +28,7 @@ import { AgentStreamBroadcaster } from "../../../src/services/agent-streaming/ag
 import { AgentStreamHandler } from "../../../src/services/agent-streaming/agent-stream-handler.js";
 import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
 import { AgentStreamSequences } from "../../../src/services/agent-streaming/agent-stream-sequence.js";
+import { NO_ELIGIBLE_STANDALONE_RUNS } from "../../helpers/explicit-host-collaborators.js";
 
 type WsMessage = {
   type: string;
@@ -354,7 +355,7 @@ const startHarness = async (input: {
     overlayStore,
     commandRegistry: registry,
   });
-  const commandCoordinator = new AgentRunCommandCoordinator({
+  const commandCoordinator = new AgentRunCommandCoordinator({ standaloneRuns: NO_ELIGIBLE_STANDALONE_RUNS,
     agentRunService: agentRunService as any,
     registry,
     overlayStore,
@@ -382,6 +383,8 @@ const startHarness = async (input: {
       handleMessage: async () => {},
       disconnect: async () => {},
     } as any,
+    {} as never,
+    {} as never,
   );
   const address = await app.listen({ port: 0, host: "127.0.0.1" });
   const url = new URL(address);

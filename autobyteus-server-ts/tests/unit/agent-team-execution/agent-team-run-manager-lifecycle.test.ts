@@ -6,6 +6,7 @@ import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/
 import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import { MemberExecutionContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
 import { ActiveCollaborationRootDirectory } from "../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
+import { OFFERED_MODEL_EXECUTION_FACTORY } from "../../helpers/explicit-host-collaborators.js";
 
 const modelSelectionValidator = Object.freeze({
   validateMany: async () => [],
@@ -15,7 +16,7 @@ const modelSelectionValidator = Object.freeze({
   }),
 });
 
-const flatTeamExecutionFactory = new FlatTeamExecutionFactory();
+const flatTeamExecutionFactory = new FlatTeamExecutionFactory({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY });
 const memberExecutionContextBuilder = new MemberExecutionContextBuilder({
   getDefinitionById: async () => null,
 } as never, NOT_DELEGATED);

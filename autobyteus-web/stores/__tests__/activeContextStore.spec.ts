@@ -82,7 +82,7 @@ describe('activeContextStore interrupt routing', () => {
 
     const interruptFocusedMember = vi
       .spyOn(teamRunStore, 'interruptFocusedMemberGeneration')
-      .mockReturnValue(true);
+      .mockResolvedValue({ kind: 'accepted' });
 
     await activeContextStore.interruptGeneration();
 
@@ -103,7 +103,7 @@ describe('activeContextStore interrupt routing', () => {
     agentContextsStore.runs.set('agent-run-1', agentContext);
     selectionStore.selectRun('agent-run-1', 'agent');
 
-    const interruptAgent = vi.spyOn(agentRunStore, 'interruptGeneration').mockReturnValue(true);
+    const interruptAgent = vi.spyOn(agentRunStore, 'interruptGeneration').mockResolvedValue({ kind: 'accepted' });
     const interruptTeam = vi.spyOn(teamRunStore, 'interruptFocusedMemberGeneration');
 
     await activeContextStore.interruptGeneration();
@@ -128,7 +128,7 @@ describe('activeContextStore interrupt routing', () => {
     activeTeam.view.focusAgent(solutionDesigner.state.runId);
     const interruptFocusedMember = vi
       .spyOn(teamRunStore, 'interruptFocusedMemberGeneration')
-      .mockReturnValue(true);
+      .mockResolvedValue({ kind: 'accepted' });
 
     expect(activeContextStore.activeAgentContext?.state.runId).toBe('team-1::solution_designer');
     await activeContextStore.interruptGeneration();
@@ -263,7 +263,7 @@ describe('activeContextStore interrupt routing', () => {
     // Once the worker's run is open, it is the target, with its own draft.
     const worker = createAgentContext('worker-run');
     opening.mockReturnValue(false);
-    childTarget.mockReturnValue({ kind: 'agent_run_task_agent', host: { hostRunId: 'manager-run' }, address: '/worker', agentRunId: 'worker-run',
+    childTarget.mockReturnValue({ kind: 'agent_run_task_agent', viewRun: { runId: 'manager-run' }, address: '/worker', agentRunId: 'worker-run',
       access: 'live', context: worker, workspaceRootPath: null, browse: { kind: 'run', runId: 'worker-run' },
       interaction: { send: vi.fn(), interrupt: vi.fn(), decideTool: vi.fn() } } as never);
     reselect();

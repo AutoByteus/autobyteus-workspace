@@ -21,11 +21,14 @@ import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
+import { createAgentStreamHandler } from "../../../src/services/agent-streaming/agent-stream-handler.js";
+import { AgentRunCommandCoordinator } from "../../../src/agent-execution/services/agent-run-command-coordinator.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getCodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { SkillService } from "../../../src/skills/services/skill-service.js";
 import { closeLiveServerVault, initializeLiveServerVault } from "../../../../test-support/test-vault/live-server-vault.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { NO_ELIGIBLE_STANDALONE_RUNS } from "../../helpers/explicit-host-collaborators.js";
 
 const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen3.6-35b-a3b";
 const lmStudioRuntimeEnabled = process.env.RUN_LMSTUDIO_E2E === "1";
@@ -721,7 +724,7 @@ const defineRuntimeSuite = (input: {
         handleMessage: async () => {},
         disconnect: async () => {},
       } as unknown as Parameters<typeof registerAgentWebsocket>[2];
-      await registerAgentWebsocket(app, undefined, dummyTeamHandler);
+      await registerAgentWebsocket(app, createAgentStreamHandler(new AgentRunCommandCoordinator({ standaloneRuns: NO_ELIGIBLE_STANDALONE_RUNS })), dummyTeamHandler, {} as never, {} as never);
       const address = await app.listen({ port: 0, host: "127.0.0.1" });
       const url = new URL(address);
       const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent/${runId}`);

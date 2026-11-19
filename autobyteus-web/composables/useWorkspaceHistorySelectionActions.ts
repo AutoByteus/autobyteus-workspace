@@ -78,7 +78,7 @@ export const useWorkspaceHistorySelectionActions = (params: {
 
   /** The run row: the run's own agent again, not a delegated child under it (autobyteus-277 AR-006). */
   const onOpenAgentRun = (run: RunTreeRow): Promise<void> => {
-    useAgentRunCollaborationStore().selectHost(run.runId);
+    useAgentRunCollaborationStore().selectStandaloneRun(run.runId);
     return onSelectRun(run);
   };
 

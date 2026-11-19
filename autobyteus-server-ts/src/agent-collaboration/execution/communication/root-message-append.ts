@@ -11,7 +11,7 @@ export type RootMessageAppendPreparation =
   | Readonly<{ kind: "append"; logOwners: readonly StoredMessageLogOwner[] }>
   /** The root stopped accepting messages, or the message ID is already in the list. */
   | Readonly<{ kind: "conflict" }>
-  /** The Task scope refused the message (closed, or a different Task). */
+  /** The Task scope refused the message: its Task is closed (autobyteus-492: a different Task is no refusal). */
   | Readonly<{ kind: "refused" }>;
 
 /** A coordinator's result for one append. An indeterminate write is thrown, never returned. */

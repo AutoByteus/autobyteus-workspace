@@ -40,7 +40,7 @@ const setup = (options: { quiet?: boolean } = {}) => {
   const finish = vi.fn(async () => ({ accepted: true }));
   const tryPrepare = vi.fn(async () => (options.quiet === false ? null : { commit: () => ({ finish }) }));
   const shutdown = new DelegatedRunIdleShutdown({
-    hostRunId: "host-run",
+    agentRunId: "host-run",
     agentRunManager: { tryPrepareAgentRunTerminationIfQuiescent: tryPrepare } as never,
     runInGate: (operation) => operation(),
     gracePeriodMs: () => 1_000,

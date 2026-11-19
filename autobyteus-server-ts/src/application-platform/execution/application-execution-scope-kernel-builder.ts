@@ -1,4 +1,6 @@
 import { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
+import { ConfiguredAgentExecutionFactory } from "../../agent-collaboration/execution/backends/configured-agent-execution-factory.js";
+import { APPLICATION_HOST_STANDALONE_RUNS } from "../../agent-execution/services/standalone-run-ports.js";
 import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
 import { getAgentStreamSequences } from "../../services/agent-streaming/agent-stream-sequence.js";
@@ -134,6 +136,7 @@ export const buildApplicationExecutionScopeKernel = (
         // Application runs get no integration access in this step.
         integrationRunAccess: null,
         providerRelayAccess: input.providerRelayAccess,
+        peerDiscovery: input.peerDiscovery,
       });
     const agentRunManager = new AgentRunManager({
       autoByteusBackendFactory: providerFactories.autoByteus,
@@ -169,9 +172,13 @@ export const buildApplicationExecutionScopeKernel = (
       memoryDir: input.memoryDir,
       modelSelectionValidator: input.modelSelectionValidator,
       delegationIndex: input.delegationIndex,
+      remoteChannel: input.remoteChannel,
       viewStreams: input.viewStreams,
       taskRecords: input.taskRecords,
       flatTeamExecutionFactory: new FlatTeamExecutionFactory({
+        // G-5: the scope's member agents check their definition, then their stored model, before they start.
+        executionFactory: new ConfiguredAgentExecutionFactory({ storedModelChecks: { agentDefinitions: input.agentDefinitionService,
+          storedModels: input.modelSelectionValidator } }),
         agentRunManager,
         memoryLocator,
         activityInspector,
@@ -260,6 +267,7 @@ const buildRunServices = (
   const lifecycleService = new StandaloneAgentRunLifecycleService(
     input.memoryDir,
     {
+      storedModelChecks: { agentDefinitions: input.agentDefinitionService, storedModels: input.modelSelectionValidator },
       agentRunManager: kernel.agentRunManager,
       metadataService,
       historyCatalogService,
@@ -276,6 +284,8 @@ const buildRunServices = (
     agentRunIdentityAllocator,
     provisioningService,
     lifecycleService,
+    // Application runs are application-owned, never eligible standalone runs (DR-2).
+    standaloneRuns: APPLICATION_HOST_STANDALONE_RUNS,
   });
   const teamRunService = new TeamRunService({
     agentTeamRunManager: kernel.teamRunManager,

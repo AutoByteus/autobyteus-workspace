@@ -44,7 +44,7 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
   /** Tells the listener of a change made directly in `entries` (a test's own write). */
   changed(taskId: string): void { this.listener?.entriesChanged(taskId); }
 
-  async projectFolderForNewCopy(projectId: string): Promise<string | null> {
+  async projectFolderForNewDelegatedRun(projectId: string): Promise<string | null> {
     const folder = this.projectFolders.get(projectId) ?? null;
     if (folder instanceof Error) throw folder;
     return folder;
@@ -235,5 +235,5 @@ const entryAgentOf = (entry: Entry): string => "agentRunId" in entry.execution ?
 /** The agent run that receives a delegated copy's work (an Agent copy itself, or a Team copy's coordinator); throws on a failed delegation. */
 export const ingressOfOutcome = (outcome: TaskDelegationOutcome): string => {
   if (!outcome.delegated) throw new Error(`Delegation failed: ${outcome.message}`);
-  return outcome.copy.kind === "agent" ? outcome.copy.agentRunId : outcome.copy.teamCoordinatorAgentRunId;
+  return outcome.delegatedRun.kind === "agent" ? outcome.delegatedRun.agentRunId : outcome.delegatedRun.teamCoordinatorAgentRunId;
 };

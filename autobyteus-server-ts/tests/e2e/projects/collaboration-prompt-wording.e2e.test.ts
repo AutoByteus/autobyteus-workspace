@@ -224,7 +224,8 @@ suite("Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/sco
     expect(withTaskId.text, JSON.stringify(withTaskId)).toContain("You are a task agent, so you can't use task_id. Delegate with a description instead; that work is part of your Task.");
     // An ID the sender never received from a delegation.
     const unknown = await asFirst("send_message_to", { target_agent_run_id: "not_a_task_agent_000", content: "Hello?" });
-    expect(unknown.text, JSON.stringify(unknown)).toContain("No running agent has the run id 'not_a_task_agent_000', so the message was not sent. Use an exact run id you were given");
+    // autobyteus-492 REQ-010/REQ-012: a stopped agent is not woken; run IDs also come from list_running_agents; node for another node.
+    expect(unknown.text, JSON.stringify(unknown)).toContain("No running agent has the run id 'not_a_task_agent_000', so the message was not sent. A stopped agent is not woken. Use an exact run id you were given");
     // SR-003: a name used as an address, on both tools, says what to do instead; a message to oneself is refused plainly.
     const nameAsAddress = await asFirst("send_message_to", { recipient_address: "aic_pm_name", content: "Hello?" });
     expect(nameAsAddress.text, JSON.stringify(nameAsAddress)).toContain("'aic_pm_name' is not a valid address");
@@ -244,8 +245,9 @@ suite("Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/sco
     await h.terminate("agent", root.rootId);
   }, 300_000);
 
-  // The cross-Task refusal reaches the agent as a result with the §7.3 text (design T-4), not as a tool error.
-  it("CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text", async () => {
+  // autobyteus-492 (DEC-001, CM-13): the run ID is the address. The former cross-Task refusal (§7.3 "it works on a different
+  // Task") is gone: a task agent's message to a running task agent of a different Task is delivered, and that agent receives it.
+  it("CPW-R2 Agent root: a task agent messaging a running agent of a different Task is delivered (492 AC-008)", async () => {
     const root = await h.startRoot("agent", ids);
     const delegate = async (name: string) => {
       const result = await root.calls(root.managerRunId, "/", callTool("delegate_task", { recipient_address: `/${segment(name)}`, description: "Reply OK." }));
@@ -256,8 +258,13 @@ suite("Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/sco
     const secondId = await delegate(names.stranger);
     await root.waitForTaskAgent(firstId);
     await root.waitForTaskAgent(secondId);
-    const crossTask = await h.mcpCall(firstId, "send_message_to", { target_agent_run_id: secondId, content: "Hello?" });
-    expect(crossTask.text, JSON.stringify(crossTask)).toContain("You can't message this agent: it works on a different Task.");
+    const crossTask = await h.mcpCall(firstId, "send_message_to", { target_agent_run_id: secondId, content: "CROSS-TASK-HELLO" });
+    expect(crossTask.isError, JSON.stringify(crossTask)).toBe(false);
+    expect(JSON.parse(crossTask.text), crossTask.text).toMatchObject({ accepted: true, target_agent_run_id: secondId });
+    let received: string | undefined;
+    await until(async () => Boolean(received = stringsOf(await root.conversationOf(secondId, "")).find((value) => value.includes("CROSS-TASK-HELLO"))),
+      "the task agent of the other Task receives the message");
+    expect(received).toContain(`sender run id "${firstId}"`);
     root.close();
     await h.terminate("agent", root.rootId);
   }, 300_000);
@@ -310,7 +317,7 @@ suite("Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/sco
     await check("M-05", agentId, "send_message_to", { target_agent_run_id: teamRunId, content: "x" },
       [`${teamRunId} is a task agent team's run id, and send_message_to talks with agents. To talk with the team, use its coordinator's run id: ${coordinatorId}.`]);
     await check("M-11", agentId, "send_message_to", { target_agent_run_id: "research_lead", content: "x" },
-      ["No running agent has the run id 'research_lead', so the message was not sent. Use an exact run id you were given: a sender run id (from a message or your new task), or a run id delegate_task returned to you."]);
+      ["No running agent has the run id 'research_lead', so the message was not sent. A stopped agent is not woken. Use an exact run id you were given: a sender run id (from a message or your new task), a run id delegate_task returned to you, or one list_running_agents lists. For an agent on another node, also pass node."]);
     await check("M-13", agentId, "send_message_to", { target_agent_run_id: agentId, content: "x" }, ["You can't send a message to yourself."]);
     await check("M-21", coordinatorId, "delegate_task", { recipient_address: mateAddress, description: "x" },
       [`${mateAddress} is in your own team; you can't delegate to it. Talk with it using send_message_to.`]);
@@ -359,11 +366,11 @@ suite("Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/sco
     // Agent root: the agent the user started delegates (its address reaches it → given); the task agent reports (run id only);
     // the task agent delegates further (a task agent sender → run id only); a task agent team member writes to the host from outside its team (run id only).
     const agentRoot = await h.startRoot("agent", ids);
-    const host = agentRoot.managerRunId, hostAddress = `/${segment(names.manager)}`;
+    const host = agentRoot.managerRunId, agentAddress = `/${segment(names.manager)}`;
     const a = (await agentRoot.calls(host, "/", callTool("delegate_task", { recipient_address: `/${segment(names.outsider)}`, description: "Task marker H1-A." }))).target_agent_run_id as string;
     await agentRoot.waitForTaskAgent(a);
     const taskA = await receivedWith(agentRoot, a, `/${segment(names.outsider)}`, "H1-A");
-    expect(taskA).toContain(`You have a new task from ${withAddress(hostAddress, host)}.`);
+    expect(taskA).toContain(`You have a new task from ${withAddress(agentAddress, host)}.`);
     expect(taskA).toContain("recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both)");
     await agentRoot.calls(a, `/${segment(names.outsider)}`, callTool("send_message_to", { target_agent_run_id: host, content: "Report marker H1-R." }));
     const report = await receivedWith(agentRoot, host, "/", "H1-R");
@@ -384,7 +391,7 @@ suite("Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/sco
     const teamCopy = await agentRoot.waitForTaskAgent(squad.target_team_run_id as string);
     const coordAddress = teamCopy.members.find((m) => m.agentRunId === coord)!.address;
     const taskT = await receivedWith(agentRoot, coord, coordAddress, "H1-T");
-    expect(taskT).toContain(`You have a new task from ${withAddress(hostAddress, host)}.`);
+    expect(taskT).toContain(`You have a new task from ${withAddress(agentAddress, host)}.`);
     await agentRoot.calls(coord, coordAddress, callTool("send_message_to", { target_agent_run_id: host, content: "Team report marker H1-TR." }));
     const teamReport = await receivedWith(agentRoot, host, "/", "H1-TR");
     expect(teamReport).toContain(`You received a message from ${runIdOnly(coord)}.`);

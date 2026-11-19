@@ -19,6 +19,7 @@ import { orgMemberLoadTarget, stageAgentOrgExecutionContext } from '~/services/a
 import { memberLoader } from '~/services/runHydration/memberLoader'
 import { rebuildOfView, useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 import { AgentOrgStreamingService } from '~/services/agentOrgExecution/agentOrgStreamingService'
+import { orgInterruptOutcome } from '~/services/runInterrupt/orgInterruptOutcome'
 import { acceptLocalSubmission, beginLocalUserSubmission, failLocalSubmission, finalizeLocalSubmissionAttachments, type LocalUserSubmissionHandle } from '~/services/runSubmission/localUserSubmission'
 import { upsertUserMessageByIdentity } from '~/services/agentStreaming/handlers/userMessageProjection'
 import { readAgentOrgRunInspection } from '~/services/agentOrgExecution/agentOrgRunInspection'
@@ -343,8 +344,8 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
         mentions: toCollaboratorMentionDtos(content, mentions) })
       acceptLocalSubmission(submission)
     } catch (cause) {
-      // A rejected add posted nothing: the notice shows and the draft stays as typed.
-      if (failLocalSubmission(submission, cause) === 'kept_draft') return
+      // A rejected add posted nothing (draft kept); a message that did not reach the node returns its draft (540 D-5).
+      if (failLocalSubmission(submission, cause) !== 'failed') return
       if (!draftEdited) { context.requirement = content; context.contextFilePaths = attachments; context.requestedMentions = [...mentions] }
       throw cause
     } finally {
@@ -373,7 +374,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     const capability: WorkspaceAccess = access === 'continuable' ? { access, continuation: { send } }
       : access === 'live' ? { access, interaction: {
         send,
-        interrupt: () => liveService().interrupt(agentRunId),
+        interrupt: () => orgInterruptOutcome(liveService(), agentRunId),
         decideTool: (invocationId, approved, reason) => liveService().decideTool(agentRunId, invocationId, approved, reason),
       } } : { access: 'read_only' }
     return Object.freeze({ ...target, ...capability })

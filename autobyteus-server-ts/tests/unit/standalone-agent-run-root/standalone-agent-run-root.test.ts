@@ -30,7 +30,7 @@ describe("StandaloneAgentRunRoot (its own agent only)", () => {
     expect(root.hasAgentExecution(HOST)).toBe(true);
     expect(root.hasAgentExecution("someone-else")).toBe(false);
     const accepted = await root.acceptFromRun({ message: message("m-1"), senderIdentity: manager, senderDisplayName: "project_task_manager",
-      senderAddress: "/project_task_manager", assertAllowed: () => undefined });
+      senderAddress: "/project_task_manager", assertAllowed: () => undefined, publishToViews: true });
     expect(accepted).toMatchObject({ accepted: true });
     expect(h.restores).toHaveBeenCalledOnce();
     expect(h.host.reserved).toEqual([expect.stringContaining("Please review.")]);
@@ -55,9 +55,9 @@ describe("StandaloneAgentRunRoot (its own agent only)", () => {
   it("an address in this run is its own agent (the self refusal); any other address is not found here", async () => {
     const h = await buildManager();
     const root = (await h.manager.resolveRoot(HOST))!;
-    await expect(root.deliverLogicalMessage(h.hostIdentity, { recipientAddress: "/research_assistant" as never, content: "x" }))
+    await expect(root.deliverLogicalMessage(h.agentIdentity, { recipientAddress: "/research_assistant" as never, content: "x" }))
       .resolves.toMatchObject({ accepted: false, code: "COLLABORATION_SELF_TARGET_REJECTED" });
-    await expect(root.deliverLogicalMessage(h.hostIdentity, { recipientAddress: "/code_reviewer" as never, content: "x" }))
+    await expect(root.deliverLogicalMessage(h.agentIdentity, { recipientAddress: "/code_reviewer" as never, content: "x" }))
       .rejects.toMatchObject({ code: "COLLABORATION_TARGET_NOT_FOUND" });
   });
 
@@ -65,7 +65,7 @@ describe("StandaloneAgentRunRoot (its own agent only)", () => {
     const h = await buildManager();
     const root = (await h.manager.resolveRoot(HOST))!;
     const stopped = await h.manager.stopRoot(HOST);
-    expect(stopped).toMatchObject({ rootEnded: true, host: { outcome: "terminated" } });
+    expect(stopped).toMatchObject({ rootEnded: true, agent: { outcome: "terminated" } });
     expect(root.isActive()).toBe(false);
     expect(h.directory.resolve(root.rootIdentity)).toBeNull();
     expect(await h.manager.resolveRoot(HOST)).not.toBe(root);
@@ -77,14 +77,14 @@ describe("StandaloneAgentRunRoot (its own agent only)", () => {
     await expect(h.manager.stopRootForTaskClosure(HOST, () => false)).resolves.toBe("kept_open");
     expect(root.isActive()).toBe(true);
     expect(h.directory.resolve(root.rootIdentity)).toBe(root);
-    await expect(h.manager.stopRootForTaskClosure(HOST, () => true)).resolves.toMatchObject({ rootEnded: true, host: { outcome: "terminated" } });
+    await expect(h.manager.stopRootForTaskClosure(HOST, () => true)).resolves.toMatchObject({ rootEnded: true, agent: { outcome: "terminated" } });
     expect(root.isActive()).toBe(false);
   });
 
   it("a stopped run's view is its own agent, read without restoring it (DS-8)", async () => {
     const h = await buildManager();
     const inspection = await h.manager.getInspection(HOST);
-    expect(inspection).toMatchObject({ isActive: false, snapshot: { host: { agentRunId: HOST, address: "/research_assistant" }, createdAt: "2026-09-30T00:00:00.000Z" } });
+    expect(inspection).toMatchObject({ isActive: false, snapshot: { agent: { agentRunId: HOST, address: "/research_assistant" }, createdAt: "2026-09-30T00:00:00.000Z" } });
     expect(h.restores).not.toHaveBeenCalled();
   });
 
@@ -95,9 +95,9 @@ describe("StandaloneAgentRunRoot (its own agent only)", () => {
     const h = await buildManager(tasks, tree);
     tasks.addTask("T1");
     const root = (await h.manager.resolveRoot(HOST))!;
-    expect(root.ownedTaskOf({ identity: h.hostIdentity })).toBeNull();
+    expect(root.ownedTaskOf({ identity: h.agentIdentity })).toBeNull();
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/research_assistant",
       delegatedFrom: { delegatingRun: otherRun, delegatorAgentRunId: "manager-run" }, execution: { agentRunId: HOST } });
-    expect(root.ownedTaskOf({ identity: h.hostIdentity })).toEqual({ taskId: "T1", execution: { agentRunId: HOST }, open: true });
+    expect(root.ownedTaskOf({ identity: h.agentIdentity })).toEqual({ taskId: "T1", execution: { agentRunId: HOST }, open: true });
   });
 });

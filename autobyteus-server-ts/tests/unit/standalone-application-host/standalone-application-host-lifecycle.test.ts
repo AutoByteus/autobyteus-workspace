@@ -22,6 +22,7 @@ const mocks = vi.hoisted(() => {
     initialize: vi.fn(),
     getLogsDir: () => "/tmp/standalone-lifecycle/logs",
     getMemoryDir: () => "/tmp/standalone-lifecycle/memory",
+    getTempWorkspaceDir: () => "/tmp/standalone-lifecycle/temp_workspace",
     getAppDataDir: () => "/tmp/standalone-lifecycle",
     get: () => undefined,
     getBaseUrl: () => "http://localhost:8000",
@@ -67,7 +68,7 @@ const mocks = vi.hoisted(() => {
     resolveExactCurrentLlmModel: vi.fn(async () => null),
     runtimeModelSelectionCatalog: vi.fn(async () => ({ offeredModels: [], findExactCurrent: () => null })),
   };
-  const modelAvailabilityService = {};
+  const modelAvailabilityService = { loadOnDemandModel: async () => "not_on_demand" as const };
   const llmProviderService = {};
   const codexClientManager = {};
   return {
@@ -328,6 +329,8 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
       integrationRunAccess: null,
       providerRelayAccess: null,
       runPasses: null,
+      remoteChannel: expect.any(Function),
+      peerDiscovery: expect.any(Function),
       modelSelectionValidator: expect.anything(),
       taskRecords: expect.objectContaining({ isOpen: expect.any(Function), statusChanged: expect.any(Function) }),
       delegationIndex: expect.objectContaining({ openChildrenOf: expect.any(Function), parentOf: expect.any(Function) }),
@@ -356,6 +359,8 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
       workspaceManager: mocks.workspaceManager,
       providerRelayAccess: null,
       runPasses: null,
+      remoteChannel: expect.any(Function),
+      peerDiscovery: expect.any(Function),
       runtimeAvailabilityService: mocks.runtimeAvailabilityService,
       modelCatalogService: mocks.modelCatalogService,
       modelAvailabilityService: mocks.modelAvailabilityService,

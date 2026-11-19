@@ -42,3 +42,17 @@ describe('RunMemberRow: the agent runtime control follows the model control', ()
     expect(runtimeLockedOf({ locked: { model: false }, runtimeLocked: true })).toBe('true')
   })
 })
+
+describe('RunMemberRow: a member whose saved model is no longer offered (autobyteus-500 G-5)', () => {
+  const noteCard = { props: ['modelUnavailable'], template: '<div data-test="card-stub" :data-model-unavailable="String(modelUnavailable)" />' }
+  const noteOf = (modelUnavailableFor: ((key: string) => boolean) | null) => mount(RunMemberRow, {
+    props: { expandedKeys: new Set<string>(['/lead@lead-run']), node: node(), modelUnavailableFor },
+    global: { stubs: { RunSettingsCard: noteCard, RemoteNodeChip: true, Icon: true } },
+  }).get('[data-test="card-stub"]').attributes('data-model-unavailable')
+
+  it('passes its own answer to its card, which shows the root card\'s note', () => {
+    expect(noteOf((key) => key === '/lead@lead-run')).toBe('true')
+    expect(noteOf((key) => key === '/other')).toBe('false')
+    expect(noteOf(null)).toBe('false')
+  })
+})

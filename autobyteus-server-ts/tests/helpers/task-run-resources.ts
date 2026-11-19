@@ -2,6 +2,7 @@ import type { TaskEntriesListener } from "../../src/agent-collaboration/executio
 import { TaskExecutionResourceService } from "../../src/projects/services/task-execution-resource-service.js";
 import { TaskExecutionResourceStore } from "../../src/projects/stores/task-execution-resource-store.js";
 import type { ProjectTaskService } from "../../src/projects/services/project-task-service.js";
+import { NO_RUN_SIDE_TASK_PORTS } from "./explicit-host-collaborators.js";
 
 type ProjectTaskDependencies = NonNullable<ConstructorParameters<typeof ProjectTaskService>[0]>;
 
@@ -20,6 +21,13 @@ export const taskRunResources = (
   return resources;
 };
 
-/** A `ProjectTaskService`'s dependencies with its run resources over the same layouts as its stores. */
-export const withTaskRunResources = (deps: Omit<ProjectTaskDependencies, "taskExecutionResources">): ProjectTaskDependencies =>
-  ({ ...deps, taskExecutionResources: taskRunResources(new TaskExecutionResourceStore(deps.store?.layout, deps.adHocTasks?.layout)) });
+type RunSidePorts = keyof typeof NO_RUN_SIDE_TASK_PORTS;
+
+/**
+ * A `ProjectTaskService`'s dependencies with its run resources over the same layouts as its stores, and the run-side
+ * ports the test states, else `NO_RUN_SIDE_TASK_PORTS` (no running roots).
+ */
+export const withTaskRunResources = (
+  deps: Omit<ProjectTaskDependencies, "taskExecutionResources" | RunSidePorts> & Partial<Pick<ProjectTaskDependencies, RunSidePorts>>,
+): ProjectTaskDependencies =>
+  ({ ...NO_RUN_SIDE_TASK_PORTS, ...deps, taskExecutionResources: taskRunResources(new TaskExecutionResourceStore(deps.store?.layout, deps.adHocTasks?.layout)) });

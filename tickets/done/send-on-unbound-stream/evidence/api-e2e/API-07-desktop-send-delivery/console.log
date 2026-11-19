@@ -1,0 +1,271 @@
+2026-11-18T21:42:39.816Z debug [vite] connecting...
+2026-11-18T21:42:39.844Z debug [vite] connected.
+2026-11-18T21:42:42.737Z error Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)
+2026-11-18T21:42:42.740Z warning [Vue Router warn]: uncaught error during route navigation:
+2026-11-18T21:42:42.740Z error TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:49242/_nuxt/pages/workspace.vue
+2026-11-18T21:42:42.740Z error [nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://127.0.0.1:49242/_nuxt/pages/workspace.vue
+2026-11-18T21:42:42.740Z warning [Vue Router warn]: Unexpected error when starting the router: TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:49242/_nuxt/pages/workspace.vue
+2026-11-18T21:42:42.741Z log serverStore: Initializing server config
+2026-11-18T21:42:42.741Z log serverStore: Not in Electron environment. Skipping server initialization.
+2026-11-18T21:42:43.373Z debug [vite] connecting...
+2026-11-18T21:42:43.429Z debug [vite] connected.
+2026-11-18T21:42:45.674Z log serverStore: Initializing server config
+2026-11-18T21:42:45.674Z log serverStore: Not in Electron environment. Skipping server initialization.
+2026-11-18T21:42:45.680Z info <Suspense> is an experimental feature and its API will likely change.
+2026-11-18T21:42:46.022Z log Workspace.vue: Mounted. Fetching server settings and loading profiles...
+2026-11-18T21:42:46.047Z log [useTerminalSession] Connecting to: ws://127.0.0.1:49241/ws/terminal/a95fc1fc-1fb0-4833-bc1d-ee77c6d84a7c
+2026-11-18T21:42:46.061Z log [useTerminalSession] Connected
+2026-11-18T21:42:46.117Z log Agent WebSocket connected
+2026-11-18T21:42:46.135Z log Team WebSocket transport connected
+2026-11-18T21:42:49.708Z debug [vite] connecting...
+2026-11-18T21:42:49.729Z debug [vite] connected.
+2026-11-18T21:42:50.653Z log serverStore: Initializing server config
+2026-11-18T21:42:50.653Z log serverStore: Not in Electron environment. Skipping server initialization.
+2026-11-18T21:42:50.655Z info <Suspense> is an experimental feature and its API will likely change.
+2026-11-18T21:42:50.747Z log Workspace.vue: Mounted. Fetching server settings and loading profiles...
+2026-11-18T21:42:50.757Z log [useTerminalSession] Connecting to: ws://127.0.0.1:49241/ws/terminal/25a4b752-9c4a-48f8-9ed7-8030d8d12b44
+2026-11-18T21:42:50.767Z log [useTerminalSession] Connected
+2026-11-18T21:42:50.798Z log Agent WebSocket connected
+2026-11-18T21:42:50.837Z log Team WebSocket transport connected
+2026-11-18T21:42:57.255Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:42:57.294Z log Agent WebSocket connected
+2026-11-18T21:42:57.318Z log Team WebSocket transport connected
+2026-11-18T21:42:59.703Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:42:59.742Z log Agent WebSocket connected
+2026-11-18T21:43:00.012Z log Team WebSocket transport connected
+2026-11-18T21:43:00.657Z log Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm
+2026-11-18T21:43:02.394Z log Agent WebSocket connected
+2026-11-18T21:43:02.655Z log Team WebSocket transport connected
+2026-11-18T21:43:05.006Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:43:05.060Z log Agent WebSocket connected
+2026-11-18T21:43:05.306Z log Team WebSocket transport connected
+2026-11-18T21:43:07.728Z log Agent WebSocket connected
+2026-11-18T21:43:07.978Z log Team WebSocket transport connected
+2026-11-18T21:43:10.349Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:43:10.392Z log Agent WebSocket connected
+2026-11-18T21:43:10.634Z log Team WebSocket transport connected
+2026-11-18T21:43:13.058Z log Agent WebSocket connected
+2026-11-18T21:43:13.300Z log Team WebSocket transport connected
+2026-11-18T21:43:15.668Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:43:15.710Z log Agent WebSocket connected
+2026-11-18T21:43:15.847Z log Team WebSocket transport connected
+2026-11-18T21:43:18.337Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:43:18.374Z log Agent WebSocket connected
+2026-11-18T21:43:18.634Z log Team WebSocket transport connected
+2026-11-18T21:43:21.042Z log Agent WebSocket connected
+2026-11-18T21:43:21.280Z log Team WebSocket transport connected
+2026-11-18T21:43:23.655Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:43:23.693Z log Agent WebSocket connected
+2026-11-18T21:43:23.939Z log Team WebSocket transport connected
+2026-11-18T21:43:26.376Z log Agent WebSocket connected
+2026-11-18T21:43:26.623Z log Team WebSocket transport connected
+2026-11-18T21:43:28.992Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:43:29.041Z log Agent WebSocket connected
+2026-11-18T21:43:29.356Z log Team WebSocket transport connected
+2026-11-18T21:43:31.775Z log Agent WebSocket connected
+2026-11-18T21:43:32.012Z log Team WebSocket transport connected
+2026-11-18T21:43:34.385Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:43:34.426Z log Agent WebSocket connected
+2026-11-18T21:43:34.663Z log Team WebSocket transport connected
+2026-11-18T21:43:37.094Z log Agent WebSocket connected
+2026-11-18T21:43:37.329Z log Team WebSocket transport connected
+2026-11-18T21:43:39.701Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:43:39.741Z log Agent WebSocket connected
+2026-11-18T21:43:39.983Z log Team WebSocket transport connected
+2026-11-18T21:43:42.427Z log Agent WebSocket connected
+2026-11-18T21:43:42.664Z log Team WebSocket transport connected
+2026-11-18T21:43:45.058Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:43:45.108Z log Agent WebSocket connected
+2026-11-18T21:43:45.379Z log Team WebSocket transport connected
+2026-11-18T21:43:47.777Z log Agent WebSocket connected
+2026-11-18T21:43:48.012Z log Team WebSocket transport connected
+2026-11-18T21:43:52.595Z log Agent WebSocket disconnected: the path dropped after the message reached the node
+2026-11-18T21:43:53.604Z log Agent WebSocket connected
+2026-11-18T21:43:53.604Z log Team WebSocket transport connected
+2026-11-18T21:43:56.967Z log Agent WebSocket disconnected: the path dropped after the message reached the node
+2026-11-18T21:43:57.980Z log Agent WebSocket connected
+2026-11-18T21:43:57.980Z log Team WebSocket transport connected
+2026-11-18T21:44:06.625Z log Agent WebSocket connected
+2026-11-18T21:44:08.645Z log Agent WebSocket disconnected: the path dropped with the message on it
+2026-11-18T21:44:09.648Z log Team WebSocket transport connected
+2026-11-18T21:44:09.652Z log Agent WebSocket connected
+2026-11-18T21:44:09.660Z error Error sending user input: MessageNotDeliveredError: The message 'client_b6ca3264-ac56-4600-899d-68932b395484' was not in the stream's snapshot after the connection was lost.
+    at http://127.0.0.1:49242/_nuxt/services/agentStreaming/agentStreamSendAdmissions.ts:42:24
+    at HeldUntilRebind.settle (http://127.0.0.1:49242/_nuxt/services/agentStreaming/heldUntilRebind.ts:11:32)
+    at AgentStreamSendAdmissions.decideHeld (http://127.0.0.1:49242/_nuxt/services/agentStreaming/agentStreamSendAdmissions.ts:54:17)
+    at handleMessage (http://127.0.0.1:49242/_nuxt/services/agentStreaming/AgentStreami
+2026-11-18T21:44:09.661Z warning Message not delivered (not_sent): The message 'client_b6ca3264-ac56-4600-899d-68932b395484' was not in the stream's snapshot after the connection was lost.
+2026-11-18T21:44:14.165Z log Agent WebSocket disconnected: the path dropped with the message on it
+2026-11-18T21:44:15.171Z log Team WebSocket transport connected
+2026-11-18T21:44:15.172Z log Agent WebSocket connected
+2026-11-18T21:44:15.195Z error Error sending user input: MessageNotDeliveredError: The message 'client_6eba39e6-4924-43c2-ab37-d0abc1720521' was not in the stream's snapshot after the connection was lost.
+    at http://127.0.0.1:49242/_nuxt/services/agentStreaming/agentStreamSendAdmissions.ts:42:24
+    at HeldUntilRebind.settle (http://127.0.0.1:49242/_nuxt/services/agentStreaming/heldUntilRebind.ts:11:32)
+    at AgentStreamSendAdmissions.decideHeld (http://127.0.0.1:49242/_nuxt/services/agentStreaming/agentStreamSendAdmissions.ts:54:17)
+    at handleMessage (http://127.0.0.1:49242/_nuxt/services/agentStreaming/AgentStreami
+2026-11-18T21:44:15.195Z warning Message not delivered (unknown): The message 'client_6eba39e6-4924-43c2-ab37-d0abc1720521' was not in the stream's snapshot after the connection was lost.
+2026-11-18T21:44:17.527Z log Agent WebSocket disconnected: path down
+2026-11-18T21:44:18.531Z log Agent WebSocket disconnected: path down
+2026-11-18T21:44:20.537Z log Agent WebSocket disconnected: path down
+2026-11-18T21:44:24.541Z log Agent WebSocket disconnected: path down
+2026-11-18T21:44:27.531Z error Error sending user input: MessageNotDeliveredError: The agent stream for run 'sender_d92f_199dcc6a23fe4436bce5eee055f0427b' was not ready within 10000 ms.
+    at http://127.0.0.1:49242/_nuxt/services/agentStreaming/AgentStreamingService.ts:82:16
+2026-11-18T21:44:27.531Z warning Message not delivered (not_sent): The agent stream for run 'sender_d92f_199dcc6a23fe4436bce5eee055f0427b' was not ready within 10000 ms.
+2026-11-18T21:44:28.864Z log Team WebSocket transport connected
+2026-11-18T21:44:32.550Z log Agent WebSocket connected
+2026-11-18T21:44:34.152Z log Agent WebSocket disconnected: the page's path is down
+2026-11-18T21:44:34.698Z log Agent WebSocket disconnected: path down
+2026-11-18T21:44:35.154Z log Agent WebSocket disconnected: path down
+2026-11-18T21:44:35.704Z log Agent WebSocket disconnected: path down
+2026-11-18T21:44:37.165Z log Agent WebSocket disconnected: path down
+2026-11-18T21:44:37.708Z log Agent WebSocket disconnected: path down
+2026-11-18T21:44:41.166Z log Agent WebSocket disconnected: path down
+2026-11-18T21:44:41.711Z log Agent WebSocket disconnected: path down
+2026-11-18T21:44:44.698Z error Error sending user input: MessageNotDeliveredError: The agent stream for run 'sender_d92f_2066182bf9574ada847def6bc1329f26' was not ready within 10000 ms.
+    at http://127.0.0.1:49242/_nuxt/services/agentStreaming/AgentStreamingService.ts:82:16
+2026-11-18T21:44:44.698Z warning Message not delivered (not_sent): The agent stream for run 'sender_d92f_2066182bf9574ada847def6bc1329f26' was not ready within 10000 ms.
+2026-11-18T21:44:45.847Z log Team WebSocket transport connected
+2026-11-18T21:44:49.183Z log Agent WebSocket connected
+2026-11-18T21:44:49.714Z log Agent WebSocket connected
+2026-11-18T21:44:51.239Z log Agent WebSocket connected
+2026-11-18T21:44:53.921Z log Agent WebSocket connected
+2026-11-18T21:44:56.742Z log Agent WebSocket connected
+2026-11-18T21:44:56.751Z log Agent WebSocket disconnected: the path dropped after the message reached the node
+2026-11-18T21:44:56.752Z log Agent WebSocket disconnected: the path dropped after the message reached the node
+2026-11-18T21:44:57.759Z log Team WebSocket transport connected
+2026-11-18T21:44:57.759Z log Agent WebSocket connected
+2026-11-18T21:44:57.759Z log Agent WebSocket connected
+2026-11-18T21:45:02.945Z log Workspace.vue: Mounted. Fetching server settings and loading profiles...
+2026-11-18T21:45:08.671Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:08.671Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:08.721Z log Team WebSocket transport connected
+2026-11-18T21:45:08.741Z log Agent WebSocket connected
+2026-11-18T21:45:08.741Z log Agent WebSocket connected
+2026-11-18T21:45:11.184Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:11.184Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:11.222Z log Team WebSocket transport connected
+2026-11-18T21:45:11.241Z log Agent WebSocket connected
+2026-11-18T21:45:11.242Z log Agent WebSocket connected
+2026-11-18T21:45:13.836Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:13.837Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:13.871Z log Team WebSocket transport connected
+2026-11-18T21:45:13.892Z log Agent WebSocket connected
+2026-11-18T21:45:13.892Z log Agent WebSocket connected
+2026-11-18T21:45:16.484Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:16.484Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:16.521Z log Team WebSocket transport connected
+2026-11-18T21:45:16.541Z log Agent WebSocket connected
+2026-11-18T21:45:16.541Z log Agent WebSocket connected
+2026-11-18T21:45:19.134Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:19.135Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:19.172Z log Team WebSocket transport connected
+2026-11-18T21:45:19.192Z log Agent WebSocket connected
+2026-11-18T21:45:19.192Z log Agent WebSocket connected
+2026-11-18T21:45:21.784Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:21.784Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:21.841Z log Team WebSocket transport connected
+2026-11-18T21:45:21.860Z log Agent WebSocket connected
+2026-11-18T21:45:21.860Z log Agent WebSocket connected
+2026-11-18T21:45:24.466Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:24.467Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:24.522Z log Team WebSocket transport connected
+2026-11-18T21:45:24.545Z log Agent WebSocket connected
+2026-11-18T21:45:24.545Z log Agent WebSocket connected
+2026-11-18T21:45:27.137Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:27.137Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:27.189Z log Team WebSocket transport connected
+2026-11-18T21:45:27.207Z log Agent WebSocket connected
+2026-11-18T21:45:27.207Z log Agent WebSocket connected
+2026-11-18T21:45:29.815Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:29.816Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:29.856Z log Team WebSocket transport connected
+2026-11-18T21:45:29.873Z log Agent WebSocket connected
+2026-11-18T21:45:29.874Z log Agent WebSocket connected
+2026-11-18T21:45:32.461Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:32.461Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:32.507Z log Team WebSocket transport connected
+2026-11-18T21:45:32.525Z log Agent WebSocket connected
+2026-11-18T21:45:32.526Z log Agent WebSocket connected
+2026-11-18T21:45:35.120Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:35.120Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:35.172Z log Team WebSocket transport connected
+2026-11-18T21:45:35.194Z log Agent WebSocket connected
+2026-11-18T21:45:35.194Z log Agent WebSocket connected
+2026-11-18T21:45:37.787Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:37.787Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:37.825Z log Team WebSocket transport connected
+2026-11-18T21:45:37.843Z log Agent WebSocket connected
+2026-11-18T21:45:37.843Z log Agent WebSocket connected
+2026-11-18T21:45:40.466Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:40.467Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:40.525Z log Team WebSocket transport connected
+2026-11-18T21:45:40.547Z log Agent WebSocket connected
+2026-11-18T21:45:40.547Z log Agent WebSocket connected
+2026-11-18T21:45:43.155Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:43.155Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:43.191Z log Team WebSocket transport connected
+2026-11-18T21:45:43.210Z log Agent WebSocket connected
+2026-11-18T21:45:43.210Z log Agent WebSocket connected
+2026-11-18T21:45:45.816Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:45.816Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:45.848Z log Agent WebSocket connected
+2026-11-18T21:45:45.849Z log Agent WebSocket connected
+2026-11-18T21:45:45.850Z log Team WebSocket transport connected
+2026-11-18T21:45:48.433Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:48.433Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:48.473Z log Team WebSocket transport connected
+2026-11-18T21:45:48.495Z log Agent WebSocket connected
+2026-11-18T21:45:48.495Z log Agent WebSocket connected
+2026-11-18T21:45:51.111Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:51.111Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:51.156Z log Team WebSocket transport connected
+2026-11-18T21:45:51.176Z log Agent WebSocket connected
+2026-11-18T21:45:51.176Z log Agent WebSocket connected
+2026-11-18T21:45:53.773Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:53.773Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:53.822Z log Team WebSocket transport connected
+2026-11-18T21:45:53.841Z log Agent WebSocket connected
+2026-11-18T21:45:53.841Z log Agent WebSocket connected
+2026-11-18T21:45:56.433Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:56.433Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:56.475Z log Team WebSocket transport connected
+2026-11-18T21:45:56.491Z log Agent WebSocket connected
+2026-11-18T21:45:56.491Z log Agent WebSocket connected
+2026-11-18T21:45:59.102Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:59.102Z log Agent WebSocket disconnected: a forced reconnect
+2026-11-18T21:45:59.158Z log Team WebSocket transport connected
+2026-11-18T21:45:59.175Z log Agent WebSocket connected
+2026-11-18T21:45:59.175Z log Agent WebSocket connected
+2026-11-18T21:46:02.023Z warning Message not delivered (unknown): the path dropped with the message on it
+2026-11-18T21:46:02.025Z log Agent WebSocket disconnected: the path dropped with the message on it
+2026-11-18T21:46:02.025Z log Agent WebSocket disconnected: the path dropped with the message on it
+2026-11-18T21:46:03.034Z log Team WebSocket transport connected
+2026-11-18T21:46:03.035Z log Agent WebSocket connected
+2026-11-18T21:46:03.035Z log Agent WebSocket connected
+2026-11-18T21:46:05.154Z log Agent WebSocket disconnected: the page's path is down
+2026-11-18T21:46:05.154Z log Agent WebSocket disconnected: the page's path is down
+2026-11-18T21:46:05.853Z log Agent WebSocket disconnected: path down
+2026-11-18T21:46:05.853Z log Agent WebSocket disconnected: path down
+2026-11-18T21:46:07.858Z log Agent WebSocket disconnected: path down
+2026-11-18T21:46:07.858Z log Agent WebSocket disconnected: path down
+2026-11-18T21:46:10.849Z log Agent WebSocket disconnected: path down
+2026-11-18T21:46:10.850Z log Agent WebSocket disconnected: path down
+2026-11-18T21:46:15.853Z log Agent WebSocket disconnected: path down
+2026-11-18T21:46:15.854Z log Agent WebSocket disconnected: path down
+2026-11-18T21:46:20.851Z log Agent WebSocket connected
+2026-11-18T21:46:20.851Z log Agent WebSocket connected
+2026-11-18T21:46:20.852Z log Team WebSocket transport connected
+2026-11-18T21:46:22.895Z log Agent WebSocket disconnected: the page's path is down
+2026-11-18T21:46:22.895Z log Agent WebSocket disconnected: the page's path is down
+2026-11-18T21:46:23.624Z log Agent WebSocket disconnected: path down
+2026-11-18T21:46:23.624Z log Agent WebSocket disconnected: path down
+2026-11-18T21:46:25.629Z log Agent WebSocket disconnected: path down
+2026-11-18T21:46:25.630Z log Agent WebSocket disconnected: path down
+2026-11-18T21:46:25.845Z log Agent WebSocket disconnected: path down
+2026-11-18T21:46:25.845Z log Agent WebSocket disconnected: path down
+2026-11-18T21:46:30.846Z log Agent WebSocket disconnected: path down
+2026-11-18T21:46:30.847Z log Agent WebSocket disconnected: path down
+2026-11-18T21:46:33.638Z warning Message not delivered (not_sent): Timed out waiting for Team stream handshake for 'send_team_d92f_a3a9727283b649eb910e63c07feb26c4'.
+2026-11-18T21:46:33.856Z log Team WebSocket transport connected
+2026-11-18T21:46:35.846Z log Agent WebSocket connected
+2026-11-18T21:46:35.846Z log Agent WebSocket connected

@@ -16,6 +16,7 @@
 // TS-005/006/007 a task Team delegated by a task Team member under an Agent, Team and Org run (each dot = its shown agents).
 // TS-008 (autobyteus-448 DEC-004) an Agent run and a Team run idle with a background task (`BACKGROUND_STEP`): the active,
 // not pulsing dot and "Background task running" in the row, the Team row and the header; no Stop; Idle once it exits.
+// TS-009 (autobyteus-448 part 2, as merged into autobyteus-500) the same in an Org run: its agent row and its mounted Team's row.
 // TS-001/003/004 also check the delegated Team row's layout: dot → people-group icon → name, the dot centered on the
 // name line, no overlap with the Task summary line or the per-copy Stop icon, and Stop shown only while the copy is live.
 // The probe owns a private data root, free ports, the backend and Nuxt process groups and Chrome, and removes
@@ -52,7 +53,7 @@ const ledger = getArg('ledger-file', getArg('ledger'));
 const executablePath = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
   || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser']
     .find((candidate) => fs.existsSync(candidate));
-const ALL_CASES = ['TS-001', 'TS-002', 'TS-003', 'TS-004', 'TS-005', 'TS-006', 'TS-007', 'TS-008'];
+const ALL_CASES = ['TS-001', 'TS-002', 'TS-003', 'TS-004', 'TS-005', 'TS-006', 'TS-007', 'TS-008', 'TS-009'];
 const selectedCases = (getArg('cases') ?? ALL_CASES.join(',')).split(',').map((c) => c.trim()).filter(Boolean);
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -281,7 +282,7 @@ const openRoot = async (page, root, names) => {
   return runRow;
 };
 const TEAM_DOT = '[data-test="team-aggregate-status-dot"]';
-const TASK_TEAM_ROW = '[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]';
+const TASK_TEAM_ROW = '[data-test="workspace-team-transient-execution-row"][data-delegated-run-kind="task_team"]';
 const taskTeamRow = (page, kind, teamRunId) => page.locator(TASK_TEAM_ROW).first();
 const agentRow = (page, kind, agentRunId) => page.locator(kind === 'org' ? `[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${agentRunId}"], [data-test="agent-org-agent-row-${agentRunId}"]`
   : `[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${agentRunId}"]`).first();
@@ -816,6 +817,51 @@ const backgroundTaskJourney = async () => {
   } finally { agentInput.close(); teamInput.close(); workerInput.close(); await context.close(); }
 };
 
+/**
+ * TS-009 (autobyteus-448 part 2 through autobyteus-500's merge: `backgroundTasksRunning` in AgentOrgRunMemberTree): an Org
+ * run whose manager and a member of its mounted Team are each idle with a background step: the Org agent row and the Org
+ * Team row say "Background task running" with the active, not pulsing dot; both are Idle once the steps exit.
+ */
+const orgBackgroundTaskJourney = async () => {
+  const { ids, names } = await createDefinitions('TsOrgBackground');
+  const root = await createRoot('org', ids);
+  const tree = (await gql('query($id:String!){getAgentOrgRunConfig(orgRunId:$id){executionTree}}', { id: root.rootId })).getAgentOrgRunConfig.executionTree;
+  const objects = (v) => Array.isArray(v) ? v.flatMap(objects) : v && typeof v === 'object' ? [v, ...Object.values(v).flatMap(objects)] : [];
+  const reviewer = objects(tree).find((o) => typeof o.address === 'string' && /\/squad\/reviewer$/.test(o.address) && (o.agentRunId ?? o.agent_run_id));
+  assert(reviewer, 'the Org Team member /squad/reviewer in the Org tree', JSON.stringify(tree).slice(0, 1500));
+  const reviewerRunId = reviewer.agentRunId ?? reviewer.agent_run_id;
+  const managerIn = await managerInput(root);
+  const reviewerIn = await managerInput({ ...root, managerRunId: reviewerRunId });
+  const STEP = 'Start the docs server. BACKGROUND_STEP:{"seconds":45,"exitCode":0}';
+  managerIn.send(STEP); reviewerIn.send(STEP);
+  const { page, errors, context } = await newPage();
+  const out = { root: root.rootId, manager: root.managerRunId, reviewer: reviewerRunId };
+  const BG = 'Background task running';
+  const activeNotPulsing = (cls) => (cls ?? '').split(/\s+/).includes('bg-blue-500') && !(cls ?? '').includes('animate-pulse');
+  try {
+    await openRoot(page, root, names);
+    const managerRow = page.locator(`[data-test="agent-org-agent-row-${root.managerRunId}"]`);
+    await until('Org agent row: background task', async () => ((await managerRow.getAttribute('aria-label').catch(() => '')) ?? '').includes(`, ${BG}, `) || null, 60000);
+    out.managerRow = { label: await managerRow.getAttribute('aria-label'), dot: await managerRow.locator('span.rounded-full').first().getAttribute('class') };
+    assert(activeNotPulsing(out.managerRow.dot), 'Org agent row dot: active blue, not pulsing', out.managerRow);
+    const squadRow = page.locator('[data-test^="agent-org-team-row-"]').first();
+    await until('Org Team row: its member\'s background task', async () => ((await squadRow.getAttribute('aria-label').catch(() => '')) ?? '').endsWith(`. ${BG}`) || null, 60000);
+    out.squadRow = { label: await squadRow.getAttribute('aria-label'), dot: await teamDotOf(squadRow) };
+    assert(out.squadRow.dot.status === 'background' || activeNotPulsing(out.squadRow.dot.dotClass), 'Org Team row dot: active, not pulsing', out.squadRow);
+    await shot(page, 'ts009-org-background');
+    // The daemons exit (45 s after they started): both rows are Idle.
+    const labels = async () => ({ manager: await managerRow.getAttribute('aria-label').catch(() => null), squad: await squadRow.getAttribute('aria-label').catch(() => null) });
+    const idleOrSay = async (label, check, ms) => until(label, check, ms).catch(async (error) => { error.details = await labels(); throw error; });
+    // The agent row names its status ("manager, idle, /manager, <id>"); the Team row its Team status ("squad. Team status: Idle").
+    await idleOrSay('Org agent row idle', async () => ((await managerRow.getAttribute('aria-label').catch(() => '')) ?? '').includes(', idle, ') || null, 90000);
+    await idleOrSay('Org Team row idle', async () => ((await squadRow.getAttribute('aria-label').catch(() => '')) ?? '').endsWith('. Team status: Idle') || null, 60000);
+    out.after = { manager: await managerRow.getAttribute('aria-label'), squad: await squadRow.getAttribute('aria-label') };
+    await shot(page, 'ts009-org-idle-again');
+    assert(errors.length === 0, 'browser errors', errors);
+    return out;
+  } finally { managerIn.close(); reviewerIn.close(); await context.close(); }
+};
+
 const CASES = {
   'TS-001': ['Agent run: delegated Team idle → busy while collapsed → busy+error → error after Stop generation → gray when the run stops', agentRootJourney],
   'TS-002': ['TEAMS rows: idle run green, alive unstarted gray with Stop, group = highest run, Stop button → gray, all stopped → gray', teamsSectionJourney],
@@ -825,6 +871,7 @@ const CASES = {
   'TS-006': ['Team run: a task Team delegated by a task Team member; each Team dot = its shown agents; the run row keeps its own status (SR-082); stop → gray', nestedTaskTeamJourney('team')],
   'TS-007': ['Org run: a task Team delegated by a member of a delegated Org Team copy; each Team dot = its shown agents; stop → gray', nestedTaskTeamJourney('org')],
   'TS-008': ['Background tasks: an Agent run and a Team run idle with a background task show "Background task running" with the active dot and no Stop; Idle once it exits', backgroundTaskJourney],
+  'TS-009': ['Background tasks in an Org run: the Org agent row and the Org Team row of a member idle with a background task show "Background task running" with the active dot; Idle once it exits', orgBackgroundTaskJourney],
 };
 
 let result = 'Pass';
@@ -846,7 +893,7 @@ try {
     } catch (error) {
       result = 'Fail';
       evidence.cases[id] = { result: 'Fail', description, startedAt, message: error.message, details: error.details };
-      evidence.failures.push({ id, message: error.message });
+      evidence.failures.push({ id, message: error.message, ...(error.details ? { details: error.details } : {}) });
     }
     if (ledger) await fsp.appendFile(ledger, `\n- ${new Date().toISOString()} ${id}: ${evidence.cases[id].result} — ${description}${evidence.cases[id].message ? ` (${evidence.cases[id].message})` : ''}. Evidence: ${evidencePath}\n`);
     await save();

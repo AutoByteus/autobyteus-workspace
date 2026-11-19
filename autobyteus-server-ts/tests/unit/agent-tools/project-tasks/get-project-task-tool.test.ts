@@ -28,6 +28,7 @@ import {
 import { ANY_TASK_READ_SCOPE, taskReadScopeOf } from "../../../../src/agent-tools/project-tasks/project-task-read-scope.js";
 import { buildProjectTaskToolSchema } from "../../../../src/agent-tools/project-tasks/project-task-tool-contract.js";
 import { withTaskRunResources } from "../../../helpers/task-run-resources.js";
+import { OFF_DISCOVERY } from "../../../helpers/explicit-host-collaborators.js";
 
 /**
  * autobyteus-260: `get_project_task` (REQ-014, REQ-015, REQ-016; AC-012–AC-014), short `list_project_tasks` entries
@@ -199,7 +200,7 @@ describe("get_project_task exposure (REQ-016, AC-014)", () => {
     expect(catalog.resolveConfiguredSupportedToolNames(buildRuntimeAgentToolExposure(["get_project_task"]))).toEqual(["get_project_task"]);
     const resolve = (toolNames: string[]) => {
       const agentDefinition = new AgentDefinition({ name: "Worker", description: "d", instructions: "i", toolNames });
-      return resolveAutoByteusAgentTools({ agentDefinition, runtimeToolExposure: resolveRuntimeAgentToolExposure(agentDefinition),
+      return resolveAutoByteusAgentTools({ peerDiscovery: OFF_DISCOVERY, agentDefinition, runtimeToolExposure: resolveRuntimeAgentToolExposure(agentDefinition),
         memberExecutionContext: member(() => null) as never, logger: { warn: vi.fn(), error: vi.fn() } });
     };
     expect(resolve(["list_project_tasks"]).actualToolNames).toEqual(["list_project_tasks"]);

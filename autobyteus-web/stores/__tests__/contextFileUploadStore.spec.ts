@@ -31,9 +31,9 @@ describe('contextFileUploadStore', () => {
     vi.unstubAllGlobals();
   });
 
-  const collaborationDraft = createUploadedContextAttachment({
+  const orgMemberDraft = createUploadedContextAttachment({
     storedFilename: 'ctx_cafe__screen shot.png',
-    locator: '/rest/drafts/agent-collaborations/host-1/agent-runs/child-1/context-files/ctx_cafe__screen%20shot.png',
+    locator: '/rest/drafts/agent-org-runs/org-1/agent-runs/member-1/context-files/ctx_cafe__screen%20shot.png',
     displayName: 'screen shot.png',
     phase: 'draft',
     type: 'Image',
@@ -48,10 +48,10 @@ describe('contextFileUploadStore', () => {
     });
     vi.stubGlobal('fetch', fetchMock);
 
-    await store.deleteDraftAttachment(collaborationDraft);
+    await store.deleteDraftAttachment(orgMemberDraft);
 
     expect(fetchMock).toHaveBeenCalledWith(
-      'http://127.0.0.1:31000/rest/drafts/agent-collaborations/host-1/agent-runs/child-1/context-files/ctx_cafe__screen%20shot.png',
+      'http://127.0.0.1:31000/rest/drafts/agent-org-runs/org-1/agent-runs/member-1/context-files/ctx_cafe__screen%20shot.png',
       expect.objectContaining({ method: 'DELETE' }),
     );
     expect(inFlightDuringRequest).toBe(true);
@@ -65,11 +65,11 @@ describe('contextFileUploadStore', () => {
       headers: { 'content-type': 'application/json' },
     })));
 
-    await expect(store.deleteDraftAttachment(collaborationDraft)).rejects.toThrow('agentRunId must be a safe non-empty identity.');
+    await expect(store.deleteDraftAttachment(orgMemberDraft)).rejects.toThrow('agentRunId must be a safe non-empty identity.');
     expect(store.isUploading).toBe(false);
 
     vi.stubGlobal('fetch', vi.fn(async () => new Response('gateway down', { status: 502 })));
-    await expect(store.deleteDraftAttachment(collaborationDraft)).rejects.toThrow('Delete failed (502).');
+    await expect(store.deleteDraftAttachment(orgMemberDraft)).rejects.toThrow('Delete failed (502).');
   });
 
   it('preserves uploaded display names when finalizing sanitized stored filenames', async () => {

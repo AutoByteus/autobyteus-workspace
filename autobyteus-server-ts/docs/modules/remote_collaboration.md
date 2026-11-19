@@ -23,7 +23,9 @@ Slice 1 (autobyteus-191) is text only, for Agents, on a trusted private network:
 authentication between nodes and no credential ever crosses them. autobyteus-245 removed publishing: with the
 switch on, every shared Agent is available to registered peers. autobyteus-247 added shared Agent Teams,
 autobyteus-261 discovery. autobyteus-278 shows remote runs in the delegator's run tree and lets the owner drive
-them (see [Remote runs in the run tree](#remote-runs-in-the-run-tree)). Attachments, a remote run's files, stop
+them (see [Remote runs in the run tree](#remote-runs-in-the-run-tree)). autobyteus-492 lets any agent list the
+running agents of a peer and message one by its run ID, linked or not (see
+[Messages by run ID and running agents](#messages-by-run-id-and-running-agents)). Attachments, a remote run's files, stop
 on Task closure and peer authentication come in later slices.
 
 ## Settings (per node)
@@ -85,8 +87,9 @@ on Task closure and peer authentication come in later slices.
 
 ## Between nodes
 
-Four requests, `POST /rest/remote/delegated-runs`, `/rest/remote/messages`, `/rest/remote/availability` and
-`/rest/remote/available-agents`, plus the run-view routes of autobyteus-278 (`/rest/remote/run-summaries`,
+Six requests, `POST /rest/remote/delegated-runs`, `/rest/remote/messages`, `/rest/remote/availability`,
+`/rest/remote/available-agents`, and (autobyteus-492) `/rest/remote/run-messages` and `/rest/remote/running-agents`
+([below](#messages-by-run-id-and-running-agents)), plus the run-view routes of autobyteus-278 (`/rest/remote/run-summaries`,
 `/agent-projection`, `/owner-commands` and the WebSocket `/rest/remote/run-observations`, described
 [below](#remote-runs-in-the-run-tree)) (route class `REMOTE_PEER`; a mobile credential is refused). Every request
 carries `{fromNodeId, toNodeId}`; every answer carries the responder's `nodeId`. A domain refusal is `200
@@ -146,6 +149,33 @@ build) answers 404, which the caller reads as unreachable (DESIGN.md rule 9).
   directory checks the request against the root's **stored** links (`storedLinkCheck`: the root managers read
   their own stores, `remote-collaboration` parses no root files): a sender not linked from that node is
   `REMOTE_TARGET_NOT_PERMITTED` and nothing is loaded. The restored root's own link check stays the authority.
+
+### Messages by run ID and running agents
+
+autobyteus-492 (CM-13): the run ID is the address across nodes too.
+
+- **`run-messages`**: `{fromNodeId, toNodeId, messageId, sender: {agentRunId}, target: {agentRunId}, content,
+  messageType, createdAt}`, with no `targetRoot`: a message to a running agent of the called node by its run ID
+  only. Unlike `messages` (a linked run, its root named, which may wake it), it never restores or wakes anything.
+  `RemoteMessageReceiver.acceptRunMessage` asks `RunningAgents.rootOf` (from each live root's own statuses), and
+  the agent's active root accepts it in its gate (`acceptPeerRunMessage`: the agent still runs) as from a
+  one-message `unlinked_run` endpoint; the engine writes the receiver's log and the header names the sender's
+  node. An agent that does not run is `REMOTE_TARGET_NOT_RUNNING`; a team run's ID that runs there is
+  `TARGET_IS_TEAM_RUN` with its coordinator's run ID (`RunningAgents.teamCoordinatorOf`, from the team's own
+  root). The sending node words both with its name for the peer, the second saying to keep `node`.
+- **Who sends it.** `send_message_to(target_agent_run_id, node)` from any agent of this node: the router finds the
+  peer, applies this node's closed-Task admission (`CrossRunMessageDelivery.closedPeerRunRefusal`: a run this
+  node's Tasks hold on that node, all closed, is `TASK_AGENT_RESOURCE_CLOSED` for every sender here, with or
+  without `node`), then the sender's root sends it (`deliverToPeerRun`). `RemoteMessageSend` chooses the endpoint:
+  the root's link when the sender is paired with that run, else `unlinked_run`. A root's linked run ID messaged
+  by an agent the link does not pair (a teammate of the delegator) goes unlinked too, to the same node. The
+  sender's log gets the message once the peer accepted it, as for a linked message.
+- **`running-agents`**: the envelope only; the answer `{accepted: true, nodeId, agents: [entry]}` is the called
+  node's `RunningAgentsListing` with no caller (the entries `list_running_agents` lists, without `node`). The
+  asking node's `PeerClient` reads it strictly (each kind's fields only; anything else is a malformed answer,
+  "it answered without its list") and `PeerNodeDiscovery.listRunningAgents(node)` adds `node`. Nothing is cached.
+- Both routes are peer routes behind the node access gate (signed, NA-9) and `PeerGateway`'s admission, like
+  every `/rest/remote/*` route. A peer of an older release answers 404, read as unreachable.
 
 The refusal codes are one list next to the port (`agent-collaboration/execution/remote/remote-refusal-codes.ts`);
 the agent-facing texts are in `domain/remote-refusals.ts`.
@@ -268,7 +298,7 @@ run's host, or a Team run's members.
     frame is `{nodeId}` (or a refusal, then close). After it come `{agentRunId, message}` frames, one presentation
     message of one paired agent each. A frame the run produces while it is being subscribed (a live run's current
     state) waits in the route and follows `{nodeId}`.
-    - An Agent run is followed from host to host across idle shutdown (`StandaloneAgentRunRoot.onHostReady`).
+    - An Agent run is followed from host to host across idle shutdown (`StandaloneAgentRunRoot.onAgentReady`).
     - A Team run is followed through its root publisher, filtered to its members, and across a restore after idle
       shutdown (the manager's lifecycle notifications).
     - B ends the stream when the run is stopped, terminated or deleted by any path: B's own window, GraphQL,
@@ -278,9 +308,9 @@ run's host, or a Team run's members.
 - **B's owner.** `RemoteRunViewProvider` (`inbound/remote-run-view-provider.ts`) first checks the run's stored
   back-link: `RemoteRootDirectory.storedLinkCheck` with the query kind `owner` (`{fromNodeId, targetAgentRunId}`),
   which admits the node in `delegatedFrom.nodeId` and, when an agent is named, only a paired agent. It then calls
-  the root kind's `PairedAgentAccess` behind `RemoteRootDirectory.pairedAgents(kind)`:
-  - `StandalonePairedAgentAccess` on `StandaloneAgentRunRootManager`;
-  - `TeamPairedAgentAccess` on `TeamRunService`.
+  the root kind's `RunAgentAccess` behind `RemoteRootDirectory.runAgents(kind)`:
+  - `StandaloneRunAgentAccess` on `StandaloneAgentRunRootManager`;
+  - `TeamRunAgentAccess` on `TeamRunService`.
 
   Titles come from the run services' `readRunTitle`, and projections from the agent and Team-member projection
   services. A refusal is `REMOTE_TARGET_NOT_PERMITTED` or `REMOTE_TARGET_NOT_FOUND`.

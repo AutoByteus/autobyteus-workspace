@@ -1,0 +1,1248 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/.env
+◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/.env // tip: ⌁ auth for agents [www.vestauth.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:49241
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:49241
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "development.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/db/development.db"
+
+SQLite database development.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/db/development.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:39777) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-18T21:42:27.967Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 34 predefined settings
+AgentRunManager initialized.
+Node access: local control socket not opened. The node's local control socket path is 108 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/node-access/local-control.sock. Use a shorter data folder path.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1795038148333,"pid":39777,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:49304"}
+{"level":30,"time":1795038148358,"pid":39777,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:49241"}
+[2026-11-18T21:42:28.358Z] [INFO] [server.runtime] Server listening on 127.0.0.1:49241
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Hub Staging Sweep' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Created and registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+Agent Definition created successfully with ID: sender-d92f
+Agent Definition created successfully with ID: send-lead-d92f
+Agent Definition created successfully with ID: send-mate-d92f
+Agent Team Definition created successfully with ID: send-team-d92f
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 98c7a2eb-1924-4e54-b559-25c1b78ef25f for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=98c7a2eb-1924-4e54-b559-25c1b78ef25f, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agent_teams/send_team_d92f_a3a9727283b649eb910e63c07feb26c4/send_lead_d92f_34e273c85419475db5f1e168b7f442f0/raw_traces_manifest.json
+Created agent session 3588eb22-a7a6-4076-898d-f40f76c78fb4 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=3588eb22-a7a6-4076-898d-f40f76c78fb4, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Created terminal session a95fc1fc-1fb0-4833-bc1d-ee77c6d84a7c using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/home
+Terminal WebSocket connected: a95fc1fc-1fb0-4833-bc1d-ee77c6d84a7c
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/home
+Closed agent session 3588eb22-a7a6-4076-898d-f40f76c78fb4
+Closed agent session 98c7a2eb-1924-4e54-b559-25c1b78ef25f
+Agent WebSocket disconnected: 98c7a2eb-1924-4e54-b559-25c1b78ef25f
+Closed PTY session a95fc1fc-1fb0-4833-bc1d-ee77c6d84a7c
+Terminal WebSocket disconnected: a95fc1fc-1fb0-4833-bc1d-ee77c6d84a7c
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session de0bf57a-a83f-42d4-aeec-bf32779df7b0 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=de0bf57a-a83f-42d4-aeec-bf32779df7b0, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Created terminal session 25a4b752-9c4a-48f8-9ed7-8030d8d12b44 using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/home
+Terminal WebSocket connected: 25a4b752-9c4a-48f8-9ed7-8030d8d12b44
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/home
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agent_teams/send_team_d92f_a3a9727283b649eb910e63c07feb26c4/send_lead_d92f_34e273c85419475db5f1e168b7f442f0/raw_traces_manifest.json
+Created agent session 60ce4dea-37bf-4cbb-8b64-cf28a1df32d1 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=60ce4dea-37bf-4cbb-8b64-cf28a1df32d1, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Closed PTY session 25a4b752-9c4a-48f8-9ed7-8030d8d12b44
+Terminal WebSocket disconnected: 25a4b752-9c4a-48f8-9ed7-8030d8d12b44
+Closed agent session de0bf57a-a83f-42d4-aeec-bf32779df7b0
+Agent WebSocket disconnected: de0bf57a-a83f-42d4-aeec-bf32779df7b0
+Closed agent session 60ce4dea-37bf-4cbb-8b64-cf28a1df32d1
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session f3c254b2-e9ed-43d7-9f4e-17fc4cb8bf33 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=f3c254b2-e9ed-43d7-9f4e-17fc4cb8bf33, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Created agent session efa7b331-bc11-46ff-b3dc-abdb87d1ae89 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=efa7b331-bc11-46ff-b3dc-abdb87d1ae89, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Closed agent session f3c254b2-e9ed-43d7-9f4e-17fc4cb8bf33
+Agent WebSocket disconnected: f3c254b2-e9ed-43d7-9f4e-17fc4cb8bf33
+Closed agent session efa7b331-bc11-46ff-b3dc-abdb87d1ae89
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session ea64b2c8-4c9d-437e-8cac-fcbe7cce8bf6 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=ea64b2c8-4c9d-437e-8cac-fcbe7cce8bf6, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Created agent session f707fc0c-be1e-4931-80c1-59025530751b for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=f707fc0c-be1e-4931-80c1-59025530751b, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Closed agent session ea64b2c8-4c9d-437e-8cac-fcbe7cce8bf6
+Agent WebSocket disconnected: ea64b2c8-4c9d-437e-8cac-fcbe7cce8bf6
+Closed agent session f707fc0c-be1e-4931-80c1-59025530751b
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session bb8e621e-8de5-4064-bd56-4d8a94dbd81e for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=bb8e621e-8de5-4064-bd56-4d8a94dbd81e, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Created agent session e47a046d-cc7c-4a42-8c34-345b0f4b3ac1 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=e47a046d-cc7c-4a42-8c34-345b0f4b3ac1, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Closed agent session bb8e621e-8de5-4064-bd56-4d8a94dbd81e
+Agent WebSocket disconnected: bb8e621e-8de5-4064-bd56-4d8a94dbd81e
+Closed agent session e47a046d-cc7c-4a42-8c34-345b0f4b3ac1
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 9d5ab4ff-a878-4d19-b250-5f0a30ab367f for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=9d5ab4ff-a878-4d19-b250-5f0a30ab367f, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Created agent session b616604e-b8a9-4845-bd70-6cabb1381594 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=b616604e-b8a9-4845-bd70-6cabb1381594, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Closed agent session 9d5ab4ff-a878-4d19-b250-5f0a30ab367f
+Agent WebSocket disconnected: 9d5ab4ff-a878-4d19-b250-5f0a30ab367f
+Closed agent session b616604e-b8a9-4845-bd70-6cabb1381594
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 88f76c41-1be5-446b-81f1-814a53ed9538 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=88f76c41-1be5-446b-81f1-814a53ed9538, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Created agent session fece0381-7b33-4cfc-8c72-8074b17bc335 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=fece0381-7b33-4cfc-8c72-8074b17bc335, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Closed agent session 88f76c41-1be5-446b-81f1-814a53ed9538
+Agent WebSocket disconnected: 88f76c41-1be5-446b-81f1-814a53ed9538
+Closed agent session fece0381-7b33-4cfc-8c72-8074b17bc335
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 81884884-632c-4503-b063-8709ddfbee5d for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=81884884-632c-4503-b063-8709ddfbee5d, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Created agent session 395c2608-62ff-45e8-9b47-2bdd8f4da73d for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=395c2608-62ff-45e8-9b47-2bdd8f4da73d, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Closed agent session 81884884-632c-4503-b063-8709ddfbee5d
+Agent WebSocket disconnected: 81884884-632c-4503-b063-8709ddfbee5d
+Closed agent session 395c2608-62ff-45e8-9b47-2bdd8f4da73d
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 84b1fd9f-6300-483a-85f6-38f596a7201e for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=84b1fd9f-6300-483a-85f6-38f596a7201e, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Created agent session 42318a9f-7e99-48f4-b69e-765c10c61d8d for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=42318a9f-7e99-48f4-b69e-765c10c61d8d, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Closed agent session 84b1fd9f-6300-483a-85f6-38f596a7201e
+Agent WebSocket disconnected: 84b1fd9f-6300-483a-85f6-38f596a7201e
+Closed agent session 42318a9f-7e99-48f4-b69e-765c10c61d8d
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session c9b29928-3c27-4896-bcab-34896702b6e2 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=c9b29928-3c27-4896-bcab-34896702b6e2, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+Created agent session d6e0f69c-d07b-4f6f-8baf-3ae751362b83 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=d6e0f69c-d07b-4f6f-8baf-3ae751362b83, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+AGY compaction detection off for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Closed agent session c9b29928-3c27-4896-bcab-34896702b6e2
+Agent WebSocket disconnected: c9b29928-3c27-4896-bcab-34896702b6e2
+Closed agent session d6e0f69c-d07b-4f6f-8baf-3ae751362b83
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session c8a28dee-4eca-4d18-9538-1d94d4d7a81b for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=c8a28dee-4eca-4d18-9538-1d94d4d7a81b, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Created agent session 183b42e3-f1a8-48e9-b762-d3f837d2b7cf for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=183b42e3-f1a8-48e9-b762-d3f837d2b7cf, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Closed agent session c8a28dee-4eca-4d18-9538-1d94d4d7a81b
+Agent WebSocket disconnected: c8a28dee-4eca-4d18-9538-1d94d4d7a81b
+Closed agent session 183b42e3-f1a8-48e9-b762-d3f837d2b7cf
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 4d948f25-e8eb-41a6-978b-9ee301036077 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=4d948f25-e8eb-41a6-978b-9ee301036077, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Created agent session 50f93e93-32ef-4288-85ee-0c2b8d341fca for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=50f93e93-32ef-4288-85ee-0c2b8d341fca, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Closed agent session 4d948f25-e8eb-41a6-978b-9ee301036077
+Agent WebSocket disconnected: 4d948f25-e8eb-41a6-978b-9ee301036077
+Closed agent session 50f93e93-32ef-4288-85ee-0c2b8d341fca
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 5f148261-ecdd-4092-b304-aa5cd2946019 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=5f148261-ecdd-4092-b304-aa5cd2946019, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Created agent session 710e5490-b70f-4ff6-9fe4-028f4ece41b0 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=710e5490-b70f-4ff6-9fe4-028f4ece41b0, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Closed agent session 5f148261-ecdd-4092-b304-aa5cd2946019
+Agent WebSocket disconnected: 5f148261-ecdd-4092-b304-aa5cd2946019
+Closed agent session 710e5490-b70f-4ff6-9fe4-028f4ece41b0
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 7fe01eeb-e176-441a-a4a7-5f17b5ce02f2 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=7fe01eeb-e176-441a-a4a7-5f17b5ce02f2, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Created agent session ff8e5883-c8e5-4af6-b0db-95bf89bbeb7c for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=ff8e5883-c8e5-4af6-b0db-95bf89bbeb7c, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Closed agent session 7fe01eeb-e176-441a-a4a7-5f17b5ce02f2
+Agent WebSocket disconnected: 7fe01eeb-e176-441a-a4a7-5f17b5ce02f2
+Closed agent session ff8e5883-c8e5-4af6-b0db-95bf89bbeb7c
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 04f905a4-ea6c-4925-8d56-e5f3932c5491 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=04f905a4-ea6c-4925-8d56-e5f3932c5491, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Created agent session d25aee69-7936-4082-8899-fe493f2d3258 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=d25aee69-7936-4082-8899-fe493f2d3258, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Closed agent session 04f905a4-ea6c-4925-8d56-e5f3932c5491
+Agent WebSocket disconnected: 04f905a4-ea6c-4925-8d56-e5f3932c5491
+Closed agent session d25aee69-7936-4082-8899-fe493f2d3258
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session f0dfe036-88d9-4907-8de1-0e35313b5ce8 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=f0dfe036-88d9-4907-8de1-0e35313b5ce8, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Created agent session f0cde3f9-6427-4a53-8cc2-bb7f265bca87 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=f0cde3f9-6427-4a53-8cc2-bb7f265bca87, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Closed agent session f0dfe036-88d9-4907-8de1-0e35313b5ce8
+Agent WebSocket disconnected: f0dfe036-88d9-4907-8de1-0e35313b5ce8
+Closed agent session f0cde3f9-6427-4a53-8cc2-bb7f265bca87
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session fa6165e9-1944-49e3-aa96-59b82809f134 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=fa6165e9-1944-49e3-aa96-59b82809f134, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Created agent session d9a1bf1a-1a32-4b04-aa5d-ee2f9249a8cc for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=d9a1bf1a-1a32-4b04-aa5d-ee2f9249a8cc, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Closed agent session fa6165e9-1944-49e3-aa96-59b82809f134
+Agent WebSocket disconnected: fa6165e9-1944-49e3-aa96-59b82809f134
+Closed agent session d9a1bf1a-1a32-4b04-aa5d-ee2f9249a8cc
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 550c8552-e873-4eeb-9dde-f9536ae3eea5 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=550c8552-e873-4eeb-9dde-f9536ae3eea5, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Created agent session 74d89cfa-f7ee-407d-ba45-bb0309ef7b7a for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=74d89cfa-f7ee-407d-ba45-bb0309ef7b7a, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Closed agent session 550c8552-e873-4eeb-9dde-f9536ae3eea5
+Agent WebSocket disconnected: 550c8552-e873-4eeb-9dde-f9536ae3eea5
+Closed agent session 74d89cfa-f7ee-407d-ba45-bb0309ef7b7a
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 97ff9c50-840d-48a4-a209-c9317ac5018b for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=97ff9c50-840d-48a4-a209-c9317ac5018b, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Created agent session fa9f655c-c866-4145-b21a-3e8e46a2d899 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=fa9f655c-c866-4145-b21a-3e8e46a2d899, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Closed agent session 97ff9c50-840d-48a4-a209-c9317ac5018b
+Agent WebSocket disconnected: 97ff9c50-840d-48a4-a209-c9317ac5018b
+Closed agent session fa9f655c-c866-4145-b21a-3e8e46a2d899
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 3dc2723b-62ba-42bc-b872-61728254cb2c for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=3dc2723b-62ba-42bc-b872-61728254cb2c, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Created agent session aa52914a-318e-4116-bcd8-5ce164bd2f55 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=aa52914a-318e-4116-bcd8-5ce164bd2f55, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Closed agent session 3dc2723b-62ba-42bc-b872-61728254cb2c
+Agent WebSocket disconnected: 3dc2723b-62ba-42bc-b872-61728254cb2c
+Closed agent session aa52914a-318e-4116-bcd8-5ce164bd2f55
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session ef4654a2-c131-420f-919a-58d5ca62bed0 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=ef4654a2-c131-420f-919a-58d5ca62bed0, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Created agent session 8e75e306-2609-4fa9-8b89-327f3bc583f9 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=8e75e306-2609-4fa9-8b89-327f3bc583f9, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Closed agent session ef4654a2-c131-420f-919a-58d5ca62bed0
+Agent WebSocket disconnected: ef4654a2-c131-420f-919a-58d5ca62bed0
+Closed agent session 8e75e306-2609-4fa9-8b89-327f3bc583f9
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 0686dcc6-150b-4abe-a809-2d09a1c4318f for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=0686dcc6-150b-4abe-a809-2d09a1c4318f, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Created agent session 4ad22b7c-ea14-4400-a827-75dea41d6a00 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=4ad22b7c-ea14-4400-a827-75dea41d6a00, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Closed agent session 4ad22b7c-ea14-4400-a827-75dea41d6a00
+Closed agent session 0686dcc6-150b-4abe-a809-2d09a1c4318f
+Agent WebSocket disconnected: 0686dcc6-150b-4abe-a809-2d09a1c4318f
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 71c0fed9-1ba8-4816-9d43-3622e6aa48c2 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=71c0fed9-1ba8-4816-9d43-3622e6aa48c2, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Created agent session 55f31bba-7163-44c1-9164-71c027b286f9 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=55f31bba-7163-44c1-9164-71c027b286f9, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 8e17401b-b240-41ca-a6df-21df9b567391 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=8e17401b-b240-41ca-a6df-21df9b567391, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Closed agent session 8e17401b-b240-41ca-a6df-21df9b567391
+Agent WebSocket disconnected: 8e17401b-b240-41ca-a6df-21df9b567391
+Closed agent session 71c0fed9-1ba8-4816-9d43-3622e6aa48c2
+Agent WebSocket disconnected: 71c0fed9-1ba8-4816-9d43-3622e6aa48c2
+Closed agent session 55f31bba-7163-44c1-9164-71c027b286f9
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 43b28c9f-34f6-4e8c-8d98-fe92fbb0add2 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=43b28c9f-34f6-4e8c-8d98-fe92fbb0add2, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session c595aba1-8778-44c5-885f-ba8e4e80cffb for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Agent Team WebSocket connected: session=c595aba1-8778-44c5-885f-ba8e4e80cffb, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Closed agent session 43b28c9f-34f6-4e8c-8d98-fe92fbb0add2
+Agent WebSocket disconnected: 43b28c9f-34f6-4e8c-8d98-fe92fbb0add2
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 808c87bf-d3f9-4abb-b765-2c9c614bab1e for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=808c87bf-d3f9-4abb-b765-2c9c614bab1e, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Closed agent session c595aba1-8778-44c5-885f-ba8e4e80cffb
+Closed agent session 808c87bf-d3f9-4abb-b765-2c9c614bab1e
+Agent WebSocket disconnected: 808c87bf-d3f9-4abb-b765-2c9c614bab1e
+Created agent session 8c3aaa65-85cf-4f65-9849-1fc6cf7b7f10 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=8c3aaa65-85cf-4f65-9849-1fc6cf7b7f10, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session a91e795d-94f7-4be9-b49b-1c15c936bbf0 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=a91e795d-94f7-4be9-b49b-1c15c936bbf0, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Closed agent session 8c3aaa65-85cf-4f65-9849-1fc6cf7b7f10
+Closed agent session a91e795d-94f7-4be9-b49b-1c15c936bbf0
+Agent WebSocket disconnected: a91e795d-94f7-4be9-b49b-1c15c936bbf0
+Created agent session bc80e86f-d750-45a8-b6c9-7c963bc3f670 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=bc80e86f-d750-45a8-b6c9-7c963bc3f670, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 36dc0a8d-5ec0-48f3-a81a-51800a2272ce for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=36dc0a8d-5ec0-48f3-a81a-51800a2272ce, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Closed agent session 36dc0a8d-5ec0-48f3-a81a-51800a2272ce
+Agent WebSocket disconnected: 36dc0a8d-5ec0-48f3-a81a-51800a2272ce
+Closed agent session bc80e86f-d750-45a8-b6c9-7c963bc3f670
+Created agent session 73cca683-33c6-4fbb-82c0-c1f1f3bc9f1a for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=73cca683-33c6-4fbb-82c0-c1f1f3bc9f1a, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 7d89ab93-24df-4841-a949-17820e3c1ad0 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=7d89ab93-24df-4841-a949-17820e3c1ad0, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Closed agent session 73cca683-33c6-4fbb-82c0-c1f1f3bc9f1a
+Closed agent session 7d89ab93-24df-4841-a949-17820e3c1ad0
+Agent WebSocket disconnected: 7d89ab93-24df-4841-a949-17820e3c1ad0
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+Created agent session c798990d-d492-4bfa-9f28-aa236c5ad6b8 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=c798990d-d492-4bfa-9f28-aa236c5ad6b8, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session f3982e9f-b6ca-4e26-94b0-875446a39de3 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=f3982e9f-b6ca-4e26-94b0-875446a39de3, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Agent websocket attached for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Created agent session f4c250eb-cb09-479e-857a-5068860b7edc for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent WebSocket connected: session=f4c250eb-cb09-479e-857a-5068860b7edc, run=sender_d92f_2066182bf9574ada847def6bc1329f26
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Closed agent session f3982e9f-b6ca-4e26-94b0-875446a39de3
+Agent WebSocket disconnected: f3982e9f-b6ca-4e26-94b0-875446a39de3
+Closed agent session f4c250eb-cb09-479e-857a-5068860b7edc
+Agent WebSocket disconnected: f4c250eb-cb09-479e-857a-5068860b7edc
+Agent websocket attached for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Created agent session 25b8254a-f73f-4eaf-b443-389d2c85ed47 for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent WebSocket connected: session=25b8254a-f73f-4eaf-b443-389d2c85ed47, run=sender_d92f_2066182bf9574ada847def6bc1329f26
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/media
+AgentRuntimeState initialized for agent_id 'sender_d92f_2066182bf9574ada847def6bc1329f26'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'sender_d92f_2066182bf9574ada847def6bc1329f26': LLM instance 'AnthropicLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'sender_d92f_2066182bf9574ada847def6bc1329f26'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'sender_d92f_2066182bf9574ada847def6bc1329f26' with config: 'Sender d92f'.
+AgentWorker initialized for agent_id 'sender_d92f_2066182bf9574ada847def6bc1329f26'.
+Registered AgentContext for agent_id 'sender_d92f_2066182bf9574ada847def6bc1329f26'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'sender_d92f_2066182bf9574ada847def6bc1329f26'. Context registered.
+Agent facade initialized for agent_id 'sender_d92f_2066182bf9574ada847def6bc1329f26'.
+Agent 'sender_d92f_2066182bf9574ada847def6bc1329f26' created and stored successfully.
+Agent 'sender_d92f_2066182bf9574ada847def6bc1329f26' requesting runtime to start.
+AgentRuntime for 'sender_d92f_2066182bf9574ada847def6bc1329f26': Starting worker.
+AgentWorker 'sender_d92f_2066182bf9574ada847def6bc1329f26': Starting...
+AgentWorker 'sender_d92f_2066182bf9574ada847def6bc1329f26' asyncRun(): Starting.
+Agent 'sender_d92f_2066182bf9574ada847def6bc1329f26': Runtime init completed (event store initialized).
+Agent 'sender_d92f_2066182bf9574ada847def6bc1329f26': Runtime init completed (status deriver initialized).
+Agent 'sender_d92f_2066182bf9574ada847def6bc1329f26': Runtime init completed (AgentEventInbox initialized).
+Agent 'sender_d92f_2066182bf9574ada847def6bc1329f26': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'sender_d92f_2066182bf9574ada847def6bc1329f26' to become idle (timeout: 30s)...
+AgentEventStream (ID: 5fc95506-fd33-46b5-b0fc-e0235476cea1) initialized for agent_id 'sender_d92f_2066182bf9574ada847def6bc1329f26'. Subscribed to notifier.
+Agent 'sender_d92f_2066182bf9574ada847def6bc1329f26': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: b7d131d8-f8b3-415a-a4de-3f33213d0c45, AgentID: sender_d92f_2066182bf9574ada847def6bc1329f26) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'sender_d92f_2066182bf9574ada847def6bc1329f26': Bootstrapper starting direct lifecycle execution.
+Agent 'sender_d92f_2066182bf9574ada847def6bc1329f26': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'sender_d92f_2066182bf9574ada847def6bc1329f26': Executing McpServerPrewarmingStep.
+Agent 'sender_d92f_2066182bf9574ada847def6bc1329f26': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'sender_d92f_2066182bf9574ada847def6bc1329f26': Executing SystemPromptProcessingStep.
+Agent 'sender_d92f_2066182bf9574ada847def6bc1329f26': No configured skills. Skipping skill catalog.
+Agent 'sender_d92f_2066182bf9574ada847def6bc1329f26': Final processed system prompt configured and captured. Trace ID: rt_1795038291253_c53354a4-2aef-45c6-b419-65932e1fe727. Final length: 4813.
+Agent 'sender_d92f_2066182bf9574ada847def6bc1329f26': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: b7d131d8-f8b3-415a-a4de-3f33213d0c45, AgentID: sender_d92f_2066182bf9574ada847def6bc1329f26) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'sender_d92f_2066182bf9574ada847def6bc1329f26' initialized successfully. Entering main event scheduler loop.
+Agent 'sender_d92f_2066182bf9574ada847def6bc1329f26' has become idle.
+AgentEventStream (ID: 5fc95506-fd33-46b5-b0fc-e0235476cea1) for 'sender_d92f_2066182bf9574ada847def6bc1329f26': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: b65feee3-b595-4a12-88ce-fb06c3ff5544) initialized for agent_id 'sender_d92f_2066182bf9574ada847def6bc1329f26'. Subscribed to notifier.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+AgentExternalEventNotifier (NotifierID: b7d131d8-f8b3-415a-a4de-3f33213d0c45, AgentID: sender_d92f_2066182bf9574ada847def6bc1329f26) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b7d131d8-f8b3-415a-a4de-3f33213d0c45, AgentID: sender_d92f_2066182bf9574ada847def6bc1329f26) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'sender_d92f_2066182bf9574ada847def6bc1329f26': UserInputContextBuildingProcessor completed. Final content length: 20
+AgentExternalEventNotifier (NotifierID: b7d131d8-f8b3-415a-a4de-3f33213d0c45, AgentID: sender_d92f_2066182bf9574ada847def6bc1329f26) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b7d131d8-f8b3-415a-a4de-3f33213d0c45, AgentID: sender_d92f_2066182bf9574ada847def6bc1329f26) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b7d131d8-f8b3-415a-a4de-3f33213d0c45, AgentID: sender_d92f_2066182bf9574ada847def6bc1329f26) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b7d131d8-f8b3-415a-a4de-3f33213d0c45, AgentID: sender_d92f_2066182bf9574ada847def6bc1329f26) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b7d131d8-f8b3-415a-a4de-3f33213d0c45, AgentID: sender_d92f_2066182bf9574ada847def6bc1329f26) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b7d131d8-f8b3-415a-a4de-3f33213d0c45, AgentID: sender_d92f_2066182bf9574ada847def6bc1329f26) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b7d131d8-f8b3-415a-a4de-3f33213d0c45, AgentID: sender_d92f_2066182bf9574ada847def6bc1329f26) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 39c6c1cd-224f-4fa3-8a9a-a9a5fc7526f3 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=39c6c1cd-224f-4fa3-8a9a-a9a5fc7526f3, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Closed agent session 39c6c1cd-224f-4fa3-8a9a-a9a5fc7526f3
+Agent WebSocket disconnected: 39c6c1cd-224f-4fa3-8a9a-a9a5fc7526f3
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session c94d8ffc-288b-478b-85c0-82d5f3713eed for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=c94d8ffc-288b-478b-85c0-82d5f3713eed, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Closed agent session c798990d-d492-4bfa-9f28-aa236c5ad6b8
+Closed agent session 25b8254a-f73f-4eaf-b443-389d2c85ed47
+Agent WebSocket disconnected: 25b8254a-f73f-4eaf-b443-389d2c85ed47
+Closed agent session c94d8ffc-288b-478b-85c0-82d5f3713eed
+Agent WebSocket disconnected: c94d8ffc-288b-478b-85c0-82d5f3713eed
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Created agent session c68ee91e-80ce-480b-be34-a37db625b6b4 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent websocket attached for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Created agent session 23593a1a-385d-4ba6-8400-b84bc97322d3 for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent WebSocket connected: session=23593a1a-385d-4ba6-8400-b84bc97322d3, run=sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session e3626088-4f3d-473f-b385-cbb9ea630643 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=e3626088-4f3d-473f-b385-cbb9ea630643, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent Team WebSocket connected: session=c68ee91e-80ce-480b-be34-a37db625b6b4, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run send_lead_d92f_34e273c85419475db5f1e168b7f442f0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agent_teams/send_team_d92f_a3a9727283b649eb910e63c07feb26c4/send_lead_d92f_34e273c85419475db5f1e168b7f442f0/raw_traces_manifest.json
+Closed agent session c68ee91e-80ce-480b-be34-a37db625b6b4
+Closed agent session e3626088-4f3d-473f-b385-cbb9ea630643
+Agent WebSocket disconnected: e3626088-4f3d-473f-b385-cbb9ea630643
+Closed agent session 23593a1a-385d-4ba6-8400-b84bc97322d3
+Agent WebSocket disconnected: 23593a1a-385d-4ba6-8400-b84bc97322d3
+Created agent session 38ae5f2a-591f-48d9-b098-643347099880 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=38ae5f2a-591f-48d9-b098-643347099880, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agent_teams/send_team_d92f_a3a9727283b649eb910e63c07feb26c4/send_lead_d92f_34e273c85419475db5f1e168b7f442f0/raw_traces_manifest.json
+Agent websocket attached for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Created agent session 5f548971-e13b-40b9-adc0-8057a141c418 for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent WebSocket connected: session=5f548971-e13b-40b9-adc0-8057a141c418, run=sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 48c8905a-8b72-42e9-96f1-6316a43c6934 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=48c8905a-8b72-42e9-96f1-6316a43c6934, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Closed agent session 38ae5f2a-591f-48d9-b098-643347099880
+Closed agent session 48c8905a-8b72-42e9-96f1-6316a43c6934
+Agent WebSocket disconnected: 48c8905a-8b72-42e9-96f1-6316a43c6934
+Closed agent session 5f548971-e13b-40b9-adc0-8057a141c418
+Agent WebSocket disconnected: 5f548971-e13b-40b9-adc0-8057a141c418
+Created agent session 28e927fa-6ee1-44cf-9de3-4ca0bb639874 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=28e927fa-6ee1-44cf-9de3-4ca0bb639874, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent websocket attached for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Created agent session f1dd5816-d5de-4f6a-be79-03538ff1c6ba for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent WebSocket connected: session=f1dd5816-d5de-4f6a-be79-03538ff1c6ba, run=sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 5447ea06-c17c-49b3-950e-eccbfc698989 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=5447ea06-c17c-49b3-950e-eccbfc698989, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run send_lead_d92f_34e273c85419475db5f1e168b7f442f0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agent_teams/send_team_d92f_a3a9727283b649eb910e63c07feb26c4/send_lead_d92f_34e273c85419475db5f1e168b7f442f0/raw_traces_manifest.json
+Closed agent session 28e927fa-6ee1-44cf-9de3-4ca0bb639874
+Closed agent session 5447ea06-c17c-49b3-950e-eccbfc698989
+Agent WebSocket disconnected: 5447ea06-c17c-49b3-950e-eccbfc698989
+Closed agent session f1dd5816-d5de-4f6a-be79-03538ff1c6ba
+Agent WebSocket disconnected: f1dd5816-d5de-4f6a-be79-03538ff1c6ba
+Created agent session ae03ff25-da28-461e-aad1-03849f15b761 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=ae03ff25-da28-461e-aad1-03849f15b761, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent websocket attached for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Created agent session 33a7ca1e-a74a-4097-ab01-7bf98b299549 for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent WebSocket connected: session=33a7ca1e-a74a-4097-ab01-7bf98b299549, run=sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 496f1caa-866a-450b-afc8-46a4f8b2b3be for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=496f1caa-866a-450b-afc8-46a4f8b2b3be, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run send_lead_d92f_34e273c85419475db5f1e168b7f442f0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agent_teams/send_team_d92f_a3a9727283b649eb910e63c07feb26c4/send_lead_d92f_34e273c85419475db5f1e168b7f442f0/raw_traces_manifest.json
+Closed agent session ae03ff25-da28-461e-aad1-03849f15b761
+Closed agent session 33a7ca1e-a74a-4097-ab01-7bf98b299549
+Agent WebSocket disconnected: 33a7ca1e-a74a-4097-ab01-7bf98b299549
+Closed agent session 496f1caa-866a-450b-afc8-46a4f8b2b3be
+Agent WebSocket disconnected: 496f1caa-866a-450b-afc8-46a4f8b2b3be
+Created agent session 2ba44f0c-164b-4a95-a91e-c9395ced855e for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=2ba44f0c-164b-4a95-a91e-c9395ced855e, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent websocket attached for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Created agent session 7dd0954f-75c0-4e0e-afdb-fa6d26631d10 for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent WebSocket connected: session=7dd0954f-75c0-4e0e-afdb-fa6d26631d10, run=sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 6f9ee458-77c0-4e01-a935-ba007ebc9907 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=6f9ee458-77c0-4e01-a935-ba007ebc9907, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run send_lead_d92f_34e273c85419475db5f1e168b7f442f0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agent_teams/send_team_d92f_a3a9727283b649eb910e63c07feb26c4/send_lead_d92f_34e273c85419475db5f1e168b7f442f0/raw_traces_manifest.json
+Closed agent session 2ba44f0c-164b-4a95-a91e-c9395ced855e
+Closed agent session 7dd0954f-75c0-4e0e-afdb-fa6d26631d10
+Agent WebSocket disconnected: 7dd0954f-75c0-4e0e-afdb-fa6d26631d10
+Closed agent session 6f9ee458-77c0-4e01-a935-ba007ebc9907
+Agent WebSocket disconnected: 6f9ee458-77c0-4e01-a935-ba007ebc9907
+Created agent session 5c3d0d41-e698-4387-a1a0-f0b5cd388b27 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=5c3d0d41-e698-4387-a1a0-f0b5cd388b27, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent websocket attached for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Created agent session 660afca7-6df9-4512-bf01-99294bcff7dd for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent WebSocket connected: session=660afca7-6df9-4512-bf01-99294bcff7dd, run=sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session e60a1306-de37-4c56-815a-2c75320f64af for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=e60a1306-de37-4c56-815a-2c75320f64af, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run send_lead_d92f_34e273c85419475db5f1e168b7f442f0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agent_teams/send_team_d92f_a3a9727283b649eb910e63c07feb26c4/send_lead_d92f_34e273c85419475db5f1e168b7f442f0/raw_traces_manifest.json
+Closed agent session 5c3d0d41-e698-4387-a1a0-f0b5cd388b27
+Closed agent session e60a1306-de37-4c56-815a-2c75320f64af
+Agent WebSocket disconnected: e60a1306-de37-4c56-815a-2c75320f64af
+Closed agent session 660afca7-6df9-4512-bf01-99294bcff7dd
+Agent WebSocket disconnected: 660afca7-6df9-4512-bf01-99294bcff7dd
+Created agent session 8a20cd11-1612-4bae-ac95-cbd655f78618 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=8a20cd11-1612-4bae-ac95-cbd655f78618, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent websocket attached for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Created agent session 844c052a-5c3c-47b4-9b6b-52e2f50c6b0e for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent WebSocket connected: session=844c052a-5c3c-47b4-9b6b-52e2f50c6b0e, run=sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session e0140296-6efd-48f5-a371-9787483f5587 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=e0140296-6efd-48f5-a371-9787483f5587, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run send_lead_d92f_34e273c85419475db5f1e168b7f442f0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agent_teams/send_team_d92f_a3a9727283b649eb910e63c07feb26c4/send_lead_d92f_34e273c85419475db5f1e168b7f442f0/raw_traces_manifest.json
+Closed agent session 8a20cd11-1612-4bae-ac95-cbd655f78618
+Closed agent session e0140296-6efd-48f5-a371-9787483f5587
+Agent WebSocket disconnected: e0140296-6efd-48f5-a371-9787483f5587
+Closed agent session 844c052a-5c3c-47b4-9b6b-52e2f50c6b0e
+Agent WebSocket disconnected: 844c052a-5c3c-47b4-9b6b-52e2f50c6b0e
+Created agent session 6c2179c9-a6f8-470f-a88b-defed50ea9a5 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=6c2179c9-a6f8-470f-a88b-defed50ea9a5, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent websocket attached for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Created agent session dc039e3b-ef61-4412-88bd-062b2afec3e6 for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent WebSocket connected: session=dc039e3b-ef61-4412-88bd-062b2afec3e6, run=sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 865b76b4-f965-44cf-a2c4-2e62e292dd97 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=865b76b4-f965-44cf-a2c4-2e62e292dd97, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run send_lead_d92f_34e273c85419475db5f1e168b7f442f0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agent_teams/send_team_d92f_a3a9727283b649eb910e63c07feb26c4/send_lead_d92f_34e273c85419475db5f1e168b7f442f0/raw_traces_manifest.json
+Closed agent session 6c2179c9-a6f8-470f-a88b-defed50ea9a5
+Closed agent session 865b76b4-f965-44cf-a2c4-2e62e292dd97
+Agent WebSocket disconnected: 865b76b4-f965-44cf-a2c4-2e62e292dd97
+Closed agent session dc039e3b-ef61-4412-88bd-062b2afec3e6
+Agent WebSocket disconnected: dc039e3b-ef61-4412-88bd-062b2afec3e6
+Created agent session 639dea1a-3b11-46b6-8192-f402ada9bfbe for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=639dea1a-3b11-46b6-8192-f402ada9bfbe, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent websocket attached for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Created agent session 161acc4e-1872-4cc9-a1e4-5499091c9bfd for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent WebSocket connected: session=161acc4e-1872-4cc9-a1e4-5499091c9bfd, run=sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 14064f0e-7f18-4bb8-88a6-2c21f455d412 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=14064f0e-7f18-4bb8-88a6-2c21f455d412, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run send_lead_d92f_34e273c85419475db5f1e168b7f442f0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agent_teams/send_team_d92f_a3a9727283b649eb910e63c07feb26c4/send_lead_d92f_34e273c85419475db5f1e168b7f442f0/raw_traces_manifest.json
+Closed agent session 639dea1a-3b11-46b6-8192-f402ada9bfbe
+Closed agent session 14064f0e-7f18-4bb8-88a6-2c21f455d412
+Agent WebSocket disconnected: 14064f0e-7f18-4bb8-88a6-2c21f455d412
+Closed agent session 161acc4e-1872-4cc9-a1e4-5499091c9bfd
+Agent WebSocket disconnected: 161acc4e-1872-4cc9-a1e4-5499091c9bfd
+Created agent session facfd2c2-7eca-45ca-a304-218487532132 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=facfd2c2-7eca-45ca-a304-218487532132, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent websocket attached for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Created agent session 5b1d7492-6d5a-4e6f-9fb5-6c5440e2084b for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent WebSocket connected: session=5b1d7492-6d5a-4e6f-9fb5-6c5440e2084b, run=sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session f0c25622-4ebe-4c88-b81e-481b5d308a65 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=f0c25622-4ebe-4c88-b81e-481b5d308a65, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run send_lead_d92f_34e273c85419475db5f1e168b7f442f0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agent_teams/send_team_d92f_a3a9727283b649eb910e63c07feb26c4/send_lead_d92f_34e273c85419475db5f1e168b7f442f0/raw_traces_manifest.json
+Closed agent session facfd2c2-7eca-45ca-a304-218487532132
+Closed agent session f0c25622-4ebe-4c88-b81e-481b5d308a65
+Agent WebSocket disconnected: f0c25622-4ebe-4c88-b81e-481b5d308a65
+Closed agent session 5b1d7492-6d5a-4e6f-9fb5-6c5440e2084b
+Agent WebSocket disconnected: 5b1d7492-6d5a-4e6f-9fb5-6c5440e2084b
+Created agent session 86e303d1-b087-4c7e-8f6c-81d096a20465 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=86e303d1-b087-4c7e-8f6c-81d096a20465, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent websocket attached for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Created agent session 08921d65-850a-4aa6-bd7d-aa446cbc3727 for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent WebSocket connected: session=08921d65-850a-4aa6-bd7d-aa446cbc3727, run=sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session c77a2708-b2b5-48b6-889a-efba5f94316d for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=c77a2708-b2b5-48b6-889a-efba5f94316d, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run send_lead_d92f_34e273c85419475db5f1e168b7f442f0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agent_teams/send_team_d92f_a3a9727283b649eb910e63c07feb26c4/send_lead_d92f_34e273c85419475db5f1e168b7f442f0/raw_traces_manifest.json
+Closed agent session 86e303d1-b087-4c7e-8f6c-81d096a20465
+Closed agent session c77a2708-b2b5-48b6-889a-efba5f94316d
+Agent WebSocket disconnected: c77a2708-b2b5-48b6-889a-efba5f94316d
+Closed agent session 08921d65-850a-4aa6-bd7d-aa446cbc3727
+Agent WebSocket disconnected: 08921d65-850a-4aa6-bd7d-aa446cbc3727
+Created agent session b001be89-9c21-4054-9599-8204e0a51210 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=b001be89-9c21-4054-9599-8204e0a51210, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent websocket attached for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Created agent session 5d707bff-7594-49a0-8d77-fde8ed5da7c5 for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent WebSocket connected: session=5d707bff-7594-49a0-8d77-fde8ed5da7c5, run=sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 41558d25-7b65-4afd-ba95-f81799ee4783 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=41558d25-7b65-4afd-ba95-f81799ee4783, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run send_lead_d92f_34e273c85419475db5f1e168b7f442f0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agent_teams/send_team_d92f_a3a9727283b649eb910e63c07feb26c4/send_lead_d92f_34e273c85419475db5f1e168b7f442f0/raw_traces_manifest.json
+Closed agent session b001be89-9c21-4054-9599-8204e0a51210
+Closed agent session 41558d25-7b65-4afd-ba95-f81799ee4783
+Agent WebSocket disconnected: 41558d25-7b65-4afd-ba95-f81799ee4783
+Closed agent session 5d707bff-7594-49a0-8d77-fde8ed5da7c5
+Agent WebSocket disconnected: 5d707bff-7594-49a0-8d77-fde8ed5da7c5
+Created agent session 1d8f7672-c8a2-46fe-8244-b05359200118 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=1d8f7672-c8a2-46fe-8244-b05359200118, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent websocket attached for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Created agent session 52e6062b-4f0e-4ac6-923e-999143d21f41 for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent WebSocket connected: session=52e6062b-4f0e-4ac6-923e-999143d21f41, run=sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session a6e7aa47-677e-4e08-b0bf-4c007369ccbe for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=a6e7aa47-677e-4e08-b0bf-4c007369ccbe, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run send_lead_d92f_34e273c85419475db5f1e168b7f442f0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agent_teams/send_team_d92f_a3a9727283b649eb910e63c07feb26c4/send_lead_d92f_34e273c85419475db5f1e168b7f442f0/raw_traces_manifest.json
+Closed agent session 1d8f7672-c8a2-46fe-8244-b05359200118
+Closed agent session a6e7aa47-677e-4e08-b0bf-4c007369ccbe
+Agent WebSocket disconnected: a6e7aa47-677e-4e08-b0bf-4c007369ccbe
+Closed agent session 52e6062b-4f0e-4ac6-923e-999143d21f41
+Agent WebSocket disconnected: 52e6062b-4f0e-4ac6-923e-999143d21f41
+Created agent session c529526a-e287-40ce-a884-343fd7eab39a for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=c529526a-e287-40ce-a884-343fd7eab39a, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent websocket attached for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Created agent session a369af2c-9fd6-42f2-88e8-9b972292322e for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent WebSocket connected: session=a369af2c-9fd6-42f2-88e8-9b972292322e, run=sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 39a78fe5-1281-40c8-bfc0-b691b7711019 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=39a78fe5-1281-40c8-bfc0-b691b7711019, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run send_lead_d92f_34e273c85419475db5f1e168b7f442f0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agent_teams/send_team_d92f_a3a9727283b649eb910e63c07feb26c4/send_lead_d92f_34e273c85419475db5f1e168b7f442f0/raw_traces_manifest.json
+Closed agent session c529526a-e287-40ce-a884-343fd7eab39a
+Closed agent session 39a78fe5-1281-40c8-bfc0-b691b7711019
+Agent WebSocket disconnected: 39a78fe5-1281-40c8-bfc0-b691b7711019
+Closed agent session a369af2c-9fd6-42f2-88e8-9b972292322e
+Agent WebSocket disconnected: a369af2c-9fd6-42f2-88e8-9b972292322e
+Created agent session 487628f0-c4a5-4b58-b0ff-6b1fce8b2e86 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=487628f0-c4a5-4b58-b0ff-6b1fce8b2e86, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent websocket attached for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Created agent session 1976593b-c6e7-40e4-a033-302ecd8be75a for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent WebSocket connected: session=1976593b-c6e7-40e4-a033-302ecd8be75a, run=sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session df191fe2-fb01-43e0-a4c7-38ed87bc0674 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=df191fe2-fb01-43e0-a4c7-38ed87bc0674, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run send_lead_d92f_34e273c85419475db5f1e168b7f442f0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agent_teams/send_team_d92f_a3a9727283b649eb910e63c07feb26c4/send_lead_d92f_34e273c85419475db5f1e168b7f442f0/raw_traces_manifest.json
+Closed agent session 487628f0-c4a5-4b58-b0ff-6b1fce8b2e86
+Closed agent session df191fe2-fb01-43e0-a4c7-38ed87bc0674
+Agent WebSocket disconnected: df191fe2-fb01-43e0-a4c7-38ed87bc0674
+Closed agent session 1976593b-c6e7-40e4-a033-302ecd8be75a
+Agent WebSocket disconnected: 1976593b-c6e7-40e4-a033-302ecd8be75a
+Agent websocket attached for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Created agent session 15bb7941-e783-42e7-8338-913fe26b58ba for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent WebSocket connected: session=15bb7941-e783-42e7-8338-913fe26b58ba, run=sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 66fbf168-8271-4a38-90cd-5b4a2feaee0f for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=66fbf168-8271-4a38-90cd-5b4a2feaee0f, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 4497f041-b934-4658-88a9-ae8195508153 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Agent Team WebSocket connected: session=4497f041-b934-4658-88a9-ae8195508153, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run send_lead_d92f_34e273c85419475db5f1e168b7f442f0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agent_teams/send_team_d92f_a3a9727283b649eb910e63c07feb26c4/send_lead_d92f_34e273c85419475db5f1e168b7f442f0/raw_traces_manifest.json
+Closed agent session 15bb7941-e783-42e7-8338-913fe26b58ba
+Agent WebSocket disconnected: 15bb7941-e783-42e7-8338-913fe26b58ba
+Closed agent session 4497f041-b934-4658-88a9-ae8195508153
+Closed agent session 66fbf168-8271-4a38-90cd-5b4a2feaee0f
+Agent WebSocket disconnected: 66fbf168-8271-4a38-90cd-5b4a2feaee0f
+Created agent session 388b8c1e-f015-4325-8a94-dcc655ddfc36 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=388b8c1e-f015-4325-8a94-dcc655ddfc36, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent websocket attached for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Created agent session 5c92899c-b4b6-4258-a306-fcc79a88d84d for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent WebSocket connected: session=5c92899c-b4b6-4258-a306-fcc79a88d84d, run=sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 6ac029c3-6de6-44ce-863d-6667ae55c453 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=6ac029c3-6de6-44ce-863d-6667ae55c453, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run send_lead_d92f_34e273c85419475db5f1e168b7f442f0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agent_teams/send_team_d92f_a3a9727283b649eb910e63c07feb26c4/send_lead_d92f_34e273c85419475db5f1e168b7f442f0/raw_traces_manifest.json
+Closed agent session 5c92899c-b4b6-4258-a306-fcc79a88d84d
+Agent WebSocket disconnected: 5c92899c-b4b6-4258-a306-fcc79a88d84d
+Closed agent session 388b8c1e-f015-4325-8a94-dcc655ddfc36
+Closed agent session 6ac029c3-6de6-44ce-863d-6667ae55c453
+Agent WebSocket disconnected: 6ac029c3-6de6-44ce-863d-6667ae55c453
+Created agent session 42a3c021-a359-4c59-859e-f8d61b036b9c for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=42a3c021-a359-4c59-859e-f8d61b036b9c, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent websocket attached for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Created agent session 2cc41504-3b5e-42d8-abf4-fb9e6a9f51d4 for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent WebSocket connected: session=2cc41504-3b5e-42d8-abf4-fb9e6a9f51d4, run=sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session f5c5dd37-eadb-4b7b-9d57-b272d0e5d5d8 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=f5c5dd37-eadb-4b7b-9d57-b272d0e5d5d8, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run send_lead_d92f_34e273c85419475db5f1e168b7f442f0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agent_teams/send_team_d92f_a3a9727283b649eb910e63c07feb26c4/send_lead_d92f_34e273c85419475db5f1e168b7f442f0/raw_traces_manifest.json
+Closed agent session 42a3c021-a359-4c59-859e-f8d61b036b9c
+Closed agent session 2cc41504-3b5e-42d8-abf4-fb9e6a9f51d4
+Agent WebSocket disconnected: 2cc41504-3b5e-42d8-abf4-fb9e6a9f51d4
+Closed agent session f5c5dd37-eadb-4b7b-9d57-b272d0e5d5d8
+Agent WebSocket disconnected: f5c5dd37-eadb-4b7b-9d57-b272d0e5d5d8
+Created agent session 49d1f827-955e-4a01-b97c-9a047b51159e for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=49d1f827-955e-4a01-b97c-9a047b51159e, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent websocket attached for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Created agent session fa8a6745-934d-4c53-bbc2-b375128845f7 for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent WebSocket connected: session=fa8a6745-934d-4c53-bbc2-b375128845f7, run=sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session ffd25b59-2688-40d0-b89c-45e20e988929 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=ffd25b59-2688-40d0-b89c-45e20e988929, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run send_lead_d92f_34e273c85419475db5f1e168b7f442f0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agent_teams/send_team_d92f_a3a9727283b649eb910e63c07feb26c4/send_lead_d92f_34e273c85419475db5f1e168b7f442f0/raw_traces_manifest.json
+Closed agent session 49d1f827-955e-4a01-b97c-9a047b51159e
+Closed agent session ffd25b59-2688-40d0-b89c-45e20e988929
+Agent WebSocket disconnected: ffd25b59-2688-40d0-b89c-45e20e988929
+Closed agent session fa8a6745-934d-4c53-bbc2-b375128845f7
+Agent WebSocket disconnected: fa8a6745-934d-4c53-bbc2-b375128845f7
+Created agent session 9630acb4-59a9-4a6c-b485-88cf5f8271bc for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=9630acb4-59a9-4a6c-b485-88cf5f8271bc, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent websocket attached for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Created agent session 8fc5c57b-61ef-458c-b03d-08871cbfb3de for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent WebSocket connected: session=8fc5c57b-61ef-458c-b03d-08871cbfb3de, run=sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 0e5f3d14-a3a9-44d1-94b0-43abbcb0ad82 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=0e5f3d14-a3a9-44d1-94b0-43abbcb0ad82, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run send_lead_d92f_34e273c85419475db5f1e168b7f442f0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agent_teams/send_team_d92f_a3a9727283b649eb910e63c07feb26c4/send_lead_d92f_34e273c85419475db5f1e168b7f442f0/raw_traces_manifest.json
+Closed agent session 9630acb4-59a9-4a6c-b485-88cf5f8271bc
+Closed agent session 0e5f3d14-a3a9-44d1-94b0-43abbcb0ad82
+Agent WebSocket disconnected: 0e5f3d14-a3a9-44d1-94b0-43abbcb0ad82
+Closed agent session 8fc5c57b-61ef-458c-b03d-08871cbfb3de
+Agent WebSocket disconnected: 8fc5c57b-61ef-458c-b03d-08871cbfb3de
+Created agent session d47a870f-337a-4b6d-9ebb-6113e2abcaa0 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=d47a870f-337a-4b6d-9ebb-6113e2abcaa0, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent websocket attached for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Created agent session 23b9ee9a-92dd-4b64-8ddd-b44316f36a81 for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent WebSocket connected: session=23b9ee9a-92dd-4b64-8ddd-b44316f36a81, run=sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 28cf34e7-c1d9-4e68-a252-bc4cd1e35066 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=28cf34e7-c1d9-4e68-a252-bc4cd1e35066, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/workspace.
+Reusing registered workspace ID: agent_ws_4767e8d4ce4f83b43830fdd2548a025cf430b5d86aac48a029a57a549e825412
+AGY compaction detection off for run send_lead_d92f_34e273c85419475db5f1e168b7f442f0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agent_teams/send_team_d92f_a3a9727283b649eb910e63c07feb26c4/send_lead_d92f_34e273c85419475db5f1e168b7f442f0/raw_traces_manifest.json
+Closed agent session d47a870f-337a-4b6d-9ebb-6113e2abcaa0
+Closed agent session 28cf34e7-c1d9-4e68-a252-bc4cd1e35066
+Agent WebSocket disconnected: 28cf34e7-c1d9-4e68-a252-bc4cd1e35066
+Closed agent session 23b9ee9a-92dd-4b64-8ddd-b44316f36a81
+Agent WebSocket disconnected: 23b9ee9a-92dd-4b64-8ddd-b44316f36a81
+Created agent session bdb84bff-8ab3-489c-88c7-af7a248c87f4 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=bdb84bff-8ab3-489c-88c7-af7a248c87f4, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent websocket attached for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Created agent session 378ceb63-b3ec-4471-b357-9ff4fe5e8734 for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent WebSocket connected: session=378ceb63-b3ec-4471-b357-9ff4fe5e8734, run=sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session d737d332-964d-45e8-be83-1fed39303927 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=d737d332-964d-45e8-be83-1fed39303927, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Closed agent session bdb84bff-8ab3-489c-88c7-af7a248c87f4
+Closed agent session d737d332-964d-45e8-be83-1fed39303927
+Agent WebSocket disconnected: d737d332-964d-45e8-be83-1fed39303927
+Closed agent session 378ceb63-b3ec-4471-b357-9ff4fe5e8734
+Agent WebSocket disconnected: 378ceb63-b3ec-4471-b357-9ff4fe5e8734
+Agent websocket attached for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Created agent session e5d05e29-ba7d-420a-97bd-24aa83c62c06 for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent WebSocket connected: session=e5d05e29-ba7d-420a-97bd-24aa83c62c06, run=sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session ba71f895-406d-49a9-ab88-25e7bc88fe82 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=ba71f895-406d-49a9-ab88-25e7bc88fe82, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 96804843-8334-4199-82bc-032f411e434b for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=96804843-8334-4199-82bc-032f411e434b, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Closed agent session e5d05e29-ba7d-420a-97bd-24aa83c62c06
+Agent WebSocket disconnected: e5d05e29-ba7d-420a-97bd-24aa83c62c06
+Closed agent session 96804843-8334-4199-82bc-032f411e434b
+Closed agent session ba71f895-406d-49a9-ab88-25e7bc88fe82
+Agent WebSocket disconnected: ba71f895-406d-49a9-ab88-25e7bc88fe82
+Created agent session 5b7a0c80-36bb-4542-977e-5d32e6cfb312 for run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent team websocket attached for team run send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent Team WebSocket connected: session=5b7a0c80-36bb-4542-977e-5d32e6cfb312, run=send_team_d92f_a3a9727283b649eb910e63c07feb26c4
+Agent websocket attached for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Created agent session 2b4f385d-c0da-41bf-a7a8-51260e92f7b2 for run sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent WebSocket connected: session=2b4f385d-c0da-41bf-a7a8-51260e92f7b2, run=sender_d92f_2066182bf9574ada847def6bc1329f26
+Agent websocket attached for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Created agent session 56e6de99-0780-4d6d-84b1-8f1eddd96df9 for run sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Agent WebSocket connected: session=56e6de99-0780-4d6d-84b1-8f1eddd96df9, run=sender_d92f_199dcc6a23fe4436bce5eee055f0427b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_2066182bf9574ada847def6bc1329f26/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/send-delivery-AbsYpS/memory/agents/sender_d92f_199dcc6a23fe4436bce5eee055f0427b/raw_traces_manifest.json
+Closed agent session 5b7a0c80-36bb-4542-977e-5d32e6cfb312
+Closed agent session 56e6de99-0780-4d6d-84b1-8f1eddd96df9
+Agent WebSocket disconnected: 56e6de99-0780-4d6d-84b1-8f1eddd96df9
+Closed agent session 2b4f385d-c0da-41bf-a7a8-51260e92f7b2
+Agent WebSocket disconnected: 2b4f385d-c0da-41bf-a7a8-51260e92f7b2
+Removing agent 'sender_d92f_2066182bf9574ada847def6bc1329f26'. Attempting graceful shutdown.
+Agent 'sender_d92f_2066182bf9574ada847def6bc1329f26' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: b7d131d8-f8b3-415a-a4de-3f33213d0c45, AgentID: sender_d92f_2066182bf9574ada847def6bc1329f26) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'sender_d92f_2066182bf9574ada847def6bc1329f26': Stop requested.
+AgentExternalEventNotifier (NotifierID: b7d131d8-f8b3-415a-a4de-3f33213d0c45, AgentID: sender_d92f_2066182bf9574ada847def6bc1329f26) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b7d131d8-f8b3-415a-a4de-3f33213d0c45, AgentID: sender_d92f_2066182bf9574ada847def6bc1329f26) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'sender_d92f_2066182bf9574ada847def6bc1329f26' asyncRun() loop has finished.
+AgentWorker 'sender_d92f_2066182bf9574ada847def6bc1329f26': Running shutdown sequence on worker loop.
+AgentWorker 'sender_d92f_2066182bf9574ada847def6bc1329f26': Shutdown resource cleanup completed successfully.
+AgentWorker 'sender_d92f_2066182bf9574ada847def6bc1329f26': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'sender_d92f_2066182bf9574ada847def6bc1329f26'.
+AgentRuntime for 'sender_d92f_2066182bf9574ada847def6bc1329f26': Context unregistered.
+AgentRuntime for 'sender_d92f_2066182bf9574ada847def6bc1329f26' stop() method completed.
+AgentEventStream (ID: b65feee3-b595-4a12-88ce-fb06c3ff5544) for 'sender_d92f_2066182bf9574ada847def6bc1329f26': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: b65feee3-b595-4a12-88ce-fb06c3ff5544) for 'sender_d92f_2066182bf9574ada847def6bc1329f26': close() called. Unsubscribing all listeners and signaling.

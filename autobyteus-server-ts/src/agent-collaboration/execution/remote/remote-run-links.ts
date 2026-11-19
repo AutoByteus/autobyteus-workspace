@@ -4,9 +4,9 @@ import type { RootExecutionIdentity } from "../domain/root-execution-identity.js
 import type { PeerDelegatedFrom } from "../../../run-history/store/agent-run-metadata-types.js";
 import type { CollaborationCommunicationMessage } from "../communication/collaboration-communication-message.js";
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "./remote-refusal-codes.js";
-import { delegatedRunEndpoint, delegatedTeamEndpoints, delegatorEndpoint, type RemoteEndpoint } from "./remote-endpoint.js";
+import { delegatedRunEndpoint, delegatedTeamEndpoints, delegatorEndpoint, type LinkedRemoteEndpoint, type RemoteEndpoint } from "./remote-endpoint.js";
 import {
-  resolveRemoteRunChannel,
+  type RemoteRunChannelAccess,
   type RemoteChannelRefusal,
   type RemoteDeliveryReceipt,
   type RemoteOwnerCommand,
@@ -64,7 +64,9 @@ export const storedRemoteLinkCheck = (
   stored: Omit<RemoteRunLinksOptions, "channel"> | Readonly<{ run: RootExecutionIdentity; tree: Pick<DelegationIndex, "peerChildrenOf"> }> | null,
   query: RemoteInboundQuery,
 ): StoredRemoteLinkCheck => !stored ? "not_found"
-  : new RemoteRunLinks("run" in stored ? { peerRuns: () => peerRunLinksOf(stored.run, stored.tree) } : stored).admitsInbound(query) ? "proceed" : "not_linked";
+  // A stored check only reads the links; it sends nothing, so it has no channel.
+  : new RemoteRunLinks({ ...("run" in stored ? { peerRuns: () => peerRunLinksOf(stored.run, stored.tree) } : stored), channel: () => null })
+    .admitsInbound(query) ? "proceed" : "not_linked";
 
 /** The peer accepted the message; `peerName` is this owner's label for it, named in the sender's result. */
 export type RemoteDeliveryAnswer = Readonly<{ accepted: true; peerName: string }> | RemoteChannelRefusal;
@@ -74,23 +76,24 @@ export type RemoteRunLinksOptions = Readonly<{
   peerRuns(): readonly PeerRunLink[];
   /**
    * Receiving node: the back-link of a root a peer delegated to (`delegatedFrom`) and the local agents it pairs
-   * with (a standalone root's host; every member of a Team root); `null` otherwise.
+   * with (a standalone run's own agent; every member of a Team root); `null` otherwise.
    */
   backLink?: Readonly<{ pairedAgentRunIds(): readonly string[]; delegatedFrom: PeerDelegatedFrom }> | null;
-  channel?(): RemoteRunChannel | null;
+  channel: RemoteRunChannelAccess;
 }>;
 
 /**
  * The shared core of a root's remote endpoints (design § Remote Messaging, AR-006): membership and transmit.
  * It has no side-dependent rule; each endpoint kind carries its own (`remote-endpoint.ts`). It is the only reader
  * of the tree's `remoteTaskExecutions` outside the store (AR-001). It never touches message state: the root's
- * message delivery orders the pair rule, the engine and `deliver` (AR-005).
+ * message delivery orders the endpoint choice, the engine and `deliver` (AR-005). It holds only linked endpoints; a
+ * one-message `unlinked_run` endpoint (autobyteus-492) is never stored here, only transmitted by `deliver`.
  */
 export class RemoteRunLinks {
   constructor(private readonly options: RemoteRunLinksOptions) {}
 
-  endpoints(): readonly RemoteEndpoint[] {
-    const delegated = this.options.peerRuns().flatMap((link): readonly RemoteEndpoint[] =>
+  endpoints(): readonly LinkedRemoteEndpoint[] {
+    const delegated = this.options.peerRuns().flatMap((link): readonly LinkedRemoteEndpoint[] =>
       link.kind === "agent" ? [delegatedRunEndpoint(link)] : delegatedTeamEndpoints(link));
     const back = this.options.backLink;
     return back ? [...delegated, delegatorEndpoint(back.pairedAgentRunIds(), back.delegatedFrom)] : delegated;
@@ -110,7 +113,7 @@ export class RemoteRunLinks {
   }
 
   /** The remote endpoint with this run ID; `null` when the run ID is not one (today's local path). */
-  endpointFor(agentRunId: string): RemoteEndpoint | null {
+  endpointFor(agentRunId: string): LinkedRemoteEndpoint | null {
     return this.endpoints().find((endpoint) => endpoint.reference.agentRunId === agentRunId) ?? null;
   }
 
@@ -120,7 +123,7 @@ export class RemoteRunLinks {
   }
 
   /** The inbound link check: the sender is this root's endpoint on that peer, and its kind allows the target. */
-  inboundEndpoint(fromNodeId: string, senderAgentRunId: string, targetAgentRunId: string): RemoteEndpoint | null {
+  inboundEndpoint(fromNodeId: string, senderAgentRunId: string, targetAgentRunId: string): LinkedRemoteEndpoint | null {
     const endpoint = this.endpointFor(senderAgentRunId);
     return endpoint && endpoint.reference.nodeId === fromNodeId && endpoint.allowsTarget(targetAgentRunId) ? endpoint : null;
   }
@@ -149,7 +152,7 @@ export class RemoteRunLinks {
       : this.inboundEndpoint(query.fromNodeId, query.senderAgentRunId, query.targetAgentRunId) !== null;
   }
 
-  /** Transmits a prepared message to the endpoint's node (the channel only; no state changes here). */
+  /** Transmits a prepared message to the endpoint's node, linked or unlinked (the channel only; no state changes here). */
   async deliver(endpoint: RemoteEndpoint, message: CollaborationCommunicationMessage): Promise<RemoteDeliveryAnswer> {
     const channel = this.channel();
     if (!channel) return { accepted: false, code: REMOTE_REFUSAL.OFF, message: REMOTE_ROOT_REFUSAL_TEXT.off };
@@ -180,6 +183,6 @@ export class RemoteRunLinks {
   }
 
   private channel(): RemoteRunChannel | null {
-    return resolveRemoteRunChannel(this.options.channel);
+    return this.options.channel();
   }
 }

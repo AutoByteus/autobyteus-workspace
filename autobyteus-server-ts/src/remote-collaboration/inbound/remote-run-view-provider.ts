@@ -1,6 +1,6 @@
 import type { AgentPresentationMessage } from "@autobyteus/agent-presentation-contracts";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
-import { pairedAgentStatusFrame, type PairedAgentObservation } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
+import { runAgentStatusFrame, type RunAgentObservation } from "../../agent-collaboration/execution/remote/run-agent-access.js";
 import type {
   RemoteAgentLaunch,
   RemoteAgentProjection,
@@ -53,7 +53,7 @@ const startedRunOf = (root: RemoteTargetRoot): RemoteStartedRunRef | null =>
 /**
  * autobyteus-278: the one inbound owner of what a peer's owner reads and drives on this node: the summaries, stored
  * conversations, live output and commands of runs that peer's delegation started, about their own agents only
- * (an Agent's host, a Team's members). Every request is checked against the run's stored back-link first (the
+ * (an Agent run's own agent, a Team's members). Every request is checked against the run's stored back-link first (the
  * calling node started it), and then served by the root kind's own API behind `RemoteRootDirectory` (N-304).
  */
 export class RemoteRunViewProvider {
@@ -72,7 +72,7 @@ export class RemoteRunViewProvider {
         kind: run.kind,
         runId: run.runId,
         title: await this.views.runTitle(run).catch(() => null),
-        statuses: this.roots.pairedAgents(run.kind).pairedAgentStatuses(run.runId),
+        statuses: this.roots.runAgents(run.kind).runAgentStatuses(run.runId),
         // A run whose launches cannot be read answers none, with a warning naming it (`DESIGN.md` rule 7).
         launches: await this.views.runLaunches(run).catch((error: unknown) => {
           console.warn(`The launches of ${run.kind} run '${run.runId}' are left out of its summary: ${error instanceof Error ? error.message : String(error)}`);
@@ -100,7 +100,7 @@ export class RemoteRunViewProvider {
     if (!run) return notFound();
     const refused = await this.check(run, from, request.agentRunId);
     if (refused) return refused;
-    const result = await this.roots.pairedAgents(run.kind)
+    const result = await this.roots.runAgents(run.kind)
       .executeOwnerCommand(run.runId, request.agentRunId, request.command, { nodeName: from.name })
       .catch((error: unknown): AgentOperationResult => ({ accepted: false, code: "REMOTE_OWNER_COMMAND_FAILED",
         message: error instanceof Error ? error.message : String(error) }));
@@ -112,19 +112,19 @@ export class RemoteRunViewProvider {
    * that ends by stop, terminate or delete through any path closes the sink (DS-006); the peer then reads its final
    * summary (AR-403). Idle shutdown does not end it.
    */
-  async observe(opening: RunObservationOpening, from: PeerNode, sink: RunObservationSink): Promise<PeerHandlerRefusal | Readonly<{ accepted: true; observation: PairedAgentObservation }>> {
+  async observe(opening: RunObservationOpening, from: PeerNode, sink: RunObservationSink): Promise<PeerHandlerRefusal | Readonly<{ accepted: true; observation: RunAgentObservation }>> {
     const run = startedRunOf(opening.targetRoot);
     if (!run) return notFound();
     const refused = await this.check(run, from, null);
     if (refused) return refused;
-    const agents = this.roots.pairedAgents(run.kind);
+    const agents = this.roots.runAgents(run.kind);
     const observation = await agents
-      .observePairedAgents(run.runId, (agentRunId, message) => sink.send({ agentRunId, message }), () => sink.close())
+      .observeRunAgents(run.runId, (agentRunId, message) => sink.send({ agentRunId, message }), () => sink.close())
       .catch(() => null);
     if (!observation) return notFound();
     // CR-461-090: the stream carries changes only, so it opens with each running agent's current status, read after the
     // listener is attached (no change falls between them). A run that is not running has none: its peer reads offline.
-    for (const live of agents.pairedAgentStatuses(run.runId)) sink.send({ agentRunId: live.agentRunId, message: pairedAgentStatusFrame(live.status, live.backgroundTasksRunning) });
+    for (const live of agents.runAgentStatuses(run.runId)) sink.send({ agentRunId: live.agentRunId, message: runAgentStatusFrame(live.status, live.backgroundTasksRunning) });
     return Object.freeze({ accepted: true as const, observation });
   }
 
@@ -140,8 +140,8 @@ export class RemoteRunViewProvider {
     try {
       const snapshot: AgentStreamSnapshotPayload = await peerAgentStreamSnapshot(this.sequences, request.agentRunId,
         () => this.views.agentProjection(run, request.agentRunId));
-      const live = this.roots.pairedAgents(run.kind).pairedAgentStatuses(run.runId).find((agent) => agent.agentRunId === request.agentRunId);
-      return Object.freeze({ accepted: true as const, snapshot, status: pairedAgentStatusFrame(live?.status ?? "offline", live?.backgroundTasksRunning ?? 0) });
+      const live = this.roots.runAgents(run.kind).runAgentStatuses(run.runId).find((agent) => agent.agentRunId === request.agentRunId);
+      return Object.freeze({ accepted: true as const, snapshot, status: runAgentStatusFrame(live?.status ?? "offline", live?.backgroundTasksRunning ?? 0) });
     } catch (error) {
       return refusal(REMOTE_REFUSAL.TARGET_NOT_FOUND, error instanceof Error ? error.message : String(error));
     }

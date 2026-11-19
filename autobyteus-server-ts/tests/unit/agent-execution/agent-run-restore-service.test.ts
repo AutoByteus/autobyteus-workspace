@@ -3,6 +3,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
 import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
+import { NO_ELIGIBLE_STANDALONE_RUNS } from "../../helpers/explicit-host-collaborators.js";
 
 const metadata = (): AgentRunMetadata => ({
   runId: "run-1",
@@ -27,10 +28,10 @@ const createSubject = () => {
   const lifecycleService = Object.assign(
     Object.create(StandaloneAgentRunLifecycleService.prototype) as StandaloneAgentRunLifecycleService,
     {
-    activateHost: vi.fn().mockResolvedValue(restored),
+    activateRunAgent: vi.fn().mockResolvedValue(restored),
     },
   );
-  const service = new AgentRunService("/tmp/agent-run-service-test", {
+  const service = new AgentRunService("/tmp/agent-run-service-test", { standaloneRuns: NO_ELIGIBLE_STANDALONE_RUNS,
     agentRunManager: { getActiveRun: vi.fn().mockReturnValue(null) } as never,
     metadataService: {} as never,
     historyCatalogService: {} as never,
@@ -45,12 +46,12 @@ describe("AgentRunService restore", () => {
     const { lifecycleService, restored, service } = createSubject();
 
     await expect(service.restoreAgentRun(" run-1 ")).resolves.toBe(restored);
-    expect(lifecycleService.activateHost).toHaveBeenCalledExactlyOnceWith("run-1", { memberExecutionContext: null });
+    expect(lifecycleService.activateRunAgent).toHaveBeenCalledExactlyOnceWith("run-1", { memberExecutionContext: null });
   });
 
   it("preserves lifecycle-owner restore failures", async () => {
     const { lifecycleService, service } = createSubject();
-    lifecycleService.activateHost.mockRejectedValueOnce(
+    lifecycleService.activateRunAgent.mockRejectedValueOnce(
       new Error("Run 'run-missing' was not found."),
     );
 
@@ -63,7 +64,7 @@ describe("AgentRunService restore", () => {
     const { lifecycleService, service } = createSubject();
 
     await expect(service.restoreAgentRun("   ")).rejects.toThrow("runId is required.");
-    expect(lifecycleService.activateHost).not.toHaveBeenCalled();
+    expect(lifecycleService.activateRunAgent).not.toHaveBeenCalled();
   });
 });
 
@@ -73,10 +74,10 @@ describe("AgentRunService routes an eligible standalone run through its root (AR
     const activation = { run, metadata: metadata() };
     const lifecycleService = Object.assign(
       Object.create(StandaloneAgentRunLifecycleService.prototype) as StandaloneAgentRunLifecycleService,
-      { activateHost: vi.fn().mockResolvedValue(activation), updateStoppedSelection: vi.fn() },
+      { activateRunAgent: vi.fn().mockResolvedValue(activation), updateStoppedSelection: vi.fn() },
     );
     const standaloneRuns = {
-      resolveRootAndEnsureHost: vi.fn(async () => owned ? activation : null),
+      resolveRootAndEnsureAgent: vi.fn(async () => owned ? activation : null),
       stopRoot: vi.fn(async () => null),
       refreshInheritedLaunch: vi.fn(async () => undefined),
     };
@@ -98,15 +99,15 @@ describe("AgentRunService routes an eligible standalone run through its root (AR
     await expect(service.restoreAgentRun("run-1")).resolves.toBe(activation);
     await expect(service.resolveAgentRun("run-1")).resolves.toBe(activation.run);
     await expect(service.activatePreparedRun("run-1")).resolves.toBe(activation.run);
-    expect(standaloneRuns.resolveRootAndEnsureHost).toHaveBeenCalledTimes(4);
-    expect(lifecycleService.activateHost).not.toHaveBeenCalled();
+    expect(standaloneRuns.resolveRootAndEnsureAgent).toHaveBeenCalledTimes(4);
+    expect(lifecycleService.activateRunAgent).not.toHaveBeenCalled();
   });
 
-  it("a run that cannot host delegated copies is activated directly without a member context", async () => {
+  it("a run that is not collaboration-eligible is activated directly without a member context", async () => {
     const { service, lifecycleService, standaloneRuns } = subject(false);
     await service.restoreAgentRun("run-1");
-    expect(standaloneRuns.resolveRootAndEnsureHost).toHaveBeenCalledWith("run-1");
-    expect(lifecycleService.activateHost).toHaveBeenCalledExactlyOnceWith("run-1", { memberExecutionContext: null });
+    expect(standaloneRuns.resolveRootAndEnsureAgent).toHaveBeenCalledWith("run-1");
+    expect(lifecycleService.activateRunAgent).toHaveBeenCalledExactlyOnceWith("run-1", { memberExecutionContext: null });
   });
 
   const edit = { agentRunId: "run-1", runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "m", llmConfig: null };

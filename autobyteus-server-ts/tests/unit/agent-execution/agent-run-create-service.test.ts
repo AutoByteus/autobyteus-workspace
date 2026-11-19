@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
 import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
+import { NO_ELIGIBLE_STANDALONE_RUNS } from "../../helpers/explicit-host-collaborators.js";
 
 const createSubject = () => {
   const runId = "support_agent_00000000000000000000000000000001";
@@ -31,10 +32,10 @@ const createSubject = () => {
   const lifecycleService = Object.assign(
     Object.create(StandaloneAgentRunLifecycleService.prototype) as StandaloneAgentRunLifecycleService,
     {
-    activateHost: vi.fn().mockResolvedValue({ run: activeRun, metadata: {} }),
+    activateRunAgent: vi.fn().mockResolvedValue({ run: activeRun, metadata: {} }),
     },
   );
-  const service = new AgentRunService("/tmp/agent-run-service-test", {
+  const service = new AgentRunService("/tmp/agent-run-service-test", { standaloneRuns: NO_ELIGIBLE_STANDALONE_RUNS,
     agentRunManager: agentRunManager as never,
     metadataService: metadataService as never,
     historyCatalogService: historyCatalogService as never,
@@ -71,12 +72,12 @@ describe("AgentRunService create", () => {
     });
 
     expect(mocks.provisioningService.prepareAgentRun).toHaveBeenCalledExactlyOnceWith(input);
-    expect(mocks.lifecycleService.activateHost).toHaveBeenCalledExactlyOnceWith(
+    expect(mocks.lifecycleService.activateRunAgent).toHaveBeenCalledExactlyOnceWith(
       "support_agent_00000000000000000000000000000001",
       { memberExecutionContext: null },
     );
     expect(mocks.provisioningService.prepareAgentRun.mock.invocationCallOrder[0])
-      .toBeLessThan(mocks.lifecycleService.activateHost.mock.invocationCallOrder[0]!);
+      .toBeLessThan(mocks.lifecycleService.activateRunAgent.mock.invocationCallOrder[0]!);
   });
 
   const createInput = {
@@ -91,7 +92,7 @@ describe("AgentRunService create", () => {
   it("AC-001: undoes the prepared run when activation fails, then rethrows the activation error", async () => {
     const { service, mocks } = createSubject();
     const activationError = new Error("AgentRun activation admission is closed for process shutdown.");
-    mocks.lifecycleService.activateHost.mockRejectedValueOnce(activationError);
+    mocks.lifecycleService.activateRunAgent.mockRejectedValueOnce(activationError);
 
     await expect(service.createAgentRun(createInput)).rejects.toBe(activationError);
 
@@ -103,7 +104,7 @@ describe("AgentRunService create", () => {
     const { service, mocks } = createSubject();
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     const activationError = new Error("runtime failed after start");
-    mocks.lifecycleService.activateHost.mockRejectedValueOnce(activationError);
+    mocks.lifecycleService.activateRunAgent.mockRejectedValueOnce(activationError);
     mocks.provisioningService.cancelPreparedAgentRun.mockResolvedValueOnce({
       success: false, message: "Only unactivated prepared runs can be cancelled.",
     });
@@ -119,7 +120,7 @@ describe("AgentRunService create", () => {
     const { service, mocks } = createSubject();
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     const activationError = new Error("activation failed");
-    mocks.lifecycleService.activateHost.mockRejectedValueOnce(activationError);
+    mocks.lifecycleService.activateRunAgent.mockRejectedValueOnce(activationError);
     mocks.provisioningService.cancelPreparedAgentRun.mockRejectedValueOnce(new Error("catalog flush failed"));
 
     await expect(service.createAgentRun(createInput)).rejects.toBe(activationError);

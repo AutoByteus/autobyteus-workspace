@@ -1,0 +1,1657 @@
+# API-05b the 8 files that failed in API-05, one at a time; commit 41bba2c734 (code 49ed8967f0); 2026-11-19T00:41:16Z; Node v22.23.1; load 8.01 10.24 14.67
+# same env; pnpm -C autobyteus-server-ts exec vitest run --fileParallelism=false tests/e2e/agent-definitions/internal-agents.e2e.test.ts tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts tests/e2e/node-access/node-access-model.e2e.test.ts tests/e2e/projects/embedding-settings.e2e.test.ts tests/e2e/projects/project-mutation-node-locality.e2e.test.ts tests/e2e/projects/project-task-boundaries.e2e.test.ts tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts tests/e2e/workspaces/search-files-through-gate.e2e.test.ts 
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/projects/project-mutation-node-locality.e2e.test.ts[2m > [22m[2mE-008: separate built nodes accept the same local path but cannot patch remote Project identities; restart preserves bytes
+[22m[39mBuilt-node HTTP receipt {"nodeA":"http://127.0.0.1:63510","nodeB":"http://127.0.0.1:63496","projectId":"project_ca7a0670-d5ab-491a-8dae-a5cd6143f22f","workspaceId":"agent_ws_4517fa084ac2a88ae76baa849a57ff2d418eba418ab54a7ec0af7aab4b7421b8","savedBeforeRestart":{"projectId":"project_ca7a0670-d5ab-491a-8dae-a5cd6143f22f","name":"Node local","description":"Saved goal","createdAt":"2026-11-19T00:41:22.783Z","updatedAt":"2026-11-19T00:41:22.783Z","workspaces":[{"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-mutation-node-g3eQNZ/registered-source","description":"Source","availability":"AVAILABLE"}]},"remotePatch":{"error":{"code":"PROJECT_NOT_FOUND","message":"Project 'project_ca7a0670-d5ab-491a-8dae-a5cd6143f22f' was not found."}},"localPathOnB":{"project":{"projectId":"project_e78b3ac4-b143-4d44-916b-1aea9b5195c3","name":"Node local","workspaces":[{"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-mutation-node-g3eQNZ/registered-source","description":"B reference"}]}},"afterRestart":{"project":{"projectId":"project_ca7a0670-d5ab-491a-8dae-a5cd6143f22f","name":"Node local","description":"After restart","workspaces":[{"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-mutation-node-g3eQNZ/registered-source","description":"Source"}]}}}
+
+[90mstdout[2m | tests/e2e/projects/project-mutation-node-locality.e2e.test.ts[2m > [22m[2mE-008: separate built nodes accept the same local path but cannot patch remote Project identities; restart preserves bytes
+[22m[39mOwned built-node cleanup: both children exited 0; four listeners closed; both private roots removed.
+
+ [32m✓[39m tests/e2e/projects/project-mutation-node-locality.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 12810[2mms[22m[39m
+   [33m[2m✓[22m[39m E-008: separate built nodes accept the same local path but cannot patch remote Project identities; restart preserves bytes [33m 12810[2mms[22m[39m
+(node:74787) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mNode access: local control socket not opened. The node's local control socket path is 107 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/node-access/local-control.sock. Use a shorter data folder path.
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mRegistered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstderr[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mAgent Definition created successfully with ID: stop-manager-ef0834
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mAgent Definition created successfully with ID: stop-mate-ef0834
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mAgent Team Definition created successfully with ID: stop-team-ef0834
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mstandalone agent run
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/workspace.
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mstandalone agent run
+[22m[39mCreated and registered workspace ID: agent_ws_fa3cab1192d0f85e37a73de30057fd94278525a779f7c59b0602c1285b06d349
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mstandalone agent run
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/workspace.
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mstandalone agent run
+[22m[39mReusing registered workspace ID: agent_ws_fa3cab1192d0f85e37a73de30057fd94278525a779f7c59b0602c1285b06d349
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mstandalone agent run
+[22m[39mAGY compaction detection off for run stop_manager_ef0834_04f4d526037d415896f59932627b5048: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mstandalone agent run
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/memory/agents/stop_manager_ef0834_04f4d526037d415896f59932627b5048/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mstandalone agent run
+[22m[39mAgent websocket attached for run stop_manager_ef0834_04f4d526037d415896f59932627b5048
+Created agent session 8b7dc0e5-e558-4ced-a7ab-e3a37c941e46 for run stop_manager_ef0834_04f4d526037d415896f59932627b5048
+Agent WebSocket connected: session=8b7dc0e5-e558-4ced-a7ab-e3a37c941e46, run=stop_manager_ef0834_04f4d526037d415896f59932627b5048
+
+[90mstderr[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mstandalone agent run
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/memory/agents/stop_manager_ef0834_04f4d526037d415896f59932627b5048/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mstandalone agent run
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/workspace.
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mstandalone agent run
+[22m[39mReusing registered workspace ID: agent_ws_fa3cab1192d0f85e37a73de30057fd94278525a779f7c59b0602c1285b06d349
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mstandalone agent run
+[22m[39mAGY compaction detection off for run stop_manager_ef0834_04f4d526037d415896f59932627b5048: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mstandalone agent run
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/memory/agents/stop_manager_ef0834_04f4d526037d415896f59932627b5048/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mstandalone agent run
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/memory/agents/stop_manager_ef0834_04f4d526037d415896f59932627b5048/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mstandalone agent run
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/workspace.
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mstandalone agent run
+[22m[39mReusing registered workspace ID: agent_ws_fa3cab1192d0f85e37a73de30057fd94278525a779f7c59b0602c1285b06d349
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mstandalone agent run
+[22m[39mAGY compaction detection off for run stop_manager_ef0834_04f4d526037d415896f59932627b5048: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mstandalone agent run
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/memory/agents/stop_manager_ef0834_04f4d526037d415896f59932627b5048/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mstandalone agent run
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/memory/agents/stop_manager_ef0834_04f4d526037d415896f59932627b5048/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mTeam member
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/workspace.
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mTeam member
+[22m[39mReusing registered workspace ID: agent_ws_fa3cab1192d0f85e37a73de30057fd94278525a779f7c59b0602c1285b06d349
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mTeam member
+[22m[39mCreated agent session 519d7f81-086e-4d19-8303-a0d5da92c1e5 for run stop_team_ef0834_0022d764fbf5422d935ba9aa03b165fc
+Agent team websocket attached for team run stop_team_ef0834_0022d764fbf5422d935ba9aa03b165fc
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mTeam member
+[22m[39mAgent Team WebSocket connected: session=519d7f81-086e-4d19-8303-a0d5da92c1e5, run=stop_team_ef0834_0022d764fbf5422d935ba9aa03b165fc
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mTeam member
+[22m[39mCreated agent session de97ddbd-8e9e-4d01-a584-b552fc51e9d0 for run stop_team_ef0834_0022d764fbf5422d935ba9aa03b165fc
+Agent team websocket attached for team run stop_team_ef0834_0022d764fbf5422d935ba9aa03b165fc
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mTeam member
+[22m[39mAgent Team WebSocket connected: session=de97ddbd-8e9e-4d01-a584-b552fc51e9d0, run=stop_team_ef0834_0022d764fbf5422d935ba9aa03b165fc
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mTeam member
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/workspace.
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mTeam member
+[22m[39mReusing registered workspace ID: agent_ws_fa3cab1192d0f85e37a73de30057fd94278525a779f7c59b0602c1285b06d349
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mTeam member
+[22m[39mAGY compaction detection off for run stop_manager_ef0834_0d3dcf2f38e24de78d89a71a0f9e822f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mTeam member
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/memory/agent_teams/stop_team_ef0834_0022d764fbf5422d935ba9aa03b165fc/stop_manager_ef0834_0d3dcf2f38e24de78d89a71a0f9e822f/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mTeam member
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/workspace.
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mTeam member
+[22m[39mReusing registered workspace ID: agent_ws_fa3cab1192d0f85e37a73de30057fd94278525a779f7c59b0602c1285b06d349
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mTeam member
+[22m[39mAGY compaction detection off for run stop_manager_ef0834_0d3dcf2f38e24de78d89a71a0f9e822f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mTeam member
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/memory/agent_teams/stop_team_ef0834_0022d764fbf5422d935ba9aa03b165fc/stop_manager_ef0834_0d3dcf2f38e24de78d89a71a0f9e822f/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mTeam member
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/workspace.
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mTeam member
+[22m[39mReusing registered workspace ID: agent_ws_fa3cab1192d0f85e37a73de30057fd94278525a779f7c59b0602c1285b06d349
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mTeam member
+[22m[39mAGY compaction detection off for run stop_manager_ef0834_0d3dcf2f38e24de78d89a71a0f9e822f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)[2m > [22m[2mTeam member
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stop-nothing-to-stop-DpJbCR/memory/agent_teams/stop_team_ef0834_0022d764fbf5422d935ba9aa03b165fc/stop_manager_ef0834_0d3dcf2f38e24de78d89a71a0f9e822f/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mClosed agent session 519d7f81-086e-4d19-8303-a0d5da92c1e5
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mClosed agent session de97ddbd-8e9e-4d01-a584-b552fc51e9d0
+
+[90mstdout[2m | tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts[2m > [22m[2mautobyteus-533: a Stop with nothing to stop is accepted (scripted AGY)
+[22m[39mClosed agent session 8b7dc0e5-e558-4ced-a7ab-e3a37c941e46
+Agent WebSocket disconnected: 8b7dc0e5-e558-4ced-a7ab-e3a37c941e46
+
+ [32m✓[39m tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 10468[2mms[22m[39m
+     [33m[2m✓[22m[39m standalone agent run [33m 4717[2mms[22m[39m
+     [33m[2m✓[22m[39m Team member [33m 2718[2mms[22m[39m
+(node:75005) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9/.env
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9/.env // tip: ⌘ enable debugging { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mNode access: local control socket not opened. The node's local control socket path is 108 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9/node-access/local-control.sock. Use a shorter data folder path.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'search_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstderr[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstderr[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-FILES: multipart bytes, saved ownership, typed deltas and Done survive reader reconstruction
+[22m[39mNode request refused NODE_CREDENTIAL_INVALID /rest/projects/project_42ca438e-443e-4be2-997d-7820446e8cfc/tasks/project_task_d4f34331-7a5c-430b-af68-f5807406d835/context-files/ctx_96ea181b56ba__note.txt from 127.0.0.1
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected list_projects adapter wins over a configured MCP name
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+
+[90mstderr[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected list_projects adapter wins over a configured MCP name
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Configured MCP tool 'list_projects' was not exposed because it collides with a protected Agent Tools MCP adapter.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected list_projects adapter wins over a configured MCP name
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+
+[90mstderr[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected list_projects adapter wins over a configured MCP name
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected create_project adapter wins over a configured MCP name
+[22m[39mSuccessfully registered tool definition: 'create_project'
+
+[90mstderr[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected create_project adapter wins over a configured MCP name
+[22m[39mOverwriting existing tool definition for name: 'create_project'
+Configured MCP tool 'create_project' was not exposed because it collides with a protected Agent Tools MCP adapter.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected create_project adapter wins over a configured MCP name
+[22m[39mSuccessfully registered tool definition: 'create_project'
+
+[90mstderr[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected create_project adapter wins over a configured MCP name
+[22m[39mOverwriting existing tool definition for name: 'create_project'
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected update_project adapter wins over a configured MCP name
+[22m[39mSuccessfully registered tool definition: 'update_project'
+
+[90mstderr[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected update_project adapter wins over a configured MCP name
+[22m[39mOverwriting existing tool definition for name: 'update_project'
+Configured MCP tool 'update_project' was not exposed because it collides with a protected Agent Tools MCP adapter.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected update_project adapter wins over a configured MCP name
+[22m[39mSuccessfully registered tool definition: 'update_project'
+
+[90mstderr[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected update_project adapter wins over a configured MCP name
+[22m[39mOverwriting existing tool definition for name: 'update_project'
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-AGG: public registration is not mkdir; failed aggregate save preserves registry and prior records
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9/not-created-folder/../not-created-folder
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9/not-created-folder.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-AGG: public registration is not mkdir; failed aggregate save preserves registry and prior records
+[22m[39mWorkspace path refused (missing): No folder exists at the workspace path. (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9/not-created-folder/../not-created-folder)
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-AGG: public registration is not mkdir; failed aggregate save preserves registry and prior records
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9/registered-folder/../registered-folder
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9/registered-folder.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-AGG: public registration is not mkdir; failed aggregate save preserves registry and prior records
+[22m[39mCreated and registered workspace ID: agent_ws_46a945c8d259ec7dfbc7b73cd51419f4aa0aaa3a66da5cb2f5b6fe9bef959da8
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-AGG: public registration is not mkdir; failed aggregate save preserves registry and prior records
+[22m[39mGraphQL mutation to remove registered workspace
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-AGG: public registration is not mkdir; failed aggregate save preserves registry and prior records
+[22m[39mClosing FileSystemWorkspace agent_ws_46a945c8d259ec7dfbc7b73cd51419f4aa0aaa3a66da5cb2f5b6fe9bef959da8
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mE-006: path links retain descriptions; lists replace, blanks and [] clear only associations
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9/tool-workspace-a
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9/tool-workspace-a.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mE-006: path links retain descriptions; lists replace, blanks and [] clear only associations
+[22m[39mCreated and registered workspace ID: agent_ws_02c4c271e64b037d2986598bb4083b815bda5d251c12708a45c3c5eb0dd717da
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mE-006: path links retain descriptions; lists replace, blanks and [] clear only associations
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9/tool-workspace-b
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9/tool-workspace-b.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mE-006: path links retain descriptions; lists replace, blanks and [] clear only associations
+[22m[39mCreated and registered workspace ID: agent_ws_486cda303aae652afdc22734dc08857f1fc8af732c2e13d4598038b11330f889
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mE-006: path links retain descriptions; lists replace, blanks and [] clear only associations
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9/tool-workspace-c
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9/tool-workspace-c.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mE-006: path links retain descriptions; lists replace, blanks and [] clear only associations
+[22m[39mCreated and registered workspace ID: agent_ws_cbb0bf38ebc42ebe98495bab953dab56b6bb372638f858b27639ae875b5ab0aa
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mE-006: path links retain descriptions; lists replace, blanks and [] clear only associations
+[22m[39mGraphQL mutation to remove registered workspace
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mE-006: path links retain descriptions; lists replace, blanks and [] clear only associations
+[22m[39mClosing FileSystemWorkspace agent_ws_cbb0bf38ebc42ebe98495bab953dab56b6bb372638f858b27639ae875b5ab0aa
+
+[90mstderr[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mCMT-API-002: a parent's close names the part it could not close (damaged run data) in partsNotClosed, next to closedParts; the field is absent when every part closes (task-comments AC-009, autobyteus-187)
+[22m[39mTASK_PART_CLOSE_FAILED {
+  projectId: [32m'project_3ab91b2f-e330-4d63-9efc-09277f16a5b9'[39m,
+  taskId: [32m'project_task_d077420c-8542-4c8f-bd98-ba3ddeb951b6'[39m,
+  partTaskId: [32m'project_task_3c274882-667d-4381-8649-90521993a452'[39m,
+  error: [32m"Expected property name or '}' in JSON at position 2 (line 1 column 3)"[39m
+}
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mE-007: current Projects/Tasks/context/assignments/history/registry/folders survive metadata/list patches and reader reconstruction
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9/protected-source
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9/protected-source.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mE-007: current Projects/Tasks/context/assignments/history/registry/folders survive metadata/list patches and reader reconstruction
+[22m[39mCreated and registered workspace ID: agent_ws_853f0c550d394cbd7192e01e00de9cf98b51c0324b39a7499425162812efbe10
+
+[90mstderr[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mE-007: current Projects/Tasks/context/assignments/history/registry/folders survive metadata/list patches and reader reconstruction
+[22m[39mTASK_AGENT_RESOURCES_UNAVAILABLE {
+  taskId: [32m'project_task_3c274882-667d-4381-8649-90521993a452'[39m,
+  file: [32m'/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9/projects/project_3ab91b2f-e330-4d63-9efc-09277f16a5b9/tasks/project_task_3c274882-667d-4381-8649-90521993a452/agent_run_resources.json'[39m,
+  message: [32m"Agent run resource data could not be read (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-3hCtA9/projects/project_3ab91b2f-e330-4d63-9efc-09277f16a5b9/tasks/project_task_3c274882-667d-4381-8649-90521993a452/agent_run_resources.json: Expected property name or '}' in JSON at position 2 (line 1 column 3)). Fix or restore the file and restart the app; other features keep working."[39m
+}
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mOwned HTTP fixture cleanup: Studio/MCP listeners closed, data directory removed.
+
+ [32m✓[39m tests/e2e/projects/project-task-boundaries.e2e.test.ts [2m([22m[2m18 tests[22m[2m)[22m[33m 17190[2mms[22m[39m
+     [33m[2m✓[22m[39m API-MCP: selected default host executes equivalent compact mutations and detailed native reads [33m 1203[2mms[22m[39m
+     [33m[2m✓[22m[39m API-FILES: multipart bytes, saved ownership, typed deltas and Done survive reader reconstruction [33m 513[2mms[22m[39m
+     [33m[2m✓[22m[39m E-005: selected HTTP and native Project create/patch save defaults and reject invalid input atomically [33m 312[2mms[22m[39m
+     [33m[2m✓[22m[39m E-006: path links retain descriptions; lists replace, blanks and [] clear only associations [33m 471[2mms[22m[39m
+     [33m[2m✓[22m[39m CTX-E2E-001: context_files create/patch over MCP and native are saved, readable through GraphQL/REST/list and outlive their sources (AC-001..004, 006, 009, 011) [33m 317[2mms[22m[39m
+     [33m[2m✓[22m[39m CTX-E2E-002: invalid context_files fail with a path-naming error and change nothing, including no DONE closure (AC-004, 005, 008) [33m 632[2mms[22m[39m
+     [33m[2m✓[22m[39m TKD-API-001: keys as Task IDs, depends_on by key / any case / long ID, rejected dependencies write nothing, blocked Tasks start, a deleted Project's keys stay unknown (AC-020, 022, 024, 025, 027) [33m 1452[2mms[22m[39m
+     [33m[2m✓[22m[39m POF-API-001: part_of by key / any case / long ID, "" clears, omitted keeps; partOf / parts in numeric key order; refusals write nothing; a parent's DONE / CANCELLED closes its open parts and lists them; reopen, repeats and a part's close never cascade (task-part-of AC-003, 004, 006, 014, 015, 018) [33m 1863[2mms[22m[39m
+     [33m[2m✓[22m[39m CMT-API-001: update_task add_comment by key / any case / long ID appends numbered comments, never the description; DONE + comment is one write; blank, wrong-shape and unknown are refused with nothing written; list_project_tasks shows the texts (task-comments AC-001, AC-005, AC-008) [33m 822[2mms[22m[39m
+     [33m[2m✓[22m[39m CMT-API-002: a parent's close names the part it could not close (damaged run data) in partsNotClosed, next to closedParts; the field is absent when every part closes (task-comments AC-009, autobyteus-187) [33m 305[2mms[22m[39m
+     [33m[2m✓[22m[39m TTL-API-001: a Task title is required, trimmed and kept whole however long; update_task changes it; refusals write nothing (MCP equals native; GraphQL the same) [33m 1002[2mms[22m[39m
+(node:75024) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/node-access/node-access-model.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/e2e/node-access/node-access-model.e2e.test.ts [2m([22m[2m23 tests[22m[2m)[22m[33m 2756[2mms[22m[39m
+     [33m[2m✓[22m[39m NAS-01 the launch owner credential opens GraphQL, REST and a WebSocket route [33m 1566[2mms[22m[39m
+(node:75033) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/.env // tip: ◈ encrypted .env [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mNode access: local control socket not opened. The node's local control socket path is 106 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/node-access/local-control.sock. Use a shorter data folder path.
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: ia-normal-f244c0
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: ia-scout-f244c0
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-01 the agent list leaves the internal agent out while hidden and lists it with internal: true once shown; it opens by ID either way (AC-001, AC-005, AC-007, REQ-008)
+[22m[39mServer setting 'AUTOBYTEUS_SHOW_INTERNAL_AGENTS' updated
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-01 the agent list leaves the internal agent out while hidden and lists it with internal: true once shown; it opens by ID either way (AC-001, AC-005, AC-007, REQ-008)
+[22m[39mServer setting 'AUTOBYTEUS_SHOW_INTERNAL_AGENTS' updated
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-02 saving the internal agent keeps "internal": true in its file; saving a normal agent adds no key (AC-006)
+[22m[39mAgent Definition with ID e2e-internal-helper updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-02 saving the internal agent keeps "internal": true in its file; saving a normal agent adds no key (AC-006)
+[22m[39mAgent Definition with ID ia-normal-f244c0 updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+[22m[39mCreated and registered workspace ID: agent_ws_747bea83ee573fdf17386a645c481ef99073d1cbacb0f1c07e8a095de27a4dbf
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+[22m[39mReusing registered workspace ID: agent_ws_747bea83ee573fdf17386a645c481ef99073d1cbacb0f1c07e8a095de27a4dbf
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+[22m[39mAGY compaction detection off for run e2e_internal_helper_81b089373e5d4dc99bf8a339b79f2004: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory/agents/e2e_internal_helper_81b089373e5d4dc99bf8a339b79f2004/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+[22m[39mAgent websocket attached for run e2e_internal_helper_81b089373e5d4dc99bf8a339b79f2004
+Created agent session d672fc47-bf28-4573-a29d-d2403216ee87 for run e2e_internal_helper_81b089373e5d4dc99bf8a339b79f2004
+Agent WebSocket connected: session=d672fc47-bf28-4573-a29d-d2403216ee87, run=e2e_internal_helper_81b089373e5d4dc99bf8a339b79f2004
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory/agents/e2e_internal_helper_81b089373e5d4dc99bf8a339b79f2004/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory/agents/e2e_internal_helper_81b089373e5d4dc99bf8a339b79f2004/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+[22m[39mReusing registered workspace ID: agent_ws_747bea83ee573fdf17386a645c481ef99073d1cbacb0f1c07e8a095de27a4dbf
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+[22m[39mReusing registered workspace ID: agent_ws_747bea83ee573fdf17386a645c481ef99073d1cbacb0f1c07e8a095de27a4dbf
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+[22m[39mAGY compaction detection off for run ia_normal_f244c0_45cadcc505e34e7b8f73a8aa286352cf: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory/agents/ia_normal_f244c0_45cadcc505e34e7b8f73a8aa286352cf/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+[22m[39mAgent websocket attached for run ia_normal_f244c0_45cadcc505e34e7b8f73a8aa286352cf
+Created agent session 5ffb58bc-187d-4b59-ae8d-50bd4348899b for run ia_normal_f244c0_45cadcc505e34e7b8f73a8aa286352cf
+Agent WebSocket connected: session=5ffb58bc-187d-4b59-ae8d-50bd4348899b, run=ia_normal_f244c0_45cadcc505e34e7b8f73a8aa286352cf
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory/agents/ia_normal_f244c0_45cadcc505e34e7b8f73a8aa286352cf/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory/agents/e2e_internal_helper_81b089373e5d4dc99bf8a339b79f2004/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+[22m[39mServer setting 'AUTOBYTEUS_SHOW_INTERNAL_AGENTS' updated
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+[22m[39mServer setting 'AUTOBYTEUS_SHOW_INTERNAL_AGENTS' updated
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mReusing registered workspace ID: agent_ws_747bea83ee573fdf17386a645c481ef99073d1cbacb0f1c07e8a095de27a4dbf
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mReusing registered workspace ID: agent_ws_747bea83ee573fdf17386a645c481ef99073d1cbacb0f1c07e8a095de27a4dbf
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mAGY compaction detection off for run ia_scout_f244c0_a4aaf654beb84285bb628fdba6477eb2: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory/agents/ia_scout_f244c0_a4aaf654beb84285bb628fdba6477eb2/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mAgent websocket attached for run ia_scout_f244c0_a4aaf654beb84285bb628fdba6477eb2
+Created agent session 50fde836-ba0d-4d56-9d14-36f69ac7bfff for run ia_scout_f244c0_a4aaf654beb84285bb628fdba6477eb2
+Agent WebSocket connected: session=50fde836-ba0d-4d56-9d14-36f69ac7bfff, run=ia_scout_f244c0_a4aaf654beb84285bb628fdba6477eb2
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory/agents/ia_scout_f244c0_a4aaf654beb84285bb628fdba6477eb2/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory/agents/ia_scout_f244c0_a4aaf654beb84285bb628fdba6477eb2/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory/agents/ia_scout_f244c0_a4aaf654beb84285bb628fdba6477eb2/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory/agents/ia_scout_f244c0_a4aaf654beb84285bb628fdba6477eb2/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory/agents/ia_scout_f244c0_a4aaf654beb84285bb628fdba6477eb2/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory/agents/ia_scout_f244c0_a4aaf654beb84285bb628fdba6477eb2/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory/agents/ia_scout_f244c0_a4aaf654beb84285bb628fdba6477eb2/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mSEND_MESSAGE command not accepted for agent run ia_scout_f244c0_a4aaf654beb84285bb628fdba6477eb2: [COLLABORATOR_ADD_FAILED] 'e2e-internal-helper' is not a shared Agent that can be mentioned.
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mServer setting 'AUTOBYTEUS_SHOW_INTERNAL_AGENTS' updated
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory/agents/ia_scout_f244c0_a4aaf654beb84285bb628fdba6477eb2/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory/agents/ia_scout_f244c0_a4aaf654beb84285bb628fdba6477eb2/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory/agents/ia_scout_f244c0_a4aaf654beb84285bb628fdba6477eb2/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory/agents/ia_scout_f244c0_a4aaf654beb84285bb628fdba6477eb2/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mReusing registered workspace ID: agent_ws_747bea83ee573fdf17386a645c481ef99073d1cbacb0f1c07e8a095de27a4dbf
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory/agents/ia_scout_f244c0_a4aaf654beb84285bb628fdba6477eb2/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory/agents/ia_scout_f244c0_a4aaf654beb84285bb628fdba6477eb2/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mReusing registered workspace ID: agent_ws_747bea83ee573fdf17386a645c481ef99073d1cbacb0f1c07e8a095de27a4dbf
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory/agents/ia_scout_f244c0_a4aaf654beb84285bb628fdba6477eb2/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mAGY compaction detection off for run e2e_internal_helper_1860b3f954944e28b58fbde4ac17a667: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory/agents/ia_scout_f244c0_a4aaf654beb84285bb628fdba6477eb2/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory/agents/e2e_internal_helper_1860b3f954944e28b58fbde4ac17a667/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory/agents/ia_scout_f244c0_a4aaf654beb84285bb628fdba6477eb2/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mServer setting 'AUTOBYTEUS_SHOW_INTERNAL_AGENTS' updated
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory/agents/ia_scout_f244c0_a4aaf654beb84285bb628fdba6477eb2/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mIA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-pShbbu/memory/agents/ia_scout_f244c0_a4aaf654beb84285bb628fdba6477eb2/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mClosed agent session 50fde836-ba0d-4d56-9d14-36f69ac7bfff
+Agent WebSocket disconnected: 50fde836-ba0d-4d56-9d14-36f69ac7bfff
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mClosed agent session 5ffb58bc-187d-4b59-ae8d-50bd4348899b
+Agent WebSocket disconnected: 5ffb58bc-187d-4b59-ae8d-50bd4348899b
+
+[90mstdout[2m | tests/e2e/agent-definitions/internal-agents.e2e.test.ts[2m > [22m[2mInternal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mClosed agent session d672fc47-bf28-4573-a29d-d2403216ee87
+Agent WebSocket disconnected: d672fc47-bf28-4573-a29d-d2403216ee87
+
+ [32m✓[39m tests/e2e/agent-definitions/internal-agents.e2e.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 7532[2mms[22m[39m
+     [33m[2m✓[22m[39m IA-02 saving the internal agent keeps "internal": true in its file; saving a normal agent adds no key (AC-006) [33m 1645[2mms[22m[39m
+     [33m[2m✓[22m[39m IA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008) [33m 545[2mms[22m[39m
+     [33m[2m✓[22m[39m IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005) [33m 963[2mms[22m[39m
+(node:75169) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/embedding-settings-e2e-cnMmzP
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/embedding-settings-e2e-cnMmzP/.env
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mLoading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/embedding-settings-e2e-cnMmzP/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/embedding-settings-e2e-cnMmzP/.env // tip: ◈ encrypted .env [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/embedding-settings-e2e-cnMmzP
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/embedding-settings-e2e-cnMmzP/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/embedding-settings-e2e-cnMmzP/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/embedding-settings-e2e-cnMmzP/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/embedding-settings-e2e-cnMmzP/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mNode access: local control socket not opened. The node's local control socket path is 109 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/embedding-settings-e2e-cnMmzP/node-access/local-control.sock. Use a shorter data folder path.
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/embedding-settings-e2e-cnMmzP/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/embedding-settings-e2e-cnMmzP/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/embedding-settings-e2e-cnMmzP/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mSuccessfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mSuccessfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mRegistered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstderr[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary[2m > [22m[2mswitches the active model through the setting, prepares it at once, keeps the old files, and shows the Projects as Not indexed
+[22m[39mServer setting 'AUTOBYTEUS_EMBEDDING_MODEL' updated
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary[2m > [22m[2mswitches the active model through the setting, prepares it at once, keeps the old files, and shows the Projects as Not indexed
+[22m[39mServer setting 'AUTOBYTEUS_EMBEDDING_MODEL' updated
+
+[90mstdout[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary[2m > [22m[2mshows an unavailable model with its reason, and Retry prepares it again at once (AC-012)
+[22m[39mServer setting 'AUTOBYTEUS_EMBEDDING_MODEL' updated
+
+[90mstderr[2m | tests/e2e/projects/embedding-settings.e2e.test.ts[2m > [22m[2mEmbedding settings over the production GraphQL boundary[2m > [22m[2mshows an unavailable model with its reason, and Retry prepares it again at once (AC-012)
+[22m[39mEMBEDDING_MODEL_UNAVAILABLE { model: [32m'embeddinggemma-2'[39m, reason: [32m'Could not reach huggingface.co'[39m }
+
+ [32m✓[39m tests/e2e/projects/embedding-settings.e2e.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 11335[2mms[22m[39m
+     [33m[2m✓[22m[39m indexes a Project a few seconds after Task writes, with no search, once the model is on disk (REQ-011, AC-015) [33m 3087[2mms[22m[39m
+(node:75196) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/.env // tip: ⌘ suppress logs { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mSuccessfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mAgent Definition created successfully with ID: grok-replay-11a98a05-227f-4f84-a4a8-cdcbe2939600
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mstreams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/workspace-Fkrx3r
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/workspace-Fkrx3r.
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mstreams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009)
+[22m[39mCreated and registered workspace ID: agent_ws_5729db0403180965f273d4ee375a5d542575aaefb50ab6af2ec574450d0b16c2
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mstreams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/workspace-Fkrx3r
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/workspace-Fkrx3r.
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mstreams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009)
+[22m[39mReusing registered workspace ID: agent_ws_5729db0403180965f273d4ee375a5d542575aaefb50ab6af2ec574450d0b16c2
+
+[90mstderr[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mstreams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/memory/agents/grok_replay_11a98a05_227f_4f84_a4a8_cdcbe2939600_2dc2ec2cb98141d39bfa044c408aeebf/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mstreams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009)
+[22m[39mAgent websocket attached for run grok_replay_11a98a05_227f_4f84_a4a8_cdcbe2939600_2dc2ec2cb98141d39bfa044c408aeebf
+Created agent session 0f52920f-bf1e-40ef-b50c-5b38ab76b63e for run grok_replay_11a98a05_227f_4f84_a4a8_cdcbe2939600_2dc2ec2cb98141d39bfa044c408aeebf
+Agent WebSocket connected: session=0f52920f-bf1e-40ef-b50c-5b38ab76b63e, run=grok_replay_11a98a05_227f_4f84_a4a8_cdcbe2939600_2dc2ec2cb98141d39bfa044c408aeebf
+
+[90mstderr[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mstreams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/memory/agents/grok_replay_11a98a05_227f_4f84_a4a8_cdcbe2939600_2dc2ec2cb98141d39bfa044c408aeebf/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mstreams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009)
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstderr[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mstreams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/memory/agents/grok_replay_11a98a05_227f_4f84_a4a8_cdcbe2939600_2dc2ec2cb98141d39bfa044c408aeebf/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mturns a recorded Grok permission request into a run_bash approval answered over the WebSocket (AC-004)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/workspace-ImIwaG
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/workspace-ImIwaG.
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mturns a recorded Grok permission request into a run_bash approval answered over the WebSocket (AC-004)
+[22m[39mCreated and registered workspace ID: agent_ws_68aa465357366e4a7302c77145bfb48215583e015cf448542704d48454782785
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mturns a recorded Grok permission request into a run_bash approval answered over the WebSocket (AC-004)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/workspace-ImIwaG
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/workspace-ImIwaG.
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mturns a recorded Grok permission request into a run_bash approval answered over the WebSocket (AC-004)
+[22m[39mReusing registered workspace ID: agent_ws_68aa465357366e4a7302c77145bfb48215583e015cf448542704d48454782785
+
+[90mstderr[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mturns a recorded Grok permission request into a run_bash approval answered over the WebSocket (AC-004)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/memory/agents/grok_replay_11a98a05_227f_4f84_a4a8_cdcbe2939600_575075f5b91f4554ab1461afe28eba1f/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mturns a recorded Grok permission request into a run_bash approval answered over the WebSocket (AC-004)
+[22m[39mAgent websocket attached for run grok_replay_11a98a05_227f_4f84_a4a8_cdcbe2939600_575075f5b91f4554ab1461afe28eba1f
+Created agent session 85296782-c2f3-4b3d-b143-b7dfc53ac99e for run grok_replay_11a98a05_227f_4f84_a4a8_cdcbe2939600_575075f5b91f4554ab1461afe28eba1f
+Agent WebSocket connected: session=85296782-c2f3-4b3d-b143-b7dfc53ac99e, run=grok_replay_11a98a05_227f_4f84_a4a8_cdcbe2939600_575075f5b91f4554ab1461afe28eba1f
+
+[90mstderr[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mturns a recorded Grok permission request into a run_bash approval answered over the WebSocket (AC-004)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/memory/agents/grok_replay_11a98a05_227f_4f84_a4a8_cdcbe2939600_575075f5b91f4554ab1461afe28eba1f/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mcompletes the turn when Grok ends it after a denied run_bash, and the run takes the next message (AC-004)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/workspace-YBn4sG
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/workspace-YBn4sG.
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mcompletes the turn when Grok ends it after a denied run_bash, and the run takes the next message (AC-004)
+[22m[39mCreated and registered workspace ID: agent_ws_fb9a8fad670047bfe612a8fb78fdf4630cdfd7bce21c66c3b30fac4667fa8e86
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mcompletes the turn when Grok ends it after a denied run_bash, and the run takes the next message (AC-004)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/workspace-YBn4sG
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/workspace-YBn4sG.
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mcompletes the turn when Grok ends it after a denied run_bash, and the run takes the next message (AC-004)
+[22m[39mReusing registered workspace ID: agent_ws_fb9a8fad670047bfe612a8fb78fdf4630cdfd7bce21c66c3b30fac4667fa8e86
+
+[90mstderr[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mcompletes the turn when Grok ends it after a denied run_bash, and the run takes the next message (AC-004)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/memory/agents/grok_replay_11a98a05_227f_4f84_a4a8_cdcbe2939600_6ca37953e7c94eeeaca2be2ac11cf9d9/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mcompletes the turn when Grok ends it after a denied run_bash, and the run takes the next message (AC-004)
+[22m[39mAgent websocket attached for run grok_replay_11a98a05_227f_4f84_a4a8_cdcbe2939600_6ca37953e7c94eeeaca2be2ac11cf9d9
+Created agent session 32209199-66e9-475f-b942-5a547b2c1d47 for run grok_replay_11a98a05_227f_4f84_a4a8_cdcbe2939600_6ca37953e7c94eeeaca2be2ac11cf9d9
+Agent WebSocket connected: session=32209199-66e9-475f-b942-5a547b2c1d47, run=grok_replay_11a98a05_227f_4f84_a4a8_cdcbe2939600_6ca37953e7c94eeeaca2be2ac11cf9d9
+
+[90mstderr[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mcompletes the turn when Grok ends it after a denied run_bash, and the run takes the next message (AC-004)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/memory/agents/grok_replay_11a98a05_227f_4f84_a4a8_cdcbe2939600_6ca37953e7c94eeeaca2be2ac11cf9d9/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mfails run creation with Grok's own authentication error text when Grok is not logged in (AC-012)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/workspace-TwxTED
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/workspace-TwxTED.
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mfails run creation with Grok's own authentication error text when Grok is not logged in (AC-012)
+[22m[39mCreated and registered workspace ID: agent_ws_b59f4cde5b4c6ead4a474fef6fac574b47871ac0ae62ebeda1d2fd17f28684c5
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mfails run creation with Grok's own authentication error text when Grok is not logged in (AC-012)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/workspace-TwxTED
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/workspace-TwxTED.
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mfails run creation with Grok's own authentication error text when Grok is not logged in (AC-012)
+[22m[39mReusing registered workspace ID: agent_ws_b59f4cde5b4c6ead4a474fef6fac574b47871ac0ae62ebeda1d2fd17f28684c5
+
+[90mstderr[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mfails run creation with Grok's own authentication error text when Grok is not logged in (AC-012)
+[22m[39mError in createAgentRun: AgentCreationError: Grok Build: Authentication required: no auth method id provided
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/workspace-LBcpuu
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/workspace-LBcpuu.
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+[22m[39mCreated and registered workspace ID: agent_ws_6b3468e2841e4af579302771313950acf517557fce4585ac7750ffddec160208
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/workspace-LBcpuu
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/workspace-LBcpuu.
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+[22m[39mReusing registered workspace ID: agent_ws_6b3468e2841e4af579302771313950acf517557fce4585ac7750ffddec160208
+
+[90mstderr[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/memory/agents/grok_replay_11a98a05_227f_4f84_a4a8_cdcbe2939600_c95562b63f8c4b71beae08c7e9ea79d6/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+[22m[39mAgent websocket attached for run grok_replay_11a98a05_227f_4f84_a4a8_cdcbe2939600_c95562b63f8c4b71beae08c7e9ea79d6
+Created agent session ce7fb5b9-5701-43b0-bee8-7c9444102f10 for run grok_replay_11a98a05_227f_4f84_a4a8_cdcbe2939600_c95562b63f8c4b71beae08c7e9ea79d6
+Agent WebSocket connected: session=ce7fb5b9-5701-43b0-bee8-7c9444102f10, run=grok_replay_11a98a05_227f_4f84_a4a8_cdcbe2939600_c95562b63f8c4b71beae08c7e9ea79d6
+
+[90mstderr[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)[2m > [22m[2mends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-bCENUH/memory/agents/grok_replay_11a98a05_227f_4f84_a4a8_cdcbe2939600_c95562b63f8c4b71beae08c7e9ea79d6/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mClosed agent session ce7fb5b9-5701-43b0-bee8-7c9444102f10
+Agent WebSocket disconnected: ce7fb5b9-5701-43b0-bee8-7c9444102f10
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mClosed agent session 32209199-66e9-475f-b942-5a547b2c1d47
+Agent WebSocket disconnected: 32209199-66e9-475f-b942-5a547b2c1d47
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mClosed agent session 85296782-c2f3-4b3d-b143-b7dfc53ac99e
+Agent WebSocket disconnected: 85296782-c2f3-4b3d-b143-b7dfc53ac99e
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mClosed agent session 0f52920f-bf1e-40ef-b50c-5b38ab76b63e
+Agent WebSocket disconnected: 0f52920f-bf1e-40ef-b50c-5b38ab76b63e
+
+[90mstdout[2m | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts[2m > [22m[2mGrok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+[22m[39mAgent Definition with ID grok-replay-11a98a05-227f-4f84-a4a8-cdcbe2939600 deleted successfully.
+
+ [32m✓[39m tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 4635[2mms[22m[39m
+     [33m[2m✓[22m[39m lists the Grok Build catalog from the agent handshake with the reasoning-effort schema (AC-002) [33m 1141[2mms[22m[39m
+     [33m[2m✓[22m[39m streams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009) [33m 601[2mms[22m[39m
+(node:75212) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-nWhbf7
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-nWhbf7/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-nWhbf7/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-nWhbf7/.env // tip: ◈ encrypted .env [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-nWhbf7
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-nWhbf7/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-nWhbf7/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-nWhbf7/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-nWhbf7/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mNode access: local control socket not opened. The node's local control socket path is 104 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-nWhbf7/node-access/local-control.sock. Use a shorter data folder path.
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-nWhbf7/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-nWhbf7/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-nWhbf7/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mSuccessfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mSuccessfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mRegistered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstderr[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate[2m > [22m[2mfinds a workspace file for the owner and for a paired phone
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-workspace-pslU69
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-workspace-pslU69.
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate[2m > [22m[2mfinds a workspace file for the owner and for a paired phone
+[22m[39mCreated and registered workspace ID: agent_ws_f116d350146a505d6f4fb611deeddac960211e10dbbaf77fc3597e64c7927f5d
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate[2m > [22m[2mfinds a workspace file for the owner and for a paired phone
+[22m[39mCreated WorkspaceFileExplorer for agent_ws_f116d350146a505d6f4fb611deeddac960211e10dbbaf77fc3597e64c7927f5d (graphql-search).
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate[2m > [22m[2mfinds a workspace file for the owner and for a paired phone
+[22m[39mStarting directory traversal for: '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-workspace-pslU69' with max_depth=null
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate[2m > [22m[2mfinds a workspace file for the owner and for a paired phone
+[22m[39mDirectory traversal for '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-workspace-pslU69' completed in 0.0040 seconds.
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate[2m > [22m[2mfinds a workspace file for the owner and for a paired phone
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate[2m > [22m[2mfinds a workspace file for the owner and for a paired phone
+[22m[39m[Search] Trying strategy: FuzzysortSearchStrategy for query 'app'
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate[2m > [22m[2mfinds a workspace file for the owner and for a paired phone
+[22m[39m[Search] FuzzysortSearchStrategy completed in 0.67ms, found 1 results (total: 0.70ms)
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate[2m > [22m[2mfinds a workspace file for the owner and for a paired phone
+[22m[39mStarting directory traversal for: '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-workspace-pslU69' with max_depth=null
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate[2m > [22m[2mfinds a workspace file for the owner and for a paired phone
+[22m[39mDirectory traversal for '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-workspace-pslU69' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate[2m > [22m[2mfinds a workspace file for the owner and for a paired phone
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate[2m > [22m[2mfinds a workspace file for the owner and for a paired phone
+[22m[39m[Search] Trying strategy: FuzzysortSearchStrategy for query 'app'
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate[2m > [22m[2mfinds a workspace file for the owner and for a paired phone
+[22m[39m[Search] FuzzysortSearchStrategy completed in 0.08ms, found 1 results (total: 0.10ms)
+
+ [32m✓[39m tests/e2e/workspaces/search-files-through-gate.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 2403[2mms[22m[39m
+     [33m[2m✓[22m[39m finds a workspace file for the owner and for a paired phone [33m 1396[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m8 passed[39m[22m[90m (8)[39m
+[2m      Tests [22m [1m[32m62 passed[39m[22m[90m (62)[39m
+[2m   Start at [22m 01:41:17
+[2m   Duration [22m 95.86s[2m (transform 7.77s, setup 231ms, import 25.22s, tests 69.13s, environment 0ms)[22m
+
+rerun exit 0

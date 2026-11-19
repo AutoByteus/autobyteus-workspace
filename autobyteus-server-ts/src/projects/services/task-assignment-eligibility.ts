@@ -13,8 +13,9 @@ export const terminalAssignment = (status: ProjectTaskStatus): ProjectError => n
 
 /**
  * ProjectTaskService's Task-side eligibility checks for its runtime port: an assignment target (exists, not DONE or
- * CANCELLED), the copy-side rules of an existing-copy assignment, and whether a closed copy's current Task allows
- * reactivation. Agent-facing texts name Tasks by key. Used only by ProjectTaskService, inside its serializations.
+ * CANCELLED), the rules of an assignment to an existing delegated run, and whether a closed delegated run's current
+ * Task allows reactivation. Agent-facing texts name Tasks by key. Used only by ProjectTaskService, inside its
+ * serializations.
  */
 export class TaskAssignmentEligibility {
   constructor(
@@ -24,8 +25,8 @@ export class TaskAssignmentEligibility {
   ) {}
 
   /**
-   * Reactivation needs the copy's current Task to exist and be TODO or IN_PROGRESS; only the agent changes
-   * that status. When it is closed but an earlier Task of the copy was reopened, the refusal names the
+   * Reactivation needs the delegated run's current Task to exist and be TODO or IN_PROGRESS; only the agent changes
+   * that status. When it is closed but an earlier Task of the delegated run was reopened, the refusal names the
    * current Task and the working next step (REQ-007).
    */
   async assertReopenTaskNotTerminal(location: TaskLocation, execution: TaskExecutionReference): Promise<void> {
@@ -59,13 +60,13 @@ export class TaskAssignmentEligibility {
     if (isTerminalTaskStatus(task.status)) throw terminalAssignment(task.status);
     return task;
   }
-  /** The copy-side rules of an existing-copy assignment, on the copy's history across Tasks; texts name Tasks by key. */
-  assertCopyAssignable(input: Readonly<{ execution: TaskExecutionReference; requestedBy: string; taskId: string; ownDelegatorAgentRunId?: string }>, task: ProjectTask): void {
+  /** The delegated run's rules of an assignment to it, on its history across Tasks; texts name Tasks by key. */
+  assertDelegatedRunAssignable(input: Readonly<{ execution: TaskExecutionReference; requestedBy: string; taskId: string; ownDelegatorAgentRunId?: string }>, task: ProjectTask): void {
     assertTaskExecutionAssignable(this.resources.historyOf(input.execution), { requestedBy: input.requestedBy, taskId: input.taskId, taskReference: task.taskKey,
       ...(input.ownDelegatorAgentRunId !== undefined ? { ownDelegatorAgentRunId: input.ownDelegatorAgentRunId } : {}) });
   }
   /**
-   * The agent-facing references (a Project Task's key, a Temp task's ID) of the copy's open Tasks other than
+   * The agent-facing references (a Project Task's key, a Temp task's ID) of the delegated run's open Tasks other than
    * `exceptTaskId`, oldest first; a Task deleted meanwhile is left out. For the given-Task message.
    */
   async openTaskReferencesOf(execution: TaskExecutionReference, exceptTaskId: string): Promise<string[]> {

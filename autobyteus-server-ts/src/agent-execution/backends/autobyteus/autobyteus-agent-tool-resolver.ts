@@ -1,4 +1,5 @@
 import type { BaseTool } from "autobyteus-ts/tools/base-tool.js";
+import type { PeerDiscoveryAccess } from "../../../agent-collaboration/execution/remote/peer-discovery-channel.js";
 import { ToolConfig } from "autobyteus-ts/tools/tool-config.js";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import type { AgentDefinition } from "../../../agent-definition/domain/models.js";
@@ -21,6 +22,8 @@ import { LIST_AVAILABLE_AGENTS_TOOL_NAME } from "../../../agent-tools/agent-disc
 import { createBoundListAvailableAgentsTool } from "../../../agent-tools/agent-discovery/list-available-agents-tool.js";
 import { LIST_PEER_NODES_TOOL_NAME } from "../../../agent-tools/agent-discovery/list-peer-nodes-contract.js";
 import { createBoundListPeerNodesTool } from "../../../agent-tools/agent-discovery/list-peer-nodes-tool.js";
+import { LIST_RUNNING_AGENTS_TOOL_NAME } from "../../../agent-tools/agent-discovery/list-running-agents-contract.js";
+import { createBoundListRunningAgentsTool } from "../../../agent-tools/agent-discovery/list-running-agents-tool.js";
 import { GET_PROJECT_TASK_TOOL_NAME } from "../../../agent-tools/project-tasks/project-task-tool-contract.js";
 import { createBoundGetProjectTaskTool } from "../../../agent-tools/project-tasks/project-task-native-tools.js";
 
@@ -46,6 +49,8 @@ export const resolveAutoByteusAgentTools = (input: {
   senderName?: string | null;
   runtimeKind?: string | null;
   memberExecutionContext?: MemberExecutionContext | null;
+  /** The host's discovery for the discovery tools (autobyteus-500 FU-011). */
+  peerDiscovery: PeerDiscoveryAccess;
   logger?: ToolResolutionLogger | null;
 }): AutoByteusAgentToolResolution => {
   const { agentDefinition, memberExecutionContext = null } = input;
@@ -82,17 +87,18 @@ export const resolveAutoByteusAgentTools = (input: {
       continue;
     }
 
-    // The discovery tools (autobyteus-261: also list_peer_nodes) need a run that can delegate.
-    if (name.trim() === LIST_AVAILABLE_AGENTS_TOOL_NAME || name.trim() === LIST_PEER_NODES_TOOL_NAME) {
+    // The discovery tools (autobyteus-261: also list_peer_nodes; autobyteus-492: list_running_agents) need a run that can delegate.
+    const discoveryTools = { [LIST_AVAILABLE_AGENTS_TOOL_NAME]: createBoundListAvailableAgentsTool, [LIST_PEER_NODES_TOOL_NAME]: createBoundListPeerNodesTool,
+      [LIST_RUNNING_AGENTS_TOOL_NAME]: createBoundListRunningAgentsTool } as const;
+    const createDiscoveryTool = discoveryTools[name.trim() as keyof typeof discoveryTools];
+    if (createDiscoveryTool) {
       if (!memberExecutionContext?.collaboration.listAvailableAgents) {
         logger.warn(
           `Tool '${name}' defined in agent definition '${agentDefinition.name}' requires a run that can delegate to available agents. Skipping.`,
         );
         continue;
       }
-      tools.push(name.trim() === LIST_AVAILABLE_AGENTS_TOOL_NAME
-        ? createBoundListAvailableAgentsTool(memberExecutionContext)
-        : createBoundListPeerNodesTool(memberExecutionContext));
+      tools.push(createDiscoveryTool(memberExecutionContext, input.peerDiscovery));
       actualToolNames.push(name);
       continue;
     }

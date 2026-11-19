@@ -206,9 +206,10 @@ Built-in agent customization beyond the four personal settings belongs in the bu
 Do not add separate one-off built-in-agent bootstrappers or scatter platform
 templates under feature-runtime folders. Native compaction now constructs an
 isolated tool-free LLM directly; it has no synchronized Memory Compactor agent,
-registry-selected algorithm or child Agent runtime. Old compactor-agent files and
-removed selector/strategy setting values are inert for compaction and are neither
-imported nor deleted. The optional current model/config tuple is server-owned,
+registry-selected algorithm or child Agent runtime. Removed selector/strategy
+setting values are inert for compaction and are not imported. The startup
+migration `20261118_remove_retired_built_in_agents` deletes the installed folders
+of the retired built-in Memory Compactor and Skill Self-Evolver; their runs stay. The optional current model/config tuple is server-owned,
 not an AgentDefinition selector. The Daily Assistant is not auto-featured;
 featured placement stays an operator choice in Settings.
 

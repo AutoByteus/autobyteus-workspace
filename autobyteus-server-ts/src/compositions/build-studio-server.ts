@@ -1,4 +1,5 @@
 import { createCredentialProxyHost, type CredentialProxyHost } from "../credential-proxy/credential-proxy-host.js";
+import type { StoredModelOfferCheck } from "../llm-management/services/run-model-selection-service.js";
 import type { ProviderRelayAccess } from "../credential-proxy/provider-relays/provider-relay-access.js";
 import { setProcessProviderRelayAccess } from "../credential-proxy/provider-relays/provider-relay-process-access.js";
 import type { RunPassRevocation } from "../credential-proxy/run-pass-revocation.js";
@@ -20,13 +21,8 @@ import { registerMobileWebStaticRoutes } from "../api/static/mobile-web.js";
 import { registerRestRoutes } from "../api/rest/index.js";
 import { registerWebsocketRoutes } from "../api/websocket/index.js";
 import { registerGraphql } from "../api/graphql/index.js";
-import { ApplicationPackageRootSettingsStore } from "../application-packages/stores/application-package-root-settings-store.js";
-import { ApplicationPackageRegistryStore } from "../application-packages/stores/application-package-registry-store.js";
-import { BuiltInApplicationPackageMaterializer } from "../application-packages/services/built-in-application-package-materializer.js";
 import { ApplicationPackageRegistryService } from "../application-packages/services/application-package-registry-service.js";
 import { ApplicationPackageCommandService } from "../application-packages/services/application-package-command-service.js";
-import { FileApplicationBundleProvider } from "../application-bundles/providers/file-application-bundle-provider.js";
-import { ApplicationBundleService } from "../application-bundles/services/application-bundle-service.js";
 import { ApplicationCapabilityService } from "../application-capability/services/application-capability-service.js";
 import { buildApplicationPlatformRuntime } from "../application-platform/runtime/build-application-platform-runtime.js";
 import type { ApplicationPlatformRuntime } from "../application-platform/runtime/application-platform-runtime.js";
@@ -38,10 +34,12 @@ import {
 import type { ScopedAgentToolMcpSessionAuthority } from "../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { getGeneralProcessPublishedArtifactPublisher } from "../services/published-artifacts/published-artifact-publication-service.js";
 import { StudioRunModelConfigService } from "../run-history/services/studio-run-model-config-service.js";
-import { composeStudioRemoteCollaboration } from "./remote-collaboration-composition.js";
+import { createStudioPackageServices } from "./studio-package-services.js";
+import { composeStudioRemoteCollaboration, createLateRemoteCollaborationBinding, type LateRemoteCollaborationBinding } from "./remote-collaboration-composition.js";
 import { createCollaborationRootResolver } from "./collaboration-root-resolver.js";
+import { composeRunningAgents } from "./running-agents-composition.js";
 import { composeCollaboration, composeTaskSide, type Collaboration, type TaskSide } from "./collaboration-composition.js";
-import { findProcessRemoteRunChannel } from "../agent-collaboration/execution/remote/remote-run-channel.js";
+import { createAgentStreamHandler } from "../services/agent-streaming/agent-stream-handler.js";
 import { composeRestartResume, type RestartResume } from "./restart-resume-composition.js";
 import { RestartReminderService } from "../restart-resume/restart-reminder-service.js";
 import { restartReminderRecordPath } from "../restart-resume/restart-reminder-record.js";
@@ -102,20 +100,6 @@ export type StudioServer = Readonly<{
   stopFileWatchesForProcessExit(): void;
 }>;
 
-const createStudioPackageServices = (appConfig: AppConfig) => {
-  const packageRegistryService = new ApplicationPackageRegistryService({
-    rootSettingsStore: new ApplicationPackageRootSettingsStore(appConfig),
-    registryStore: new ApplicationPackageRegistryStore(appConfig),
-    builtInMaterializer: new BuiltInApplicationPackageMaterializer(appConfig),
-  });
-  const bundleProvider = new FileApplicationBundleProvider();
-  const bundleService = new ApplicationBundleService({
-    provider: bundleProvider,
-    packageRegistryService,
-  });
-  return { packageRegistryService, bundleProvider, bundleService };
-};
-
 const createStudioApplicationServices = (input: {
   appConfig: AppConfig;
   packages: ReturnType<typeof createStudioPackageServices>;
@@ -125,10 +109,11 @@ const createStudioApplicationServices = (input: {
   workspaceManager: WorkspaceManager;
   contextFilePathEnvironment: ContextFilePathEnvironment;
   modelCatalogService: ModelCatalogService;
-  modelSelectionValidator: RunModelSelectionValidator;
+  modelSelectionValidator: RunModelSelectionValidator & StoredModelOfferCheck;
   providerRelayAccess: ProviderRelayAccess;
   runPasses: RunPassRevocation;
   taskSide: TaskSide;
+  remote: LateRemoteCollaborationBinding;
 }) => {
   const applicationRuntime = buildApplicationPlatformRuntime({
     appConfig: input.appConfig, delegationIndex: input.taskSide.tree, viewStreams: input.taskSide.viewStreams, taskRecords: input.taskSide.taskRecords,
@@ -145,6 +130,7 @@ const createStudioApplicationServices = (input: {
     // The studio's application launches get its provider relays and end their passes through the same host.
     providerRelayAccess: input.providerRelayAccess,
     runPasses: input.runPasses,
+    remoteChannel: input.remote.channel, peerDiscovery: input.remote.discovery,
     modelAvailabilityService: getModelAvailabilityService(),
     llmProviderService: getLlmProviderService(),
     codexClientManager: getCodexAppServerClientManager(),
@@ -241,8 +227,10 @@ export const buildStudioServer = async (input: {
       appDataDir: input.appConfig.getAppDataDir(),
       baseUrl: input.appConfig.getBaseUrl(),
     });
+    const remote = createLateRemoteCollaborationBinding(); // FU-011: composed below, after the run services; read on use
     agentToolsMcpHost = createAgentToolsMcpHost({
       loggingConfig: input.loggingConfig,
+      peerDiscovery: remote.discovery,
     });
     credentialProxyHost = createCredentialProxyHost({ agentDefinitions: hostDefinitionServices.agentDefinitionService });
     // Before it listens: the model catalog and runtime availability read it (discovery waits for the listener).
@@ -251,7 +239,7 @@ export const buildStudioServer = async (input: {
       workspaceManager, nativeCommandProcessScope: nativeShutdown.scope,
     });
     const modelCatalogService = getModelCatalogService();
-    const modelSelectionValidator = new RunModelSelectionService(modelCatalogService);
+    const modelSelectionValidator = new RunModelSelectionService(modelCatalogService, getModelAvailabilityService());
     const generalAssembly = agentToolsMcpHost.sessionAuthorities.begin({
       scopeIdentity: "general-process",
     });
@@ -297,11 +285,15 @@ export const buildStudioServer = async (input: {
       // then the restart reminder, tool list updates, skill notices and background task notices (one notice per input).
       platformInputNotices: new AgentRunPlatformNotices([runtimeHandoverNotices, restartReminders, ...platformNotices.sources]),
       runtimeSwitching: { memory: new RuntimeSwitchRecorder() },
+      remoteChannel: remote.channel, peerDiscovery: remote.discovery,
     });
     generalProcessAuthority = null;
     // One root resolution for inbound remote messages and restart resume (autobyteus-285 D5).
     const rootResolver = createCollaborationRootResolver({ standaloneRoots: getStandaloneAgentRunRootManager(),
       teamRuns: generalProcessRunSupervisor.teamRunService, orgRuns: generalProcessRunSupervisor.agentOrgRunService });
+    // autobyteus-492: this node's running agents, used by the peer receiver and gateway and by messages between runs.
+    const running = composeRunningAgents({ memoryDir: input.appConfig.getMemoryDir(), tempWorkspaceDir: input.appConfig.getTempWorkspaceDir(),
+      activeRoots: getActiveCollaborationRootDirectory(), runs: generalProcessRunSupervisor, agentDefinitions: hostDefinitionServices.agentDefinitionService });
     const remoteCollaboration = composeStudioRemoteCollaboration({
       appDataDir: input.appConfig.getAppDataDir(), memoryDir: input.appConfig.getMemoryDir(),
       tempWorkspaceDir: input.appConfig.getTempWorkspaceDir(),
@@ -309,11 +301,14 @@ export const buildStudioServer = async (input: {
       teamRuns: generalProcessRunSupervisor.teamRunService,
       orgRuns: generalProcessRunSupervisor.agentOrgRunService,
       rootResolver,
+      running,
     });
     releaseRemoteCollaboration = remoteCollaboration.release;
+    remote.bind(remoteCollaboration.services);
     // autobyteus-461 SR-047 steps 4–8: the Task service, delegation and messages between runs, the views' owners, their consumers.
     const currentCollaboration = collaboration = await composeCollaboration({ memoryDir: input.appConfig.getMemoryDir(), taskSide,
-      runs: generalProcessRunSupervisor, rootResolver, activeRoots: getActiveCollaborationRootDirectory(), remoteChannel: findProcessRemoteRunChannel, episodicCatalog: currentEpisodicCatalog });
+      runs: generalProcessRunSupervisor, rootResolver, activeRoots: getActiveCollaborationRootDirectory(), remoteChannel: remote.channel, episodicCatalog: currentEpisodicCatalog,
+      running });
     currentEpisodicCatalog.start({ taskTitles: currentCollaboration.tasks });
     // autobyteus-437: the node access gate (every request needs a credential) and its credential services.
     const currentNodeAccess = nodeAccess = await startNodeAccess({ appDataDir: input.appConfig.getAppDataDir(), remoteCollaboration: remoteCollaboration.services });
@@ -331,6 +326,7 @@ export const buildStudioServer = async (input: {
       modelSelectionValidator,
       providerRelayAccess: credentialProxyHost.providerRelayAccess,
       runPasses: credentialProxyHost.runPasses,
+      remote,
     });
     const currentApplicationRuntime = applicationServices.applicationRuntime;
     applicationRuntime = currentApplicationRuntime;
@@ -403,7 +399,7 @@ export const buildStudioServer = async (input: {
         async (restApp) => registerRestRoutes(restApp, {
           lifecycleReadiness: currentApplicationRuntime.lifecycle,
           application: currentApplicationRuntime.rest,
-          nodeAccess: currentNodeAccess, delegationIndex: taskSide.tree,
+          nodeAccess: currentNodeAccess, remoteCollaboration: remoteCollaboration.services,
         }),
         { prefix: "/rest" },
       );
@@ -415,6 +411,8 @@ export const buildStudioServer = async (input: {
         agentPackageDefinitionChangeHub: agentPackageDefinitionFeed.hub,
         views: currentCollaboration.views,
         runStatus: currentCollaboration.runStatus,
+        remoteChannel: remoteCollaboration.services.client,
+        agentStreamHandler: createAgentStreamHandler(generalProcessRunSupervisor.agentRunCommandCoordinator),
       });
       await registerGraphql(app);
       // Last preClose hook: after the native drain and the WebSocket plugin's client close (AR-003).

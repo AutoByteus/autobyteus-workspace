@@ -1,0 +1,66 @@
+autobyteus-500 API/E2E round 2 (API-REV-002), on CRR-004 (Pass): head c22af3b892, code 7eb78a701b (IR-003: CR-500-003,
+CR-500-004, CR-500-005). Server dist rebuilt from 7eb78a701b. Clean environment per run (env -i, a throwaway HOME; the real
+HOME only for the live Claude login, approved by the user for their CLIs); never the user's app or ~/.autobyteus. Mac load
+60-120. Raw logs: /tmp/api500/r2. Paths shortened to ~.
+
+What to look for: §1 F-1 … F-3 resolved; §2 ODM-1 (AutoByteus models loaded on demand across real restarts); §3 the browser
+cases; §4 LE-F1 live.
+
+Correction to round 1 (F-3): the mate did get an ERROR frame (RUN_MODEL_NOT_OFFERED; /tmp/api500/r1/scp006-diag2.log, as the
+code reviewer found at CRR-003). My diagnostic printed only the last 12 frames and the helper waits for a tool result, so it
+saw a timeout; the observation "no frame for the mate" in API-r1-runs.txt §3 c is wrong. The finding itself (a false G-5
+refusal of an on-demand AutoByteus model after a restart) stands and is fixed (CR-500-003).
+
+§1 The round-1 failures, rerun (batch: /tmp/api500/r2/batch.log; one file at a time)
+  - F-1 E-002 remove-built-in-project-task-manager-startup: 4 passed (4): the retired agent's run is refused RUN_NOT_FOUND,
+    "AgentDefinition with ID … not found" again (CR-500-004).
+  - F-2 delegated-launch-config-defaults "Agent root: with the root's model retired … (the refusal says what to do …)": pass
+    (Mac batch; Linux container 3/3). Browser DLP-005 Pass (§3).
+  - F-3 get-project-task-worker-scope: 6 passed (6), SCP-E2E-006 included (CR-500-003).
+  - G-5-touched: delegated-copy-model-change 11/11; removed-remote-provider-saved-selection 2/2; delegated-team-lazy-member-
+    activation 2 passed (Mac rerun; the batch's failure was a load timeout "org: lead offline"; the container cannot run its
+    process helper: no lsof); RSE-1 1/1; ALM-1 1/1.
+
+§2 ODM-1 (new: tests/e2e/llm-management/on-demand-stored-models-startup.e2e.test.ts): Pass on the Mac and in Linux
+  Emulated LM Studio (/api/v1/models, /v1/chat/completions) and Ollama (/api/tags, /api/ps, /api/show, /api/chat) on loopback.
+  - First start: a standalone run on 'odm-lms-model:lmstudio@127.0.0.1:<p>', one on 'odm-oll-model:ollama@127.0.0.1:<p>', a
+    Team whose lead and second member run on the LM Studio model: each answers.
+  - a. After a real restart, both hosts up: each run and the lead start and answer; agentRunModelOptions name the current
+    model (modelListReadable true, currentModel set): no "not offered" note. Base 9695d310c5 (the same test, a temporary copy,
+    removed after): the runs answer, but the LM Studio run's options show no current model after the restart: the false note
+    CR-500-003 removes ("AssertionError: LM Studio run: no note", /tmp/api500/r2/odm1-base.log).
+  - b. Ollama host down: no G-5 refusal; the start fails with the start's own "MODEL_IDENTIFIER_NOT_AVAILABLE" (the
+    unchanged line of model-availability-service's start path, as at base); options "The model list of AutoByteus could not
+    be read. Try again." (modelListReadable false).
+  - c. LM Studio read and no longer listing the model: the standalone run → "odm-worker-… can't start: its saved model
+    'odm-lms-model:lmstudio@…' is not offered by AutoByteus now. Stop it, then choose a runtime and model … in Settings.",
+    0 chat requests; the lead → "lead can't start: …", 0 chat requests; the member whose agent definition was removed →
+    "AgentDefinition with ID odm-retired-… not found." (its own answer, not G-5's), 0 chat requests; options: read, no
+    current model (the note). Observation (FU-500-11, also at base): the options then offer no other AutoByteus model and
+    say "The current model's context capacity could not be verified …".
+
+§3 Browser probes (delegated-launch-defaults-probe; /tmp/api500/r2/probe): 6 Pass, 0 Fail
+  - G5-001: the manager row note "No longer offered by Antigravity CLI. Choose another model before this run resumes.", the
+    worker row none; "manager can't start: …"; launches 1 → 1.                    API-r2-G5-001-settings-member-note-1280.png
+  - G5-002: "writer-aa7c can't start: …"; launches 1 → 1.
+  - G5-003: no G-5 refusal; AGY's own errors after 23.8 s (list slower than the budget) and 0.9 s (list fails).
+  - DLP-005: "Plain 293a can't be delegated to: it would use this run's model 'dlc-retiring-model', which Antigravity CLI no
+    longer offers. Set a model for Plain 293a in its settings, or change this run's model, then delegate again." (the probe
+    evidence JSON, plainCall).                                                      API-r2-DLP-005-conversation-1280.png
+  - DLP-003, DLP-004: Pass (notes and Settings rows).
+
+§4 LE-F1 live on Claude (agent-initiated-collaborators -t LE-F1, RUN_CLAUDE_E2E=1)
+  - The default stale model 'claude-haiku-4-5-20251001' is in the CLI's catalog today, so the precondition fails (as in
+    461's round 20). With CLAUDE_E2E_STALE_MODEL=claude-sonnet-4-5-20250929 (not listed, still accepted): Pass: the catalog
+    copy fails with the reason ("can't be delegated to"), the outside message is not found, nothing is added.
+
+§5 Test-side (this stage)
+  - team-stream-clients-wait-for-connected.test.ts: RSE-1 sends early on purpose: an explicit, named exemption; a new case
+    checks each exempt file exists and still sends early. 3/3.
+  - Server typecheck: production 0; tests 1010 in 316 files = baseline.
+
+§6 CR-500-006 (test-code review CRR-005, Local Fix in ODM-1): rerun after the fix: "Tests 1 passed (1)" (/tmp/api500/r2/odm3.log)
+  - step b (host down) now also asserts the start's own "MODEL_IDENTIFIER_NOT_AVAILABLE";
+  - step c (removed agent) now also asserts "AgentDefinition with ID <id> not found";
+  - the lead's Settings options check is unconditional (the team's "/lead" scope is returned and names the model);
+  - the G-5 negatives are kept. Static check 3/3; the test file adds no type error.

@@ -27,8 +27,8 @@ const harness = (input: Readonly<{ agents?: Record<string, string[]>; live?: Rec
     return { close: vi.fn(() => { listeners.delete(runId); }) };
   });
   const access = {
-    observePairedAgents: observe,
-    pairedAgentStatuses: (runId: string) => Object.entries(live.get(runId) ?? {}).map(([agentRunId, status]) => ({ agentRunId, status, backgroundTasksRunning: 0 })),
+    observeRunAgents: observe,
+    runAgentStatuses: (runId: string) => Object.entries(live.get(runId) ?? {}).map(([agentRunId, status]) => ({ agentRunId, status, backgroundTasksRunning: 0 })),
   };
   const peerClose = vi.fn();
   type PeerObserver = { onFrame(agentRunId: string, message: unknown): void; onEnd(): void };

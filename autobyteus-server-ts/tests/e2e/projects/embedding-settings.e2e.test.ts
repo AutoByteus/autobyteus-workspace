@@ -9,7 +9,7 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 import { EMBEDDING_MODEL_CATALOG } from "../../../src/embeddings/catalog/embedding-model-catalog.js";
 import { resolveActiveEmbeddingModel } from "../../../src/embeddings/catalog/embedding-model-setting.js";
 import { resetEmbeddingIndexForTests } from "../../../src/embeddings/embedding-index.js";
-import { getProjectTaskService, releaseProjectTaskServiceProcessInstance } from "../../../src/projects/services/project-task-service.js";
+import { releaseComposedProjectTaskService } from "../../helpers/explicit-host-collaborators.js";
 import { resetProjectServiceForTests } from "../../../src/projects/services/project-service.js";
 import { resetProjectStoreForTests } from "../../../src/projects/stores/project-store.js";
 import { resetProjectTaskContextStoreForTests } from "../../../src/projects/context/project-task-context-store.js";
@@ -18,7 +18,7 @@ import { createFakeEmbeddingIndex, fakeModel } from "../../helpers/fake-embeddin
 // Settings → Server Settings → Embedding over the real Studio HTTP (GraphQL) and the real composition, over
 // test-owned files. The catalog keeps its real ids, names and sizes; only downloads and the model runtime are
 // deterministic stand-ins (no model is downloaded). The active model follows the real server setting.
-const reset = () => { releaseProjectTaskServiceProcessInstance(getProjectTaskService()); resetProjectServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
+const reset = () => { releaseComposedProjectTaskService();resetProjectServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
 const STATUS = `query EmbeddingSettings {
   embeddingModelsStatus { activeModelId defaultModelId onDiskBytes
     models { id displayName languages downloadBytes file { state done total reason } activeDisplay { state phase done total reason } } }

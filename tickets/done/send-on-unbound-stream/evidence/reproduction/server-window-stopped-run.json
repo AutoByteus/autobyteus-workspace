@@ -1,0 +1,123 @@
+{
+  "neverStartedRun": {
+    "sendOnOpen": {
+      "ACK:accepted": 20
+    },
+    "sendAtPollOffset": {
+      "ACK:accepted": 20
+    },
+    "connectedMsSummary": {
+      "min": 0,
+      "median": 0,
+      "p90": 0,
+      "max": 1
+    }
+  },
+  "liveIdleRun": {
+    "sendOnOpen": {
+      "ACK:accepted": 20
+    },
+    "sendAtPollOffset": {
+      "ACK:accepted": 20
+    },
+    "connectedMsSummary": {
+      "min": 0,
+      "median": 0,
+      "p90": 0,
+      "max": 0
+    }
+  },
+  "stoppedRun": {
+    "sendOnOpenAfterStop": {
+      "ACK:accepted": 1,
+      "SESSION_NOT_READY": 7
+    },
+    "afterStopAtPollOffset": [
+      {
+        "offset": 48,
+        "connectedMs": 1,
+        "answer": "ACK:accepted"
+      },
+      {
+        "offset": 47,
+        "connectedMs": 0,
+        "answer": "ACK:accepted"
+      },
+      {
+        "offset": 36,
+        "connectedMs": 4,
+        "answer": "ACK:accepted"
+      },
+      {
+        "offset": 6,
+        "connectedMs": 0,
+        "answer": "ACK:accepted"
+      },
+      {
+        "offset": 40,
+        "connectedMs": 1,
+        "answer": "ACK:accepted"
+      },
+      {
+        "offset": 36,
+        "connectedMs": 1,
+        "answer": "ACK:accepted"
+      },
+      {
+        "offset": 22,
+        "connectedMs": 2,
+        "answer": "ACK:accepted"
+      },
+      {
+        "offset": 15,
+        "connectedMs": 0,
+        "answer": "ACK:accepted"
+      },
+      {
+        "offset": 8,
+        "connectedMs": 0,
+        "answer": "ACK:accepted"
+      },
+      {
+        "offset": 42,
+        "connectedMs": 1,
+        "answer": "ACK:accepted"
+      },
+      {
+        "offset": 36,
+        "connectedMs": 0,
+        "answer": "ACK:accepted"
+      },
+      {
+        "offset": 44,
+        "connectedMs": 1,
+        "answer": "ACK:accepted"
+      },
+      {
+        "offset": 3,
+        "connectedMs": 0,
+        "answer": "ACK:accepted"
+      },
+      {
+        "offset": 14,
+        "connectedMs": 1,
+        "answer": "ACK:accepted"
+      },
+      {
+        "offset": 9,
+        "connectedMs": 1,
+        "answer": "ACK:accepted"
+      },
+      {
+        "offset": 6,
+        "connectedMs": 0,
+        "answer": "ACK:accepted"
+      }
+    ],
+    "connectedMsSummary": {
+      "min": 0,
+      "median": 1,
+      "max": 2
+    }
+  }
+}

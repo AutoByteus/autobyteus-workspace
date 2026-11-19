@@ -1,0 +1,21 @@
+# IMP-04 server unit suite (full), and the cause of its 2 failures
+# command: pnpm -C autobyteus-server-ts test:unit ; after committing: the two failing files alone ; an FSEvents measurement
+# commit: full run on the working tree before the commits; rerun on 49ed8967f0
+# env: macOS, Node v22.23.1
+# date: 2026-11-18
+# result: 8471 passed, 2 failed: tracked-imports (the new web files were not yet added to git: it names them; passes once
+#   committed) and skill-folder-watcher (fseventsd at 164% CPU; passes alone). Neither exercises changed code.
+
+Full run:
+ FAIL  tests/architecture/tracked-imports.test.ts > tracked imports > finds no tracked code importing an untracked file in this repository
+ FAIL  tests/unit/skill-update-notices/skill-folder-watcher.test.ts > SkillFolderWatcher > reports changes in a real skill folder, and a deleted folder as that folder
+ Test Files  2 failed | 1026 passed | 5 skipped (1033)
+      Tests  2 failed | 8471 passed | 9 skipped (8482)
+tracked-imports detail: "Tracked code importing files that are not tracked: 6 … AgentStreamingService.ts -> ./agentStreamSendAdmissions, … -> ./heldUntilRebind"
+
+After the commits, alone:
+ Test Files  2 passed (2)
+      Tests  11 passed (11)
+
+FSEvents measurement (fs.watch a temp dir recursively, write one file, wait 10 s): {"writeToEventMs":"none in 10000 ms","closeBlockMs":1}
+fseventsd CPU: 164.3% (ps -Ao pcpu,comm)

@@ -13,6 +13,7 @@ const mocks = vi.hoisted(() => {
     initialize: vi.fn(),
     getLogsDir: () => path.join(dirs.root, "logs"),
     getMemoryDir: () => path.join(dirs.root, "memory"),
+    getTempWorkspaceDir: () => path.join(dirs.root, "temp_workspace"),
     getAppDataDir: () => dirs.root,
     get: () => undefined,
     getBaseUrl: () => "http://localhost:8000",
@@ -39,14 +40,14 @@ const mocks = vi.hoisted(() => {
     stopForTaskClosure: vi.fn(async (_agentRunId: string, stillClosed: () => boolean) => (stillClosed() ? "stopped" : "kept_open")),
   };
   const teamRunService = {
-    pairedAgents: {}, getActiveTeamRun: vi.fn(() => null), restoreTeamRun: vi.fn(), resolveManagedTeamRun: vi.fn(),
+    runAgents: {}, getActiveTeamRun: vi.fn(() => null), restoreTeamRun: vi.fn(), resolveManagedTeamRun: vi.fn(),
     terminateTeamRun: vi.fn(), createTeamRun: vi.fn(), stopForTaskClosure: vi.fn(),
   };
   const generalProcessRunSupervisor = {
     agentRunService,
     teamRunService,
     agentOrgRunService: { getActive: vi.fn(() => null), restore: vi.fn() },
-    standaloneRootManager: { pairedAgents: {}, resolveRoot: vi.fn(async (runId: string) => (runId === "child-run" ? childRoot : null)) },
+    standaloneRootManager: { runAgents: {}, resolveRoot: vi.fn(async (runId: string) => (runId === "child-run" ? childRoot : null)) },
     teamRunHistoryService: {},
     delegatedWorkGuard: { guard: (_run: unknown, _action: unknown, perform: () => Promise<unknown>) => perform() },
     close: vi.fn(async () => undefined),
@@ -124,7 +125,7 @@ vi.mock("../../../src/llm-management/services/model-catalog-service.js", () => (
     runtimeModelSelectionCatalog: vi.fn(async () => ({ offeredModels: [], findExactCurrent: () => null })),
   }),
 }));
-vi.mock("../../../src/llm-management/services/model-availability-service.js", () => ({ getModelAvailabilityService: () => ({}) }));
+vi.mock("../../../src/llm-management/services/model-availability-service.js", () => ({ getModelAvailabilityService: () => ({ loadOnDemandModel: async () => "not_on_demand" }) }));
 vi.mock("../../../src/llm-management/llm-providers/services/llm-provider-service.js", () => ({ getLlmProviderService: () => ({}) }));
 vi.mock("../../../src/runtime-management/codex/client/codex-app-server-client-manager.js", () => ({ getCodexAppServerClientManager: () => ({}) }));
 vi.mock("autobyteus-ts/llm/llm-factory.js", () => ({ LLMFactory: { requireCurrentModelIdentifier: vi.fn(async () => undefined) } }));
@@ -144,6 +145,7 @@ import { AgentRunManager } from "../../../src/agent-execution/services/agent-run
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { AgentOrgRunManager } from "../../../src/agent-org-execution/services/agent-org-run-manager.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
+import { NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
 
 const input = { packageRoot: "/tmp/standalone-package", localApplicationId: "brief-studio", appDataDir: "/tmp/standalone-data", host: "127.0.0.1", port: 0 };
 
@@ -158,7 +160,7 @@ beforeEach(async () => {
       grokBackendFactory: {} as never, deepSeekHarnessBackendFactory: {} as never, activationRegistry: { getActiveRun: () => null } as never,
       memoryRecorder: {} as never, providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch }, agentToolMcpRunSessionDeactivator: {} as never, runPasses: null,
     }),
-    teams: AgentTeamRunManager.initializeProcessInstance({ delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+    teams: AgentTeamRunManager.initializeProcessInstance({ remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       memoryDir: path.join(mocks.dirs.root, "memory"), flatTeamExecutionFactory: {} as never, memberExecutionContextBuilder: {} as never,
       modelSelectionValidator: { validate: () => undefined } as never }),
     orgs: AgentOrgRunManager.initializeProcessInstance({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),

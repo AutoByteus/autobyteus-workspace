@@ -68,7 +68,7 @@ beforeEach(async () => {
   writeAttachmentAgentMetadata(memoryDir, "isolated");
   normalizer = new AgentRunProviderInputNormalizer(new ContextFileLocalPathResolver({
     layout: new ContextFileLayout({ appDataDir: config.root, memoryDir }),
-    ownerResolver: new ContextFileOwnerResolver({ memoryDir, locations: createStoredCollaborationExecutionLocationService(memoryDir, noDelegations()) }),
+    ownerResolver: new ContextFileOwnerResolver({ memoryDir, locations: createStoredCollaborationExecutionLocationService(memoryDir) }),
     baseUrl: "http://app.test",
   }));
   app = fastify(); await app.register(multipart); await app.register(registerContextFileRoutes, { prefix: "/rest" });

@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { LaunchUsabilityCheck } from "../../../src/launch-preferences/launch-usability-check.js";
 import { RunModelSelectionService } from "../../../src/llm-management/services/run-model-selection-service.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { NO_ON_DEMAND_MODELS } from "../../helpers/explicit-host-collaborators.js";
 
 // claude-anthropic-effort-control SR-005 caller #7 (AC-013): every usable launch the check returns carries the
 // validated, canonical model selection, so a launched copy never takes a setting its model does not declare.
@@ -15,7 +16,7 @@ const setup = () => {
     { model_identifier: "opus", config_schema: EFFORT_SCHEMA },
     { model_identifier: "plain", config_schema: null },
   ])) };
-  const validator = new RunModelSelectionService(catalog as never, { resolveMany: vi.fn() } as never);
+  const validator = new RunModelSelectionService(catalog as never, NO_ON_DEMAND_MODELS, { resolveMany: vi.fn() } as never);
   const availability = { getRuntimeAvailability: vi.fn(async (runtimeKind: RuntimeKind) => ({ runtimeKind, enabled: true, reason: null })) };
   return new LaunchUsabilityCheck({ availability: availability as never, validator });
 };
@@ -54,7 +55,8 @@ describe("LaunchUsabilityCheck canonical launches", () => {
     });
     expect(result.verdicts).toEqual([{ usable: false, reason: "model_settings_invalid",
       detail: "Its model settings are invalid: Value is not one of the supported options." }]);
-    expect(result.inherited).toEqual({ usable: false, detail: "Its model settings are invalid: Value is not one of the supported options." });
+    expect(result.inherited).toEqual({ usable: false, modelNoLongerOffered: false,
+      detail: "Its model settings are invalid: Value is not one of the supported options." });
   });
 
   it("reports no inherited verdict when there is no inherited launch", async () => {

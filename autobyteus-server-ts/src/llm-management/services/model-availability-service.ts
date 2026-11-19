@@ -18,8 +18,25 @@ import {
   type CustomLlmProviderStore,
 } from '../llm-providers/stores/custom-llm-provider-store.js';
 import { getModelCatalogService, type ModelCatalogService } from './model-catalog-service.js';
+import type { ModelSourceStatus } from '../llm-providers/domain/models.js';
 
 export type AvailableModelKind = 'LLM' | 'AUDIO' | 'IMAGE' | 'VIDEO';
+
+/**
+ * autobyteus-500 G-5 (SR-015 R1, SR-016): an AutoByteus LLM identifier of a provider loaded on demand (Ollama, LM Studio,
+ * a custom OpenAI-compatible endpoint) after its provider's catalog is ensured. `unreadable`: the provider can't be
+ * resolved (its host or endpoint isn't configured), the load throws, or its source reports any failed unit or a failed
+ * state; the counts span the provider's hosts, so one failed host may be this model's.
+ */
+export type OnDemandModelLoad = 'not_on_demand' | 'loaded' | 'unreadable';
+
+const FAILED_SOURCE_STATES: ReadonlySet<string> = new Set(['ERROR', 'STALE_ERROR']);
+const sourceFailed = (source: ModelSourceStatus): boolean =>
+  source.failedUnitCount > 0 || FAILED_SOURCE_STATES.has(source.state);
+
+const isOnDemandIdentifier = (identifier: string): boolean =>
+  parseOpenAICompatibleEndpointModelIdentifier(identifier) !== null
+  || parseHostScopedLlmModelIdentifier(identifier) !== null;
 
 const normalizedConfiguredEndpoints = (hosts: readonly string[]): string[] => hosts
   .map((host) => tryNormalizeDiscoveryEndpointIdentity(host))
@@ -55,12 +72,29 @@ export class ModelAvailabilityService {
     runtimeKind = 'autobyteus',
   ): Promise<void> {
     if (await this.isRegistered(modelIdentifier, kind)) return;
-    const providerId = await this.resolveDynamicProvider(modelIdentifier, kind);
-    if (!providerId) throw new Error('MODEL_IDENTIFIER_NOT_AVAILABLE');
-    await this.catalog.ensureProviderModelCatalog(providerId, runtimeKind);
+    // Its own errors reach the start as before; G-5's `loadOnDemandModel` classifies them instead.
+    if (!await this.loadProviderCatalog(modelIdentifier, kind, runtimeKind)) throw new Error('MODEL_IDENTIFIER_NOT_AVAILABLE');
     if (!await this.isRegistered(modelIdentifier, kind)) {
       throw new Error('MODEL_IDENTIFIER_NOT_AVAILABLE');
     }
+  }
+
+  /** G-5: loads an AutoByteus LLM identifier's on-demand provider, as a start would, and says whether it was read. */
+  async loadOnDemandModel(identifier: string): Promise<OnDemandModelLoad> {
+    if (!isOnDemandIdentifier(identifier)) return 'not_on_demand';
+    try {
+      const loaded = await this.loadProviderCatalog(identifier, 'LLM', 'autobyteus');
+      return !loaded || loaded.snapshot.sources.some(sourceFailed) ? 'unreadable' : 'loaded';
+    } catch {
+      return 'unreadable';
+    }
+  }
+
+  /** The on-demand load step both use: the identifier's provider, its catalog ensured; null when it can't be resolved. */
+  private async loadProviderCatalog(identifier: string, kind: AvailableModelKind, runtimeKind: string) {
+    const providerId = await this.resolveDynamicProvider(identifier, kind);
+    if (!providerId) return null;
+    return { snapshot: await this.catalog.ensureProviderModelCatalog(providerId, runtimeKind) };
   }
 
   private async resolveDynamicProvider(

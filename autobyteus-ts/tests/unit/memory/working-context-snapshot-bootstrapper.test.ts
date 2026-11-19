@@ -6,7 +6,6 @@ import { ToolInvocation } from '../../../src/agent/tool-invocation.js';
 import { ToolResultEvent } from '../../../src/agent/events/agent-events.js';
 import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../../../src/llm/utils/messages.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
-import { EpisodicItem } from '../../../src/memory/models/episodic-item.js';
 import { WorkingContextSnapshotBootstrapper } from '../../../src/memory/restore/working-context-snapshot-bootstrapper.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
 import { WorkingContextSnapshotStore } from '../../../src/memory/store/working-context-snapshot-store.js';
@@ -40,7 +39,6 @@ describe('WorkingContextSnapshotBootstrapper current-only restore', () => {
   });
 
   it('restores a valid v5 snapshot directly and preserves exact current memory shape', () => {
-    memoryStore.add([new EpisodicItem({ id: 'e1', ts: 1, summary: 'Current M1' })]);
     const expected = new WorkingContextFinalizer().finalize({
       messages: [
         new Message(MessageRole.SYSTEM, { content: 'Stored system' }),

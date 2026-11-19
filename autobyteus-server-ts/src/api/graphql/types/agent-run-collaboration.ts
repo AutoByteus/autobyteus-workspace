@@ -49,11 +49,11 @@ export class AgentRunCollaborationResolver {
 
   @Query(() => AgentRunCollaborationMemberProjectionPayload)
   agentRunCollaborationMemberProjection(
-    @Arg("hostRunId", () => String) hostRunId: string,
+    @Arg("runId", () => String) runId: string,
     @Arg("memberAddress", () => String) memberAddress: string,
     @Arg("agentRunId", () => String) agentRunId: string,
   ): Promise<AgentRunCollaborationMemberProjectionPayload> {
-    return getStandaloneRootMemberViewProjectionService().getProjection(hostRunId, memberAddress, agentRunId);
+    return getStandaloneRootMemberViewProjectionService().getProjection(runId, memberAddress, agentRunId);
   }
 
   /**

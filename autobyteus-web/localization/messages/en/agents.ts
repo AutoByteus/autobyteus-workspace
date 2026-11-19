@@ -100,8 +100,12 @@ const messages = {
   'agents.components.agents.GroupableTagInput.loading': 'Loading...',
   'agents.components.agents.GroupableTagInput.add': 'Add',
   'agents.components.agents.GroupableTagInput.remove': 'Remove',
-  'agents.store.interrupt.failed': 'Could not stop {{target}}: {{detail}}',
-  'agents.store.interrupt.transportFailed': 'Could not send Stop to {{target}}: {{detail}}',
+  'agents.send.notDelivered.notSent': 'Your message was not sent: not connected to the node. It is back in the message box; send it again.',
+  'agents.send.notDelivered.unknown': 'The connection to the node was lost while sending. Your message is back in the message box; if it does not appear in the conversation, send it again.',
+  'agents.send.notDelivered.dismiss': 'Dismiss',
+  'agents.interrupt.stopping': 'Stopping…',
+  'agents.interrupt.notSent': 'Stop was not sent: not connected to the node. Check the connection and try again.',
+  'agents.interrupt.failed': 'Could not stop {{name}}. Please try again.',
 } satisfies TranslationCatalog;
 
 export default messages;
