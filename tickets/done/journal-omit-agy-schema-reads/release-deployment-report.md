@@ -27,10 +27,10 @@ Repository finalization into `origin/personal`. No release, tag or deployment.
 Moved to `tickets/done/journal-omit-agy-schema-reads`: `Yes`.
 
 ## Repository Finalization
-TBD
+- Ticket branch committed and pushed after Secret Gate PASS; target `origin/personal` @ `69e89271fb` unchanged; `finalize/journal-omit-agy-schema-reads` from it; `--no-ff` merge `48d683694d`; Secret Gate, hygiene and licensing pass on the merged state; pushed `69e89271fb..48d683694d` (a record-only commit follows). Status `Completed`; blocker none.
 
 ## Post-Finalization Cleanup
-TBD
+- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/journal-omit-agy-schema-reads` removed and pruned; local branches and remote branch `origin/codex/journal-omit-agy-schema-reads` deleted after the merge was confirmed. Status `Completed`.
 
 ## Release Notes Summary
 `release-notes.md` written (the one-time re-render and re-index); not used: no release.
@@ -42,4 +42,4 @@ Journals are derived data: revision 3 re-renders them once in place from the raw
 Revert the merge on `personal`; the next release's journals then show the schema reads again after another re-render. Nothing is released.
 
 ## Final Status
-TBD
+- Verification complete `Yes`; repository finalization complete `Yes` (`personal` @ `48d683694d` plus this record commit); release not required; cleanup complete `Yes`; blocker `None` (the scripted-AGY timeout flake is FU-3); terminal package sent `Yes`.
