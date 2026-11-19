@@ -299,7 +299,7 @@ Pushing a `v*` tag starts four workflows:
 
 | Workflow | Publishes |
 | --- | --- |
-| Desktop Release | macOS ARM64 and x64 (`.dmg`, `.zip`, blockmaps), Linux x64 and ARM64 AppImages, the Windows `.exe`, and the `latest*.yml` updater metadata, on the GitHub release. The updater metadata goes up last, after the server packages (below) |
+| Desktop Release | macOS ARM64 and x64 (`.dmg`, `.zip`, blockmaps), Linux x64 and ARM64 AppImages and their signed release records, the Windows `.exe`, and the `latest*.yml` updater metadata, on the GitHub release. The updater metadata goes up last, after the server packages (below) |
 | Android APK Release | The signed APK and its `.sha256`, on the same GitHub release |
 | iOS App Store Connect Release | A TestFlight upload |
 | Server Docker Release | `autobyteus/autobyteus-server:X.Y.Z[-beta.N]`. A stable tag also moves `:latest`; the newest tag, stable or beta, moves `:beta`. Then, on the GitHub release, the signed server package per architecture (`x64`, `arm64`): `autobyteus-server-X.Y.Z[-beta.N]-linux-<arch>.tar.gz`, `.json` and `.json.sig`. Each architecture builds natively on its own runner (`ubuntu-latest`, `ubuntu-24.04-arm`) at the same time, with no layer cache; nothing is tagged until both have built |
@@ -474,6 +474,7 @@ What the release workflows build, validate and need.
   - macOS Intel x64 DMG + blockmap
   - Linux x64 AppImage + `latest-linux.yml` metadata with embedded AppImage `blockMapSize`
   - Linux ARM64 AppImage + `latest-linux-arm64.yml` metadata with embedded AppImage `blockMapSize`
+  - for each Linux AppImage, the matching `.AppImage.release.json` and `.AppImage.release.json.sig` beside it on its exact version tag. Missing or incorrect files block protected installation or updates; the YAML feed is not a substitute.
   - signed Android APK on the same GitHub Release
   - iOS simulator build/test workflow artifacts, plus signed `.ipa` upload to App Store Connect/TestFlight when iOS publish secrets are configured
   - Docker Hub server image for `linux/amd64,linux/arm64`
@@ -546,6 +547,15 @@ What the release workflows build, validate and need.
 - Required GitHub repository secrets for Docker Hub publish:
   - `DOCKERHUB_USERNAME`
   - `DOCKERHUB_TOKEN`
+- Linux desktop signing: provision the Ed25519 public PEM in the repository
+  variable `DESKTOP_RELEASE_PUBLIC_KEY` before a production Linux build. Keep
+  its matching `DESKTOP_RELEASE_PRIVATE_KEY` **only** in the protected
+  `desktop-release-signing` environment. Native build jobs embed the public
+  anchor; the isolated signing job signs the final files and verifies the
+  matching metadata before publication. Never use the server key, or publish
+  build-only packages, signatures or keys. Missing or mismatched trust is a
+  release blocker, not a reason to generate replacement production keys.
+  See [protected Ubuntu installation and repair](autobyteus-web/docs/linux-managed-desktop.md).
 - Required GitHub repository secret for server package publish:
   - `SERVER_PACKAGE_SIGNING_KEY`: the Ed25519 private key that signs server packages. Created once with `node scripts/server-package/generate-signing-key.mjs`, which sets the secret through `gh` and writes the matching public key to `autobyteus-server-ts/docker/server-package-signing-key.pem`. The package job checks each signature against that public key and fails when they do not match. A new key pair (`--replace`) makes every older image refuse newer packages.
 - Server Docker system level:
