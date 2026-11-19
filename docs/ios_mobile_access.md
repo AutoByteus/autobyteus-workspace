@@ -1,15 +1,15 @@
 # iOS + Tailscale Mobile Access Guide
 
-This guide covers the iOS app shell in `autobyteus-ios`. The app loads the existing AutoByteus `/mobile` web shell from a reachable desktop/server node.
+This guide covers the iOS app shell in `autobyteus-ios`. The app loads the existing AutoByteus `/mobile` web shell from a reachable desktop/server node. It also bundles a demo build of the same screens on sample data, for trying the app without a computer and for App Review (autobyteus-279; `autobyteus-web/docs/remote_access.md`, The demo build (iOS)).
 
 ## Ownership boundaries
 
-- **iOS app:** native setup, QR scanning, saved node metadata, Phone Access status checks, trusted `WKWebView` containment, diagnostics, share pending-input handoff, build/signing-readiness discovery.
+- **iOS app:** the scan-first start screen and connect flow (as on Android), QR scanning, saved node metadata, Phone Access status checks, trusted `WKWebView` containment with the shell bridge, diagnostics, the demo web view, share handling, build/signing-readiness discovery.
 - **Existing `/mobile` shell:** the run list, the run screen with its ⋮ views (Artifacts, Files, Messages, Activity), New run for agent runs, the connection sheet, pairing bootstrap, and WebView-local mobile credential storage.
 - **Remote Access backend:** Phone Access status, pairing sessions, pairing exchange, mobile credentials, revocation, and protected route authorization.
 - **Tailscale:** private network reachability only; it is not AutoByteus authorization.
 
-The iOS app intentionally does not include a native AutoByteus runtime, duplicate chat/run UI, direct run/chat API client, or native `mra_...` credential bridge.
+The iOS app intentionally does not include a native AutoByteus runtime, native chat/run UI, direct run/chat API client, or native `mra_...` credential bridge. The demo is the `/mobile` code itself, built separately with a sample node inside the page; it never reaches a real node.
 
 ## Recommended stable URL
 
@@ -23,7 +23,10 @@ The `/mobile` web shell stores the MVP mobile credential in WebView-local storag
 
 ## Build and simulator validation
 
+After `pnpm install`, make the bundled demo build first (the Xcode build fails without `autobyteus-ios/DemoWeb/`):
+
 ```bash
+autobyteus-ios/scripts/prepare-demo-web.sh --build
 autobyteus-ios/scripts/generate-project.sh
 xcodebuild \
   -project autobyteus-ios/AutoByteusMobile.xcodeproj \
@@ -41,14 +44,15 @@ autobyteus-ios/scripts/ios-simulator-smoke.sh tickets/ios-wrapper-app/e2e-eviden
 
 Expected simulator scenarios:
 
-1. Enter `http://127.0.0.1:<port>/mobile` from the fake server.
+1. Other ways to connect → Type an address: enter `http://127.0.0.1:<port>/mobile` from the fake server.
 2. Acknowledge private HTTP.
 3. Validate `/rest/remote-access/status`.
 4. Open `/mobile` in a full-viewport `WKWebView`.
 5. Assert the fake `/mobile` marker `AUTOBYTEUS_FAKE_MOBILE_READY` inside `WKWebView`.
 6. Force-stop/relaunch and confirm saved-node restore with the same marker.
-7. Exercise an unreachable node and confirm a native diagnostic instead of a raw WebView error page.
-8. Record simulator UDID/runtime, fake URL, `.xcresult`, test log, screenshots, and signing-readiness output.
+7. Exercise an unreachable node and confirm Can't reach <node> with Retry instead of a raw WebView error page.
+8. The demo: Try demo, the injected demo code and `autobyteus://demo` open the demo run list; Leave demo and a cold launch return to the first screen; a kept share is used once; the demo's web view blocks the network.
+9. Record simulator UDID/runtime, fake URL, `.xcresult`, test log, screenshots, and signing-readiness output.
 
 ## QR and file-upload evidence
 
@@ -112,6 +116,7 @@ Do not reuse macOS desktop `APPLE_*` secrets or `Developer ID Application` ident
 
 Native utility beyond a generic website wrapper should be highlighted if submitting for review:
 
+- the built-in demo (**Try demo**, the demo QR code, `autobyteus://demo`): the full app on sample data with no account and no network, the answer to Guideline 2.1(a);
 - app-owned QR setup;
 - saved node management;
 - Phone Access reachability diagnostics;

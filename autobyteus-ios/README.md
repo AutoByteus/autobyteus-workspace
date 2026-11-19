@@ -1,16 +1,18 @@
 # AutoByteus iOS Mobile Shell
 
-This project builds the native iOS wrapper for the existing AutoByteus `/mobile` experience. It does **not** run AutoByteus locally on iOS and it does not implement the run list, the run screen and its views, New run, or mobile credential exchange natively.
+This project builds the native iOS wrapper for the existing AutoByteus `/mobile` experience. It does **not** run AutoByteus locally on iOS and it does not implement the run list, the run screen and its views, New run, or mobile credential exchange natively. It bundles one build of those same web screens, the demo (`DemoWeb/`, autobyteus-279), which runs on sample data with no network.
 
 ## What the app owns
 
-- first-run scan/paste/manual node URL entry;
-- app-owned Phone Access QR scanning and iOS camera-permission recovery;
-- native persistence of saved node entry metadata only;
+- the scan-first start screen, as on Android (`Start/`): Scan, **Try demo**, the saved nodes ("Your nodes"), and **Other ways to connect** (Type an address, Paste a link); then Connecting and Can't reach (`Connect/`, `AutoByteusMobileCore/NodeConnectionFlow.swift`);
+- app-owned Phone Access QR scanning and iOS camera-permission recovery; the demo code `autobyteus://demo` ("Demo code found");
+- native persistence of saved node entry metadata only; native screens name a node by `SavedNodeEntry.shownName` ("AutoByteus node" when no name is known, never an address);
 - reachability checks against `/rest/remote-access/status`;
-- `WKWebView` containment for the saved AutoByteus origin;
+- `WKWebView` containment for the saved AutoByteus origin, with the shell bridge `window.AutoByteusShell` (`Shell/ShellBridgeHandler.swift`, Android's contract plus `leaveDemo`; see `autobyteus-web/docs/remote_access.md`);
+- the demo (`Demo/`): the bundled demo build in its own web view at `autobyteus-demo://app/`, with no network and nothing kept after Leave demo or a cold launch;
 - Tailscale-oriented diagnostics and recovery actions;
-- safe share-extension pending-input handoff.
+- the share extension: it keeps the shared text, and the app acts on it once when it next becomes active (a pairing link connects, the demo link opens the demo, other text opens Type an address pre-filled);
+- the iPad layout of its own screens (a centered 448 pt first screen, 512 pt sheets).
 
 The existing `/mobile` web shell owns AutoByteus product UI and WebView-local mobile credential storage. Native iOS code must not persist `mra_...` credentials.
 
@@ -22,9 +24,10 @@ The existing `/mobile` web shell owns AutoByteus product UI and WebView-local mo
 
 ## Generate, build, and test
 
-From the repository root:
+From the repository root, after `pnpm install`. The build fails while `DemoWeb/` is missing, so make the demo build first (it is build output, not committed):
 
 ```bash
+autobyteus-ios/scripts/prepare-demo-web.sh --build
 autobyteus-ios/scripts/generate-project.sh
 xcodebuild \
   -project autobyteus-ios/AutoByteusMobile.xcodeproj \
@@ -50,7 +53,7 @@ Simulator smoke path with a fake AutoByteus node:
 autobyteus-ios/scripts/ios-simulator-smoke.sh tickets/ios-wrapper-app/e2e-evidence
 ```
 
-The smoke script starts a local fake `/rest/remote-access/status` + `/mobile` server, injects the fake URL through UI-test build settings/Info.plist, runs the UI smoke tests, fails if those tests skip, stores an `.xcresult` with screenshots, and captures signing-readiness output. API/E2E owns authoritative simulator evidence; implementation may run this as a confidence check when time/environment allow.
+The smoke script starts a local fake `/rest/remote-access/status` + `/mobile` server, injects the fake URL through UI-test build settings/Info.plist, runs the UI smoke tests (the fake node through Type an address, Can't reach, and the demo: Try demo, the demo code, the demo link, Leave demo, a kept share, the blocked network), fails if those tests skip, stores an `.xcresult` with screenshots, and captures signing-readiness output. API/E2E owns authoritative simulator evidence; implementation may run this as a confidence check when time/environment allow.
 
 GitHub-hosted simulators are intermittently very slow, so the UI smoke tests wait for readiness (hittable controls, keyboard focus) with generous upper bounds instead of fixed waits. On a loaded simulator a delivered tap can have no effect, so before Connect the tests confirm that the URL field holds the typed node URL and that the HTTP acknowledgement switch is on: the switch state is checked before each tap and re-tapped up to 3 times, never toggling it off. The tests launch the app, including the restore relaunch, with `AUTOBYTEUS_CONNECTION_TIMEOUT_SECONDS=60`. That launch-environment override of the app's connection-check timeout is compiled only into Debug builds, which the scheme's test action uses; Release/TestFlight builds always keep the 5 s default (values above 120 s are capped; invalid values are ignored).
 
@@ -68,7 +71,18 @@ xcodebuild \
   test
 ```
 
-Without the override the app's 5 s check times out and the test shows "AutoByteus node is unreachable"; with it the test passes. CI keeps the default `--status-delay-seconds 0`.
+Without the override the app's 5 s check times out and the test shows Can't reach; with it the test passes.
+
+The iPad layout test is its own class and needs an iPad destination; the iPhone smoke skips it:
+
+```bash
+xcodebuild \
+  -project autobyteus-ios/AutoByteusMobile.xcodeproj \
+  -scheme AutoByteusMobile \
+  -destination 'platform=iOS Simulator,name=iPad Air 11-inch (M3)' \
+  -only-testing:AutoByteusMobileUITests/DemoIPadUITests \
+  test
+``` CI keeps the default `--status-delay-seconds 0`.
 
 ## Signing readiness
 
@@ -91,7 +105,7 @@ The script records Xcode version/path, simulator inventory, public code-signing 
 
 `.github/workflows/release-ios.yml` provides the iOS CI release path:
 
-- tag pushes matching `v*` and manual `workflow_dispatch` runs always run simulator build/test artifacts first;
+- tag pushes matching `v*` and manual `workflow_dispatch` runs always run simulator build/test artifacts first; both macOS jobs build the bundled demo from `pnpm install` (`prepare-demo-web.sh --build`);
 - manual build-only runs use `publish_app_store_connect=false` and do not require Apple distribution secrets;
 - tag pushes and manual publish runs use a guarded App Store Connect/TestFlight publish path only after all iOS-specific secrets are present;
 - missing publish secrets fail fast with exact missing names and `gh secret set <NAME>` guidance before any keychain, profile, archive, export, or upload step;
@@ -153,5 +167,7 @@ Before claiming production release readiness, validate on a physical iPhone when
 7. Force-quit/relaunch and confirm saved-node restore.
 8. Exercise an unreachable node and confirm native diagnostic recovery.
 9. Record signing-readiness output for the intended bundle ID/team.
+
+10. The demo: scan the demo QR code with the in-app scanner, open `autobyteus://demo` from the Camera app, and walk the demo with airplane mode on (every icon shows, nothing fails).
 
 Simulator-first validation cannot prove real camera capture or every file-picker/photo-library behavior; record those as evidence gaps until a physical device is used.
