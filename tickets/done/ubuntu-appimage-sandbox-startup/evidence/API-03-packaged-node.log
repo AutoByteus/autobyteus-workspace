@@ -1,0 +1,6 @@
+Prior probe harness error: extract-and-run runtime emits extraction paths on stdout, interleaving valid Node JSON. Actual Node exited23. No source failure. Removed optional extraction mode; rerun actual mounted AppImage. Raw failed-harness log at /home/ryan-ai/hdd_drive/autobyteus_org/api-e2e-autobyteus-5/API-03-extract-harness.log
+API-03 | 2026-11-18 | source 0df0c901e4 | Ubuntu26 x64, current AppImage de7e643e316a9593d63ce79f8eb0483f21460fded1fea61946f8d917927e4132
+{"argv":["space argument","--example"],"node":"24.19.0","exec":"/tmp/.mount_AutoBylDoyjG/autobyteus"}
+  exit= 23
+outer-group-signal exit= 42 stderr= 
+PASS current packaged real ELF receives SIGTERM and exits 42; argv and exit23 preserved

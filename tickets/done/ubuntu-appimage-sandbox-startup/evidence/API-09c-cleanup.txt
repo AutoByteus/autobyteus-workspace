@@ -1,0 +1,15 @@
+# API-09c | API-09c-cleanup | 2026-11-19 | CRR-004 (reviewed product c90f3ba8f2); Linux x64 repository / isolated native fixture
+API-09c 2026-11-19 current CRR-004 — owned disposable resources only.
+owned VM pid=356417
+qmp_capabilities {}
+quit {}
+owned VM pid=357049
+qmp_capabilities {}
+quit {}
+owned VM pid=357083
+qmp_capabilities {}
+quit {}
+owned QEMU pidfile removed
+owned QEMU pidfile removed
+owned QEMU pidfile removed
+no QA VM forwards or debugger tunnels listening on those ports

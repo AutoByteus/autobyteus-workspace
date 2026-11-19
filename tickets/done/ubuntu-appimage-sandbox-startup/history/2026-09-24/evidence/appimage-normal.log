@@ -1,0 +1,4 @@
+mode=normal
+probe_root=/tmp/autobyteus-appimage-normal.RIhP16
+[1163611:0924/114230.900112:FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:166] The SUID sandbox helper binary was found, but is not configured correctly. Rather than run without sandboxing I'm aborting now. You need to make sure that /tmp/.mount_AutoByPrSjXi/chrome-sandbox is owned by root and has mode 4755.
+exit=133

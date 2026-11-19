@@ -1,0 +1,10 @@
+dbus-daemon[6146]: [session uid=1000 pid=6146 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=6156 comm="/usr/lib/policykit-1-gnome/polkit-gnome-authentica" label="unconfined")
+dbus-daemon[6146]: [session uid=1000 pid=6146 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[6184]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=6156 comm="/usr/lib/policykit-1-gnome/polkit-gnome-authentica" label="unconfined")
+dbus-daemon[6184]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+{"status":"ok","message":"Server is running"}
+autobyteus
+Traceback (most recent call last):
+  File "<stdin>", line 14, in <module>
+Exception: No inspected renderer or permission to read its namespaces

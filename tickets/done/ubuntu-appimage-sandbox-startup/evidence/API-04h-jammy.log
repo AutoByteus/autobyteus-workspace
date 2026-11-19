@@ -1,0 +1,25 @@
+# API-04h-jammy | 2026-11-19 | reviewed product 8f10fa9287 | Ubuntu22/26 x64 guest; operation: see matching case in execution report
+API-04h Jammy: preliminary direct launch before XDG/display file was ready failed with missing X server. Wait for actual display; use only this current run for host proof.
+1280 900
+332aefbf8bc26b353bd270fd3d1bcf088a6ddfc0139516c56a471e8eea568b53  QA4-Renamed.AppImage
+PRETTY_NAME="Ubuntu 22.04.5 LTS"
+22.04 direct
+autobyteus
+curl: (7) Failed to connect to localhost port 29695 after 0 ms: Connection refused
+curl: (7) Failed to connect to localhost port 29695 after 0 ms: Connection refused
+curl: (7) Failed to connect to localhost port 29695 after 0 ms: Connection refused
+curl: (7) Failed to connect to localhost port 29695 after 0 ms: Connection refused
+curl: (7) Failed to connect to localhost port 29695 after 0 ms: Connection refused
+{"status":"ok","message":"Server is running"}
+{"supervisor": [{"pid": "1608", "ppid": "1", "exe": "/tmp/.mount_QA4-ReYJXHBA/AppRun", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["1608"]}], "main": [{"pid": "1623", "ppid": "1608", "exe": "/tmp/.mount_QA4-ReYJXHBA/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["1623"]}], "renderer": [{"pid": "1735", "ppid": "1677", "exe": "/tmp/.mount_QA4-ReYJXHBA/autobyteus", "uid": "1000", "NoNewPrivs": "1", "Seccomp": "2", "NSpid": ["1735", "4", "1"]}], "server": [{"pid": "1748", "ppid": "1623", "exe": "/tmp/.mount_QA4-ReYJXHBA/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["1748"]}]}
+8e0193bcd79e65db92762ad8549b5ec4f82eb7174319d01565fef22b9c1dc67c  /home/witness/.autobyteus/server-data/temp_workspace/qa4-saved
+22.04 portable-menu
+autobyteus
+curl: (7) Failed to connect to localhost port 29695 after 0 ms: Connection refused
+curl: (7) Failed to connect to localhost port 29695 after 0 ms: Connection refused
+curl: (7) Failed to connect to localhost port 29695 after 0 ms: Connection refused
+curl: (7) Failed to connect to localhost port 29695 after 0 ms: Connection refused
+{"status":"ok","message":"Server is running"}
+{"supervisor": [{"pid": "2115", "ppid": "1", "exe": "/tmp/.mount_QA4-Rew0Hokc/AppRun", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["2115"]}], "main": [{"pid": "2131", "ppid": "2115", "exe": "/tmp/.mount_QA4-Rew0Hokc/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["2131"]}], "renderer": [{"pid": "2239", "ppid": "2185", "exe": "/tmp/.mount_QA4-Rew0Hokc/autobyteus", "uid": "1000", "NoNewPrivs": "1", "Seccomp": "2", "NSpid": ["2239", "4", "1"]}], "server": [{"pid": "2255", "ppid": "2131", "exe": "/tmp/.mount_QA4-Rew0Hokc/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["2255"]}]}
+8e0193bcd79e65db92762ad8549b5ec4f82eb7174319d01565fef22b9c1dc67c  /home/witness/.autobyteus/server-data/temp_workspace/qa4-saved
+no-sidecar-or-enrollment

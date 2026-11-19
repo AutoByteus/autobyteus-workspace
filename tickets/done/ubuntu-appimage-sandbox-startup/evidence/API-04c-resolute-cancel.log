@@ -1,0 +1,16 @@
+4194308
+X Error of failed request:  BadWindow (invalid Window parameter)
+  Major opcode of failed request:  3 (X_GetWindowAttributes)
+  Resource id in failed request:  0x2001db
+  Serial number of failed request:  89
+  Current serial number in output stream:  90
+Error executing command as another user: Request dismissed
+[5645:1119/120012.730459:FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:166] The SUID sandbox helper binary was found, but is not configured correctly. Rather than run without sandboxing I'm aborting now. You need to make sure that /tmp/.mount_RenamezwoOPQ/chrome-sandbox is owned by root and has mode 4755.
+Ubuntu will request one-shot authorization for /proc/5631/fd/9 (program path, not a publisher verification).
+Error executing command as another user: Request dismissed
+Ubuntu authorization or installation refused: exit status 126
+Serving HTTP on 127.0.0.1 port 18889 (http://127.0.0.1:18889/) ...
+127.0.0.1 - - [19/Nov/2026 12:00:32] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 12:00:32] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json.sig HTTP/1.1" 200 -
+kernel.apparmor_restrict_unprivileged_userns = 1
+PASS-OS-AUTH-CANCEL-no-protected-install

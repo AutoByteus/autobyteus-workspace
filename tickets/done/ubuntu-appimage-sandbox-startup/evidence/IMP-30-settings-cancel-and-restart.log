@@ -1,0 +1,193 @@
+IMP-30 | 2026-11-19 | Noble x64 disposable guest | 9017bd351d main TS compiled into retained full version 1.5.14 fixture, retained genuine signed 1.5.15; only test trust
+
+> autobyteus@1.5.13 transpile-electron /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web
+> tsc -p electron/tsconfig.json
+
+Verified signed desktop release 1.5.14 x64
+82c694d4e75f17d7f9192d2e55b0848b7f97db62d3ccd4495bd1b89e863665ae  /home/ryan-ai/hdd_drive/autobyteus_org/api-e2e-autobyteus-5/ir004/repack/AutoByteus_personal_linux-x64-1.5.14.AppImage
+toggled off {
+  activationMode: 'managed-quit',
+  status: 'downloading',
+  currentVersion: '1.5.14',
+  currentVersionIsPrerelease: false,
+  updateChannel: 'stable',
+  updateStaged: false,
+  availableVersion: '1.5.15',
+  downloadPercent: 0,
+  downloadTransferredBytes: 0,
+  downloadTotalBytes: null,
+  releaseNotes: null,
+  message: 'Downloading update...',
+  errorKind: null,
+  errorOperation: null,
+  checkedAt: '2026-11-19T12:23:04.648Z',
+  notification: {
+    version: '1.5.15',
+    fromVersion: '1.5.14',
+    foundAt: '2026-11-19T12:23:03.512Z',
+    read: false,
+    state: 'waiting',
+    handledVersion: null,
+    releasePageUrl: null,
+    outcome: null,
+    outcomeReason: null,
+    outcomeStep: null
+  },
+  autoCheck: { enabled: true, intervalMinutes: 60 },
+  automaticUpdate: false,
+  automaticInstallPreparing: false
+}
+cancel settled {
+  activationMode: 'managed-quit',
+  status: 'downloading',
+  currentVersion: '1.5.14',
+  currentVersionIsPrerelease: false,
+  updateChannel: 'stable',
+  updateStaged: false,
+  availableVersion: '1.5.15',
+  downloadPercent: 0,
+  downloadTransferredBytes: 0,
+  downloadTotalBytes: null,
+  releaseNotes: null,
+  message: 'Downloading update...',
+  errorKind: null,
+  errorOperation: null,
+  checkedAt: '2026-11-19T12:23:04.648Z',
+  notification: {
+    version: '1.5.15',
+    fromVersion: '1.5.14',
+    foundAt: '2026-11-19T12:23:03.512Z',
+    read: false,
+    state: 'waiting',
+    handledVersion: null,
+    releasePageUrl: null,
+    outcome: null,
+    outcomeReason: null,
+    outcomeStep: null
+  },
+  autoCheck: { enabled: true, intervalMinutes: 60 },
+  automaticUpdate: false,
+  automaticInstallPreparing: false
+}
+locator.click: Timeout 8000ms exceeded.
+Call log:
+[2m  - waiting for getByTestId('settings-updates-check-updates')[22m
+[2m    - locator resolved to <button disabled type="button" data-testid="settings-updates-check-updates" class="rounded-md bg-sky-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-60">Check for Updates</button>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is not enabled[22m
+[2m    - retrying click action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is not enabled[22m
+[2m    - retrying click action[22m
+[2m      - waiting 100ms[22m
+[2m    15 × waiting for element to be visible, enabled and stable[22m
+[2m       - element is not enabled[22m
+[2m     - retrying click action[22m
+[2m       - waiting 500ms[22m
+
+    at click (/home/ryan-ai/hdd_drive/autobyteus_org/api-e2e-autobyteus-5/ir004/actions.cjs:5:35)
+    at /home/ryan-ai/hdd_drive/autobyteus_org/api-e2e-autobyteus-5/ir004/actions.cjs:17:7 {
+  name: 'TimeoutError'
+}
+Corrected driver: wait on resolved IPC state in driver, not an async predicate inside page.waitForFunction. First attempt toggled during network transfer, not verification, not evidence of cancellation behavior.
+observed writer verification downloading Verifying downloaded update... true
+toggled off {
+  activationMode: 'managed-quit',
+  status: 'downloading',
+  currentVersion: '1.5.14',
+  currentVersionIsPrerelease: false,
+  updateChannel: 'stable',
+  updateStaged: false,
+  availableVersion: '1.5.15',
+  downloadPercent: 0,
+  downloadTransferredBytes: 0,
+  downloadTotalBytes: null,
+  releaseNotes: null,
+  message: 'Verifying downloaded update...',
+  errorKind: null,
+  errorOperation: null,
+  checkedAt: '2026-11-19T12:23:38.437Z',
+  notification: {
+    version: '1.5.15',
+    fromVersion: '1.5.14',
+    foundAt: '2026-11-19T12:23:03.512Z',
+    read: false,
+    state: 'waiting',
+    handledVersion: null,
+    releasePageUrl: null,
+    outcome: null,
+    outcomeReason: null,
+    outcomeStep: null
+  },
+  autoCheck: { enabled: true, intervalMinutes: 60 },
+  automaticUpdate: false,
+  automaticInstallPreparing: false
+}
+observed cancel complete available Update is available for download. false
+cancel settled {
+  activationMode: 'managed-quit',
+  status: 'available',
+  currentVersion: '1.5.14',
+  currentVersionIsPrerelease: false,
+  updateChannel: 'stable',
+  updateStaged: false,
+  availableVersion: '1.5.15',
+  downloadPercent: null,
+  downloadTransferredBytes: null,
+  downloadTotalBytes: null,
+  releaseNotes: null,
+  message: 'Update is available for download.',
+  errorKind: null,
+  errorOperation: null,
+  checkedAt: '2026-11-19T12:23:38.437Z',
+  notification: {
+    version: '1.5.15',
+    fromVersion: '1.5.14',
+    foundAt: '2026-11-19T12:23:03.512Z',
+    read: false,
+    state: 'waiting',
+    handledVersion: null,
+    releasePageUrl: null,
+    outcome: null,
+    outcomeReason: null,
+    outcomeStep: null
+  },
+  autoCheck: { enabled: true, intervalMinutes: 60 },
+  automaticUpdate: false,
+  automaticInstallPreparing: false
+}
+verified before click {
+  activationMode: 'managed-quit',
+  status: 'downloaded',
+  currentVersion: '1.5.14',
+  currentVersionIsPrerelease: false,
+  updateChannel: 'stable',
+  updateStaged: true,
+  availableVersion: '1.5.15',
+  downloadPercent: 100,
+  downloadTransferredBytes: 0,
+  downloadTotalBytes: null,
+  releaseNotes: null,
+  message: 'Ready for your next quit.',
+  errorKind: null,
+  errorOperation: null,
+  checkedAt: '2026-11-19T12:23:47.657Z',
+  notification: {
+    version: '1.5.15',
+    fromVersion: '1.5.14',
+    foundAt: '2026-11-19T12:23:03.512Z',
+    read: false,
+    state: 'waiting',
+    handledVersion: null,
+    releasePageUrl: null,
+    outcome: null,
+    outcomeReason: null,
+    outcomeStep: null
+  },
+  autoCheck: { enabled: true, intervalMinutes: 60 },
+  automaticUpdate: false,
+  automaticInstallPreparing: false
+}
+clicked Install & Restart 2026-11-19T12:23:55.850Z

@@ -1,0 +1,34 @@
+# API-05d | API-05d-menu-known-old | 2026-11-19 | CRR-004 (reviewed product c90f3ba8f2); Ubuntu24.04 x64 guest
+Thu Nov 19 13:05:17 UTC 2026
+Menu .14 staged .15 in Settings; induce writer service restart only in dedicated guest; known live baseline remains .14.
+active
+total 703792
+drwxr-xr-x 2 abdesk-1000 abdesk-1000      4096 Nov 19 13:04 .
+drwxr-xr-x 4 root        root             4096 Nov 19 13:00 ..
+-r-xr-xr-x 1 abdesk-1000 abdesk-1000 360331528 Nov 19 13:04 .pending-3074747250
+-rw------- 1 abdesk-1000 abdesk-1000         0 Nov 19 13:02 .writer-lock
+-r-xr-xr-x 1 abdesk-1000 abdesk-1000 360331634 Nov 19 13:02 AutoByteus.AppImage
+{"status":"ok","message":"Server is running"}
+autobyteus
+{"supervisor": [{"pid": "4092", "ppid": "1", "exe": "/tmp/.mount_AutoByrrZw9n/AppRun", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["4092"]}], "main": [{"pid": "4954", "ppid": "4092", "exe": "/tmp/.mount_AutoByrrZw9n/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["4954"]}], "server": [{"pid": "5004", "ppid": "4954", "exe": "/tmp/.mount_AutoByrrZw9n/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["5004"]}], "renderer": [{"pid": "5100", "ppid": "4960", "exe": "/tmp/.mount_AutoByrrZw9n/autobyteus", "uid": "1000", "NoNewPrivs": "1", "Seccomp": "2", "NSpid": ["5100", "4", "1"]}], "file": "df33d927190eae41a8c2a499cae3d63c3cd9b1a014bbf3002b6d280062d5be03", "work": "b54b3859fb69fd5d8a3a80621258135c360e4cf1095320dde50cdb0cc09ae936"}
+Thu Nov 19 13:05:27 UTC 2026
+29695 absent
+
+29696 {"status":"ok","message":"Server is running"}
+autobyteus
+{
+  "version": "1.5.15",
+  "fromVersion": "1.5.14",
+  "foundAt": "2026-11-19T13:04:18.968Z",
+  "read": false,
+  "handledVersion": null,
+  "handledAt": null,
+  "automatic": null,
+  "automaticFailure": null,
+  "outcome": null,
+  "manualInstall": null,
+  "manualFailure": {
+    "version": "1.5.15",
+    "reason": "stage-gone"
+  }
+}

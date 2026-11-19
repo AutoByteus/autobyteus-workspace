@@ -1,0 +1,246 @@
+name: API-08 native Linux validation
+'on':
+  push:
+    branches:
+    - validation/autobyteus-5-crr004-linux-20261119125804
+permissions:
+  contents: read
+jobs:
+  build-linux-x64:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    steps:
+    - name: Checkout workspace + submodules
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10.28.2
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+    - name: Install Linux build deps
+      run: 'test "$(uname -m)" = x86_64; uname -ms; node -p process.arch
+
+        sudo apt-get update
+
+        sudo apt-get install -y libarchive-tools
+
+        '
+    - name: Install workspace dependencies
+      run: pnpm install --frozen-lockfile
+    - name: Setup pinned native toolchain
+      uses: actions/setup-go@v5
+      with:
+        go-version: 1.27.4
+        cache: false
+    - name: Prepare desktop public trust or disposable build-only identity
+      run: node scripts/desktop-package/prepare-build-trust.mjs build-only "$RUNNER_TEMP/desktop-trust"
+    - name: Check native and signed-record units
+      run: 'go env GOARCH; git rev-parse HEAD
+
+        node --test scripts/desktop-package/*.test.mjs
+
+        cd autobyteus-web/linux-install
+
+        go test ./...
+
+        '
+    - name: Build Electron Linux x64
+      working-directory: autobyteus-web
+      env:
+        AUTOBYTEUS_BUILD_FLAVOR: personal
+      run: pnpm build:electron:linux:x64
+    - name: Sign build-only final bytes with disposable trust
+      run: 'set -euo pipefail
+
+        VERSION="$(node -p "require(''./autobyteus-web/package.json'').version")"
+
+        IMAGE="autobyteus-web/electron-dist/AutoByteus_personal_linux-x64-$VERSION.AppImage"
+
+        node scripts/desktop-package/sign-release.mjs "$IMAGE" "$VERSION" x64 "$AUTOBYTEUS_DESKTOP_TEST_KEY_FILE"
+        "$AUTOBYTEUS_DESKTOP_PUBLIC_KEY_FILE"
+
+        node scripts/desktop-package/verify-release.mjs "$IMAGE" "$VERSION" x64 "$AUTOBYTEUS_DESKTOP_PUBLIC_KEY_FILE"
+
+        '
+    - name: Verify Linux x64 AppImage and updater metadata
+      run: "APPIMAGE=\"$(find autobyteus-web/electron-dist -maxdepth 1 -type f -name\
+        \ '*linux-x64*.AppImage' -print -quit)\"\ntest -n \"$APPIMAGE\"\nnode scripts/desktop-package/verify-layout.mjs\
+        \ \"$APPIMAGE\" \"$AUTOBYTEUS_DESKTOP_PUBLIC_KEY_FILE\"\nfile \"$APPIMAGE\"\
+        \nfile \"$APPIMAGE\" | grep -Eq 'x86-64|x86_64'\ntest -f autobyteus-web/electron-dist/latest-linux.yml\n\
+        python3 scripts/validate_linux_updater_metadata.py \\\n  --metadata autobyteus-web/electron-dist/latest-linux.yml\
+        \ \\\n  --arch-token linux-x64 \\\n  --image \"$APPIMAGE\"\n"
+    - name: Verify Linux x64 Prisma engines
+      run: 'ENGINES_DIR="$(find autobyteus-web/resources/server/node_modules -maxdepth
+        6 -type d -path ''*/@prisma/engines'' | head -n1)"
+
+        test -n "$ENGINES_DIR"
+
+        echo "Prisma engines dir: $ENGINES_DIR"
+
+        test -f "$ENGINES_DIR/schema-engine-debian-openssl-1.1.x"
+
+        test -f "$ENGINES_DIR/libquery_engine-debian-openssl-1.1.x.so.node"
+
+        test -f "$ENGINES_DIR/schema-engine-debian-openssl-3.0.x"
+
+        test -f "$ENGINES_DIR/libquery_engine-debian-openssl-3.0.x.so.node"
+
+        CLIENT_DIR="$(find autobyteus-web/resources/server/node_modules -maxdepth
+        10 -type d -path ''*/node_modules/.prisma/client'' | head -n1)"
+
+        test -n "$CLIENT_DIR"
+
+        echo "Prisma client dir: $CLIENT_DIR"
+
+        test -f "$CLIENT_DIR/libquery_engine-debian-openssl-1.1.x.so.node"
+
+        test -f "$CLIENT_DIR/libquery_engine-debian-openssl-3.0.x.so.node"
+
+        '
+    - name: Verify Linux x64 packaged server startup
+      run: "APP_UNPACKED_DIR=\"autobyteus-web/electron-dist/linux-unpacked\"\nAPP_SERVER_ROOT=\"\
+        $(find \"$APP_UNPACKED_DIR\" -path '*/resources/server' -type d -print -quit)\"\
+        \ntest -n \"$APP_SERVER_ROOT\"\nAPP_EXECUTABLE=\"$(node -e \"const fs=require('fs');\
+        \ const path=require('path'); const dir=process.argv[1]; const entry=fs.readdirSync(dir).find((name)=>name.toLowerCase()==='autobyteus'\
+        \ && fs.statSync(path.join(dir,name)).isFile() && (fs.statSync(path.join(dir,name)).mode\
+        \ & 0o111)); if (!entry) process.exit(1); console.log(path.join(dir, entry));\"\
+        \ \"$APP_UNPACKED_DIR\")\"\ntest -x \"$APP_EXECUTABLE\"\necho \"Using Linux\
+        \ x64 runtime executable: $APP_EXECUTABLE\"\nnode autobyteus-web/scripts/verify-packaged-server-startup.mjs\
+        \ \\\n  --server-root \"$APP_SERVER_ROOT\" \\\n  --runtime-executable \"$APP_EXECUTABLE\"\
+        \n"
+    - name: Record verified architecture and digest
+      run: 'set -eu
+
+        find autobyteus-web/electron-dist -type f \( -name AppRun -o -name autobyteus-install-client
+        -o -name autobyteus-provision -o -name "schema-engine-*" -o -name "libquery_engine*.so.node"
+        \) -exec file {} + | head -60
+
+        sha256sum autobyteus-web/electron-dist/*linux-x64*.AppImage'
+    - name: Assert packaged native companion architecture
+      run: 'set -eu
+
+        addon=$(find autobyteus-web/electron-dist -type f -name "managed-restart.node"
+        -print -quit); test -f "$addon"; file "$addon" | grep -F x86-64'
+  build-linux-arm64:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 60
+    steps:
+    - name: Checkout workspace + submodules
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10.28.2
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+    - name: Install Linux build deps
+      run: 'test "$(uname -m)" = aarch64; uname -ms; node -p process.arch
+
+        sudo apt-get update
+
+        sudo apt-get install -y libarchive-tools
+
+        '
+    - name: Install workspace dependencies
+      run: pnpm install --frozen-lockfile
+    - name: Setup pinned native toolchain
+      uses: actions/setup-go@v5
+      with:
+        go-version: 1.27.4
+        cache: false
+    - name: Prepare desktop public trust or disposable build-only identity
+      run: node scripts/desktop-package/prepare-build-trust.mjs build-only "$RUNNER_TEMP/desktop-trust"
+    - name: Check native and signed-record units
+      run: 'go env GOARCH; git rev-parse HEAD
+
+        node --test scripts/desktop-package/*.test.mjs
+
+        cd autobyteus-web/linux-install
+
+        go test ./...
+
+        '
+    - name: Build Electron Linux ARM64
+      working-directory: autobyteus-web
+      env:
+        AUTOBYTEUS_BUILD_FLAVOR: personal
+      run: pnpm build:electron:linux:arm64
+    - name: Sign build-only final bytes with disposable trust
+      run: 'set -euo pipefail
+
+        VERSION="$(node -p "require(''./autobyteus-web/package.json'').version")"
+
+        IMAGE="autobyteus-web/electron-dist/AutoByteus_personal_linux-arm64-$VERSION.AppImage"
+
+        node scripts/desktop-package/sign-release.mjs "$IMAGE" "$VERSION" arm64 "$AUTOBYTEUS_DESKTOP_TEST_KEY_FILE"
+        "$AUTOBYTEUS_DESKTOP_PUBLIC_KEY_FILE"
+
+        node scripts/desktop-package/verify-release.mjs "$IMAGE" "$VERSION" arm64
+        "$AUTOBYTEUS_DESKTOP_PUBLIC_KEY_FILE"
+
+        '
+    - name: Verify Linux ARM64 AppImage and updater metadata
+      run: "APPIMAGE=\"$(find autobyteus-web/electron-dist -maxdepth 1 -type f -name\
+        \ '*linux-arm64*.AppImage' -print -quit)\"\ntest -n \"$APPIMAGE\"\nnode scripts/desktop-package/verify-layout.mjs\
+        \ \"$APPIMAGE\" \"$AUTOBYTEUS_DESKTOP_PUBLIC_KEY_FILE\"\nfile \"$APPIMAGE\"\
+        \nfile \"$APPIMAGE\" | grep -Eq 'ARM aarch64|aarch64|ARM64'\ntest -f autobyteus-web/electron-dist/latest-linux-arm64.yml\n\
+        python3 scripts/validate_linux_updater_metadata.py \\\n  --metadata autobyteus-web/electron-dist/latest-linux-arm64.yml\
+        \ \\\n  --arch-token linux-arm64 \\\n  --image \"$APPIMAGE\"\n"
+    - name: Verify Linux ARM64 Prisma engines
+      run: 'ENGINES_DIR="$(find autobyteus-web/resources/server/node_modules -maxdepth
+        6 -type d -path ''*/@prisma/engines'' | head -n1)"
+
+        test -n "$ENGINES_DIR"
+
+        echo "Prisma engines dir: $ENGINES_DIR"
+
+        test -f "$ENGINES_DIR/schema-engine-linux-arm64-openssl-3.0.x"
+
+        test -f "$ENGINES_DIR/libquery_engine-linux-arm64-openssl-3.0.x.so.node"
+
+        CLIENT_DIR="$(find autobyteus-web/resources/server/node_modules -maxdepth
+        10 -type d -path ''*/node_modules/.prisma/client'' | head -n1)"
+
+        test -n "$CLIENT_DIR"
+
+        echo "Prisma client dir: $CLIENT_DIR"
+
+        test -f "$CLIENT_DIR/libquery_engine-linux-arm64-openssl-3.0.x.so.node"
+
+        '
+    - name: Verify Linux ARM64 packaged server startup
+      run: "APP_UNPACKED_DIR=\"autobyteus-web/electron-dist/linux-arm64-unpacked\"\
+        \nAPP_SERVER_ROOT=\"$(find \"$APP_UNPACKED_DIR\" -path '*/resources/server'\
+        \ -type d -print -quit)\"\ntest -n \"$APP_SERVER_ROOT\"\nAPP_EXECUTABLE=\"\
+        $(node -e \"const fs=require('fs'); const path=require('path'); const dir=process.argv[1];\
+        \ const entry=fs.readdirSync(dir).find((name)=>name.toLowerCase()==='autobyteus'\
+        \ && fs.statSync(path.join(dir,name)).isFile() && (fs.statSync(path.join(dir,name)).mode\
+        \ & 0o111)); if (!entry) process.exit(1); console.log(path.join(dir, entry));\"\
+        \ \"$APP_UNPACKED_DIR\")\"\ntest -x \"$APP_EXECUTABLE\"\necho \"Using Linux\
+        \ ARM64 runtime executable: $APP_EXECUTABLE\"\nnode autobyteus-web/scripts/verify-packaged-server-startup.mjs\
+        \ \\\n  --server-root \"$APP_SERVER_ROOT\" \\\n  --runtime-executable \"$APP_EXECUTABLE\"\
+        \n"
+    - name: Record verified architecture and digest
+      run: 'set -eu
+
+        find autobyteus-web/electron-dist -type f \( -name AppRun -o -name autobyteus-install-client
+        -o -name autobyteus-provision -o -name "schema-engine-*" -o -name "libquery_engine*.so.node"
+        \) -exec file {} + | head -60
+
+        sha256sum autobyteus-web/electron-dist/*linux-arm64*.AppImage'
+    - name: Assert packaged native companion architecture
+      run: 'set -eu
+
+        addon=$(find autobyteus-web/electron-dist -type f -name "managed-restart.node"
+        -print -quit); test -f "$addon"; file "$addon" | grep -F aarch64'

@@ -1,0 +1,22 @@
+Clean 26.04 redirect; no preexisting health on port
+dbus-daemon[7544]: [session uid=1000 pid=7544 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=7555 comm="/usr/lib/policykit-1-gnome/polkit-gnome-authentica" label="unconfined")
+dbus-daemon[7544]: [session uid=1000 pid=7544 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[7586]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=7555 comm="/usr/lib/policykit-1-gnome/polkit-gnome-authentica" label="unconfined")
+dbus-daemon[7586]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+{"status":"ok","message":"Server is running"}
+autobyteus
+renderer 7673 Seccomp=2 NoNewPrivs=1 and nested PID namespace ['7673', '4', '1']
+feed log
+Serving HTTP on 127.0.0.1 port 18889 (http://127.0.0.1:18889/) ...
+Clean 26.04 installedmenu; no preexisting health on port
+dbus-daemon[7920]: [session uid=1000 pid=7920 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=7934 comm="gtk-launch autobyteus-managed" label="unconfined")
+dbus-daemon[7920]: [session uid=1000 pid=7920 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[7948]: Activating service name='org.a11y.atspi.Registry' requested by ':1.1' (uid=1000 pid=7933 comm="/usr/lib/policykit-1-gnome/polkit-gnome-authentica" label="unconfined")
+dbus-daemon[7948]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+{"status":"ok","message":"Server is running"}
+autobyteus
+renderer 8045 Seccomp=2 NoNewPrivs=1 and nested PID namespace ['8045', '4', '1']
+feed log
+Serving HTTP on 127.0.0.1 port 18889 (http://127.0.0.1:18889/) ...

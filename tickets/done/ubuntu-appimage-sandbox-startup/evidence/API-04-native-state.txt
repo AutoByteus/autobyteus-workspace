@@ -1,0 +1,77 @@
+API-04 | 2026-11-18 | source 0df0c901e4 | Noble 6.8.0-147 x64 disposable guest; full test-origin AppImage df66a9f8649fa94ba8a17d1ba24a61c65efd654f465f4d30624a154af275ea15
+Step: read kernel sandbox state for init/main/renderer/server plus ownership, socket, unchanged userns policy and one-shot auth journal
+PID=1
+Uid:	0	0	0	0
+Gid:	0	0	0	0
+NSpid:	1
+NoNewPrivs:	0
+Seccomp:	0
+Seccomp_filters:	0
+unconfined
+user:[4026531837]
+pid:[4026531836]
+net:[4026531840]
+mnt:[4026531841]
+PID=4434
+Uid:	1000	1000	1000	1000
+Gid:	1000	1000	1000	1000
+NSpid:	4434
+NoNewPrivs:	0
+Seccomp:	0
+Seccomp_filters:	0
+autobyteus-desktop-1000 (unconfined)
+user:[4026531837]
+pid:[4026531836]
+net:[4026531840]
+mnt:[4026531841]
+PID=4489
+Uid:	1000	1000	1000	1000
+Gid:	1000	1000	1000	1000
+NSpid:	4489	4	1
+NoNewPrivs:	1
+Seccomp:	2
+Seccomp_filters:	1
+autobyteus-desktop-1000 (unconfined)
+user:[4026532282]
+pid:[4026532283]
+net:[4026532225]
+mnt:[4026531841]
+PID=4510
+Uid:	1000	1000	1000	1000
+Gid:	1000	1000	1000	1000
+NSpid:	4510
+NoNewPrivs:	0
+Seccomp:	0
+Seccomp_filters:	0
+autobyteus-desktop-1000 (unconfined)
+user:[4026531837]
+pid:[4026531836]
+net:[4026531840]
+mnt:[4026531841]
+root root 755 /opt/autobyteus-desktop/1000
+abdesk-1000 abdesk-1000 755 /opt/autobyteus-desktop/1000/app
+root root 755 /opt/autobyteus-desktop/1000/support
+abdesk-1000 abdesk-1000 555 /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+witness witness 600 /run/autobyteus-desktop-1000.sock
+kernel.apparmor_restrict_unprivileged_userns = 1
+Nov 18 14:38:11 ab5-implementation systemd[1]: Starting polkit.service - Authorization Manager...
+Nov 18 14:38:11 ab5-implementation polkitd[605]: Started polkitd version 124
+Nov 18 14:38:11 ab5-implementation polkitd[605]: Loading rules from directory /etc/polkit-1/rules.d
+Nov 18 14:38:11 ab5-implementation polkitd[605]: Loading rules from directory /usr/share/polkit-1/rules.d
+Nov 18 14:38:11 ab5-implementation polkitd[605]: Finished loading, compiling and executing 6 rules
+Nov 18 14:38:11 ab5-implementation systemd[1]: Started polkit.service - Authorization Manager.
+Nov 18 14:38:11 ab5-implementation polkitd[605]: Acquired the name org.freedesktop.PolicyKit1 on the system bus
+Nov 18 14:40:37 ab5-implementation polkitd[605]: Registered Authentication Agent for unix-session:9 (system bus name :1.35 [/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1], object path /org/gnome/PolicyKit1/AuthenticationAgent, locale C.UTF-8)
+Nov 18 14:41:17 ab5-implementation polkitd[605]: Operator of unix-session:9 successfully authenticated as unix-user:witness to gain ONE-SHOT authorization for action org.freedesktop.policykit.exec for unix-process:3796:15124 [./MyCurrentRenamed.AppImage --remote-debugging-port=18990] (owned by unix-user:witness)
+● autobyteus-desktop-1000.socket - AutoByteus desktop update socket for UID 1000
+     Loaded: loaded (/etc/systemd/system/autobyteus-desktop-1000.socket; enabled; preset: enabled)
+     Active: active (listening) since Wed 2026-11-18 14:41:19 UTC; 33s ago
+   Triggers: ● autobyteus-desktop-1000.service
+     Listen: /run/autobyteus-desktop-1000.sock (Stream)
+      Tasks: 0 (limit: 4653)
+     Memory: 0B (peak: 256.0K)
+        CPU: 364us
+     CGroup: /system.slice/autobyteus-desktop-1000.socket
+
+Nov 18 14:41:19 ab5-implementation systemd[1]: Starting autobyteus-desktop-1000.socket - AutoByteus desktop update socket for UID 1000...
+Nov 18 14:41:19 ab5-implementation systemd[1]: Listening on autobyteus-desktop-1000.socket - AutoByteus desktop update socket for UID 1000.

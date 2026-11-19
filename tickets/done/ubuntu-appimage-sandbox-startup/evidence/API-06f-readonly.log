@@ -1,0 +1,12 @@
+# API-06f-readonly | 2026-11-19 | reviewed product 8f10fa9287 | Ubuntu24.04 x64 guest; operation: see matching case in execution report
+API-06f same ordinary launcher, enough capacity but unavailable (read-only) dedicated test volume; do not classify as insufficient space
+/      tmpfs  ro,nosuid,nodev,relatime,size=716800k,mode=755,inode64
+Install AutoByteus
+Authenticate
+AutoByteus installation
+launcher-exit=133
+Ubuntu will request one-shot authorization for /proc/2352/fd/9 (program path, not a publisher verification).
+mkdir /opt/autobyteus-desktop/1000: read-only file system
+AutoByteus could not complete the requested operation. Ask an Ubuntu administrator to inspect the installation and its terminal diagnostics before trying again.
+9724c0ad7e5b6392c7f6e3120650270450a2a1c6cb01ee325785d0569978bf43  /home/witness/.autobyteus/server-data/temp_workspace/qa4-saved
+no-owned-installation-account-profile-units-socket-menu-or-running-app

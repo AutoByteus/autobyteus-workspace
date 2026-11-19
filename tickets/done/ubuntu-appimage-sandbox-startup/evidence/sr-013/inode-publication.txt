@@ -1,0 +1,5 @@
+fixture-1 record-1
+fixture-2 record-2
+previous open fd fixture-1 record-1
+fixture-3 record-3
+previous open fd fixture-2 record-2

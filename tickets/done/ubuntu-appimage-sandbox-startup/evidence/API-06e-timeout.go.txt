@@ -1,0 +1,87 @@
+// Temporary slow-path integration: a dedicated handler and inert signed test store.
+// Run only in the writer test package. No service, external address, root or AppImage.
+package main
+
+import (
+	"autobyteus.local/desktop/linux-install/internal/imagefile"
+	"autobyteus.local/desktop/linux-install/internal/protocol"
+	"autobyteus.local/desktop/linux-install/internal/store"
+	"bytes"
+	"crypto/ed25519"
+	"encoding/json"
+	"net"
+	"os"
+	"path/filepath"
+	"testing"
+	"time"
+)
+
+func TestQASlowFixtureRead(t *testing.T) {
+	dir := t.TempDir()
+	pub, key, e := ed25519.GenerateKey(nil)
+	if e != nil {
+		t.Fatal(e)
+	}
+	q, body, old := signedPayload(t, key, "1.5.13")
+	f, e := os.Create(filepath.Join(dir, "AutoByteus.AppImage"))
+	if e != nil {
+		t.Fatal(e)
+	}
+	if _, e = f.Write(body); e != nil {
+		t.Fatal(e)
+	}
+	if e = imagefile.SetIdentity(f, q.Record, q.Signature); e != nil {
+		t.Fatal(e)
+	}
+	if e = f.Close(); e != nil {
+		t.Fatal(e)
+	}
+	s, e := store.Open(dir, "x64", pub)
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer s.Close()
+	l, e := net.ListenUnix("unix", &net.UnixAddr{Name: filepath.Join(dir, "fixture.sock"), Net: "unix"})
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer l.Close()
+	c, e := net.DialUnix("unix", nil, l.Addr().(*net.UnixAddr))
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer c.Close()
+	a, e := l.AcceptUnix()
+	if e != nil {
+		t.Fatal(e)
+	}
+	done := make(chan struct{})
+	start := time.Now()
+	go func() { defer close(done); handle(a, uint32(os.Getuid()), s) }()
+	q, body, _ = signedPayload(t, key, "1.5.14")
+	q.ExpectedDigest = old.SHA256
+	if e = json.NewEncoder(c).Encode(q); e != nil {
+		t.Fatal(e)
+	}
+	if _, e = c.Write(body[:1]); e != nil {
+		t.Fatal(e)
+	}
+	select {
+	case <-done:
+	case <-time.After(200 * time.Second):
+		t.Fatal("handler did not release stalled local test transfer")
+	}
+	elapsed := time.Since(start)
+	if elapsed < 175*time.Second {
+		t.Fatal("did not reach normal deadline", elapsed)
+	}
+	resp, e := s.Handle(protocol.Request{Operation: "status"}, bytes.NewReader(nil))
+	if e != nil || !bytes.Equal(resp.Record, old.Bytes()) {
+		t.Fatal("live version changed", e)
+	}
+	pending, e := filepath.Glob(filepath.Join(dir, ".pending-*"))
+	if e != nil || len(pending) != 0 {
+		t.Fatal("stage leaked", e, pending)
+	}
+	t.Logf("one private fixture timeout in %s; live %s; orphan=0", elapsed, old.Version)
+}

@@ -11,7 +11,11 @@ type AutomaticInstall = { version: string; startedAt: string };
 /** An automatic download or install of `version` failed; an install failure blocks that version (REQ-004). */
 type AutomaticFailure = { version: string; step: 'download' | 'install'; reason: string };
 
+type ManualFailure = { version: string; reason: 'refused' | 'not-running' | 'stage-gone' };
+
 type StoredRecord = {
+  manualInstall: string | null;
+  manualFailure: ManualFailure | null;
   version: string;
   fromVersion: string;
   foundAt: string;
@@ -39,6 +43,12 @@ const toAutomaticFailure = (value: unknown): AutomaticFailure | null => {
     ? { version: candidate.version, step: candidate.step, reason: candidate.reason } : null;
 };
 
+const toManualFailure = (value: unknown): ManualFailure | null => {
+  const candidate = value as ManualFailure | null;
+  return candidate && nonEmpty(candidate.version) && (candidate.reason === 'refused' || candidate.reason === 'not-running' || candidate.reason === 'stage-gone')
+    ? { version: candidate.version, reason: candidate.reason } : null;
+};
+
 /** Keeps the stored object only when it has the current shape; unknown fields are dropped, invalid optional ones read as none. */
 function toStoredRecord(value: unknown): StoredRecord | null {
   if (!value || typeof value !== 'object') return null;
@@ -48,6 +58,8 @@ function toStoredRecord(value: unknown): StoredRecord | null {
     return null;
   }
   return {
+    manualInstall: nonEmpty(record.manualInstall) ? record.manualInstall : null,
+    manualFailure: toManualFailure(record.manualFailure),
     version: record.version,
     fromVersion: record.fromVersion,
     foundAt: record.foundAt,
@@ -87,7 +99,26 @@ export class AppUpdateNotificationRecord {
 
   /** An automatic install of `version` was accepted: resolved by the next start; an earlier failure of it is cleared. */
   recordAutomaticInstall(version: string): boolean {
-    return this.save({ ...this.waitingRecordOf(version), automatic: { version, startedAt: this.now().toISOString() }, automaticFailure: null });
+    return this.save({ ...this.waitingRecordOf(version), automatic: { version, startedAt: this.now().toISOString() }, automaticFailure: null, manualInstall: null, manualFailure: null });
+  }
+
+  /** Managed explicit restart: expected target, reconciled only against the next running version. */
+  recordManualInstall(version: string): boolean {
+    return this.save({ ...this.waitingRecordOf(version), manualInstall: version, automatic: null });
+  }
+
+  /** A confirmed refusal does not change the separate automatic retry/block evidence. */
+  recordManualInstallFailure(version: string, reason: ManualFailure['reason'] = 'refused'): boolean {
+    return this.save({ ...this.waitingRecordOf(version), manualInstall: null,
+      manualFailure: { version, reason }, read: false });
+  }
+
+  /** Confirmed old baseline and absent receipt: drop only this attempt, never independent failure history. */
+  clearLostStageAttempt(version: string): void {
+    const current = this.record;
+    if (!current) return;
+    this.save({ ...current, automatic: current.automatic?.version === version ? null : current.automatic,
+      manualInstall: current.manualInstall === version ? null : current.manualInstall });
   }
 
   /**
@@ -101,8 +132,12 @@ export class AppUpdateNotificationRecord {
 
   /** `version`'s automatic install failed before: it is not installed automatically again (REQ-004). */
   blocksAutomatic(version: string): boolean {
+    return this.automaticInstallBlockedVersion === version;
+  }
+
+  get automaticInstallBlockedVersion(): string | null {
     const failure = this.record?.automaticFailure;
-    return failure?.version === version && failure.step === 'install';
+    return failure?.step === 'install' ? failure.version : null;
   }
 
   /**
@@ -144,6 +179,7 @@ export class AppUpdateNotificationRecord {
 
   private outcomeOf(current: StoredRecord): Pick<AppUpdateNotification, 'outcome' | 'outcomeReason' | 'outcomeStep'> {
     if (current.handledVersion !== null) return { outcome: current.outcome, outcomeReason: null, outcomeStep: null };
+    if (current.manualFailure?.version === current.version) return { outcome: 'MANUAL_INSTALL_FAILED', outcomeReason: current.manualFailure.reason, outcomeStep: null };
     const failure = current.automaticFailure;
     return failure?.version === current.version
       ? { outcome: 'AUTO_FAILED', outcomeReason: failure.reason, outcomeStep: failure.step } : { outcome: null, outcomeReason: null, outcomeStep: null };
@@ -157,6 +193,15 @@ export class AppUpdateNotificationRecord {
   private reconcileWithRunningVersion(): void {
     const current = this.record;
     if (!current || current.handledVersion !== null) return;
+    if (current.manualInstall === this.runningVersion || current.manualFailure?.version === this.runningVersion) {
+      this.save({ ...current, handledVersion: this.runningVersion, handledAt: this.now().toISOString(), read: false,
+        manualInstall: null, manualFailure: null, automatic: null, automaticFailure: null, outcome: null });
+      return;
+    }
+    if (current.manualInstall && current.fromVersion === this.runningVersion) {
+      this.save({ ...current, manualInstall: null, manualFailure: { version: current.manualInstall, reason: 'not-running' }, read: false });
+      return;
+    }
     const handled = { handledVersion: this.runningVersion, handledAt: this.now().toISOString() };
     const failedInstall = current.automaticFailure?.step === 'install' ? current.automaticFailure.version : null;
     if (current.automatic?.version === this.runningVersion || failedInstall === this.runningVersion) {
@@ -166,14 +211,14 @@ export class AppUpdateNotificationRecord {
       this.save({ ...current, automatic: null,
         automaticFailure: { version, step: 'install', reason: `The update did not install. The app is still on ${current.fromVersion}.` } });
     } else if (current.fromVersion !== this.runningVersion) {
-      this.save({ ...current, ...handled, automatic: null });
+      this.save({ ...current, ...handled, automatic: null, manualInstall: null, manualFailure: null });
     }
   }
 
   private freshRecord(version: string): StoredRecord {
     return {
       version, fromVersion: this.runningVersion, foundAt: this.now().toISOString(), read: false,
-      handledVersion: null, handledAt: null, automatic: null, automaticFailure: null, outcome: null,
+      handledVersion: null, handledAt: null, automatic: null, automaticFailure: null, outcome: null, manualInstall: null, manualFailure: null,
     };
   }
 
@@ -220,6 +265,8 @@ export class AppUpdateNotificationRecord {
       }
     } catch (error) {
       logger.error('[updater] Failed to save the app update notification.', error);
+      // A managed activation follows shutdown; its file logger can already be closed.
+      process.stderr.write('[updater] Failed to persist the update notification; recovery will continue.\n');
     }
     return true;
   }

@@ -1,0 +1,21 @@
+API-01 | 2026-11-18 | Ubuntu26 x64 Node22.23.2 | HEAD 0df0c901e4
+Commands: git diff --name-only eb470a0d31 HEAD; inspect IMP-23/24/26
+tickets/in-progress/ubuntu-appimage-sandbox-startup/code-review-report.md
+tickets/in-progress/ubuntu-appimage-sandbox-startup/code-review-revision-record.md
+tickets/in-progress/ubuntu-appimage-sandbox-startup/evidence/CRR-002-source-size.tsv
+tickets/in-progress/ubuntu-appimage-sandbox-startup/evidence/IMP-21-review-reproduction.txt
+tickets/in-progress/ubuntu-appimage-sandbox-startup/evidence/IMP-22-regression-red-excerpt.txt
+tickets/in-progress/ubuntu-appimage-sandbox-startup/evidence/IMP-22-regression-red.log
+tickets/in-progress/ubuntu-appimage-sandbox-startup/evidence/IMP-23-focused-green.log
+tickets/in-progress/ubuntu-appimage-sandbox-startup/evidence/IMP-24-typechecks.log
+tickets/in-progress/ubuntu-appimage-sandbox-startup/evidence/IMP-25-review-probe-fixed.txt
+tickets/in-progress/ubuntu-appimage-sandbox-startup/evidence/IMP-26-recheck-scope.txt
+tickets/in-progress/ubuntu-appimage-sandbox-startup/implementation-handoff.md
+tickets/in-progress/ubuntu-appimage-sandbox-startup/implementation-revision-record.md
+ Test Files  6 passed (6)
+      Tests  126 passed (126)
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+No source difference: IMP-23 and IMP-24 reused, not rerun. Prior native/UI mechanisms per IMP-26, not full acceptance.

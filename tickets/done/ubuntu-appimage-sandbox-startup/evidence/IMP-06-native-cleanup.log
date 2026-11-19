@@ -1,0 +1,16 @@
+Native implementation working-tree snapshot after 703b1bef5c; no acceptance/sign-off.
+Built with Go 1.27.4 linux/amd64, CGO_ENABLED=0, disposable Ed25519 key and desktop_test loopback origin.
+The AppImage carries an inert shell pre-main failure fixture, NOT the product Electron renderer/server.
+Later client/protocol/session and consent-text edits were not in this native fixture; rerun by impact.
+
+PASS-owned-installation-removed
+Nov 18 13:28:26 ab5-implementation polkitd[864]: Acquired the name org.freedesktop.PolicyKit1 on the system bus
+Nov 18 13:28:26 ab5-implementation systemd[1]: Started polkit.service - Authorization Manager.
+Nov 18 13:29:28 ab5-implementation polkitd[864]: Registered Authentication Agent for unix-process:2043:8087 (system bus name :1.34 [/usr/bin/pkttyagent --process 2043 --notify-fd 3], object path /org/freedesktop/PolicyKit1/AuthenticationAgent, locale C.UTF-8)
+Nov 18 13:29:28 ab5-implementation polkitd[864]: Operator of unix-process:2043:8087 successfully authenticated as unix-user:witness to gain ONE-SHOT authorization for action org.freedesktop.policykit.exec for unix-process:2043:8087 [./MyApp.AppImage] (owned by unix-user:witness)
+Nov 18 13:29:29 ab5-implementation polkitd[864]: Unregistered Authentication Agent for unix-process:2043:8087 (system bus name :1.34, object path /org/freedesktop/PolicyKit1/AuthenticationAgent, locale C.UTF-8) (disconnected from bus)
+Nov 18 13:33:17 ab5-implementation polkitd[864]: Registered Authentication Agent for unix-process:2333:31188 (system bus name :1.42 [/usr/bin/pkttyagent --process 2333 --notify-fd 3], object path /org/freedesktop/PolicyKit1/AuthenticationAgent, locale C.UTF-8)
+Nov 18 13:33:17 ab5-implementation polkitd[864]: Operator of unix-process:2333:31188 successfully authenticated as unix-user:witness to gain ONE-SHOT authorization for action org.freedesktop.policykit.exec for unix-process:2333:31188 [./MyApp.AppImage --autobyteus-uninstall] (owned by unix-user:witness)
+Nov 18 13:33:18 ab5-implementation polkitd[864]: Unregistered Authentication Agent for unix-process:2333:31188 (system bus name :1.42, object path /org/freedesktop/PolicyKit1/AuthenticationAgent, locale C.UTF-8) (disconnected from bus)
+kernel.apparmor_restrict_unprivileged_userns = 1
+kernel.apparmor_restrict_unprivileged_unconfined = 0

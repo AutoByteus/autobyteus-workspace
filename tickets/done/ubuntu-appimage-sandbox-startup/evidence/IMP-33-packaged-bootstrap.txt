@@ -1,0 +1,18 @@
+2026-11-19 UTC; IR-005, c90f3ba8f2 (corresponding production tree), x64.
+Check: actual packaged Linux FD4 bootstrap and detached release identity. Ubuntu 24.04.5 LTS disposable overlay of the IR-004 test guest; UID1000, Xvfb/Openbox, no real user profile. Local Noble/x64 implementation witness, not a fresh native CI or production release.
+Repack retained FULL test-only versioned 1.5.13/.14/.15 application payloads (real Electron/renderer/embedded server, no JS spy or replacement relaunch). Compile current managed JS + native assets with the pinned native toolchain; replace those changed payloads, pack asar and AppImage, sign and verify complete final bytes using the separate disposable desktop trust, generate feed metadata. No access to production signing. Local fixture invokes the pack commands; independent clean package from source remains required.
+Commands: ir005/package 1.5.13 1.5.14 1.5.15; each calls buildNative, app-builder appimage, sign-release, verify-layout and verify-release. Renamed .13 -> Install, exact tagged detached test records, actual graphical Ubuntu Authentication; the authorization occurred only at enrollment. Normal installed server healthy; then ordinary quit before isolated monitored run. Never changed kernel/global security settings.
+Initial experiment before final c90f3ba8f2: fixed FD4 could send the indication and reopen a real app, but inspection found the same socket in the embedded server. Explicit stdio at the Node launcher is NOT proof of exclusive descriptor ownership. Fixed by claiming authenticated nonblocking FD4 with a fixed-function Node-API addon that sets FD_CLOEXEC before starting the server; no generic descriptor/path/command API.
+Final release digests and verification:
+Verified native AppRun, unchanged Electron ELF, provisioner/client and sandbox-preserving desktop Exec
+Verified signed desktop release 1.5.13 x64
+731d3f61cdfb39f3b87400ac026605153702db3c86b85269072e78ba3a84d5ce  1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage
+Verified native AppRun, unchanged Electron ELF, provisioner/client and sandbox-preserving desktop Exec
+Verified signed desktop release 1.5.14 x64
+df33d927190eae41a8c2a499cae3d63c3cd9b1a014bbf3002b6d280062d5be03  1.5.14/AutoByteus_personal_linux-x64-1.5.14.AppImage
+Verified native AppRun, unchanged Electron ELF, provisioner/client and sandbox-preserving desktop Exec
+Verified signed desktop release 1.5.15 x64
+4d2cdcec096230953479833e9489387f9d033763b50c782d1b79e8e6991bb0e9  1.5.15/AutoByteus_personal_linux-x64-1.5.15.AppImage
+Final .13: /proc/main/fd/4 socket:[20325], fdinfo flags 02004002 (CLOEXEC + NONBLOCK); server FD4 anon_inode:[eventpoll]. Enumerating socket:[20325] across the guest's login-owned autobyteus processes returned precisely:
+pid=4614 lrwx------ 1 witness witness 64 Nov 19 12:45 4 -> socket:[20325]
+New .14 main and server use a fresh mount and distinct descriptors (IMP-36). Same UID, protections retained. Packaged transport worked; bootstrap claim, direct child validation and capability preflight covered separately at IMP-34.

@@ -1,0 +1,26 @@
+IMP-25 | 2026-11-18 | source eb470a0d31 | Ubuntu26 x64, Node22.23.2
+Command: node tickets/in-progress/ubuntu-appimage-sandbox-startup/evidence/CRR-001-lifecycle-probe.cjs
+Probe labels are historical; step4 must show activations0 and retained failure, step7 quits1, no relaunch. Assertions live in IMP-23.
+1. Ordinary-quit activation refusal persists block: {
+  version: '1.1.10',
+  step: 'install',
+  reason: 'The protected update could not be installed.'
+}
+2. Next launch check respects block: { downloads: 0, activations: 0, quits: 0, exits: 0, relaunches: 0 }
+3. Explicit Download only, no Install and Restart: downloaded { downloads: 1, activations: 0, quits: 0, exits: 0, relaunches: 0 }
+4. Ordinary quit nevertheless activates; independent block cleared: { downloads: 1, activations: 0, quits: 1, exits: 0, relaunches: 0 } automaticFailure= {
+  version: '1.1.10',
+  step: 'install',
+  reason: 'The protected update could not be installed.'
+}
+5. Manual restart accepted: { accepted: true }
+6. Activation and status fail, no unsafe relaunch: { downloads: 1, activations: 1, quits: 0, exits: 0, relaunches: 0 }
+7. Later independent ordinary quit: {
+  prevented: 1,
+  downloads: 1,
+  activations: 1,
+  quits: 1,
+  exits: 0,
+  relaunches: 0
+}
+Process exit: 0

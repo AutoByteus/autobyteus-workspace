@@ -1,0 +1,56 @@
+API-08 | 2026-11-18 | HEAD 0df0c901e4 | branch-only CI safety preflight
+Commands: git ls-remote --heads origin fix/ubuntu-appimage-sandbox-startup; inspect release-desktop.yml lines136-161 and266-291
+Remote branch preflight returned no matching ref (not pushed).
+          cache: pnpm
+
+      - name: Install workspace dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Python setuptools for node-gyp
+        run: python3 -m pip install --user --break-system-packages --upgrade setuptools
+
+      - name: Import Apple code signing certificate
+        uses: apple-actions/import-codesign-certs@v3
+        with:
+          p12-file-base64: ${{ secrets.APPLE_CERTIFICATE_P12_BASE64 }}
+          p12-password: ${{ secrets.APPLE_CERTIFICATE_P12_PASSWORD }}
+
+      - name: Build Electron macOS ARM64
+        working-directory: autobyteus-web
+        env:
+          NO_TIMESTAMP: "1"
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          AUTOBYTEUS_BUILD_FLAVOR: "personal"
+          PRISMA_CLI_BINARY_TARGETS: "darwin-arm64,debian-openssl-1.1.x,debian-openssl-3.0.x"
+        run: |
+          sudo launchctl limit maxfiles 65536 200000 || true
+          cache: pnpm
+
+      - name: Install workspace dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Python setuptools for node-gyp
+        run: python3 -m pip install --user --break-system-packages --upgrade setuptools
+
+      - name: Import Apple code signing certificate
+        uses: apple-actions/import-codesign-certs@v3
+        with:
+          p12-file-base64: ${{ secrets.APPLE_CERTIFICATE_P12_BASE64 }}
+          p12-password: ${{ secrets.APPLE_CERTIFICATE_P12_PASSWORD }}
+
+      - name: Build Electron macOS Intel x64
+        working-directory: autobyteus-web
+        env:
+          NO_TIMESTAMP: "1"
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          AUTOBYTEUS_BUILD_FLAVOR: "personal"
+          PRISMA_CLI_BINARY_TARGETS: "darwin,debian-openssl-1.1.x,debian-openssl-3.0.x"
+        run: |
+          sudo launchctl limit maxfiles 65536 200000 || true
+BLOCKED: publish_release=false still imports Apple production signing credentials. Explicit task no-production-key restriction prevents dispatch without clarification or secret-free Linux-only native runner. No credential values read, no push/CI dispatch/publication.

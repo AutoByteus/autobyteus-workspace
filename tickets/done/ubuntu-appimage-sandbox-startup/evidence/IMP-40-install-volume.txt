@@ -1,0 +1,44 @@
+IR-006 | source 1d21c76fd3 | 2026-11-19 UTC | Same private graphical Noble guest and normal user; real pkexec/polkit authentication agent and genuine signed full test package, not a pkexec mock. Steps: restore intact tree; normal one-shot removal; provide an empty 32 MiB test volume at the guest install base (root:root 0755 for the actual space check), no change to boot disk capacity. Normal renamed file → Install → Ubuntu authentication. Inspect and dismiss actual dialog. Check guest tree, passwd, installed AppArmor profile/file, unit/socket files, socket and menu, absence of running app, independent synthetic marker. Repeat auth dismissal on the same volume. Unmount the test volume, then retry setup on ordinary sufficient space.
+Visible storage refusal (IMP-40-install-volume.png): “Not enough free space on the AutoByteus install volume. Make room on the volume containing /opt/autobyteus-desktop, or ask an Ubuntu administrator for help, then try again.” NOT an authorization refusal. Title/OK readable, no truncation or arbitrary helper text.
+Visible cancellation control (IMP-40-cancel.png): “Ubuntu authorization was cancelled. Retry the requested action when you are ready to authorize it.” No storage claim.
+Fixture setup negative control: first temporary mount had the default root mode 1777, so existing protected-directory check correctly failed BEFORE preflight. Visible unknown failure (IMP-40-unknown.png) said AutoByteus could not complete the operation and to ask an administrator to inspect installation and terminal diagnostics; it did not suggest space or display arbitrary helper output. Recreated the empty test mount at the required protected mode. On first genuine low-space observation the screenshot driver hit a transient X11 BadWindow on dialog transition; dialog remained visible and was inspected, then scenario repeated cleanly for both visible outcome and complete exit/state control. These are separate from the passing authoritative repeat below.
+Volume and marker before:
+Filesystem     1K-blocks  Used Available Use% Mounted on
+tmpfs              32768     0     32768   0% /opt/autobyteus-desktop
+b1541ee880e639f904b79c274e535f9ceee0b89149c11dcfabb50de70f2d5a25  /home/witness/e2e-profile/server-data/temp_workspace/ir005-marker
+0 0 1777
+0 0 755
+Filesystem     1K-blocks  Used Available Use% Mounted on
+tmpfs              32768     0     32768   0% /opt/autobyteus-desktop
+Authorized storage refusal, clean repeat (separate diagnostic and cleanup observations):
+Install AutoByteus
+Authenticate
+AutoByteus installation
+launcher-exit=133
+insufficient installation space
+pkexec: exit status 78
+Not enough free space on the AutoByteus install volume. Make room on the volume containing /opt/autobyteus-desktop, or ask an Ubuntu administrator for help, then try again.
+no-installation-tree-account-profile-units-socket-menu-or-app
+b1541ee880e639f904b79c274e535f9ceee0b89149c11dcfabb50de70f2d5a25  /home/witness/e2e-profile/server-data/temp_workspace/ir005-marker
+Dismissed authorization (no provisioner):
+Install AutoByteus
+Authenticate
+AutoByteus installation
+launcher-exit=133
+pkexec: exit status 126
+Ubuntu authorization was cancelled. Retry the requested action when you are ready to authorize it.
+no-installation-tree-account-profile-units-socket-menu-or-app
+b1541ee880e639f904b79c274e535f9ceee0b89149c11dcfabb50de70f2d5a25  /home/witness/e2e-profile/server-data/temp_workspace/ir005-marker
+Sufficient-space retry, subsequent normal authorization and real server readiness:
+Filesystem     1K-blocks    Used Available Use% Mounted on
+/dev/vda1       11096324 5348620   5731320  49% /
+Install AutoByteus
+Authenticate
+autobyteus
+{"status":"ok","message":"Server is running"}
+1caa815871b2ea419ab546a28b2f10e5a50362dd85266d9b57b687ccc69f8442  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+b1541ee880e639f904b79c274e535f9ceee0b89149c11dcfabb50de70f2d5a25  e2e-profile/server-data/temp_workspace/ir005-marker
+Final authorized removal and fixture cleanup:
+volume-unmounted-and-normal-removal-confirmed
+b1541ee880e639f904b79c274e535f9ceee0b89149c11dcfabb50de70f2d5a25  /home/witness/e2e-profile/server-data/temp_workspace/ir005-marker
+No permission or sandbox bypass, automated repair, deletion of a real user profile, or change to release state. Full private fixture and raw local output retained outside repo at /home/ryan-ai/hdd_drive/autobyteus_org/api-e2e-autobyteus-5/ir006-fYTkJC.

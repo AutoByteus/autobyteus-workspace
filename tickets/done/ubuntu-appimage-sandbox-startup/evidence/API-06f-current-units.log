@@ -1,0 +1,149 @@
+# API-06f-current-units | 2026-11-19 | reviewed product 8f10fa9287 | normal-user native Linux repository; operation: see matching case in execution report
+?   	autobyteus.local/desktop/linux-install/cmd/client	[no test files]
+?   	autobyteus.local/desktop/linux-install/cmd/launcher	[no test files]
+=== RUN   TestKnownInstallVolumeFailureStatus
+--- PASS: TestKnownInstallVolumeFailureStatus (0.00s)
+PASS
+ok  	autobyteus.local/desktop/linux-install/cmd/provision	0.003s
+=== RUN   TestWriterSocketTransactions
+--- PASS: TestWriterSocketTransactions (0.01s)
+PASS
+ok  	autobyteus.local/desktop/linux-install/cmd/writer	0.015s
+=== RUN   TestBuildPinnedAddress
+--- PASS: TestBuildPinnedAddress (0.00s)
+=== RUN   TestRedirectPolicy
+--- PASS: TestRedirectPolicy (0.00s)
+=== RUN   TestResponseBoundsAndStatus
+--- PASS: TestResponseBoundsAndStatus (0.00s)
+=== RUN   TestPreAuthorizationRecovery
+=== RUN   TestPreAuthorizationRecovery/missing-record
+=== RUN   TestPreAuthorizationRecovery/missing-signature
+=== RUN   TestPreAuthorizationRecovery/offline
+=== RUN   TestPreAuthorizationRecovery/interrupted-read
+=== RUN   TestPreAuthorizationRecovery/oversize
+=== RUN   TestPreAuthorizationRecovery/signature
+=== RUN   TestPreAuthorizationRecovery/version
+=== RUN   TestPreAuthorizationRecovery/length
+=== RUN   TestPreAuthorizationRecovery/same-length-digest
+=== RUN   TestPreAuthorizationRecovery/valid
+--- PASS: TestPreAuthorizationRecovery (0.01s)
+    --- PASS: TestPreAuthorizationRecovery/missing-record (0.00s)
+    --- PASS: TestPreAuthorizationRecovery/missing-signature (0.00s)
+    --- PASS: TestPreAuthorizationRecovery/offline (0.00s)
+    --- PASS: TestPreAuthorizationRecovery/interrupted-read (0.00s)
+    --- PASS: TestPreAuthorizationRecovery/oversize (0.00s)
+    --- PASS: TestPreAuthorizationRecovery/signature (0.00s)
+    --- PASS: TestPreAuthorizationRecovery/version (0.00s)
+    --- PASS: TestPreAuthorizationRecovery/length (0.00s)
+    --- PASS: TestPreAuthorizationRecovery/same-length-digest (0.00s)
+    --- PASS: TestPreAuthorizationRecovery/valid (0.00s)
+PASS
+ok  	autobyteus.local/desktop/linux-install/internal/acquire	0.010s
+?   	autobyteus.local/desktop/linux-install/internal/buildinfo	[no test files]
+?   	autobyteus.local/desktop/linux-install/internal/imagefile	[no test files]
+?   	autobyteus.local/desktop/linux-install/internal/install	[no test files]
+=== RUN   TestAuthorizationFailureGuidance
+--- PASS: TestAuthorizationFailureGuidance (0.00s)
+=== RUN   TestBootstrapClaim
+    bootstrap_linux_test.go:25: requires the native packaging C compiler
+--- SKIP: TestBootstrapClaim (0.00s)
+=== RUN   TestMenuOwnsOnlyItsUnmodifiedEntry
+--- PASS: TestMenuOwnsOnlyItsUnmodifiedEntry (0.00s)
+=== RUN   TestAbsentAndIncompleteManagedInstallRemainDistinct
+Protected installation check: lstat /opt/autobyteus-desktop: no such file or directory
+--- PASS: TestAbsentAndIncompleteManagedInstallRemainDistinct (0.00s)
+=== RUN   TestDirectChildHandback
+=== RUN   TestDirectChildHandback/direct
+=== RUN   TestDirectChildHandback/no-indication
+=== RUN   TestDirectChildHandback/different-byte
+=== RUN   TestDirectChildHandback/long
+=== RUN   TestDirectChildHandback/duplicate
+=== RUN   TestDirectChildHandback/grandchild
+=== RUN   TestDirectChildHandback/ordinary-exit
+=== RUN   TestDirectChildHandback/crash
+--- PASS: TestDirectChildHandback (0.01s)
+    --- PASS: TestDirectChildHandback/direct (0.00s)
+    --- PASS: TestDirectChildHandback/no-indication (0.00s)
+    --- PASS: TestDirectChildHandback/different-byte (0.00s)
+    --- PASS: TestDirectChildHandback/long (0.00s)
+    --- PASS: TestDirectChildHandback/duplicate (0.00s)
+    --- PASS: TestDirectChildHandback/grandchild (0.00s)
+    --- PASS: TestDirectChildHandback/ordinary-exit (0.00s)
+    --- PASS: TestDirectChildHandback/crash (0.00s)
+=== RUN   TestHandbackRejectsAncillaryAndWrongUID
+--- PASS: TestHandbackRejectsAncillaryAndWrongUID (0.00s)
+=== RUN   TestEmptyDatagramIsNotCompletion
+--- PASS: TestEmptyDatagramIsNotCompletion (0.00s)
+=== RUN   TestEarlyFatalClassification
+=== RUN   TestEarlyFatalClassification/sandbox-fatal
+FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:158] Rather than run without sandboxing I'm aborting now.
+=== RUN   TestEarlyFatalClassification/already-ready
+FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:158] Rather than run without sandboxing I'm aborting now.
+=== RUN   TestEarlyFatalClassification/unrelated-crash
+unrelated
+=== RUN   TestEarlyFatalClassification/normal-error
+FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:158] Rather than run without sandboxing I'm aborting now.
+=== RUN   TestEarlyFatalClassification/normal-exit
+=== RUN   TestEarlyFatalClassification/argv
+--- PASS: TestEarlyFatalClassification (0.32s)
+    --- PASS: TestEarlyFatalClassification/sandbox-fatal (0.10s)
+    --- PASS: TestEarlyFatalClassification/already-ready (0.11s)
+    --- PASS: TestEarlyFatalClassification/unrelated-crash (0.10s)
+    --- PASS: TestEarlyFatalClassification/normal-error (0.00s)
+    --- PASS: TestEarlyFatalClassification/normal-exit (0.00s)
+    --- PASS: TestEarlyFatalClassification/argv (0.00s)
+PASS
+ok  	autobyteus.local/desktop/linux-install/internal/launch	0.332s
+?   	autobyteus.local/desktop/linux-install/internal/protocol	[no test files]
+=== RUN   TestGoldenRecords
+=== RUN   TestGoldenRecords/canonical
+=== RUN   TestGoldenRecords/duplicate
+=== RUN   TestGoldenRecords/unknown
+=== RUN   TestGoldenRecords/missing
+=== RUN   TestGoldenRecords/float
+=== RUN   TestGoldenRecords/channel
+=== RUN   TestGoldenRecords/version
+=== RUN   TestGoldenRecords/writer
+=== RUN   TestGoldenRecords/too-large
+=== RUN   TestGoldenRecords/no-newline
+=== RUN   TestGoldenRecords/wrong-product
+=== RUN   TestGoldenRecords/wrong-signature
+--- PASS: TestGoldenRecords (0.00s)
+    --- PASS: TestGoldenRecords/canonical (0.00s)
+    --- PASS: TestGoldenRecords/duplicate (0.00s)
+    --- PASS: TestGoldenRecords/unknown (0.00s)
+    --- PASS: TestGoldenRecords/missing (0.00s)
+    --- PASS: TestGoldenRecords/float (0.00s)
+    --- PASS: TestGoldenRecords/channel (0.00s)
+    --- PASS: TestGoldenRecords/version (0.00s)
+    --- PASS: TestGoldenRecords/writer (0.00s)
+    --- PASS: TestGoldenRecords/too-large (0.00s)
+    --- PASS: TestGoldenRecords/no-newline (0.00s)
+    --- PASS: TestGoldenRecords/wrong-product (0.00s)
+    --- PASS: TestGoldenRecords/wrong-signature (0.00s)
+=== RUN   TestVersionAdmission
+--- PASS: TestVersionAdmission (0.00s)
+=== RUN   TestExactPayload
+--- PASS: TestExactPayload (0.00s)
+PASS
+ok  	autobyteus.local/desktop/linux-install/internal/release	0.005s
+=== RUN   TestSnapshotCustody
+--- PASS: TestSnapshotCustody (0.00s)
+PASS
+ok  	autobyteus.local/desktop/linux-install/internal/sealed	0.005s
+=== RUN   TestAuthenticatedInodeTransactions
+=== RUN   TestAuthenticatedInodeTransactions/tampered
+=== RUN   TestAuthenticatedInodeTransactions/wrong-key
+=== RUN   TestAuthenticatedInodeTransactions/rollback
+=== RUN   TestAuthenticatedInodeTransactions/channel
+=== RUN   TestAuthenticatedInodeTransactions/stale
+--- PASS: TestAuthenticatedInodeTransactions (0.01s)
+    --- PASS: TestAuthenticatedInodeTransactions/tampered (0.00s)
+    --- PASS: TestAuthenticatedInodeTransactions/wrong-key (0.00s)
+    --- PASS: TestAuthenticatedInodeTransactions/rollback (0.00s)
+    --- PASS: TestAuthenticatedInodeTransactions/channel (0.00s)
+    --- PASS: TestAuthenticatedInodeTransactions/stale (0.00s)
+=== RUN   TestMissingIdentityRefusesBaseline
+--- PASS: TestMissingIdentityRefusesBaseline (0.00s)
+PASS
+ok  	autobyteus.local/desktop/linux-install/internal/store	0.012s

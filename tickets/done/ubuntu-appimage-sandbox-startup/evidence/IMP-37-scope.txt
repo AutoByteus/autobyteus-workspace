@@ -1,0 +1,40 @@
+IMP-37 | IR-005 | c90f3ba8f2 | 2026-11-19 UTC | review scope/line guardrail, local worktree.
+Commands: git diff --numstat b845b231a1..c90f3ba8f2; nonempty = awk NF; git diff --check
+1	1	autobyteus-web/build/scripts/linuxInstallPack.ts
+6	2	autobyteus-web/docs/linux-managed-desktop.md
+47	18	autobyteus-web/electron/application/__tests__/managedUpdateSession.spec.ts
+3	1	autobyteus-web/electron/application/electronApplication.ts
+17	4	autobyteus-web/electron/application/managedUpdateSession.ts
+26	0	autobyteus-web/electron/launch-profile/managedRestartChannel.ts
+14	14	autobyteus-web/electron/updater/__tests__/appUpdater.spec.ts
+6	1	autobyteus-web/electron/updater/appUpdater.ts
+2	2	autobyteus-web/electron/updater/linuxManagedInstall.ts
+1	1	autobyteus-web/linux-install/cmd/launcher/main.go
+33	0	autobyteus-web/linux-install/electron/managed_restart.c
+84	0	autobyteus-web/linux-install/internal/launch/bootstrap_linux_test.go
+98	0	autobyteus-web/linux-install/internal/launch/restart_linux.go
+85	0	autobyteus-web/linux-install/internal/launch/restart_linux_test.go
+47	5	autobyteus-web/linux-install/internal/launch/supervise_linux.go
+1	1	autobyteus-web/linux-install/internal/launch/supervise_linux_test.go
+4	0	scripts/desktop-package/build-native.mjs
+1	1	scripts/desktop-package/verify-layout.mjs
+
+ 28 autobyteus-web/build/scripts/linuxInstallPack.ts
+ 80 autobyteus-web/docs/linux-managed-desktop.md
+141 autobyteus-web/electron/application/__tests__/managedUpdateSession.spec.ts
+479 autobyteus-web/electron/application/electronApplication.ts
+147 autobyteus-web/electron/application/managedUpdateSession.ts
+ 24 autobyteus-web/electron/launch-profile/managedRestartChannel.ts
+817 autobyteus-web/electron/updater/__tests__/appUpdater.spec.ts
+500 autobyteus-web/electron/updater/appUpdater.ts
+ 58 autobyteus-web/electron/updater/linuxManagedInstall.ts
+119 autobyteus-web/linux-install/cmd/launcher/main.go
+ 32 autobyteus-web/linux-install/electron/managed_restart.c
+ 82 autobyteus-web/linux-install/internal/launch/bootstrap_linux_test.go
+ 93 autobyteus-web/linux-install/internal/launch/restart_linux.go
+ 82 autobyteus-web/linux-install/internal/launch/restart_linux_test.go
+133 autobyteus-web/linux-install/internal/launch/supervise_linux.go
+ 34 autobyteus-web/linux-install/internal/launch/supervise_linux_test.go
+ 44 scripts/desktop-package/build-native.mjs
+ 28 scripts/desktop-package/verify-layout.mjs
+No changed production file above 500 nonempty lines. Large AppUpdater spec is test-only. No change to signed release format, writer transactions, account/network policy, Electron renderer bundle, DTO/schema, or CI permission/trigger.

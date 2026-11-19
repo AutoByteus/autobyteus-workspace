@@ -1,0 +1,61 @@
+IMP-12 2026-11-18, Ubuntu26 x64 Node22.23.2/Go1.27.4, 4c58622f6a + stage-lifetime clarification
+?   	autobyteus.local/desktop/linux-install/cmd/client	[no test files]
+?   	autobyteus.local/desktop/linux-install/cmd/launcher	[no test files]
+?   	autobyteus.local/desktop/linux-install/cmd/provision	[no test files]
+?   	autobyteus.local/desktop/linux-install/cmd/writer	[no test files]
+ok  	autobyteus.local/desktop/linux-install/internal/acquire	(cached)
+?   	autobyteus.local/desktop/linux-install/internal/buildinfo	[no test files]
+?   	autobyteus.local/desktop/linux-install/internal/imagefile	[no test files]
+?   	autobyteus.local/desktop/linux-install/internal/install	[no test files]
+ok  	autobyteus.local/desktop/linux-install/internal/launch	0.328s
+?   	autobyteus.local/desktop/linux-install/internal/protocol	[no test files]
+ok  	autobyteus.local/desktop/linux-install/internal/release	(cached)
+ok  	autobyteus.local/desktop/linux-install/internal/sealed	(cached)
+ok  	autobyteus.local/desktop/linux-install/internal/store	0.008s
+
+> autobyteus@1.5.13 test:electron /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web
+> vitest --config ./electron/vitest.config.ts run electron/updater/__tests__/appUpdater.spec.ts electron/updater/__tests__/appUpdateNotificationRecord.spec.ts electron/application/__tests__/managedUpdateSession.spec.ts
+
+
+ RUN  v3.2.7 /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web/electron
+
+ ✓ updater/__tests__/appUpdateNotificationRecord.spec.ts (19 tests) 28ms
+ ✓ updater/__tests__/appUpdater.spec.ts (37 tests) 179ms
+ ✓ application/__tests__/managedUpdateSession.spec.ts (10 tests) 530ms
+
+ Test Files  3 passed (3)
+      Tests  66 passed (66)
+   Start at  14:55:16
+   Duration  1.04s (transform 286ms, setup 0ms, collect 448ms, tests 737ms, environment 1ms, prepare 290ms)
+
+IMP-12 expanded discard/supersede/channel/restart coverage
+=== RUN   TestAuthenticatedInodeTransactions
+=== RUN   TestAuthenticatedInodeTransactions/tampered
+=== RUN   TestAuthenticatedInodeTransactions/wrong-key
+=== RUN   TestAuthenticatedInodeTransactions/rollback
+=== RUN   TestAuthenticatedInodeTransactions/channel
+=== RUN   TestAuthenticatedInodeTransactions/stale
+--- PASS: TestAuthenticatedInodeTransactions (0.01s)
+    --- PASS: TestAuthenticatedInodeTransactions/tampered (0.00s)
+    --- PASS: TestAuthenticatedInodeTransactions/wrong-key (0.00s)
+    --- PASS: TestAuthenticatedInodeTransactions/rollback (0.00s)
+    --- PASS: TestAuthenticatedInodeTransactions/channel (0.00s)
+    --- PASS: TestAuthenticatedInodeTransactions/stale (0.00s)
+=== RUN   TestMissingIdentityRefusesBaseline
+--- PASS: TestMissingIdentityRefusesBaseline (0.00s)
+PASS
+ok  	autobyteus.local/desktop/linux-install/internal/store	0.009s
+IMP-12 f1a88a2672, cached same-release automatic re-stage through actual AppUpdater/session/record
+
+> autobyteus@1.5.13 test:electron /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web
+> vitest --config ./electron/vitest.config.ts run electron/updater/__tests__/appUpdater.spec.ts -t 'lost managed receipt'
+
+
+ RUN  v3.2.7 /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web/electron
+
+ ✓ updater/__tests__/appUpdater.spec.ts (38 tests | 37 skipped) 172ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 37 skipped (38)
+   Start at  14:57:54
+   Duration  1.17s (transform 200ms, setup 0ms, collect 231ms, tests 172ms, environment 0ms, prepare 77ms)

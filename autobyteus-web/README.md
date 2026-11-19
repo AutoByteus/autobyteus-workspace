@@ -167,6 +167,10 @@ pnpm preview  # To preview the build
 
 ### Desktop Application Build
 
+For Linux, see [protected Ubuntu desktop installation](docs/linux-managed-desktop.md)
+for the native toolchain, build-time public key, ordinary launch and repair
+steps. For local testing use disposable trust, never a production signing key.
+
 To build the desktop application, use the appropriate command for your operating system:
 
 ```bash

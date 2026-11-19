@@ -1,0 +1,6 @@
+# API-04g-current-package | 2026-11-19 | reviewed product 8f10fa9287 | Ubuntu24.04 x64 guest; operation: see matching case in execution report
+Verified signed desktop release 1.5.13 x64
+332aefbf8bc26b353bd270fd3d1bcf088a6ddfc0139516c56a471e8eea568b53  /home/ryan-ai/hdd_drive/autobyteus_org/api-e2e-autobyteus-5/ir007-6SRvsr/AutoByteus_personal_linux-x64-1.5.13.AppImage
+332aefbf8bc26b353bd270fd3d1bcf088a6ddfc0139516c56a471e8eea568b53  QA4-Renamed.AppImage
+9724c0ad7e5b6392c7f6e3120650270450a2a1c6cb01ee325785d0569978bf43  e2e-profile/server-data/temp_workspace/qa4-saved
+9724c0ad7e5b6392c7f6e3120650270450a2a1c6cb01ee325785d0569978bf43  .autobyteus/server-data/temp_workspace/qa4-saved

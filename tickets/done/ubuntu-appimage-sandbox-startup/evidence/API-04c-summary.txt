@@ -1,0 +1,13 @@
+API-04c / Ubuntu22 and Ubuntu26 startup matrix — x64 only, official cloud images verified against Ubuntu's signed digest list. Test-specific isolated overlay and UID1000 desktop. No host policy modification. Builds use same verified renamed 1.5.13 full Noble-tested package/test-only origin. GUI environment Xvfb :91 / Openbox and normal polkit agent, not default full desktop. Test history includes harness-only recovery: initial checksum grep treated end marker literally, repaired against same signed official checksum list; explicit bootindex=1 added so the seed drive cannot become the boot disk. No acceptance based on boot/setup alone.
+Jammy portable menu fixture: user desktop entry with absolute path to downloaded AppImage, the project's desktop-entry marker and %U. Entry creation by tester is not a claim that first launch auto-registers portable downloads. Native menu invocation via gtk-launch.
+Shutdown owned 22.04 fixture
+no embedded server listening after normal close
+qmp_capabilities {}
+quit {}
+Owned VM stopped. Offline disks retained privately for reviewer or subsequent validation; not a user installation.
+Shutdown owned 26.04 fixture
+no embedded server listening after normal close
+qmp_capabilities {}
+quit {}
+Owned VM stopped. Offline disks retained privately for reviewer or subsequent validation; not a user installation.
+The first Ubuntu22 and Ubuntu26 PID inspection matched NUL-separated argv, but Chromium rewrites its process title with spaces. The windows and health existed; parser found no renderer. Tearing down Xvfb on that harness assertion left the previous test server alive; do not count the intermediate 22.04 rerun with a stale port. Identified and stopped only the prior owned processes in the dedicated VMs, repaired the parser and required no listener before each run. API-04c-clean-22.04.log and API-04c-clean-26.04.log are the definitive reruns (direct + user-created shortcut on 22; renamed redirect + installed desktop entry on 26). Verified fresh health, nested renderer PID namespace, Seccomp=2, NoNewPrivs=1, visible app, no release-sidecar GET on any of those launches. Both gracefully exited on Alt-F4. Test package matched the Noble baseline. PolicyKit cancellation on 26: transient xdotool BadWindow during dialog transition; actual error dialog inspected a second time, logged request dismissed and verified no installation. Afterwards authorized a separate fresh normal GUI enrollment. Scope: user namespace restriction remained 1 on the affected 26.04 host; not a global policy workaround.

@@ -1,0 +1,13 @@
+API-04 | 2026-11-18 | source 0df0c901e4 | Noble full current test-origin AppImage, synthetic guest
+Steps: ordinary close, reopen renamed original; assert health + packaged chat URL, no sidecar GET or authorization log; inspect menu and kernel attachment; ordinary Alt-F4 again
+PASS redirected original download: health ok, packaged chat renderer ready
+PASS no sidecar request or reauthorization on installed redirection
+[Desktop Entry]
+Type=Application
+Name=AutoByteus
+Exec=/opt/autobyteus-desktop/1000/app/AutoByteus.AppImage %U
+Icon=applications-development
+Terminal=false
+Categories=Development;
+X-AutoByteus-Managed-UID=1000
+autobyteus-desktop-1000 (unconfined)

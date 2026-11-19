@@ -1,0 +1,7 @@
+# API-05c | API-05c-consent-ledger | 2026-11-19 | CRR-004 (reviewed product c90f3ba8f2); Ubuntu24.04 x64 guest
+Noble journal; GUI direct and menu update operations between 13:01Z and 13:11Z
+Nov 19 13:00:26 ab5-implementation polkitd[632]: Operator of unix-session:12 successfully authenticated as unix-user:witness to gain ONE-SHOT authorization for action org.freedesktop.policykit.exec for unix-process:1495:9005 [/opt/autobyteus-desktop/1000/app/AutoByteus.AppImage --autobyteus-uninstall] (owned by unix-user:witness)
+Nov 19 13:00:38 ab5-implementation polkitd[632]: Operator of unix-session:12 successfully authenticated as unix-user:witness to gain ONE-SHOT authorization for action org.freedesktop.policykit.exec for unix-process:1672:9423 [./QA-renamed.AppImage] (owned by unix-user:witness)
+Nov 19 13:14:53 ab5-implementation polkitd[632]: Operator of unix-session:131 successfully authenticated as unix-user:witness to gain ONE-SHOT authorization for action org.freedesktop.policykit.exec for unix-process:10119:95774 [./QA-renamed.AppImage --autobyteus-uninstall] (owned by unix-user:witness)
+Nov 19 13:15:52 ab5-implementation polkitd[632]: Operator of unix-session:143 successfully authenticated as unix-user:witness to gain ONE-SHOT authorization for action org.freedesktop.policykit.exec for unix-process:10909:101422 [./QA-renamed.AppImage] (owned by unix-user:witness)
+temp-grant-query-exit=0

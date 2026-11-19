@@ -1,0 +1,27 @@
+IMP-26 | 2026-11-18 | source eb470a0d31, reviewed baseline f8788f9700 | Ubuntu26 x64
+Step: compare changed files and prior evidence to select implementation checks by impact.
+Commands: git diff --name-only f8788f9700 eb470a0d31; git diff --check; count nonempty lines in changed source.
+
+Changed production: ManagedUpdateSession, AppUpdater, AppUpdateNotificationRecord only.
+Changed tests: managedUpdateSession.spec.ts, appUpdater.spec.ts.
+No native/packaging/workflow/dependency/contract/renderer source delta in IR-003.
+
+RERUN:
+- IMP-12 managed/updater/record cases: all three owners changed. IMP-23 runs all 77 cases, including 10 new regressions.
+- IMP-20 AppUpdaterAutomatic (23), AppUpdaterAutomaticMac (17), AppUpdaterAutoCheck (9): actual AppUpdater and/or notification policy changed. IMP-23 reruns these 49.
+- IMP-15 both typechecks: TESTING.md requires both for any TS change. IMP-24 replaces their current-source evidence.
+NEW:
+- IMP-21 original reviewer probe on baseline reproduces both defects.
+- IMP-22 seven continued-journey regressions against baseline: six fail, manual success remains allowed. Final F-CR-002 assertion order also demonstrates the missing later quit/exit specifically.
+- IMP-25 unchanged reviewer probe on fixed source (labels in probe are historical; inspect counts, not label assertions).
+STILL VALID (not repeated):
+- IMP-20 remaining 19 cases: disabled updater, cached-download internals, ApplicationShutdown, application wiring/preparation. These either mock AppUpdater or drive unchanged native/shutdown owners, not the changed managed continuation. Managed shutdown interaction has new real-owner tests in IMP-23.
+- IMP-09/14 component/store rendering and keyboard checks: unchanged components, DTOs, locales and fixture states. No new visual inspection claim.
+- IMP-11/12 native/CLI, IMP-16/17 metadata/menu/vectors, IMP-19 workflow: no implementation they execute changed.
+HISTORICAL ONLY:
+- IMP-10/13/18 full package: valid for their recorded IR-002 bytes, NOT a current IR-003 package. These TS fixes are not in that AppImage. No repackage/isolated-app/host acceptance performed in this source-fix round.
+- IMP-05/06 already-limited old inert native authorization witness remains non-acceptance.
+
+Source nonempty counts: ManagedUpdateSession 126, AppUpdater 491, AppUpdateNotificationRecord 244.
+No changed source >500; no changed source delta >220; no new owner, migration or backward-dependency callback.
+Large/High unchanged. No downstream API/E2E, host/authentication/production secret/release operation performed.

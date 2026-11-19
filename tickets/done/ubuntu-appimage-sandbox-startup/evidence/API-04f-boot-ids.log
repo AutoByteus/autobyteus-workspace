@@ -1,0 +1,7 @@
+# API-04f | API-04f-boot-ids | 2026-11-19 | CRR-004 (reviewed product c90f3ba8f2); Ubuntu26.04 x64 guest
+a9ec4cc5-78ce-4a2d-a9dc-0ca0e779a5c7
+2026-11-19 13:01:57
+4d2cdcec096230953479833e9489387f9d033763b50c782d1b79e8e6991bb0e9  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+1375301c701d98fc044779ceb51a493bd5e2884c42c64c8f71bac721b4673071  qa3-data/server-data/temp_workspace/qa3-note
+a9166b86-f24e-4843-abd7-cdb265f6d611
+First SSH attempt while booting: connection reset; login and gtk-launch after guest boot succeeded. Authoritative state captured BEFORE operator close in API-04f-postboot-state.log.

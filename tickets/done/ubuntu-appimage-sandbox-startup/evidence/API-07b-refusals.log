@@ -1,0 +1,43 @@
+Traceback (most recent call last):
+  File "/home/witness/case.py", line 29, in <module>
+    if not sp.run(["xdpyinfo"],stdout=sp.DEVNULL,stderr=sp.DEVNULL).returncode: break
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 548, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 1026, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/usr/lib/python3.12/subprocess.py", line 1955, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: 'xdpyinfo'
+dbus-daemon[4016]: [session uid=1000 pid=4016] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=4030 comm="/usr/lib/policykit-1-gnome/polkit-gnome-authentica" label="unconfined")
+dbus-daemon[4016]: [session uid=1000 pid=4016] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[4049]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=4030 comm="/usr/lib/policykit-1-gnome/polkit-gnome-authentica" label="unconfined")
+dbus-daemon[4049]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+offline [4059:1119/113201.906307:FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:166] The SUID sandbox helper binary was found, but is not configured correctly. Rather than run without sandboxing I'm aborting now. You need to make sure that /tmp/.mount_MyCurrqeMjPQ/chrome-sandbox is owned by root and has mode 4755.
+cannot reach official release service; reconnect and retry 
+{"case": "offline", "outcome": "pass", "status": 133, "requests": 0, "installation": false}
+X connection to :91 broken (explicit kill or server shutdown).
+dbus-daemon[4104]: [session uid=1000 pid=4104] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=4118 comm="/usr/lib/policykit-1-gnome/polkit-gnome-authentica" label="unconfined")
+dbus-daemon[4104]: [session uid=1000 pid=4104] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[4139]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=4118 comm="/usr/lib/policykit-1-gnome/polkit-gnome-authentica" label="unconfined")
+dbus-daemon[4139]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+X connection to :91 broken (explicit kill or server shutdown).
+invalidsig [4138:1119/113204.867605:FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:166] The SUID sandbox helper binary was found, but is not configured correctly. Rather than run without sandboxing I'm aborting now. You need to make sure that /tmp/.mount_MyCurrxZrfxn/chrome-sandbox is owned by root and has mode 4755.
+release signature refused Serving HTTP on 127.0.0.1 port 18889 (http://127.0.0.1:18889/) ...
+127.0.0.1 - - [19/Nov/2026 11:32:05] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 11:32:05] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json.sig HTTP/1.1" 200 -
+{"case": "invalidsig", "outcome": "pass", "status": 133, "requests": 2, "installation": false}
+dbus-daemon[4190]: [session uid=1000 pid=4190] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=4204 comm="/usr/lib/policykit-1-gnome/polkit-gnome-authentica" label="unconfined")
+dbus-daemon[4190]: [session uid=1000 pid=4190] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[4228]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=4204 comm="/usr/lib/policykit-1-gnome/polkit-gnome-authentica" label="unconfined")
+dbus-daemon[4228]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+X connection to :91 broken (explicit kill or server shutdown).
+mismatched [4219:1119/113207.179622:FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:166] The SUID sandbox helper binary was found, but is not configured correctly. Rather than run without sandboxing I'm aborting now. You need to make sure that /tmp/.mount_MyCurrTjRtRk/chrome-sandbox is owned by root and has mode 4755.
+outer AppImage is not the signed regular file Serving HTTP on 127.0.0.1 port 18889 (http://127.0.0.1:18889/) ...
+127.0.0.1 - - [19/Nov/2026 11:32:08] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 11:32:08] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json.sig HTTP/1.1" 200 -
+{"case": "mismatched", "outcome": "pass", "status": 133, "requests": 2, "installation": false}

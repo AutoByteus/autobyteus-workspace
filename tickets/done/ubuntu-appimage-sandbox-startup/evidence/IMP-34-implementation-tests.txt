@@ -1,0 +1,43 @@
+2026-11-19 UTC; IR-005, c90f3ba8f2 (corresponding production tree), x64.
+Test-owned files and disposable OS/process fixtures. No host enrollment, secrets or live profile. Commands from worktree root:
+(cd autobyteus-web/linux-install && go test -count=1 -v ./...)  [pinned Go, native gcc and Node headers on PATH]
+pnpm -C autobyteus-web test:electron run managedUpdateSession.spec.ts appUpdater.spec.ts appUpdaterAutomatic.spec.ts appUpdaterAutomaticMac.spec.ts appUpdaterAutoCheck.spec.ts appUpdateNotificationRecord.spec.ts
+Native selected results (no skipped/failed native tests):
+--- PASS: TestWriterSocketTransactions (0.01s)
+ok  	autobyteus.local/desktop/linux-install/cmd/writer	0.014s
+--- PASS: TestBuildPinnedAddress (0.00s)
+--- PASS: TestRedirectPolicy (0.00s)
+--- PASS: TestResponseBoundsAndStatus (0.00s)
+ok  	autobyteus.local/desktop/linux-install/internal/acquire	0.004s
+--- PASS: TestBootstrapClaim (0.17s)
+    --- PASS: TestBootstrapClaim/channel (0.02s)
+    --- PASS: TestBootstrapClaim/wrong-identification (0.03s)
+    --- PASS: TestBootstrapClaim/no-identification (0.03s)
+    --- PASS: TestBootstrapClaim/blocking (0.03s)
+    --- PASS: TestBootstrapClaim/collision (0.02s)
+--- PASS: TestMenuOwnsOnlyItsUnmodifiedEntry (0.00s)
+--- PASS: TestDirectChildHandback (0.01s)
+--- PASS: TestHandbackRejectsAncillaryAndWrongUID (0.00s)
+--- PASS: TestEmptyDatagramIsNotCompletion (0.00s)
+--- PASS: TestEarlyFatalClassification (0.33s)
+ok  	autobyteus.local/desktop/linux-install/internal/launch	0.507s
+--- PASS: TestGoldenRecords (0.00s)
+--- PASS: TestVersionAdmission (0.00s)
+--- PASS: TestExactPayload (0.00s)
+ok  	autobyteus.local/desktop/linux-install/internal/release	0.005s
+--- PASS: TestSnapshotCustody (0.00s)
+ok  	autobyteus.local/desktop/linux-install/internal/sealed	0.004s
+--- PASS: TestAuthenticatedInodeTransactions (0.01s)
+--- PASS: TestMissingIdentityRefusesBaseline (0.00s)
+ok  	autobyteus.local/desktop/linux-install/internal/store	0.009s
+Electron results:
+ ✓ updater/__tests__/disabledAppUpdater.spec.ts (3 tests) 14ms
+ ✓ updater/__tests__/appUpdateNotificationRecord.spec.ts (19 tests) 42ms
+ ✓ updater/__tests__/appUpdaterAutoCheck.spec.ts (9 tests) 51ms
+ ✓ updater/__tests__/appUpdaterAutomaticMac.spec.ts (17 tests) 77ms
+ ✓ updater/__tests__/appUpdaterAutomatic.spec.ts (23 tests) 104ms
+ ✓ application/__tests__/managedUpdateSession.spec.ts (17 tests) 887ms
+ ✓ updater/__tests__/appUpdater.spec.ts (46 tests) 1243ms
+ Test Files  7 passed (7)
+      Tests  134 passed (134)
+Native checks cover socket type/hello/nonblocking/descriptor collision, real Node-API CLOEXEC, direct vs grandchild/incorrect UID/ancillary/duplicates/malformed, byte without reserved exit, clean exit without byte, signal/crash refusal and portable early-fatal/readiness/argv classification. Session tests include preflight before stop, missing status, confirmed refusal vs candidate, settings invalidation + baseline check, failed write with no special exit, independent ordinary exit, dispatch and permanent-block regression. Tests do not simulate every possible OS signal schedule.

@@ -79,6 +79,10 @@ export class WorkJournalFileRenderer {
     for (const [index, record] of input.records.entries()) {
       if (record.traceType === "tool_call") {
         const result = pairs.resultByCallIndex.get(index) ?? null;
+        if (result && this.isOmittedPlumbing(record, result, translation)) {
+          omittedRecordCount += 2; // the call and its paired result, which is not rendered again as an orphan
+          continue;
+        }
         entries.push(this.toolEntry(record, result, translation, marker));
         renderedRecordCount += result ? 2 : 1;
         continue;
@@ -102,6 +106,12 @@ export class WorkJournalFileRenderer {
 
     const markdown = [...this.header(input, translation), "", ...this.formatEntries(entries, link)].join("\n") + "\n";
     return { markdown, renderedRecordCount, omittedRecordCount };
+  }
+
+  /** A successful call of the runtime's own plumbing (autobyteus-560): omitted with its result; a failed one renders as any other. */
+  private isOmittedPlumbing(call: MemoryTraceEvent, result: MemoryTraceEvent, translation: RuntimeTranslation): boolean {
+    return translation.isRuntimePlumbing?.({ name: call.toolName ?? "", args: call.toolArgs ?? {} }) === true
+      && translation.normalizeResult({ value: result.toolResult ?? null, error: result.toolError ?? null }).outcome.kind === "ok";
   }
 
   /** Each call takes the first unpaired result with its (turn, call id), wherever it is in the file. */

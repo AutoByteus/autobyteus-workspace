@@ -1,0 +1,18 @@
+IR-006 | source 1d21c76fd3 | 2026-11-19 UTC | native x64 Linux; scope: corrective provisioning/inspection/authorization statuses + current packaged fixture.
+Commands: (cd autobyteus-web/linux-install && go test -count=1 -v ./...); pinned Go1.27.4, native gcc/Node packaging toolchain. Local isolated build script ir006-*/build: retain full IR-005 .13 test desktop/server, build all native components + pinned provisioner from current source (buildNative, loopback test origin), repackage, sign full final AppImage with disposable test trust, verify-release and verify-layout. No CI/release credentials. This is a local full executable fixture, not clean hosted native build evidence.
+Checks: no skipped or failed Go suites. Specific return/UI classification coverage:
+--- PASS: TestKnownInstallVolumeFailureStatus (0.00s)
+ok  	autobyteus.local/desktop/linux-install/cmd/provision	0.007s
+ok  	autobyteus.local/desktop/linux-install/cmd/writer	0.047s
+ok  	autobyteus.local/desktop/linux-install/internal/acquire	0.009s
+--- PASS: TestAuthorizationFailureGuidance (0.00s)
+--- PASS: TestAbsentAndIncompleteManagedInstallRemainDistinct (0.00s)
+ok  	autobyteus.local/desktop/linux-install/internal/launch	1.054s
+ok  	autobyteus.local/desktop/linux-install/internal/release	0.013s
+ok  	autobyteus.local/desktop/linux-install/internal/sealed	0.027s
+ok  	autobyteus.local/desktop/linux-install/internal/store	0.046s
+Final fixture verification:
+Verified signed desktop release 1.5.13 x64
+Verified native AppRun, unchanged Electron ELF, provisioner/client and sandbox-preserving desktop Exec
+1caa815871b2ea419ab546a28b2f10e5a50362dd85266d9b57b687ccc69f8442  /home/ryan-ai/hdd_drive/autobyteus_org/api-e2e-autobyteus-5/ir006-fYTkJC/AutoByteus_personal_linux-x64-1.5.13.AppImage
+No TS/renderer/workflow change; no merge/rebase this round. E2E/host matrix and new secret-isolated native x64/ARM64 CI for changed package remain downstream, not inferred from these checks.

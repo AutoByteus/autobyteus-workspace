@@ -1,0 +1,8 @@
+IMP-13 2026-11-18 Ubuntu26 x64 Node22.23.2; package source f1a88a2672; disposable trust only
+Verified native AppRun, unchanged Electron ELF, provisioner/client and sandbox-preserving desktop Exec
+Verified signed desktop release 1.5.13 x64
+Validated autobyteus-web/electron-dist/latest-linux.yml: linux-x64 AppImage metadata includes embedded blockMapSize
+5fcc1a881c1f249b7bef7ea04f024083ca2e70060423ac88895e02c9f9da1fdd  autobyteus-web/electron-dist/AutoByteus_personal_linux-x64-1.5.13.AppImage
+{"execPath":"/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web/electron-dist/linux-unpacked/autobyteus","argv":["argument with spaces","--second"],"node":"24.19.0"}
+Earlier Node argv process returned expected exit code 23. This check now verifies a forwarded SIGTERM against the actual packaged Node ELF via AppRun.
+PASS packaged AppRun Node mode: SIGTERM handled by real ELF, exit 42, no consent or network path.
