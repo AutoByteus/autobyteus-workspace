@@ -1,0 +1,70 @@
+IR-007 | source 8f10fa9287 | Ubuntu 24.04.5 x64 test VM | 2026-11-19 UTC
+Step: clone powered-off IR-006 disposable image, no enrollment, synthetic profile and work marker. Ordinary UID1000 in a real graphical Xvfb/Openbox/Zenity session. Run renamed full .13 AppImage, click Install on actual prompt, inspect the error window before Return. Use only separate test-trust release mirror and temporary evidence files; no change to OS trust policy or host data. Control: IR-006 package with missing record shows only the HTTP error. New package uses the same signed bytes for all negative cases. Missing record (HTTP 404); 4097-byte record; a genuine but nonmatching release signature; correctly signed same-version record for a different full .13 AppImage; mirror offline. Isolated faulty release evidence NEVER provided to the root adapter.
+Visible results (not inferred from logs): missing official verification files: “Try again later. If the files are still unavailable, contact AutoByteus support.” Invalid metadata/signature/image: “Download a fresh copy from the official AutoByteus releases page. If verification still fails, contact AutoByteus support.” Offline: “cannot reach official release service; reconnect and retry.” Title, body and focused OK readable; Return dismissed each refusal. Actual screenshots: IMP-42-missing.png, -oversized.png, -signature.png, -mismatch.png, -offline.png. No authorization UI/authorization dispatch on any refusal.
+Negative-case logs and synthetic-state checks:
+-w /usr/bin/pkexec -p x -k ir007_pkauth
+no-owned-installation-account-menu-unit-socket-profile-or-running-app
+b1541ee880e639f904b79c274e535f9ceee0b89149c11dcfabb50de70f2d5a25  /home/witness/e2e-profile/server-data/temp_workspace/ir005-marker
+case=prior
+Install AutoByteus
+AutoByteus installation
+launcher-exit=133
+official release sidecar unavailable (HTTP 404)
+no-owned-installation-account-menu-unit-socket-profile-or-running-app
+b1541ee880e639f904b79c274e535f9ceee0b89149c11dcfabb50de70f2d5a25  /home/witness/e2e-profile/server-data/temp_workspace/ir005-marker
+case=missing
+Install AutoByteus
+AutoByteus installation
+launcher-exit=133
+The official verification files for this release are unavailable (HTTP 404). Try again later. If the files are still unavailable, contact AutoByteus support.
+no-owned-installation-account-menu-unit-socket-profile-or-running-app
+b1541ee880e639f904b79c274e535f9ceee0b89149c11dcfabb50de70f2d5a25  /home/witness/e2e-profile/server-data/temp_workspace/ir005-marker
+case=oversized
+Install AutoByteus
+AutoByteus installation
+launcher-exit=133
+AutoByteus could not verify this AppImage against its official release. Download a fresh copy from the official AutoByteus releases page. If verification still fails, contact AutoByteus support.
+no-owned-installation-account-menu-unit-socket-profile-or-running-app
+b1541ee880e639f904b79c274e535f9ceee0b89149c11dcfabb50de70f2d5a25  /home/witness/e2e-profile/server-data/temp_workspace/ir005-marker
+case=signature
+Install AutoByteus
+AutoByteus installation
+launcher-exit=133
+AutoByteus could not verify this AppImage against its official release. Download a fresh copy from the official AutoByteus releases page. If verification still fails, contact AutoByteus support.
+no-owned-installation-account-menu-unit-socket-profile-or-running-app
+b1541ee880e639f904b79c274e535f9ceee0b89149c11dcfabb50de70f2d5a25  /home/witness/e2e-profile/server-data/temp_workspace/ir005-marker
+case=mismatch
+Install AutoByteus
+AutoByteus installation
+launcher-exit=133
+AutoByteus could not verify this AppImage against its official release. Download a fresh copy from the official AutoByteus releases page. If verification still fails, contact AutoByteus support.
+no-owned-installation-account-menu-unit-socket-profile-or-running-app
+b1541ee880e639f904b79c274e535f9ceee0b89149c11dcfabb50de70f2d5a25  /home/witness/e2e-profile/server-data/temp_workspace/ir005-marker
+case=offline
+Install AutoByteus
+AutoByteus installation
+launcher-exit=133
+cannot reach official release service; reconnect and retry
+no-owned-installation-account-menu-unit-socket-profile-or-running-app
+b1541ee880e639f904b79c274e535f9ceee0b89149c11dcfabb50de70f2d5a25  /home/witness/e2e-profile/server-data/temp_workspace/ir005-marker
+Independent authorization observation: guest kernel exec watch for /usr/bin/pkexec throughout all refusals AND valid control. Initial default ausearch query from piped diagnostic shell missed even the positive control and was NOT relied upon. Read the actual /var/log/audit/audit.log, filter syscall records with the exact observer key and executable, count all and compare timestamps with the last refusal. Exactly one matching exec during entire interval; it follows ALL refusals and belongs to the deliberate valid control below.
+Positive boundary control: restore matching complete signed record/signature and service, same renamed outer. Correct verification led to Ubuntu Authenticate; dismiss deliberately (no credentials submitted). Then actual cancellation dialog, no resources created or work changed.
+Install AutoByteus
+Authenticate
+AutoByteus installation
+launcher-exit=133
+pkexec: exit status 126
+Ubuntu authorization was cancelled. Retry the requested action when you are ready to authorize it.
+no-installation-tree-account-profile-units-socket-menu-or-app
+b1541ee880e639f904b79c274e535f9ceee0b89149c11dcfabb50de70f2d5a25  /home/witness/e2e-profile/server-data/temp_workspace/ir005-marker
+entire watch interval, pkexec exec count=1
+last refusal at 13:43:02Z; sole watched pkexec at 13:43:23Z
+No rules
+observer-removed
+127.0.0.1 - - [19/Nov/2026 13:43:22] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 13:43:22] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json.sig HTTP/1.1" 200 -
+Ubuntu will request one-shot authorization
+pkexec: exit status 126
+no-owned-installation-account-menu-unit-socket-profile-or-running-app
+b1541ee880e639f904b79c274e535f9ceee0b89149c11dcfabb50de70f2d5a25  /home/witness/e2e-profile/server-data/temp_workspace/ir005-marker
+No auth/session changes requested to make invalid data pass, no installation or production/user data access. Test observer removed, cloned guest powered off. This is an x64 local implementation witness, not release/CI or QA acceptance.

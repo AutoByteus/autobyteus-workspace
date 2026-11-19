@@ -9,6 +9,7 @@
 | IR-004 | API-REV-002 Fail / CRR-003 failure-origin review | F-API-01 / F-API-02 | Large / High | SR-012/014/015; ARCH-REV-003; CRR-003; API-REV-002 | Cancellation fixed; Design Impact for explicit restart; no advancement |
 | IR-005 | ARCH-REV-004 Pass after IR-004 Design Impact | F-API-01, F-API-02 | Large / High | SR-012/015/016, DS-004; ARCH-REV-004, CRR-003, API-REV-002 | Revised implementation complete — ready for source rereview; QA gates pending |
 | IR-006 | CRR-005 Local Fix after API-REV-003 | F-API-03, F-API-04 | Large / High | SR-012/015/016, DS-004; ARCH-REV-004; CRR-005; API-REV-003 | Actionable graphical refusal guidance corrected — ready for source rereview |
+| IR-007 | CRR-006 Local Fix | F-CR-003 | Large / High | SR-012/015/016; DS-004; ARCH-REV-004; CRR-006; API-REV-003 | Pre-auth recovery guidance corrected — ready for source rereview |
 
 ## IR-001 — First-install input acquisition
 - Initial baseline; prior authoritative result N/A; triggering upstream finding IDs N/A (AR-001–003 resolved).
@@ -63,3 +64,9 @@
 - Source 1d21c76fd3: Managed returns a safe administrator inspection/repair step for an invalid existing installation, preserving original diagnostics separately from the UI. A typed install-space failure traverses sealed provisioner → pkexec exit 78 → fixed provision-only refusal. Cancel/unavailable auth and unknown causes remain distinct; subprocess text is not trusted guidance. No rollback, auth custody or updater behavior change.
 - IMP-38/39/40: Go tests + rebuilt/signed x64 package; old/new real graphical missing-live-file controls and actual authorized low-space setup, cancelled/unknown controls, unchanged synthetic data and safe refusal/rollback. Actual sufficient-space retry and normal removal succeeded. Screenshots show what the user saw; console and ownership controls separately recorded.
 - **Local Fixes Implemented — Ready for independent source rereview.** API-REV-003 remains unresolved downstream until reviewed current-byte validation. Carry forward scoped previous Ubuntu/native/update evidence, repeat impact-selected package/OS checks (SR-015); no release, production keys, or real user data.
+
+## IR-007 — Actionable pre-authorization acquisition refusals
+- Prior result: IR-006 submitted; CRR-006 resolved F-API-03/04 at source but found F-CR-003 on the earlier ordinary-user Install path. No new approval/design; DR N/A; SCN/BEH-005, REQ-003/AC-003; Large/High unchanged.
+- Source 8f10fa9287: distinguish unavailable official evidence from invalid metadata/download and reconnectable access errors in acquire.Fetch/get; safely handle local outer open/read failures before auth. No change to pinned identities/origins, redirect policy, signed byte checks, attempt count, rollback or privilege.
+- IMP-41/42: ten Fetch subcases (eight detect old implementation), complete native unit run, locally rebuilt/signed full x64 fixture and actual Noble graphical refusal/positive control. No pkexec during refusal cases; one after restoration of exact good assets. No owned enrollment or workspace change. See current handoff for visible dialogs, accurate audit-source check and limitations.
+- **Local Fix Implemented — Ready for independent source rereview.** After pass QA repeats F-CR-003 and IR-006 refusal cases, and SR-015 impact-selected native package/CI checks; no release authorization.

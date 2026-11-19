@@ -1,4 +1,25 @@
-# Implementation Handoff — IR-006
+# Implementation Handoff — IR-007
+
+**F-CR-003 local fix implemented; ready for independent source rereview.** Large / High unchanged. Approved SR-012; DS-004 / SR-016, ARCH-REV-004, SR-015 CI constraints; SCN/BEH-005, REQ-003, AC-003. Prior IR-006 fixes F-API-03/04 resolved at source in CRR-006; API-REV-003 remains open downstream. Product **8f10fa9287** on `fix/ubuntu-appimage-sandbox-startup` → `personal`, review base 2aa53e656a.
+
+### Revised production path
+After Install consent, the ordinary launcher opens the outer image and calls `internal/acquire.Fetch`. A failed or interrupted connection still recommends reconnect/retry. A non-200 response now explains that the official verification files for **this release** are unavailable and to retry later or seek support. Oversized data, unverified signatures/metadata, mismatched identity/size/digest, or unreadable local bytes now direct the user to download again from the official AutoByteus releases page and contact support if verification still fails. Only bounded recovery text and, where relevant, the numeric HTTP status go to the dialog; no remote body, signed URL, response header, local path or unchecked error string.
+
+The trust boundary did not move. Production still derives the exact tagged URLs from the build, bounds actual reads, restricts redirects, verifies signature/identity and hashes/rewinds the same open file. Only success returns evidence for the existing one-shot authorization; no implicit repeat, alternate source, unsigned path, new privileged transport or policy change. The existing independent verifier still checks streamed bytes. Changed files: `linux-install/internal/acquire/record.go`, `cmd/launcher/main.go` (local open failure text), `internal/acquire/recovery_test.go` and the Linux user guide. No writer/managed restart/provisioner, persisted-data or renderer change. Changed production files below 500 nonempty lines; no file delta >220.
+
+### Checks run (source 8f10fa9287)
+| ID | Check | Result / evidence under `evidence/` |
+|---|---|---|
+| IMP-41 | New Fetch regression cases against prior tree and current ordinary-user native module; rebuild affected native payload and verify signed local full x64 fixture/layout. | **8 failed subcases** on previous implementation, **all 10 Fetch cases pass** now, **20 top-level Go tests pass**. Valid path returns exact evidence and rewound handle, no usable result from failures. `IMP-41-acquisition-checks.txt`. |
+| IMP-42 | Real normal-user graphical Install on fresh disposable Noble overlay. Old missing-record control vs current missing/oversized/signature/mismatch/offline; kernel exec observation and per-case installation/marker assertions. Restore good files; authenticated boundary control, cancel. | Real dialogs show distinct retry-later vs fresh-official-copy actions. **entire watch interval, pkexec exec count=1**: sole execution occurred in the valid control **after** all refusals. Every refusal left enrollment absent and work unchanged. `IMP-42-visible-preauth-refusals.txt`, screenshots `IMP-42-{missing,oversized,signature,mismatch,offline}.png`. |
+
+**Rendered inspection:** viewed and dismissed the actual native dialogs, not a terminal or UI mock. The action and OK are legible at 1280×900 and no technical-only 404/signature mismatch stands in for recovery. Raw diagnostic state, audit observation and installed-resource evidence are recorded separately from screenshots. No new frontend surface or style; no browser/typecheck rerun (no TS change, merge or rebase).
+
+**Next gate:** source rereview, then independent QA reruns F-CR-003 and both IR-006 cases; rerun native x64/ARM64 build/smoke through the SR-015 secret-isolated Linux route on reviewed bytes. Prior update/host/architecture passes retain their original scope. Neither local repack nor unit tests replace a clean native build or full acceptance. No delivery, release, remote push or production keys; guest stopped.
+
+---
+
+# Historical implementation handoff — IR-006
 
 **Local fixes implemented; ready for independent source rereview.** Findings F-API-03/04 from API-REV-003 / failure-origin review CRR-005. Product commit **1d21c76fd3**, on `fix/ubuntu-appimage-sandbox-startup` → `personal`, review base b803a1086d. Requirements SR-012, BEH/SCN-005, REQ-003, AC-003/004; DS-004/SR-016 and ARCH-REV-004 retained. No change in behavior authority or architecture classification: **Large / High**. No delivery, push or release.
 
