@@ -147,3 +147,6 @@ Informational receipt: ARCH-REV-003 passed DS-003 / SR-014 on the SR-012 require
 DS-003 implementation clarification (same reviewed U2/manual path): manual-install-failure-clarification.md. No changed intent or architecture route.
 
 DS-003 implementation clarification: stage-lifetime-clarification.md specifies transaction-lifetime expiry (not a wall-clock TTL), loss recovery and retry eligibility without changing approved quit/security rules. No new product decision.
+
+## SR-015 — API-08 disposition, approved behavior unchanged
+User via Project Task Manager requests architecture-proof decision. Retain native ARM64 packaging gate; reject credential-bearing whole-workflow dispatch, authorize only an already-permitted isolated native Linux validation route. Details in api-08-native-linux-disposition.md, implementation handoff and API-REV-001. DS-003 runtime shape, SR-012 and CRR-002 unchanged; API-08 Not Tested. API/E2E to continue independent x64 matrix and two signed upgrades; no new production design review/implementation handoff or support change.
