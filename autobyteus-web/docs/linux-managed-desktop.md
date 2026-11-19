@@ -67,6 +67,12 @@ files/account and the unmodified user menu entry. It **does not delete user
 profile or server data**. Modified/unrecognized resources are left intact with
 an error, not force-deleted.
 
+If setup reports insufficient space, free space on the volume containing
+`/opt/autobyteus-desktop` (not just in Downloads), or ask an administrator
+for help, then retry. If the protected installation is incomplete, ask an
+administrator to inspect the per-user installation named in the dialog before
+trying again.
+
 A managed sandbox/identity failure requests administrator repair; it does not
 loop through enrollment. Do not chmod/chown the protected store, delete its
 attributes, copy another image over it, disable Ubuntu restrictions or add

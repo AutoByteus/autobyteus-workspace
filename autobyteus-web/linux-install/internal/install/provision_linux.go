@@ -3,6 +3,7 @@ package install
 
 import (
 	"crypto/ed25519"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -16,6 +17,8 @@ import (
 	"autobyteus.local/desktop/linux-install/internal/protocol"
 	"autobyteus.local/desktop/linux-install/internal/release"
 )
+
+var ErrInsufficientInstallSpace = errors.New("insufficient installation space")
 
 func command(path string, args ...string) error {
 	cmd := exec.Command(path, args...)
@@ -107,7 +110,7 @@ func Provision(p Paths, request protocol.Request, payload io.Reader, key ed25519
 		return err
 	}
 	if space.Bavail*uint64(space.Bsize) < uint64(r.Size)+64*1024*1024 {
-		return fmt.Errorf("insufficient installation space")
+		return ErrInsufficientInstallSpace
 	}
 	staged := filepath.Join(p.App, ".initial")
 	f, e := os.OpenFile(staged, os.O_CREATE|os.O_EXCL|os.O_RDWR, 0600)

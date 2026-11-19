@@ -2,6 +2,7 @@ package main
 
 import (
 	"embed"
+	"errors"
 	"fmt"
 	"os"
 
@@ -42,9 +43,16 @@ func run() error {
 	fmt.Println(`{"committed":true}`)
 	return nil
 }
+func failureStatus(err error) int {
+	if errors.Is(err, install.ErrInsufficientInstallSpace) {
+		return protocol.ExitInsufficientInstallSpace
+	}
+	return 1
+}
+
 func main() {
 	if err := run(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+		os.Exit(failureStatus(err))
 	}
 }
