@@ -40,7 +40,10 @@ while work continues. **Ready for your next quit** means exactly that: an
 independently requested ordinary quit stops the app/server once, activates the
 verified file and leaves the app closed. An update never initiates this quit or
 reopens the app. **Install and Restart** explicitly requests activation now and
-relaunches the fixed outer AppImage, not a transient mount. With automation off,
+asks the original desktop launcher to reopen the fixed outer AppImage after the
+old app and server stop. Electron does not launch a successor from a transient
+mount. If the app cannot confirm restart support, it leaves the staged update
+and running server alone. With automation off,
 a verified manual download can be installed using that action. Turning the
 switch off cancels pending automatic activation before dispatch.
 
@@ -74,7 +77,8 @@ administrator inspection rather than an automated privilege fallback.
 
 ## Build and release administration
 
-Linux builds require the pinned Go toolchain and a provisioned Ed25519 **desktop**
+Linux builds require the pinned Go toolchain, a native C compiler (gcc), Node
+with Node-API headers and a provisioned Ed25519 **desktop**
 public key (`AUTOBYTEUS_DESKTOP_PUBLIC_KEY_FILE`). The build creates the writer,
 embeds it into the provisioner, then pins that helper's digest in AppRun. Final
 AppImage bytes are signed only after packaging. See `linux-install/contract/desktop-release.md`.

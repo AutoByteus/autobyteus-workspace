@@ -42,6 +42,7 @@ const CHECK_OPERATIONS: Readonly<Record<AppUpdateCheckSource | 'manual', AppUpda
 
 type AppUpdaterOptions = {
   managedSession?: ManagedUpdateSession;
+  showRestartUnavailable?: (message: string) => void;
   prepareForInstall?: () => Promise<void>;
   /** After a failed automatic install (autobyteus-356): the application relaunches the old version when it can. */
   recoverAfterFailedInstall?: () => void | Promise<void>;
@@ -489,7 +490,11 @@ export class AppUpdater implements AppUpdateController {
   }
 
   private managedEvent(event: ManagedUpdateEvent): void {
-    if (event.type === 'invalidated') {
+    if (event.type === 'restart-unavailable' || event.type === 'restart-write-failed') {
+      const message = 'Manual restart is unavailable. Quit AutoByteus and reopen it from the installed application menu.';
+      if (event.type === 'restart-write-failed') this.applyState({ status: 'error', updateStaged: false, errorKind: 'install', errorOperation: 'install', message });
+      this.options.showRestartUnavailable?.(message);
+    } else if (event.type === 'invalidated') {
       this.applyState({ updateStaged: false, ...(this.state.status === 'downloaded' ? { status: 'available' } : {}) });
     } else if (event.type === 'verification-cancelled') {
       this.automatic?.downloaded(event.version); // end automatic download bookkeeping; no managed install on readiness

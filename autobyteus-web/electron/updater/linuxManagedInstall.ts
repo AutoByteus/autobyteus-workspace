@@ -11,7 +11,7 @@ const execute = promisify(execFile)
 
 /** The native client owns signed downloads and the authenticated writer protocol. No shell or elevation. */
 export class LinuxManagedInstall {
-  constructor(readonly canonicalImage: string, private readonly client: string) {}
+  constructor(private readonly client: string) {}
   private async command(args: string[]): Promise<Receipt> {
     const { stdout } = await execute(this.client, args, { timeout: 210_000, maxBuffer: 8192 })
     const receipt = JSON.parse(stdout) as Receipt
@@ -57,5 +57,5 @@ export function detectLinuxManagedInstall(): LinuxManagedInstall | null {
     || (store.mode & 0o022) !== 0 || (image.mode & 0o022) !== 0) throw new Error('Invalid managed image ownership')
   const label = readFileSync('/proc/self/attr/current', 'utf8').trim()
   if (label !== `autobyteus-desktop-${uid} (unconfined)`) throw new Error('Managed application has no scoped kernel attachment')
-  return new LinuxManagedInstall(canonical, path.join(path.dirname(process.execPath), 'autobyteus-install-client'))
+  return new LinuxManagedInstall(path.join(path.dirname(process.execPath), 'autobyteus-install-client'))
 }

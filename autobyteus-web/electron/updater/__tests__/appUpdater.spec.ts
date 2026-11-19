@@ -154,14 +154,14 @@ describe('AppUpdater', () => {
 
   it('managed verification is the only readiness authority; automatic download never invokes native install', async () => {
     let receipt!: (value: any) => void;
-    const writer = { canonicalImage: '/opt/autobyteus-desktop/1000/app/AutoByteus.AppImage',
+    const writer = {
       stage: vi.fn(() => new Promise<any>(resolve => { receipt = resolve; })),
       activate: vi.fn(async () => ({ version: '1.1.10', sha256: 'new' })),
       status: vi.fn(), discard: vi.fn(async () => {}) };
-    const stop = vi.fn(async () => {}), quit = vi.fn(), relaunch = vi.fn();
+    const stop = vi.fn(async () => {}), quit = vi.fn(), requestReopen = vi.fn();
     const session = new ManagedUpdateSession({ writer, shutdown: new ApplicationShutdown(stop, vi.fn()),
       initialSettings: { automaticUpdate: false, updateChannel: 'stable' }, serverGone: () => true,
-      quit, relaunch, notifyQuit: vi.fn(), exit: vi.fn(), report: vi.fn() });
+      quit, requestReopen, notifyQuit: vi.fn(), exit: vi.fn(), report: vi.fn() });
     const updater = new AppUpdater({ managedSession: session }); updater.initialize();
     updater.setAutomaticUpdate(true);
     expect(updater.getState().activationMode).toBe('managed-quit');
@@ -179,18 +179,18 @@ describe('AppUpdater', () => {
     expect(stop).not.toHaveBeenCalled();
     session.willQuit({ preventDefault() {} });
     await vi.waitFor(() => expect(quit).toHaveBeenCalledOnce());
-    expect(writer.activate).toHaveBeenCalledOnce(); expect(relaunch).not.toHaveBeenCalled();
+    expect(writer.activate).toHaveBeenCalledOnce(); expect(requestReopen).not.toHaveBeenCalled();
     expect(autoUpdaterMock.quitAndInstall).not.toHaveBeenCalled();
   });
 
   it('opt-out during verification restores manual actions after the stale receipt settles', async () => {
     const candidate = { id: 'stale', baseline: 'old', channel: 'stable' as const, identity: { version: '1.1.10', sha256: 'new' } };
     let resolve!: (stage: typeof candidate) => void;
-    const writer = { canonicalImage: '/protected/AppImage', activate: vi.fn(), status: vi.fn(), discard: vi.fn(async () => {}),
+    const writer = { activate: vi.fn(), status: vi.fn(), discard: vi.fn(async () => {}),
       stage: vi.fn(async () => ({ ...candidate, id: 'fresh' })).mockImplementationOnce(() => new Promise(r => { resolve = r; })) };
     const quit = vi.fn(), session = new ManagedUpdateSession({ writer, shutdown: new ApplicationShutdown(async () => {}, vi.fn()),
       initialSettings: { automaticUpdate: false, updateChannel: 'stable' }, serverGone: () => true,
-      quit, relaunch: vi.fn(), notifyQuit: vi.fn(), exit: vi.fn(), report: vi.fn() });
+      quit, requestReopen: vi.fn(), notifyQuit: vi.fn(), exit: vi.fn(), report: vi.fn() });
     const updater = new AppUpdater({ managedSession: session }); updater.initialize(); updater.setAutomaticUpdate(true);
     const offer = () => autoUpdaterMock.emit('update-available', { version: '1.1.10' });
     const deliver = async () => { autoUpdaterMock.emit('update-downloaded', { version: '1.1.10', downloadedFile: '/cache/image' }); };
@@ -213,13 +213,13 @@ describe('AppUpdater', () => {
 
   it('lost managed receipt clears provisional failure across restart and re-stages a cached update automatically', async () => {
     const candidate = { id: 'stage', baseline: 'old', channel: 'stable' as const, identity: { version: '1.1.10', sha256: 'new' } };
-    const writer = { canonicalImage: '/opt/autobyteus-desktop/1000/app/AutoByteus.AppImage', stage: vi.fn(async () => candidate),
+    const writer = {  stage: vi.fn(async () => candidate),
       activate: vi.fn(async () => { throw new ManagedStageGone('gone'); }),
       status: vi.fn(async () => ({ version: '1.1.9', sha256: 'old' })), discard: vi.fn(async () => {}) };
     const quit = vi.fn();
     const makeSession = () => new ManagedUpdateSession({ writer, shutdown: new ApplicationShutdown(async () => {}, vi.fn()),
       initialSettings: { automaticUpdate: true, updateChannel: 'stable' }, serverGone: () => true,
-      quit, relaunch: vi.fn(), notifyQuit: vi.fn(), exit: vi.fn(), report: vi.fn() });
+      quit, requestReopen: vi.fn(), notifyQuit: vi.fn(), exit: vi.fn(), report: vi.fn() });
     const session = makeSession(), updater = new AppUpdater({ managedSession: session }); updater.initialize(); updater.setAutomaticUpdate(true);
     autoUpdaterMock.emit('update-available', { version: '1.1.10' });
     autoUpdaterMock.emit('update-downloaded', { version: '1.1.10', downloadedFile: '/cache/image' });
@@ -254,11 +254,11 @@ describe('AppUpdater', () => {
       autoUpdaterMock.downloadUpdate.mockImplementationOnce(async () => {
         autoUpdaterMock.emit('update-downloaded', { version: candidate.identity.version, downloadedFile: '/synthetic/cache.AppImage' });
       });
-      const writer = { canonicalImage: '/opt/autobyteus-desktop/1000/app/AutoByteus.AppImage',
+      const writer = {
         stage: vi.fn(async () => candidate), activate: vi.fn(async () => candidate.identity),
         status: vi.fn(async () => ({ version: '1.1.9', sha256: 'old' })), discard: vi.fn(async () => {}) };
       const stop = vi.fn(async () => {});
-      const hooks = { serverGone: vi.fn(() => true), quit: vi.fn(), relaunch: vi.fn(),
+      const hooks = { serverGone: vi.fn(() => true), quit: vi.fn(), requestReopen: vi.fn(),
         notifyQuit: vi.fn(), exit: vi.fn(), report: vi.fn() };
       const session = new ManagedUpdateSession({ writer, shutdown: new ApplicationShutdown(stop, vi.fn()),
         initialSettings: { automaticUpdate: false, updateChannel: 'stable' }, ...hooks });
@@ -288,14 +288,14 @@ describe('AppUpdater', () => {
           s.session.willQuit({ preventDefault() {} });
           await vi.waitFor(() => expect(s.hooks.quit).toHaveBeenCalledOnce());
           expect(s.writer.activate).not.toHaveBeenCalled();
-          expect(s.hooks.relaunch).not.toHaveBeenCalled();
+          expect(s.hooks.requestReopen).not.toHaveBeenCalled();
         } else {
           if (action === 'manual refusal') s.writer.activate.mockRejectedValue(new Error('refused'));
           if (action === 'manual receipt loss') s.writer.activate.mockRejectedValue(new ManagedStageGone('gone'));
           expect(s.updater.installUpdateAndRestart()).toEqual({ accepted: true });
-          await vi.waitFor(() => expect(s.hooks.exit).toHaveBeenCalledWith(0));
+          await vi.waitFor(() => expect(s.hooks.exit).toHaveBeenCalledWith(76));
           expect(s.writer.activate).toHaveBeenCalledOnce();
-          expect(s.hooks.relaunch).toHaveBeenCalledWith(s.writer.canonicalImage);
+          expect(s.hooks.requestReopen).toHaveBeenCalledOnce();
           if (action !== 'manual success') {
             expect(s.updater.getState().notification?.outcome).toBe('MANUAL_INSTALL_FAILED');
             // The manual outcome hides AUTO_FAILED in the row, not the separate permanent block.
@@ -346,7 +346,7 @@ describe('AppUpdater', () => {
         expect(s.writer.stage).toHaveBeenCalledOnce();
         expect(s.stop).toHaveBeenCalledOnce();
         expect(s.hooks.notifyQuit).toHaveBeenCalledOnce();
-        expect(s.hooks.relaunch).not.toHaveBeenCalled();
+        expect(s.hooks.requestReopen).not.toHaveBeenCalled();
         expect(autoUpdaterMock.quitAndInstall).not.toHaveBeenCalled();
       });
   });

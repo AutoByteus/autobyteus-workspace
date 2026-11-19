@@ -27,7 +27,7 @@ func TestEarlyFatalClassification(t *testing.T) {
 			if err := os.WriteFile(script, []byte("#!/bin/sh\nulimit -c 0\n"+c.script), 0700); err != nil {
 				t.Fatal(err)
 			}
-			code, restricted, err := Supervise(script, []string{"argument with spaces", "--second"})
+			code, restricted, err := Supervise(script, []string{"argument with spaces", "--second"}, false)
 			if err != nil || code != c.code || restricted != c.restricted {
 				t.Fatalf("got code=%d restricted=%v error=%v", code, restricted, err)
 			}

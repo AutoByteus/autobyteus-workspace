@@ -3,17 +3,19 @@ import { ManagedStageGone, type ManagedStage, type LinuxManagedInstall } from '.
 
 type Settings = Readonly<{ automaticUpdate: boolean; updateChannel: 'stable' | 'beta' }>
 type SessionOptions = Readonly<{
-  writer: Pick<LinuxManagedInstall, 'stage' | 'activate' | 'status' | 'discard' | 'canonicalImage'>
+  writer: Pick<LinuxManagedInstall, 'stage' | 'activate' | 'status' | 'discard'>
   shutdown: ApplicationShutdown
   serverGone: () => boolean
   initialSettings: Settings
   notifyQuit: () => void
   quit: () => void
   exit: (code: number) => void
-  relaunch: (canonicalImage: string) => void
+  requestReopen: (() => void) | null
   report: (error: unknown) => void
 }>
 export type ManagedUpdateEvent =
+  | { type: 'restart-unavailable' }
+  | { type: 'restart-write-failed' }
   | { type: 'ready'; version: string }
   | { type: 'invalidated' }
   | { type: 'verification-cancelled'; version: string }
@@ -73,6 +75,7 @@ export class ManagedUpdateSession {
   }
   requestRestart(): { accepted: boolean } {
     if (!this.pending || this.intent !== null) return { accepted: false }
+    if (!this.options.requestReopen) { this.emit({ type: 'restart-unavailable' }); return { accepted: false } }
     this.intent = 'restart'
     const stage = this.pending, generation = this.generation
     void this.finish(stage, generation, false)
@@ -117,10 +120,20 @@ export class ManagedUpdateSession {
             if (actual.sha256 !== stage.baseline) throw new Error('Activation outcome requires repair')
           }
         }
+      } else if (!automatic && (!stage || (await this.options.writer.status()).sha256 !== stage.baseline)) {
+        throw new Error('Cancelled restart baseline could not be confirmed')
+      }
+      if (automatic) { this.passQuit = true; this.options.quit(); return }
+      try { this.options.requestReopen!() }
+      catch (error) {
+        this.pending = null; ++this.generation
+        this.intent = 'failed-restart'
+        this.options.report(error)
+        this.emit({ type: 'restart-write-failed' })
+        return
       }
       this.passQuit = true
-      if (automatic) this.options.quit() // ordinary intentional quit never reopens
-      else { this.options.relaunch(this.options.writer.canonicalImage); this.options.exit(0) }
+      this.options.exit(76)
     } catch (error) {
       this.options.report(error)
       if (stage) this.emit({ type: 'activation-failed', version: stage.identity.version, error, automatic, confirmedOld: false })

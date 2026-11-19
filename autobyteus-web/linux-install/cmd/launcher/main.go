@@ -66,7 +66,7 @@ func run() (int, error) {
 			return 1, syscall.Exec(canonical, append([]string{canonical}, args...), os.Environ())
 		}
 	}
-	code, restricted, err := launch.Supervise(real, args)
+	code, restricted, err := launch.Supervise(real, args, managed)
 	if err != nil || !restricted {
 		return code, err
 	}

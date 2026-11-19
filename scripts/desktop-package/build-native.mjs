@@ -21,6 +21,10 @@ export function buildNative({ version, arch, publicKeyFile, output, asset, testO
   const fields = {Version:version,Arch:arch,Repository:'AutoByteus/autobyteus-workspace',Asset:asset,PublicKey:publicKey};
   mkdirSync(output,{recursive:true});
   const env = {...process.env,CGO_ENABLED:'0',GOTOOLCHAIN:'local'};
+  // Stable Node-API, no V8 ABI or downloaded headers. Release Node distributions include these headers.
+  execFileSync('gcc',['-std=c11','-O2','-Wall','-Wextra','-Werror','-fPIC','-shared',
+    '-I'+resolve(process.execPath,'../../include/node'),resolve(source,'electron/managed_restart.c'),
+    '-o',resolve(output,'managed-restart.node')],{stdio:'inherit'});
   function build(command,destination,extra={}) {
     let flags=Object.entries({...fields,...extra}).flatMap(([key,value])=>['-X',`autobyteus.local/desktop/linux-install/internal/buildinfo.${key}=${value}`]).join(' ');
     if (testOrigin) flags += ` -X autobyteus.local/desktop/linux-install/internal/acquire.testOrigin=${testOrigin}`;

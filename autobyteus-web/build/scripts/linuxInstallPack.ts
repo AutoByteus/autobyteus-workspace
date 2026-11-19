@@ -21,7 +21,7 @@ export function packLinuxInstall(context: AfterPackContext): void {
   const nativeOutput = path.resolve('linux-install/out')
   execFileSync(process.execPath, [path.resolve('../scripts/desktop-package/build-native.mjs'),
     version, arch, path.resolve(publicKeyFile), nativeOutput, canonicalAsset], { stdio: 'inherit' })
-  for (const name of ['AppRun', 'autobyteus-provision', 'autobyteus-install-client']) {
+  for (const name of ['AppRun', 'autobyteus-provision', 'autobyteus-install-client', 'managed-restart.node']) {
     fs.copyFileSync(path.join(nativeOutput, name), path.join(context.appOutDir, name))
     fs.chmodSync(path.join(context.appOutDir, name), 0o755)
   }

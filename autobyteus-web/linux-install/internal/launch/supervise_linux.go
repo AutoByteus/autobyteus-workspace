@@ -1,12 +1,14 @@
 package launch
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"os/exec"
 	"os/signal"
 	"regexp"
 	"sync"
+	"sync/atomic"
 	"syscall"
 	"time"
 )
@@ -38,7 +40,7 @@ func (d *diagnostics) Write(b []byte) (int, error) {
 	return n, err
 }
 
-func Supervise(executable string, args []string) (int, bool, error) {
+func Supervise(executable string, args []string, managed bool) (int, bool, error) {
 	ready, notify, err := os.Pipe()
 	if err != nil {
 		return 1, false, err
@@ -47,18 +49,41 @@ func Supervise(executable string, args []string) (int, bool, error) {
 	cmd := exec.Command(executable, args...)
 	cmd.Env = append(os.Environ(), "AUTOBYTEUS_LAUNCH_READY_FD=3")
 	cmd.ExtraFiles = []*os.File{notify}
+	var receiver, sender *os.File
+	if managed {
+		receiver, sender, err = restartPair()
+		if err == nil {
+			defer receiver.Close()
+			info, e := sender.Stat()
+			if e != nil {
+				sender.Close()
+				notify.Close()
+				return 1, false, e
+			}
+			cmd.Env = append(cmd.Env, fmt.Sprintf("AUTOBYTEUS_RESTART_INODE=%d", info.Sys().(*syscall.Stat_t).Ino))
+			cmd.ExtraFiles = append(cmd.ExtraFiles, sender)
+		} else {
+			fmt.Fprintln(os.Stderr, "Manual restart channel unavailable:", err)
+		}
+	}
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	capture := &diagnostics{}
 	cmd.Stderr = capture
 	started := time.Now()
-	if err = cmd.Start(); err != nil {
+	signals := make(chan os.Signal, 8)
+	signal.Notify(signals, syscall.SIGTERM, syscall.SIGINT, syscall.SIGHUP)
+	defer signal.Stop(signals)
+	err = cmd.Start()
+	if sender != nil {
+		sender.Close()
+	}
+	if err != nil {
 		notify.Close()
 		return 1, false, err
 	}
 	notify.Close()
-	signals := make(chan os.Signal, 8)
-	signal.Notify(signals, syscall.SIGTERM, syscall.SIGINT, syscall.SIGHUP)
+	var terminated atomic.Bool
 	done := make(chan struct{})
 	var wg sync.WaitGroup
 	wg.Add(1)
@@ -67,6 +92,7 @@ func Supervise(executable string, args []string) (int, bool, error) {
 		for {
 			select {
 			case s := <-signals:
+				terminated.Store(true)
 				cmd.Process.Signal(s)
 			case <-done:
 				return
@@ -74,7 +100,6 @@ func Supervise(executable string, args []string) (int, bool, error) {
 		}
 	}()
 	err = cmd.Wait()
-	signal.Stop(signals)
 	close(done)
 	wg.Wait()
 	// Readiness pipe may still be inherited by descendants: never block quit waiting for EOF.
@@ -87,6 +112,23 @@ func Supervise(executable string, args []string) (int, bool, error) {
 	if exit, ok := err.(*exec.ExitError); ok {
 		status := exit.Sys().(syscall.WaitStatus)
 		code := status.ExitStatus()
+		if managed && code == restartExit {
+			if receiver == nil || !restartRequested(int(receiver.Fd()), cmd.Process.Pid, os.Getuid()) {
+				return 1, false, fmt.Errorf("manual restart not confirmed")
+			}
+			// Continue collecting signals during revalidation. After Stop, new signals use
+			// ordinary process disposition; account for signals already queued before exec.
+			e := canonicalRestart(func() bool {
+				signal.Stop(signals)
+				select {
+				case <-signals:
+					return false
+				default:
+					return !terminated.Load()
+				}
+			})
+			return 1, false, e
+		}
 		if status.Signaled() {
 			code = 128 + int(status.Signal())
 		}

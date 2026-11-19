@@ -9,7 +9,7 @@ const [image, publicPath] = process.argv.slice(2);
 if (!image || ![3,4].includes(process.argv.length)) throw Error('Usage: verify-layout.mjs IMAGE [PUBLIC_KEY_FILE]');
 const directory=mkdtempSync(join(tmpdir(),'autobyteus-layout-'));
 try {
-  for (const file of ['AppRun','autobyteus','autobyteus.desktop','autobyteus-provision','autobyteus-install-client']) {
+  for (const file of ['AppRun','autobyteus','autobyteus.desktop','autobyteus-provision','autobyteus-install-client','managed-restart.node']) {
     execFileSync(resolve(image),['--appimage-extract',file],{cwd:directory,stdio:'pipe'});
     const data=readFileSync(join(directory,'squashfs-root',file));
     if (file.endsWith('.desktop')) {

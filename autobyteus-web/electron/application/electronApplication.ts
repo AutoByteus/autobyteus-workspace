@@ -1,3 +1,4 @@
+import { claimManagedRestart } from '../launch-profile/managedRestartChannel'
 import { ManagedUpdateSession } from './managedUpdateSession'
 import { detectLinuxManagedInstall } from '../updater/linuxManagedInstall'
 import { loadAppUpdateAutomatic } from '../updater/appUpdateAutomaticStore'
@@ -91,10 +92,11 @@ export class ElectronApplication {
       initialSettings: { automaticUpdate: loadAppUpdateAutomatic(app.getPath('userData')), updateChannel: loadAppUpdateChannel(app.getPath('userData')) },
       notifyQuit: () => this.shellWindowRegistry.broadcast('app-quitting', undefined),
       quit: () => app.quit(), exit: code => app.exit(code),
-      relaunch: execPath => app.relaunch({ execPath, args: [] }), report: error => logger.error('Managed update failed', error),
+      requestReopen: claimManagedRestart(), report: error => logger.error('Managed update failed', error),
     }) : null
     const installHooks = {
       managedSession: this.managedUpdates ?? undefined,
+      showRestartUnavailable: (message: string) => dialog.showErrorBox('AutoByteus update', message),
       prepareForInstall: () => this.prepareForInstall(),
       recoverAfterFailedInstall: () => this.recoverAfterFailedInstall(),
     }
