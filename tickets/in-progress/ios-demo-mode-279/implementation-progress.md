@@ -8,7 +8,7 @@ A running record of the build, kept in the ticket so the work stays traceable be
   - **Constraint found:** the demo's `WebSocket` must be the class that defines `send`/`close` itself, because noVNC checks a socket's immediate prototype only.
   - **Note for the iPad layout:** on iPad the web view reports a desktop user agent, so the layout must follow the viewport width, never the user agent.
 
-## Step 1: the web demo node (in progress)
+## Step 1: the web demo node (done)
 
 Working on the dev server (`AUTOBYTEUS_MOBILE_WEB_BUILD=true AUTOBYTEUS_DEMO_BUILD=1 NUXT_APP_BASE_URL=/ nuxt dev`):
 
@@ -41,6 +41,7 @@ Findings while porting:
 - **A test that read Iconify's placeholder.** `AgentConversationFeed.spec.ts` (the jump arrow's exact signature) expected the glyph's classes `h-4 w-4` and a 16 × 16 view box: Iconify's loading placeholder, since the icon was never loaded in tests. With the local bundle the real `heroicons:arrow-down` draws (24 × 24, Iconify's own classes); the test now compares the glyph's layout classes and the real view box.
 - **The content rule list never compiled.** `^(https?|wss?)://` is not accepted by WebKit ("Disjunctions are not supported yet"), so the R-002 harness ran without it (its summary corrected). The app uses two rules without alternation, refuses to open a demo whose list did not compile, and a UI test shows an image from a real site is blocked in the demo web view.
 - **iOS first screen copy.** Android's ("…and press Show QR code", DEC-024: the desktop's button is "Show QR code") rather than VIS-001's "…and choose Connect a phone".
+- **Activity on stopped runs.** The probes found five runs with an empty Activity view: the ported content gave stopped runs none. A stopped run now keeps its Activity, as the node's run history does (REQ-004).
 - **Reference files.** The node stores a message's references as absolute paths and names each by `sha256(messageId \0 path)`; the demo's messages carry absolute paths in the demo folder and its route resolves the same ids.
 
 | Part | State | Files |
@@ -57,9 +58,9 @@ Findings while porting:
 | `--demo` build target | done | `scripts/build-mobile-web.mjs`; the build is 12 MB (R-004) |
 | Local icons | done | `plugins/01.localIcons.client.ts`, `scripts/build-icon-bundle.mjs` (`pnpm icons:build`, `icons:check`), `assets/icons/phone-icon-bundle.json` (161 icons, 77 KB), `scripts/__tests__/buildIconBundle.spec.ts`; dev dependencies `@iconify-json/{heroicons,mdi,ph,svg-spinners,vscode-icons}`, `@iconify/utils` |
 | Contract, inventory and build guard tests | done | `demo/__tests__/{demoInventory,demoStreams,demoWorld}.spec.ts` (the measured inventory as `fixtures/`), `scripts/__tests__/{demoImportBoundary,mobileBuildChecks,buildIconBundle}.spec.ts`; each build checks its own output (`scripts/mobile-build-checks.mjs`, run by `build-mobile-web.mjs`): `/mobile` holds no demo code, the demo answers all 252 compiled operations (45 handled, 207 listed in `demo/graphql/unreachable-operations.json` with their reasons) |
-| Sweep probes | to do | `tests/e2e/mobile-demo-*.mjs` |
+| Sweep probes | done | `tests/e2e/mobile-demo-*.mjs`: 0 findings, 0 errors at three sizes (handoff IMP-07) |
 
-## Step 2: the web shell (in progress)
+## Step 2: the web shell (done)
 
 | Part | State | Files |
 | --- | --- | --- |
@@ -67,9 +68,9 @@ Findings while porting:
 | iPad layout (REQ-008; VIS-031, 033, 034, 035) | done | `MobilePairedShell.vue` (two panes from 1024 px: the 380 px list and a right pane that is the containing block of every other screen, so each fills it unchanged; "Choose a run"), `MobileBottomSheet.vue` (a centered 512 px card from 768 px), `composables/mobile/useMobileSplitLayout.ts` (the viewport width, never the user agent), `MobileRunTargetView.vue` / `MobileRunScreen.vue` (no ← beside the list); specs |
 | DC-007 (REQ-009) | done | `composables/workspace/useOwnSendFollow.ts` (your own send follows; others' activity waits behind Jump to latest), wired in `AgentConversationFeed.vue`, which shares one `followLatest` with Jump to latest and a subject change, so the file stays within 500 lines (499); specs |
 | DC-011 (REQ-010) | done | `ArtifactContentViewer.vue` (`previewOnly`: no Edit Mode / Preview switch), `MobileArtifacts.vue` (passes it); specs |
-| Sweep probes | written, red until complete | `tests/e2e/mobile-demo-{crawl,sheets,upload,final}-probe.mjs`, `mobile-demo-probe-support.mjs`; `pnpm test:e2e:mobile-demo` |
+| Sweep probes | green at three sizes (IMP-07) | `tests/e2e/mobile-demo-{crawl,sheets,upload,final}-probe.mjs`, `mobile-demo-probe-support.mjs`; `pnpm test:e2e:mobile-demo` |
 
-## Step 3: iOS (in progress)
+## Step 3: iOS (done)
 
 | Part | State | Files |
 | --- | --- | --- |
@@ -82,8 +83,11 @@ Findings while porting:
 | Routes (DS-001, DS-004, DS-005) | done | `AppShellCoordinator.swift`, `SceneDelegate.swift` |
 | Share extension (UIS-016) | done | `AutoByteusMobileShareExtension/ShareViewController.swift` (the four messages; a centered card on iPad) |
 | Bundling | done | `project.yml` (DemoWeb/ as a folder; the build fails without it), `scripts/prepare-demo-web.sh`, `.gitignore` |
-| XCUITests | iPhone done; iPad to run | `AutoByteusMobileUITests/DemoUITests.swift` (first screen, Try demo, Leave demo, a new demo, cold launch, the demo code, the demo link, a kept share, no network from the demo web view); the fake-node smoke tests rewritten for the new connect path |
+| XCUITests | done on iPhone and iPad (IMP-09…IMP-11) | `AutoByteusMobileUITests/DemoUITests.swift` (first screen, Try demo, Leave demo, a new demo, cold launch, the demo code, the demo link, a kept share, no network from the demo web view); the fake-node smoke tests rewritten for the new connect path |
 
 ## Steps 4–5
 
-Not started (design spec, Change Sequence).
+- Step 4 done: both macOS jobs of `release-ios.yml` build the bundled demo from `pnpm install` (`prepare-demo-web.sh --build`; IMP-06, IMP-12). Its build-only run on the branch is downstream (it needs the branch pushed).
+- Step 5 is downstream: the Solution Designer's sweep, then TestFlight only on the founder's word.
+
+The handoff is `implementation-handoff.md` (IR-001).

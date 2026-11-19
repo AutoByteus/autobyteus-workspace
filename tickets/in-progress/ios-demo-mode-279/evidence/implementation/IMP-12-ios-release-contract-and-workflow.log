@@ -1,0 +1,11 @@
+# IMP-12 iOS release contract check and workflow parse
+# command: autobyteus-ios/scripts/ios-release-contract-check.py; ruby -ryaml -e 'YAML.load_file(".github/workflows/release-ios.yml")'
+# commit: df18856ea4
+# env: macOS 26.5.2, Python 3.9.6, ruby 2.6.10p210
+# date: 2026-11-19T17:34:39Z
+
+iOS release contract checks passed.
+contract exit=0
+build-ios: Checkout workspace | Select Xcode 26 or newer | Install XcodeGen | Select available iOS simulator | Setup pnpm | Setup Node | Install workspace dependencies | Build the bundled demo | Generate, build, and run implementation checks | Write publish secret readiness summary | Upload iOS build/test artifacts
+upload-testflight: Checkout workspace | Select Xcode 26 or newer | Install XcodeGen | Initialize temporary publish paths | Import iOS distribution certificate into temporary keychain | Decode, verify, and install App Store provisioning profiles | Setup pnpm | Setup Node | Install workspace dependencies | Build the bundled demo | Generate project and ExportOptions.plist | Archive and export signed IPA | Upload IPA to App Store Connect/TestFlight | Summarize iOS TestFlight upload | Cleanup iOS signing material | Upload iOS publish artifacts
+yaml exit=0

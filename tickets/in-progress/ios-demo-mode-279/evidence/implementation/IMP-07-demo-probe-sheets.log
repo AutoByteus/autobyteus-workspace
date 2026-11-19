@@ -1,0 +1,10 @@
+# IMP-07 mobile-demo-sheets-probe
+# command: node tests/e2e/mobile-demo-sheets-probe.mjs --output-dir=/tmp/autobyteus-279-dev/probes/sheets
+# build: dist-mobile-demo/public from IMP-06; commit: e36f18cfd3 (its tree; run just before that commit was made)
+# env: macOS 26.5.2, node v22.23.1, headless Google Chrome; sizes 440x956, 820x1180, 1180x820
+# date: 2026-11-19T13:49:59Z
+
+mobile-demo-sheets iphone-440x956: 0 findings, 0 errors
+mobile-demo-sheets ipad-portrait-820x1180: 0 findings, 0 errors
+mobile-demo-sheets ipad-landscape-1180x820: 0 findings, 0 errors
+exit=0
