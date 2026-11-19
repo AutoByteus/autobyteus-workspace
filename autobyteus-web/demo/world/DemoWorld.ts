@@ -6,6 +6,7 @@
  * delegated. Top-level runs are the run list's rows; delegated runs are rows of their root's run tree.
  */
 import { foldTeamAggregateStatus } from '@autobyteus/collaboration-stream-contracts';
+import { DemoRuntime, type DemoAgentFrame } from '../runtime';
 import { DEMO_RUN_SPECS, SHOWCASE_RUN_KEY, type DemoMemberSpec, type DemoRunSpec, type DemoStatus } from './content/runs';
 
 export type { DemoStatus } from './content/runs';
@@ -61,7 +62,8 @@ export type DemoDefinition = { kind: DemoDefinitionKind; id: string; name: strin
 
 export type DemoWorldChange =
   | { type: 'agent_status'; agent: DemoAgent }
-  | { type: 'run_tree'; root: DemoRun };
+  | { type: 'run_tree'; root: DemoRun }
+  | { type: 'agent_frame'; agent: DemoAgent; frame: DemoAgentFrame };
 
 export const DEMO_WORKSPACE_ROOT = '/demo/demo-workspace';
 export const DEMO_WORKSPACE_NAME = 'demo-workspace';
@@ -86,9 +88,12 @@ export class DemoWorld {
   private readonly agentsById = new Map<string, DemoAgent>();
   private readonly definitionsById = new Map<string, DemoDefinition>();
   private readonly listeners = new Set<(change: DemoWorldChange) => void>();
+  /** What the demo's agents do when the phone sends them a message or stops them (`demo/runtime.ts`). */
+  readonly runtime: DemoRuntime;
 
   constructor(readonly startedAt: Date) {
     for (const spec of DEMO_RUN_SPECS) this.topLevelRuns.push(this.buildRun(spec, null));
+    this.runtime = new DemoRuntime(this);
   }
 
   /** An ISO time `minutes` before the demo started (the ages a run list shows: "2m", "6h", "3d"). */

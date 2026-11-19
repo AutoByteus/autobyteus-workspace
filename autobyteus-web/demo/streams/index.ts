@@ -1,5 +1,6 @@
 /** The demo node's WebSocket streams (autobyteus-279), one session per route. */
 import type { DemoStreamSession } from '../demoTransport';
+import { openAgentStream } from './agentStream';
 import { openRunStatusStream } from './runStatusStream';
 import type { DemoWorld } from '../world/DemoWorld';
 
@@ -23,10 +24,22 @@ const changeFeedThatNeverChanges = (context: DemoStreamContext): DemoStreamSessi
   received: () => undefined,
 });
 
+/** A run the world does not have: the node closes the socket, as for a run it does not know. */
+const unknownRun = (context: DemoStreamContext, runId: string): DemoStreamSession => {
+  console.error(`[demo] no run ${runId} for ${context.url.pathname}`);
+  setTimeout(() => context.close(4004, 'run not found'), 0);
+  return { received: () => undefined };
+};
+
 const routes: DemoStreamRoute[] = [
   route(/^\/ws\/agent-package-definitions$/, changeFeedThatNeverChanges),
   route(/^\/ws\/projects$/, changeFeedThatNeverChanges),
   route(/^\/ws\/run-status$/, openRunStatusStream),
+  route(/^\/ws\/agent\/([^/]+)$/, (context, match) => {
+    const agent = context.world.agent(decodeURIComponent(match[1]!));
+    if (!agent || agent.run.kind !== 'agent') return unknownRun(context, match[1]!);
+    return openAgentStream(context, agent);
+  }),
 ];
 
 export const openDemoStream = (
