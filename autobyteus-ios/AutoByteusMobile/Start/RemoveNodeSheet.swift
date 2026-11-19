@@ -12,9 +12,7 @@ final class RemoveNodeSheet: UIViewController {
         self.entry = entry
         self.onRemove = onRemove
         super.init(nibName: nil, bundle: nil)
-        modalPresentationStyle = .pageSheet
-        sheetPresentationController?.detents = [.custom { _ in 220 }]
-        sheetPresentationController?.prefersGrabberVisible = true
+        ShellUI.presentAsSheet(self, phoneDetent: .custom { _ in 220 }, cardHeight: 200)
     }
 
     required init?(coder: NSCoder) { nil }

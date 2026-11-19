@@ -17,9 +17,7 @@ final class TypeAddressSheet: UIViewController, UITextFieldDelegate {
         self.prefill = prefill
         self.onConnect = onConnect
         super.init(nibName: nil, bundle: nil)
-        modalPresentationStyle = .pageSheet
-        sheetPresentationController?.detents = [.medium()]
-        sheetPresentationController?.prefersGrabberVisible = true
+        ShellUI.presentAsSheet(self, phoneDetent: .medium(), cardHeight: 300)
     }
 
     required init?(coder: NSCoder) { nil }

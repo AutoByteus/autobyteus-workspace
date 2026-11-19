@@ -97,6 +97,27 @@ final class DemoUITests: XCTestCase {
         XCTAssertEqual("network-probe:blocked", probe.label)
     }
 
+    /// iPad landscape (REQ-008, VIS-032…035): the first screen's centered column, Type an address as a centered card, and
+    /// the demo's two panes with the empty pane's "Choose a run". iPhone has no such layout, so it is skipped there.
+    func testIPadLandscape() throws {
+        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "iPad only")
+        XCUIDevice.shared.orientation = .landscapeLeft
+        addTeardownBlock { XCUIDevice.shared.orientation = .portrait }
+        let app = launch()
+        XCTAssertTrue(app.buttons["start.scan"].waitForExistence(timeout: uiReadyTimeout))
+        attach(app, "ipad-landscape-first-screen")
+        app.buttons["start.otherWays"].tap()
+        tap(app.buttons["start.typeAddress"])
+        let field = app.textFields["typeAddress.field"]
+        XCTAssertTrue(field.waitForExistence(timeout: uiReadyTimeout))
+        XCTAssertLessThanOrEqual(field.frame.width, 512, "Type an address is a 512 pt card on iPad")
+        attach(app, "ipad-landscape-type-address")
+        app.buttons["Close"].firstMatch.tap()
+        tap(app.buttons["start.tryDemo"])
+        waitForDemo(app, "ipad-landscape-demo")
+        XCTAssertTrue(app.webViews.staticTexts["Choose a run"].exists, "The empty pane beside the list")
+    }
+
     private func waitForDemo(_ app: XCUIApplication, _ name: String) {
         let welcome = app.webViews.staticTexts["Welcome to the demo"]
         XCTAssertTrue(welcome.waitForExistence(timeout: demoLoadTimeout), "The demo's run list with its welcome card")

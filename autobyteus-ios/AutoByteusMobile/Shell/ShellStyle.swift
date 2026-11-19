@@ -108,6 +108,22 @@ enum ShellUI {
         return button
     }
 
+    /// The tablet sheet card's width (VIS-035: sheets are centered 512 pt cards on iPad).
+    static let sheetCardWidth: CGFloat = 512
+
+    /// Presents `controller` as the app's sheet: on iPhone a bottom sheet at `phoneDetent` with a grabber; on iPad a
+    /// centered card `sheetCardWidth` wide and `cardHeight` tall. Call from the controller's initializer.
+    static func presentAsSheet(_ controller: UIViewController, phoneDetent: UISheetPresentationController.Detent, cardHeight: CGFloat) {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            controller.modalPresentationStyle = .formSheet
+            controller.preferredContentSize = CGSize(width: sheetCardWidth, height: cardHeight)
+        } else {
+            controller.modalPresentationStyle = .pageSheet
+            controller.sheetPresentationController?.detents = [phoneDetent]
+            controller.sheetPresentationController?.prefersGrabberVisible = true
+        }
+    }
+
     /// Pins `content` to `container`'s safe area, centered and at most `columnMaxWidth` wide (iPad: one centered column).
     static func centeredColumn(_ content: UIView, in container: UIView) {
         content.translatesAutoresizingMaskIntoConstraints = false
