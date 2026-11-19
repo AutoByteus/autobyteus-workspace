@@ -111,7 +111,7 @@ Manifest (exact shape, no generation time, no paths):
 ```json
 {
   "run_id": "run_…",
-  "renderer_revision": 2,
+  "renderer_revision": 3,
   "files": [
     { "journal_file": "work_journal_000001.md", "source_file": "raw_traces_000001.jsonl",
       "source_record_count": 141, "state": "closed", "content_sha256": "…", "runtime_kind": "claude_agent_sdk" },
@@ -226,6 +226,14 @@ be wrong when an agent only reviews a skill; the line stays true, since the text
 `(via <server>)` for a qualified name (Codex `<server>.<tool>`, Antigravity `mcp__<server>__<tool>`). A
 qualified name never reaches the platform table, so another server's tool that shares a platform tool's
 name is not mistaken for it. The user's own tools and a run whose runtime is not recorded stay generic.
+
+**Runtime plumbing (omitted).** A runtime translation may name a call as its own plumbing
+(`RuntimeTranslation.isRuntimePlumbing`). Antigravity reads `<home>/.gemini/antigravity*/mcp/<server>/<tool>.json` (and the server's
+`instructions.md`) before each lazy MCP tool; a `read_file`, `view_file` or plain shell read (`cat`, `sed -n`, `head`, one path, via the
+same `plainReadPath` as the skill rule) of exactly such a path is not shown, with its result. The renderer omits it only when its
+result is in the same file and succeeded (it counts the two records as omitted); a failed read, a read with no result, a repository's
+own `mcp/<x>/<y>.json`, a spill read of `.system_generated/…/output.txt`, another runtime's read or any other file renders as usual.
+The raw traces keep both records (autobyteus-560).
 
 A converter is pure (no clock, no I/O, no model) and only rephrases what the record holds; the line
 links to the raw record, which keeps the original tool name and data.
