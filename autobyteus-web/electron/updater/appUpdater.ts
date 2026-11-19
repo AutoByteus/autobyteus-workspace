@@ -491,6 +491,10 @@ export class AppUpdater implements AppUpdateController {
   private managedEvent(event: ManagedUpdateEvent): void {
     if (event.type === 'invalidated') {
       this.applyState({ updateStaged: false, ...(this.state.status === 'downloaded' ? { status: 'available' } : {}) });
+    } else if (event.type === 'verification-cancelled') {
+      this.automatic?.downloaded(event.version); // end automatic download bookkeeping; no managed install on readiness
+      this.applyState({ status: 'available', updateStaged: false, message: 'Update is available for download.',
+        downloadPercent: null, downloadTransferredBytes: null, downloadTotalBytes: null });
     } else if (event.type === 'stage-gone') {
       this.notificationRecord?.clearLostStageAttempt(event.version);
       if (!event.automatic) this.notificationRecord?.recordManualInstallFailure(event.version, 'stage-gone');

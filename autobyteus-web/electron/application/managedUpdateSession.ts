@@ -16,6 +16,7 @@ type SessionOptions = Readonly<{
 export type ManagedUpdateEvent =
   | { type: 'ready'; version: string }
   | { type: 'invalidated' }
+  | { type: 'verification-cancelled'; version: string }
   | { type: 'stage-gone'; version: string; automatic: boolean }
   | { type: 'activating'; version: string; automatic: boolean }
   | { type: 'stage-failed'; version: string; error: unknown }
@@ -25,6 +26,7 @@ export type ManagedUpdateEvent =
 export class ManagedUpdateSession {
   private generation = 0
   private pending: ManagedStage | null = null
+  private verifying: number | null = null
   private intent: 'quit' | 'restart' | 'failed-restart' | null = null
   private automaticInstallBlockedVersion: string | null = null
   private passQuit = false
@@ -39,6 +41,7 @@ export class ManagedUpdateSession {
   async stageDownloaded(file: string, version: string): Promise<void> {
     if (this.intent !== null) return
     const generation = ++this.generation
+    this.verifying = generation
     const channel = this.lastSettings.updateChannel
     if (this.pending) this.discard(this.pending)
     this.pending = null
@@ -46,12 +49,17 @@ export class ManagedUpdateSession {
     try {
       const stage = await this.options.writer.stage(file, version, channel)
       if (generation !== this.generation || this.intent !== null || this.lastSettings.updateChannel !== channel) {
-        this.discard(stage); return
+        await this.options.writer.discard(stage).catch(this.options.report); return
       }
       this.pending = stage
       this.emit({ type: 'ready', version })
     } catch (error) {
       if (generation === this.generation) this.emit({ type: 'stage-failed', version, error })
+    } finally {
+      if (this.verifying === generation) {
+        this.verifying = null
+        if (this.intent === null && generation !== this.generation) this.emit({ type: 'verification-cancelled', version })
+      }
     }
   }
   settingsChanged(current: Settings): void {
