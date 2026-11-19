@@ -137,6 +137,8 @@ export class DemoRuntime {
     const dedupeKey = payload.dedupe_key || messageId;
     const content = payload.content ?? '';
     const attached = (payload.context_file_paths ?? []).map((item) => (typeof item === 'string' ? item : String(item?.path ?? ''))).filter(Boolean);
+    // An uploaded file is named as the user named it (its locator holds the node's stored name).
+    const names = attached.map((path) => this.world.contextFiles.displayNameOf(path) ?? path.split('/').pop() ?? path);
     const stream = this.streamOf(agent);
     const turnId = nextId('demo-turn');
     const sentAt = Date.now();
@@ -149,17 +151,18 @@ export class DemoRuntime {
     }
     conversationOf(this.world, agent).push({
       kind: 'message', role: 'user', content, messageId, dedupeKey, ts: Math.floor(sentAt / 1000),
-      ...(attached.length ? { fileAttachments: attached.map((path) => ({ uri: path, fileType: 'Text', fileName: path.split('/').pop() ?? path })) } : {}),
+      ...(attached.length ? { fileAttachments: attached.map((path, index) => ({ uri: path, fileType: 'Text', fileName: names[index]! })) } : {}),
     });
     stream.inputRevision += 1;
     this.publish(agent, 'AGENT_INPUT_STATE', this.inputState(agent, [{
       sequence: stream.inputRevision, message_id: messageId, dedupe_key: dedupeKey, turn_id: null, state: 'queued', content, sender_type: 'user',
-      file_attachments: attached.map((path) => ({ uri: path, file_type: 'Text', file_name: path.split('/').pop() ?? null })),
+      file_attachments: attached.map((path, index) => ({ uri: path, file_type: 'Text', file_name: names[index]! })),
     }]));
-    this.play(agent, turnId, content, attached);
+    this.play(agent, turnId, content, names);
     return { command_type: 'SEND_MESSAGE', run_id: agent.agentRunId, message_id: messageId, dedupe_key: dedupeKey, state: 'accepted', accepted: true, duplicate: false };
   }
 
+  /** The scripted turn; `attached` holds the names of the files the message carries. */
   private play(agent: DemoAgent, turnId: string, content: string, attached: string[]): void {
     const stream = this.streamOf(agent);
     const reply = replyFor({ showcase: agent.run === this.world.showcaseRun, member: agent.memberName !== null }, content, attached);

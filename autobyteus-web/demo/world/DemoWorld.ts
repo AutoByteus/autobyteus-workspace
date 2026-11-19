@@ -7,6 +7,7 @@
  */
 import { foldTeamAggregateStatus } from '@autobyteus/collaboration-stream-contracts';
 import { DemoRuntime, type DemoAgentFrame, type DemoMemberInput } from '../runtime';
+import { DemoContextFiles } from './contextFiles';
 import { DEMO_RUN_SPECS, SHOWCASE_RUN_KEY, type DemoMemberSpec, type DemoRunSpec, type DemoStatus } from './content/runs';
 
 export type { DemoStatus } from './content/runs';
@@ -102,6 +103,8 @@ export class DemoWorld {
   private startedRuns = 0;
   /** What the demo's agents do when the phone sends them a message or stops them (`demo/runtime.ts`). */
   readonly runtime: DemoRuntime;
+  /** The files the user attached (in memory). */
+  readonly contextFiles = new DemoContextFiles();
 
   constructor(readonly startedAt: Date) {
     for (const spec of DEMO_RUN_SPECS) this.topLevelRuns.push(this.buildRun(spec, null));

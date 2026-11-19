@@ -4,10 +4,12 @@
  * - `fetch` to the demo origin goes to the demo node; the page's own origin (the bundled build and Nuxt's app manifest),
  *   `blob:` and `data:` go to the real `fetch`; every other origin is refused with a `TypeError`, as an offline fetch is.
  * - `WebSocket` to the demo origin is a socket the demo node serves; any other address is refused.
+ * - `XMLHttpRequest` (the phone's REST client, axios) follows the same rule as `fetch` (`demoXmlHttpRequest.ts`).
  *
  * Installed before the Apollo plugin, whose `HttpLink` captures `globalThis.fetch` when it is created.
  */
 import { DEMO_ORIGIN } from './demoIdentity';
+import { createDemoXmlHttpRequestClass } from './demoXmlHttpRequest';
 
 /** What the demo node serves through the transport. */
 export type DemoNodeEndpoint = {
@@ -99,7 +101,7 @@ export const createDemoSocketClass = (node: DemoNodeEndpoint) => class DemoSocke
   }
 };
 
-/** Replaces the page's `fetch` and `WebSocket` with the demo's (see the module comment). */
+/** Replaces the page's `fetch`, `WebSocket` and `XMLHttpRequest` with the demo's (see the module comment). */
 export const installDemoTransport = (node: DemoNodeEndpoint): void => {
   const realFetch = globalThis.fetch.bind(globalThis);
   globalThis.fetch = (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
@@ -109,4 +111,5 @@ export const installDemoTransport = (node: DemoNodeEndpoint): void => {
     return Promise.reject(new TypeError(`The demo has no network: ${url.origin}`));
   };
   globalThis.WebSocket = createDemoSocketClass(node) as unknown as typeof WebSocket;
+  globalThis.XMLHttpRequest = createDemoXmlHttpRequestClass(node, isDemoAddress, globalThis.XMLHttpRequest);
 };

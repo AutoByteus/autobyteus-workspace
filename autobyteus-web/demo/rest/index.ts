@@ -3,9 +3,10 @@ import type { RemoteAccessStatus } from '~/types/remoteAccess';
 import { DEMO_NODE_ID } from '../demoIdentity';
 import type { DemoWorld } from '../world/DemoWorld';
 import { contentRoutes } from './content';
+import { contextFileRoutes } from './contextFiles';
 
 export type DemoRestRoute = {
-  method: 'GET' | 'POST';
+  method: 'GET' | 'POST' | 'DELETE';
   match(url: URL): boolean;
   answer(url: URL, request: Request, world: DemoWorld): Response | Promise<Response>;
 };
@@ -25,4 +26,5 @@ export const demoRestRoutes: DemoRestRoute[] = [
   // autobyteus-server-ts/src/api/rest/node-desktop.ts: the demo node has a node desktop (its RFB is the demo's own).
   { method: 'GET', match: path('/rest/node-desktop'), answer: () => json({ available: true }) },
   ...contentRoutes,
+  ...contextFileRoutes,
 ];
