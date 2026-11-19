@@ -1,3 +1,4 @@
+import { agentInputStateSchema, type AgentInputStateDto } from '@autobyteus/agent-presentation-contracts';
 import type { RunProjectionPayload } from '~/services/runHydration/runStoredStateLoader';
 import type { SegmentContentPayload, ServerMessage } from './messageTypes';
 import { parseServerMessage, validateCanonicalBoundary } from './messageParser';
@@ -11,6 +12,8 @@ export type NumberedFrame = Readonly<{ sequence: number; sequence_through?: numb
  */
 export interface AgentStreamSnapshotPayload {
   stored: RunProjectionPayload;
+  /** The run's current input state, or null when the node cannot tell it (a stopped run, a peer's relay; autobyteus-540 D-8). */
+  input_state: AgentInputStateDto | null;
   turn_frames: Array<ServerMessage & NumberedFrame>;
   base_sequence: number;
   live_sequence_id: string | null;
@@ -36,6 +39,7 @@ export const parseAgentStreamMessage = (raw: string): AgentStreamWireMessage => 
       || !isSequence(payload.base_sequence) || !(payload.live_sequence_id === null || typeof payload.live_sequence_id === 'string')) {
       throw new Error('Invalid AGENT_STREAM_SNAPSHOT payload');
     }
+    if (payload.input_state !== null) agentInputStateSchema.parse(payload.input_state);
     for (const frame of payload.turn_frames) {
       if (!isRecord(frame) || typeof frame.type !== 'string' || !isSequence(frame.sequence)) throw new Error('Invalid snapshot turn frame');
       validateCanonicalBoundary(frame.type, frame.payload);

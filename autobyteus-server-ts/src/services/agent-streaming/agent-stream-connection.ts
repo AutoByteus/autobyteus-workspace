@@ -5,6 +5,7 @@ import {
   agentStreamSnapshotMessage,
   storedRunSnapshot,
   type AgentStreamSnapshotPayload,
+  type ReadInputState,
   type ReadStoredRun,
 } from "./agent-stream-snapshot.js";
 import type { AgentStreamServerMessageSink } from "./websocket-egress/agent-stream-websocket-egress.js";
@@ -18,12 +19,14 @@ export const connectToActiveRun = (input: Readonly<{
   sequence: AgentStreamSequence;
   sink: AgentStreamServerMessageSink;
   readStored: ReadStoredRun;
+  /** The bound run's current input state, carried by the snapshot (autobyteus-540 D-8). */
+  readInputState: ReadInputState;
   onFailure: (error: unknown) => void;
 }>): (() => void) => {
   let closed = false;
   let connection: SnapshotConnection<AgentStreamSnapshotPayload, AgentStreamFrame> | null = null;
   let unsubscribe: () => void = () => undefined;
-  void input.sequence.connect((base) => activeRunSnapshot(input.sequence, base, input.readStored)).then((opened) => {
+  void input.sequence.connect((base) => activeRunSnapshot(input.sequence, base, input.readStored, input.readInputState)).then((opened) => {
     if (closed) { opened.close(); return; }
     connection = opened;
     input.sink.send(agentStreamSnapshotMessage(opened.snapshot));

@@ -44,7 +44,7 @@ const harness = (options: { predating?: string[]; memory?: RunProjectionConversa
     return buildRunProjectionBundle(runId, [...memory], []);
   };
   const snapshot = async () => {
-    const connection = await sequence.connect((base) => activeRunSnapshot(sequence, base, readStored));
+    const connection = await sequence.connect((base) => activeRunSnapshot(sequence, base, readStored, null));
     const after: unknown[] = [];
     connection.subscribe((frame) => after.push(frame.message.toJSON()));
     return { ...connection.snapshot, after };
@@ -163,17 +163,31 @@ describe("AgentStreamSequence snapshot", () => {
     expect(run.sequence.base().baseSequence).toBe(1);
   });
 
+  it("an active run's snapshot carries its input state, read after the stored part (autobyteus-540 D-8)", async () => {
+    const run = harness();
+    const order: string[] = [];
+    const inputState = { run_instance_id: "instance-1", revision: 2, recoverableBlock: null, entries: [{ sequence: 1,
+      message_id: "client_msg-2", dedupe_key: "client_msg-2", turn_id: null, state: "queued" as const, content: "next",
+      sender_type: "user" as const, file_attachments: [] }] };
+    const connection = await run.sequence.connect((base) => activeRunSnapshot(run.sequence, base,
+      async (runId) => { order.push("stored"); return buildRunProjectionBundle(runId, [], []); },
+      () => { order.push("input_state"); return inputState; }));
+    expect(connection.snapshot.input_state).toEqual(inputState);
+    expect(order).toEqual(["stored", "input_state"]);
+    connection.close();
+  });
+
   it("a stopped run's snapshot is its full stored conversation, with no frames", async () => {
     const result = await storedRunSnapshot(RUN, async (runId) =>
       buildRunProjectionBundle(runId, [stored("t9", "all of it")], []));
-    expect(result).toMatchObject({ stored: { conversation: [stored("t9", "all of it")] }, turn_frames: [], base_sequence: 0, live_sequence_id: null });
+    expect(result).toMatchObject({ stored: { conversation: [stored("t9", "all of it")] }, input_state: null, turn_frames: [], base_sequence: 0, live_sequence_id: null });
   });
 
   it("a run whose stored turns could not be read refuses a snapshot instead of guessing", async () => {
     const sequence = new AgentStreamSequence(RUN, { storedTurnIds: () => { throw new Error("unreadable"); },
       whenPersisted: async () => undefined, map: (runEvent) => getAgentRunEventMessageMapper().map(runEvent) });
     sequence.recordPredating();
-    await expect(sequence.connect((base) => activeRunSnapshot(sequence, base, async (runId) => buildRunProjectionBundle(runId, [], []))))
+    await expect(sequence.connect((base) => activeRunSnapshot(sequence, base, async (runId) => buildRunProjectionBundle(runId, [], []), null)))
       .rejects.toThrow("no record of its stored turns");
   });
 

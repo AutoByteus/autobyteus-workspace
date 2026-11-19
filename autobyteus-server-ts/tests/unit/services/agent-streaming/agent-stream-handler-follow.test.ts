@@ -24,6 +24,7 @@ const fakeRun = () => {
   return {
     runId: RUN, runtimeKind: "autobyteus",
     getStatusSnapshot: () => ({ status: "running" }),
+    getInputStateSnapshot: () => ({ run_instance_id: `${RUN}-instance`, revision: 0, entries: [], recoverableBlock: null }),
     subscribeToEvents: vi.fn((listener: (event: unknown) => void) => { listeners.add(listener); return () => listeners.delete(listener); }),
     emit: (delta: string) => listeners.forEach((listener) => listener({ runId: RUN, eventType: AgentRunEventType.SEGMENT_CONTENT,
       payload: { id: "item-1", delta, segment_type: "text" }, statusHint: null })),

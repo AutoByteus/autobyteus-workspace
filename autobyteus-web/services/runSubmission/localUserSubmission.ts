@@ -8,6 +8,9 @@ import {
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { resolveFirstUserMessageSummary } from '~/utils/runTreeSummary';
 import { CollaboratorAddRejection } from '~/services/collaborators/collaboratorAddFailures';
+import { MessageNotDeliveredError, type MessageNotDeliveredCertainty } from './messageNotDelivered';
+import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState';
+import type { AgentStatus } from '~/types/agent/AgentStatus';
 
 export interface BeginLocalUserSubmissionOptions {
   text: string;
@@ -17,7 +20,19 @@ export interface BeginLocalUserSubmissionOptions {
   navigationTarget: LocalUserSubmissionNavigationTarget | null;
   /** `@` mentions sent with this message; their names render as inline chips. */
   mentions?: readonly RequestedCollaboratorMention[];
+  /**
+   * The draft as the user typed it, when `text` is composed from it (a skill tag's instruction): what comes back to the
+   * message box if the message is not delivered. Defaults to `text` with no skill tags.
+   */
+  draft?: Readonly<{ requirement: string; requestedSkillNames: readonly string[] }>;
 }
+
+/** What a not-delivered send puts back in the message box (autobyteus-540 D-4); attachments are the message's own. */
+export type ReturnableDraft = Readonly<{
+  requirement: string;
+  requestedSkillNames: readonly string[];
+  requestedMentions: readonly RequestedCollaboratorMention[];
+}>;
 
 export type LocalUserSubmissionNavigationTarget =
   | { kind: 'standalone'; runId: string }
@@ -37,6 +52,8 @@ export interface LocalUserSubmissionHandle {
   held: boolean;
   // Null keeps local composer/conversation effects without optimistic history navigation.
   navigationTarget: LocalUserSubmissionNavigationTarget | null;
+  /** The draft to put back if the message is not delivered. */
+  readonly draft: ReturnableDraft;
 }
 
 const nowIso = (): string => new Date().toISOString();
@@ -85,9 +102,15 @@ export const beginLocalUserSubmission = (
     message: submittedMessage,
     navigationTarget: options.navigationTarget,
     held: Boolean(options.mentions?.length),
+    draft: Object.freeze({
+      requirement: options.draft?.requirement ?? options.text,
+      requestedSkillNames: [...(options.draft?.requestedSkillNames ?? [])],
+      requestedMentions: [...(options.mentions ?? [])],
+    }),
   };
   // A new send replaces the notice of the previous one.
   context.collaboratorAddFailure = null;
+  context.messageNotDelivered = null;
   context.submissionPending = true;
   if (!handle.held) showSubmittedMessage(handle, occurredAt);
   return handle;
@@ -143,20 +166,60 @@ export const finalizeLocalSubmissionAttachments = (
   return true;
 };
 
+/** Shows the not-delivered notice above the message box (autobyteus-540 D-6); a new send or its dismiss clears it. */
+export const showMessageNotDelivered = (context: AgentContext, certainty: MessageNotDeliveredCertainty): void => {
+  context.messageNotDelivered = certainty;
+};
+
+/**
+ * A message that did not reach the node, or may not have: the shown message is removed when the node does not have it
+ * (`not_sent`; for `unknown` the next snapshot shows the truth), the draft comes back when the message box is empty
+ * (a draft typed meanwhile is kept), the notice shows, and the run's status is left alone.
+ */
+const returnDraft = (handle: LocalUserSubmissionHandle, error: MessageNotDeliveredError): void => {
+  const { context, message, draft } = handle;
+  console.warn(`Message not delivered (${error.certainty}): ${error.message}`);
+  context.submissionPending = false;
+  if (!handle.held && error.certainty === 'not_sent') {
+    const at = context.state.conversation.messages.indexOf(message);
+    if (at >= 0) {
+      context.state.conversation.messages.splice(at, 1);
+      commitRecentEventMonitorEffect(context, 'STRUCTURAL');
+      context.state.conversation.updatedAt = nowIso();
+    }
+  }
+  // A held send never cleared the box; any other: only an empty box takes the draft back.
+  if (!handle.held && !context.requirement.trim() && !context.contextFilePaths.length && !context.requestedSkillNames.length) {
+    context.requirement = draft.requirement;
+    context.contextFilePaths = (message.contextFilePaths ?? []).map((attachment) => ({ ...attachment }));
+    context.requestedSkillNames = [...draft.requestedSkillNames];
+    context.requestedMentions = [...draft.requestedMentions];
+  }
+  showMessageNotDelivered(context, error.certainty);
+};
+
 /**
  * A failed send. A held send rejected because a mentioned unit could not be involved shows the
  * notice and keeps the draft as typed (nothing was posted); returns `'kept_draft'` then.
- * Any other failure shows the message with an error, as before.
+ * A message that did not reach the node returns its draft with the not-delivered notice; returns `'returned_draft'`.
+ * Neither changes the run's status. Any other failure shows the message with an error, as before, after setting the
+ * run's status to `failedStatus` when given (so the navigation effect carries it).
  */
 export const failLocalSubmission = (
   handle: LocalUserSubmissionHandle,
   error: unknown,
-): 'kept_draft' | 'failed' => {
+  options: Readonly<{ failedStatus?: AgentStatus }> = {},
+): 'kept_draft' | 'returned_draft' | 'failed' => {
   if (handle.held && error instanceof CollaboratorAddRejection) {
     handle.context.submissionPending = false;
     handle.context.collaboratorAddFailure = error.failure;
     return 'kept_draft';
   }
+  if (error instanceof MessageNotDeliveredError) {
+    returnDraft(handle, error);
+    return 'returned_draft';
+  }
+  if (options.failedStatus) applyOfflineOrTerminalCleanup(handle.context, options.failedStatus);
   acceptLocalSubmission(handle);
   const occurredAt = nowIso();
   const message = toErrorMessage(error);

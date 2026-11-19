@@ -19,16 +19,18 @@ import {
 } from './protocol';
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
-import { collaboratorAddRejectionOf } from '~/services/collaborators/collaboratorAddFailures';
+import { MessageNotDeliveredError } from '~/services/runSubmission/messageNotDelivered';
 import { dispatchAgentStreamMessage } from './agentStreamMessageProjector';
 import { parseAgentStreamMessage } from './protocol/agentStreamEnvelope';
 import { AgentStreamSequencing } from './agentStreamSequencing';
 import { applyAgentStreamSnapshot } from './agentStreamSnapshotApplication';
 import {
   admitInterruptCommand,
-  InterruptsAwaitingRebind,
+  holdPendingInterrupts,
   settlePendingInterruptAck,
 } from './interruptCommandAdmission';
+import { HeldUntilRebind } from './heldUntilRebind';
+import { AgentStreamSendAdmissions } from './agentStreamSendAdmissions';
 
 const shouldLogStreaming = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -70,9 +72,12 @@ export class AgentStreamingService {
   private runId: string | null = null;
   private readonly pendingInterruptCommands = new Map<string, PendingInterruptCommand>();
   /** Stops lost with a connection this service reconnects: settled once the new connection's status is applied. */
-  private readonly interruptsAwaitingRebind = new InterruptsAwaitingRebind();
-  /** Held sends (with `@` mentions) waiting for their admission ack, by message ID. */
-  private readonly pendingAdmissions = new Map<string, { resolve(): void; reject(error: Error): void }>();
+  private readonly interruptsAwaitingRebind = new HeldUntilRebind();
+  /** Sends waiting for the node's answer; held across a reconnect and decided by its snapshot (autobyteus-540 D-2, D-3). */
+  private readonly sends = new AgentStreamSendAdmissions();
+  /** The node's `CONNECTED` arrived on the current connection: its session is bound and takes commands (D-1). */
+  private bound = false;
+  private readonly boundWaiters = new Set<() => void>();
   private readonly onSendMessageCommandAck: (ack: SendMessageCommandAckPayload) => void;
   private readonly connectionListeners = new Set<(event: AgentStreamConnectionEvent) => void>();
   /** Where the view is in the run's own stream: set by each snapshot, continued by its numbered frames (SR-087). */
@@ -98,6 +103,23 @@ export class AgentStreamingService {
     return this.wsClient.state === ConnectionState.CONNECTED;
   }
 
+  /**
+   * Resolves once the stream is bound: at once when the node's `CONNECTED` has arrived on the current connection,
+   * otherwise at the next one. Rejects `MessageNotDeliveredError('not_sent')` when that does not happen in `timeoutMs`
+   * (autobyteus-540 D-1): an open socket is not yet a session the node takes commands on.
+   */
+  whenBound(timeoutMs: number): Promise<void> {
+    if (this.bound) return Promise.resolve();
+    return new Promise<void>((resolve, reject) => {
+      const onBound = () => { clearTimeout(timer); resolve(); };
+      const timer = setTimeout(() => {
+        this.boundWaiters.delete(onBound);
+        reject(new MessageNotDeliveredError('not_sent', `The agent stream for run '${this.runId ?? ''}' was not ready within ${timeoutMs} ms.`));
+      }, timeoutMs);
+      this.boundWaiters.add(onBound);
+    });
+  }
+
   attachContext(context: AgentContext): void {
     this.context = context;
   }
@@ -109,12 +131,13 @@ export class AgentStreamingService {
   }
 
   /**
-   * A quiet close for a re-synchronization: the loss bookkeeping (pending admissions rejected, waiting
-   * Stops held until the rebind) without the loss notification; the context stays attached.
+   * A quiet close for a re-synchronization: the loss bookkeeping (waiting Stops and sends held until the rebind)
+   * without the loss notification; the context stays attached.
    */
   dropConnection(reason: string): void {
+    console.log('Agent WebSocket dropped:', reason);
     this.wsClient.disconnect();
-    this.rejectInFlight(reason, true);
+    this.rejectInFlight(true);
   }
 
   /**
@@ -139,9 +162,12 @@ export class AgentStreamingService {
    * Disconnect from the WebSocket stream.
    */
   disconnect(): void {
-    // Closed for good: no rebind follows, so every waiting or held Stop settles now (autobyteus-533 D-W7).
-    this.interruptsAwaitingRebind.holdPending(this.pendingInterruptCommands);
+    // Closed for good: no rebind follows, so every waiting or held Stop and send settles now (autobyteus-533 D-W7,
+    // autobyteus-540 D-3: a send may or may not have reached the node).
+    holdPendingInterrupts(this.interruptsAwaitingRebind, this.pendingInterruptCommands);
     this.interruptsAwaitingRebind.settle();
+    this.sends.closeForGood();
+    this.bound = false;
     this.wsClient.off('onMessage', this.handleMessage);
     this.wsClient.off('onConnect', this.handleConnect);
     this.wsClient.off('onDisconnect', this.handleDisconnect);
@@ -153,32 +179,24 @@ export class AgentStreamingService {
   }
 
   /**
-   * Send a user message to the agent.
+   * Sends a user message to the agent and resolves at the node's `AGENT_COMMAND_ACK` for it, accepted or refused (a
+   * refused ack keeps the projector's presentation). On a stream that is not bound, or a socket that throws, nothing
+   * leaves: `MessageNotDeliveredError('not_sent')`. A send lost with its connection is decided after the rebind's
+   * snapshot (autobyteus-540 D-2, D-3).
    */
   sendMessage(
     content: string,
-    contextFilePaths?: string[],
-    imageUrls?: string[],
-    command?: { messageId: string; dedupeKey: string; mentions?: readonly CollaboratorMentionDto[] },
-  ): void {
-    const message: ClientMessage = {
-      type: 'SEND_MESSAGE',
-      payload: {
-        content,
-        context_file_paths: contextFilePaths,
-        image_urls: imageUrls,
-        message_id: command?.messageId ?? '',
-        dedupe_key: command?.dedupeKey ?? '',
-        ...(command?.mentions?.length ? { mentions: command.mentions.map((mention) => ({ ...mention })) } : {}),
-      },
-    };
-    this.wsClient.send(serializeClientMessage(message));
+    contextFilePaths: string[],
+    imageUrls: string[],
+    command: { messageId: string; dedupeKey: string; mentions?: readonly CollaboratorMentionDto[] },
+  ): Promise<void> {
+    return this.send(content, contextFilePaths, imageUrls, command, false);
   }
 
   /**
    * Sends and waits for the root's admission (a send with `@` mentions, AR-007): resolves when
    * the send is accepted; rejects with `CollaboratorAddRejection` when a mentioned collaborator
-   * could not be added (nothing was posted), or with an error for any other rejection.
+   * could not be added (nothing was posted), or with an error for any other rejection; as `sendMessage` otherwise.
    */
   sendMessageAwaitingAdmission(
     content: string,
@@ -186,24 +204,38 @@ export class AgentStreamingService {
     imageUrls: string[],
     command: { messageId: string; dedupeKey: string; mentions?: readonly CollaboratorMentionDto[] },
   ): Promise<void> {
-    const admission = new Promise<void>((resolve, reject) => {
-      this.pendingAdmissions.set(command.messageId, { resolve, reject });
-    });
-    try {
-      this.sendMessage(content, contextFilePaths, imageUrls, command);
-    } catch (error) {
-      this.pendingAdmissions.delete(command.messageId);
-      return Promise.reject(error);
-    }
-    return admission;
+    return this.send(content, contextFilePaths, imageUrls, command, true);
   }
 
-  private settleAdmission(ack: SendMessageCommandAckPayload): void {
-    const pending = this.pendingAdmissions.get(ack.message_id);
-    if (!pending) return;
-    this.pendingAdmissions.delete(ack.message_id);
-    if (ack.accepted) pending.resolve();
-    else pending.reject(collaboratorAddRejectionOf(ack) ?? new Error(ack.message ?? ack.code ?? 'The message was not accepted.'));
+  private send(
+    content: string,
+    contextFilePaths: string[],
+    imageUrls: string[],
+    command: { messageId: string; dedupeKey: string; mentions?: readonly CollaboratorMentionDto[] },
+    rejectsWhenRefused: boolean,
+  ): Promise<void> {
+    const answer = this.sends.begin(command.messageId, rejectsWhenRefused);
+    if (!this.bound || this.wsClient.state !== ConnectionState.CONNECTED) {
+      this.sends.notSent(command.messageId, `The agent stream for run '${this.runId ?? ''}' is not ready (${this.wsClient.state}).`);
+      return answer;
+    }
+    const message: ClientMessage = {
+      type: 'SEND_MESSAGE',
+      payload: {
+        content,
+        context_file_paths: contextFilePaths,
+        image_urls: imageUrls,
+        message_id: command.messageId,
+        dedupe_key: command.dedupeKey,
+        ...(command.mentions?.length ? { mentions: command.mentions.map((mention) => ({ ...mention })) } : {}),
+      },
+    };
+    try {
+      this.wsClient.send(serializeClientMessage(message));
+    } catch (error) {
+      this.sends.notSent(command.messageId, error instanceof Error ? error.message : String(error));
+    }
+    return answer;
   }
 
   /**
@@ -258,6 +290,11 @@ export class AgentStreamingService {
         this.sequencing.reset(wire.payload.base_sequence, wire.payload.live_sequence_id);
         const context = this.context;
         applyAgentStreamSnapshot(context.state.runId, context, wire.payload, (frame) => this.dispatchMessage(frame, context));
+        // Sends lost with the previous connection: the node's view is on the context now (autobyteus-540 D-3).
+        this.sends.decideHeld({
+          inputStateKnown: wire.payload.input_state !== null,
+          has: (messageId) => context.state.conversation.messages.some((entry) => entry.type === 'user' && entry.messageId === messageId),
+        });
         return;
       }
       if (typeof wire.sequence === 'number') {
@@ -283,10 +320,10 @@ export class AgentStreamingService {
       return;
     }
     if (message.type === 'AGENT_COMMAND_ACK' && message.payload.command_type === 'SEND_MESSAGE') {
-      this.settleAdmission(message.payload);
+      this.sends.acknowledge(message.payload);
       this.onSendMessageCommandAck(message.payload);
     }
-    if (message.type === 'CONNECTED') this.notifyConnection({ kind: 'bound' });
+    if (message.type === 'CONNECTED') this.markBound();
     this.logMessage(message);
     this.dispatchMessage(message, this.context);
     // The new connection's status is on the context: Stops lost with the old one end, and the status decides.
@@ -309,18 +346,29 @@ export class AgentStreamingService {
   private handleDisconnect = (reason: string | undefined, retryable: boolean): void => {
     console.log('Agent WebSocket disconnected:', reason);
     this.sequencing.clear();
-    this.rejectInFlight(reason, retryable);
+    this.rejectInFlight(retryable);
     this.notifyConnection({ kind: 'lost', retryable });
   };
 
-  /** A loss: admissions fail; waiting Stops are held until the rebind when it recovers, else settled now. */
-  private rejectInFlight(reason: string | undefined, recovers: boolean): void {
-    this.interruptsAwaitingRebind.holdPending(this.pendingInterruptCommands);
+  /** The node's `CONNECTED`: the stream is bound; sends waiting for it may leave. */
+  private markBound(): void {
+    this.bound = true;
+    const waiters = [...this.boundWaiters];
+    this.boundWaiters.clear();
+    for (const onBound of waiters) onBound();
+    this.notifyConnection({ kind: 'bound' });
+  }
+
+  /**
+   * A loss: the stream is no longer bound. When it recovers, waiting Stops and sends are held until the rebind
+   * (its status for a Stop, its snapshot for a send); otherwise they settle now.
+   */
+  private rejectInFlight(recovers: boolean): void {
+    this.bound = false;
+    holdPendingInterrupts(this.interruptsAwaitingRebind, this.pendingInterruptCommands);
     if (!recovers) this.interruptsAwaitingRebind.settle();
-    for (const pending of this.pendingAdmissions.values()) {
-      pending.reject(new Error(reason || 'Message admission was interrupted because the stream disconnected.'));
-    }
-    this.pendingAdmissions.clear();
+    if (recovers) this.sends.holdWaiting();
+    else this.sends.closeForGood();
   }
 
   private notifyConnection(event: AgentStreamConnectionEvent): void {

@@ -93,7 +93,7 @@ The Pinia stores act as the primary interface for the UI components to interact 
 
 - **Role**: Manages the execution lifecycle of individual agents.
 - **Key Actions**:
-  - `sendUserInputAndSubscribe()`: After validation, immediately begins a local user submission by appending the user message, clearing the composer/staged context files, and setting `isSending`. For a new temporary run it calls `PrepareAgentRun` to create a durable prepared run identity without starting runtime, promotes the local context to that run id, finalizes attachments, opens the WebSocket stream, and sends `SEND_MESSAGE` with required `message_id` / `dedupe_key`. Existing inactive runs do not call `RestoreAgentRun` before send; backend `SEND_MESSAGE` owns restore/start/send lifecycle. Finalized attachment locators reconcile onto the same canonical reactive UserMessage retained by the submission handle and visible conversation, updating its mounted chip rather than a raw alias or duplicate row. The current first text Send/Open scope is recorded below; storage and opener behavior are unchanged. The visible lifecycle status remains backend-owned and comes from streamed `AGENT_STATUS` / `AGENT_COMMAND_ACK.status` payloads, not a frontend lifecycle placeholder.
+  - `sendUserInputAndSubscribe()`: After validation, immediately begins a local user submission by appending the user message, clearing the composer/staged context files, and setting `isSending`. For a new temporary run it calls `PrepareAgentRun` to create a durable prepared run identity without starting runtime, promotes the local context to that run id, finalizes attachments, opens the WebSocket stream, waits until it is bound (`ensureAgentStreamConnected`: the node's `CONNECTED` on the current connection, not the open socket; 10 s), and sends `SEND_MESSAGE` with required `message_id` / `dedupe_key`, awaiting the node's acknowledgement (autobyteus-540, see "A message that does not reach the node" below). Existing inactive runs do not call `RestoreAgentRun` before send; backend `SEND_MESSAGE` owns restore/start/send lifecycle. Finalized attachment locators reconcile onto the same canonical reactive UserMessage retained by the submission handle and visible conversation, updating its mounted chip rather than a raw alias or duplicate row. The current first text Send/Open scope is recorded below; storage and opener behavior are unchanged. The visible lifecycle status remains backend-owned and comes from streamed `AGENT_STATUS` / `AGENT_COMMAND_ACK.status` payloads, not a frontend lifecycle placeholder.
   - Activation-pending marker (`markActivationPending` / `clearActivationPending` / `isActivationPending`): a send to a run the client does not consider live (a first send, marked with the permanent id right after promotion, or a resume of an Offline/Error run) is marked before the stream connects. History reconcile (`reconcileDiscoveredActiveRuns`) skips a marked run: a snapshot taken before activation must not disconnect it or apply Offline cleanup. The marker ends when a snapshot lists the run as active (`isActive || shouldConnectStream`), on a handled send failure (including the connect timeout), on a rejected `SEND_MESSAGE` ack (`AgentStreamingService` `onSendMessageCommandAck`), and on terminate/close. Live `AGENT_STATUS` events never end it: the backend reports `offline` as soon as the stream connects, before `SEND_MESSAGE`. `submissionPending` keeps its UI meaning and is not a reconcile guard. The workspace branch of `fetchRunHistoryTree` carries a request generation, like the Agent Org branch, so an older snapshot is never applied or reconciled after a newer one.
   - `connectToAgentStream(runId)`: Listens for real-time events specific to an agent run via WebSocket. For standalone runs, connect attaches to a durable run identity and receives backend status projection without forcing runtime restore; the later `SEND_MESSAGE` command performs backend-owned activation/restore when needed.
   - `interruptGeneration()`: Generates a fresh `client_interrupt_*` command id, sends the backend `INTERRUPT_GENERATION` control command through `AgentStreamingService`, and resolves with the Stop's `InterruptOutcome` (`not_sent` when the run has no stream). It presents nothing: `runInterrupt` owns what the user sees (see Interrupt dispatch below).
@@ -392,7 +392,7 @@ for every run kind, goes `activeContextStore.interruptGeneration` → `runInterr
 - The streaming services register the command id and exact target before send,
   answer `not_sent` for a non-connected stream or a send that throws, and settle
   each Stop once from its matching acknowledgement. They present nothing. A Stop
-  waiting when the connection is lost is held (`InterruptsAwaitingRebind`) while
+  waiting when the connection is lost is held (`HeldUntilRebind`) while
   the same service reconnects, and settled `connection_lost` only after the
   rebind's status is applied (agent and peer: the new connection's first
   `AGENT_STATUS`; Team and Org: the snapshot that makes the stream ready), so the
@@ -410,6 +410,27 @@ choose provider start/append/wait policy, reject a second backend command as
 by command/message identity and renders lifecycle from the later canonical
 status/turn/error stream. Accepted waiting input is not duplicated locally when
 the server later forwards or associates it with a turn.
+
+A message that does not reach the node (autobyteus-540). The run stream takes
+commands only after its `CONNECTED` (Team and Org: after their view snapshot), so
+an agent send (standalone, delegated, peer) waits for
+`AgentStreamingService.whenBound`, and every agent send resolves at the node's
+`AGENT_COMMAND_ACK` for it. A send waiting when its connection is lost is held
+and decided after the rebind's `AGENT_STREAM_SNAPSHOT` is applied: its stored
+part, then its `input_state` (the run's current queued and held input, which the
+node puts in an active run's snapshot; `null` for a stopped run and a peer's
+relay), then its turn frames. The message is found by its id (stored, live turn
+or queued) → delivered; missing with an input state → not sent; missing without
+one → unknown. A final close settles held and waiting sends as unknown. Team and
+Org classify their own transport failures the same way (not ready, socket refused
+→ not sent; lost before admission → unknown). Every route ends in
+`MessageNotDeliveredError` (`services/runSubmission/messageNotDelivered.ts`), and
+the shared failure owner `failLocalSubmission` presents it once: for "not sent"
+the shown message is removed; the draft (text, attachments, mentions, skill tags)
+comes back when the box is empty; `context.messageNotDelivered` drives the plain
+notice above the box (`MessageNotDeliveredNotice.vue`, desktop and phone), which
+the next send or its dismiss clears; the run's status is left alone. A first
+message of a new run keeps its prepared run, so it can be sent again on it.
 
 ### Runtime Status And Interrupt Authority
 

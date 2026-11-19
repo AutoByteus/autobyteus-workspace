@@ -80,6 +80,7 @@
     "test:e2e:standalone-agent-error-stop": "node tests/e2e/standalone-agent-error-stop-probe.mjs",
     "test:e2e:interrupt-result-presentation": "node tests/e2e/interrupt-result-presentation-probe.mjs",
     "test:e2e:stop-generation": "node tests/e2e/stop-generation-probe.mjs",
+    "test:e2e:send-delivery": "node tests/e2e/send-delivery-probe.mjs",
     "test:e2e:projects-navigation": "node tests/e2e/projects-primary-navigation-probe.mjs",
     "test:e2e:projects": "node tests/e2e/projects-feature-probe.mjs",
     "test:e2e:embedding-settings": "node tests/e2e/embedding-settings-probe.mjs",

@@ -106,26 +106,24 @@ export const runStopGenerationCases = async (probe) => {
     await sleep(1_000);
     return runScreen(page);
   };
-  /** The user's message; resolves once the node holds the turn (its held step reached the phone) and Stop is offered. */
+  /**
+   * The user's message; resolves once the node holds the turn (its held step reached the phone) and Stop is offered. A
+   * message that does not start its turn fails the case at once (autobyteus-540 D-7); the stall is recorded.
+   */
   const sends = { count: 0, stalls: [] };
   const holdTurn = async (marker) => {
     sends.count += 1;
-    for (let attempt = 1; ; attempt += 1) {
-      const holdsBefore = wire.holds.length; const from = wire.log.length; const at = Date.now();
-      await waitFor('Send enabled', async () => { if (!(await textarea().inputValue().catch(() => ''))) await textarea().fill(`HOLD_TURN ${marker}`); return (await label()) === 'Send message' && await button().isEnabled(); }, 60_000);
-      await button().click();
-      try {
-        await waitFor('the held turn and Stop', async () => wire.holds.length > holdsBefore && await offered(), 60_000);
-        await sleep(500);
-        return;
-      } catch {
-        // CG-07: a message after a Stop took the AGY run offline that did not start a turn; the user would send again.
-        sends.stalls.push({ marker, attempt, at: new Date(at).toISOString(), button: await label(), draft: await textarea().inputValue().catch(() => null),
-          frames: wire.since(from).map((f) => ({ ...f, at: f.at - at })) });
-        await shot(page, `stall-${marker}-${attempt}`);
-        if (attempt >= 2) throw Object.assign(new Error(`CG-07: the message "${marker}" did not start a turn twice`), { details: sends.stalls.at(-1) });
-        await settle();
-      }
+    const holdsBefore = wire.holds.length; const from = wire.log.length; const at = Date.now();
+    await waitFor('Send enabled', async () => { if (!(await textarea().inputValue().catch(() => ''))) await textarea().fill(`HOLD_TURN ${marker}`); return (await label()) === 'Send message' && await button().isEnabled(); }, 60_000);
+    await button().click();
+    try {
+      await waitFor('the held turn and Stop', async () => wire.holds.length > holdsBefore && await offered(), 60_000);
+      await sleep(500);
+    } catch {
+      sends.stalls.push({ marker, at: new Date(at).toISOString(), button: await label(), draft: await textarea().inputValue().catch(() => null),
+        frames: wire.since(from).map((f) => ({ ...f, at: f.at - at })) });
+      await shot(page, `stall-${marker}`);
+      throw Object.assign(new Error(`The message "${marker}" did not start a turn (a lost send)`), { details: sends.stalls.at(-1) });
     }
   };
   const settle = async () => {

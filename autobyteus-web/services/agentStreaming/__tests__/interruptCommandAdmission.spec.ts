@@ -2,10 +2,11 @@ import { describe, expect, it, vi } from 'vitest';
 import { ConnectionState } from '../transport';
 import {
   admitInterruptCommand,
-  InterruptsAwaitingRebind,
+  holdPendingInterrupts,
   settlePendingInterruptAck,
 } from '../interruptCommandAdmission';
 import type { InterruptCommandTarget, PendingInterruptCommand } from '../protocol';
+import { HeldUntilRebind } from '../heldUntilRebind';
 
 const target: InterruptCommandTarget = { target_kind: 'standalone_run', run_id: 'run-1' };
 const admit = (pending: Map<string, PendingInterruptCommand>, state: ConnectionState, send: () => void = vi.fn()) =>
@@ -47,10 +48,10 @@ describe('interrupt command admission (autobyteus-533 D-W1, D-W7)', () => {
 
   it('holds lost Stops until settle, then settles each exactly once as connection_lost', async () => {
     const pending = new Map<string, PendingInterruptCommand>();
-    const holder = new InterruptsAwaitingRebind();
+    const holder = new HeldUntilRebind();
     const outcomes: string[] = [];
     void admit(pending, ConnectionState.CONNECTED).then((outcome) => outcomes.push(outcome.kind));
-    holder.holdPending(pending);
+    holdPendingInterrupts(holder, pending);
     expect(pending.size).toBe(0);
     await Promise.resolve();
     expect(outcomes).toEqual([]);

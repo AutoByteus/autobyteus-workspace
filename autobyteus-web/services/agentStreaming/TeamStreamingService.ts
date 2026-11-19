@@ -13,9 +13,10 @@ import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAu
 import {
   admitInterruptCommand,
   INTERRUPT_NOT_SENT,
-  InterruptsAwaitingRebind,
+  holdPendingInterrupts,
   settlePendingInterruptAck,
 } from './interruptCommandAdmission';
+import { HeldUntilRebind } from './heldUntilRebind';
 import { TeamToolApprovalTargetTracker } from './TeamToolApprovalTargetTracker';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
@@ -63,7 +64,7 @@ export class TeamStreamingService {
   private readonly wsEndpoint: string;
   private readonly pendingInterruptCommands = new Map<string, PendingInterruptCommand>();
   /** Stops lost with a connection this service recovers: settled once the snapshot that makes it ready is applied. */
-  private readonly interruptsAwaitingRebind = new InterruptsAwaitingRebind();
+  private readonly interruptsAwaitingRebind = new HeldUntilRebind();
   private readonly teamSends = new TeamSendAdmissions();
   private readonly onStreamRecoveryRequired: (notice: TeamStreamRecoveryNotice) => void;
   private readonly approvalTracker = new TeamToolApprovalTargetTracker();
@@ -282,7 +283,7 @@ export class TeamStreamingService {
     if (this.teamContext) useRunTreeStore().streamEnded(this.treeRefOf(this.teamContext));
     if (!this.isReopenRequired) this.phase = 'disconnected';
     // Their answers are gone with the socket: held until the snapshot of the next connection (or a final close).
-    this.interruptsAwaitingRebind.holdPending(this.pendingInterruptCommands);
+    holdPendingInterrupts(this.interruptsAwaitingRebind, this.pendingInterruptCommands);
     this.teamSends.drain(reason || 'Team message admission was lost because the stream disconnected.');
   }
 
@@ -467,7 +468,7 @@ export class TeamStreamingService {
 
   /** The stream is closed for good: every waiting or held Stop settles as `connection_lost` now. */
   private settleInterruptsNow(): void {
-    this.interruptsAwaitingRebind.holdPending(this.pendingInterruptCommands);
+    holdPendingInterrupts(this.interruptsAwaitingRebind, this.pendingInterruptCommands);
     this.interruptsAwaitingRebind.settle();
   }
 }

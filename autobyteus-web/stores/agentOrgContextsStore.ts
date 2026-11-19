@@ -344,8 +344,8 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
         mentions: toCollaboratorMentionDtos(content, mentions) })
       acceptLocalSubmission(submission)
     } catch (cause) {
-      // A rejected add posted nothing: the notice shows and the draft stays as typed.
-      if (failLocalSubmission(submission, cause) === 'kept_draft') return
+      // A rejected add posted nothing (draft kept); a message that did not reach the node returns its draft (540 D-5).
+      if (failLocalSubmission(submission, cause) !== 'failed') return
       if (!draftEdited) { context.requirement = content; context.contextFilePaths = attachments; context.requestedMentions = [...mentions] }
       throw cause
     } finally {

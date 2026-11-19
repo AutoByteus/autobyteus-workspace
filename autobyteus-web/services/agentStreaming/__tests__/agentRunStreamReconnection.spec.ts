@@ -64,7 +64,7 @@ describe('AgentRunStreamReconnection', () => {
   const projectionReads = () => io.queries.filter((name) => name === 'GetRunProjection').length;
   /** The node's snapshot of the run at `base` (live `sequenceId`; null: a stopped run). */
   const snapshot = (assistantText: string, base = 0, turnFrames: unknown[] = [], sequenceId: string | null = 'live-1') =>
-    ws.message('AGENT_STREAM_SNAPSHOT', { stored: storedProjection(assistantText), turn_frames: turnFrames,
+    ws.message('AGENT_STREAM_SNAPSHOT', { stored: storedProjection(assistantText), input_state: null, turn_frames: turnFrames,
       base_sequence: base, live_sequence_id: sequenceId });
   const start = (id: string, turn: string, sequence: number) => ({ type: 'SEGMENT_START', payload: { id, turn_id: turn, segment_type: 'text' }, sequence });
   const content = (id: string, turn: string, delta: string, sequence: number) =>
@@ -194,24 +194,32 @@ describe('AgentRunStreamReconnection', () => {
     expect(ws.connects).toBe(3);
   });
 
-  it('P-005 and N-6: an owner-opened stream re-syncs after ≥ 30 s hidden; pending admissions are rejected and a waiting Stop is held until the rebind\'s status (autobyteus-533 D-W7)', async () => {
+  it('P-005 and N-6: an owner-opened stream re-syncs after ≥ 30 s hidden; a waiting send and a waiting Stop are held until the rebind decides them (autobyteus-533 D-W7, autobyteus-540 D-3)', async () => {
     openAsOwner();
+    ws.message('CONNECTED', { agent_id: runId, session_id: 's-1' });
     const admission = stream.service.sendMessageAwaitingAdmission('hi @helper', [], [], { messageId: 'm-1', dedupeKey: 'm-1' });
-    const admissionRejected = expect(admission).rejects.toThrow('Agent stream is re-synchronizing.');
+    const sendSettled = vi.fn();
+    admission.then(() => sendSettled('delivered'), (error: { certainty?: string }) => sendSettled(error.certainty));
     const outcomes: string[] = [];
     void stream.service.interruptGeneration('interrupt-1').then((outcome) => outcomes.push(outcome.kind));
 
     hidePage();
     await vi.advanceTimersByTimeAsync(30_000);
     showPage();
-    await admissionRejected;
     await flush();
     expect(ws.connects).toBe(2);
     expect(outcomes).toEqual([]);
+    expect(sendSettled).not.toHaveBeenCalled();
     ws.open();
+    ws.message('CONNECTED', { agent_id: runId, session_id: 's-2' });
     ws.message('AGENT_STATUS', { recoverableBlock: null, status: 'idle' });
     await flush();
     expect(outcomes).toEqual(['connection_lost']);
+    expect(sendSettled).not.toHaveBeenCalled();
+    // A stopped run's snapshot carries no input state: the missing message may or may not have reached the node.
+    snapshot('stored answer', 0, [], null);
+    await flush();
+    expect(sendSettled).toHaveBeenCalledWith('unknown');
   });
 
   it('a short hide (< 30 s) of a connected stream does nothing', async () => {
@@ -282,7 +290,7 @@ describe('agentRunStore.connectToAgentStream (P-004 through the store)', () => {
     await vi.advanceTimersByTimeAsync(0);
     expect(ws.connects).toBe(2);
     ws.open();
-    ws.message('AGENT_STREAM_SNAPSHOT', { stored: storedProjection('the gap\'s answer'), turn_frames: [], base_sequence: 7, live_sequence_id: 'live-1' });
+    ws.message('AGENT_STREAM_SNAPSHOT', { stored: storedProjection('the gap\'s answer'), input_state: null, turn_frames: [], base_sequence: 7, live_sequence_id: 'live-1' });
     await vi.advanceTimersByTimeAsync(0);
     expect(io.queries.filter((name) => name === 'GetRunProjection')).toHaveLength(0);
     expect(JSON.stringify(context.state.conversation.messages)).toContain('the gap\'s answer');

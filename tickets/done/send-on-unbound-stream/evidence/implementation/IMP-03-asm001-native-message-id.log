@@ -1,0 +1,7 @@
+# IMP-03 ASM-001 on the native stored path
+# command: pnpm exec vitest run tests/unit/run-history/projection/native-user-message-identity.test.ts --no-watch
+# commit: 49ed8967f0
+# env: macOS, Node v22.23.1
+# date: 2026-11-18
+
+      Tests  1 passed (1)

@@ -32,7 +32,9 @@ export const peerAgentStreamSnapshot = async (
   const read = async () => runProjectionOf(await readStored());
   const sequence = sequences.of(agentRunId);
   if (!sequence) return storedRunSnapshot(agentRunId, read);
-  const connection = await sequence.connect((base) => activeRunSnapshot(sequence, base, read));
+  // No input state: the observing peer reaches this run through `RunAgentAccess`, which has no input-state read, so its
+  // page settles a send lost in flight as unknown rather than not sent (autobyteus-540 D-8, R-4).
+  const connection = await sequence.connect((base) => activeRunSnapshot(sequence, base, read, null));
   connection.close();
   return connection.snapshot;
 };

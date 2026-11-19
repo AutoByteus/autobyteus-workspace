@@ -80,6 +80,7 @@ describe("AgentStreamHandler", () => {
       .fn()
       .mockResolvedValue({ accepted: true, runtimeKind: "autobyteus" }),
     interrupt: vi.fn().mockResolvedValue({ accepted: false, runtimeKind: "autobyteus" }),
+    getInputStateSnapshot: vi.fn(() => ({ run_instance_id: "instance-1", revision: 0, entries: [], recoverableBlock: null })),
     ...overrides,
   });
 
@@ -274,6 +275,26 @@ describe("AgentStreamHandler", () => {
     // Coalesced content keeps the range of frames it covers.
     expect(messages).toContainEqual({ type: ServerMessageType.SEGMENT_CONTENT_BATCH, sequence: 2, sequence_through: 2,
       payload: { items: [{ id: "item-1", turn_id: "turn-1", segment_type: "text", delta: "hello" }] } });
+  });
+
+  it("carries the active run's current input state in its snapshot, so a reconnecting page sees queued input (autobyteus-540 D-8)", async () => {
+    const queued = { sequence: 1, message_id: "client_msg-2", dedupe_key: "client_msg-2", turn_id: null, state: "queued" as const,
+      content: "and then this", sender_type: "user" as const, file_attachments: [] };
+    const inputState = { run_instance_id: "instance-1", revision: 4, entries: [queued], recoverableBlock: null };
+    const activeRun = createActiveRun({ getInputStateSnapshot: vi.fn(() => inputState) });
+    const handler = new AgentStreamHandler(
+      new AgentSessionManager(),
+      createAgentRunService(activeRun) as any,
+      undefined,
+      createCommandCoordinator({ activeRun }) as any,
+      createStatusProjectionService() as any,
+      null, sequences, readStored,
+    );
+    const connection = { send: vi.fn(), close: vi.fn() };
+    await handler.connect(connection, "agent-123");
+    await vi.waitFor(() => expect(snapshotsOf(connection)).toHaveLength(1));
+    expect(snapshotsOf(connection)[0].payload.input_state).toEqual(inputState);
+    expect(activeRun.getInputStateSnapshot).toHaveBeenCalledOnce();
   });
 
   it("gives a turn not yet confirmed at the base from its frames, in the snapshot (SR-087)", async () => {

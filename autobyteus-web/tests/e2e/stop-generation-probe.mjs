@@ -230,30 +230,28 @@ try {
     await startStopTrace(page, SCOPE);
     await sleep(1500);
   };
-  /** The message the user sends; true once the node holds the turn (its held step reached the page). */
+  /**
+   * The message the user sends; resolves once the node holds the turn (its held step reached the page). A message that
+   * does not start its turn fails the case at once (autobyteus-540 D-7): no second send hides a lost one. The stall is
+   * recorded with its frames, the button and the draft.
+   */
   const holdTurn = async (target, marker) => {
     evidence.sends = (evidence.sends ?? 0) + 1;
-    for (let attempt = 1; ; attempt += 1) {
-      const holdsBefore = wire.holds.length;
-      const logFrom = wire.log.length;
-      const sentAt = Date.now();
-      await until('Send enabled', async () => { await textarea().fill(`HOLD_TURN ${marker}`); await sleep(200); return (await primary().getAttribute('aria-label')) === 'Send message' && primary().isEnabled(); }, 60_000);
-      await primary().click();
-      try {
-        await until('the held turn and Stop', async () => wire.holds.length > holdsBefore && (await primary().getAttribute('aria-label')) === STOP && primary().isEnabled(), 60_000);
-        await sleep(500);
-        return;
-      } catch {
-        // CG-07: a message after a Stop took the AGY run offline that did not start a turn. Recorded with its frames; the
-        // user would press Send again, so the probe does once.
-        const frames = wire.since(logFrom).map((f) => ({ ...f, at: f.at - sentAt }));
-        evidence.sendStalls.push({ target: target.kind, marker, attempt, at: new Date(sentAt).toISOString(), frames,
-          button: await primary().getAttribute('aria-label').catch(() => null), draft: await textarea().inputValue().catch(() => null) });
-        await page.screenshot({ path: path.join(outputDir, `stall-${target.kind}-${marker}-${attempt}.png`) }).catch(() => undefined);
-        await saveEvidence();
-        if (attempt >= 2) throw Object.assign(new Error(`CG-07: the message "${marker}" did not start a turn twice`), { details: { frames } });
-        await settle();
-      }
+    const holdsBefore = wire.holds.length;
+    const logFrom = wire.log.length;
+    const sentAt = Date.now();
+    await until('Send enabled', async () => { await textarea().fill(`HOLD_TURN ${marker}`); await sleep(200); return (await primary().getAttribute('aria-label')) === 'Send message' && primary().isEnabled(); }, 60_000);
+    await primary().click();
+    try {
+      await until('the held turn and Stop', async () => wire.holds.length > holdsBefore && (await primary().getAttribute('aria-label')) === STOP && primary().isEnabled(), 60_000);
+      await sleep(500);
+    } catch {
+      const frames = wire.since(logFrom).map((f) => ({ ...f, at: f.at - sentAt }));
+      evidence.sendStalls.push({ target: target.kind, marker, at: new Date(sentAt).toISOString(), frames,
+        button: await primary().getAttribute('aria-label').catch(() => null), draft: await textarea().inputValue().catch(() => null) });
+      await page.screenshot({ path: path.join(outputDir, `stall-${target.kind}-${marker}.png`) }).catch(() => undefined);
+      await saveEvidence();
+      throw Object.assign(new Error(`The message "${marker}" did not start a turn (a lost send)`), { details: { frames } });
     }
   };
   const center = async () => { const box = await primary().boundingBox(); return { x: box.x + box.width / 2, y: box.y + box.height / 2 }; };

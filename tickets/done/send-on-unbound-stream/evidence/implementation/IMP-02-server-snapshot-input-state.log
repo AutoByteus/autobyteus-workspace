@@ -1,0 +1,8 @@
+# IMP-02 server focused: agent stream snapshot (D-8), peer relay, handlers, websocket integration
+# command: pnpm exec vitest run tests/unit/services/agent-streaming tests/unit/remote-collaboration tests/integration/agent/agent-websocket.integration.test.ts tests/integration/agent/agent-status-websocket.integration.test.ts --no-watch
+# commit: 49ed8967f0
+# env: macOS, Node v22.23.1
+# date: 2026-11-18
+
+ Test Files  53 passed (53)
+      Tests  398 passed (398)

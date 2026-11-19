@@ -1,0 +1,16 @@
+# IMP-07 web unit and component suite (full)
+# command: NUXT_TEST=true pnpm -C autobyteus-web exec vitest run
+# commit: working tree = 49ed8967f0 (run before the commit, same files)
+# env: macOS, Node v22.23.1
+# date: 2026-11-18
+# includes: agentStreamSendDelivery.spec (14 cases: D-1 readiness and timeout, every held-send branch incl. the queued case,
+#   the input-state overlay rule, the returned draft and notice), Team/Org/peer route specs, MessageNotDeliveredNotice.spec,
+#   sendNotDeliveredCatalog.spec, rewritten stale specs
+
+ Test Files  775 passed (775)
+      Tests  5848 passed | 2 skipped (5850)
+
+Mutation check (same tree): with the snapshot's input_state ignored in agentStreamSnapshotApplication.ts, the queued case fails:
+   × … a native/AGY/ACP run queued it while Running and the ack and input state were lost: found through the snapshot's input state, never "not sent"
+AssertionError: expected [ 'the running turn\'s input' ] to deeply equal [ 'the running turn\'s input', …(1) ]
+(restored afterwards; the file's diff is the committed one)

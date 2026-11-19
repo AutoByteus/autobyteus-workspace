@@ -65,6 +65,10 @@ class FakeRuntimeRun {
     return this.snapshot;
   }
 
+  getInputStateSnapshot() {
+    return { run_instance_id: `${this.runId}-instance`, revision: 0, entries: [], recoverableBlock: null };
+  }
+
   setStatus(status: "offline" | "initializing" | "idle" | "running" | "error"): void {
     this.snapshot = {
       status,

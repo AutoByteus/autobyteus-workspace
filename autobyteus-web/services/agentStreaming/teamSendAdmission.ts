@@ -1,5 +1,6 @@
 import type { TeamStreamServerMessage } from '@autobyteus/team-stream-contracts';
 import { COLLABORATOR_ADD_FAILED, collaboratorAddRejectionOf } from '~/services/collaborators/collaboratorAddFailures';
+import { MessageNotDeliveredError } from '~/services/runSubmission/messageNotDelivered';
 
 /**
  * The Team stream's pending message admissions: one per AgentRun, settled by the root's
@@ -49,12 +50,12 @@ export class TeamSendAdmissions {
     return { promise, isNew: true };
   }
 
-  /** The send itself failed: the admission ends with its error. */
+  /** The send itself failed on the socket: nothing left, so the message was not sent (autobyteus-540 D-5). */
   fail(identity: TeamSendIdentity, error: unknown): void {
     const key = sendKey(identity);
     const pending = this.pending.get(key);
     this.pending.delete(key);
-    pending?.reject(error instanceof Error ? error : new Error(String(error)));
+    pending?.reject(new MessageNotDeliveredError('not_sent', error instanceof Error ? error.message : String(error)));
   }
 
   resolve(message: Extract<TeamStreamServerMessage, { type: 'MEMBER_INPUT_MESSAGE' }>): void {
@@ -82,9 +83,10 @@ export class TeamSendAdmissions {
     return true;
   }
 
+  /** The connection is gone with sends waiting for admission: each may or may not have reached the root (D-5). */
   drain(message: string): void {
     const pending = [...this.pending.values()];
     this.pending.clear();
-    pending.forEach((entry) => entry.reject(new Error(message)));
+    pending.forEach((entry) => entry.reject(new MessageNotDeliveredError('unknown', message)));
   }
 }

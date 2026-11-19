@@ -1,0 +1,13 @@
+# IMP-01 the root cause as a failing web unit test, before the fix
+# command: NUXT_TEST=true pnpm -C autobyteus-web exec vitest run services/agentStreaming/__tests__/agentStreamSendDelivery.spec.ts
+#          (the file then held only the readiness case: "ensureAgentStreamConnected waits for the node's CONNECTED, not for the open socket")
+# commit: 5b58c98cc4 (code = base origin/personal 914eb36577; the spec file not yet committed)
+# env: macOS, Node v22.23.1
+# date: 2026-11-18
+# result: FAIL (expected: the store treats the open socket as ready)
+
+   × agent stream send delivery (autobyteus-540) > ready means bound (D-1, AC-001) > ensureAgentStreamConnected waits for the node's CONNECTED, not for the open socket 14ms
+AssertionError: expected "spy" to not be called at all, but actually been called 1 times
+      Tests  1 failed (1)
+
+After the fix (same test, commit 49ed8967f0): passes (see IMP-07).

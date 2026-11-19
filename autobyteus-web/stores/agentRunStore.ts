@@ -28,7 +28,7 @@ import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { ConnectionState } from '~/services/agentStreaming';
 import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState';
-import { CollaboratorAddRejection } from '~/services/collaborators/collaboratorAddFailures';
+import { MessageNotDeliveredError } from '~/services/runSubmission/messageNotDelivered';
 import {
   acceptLocalSubmission,
   beginLocalUserSubmission,
@@ -150,6 +150,7 @@ export const useAgentRunStore = defineStore('agentRun', {
         attachments: draftAttachments,
         navigationTarget: { kind: 'standalone', runId },
         mentions,
+        draft: { requirement: userText, requestedSkillNames: currentAgent.requestedSkillNames },
       });
 
       let preparedRunId: string | null = null;
@@ -238,14 +239,17 @@ export const useAgentRunStore = defineStore('agentRun', {
           );
           acceptLocalSubmission(localSubmission);
         } else {
-          service.sendMessage(messageContent, submissionPlan.executable.contextFilePaths, submissionPlan.executable.imageUrls, command);
+          // Resolves at the node's answer; a message the node never took ends `MessageNotDeliveredError` (autobyteus-540).
+          await service.sendMessage(messageContent, submissionPlan.executable.contextFilePaths, submissionPlan.executable.imageUrls, command);
         }
         preparedRunId = null;
         runHistoryStore.refreshTreeQuietly();
       } catch (error: any) {
         console.error('Error sending user input:', error);
         if (activationPendingRunId) this.clearActivationPending(activationPendingRunId);
-        if (preparedRunId) {
+        // A message that did not reach the node keeps its prepared run: the draft comes back to be sent again on it, and
+        // an `unknown` one may already have started it (autobyteus-540 REQ-003).
+        if (preparedRunId && !(error instanceof MessageNotDeliveredError)) {
           getApolloClient().mutate({
             mutation: CancelPreparedAgentRun,
             variables: { agentRunId: preparedRunId },
@@ -253,13 +257,9 @@ export const useAgentRunStore = defineStore('agentRun', {
             console.warn(`Failed to cancel prepared agent run '${preparedRunId}'.`, cancelError);
           });
         }
-        // A rejected add posted nothing: the notice shows and the draft stays as typed.
-        if (localSubmission.held && error instanceof CollaboratorAddRejection) {
-          failLocalSubmission(localSubmission, error);
-          return;
-        }
-        applyOfflineOrTerminalCleanup(localSubmission.context, AgentStatus.Error);
-        failLocalSubmission(localSubmission, error);
+        // A rejected add posted nothing (the draft stays as typed); a message that did not reach the node comes back to
+        // the box with its notice (autobyteus-540). Neither changes the run's status.
+        failLocalSubmission(localSubmission, error, { failedStatus: AgentStatus.Error });
 
         // We do NOT re-throw here because we've handled it by showing it in the UI.
         // If we re-throw, parent catch blocks might try to handle it again (e.g. log it).
@@ -312,25 +312,14 @@ export const useAgentRunStore = defineStore('agentRun', {
       return streamingServices.get(runId)?.service.connectionState === ConnectionState.CONNECTED;
     },
 
+    /** The run's stream, once bound (the node's `CONNECTED`): a send leaves only then (autobyteus-540 D-1). */
     async ensureAgentStreamConnected(runId: string): Promise<AgentStreamingService> {
       const service = this.connectToAgentStream(runId);
       if (!service) {
         throw new Error(`Unable to connect agent stream for run '${runId}'.`);
       }
-      const isConnected = () => service.connectionState === ConnectionState.CONNECTED;
-      if (isConnected()) {
-        return service;
-      }
-
-      const timeoutAt = Date.now() + 10000;
-      while (Date.now() < timeoutAt) {
-        if (isConnected()) {
-          return service;
-        }
-        await new Promise((resolve) => setTimeout(resolve, 50));
-      }
-
-      throw new Error(`Timed out waiting for agent stream connection for run '${runId}'.`);
+      await service.whenBound(10_000);
+      return service;
     },
 
     disconnectAgentStream(runId: string): void {
