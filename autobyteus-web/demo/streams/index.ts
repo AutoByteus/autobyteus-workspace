@@ -1,5 +1,6 @@
 /** The demo node's WebSocket streams (autobyteus-279), one session per route. */
 import type { DemoStreamSession } from '../demoTransport';
+import { openAgentCollaborationStream } from './agentCollaborationStream';
 import { openAgentStream } from './agentStream';
 import { openRunStatusStream } from './runStatusStream';
 import type { DemoWorld } from '../world/DemoWorld';
@@ -39,6 +40,11 @@ const routes: DemoStreamRoute[] = [
     const agent = context.world.agent(decodeURIComponent(match[1]!));
     if (!agent || agent.run.kind !== 'agent') return unknownRun(context, match[1]!);
     return openAgentStream(context, agent);
+  }),
+  route(/^\/ws\/agent-collaboration\/([^/]+)$/, (context, match) => {
+    const run = context.world.run(decodeURIComponent(match[1]!));
+    if (!run || run.kind !== 'agent') return unknownRun(context, match[1]!);
+    return openAgentCollaborationStream(context, run);
   }),
 ];
 

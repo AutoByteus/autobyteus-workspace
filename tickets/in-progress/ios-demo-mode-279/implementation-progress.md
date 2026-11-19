@@ -10,17 +10,24 @@ A running record of the build, kept in the ticket so the work stays traceable be
 
 ## Step 1: the web demo node (in progress)
 
+Working on the dev server (`AUTOBYTEUS_MOBILE_WEB_BUILD=true AUTOBYTEUS_DEMO_BUILD=1 NUXT_APP_BASE_URL=/ nuxt dev`):
+
+- the run list renders from the world, with statuses over `/ws/run-status`;
+- the showcase conversation renders (VIS-007);
+- a send plays the scripted turn (tool call, the streamed answer, the closing line, Idle) with no console error.
+
 | Part | State | Files |
 | --- | --- | --- |
-| Demo fact in every build | written | `utils/remoteAccess/demoSession.ts` (`DEMO_ENTRY_ID`) |
-| Demo plugin registered only for `AUTOBYTEUS_DEMO_BUILD=1` | written | `nuxt.config.ts`, `demo/plugins/00.demoBoot.client.ts` |
-| Identity | written | `demo/demoIdentity.ts` |
-| Transport (fetch and WebSocket at the page boundary) | written | `demo/demoTransport.ts` |
-| Operation table (43 operations, generated types) | written | `demo/graphql/operations.ts` |
-| Boot (transport → world → session) | to do | `demo/demoBoot.ts` |
-| Dispatch | to do | `demo/DemoNode.ts` |
-| World, GraphQL handlers, REST, streams, runtime, RFB | to do | `demo/world/*`, `demo/graphql/*`, `demo/rest/*`, `demo/streams/*`, `demo/runtime.ts` |
-| `--demo` build target | to do | `scripts/build-mobile-web.mjs` |
+| Demo fact in every build | done | `utils/remoteAccess/demoSession.ts` (`DEMO_ENTRY_ID`) |
+| Demo plugin registered only for `AUTOBYTEUS_DEMO_BUILD=1` | done | `nuxt.config.ts`, `demo/plugins/00.demoBoot.client.ts` |
+| Boot (transport, then world, then session) and the transport | done | `demo/demoBoot.ts`, `demo/demoTransport.ts`, `demo/demoIdentity.ts` |
+| Dispatch (loud on anything unknown) | done | `demo/DemoNode.ts` |
+| World: runs as trees, definitions, conversations, Activity, background tasks, run trees | done | `demo/world/*` (content ported from the design reference) |
+| GraphQL | in progress | done: histories, definitions, workspaces, run tree, projections, file changes, resume configs, Tasks. To do: the remaining inventory operations (files, search, models and runtimes, Settings saves, New run, terminate, background task view, Org inspection and checkpoint, participant messages) |
+| REST | in progress | done: health, status, node desktop. To do: file content, file-change content, message references, media |
+| Streams | in progress | done: `/ws/agent` (the agent's snapshot and frames), `/ws/agent-collaboration`, `/ws/run-status`, the package-definitions and projects feeds. To do: `/ws/agent-team`, `/ws/agent-org`, `/ws/file-explorer`, the node-desktop RFB |
+| Runtime | in progress | done: send (a scripted turn) and Stop for agent runs. To do: Team and Org members, New run, attachments, Settings Save |
+| `--demo` build target | done | `scripts/build-mobile-web.mjs`; the build is 12 MB (R-004) |
 | Local icons | to do | `plugins/01.localIcons.client.ts`, `scripts/build-icon-bundle.mjs` |
 | Contract, inventory and build guard tests; the sweep probes | to do | `demo/__tests__`, `tests/e2e/mobile-demo-*.mjs` |
 

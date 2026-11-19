@@ -4,11 +4,13 @@
  * demo folder), streams its answer in 3-word steps of 70 ms ending with the exact closing line, then turns Idle. A Stop
  * ends the turn and the run is Idle in about 0.3 s ("Background task running" when it still has background tasks).
  *
- * Every frame is a presentation message of the node's own protocol, validated by its contract schema, numbered in the
- * agent's run sequence and published on the world's change bus; the world keeps the turn in the agent's conversation and
- * Activity, as a node keeps them.
+ * Every frame is a message of the agent stream's own wire format (`/ws/agent`: a segment's id is `id`), validated by the
+ * phone's own boundary check (`validateCanonicalBoundary`), numbered in the agent's run sequence and published on the
+ * world's change bus; a Team or Org stream maps it to its contract. The world keeps the turn in the agent's conversation
+ * and Activity, as a node keeps them.
  */
 import { agentPresentationPayloadSchemas } from '@autobyteus/agent-presentation-contracts';
+import { validateCanonicalBoundary } from '~/services/agentStreaming/protocol/messageParser';
 import { backgroundTasksRunningOf } from './world/backgroundTasks';
 import { replyFor, words } from './world/content/replies';
 import { activitiesOf, conversationOf } from './world/conversations';
@@ -69,10 +71,12 @@ export class DemoRuntime {
   }
 
   private publish(agent: DemoAgent, type: PresentationType, payload: Record<string, unknown>): void {
-    const schema = agentPresentationPayloadSchemas[type] as { parse(value: unknown): unknown };
+    validateCanonicalBoundary(type, payload);
+    // The frames outside the boundary check share the presentation contract's wire shape (a segment's differs: its id).
+    if (!type.startsWith('SEGMENT_')) (agentPresentationPayloadSchemas[type] as { parse(value: unknown): unknown }).parse(payload);
     const stream = this.streamOf(agent);
     stream.sequence += 1;
-    this.world.emit({ type: 'agent_frame', agent, frame: { type, payload: schema.parse(payload) as Record<string, unknown>, sequence: stream.sequence } });
+    this.world.emit({ type: 'agent_frame', agent, frame: { type, payload, sequence: stream.sequence } });
   }
 
   private setStatus(agent: DemoAgent, status: DemoStatus): void {
@@ -122,8 +126,8 @@ export class DemoRuntime {
         stream.inputRevision += 1;
         this.publish(agent, 'AGENT_INPUT_STATE', this.inputState(agent));
       }],
-      [700, () => this.publish(agent, 'SEGMENT_START', { segment_id: toolId, turn_id: turnId, segment_type: 'tool_call', metadata: { tool_name: reply.tool, arguments: reply.args } })],
-      [200, () => this.publish(agent, 'SEGMENT_END', { segment_id: toolId, turn_id: turnId, metadata: { tool_name: reply.tool, arguments: reply.args }, interrupted: false, reason: null, failed: false, error: null })],
+      [700, () => this.publish(agent, 'SEGMENT_START', { id: toolId, turn_id: turnId, segment_type: 'tool_call', metadata: { tool_name: reply.tool, arguments: reply.args } })],
+      [200, () => this.publish(agent, 'SEGMENT_END', { id: toolId, turn_id: turnId, metadata: { tool_name: reply.tool, arguments: reply.args }, interrupted: false, reason: null, failed: false, error: null })],
       [100, () => this.publish(agent, 'TOOL_EXECUTION_STARTED', { invocation_id: toolId, tool_name: reply.tool, turn_id: turnId, arguments: reply.args })],
       [900, () => {
         this.publish(agent, 'TOOL_EXECUTION_SUCCEEDED', { invocation_id: toolId, tool_name: reply.tool, turn_id: turnId, arguments: reply.args, result: reply.result });
@@ -132,10 +136,10 @@ export class DemoRuntime {
         activitiesOf(this.world, agent).push({ kind: 'tool', invocationId: toolId, toolName: reply.tool, type: 'tool_call', status: 'success',
           contextText: String(Object.values(reply.args)[0] ?? ''), arguments: reply.args, logs: [], result: reply.result, error: null, ts });
       }],
-      [300, () => this.publish(agent, 'SEGMENT_START', { segment_id: textId, turn_id: turnId, segment_type: 'text', metadata: null })],
-      ...words(reply.text).map((delta): [number, () => void] => [70, () => this.publish(agent, 'SEGMENT_CONTENT', { segment_id: textId, turn_id: turnId, segment_type: 'text', delta })]),
+      [300, () => this.publish(agent, 'SEGMENT_START', { id: textId, turn_id: turnId, segment_type: 'text', metadata: null })],
+      ...words(reply.text).map((delta): [number, () => void] => [70, () => this.publish(agent, 'SEGMENT_CONTENT', { id: textId, turn_id: turnId, segment_type: 'text', delta })]),
       [80, () => {
-        this.publish(agent, 'SEGMENT_END', { segment_id: textId, turn_id: turnId, metadata: null, interrupted: false, reason: null, failed: false, error: null });
+        this.publish(agent, 'SEGMENT_END', { id: textId, turn_id: turnId, metadata: null, interrupted: false, reason: null, failed: false, error: null });
         conversationOf(this.world, agent).push({ kind: 'message', role: 'assistant', content: reply.text, ts: Math.floor(Date.now() / 1000) });
       }],
       [120, () => { this.publish(agent, 'TURN_COMPLETED', { turn_id: turnId, reason: null }); stream.turnId = null; }],

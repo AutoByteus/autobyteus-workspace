@@ -21,4 +21,6 @@ export const demoRestRoutes: DemoRestRoute[] = [
     method: 'GET', match: path('/rest/remote-access/status'),
     answer: () => json({ phoneAccessEnabled: true, pairingAvailable: true, nodeId: DEMO_NODE_ID } satisfies RemoteAccessStatus),
   },
+  // autobyteus-server-ts/src/api/rest/node-desktop.ts: the demo node has a node desktop (its RFB is the demo's own).
+  { method: 'GET', match: path('/rest/node-desktop'), answer: () => json({ available: true }) },
 ];
