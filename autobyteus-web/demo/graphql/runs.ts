@@ -84,7 +84,17 @@ export const runHandlers = {
     __typename: 'Query',
     getAgentOrgRunInspection: { root_subject_kind: 'agent_org', root_run_id: orgRunId, root_org: orgRootView(world, runOf(world, orgRunId, 'org')) },
   }),
-  // A live Org's checkpoint: its change sequence, and whether any of its agents is working.
+  // A Team's or Org's checkpoint: its change sequence, and whether any of its agents is working.
+  GetTeamRunExecutionCheckpoint: ({ teamRunId }, world) => {
+    const run = runOf(world, teamRunId, 'team');
+    return {
+      __typename: 'Query',
+      getTeamRunExecutionCheckpoint: {
+        __typename: 'TeamRunExecutionCheckpointPayload', rootTeamRunId: teamRunId, changeSequence: world.runtime.runSequenceOf(run).changeSequence,
+        hasOpenExecutionWork: run.agents.some((agent) => agent.status === 'running'),
+      },
+    };
+  },
   GetAgentOrgExecutionCheckpoint: ({ orgRunId }, world) => {
     const run = runOf(world, orgRunId, 'org');
     return {

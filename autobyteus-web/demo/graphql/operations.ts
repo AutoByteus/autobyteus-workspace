@@ -1,6 +1,7 @@
 /**
  * The GraphQL operations the phone sends (autobyteus-279): every name in the measured inventory
- * (`tickets/.../evidence/architecture/phone-network-inventory.json`), each with its generated variables and result
+ * (`tickets/.../evidence/architecture/phone-network-inventory.json`), and the ones the demo build's own compiled
+ * operations showed the phone can send beyond it (the `@` menu, a Team's checkpoint), each with its generated variables and result
  * (`generated/graphql.ts`, checked by `codegen:check`). The demo node's handler table must cover all of them
  * (`DemoGraphqlHandlers`), so a changed schema fails the demo's type check instead of drifting.
  */
@@ -27,6 +28,7 @@ export type DemoOperations = {
   GetAgentRunResumeConfig: [G.GetAgentRunResumeConfigQueryVariables, G.GetAgentRunResumeConfigQuery];
   GetAgentTeamDefinitions: [G.GetAgentTeamDefinitionsQueryVariables, G.GetAgentTeamDefinitionsQuery];
   GetAllWorkspaces: [G.GetAllWorkspacesQueryVariables, G.GetAllWorkspacesQuery];
+  GetCollaboratorMentionCandidates: [G.GetCollaboratorMentionCandidatesQueryVariables, G.GetCollaboratorMentionCandidatesQuery];
   GetFileContent: [G.GetFileContentQueryVariables, G.GetFileContentQuery];
   GetFolderChildren: [G.GetFolderChildrenQueryVariables, G.GetFolderChildrenQuery];
   GetProviderModelCatalogSnapshots: [G.GetProviderModelCatalogSnapshotsQueryVariables, G.GetProviderModelCatalogSnapshotsQuery];
@@ -38,6 +40,7 @@ export type DemoOperations = {
   GetTaskWorkerTasks: [G.GetTaskWorkerTasksQueryVariables, G.GetTaskWorkerTasksQuery];
   GetTeamMemberFileChanges: [G.GetTeamMemberFileChangesQueryVariables, G.GetTeamMemberFileChangesQuery];
   GetTeamMemberRunProjection: [G.GetTeamMemberRunProjectionQueryVariables, G.GetTeamMemberRunProjectionQuery];
+  GetTeamRunExecutionCheckpoint: [G.GetTeamRunExecutionCheckpointQueryVariables, G.GetTeamRunExecutionCheckpointQuery];
   GetTeamRunResumeConfig: [G.GetTeamRunResumeConfigQueryVariables, G.GetTeamRunResumeConfigQuery];
   ListCollaborationRootHistory: [G.ListCollaborationRootHistoryQueryVariables, G.ListCollaborationRootHistoryQuery];
   ListWorkspaceRunHistory: [G.ListWorkspaceRunHistoryQueryVariables, G.ListWorkspaceRunHistoryQuery];

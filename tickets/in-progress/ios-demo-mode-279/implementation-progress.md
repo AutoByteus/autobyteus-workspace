@@ -35,6 +35,7 @@ Findings while porting:
 - **noVNC's clipboard read in Chrome.** In Control, noVNC reads the clipboard when its canvas gets focus if the browser reports clipboard permission as "prompt" (Chrome); headless Chrome refuses and noVNC logs "Clipboard read failed". A real node does the same in that browser. WebKit (the iOS app) does not answer the permission query, so noVNC never reads there. The Chrome probes grant clipboard permission in their browser context.
 - **Icons were fetched from the network.** `@iconify/vue` captured the real `fetch` when it loaded, before the demo transport, so the demo's icons came from `api.iconify.design` (the iOS content rule list would have blocked them). The local bundle replaces that path in every build: the API module now fetches nothing and logs a missing name.
 - **Icon collections: five, not four.** The desktop shell names two Phosphor icons (`ph:brain`, `ph:tree-view`). The Iconify API is off in every build, so the bundle holds every name in the source, as the design's rule says, and that includes `ph`.
+- **The compiled operations found two the phone can send.** The demo build compiles 252 operations; the measured inventory has 43. Checking the rest found the composer's `@` menu (`GetCollaboratorMentionCandidates`) and a Team's checkpoint (`GetTeamRunExecutionCheckpoint`) reachable on the phone; both are now answered (the `@` menu lists the sample agents and Teams). The other 207 are listed with a reason each (desktop pages and Settings, file editing, peers, and the rest); three are dead documents (FU-001).
 - **Reference files.** The node stores a message's references as absolute paths and names each by `sha256(messageId \0 path)`; the demo's messages carry absolute paths in the demo folder and its route resolves the same ids.
 
 | Part | State | Files |
@@ -50,7 +51,8 @@ Findings while porting:
 | Runtime | done | send, Stop, the member reply, New run, terminate (a run and its delegated runs), a stopped run starting on a send, Settings Save in memory, attachments kept in memory and named in the reply (`world/contextFiles.ts`, `rest/contextFiles.ts`) |
 | `--demo` build target | done | `scripts/build-mobile-web.mjs`; the build is 12 MB (R-004) |
 | Local icons | done | `plugins/01.localIcons.client.ts`, `scripts/build-icon-bundle.mjs` (`pnpm icons:build`, `icons:check`), `assets/icons/phone-icon-bundle.json` (161 icons, 77 KB), `scripts/__tests__/buildIconBundle.spec.ts`; dev dependencies `@iconify-json/{heroicons,mdi,ph,svg-spinners,vscode-icons}`, `@iconify/utils` |
-| Contract, inventory and build guard tests; the sweep probes | to do | `demo/__tests__`, `tests/e2e/mobile-demo-*.mjs` |
+| Contract, inventory and build guard tests | done | `demo/__tests__/{demoInventory,demoStreams,demoWorld}.spec.ts` (the measured inventory as `fixtures/`), `scripts/__tests__/{demoImportBoundary,mobileBuildChecks,buildIconBundle}.spec.ts`; each build checks its own output (`scripts/mobile-build-checks.mjs`, run by `build-mobile-web.mjs`): `/mobile` holds no demo code, the demo answers all 252 compiled operations (45 handled, 207 listed in `demo/graphql/unreachable-operations.json` with their reasons) |
+| Sweep probes | to do | `tests/e2e/mobile-demo-*.mjs` |
 
 ## Steps 2–5
 
