@@ -50,6 +50,8 @@ autobyteus-android/**/build/
 autobyteus-ios/AutoByteusMobile.xcodeproj/
 autobyteus-ios/build/
 autobyteus-ios/DerivedData/
+# autobyteus-279: the demo build copied into the app by autobyteus-ios/scripts/prepare-demo-web.sh.
+autobyteus-ios/DemoWeb/
 autobyteus-ios/**/*.xcuserstate
 autobyteus-ios/**/*.xcuserdata/
 autobyteus-ios/**/*.xcresult/

@@ -11,6 +11,8 @@ final class AutoByteusWebViewController: UIViewController, WKNavigationDelegate,
 
     private(set) var webView: WKWebView!
     private(set) var currentURL: String
+    /// The node page's shell bridge (autobyteus-279, Android's contract): given to the main frame of the node's origin only.
+    private let bridge: ShellBridgeHandler?
 
     init(
         entry: SavedNodeEntry,
@@ -18,10 +20,13 @@ final class AutoByteusWebViewController: UIViewController, WKNavigationDelegate,
         onPageStarted: @escaping (String) -> Void,
         onPageFinished: @escaping (String) -> Void,
         onDiagnostic: @escaping (ConnectionDiagnostic) -> Void,
-        onExternalURL: @escaping (URL) -> Void
+        onExternalURL: @escaping (URL) -> Void,
+        bridgeDelegate: ShellBridgeDelegate? = nil
     ) {
         self.entry = entry
         self.currentURL = initialURL
+        self.bridge = URL(string: entry.origin).map { ShellBridgeHandler(origin: $0) }
+        self.bridge?.delegate = bridgeDelegate
         self.onPageStarted = onPageStarted
         self.onPageFinished = onPageFinished
         self.onDiagnostic = onDiagnostic
@@ -37,7 +42,9 @@ final class AutoByteusWebViewController: UIViewController, WKNavigationDelegate,
         configuration.defaultWebpagePreferences.allowsContentJavaScript = true
         configuration.preferences.javaScriptCanOpenWindowsAutomatically = false
         configuration.allowsInlineMediaPlayback = true
+        bridge?.install(in: configuration)
         let view = WKWebView(frame: .zero, configuration: configuration)
+        bridge?.webView = view
         view.navigationDelegate = self
         view.uiDelegate = self
         view.allowsBackForwardNavigationGestures = true

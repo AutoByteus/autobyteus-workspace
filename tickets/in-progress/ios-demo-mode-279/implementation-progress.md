@@ -39,6 +39,8 @@ Findings while porting:
 - **The showcase picture's URL.** The node names stored media by a relative URL (`/rest/files/<category>/<name>`), which a phone page resolves to the node because the node serves it. The demo page is the app's own (`autobyteus-demo://app`), so the relative URL reached the app's files (the build's `200.html`) and the picture broke. The demo world now gives its picture at its node's origin (`SHOWCASE_IMAGE_URL`); the transport rule (N-1) is unchanged.
 - **iPad panes without per-screen changes.** The reference moved each screen with CSS on its test id. The shell instead makes the right pane the containing block of its fixed-position screens (a transform), so every screen, and the viewers inside them, fills the pane; the run screen alone needs to know (no ←), through `useMobileSplitLayout`.
 - **A test that read Iconify's placeholder.** `AgentConversationFeed.spec.ts` (the jump arrow's exact signature) expected the glyph's classes `h-4 w-4` and a 16 × 16 view box: Iconify's loading placeholder, since the icon was never loaded in tests. With the local bundle the real `heroicons:arrow-down` draws (24 × 24, Iconify's own classes); the test now compares the glyph's layout classes and the real view box.
+- **The content rule list never compiled.** `^(https?|wss?)://` is not accepted by WebKit ("Disjunctions are not supported yet"), so the R-002 harness ran without it (its summary corrected). The app uses two rules without alternation, refuses to open a demo whose list did not compile, and a UI test shows an image from a real site is blocked in the demo web view.
+- **iOS first screen copy.** Android's ("…and press Show QR code", DEC-024: the desktop's button is "Show QR code") rather than VIS-001's "…and choose Connect a phone".
 - **Reference files.** The node stores a message's references as absolute paths and names each by `sha256(messageId \0 path)`; the demo's messages carry absolute paths in the demo folder and its route resolves the same ids.
 
 | Part | State | Files |
@@ -67,6 +69,21 @@ Findings while porting:
 | DC-011 (REQ-010) | done | `ArtifactContentViewer.vue` (`previewOnly`: no Edit Mode / Preview switch), `MobileArtifacts.vue` (passes it); specs |
 | Sweep probes | written, red until complete | `tests/e2e/mobile-demo-{crawl,sheets,upload,final}-probe.mjs`, `mobile-demo-probe-support.mjs`; `pnpm test:e2e:mobile-demo` |
 
-## Steps 3–5
+## Step 3: iOS (in progress)
+
+| Part | State | Files |
+| --- | --- | --- |
+| Connect flow, as Android (REQ-001, REQ-013) | done | `AutoByteusMobileCore/NodeConnectionFlow.swift` (a pairing link is saved when the page pairs; a typed address when it answers; a saved node opens), `ConnectionInputResolver.swift` (pairing link / typed address), `CantReachReason.swift`; tests |
+| Shared text and the demo link (REQ-002, REQ-007) | done | `AutoByteusMobileCore/SharedText.swift` (`DemoLink`, `SharedTextAction` with the share sheet's copy); tests |
+| Start screen, sheets, Connecting, Can't reach (UIS-001; VIS-001/002) | done | `Start/{StartViewController,NodeRowView,TypeAddressSheet,RemoveNodeSheet}.swift`, `Connect/{ConnectingViewController,CantReachViewController}.swift`, `Shell/ShellStyle.swift`, the mark asset; `ConnectionViewController.swift` removed |
+| Scanner (UIS-002; VIS-003) | done | `QRCodeScannerViewController.swift`: Android's look; the demo code says "Demo code found" and opens the demo after 0.7 s |
+| Shell bridge (node pages and the demo) | done | `Shell/ShellBridgeHandler.swift` (`window.AutoByteusShell`, main frame of the open origin only, no credential), `Shell/ShellFileSaver.swift`, `Shell/DesktopFullScreen.swift`; `WebShellViewController.swift`, `AutoByteusWebViewController.swift` |
+| Demo web view (DS-001, REQ-003, REQ-006) | done | `Demo/{DemoWebViewController,DemoSchemeHandler}.swift`: the bundled build at `autobyteus-demo://app/`, a new non-persistent store each open, a content rule list blocking `http(s)` and `ws(s)` (a list that does not compile opens no demo) |
+| Routes (DS-001, DS-004, DS-005) | done | `AppShellCoordinator.swift`, `SceneDelegate.swift` |
+| Share extension (UIS-016) | done | `AutoByteusMobileShareExtension/ShareViewController.swift` (the four messages; a centered card on iPad) |
+| Bundling | done | `project.yml` (DemoWeb/ as a folder; the build fails without it), `scripts/prepare-demo-web.sh`, `.gitignore` |
+| XCUITests | iPhone done; iPad to run | `AutoByteusMobileUITests/DemoUITests.swift` (first screen, Try demo, Leave demo, a new demo, cold launch, the demo code, the demo link, a kept share, no network from the demo web view); the fake-node smoke tests rewritten for the new connect path |
+
+## Steps 4–5
 
 Not started (design spec, Change Sequence).

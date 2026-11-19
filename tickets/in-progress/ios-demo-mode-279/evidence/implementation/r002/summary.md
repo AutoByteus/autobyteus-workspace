@@ -29,10 +29,12 @@
 | The page's own origin through the transport (`/meta/latest.json`, status 200, `application/json`) | ✓ | ✓ |
 | `blob:` and `data:` through the transport | ✓ | ✓ |
 | Another origin refused by the transport (`TypeError: Offline`) | ✓ | ✓ |
-| The real `fetch` beneath, blocked by the content rule list (`TypeError: Load failed`) | ✓ | ✓ |
+| The real `fetch` beneath fails (`TypeError: Load failed`); see the correction below: not proof of the content rule list | ✓ | ✓ |
 | Apollo `HttpLink` (fetch captured at creation, as `plugins/30.apollo.client.ts`) answered by the demo node | ✓ | ✓ |
 | A stream socket: `new WebSocket`, `addEventListener('message')` and `onmessage` both delivered | ✓ | ✓ |
 | noVNC `RFB` over a socket the page built (as `useVncSession.ts`): `connect`, one Raw frame painted (pixel 224,122,60) | ✓ | ✓ |
+
+**Correction (Step 3, 2026-11-19).** The harness's content rule list used `^(https?|wss?)://`, which WebKit does not compile ("Disjunctions are not supported yet"): the harness ran without a rule list, so the failed `fetch` row shows that the unreachable host failed, not that the list blocked it. The app's rule list is two rules without alternation (`^https?://`, `^wss?://`), and a rule list that does not compile now stops the demo from opening; its blocking is checked again on the app (see `implementation-handoff.md`).
 
 Results: `results/iphone-17-pro-max.json`; the files the scheme handler served: `results/iphone-17-pro-max-served.txt`.
 
