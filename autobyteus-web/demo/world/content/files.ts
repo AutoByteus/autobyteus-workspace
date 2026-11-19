@@ -46,13 +46,9 @@ export const DEMO_FILES: Record<string, string> = {
   'docs/lease-renewal.md': '# Lease renewal\n\nThe flat on Garden Street, renewed for two years from 1 April.\n\n- Notice period: three months\n- Repairs: the landlord pays for anything over 200\n- Rent: fixed for the first year, then reviewed\n',
   'src/export/filters.ts': 'export function restoreFilters(saved: ExportFilters | null): ExportFilters {\n  // Keep the filters the user set when they come back to the export screen.\n  return saved ?? defaultFilters()\n}\n',
 }
-export const isDemoImage = (path: string): boolean => /\.(png|jpe?g|svg)(?=$|[&#?])/i.test(path)
-export const demoFileText = (path: string): string => DEMO_FILES[String(path).replace(/^\/+/, '')] ?? `# ${String(path).split('/').pop()}\n\nA sample file of the demo.\n`
-export const demoSearch = (query: string): string[] => Object.keys(DEMO_FILES).filter((path) => path.toLowerCase().includes(String(query ?? '').trim().toLowerCase()))
 
 /** The pictures of the demo's folder: invented screens, no real data. */
 export const demoImageFor = (path: string): string => (/before/i.test(path)
   ? `<svg xmlns="http://www.w3.org/2000/svg" width="960" height="600" viewBox="0 0 960 600"><rect width="960" height="600" rx="24" fill="#f8fafc"/><text x="56" y="84" font-family="system-ui,-apple-system,sans-serif" font-size="34" font-weight="600" fill="#0f172a">Export · before 1.6</text><text x="56" y="124" font-family="system-ui,-apple-system,sans-serif" font-size="22" fill="#64748b">Sample screen · filters reset when you leave</text><rect x="56" y="170" width="848" height="56" rx="10" fill="#e2e8f0"/><text x="80" y="206" font-family="system-ui,-apple-system,sans-serif" font-size="22" fill="#64748b">Filters: none</text><g fill="#cbd5e1"><rect x="56" y="256" width="848" height="40" rx="8"/><rect x="56" y="312" width="848" height="40" rx="8"/><rect x="56" y="368" width="848" height="40" rx="8"/><rect x="56" y="424" width="848" height="40" rx="8"/></g></svg>`
   : DEMO_IMAGE_SVG)
 
-// --- Team and Org members: conversations, Activity and Messages that fit their work -----------------------------------

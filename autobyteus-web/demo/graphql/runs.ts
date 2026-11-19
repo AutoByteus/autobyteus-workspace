@@ -50,7 +50,7 @@ export const fileChangesOf = (world: DemoWorld, agent: DemoAgent): FileChange[] 
 };
 
 /** Settings change a stopped run only (the node's rule): a live run's answer is `RUN_ACTIVE`. */
-const editability = (world: DemoWorld, run: DemoRun) => (isLive(world, run)
+export const editability = (world: DemoWorld, run: DemoRun) => (isLive(world, run)
   ? { __typename: 'RunModelConfigEditabilityObject' as const, editable: false, reason: 'RUN_ACTIVE' }
   : { __typename: 'RunModelConfigEditabilityObject' as const, editable: true, reason: null });
 

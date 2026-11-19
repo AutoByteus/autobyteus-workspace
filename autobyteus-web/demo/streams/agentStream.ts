@@ -1,7 +1,8 @@
 /**
  * `/ws/agent/:runId` (autobyteus-279), as the node serves it (`autobyteus-server-ts/src/services/agent-streaming`):
  * `CONNECTED`, the agent's `AGENT_STATUS`, then its `AGENT_STREAM_SNAPSHOT` (its stored projection; for a live run its
- * input state and the base of its own numbered sequence). Then each frame the demo's runtime publishes for the agent.
+ * input state and the base of its own numbered sequence). Then each frame the demo's runtime publishes for the agent;
+ * when the run starts or stops, a snapshot in its new mode first.
  * `SEND_MESSAGE` and `INTERRUPT_GENERATION` go to the runtime, and their acknowledgements to this socket only.
  */
 import type { DemoStreamSession } from '../demoTransport';
@@ -18,32 +19,40 @@ export const openAgentStream = (context: DemoStreamContext, agent: DemoAgent): D
   const send = (message: unknown) => context.send(JSON.stringify(message));
   const sessionId = `demo-session-${agent.agentRunId}-${Math.random().toString(36).slice(2, 10)}`;
 
+  /** The agent's snapshot: its stored projection; for a live run its input state and the base of its own sequence. */
+  const snapshot = () => {
+    const live = agent.status !== 'offline';
+    const stream = runtime.streamOf(agent);
+    send({
+      type: 'AGENT_STREAM_SNAPSHOT',
+      payload: {
+        stored: {
+          runId: agent.agentRunId, conversation: conversationOf(world, agent), activities: activitiesOf(world, agent),
+          summary: agent.run.summary, lastActivityAt: agent.lastActivityAt, hasEarlierActiveTraceEvents: false,
+        },
+        // A stopped run's snapshot is its whole stored conversation, with no sequence and no input state.
+        input_state: live ? runtime.inputState(agent) : null,
+        turn_frames: [],
+        base_sequence: stream.sequence,
+        live_sequence_id: live ? stream.liveSequenceId : null,
+      },
+    });
+  };
+
   const unsubscribe = world.onChange((change) => {
     if (change.type === 'agent_frame' && change.agent === agent) {
       send({ type: change.frame.type, payload: change.frame.payload, sequence: change.frame.sequence });
+    } else if (change.type === 'run_lifecycle' && change.run === agent.run) {
+      // The run started or stopped: the session switches mode (live: the node's `connectToActiveRun`; stopped: stored).
+      snapshot();
     }
   });
 
   return {
     opened: () => {
-      const live = agent.status !== 'offline';
-      const stream = runtime.streamOf(agent);
       send({ type: 'CONNECTED', payload: { agent_id: agent.agentRunId, session_id: sessionId } });
       send({ type: 'AGENT_STATUS', payload: statusPayload(world, agent) });
-      send({
-        type: 'AGENT_STREAM_SNAPSHOT',
-        payload: {
-          stored: {
-            runId: agent.agentRunId, conversation: conversationOf(world, agent), activities: activitiesOf(world, agent),
-            summary: agent.run.summary, lastActivityAt: agent.lastActivityAt, hasEarlierActiveTraceEvents: false,
-          },
-          // A stopped run's snapshot is its whole stored conversation, with no sequence and no input state.
-          input_state: live ? runtime.inputState(agent) : null,
-          turn_frames: [],
-          base_sequence: stream.sequence,
-          live_sequence_id: live ? stream.liveSequenceId : null,
-        },
-      });
+      snapshot();
     },
     received: (data) => {
       const message = JSON.parse(String(data)) as ClientMessage;

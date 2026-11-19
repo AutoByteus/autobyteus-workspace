@@ -1,7 +1,7 @@
 /**
  * `/ws/agent-org/:orgRunId` (autobyteus-279), an Org run's view as the node serves it: `CONNECTED`, its
  * `ROOT_EXECUTION_VIEW_SNAPSHOT` (`orgRootView`, the view its inspection answers), its `RUN_TREE_SNAPSHOT` at the same
- * base, then `ROOT_LIFECYCLE`. Then, numbered in the run's one change sequence, each agent's input and frames as
+ * base, then `ROOT_LIFECYCLE` (again, in band, when the Org starts or stops). Then, numbered in the run's one change sequence, each agent's input and frames as
  * `agent_presentation` events. Commands name their target agent and are acknowledged. Every message is validated by the
  * collaboration contract.
  */
@@ -22,8 +22,18 @@ export const openOrgStream = (context: DemoStreamContext, run: DemoRun): DemoStr
   const event = (changeSequence: number, agentRunId: string, memberAddress: string, message: { type: string; payload: unknown }) =>
     send({ type: 'ROOT_EXECUTION_EVENT', payload: { ...root, change_sequence: changeSequence, event: { kind: 'agent_presentation', member_address: memberAddress, agent_run_id: agentRunId, message } } });
 
+  /** The view at its current sequence: its snapshot, its tree at the same base, then its lifecycle. */
+  const show = () => {
+    const view = orgRootView(world, run);
+    send({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { ...root, root_org: view } });
+    send({ type: 'RUN_TREE_SNAPSHOT', payload: { ...root, base_change_sequence: view.base_change_sequence, rows: runTreeOf(run).rows } });
+    send({ type: 'ROOT_LIFECYCLE', payload: { ...root, is_active: view.is_active } });
+  };
+
   const unsubscribe = world.onChange((change) => {
-    if (change.type === 'agent_frame' && change.agent.run === run) {
+    if (change.type === 'run_lifecycle' && change.run === run) {
+      show();
+    } else if (change.type === 'agent_frame' && change.agent.run === run) {
       event(change.frame.changeSequence, change.agent.agentRunId, addressOf(change.agent),
         { type: change.frame.type, payload: rootFramePayload(change.frame.type, change.frame.payload) });
     } else if (change.type === 'member_input' && change.agent.run === run) {
@@ -41,11 +51,8 @@ export const openOrgStream = (context: DemoStreamContext, run: DemoRun): DemoStr
 
   return {
     opened: () => {
-      const view = orgRootView(world, run);
       send({ type: 'CONNECTED', payload: { ...root, session_id: `demo-org-${run.runId}-${Math.random().toString(36).slice(2, 10)}` } });
-      send({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { ...root, root_org: view } });
-      send({ type: 'RUN_TREE_SNAPSHOT', payload: { ...root, base_change_sequence: view.base_change_sequence, rows: runTreeOf(run).rows } });
-      send({ type: 'ROOT_LIFECYCLE', payload: { ...root, is_active: view.is_active } });
+      show();
     },
     received: (data) => {
       const message = CollaborationStreamClientMessageSchema.parse(JSON.parse(String(data)));

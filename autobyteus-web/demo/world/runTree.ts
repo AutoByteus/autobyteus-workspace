@@ -5,7 +5,7 @@
  * depth-first order. Validated by the contract's schema.
  */
 import { runTreeDtoSchema, type RunTreeDto, type RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts';
-import type { DemoAgent, DemoLaunch, DemoRun } from './DemoWorld';
+import { runLaunchOf, type DemoAgent, type DemoLaunch, type DemoRun } from './DemoWorld';
 import { addressOf } from './projections';
 
 type Draft = Omit<RunTreeRowDto, 'depth'>;
@@ -78,7 +78,7 @@ const delegatedRows = (run: DemoRun, anchors: Map<DemoAgent, string>): Draft[] =
   }
   const key = rowKey('team', run.runId);
   const rows: Draft[] = [{ key, parentKey: null, kind: 'team', name: slotNameOf(address) ?? run.runId, address,
-    openTarget: { runKind: 'agent_team', runId: run.runId, agentRunId: run.coordinator.agentRunId }, statusIds: [run.runId], launch: launchOf(run.coordinator.launch, true) }];
+    openTarget: { runKind: 'agent_team', runId: run.runId, agentRunId: run.coordinator.agentRunId }, statusIds: [run.runId], launch: launchOf(runLaunchOf(run), true) }];
   for (const member of run.agents) {
     const draft = { ...memberRow(run.runId, key, member, null), launch: launchOf(member.launch, false) };
     rows.push(draft);

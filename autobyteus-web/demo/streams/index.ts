@@ -2,9 +2,11 @@
 import type { DemoStreamSession } from '../demoTransport';
 import { openAgentCollaborationStream } from './agentCollaborationStream';
 import { openAgentStream } from './agentStream';
+import { openFileExplorerStream } from './fileExplorerStream';
 import { openOrgStream } from './orgStream';
 import { openRunStatusStream } from './runStatusStream';
 import { openTeamStream } from './teamStream';
+import { DEMO_WORKSPACE_ID } from '../graphql/definitions';
 import type { DemoWorld } from '../world/DemoWorld';
 
 export type DemoStreamContext = {
@@ -38,6 +40,10 @@ const routes: DemoStreamRoute[] = [
   route(/^\/ws\/agent-package-definitions$/, changeFeedThatNeverChanges),
   route(/^\/ws\/projects$/, changeFeedThatNeverChanges),
   route(/^\/ws\/run-status$/, openRunStatusStream),
+  route(/^\/ws\/file-explorer\/([^/]+)$/, (context, match) => {
+    const workspaceId = decodeURIComponent(match[1]!);
+    return workspaceId === DEMO_WORKSPACE_ID ? openFileExplorerStream(context, workspaceId) : unknownRun(context, workspaceId);
+  }),
   route(/^\/ws\/agent\/([^/]+)$/, (context, match) => {
     const agent = context.world.agent(decodeURIComponent(match[1]!));
     if (!agent || agent.run.kind !== 'agent') return unknownRun(context, match[1]!);

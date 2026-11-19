@@ -1,7 +1,8 @@
 /**
  * `/ws/agent-team/:teamRunId` (autobyteus-279), a Team run's view as the node serves it (`team-view-session.ts`):
  * `CONNECTED`, its `TEAM_EXECUTION_VIEW_SNAPSHOT` (its tree, its members' statuses and input states), its
- * `RUN_TREE_SNAPSHOT` at the same base, then `TEAM_RUN_LIFECYCLE`. Then, numbered in the run's one change sequence, each
+ * `RUN_TREE_SNAPSHOT` at the same base, then `TEAM_RUN_LIFECYCLE` (again, in band, when the Team starts or stops). Then,
+ * numbered in the run's one change sequence, each
  * member's input (`MEMBER_INPUT_MESSAGE`) and each member's frame (the member's own frame with its `agent_run_id` and the
  * change sequence; a segment's id is `segment_id`). Every message is validated by the Team stream contract.
  */
@@ -25,8 +26,24 @@ export const openTeamStream = (context: DemoStreamContext, run: DemoRun): DemoSt
   const runtime = world.runtime;
   const send = (message: unknown) => context.send(JSON.stringify(teamStreamServerMessageSchema.parse(message)));
 
+  /** The view at its current sequence: its snapshot, its tree at the same base, then its lifecycle (the node's `show`). */
+  const show = () => {
+    const sequence = runtime.runSequenceOf(run);
+    send({ type: 'TEAM_EXECUTION_VIEW_SNAPSHOT', payload: {
+      root_team_run_id: run.runId, base_change_sequence: sequence.changeSequence, live_sequence_id: sequence.liveSequenceId,
+      last_message_change_sequence: 0, execution_tree: teamExecutionTree(run),
+      agent_statuses: run.agents.map((agent) => ({ agent_run_id: agent.agentRunId, member_address: addressOf(agent), ...statusPayload(world, agent) })),
+      agent_input_states: run.agents.filter((agent) => agent.status !== 'offline').map((agent) => ({ agent_run_id: agent.agentRunId, state: runtime.inputState(agent) })),
+    } });
+    send({ type: 'RUN_TREE_SNAPSHOT', payload: { base_change_sequence: sequence.changeSequence, rows: runTreeOf(run).rows } });
+    send({ type: 'TEAM_RUN_LIFECYCLE', payload: { is_active: isLive(world, run) } });
+  };
+
   const unsubscribe = world.onChange((change) => {
-    if (change.type === 'agent_frame' && change.agent.run === run) {
+    if (change.type === 'run_lifecycle' && change.run === run) {
+      // The Team started or stopped: the view switches mode in band, at the current sequence (the node's mode switch).
+      show();
+    } else if (change.type === 'agent_frame' && change.agent.run === run) {
       send({ type: change.frame.type, payload: {
         ...rootFramePayload(change.frame.type, change.frame.payload), change_sequence: change.frame.changeSequence, agent_run_id: change.agent.agentRunId,
       } });
@@ -42,16 +59,8 @@ export const openTeamStream = (context: DemoStreamContext, run: DemoRun): DemoSt
 
   return {
     opened: () => {
-      const sequence = runtime.runSequenceOf(run);
       send({ type: 'CONNECTED', payload: { session_id: `demo-team-${run.runId}-${Math.random().toString(36).slice(2, 10)}`, root_team_run_id: run.runId } });
-      send({ type: 'TEAM_EXECUTION_VIEW_SNAPSHOT', payload: {
-        root_team_run_id: run.runId, base_change_sequence: sequence.changeSequence, live_sequence_id: sequence.liveSequenceId,
-        last_message_change_sequence: 0, execution_tree: teamExecutionTree(run),
-        agent_statuses: run.agents.map((agent) => ({ agent_run_id: agent.agentRunId, member_address: addressOf(agent), ...statusPayload(world, agent) })),
-        agent_input_states: run.agents.filter((agent) => agent.status !== 'offline').map((agent) => ({ agent_run_id: agent.agentRunId, state: runtime.inputState(agent) })),
-      } });
-      send({ type: 'RUN_TREE_SNAPSHOT', payload: { base_change_sequence: sequence.changeSequence, rows: runTreeOf(run).rows } });
-      send({ type: 'TEAM_RUN_LIFECYCLE', payload: { is_active: isLive(world, run) } });
+      show();
     },
     received: (data) => {
       const message = parseTeamStreamClientMessage(String(data));

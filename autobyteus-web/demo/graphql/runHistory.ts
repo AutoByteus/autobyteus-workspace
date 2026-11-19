@@ -39,7 +39,7 @@ export const workspaceHistory = (world: DemoWorld): HistoryGroup => {
       runs: runs.sort(newestFirst).map((run) => ({
         __typename: 'RunHistoryItemObject' as const,
         runId: run.runId, displayName: null, summary: run.summary, createdAt: run.createdAt, lastActivityAt: run.lastActivityAt,
-        archivedAt: null, terminatedAt: null, ...statusFields(world, run),
+        archivedAt: null, terminatedAt: run.terminatedAt, ...statusFields(world, run),
         hasCollaboration: run.coordinator.delegated.length > 0,
       })),
     })).sort((a, b) => a.agentName.localeCompare(b.agentName)),
@@ -51,7 +51,7 @@ export const workspaceHistory = (world: DemoWorld): HistoryGroup => {
         __typename: 'WorkspaceHistoryTeamRunItemObject',
         teamRunId: run.runId, displayName: null, teamDefinitionId: run.definitionId, teamDefinitionName: run.name,
         coordinatorAddress: `/${run.coordinator.memberName}`, workspaceRootPath: DEMO_WORKSPACE_ROOT, summary: run.summary,
-        createdAt: run.createdAt, lastActivityAt: run.lastActivityAt, archivedAt: null, terminatedAt: null, isActive: isLive(world, run),
+        createdAt: run.createdAt, lastActivityAt: run.lastActivityAt, archivedAt: null, terminatedAt: run.terminatedAt, isActive: isLive(world, run),
         rootTeam: teamExecutionTree(run).root_team,
         members: run.agents.map((agent) => ({
           __typename: 'WorkspaceHistoryTeamRunMemberObject',

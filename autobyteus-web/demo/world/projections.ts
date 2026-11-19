@@ -4,7 +4,7 @@
  */
 import { agentOrgExecutionTreeDtoSchema, type AgentOrgExecutionTreeDto } from '@autobyteus/collaboration-stream-contracts';
 import { teamRunExecutionTreeDtoSchema, type AgentLaunchConfigurationDto, type TeamRunExecutionTreeDto } from '@autobyteus/team-stream-contracts';
-import type { DemoAgent, DemoLaunch, DemoRun, DemoWorld } from './DemoWorld';
+import { runLaunchOf, type DemoAgent, type DemoLaunch, type DemoRun, type DemoWorld } from './DemoWorld';
 
 /** An agent's launch as a Team execution tree carries it (snake case). */
 export const launchSnake = (launch: DemoLaunch): AgentLaunchConfigurationDto => ({
@@ -34,7 +34,7 @@ export const teamExecutionTree = (run: DemoRun): TeamRunExecutionTreeDto => team
   created_at: run.createdAt, archived_at: null, application_binding: null, handoffs: [],
   root_team: {
     address: '/', team_definition_id: run.definitionId, team_definition_name: run.name, team_run_id: run.runId,
-    coordinator_address: addressOf(run.coordinator), default_launch_configuration: launchSnake(run.coordinator.launch),
+    coordinator_address: addressOf(run.coordinator), default_launch_configuration: launchSnake(runLaunchOf(run)),
     members: run.agents.map((agent) => ({
       kind: 'configured_agent', address: addressOf(agent), agent_definition_id: agent.definitionId, role: null, description: null,
       agent_run_id: agent.agentRunId, platform_agent_run_id: null, launch_configuration: launchSnake(agent.launch),
@@ -47,7 +47,7 @@ export const orgExecutionTree = (run: DemoRun): AgentOrgExecutionTreeDto => agen
   subjectKind: 'agent_org', createdAt: run.createdAt, archivedAt: null, applicationBinding: null, handoffs: [],
   rootOrg: {
     address: '/', orgDefinitionId: run.definitionId, orgDefinitionName: run.name, orgRunId: run.runId,
-    defaultLaunchConfiguration: launchCamel(run.coordinator.launch),
+    defaultLaunchConfiguration: launchCamel(runLaunchOf(run)),
     members: run.agents.map((agent) => ({
       address: addressOf(agent), agentDefinitionId: agent.definitionId, role: null, description: null, agentRunId: agent.agentRunId,
       platformAgentRunId: null, launchConfiguration: launchCamel(agent.launch),

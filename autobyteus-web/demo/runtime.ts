@@ -116,8 +116,23 @@ export class DemoRuntime {
     stream.timers.add(timer);
   }
 
-  /** A message to the agent (`SEND_MESSAGE`): accepted at once; the scripted turn follows. */
+  /**
+   * A message to a stopped run starts it (the node restores it): its agents are Idle in a new run instance, then its
+   * views switch to live (`run_lifecycle`) before the turn's frames.
+   */
+  private start(run: DemoRun): void {
+    for (const agent of run.agents) {
+      const stream = this.streamOf(agent);
+      stream.liveSequenceId = nextId(`demo-seq-${agent.agentRunId}`);
+      stream.runInstanceId = nextId(`demo-instance-${agent.agentRunId}`);
+      this.world.setStatus(agent, 'idle');
+    }
+    this.world.emit({ type: 'run_lifecycle', run, live: true });
+  }
+
+  /** A message to the agent (`SEND_MESSAGE`): accepted at once (a stopped run starts first); the scripted turn follows. */
   send(agent: DemoAgent, payload: DemoSendPayload): DemoSendAck {
+    if (this.world.statusOf(agent.run) === 'offline') this.start(agent.run);
     const messageId = payload.message_id || nextId('demo-message');
     const dedupeKey = payload.dedupe_key || messageId;
     const content = payload.content ?? '';
@@ -179,6 +194,24 @@ export class DemoRuntime {
     ];
     let at = 0;
     for (const [delay, step] of steps) { at += delay; this.later(agent, at, step); }
+  }
+
+  /**
+   * Terminate (the node's terminate): the runs its agents delegated first, then its own agents end their turns and go
+   * offline. A later message to it starts it again, as on the node.
+   */
+  terminate(run: DemoRun): void {
+    for (const agent of run.agents) for (const child of agent.delegated) this.terminate(child);
+    for (const agent of run.agents) {
+      const stream = this.streamOf(agent);
+      for (const timer of stream.timers) clearTimeout(timer);
+      stream.timers.clear();
+      if (stream.turnId) this.publish(agent, 'TURN_INTERRUPTED', { turn_id: stream.turnId, reason: null });
+      stream.turnId = null;
+      if (agent.status !== 'offline') this.setStatus(agent, 'offline');
+    }
+    run.terminatedAt = new Date().toISOString();
+    this.world.emit({ type: 'run_lifecycle', run, live: false });
   }
 
   /** Stop (`INTERRUPT_GENERATION`): the turn ends and the run is Idle in about 0.3 s. */

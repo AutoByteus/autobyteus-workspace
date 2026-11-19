@@ -2,6 +2,7 @@
 import type { RemoteAccessStatus } from '~/types/remoteAccess';
 import { DEMO_NODE_ID } from '../demoIdentity';
 import type { DemoWorld } from '../world/DemoWorld';
+import { contentRoutes } from './content';
 
 export type DemoRestRoute = {
   method: 'GET' | 'POST';
@@ -23,4 +24,5 @@ export const demoRestRoutes: DemoRestRoute[] = [
   },
   // autobyteus-server-ts/src/api/rest/node-desktop.ts: the demo node has a node desktop (its RFB is the demo's own).
   { method: 'GET', match: path('/rest/node-desktop'), answer: () => json({ available: true }) },
+  ...contentRoutes,
 ];

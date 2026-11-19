@@ -28,6 +28,7 @@ const teamOf = (agent: DemoAgent) => (agent.memberName ? { name: agent.run.name,
 const startOf = (agent: DemoAgent, spanMs: number): number => Date.parse(agent.lastActivityAt) - spanMs;
 
 const initialEntries = (world: DemoWorld, agent: DemoAgent): Entry[] => {
+  if (agent.run.startedInDemo) return [];
   if (agent.run === world.showcaseRun) {
     const ptm = world.topLevelRuns.find((run) => run.key === 'project-task-manager-1')!;
     return showcaseEntries(startOf(agent, 90_000), ptm.runId);
@@ -40,6 +41,7 @@ const initialEntries = (world: DemoWorld, agent: DemoAgent): Entry[] => {
 };
 
 const initialActivities = (world: DemoWorld, agent: DemoAgent): Entry[] => {
+  if (agent.run.startedInDemo) return [];
   if (agent.status === 'offline') return [];
   if (agent.run === world.showcaseRun) return showcaseActivities(startOf(agent, 90_000));
   if (agent.key === 'project-task-manager-1') return asActivities(projectTaskManagerEntries(startOf(agent, 60_000), agent));

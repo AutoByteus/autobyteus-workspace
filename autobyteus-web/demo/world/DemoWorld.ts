@@ -53,8 +53,14 @@ export type DemoRun = {
   coordinator: DemoAgent;
   /** The agent that delegated this run; null for a top-level run. */
   delegator: DemoAgent | null;
-  /** The key of the run in the content (stable across starts). */
+  /** The key of the run in the content (stable across starts); `new-<n>` for a run started in the demo. */
   key: string;
+  /** A run the user started in the demo (New run): it has no sample work, only what the demo's runtime adds. */
+  startedInDemo: boolean;
+  /** A Team's or Org's own default launch (its `/` scope in Settings); null for an agent run, whose launch is its agent's. */
+  defaultLaunch: DemoLaunch | null;
+  /** When the run was terminated (the history's `terminatedAt`); null while it has not been. */
+  terminatedAt: string | null;
 };
 
 export type DemoDefinitionKind = 'agent' | 'team' | 'org';
@@ -62,9 +68,13 @@ export type DemoDefinition = { kind: DemoDefinitionKind; id: string; name: strin
 
 export type DemoWorldChange =
   | { type: 'agent_status'; agent: DemoAgent }
-  | { type: 'run_tree'; root: DemoRun }
+  /** A run started (a message to a stopped run) or was terminated: its views switch mode, as the node's do. */
+  | { type: 'run_lifecycle'; run: DemoRun; live: boolean }
   | { type: 'agent_frame'; agent: DemoAgent; frame: DemoAgentFrame }
   | { type: 'member_input'; agent: DemoAgent; input: DemoMemberInput };
+
+/** A run's launch as Settings and its tree show it: an agent run's agent's, a Team's or Org's own default. */
+export const runLaunchOf = (run: DemoRun): DemoLaunch => run.defaultLaunch ?? run.coordinator.launch;
 
 export const DEMO_WORKSPACE_ROOT = '/demo/demo-workspace';
 export const DEMO_WORKSPACE_NAME = 'demo-workspace';
@@ -89,6 +99,7 @@ export class DemoWorld {
   private readonly agentsById = new Map<string, DemoAgent>();
   private readonly definitionsById = new Map<string, DemoDefinition>();
   private readonly listeners = new Set<(change: DemoWorldChange) => void>();
+  private startedRuns = 0;
   /** What the demo's agents do when the phone sends them a message or stops them (`demo/runtime.ts`). */
   readonly runtime: DemoRuntime;
 
@@ -143,6 +154,32 @@ export class DemoWorld {
     }
   }
 
+  /**
+   * A run the user starts (New run; the node's `prepareAgentRun`): a new top-level agent run of an agent definition,
+   * offline (prepared) until its first message arrives.
+   */
+  startAgentRun(definition: DemoDefinition, launch: DemoLaunch, summary: string): DemoRun {
+    if (definition.kind !== 'agent') throw new Error(`Agent definition '${definition.id}' was not found.`);
+    this.startedRuns += 1;
+    const key = `new-${this.startedRuns}`;
+    const now = new Date().toISOString();
+    const run = {
+      kind: 'agent', runId: `${snake(definition.name)}_${hex(`${key}@${this.startedAt.toISOString()}`)}`, name: definition.name,
+      definitionId: definition.id, summary, createdAt: now, lastActivityAt: now, agents: [], delegator: null, key, startedInDemo: true,
+      defaultLaunch: null, terminatedAt: null,
+    } as unknown as DemoRun;
+    const agent: DemoAgent = {
+      agentRunId: run.runId, key, agentName: definition.name, definitionId: definition.id, memberName: null, status: 'offline',
+      launch: { ...launch }, createdAt: now, lastActivityAt: now, run, delegated: [],
+    };
+    run.agents.push(agent);
+    run.coordinator = agent;
+    this.runsById.set(run.runId, run);
+    this.agentsById.set(agent.agentRunId, agent);
+    this.topLevelRuns.push(run);
+    return run;
+  }
+
   private define(kind: DemoDefinitionKind, name: string, members: string[] = []): string {
     const id = `demo-${kind}-${slug(name)}`;
     if (!this.definitionsById.has(id)) this.definitionsById.set(id, { kind, id, name, members });
@@ -167,7 +204,8 @@ export class DemoWorld {
       kind: spec.kind, runId: `${snake(name)}_${hex(spec.key)}`, name,
       definitionId: this.define(spec.kind, name, memberSpecs.map((member) => member.name)),
       summary: spec.summary, createdAt: this.minutesAgo(spec.minutes + 30), lastActivityAt: this.minutesAgo(spec.minutes),
-      agents: [], delegator, key: spec.key,
+      agents: [], delegator, key: spec.key, startedInDemo: false,
+      defaultLaunch: spec.kind === 'agent' ? null : { ...DEMO_DEFAULT_LAUNCH, workspaceRootPath: DEMO_WORKSPACE_ROOT }, terminatedAt: null,
     } as unknown as DemoRun;
     this.runsById.set(run.runId, run);
     if (spec.kind === 'agent') {

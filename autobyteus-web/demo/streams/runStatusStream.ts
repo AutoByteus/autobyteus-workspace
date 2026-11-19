@@ -34,9 +34,6 @@ export const openRunStatusStream = (context: DemoStreamContext): DemoStreamSessi
       if (!run) return;
       send({ type: 'RUN_STATUS_CHANGED', payload: { ...refOf(run), ...agentState(world, change.agent) } });
       send({ type: 'RUN_STATE_CHANGED', payload: { ...refOf(run), ...runState(world, run) } });
-    } else if (change.type === 'run_tree') {
-      const run = subscribed.get(change.root.runId);
-      if (run) send({ type: 'RUN_TREE_CHANGED', payload: refOf(run) });
     }
   });
 
