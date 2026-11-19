@@ -1,0 +1,10 @@
+# API-05-pdf-download: ApiE2E279UITests/testLargePdfDownload on apie2e279-iphone (87FD7BD4-527F-4396-8F0F-15E34D1FA345); fresh-start clone build (429af9bd66 + the temporary test file); 2026-11-19T20:49:12Z; load 122.09 135.67 147.41
+# links made just before: pdf
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testLargePdfDownload]' started.
+/Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobileUITests/ApiE2E279UITests.swift:168: error: -[AutoByteusMobileUITests.ApiE2E279UITests testLargePdfDownload] : XCTAssertTrue failed - The PDF's link in the conversation
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testLargePdfDownload]' failed (161.106 seconds).
+	 Executed 1 test, with 1 failure (0 unexpected) in 161.106 (161.108) seconds
+	 Executed 1 test, with 1 failure (0 unexpected) in 161.106 (161.109) seconds
+	 Executed 1 test, with 1 failure (0 unexpected) in 161.106 (161.110) seconds
+** TEST EXECUTE FAILED **
+# exit: 65
