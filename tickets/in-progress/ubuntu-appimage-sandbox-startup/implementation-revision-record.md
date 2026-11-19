@@ -6,6 +6,7 @@
 | IR-001 | Architecture Reviewer / ARCH-REV-002 intake | IMP-DI-001 | Design Impact | SR-012/013/014; ARCH-REV-002 | Dependent implementation held for DS-003 delta review |
 | IR-002 | ARCH-REV-003 Pass plus designer clarifications | IMP-DI-001 resolved; U1/U2 clarification | Large / High | SR-012/014; ARCH-REV-003 | Implementation Complete — Ready for Code Review; acceptance pending |
 | IR-003 | Code Reviewer / CRR-001 Local Fix | F-CR-001, F-CR-002 | Large / High | SR-012/014; ARCH-REV-003; CRR-001 | Local Fixes Implemented — Ready for source rereview; acceptance pending |
+| IR-004 | API-REV-002 Fail / CRR-003 failure-origin review | F-API-01 / F-API-02 | Large / High | SR-012/014/015; ARCH-REV-003; CRR-003; API-REV-002 | Cancellation fixed; Design Impact for explicit restart; no advancement |
 
 ## IR-001 — First-install input acquisition
 - Initial baseline; prior authoritative result N/A; triggering upstream finding IDs N/A (AR-001–003 resolved).
@@ -41,3 +42,10 @@
 - Classification **Large / High unchanged**. Local defects fit existing authorities; no design change, migration, compatibility branch, new owner or source size >500 / delta >220. Current source and handoff, not the revision record, determine resolution at rereview.
 - Limitations: IR-002 full AppImage predates these TS fixes. No new package, isolated desktop, real graphical authentication, Ubuntu22/24/26 sandbox, native ARM64/clean CI, two genuine signed updates/data continuity or full failure-matrix validation this round. All gates retained in handoff. No production keys, user data, publication/push/release or host-policy change. No frontend file changes; unchanged IMP-14 visual evidence reused, no new rendered/shell sign-off claimed.
 - Cleanup: no new runtime instance or host modification; synthetic profiles cleaned; only generated untracked SDK dist outputs removed after typechecks. Reviewer artifacts preserved untouched. Return to Code Reviewer per selected source-review rule.
+
+## IR-004 — Actual Settings recovery and canonical restart diagnosis
+- Prior: IR-003 Local Fix, **CRR-002 Pass**. Trigger: API-REV-002 Fail, confirmed implementation origin under CRR-003, F-API-01 and F-API-02, evidence at 1e34ab90eb/83c4adb869. Approved SR-012, DS-003/SR-014, ARCH-REV-003, SR-015 scoped CI authority. DR N/A.
+- 9017bd351d: managedUpdateSession.ts and appUpdater.ts distinguish settled cancelled verification from stage-start invalidation; stale writer receipt discarded before releasing busy state; appUpdater.spec.ts adds same-session manual control continuation. No persistence/UI/privilege delta.
+- IMP-27/28: 59 tests pass, both required typechecks pass, exact preexisting test baselines. IMP-30 repeats corrected actual Settings opt-out timing successfully. IMP-29/31 trace real post-commit canonical exec and failure before AppRun (NoNewPrivs=1; standard system FUSE helper cannot mount); independent menu works with identical signed bytes. Not a writer refusal or missing JS call. Package repack is test-trust only.
+- Current result: **Design Impact** for explicitly prescribed Electron relaunch mechanism, BEH-004 U2 / AC-006/008. F-API-02 not fixed. Preserve ordinary-user canonical path and existing security, user behavior and previous findings. No dependent implementation or source rereview until design revised. No duplicate advancement. Large/High unchanged.
+- IMP-32 records alternative to assess, precise limitations and private stopped guest recovery assets. No host changes, active fixture processes, release/production keys or user data. Native startup/ordinary quit/CI passes retain API-REV-002 limits. Outstanding matrix and independent actual-Settings rerun mandatory after approved implementation.

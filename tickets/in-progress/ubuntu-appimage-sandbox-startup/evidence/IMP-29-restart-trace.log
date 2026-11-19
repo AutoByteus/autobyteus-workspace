@@ -1,0 +1,86 @@
+IMP-29 | API-05b baseline 83c4adb869 product same as IR-003, retained signed feed14/1.5.15 | Noble x64 VM | 2026-11-19 | actual Settings actions, main inspector observation + guest exec/exit audit; no status synthesis
+Thu Nov 19 12:19:45 UTC 2026
+uid=1000(witness) gid=1000(witness) groups=1000(witness),4(adm),27(sudo)
+{"status":"ok","message":"Server is running"}
+2026-11-19T12:18:13.631Z pid=7450 armed
+ea0a36b11a75a48af4af19317cf88d1bf61af9c0cf050a31e74737a14946cb0b  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+verified before click {
+  activationMode: 'managed-quit',
+  status: 'downloaded',
+  currentVersion: '1.5.14',
+  currentVersionIsPrerelease: false,
+  updateChannel: 'stable',
+  updateStaged: true,
+  availableVersion: '1.5.15',
+  downloadPercent: 100,
+  downloadTransferredBytes: 360243529,
+  downloadTotalBytes: 360243529,
+  releaseNotes: null,
+  message: 'Ready for your next quit.',
+  errorKind: null,
+  errorOperation: null,
+  checkedAt: '2026-11-19T12:19:53.107Z',
+  notification: {
+    version: '1.5.15',
+    fromVersion: '1.5.14',
+    foundAt: '2026-11-19T12:19:47.998Z',
+    read: false,
+    state: 'waiting',
+    handledVersion: null,
+    releasePageUrl: null,
+    outcome: null,
+    outcomeReason: null,
+    outcomeStep: null
+  },
+  autoCheck: { enabled: true, intervalMinutes: 60 },
+  automaticUpdate: false,
+  automaticInstallPreparing: false
+}
+clicked Install & Restart 2026-11-19T12:20:04.936Z
+Thu Nov 19 12:20:10 UTC 2026
+uid=1000(witness) gid=1000(witness) groups=1000(witness),4(adm),27(sudo)
+36e63d2d70919dfbc466da6faf95bd743e80929ec5f5a83ff30b95551aad9b85  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+health 29696: absent
+
+health 29695: absent
+
+
+Openbox
+2026-11-19T12:18:13.631Z pid=7450 armed
+2026-11-19T12:20:05.092Z pid=7450 activate started
+2026-11-19T12:20:06.946Z pid=7450 activate returned {"version":"1.5.15","sha256":"36e63d2d70919dfbc466da6faf95bd743e80929ec5f5a83ff30b95551aad9b85"}
+2026-11-19T12:20:06.946Z pid=7450 relaunch [{"execPath":"/opt/autobyteus-desktop/1000/app/AutoByteus.AppImage","args":[]}]
+2026-11-19T12:20:06.980Z pid=7450 relaunch returned
+2026-11-19T12:20:06.980Z pid=7450 exit [0]
+2026-11-19T12:20:06.981Z pid=7450 exit returned
+[2026-11-19T12:19:39.391Z] [INFO] [electron] ServerStatusManager: Server is ready
+ExecutablePath: /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+ProcCmdline: /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+ProcCwd: /home/witness
+ Name:	AutoByteus.AppI
+ PPid:	14047
+ Uid:	1000	1000	1000	1000
+ NoNewPrivs:	1
+ Seccomp:	0
+Signal: 11
+SignalName: SIGSEGV
+After independent gtk-launch autobyteus-managed
+Thu Nov 19 12:21:37 UTC 2026
+36e63d2d70919dfbc466da6faf95bd743e80929ec5f5a83ff30b95551aad9b85  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+{"status":"ok","message":"Server is running"}
+autobyteus
+Nov 19 12:20:07 ab5-implementation kernel: AutoByteus.AppI[14048]: segfault at 357 ip 00007621331ec76e sp 00007ffe35546550 error 4 in ld-linux-x86-64.so.2[7621331eb000+2b000] likely on CPU 3 (core 3, 
+Paired mount diagnostic only; same committed image/UID/display. --appimage-mount under normal login vs same process context restricted by setpriv --no-new-privs. 124 = timeout after reporting live mount.
+NORMAL
+/tmp/.mount_AutoBy9xkSuM
+rc=124
+RESTRICTED
+fusermount: mount failed: Operation not permitted
+open dir error: No such file or directory
+rc=127
+Test-only normal image entry with already-set no_new_privs
+fusermount: mount failed: Operation not permitted
+open dir error: No such file or directory
+exit=127
+Healthy independent menu run: NoNewPrivs=0 for AppRun, Electron main and outer mount process (all UID1000).
+Baseline auditd rules had been reloaded during guest package/service initialization: no baseline syscall sequence from ausearch. Crash report + kernel log do identify canonical process/UID/NNP/SIGSEGV. Repeating on IR-004 F-01 fixture with audit rules verified.

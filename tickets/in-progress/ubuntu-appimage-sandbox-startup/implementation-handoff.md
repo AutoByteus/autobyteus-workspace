@@ -1,5 +1,26 @@
-# Implementation Handoff — IR-003
+# Implementation Handoff — IR-004
 
+## Current result: Design Impact — F-API-02 restart mechanism requires revision
+**Not ready for source rereview or API/E2E.** IR-003 received **CRR-002 Pass**; subsequent **API-REV-002 Fail → CRR-003 failure-origin review** identified F-API-01 and F-API-02. Approved SR-012, DS-003/SR-014, SR-015 CI scope, ARCH-REV-003; DR N/A. **Large / High** unchanged. Branch/worktree and final target unchanged. Current production delta: 9017bd351d. No dependent F-API-02 mechanism implemented.
+
+- **F-API-01 (BEH-004, AC-008): implemented.** Session tracks the in-flight writer verification; opt-out invalidates it immediately but manual controls stay busy until the stale verification/discard settles. Only the cancelled current verification emits its completion; stage start is not exposed as available. AppUpdater clears verification progress and download bookkeeping. Same-session manual Check, Download and explicit Install work in the actual Settings path, with no stale ready or late activation. Durable regression in appUpdater.spec.ts forces the timing; no renderer or persisted schema change.
+- **F-API-02 (BEH-004, AC-006/008): reproduced twice, mechanism established.** Successful writer ACK, exact canonical relaunch, old exit0, genuine native successor as the original UID. The successor inherits NoNewPrivs=1; its OS FUSE mount helper cannot mount. Mount EPERM occurs before AppRun, followed by runtime failure, no usable app. The later operator menu uses the same signed inode and profile, mounts successfully and returns healthy. DS-003 explicitly requires Electron app.relaunch for this edge. **Request revised design for an ordinary-user canonical restart, not changed user behavior or weaker security.** See IMP-32. No speculative writer retry or duplicate launch.
+- Previous F-CR-001/002 stay resolved. API-05a ordinary quit, scoped Ubuntu22/24/26 startup and scoped SR-015 x64/ARM64 CI passes are retained, not rerun or inflated into acceptance. Two-update explicit restart still fails, channel/repair/transport/fault matrix open. Once design is recovered: implement, regress both, return to source review, then independent current-package Settings validation. No production keys, end-user profile, branch push, release or delivery.
+- Visual check: no rendered component/style delta. Actual affected Settings controls exercised on a disposable graphical Noble guest (IMP-30); no claim of a spontaneous successor or new visual-design sign-off.
+- Validation / checks run (this round; additional prior entries below are historical):
+
+| ID | Commit / step | Result / evidence under evidence/ |
+|---|---|---|
+| IMP-27 | 9017bd351d, two affected Electron suites | **59 passed (59)** including deterministic cancellation/manual-control regression; IMP-27-verification.log. |
+| IMP-28 | 9017bd351d, both required typechecks | **Exit: web=0 server=0**; 0 production errors, existing 87/1012 test baselines. IMP-28-typechecks.log. |
+| IMP-29 | Prior API-05b 1.5.14 full test binary, unchanged product at 83c4adb869; real Settings + inspector observations, same bytes operator menu + paired mount diagnostic | **activate returned**, **relaunch returned**, exit0; canonical process UID1000, SIGSEGV, NoNewPrivs=1; restricted mount counterpart EPERM. IMP-29-restart-trace.log. |
+| IMP-30 | 9017bd351d test-trust 1.5.14 repack, real Settings opt-out during verification + manual Check/Download/Install | **observed writer verification**, **observed cancel complete available**, verified before click, then **clicked Install & Restart**. Initial driver toggled too early; corrected to await resolved IPC state. IMP-30-settings-cancel-and-restart.log. No accepted restart inferred. |
+| IMP-31 | Same click; JS and kernel native audit, Apport + subsequent menu control | Canonical exec; mount **success=no exit=-1** with euid1000 vs menu **success=yes exit=0** in standard OS mount helper; runtime parent exit127. Same marker, menu window/health ok. IMP-31-packaged-restart-origin.txt. |
+| IMP-32 | 9017bd351d plus pinned Electron source and trace/control interpretation | Causal diagnosis, fixture limitations, retained paths and design recovery request in IMP-32-design-impact.md. |
+
+No unchanged native/CI/renderer suites rerun. Earlier IR-003 readiness and IR-002 acceptance-status descriptions below are historical; the latest independent API-REV-002 ledger and this IR-004 section take precedence.
+
+## Historical IR-003 handoff (before API-REV-002)
 ## Upstream artifact package
 - Worktree: `/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup`
 - Branch: `fix/ubuntu-appimage-sandbox-startup`; final integration target **personal**. Base `f7b4d687`, integration merge `bc87bef825`; no merge/release performed here.
