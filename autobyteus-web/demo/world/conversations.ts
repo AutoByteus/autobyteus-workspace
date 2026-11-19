@@ -42,12 +42,12 @@ const initialEntries = (world: DemoWorld, agent: DemoAgent): Entry[] => {
 
 const initialActivities = (world: DemoWorld, agent: DemoAgent): Entry[] => {
   if (agent.run.startedInDemo) return [];
-  if (agent.status === 'offline') return [];
+  // A stopped run keeps its Activity, as the node's run history does (REQ-004: Activity on every run).
   if (agent.run === world.showcaseRun) return showcaseActivities(startOf(agent, 90_000));
   if (agent.key === 'project-task-manager-1') return asActivities(projectTaskManagerEntries(startOf(agent, 60_000), agent));
   const at = startOf(agent, 5 * 60_000);
-  const node = { id: agent.key, name: agent.memberName ?? agent.agentName, summary: agent.run.summary, status: agent.status };
-  return (agent.memberName ? demoMemberActivities(node, at, teamOf(agent)) : demoAgentActivities(node, at) ?? demoMemberActivities(node, at)) ?? [];
+  const node = { id: agent.key, name: agent.memberName ?? agent.agentName, summary: agent.run.summary };
+  return agent.memberName ? demoMemberActivities(node, at, teamOf(agent)) : demoAgentActivities(node, at) ?? demoMemberActivities(node, at);
 };
 
 /** The ported content's entries as the projection's: each names its kind, or the content is wrong. */

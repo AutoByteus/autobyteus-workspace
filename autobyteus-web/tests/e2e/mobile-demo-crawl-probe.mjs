@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // The iOS demo crawl (autobyteus-279; the sweep's crawl.mjs): every run row, every ⋮ view of each run, the first file of
 // Files and Artifacts, and the composer's upload button, at each size. Any error word, empty screen or error fails it.
-import { openRunNamed, runDemoProbe, unfoldRunList } from './mobile-demo-probe-support.mjs';
+import { backToRuns, openRunNamed, runDemoProbe, unfoldRunList } from './mobile-demo-probe-support.mjs';
 
 await runDemoProbe('mobile-demo-crawl', async (tools) => {
   const { page, sleep, shot, check, record } = tools;
@@ -32,6 +32,6 @@ await runDemoProbe('mobile-demo-crawl', async (tools) => {
       await back();
     }
     // Back to the list, which stayed mounted: its folds are as they were.
-    await page.getByRole('button', { name: 'Back to runs' }).click(); await sleep(400);
+    await backToRuns(tools);
   }
 });

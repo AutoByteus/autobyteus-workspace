@@ -20,6 +20,11 @@ describe('the demo world', () => {
     }
   });
 
+  it('gives every sample agent Activity, a stopped run\'s too (REQ-004)', () => {
+    const without = agents.filter((agent) => !agent.run.startedInDemo && activitiesOf(world, agent).length === 0).map((agent) => agent.key);
+    expect(without).toEqual([]);
+  });
+
   it('names only files and folders the demo folder has', () => {
     const named = agents.flatMap((agent) => conversationOf(world, agent)
       .filter((entry) => entry.kind === 'tool_call' && typeof entry.toolArgs?.path === 'string')

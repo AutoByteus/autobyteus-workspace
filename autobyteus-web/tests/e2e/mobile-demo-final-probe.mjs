@@ -2,7 +2,7 @@
 // The iOS demo's last checks (autobyteus-279; the sweep's final.mjs): a live run's Settings are locked until Stop; after
 // Stop a change Saves and reopening shows it; the demo sheet's Leave demo asks the app to leave (the app then shows its
 // first screen and forgets the demo: XCUITests). A new demo is a new page: it starts as the first did.
-import { openRunNamed, runDemoProbe } from './mobile-demo-probe-support.mjs';
+import { backToRuns, openRunNamed, runDemoProbe } from './mobile-demo-probe-support.mjs';
 
 await runDemoProbe('mobile-demo-final', async (tools) => {
   const { page, sleep, shot, check, expect, record } = tools;
@@ -24,7 +24,7 @@ await runDemoProbe('mobile-demo-final', async (tools) => {
   expect('reopened', reopened.includes('demo/sample-reasoning-model'), 'reopening shows the saved model');
   await shot('settings-reopened'); await check('settings reopened');
   await page.locator('[data-testid="mobile-screen-back"]').last().click(); await sleep(400);
-  await page.getByRole('button', { name: 'Back to runs' }).click(); await sleep(500);
+  await backToRuns(tools);
   // Leave demo (UIS-004): the node button names the demo; its sheet's Leave demo ends it, and the next demo is fresh.
   await page.getByRole('button', { name: /^Demo, sample data/ }).click(); await sleep(400);
   await shot('demo-sheet'); await check('demo sheet');

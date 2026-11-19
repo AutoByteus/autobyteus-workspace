@@ -145,14 +145,11 @@ export function demoMemberEntries(node: { id: string; name: string }, team: { na
   if (own) return own(s)
   return [
     fromAgent('coordinator', '/coordinator', team ? `${team.summary}. Please take your part of it.` : 'Please take your part of the Task.', s(0)),
-    said(team ? `On it: my part of “${team.summary}”. I will post the result here.` : 'On it. I will post the result here.', s(1)),
+    toolCall(`${node.id}-m1`, 'read_file', { path: 'docs/pilot-summary.md' }, 'Read 9 lines.', s(1)),
+    said(team ? `On it: my part of “${team.summary}”. I will post the result here.` : 'On it. I will post the result here.', s(2)),
   ]
 }
 
 /** A member's Activity in the demo: the tool calls of its conversation. */
-export function demoMemberActivities(node: { id: string; name: string; status: string }, at: number, team: Team = null): Entry[] | null {
-  const own = workOf(node, team)
-  if (!own) return null
-  const s = (minutes: number): number => Math.floor((at + minutes * 60_000) / 1000)
-  return asActivities(own(s))
-}
+export const demoMemberActivities = (node: { id: string; name: string }, at: number, team: Team = null): Entry[] =>
+  asActivities(demoMemberEntries(node, team, at))

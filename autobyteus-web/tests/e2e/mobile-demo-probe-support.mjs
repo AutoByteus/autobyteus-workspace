@@ -159,6 +159,15 @@ export const openRunNamed = async ({ page, sleep }, name) => {
   await sleep(800);
 };
 
+/** Back to the run list from a run. On iPad landscape the list is beside the run and the run screen has no ← (REQ-008). */
+export const backToRuns = async ({ page, size, sleep, expect }) => {
+  if (size.width >= 1024) {
+    expect('two panes', (await page.getByRole('button', { name: 'Back to runs' }).count()) === 0, 'no ← on the run screen beside the list');
+    return;
+  }
+  await page.getByRole('button', { name: 'Back to runs' }).click(); await sleep(400);
+};
+
 /** Sends a message from the open run's composer and waits for the scripted reply to finish. */
 export const sendFromComposer = async ({ page, sleep }, content) => {
   await page.locator('[data-testid="mobile-run-conversation"] textarea').last().fill(content);
