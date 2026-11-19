@@ -33,6 +33,8 @@ Findings while porting:
 - **A stopped run's views switch mode.** On the node a session switches to live when its run starts (`connectToActiveRun`, the Team view's in-band snapshot) and back when it stops. The demo does the same (`run_lifecycle`), so the first send to a prepared or stopped run raises no "frame before its snapshot" warning.
 - **The REST client sends through `XMLHttpRequest`.** The phone's axios client (`services/api.ts`: uploads, size limits) uses XHR, which the design's transport sentence ("`fetch` and `WebSocket`") does not name. The transport is the page's one network boundary (DS-002, "the demo cannot reach the network"), so it now covers XHR the same way (`demo/demoXmlHttpRequest.ts`, installed by `installDemoTransport`): demo origin to the demo node, page origin / `blob:` / `data:` native, anything else fails offline. No owner or boundary changes; recorded for the reviewer.
 - **noVNC's clipboard read in Chrome.** In Control, noVNC reads the clipboard when its canvas gets focus if the browser reports clipboard permission as "prompt" (Chrome); headless Chrome refuses and noVNC logs "Clipboard read failed". A real node does the same in that browser. WebKit (the iOS app) does not answer the permission query, so noVNC never reads there. The Chrome probes grant clipboard permission in their browser context.
+- **Icons were fetched from the network.** `@iconify/vue` captured the real `fetch` when it loaded, before the demo transport, so the demo's icons came from `api.iconify.design` (the iOS content rule list would have blocked them). The local bundle replaces that path in every build: the API module now fetches nothing and logs a missing name.
+- **Icon collections: five, not four.** The desktop shell names two Phosphor icons (`ph:brain`, `ph:tree-view`). The Iconify API is off in every build, so the bundle holds every name in the source, as the design's rule says, and that includes `ph`.
 - **Reference files.** The node stores a message's references as absolute paths and names each by `sha256(messageId \0 path)`; the demo's messages carry absolute paths in the demo folder and its route resolves the same ids.
 
 | Part | State | Files |
@@ -47,7 +49,7 @@ Findings while porting:
 | Streams | done | `/ws/agent`, `/ws/agent-team`, `/ws/agent-org`, `/ws/agent-collaboration` (root views shared with their queries: `world/rootViews.ts`), `/ws/run-status`, `/ws/file-explorer`, `/ws/node-desktop` (RFB 3.8, `streams/nodeDesktopStream.ts`), the package-definitions and projects feeds; each run view switches mode when its run starts or stops |
 | Runtime | done | send, Stop, the member reply, New run, terminate (a run and its delegated runs), a stopped run starting on a send, Settings Save in memory, attachments kept in memory and named in the reply (`world/contextFiles.ts`, `rest/contextFiles.ts`) |
 | `--demo` build target | done | `scripts/build-mobile-web.mjs`; the build is 12 MB (R-004) |
-| Local icons | to do | `plugins/01.localIcons.client.ts`, `scripts/build-icon-bundle.mjs` |
+| Local icons | done | `plugins/01.localIcons.client.ts`, `scripts/build-icon-bundle.mjs` (`pnpm icons:build`, `icons:check`), `assets/icons/phone-icon-bundle.json` (161 icons, 77 KB), `scripts/__tests__/buildIconBundle.spec.ts`; dev dependencies `@iconify-json/{heroicons,mdi,ph,svg-spinners,vscode-icons}`, `@iconify/utils` |
 | Contract, inventory and build guard tests; the sweep probes | to do | `demo/__tests__`, `tests/e2e/mobile-demo-*.mjs` |
 
 ## Steps 2–5
