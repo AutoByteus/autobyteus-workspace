@@ -7,3 +7,6 @@
 export const DEMO_ENTRY_ID = 'demo';
 
 export const isDemoSession = (session: { entryId?: string | null } | null | undefined): boolean => session?.entryId === DEMO_ENTRY_ID;
+
+/** The session storage key of the welcome card's ×: closed for the rest of one demo entry (each entry has new storage). */
+export const DEMO_WELCOME_CLOSED_KEY = 'autobyteus.demo.welcomeClosed';

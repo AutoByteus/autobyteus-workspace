@@ -21,6 +21,7 @@
       :node-name="nodeName"
       :connection="connection"
       :notice="notice"
+      :demo="demo"
       @open-connection="showConnection = true"
       @new-run="navigation.openNewRun()"
       @retry="checkStatus()"
@@ -48,9 +49,11 @@
       :connected="connected"
       :is-checking="sessionStore.isCheckingStatus"
       :diagnostic="sessionStore.lastDiagnostic"
+      :demo="demo"
       @close="showConnection = false"
       @check="checkStatus()"
       @unpair="openUnpairConfirm"
+      @leave-demo="leaveDemo"
     />
     <MobileUnpairConfirm v-if="showUnpairConfirm" @cancel="showUnpairConfirm = false" @confirm="unpairPhone" />
   </template>
@@ -81,6 +84,7 @@ import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore';
 import { nodeNameOrDefault } from '~/utils/remoteAccess/nodeName';
 import { agentRunRowKey } from '~/utils/runListProjection';
+import { isDemoSession } from '~/utils/remoteAccess/demoSession';
 import { getShellBridge } from '~/utils/remoteAccess/shellBridge';
 import type { MobileRunListConnection } from '~/components/mobile/runList/MobileRunList.vue';
 
@@ -160,6 +164,14 @@ const connection = computed<MobileRunListConnection>(() => {
   if (sessionStore.phoneAccessOff) return 'phone_access_off';
   return connected.value ? 'connected' : 'unreachable';
 });
+
+/** autobyteus-279: the session is the iOS app's demo (its one marker, `DEMO_ENTRY_ID`). */
+const demo = computed(() => isDemoSession(sessionStore.session));
+/** Leave demo: the iOS app closes the demo and shows its first screen, which forgets everything the demo held. */
+function leaveDemo(): void {
+  showConnection.value = false;
+  getShellBridge()?.leaveDemo();
+}
 
 const showConnection = ref(false);
 const showUnpairConfirm = ref(false);

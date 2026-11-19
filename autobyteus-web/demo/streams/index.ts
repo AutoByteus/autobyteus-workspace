@@ -3,7 +3,7 @@ import type { DemoStreamSession } from '../demoTransport';
 import { openAgentCollaborationStream } from './agentCollaborationStream';
 import { openAgentStream } from './agentStream';
 import { openFileExplorerStream } from './fileExplorerStream';
-import { openNodeDesktopStream } from './nodeDesktopStream';
+import { openNodeDesktopStream } from './rfbServer';
 import { openOrgStream } from './orgStream';
 import { openRunStatusStream } from './runStatusStream';
 import { openTeamStream } from './teamStream';

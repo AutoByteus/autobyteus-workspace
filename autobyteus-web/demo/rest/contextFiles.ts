@@ -7,6 +7,11 @@ import type { DemoWorld } from '../world/DemoWorld';
 import type { DemoRestRoute } from './index';
 
 const MiB = 1024 * 1024;
+/** The demo's published limits (UI spec, Form And Input Validation): 25 MB for files, 200 MB for audio and video. */
+const OTHER_MAX_BYTES = 25 * MiB;
+const AUDIO_VIDEO_MAX_BYTES = 200 * MiB;
+const AUDIO_VIDEO_MIME_TYPES = ['audio/mpeg', 'audio/wav', 'audio/mp4', 'video/mp4', 'video/quicktime', 'video/webm'];
+const maxBytesFor = (mimeType: string) => (AUDIO_VIDEO_MIME_TYPES.includes(mimeType) ? AUDIO_VIDEO_MAX_BYTES : OTHER_MAX_BYTES);
 const json = (body: unknown, status = 200): Response =>
   new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json; charset=utf-8' } });
 const detail = (message: string, status: number) => json({ detail: message }, status);
@@ -29,16 +34,16 @@ const fileResponse = (world: DemoWorld, url: URL): Response => {
 const isFinalFile = (pathname: string): boolean => /^\/rest\/(runs\/[^/]+|team-runs\/[^/]+\/agent-runs\/[^/]+|agent-org-runs\/[^/]+\/agent-runs\/[^/]+)\/context-files\/[^/]+$/.test(pathname);
 
 export const contextFileRoutes: DemoRestRoute[] = [
-  // The demo keeps attachments in memory, so it allows 25 MB for every type (a node's own limit can be set to that).
   { method: 'GET', match: (url) => url.pathname === '/rest/context-files/size-limits',
-    answer: () => json({ otherFileMaxBytes: 25 * MiB, audioVideoMaxBytes: 25 * MiB, audioVideoMimeTypes: ['audio/mpeg', 'audio/wav', 'audio/mp4', 'video/mp4', 'video/quicktime', 'video/webm'] }) },
+    answer: () => json({ otherFileMaxBytes: OTHER_MAX_BYTES, audioVideoMaxBytes: AUDIO_VIDEO_MAX_BYTES, audioVideoMimeTypes: AUDIO_VIDEO_MIME_TYPES }) },
   {
     method: 'POST', match: (url) => url.pathname === '/rest/context-files/upload',
     answer: async (_url, request, world) => {
       const form = await request.formData();
       const file = form.get('file');
       if (!(file instanceof File)) return detail('No file uploaded.', 400);
-      if (file.size > 25 * MiB) return json({ code: 'CONTEXT_FILE_TOO_LARGE', detail: 'The file is larger than 25 MB.', maxBytes: 25 * MiB }, 413);
+      const maxBytes = maxBytesFor(file.type);
+      if (file.size > maxBytes) return json({ code: 'CONTEXT_FILE_TOO_LARGE', detail: `The file is larger than ${maxBytes / MiB} MB.`, maxBytes }, 413);
       try {
         return json(await world.contextFiles.upload(ownerOf<DemoDraftOwner>(form.get('owner'), DRAFT_KINDS), file));
       } catch (error) {

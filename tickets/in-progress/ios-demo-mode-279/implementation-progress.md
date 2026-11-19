@@ -21,13 +21,13 @@ Working on the dev server (`AUTOBYTEUS_MOBILE_WEB_BUILD=true AUTOBYTEUS_DEMO_BUI
 - New run: the run is prepared, the first send plays VIS-024's reply, and the run heads the list;
 - Settings on a stopped run (Codex): the Model sheet as VIS-021, Save kept in memory, reopening shows it; a send then starts the run;
 - a send to a member of a stopped Team (Billing Team) starts the Team; Stop in Settings terminates it again; no console error;
-- an attached file (`upload.mjs`'s steps) uploads, shows on the message and is named in the reply (VIS-025);
+- an attached file (`upload.mjs`'s steps) uploads, shows on the message and is named in the reply (VIS-025); the demo's limits are the spec's 25 MB for files and 200 MB for audio and video;
 - VNC Viewer: View only and Control connect and show the reference's sample desktop (VIS-022, 1024×640).
 
 Findings while porting:
 
 - **One invocation, one id.** The reference gave a conversation's tool calls and its Activity separate ids; the phone's member views reconcile the two by id (`reconcileTeamMemberToolState`), so each call showed twice. Activity is now built from the conversation's tool calls (`asActivities`), the showcase's uses its calls' ids, and the PTM's `delegate_task` calls are one per run it delegated (its tree's six).
-- **Member header (VIS-020).** The reference shows `content_writer`; the demo names rows by the node's own rule (`rowNameOf`: "content writer"), which is what a real node shows. Recorded for the sweep, not changed in the demo.
+- **Row and header names (VIS-004, VIS-020).** The reference shows Title Case delegated rows ("Software Engineering Team") and snake-case Org members (`launch_lead`, `content_writer`); the demo names rows by the node's own rule (`rowNameOf`: "software engineering team", "launch lead"), which is what a real node shows. Recorded for the sweep, not changed in the demo.
 - **Closing line.** The member reply ends with the copy table's one closing line (UI spec line 281); VIS-020's screenshot shows an older variant.
 - **Inventory gap.** Files' pictures load from `GET /rest/workspaces/:id/content`, which the measured inventory does not list (it saw no picture opened in Files). The demo answers it; the inventory test lists it as a measured-plus-found route.
 - **A stopped run's views switch mode.** On the node a session switches to live when its run starts (`connectToActiveRun`, the Team view's in-band snapshot) and back when it stops. The demo does the same (`run_lifecycle`), so the first send to a prepared or stopped run raises no "frame before its snapshot" warning.
@@ -54,6 +54,16 @@ Findings while porting:
 | Contract, inventory and build guard tests | done | `demo/__tests__/{demoInventory,demoStreams,demoWorld}.spec.ts` (the measured inventory as `fixtures/`), `scripts/__tests__/{demoImportBoundary,mobileBuildChecks,buildIconBundle}.spec.ts`; each build checks its own output (`scripts/mobile-build-checks.mjs`, run by `build-mobile-web.mjs`): `/mobile` holds no demo code, the demo answers all 252 compiled operations (45 handled, 207 listed in `demo/graphql/unreachable-operations.json` with their reasons) |
 | Sweep probes | to do | `tests/e2e/mobile-demo-*.mjs` |
 
-## Steps 2–5
+## Step 2: the web shell (in progress)
+
+| Part | State | Files |
+| --- | --- | --- |
+| Demo identity (UIS-003, UIS-004; VIS-004, VIS-006) | done | `MobileRunList.vue` (the "Demo / Sample data" button with the sparkles mark, the welcome card, closed for the rest of an entry), `MobileConnectionSheet.vue` (the demo sheet and Leave demo), `MobilePairedShell.vue` (reads `isDemoSession` once), `utils/remoteAccess/shellBridge.ts` (`leaveDemo`), `utils/remoteAccess/demoSession.ts` (the welcome key); specs for each |
+| iPad layout (REQ-008) | to do | `MobilePairedShell.vue`, `MobileBottomSheet.vue` |
+| DC-007 (REQ-009) | to do | `AgentConversationFeed.vue` |
+| DC-011 (REQ-010) | to do | `ArtifactContentViewer.vue`, `MobileArtifacts.vue` |
+| Sweep probes | written, red until complete | `tests/e2e/mobile-demo-{crawl,sheets,upload,final}-probe.mjs`, `mobile-demo-probe-support.mjs`; `pnpm test:e2e:mobile-demo` |
+
+## Steps 3–5
 
 Not started (design spec, Change Sequence).
