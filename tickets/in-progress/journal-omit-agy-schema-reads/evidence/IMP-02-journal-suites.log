@@ -1,0 +1,8 @@
+Check: IMP-02
+Command: vitest run tests/agent-work-journal (journal renderer, service, reading, skill-load, neutral vocabulary)
+Commit: 383bbf6ea5
+Environment: macOS arm64, Node 22, pnpm 10.28.2; the ticket worktree after pnpm install --frozen-lockfile, prepare:shared, prisma generate
+Date: 2026-11-19
+
+ Test Files  15 passed | 1 skipped (16)
+      Tests  225 passed | 2 skipped (227)
