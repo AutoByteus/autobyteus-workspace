@@ -55,7 +55,7 @@ The Work Journal of an Antigravity run showed every successful read of Antigravi
 | --- | --- | --- | --- | --- | --- |
 | IMP-03 | all | unit, typecheck | Reused | implementation check | code unchanged since its commit |
 | UNIT | AC-001..006 | unit | Existing Test | journal and memory-search unit folders | independent rerun |
-| API-01 (JS-01..03) | AC-001, 003-005 (path), 005, 006 | real server + scripted AGY | Durable | real-shaped schema read omitted, raw keeps it; other path kept; old-revision journal re-rendered at the next turn | the built path |
+| API-01 (JS-01..03) | AC-001, AC-004, AC-005, AC-006 | real server + scripted AGY | Durable | real-shaped schema read omitted, raw keeps it; other path kept; old-revision journal re-rendered at the next turn | the built path |
 | API-02 | same | mutation by base source | Temporary Probe | production `agent-work-journal` at the base commit | the case fails without the change |
 | API-03 | regression | e2e | Existing Test | journal / memory e2e | neighbours |
 
