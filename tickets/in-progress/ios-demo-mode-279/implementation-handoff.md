@@ -4,30 +4,32 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-mode-279`, b
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: architecture review selected (Large/High); ARCH-REV-002 `Pass` on SR-002. Implementation hands off to Code Review (Large/High rule).
+- Upstream review applicability and handoff-rule result: architecture review selected (Large/High); ARCH-REV-002 `Pass` on SR-002; for this round ARCH-REV-004 `Pass` on SR-004. Implementation hands off to Code Review (Large/High rule).
 - Requirements doc: `tickets/in-progress/ios-demo-mode-279/requirements-doc.md` (REQ-001…014, AC-001…011; approved by the founder).
 - Investigation notes: `tickets/in-progress/ios-demo-mode-279/investigation-notes.md`; network inventory `evidence/architecture/phone-network-inventory.json`.
-- Solution revision record: `tickets/in-progress/ios-demo-mode-279/solution-revision-record.md` (SR-002).
-- Design spec: `tickets/in-progress/ios-demo-mode-279/design-spec.md` (SR-002, with N-1…N-3 applied).
+- Solution revision record: `tickets/in-progress/ios-demo-mode-279/solution-revision-record.md` (SR-004).
+- Design spec: `tickets/in-progress/ios-demo-mode-279/design-spec.md` (SR-004, with N-1…N-3 and N-5 applied; this round: § Persisted Data, Revisions SR-003 and SR-004; `docs/design-cases.md` Case 24).
 - Supplemental task artifacts: the approved UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/ios-demo-mode-279/ui-ux-spec.md` with VIS-001…037 (reference `78b51f73`); `product-design-request.md`; the Solution Designer's sweep scripts in `evidence/demo-verification/`.
 - Design review report: `tickets/in-progress/ios-demo-mode-279/design-review-report.md`.
 - Architecture review revision record: `tickets/in-progress/ios-demo-mode-279/architecture-review-revision-record.md`.
-- Triggering rework report: N/A (initial implementation).
+- Triggering rework report: `code-review-report.md` CRR-002 (CR-001, failure-origin review of API-REV-001 F-1: `api-e2e-execution-coverage-report.md`), resolved in design by SR-003/SR-004.
 - Running build record kept during the work: `tickets/in-progress/ios-demo-mode-279/implementation-progress.md` (the findings while porting, in more detail than here).
 
 ## Current Implementation Summary
 
 The demo is the real phone build (the same `/mobile` code) running against a **demo node inside the page**. It is compiled only into a separate build (`build:mobile-web --demo` → `dist-mobile-demo/public`) that the iOS app bundles as `DemoWeb/`. It opens in a web view with no network. The iOS shell gains Android's start screen and connect flow, the shell bridge, the demo web view, the `autobyteus://demo` route, the scanner's demo code and the share handling. The phone shell gains the demo identity, the iPad layout, DC-007, DC-011 and local icons in every build.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002 on IR-001)
 - Implementation revision record: `tickets/in-progress/ios-demo-mode-279/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-002`
-- Related architecture-review revision IDs: `ARCH-REV-002` (Pass; ARCH-REV-001's AR-001…003 and R-1…R-3 resolved by SR-002)
-- Related code-review revision IDs: `N/A`
-- Related API/E2E revision IDs: `N/A`
+- Current implementation revision ID: `IR-002`
+- Related solution revision IDs: `SR-002`, `SR-003`, `SR-004`
+- Related architecture-review revision IDs: `ARCH-REV-002` (Pass; ARCH-REV-001's AR-001…003 and R-1…R-3 resolved by SR-002), `ARCH-REV-003` (AR-004, N-4), `ARCH-REV-004` (Pass)
+- Related code-review revision IDs: `CRR-001` (Pass), `CRR-002` (Design Impact, CR-001)
+- Related API/E2E revision IDs: `API-REV-001` (Fail, F-1)
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: F-1 (API-REV-001), CR-001 (CRR-002), AR-004 and N-4 (ARCH-REV-003), N-5 (ARCH-REV-004)
+
+**IR-002 in short:** computers the shipped iOS app saved carried its placeholder name "AutoByteus Desktop", which the new shell bridge handed to the page. `SavedNodeDisplayNamePlaceholderMigration` turns that placeholder into "no known name" at app start, and `SavedNodeEntry.knownName` / `shownName` give one name rule as on Android: the flow and `hello` read `knownName`; every native label reads `shownName` ("AutoByteus node", never an address). Details: `implementation-revision-record.md` IR-002.
 
 Commits (oldest first), all on `codex/ios-demo-mode-279` after `8430d9ef12`:
 
@@ -53,7 +55,9 @@ Commits (oldest first), all on `codex/ios-demo-mode-279` after `8430d9ef12`:
 | `e36f18cfd3` | Activity on every sample run (the probes' finding); probes follow the iPad two panes |
 | `c572234f0f` | The local icon bundle's JSON import typed for the typecheck gate |
 | `df18856ea4` | The iPad landscape test is its own class, left out of the iPhone smoke |
-| (next) | This handoff, the revision record, follow-ups and the evidence |
+| `429af9bd66` | IR-001's handoff, revision record, follow-ups and evidence |
+| `930477c533` | IR-002: the placeholder-name migration and the one name rule (CRR-002 F-1, SR-003/SR-004) |
+| (next) | IR-002's handoff update, revision record and evidence |
 
 ## Routing Classification (Mandatory)
 
@@ -64,7 +68,7 @@ Commits (oldest first), all on `codex/ios-demo-mode-279` after `8430d9ef12`:
 - Evidence and rationale: the implementation is the design's scope: a new web subsystem (`autobyteus-web/demo/`, about 60 files), a separate build, the iOS start screen port, the shell bridge, a bundled web-content boundary, the iPad layout of the real phone shell, DC-007/DC-011, local icons and a release workflow change. No node protocol change was needed; the escalation trigger did not fire (the XHR coverage below sits inside the named transport adapter).
 - Selected route: `Code Review`
 - Lightweight implementation self-review completed for the direct route: `Not Applicable`
-- New design impact or escalation trigger: `None`. Deviations recorded under Important Assumptions; none changes an owner or a boundary.
+- New design impact or escalation trigger: `None`. Deviations recorded under Important Assumptions; none changes an owner or a boundary. IR-002 adds a `Migration Required` step for one persisted field, as SR-003/SR-004 designed; risk stays `High`.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -77,7 +81,8 @@ Commits (oldest first), all on `codex/ios-demo-mode-279` after `8430d9ef12`:
 | DS-004 / REQ-006 | Demo identity; Leave demo; cold launch to the first screen; never saved | `MobileRunList.vue` (`demo` prop: "Demo / Sample data" sparkles button, the welcome card, closed per entry via sessionStorage), `MobileConnectionSheet.vue` (demo sheet, Leave demo), `MobilePairedShell.vue` (`isDemoSession`, `leaveDemo()` → `shellBridge.leaveDemo()`), iOS `ShellBridgeHandler` `.leaveDemo` → coordinator `showStart()`; non-persistent `WKWebsiteDataStore` per open | Done. `testTryDemoThenLeaveDemoThenColdLaunch` |
 | DS-005 / REQ-007 | Share: four messages; the app acts once | `AutoByteusMobileShareExtension/ShareViewController.swift`, `AutoByteusMobileCore/SharedText.swift` (`SharedTextAction`, `DemoLink`), `AppShellCoordinator.consumePendingShare()` (deferred one main-queue turn so the appearing screen is replaced cleanly) | Done. Core tests; `testAKeptShareIsUsedOnce` (via the Debug hook that keeps text as the extension does). The extension's own UI is not driven by an XCUITest (see Not run) |
 | DS-006 / REQ-008 | iPad: < 768 phone; 768–1023 centered 448 first screen and 512 cards; ≥ 1024 two panes | Web: `composables/mobile/useMobileSplitLayout.ts` (viewport width only), `MobilePairedShell.vue` (380 px list; right pane as containing block via `transform: translateZ(0)`; "Choose a run"), `MobileBottomSheet.vue` (`md:` card), `MobileRunScreen.vue` / `MobileRunTargetView.vue` (`split`: no ←). iOS: `ShellUI.centeredColumn` (448 pt), `ShellUI.presentAsSheet` (512 pt form sheet on iPad) | Done. `testIPadLandscape`; web specs; probes at 820×1180 and 1180×820 |
-| REQ-001 / REQ-013 | Android's start screen and connect flow; saved computers keep working | `AutoByteusMobileCore/NodeConnectionFlow.swift`, `ConnectionInputResolver.swift`, `CantReachReason.swift`; `Start/*`, `Connect/*`, `Shell/ShellStyle.swift`; `SavedNodeStore` read as before (`Directly Usable — No Migration`) | Done. Core tests; fake-node smoke and `AutoByteusMobileUITests` rewritten for the new connect path |
+| REQ-001 / REQ-013 | Android's start screen and connect flow; saved computers keep working | `AutoByteusMobileCore/NodeConnectionFlow.swift`, `ConnectionInputResolver.swift`, `CantReachReason.swift`; `Start/*`, `Connect/*`, `Shell/ShellStyle.swift`; `SavedNodeStore` read as before | Done. Core tests; fake-node smoke and `AutoByteusMobileUITests` rewritten for the new connect path |
+| REQ-013, F-1 (IR-002) | A computer the shipped app saved keeps its behavior: no placeholder name reaches the page or a native label | `AutoByteusMobileCore/DataMigrations/SavedNodeDisplayNamePlaceholderMigration.swift` (run by `AppShellCoordinator.init` after `SavedNodeEntryKeysMigration`, before `SavedNodeStore`); `SavedNodeEntry.knownName` / `shownName` / `unnamedNodeName`; `NodeConnectionFlow.onPaired` (`knownName == nil` renames), `showConnecting` / `showCantReach` (`shownName`); `WebShellViewController.shellBridgeHello` (`knownName ?? ""`); `NodeRowView`, `RemoveNodeSheet` (`shownName`); `RemoteAccessStatus` without `serverName` | Done. IMP-13 (migration, names, rename rule, no `.displayName` read), IMP-14 (smoke), IMP-15 (the real app over the shipped entries: "AutoByteus node" everywhere native, "Test Node 279" kept). API-04a/b reruns with a real node: API/E2E |
 | REQ-009 (DC-007) | Your own send moves to your message and follows the reply | `composables/workspace/useOwnSendFollow.ts`, `AgentConversationFeed.vue` (`followLatest` shared with Jump to latest) | Done. Specs |
 | REQ-010 (DC-011) | Phone Artifacts read only | `ArtifactContentViewer.vue` (`previewOnly`), `MobileArtifacts.vue` | Done. Specs |
 | REQ-011 | Every icon bundled; no third-party request | `scripts/build-icon-bundle.mjs`, `plugins/01.localIcons.client.ts`, `assets/icons/phone-icon-bundle.json` (164 icons, five collections) | Done. `icons:check`, `buildIconBundle.spec.ts` |
@@ -96,6 +101,7 @@ Commits (oldest first), all on `codex/ios-demo-mode-279` after `8430d9ef12`:
 - `autobyteus-web/scripts/{build-mobile-web,mobile-build-checks,build-icon-bundle}.mjs`, `plugins/01.localIcons.client.ts`, `assets/icons/phone-icon-bundle.json`, `nuxt.config.ts`.
 - `autobyteus-web/tests/e2e/mobile-demo-*.mjs`, `tests/e2e/fixtures/demo-build-server.mjs`.
 - `autobyteus-ios/AutoByteusMobileCore/{NodeConnectionFlow,ConnectionInputResolver,CantReachReason,SharedText}.swift` + tests.
+- IR-002: `autobyteus-ios/AutoByteusMobileCore/DataMigrations/SavedNodeDisplayNamePlaceholderMigration.swift`, `SavedNodeEntry.swift`, `ConnectionValidator.swift`, `ConnectionDiagnostic.swift`, `NodeConnectionFlow.swift`; `AutoByteusMobile/{AppShellCoordinator,WebShellViewController}.swift`, `Start/{NodeRowView,RemoveNodeSheet}.swift`; tests `SavedNodeDisplayNamePlaceholderMigrationTests`, `SavedNodeEntryNamesTests`, `NativeNodeNameReadsTests`, `NodeConnectionFlowTests`, `ConnectionValidatorTests`.
 - `autobyteus-ios/AutoByteusMobile/{AppShellCoordinator,SceneDelegate,QRCodeScannerViewController,WebShellViewController,AutoByteusWebViewController}.swift`, `Start/`, `Connect/`, `Shell/`, `Demo/`; `AutoByteusMobileShareExtension/ShareViewController.swift`; `AutoByteusMobileUITests/`.
 - `autobyteus-ios/project.yml`, `autobyteus-ios/scripts/prepare-demo-web.sh`, `.github/workflows/release-ios.yml`.
 
@@ -118,6 +124,9 @@ Decisions taken during implementation, none changing an owner or boundary (detai
 13. **`AgentConversationFeed.spec.ts`** asserted Iconify's loading placeholder (16×16); with local icons the real glyph draws. The test now checks the layout classes and the real view box.
 14. **A stopped run keeps its Activity.** The ported content gave stopped runs none, and members without their own work had no tool call; the probes flagged five empty Activity views. A real node keeps a stopped run's Activity in its history, and REQ-004 asks for Activity on every run, so each sample agent now has some (`demoWorld.spec.ts` checks it).
 15. **`DemoIPadUITests`** is its own class run against an iPad destination; the iPhone smoke (`ios-simulator-smoke.sh`, which fails on any skipped test) passes `-skip-testing` for it.
+16. **IR-002: `serverName` removed.** Its only reader was the "Phone Access is off" diagnostic's message, which the flow maps to a `CantReachReason` and never shows. So `RemoteAccessStatus.serverName`, its "AutoByteus Desktop" default and `phoneAccessDisabled(serverName:)`'s parameter are gone (design: "removes the field and its placeholder if none remain"); the message reads "This AutoByteus node is reachable…". The node's `serverName` in the JSON is ignored like any extra field.
+17. **IR-002: the migration rewrites the stored JSON generically** (`JSONSerialization`, sorted keys), so every other field, including any it does not know, is kept as stored; only `displayName` of an entry whose name is exactly the placeholder and that has a host changes. Data that is not an array of entries is left as is (the store already reads it as no entries). A fresh install has nothing to back up and only marks itself done.
+18. **IR-002: the no-`.displayName` check** is a core unit test (`NativeNodeNameReadsTests`) that reads the app's and the share extension's Swift sources next to the test file (the simulator reads the Mac's files), and allows the flow only its `updating(displayName:)` write. It runs wherever the core tests run, including the release workflow.
 
 ## Known Risks
 
@@ -126,6 +135,7 @@ Decisions taken during implementation, none changing an owner or boundary (detai
 - **Protocol drift (R-001):** a new phone operation without a handler fails the demo build's coverage check and the type check of `DemoGraphqlHandlers`.
 - **XCUITest landscape screenshots** come out rotated (the XCUITest capture); the content was checked.
 - **Apple's "prior approval" for demo modes (R-003)** is the founder's reply; nothing was sent.
+- **IR-002 accepted effect (design):** a migrated computer has no native name until it is paired again ("AutoByteus node" on the native screens; its run list shows the page's own pairing name, since `hello.nodeName` is `""`). A computer really named "AutoByteus Desktop" in a shipped app's entry is treated the same way.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -150,12 +160,12 @@ Decisions taken during implementation, none changing an owner or boundary (detai
 
 ## Persisted Data Transition Check (When Applicable)
 
-- Approved decision: `Directly Usable — No Migration` (saved computers); the demo persists nothing.
-- Design-spec decision reference: `design-spec.md` § Persisted Data.
-- Implementation follows the approved decision: `Yes`. The start screen reads `SavedNodeStore` as before (the autobyteus-290 key migration runs unchanged); the share handoff uses the existing app-group key, consumed once; the demo uses a new non-persistent `WKWebsiteDataStore` per open and a fresh world.
-- Direct-use evidence: the fake-node smoke saves and reopens a node through the new flow (IMP-11).
-- Migration implementation: N/A.
-- Deviation: `None`.
+- Approved decision (IR-002, SR-003): `Migration Required` for one field of the saved computers, `displayName`; every other field `Directly Usable — No Migration`; the demo persists nothing.
+- Design-spec decision reference: `design-spec.md` § Persisted Data (with the SR-004 Names rule and the N-4 write order).
+- Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`. The old literal lives only in the migration file; no current reader recognises it (the flow, `hello` and the labels read `knownName` / `shownName`). The share handoff uses the existing app-group key, consumed once; the demo uses a new non-persistent `WKWebsiteDataStore` per open and a fresh world.
+- Direct-use evidence: the fake-node smoke saves and reopens a node through the new flow (IMP-11, IMP-14).
+- Migration implementation and focused checks: `SavedNodeDisplayNamePlaceholderMigration` at app start after the key migration and before the store. Writes (1) the backup `autobyteus.saved-node-entries:before-display-name-placeholder`, (2) the rewritten entries, (3) the marker `autobyteus.migrations.saved-node-display-name-placeholder = done`; a backup without the marker is restored and the migration runs again; the next start that finds the marker removes the backup. Checks: IMP-13 (seven migration tests: rewrite and keep, every other field kept, a second start, an interruption after the backup, after the rewrite, no saved nodes, after the key migration) and IMP-15 (the real app over the shipped app's entries).
+- Deviation from the reviewed transition decision: `None`.
 
 ## Environment Or Dependency Notes
 
@@ -182,6 +192,9 @@ Evidence folder: `tickets/in-progress/ios-demo-mode-279/evidence/implementation/
 | IMP-10 | `xcodebuild … -destination <iPad Air 11-inch> -only-testing:AutoByteusMobileUITests/DemoUITests -only-testing:AutoByteusMobileUITests/DemoIPadUITests test` | `df18856ea4` tree | my iPad Air 11-inch (M3) simulator, iOS 26.1, IMP-06's DemoWeb | the same demo tests on iPad, plus `DemoIPadUITests.testIPadLandscape`: the 448 pt first screen, Type an address as a ≤ 512 pt card, the demo's two panes with "Choose a run" | AC-002, 005, 006, 007; REQ-008 | Pass | `IMP-10-ios-ui-ipad.log`, `IMP-10-ios-ui-ipad/*.png` (12 screenshots; landscape ones are stored rotated, as XCUITest captures them) | `Executed 7 tests, with 0 failures`; `DemoIPadUITests testIPadLandscape]' passed` |
 | IMP-11 | `IOS_SIMULATOR_NAME=autobyteus-279-iphone autobyteus-ios/scripts/ios-simulator-smoke.sh <dir>` (the release workflow's smoke) | `df18856ea4` tree | my iPhone 17 Pro Max simulator; the script's local fake node | every UI test on iPhone, none skipped: the rewritten connect path against the fake node (save, reopen, Can't reach) and the six demo tests | REQ-001, REQ-013; AC-001 (fake node), AC-011 (iOS part) | Pass | `IMP-11-ios-simulator-smoke.log` | `Executed 8 tests, with 0 failures`; `Smoke UI tests: executed and passed without skips` |
 | IMP-12 | `autobyteus-ios/scripts/ios-release-contract-check.py`; parse `release-ios.yml` and list each macOS job's steps | `df18856ea4` | macOS, Python 3, Ruby | the release contract and the workflow's new steps | Change Sequence step 4 | Pass | `IMP-12-ios-release-contract-and-workflow.log` | `iOS release contract checks passed.`; `Install workspace dependencies \| Build the bundled demo \| Generate…` in both `build-ios` and `upload-testflight` |
+| IMP-13 (IR-002) | `xcodebuild … -only-testing:AutoByteusMobileCoreTests test` | `930477c533` | my iPhone 17 Pro Max simulator, iOS 26.1, Xcode 26 | the migration, `SavedNodeEntry.knownName` / `shownName`, the flow's rename rule and screen names, the validator without `serverName`, the no-`.displayName` check | F-1, CR-001, AR-004, N-4; REQ-013 | Pass | `IMP-13-ios-core-tests-ir002.log` | `Executed 56 tests, with 0 failures`; `SavedNodeDisplayNamePlaceholderMigrationTests` 7, `SavedNodeEntryNamesTests` 3, `NativeNodeNameReadsTests` 2 passed |
+| IMP-14 (IR-002) | `IOS_SIMULATOR_NAME=autobyteus-279-iphone autobyteus-ios/scripts/ios-simulator-smoke.sh <dir>` | `930477c533` | as IMP-13; the script's local fake node | every UI test on iPhone after the label and `hello` changes: the fake-node save/reopen and Can't reach, the six demo tests | REQ-001, REQ-013 | Pass | `IMP-14-ios-simulator-smoke-ir002.log` | `Executed 8 tests, with 0 failures`; `Smoke UI tests: executed and passed without skips` |
+| IMP-15 (IR-002) | the new build started over the shipped app's saved entries (seeded through the simulator's `defaults`), then a throwaway UI test to the start screen (steps in the log) | `930477c533` tree | as IMP-13; no node (the addresses do not answer) | `AppShellCoordinator` start → the migration → the store; Connecting/Can't reach, the start screen rows and ⋮, the Remove sheet | F-1 (native half), AR-004; REQ-013 | Pass | `IMP-15-update-start-names.log`, `IMP-15-update-start-names/*.png` | the store read back: `"displayName":"192.0.2.10"` and `"displayName":"Test Node 279"`, marker `done`; "Can’t reach AutoByteus node"; `ROWS: ["AutoByteus node, Not reachable", "Test Node 279, Not reachable"]`; Remove sheet "AutoByteus node"; a later start: 0 backup keys |
 
 Earlier evidence kept from this round: `evidence/implementation/r002/summary.md` (the R-002 premise check at `12e85dcc05`, corrected about the content rule list).
 
@@ -193,6 +206,8 @@ Earlier evidence kept from this round: `evidence/implementation/r002/summary.md`
   - **Rotation with a run open** (TR-012) in the iOS app: the web split keeps the open run (web specs and probes at both iPad sizes); the XCUITest rotates before opening the demo.
   - **Device checks and TestFlight** (AC-002 camera, AC-003 airplane mode, AC-009, AC-010): only on the founder's explicit word (REQ-014). Nothing went to Apple, TestFlight or App Store Connect.
   - **Android suites** (AC-011): Android is untouched by this ticket.
+  - **IR-002, API-04a/b and the connect cases with a real isolated node** (the shipped app pairs → the new app installed over it: the run list's node button "Test Node 279", the row "AutoByteus node", a re-pair names the row; a new pairing by QR and Paste a link; a typed address shows "AutoByteus node" with `hello.nodeName == ""`): API/E2E's reruns, as CRR-002 routes them. IMP-15 covers the native half without a node.
+  - **IR-002, the iPad demo tests and the web checks:** not rerun; IR-002 changes no web file and no file those tests exercise beyond the native labels, which IMP-14 runs on iPhone.
 
 ## Frontend Rendered-Result Check (When Applicable)
 

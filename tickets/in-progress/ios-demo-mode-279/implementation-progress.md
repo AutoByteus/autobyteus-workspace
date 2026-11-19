@@ -91,3 +91,7 @@ Findings while porting:
 - Step 5 is downstream: the Solution Designer's sweep, then TestFlight only on the founder's word.
 
 The handoff is `implementation-handoff.md` (IR-001).
+
+## IR-002: saved computers from the shipped app (CRR-002 F-1; SR-003/SR-004, ARCH-REV-004)
+
+- Done at `930477c533`: `SavedNodeDisplayNamePlaceholderMigration` (backup → rewritten entries → marker), `SavedNodeEntry.knownName` / `shownName` for the flow, `hello` and every native label, `serverName` removed from the status. Checks IMP-13…IMP-15 (handoff). API-04a/b with a real node are API/E2E's reruns.
