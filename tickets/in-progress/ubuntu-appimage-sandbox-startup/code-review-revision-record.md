@@ -10,6 +10,7 @@
 | CRR-005 | code-review-report.md | API/E2E Failure-Origin Review / API-REV-003 | Source Pass | Fail — Local Fix | F-API-03/04 open; F-API-01/02 independently verified |
 | CRR-006 | code-review-report.md | Implementation Review / IR-006 | CRR-005 Local Fix | Fail — Local Fix | F-API-03/04 resolved at source; new F-CR-003 |
 | CRR-007 | code-review-report.md | Implementation Review / IR-007 | CRR-006 Local Fix | Pass — source only | F-CR-003 resolved; F-API-03/04 remain source-resolved |
+| CRR-008 | api-e2e-test-review-report.md | Successful API/E2E test-code review / API-REV-004 | Source Pass; no prior successful-test review | Pass | No test findings; refusal findings independently verified |
 
 ## Revision Entries
 ### CRR-001 — Managed failure-continuation review
@@ -94,3 +95,10 @@ None (initial baseline).
 - **F-CR-003 open → resolved in source.** Missing official files: retry later/support; failed connectivity/interrupted read: reconnect/retry; invalid evidence or image: fresh official copy/support. No raw remote text, alternate signer, extra request path or usable result on refusal. Same authenticated evidence and rewound handle on success. Evidence: source, IMP-41 eight red/ten green subcases, IMP-42 visible Noble refusals, no pkexec on refusal with deliberately canceled positive control.
 - F-API-03/04 remain source-resolved (IR-006/CRR-006); still require independent GUI retests. F-API-01/02 independently verified as recorded in API-REV-003. F-CR-001/002 remain resolved. No new candidate, requirement or material-premise change. Summary 9.4/10; no open source finding or follow-up.
 - Recipient **/api_e2e_engineer**. Independent current-package acquisition, incomplete-enrollment and low-space/rollback GUI checks; SR-015 isolated native x64/ARM64 build/smoke. Earlier evidence is scoped to its cases/bytes; no production trust/publication, delivery or release. The current review is not a successful API/E2E test-code review.
+
+### CRR-008 — Proportional review of cumulative QA test changes
+- Canonical `api-e2e-test-review-report.md`; successful-test review, round 8, 2026-11-19. Implementation review scope N/A. Source report remains CRR-007, unchanged. Received QA evidence `105fa7579cfa22838ac465a79653c3a7932c3a18`; product `8f10fa9287`.
+- API-REV-004 **Pass**, reported confidence 96.6%, broader validation required and executed. SR-012/015/016, DS-004, ARCH-REV-004, IR-006/007, CRR-007. DR N/A. Current result **Pass — proportional test-code review**, Large / High unchanged.
+- Cumulative QA scope: added/extended `autobyteus-web/linux-install/cmd/writer/main_test.go` (a6e3b04331, b4e2610ded); updated `TESTING.md` in b4e2610ded. No new durable path in the final evidence round. Real handler/store + signed status after disconnected activation reply is bounded and relevant; GUI refusal guidance is checked separately from rollback. API-06f confirms named nonroot test executed. No rerun or general source review.
+- Prior resolution: no prior successful-test review or unresolved test finding. F-API-03/04 and F-CR-003 now independently verified in API-REV-004. F-API-01/02 previously independently verified; F-CR-001/002 remain resolved. No new scenario, material premise, finding or follow-up.
+- Recipient **/delivery_engineer** for integrated delivery/AC-007; source and API/E2E passes are not merge or release receipts. Native ARM64 build/server smoke only; synthetic trust/data, virtual x64 desktops and bounded reuse of prior lifecycle/fault evidence retained.
