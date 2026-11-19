@@ -91,7 +91,7 @@ func run() (int, error) {
 	}
 	image, err := imagefile.Open(outer)
 	if err != nil {
-		return code, err
+		return code, acquire.ErrUnverifiedDownload
 	}
 	defer image.Close()
 	record, signature, err := acquire.Fetch(context.Background(), identity, key, image)

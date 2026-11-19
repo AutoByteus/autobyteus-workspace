@@ -4,6 +4,7 @@ package acquire
 import (
 	"context"
 	"crypto/ed25519"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -13,6 +14,12 @@ import (
 
 	"autobyteus.local/desktop/linux-install/internal/release"
 )
+
+// ErrUnverifiedDownload is safe for the install dialog. Do not put remote data,
+// download paths or signed redirect URLs in the user-facing refusal.
+var ErrUnverifiedDownload = errors.New("AutoByteus could not verify this AppImage against its official release. Download a fresh copy from the official AutoByteus releases page. If verification still fails, contact AutoByteus support.")
+
+var errReleaseConnection = errors.New("cannot reach official release service; reconnect and retry")
 
 // Identity comes from the build, never the downloaded filename, argv or environment.
 type Identity struct {
@@ -50,20 +57,23 @@ func client() *http.Client {
 func get(ctx context.Context, client *http.Client, address string, limit int64) ([]byte, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, address, nil)
 	if err != nil || !permitted(req.URL) {
-		return nil, fmt.Errorf("release URL refused")
+		return nil, ErrUnverifiedDownload
 	}
 	response, err := client.Do(req)
 	// Do not propagate net/http errors containing signed redirect query strings.
 	if err != nil {
-		return nil, fmt.Errorf("cannot reach official release service; reconnect and retry")
+		return nil, errReleaseConnection
 	}
 	defer response.Body.Close()
 	if response.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("official release sidecar unavailable (HTTP %d)", response.StatusCode)
+		return nil, fmt.Errorf("The official verification files for this release are unavailable (HTTP %d). Try again later. If the files are still unavailable, contact AutoByteus support.", response.StatusCode)
 	}
 	data, err := io.ReadAll(io.LimitReader(response.Body, limit+1))
-	if err != nil || int64(len(data)) > limit {
-		return nil, fmt.Errorf("release sidecar read or size refused")
+	if err != nil {
+		return nil, errReleaseConnection
+	}
+	if int64(len(data)) > limit {
+		return nil, ErrUnverifiedDownload
 	}
 	return data, nil
 }
@@ -76,7 +86,7 @@ func Fetch(ctx context.Context, identity Identity, key ed25519.PublicKey, image 
 	}
 	address, err := acquisitionURL(identity)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, ErrUnverifiedDownload
 	}
 	ctx, cancel := context.WithTimeout(ctx, 20*time.Second)
 	defer cancel()
@@ -89,29 +99,37 @@ func Fetch(ctx context.Context, identity Identity, key ed25519.PublicKey, image 
 	if err != nil {
 		return nil, nil, err
 	}
+	signature, err := verifyDownload(identity, key, image, data, encoded)
+	if err != nil {
+		return nil, nil, ErrUnverifiedDownload
+	}
+	return data, signature, nil
+}
+
+func verifyDownload(identity Identity, key ed25519.PublicKey, image *os.File, data, encoded []byte) ([]byte, error) {
 	signature, err := release.DecodeSignature(encoded)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	r, err := release.Verify(data, signature, key, identity.Arch)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	if r.Version != identity.Version {
-		return nil, nil, fmt.Errorf("release version differs from running download")
+		return nil, fmt.Errorf("release version differs from running download")
 	}
 	stat, err := image.Stat()
 	if err != nil || !stat.Mode().IsRegular() || stat.Size() != r.Size {
-		return nil, nil, fmt.Errorf("outer AppImage is not the signed regular file")
+		return nil, fmt.Errorf("outer AppImage is not the signed regular file")
 	}
 	if _, err = image.Seek(0, io.SeekStart); err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	if err = r.Copy(io.Discard, image); err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	if _, err = image.Seek(0, io.SeekStart); err != nil {
-		return nil, nil, err
+		return nil, err
 	}
-	return data, signature, nil
+	return signature, nil
 }

@@ -10,8 +10,11 @@ opens an installation choice. **Install** verifies the exact tagged release's
 detached signed record and the opened AppImage bytes before asking Ubuntu for
 one administrator authorization. Initial installation needs the official release
 service; normal installed launches do not. Renaming the downloaded file is fine.
-A missing/invalid signature, unreachable release, cancelled authorization or
-unsupported protection fails closed, without disabling the sandbox.
+If the official verification files are unavailable, retry later or contact
+AutoByteus support. If the download cannot be verified, get a fresh copy from
+the [official releases page](https://github.com/AutoByteus/autobyteus-workspace/releases).
+Contact support if that copy also fails verification. None of these failures
+authorizes installation or disables the sandbox.
 
 Ubuntu's authorization dialog names the retained native helper path, not a
 verified publisher. Only use the official download. The launcher explains that
