@@ -9,6 +9,7 @@
 | CRR-004 | code-review-report.md | Implementation Review / IR-004–005 and revised DS-004 | Failed API execution / CRR-003 Local Fix | Pass — source only | F-API-01/02 resolved in source; QA retest required |
 | CRR-005 | code-review-report.md | API/E2E Failure-Origin Review / API-REV-003 | Source Pass | Fail — Local Fix | F-API-03/04 open; F-API-01/02 independently verified |
 | CRR-006 | code-review-report.md | Implementation Review / IR-006 | CRR-005 Local Fix | Fail — Local Fix | F-API-03/04 resolved at source; new F-CR-003 |
+| CRR-007 | code-review-report.md | Implementation Review / IR-007 | CRR-006 Local Fix | Pass — source only | F-CR-003 resolved; F-API-03/04 remain source-resolved |
 
 ## Revision Entries
 ### CRR-001 — Managed failure-continuation review
@@ -86,3 +87,10 @@ None (initial baseline).
 - F-API-01/02 remain independently verified; F-CR-001/002 remain resolved. No changed requirements/material premise.
 - **F-CR-003 new/open:** explicitly supported pre-auth first-install acquisition refusals (404, oversized/invalid evidence, signature or image mismatch) still end in technical-only text. Current acquire.Fetch → launcher → Explain trace, unchanged relative to retained real API-07/07b dialog captures; positive offline/redirect reconnect-and-retry control. Previous runs proved safe refusal, not recovery. This is the ticket's own AC-003/DS-004 path; it predates IR-006.
 - Score 9.0/10 summary; readiness/fidelity 7.5 drive failure. No follow-up, smoke/host matrix rerun, release or new authorization. Recipient **/implementation_engineer**; correct the bounded acquisition guidance, return to source review, then independent graphical/affected package reruns. API-REV-003 still Fail; no successful-test review.
+
+### CRR-007 — Verify pre-authorization release recovery guidance
+- Canonical `code-review-report.md`, implementation review round 7, 2026-11-19. **Targeted Delta Review:** only acquisition/launcher open-error handling, its regression test and user guide changed since CRR-006. No new process/privilege/data contract. Prior full structural audit retained for unaffected areas; affected checks, sizes and scores revalidated.
+- IR-007 source `8f10fa9287`, received `ca2e88097705c878ec431ba869276be6e4a20c32`; SR-012/015/016, DS-004, ARCH-REV-004; API-REV-003 current failed execution; DR N/A. Trigger CRR-006 F-CR-003. Prior **Fail — Local Fix**; current **Pass for independent API/E2E**, Large / High unchanged.
+- **F-CR-003 open → resolved in source.** Missing official files: retry later/support; failed connectivity/interrupted read: reconnect/retry; invalid evidence or image: fresh official copy/support. No raw remote text, alternate signer, extra request path or usable result on refusal. Same authenticated evidence and rewound handle on success. Evidence: source, IMP-41 eight red/ten green subcases, IMP-42 visible Noble refusals, no pkexec on refusal with deliberately canceled positive control.
+- F-API-03/04 remain source-resolved (IR-006/CRR-006); still require independent GUI retests. F-API-01/02 independently verified as recorded in API-REV-003. F-CR-001/002 remain resolved. No new candidate, requirement or material-premise change. Summary 9.4/10; no open source finding or follow-up.
+- Recipient **/api_e2e_engineer**. Independent current-package acquisition, incomplete-enrollment and low-space/rollback GUI checks; SR-015 isolated native x64/ARM64 build/smoke. Earlier evidence is scoped to its cases/bytes; no production trust/publication, delivery or release. The current review is not a successful API/E2E test-code review.
