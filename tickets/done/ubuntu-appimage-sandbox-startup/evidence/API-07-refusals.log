@@ -1,0 +1,38 @@
+Case API-07-refusals | 2026-11-18 | source 0df0c901e4 | Ubuntu24.04.5 x64 disposable VM; full test-origin AppImage df66a9f8649fa94ba8a17d1ba24a61c65efd654f465f4d30624a154af275ea15
+Command/steps: API-04-guest-gui.sh; graphical consent/auth actions; API-07-refusals.py for negatives. No production data/keys.
+Traceback (most recent call last):
+  File "/home/witness/guest-refusals.py", line 14, in <module>
+    command('xdotool','search','--sync','--onlyvisible','--name','^Install AutoByteus$')
+  File "/home/witness/guest-refusals.py", line 7, in command
+    def command(*args):return subprocess.run(args,check=True,capture_output=True,text=True,timeout=60)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '('xdotool', 'search', '--sync', '--onlyvisible', '--name', '^Install AutoByteus$')' returned non-zero exit status 1.
+Harness repair: wait for owned Xvfb readiness before xdotool --sync (which cannot connect before display exists). Prior failure is harness startup, no product assertion executed.
+[
+  {
+    "case": "cancel",
+    "result": "pass",
+    "exit": 133,
+    "sidecarGets": 0,
+    "authorization": false,
+    "hostInstallState": false
+  },
+  {
+    "case": "404",
+    "result": "pass",
+    "exit": 133,
+    "sidecarGets": 1,
+    "authorization": false,
+    "hostInstallState": false
+  },
+  {
+    "case": "oversize",
+    "result": "pass",
+    "exit": 133,
+    "sidecarGets": 1,
+    "authorization": false,
+    "hostInstallState": false
+  }
+]

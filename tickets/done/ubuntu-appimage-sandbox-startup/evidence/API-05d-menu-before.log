@@ -1,0 +1,7 @@
+# API-05d | API-05d-menu-before | 2026-11-19 | CRR-004 (reviewed product c90f3ba8f2); Ubuntu24.04 x64 guest
+{"supervisor": [{"pid": "4092", "ppid": "1", "exe": "/tmp/.mount_AutoByFpn5ld/AppRun", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["4092"]}], "main": [{"pid": "4105", "ppid": "4092", "exe": "/tmp/.mount_AutoByFpn5ld/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["4105"]}], "server": [{"pid": "4154", "ppid": "4105", "exe": "/tmp/.mount_AutoByFpn5ld/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["4154"]}], "renderer": [{"pid": "4233", "ppid": "4113", "exe": "/tmp/.mount_AutoByFpn5ld/autobyteus", "uid": "1000", "NoNewPrivs": "1", "Seccomp": "2", "NSpid": ["4233", "4", "1"]}], "file": "df33d927190eae41a8c2a499cae3d63c3cd9b1a014bbf3002b6d280062d5be03", "work": "b54b3859fb69fd5d8a3a80621258135c360e4cf1095320dde50cdb0cc09ae936"}
+Thu Nov 19 13:04:48 UTC 2026
+29695 absent
+
+29696 {"status":"ok","message":"Server is running"}
+autobyteus

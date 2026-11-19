@@ -1,0 +1,31 @@
+API-08 SR-015 preflight; no write, no dispatch
+x86_64
+https://github.com/AutoByteus/autobyteus-workspace.git
+{"viewerPermission":"ADMIN","visibility":"PUBLIC"}
+secret gate: gitleaks is not installed (brew install gitleaks)
+initial scan availability exit=2
+secret gate: scanning 1 commit(s) in f7b4d68711..HEAD
+secret gate: PASS (no secrets found)
+{"allowed_actions":"all","enabled":true}
+Decision SR-015: unchanged reviewed public-only verification vector with approved digest; all inputs except validation workflow/ticket files equivalent to 0df0c901e4 (git diff --exit-code).
+All changed files text; reviewed path inventory: product/build/test/docs, no ticket folders, binary files, generated/operational keys or local logs.
+Public repo standard Linux compute, no uploads/cache requested: https://docs.github.com/en/billing/concepts/product-billing/github-actions
+candidate c9c24d0ab68bad5c55a683a041676cf3b5e46633; parent f7b4d68711a0d0aa11ee3802b1264293d1c4ae8c
+ref=validation/autobyteus-5-native-linux-202611191136
+remote: 
+remote: Create a pull request for 'validation/autobyteus-5-native-linux-202611191136' on GitHub by visiting:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/pull/new/validation/autobyteus-5-native-linux-202611191136        
+remote: 
+remote: GitHub found 1108 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (21 critical, 459 high, 518 moderate, 110 low). To find out more, visit:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
+remote: 
+To https://github.com/AutoByteus/autobyteus-workspace.git
+ * [new branch]            HEAD -> validation/autobyteus-5-native-linux-202611191136
+remote: 
+remote: GitHub found 1108 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (21 critical, 459 high, 518 moderate, 110 low). To find out more, visit:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
+remote: 
+To https://github.com/AutoByteus/autobyteus-workspace.git
+ - [deleted]               validation/autobyteus-5-native-linux-202611191136
+Owned remote scratch ref absent after verified native results. Run receipt retained.
+Local isolated worktree and scratch branch removed (exact SHA check). No deliverable branch or default ref moved.

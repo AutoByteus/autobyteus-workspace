@@ -1,0 +1,166 @@
+Second complete release staged before opt-out
+{"activationMode":"managed-quit","status":"downloading","currentVersion":"1.5.14","currentVersionIsPrerelease":false,"updateChannel":"stable","updateStaged":false,"availableVersion":"1.5.15","downloadPercent":90.82,"downloadTransferredBytes":327155712,"downloadTotalBytes":360243529,"releaseNotes":null,"message":"Downloading update...","errorKind":null,"errorOperation":null,"checkedAt":"2026-11-19T11:42:01.743Z","notification":{"version":"1.5.15","fromVersion":"1.5.14","foundAt":"2026-11-19T11:42:01.743Z","read":false,"state":"waiting","handledVersion":null,"releasePageUrl":null,"outcome":null,"outcomeReason":null,"outcomeStep":null},"autoCheck":{"enabled":true,"intervalMinutes":60},"automaticUpdate":true,"automaticInstallPreparing":false}
+{"activationMode":"managed-quit","status":"downloading","currentVersion":"1.5.14","currentVersionIsPrerelease":false,"updateChannel":"stable","updateStaged":false,"availableVersion":"1.5.15","downloadPercent":100,"downloadTransferredBytes":360243529,"downloadTotalBytes":360243529,"releaseNotes":null,"message":"Verifying downloaded update...","errorKind":null,"errorOperation":null,"checkedAt":"2026-11-19T11:42:01.743Z","notification":{"version":"1.5.15","fromVersion":"1.5.14","foundAt":"2026-11-19T11:42:01.743Z","read":false,"state":"waiting","handledVersion":null,"releasePageUrl":null,"outcome":null,"outcomeReason":null,"outcomeStep":null},"autoCheck":{"enabled":true,"intervalMinutes":60},"automaticUpdate":false,"automaticInstallPreparing":false}
+Serving HTTP on 127.0.0.1 port 18889 (http://127.0.0.1:18889/) ...
+127.0.0.1 - - [19/Nov/2026 11:41:55] "GET /updates/latest-linux.yml?noCache=1k7ppq0kl HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 11:42:01] "GET /updates/latest-linux.yml?noCache=1k7ppq6g0 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 11:42:01] "GET /updates/AutoByteus_personal_linux-x64-1.5.15.AppImage HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 11:42:01] "GET /updates/AutoByteus_personal_linux-x64-1.5.15.AppImage HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 11:42:03] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.15/AutoByteus_personal_linux-x64-1.5.15.AppImage.release.json HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 11:42:03] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.15/AutoByteus_personal_linux-x64-1.5.15.AppImage.release.json.sig HTTP/1.1" 200 -
+Thu Nov 19 11:42:04 UTC 2026
+ea0a36b11a75a48af4af19317cf88d1bf61af9c0cf050a31e74737a14946cb0b  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+Thu Nov 19 11:42:43 UTC 2026
+CORRECTION: the fixture toggled opt-out during verification, not after staging. Actual states above are authoritative. New case: stale Verifying state even after writer discards the stale stage.
+{"activationMode":"managed-quit","status":"downloading","currentVersion":"1.5.14","currentVersionIsPrerelease":false,"updateChannel":"stable","updateStaged":false,"availableVersion":"1.5.15","downloadPercent":100,"downloadTransferredBytes":360243529,"downloadTotalBytes":360243529,"releaseNotes":null,"message":"Verifying downloaded update...","errorKind":null,"errorOperation":null,"checkedAt":"2026-11-19T11:42:01.743Z","notification":{"version":"1.5.15","fromVersion":"1.5.14","foundAt":"2026-11-19T11:42:01.743Z","read":false,"state":"waiting","handledVersion":null,"releasePageUrl":null,"outcome":null,"outcomeReason":null,"outcomeStep":null},"autoCheck":{"enabled":true,"intervalMinutes":60},"automaticUpdate":false,"automaticInstallPreparing":false}
+[
+  {
+    test: 'settings-updates-panel',
+    disabled: undefined,
+    checked: null,
+    text: 'AutoByteus Updates\n' +
+      '\n' +
+      'Version details and desktop app update controls.\n' +
+      '\n' +
+      'Current Version\n' +
+      '1.5.14\n' +
+      'Update Status\n' +
+      'Downloading\n' +
+      'Last Checked\n' +
+      '11/19/2026, 11:42:01 AM\n' +
+      'Automatic checks: every 1 hour\n' +
+      '\n' +
+      'Downloading the latest update package.\n' +
+      '\n' +
+      'Check for app updates automatically\n' +
+      '\n' +
+      'Asks github.com for a newer version at launch and at the interval below. No account or token is used; nothing is sent to AutoByteus. A newer version is only announced, unless Update automatically below is on.\n' +
+      '\n' +
+      'Check interval\n' +
+      'Every\n' +
+      'minutes\n' +
+      'hours\n' +
+      '\n' +
+      'Receive beta updates\n' +
+      '\n' +
+      'Get early builds before they are released to everyone. Turning this off keeps your current version until a newer stable release is available.\n' +
+      '\n' +
+      'Update automatically\n' +
+      '\n' +
+      'Download and verify new versions on your channel, then install when you next quit the app. The app will not close or reopen by itself.\n' +
+      '\n' +
+      'Check for Updates'
+  },
+  {
+    test: 'settings-updates-version',
+    disabled: undefined,
+    checked: null,
+    text: '1.5.14'
+  },
+  {
+    test: 'settings-updates-status',
+    disabled: undefined,
+    checked: null,
+    text: 'Downloading'
+  },
+  {
+    test: 'settings-updates-last-checked',
+    disabled: undefined,
+    checked: null,
+    text: '11/19/2026, 11:42:01 AM'
+  },
+  {
+    test: 'settings-updates-auto-state',
+    disabled: undefined,
+    checked: null,
+    text: 'Automatic checks: every 1 hour'
+  },
+  {
+    test: 'settings-updates-message',
+    disabled: undefined,
+    checked: null,
+    text: 'Downloading the latest update package.'
+  },
+  {
+    test: 'settings-updates-auto-check',
+    disabled: undefined,
+    checked: null,
+    text: 'Check for app updates automatically\n' +
+      '\n' +
+      'Asks github.com for a newer version at launch and at the interval below. No account or token is used; nothing is sent to AutoByteus. A newer version is only announced, unless Update automatically below is on.\n' +
+      '\n' +
+      'Check interval\n' +
+      'Every\n' +
+      'minutes\n' +
+      'hours'
+  },
+  {
+    test: 'settings-updates-auto-check-description',
+    disabled: undefined,
+    checked: null,
+    text: 'Asks github.com for a newer version at launch and at the interval below. No account or token is used; nothing is sent to AutoByteus. A newer version is only announced, unless Update automatically below is on.'
+  },
+  {
+    test: 'settings-updates-auto-check-toggle',
+    disabled: false,
+    checked: 'true',
+    text: ''
+  },
+  {
+    test: 'settings-updates-beta-channel-toggle',
+    disabled: true,
+    checked: 'false',
+    text: ''
+  },
+  {
+    test: 'auto-update-app-toggle',
+    disabled: false,
+    checked: 'false',
+    text: ''
+  },
+  {
+    test: 'settings-updates-check-updates',
+    disabled: true,
+    checked: null,
+    text: 'Check for Updates'
+  }
+]
+Thu Nov 19 11:42:45 UTC 2026
+total 351816
+drwxr-xr-x 2 abdesk-1000 abdesk-1000      4096 Nov 19 11:42 .
+drwxr-xr-x 4 root        root             4096 Nov 19 11:33 ..
+-rw------- 1 abdesk-1000 abdesk-1000         0 Nov 19 11:40 .writer-lock
+-r-xr-xr-x 1 abdesk-1000 abdesk-1000 360243393 Nov 19 11:40 AutoByteus.AppImage
+● autobyteus-desktop-1000.service - AutoByteus authenticated desktop writer for UID 1000
+     Loaded: loaded (/etc/systemd/system/autobyteus-desktop-1000.service; static)
+     Active: active (running) since Thu 2026-11-19 11:40:13 UTC; 2min 32s ago
+TriggeredBy: ● autobyteus-desktop-1000.socket
+   Main PID: 1734 (writer)
+      Tasks: 5 (limit: 4653)
+     Memory: 360.2M (peak: 714.3M)
+        CPU: 10.398s
+     CGroup: /system.slice/autobyteus-desktop-1000.service
+             └─1734 /opt/autobyteus-desktop/1000/support/writer 1000
+
+Nov 19 11:40:13 ab5-implementation systemd[1]: Started autobyteus-desktop-1000.service - AutoByteus authenticated desktop writer for UID 1000.
+Serving HTTP on 127.0.0.1 port 18889 (http://127.0.0.1:18889/) ...
+127.0.0.1 - - [19/Nov/2026 11:41:55] "GET /updates/latest-linux.yml?noCache=1k7ppq0kl HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 11:42:01] "GET /updates/latest-linux.yml?noCache=1k7ppq6g0 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 11:42:01] "GET /updates/AutoByteus_personal_linux-x64-1.5.15.AppImage HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 11:42:01] "GET /updates/AutoByteus_personal_linux-x64-1.5.15.AppImage HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 11:42:03] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.15/AutoByteus_personal_linux-x64-1.5.15.AppImage.release.json HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 11:42:03] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.15/AutoByteus_personal_linux-x64-1.5.15.AppImage.release.json.sig HTTP/1.1" 200 -
+ea0a36b11a75a48af4af19317cf88d1bf61af9c0cf050a31e74737a14946cb0b  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+After quit (opted out) and manual reopen: same 1.5.14 and toggle remains off; show available 1.5.15.
+{"activationMode":"managed-quit","status":"available","currentVersion":"1.5.14","currentVersionIsPrerelease":false,"updateChannel":"stable","updateStaged":false,"availableVersion":"1.5.15","downloadPercent":null,"downloadTransferredBytes":null,"downloadTotalBytes":null,"releaseNotes":null,"message":"Version 1.5.15 is available.","errorKind":null,"errorOperation":null,"checkedAt":"2026-11-19T11:43:01.950Z","notification":{"version":"1.5.15","fromVersion":"1.5.14","foundAt":"2026-11-19T11:42:01.743Z","read":false,"state":"waiting","handledVersion":null,"releasePageUrl":null,"outcome":null,"outcomeReason":null,"outcomeStep":null},"autoCheck":{"enabled":true,"intervalMinutes":60},"automaticUpdate":false,"automaticInstallPreparing":false}
+{"activationMode":"managed-quit","status":"downloaded","currentVersion":"1.5.14","currentVersionIsPrerelease":false,"updateChannel":"stable","updateStaged":true,"availableVersion":"1.5.15","downloadPercent":100,"downloadTransferredBytes":0,"downloadTotalBytes":null,"releaseNotes":null,"message":"Ready for your next quit.","errorKind":null,"errorOperation":null,"checkedAt":"2026-11-19T11:43:06.745Z","notification":{"version":"1.5.15","fromVersion":"1.5.14","foundAt":"2026-11-19T11:42:01.743Z","read":false,"state":"waiting","handledVersion":null,"releasePageUrl":null,"outcome":null,"outcomeReason":null,"outcomeStep":null},"autoCheck":{"enabled":true,"intervalMinutes":60},"automaticUpdate":false,"automaticInstallPreparing":false}
+Click actual Install and Restart while opted out
+total 351808
+-r-xr-xr-x 1 abdesk-1000 abdesk-1000 360243529 Nov 19 11:43 AutoByteus.AppImage
+8388611
+
+36e63d2d70919dfbc466da6faf95bd743e80929ec5f5a83ff30b95551aad9b85  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+31a67222b1770743f2e34397a2ac52c3bf0d0dd22aa4b476cf77d39ec1b6123e  e2e-profile/server-data/temp_workspace/update-continuity.txt
+   4064 /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+   4067 /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+   4226 sha256sum /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage e2e-profile/server-data/temp_workspace/update-continuity.txt

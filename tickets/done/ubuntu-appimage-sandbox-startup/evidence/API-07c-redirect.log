@@ -1,0 +1,11 @@
+# API-07c | API-07c-redirect | 2026-11-19 | CRR-004 (reviewed product c90f3ba8f2); Ubuntu24.04 x64 guest
+12582916
+12582916
+AutoByteus installation
+launcher-exit=133
+cannot reach official release service; reconnect and retry
+127.0.0.1 - - [19/Nov/2026 13:15:13] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json HTTP/1.1" 302 -
+127.0.0.1 - - [19/Nov/2026 13:15:13] "GET /qa3-fixture/moved-sidecar HTTP/1.1" 302 -
+127.0.0.1 - - [19/Nov/2026 13:15:13] "GET /qa3-fixture/moved-sidecar HTTP/1.1" 302 -
+127.0.0.1 - - [19/Nov/2026 13:15:13] "GET /qa3-fixture/moved-sidecar HTTP/1.1" 302 -
+absent-install

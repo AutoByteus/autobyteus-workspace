@@ -1,0 +1,16 @@
+IMP-27 | Ubuntu26 x64 | 2026-11-19 | 9017bd351d | verify opt-out cancellation does not free active transfer, manual checks/download and ordinary quit
+
+> autobyteus@1.5.13 test:electron /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web
+> vitest --config ./electron/vitest.config.ts run electron/updater/__tests__/appUpdater.spec.ts electron/application/__tests__/managedUpdateSession.spec.ts
+
+
+ RUN  v3.2.7 /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web/electron
+
+ ✓ application/__tests__/managedUpdateSession.spec.ts (13 tests) 649ms
+ ✓ updater/__tests__/appUpdater.spec.ts (46 tests) 1374ms
+
+ Test Files  2 passed (2)
+      Tests  59 passed (59)
+   Start at  13:12:16
+   Duration  1.97s (transform 220ms, setup 0ms, collect 332ms, tests 2.02s, environment 0ms, prepare 142ms)
+

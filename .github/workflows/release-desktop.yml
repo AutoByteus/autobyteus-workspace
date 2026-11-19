@@ -403,22 +403,51 @@ jobs:
       - name: Install workspace dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Setup pinned native toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.4'
+          cache: false
+
+      - name: Prepare desktop public trust or disposable build-only identity
+        env:
+          DESKTOP_RELEASE_PUBLIC_KEY: ${{ vars.DESKTOP_RELEASE_PUBLIC_KEY }}
+          DESKTOP_TRUST_MODE: ${{ (startsWith(github.ref, 'refs/tags/') || (github.event_name == 'workflow_dispatch' && github.event.inputs.publish_release == 'true' && github.event.inputs.release_tag != '')) && 'production' || 'build-only' }}
+        run: node scripts/desktop-package/prepare-build-trust.mjs "$DESKTOP_TRUST_MODE" "$RUNNER_TEMP/desktop-trust"
+
+      - name: Check native and signed-record units
+        run: |
+          node --test scripts/desktop-package/*.test.mjs
+          cd autobyteus-web/linux-install
+          go test ./...
+
       - name: Build Electron Linux x64
         working-directory: autobyteus-web
         env:
           AUTOBYTEUS_BUILD_FLAVOR: "personal"
         run: pnpm build:electron:linux:x64
 
+      - name: Sign build-only final bytes with disposable trust
+        if: ${{ !(startsWith(github.ref, 'refs/tags/') || (github.event_name == 'workflow_dispatch' && github.event.inputs.publish_release == 'true' && github.event.inputs.release_tag != '')) }}
+        run: |
+          set -euo pipefail
+          VERSION="$(node -p "require('./autobyteus-web/package.json').version")"
+          IMAGE="autobyteus-web/electron-dist/AutoByteus_personal_linux-x64-$VERSION.AppImage"
+          node scripts/desktop-package/sign-release.mjs "$IMAGE" "$VERSION" x64 "$AUTOBYTEUS_DESKTOP_TEST_KEY_FILE" "$AUTOBYTEUS_DESKTOP_PUBLIC_KEY_FILE"
+          node scripts/desktop-package/verify-release.mjs "$IMAGE" "$VERSION" x64 "$AUTOBYTEUS_DESKTOP_PUBLIC_KEY_FILE"
+
       - name: Verify Linux x64 AppImage and updater metadata
         run: |
           APPIMAGE="$(find autobyteus-web/electron-dist -maxdepth 1 -type f -name '*linux-x64*.AppImage' -print -quit)"
           test -n "$APPIMAGE"
+          node scripts/desktop-package/verify-layout.mjs "$APPIMAGE" "$AUTOBYTEUS_DESKTOP_PUBLIC_KEY_FILE"
           file "$APPIMAGE"
           file "$APPIMAGE" | grep -Eq 'x86-64|x86_64'
           test -f autobyteus-web/electron-dist/latest-linux.yml
           python3 scripts/validate_linux_updater_metadata.py \
             --metadata autobyteus-web/electron-dist/latest-linux.yml \
-            --arch-token linux-x64
+            --arch-token linux-x64 \
+            --image "$APPIMAGE"
 
       - name: Verify Linux x64 Prisma engines
         run: |
@@ -452,7 +481,7 @@ jobs:
         with:
           name: linux-x64
           path: |
-            autobyteus-web/electron-dist/*linux-x64*.AppImage
+            autobyteus-web/electron-dist/*linux-x64*.AppImage*
             autobyteus-web/electron-dist/latest-linux.yml
           if-no-files-found: error
 
@@ -487,22 +516,51 @@ jobs:
       - name: Install workspace dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Setup pinned native toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.4'
+          cache: false
+
+      - name: Prepare desktop public trust or disposable build-only identity
+        env:
+          DESKTOP_RELEASE_PUBLIC_KEY: ${{ vars.DESKTOP_RELEASE_PUBLIC_KEY }}
+          DESKTOP_TRUST_MODE: ${{ (startsWith(github.ref, 'refs/tags/') || (github.event_name == 'workflow_dispatch' && github.event.inputs.publish_release == 'true' && github.event.inputs.release_tag != '')) && 'production' || 'build-only' }}
+        run: node scripts/desktop-package/prepare-build-trust.mjs "$DESKTOP_TRUST_MODE" "$RUNNER_TEMP/desktop-trust"
+
+      - name: Check native and signed-record units
+        run: |
+          node --test scripts/desktop-package/*.test.mjs
+          cd autobyteus-web/linux-install
+          go test ./...
+
       - name: Build Electron Linux ARM64
         working-directory: autobyteus-web
         env:
           AUTOBYTEUS_BUILD_FLAVOR: "personal"
         run: pnpm build:electron:linux:arm64
 
+      - name: Sign build-only final bytes with disposable trust
+        if: ${{ !(startsWith(github.ref, 'refs/tags/') || (github.event_name == 'workflow_dispatch' && github.event.inputs.publish_release == 'true' && github.event.inputs.release_tag != '')) }}
+        run: |
+          set -euo pipefail
+          VERSION="$(node -p "require('./autobyteus-web/package.json').version")"
+          IMAGE="autobyteus-web/electron-dist/AutoByteus_personal_linux-arm64-$VERSION.AppImage"
+          node scripts/desktop-package/sign-release.mjs "$IMAGE" "$VERSION" arm64 "$AUTOBYTEUS_DESKTOP_TEST_KEY_FILE" "$AUTOBYTEUS_DESKTOP_PUBLIC_KEY_FILE"
+          node scripts/desktop-package/verify-release.mjs "$IMAGE" "$VERSION" arm64 "$AUTOBYTEUS_DESKTOP_PUBLIC_KEY_FILE"
+
       - name: Verify Linux ARM64 AppImage and updater metadata
         run: |
           APPIMAGE="$(find autobyteus-web/electron-dist -maxdepth 1 -type f -name '*linux-arm64*.AppImage' -print -quit)"
           test -n "$APPIMAGE"
+          node scripts/desktop-package/verify-layout.mjs "$APPIMAGE" "$AUTOBYTEUS_DESKTOP_PUBLIC_KEY_FILE"
           file "$APPIMAGE"
           file "$APPIMAGE" | grep -Eq 'ARM aarch64|aarch64|ARM64'
           test -f autobyteus-web/electron-dist/latest-linux-arm64.yml
           python3 scripts/validate_linux_updater_metadata.py \
             --metadata autobyteus-web/electron-dist/latest-linux-arm64.yml \
-            --arch-token linux-arm64
+            --arch-token linux-arm64 \
+            --image "$APPIMAGE"
 
       - name: Verify Linux ARM64 Prisma engines
         run: |
@@ -533,7 +591,7 @@ jobs:
         with:
           name: linux-arm64
           path: |
-            autobyteus-web/electron-dist/*linux-arm64*.AppImage
+            autobyteus-web/electron-dist/*linux-arm64*.AppImage*
             autobyteus-web/electron-dist/latest-linux-arm64.yml
           if-no-files-found: error
 
@@ -581,6 +639,55 @@ jobs:
             autobyteus-web/electron-dist/latest.yml
           if-no-files-found: error
 
+  sign-linux-desktop:
+    name: Sign authenticated Linux desktop releases
+    if: ${{ startsWith(github.ref, 'refs/tags/') || (github.event_name == 'workflow_dispatch' && github.event.inputs.publish_release == 'true' && github.event.inputs.release_tag != '') }}
+    needs: [prepare-release, build-linux-x64, build-linux-arm64]
+    runs-on: ubuntu-latest
+    environment: desktop-release-signing
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare-release.outputs.release_sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: linux-*
+          path: signing-artifacts
+      - name: Sign final AppImages and verify metadata against the embedded public anchor
+        env:
+          DESKTOP_PRIVATE_KEY: ${{ secrets.DESKTOP_RELEASE_PRIVATE_KEY }}
+          DESKTOP_PUBLIC_KEY: ${{ vars.DESKTOP_RELEASE_PUBLIC_KEY }}
+          RELEASE_TAG: ${{ needs.prepare-release.outputs.release_tag }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = AutoByteus/autobyteus-workspace
+          test -n "$DESKTOP_PRIVATE_KEY" && test -n "$DESKTOP_PUBLIC_KEY"
+          VERSION="$(node -p "require('./autobyteus-web/package.json').version")"
+          test "$RELEASE_TAG" = "v$VERSION"
+          umask 077
+          PRIVATE="$RUNNER_TEMP/desktop-private.pem"
+          PUBLIC="$RUNNER_TEMP/desktop-public.pem"
+          trap 'rm -f "$PRIVATE" "$PUBLIC"' EXIT
+          printf '%s' "$DESKTOP_PRIVATE_KEY" > "$PRIVATE"
+          printf '%s' "$DESKTOP_PUBLIC_KEY" > "$PUBLIC"
+          for ARCH in x64 arm64; do
+            IMAGE="signing-artifacts/linux-$ARCH/AutoByteus_personal_linux-$ARCH-$VERSION.AppImage"
+            META="signing-artifacts/linux-$ARCH/latest-linux.yml"
+            if [ "$ARCH" = arm64 ]; then META="signing-artifacts/linux-$ARCH/latest-linux-arm64.yml"; fi
+            node scripts/desktop-package/sign-release.mjs "$IMAGE" "$VERSION" "$ARCH" "$PRIVATE" "$PUBLIC"
+            python3 scripts/validate_linux_updater_metadata.py --metadata "$META" --arch-token "linux-$ARCH" --image "$IMAGE" --public-key "$PUBLIC"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-authenticated-sidecars
+          path: |
+            signing-artifacts/**/*.AppImage.release.json
+            signing-artifacts/**/*.AppImage.release.json.sig
+          if-no-files-found: error
+
   publish-release:
     name: Publish GitHub Release
     if: >
@@ -594,6 +701,7 @@ jobs:
       - build-macos-x64
       - build-linux-x64
       - build-linux-arm64
+      - sign-linux-desktop
       - build-windows
     runs-on: ubuntu-latest
     steps:
@@ -681,6 +789,8 @@ jobs:
             release-artifacts/**/*.zip.blockmap
             release-artifacts/**/*.exe
             release-artifacts/**/*.AppImage
+            release-artifacts/**/*.AppImage.release.json
+            release-artifacts/**/*.AppImage.release.json.sig
 
       - name: Publish release assets with generated notes fallback
         if: ${{ steps.release_notes.outputs.has_curated_notes != 'true' }}
@@ -698,6 +808,8 @@ jobs:
             release-artifacts/**/*.zip.blockmap
             release-artifacts/**/*.exe
             release-artifacts/**/*.AppImage
+            release-artifacts/**/*.AppImage.release.json
+            release-artifacts/**/*.AppImage.release.json.sig
 
       # The updater files (latest*.yml) make every desktop on this channel offer this version, and a desktop that
       # updates asks its nodes for it 2 minutes after it starts. So they go up only once both architectures' server

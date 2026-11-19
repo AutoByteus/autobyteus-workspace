@@ -1,0 +1,10 @@
+# API-05c | API-05c-enrollment | 2026-11-19 | CRR-004 (reviewed product c90f3ba8f2); Ubuntu24.04 x64 guest
+731d3f61cdfb39f3b87400ac026605153702db3c86b85269072e78ba3a84d5ce  ir005/1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage
+df33d927190eae41a8c2a499cae3d63c3cd9b1a014bbf3002b6d280062d5be03  ir005/1.5.14/AutoByteus_personal_linux-x64-1.5.14.AppImage
+4d2cdcec096230953479833e9489387f9d033763b50c782d1b79e8e6991bb0e9  ir005/1.5.15/AutoByteus_personal_linux-x64-1.5.15.AppImage
+Ubuntu will request one-shot authorization for /opt/autobyteus-desktop/1000/support/provision (program path, not a publisher verification).
+Removed "/etc/systemd/system/sockets.target.wants/autobyteus-desktop-1000.socket".
+declare -x AUTOBYTEUS_ELECTRON_DATA_ROOT="/home/witness/qa3-data"
+{"status":"ok","message":"Server is running"}
+731d3f61cdfb39f3b87400ac026605153702db3c86b85269072e78ba3a84d5ce  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+closed-before-QA

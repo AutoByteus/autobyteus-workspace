@@ -1,0 +1,6 @@
+# API-03d-current-node | 2026-11-19 | reviewed product 8f10fa9287 | Ubuntu 26.04 x64 (CLI/local fixtures or explicit real update); operation: see matching case in execution report
+API-03d, 2026-11-19. IR-007 8f10fa9287 x64 genuine current-signed package. Ubuntu x64 normal user.
+{"argv":["space argument","--example"],"node":"24.19.0","exec":"/tmp/.mount_AutoByRFMBNd/autobyteus"}
+  exit= 23
+outer-group-signal exit= 42 stderr=
+PASS current packaged real ELF receives SIGTERM and exits 42; argv and exit23 preserved

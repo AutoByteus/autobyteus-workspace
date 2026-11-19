@@ -1,0 +1,25 @@
+Native implementation working-tree snapshot after 703b1bef5c; no acceptance/sign-off.
+Built with Go 1.27.4 linux/amd64, CGO_ENABLED=0, disposable Ed25519 key and desktop_test loopback origin.
+The AppImage carries an inert shell pre-main failure fixture, NOT the product Electron renderer/server.
+Later client/protocol/session and consent-text edits were not in this native fixture; rerun by impact.
+
+IMP-05 narrow native helper test in disposable Noble VM; inert pre-main failure fixture, NOT real Electron acceptance
+2026-11-18T13:29:26.444184+00:00
+[FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:163] Rather than run without sandboxing I'm aborting now.
+Ubuntu restricts this portable application's sandbox. Install the authenticated AutoByteus release at /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage with an app-scoped permission? Initial setup needs the official release service and one Ubuntu administrator authorization. Other applications and your data are unchanged.
+Type Install to continue, anything else cancels:
+Install
+Ubuntu will request one-shot authorization for /proc/2043/fd/10 (program path, not a publisher verification).
+[1;31m==== AUTHENTICATING FOR org.freedesktop.policykit.exec ====
+[0mAuthentication is needed to run `/proc/2043/fd/10' as the super user
+Authenticating as: Disposable implementation account (witness)
+Password:
+[1;31m==== AUTHENTICATION COMPLETE ====
+[0mCreated symlink /etc/systemd/system/sockets.target.wants/autobyteus-desktop-1000.socket → /etc/systemd/system/autobyteus-desktop-1000.socket.
+
+{"committed":true}
+[FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:163] Rather than run without sandboxing I'm aborting now.
+managed sandbox permission failed; administrator repair required, no reenrollment attempted
+
+FIXTURE_EXIT=133
+Connection to 127.0.0.1 closed.

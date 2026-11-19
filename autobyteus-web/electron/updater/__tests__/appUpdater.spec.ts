@@ -3,6 +3,9 @@ import * as os from 'os';
 import * as path from 'path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppUpdater } from '../appUpdater';
+import { ManagedUpdateSession } from '../../application/managedUpdateSession';
+import { ApplicationShutdown } from '../../application/applicationShutdown';
+import { ManagedStageGone } from '../linuxManagedInstall';
 import { APP_UPDATE_STATE_CHANNEL } from '../appUpdateController';
 
 const {
@@ -147,6 +150,205 @@ describe('AppUpdater', () => {
 
   afterEach(() => {
     fs.rmSync(userDataDir, { recursive: true, force: true });
+  });
+
+  it('managed verification is the only readiness authority; automatic download never invokes native install', async () => {
+    let receipt!: (value: any) => void;
+    const writer = {
+      stage: vi.fn(() => new Promise<any>(resolve => { receipt = resolve; })),
+      activate: vi.fn(async () => ({ version: '1.1.10', sha256: 'new' })),
+      status: vi.fn(), discard: vi.fn(async () => {}) };
+    const stop = vi.fn(async () => {}), quit = vi.fn(), requestReopen = vi.fn();
+    const session = new ManagedUpdateSession({ writer, shutdown: new ApplicationShutdown(stop, vi.fn()),
+      initialSettings: { automaticUpdate: false, updateChannel: 'stable' }, serverGone: () => true,
+      quit, requestReopen, notifyQuit: vi.fn(), exit: vi.fn(), report: vi.fn() });
+    const updater = new AppUpdater({ managedSession: session }); updater.initialize();
+    updater.setAutomaticUpdate(true);
+    expect(updater.getState().activationMode).toBe('managed-quit');
+    expect(autoUpdaterMock.autoInstallOnAppQuit).toBe(false);
+    autoUpdaterMock.emit('update-available', { version: '1.1.10' });
+    autoUpdaterMock.emit('update-downloaded', { version: '1.1.10', downloadedFile: '/cache/image' });
+    expect(updater.getState()).toMatchObject({ status: 'downloading', updateStaged: false });
+    expect(updater.installUpdateAndRestart()).toEqual({ accepted: false });
+    receipt({ id: 'stage', baseline: 'old', channel: 'stable', identity: { version: '1.1.10', sha256: 'new' } });
+    await vi.waitFor(() => expect(updater.getState()).toMatchObject({ status: 'downloaded', updateStaged: true }));
+    expect(stop).not.toHaveBeenCalled(); expect(quit).not.toHaveBeenCalled(); expect(autoUpdaterMock.quitAndInstall).not.toHaveBeenCalled();
+    // Repeated found/ready events and toggling on are not immediate-ready bypasses.
+    autoUpdaterMock.emit('update-available', { version: '1.1.10' });
+    updater.setAutomaticUpdate(true);
+    expect(stop).not.toHaveBeenCalled();
+    session.willQuit({ preventDefault() {} });
+    await vi.waitFor(() => expect(quit).toHaveBeenCalledOnce());
+    expect(writer.activate).toHaveBeenCalledOnce(); expect(requestReopen).not.toHaveBeenCalled();
+    expect(autoUpdaterMock.quitAndInstall).not.toHaveBeenCalled();
+  });
+
+  it('opt-out during verification restores manual actions after the stale receipt settles', async () => {
+    const candidate = { id: 'stale', baseline: 'old', channel: 'stable' as const, identity: { version: '1.1.10', sha256: 'new' } };
+    let resolve!: (stage: typeof candidate) => void;
+    const writer = { activate: vi.fn(), status: vi.fn(), discard: vi.fn(async () => {}),
+      stage: vi.fn(async () => ({ ...candidate, id: 'fresh' })).mockImplementationOnce(() => new Promise(r => { resolve = r; })) };
+    const quit = vi.fn(), session = new ManagedUpdateSession({ writer, shutdown: new ApplicationShutdown(async () => {}, vi.fn()),
+      initialSettings: { automaticUpdate: false, updateChannel: 'stable' }, serverGone: () => true,
+      quit, requestReopen: vi.fn(), notifyQuit: vi.fn(), exit: vi.fn(), report: vi.fn() });
+    const updater = new AppUpdater({ managedSession: session }); updater.initialize(); updater.setAutomaticUpdate(true);
+    const offer = () => autoUpdaterMock.emit('update-available', { version: '1.1.10' });
+    const deliver = async () => { autoUpdaterMock.emit('update-downloaded', { version: '1.1.10', downloadedFile: '/cache/image' }); };
+    autoUpdaterMock.downloadUpdate.mockImplementationOnce(deliver);
+    offer();
+    await vi.waitFor(() => expect(writer.stage).toHaveBeenCalledOnce());
+    updater.setAutomaticUpdate(false);
+    await updater.checkForUpdates(); await updater.downloadUpdate();
+    expect(autoUpdaterMock.checkForUpdates).not.toHaveBeenCalled(); expect(autoUpdaterMock.downloadUpdate).toHaveBeenCalledOnce();
+    resolve(candidate);
+    await vi.waitFor(() => expect(updater.getState()).toMatchObject({ status: 'available', updateStaged: false, automaticUpdate: false }));
+    expect(writer.discard).toHaveBeenCalledWith(candidate); expect(updater.installUpdateAndRestart().accepted).toBe(false);
+    autoUpdaterMock.checkForUpdates.mockImplementationOnce(async () => { offer(); });
+    await updater.checkForUpdates(); expect(autoUpdaterMock.checkForUpdates).toHaveBeenCalledOnce();
+    autoUpdaterMock.downloadUpdate.mockImplementationOnce(deliver);
+    await updater.downloadUpdate(); await vi.waitFor(() => expect(updater.getState().updateStaged).toBe(true));
+    expect(writer.stage).toHaveBeenCalledTimes(2); session.willQuit({ preventDefault() {} });
+    await vi.waitFor(() => expect(quit).toHaveBeenCalledOnce()); expect(writer.activate).not.toHaveBeenCalled();
+  });
+
+  it('lost managed receipt clears provisional failure across restart and re-stages a cached update automatically', async () => {
+    const candidate = { id: 'stage', baseline: 'old', channel: 'stable' as const, identity: { version: '1.1.10', sha256: 'new' } };
+    const writer = {  stage: vi.fn(async () => candidate),
+      activate: vi.fn(async () => { throw new ManagedStageGone('gone'); }),
+      status: vi.fn(async () => ({ version: '1.1.9', sha256: 'old' })), discard: vi.fn(async () => {}) };
+    const quit = vi.fn();
+    const makeSession = () => new ManagedUpdateSession({ writer, shutdown: new ApplicationShutdown(async () => {}, vi.fn()),
+      initialSettings: { automaticUpdate: true, updateChannel: 'stable' }, serverGone: () => true,
+      quit, requestReopen: vi.fn(), notifyQuit: vi.fn(), exit: vi.fn(), report: vi.fn() });
+    const session = makeSession(), updater = new AppUpdater({ managedSession: session }); updater.initialize(); updater.setAutomaticUpdate(true);
+    autoUpdaterMock.emit('update-available', { version: '1.1.10' });
+    autoUpdaterMock.emit('update-downloaded', { version: '1.1.10', downloadedFile: '/cache/image' });
+    await vi.waitFor(() => expect(updater.getState().updateStaged).toBe(true));
+    session.willQuit({ preventDefault() {} });
+    await vi.waitFor(() => expect(quit).toHaveBeenCalledOnce());
+    autoUpdaterMock.removeAllListeners();
+    const restarted = new AppUpdater({ managedSession: makeSession() }); restarted.initialize();
+    expect(restarted.getState().notification?.outcome).toBeNull();
+    expect(restarted.getState().automaticUpdate).toBe(true);
+    autoUpdaterMock.downloadUpdate.mockImplementationOnce(async () => {
+      autoUpdaterMock.emit('update-downloaded', { version: '1.1.10', downloadedFile: '/cache/image' });
+    });
+    autoUpdaterMock.emit('update-available', { version: '1.1.10' });
+    await vi.waitFor(() => expect(restarted.getState().updateStaged).toBe(true));
+    expect(writer.stage).toHaveBeenCalledTimes(2);
+    expect(autoUpdaterMock.quitAndInstall).not.toHaveBeenCalled();
+  });
+
+  describe('managed failure continuation (CRR-001, BEH-004)', () => {
+    // Actual updater/session/shutdown/persistence owners; only OS, downloader and writer edges are doubled.
+    // The synthetic profile is removed by the outer afterEach. This is not packaged or writer E2E.
+    const candidate = { id: 'stage', baseline: 'old', channel: 'stable' as const,
+      identity: { version: '1.1.10', sha256: 'new' } };
+    const record = () => JSON.parse(fs.readFileSync(path.join(userDataDir, 'app-update-notification.json'), 'utf8'));
+    function start() {
+      autoUpdaterMock.removeAllListeners();
+      autoUpdaterMock.downloadUpdate.mockClear();
+      autoUpdaterMock.checkForUpdates.mockImplementationOnce(async () => {
+        autoUpdaterMock.emit('update-available', { version: candidate.identity.version });
+      });
+      autoUpdaterMock.downloadUpdate.mockImplementationOnce(async () => {
+        autoUpdaterMock.emit('update-downloaded', { version: candidate.identity.version, downloadedFile: '/synthetic/cache.AppImage' });
+      });
+      const writer = {
+        stage: vi.fn(async () => candidate), activate: vi.fn(async () => candidate.identity),
+        status: vi.fn(async () => ({ version: '1.1.9', sha256: 'old' })), discard: vi.fn(async () => {}) };
+      const stop = vi.fn(async () => {});
+      const hooks = { serverGone: vi.fn(() => true), quit: vi.fn(), requestReopen: vi.fn(),
+        notifyQuit: vi.fn(), exit: vi.fn(), report: vi.fn() };
+      const session = new ManagedUpdateSession({ writer, shutdown: new ApplicationShutdown(stop, vi.fn()),
+        initialSettings: { automaticUpdate: false, updateChannel: 'stable' }, ...hooks });
+      const updater = new AppUpdater({ managedSession: session, platform: 'linux', appUpdateConfigPath: null });
+      updater.initialize();
+      return { writer, stop, hooks, session, updater };
+    }
+    async function failAutomaticInstall() {
+      const s = start(); s.writer.activate.mockRejectedValue(new Error('definite refusal'));
+      s.updater.setAutomaticUpdate(true);
+      await s.updater.checkForUpdates();
+      await vi.waitFor(() => expect(s.updater.getState().updateStaged).toBe(true));
+      s.session.willQuit({ preventDefault() {} });
+      await vi.waitFor(() => expect(s.hooks.quit).toHaveBeenCalledOnce());
+      expect(record().automaticFailure).toMatchObject({ version: '1.1.10', step: 'install' });
+      return record().automaticFailure;
+    }
+    it.each(['ordinary quit', 'manual refusal', 'manual receipt loss', 'manual success'] as const)(
+      'retains the automatic block after explicit Download, while allowing %s', async (action) => {
+        const failure = await failAutomaticInstall();
+        const s = start(); await s.updater.checkForUpdates();
+        expect(autoUpdaterMock.downloadUpdate).not.toHaveBeenCalled();
+        await s.updater.downloadUpdate();
+        await vi.waitFor(() => expect(s.updater.getState().updateStaged).toBe(true));
+        expect(s.writer.activate).not.toHaveBeenCalled();
+        if (action === 'ordinary quit') {
+          s.session.willQuit({ preventDefault() {} });
+          await vi.waitFor(() => expect(s.hooks.quit).toHaveBeenCalledOnce());
+          expect(s.writer.activate).not.toHaveBeenCalled();
+          expect(s.hooks.requestReopen).not.toHaveBeenCalled();
+        } else {
+          if (action === 'manual refusal') s.writer.activate.mockRejectedValue(new Error('refused'));
+          if (action === 'manual receipt loss') s.writer.activate.mockRejectedValue(new ManagedStageGone('gone'));
+          expect(s.updater.installUpdateAndRestart()).toEqual({ accepted: true });
+          await vi.waitFor(() => expect(s.hooks.exit).toHaveBeenCalledWith(76));
+          expect(s.writer.activate).toHaveBeenCalledOnce();
+          expect(s.hooks.requestReopen).toHaveBeenCalledOnce();
+          if (action !== 'manual success') {
+            expect(s.updater.getState().notification?.outcome).toBe('MANUAL_INSTALL_FAILED');
+            // The manual outcome hides AUTO_FAILED in the row, not the separate permanent block.
+            const continued = start(); await continued.updater.checkForUpdates();
+            expect(autoUpdaterMock.downloadUpdate).not.toHaveBeenCalled();
+            await continued.updater.downloadUpdate();
+            await vi.waitFor(() => expect(continued.updater.getState().updateStaged).toBe(true));
+            continued.session.willQuit({ preventDefault() {} });
+            await vi.waitFor(() => expect(continued.hooks.quit).toHaveBeenCalledOnce());
+            expect(continued.writer.activate).not.toHaveBeenCalled();
+          }
+        }
+        expect(record().automaticFailure).toEqual(failure);
+        expect(record().automatic).toBeNull();
+        expect(autoUpdaterMock.quitAndInstall).not.toHaveBeenCalled();
+      });
+    it.each(['unknown commit', 'stop failed', 'server exit unconfirmed'] as const)(
+      'allows a later ordinary exit after manual %s, without retry or relaunch', async (failure) => {
+        const s = start(); s.updater.setAutomaticUpdate(true);
+        if (failure === 'unknown commit') {
+          s.writer.activate.mockRejectedValue(new Error('lost reply'));
+          s.writer.status.mockRejectedValue(new Error('status unavailable'));
+        } else {
+          s.hooks.serverGone.mockReturnValue(false);
+          if (failure === 'stop failed') s.stop.mockRejectedValue(new Error('stop failed'));
+        }
+        await s.updater.checkForUpdates();
+        await vi.waitFor(() => expect(s.updater.getState().updateStaged).toBe(true));
+        expect(s.updater.installUpdateAndRestart()).toEqual({ accepted: true });
+        await vi.waitFor(() => expect(s.hooks.report).toHaveBeenCalledOnce());
+        expect(s.updater.getState().updateStaged).toBe(false);
+        expect(s.updater.installUpdateAndRestart()).toEqual({ accepted: false });
+        // A late downloader event cannot begin another transaction in the failed session.
+        autoUpdaterMock.emit('update-downloaded', { version: '1.1.10', downloadedFile: '/synthetic/cache.AppImage' });
+        await Promise.resolve();
+        s.session.willQuit({ preventDefault() {} });
+        if (failure === 'unknown commit') {
+          await vi.waitFor(() => expect(s.hooks.quit).toHaveBeenCalledOnce());
+          const reentry = { preventDefault: vi.fn() }; s.session.willQuit(reentry);
+          expect(reentry.preventDefault).not.toHaveBeenCalled();
+          expect(s.hooks.exit).not.toHaveBeenCalled();
+          expect(s.writer.status).toHaveBeenCalledOnce();
+        } else {
+          await vi.waitFor(() => expect(s.hooks.exit).toHaveBeenCalledWith(1));
+          expect(s.hooks.quit).not.toHaveBeenCalled();
+        }
+        expect(s.writer.activate).toHaveBeenCalledTimes(failure === 'unknown commit' ? 1 : 0);
+        expect(s.writer.stage).toHaveBeenCalledOnce();
+        expect(s.stop).toHaveBeenCalledOnce();
+        expect(s.hooks.notifyQuit).toHaveBeenCalledOnce();
+        expect(s.hooks.requestReopen).not.toHaveBeenCalled();
+        expect(autoUpdaterMock.quitAndInstall).not.toHaveBeenCalled();
+      });
   });
 
   it('registers IPC handlers and broadcasts initial state on initialize', async () => {

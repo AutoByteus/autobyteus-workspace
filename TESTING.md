@@ -66,6 +66,11 @@ Renderer behavior that the phone (`/mobile`) also offers is proven on the phone 
 `pnpm -C autobyteus-web test:e2e:mobile-shell` that performs the user's action there. A desktop probe
 or a dev server does not run the phone's routing or its production build.
 
+When testing a packaged desktop installer refusal, launch it graphically in a disposable guest.
+Verify that the dialog tells the user a safe next step, and check separately that the installed
+files and user data were preserved or rolled back as intended. A helper stderr message or a
+nonzero exit is not proof of what a desktop user saw.
+
 ## Choosing the path
 
 Start with the smallest layer that directly proves the change, then add the layer that

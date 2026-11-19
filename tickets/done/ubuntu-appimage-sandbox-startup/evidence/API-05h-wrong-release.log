@@ -1,0 +1,39 @@
+# API-05h | API-05h-wrong-release | 2026-11-19 | CRR-004 (reviewed product c90f3ba8f2); Ubuntu26.04 x64 guest
+{"activationMode":"managed-quit","status":"downloading","currentVersion":"1.5.14","currentVersionIsPrerelease":false,"updateChannel":"stable","updateStaged":false,"availableVersion":"1.5.15","downloadPercent":0,"downloadTransferredBytes":0,"downloadTotalBytes":null,"releaseNotes":null,"message":"Downloading update...","errorKind":null,"errorOperation":null,"checkedAt":"2026-11-19T13:17:02.221Z","notification":{"version":"1.5.15","fromVersion":"1.5.14","foundAt":"2026-11-19T13:17:02.221Z","read":false,"state":"waiting","handledVersion":null,"releasePageUrl":null,"outcome":null,"outcomeReason":null,"outcomeStep":null},"autoCheck":{"enabled":true,"intervalMinutes":60},"automaticUpdate":true,"automaticInstallPreparing":false}
+{"activationMode":"managed-quit","status":"error","currentVersion":"1.5.14","currentVersionIsPrerelease":false,"updateChannel":"stable","updateStaged":false,"availableVersion":"1.5.15","downloadPercent":100,"downloadTransferredBytes":360331634,"downloadTotalBytes":360331634,"releaseNotes":null,"message":"Update information is incomplete right now. Try again in a few minutes.","errorKind":"metadata","errorOperation":"download","checkedAt":"2026-11-19T13:17:02.221Z","notification":{"version":"1.5.15","fromVersion":"1.5.14","foundAt":"2026-11-19T13:17:02.221Z","read":false,"state":"waiting","handledVersion":null,"releasePageUrl":null,"outcome":"AUTO_FAILED","outcomeReason":"Update information is incomplete right now. Try again in a few minutes.","outcomeStep":"download"},"autoCheck":{"enabled":true,"intervalMinutes":60},"automaticUpdate":true,"automaticInstallPreparing":false}
+visible panel: AutoByteus Updates
+
+Version details and desktop app update controls.
+
+Current Version
+1.5.14
+Update Status
+Error
+Last Checked
+11/19/2026, 1:17:02 PM
+Automatic checks: every 1 hour
+
+Update information is incomplete right now. Try again in a few minutes.
+
+Check for app updates automatically
+
+Asks github.com for a newer version at launch and at the interval below. No account or token is used; nothing is sent to AutoByteus. A newer version is only announced, unless Update automatically below is on.
+
+Check interval
+Every
+minutes
+hours
+
+Receive beta updates
+
+Get early builds before they are released to everyone. Turning this off keeps your current version until a newer stable release is available.
+
+Update automatically
+
+New versions install when you next quit the app. The app will not close or reopen by itself. Switch off to update by hand.
+
+Check for Updates
+[2026-11-19T13:17:03.858Z] [ERROR] [electron] [updater] Auto-update failed. (kind=metadata, operation=download, code=ERR_CHECKSUM_MISMATCH)
+{"status":"ok","message":"Server is running"}df33d927190eae41a8c2a499cae3d63c3cd9b1a014bbf3002b6d280062d5be03  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+1375301c701d98fc044779ceb51a493bd5e2884c42c64c8f71bac721b4673071  qa3-data/server-data/temp_workspace/qa3-note
+4d2cdcec096230953479833e9489387f9d033763b50c782d1b79e8e6991bb0e9  AutoByteus_personal_linux-x64-1.5.15.AppImage

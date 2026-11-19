@@ -1,4 +1,5 @@
 import { app } from 'electron'
+import { signalLinuxLaunchReady } from './launch-profile/linuxLaunchReady'
 import { getCanonicalBaseDataPath } from './appDataPaths'
 import { configureElectronLogger } from './logger'
 import { registerLocalFileProtocolScheme } from './local-file-protocol/register-local-file-scheme'
@@ -6,6 +7,7 @@ import { assertEmbeddedServerListenerPortAvailable } from './launch-profile/e2eL
 import { resolveElectronLaunchProfile } from './launch-profile/electronLaunchProfile'
 import { applyElectronLaunchProfilePaths } from './launch-profile/electronLaunchProfilePaths'
 
+signalLinuxLaunchReady()
 registerLocalFileProtocolScheme()
 
 type ApplicationController = {

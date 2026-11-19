@@ -70,28 +70,30 @@ export interface AppUpdateNotification {
   /** GitHub release page of `version`; null when the release feed is not GitHub (the e2e test feed). */
   releasePageUrl: string | null;
   /**
-   * What automatic updates did with `version` (autobyteus-356): `AUTO_UPDATED` on a handled notification the app
-   * installed by itself; `AUTO_FAILED` on a waiting one whose automatic download or install failed; null otherwise.
+   * What updates did with `version`: `AUTO_UPDATED` on a handled notification the app
+   * installed by itself; `AUTO_FAILED` for an automatic failure; `MANUAL_INSTALL_FAILED` for a confirmed managed
+   * explicit-install refusal (independent of automatic retry policy); null otherwise.
    */
-  outcome: AppUpdateAutomaticOutcome | null;
-  /** The failure's reason when `outcome` is `AUTO_FAILED`; null otherwise. */
+  outcome: AppUpdateOutcome | null;
+  /** Automatic failure text, or safe manual-failure code (`refused` / `not-running` / `stage-gone`); null otherwise. */
   outcomeReason: string | null;
   /** Which automatic step failed when `outcome` is `AUTO_FAILED` (`install`: not tried again for this version); null otherwise. */
   outcomeStep: 'download' | 'install' | null;
 }
 
-export type AppUpdateAutomaticOutcome = 'AUTO_UPDATED' | 'AUTO_FAILED';
+export type AppUpdateOutcome = 'AUTO_UPDATED' | 'AUTO_FAILED' | 'MANUAL_INSTALL_FAILED';
 
 export interface AppUpdateState {
+  /** Managed Linux activates only on an independent quit; native updater policy is unchanged elsewhere. */
+  activationMode: 'native' | 'managed-quit';
   status: AppUpdateStatus;
   currentVersion: string;
   /** True when the running build is a pre-release (for example 1.4.90-beta.3). */
   currentVersionIsPrerelease: boolean;
   updateChannel: AppUpdateChannel;
   /**
-   * True once an update has been downloaded in this app process. The staged update
-   * installs on quit (autoInstallOnAppQuit), and a later check does not unstage it,
-   * so this stays true until the app restarts.
+   * True after the selected installer verifies readiness. Managed readiness can be
+   * invalidated by settings or a new attempt; native readiness stays true until restart.
    */
   updateStaged: boolean;
   availableVersion: string | null;
@@ -107,7 +109,7 @@ export interface AppUpdateState {
   notification: AppUpdateNotification | null;
   /** The app's automatic checks; null when this launch never checks (disabled updates). */
   autoCheck: AppUpdateAutoCheck | null;
-  /** "Update automatically" for the app (autobyteus-356): download, install and restart without a click. Off by default. */
+  /** "Update automatically" for the app (autobyteus-356): download and install by the activationMode policy. Off by default. */
   automaticUpdate: boolean;
   /** An automatic install waits for the system updater's copy (macOS): no check runs, and the status stays `downloaded`. */
   automaticInstallPreparing: boolean;

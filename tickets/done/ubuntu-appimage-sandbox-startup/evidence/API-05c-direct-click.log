@@ -1,0 +1,100 @@
+# API-05c | API-05c-direct-click | 2026-11-19 | CRR-004 (reviewed product c90f3ba8f2); Ubuntu24.04 x64 guest
+observed writer verification downloading Verifying downloaded update... true
+toggled off {
+  activationMode: 'managed-quit',
+  status: 'downloading',
+  currentVersion: '1.5.13',
+  currentVersionIsPrerelease: false,
+  updateChannel: 'stable',
+  updateStaged: false,
+  availableVersion: '1.5.14',
+  downloadPercent: 100,
+  downloadTransferredBytes: 360331634,
+  downloadTotalBytes: 360331634,
+  releaseNotes: null,
+  message: 'Verifying downloaded update...',
+  errorKind: null,
+  errorOperation: null,
+  checkedAt: '2026-11-19T13:02:33.034Z',
+  notification: {
+    version: '1.5.14',
+    fromVersion: '1.5.13',
+    foundAt: '2026-11-19T13:02:33.033Z',
+    read: false,
+    state: 'waiting',
+    handledVersion: null,
+    releasePageUrl: null,
+    outcome: null,
+    outcomeReason: null,
+    outcomeStep: null
+  },
+  autoCheck: { enabled: true, intervalMinutes: 60 },
+  automaticUpdate: false,
+  automaticInstallPreparing: false
+}
+observed cancel complete available Update is available for download. false
+cancel settled {
+  activationMode: 'managed-quit',
+  status: 'available',
+  currentVersion: '1.5.13',
+  currentVersionIsPrerelease: false,
+  updateChannel: 'stable',
+  updateStaged: false,
+  availableVersion: '1.5.14',
+  downloadPercent: null,
+  downloadTransferredBytes: null,
+  downloadTotalBytes: null,
+  releaseNotes: null,
+  message: 'Update is available for download.',
+  errorKind: null,
+  errorOperation: null,
+  checkedAt: '2026-11-19T13:02:33.034Z',
+  notification: {
+    version: '1.5.14',
+    fromVersion: '1.5.13',
+    foundAt: '2026-11-19T13:02:33.033Z',
+    read: false,
+    state: 'waiting',
+    handledVersion: null,
+    releasePageUrl: null,
+    outcome: null,
+    outcomeReason: null,
+    outcomeStep: null
+  },
+  autoCheck: { enabled: true, intervalMinutes: 60 },
+  automaticUpdate: false,
+  automaticInstallPreparing: false
+}
+verified before click {
+  activationMode: 'managed-quit',
+  status: 'downloaded',
+  currentVersion: '1.5.13',
+  currentVersionIsPrerelease: false,
+  updateChannel: 'stable',
+  updateStaged: true,
+  availableVersion: '1.5.14',
+  downloadPercent: 100,
+  downloadTransferredBytes: 0,
+  downloadTotalBytes: null,
+  releaseNotes: null,
+  message: 'Ready for your next quit.',
+  errorKind: null,
+  errorOperation: null,
+  checkedAt: '2026-11-19T13:02:46.975Z',
+  notification: {
+    version: '1.5.14',
+    fromVersion: '1.5.13',
+    foundAt: '2026-11-19T13:02:33.033Z',
+    read: false,
+    state: 'waiting',
+    handledVersion: null,
+    releasePageUrl: null,
+    outcome: null,
+    outcomeReason: null,
+    outcomeStep: null
+  },
+  autoCheck: { enabled: true, intervalMinutes: 60 },
+  automaticUpdate: false,
+  automaticInstallPreparing: false
+}
+clicked Install & Restart 2026-11-19T13:02:56.053Z

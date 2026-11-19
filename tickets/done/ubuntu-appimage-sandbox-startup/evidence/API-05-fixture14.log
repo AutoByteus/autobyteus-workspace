@@ -1,0 +1,15 @@
+Verified native AppRun, unchanged Electron ELF, provisioner/client and sandbox-preserving desktop Exec
+Linux updater metadata validation failed: /home/ryan-ai/hdd_drive/autobyteus_org/api-e2e-autobyteus-5/continuation-KE5YCq/feed14/latest-linux.yml does not contain a files[] AppImage url with architecture token 'linux-x64'
+Verified signed desktop release 1.5.14 x64
+Verified native AppRun, unchanged Electron ELF, provisioner/client and sandbox-preserving desktop Exec
+Validated autobyteus-web/electron-dist/latest-linux.yml: linux-x64 AppImage metadata includes embedded blockMapSize
+1ed8e449ae986527383bcbbfcbe2a4ee6680ca6f64dd75c6c69d825786f3dfc5  autobyteus-web/electron-dist/AutoByteus_personal_linux-x64-1.5.14.AppImage
+API-05-CANDIDATE-READY 1.5.14
+Verified signed desktop release 1.5.15 x64
+Verified native AppRun, unchanged Electron ELF, provisioner/client and sandbox-preserving desktop Exec
+Validated autobyteus-web/electron-dist/latest-linux.yml: linux-x64 AppImage metadata includes embedded blockMapSize
+36e63d2d70919dfbc466da6faf95bd743e80929ec5f5a83ff30b95551aad9b85  autobyteus-web/electron-dist/AutoByteus_personal_linux-x64-1.5.15.AppImage
+API-05-CANDIDATE-READY 1.5.15
+Initial fixture feed serialization check failed (key order/format in YAML fixture). Metadata regenerated in official renderer order, preserving size/sha512/blockMapSize from app-builder JSON, package not rebuilt.
+Validated /home/ryan-ai/hdd_drive/autobyteus_org/api-e2e-autobyteus-5/continuation-KE5YCq/feed14/latest-linux.yml: linux-x64 AppImage metadata includes embedded blockMapSize
+ea0a36b11a75a48af4af19317cf88d1bf61af9c0cf050a31e74737a14946cb0b  /home/ryan-ai/hdd_drive/autobyteus_org/api-e2e-autobyteus-5/continuation-KE5YCq/feed14/AutoByteus_personal_linux-x64-1.5.14.AppImage

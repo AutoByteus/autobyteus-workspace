@@ -1,0 +1,87 @@
+IMP-17 2026-11-18T14:03:13Z, f1a88a2672 + idempotent owned menu; synthetic HOME, no host changes
+=== RUN   TestMenuOwnsOnlyItsUnmodifiedEntry
+--- PASS: TestMenuOwnsOnlyItsUnmodifiedEntry (0.00s)
+PASS
+ok  	autobyteus.local/desktop/linux-install/internal/launch	0.002s
+TAP version 13
+# Subtest: canonical
+ok 1 - canonical
+  ---
+  duration_ms: 1.997265
+  type: 'test'
+  ...
+# Subtest: duplicate
+ok 2 - duplicate
+  ---
+  duration_ms: 0.304446
+  type: 'test'
+  ...
+# Subtest: unknown
+ok 3 - unknown
+  ---
+  duration_ms: 0.130912
+  type: 'test'
+  ...
+# Subtest: missing
+ok 4 - missing
+  ---
+  duration_ms: 0.20009
+  type: 'test'
+  ...
+# Subtest: float
+ok 5 - float
+  ---
+  duration_ms: 0.137834
+  type: 'test'
+  ...
+# Subtest: channel
+ok 6 - channel
+  ---
+  duration_ms: 0.169875
+  type: 'test'
+  ...
+# Subtest: version
+ok 7 - version
+  ---
+  duration_ms: 0.156335
+  type: 'test'
+  ...
+# Subtest: writer
+ok 8 - writer
+  ---
+  duration_ms: 0.109593
+  type: 'test'
+  ...
+# Subtest: too-large
+ok 9 - too-large
+  ---
+  duration_ms: 0.298917
+  type: 'test'
+  ...
+# Subtest: no-newline
+ok 10 - no-newline
+  ---
+  duration_ms: 0.369683
+  type: 'test'
+  ...
+# Subtest: wrong-product
+ok 11 - wrong-product
+  ---
+  duration_ms: 0.184757
+  type: 'test'
+  ...
+# Subtest: wrong-signature
+ok 12 - wrong-signature
+  ---
+  duration_ms: 0.868091
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 71.30579

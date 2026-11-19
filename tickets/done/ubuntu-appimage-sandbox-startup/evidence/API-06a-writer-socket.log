@@ -1,0 +1,13 @@
+API-06a | 2026-11-18 | HEAD 0df0c901e4 + new cmd/writer/main_test.go | Ubuntu26 nonroot x64 Go1.27.4
+Command: cd autobyteus-web/linux-install; go test -v ./cmd/writer
+=== RUN   TestWriterSocketTransactions
+--- PASS: TestWriterSocketTransactions (0.01s)
+PASS
+ok  	autobyteus.local/desktop/linux-install/cmd/writer	0.011s
+
+Harness note: test command exited 0; subsequent cat used changed cwd and failed; no test failure or rerun.
+API-06a rerun reason: test-only defensive cleanup now tolerates failed store reopen without secondary nil panic; no production change
+=== RUN   TestWriterSocketTransactions
+--- PASS: TestWriterSocketTransactions (0.01s)
+PASS
+ok  	autobyteus.local/desktop/linux-install/cmd/writer	0.011s

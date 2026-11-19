@@ -1,0 +1,14 @@
+# API-04e | API-04e-repair-repeat | 2026-11-19 | CRR-004 (reviewed product c90f3ba8f2); Ubuntu24.04 x64 guest
+mode=launch; source: normal renamed file, no special launch profile
+AutoByteus installation
+lstat /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage: no such file or directory
+temp-grants-query=0
+exit=1
+mode=uninstall; source: normal renamed file, no special launch profile
+AutoByteus installation
+lstat /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage: no such file or directory
+temp-grants-query=0
+exit=1
+b54b3859fb69fd5d8a3a80621258135c360e4cf1095320dde50cdb0cc09ae936  qa3-data/server-data/temp_workspace/qa3-note
+no-server
+4d2cdcec096230953479833e9489387f9d033763b50c782d1b79e8e6991bb0e9  AutoByteus.AppImage

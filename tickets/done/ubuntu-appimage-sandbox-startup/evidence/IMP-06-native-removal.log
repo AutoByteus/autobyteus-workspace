@@ -1,0 +1,18 @@
+Native implementation working-tree snapshot after 703b1bef5c; no acceptance/sign-off.
+Built with Go 1.27.4 linux/amd64, CGO_ENABLED=0, disposable Ed25519 key and desktop_test loopback origin.
+The AppImage carries an inert shell pre-main failure fixture, NOT the product Electron renderer/server.
+Later client/protocol/session and consent-text edits were not in this native fixture; rerun by impact.
+
+IMP-06 native installed provisioner removal, disposable Noble VM; second one-shot authentication
+2026-11-18T13:33:17.245063+00:00
+Ubuntu will request one-shot authorization for /opt/autobyteus-desktop/1000/support/provision (program path, not a publisher verification).
+[1;31m==== AUTHENTICATING FOR org.freedesktop.policykit.exec ====
+[0mAuthentication is needed to run `/opt/autobyteus-desktop/1000/support/provision' as the super user
+Authenticating as: Disposable implementation account (witness)
+Password:
+[1;31m==== AUTHENTICATION COMPLETE ====
+[0mRemoved "/etc/systemd/system/sockets.target.wants/autobyteus-desktop-1000.socket".
+
+
+REMOVE_EXIT=0
+Connection to 127.0.0.1 closed.

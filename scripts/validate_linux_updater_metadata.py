@@ -10,6 +10,10 @@ macOS DMG/ZIP outputs, Linux AppImage builds do not publish standalone
 from __future__ import annotations
 
 import argparse
+import subprocess
+import hashlib
+import base64
+import json
 import re
 import sys
 from pathlib import Path
@@ -140,10 +144,38 @@ def main() -> int:
         choices=("linux-x64", "linux-arm64"),
         help="Architecture token that must appear in the AppImage url/path",
     )
+    parser.add_argument("--image", type=Path, help="Final AppImage for exact-byte metadata verification")
+    parser.add_argument("--public-key", type=Path, help="Require authenticated desktop sidecars with this pinned public key")
     args = parser.parse_args()
 
     try:
         validate(args.metadata, args.arch_token)
+        if args.public_key and not args.image:
+            raise ValueError("--public-key requires --image")
+        if args.image:
+            text = args.metadata.read_text(encoding="utf-8")
+            entries = _file_entries(text)
+            entry = entries[0] if len(entries) == 1 else None
+            if entry is None or entry.get("url") != args.image.name:
+                raise ValueError("Metadata does not name this exact final artifact")
+            digest = hashlib.sha512()
+            with args.image.open("rb") as image:
+                for chunk in iter(lambda: image.read(1024 * 1024), b""):
+                    digest.update(chunk)
+            encoded_digest = base64.b64encode(digest.digest()).decode("ascii")
+            if entry.get("sha512") != encoded_digest or int(entry.get("size", -1)) != args.image.stat().st_size:
+                raise ValueError("Metadata hash/size differs from final artifact")
+            if _top_level_path(text) not in (None, args.image.name):
+                raise ValueError("Top-level metadata path differs from final artifact")
+            top_hash = re.search(r"^sha512:\s*(.+)$", text, re.M)
+            if top_hash and _strip_yaml_scalar(top_hash.group(1)) != encoded_digest:
+                raise ValueError("Top-level metadata digest differs from final artifact")
+            if args.public_key:
+                record = json.loads(Path(str(args.image) + ".release.json").read_text(encoding="utf-8"))
+                version_line = re.search(r"^version:\s*(.+)$", text, re.M)
+                if not version_line or _strip_yaml_scalar(version_line.group(1)) != record["version"]:
+                    raise ValueError("Metadata and signed version differ")
+                subprocess.run(["node", str(Path(__file__).parent / "desktop-package/verify-release.mjs"), str(args.image), record["version"], args.arch_token.removeprefix("linux-"), str(args.public_key)], check=True)
     except Exception as exc:  # noqa: BLE001 - CLI should print a concise validation failure.
         print(f"Linux updater metadata validation failed: {exc}", file=sys.stderr)
         return 1

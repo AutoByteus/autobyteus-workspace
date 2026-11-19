@@ -1,0 +1,2 @@
+IMP-19 2026-11-18T14:07:49.708120+00:00 4c6950c7571efc9c691e1c9fddbb139e522e1628 + signer scope clarification; static YAML assertions only, not CI execution
+PASS static job graph: production private key limited to protected signing job; build-only signing conditional; final-byte verification; publish depends on signer; no fixture tests or AppImage execution in private-key step.

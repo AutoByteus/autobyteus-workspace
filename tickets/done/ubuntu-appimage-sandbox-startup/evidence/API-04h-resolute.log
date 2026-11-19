@@ -1,0 +1,29 @@
+# API-04h-resolute | 2026-11-19 | reviewed product 8f10fa9287 | Ubuntu22/26 x64 guest; operation: see matching case in execution report
+CRR-007 Resolute graphical control; first separate agent session reported unavailable, no install; use one fresh graphical/polkit session for the two consented operations. Existing fixture .15 removed before enrolling .13.
+Install AutoByteus
+autobyteus
+curl: (7) Failed to connect to localhost port 29695 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29695 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29695 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29695 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29695 after 0 ms: Could not connect to server
+{"status":"ok","message":"Server is running"}
+332aefbf8bc26b353bd270fd3d1bcf088a6ddfc0139516c56a471e8eea568b53  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+8e0193bcd79e65db92762ad8549b5ec4f82eb7174319d01565fef22b9c1dc67c  /home/witness/.autobyteus/server-data/temp_workspace/qa4-saved
+
+{"supervisor": [{"pid": "2494", "ppid": "2225", "exe": "/tmp/.mount_AutoByyCK7P6/AppRun", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["2494"]}], "main": [{"pid": "2799", "ppid": "2494", "exe": "/tmp/.mount_AutoByyCK7P6/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["2799"]}], "renderer": [{"pid": "2859", "ppid": "2806", "exe": "/tmp/.mount_AutoByyCK7P6/autobyteus", "uid": "1000", "NoNewPrivs": "1", "Seccomp": "2", "NSpid": ["2859", "4", "1"]}], "server": [{"pid": "2888", "ppid": "2799", "exe": "/tmp/.mount_AutoByyCK7P6/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["2888"]}]}
+26.04 installed-menu
+autobyteus
+curl: (7) Failed to connect to localhost port 29695 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29695 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29695 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29695 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29695 after 0 ms: Could not connect to server
+{"status":"ok","message":"Server is running"}
+
+{"supervisor": [{"pid": "3222", "ppid": "1", "exe": "/tmp/.mount_AutoBy1vTJnY/AppRun", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["3222"]}], "main": [{"pid": "3265", "ppid": "3222", "exe": "/tmp/.mount_AutoBy1vTJnY/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["3265"]}], "renderer": [{"pid": "3351", "ppid": "3292", "exe": "/tmp/.mount_AutoBy1vTJnY/autobyteus", "uid": "1000", "NoNewPrivs": "1", "Seccomp": "2", "NSpid": ["3351", "4", "1"]}], "server": [{"pid": "3372", "ppid": "3265", "exe": "/tmp/.mount_AutoBy1vTJnY/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["3372"]}]}
+8e0193bcd79e65db92762ad8549b5ec4f82eb7174319d01565fef22b9c1dc67c  /home/witness/.autobyteus/server-data/temp_workspace/qa4-saved
+kernel.apparmor_restrict_unprivileged_userns = 1
+witness:witness 600 /run/autobyteus-desktop-1000.sock
+127.0.0.1 - - [19/Nov/2026 13:56:48] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 13:56:48] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json.sig HTTP/1.1" 200 -

@@ -1,0 +1,29 @@
+# API-06b | API-06b-fault | 2026-11-19 | CRR-004 (reviewed product c90f3ba8f2); Linux x64 repository / isolated native fixture
+isolated child QA_FAULT=attribute fsetxattr:error=EOPNOTSUPP:when=3
+=== RUN   TestQAPersistenceFault
+    qa_fault_test.go:94: fault=attribute reopened=1.5.13 orphan=0
+--- PASS: TestQAPersistenceFault (0.01s)
+PASS
+360338 fsetxattr([test fd]) (INJECTED)
+isolated child QA_FAULT=file-sync fsync:error=EIO:when=1
+=== RUN   TestQAPersistenceFault
+    qa_fault_test.go:94: fault=file-sync reopened=1.5.13 orphan=0
+--- PASS: TestQAPersistenceFault (0.01s)
+PASS
+360348 fsync([test fd]) (INJECTED)
+isolated child QA_FAULT=stage-dir-sync fsync:error=EIO:when=2
+=== RUN   TestQAPersistenceFault
+    qa_fault_test.go:94: fault=stage-dir-sync reopened=1.5.13 orphan=0
+--- PASS: TestQAPersistenceFault (0.01s)
+PASS
+360362 fsync([test fd]) (INJECTED)
+isolated child QA_FAULT=commit-dir-sync fsync:error=EIO:when=3
+=== RUN   TestQAPersistenceFault
+    qa_fault_test.go:94: fault=commit-dir-sync reopened=1.5.14 orphan=0
+--- PASS: TestQAPersistenceFault (0.01s)
+PASS
+360372 fsync([test fd]) (INJECTED)
+Guest Noble test process: TMPDIR=/home/witness/qa3-smallfs QA_FAULT=low-volume ./qa3-fault.test -test.run ^TestQAPersistenceFault$ -test.v
+Kernel tmpfs size 8192 KiB; used=0; available=8192. Temporary private mount; normal uid=1000.
+qa_fault_test.go:94: fault=low-volume reopened=1.5.13 orphan=0
+--- PASS: TestQAPersistenceFault (0.01s); test mount unmounted.

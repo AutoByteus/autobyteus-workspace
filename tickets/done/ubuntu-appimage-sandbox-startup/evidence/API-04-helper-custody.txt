@@ -1,0 +1,4 @@
+API-04 | 2026-11-18 | same current test-origin helper, while graphical password prompt held
+Read /proc/3796/fd/9 through normal UID; fcntl F_GET_SEALS and SHA256:
+seals= 15
+helper_sha256= 39e8baf8d7edefdee85f85f492f9fd5771b1376a6d849da746a3856b85f95a98

@@ -1,0 +1,25 @@
+gpgv: Signature made Sat Nov 14 18:15:37 2026 CET
+gpgv:                using RSA key D2EB44626FDDC30B513D5BB71A5D6C4C7DB87C81
+gpgv: Good signature from "UEC Image Automatic Signing Key <cdimage@ubuntu.com>"
+sha256sum: 'standard input': no properly formatted checksum lines found
+ubuntu-22.04-server-cloudimg-amd64.img: OK
+gpgv: Signature made Sat Nov 14 17:45:36 2026 CET
+gpgv:                using RSA key D2EB44626FDDC30B513D5BB71A5D6C4C7DB87C81
+gpgv: Good signature from "UEC Image Automatic Signing Key <cdimage@ubuntu.com>"
+ubuntu-22.04-server-cloudimg-amd64.img: OK
+...........................................................................................................................................................................................................status: error
+PRETTY_NAME="Ubuntu 22.04.5 LTS"
+NAME="Ubuntu"
+VERSION_ID="22.04"
+VERSION="22.04.5 LTS (Jammy Jellyfish)"
+x86_64
+ubuntu-26.04-server-cloudimg-amd64.img: OK
+ubuntu-26.04-server-cloudimg-amd64.img: OK
+...............................................................................................................................................................................................................................................................................................................................status: done
+PRETTY_NAME="Ubuntu 26.04.1 LTS"
+NAME="Ubuntu"
+VERSION_ID="26.04"
+VERSION="26.04.1 LTS (Resolute Raccoon)"
+x86_64
+22.04 guest ready
+26.04 guest ready
