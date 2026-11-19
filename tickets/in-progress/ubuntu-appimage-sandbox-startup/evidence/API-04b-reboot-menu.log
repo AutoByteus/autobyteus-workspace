@@ -1,0 +1,24 @@
+Before
+9c1121fd-6764-47fa-8cec-2f373d85f4d1
+{"status":"ok","message":"Server is running"}[Desktop Entry]
+Type=Application
+Name=AutoByteus
+Exec=/opt/autobyteus-desktop/1000/app/AutoByteus.AppImage %U
+Icon=applications-development
+Terminal=false
+Categories=Development;
+X-AutoByteus-Managed-UID=1000
+df66a9f8649fa94ba8a17d1ba24a61c65efd654f465f4d30624a154af275ea15  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+Guest OS accepted normal reboot, then hung on its unattended-upgrades stop job for >3 min. Use a hypervisor reset of this owned snapshot to establish cold-start persistence, not a clean OS reboot.
+{"status":"ok","message":"Server is running"}
+a944f4ce-95a9-483c-b697-061164c86fc2
+autobyteus
+df66a9f8649fa94ba8a17d1ba24a61c65efd654f465f4d30624a154af275ea15  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+Serving HTTP on 127.0.0.1 port 18889 (http://127.0.0.1:18889/) ...
+inactive
+/run/autobyteus-desktop-1000.sock     autobyteus-desktop-1000.socket  autobyteus-desktop-1000.service
+browser-artifacts
+electron
+extensions
+logs
+server-data

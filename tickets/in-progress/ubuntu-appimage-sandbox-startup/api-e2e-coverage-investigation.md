@@ -66,3 +66,6 @@ API-08 safety discovery: branch is not on origin (`git ls-remote --heads origin 
 
 ### Round disposition / explicit continuation ledger
 API-04/07 were split into bounded completed Noble journeys and remaining API-04-matrix / API-07-rest. API-09 is cleanup verification (AC-007). API-05/06 and remaining platform journeys remain Next Round, not impossible and not waived. API-08 is the actual external blocker, recorded before any dispatch; user clarification pending. No product or upstream validity failure found. Current execution report is authoritative for results and confidence; this investigation stays the plan.
+
+## SR-015 / second-round plan update
+Distinguish independent x64 coverage from native CI. Real full signed 13→14→15 on Noble normal graphical enrollment, then E2E fixture profile for actual Settings/loopback release source; record individual steps including opt-out, menu/operator control and explicit vs ordinary quit. Ubuntu22/26 guests from verified official images as available. The native proof method follows SR-015 (build+smoke, not an ARM GUI Cartesian matrix). Negative and lifecycle failures go to focused failure-origin review, not environment rerouting. No replacement of real checks with mocks.
