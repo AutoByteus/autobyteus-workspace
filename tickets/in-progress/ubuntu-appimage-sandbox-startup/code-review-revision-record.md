@@ -8,6 +8,7 @@
 | CRR-003 | code-review-report.md | API/E2E Failure-Origin Review / API-REV-002 | Source Pass | Fail — Local Fix | F-API-01, F-API-02 |
 | CRR-004 | code-review-report.md | Implementation Review / IR-004–005 and revised DS-004 | Failed API execution / CRR-003 Local Fix | Pass — source only | F-API-01/02 resolved in source; QA retest required |
 | CRR-005 | code-review-report.md | API/E2E Failure-Origin Review / API-REV-003 | Source Pass | Fail — Local Fix | F-API-03/04 open; F-API-01/02 independently verified |
+| CRR-006 | code-review-report.md | Implementation Review / IR-006 | CRR-005 Local Fix | Fail — Local Fix | F-API-03/04 resolved at source; new F-CR-003 |
 
 ## Revision Entries
 ### CRR-001 — Managed failure-continuation review
@@ -76,3 +77,12 @@ None (initial baseline).
 - New **F-API-04 open**: accurate low-space preflight is stderr-only; generic helper exit across pkexec leaves the graphical user without a storage diagnosis or safe retry. Rollback and data checks pass.
 - Prior review gap: source confirmed refusal/rollback but not which message reaches the unprivileged graphical Explain call. Affected behavioral/readiness conclusion corrected; no general scorecard/test review. No separate design decision or unrelated follow-up.
 - Recipient: **/implementation_engineer**, then source rereview and independent graphical regression on both refusals; existing successful cases retain their measured scope. Confidence 87.0% does not waive failed AC-003. No delivery/release. QA's writer-test delta awaits a successful execution before proportional review.
+
+### CRR-006 — Verify repair/storage guidance; trace the earlier acquisition refusal
+- Canonical `code-review-report.md`, implementation review round 6, 2026-11-19. **Full Re-Audit:** IR-006 adds a shared helper/launcher exit-status contract. All structural checks and scorecard reconsidered; cumulative 56-path size inventory. No reviewer product/test changes.
+- IR-006 product `1d21c76fd3`, received `7777348208aeba9902de448a1eca4ea6def78a41`. Approved SR-012; SR-015/016, DS-004, ARCH-REV-004. Trigger CRR-005 / API-REV-003 Fail. DR N/A. Prior result **Fail — Local Fix**. Current result **Fail — implementation-owned Local Fix**, Large / High unchanged.
+- **F-API-03 resolved at source:** no accepted path for damaged enrollment; deterministic administrator inspection/repair guidance before both launch/uninstall, raw detail only on stderr. Absent root still distinct. IMP-38/39.
+- **F-API-04 resolved at source:** matched preflight sentinel → reserved status 78 → known storage/action dialog only on provision. Cancellation/unknown not mislabeled; real rollback, same data and sufficient-space retry established in IMP-38/40. Both fixes still need independent execution.
+- F-API-01/02 remain independently verified; F-CR-001/002 remain resolved. No changed requirements/material premise.
+- **F-CR-003 new/open:** explicitly supported pre-auth first-install acquisition refusals (404, oversized/invalid evidence, signature or image mismatch) still end in technical-only text. Current acquire.Fetch → launcher → Explain trace, unchanged relative to retained real API-07/07b dialog captures; positive offline/redirect reconnect-and-retry control. Previous runs proved safe refusal, not recovery. This is the ticket's own AC-003/DS-004 path; it predates IR-006.
+- Score 9.0/10 summary; readiness/fidelity 7.5 drive failure. No follow-up, smoke/host matrix rerun, release or new authorization. Recipient **/implementation_engineer**; correct the bounded acquisition guidance, return to source review, then independent graphical/affected package reruns. API-REV-003 still Fail; no successful-test review.
