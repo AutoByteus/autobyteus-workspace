@@ -3,6 +3,7 @@ import type { DemoStreamSession } from '../demoTransport';
 import { openAgentCollaborationStream } from './agentCollaborationStream';
 import { openAgentStream } from './agentStream';
 import { openFileExplorerStream } from './fileExplorerStream';
+import { openNodeDesktopStream } from './nodeDesktopStream';
 import { openOrgStream } from './orgStream';
 import { openRunStatusStream } from './runStatusStream';
 import { openTeamStream } from './teamStream';
@@ -40,6 +41,7 @@ const routes: DemoStreamRoute[] = [
   route(/^\/ws\/agent-package-definitions$/, changeFeedThatNeverChanges),
   route(/^\/ws\/projects$/, changeFeedThatNeverChanges),
   route(/^\/ws\/run-status$/, openRunStatusStream),
+  route(/^\/ws\/node-desktop$/, (context) => openNodeDesktopStream(context)),
   route(/^\/ws\/file-explorer\/([^/]+)$/, (context, match) => {
     const workspaceId = decodeURIComponent(match[1]!);
     return workspaceId === DEMO_WORKSPACE_ID ? openFileExplorerStream(context, workspaceId) : unknownRun(context, workspaceId);
