@@ -7,6 +7,7 @@
 | CRR-002 | code-review-report.md | Implementation Review / IR-003 fixes | Fail | Pass | F-CR-001/002 resolved |
 | CRR-003 | code-review-report.md | API/E2E Failure-Origin Review / API-REV-002 | Source Pass | Fail — Local Fix | F-API-01, F-API-02 |
 | CRR-004 | code-review-report.md | Implementation Review / IR-004–005 and revised DS-004 | Failed API execution / CRR-003 Local Fix | Pass — source only | F-API-01/02 resolved in source; QA retest required |
+| CRR-005 | code-review-report.md | API/E2E Failure-Origin Review / API-REV-003 | Source Pass | Fail — Local Fix | F-API-03/04 open; F-API-01/02 independently verified |
 
 ## Revision Entries
 ### CRR-001 — Managed failure-continuation review
@@ -66,3 +67,12 @@ None (initial baseline).
   - **F-CR-001/002** remain resolved: retained independent auto block and ordinary exit after settled failure, current source and IMP-34.
 - Supported-scenario and material-premise gates Pass (MP-001 established by actual same-byte launch control). Score 9.4/10. All 25 structural checks reconsidered, 55 production paths inventoried; no over-limit source. No new findings or follow-ups.
 - Route: **/api_e2e_engineer**. Independent current Settings/notification/update/data journeys, affected host checks, native x64+ARM64 secret-isolated package/smoke, remaining repair/channel/transport/fault/authorization matrix required. Do not convert IMP-36 or earlier QA/CI to current acceptance. No delivery, publish or release.
+
+### CRR-005 — Actionable desktop guidance on installation refusal
+- Canonical report `code-review-report.md`. Round 5, 2026-11-19; **focused failure-origin review**, full implementation scope N/A. Trigger: API-REV-003 Fail, API-04e/06d, `api-e2e-execution-coverage-report.md` and `evidence/API-04e-06d-recovery-findings.md`. Evidence HEAD `b4e2610ded9ebb6c9834905d6c465df1527fbb85`; tested IR-005 production `c90f3ba8f2`. No production change since CRR-004.
+- Authority: SR-012, SR-015/016, DS-004, ARCH-REV-004, IR-005; API-REV-003; DR N/A. Prior source result CRR-004 Pass. Current result **Fail — implementation-owned Local Fix**, Large / High unchanged. No new scenario/material premise: SCN-005, L2 and AC-003 already require actionable safe refusal in the user's actual launch surface.
+- Prior resolution: **F-API-01/02 independently verified** by API-05c–e on current bytes. Earlier F-CR-001/002 remain resolved. No regression of ordinary-quit or explicit-restart authority alleged.
+- New **F-API-03 open**: incomplete enrollment's missing live file becomes raw lstat before launch/uninstall dispatch; no actionable dialog. Repeat and intact-inode restoration/removal controls exclude a bad source package.
+- New **F-API-04 open**: accurate low-space preflight is stderr-only; generic helper exit across pkexec leaves the graphical user without a storage diagnosis or safe retry. Rollback and data checks pass.
+- Prior review gap: source confirmed refusal/rollback but not which message reaches the unprivileged graphical Explain call. Affected behavioral/readiness conclusion corrected; no general scorecard/test review. No separate design decision or unrelated follow-up.
+- Recipient: **/implementation_engineer**, then source rereview and independent graphical regression on both refusals; existing successful cases retain their measured scope. Confidence 87.0% does not waive failed AC-003. No delivery/release. QA's writer-test delta awaits a successful execution before proportional review.
