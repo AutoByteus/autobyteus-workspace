@@ -1,0 +1,22 @@
+# Case: API-03
+# Command: vitest run tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts tests/e2e/memory tests/agent-work-journal (first run, in parallel, before building dist/), then episodic-catalog + restore-transport after pnpm build
+# Commit: f0901fa9b6 (code = 383bbf6ea5; the new e2e file and the fixture line are committed with this round)
+# Environment: macOS arm64, Node v22.23.1, in-process real server (studio runtime server), owned temp data dir, private HOME, scripted Antigravity CLI (case mcp_calls)
+# Date: 2026-11-19
+
+## first run
+      Tests  4 failed | 261 passed | 5 skipped (270)
+     × EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s 7908ms
+     × EC-05: a start after a pass that never ran, a removed run folder, an agent's only run removed and a hand edit: exactly those catalogs are brought up to date 19704ms
+     × EC-06: a start with no episodic/ rebuilds every catalog as it was, with a run without a journal and an older manifest; damaged team and org trees, damaged run metadata and a non-JSON manifest are left out with a warning naming each; nothing outside episodic/ changes 147ms
+     × EC-07: a restart with no change writes no file under episodic/ 121ms
+ Test Files  2 failed | 27 passed | 2 skipped (31)
+AssertionError: Failed to terminate agent run: AgentTerminationError: AggregateError: AGY exact background ownership discovery remains unconfirmed.: expected false to be true // Object.is equality
+Error terminating agent run with ID ec_writer_2bdd80_7adfac4445ad44858bf26242208c0bec: AgentTerminationError: AggregateError: AGY exact background ownership discovery remains unconfirmed.
+Error: Cannot find module '/Users/normy/autobyteus_org/autobyteus-worktrees/journal-omit-agy-schema-reads/autobyteus-server-ts/dist/app.js'
+Error: Hook timed out in 10000ms.
+Failed to terminate agent run 'ec_writer_2bdd80_7adfac4445ad44858bf26242208c0bec': AggregateError: AGY exact background ownership discovery remains unconfirmed.
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+## after pnpm build (exit 0): the two files that failed
+ Test Files  2 passed (2)
+      Tests  8 passed (8)

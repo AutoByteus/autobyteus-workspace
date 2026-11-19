@@ -444,7 +444,8 @@ if (arg === "--version") {
         step(step_index, state, tool_name, parameters, extra);
       };
       const imagePath = process.env.AGY_FAKE_MCP_IMAGE_PATH;
-      call(1, "view_file", { AbsolutePath: "/agy/mcp/autobyteus_agent_tools/delegate_task.json" }, "DONE",
+      // AGY_FAKE_MCP_SCHEMA_PATH names the schema file this read opens (a real-shaped `<home>/.gemini/antigravity-cli/mcp/...` path in the journal test).
+      call(1, "view_file", { AbsolutePath: process.env.AGY_FAKE_MCP_SCHEMA_PATH ?? "/agy/mcp/autobyteus_agent_tools/delegate_task.json" }, "DONE",
         { output: "{\"lines\": 1}" });
       call(2, "call_mcp_tool", { Arguments: { description: "Summarise the report.", recipient_address: "/researcher" },
         ServerName: "autobyteus_agent_tools", ToolName: "delegate_task" }, "DONE",
