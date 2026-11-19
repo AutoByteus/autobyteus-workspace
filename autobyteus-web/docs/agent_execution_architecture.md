@@ -392,7 +392,7 @@ for every run kind, goes `activeContextStore.interruptGeneration` → `runInterr
 - The streaming services register the command id and exact target before send,
   answer `not_sent` for a non-connected stream or a send that throws, and settle
   each Stop once from its matching acknowledgement. They present nothing. A Stop
-  waiting when the connection is lost is held (`InterruptsAwaitingRebind`) while
+  waiting when the connection is lost is held (`HeldUntilRebind`) while
   the same service reconnects, and settled `connection_lost` only after the
   rebind's status is applied (agent and peer: the new connection's first
   `AGENT_STATUS`; Team and Org: the snapshot that makes the stream ready), so the

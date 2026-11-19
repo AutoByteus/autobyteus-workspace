@@ -371,6 +371,19 @@ If a send materializes or restores a runtime, the existing socket is rebound to
 that stream. Command overlays remain until command-correlated runtime evidence
 or coordinator failure replaces them.
 
+A standalone run's stream takes commands only after its `CONNECTED`: a command
+sent while the session connects is answered `ERROR` `SESSION_NOT_READY`, so a
+client sends only on a bound stream and waits for the command's
+`AGENT_COMMAND_ACK` (autobyteus-540). Its `AGENT_STREAM_SNAPSHOT` (on every
+connection, including a rebind) carries `input_state`: for an active run the
+run's current input state, which includes a message the run holds until its
+running turn ends (queued, forwarded or held input stays in it until that turn's
+end); `null` for a stopped run and for a peer's relay of the run, which cannot
+tell. A client whose send lost its answer with the connection reads the
+snapshot's stored part, its `input_state` and its turn frames: a message found
+in any of them was delivered; a message missing from a snapshot that has an
+`input_state` was not; a missing message with `input_state: null` is unknown.
+
 Manager lookup distinguishes a command-**active** root from a **managed** root
 still owned during initialization, Stop, or a nonterminal Stop failure. The
 wire `TEAM_RUN_LIFECYCLE {is_active}` reports manager ownership, remains true
