@@ -4,8 +4,16 @@ import Foundation
 ///
 /// This model intentionally stores only node metadata. Phone Access credentials such as `mra_...`
 /// remain owned by the existing server-served `/mobile` web shell in WKWebView-local storage.
+///
+/// A node is shown by its name, never by its address, as on Android (`SavedNodeEntry.kt`; autobyteus-279 SR-004): the
+/// native screens read `shownName`, the pairing flow and the page's bridge read `knownName`; nothing else interprets
+/// `displayName`.
 public struct SavedNodeEntry: Codable, Equatable, Identifiable {
+    /// The label for a node with no name: the product's word for what the phone connects to.
+    public static let unnamedNodeName = "AutoByteus node"
+
     public let id: String
+    /// The stored name: the node's name from its QR or its page's pairing, or its `host` when it has none.
     public let displayName: String
     public let baseURL: String
     public let mobileURL: String
@@ -18,6 +26,15 @@ public struct SavedNodeEntry: Codable, Equatable, Identifiable {
 
     public var origin: String { buildOrigin(scheme: scheme, host: host, port: port) }
     public var isHTTP: Bool { scheme.caseInsensitiveCompare("http") == .orderedSame }
+
+    /// The node's name from its QR or its page's pairing; `nil` for a typed address, or a saved name that is its host.
+    public var knownName: String? {
+        guard let name = displayName.trimmedNonEmpty, name.caseInsensitiveCompare(host) != .orderedSame else { return nil }
+        return name
+    }
+
+    /// What the phone shows for this node: its `knownName`, else "AutoByteus node". Never an address.
+    public var shownName: String { knownName ?? Self.unnamedNodeName }
 
     public init(
         id: String,

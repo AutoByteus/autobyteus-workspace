@@ -23,6 +23,8 @@ final class AppShellCoordinator: NodeConnectionScreens {
         self.window = window
         // autobyteus-290 SM-9: the saved entries' stored keys follow the code before the store first reads them.
         SavedNodeEntryKeysMigration.run(appGroupIdentifier: SavedNodeStore.appGroupIdentifier)
+        // autobyteus-279 SR-003: the shipped app's placeholder name becomes "no known name" (the entry's host).
+        SavedNodeDisplayNamePlaceholderMigration.run(appGroupIdentifier: SavedNodeStore.appGroupIdentifier)
         self.savedNodeStore = SavedNodeStore(appGroupIdentifier: SavedNodeStore.appGroupIdentifier)
         self.pendingStore = PendingSharedInputStore(appGroupIdentifier: SavedNodeStore.appGroupIdentifier)
     }

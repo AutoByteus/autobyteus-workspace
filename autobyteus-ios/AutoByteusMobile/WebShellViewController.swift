@@ -42,7 +42,7 @@ final class WebShellViewController: UIViewController, ShellBridgeDelegate {
     // MARK: ShellBridgeDelegate
 
     func shellBridgeHello() -> ShellHello {
-        ShellHello(nodeCount: bridgeActions.nodeCount(), deviceName: UIDevice.current.model, nodeName: entry.displayName)
+        ShellHello(nodeCount: bridgeActions.nodeCount(), deviceName: UIDevice.current.model, nodeName: entry.knownName ?? "")
     }
 
     func shellBridge(didReceive message: ShellBridgeMessage) {

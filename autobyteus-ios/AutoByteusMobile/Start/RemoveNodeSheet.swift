@@ -21,7 +21,7 @@ final class RemoveNodeSheet: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = ShellColors.white
         view.accessibilityIdentifier = "removeNode.root"
-        let title = ShellUI.label(entry.displayName, size: 18, weight: .semibold, lines: 1)
+        let title = ShellUI.label(entry.shownName, size: 18, weight: .semibold, lines: 1)
         title.accessibilityTraits = .header
         let close = ShellUI.iconButton("xmark", label: "Close", color: ShellColors.slate500) { [weak self] in self?.dismiss(animated: true) }
         let header = UIStackView(arrangedSubviews: [title, UIView(), close])
@@ -48,7 +48,7 @@ final class RemoveNodeSheet: UIViewController {
 
     private func confirm() {
         content.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        content.addArrangedSubview(ShellUI.label("Remove \(entry.displayName) from this phone? Scan its QR code again to add it back.", size: 15, color: ShellColors.slate600))
+        content.addArrangedSubview(ShellUI.label("Remove \(entry.shownName) from this phone? Scan its QR code again to add it back.", size: 15, color: ShellColors.slate600))
         var cancelConfiguration = UIButton.Configuration.bordered()
         cancelConfiguration.title = "Cancel"
         cancelConfiguration.baseForegroundColor = ShellColors.slate700

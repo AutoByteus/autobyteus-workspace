@@ -111,9 +111,9 @@ public final class NodeConnectionFlow {
     public func onPaired(pageNodeName: String) {
         let pending = pendingPairing?.entry
         pendingPairing = nil
-        guard let entry = pending ?? openEntry.flatMap({ Self.hasKnownName($0) ? nil : $0 }) else { return }
+        guard let entry = pending ?? openEntry.flatMap({ $0.knownName == nil ? $0 : nil }) else { return }
         let pageName = pageNodeName.trimmingCharacters(in: .whitespacesAndNewlines)
-        let takesPageName = !Self.hasKnownName(entry) && !pageName.isEmpty
+        let takesPageName = entry.knownName == nil && !pageName.isEmpty
         if pending == nil && !takesPageName { return }
         let saved = entries.saveEntry(entry.updating(displayName: takesPageName ? pageName : nil, nowEpochMilliseconds: clock()))
         openEntry = saved
@@ -124,14 +124,11 @@ public final class NodeConnectionFlow {
         pendingPairing = nil
     }
 
-    /// An entry's name is its own when it is not just its host (iOS entries fall back to the host).
-    private static func hasKnownName(_ entry: SavedNodeEntry) -> Bool { entry.displayName != entry.host }
-
     private func run(_ next: Attempt) {
         attempt = next
         generation += 1
         let current = generation
-        screens?.showConnecting(nodeName: next.entry.displayName)
+        screens?.showConnecting(nodeName: next.entry.shownName)
         Task { [weak self, statusCheck] in
             let result = await statusCheck(next.entry)
             await MainActor.run {
@@ -140,7 +137,7 @@ public final class NodeConnectionFlow {
                 case .reachable:
                     self.opened(next)
                 case .failed(let diagnostic):
-                    self.screens?.showCantReach(nodeName: next.entry.displayName, reason: CantReachReason.reason(for: diagnostic))
+                    self.screens?.showCantReach(nodeName: next.entry.shownName, reason: CantReachReason.reason(for: diagnostic))
                 }
             }
         }

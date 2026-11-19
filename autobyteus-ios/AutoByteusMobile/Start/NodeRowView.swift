@@ -35,7 +35,7 @@ final class NodeRowView: UIView {
         avatar.addSubview(computer)
         avatar.addSubview(dot)
 
-        let name = ShellUI.label(entry.displayName, size: 16, weight: .semibold, lines: 1)
+        let name = ShellUI.label(entry.shownName, size: 16, weight: .semibold, lines: 1)
         let texts = UIStackView(arrangedSubviews: [name, stateLabel])
         texts.axis = .vertical
         texts.spacing = 2
@@ -54,7 +54,7 @@ final class NodeRowView: UIView {
         openArea.accessibilityTraits = .button
         openArea.accessibilityIdentifier = "start.row.open"
 
-        let more = ShellUI.iconButton("ellipsis", label: "More for \(entry.displayName)", color: ShellColors.slate400, rotated: true, action: onMore)
+        let more = ShellUI.iconButton("ellipsis", label: "More for \(entry.shownName)", color: ShellColors.slate400, rotated: true, action: onMore)
         more.accessibilityIdentifier = "start.row.more"
 
         for view in [row, openArea, more] { view.translatesAutoresizingMaskIntoConstraints = false }
@@ -89,6 +89,6 @@ final class NodeRowView: UIView {
         stateLabel.text = label
         stateLabel.textColor = textColor
         dot.backgroundColor = dotColor
-        openArea.accessibilityLabel = [entry.displayName, label, isCurrent ? "current node" : nil].compactMap { $0 }.joined(separator: ", ")
+        openArea.accessibilityLabel = [entry.shownName, label, isCurrent ? "current node" : nil].compactMap { $0 }.joined(separator: ", ")
     }
 }

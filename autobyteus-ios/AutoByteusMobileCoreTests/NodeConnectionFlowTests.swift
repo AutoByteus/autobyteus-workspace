@@ -28,7 +28,7 @@ final class NodeConnectionFlowTests: XCTestCase {
     }
 
     private let pairingJSON = #"{"version":1,"serverBaseUrl":"https://desk.tailnet.ts.net","pairingCode":"abc","expiresAt":"2026-05-21T00:00:00.000Z","serverName":"Desk"}"#
-    private let status = RemoteAccessStatus(phoneAccessEnabled: true, pairingAvailable: true, serverName: "Desk", nodeID: "n")
+    private let status = RemoteAccessStatus(phoneAccessEnabled: true, pairingAvailable: true, nodeID: "n")
 
     /// The flow under test; each test keeps it (the app's coordinator keeps its flow; a dropped flow's answers are dropped).
     private func flow(_ entries: Entries, _ screens: Screens, answers: ConnectionValidationResult? = nil) -> NodeConnectionFlow {
@@ -80,7 +80,7 @@ final class NodeConnectionFlowTests: XCTestCase {
         let flow = flow(entries, screens, answers: .failed(ConnectionDiagnosticMapper.fromError(URLError(.cannotConnectToHost))))
         flow.connectTyped("desk.tailnet.ts.net", httpAcknowledged: false)
         await fulfillment(of: [screens.done!], timeout: 5)
-        XCTAssertEqual(["connecting desk.tailnet.ts.net", "cantReach desk.tailnet.ts.net noSharedNetwork"], screens.events)
+        XCTAssertEqual(["connecting AutoByteus node", "cantReach AutoByteus node noSharedNetwork"], screens.events, "a node with no name is never shown by its address")
         XCTAssertTrue(entries.saved.isEmpty)
     }
 
@@ -95,12 +95,37 @@ final class NodeConnectionFlowTests: XCTestCase {
         XCTAssertTrue(entries.saved.isEmpty)
     }
 
+    /// A saved node with no known name (a typed address, or an entry the placeholder migration gave its host) takes the
+    /// page's name when the page pairs, as on Android; the host compares without case (SR-004).
+    func testAnUnnamedSavedNodeTakesThePagesNameWhenItPairs() async throws {
+        let entries = Entries()
+        let screens = Screens(done: expectation(description: "opened"))
+        let migrated = SavedNodeEntry.fromNormalized(try NodeURLNormalizer.normalize("https://office.tailnet.ts.net"), displayName: "Office.Tailnet.TS.net")
+        let flow = flow(entries, screens)
+        flow.open(migrated)
+        await fulfillment(of: [screens.done!], timeout: 5)
+        XCTAssertEqual(["connecting AutoByteus node", "open Office.Tailnet.TS.net pairing=false"], screens.events)
+        flow.onPaired(pageNodeName: " Test Node 279 ")
+        XCTAssertEqual(["Test Node 279"], entries.saved.map(\.displayName))
+    }
+
+    func testANamedSavedNodeKeepsItsNameWhenItPairs() async throws {
+        let entries = Entries()
+        let screens = Screens(done: expectation(description: "opened"))
+        let named = SavedNodeEntry.fromNormalized(try NodeURLNormalizer.normalize("https://office.tailnet.ts.net"), displayName: "Office")
+        let flow = flow(entries, screens)
+        flow.open(named)
+        await fulfillment(of: [screens.done!], timeout: 5)
+        flow.onPaired(pageNodeName: "Something Else")
+        XCTAssertTrue(entries.saved.isEmpty, "a named node is never renamed by its page")
+    }
+
     func testCancelDropsALateAnswer() async {
         let screens = Screens()
         let flow = flow(Entries(), screens)
         flow.connectTyped("desk.tailnet.ts.net", httpAcknowledged: false)
         flow.cancel()
         try? await Task.sleep(nanoseconds: 300_000_000)
-        XCTAssertEqual(["connecting desk.tailnet.ts.net"], screens.events)
+        XCTAssertEqual(["connecting AutoByteus node"], screens.events)
     }
 }

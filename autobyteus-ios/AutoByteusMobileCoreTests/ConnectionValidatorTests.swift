@@ -4,12 +4,12 @@ import AutoByteusMobileCore
 final class ConnectionValidatorTests: XCTestCase {
     private let validator = ConnectionValidator(timeoutSeconds: 1)
 
+    /// The node's `serverName` is read as an extra field: a node's name comes from its QR or its pairing (autobyteus-279).
     func testParsesStatusWithAdditionalFields() throws {
         let json = #"{"phoneAccessEnabled":true,"pairingAvailable":true,"serverName":"Home Desktop","nodeId":"instance-1","extra":"ignored"}"#
         let status = try RemoteAccessStatus.fromJSONData(Data(json.utf8))
         XCTAssertTrue(status.phoneAccessEnabled)
         XCTAssertTrue(status.pairingAvailable)
-        XCTAssertEqual("Home Desktop", status.serverName)
         XCTAssertEqual("instance-1", status.nodeID)
     }
 
@@ -35,7 +35,7 @@ final class ConnectionValidatorTests: XCTestCase {
         let data = Data(#"{"phoneAccessEnabled":true,"pairingAvailable":true,"compatibilityVersion":0,"serverName":"Old Desktop"}"#.utf8)
         let result = validator.mapStatusResponse(statusCode: 200, data: data, entry: entry)
         guard case .reachable(_, let status) = result else { return XCTFail("Expected reachable") }
-        XCTAssertEqual("Old Desktop", status.serverName)
+        XCTAssertTrue(status.phoneAccessEnabled)
     }
 
     private func entry(_ raw: String) throws -> SavedNodeEntry {
