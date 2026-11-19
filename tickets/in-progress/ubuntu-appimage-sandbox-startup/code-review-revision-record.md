@@ -6,6 +6,7 @@
 | CRR-001 | code-review-report.md | Implementation Review / IR-002 completion | N/A | Fail — Local Fix | F-CR-001, F-CR-002 |
 | CRR-002 | code-review-report.md | Implementation Review / IR-003 fixes | Fail | Pass | F-CR-001/002 resolved |
 | CRR-003 | code-review-report.md | API/E2E Failure-Origin Review / API-REV-002 | Source Pass | Fail — Local Fix | F-API-01, F-API-02 |
+| CRR-004 | code-review-report.md | Implementation Review / IR-004–005 and revised DS-004 | Failed API execution / CRR-003 Local Fix | Pass — source only | F-API-01/02 resolved in source; QA retest required |
 
 ## Revision Entries
 ### CRR-001 — Managed failure-continuation review
@@ -54,3 +55,14 @@ None (initial baseline).
 - **F-API-01 open:** cancellation invalidates the stage generation but leaves verification projected as downloading and manual actions disabled. Confirmed source-review gap: cancellation safety checked, same-session manual usability missed.
 - **F-API-02 open:** verified target actually installed; no usable window/server after the explicit restart, separately launched identical bytes healthy. Runtime-only product integration failure localized to post-commit re-entry, precise native cause unproven. Do not infer a failed syscall or assume a replacement strategy.
 - Affected runtime/readiness conclusions fail; no general scorecard repeated. Prior package/CI controls retain only their scoped proof. No other finding/follow-up. Recipient: /implementation_engineer; then source rereview and real API/E2E retest, no delivery until all critical gates pass.
+
+### CRR-004 — Managed opt-out settlement and explicit supervisor handback
+- Implementation Review, round 4, 2026-11-19; canonical `code-review-report.md`. **Full Re-Audit**: cross-owner transport, native executable lifecycle, addon/packaging, cancellation projection and actual restart context changed. Prior source CRR-002 Pass; API-REV-002 Fail / CRR-003 confirmed two product failures. **Current result: Pass for independent API/E2E, Large / High unchanged.**
+- Trigger: IR-004/005; approved SR-012, retained SR-013/014 clarifications and SR-015 CI disposition, revised DS-004/SR-016, ARCH-REV-004 Pass. F-API-02 required design recovery after IMP-31/32; no change to intended behavior. API-REV-002 is still the latest independent execution result; DR N/A.
+- Source `9017bd351d` + `c90f3ba8f2`; received `1ca0c8b98bb989bf1e3d97ec0132870b5ecf6c3e`. Branch fix/ubuntu-appimage-sandbox-startup → personal. Previous report/history and evidence retained in git; no reviewer source/test changes.
+- Prior findings:
+  - **F-API-01** — open → resolved at source. Verification-owning generation settles only after stale stage disposal/verification rejection, publishes available and clears bookkeeping; IMP-34/36 show same-session manual controls.
+  - **F-API-02** — open → resolved at source. Endpoint required before stop; authenticated known candidate/old identity after stop; deliberate packet + direct-child exit76; original supervisor revalidates/execs fixed live image once, ordinary quit never requests re-entry. IMP-33/34/36 include actual sole main holder and spontaneous healthy successor, not just writer ACK. Unknown identity/stop does not hand back. Source and scoped fixture proof only.
+  - **F-CR-001/002** remain resolved: retained independent auto block and ordinary exit after settled failure, current source and IMP-34.
+- Supported-scenario and material-premise gates Pass (MP-001 established by actual same-byte launch control). Score 9.4/10. All 25 structural checks reconsidered, 55 production paths inventoried; no over-limit source. No new findings or follow-ups.
+- Route: **/api_e2e_engineer**. Independent current Settings/notification/update/data journeys, affected host checks, native x64+ARM64 secret-isolated package/smoke, remaining repair/channel/transport/fault/authorization matrix required. Do not convert IMP-36 or earlier QA/CI to current acceptance. No delivery, publish or release.
