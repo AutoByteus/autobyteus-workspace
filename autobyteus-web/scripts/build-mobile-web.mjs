@@ -7,7 +7,10 @@ import { fileURLToPath } from 'node:url'
 const scriptDir = path.dirname(fileURLToPath(import.meta.url))
 const webRoot = path.resolve(scriptDir, '..')
 const generatedPublicDir = path.join(webRoot, 'dist', 'public')
-const mobileOutputDir = path.join(webRoot, 'dist-mobile', 'public')
+// `--demo` (autobyteus-279): the iOS app's built-in demo, the same phone build with the demo node (`demo/`), served by the
+// app itself from `autobyteus-demo://app/` (base `/`). Without it: the node's `/mobile` build, which has no demo code.
+const demo = process.argv.includes('--demo')
+const mobileOutputDir = path.join(webRoot, demo ? 'dist-mobile-demo' : 'dist-mobile', 'public')
 
 const exists = async (target) => {
   try {
@@ -54,8 +57,9 @@ const run = (command, args, env = {}) => new Promise((resolve, reject) => {
 await run('pnpm', ['generate'], {
   NODE_ENV: 'production',
   AUTOBYTEUS_MOBILE_WEB_BUILD: 'true',
-  NUXT_APP_BASE_URL: '/mobile/',
+  NUXT_APP_BASE_URL: demo ? '/' : '/mobile/',
   BACKEND_NODE_BASE_URL: '',
+  AUTOBYTEUS_DEMO_BUILD: demo ? '1' : '',
 })
 
 if (!(await exists(generatedPublicDir))) {
@@ -64,4 +68,4 @@ if (!(await exists(generatedPublicDir))) {
 await rm(mobileOutputDir, { recursive: true, force: true })
 await mkdir(path.dirname(mobileOutputDir), { recursive: true })
 await cp(generatedPublicDir, mobileOutputDir, { recursive: true })
-console.log(`Mobile web assets written to ${mobileOutputDir}`)
+console.log(`${demo ? 'Demo' : 'Mobile'} web assets written to ${mobileOutputDir}`)
