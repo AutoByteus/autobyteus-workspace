@@ -1,4 +1,6 @@
-/** The demo node's REST answers (autobyteus-279), by method and path. */
+/** The demo node's REST answers (autobyteus-279), by method and path, as the node's own routes answer them. */
+import type { RemoteAccessStatus } from '~/types/remoteAccess';
+import { DEMO_NODE_ID } from '../demoIdentity';
 import type { DemoWorld } from '../world/DemoWorld';
 
 export type DemoRestRoute = {
@@ -7,4 +9,16 @@ export type DemoRestRoute = {
   answer(url: URL, request: Request, world: DemoWorld): Response | Promise<Response>;
 };
 
-export const demoRestRoutes: DemoRestRoute[] = [];
+const json = (body: unknown, status = 200): Response =>
+  new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json; charset=utf-8' } });
+const path = (pathname: string) => (url: URL) => url.pathname === pathname;
+
+export const demoRestRoutes: DemoRestRoute[] = [
+  // autobyteus-server-ts/src/api/rest/health.ts
+  { method: 'GET', match: path('/rest/health'), answer: () => json({ status: 'ok', message: 'Server is running' }) },
+  // autobyteus-server-ts/src/api/rest/remote-access.ts: the demo node, with phone access on.
+  {
+    method: 'GET', match: path('/rest/remote-access/status'),
+    answer: () => json({ phoneAccessEnabled: true, pairingAvailable: true, nodeId: DEMO_NODE_ID } satisfies RemoteAccessStatus),
+  },
+];

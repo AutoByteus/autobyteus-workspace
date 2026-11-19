@@ -7,3 +7,5 @@ export const DEMO_NODE_NAME = 'Demo';
 /** A non-secret token: the demo session's credential, accepted by the demo node only. */
 export const DEMO_SESSION_TOKEN = 'demo-session';
 export const DEMO_DEVICE_ID = 'demo-device';
+/** The demo node's id, as `/rest/remote-access/status` reports a node's. */
+export const DEMO_NODE_ID = 'demo-node';
