@@ -5,7 +5,8 @@
 # are never written to the log. Usage: run-new.sh <test name> <simulator: iphone|ipad> <case id> [link names…]
 set -uo pipefail
 TEST=$1; SIM=$2; ID=$3; shift 3
-E=/Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-mode-279/tickets/in-progress/ios-demo-mode-279/evidence/api-e2e/ios
+# Round 2: API279_OUT=<evidence dir> and API279_COMMIT=<commit> (defaults: round 1).
+E=${API279_OUT:-/Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-mode-279/tickets/in-progress/ios-demo-mode-279/evidence/api-e2e/ios}
 IOS=$HOME/.cache/abtest279/fs-ios/autobyteus-ios
 UDID=$(grep -o "$SIM=[^ ]*" /tmp/abtest279-sims.txt | cut -d= -f2)
 ST=/tmp/abtest279/node/state.json
@@ -17,7 +18,7 @@ for name in "$@"; do
   export "TEST_RUNNER_API279_LINK_$(echo "$name" | tr a-z A-Z)=$(cat /tmp/abtest279/node/link-$tag.txt)"
 done
 RES="$E/$ID.xcresult"; rm -rf "$RES"
-{ echo "# $ID: ApiE2E279UITests/$TEST on apie2e279-$SIM ($UDID); fresh-start clone build (429af9bd66 + the temporary test file); $(date -u +%FT%TZ); load $(uptime | sed 's/.*load averages: //')"; echo "# links made just before: $*"; } > "$E/$ID.log"
+{ echo "# $ID: ApiE2E279UITests/$TEST on apie2e279-$SIM ($UDID); fresh-start clone build (${API279_COMMIT:-429af9bd66} + the temporary test file); $(date -u +%FT%TZ); load $(uptime | sed 's/.*load averages: //')"; echo "# links made just before: $*"; } > "$E/$ID.log"
 xcodebuild -project "$IOS/AutoByteusMobile.xcodeproj" -scheme AutoByteusMobile -destination "platform=iOS Simulator,id=$UDID" \
   -derivedDataPath /private/tmp/abtest279/dd-new -resultBundlePath "$RES" -only-testing:"AutoByteusMobileUITests/ApiE2E279UITests/$TEST" \
   IOS_BUNDLE_ID=org.autobyteus.mobile IOS_SHARE_EXTENSION_BUNDLE_ID=org.autobyteus.mobile.share MARKETING_VERSION=1.3.83 CURRENT_PROJECT_VERSION=2 \

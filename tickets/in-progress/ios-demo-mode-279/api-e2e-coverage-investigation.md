@@ -10,7 +10,7 @@ The plan. Results, confidence and the broader-validation decision are in `api-e2
 - Architecture review: `architecture-review-revision-record.md` (ARCH-REV-002 Pass)
 - Implementation Handoff: `implementation-handoff.md` (IR-001; reviewed route, Large / High)
 - Code Review: `code-review-report.md` (CRR-001 Pass, reviewed range `8430d9ef12..429af9bd66`)
-- API/E2E Revision Record: `api-e2e-revision-record.md`; current revision `API-REV-001`; round 1
+- API/E2E Revision Record: `api-e2e-revision-record.md`; current revision `API-REV-002`; round 2 (CRR-003: API-04 and FS-iOS rerun after IR-002; the rest kept)
 - Trigger: Code Reviewer CRR-001; HEAD `429af9bd66`; base `origin/personal` @ `8430d9ef12` (equal to `origin/personal` at the start)
 - Constraint: nothing goes to Apple, TestFlight or App Store Connect without the founder's explicit word (REQ-014); the branch is not pushed by API/E2E
 

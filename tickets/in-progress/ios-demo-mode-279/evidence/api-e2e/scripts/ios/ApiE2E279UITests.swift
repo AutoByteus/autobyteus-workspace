@@ -26,10 +26,18 @@ final class ApiE2E279UITests: XCTestCase {
         // A saved, selected computer opens at launch (the app's start rule), straight on its paired run list.
         XCTAssertTrue(app.webViews.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", "Fact Checker")).firstMatch.waitForExistence(timeout: 120), "It opens on its paired run list")
         attach(app, "update-opened")
-        // The node button's name, as the page shows it.
-        let names = app.webViews.staticTexts.allElementsBoundByIndex.prefix(8).map(\.label)
-        let note = XCTAttachment(string: "first texts: \(names)"); note.name = "update-node-name"; note.lifetime = .keepAlways; add(note)
-        print("API279 update first texts: \(names)")
+        // Round 2 (IR-002): the names the page and the native screens show for the shipped app's entry.
+        recordNames(app, "update")
+        // Opened again from the native list: the page still shows the node's own name.
+        app.descendants(matching: .any).matching(identifier: "start.row.open").firstMatch.tap()
+        // The current node's page comes back as it was left: its connection sheet still open (round 2, run 3). Close it.
+        let sheetName = app.webViews.staticTexts["Test Node 279"]
+        if sheetName.waitForExistence(timeout: 60) { attach(app, "update-reopened-as-left") }
+        // The sheet's header Close (the backdrop is the other "Close").
+        let closes = app.webViews.buttons.matching(NSPredicate(format: "label == %@", "Close"))
+        if closes.count > 0 { closes.element(boundBy: closes.count - 1).tap() }
+        XCTAssertTrue(app.webViews.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", "Fact Checker")).firstMatch.waitForExistence(timeout: 120))
+        recordNames(app, "update-reopened")
     }
 
     func testTypeAnAddress() throws {
@@ -55,6 +63,8 @@ final class ApiE2E279UITests: XCTestCase {
         while Date() < deadline && !pairing.exists && !runs.exists { sleep(1) }
         XCTAssertTrue(pairing.exists || runs.exists, "The node's page opens")
         attach(app, "type-address-opened")
+        let landed = XCTAttachment(string: runs.exists ? "landed=run list" : "landed=pairing page"); landed.name = "type-address-landed"; landed.lifetime = .keepAlways; add(landed)
+        if runs.exists { recordNames(app, "type-address") } else { recordPageTexts(app, "type-address-pairing-page"); recordNativeNames(app, "type-address", from: nil) }
         app.terminate()
         app.launchEnvironment.removeValue(forKey: "AUTOBYTEUS_RESET_SAVED_NODES")
         app.launch()
@@ -73,10 +83,13 @@ final class ApiE2E279UITests: XCTestCase {
         confirmPairing(app)
         XCTAssertTrue(app.webViews.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", "Fact Checker")).firstMatch.waitForExistence(timeout: 120), "A pasted pairing link pairs and opens the run list")
         attach(app, "paste-link-paired")
+        recordNames(app, "paste-link")
         app.terminate()
         app.launchEnvironment.removeValue(forKey: "AUTOBYTEUS_RESET_SAVED_NODES")
         app.launch()
+        XCTAssertTrue(app.webViews.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", "Fact Checker")).firstMatch.waitForExistence(timeout: 120), "Relaunch opens the saved computer")
         attach(app, "paste-link-relaunch")
+        recordNames(app, "paste-link-relaunch")
     }
 
     func testScannedPairingCode() throws {
@@ -86,6 +99,7 @@ final class ApiE2E279UITests: XCTestCase {
         confirmPairing(app)
         XCTAssertTrue(app.webViews.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", "Fact Checker")).firstMatch.waitForExistence(timeout: 120), "A scanned pairing code pairs and opens the run list")
         attach(app, "scan-paired")
+        recordNames(app, "scan")
     }
 
     // MARK: API-02 (the share extension's own sheet, from Safari)
@@ -222,6 +236,67 @@ final class ApiE2E279UITests: XCTestCase {
         XCTAssertTrue(composer.waitForExistence(timeout: 30), "Portrait again: the run stays open")
         attach(app, "rotate-portrait-again")
         let note = XCTAttachment(string: "run=\(runName)\nportrait=\(title0)\nlandscape=\(title1)"); note.name = "rotate-texts"; note.lifetime = .keepAlways; add(note)
+    }
+
+    // MARK: names (round 2, IR-002)
+
+    /// The node's name as the page shows it (its node button and connection sheet), then natively via the sheet's
+    /// "Switch node": the start screen's rows, a row's More, its Remove sheet and the Remove confirmation. Attaches each.
+    private func recordNames(_ app: XCUIApplication, _ name: String) {
+        // The run list's node button (aria-label "<name>, <state>. Connection").
+        let nodeButton = app.webViews.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@ OR label CONTAINS %@", "Connection", "Connected")).firstMatch
+        if !nodeButton.waitForExistence(timeout: 30) { recordPageTexts(app, "\(name)-no-node-button") }
+        XCTAssertTrue(nodeButton.exists, "The page's node button")
+        var lines = ["page node button: \(nodeButton.label)"]
+        nodeButton.tap()
+        let switchNode = app.webViews.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Switch node")).firstMatch
+        XCTAssertTrue(switchNode.waitForExistence(timeout: 20), "The connection sheet's Switch node")
+        sleep(1)
+        attach(app, "\(name)-page-sheet")
+        lines.append("page sheet texts: \(app.webViews.staticTexts.allElementsBoundByIndex.prefix(10).map(\.label))")
+        note(lines, "\(name)-page-names")
+        recordNativeNames(app, name, from: switchNode)
+    }
+
+    private func recordPageTexts(_ app: XCUIApplication, _ name: String) {
+        note(["page texts: \(app.webViews.staticTexts.allElementsBoundByIndex.prefix(12).map(\.label))",
+              "page buttons: \(app.webViews.buttons.allElementsBoundByIndex.prefix(8).map(\.label))",
+              "page labelled elements: \(app.webViews.descendants(matching: .any).allElementsBoundByIndex.prefix(60).map { "\($0.elementType.rawValue):\($0.label)" }.filter { !$0.hasSuffix(":") })"], name)
+    }
+
+    /// `from`: the page's "Switch node" button; nil: the pairing page's "Back to nodes".
+    private func recordNativeNames(_ app: XCUIApplication, _ name: String, from switchNode: XCUIElement?) {
+        if let switchNode { switchNode.tap() } else {
+            let back = app.webViews.buttons["Back to nodes"]
+            XCTAssertTrue(back.waitForExistence(timeout: 20), "The pairing page's Back to nodes")
+            back.tap()
+        }
+        let rows = app.descendants(matching: .any).matching(identifier: "start.row.open")
+        XCTAssertTrue(rows.firstMatch.waitForExistence(timeout: 30), "The native start screen's saved rows")
+        sleep(1)
+        attach(app, "\(name)-native-start")
+        var lines = ["native rows: \(rows.allElementsBoundByIndex.map(\.label))"]
+        let more = app.descendants(matching: .any).matching(identifier: "start.row.more")
+        lines.append("native More buttons: \(more.allElementsBoundByIndex.map(\.label))")
+        more.firstMatch.tap()
+        let sheet = app.descendants(matching: .any).matching(identifier: "removeNode.root").firstMatch
+        XCTAssertTrue(sheet.waitForExistence(timeout: 20), "The Remove sheet")
+        lines.append("remove sheet texts: \(sheet.staticTexts.allElementsBoundByIndex.map(\.label))")
+        app.descendants(matching: .any).matching(identifier: "removeNode.remove").firstMatch.tap()
+        sleep(1)
+        attach(app, "\(name)-native-remove-confirm")
+        lines.append("remove confirmation texts: \(sheet.staticTexts.allElementsBoundByIndex.map(\.label))")
+        sheet.buttons["Cancel"].tap()
+        XCTAssertTrue(rows.firstMatch.waitForExistence(timeout: 20))
+        note(lines, "\(name)-native-names")
+        let all = lines.joined(separator: "\n")
+        XCTAssertFalse(all.contains("AutoByteus Desktop"), "No shipped placeholder name")
+        XCTAssertFalse(all.contains("192.168."), "No address shown as a name")
+    }
+
+    private func note(_ lines: [String], _ name: String) {
+        let a = XCTAttachment(string: lines.joined(separator: "\n")); a.name = name; a.lifetime = .keepAlways; add(a)
+        lines.forEach { print("API279 \(name): \($0)") }
     }
 
     // MARK: helpers
