@@ -14,7 +14,15 @@ Working on the dev server (`AUTOBYTEUS_MOBILE_WEB_BUILD=true AUTOBYTEUS_DEMO_BUI
 
 - the run list renders from the world, with statuses over `/ws/run-status`;
 - the showcase conversation renders (VIS-007);
-- a send plays the scripted turn (tool call, the streamed answer, the closing line, Idle) with no console error.
+- a send plays the scripted turn (tool call, the streamed answer, the closing line, Idle) with no console error;
+- the run tree unfolds as the node's (`GetRunTree`, the collaboration and Team streams); a Team member opens, and Stop on a running member leaves it Idle;
+- an Org member opens (`GetAgentOrgRunInspection`, `/ws/agent-org`) and a send gets the member reply (VIS-020) with no console error.
+
+Findings while porting:
+
+- **One invocation, one id.** The reference gave a conversation's tool calls and its Activity separate ids; the phone's member views reconcile the two by id (`reconcileTeamMemberToolState`), so each call showed twice. Activity is now built from the conversation's tool calls (`asActivities`), the showcase's uses its calls' ids, and the PTM's `delegate_task` calls are one per run it delegated (its tree's six).
+- **Member header (VIS-020).** The reference shows `content_writer`; the demo names rows by the node's own rule (`rowNameOf`: "content writer"), which is what a real node shows. Recorded for the sweep, not changed in the demo.
+- **Closing line.** The member reply ends with the copy table's one closing line (UI spec line 281); VIS-020's screenshot shows an older variant.
 
 | Part | State | Files |
 | --- | --- | --- |
@@ -23,10 +31,10 @@ Working on the dev server (`AUTOBYTEUS_MOBILE_WEB_BUILD=true AUTOBYTEUS_DEMO_BUI
 | Boot (transport, then world, then session) and the transport | done | `demo/demoBoot.ts`, `demo/demoTransport.ts`, `demo/demoIdentity.ts` |
 | Dispatch (loud on anything unknown) | done | `demo/DemoNode.ts` |
 | World: runs as trees, definitions, conversations, Activity, background tasks, run trees | done | `demo/world/*` (content ported from the design reference) |
-| GraphQL | in progress | done: histories, definitions, workspaces, run tree, projections, file changes, resume configs, Tasks. To do: the remaining inventory operations (files, search, models and runtimes, Settings saves, New run, terminate, background task view, Org inspection and checkpoint, participant messages) |
+| GraphQL | in progress | done: histories, definitions, workspaces, run tree, projections, file changes, resume configs, Tasks, the agent collaboration view, the Org inspection and checkpoint. To do: the remaining inventory operations (files, search, models and runtimes, Settings saves, New run, terminate, background task view, participant messages) |
 | REST | in progress | done: health, status, node desktop. To do: file content, file-change content, message references, media |
-| Streams | in progress | done: `/ws/agent` (the agent's snapshot and frames), `/ws/agent-collaboration`, `/ws/run-status`, the package-definitions and projects feeds. To do: `/ws/agent-team`, `/ws/agent-org`, `/ws/file-explorer`, the node-desktop RFB |
-| Runtime | in progress | done: send (a scripted turn) and Stop for agent runs. To do: Team and Org members, New run, attachments, Settings Save |
+| Streams | in progress | done: `/ws/agent`, `/ws/agent-team`, `/ws/agent-org`, `/ws/agent-collaboration` (root views shared with their queries: `world/rootViews.ts`), `/ws/run-status`, the package-definitions and projects feeds. To do: `/ws/file-explorer`, the node-desktop RFB |
+| Runtime | in progress | done: send (a scripted turn) and Stop for agent runs and for Team and Org members (the member reply). To do: New run, attachments, Settings Save |
 | `--demo` build target | done | `scripts/build-mobile-web.mjs`; the build is 12 MB (R-004) |
 | Local icons | to do | `plugins/01.localIcons.client.ts`, `scripts/build-icon-bundle.mjs` |
 | Contract, inventory and build guard tests; the sweep probes | to do | `demo/__tests__`, `tests/e2e/mobile-demo-*.mjs` |

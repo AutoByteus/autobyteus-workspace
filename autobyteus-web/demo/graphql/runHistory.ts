@@ -29,22 +29,22 @@ export const workspaceHistory = (world: DemoWorld): HistoryGroup => {
   const agentRuns = world.topLevelRuns.filter((run) => run.kind === 'agent');
   const teamRuns = world.topLevelRuns.filter((run) => run.kind === 'team');
   return {
-    __typename: 'WorkspaceRunHistoryGroupObject',
+    __typename: 'WorkspaceRunHistoryGroupObject' as const,
     workspaceRootPath: DEMO_WORKSPACE_ROOT,
     workspaceName: DEMO_WORKSPACE_NAME,
     agentDefinitions: [...byDefinition(agentRuns)].map(([definitionId, runs]) => ({
-      __typename: 'RunHistoryAgentGroupObject',
+      __typename: 'RunHistoryAgentGroupObject' as const,
       agentDefinitionId: definitionId,
       agentName: runs[0]!.name,
       runs: runs.sort(newestFirst).map((run) => ({
-        __typename: 'RunHistoryItemObject',
+        __typename: 'RunHistoryItemObject' as const,
         runId: run.runId, displayName: null, summary: run.summary, createdAt: run.createdAt, lastActivityAt: run.lastActivityAt,
         archivedAt: null, terminatedAt: null, ...statusFields(world, run),
         hasCollaboration: run.coordinator.delegated.length > 0,
       })),
     })).sort((a, b) => a.agentName.localeCompare(b.agentName)),
     teamDefinitions: [...byDefinition(teamRuns)].map(([definitionId, runs]) => ({
-      __typename: 'WorkspaceHistoryTeamDefinitionObject',
+      __typename: 'WorkspaceHistoryTeamDefinitionObject' as const,
       teamDefinitionId: definitionId,
       teamDefinitionName: runs[0]!.name,
       runs: runs.sort(newestFirst).map((run) => ({

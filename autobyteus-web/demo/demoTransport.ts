@@ -88,7 +88,7 @@ export const createDemoSocketClass = (node: DemoNodeEndpoint) => class DemoSocke
     if (this.readyState !== 1) return;
     const payload = typeof data === 'string' ? data
       : this.binaryType === 'arraybuffer' ? data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength)
-      : new Blob([data]);
+      : new Blob([new Uint8Array(data)]);
     setTimeout(() => { if (this.readyState === 1) this.emit('message', new MessageEvent('message', { data: payload })); }, 0);
   }
 

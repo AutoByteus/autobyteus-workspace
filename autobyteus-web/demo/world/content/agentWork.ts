@@ -120,14 +120,15 @@ export function demoAgentEntries(node: { id: string; name: string; summary: stri
     said(work.answer, s(2)),
   ]
 }
-const asActivities = (nodeId: string, entries: Entry[]): Entry[] => entries.filter((entry) => entry.kind === 'tool_call').map((entry, n) => ({
-  kind: 'tool', invocationId: `${nodeId}-demo-a${n}`, toolName: entry.toolName,
+/** A conversation's tool calls as its Activity: the same invocations (the node's two views of one call share its id). */
+export const asActivities = (entries: Entry[]): Entry[] => entries.filter((entry) => entry.kind === 'tool_call').map((entry) => ({
+  kind: 'tool', invocationId: entry.invocationId, toolName: entry.toolName,
   type: entry.toolName === 'write_file' ? 'write_file' : entry.toolName === 'edit_file' ? 'edit_file' : entry.toolName === 'run_terminal_command' ? 'terminal_command' : 'tool_call',
   status: 'success', contextText: Object.values(entry.toolArgs as Record<string, unknown>)[0], arguments: entry.toolArgs, logs: [], result: entry.toolResult, error: null, ts: entry.ts,
 }))
 export const demoAgentActivities = (node: { id: string; name: string; summary: string }, at: number): Entry[] | null => {
   const entries = demoAgentEntries(node, at)
-  return entries ? asActivities(node.id, entries) : null
+  return entries ? asActivities(entries) : null
 }
 
 const workOf = (node: { id: string; name: string }, team: Team): ((s: (minutes: number) => number) => Entry[]) | null => {
@@ -153,5 +154,5 @@ export function demoMemberActivities(node: { id: string; name: string; status: s
   const own = workOf(node, team)
   if (!own) return null
   const s = (minutes: number): number => Math.floor((at + minutes * 60_000) / 1000)
-  return asActivities(node.id, own(s))
+  return asActivities(own(s))
 }

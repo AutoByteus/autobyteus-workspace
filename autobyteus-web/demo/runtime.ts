@@ -14,12 +14,21 @@ import { validateCanonicalBoundary } from '~/services/agentStreaming/protocol/me
 import { backgroundTasksRunningOf } from './world/backgroundTasks';
 import { replyFor, words } from './world/content/replies';
 import { activitiesOf, conversationOf } from './world/conversations';
-import type { DemoAgent, DemoStatus, DemoWorld } from './world/DemoWorld';
+import type { DemoAgent, DemoRun, DemoStatus, DemoWorld } from './world/DemoWorld';
 
 type PresentationType = keyof typeof agentPresentationPayloadSchemas;
 
-/** One numbered frame of an agent's own stream. */
-export type DemoAgentFrame = { type: PresentationType; payload: Record<string, unknown>; sequence: number };
+/**
+ * One frame of an agent: numbered in the agent's own stream (`sequence`, `/ws/agent`) and in its run's one change sequence
+ * (`changeSequence`, the Team and Org streams).
+ */
+export type DemoAgentFrame = { type: PresentationType; payload: Record<string, unknown>; sequence: number; changeSequence: number };
+
+/** A member's input, as a Team or Org run publishes it (`MEMBER_INPUT_MESSAGE`), numbered in the run's change sequence. */
+export type DemoMemberInput = {
+  changeSequence: number; recipientAgentRunId: string; messageId: string; dedupeKey: string; content: string; receivedAt: string;
+  contextFilePaths: Array<{ path: string; type: string | null }>;
+};
 
 export type DemoSendPayload = {
   message_id?: string;
@@ -51,6 +60,7 @@ const nextId = (prefix: string) => `${prefix}-${Date.now().toString(36)}-${(ids 
 
 export class DemoRuntime {
   private readonly streams = new WeakMap<DemoAgent, AgentStream>();
+  private readonly runSequences = new WeakMap<DemoRun, { changeSequence: number; liveSequenceId: string }>();
 
   constructor(private readonly world: DemoWorld) {}
 
@@ -62,6 +72,22 @@ export class DemoRuntime {
       this.streams.set(agent, stream);
     }
     return stream;
+  }
+
+  /** A run's one change sequence (a Team's or Org's view counts in it) and the sequence's id. */
+  runSequenceOf(run: DemoRun): { changeSequence: number; liveSequenceId: string } {
+    let sequence = this.runSequences.get(run);
+    if (!sequence) {
+      sequence = { changeSequence: 0, liveSequenceId: nextId(`demo-root-seq-${run.runId}`) };
+      this.runSequences.set(run, sequence);
+    }
+    return sequence;
+  }
+
+  private nextChange(run: DemoRun): number {
+    const sequence = this.runSequenceOf(run);
+    sequence.changeSequence += 1;
+    return sequence.changeSequence;
   }
 
   /** The agent's input state: the demo's inputs are taken at once, so none waits. */
@@ -76,7 +102,7 @@ export class DemoRuntime {
     if (!type.startsWith('SEGMENT_')) (agentPresentationPayloadSchemas[type] as { parse(value: unknown): unknown }).parse(payload);
     const stream = this.streamOf(agent);
     stream.sequence += 1;
-    this.world.emit({ type: 'agent_frame', agent, frame: { type, payload, sequence: stream.sequence } });
+    this.world.emit({ type: 'agent_frame', agent, frame: { type, payload, sequence: stream.sequence, changeSequence: this.nextChange(agent.run) } });
   }
 
   private setStatus(agent: DemoAgent, status: DemoStatus): void {
@@ -100,6 +126,12 @@ export class DemoRuntime {
     const turnId = nextId('demo-turn');
     const sentAt = Date.now();
 
+    if (agent.memberName) {
+      this.world.emit({ type: 'member_input', agent, input: {
+        changeSequence: this.nextChange(agent.run), recipientAgentRunId: agent.agentRunId, messageId, dedupeKey, content,
+        receivedAt: new Date(sentAt).toISOString(), contextFilePaths: attached.map((path) => ({ path, type: null })),
+      } });
+    }
     conversationOf(this.world, agent).push({
       kind: 'message', role: 'user', content, messageId, dedupeKey, ts: Math.floor(sentAt / 1000),
       ...(attached.length ? { fileAttachments: attached.map((path) => ({ uri: path, fileType: 'Text', fileName: path.split('/').pop() ?? path })) } : {}),
@@ -115,7 +147,7 @@ export class DemoRuntime {
 
   private play(agent: DemoAgent, turnId: string, content: string, attached: string[]): void {
     const stream = this.streamOf(agent);
-    const reply = replyFor(agent.run === this.world.showcaseRun, content, attached);
+    const reply = replyFor({ showcase: agent.run === this.world.showcaseRun, member: agent.memberName !== null }, content, attached);
     const toolId = `${turnId}-tool`;
     const textId = `${turnId}-text`;
     const steps: Array<[number, () => void]> = [

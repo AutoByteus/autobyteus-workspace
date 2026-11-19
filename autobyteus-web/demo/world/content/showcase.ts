@@ -107,10 +107,10 @@ export const showcaseEntries = (at: number, projectTaskManager: string): Entry[]
   ];
 };
 
-/** The showcase's Activity: its tool calls (the finished ones), as the projection's activities carry them. */
-export const showcaseActivities = (at: number, runId: string): Entry[] => {
+/** The showcase's Activity: its conversation's tool calls (the same invocations), as the projection's activities carry them. */
+export const showcaseActivities = (at: number): Entry[] => {
   const tool = (n: number, toolName: string, type: string, contextText: string, args: Record<string, unknown>, extra: Record<string, unknown> = {}): Entry => ({
-    kind: 'tool', invocationId: `${runId}-a${n}`, toolName, type, status: 'success', contextText, arguments: args, logs: [],
+    kind: 'tool', invocationId: `demo-rich-t${n}`, toolName, type, status: 'success', contextText, arguments: args, logs: [],
     result: 'ok', error: null, ts: Math.floor((at + n * 20_000) / 1000), ...extra,
   });
   return [

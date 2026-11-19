@@ -7,6 +7,7 @@ import { DEMO_FILES } from '../world/content/files';
 import { activitiesOf, conversationOf } from '../world/conversations';
 import type { DemoAgent, DemoRun, DemoWorld } from '../world/DemoWorld';
 import { addressOf, isLive, orgExecutionTree, teamExecutionTree } from '../world/projections';
+import { agentRootView, hasAgentRootView, orgRootView } from '../world/rootViews';
 import { runTreeOf } from '../world/runTree';
 import type { DemoGraphqlHandlers } from './operations';
 
@@ -72,6 +73,28 @@ const runKindFromTreeKind = (kind: string): DemoRun['kind'] | undefined =>
 
 export const runHandlers = {
   GetRunTree: ({ kind, runId }, world) => ({ __typename: 'Query', runTree: runTreeOf(runOf(world, runId, runKindFromTreeKind(kind))) }),
+  GetAgentRunCollaboration: ({ runId }, world) => {
+    const run = world.run(runId);
+    return {
+      __typename: 'Query',
+      agentRunCollaboration: run && hasAgentRootView(run) ? { root_subject_kind: 'agent', root_run_id: runId, root_agent: agentRootView(world, run) } : null,
+    };
+  },
+  GetAgentOrgRunInspection: ({ orgRunId }, world) => ({
+    __typename: 'Query',
+    getAgentOrgRunInspection: { root_subject_kind: 'agent_org', root_run_id: orgRunId, root_org: orgRootView(world, runOf(world, orgRunId, 'org')) },
+  }),
+  // A live Org's checkpoint: its change sequence, and whether any of its agents is working.
+  GetAgentOrgExecutionCheckpoint: ({ orgRunId }, world) => {
+    const run = runOf(world, orgRunId, 'org');
+    return {
+      __typename: 'Query',
+      getAgentOrgExecutionCheckpoint: {
+        __typename: 'AgentOrgExecutionCheckpointPayload', orgRunId, changeSequence: world.runtime.runSequenceOf(run).changeSequence,
+        hasOpenExecutionWork: run.agents.some((agent) => agent.status === 'running'),
+      },
+    };
+  },
 
   GetRunProjection: ({ runId }, world) => {
     const run = runOf(world, runId, 'agent');

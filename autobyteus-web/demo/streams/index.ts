@@ -2,7 +2,9 @@
 import type { DemoStreamSession } from '../demoTransport';
 import { openAgentCollaborationStream } from './agentCollaborationStream';
 import { openAgentStream } from './agentStream';
+import { openOrgStream } from './orgStream';
 import { openRunStatusStream } from './runStatusStream';
+import { openTeamStream } from './teamStream';
 import type { DemoWorld } from '../world/DemoWorld';
 
 export type DemoStreamContext = {
@@ -40,6 +42,16 @@ const routes: DemoStreamRoute[] = [
     const agent = context.world.agent(decodeURIComponent(match[1]!));
     if (!agent || agent.run.kind !== 'agent') return unknownRun(context, match[1]!);
     return openAgentStream(context, agent);
+  }),
+  route(/^\/ws\/agent-team\/([^/]+)$/, (context, match) => {
+    const run = context.world.run(decodeURIComponent(match[1]!));
+    if (!run || run.kind !== 'team') return unknownRun(context, match[1]!);
+    return openTeamStream(context, run);
+  }),
+  route(/^\/ws\/agent-org\/([^/]+)$/, (context, match) => {
+    const run = context.world.run(decodeURIComponent(match[1]!));
+    if (!run || run.kind !== 'org') return unknownRun(context, match[1]!);
+    return openOrgStream(context, run);
   }),
   route(/^\/ws\/agent-collaboration\/([^/]+)$/, (context, match) => {
     const run = context.world.run(decodeURIComponent(match[1]!));
