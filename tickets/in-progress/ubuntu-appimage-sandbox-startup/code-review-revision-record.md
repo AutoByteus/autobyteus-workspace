@@ -5,6 +5,7 @@
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | code-review-report.md | Implementation Review / IR-002 completion | N/A | Fail — Local Fix | F-CR-001, F-CR-002 |
 | CRR-002 | code-review-report.md | Implementation Review / IR-003 fixes | Fail | Pass | F-CR-001/002 resolved |
+| CRR-003 | code-review-report.md | API/E2E Failure-Origin Review / API-REV-002 | Source Pass | Fail — Local Fix | F-API-01, F-API-02 |
 
 ## Revision Entries
 ### CRR-001 — Managed failure-continuation review
@@ -44,3 +45,12 @@ None (initial baseline).
 - New/remaining findings: **None**. Follow-ups: **None**. Score **9.4/10**, runtime/readiness now9.3; all ten categories ≥9.2.
 - Recommended primary recipient: **/api_e2e_engineer**, implementation-review pass rule. Source pass is not execution acceptance.
 - Remaining limits: prior AppImage is **IR-002 bytes, without IR-003 TS fixes**. Build current package before real lifecycle acceptance. All graphical Ubuntu authorization, 22/24/26 renderer sandbox, native ARM64/clean branch CI, two genuine signed updates without cached grants, synthetic data continuity, failure/refusal/rollback matrix and signing administration gates remain mandatory. No production secret/push/release/host-policy operation performed.
+
+### CRR-003 — Classify two packaged Settings update failures
+- Canonical report: `code-review-report.md`, focused API/E2E failure-origin round 3, 2026-11-19. Submitted evidence commit 1e34ab90eb, tested source IR-003/eb470a0d31. No production delta since source clearance. Large / High unchanged; implementation-review scope N/A.
+- Trigger: API/E2E Engineer, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`, `evidence/API-05-discrepancies.md`; API-05b, AC-006/008. SR-012/014/015, DS-003, ARCH-REV-003, IR-003, API-REV-001/002, DR N/A. Prior CRR-002 source Pass; current result **Fail — implementation-owned Local Fix**; no test-code pass.
+- Supported initiating basis: visible opt-out while verifying, and separate verified explicit restart; approved SCN-004/BEH-004. No new product requirement.
+- Prior finding resolution: F-CR-001 and F-CR-002 remain resolved (IR-003/CRR-002). Neither the block-after-refusal nor the later quit after an unknown manual outcome is the trigger here.
+- **F-API-01 open:** cancellation invalidates the stage generation but leaves verification projected as downloading and manual actions disabled. Confirmed source-review gap: cancellation safety checked, same-session manual usability missed.
+- **F-API-02 open:** verified target actually installed; no usable window/server after the explicit restart, separately launched identical bytes healthy. Runtime-only product integration failure localized to post-commit re-entry, precise native cause unproven. Do not infer a failed syscall or assume a replacement strategy.
+- Affected runtime/readiness conclusions fail; no general scorecard repeated. Prior package/CI controls retain only their scoped proof. No other finding/follow-up. Recipient: /implementation_engineer; then source rereview and real API/E2E retest, no delivery until all critical gates pass.
