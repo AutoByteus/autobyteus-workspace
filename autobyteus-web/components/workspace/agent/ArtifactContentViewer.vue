@@ -10,7 +10,8 @@
           <span data-testid="artifact-path-display" class="font-medium text-gray-800 truncate">{{ displayPath }}</span>
         </div>
 
-        <div v-if="supportsPreview && !isDeleted" class="flex items-center gap-1 border-l border-gray-200 pl-2 ml-2">
+        <!-- DC-011 (autobyteus-279, REQ-010): the phone shows artifacts read only, so it offers no Edit Mode / Preview switch. -->
+        <div v-if="supportsPreview && !isDeleted && !previewOnly" class="flex items-center gap-1 border-l border-gray-200 pl-2 ml-2">
           <button
             class="p-1.5 rounded-md transition-all duration-200 focus:outline-none"
             :class="viewMode === 'edit' ? 'bg-blue-50 text-blue-600' : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'"
@@ -107,6 +108,8 @@ const props = defineProps<{
   /** The owner subject of the agent run whose artifacts are shown; content is read through it. */
   readSubject: AgentRunReadSubject | null;
   refreshSignal?: number;
+  /** The phone: the artifact is shown read only, in its preview (no Edit Mode switch). */
+  previewOnly?: boolean;
 }>();
 
 const artifactContentDisplayModeStore = useArtifactContentDisplayModeStore();

@@ -38,6 +38,7 @@ Findings while porting:
 - **The compiled operations found two the phone can send.** The demo build compiles 252 operations; the measured inventory has 43. Checking the rest found the composer's `@` menu (`GetCollaboratorMentionCandidates`) and a Team's checkpoint (`GetTeamRunExecutionCheckpoint`) reachable on the phone; both are now answered (the `@` menu lists the sample agents and Teams). The other 207 are listed with a reason each (desktop pages and Settings, file editing, peers, and the rest); three are dead documents (FU-001).
 - **The showcase picture's URL.** The node names stored media by a relative URL (`/rest/files/<category>/<name>`), which a phone page resolves to the node because the node serves it. The demo page is the app's own (`autobyteus-demo://app`), so the relative URL reached the app's files (the build's `200.html`) and the picture broke. The demo world now gives its picture at its node's origin (`SHOWCASE_IMAGE_URL`); the transport rule (N-1) is unchanged.
 - **iPad panes without per-screen changes.** The reference moved each screen with CSS on its test id. The shell instead makes the right pane the containing block of its fixed-position screens (a transform), so every screen, and the viewers inside them, fills the pane; the run screen alone needs to know (no ←), through `useMobileSplitLayout`.
+- **A test that read Iconify's placeholder.** `AgentConversationFeed.spec.ts` (the jump arrow's exact signature) expected the glyph's classes `h-4 w-4` and a 16 × 16 view box: Iconify's loading placeholder, since the icon was never loaded in tests. With the local bundle the real `heroicons:arrow-down` draws (24 × 24, Iconify's own classes); the test now compares the glyph's layout classes and the real view box.
 - **Reference files.** The node stores a message's references as absolute paths and names each by `sha256(messageId \0 path)`; the demo's messages carry absolute paths in the demo folder and its route resolves the same ids.
 
 | Part | State | Files |
@@ -62,8 +63,8 @@ Findings while porting:
 | --- | --- | --- |
 | Demo identity (UIS-003, UIS-004; VIS-004, VIS-006) | done | `MobileRunList.vue` (the "Demo / Sample data" button with the sparkles mark, the welcome card, closed for the rest of an entry), `MobileConnectionSheet.vue` (the demo sheet and Leave demo), `MobilePairedShell.vue` (reads `isDemoSession` once), `utils/remoteAccess/shellBridge.ts` (`leaveDemo`), `utils/remoteAccess/demoSession.ts` (the welcome key); specs for each |
 | iPad layout (REQ-008; VIS-031, 033, 034, 035) | done | `MobilePairedShell.vue` (two panes from 1024 px: the 380 px list and a right pane that is the containing block of every other screen, so each fills it unchanged; "Choose a run"), `MobileBottomSheet.vue` (a centered 512 px card from 768 px), `composables/mobile/useMobileSplitLayout.ts` (the viewport width, never the user agent), `MobileRunTargetView.vue` / `MobileRunScreen.vue` (no ← beside the list); specs |
-| DC-007 (REQ-009) | to do | `AgentConversationFeed.vue` |
-| DC-011 (REQ-010) | to do | `ArtifactContentViewer.vue`, `MobileArtifacts.vue` |
+| DC-007 (REQ-009) | done | `composables/workspace/useOwnSendFollow.ts` (your own send follows; others' activity waits behind Jump to latest), wired in `AgentConversationFeed.vue`, which shares one `followLatest` with Jump to latest and a subject change, so the file stays within 500 lines (499); specs |
+| DC-011 (REQ-010) | done | `ArtifactContentViewer.vue` (`previewOnly`: no Edit Mode / Preview switch), `MobileArtifacts.vue` (passes it); specs |
 | Sweep probes | written, red until complete | `tests/e2e/mobile-demo-{crawl,sheets,upload,final}-probe.mjs`, `mobile-demo-probe-support.mjs`; `pnpm test:e2e:mobile-demo` |
 
 ## Steps 3–5
