@@ -3,20 +3,8 @@ import XCTest
 /// The iOS app's built-in demo (autobyteus-279; AC-001, AC-002, AC-005, AC-006 in the simulator): the start screen, Try
 /// demo, the demo code and link, Leave demo, a cold launch, and a share kept for the app. The demo needs no node.
 final class DemoUITests: XCTestCase {
-    private let uiReadyTimeout: TimeInterval = 30
-    /// The demo's first page: the bundled build, its demo node and the run list (generous for a loaded CI simulator).
-    private let demoLoadTimeout: TimeInterval = 90
-
     override func setUp() {
         continueAfterFailure = false
-    }
-
-    private func launch(_ environment: [String: String] = [:]) -> XCUIApplication {
-        let app = XCUIApplication()
-        app.launchEnvironment["AUTOBYTEUS_RESET_SAVED_NODES"] = "1"
-        environment.forEach { app.launchEnvironment[$0.key] = $0.value }
-        app.launch()
-        return app
     }
 
     /// The first screen: Scan, Try demo under it, and Other ways to connect with its two options.
@@ -96,11 +84,18 @@ final class DemoUITests: XCTestCase {
         XCTAssertTrue(probe.waitForExistence(timeout: demoLoadTimeout))
         XCTAssertEqual("network-probe:blocked", probe.label)
     }
+}
 
-    /// iPad landscape (REQ-008, VIS-032…035): the first screen's centered column, Type an address as a centered card, and
-    /// the demo's two panes with the empty pane's "Choose a run". iPhone has no such layout, so it is skipped there.
-    func testIPadLandscape() throws {
-        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "iPad only")
+/// iPad landscape (REQ-008, VIS-032…035): the first screen's centered column, Type an address as a centered card, and the
+/// demo's two panes with the empty pane's "Choose a run". Run against an iPad destination
+/// (`-only-testing:AutoByteusMobileUITests/DemoIPadUITests`); the iPhone smoke leaves it out (`ios-simulator-smoke.sh`).
+final class DemoIPadUITests: XCTestCase {
+    override func setUp() {
+        continueAfterFailure = false
+    }
+
+    func testIPadLandscape() {
+        XCTAssertEqual(UIDevice.current.userInterfaceIdiom, .pad, "Run this class on an iPad simulator")
         XCUIDevice.shared.orientation = .landscapeLeft
         addTeardownBlock { XCUIDevice.shared.orientation = .portrait }
         let app = launch()
@@ -117,8 +112,23 @@ final class DemoUITests: XCTestCase {
         waitForDemo(app, "ipad-landscape-demo")
         XCTAssertTrue(app.webViews.staticTexts["Choose a run"].exists, "The empty pane beside the list")
     }
+}
 
-    private func waitForDemo(_ app: XCUIApplication, _ name: String) {
+/// What both demo test classes use.
+private let uiReadyTimeout: TimeInterval = 30
+/// The demo's first page: the bundled build, its demo node and the run list (generous for a loaded CI simulator).
+private let demoLoadTimeout: TimeInterval = 90
+
+private extension XCTestCase {
+    func launch(_ environment: [String: String] = [:]) -> XCUIApplication {
+        let app = XCUIApplication()
+        app.launchEnvironment["AUTOBYTEUS_RESET_SAVED_NODES"] = "1"
+        environment.forEach { app.launchEnvironment[$0.key] = $0.value }
+        app.launch()
+        return app
+    }
+
+    func waitForDemo(_ app: XCUIApplication, _ name: String) {
         let welcome = app.webViews.staticTexts["Welcome to the demo"]
         XCTAssertTrue(welcome.waitForExistence(timeout: demoLoadTimeout), "The demo's run list with its welcome card")
         XCTAssertTrue(demoNodeButton(app).exists, "The node button names the demo")
@@ -126,16 +136,16 @@ final class DemoUITests: XCTestCase {
     }
 
     /// The node button that names the demo (WebKit exposes its `aria-haspopup="dialog"` button as an other element).
-    private func demoNodeButton(_ app: XCUIApplication) -> XCUIElement {
+    func demoNodeButton(_ app: XCUIApplication) -> XCUIElement {
         app.webViews.otherElements["Demo, sample data. About the demo"]
     }
 
-    private func tap(_ element: XCUIElement) {
+    func tap(_ element: XCUIElement) {
         XCTAssertTrue(element.waitForExistence(timeout: uiReadyTimeout))
         element.tap()
     }
 
-    private func attach(_ app: XCUIApplication, _ name: String) {
+    func attach(_ app: XCUIApplication, _ name: String) {
         let attachment = XCTAttachment(screenshot: app.screenshot())
         attachment.name = name
         attachment.lifetime = .keepAlways
