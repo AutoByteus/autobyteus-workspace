@@ -19,8 +19,8 @@
 - Release/publication/deployment report: `release-deployment-report.md` (with its Finalization Record)
 - Integration and post-integration verification: `origin/personal` had not moved since the bootstrap base, so no merge and no rerun: nothing but documents changed after the tested commits. Checks delivery ran: `pnpm install --frozen-lockfile --lockfile-only` (consistent), the artifact hygiene check and the Secret Gate (see the report).
 - Verification (evidence judgement or user check) and finalization state: every critical criterion directly proven by API/E2E on built servers, the desktop renderer and the phone bundle; no user check needed; release decision: none (RELEASE.md default). The phone probe's overall Fail is MSP-41 (file editor save read twice), outside this diff and recorded on autobyteus-458.
-- Terminal return to the Solution Designer: see the Finalization Record in `release-deployment-report.md`.
-- Terminal return message/reference: see the Finalization Record.
+- Terminal return to the Solution Designer: `Sent` after the record commit's push; the terminal message holds the user's-checkout result and the cleanup result.
+- Terminal return message/reference: the message to the Solution Designer; finalization: merge `b0c2d94117` on `origin/personal` (`release-deployment-report.md` § Finalization Record).
 - Why this baseline was recorded: first delivery of the ticket.
 - Next recipient/action: the Solution Designer verifies the package and sends the follow-ups FU-001 … FU-003 (none urgent).
 - Remaining blockers, rollback concerns, or untested scope: none blocking. R-2, R-4 and "a (b) message may still appear" (by design); the queued case ran on AGY only; a real network was emulated at the sockets (`handoff-summary.md` § Residual Risks For The User).

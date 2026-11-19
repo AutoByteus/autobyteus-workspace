@@ -85,7 +85,7 @@ None (no release).
 - Bootstrap context source: the Solution Designer's bootstrap (worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream`, branch `codex/send-on-unbound-stream`, base `origin/personal`) and `RELEASE.md` "Finalization Target".
 - Ticket branch: `codex/send-on-unbound-stream`
 - Finalization target remote / branch: `origin` / `personal`, `--no-ff` merge from a `finalize/send-on-unbound-stream` branch (RELEASE.md).
-- The outcome (commits, push, the user's checkout, cleanup) is in the "Finalization Record" at the end of this report, written after the push.
+- The outcome (commits, push, the user's checkout, cleanup) is in the "Finalization Record" at the end of this report, written after the push. Merge `b0c2d94117` on `origin/personal`.
 
 ## Release / Publication / Deployment
 
@@ -112,10 +112,23 @@ Revert the merge commit on `personal` (`git revert -m 1 <merge>`). Nothing persi
 ## Final Status
 
 - Verification complete (from the evidence, or the user's check where needed): `Yes`
-- Repository finalization complete: see the Finalization Record
+- Repository finalization complete: `Yes` (Finalization Record below)
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: see the Finalization Record
+- Applicable safe cleanup complete or not required: run after the record commit's push (Finalization Record, last two bullets); its result is in the terminal message
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: after the Finalization Record
-- Terminal package sent to the Solution Designer: see the Finalization Record
-- Terminal message/reference: see the Finalization Record
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: by `send_message_to` after the record commit's push and the cleanup
+- Terminal message/reference: the `send_message_to` message to the Solution Designer, address from `get_handoff_rules`
+
+## Finalization Record
+
+Written after the push of the merge, the way earlier tickets recorded theirs.
+
+- Ticket branch `codex/send-on-unbound-stream`: committed (tip `30c87b91dc`) and pushed to `origin` (`[new branch]`); Secret Gate on `origin/personal..codex/send-on-unbound-stream`: `PASS`, 14 commits.
+- Target refreshed before the merge and again before the push: `git fetch origin personal` showed `914eb36577` both times (no re-integration, no re-verification needed).
+- Merge: on `finalize/send-on-unbound-stream` (from `origin/personal` `914eb36577`), `git merge --no-ff codex/send-on-unbound-stream` = `b0c2d94117` (parents `914eb36577` and `30c87b91dc`; the merged tree equals the ticket branch's tree). Secret Gate on the merged state: `PASS`, 15 commits. Hygiene check on the archived tree: passed (99 653 tracked files).
+- Push: `git push origin HEAD:personal` `914eb36577..b0c2d94117`; `origin/personal` = `b0c2d94117` afterwards.
+- Release: none (no tag, no version bump, no pipeline).
+- This record: committed on `finalize/send-on-unbound-stream` and pushed to `origin/personal` as the commit that follows `b0c2d94117`.
+- The user's checkout (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`, on `personal`): `git fetch`, then `git merge --ff-only origin/personal` after this record's push, only if it is on `personal` with no local commits and git accepts it; nothing is stashed, reset or checked out there. The result (commit, or why not) is in the terminal message.
+- Cleanup, after this record's push: `git worktree remove --force /Users/normy/autobyteus_org/autobyteus-worktrees/send-on-unbound-stream` (only untracked build output `*/dist/` remains), `git worktree prune`, delete the local branches `finalize/send-on-unbound-stream` and `codex/send-on-unbound-stream`. Remote branch: `Not required` (the repository keeps pushed `codex/*` branches). The result is in the terminal message.
