@@ -12,7 +12,9 @@ export default defineNuxtPlugin({
   name: 'local-icons',
   enforce: 'pre',
   setup() {
-    for (const collection of bundle as IconifyJSON[]) addCollection(collection);
+    // A JSON import is typed as a union of its literal shapes; the file is Iconify's own format, written by
+    // `build-icon-bundle.mjs` from the `@iconify-json` sets (`buildIconBundle.spec.ts` checks it).
+    for (const collection of bundle as unknown as IconifyJSON[]) addCollection(collection);
     _api.setAPIModule('', {
       prepare: (provider: string, prefix: string, icons: string[]): ApiParams[] => [{ type: 'icons', provider, prefix, icons }],
       send: (_host: string, params: ApiParams, callback: (status: 'abort', data: number) => void) => {
