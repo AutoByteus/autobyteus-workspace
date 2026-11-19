@@ -33,15 +33,37 @@ const argument = (name) => {
 const chromeCandidates = ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'];
 
 /**
+ * A stand-in for the iOS app's shell bridge (`window.AutoByteusShell`): it answers `hello` as the app does in the demo
+ * and records each message the page posts in `window.__shellMessages`.
+ */
+const SHELL_STAND_IN = () => {
+  const listeners = new Set();
+  window.__shellMessages = [];
+  window.AutoByteusShell = {
+    postMessage: (raw) => {
+      const message = JSON.parse(raw);
+      window.__shellMessages.push(message);
+      if (message.type === 'hello') queueMicrotask(() => listeners.forEach((listener) => listener({ data: JSON.stringify({ type: 'shell', nodeCount: 0, deviceName: 'iPhone', nodeName: 'Demo' }) })));
+    },
+    addEventListener: (_type, listener) => listeners.add(listener),
+    removeEventListener: (_type, listener) => listeners.delete(listener),
+  };
+};
+
+/**
  * Runs `probe` once per size against the demo build. Each run gets a fresh browser context (a fresh demo, as each start
  * of the iOS demo is) and the size's own record; the process exits 1 when any run has a finding or an error.
+ * `options.shell` installs the stand-in shell bridge, as the iOS app gives the demo one.
  */
-export const runDemoProbe = async (name, probe, sizes = SIZES) => {
+export const runDemoProbe = async (name, probe, sizes = SIZES, options = {}) => {
   const build = path.resolve(argument('build') ?? path.join(webRoot, 'dist-mobile-demo/public'));
   if (!existsSync(path.join(build, 'index.html'))) throw new Error(`No demo build at ${build}: run \`pnpm build:mobile-web --demo\` first.`);
   const outputDir = path.resolve(argument('output-dir') ?? path.join(webRoot, 'test-results', name));
   mkdirSync(outputDir, { recursive: true });
   const executablePath = argument('browser-executable') ?? process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH ?? chromeCandidates.find((candidate) => existsSync(candidate));
+  // `--sizes=iphone,ipad-landscape`: only the sizes whose label starts with one of these.
+  const only = argument('sizes')?.split(',').filter(Boolean);
+  if (only) sizes = sizes.filter((size) => only.some((prefix) => size.label.startsWith(prefix)));
   const server = await startDemoBuildServer(build);
   const browser = await chromium.launch({ headless: true, executablePath });
   const results = [];
@@ -52,6 +74,7 @@ export const runDemoProbe = async (name, probe, sizes = SIZES) => {
       });
       // noVNC reads the clipboard on focus where Chrome reports it as askable; WebKit never does (see the handoff).
       await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: server.baseUrl });
+      if (options.shell) await context.addInitScript(SHELL_STAND_IN);
       const page = await context.newPage();
       const record = { size: size.label, findings: [], errors: [], log: [] };
       page.on('pageerror', (error) => record.errors.push(`pageerror ${String(error.message).slice(0, 200)}`));
@@ -66,7 +89,7 @@ export const runDemoProbe = async (name, probe, sizes = SIZES) => {
         page, size, record,
         sleep: (ms) => page.waitForTimeout(ms),
         shot: async (label) => {
-          await page.waitForTimeout(400);
+          await page.waitForTimeout(200);
           shots += 1;
           await page.screenshot({ path: path.join(outputDir, `${size.label}-${String(shots).padStart(3, '0')}-${label.replace(/[^a-z0-9]+/gi, '_').slice(0, 50)}.png`) });
         },
@@ -91,6 +114,8 @@ export const runDemoProbe = async (name, probe, sizes = SIZES) => {
       }
       record.errors = [...new Set(record.errors)];
       results.push(record);
+      // Each size's record as it ends, so a long run leaves its results.
+      writeFileSync(path.join(outputDir, `${name}.json`), `${JSON.stringify(results, null, 1)}\n`);
       await context.close();
     }
   } finally {

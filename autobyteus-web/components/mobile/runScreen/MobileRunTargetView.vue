@@ -1,7 +1,7 @@
 <template>
   <section class="fixed inset-0 z-10 flex h-[100dvh] flex-col bg-white text-slate-900" data-testid="mobile-run-screen" data-state="open">
     <header class="relative flex h-14 flex-shrink-0 items-center border-b border-slate-200 bg-white pl-1 pr-1">
-      <button type="button" class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full text-slate-600 active:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" aria-label="Back to runs" data-testid="mobile-run-back" @click="$emit('back')">
+      <button type="button" class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full text-slate-600 active:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" v-if="!split" aria-label="Back to runs" data-testid="mobile-run-back" @click="$emit('back')">
         <Icon icon="heroicons:arrow-left-20-solid" class="h-6 w-6" aria-hidden="true" />
       </button>
       <div class="flex h-12 min-w-0 flex-1 items-center gap-2 px-2" data-testid="mobile-run-title">
@@ -44,6 +44,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
+import { useMobileSplitLayout } from '~/composables/mobile/useMobileSplitLayout';
 import AgentEventMonitor from '~/components/workspace/agent/AgentEventMonitor.vue';
 import RemoteNodeChip from '~/components/workspace/remote/RemoteNodeChip.vue';
 import RemoteRunNotice from '~/components/workspace/remote/RemoteRunNotice.vue';
@@ -57,6 +58,8 @@ import { mobileRunSubjectLine } from '~/utils/mobile/mobileRunSubjectLine';
 
 const props = defineProps<{ target: ActiveAgentWorkspaceTarget; parentName: string | null }>();
 defineEmits<{ (event: 'back'): void; (event: 'open-view', view: MobileView): void }>();
+/** iPad landscape (autobyteus-279): the list is beside the run, so the run has no ←. */
+const split = useMobileSplitLayout();
 
 const { displayName, readOnly, senderNameByAgentRunId, remoteView } = useTargetConversation(() => props.target);
 const { t } = useLocalization();

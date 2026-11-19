@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // The iOS demo's last checks (autobyteus-279; the sweep's final.mjs): a live run's Settings are locked until Stop; after
-// Stop a change Saves and reopening shows it; Leave demo forgets everything, and a new demo starts as the first did.
+// Stop a change Saves and reopening shows it; the demo sheet's Leave demo asks the app to leave (the app then shows its
+// first screen and forgets the demo: XCUITests). A new demo is a new page: it starts as the first did.
 import { openRunNamed, runDemoProbe } from './mobile-demo-probe-support.mjs';
 
 await runDemoProbe('mobile-demo-final', async (tools) => {
@@ -27,6 +28,15 @@ await runDemoProbe('mobile-demo-final', async (tools) => {
   // Leave demo (UIS-004): the node button names the demo; its sheet's Leave demo ends it, and the next demo is fresh.
   await page.getByRole('button', { name: /^Demo, sample data/ }).click(); await sleep(400);
   await shot('demo-sheet'); await check('demo sheet');
-  await page.getByRole('button', { name: 'Leave demo' }).click(); await sleep(800);
-  record.log.push({ where: 'after leave', head: (await tools.text()).slice(0, 120) });
-});
+  await page.getByRole('button', { name: /Leave demo/ }).click(); await sleep(500);
+  const messages = await page.evaluate(() => window.__shellMessages.map((message) => message.type));
+  expect('leave demo', messages.includes('leaveDemo'), `the page posts leaveDemo to the app (posted: ${messages.join(', ')})`);
+  // A new demo (the app opens a new web view with new storage): fresh world, the welcome card again, the old model gone.
+  await page.goto(page.url(), { waitUntil: 'networkidle' });
+  await page.locator('[data-testid="mobile-run-list"]').waitFor({ timeout: 30_000 });
+  record.log.push({ where: 'new demo', head: (await tools.text()).slice(0, 120) });
+  await openRunNamed(tools, 'Daily Assistant');
+  await settings();
+  const fresh = (await page.locator('[data-testid="mobile-run-settings"]').innerText()).replace(/\s+/g, ' ');
+  expect('new demo forgets', fresh.includes('demo/sample-model') && !fresh.includes('demo/sample-reasoning-model'), 'a new demo has the sample model again');
+}, undefined, { shell: true });

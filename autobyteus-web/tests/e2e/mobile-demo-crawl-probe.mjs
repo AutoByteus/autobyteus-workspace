@@ -16,22 +16,22 @@ await runDemoProbe('mobile-demo-crawl', async (tools) => {
     if (!(await open.count())) continue;
     await open.click();
     await page.locator('[data-testid="mobile-run-conversation"]').waitFor({ timeout: 15_000 });
-    await sleep(1200); await shot(`run-${row.name}`); await check(`run ${row.depth}:${row.name}`);
+    await sleep(900); await shot(`run-${row.name}`); await check(`run ${row.depth}:${row.name}`);
     const more = page.getByRole('button', { name: 'More' });
     await more.first().click(); await sleep(300);
     const items = await page.getByRole('menuitem').evaluateAll((elements) => elements.map((element) => element.innerText.trim()));
     await page.keyboard.press('Escape'); await sleep(200);
     for (const item of items) {
       await more.first().click(); await sleep(250);
-      await page.getByRole('menuitem', { name: item }).first().click(); await sleep(1500);
+      await page.getByRole('menuitem', { name: item }).first().click(); await sleep(900);
       await shot(`run-${row.name}-${item}`); await check(`run ${row.name} › ${item}`);
       if (/Files|Artifacts/.test(item)) {
         const file = page.locator('[data-testid="mobile-files-row"], [data-testid="mobile-artifact-row"]').filter({ hasText: /\.(md|csv|png|ts)\b/ }).first();
-        if (await file.count()) { await file.click(); await sleep(1500); await shot(`run-${row.name}-${item}-file`); await check(`run ${row.name} › ${item} › first file`); await back(); }
+        if (await file.count()) { await file.click(); await sleep(900); await shot(`run-${row.name}-${item}-file`); await check(`run ${row.name} › ${item} › first file`); await back(); }
       }
       await back();
     }
-    await page.getByRole('button', { name: 'Back to runs' }).click(); await sleep(600);
-    await unfoldRunList(tools);
+    // Back to the list, which stayed mounted: its folds are as they were.
+    await page.getByRole('button', { name: 'Back to runs' }).click(); await sleep(400);
   }
 });

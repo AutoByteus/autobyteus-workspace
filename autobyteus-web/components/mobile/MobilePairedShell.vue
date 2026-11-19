@@ -1,6 +1,8 @@
 <template>
   <!-- The paired phone (autobyteus-277): the screen the route names, over the run list that stays mounted (it keeps its
-       scroll and folds). It owns the history load and poll, the status check, and the live collaboration stream. -->
+       scroll and folds). It owns the history load and poll, the status check, and the live collaboration stream. On an
+       iPad in landscape (autobyteus-279, REQ-008) the list is a 380 px pane and every other screen opens in the right pane:
+       the pane is the containing block of their fixed-position roots, so each fills it as it fills a phone. -->
   <section
     v-if="postPair && !firstCheckDone"
     class="flex min-h-screen w-full flex-col items-center justify-center px-6 text-center"
@@ -14,9 +16,10 @@
     <p class="mt-2 text-[0.9375rem] leading-6 text-slate-600">Opening your runs…</p>
   </section>
 
-  <template v-else>
+  <div v-else class="contents" :data-layout="split ? 'split' : 'single'">
     <MobileRunList
-      v-show="navigation.screen.value === 'list'"
+      v-show="split || navigation.screen.value === 'list'"
+      :class="split ? 'mobile-split-list' : ''"
       :tree="tree"
       :node-name="nodeName"
       :connection="connection"
@@ -26,6 +29,15 @@
       @new-run="navigation.openNewRun()"
       @retry="checkStatus()"
     />
+    <div :class="split ? 'mobile-split-pane' : 'contents'" data-testid="mobile-screen-pane">
+    <!-- iPad landscape with nothing open: the right pane says what it is for (UIS-015, VIS-033). -->
+    <section v-if="split && navigation.screen.value === 'list'" class="fixed inset-0 flex flex-col items-center justify-center bg-slate-50 px-10 text-center" data-testid="mobile-split-empty">
+      <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-slate-400 shadow-sm ring-1 ring-slate-200">
+        <Icon icon="heroicons:chat-bubble-left-right-20-solid" class="h-7 w-7" aria-hidden="true" />
+      </span>
+      <p class="mt-4 text-base font-semibold text-slate-900">Choose a run</p>
+      <p class="mt-1 max-w-xs text-sm leading-5 text-slate-500">Its conversation opens here.</p>
+    </section>
     <!-- A view screen whose subject is being reopened at page start shows the run screen's "Opening…" (DEC-015). -->
     <MobileRunScreen v-if="navigation.screen.value === 'run' || (restoring && !viewTarget && VIEWS.has(navigation.screen.value))" :tree="tree" />
     <template v-else-if="viewTarget">
@@ -42,6 +54,7 @@
       />
     </template>
     <MobileNewRun v-if="navigation.screen.value === 'new'" @close="navigation.back()" @launched="onLaunched" />
+    </div>
 
     <MobileConnectionSheet
       v-if="showConnection"
@@ -56,7 +69,7 @@
       @leave-demo="leaveDemo"
     />
     <MobileUnpairConfirm v-if="showUnpairConfirm" @cancel="showUnpairConfirm = false" @confirm="unpairPhone" />
-  </template>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -78,6 +91,7 @@ import { useMobileNavigation } from '~/composables/mobile/useMobileNavigation';
 import { useMobileRouteRunSync } from '~/composables/mobile/useMobileRouteRunSync';
 import { useMobileRunOpening } from '~/composables/mobile/useMobileRunOpening';
 import { useMobileRunTree } from '~/composables/mobile/useMobileRunTree';
+import { useMobileSplitLayout } from '~/composables/mobile/useMobileSplitLayout';
 import { useMobileSubjectRestore } from '~/composables/mobile/useMobileSubjectRestore';
 import { useRunHistorySectionLoad } from '~/composables/runHistory/useRunHistorySectionLoad';
 import { useActiveContextStore } from '~/stores/activeContextStore';
@@ -97,6 +111,7 @@ const props = defineProps<{
 const emit = defineEmits<{ (event: 'checked'): void }>();
 
 const sessionStore = useMobileNodeSessionStore();
+const split = useMobileSplitLayout();
 const activeContext = useActiveContextStore();
 const navigation = useMobileNavigation();
 const tree = useMobileRunTree();
@@ -206,3 +221,10 @@ watch([() => navigation.screen.value, viewTarget, restoring], ([screen, target, 
 const onLaunched = (draftRunId: string): void => { void navigation.openRun({ replace: true, rowKey: agentRunRowKey(draftRunId) }); };
 useMobileRouteRunSync(navigation);
 </script>
+
+<style>
+/* The iPad's landscape panes (REQ-008). A transform makes each pane the containing block of its fixed-position
+   descendants: the list's own screen and its "+" stay in the 380 px list; every other screen fills the right pane. */
+.mobile-split-list { right: auto; width: 380px; border-right: 1px solid rgb(226 232 240); transform: translateZ(0); }
+.mobile-split-pane { position: fixed; top: 0; bottom: 0; right: 0; left: 380px; transform: translateZ(0); }
+</style>

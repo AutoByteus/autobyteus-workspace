@@ -4,6 +4,7 @@
  * `mobile-world.mjs` `richConversation`, with `iosDemo.ts` `demoConversation`'s demo rules): no error block, no failed
  * tool, no platform notice; the upgrade check finished; the demo's own wording.
  */
+import { DEMO_ORIGIN } from '../../demoIdentity';
 import type { Entry } from './agentWork';
 
 const MARKDOWN_ANSWER = [
@@ -68,7 +69,12 @@ const DEMO_WORDING: Array<[RegExp, string]> = [
 const reworded = (text: string): string => DEMO_WORDING.reduce((out, [from, to]) => out.replace(from, to), text);
 
 /** The showcase's picture, served by the demo node's media route. */
-export const SHOWCASE_IMAGE_PATH = '/rest/media/images/release-1-6-banner.svg';
+/**
+ * The showcase's picture, as the node names a stored media file (`/rest/files/<category>/<name>`, media-storage-service.ts),
+ * at the demo node's own origin: on a phone the node serves, the node's relative URL resolves to the node; the demo page
+ * is the app's own (`autobyteus-demo://app`), so the demo names its node's origin.
+ */
+export const SHOWCASE_IMAGE_URL = `${DEMO_ORIGIN}/rest/files/images/release-1-6-banner.svg`;
 
 const UPGRADE_CHECK = 'Connector 2.4 found. Ready to upgrade to 1.6.';
 
@@ -97,7 +103,7 @@ export const showcaseEntries = (at: number, projectTaskManager: string): Entry[]
     tool('demo-rich-t4', 'edit_file', { path: 'docs/release-notes-1.6.md' }, 'Edited docs/release-notes-1.6.md.', 14_000),
     tool('demo-rich-t5', 'write_file', { path: 'docs/pilot-summary.md' }, 'Wrote docs/pilot-summary.md.', 16_000),
     tool('demo-rich-t6', 'run_terminal_command', { command: 'pnpm run upgrade:check --target 1.6' }, { stdout: UPGRADE_CHECK, exit_code: 0 }, 18_000),
-    { kind: 'message', role: 'assistant', content: reworded(MARKDOWN_ANSWER), media: { images: [SHOWCASE_IMAGE_PATH] }, ts: s(20_000) },
+    { kind: 'message', role: 'assistant', content: reworded(MARKDOWN_ANSWER), media: { images: [SHOWCASE_IMAGE_URL] }, ts: s(20_000) },
     { kind: 'message', role: 'user', content: 'Thanks. Anything the project manager said that I should know?', ts: s(70_000) },
     {
       kind: 'inter_agent_message', role: 'user', senderAgentRunId: projectTaskManager, senderAddress: '/project_task_manager', ts: s(80_000),

@@ -36,6 +36,8 @@ Findings while porting:
 - **Icons were fetched from the network.** `@iconify/vue` captured the real `fetch` when it loaded, before the demo transport, so the demo's icons came from `api.iconify.design` (the iOS content rule list would have blocked them). The local bundle replaces that path in every build: the API module now fetches nothing and logs a missing name.
 - **Icon collections: five, not four.** The desktop shell names two Phosphor icons (`ph:brain`, `ph:tree-view`). The Iconify API is off in every build, so the bundle holds every name in the source, as the design's rule says, and that includes `ph`.
 - **The compiled operations found two the phone can send.** The demo build compiles 252 operations; the measured inventory has 43. Checking the rest found the composer's `@` menu (`GetCollaboratorMentionCandidates`) and a Team's checkpoint (`GetTeamRunExecutionCheckpoint`) reachable on the phone; both are now answered (the `@` menu lists the sample agents and Teams). The other 207 are listed with a reason each (desktop pages and Settings, file editing, peers, and the rest); three are dead documents (FU-001).
+- **The showcase picture's URL.** The node names stored media by a relative URL (`/rest/files/<category>/<name>`), which a phone page resolves to the node because the node serves it. The demo page is the app's own (`autobyteus-demo://app`), so the relative URL reached the app's files (the build's `200.html`) and the picture broke. The demo world now gives its picture at its node's origin (`SHOWCASE_IMAGE_URL`); the transport rule (N-1) is unchanged.
+- **iPad panes without per-screen changes.** The reference moved each screen with CSS on its test id. The shell instead makes the right pane the containing block of its fixed-position screens (a transform), so every screen, and the viewers inside them, fills the pane; the run screen alone needs to know (no ←), through `useMobileSplitLayout`.
 - **Reference files.** The node stores a message's references as absolute paths and names each by `sha256(messageId \0 path)`; the demo's messages carry absolute paths in the demo folder and its route resolves the same ids.
 
 | Part | State | Files |
@@ -59,7 +61,7 @@ Findings while porting:
 | Part | State | Files |
 | --- | --- | --- |
 | Demo identity (UIS-003, UIS-004; VIS-004, VIS-006) | done | `MobileRunList.vue` (the "Demo / Sample data" button with the sparkles mark, the welcome card, closed for the rest of an entry), `MobileConnectionSheet.vue` (the demo sheet and Leave demo), `MobilePairedShell.vue` (reads `isDemoSession` once), `utils/remoteAccess/shellBridge.ts` (`leaveDemo`), `utils/remoteAccess/demoSession.ts` (the welcome key); specs for each |
-| iPad layout (REQ-008) | to do | `MobilePairedShell.vue`, `MobileBottomSheet.vue` |
+| iPad layout (REQ-008; VIS-031, 033, 034, 035) | done | `MobilePairedShell.vue` (two panes from 1024 px: the 380 px list and a right pane that is the containing block of every other screen, so each fills it unchanged; "Choose a run"), `MobileBottomSheet.vue` (a centered 512 px card from 768 px), `composables/mobile/useMobileSplitLayout.ts` (the viewport width, never the user agent), `MobileRunTargetView.vue` / `MobileRunScreen.vue` (no ← beside the list); specs |
 | DC-007 (REQ-009) | to do | `AgentConversationFeed.vue` |
 | DC-011 (REQ-010) | to do | `ArtifactContentViewer.vue`, `MobileArtifacts.vue` |
 | Sweep probes | written, red until complete | `tests/e2e/mobile-demo-{crawl,sheets,upload,final}-probe.mjs`, `mobile-demo-probe-support.mjs`; `pnpm test:e2e:mobile-demo` |

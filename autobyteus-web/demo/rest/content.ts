@@ -2,7 +2,7 @@
  * The demo node's file content routes (autobyteus-279), as the node answers them: a node file by its absolute path
  * (`node-files.ts`), a workspace file by its relative path (`workspaces.ts`; Files' pictures), a run's or member's file change (`run-file-changes.ts`), a message's reference file
  * (`team-communication.ts`, `agent-org-references.ts`, `agent-collaboration-references.ts`), and a conversation's picture
- * (`media.ts`). Every file comes from the demo folder; a file it does not have is the node's refusal.
+ * (`files.ts`). Every file comes from the demo folder; a file it does not have is the node's refusal.
  */
 import sha256 from 'crypto-js/sha256';
 import { DEMO_IMAGE_SVG } from '../world/content/files';
@@ -93,6 +93,6 @@ export const contentRoutes: DemoRestRoute[] = [
   get(/^\/rest\/agent-collaborations\/([^/]+)\/communication\/messages\/([^/]+)\/references\/([^/]+)\/content$/, ([runId, messageId, referenceId], _url, world) =>
     referenceContent(world, 'agent', runId!, messageId!, referenceId!)),
 
-  // The showcase's picture (`SHOWCASE_IMAGE_PATH`), the one media file of the demo.
-  get(/^\/rest\/media\/images\/release-1-6-banner\.svg$/, () => userFile({ mimeType: 'image/svg+xml', body: DEMO_IMAGE_SVG })),
+  // The showcase's picture (`SHOWCASE_IMAGE_URL`), the one media file of the demo (the node's `/rest/files/*`).
+  get(/^\/rest\/files\/images\/release-1-6-banner\.svg$/, () => userFile({ mimeType: 'image/svg+xml', body: DEMO_IMAGE_SVG })),
 ];
