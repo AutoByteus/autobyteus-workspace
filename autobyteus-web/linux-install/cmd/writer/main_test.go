@@ -31,7 +31,7 @@ func signedPayload(t *testing.T, key ed25519.PrivateKey, version string) (protoc
 	return protocol.Request{Operation: "stage", Record: data, Signature: ed25519.Sign(key, data), Channel: "beta"}, payload, r
 }
 
-func socketRequest(t *testing.T, images *store.Store, uid uint32, request []byte) (protocol.Response, error) {
+func socketRequest(t *testing.T, images *store.Store, uid uint32, request []byte, readReply bool) (protocol.Response, error) {
 	t.Helper()
 	listener, err := net.ListenUnix("unix", &net.UnixAddr{Name: filepath.Join(t.TempDir(), "writer.sock"), Net: "unix"})
 	if err != nil {
@@ -54,6 +54,12 @@ func socketRequest(t *testing.T, images *store.Store, uid uint32, request []byte
 	if err = c.SetDeadline(time.Now().Add(5 * time.Second)); err != nil {
 		t.Fatal(err)
 	}
+	// A caller that lost its receive channel cannot infer the commit from its own reply.
+	if !readReply {
+		if err = c.CloseRead(); err != nil {
+			return protocol.Response{}, err
+		}
+	}
 	if _, err = c.Write(request); err != nil {
 		return protocol.Response{}, err
 	}
@@ -62,7 +68,9 @@ func socketRequest(t *testing.T, images *store.Store, uid uint32, request []byte
 		return protocol.Response{}, err
 	}
 	var response protocol.Response
-	err = json.NewDecoder(c).Decode(&response)
+	if readReply {
+		err = json.NewDecoder(c).Decode(&response)
+	}
 	c.Close()
 	select {
 	case <-done:
@@ -111,7 +119,7 @@ func TestWriterSocketTransactions(t *testing.T) {
 		if e != nil {
 			t.Fatal(e)
 		}
-		response, e := socketRequest(t, images, uint32(os.Getuid()), append(append(raw, '\n'), payload...))
+		response, e := socketRequest(t, images, uint32(os.Getuid()), append(append(raw, '\n'), payload...), true)
 		if e != nil {
 			t.Fatal(e)
 		}
@@ -132,12 +140,12 @@ func TestWriterSocketTransactions(t *testing.T) {
 	// An unauthorized peer must receive no identity or reply. The kernel-reported UID
 	// is real; the configured installation UID differs. No identity switching needed.
 	raw := []byte("{\"operation\":\"status\"}\n")
-	response, err := socketRequest(t, images, uint32(os.Getuid()+1), raw)
+	response, err := socketRequest(t, images, uint32(os.Getuid()+1), raw, true)
 	if err == nil || len(response.Record) != 0 {
 		t.Fatal("wrong peer obtained writer identity", response, err)
 	}
 	for _, bad := range []string{"{\"operation\":\"status\",\"destination\":\"/tmp/other\"}\n", "{} {}\n"} {
-		response, err := socketRequest(t, images, uint32(os.Getuid()), []byte(bad))
+		response, err := socketRequest(t, images, uint32(os.Getuid()), []byte(bad), true)
 		if err != nil || response.Error == "" {
 			t.Fatal("malformed request not refused", response, err)
 		}
@@ -175,7 +183,7 @@ func TestWriterSocketTransactions(t *testing.T) {
 		}
 		baseline = candidate
 	}
-	q, body, _ := signedPayload(t, key, "1.5.15")
+	q, body, final := signedPayload(t, key, "1.5.15")
 	q.ExpectedDigest = baseline.SHA256
 	receipt := call(q, body)
 	if receipt.Error != "" {
@@ -197,5 +205,18 @@ func TestWriterSocketTransactions(t *testing.T) {
 	}
 	if response = call(q, body); response.Error != "" || response.StageID == "" {
 		t.Fatal("retry cannot restage", response)
+	}
+	// No activation reply is available to the caller. Reconcile using signed status,
+	// not the stale baseline or an assumption that a missing reply means failure.
+	lostReply := protocol.Request{Operation: "activate", StageID: response.StageID, ExpectedDigest: baseline.SHA256, Channel: q.Channel}
+	wire, err := json.Marshal(lostReply)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err = socketRequest(t, images, uint32(os.Getuid()), append(wire, '\n'), false); err != nil {
+		t.Fatal(err)
+	}
+	if actual := status(); actual.SHA256 != final.SHA256 {
+		t.Fatalf("after lost activation reply: got verified %s, want %s", actual.Version, final.Version)
 	}
 }

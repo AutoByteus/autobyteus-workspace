@@ -1,0 +1,27 @@
+# API-04d | API-04d-current-resolute | 2026-11-19 | CRR-004 (reviewed product c90f3ba8f2); Ubuntu26.04 x64 guest
+{"status":"ok","message":"Server is running"}
+autobyteus
+731d3f61cdfb39f3b87400ac026605153702db3c86b85269072e78ba3a84d5ce  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+kernel.apparmor_restrict_unprivileged_userns = 1
+127.0.0.1 - - [19/Nov/2026 13:03:38] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 13:03:38] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json.sig HTTP/1.1" 200 -
+dbus-daemon[2440]: [session uid=1000 pid=2440 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=2453 comm="/usr/lib/policykit-1-gnome/polkit-gnome-authentica" label="unconfined")
+dbus-daemon[2440]: [session uid=1000 pid=2440 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[2468]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=2453 comm="/usr/lib/policykit-1-gnome/polkit-gnome-authentica" label="unconfined")
+dbus-daemon[2468]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+{"status":"ok","message":"Server is running"}
+autobyteus
+renderer 2565 Seccomp=2 NoNewPrivs=1 and nested PID namespace ['2565', '4', '1']
+feed log
+Serving HTTP on 127.0.0.1 port 18889 (http://127.0.0.1:18889/) ...
+dbus-daemon[2776]: [session uid=1000 pid=2776 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=2787 comm="/usr/lib/policykit-1-gnome/polkit-gnome-authentica" label="unconfined")
+dbus-daemon[2776]: [session uid=1000 pid=2776 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[2816]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=2787 comm="/usr/lib/policykit-1-gnome/polkit-gnome-authentica" label="unconfined")
+dbus-daemon[2816]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+{"status":"ok","message":"Server is running"}
+autobyteus
+renderer 2901 Seccomp=2 NoNewPrivs=1 and nested PID namespace ['2901', '4', '1']
+feed log
+Serving HTTP on 127.0.0.1 port 18889 (http://127.0.0.1:18889/) ...

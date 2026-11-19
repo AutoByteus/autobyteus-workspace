@@ -1,0 +1,6 @@
+# API-03c | API-03c-current-node | 2026-11-19 | CRR-004 (reviewed product c90f3ba8f2); Linux x64 repository / isolated native fixture
+API-03c CRR-004, IR-005 current signed test fixture, Ubuntu x64, 2026-11-19
+{"argv":["space argument","--example"],"node":"24.19.0","exec":"/tmp/.mount_AutoByYa5Ib1/autobyteus"}
+  exit= 23
+outer-group-signal exit= 42 stderr=
+PASS current packaged real ELF receives SIGTERM and exits 42; argv and exit23 preserved

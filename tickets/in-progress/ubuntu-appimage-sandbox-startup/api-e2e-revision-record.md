@@ -5,6 +5,7 @@
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code Reviewer CRR-002 Pass | SR-012/014, DS-003, ARCH-REV-003, IR-003, CRR-002; DR N/A | N/A | Blocked / 71.4% |
 | API-REV-002 | User/manager requests continued independent checks and SR-015 Linux-only native proof | SR-015, DS-003, IR-003, CRR-002 | Blocked / 71.4% | Fail / 76.4% |
+| API-REV-003 | CRR-004 after F-API-01/02 fixes | SR-016, DS-004, ARCH-REV-004, IR-004/005, CRR-004; native authority SR-015 | Fail / 76.4% | Fail / 87.0% |
 
 ## API-REV-001 — Current package and graphical Ubuntu24 evidence
 Baseline investigation/execution after source review. Reused current126/6 owner tests and both typechecks by source impact, rather than repeating them. Fresh source0df0c901e4 clone/frozen install/full x64 build passed, including packaged server and real Node contract. Added cmd/writer/main_test.go for actual Unix socket handler/store integration; passed. No production source changes.
@@ -17,3 +18,10 @@ Selected full package paths rather than substituting mock-based proof. Clean ful
 
 API-08: SR-015 isolated native Linux jobs both Pass; actual build, test signatures, metadata/engine checks, packaged server on x64/ARM64, traceable candidate and tuple in API-08b-receipt.json. Owned scratch CI ref removed; combined release workflow not executed. No new durable test code this round; baseline Unix-socket suite still awaits proportional review upon a future Pass. Remaining case matrix remains in the execution ledger.
 Ubuntu 22 capable and 26 restricted actual entry paths further improved host-fidelity and direct-launch coverage (API-04c). No change to either failure finding.
+
+## API-REV-003 — update regressions resolved; new desktop recovery failures
+
+Current c90f3ba8f2/ac263c11f5, no QA product source changes. F-API-01 opt-out during verification restores manual controls **in the same session**. F-API-02 direct and menu Install & Restart each produced exactly one healthy, sandboxed current-version successor on new PIDs, no operator relaunch. Confirmed-old stage loss displayed correct retry notification; unknown outcome did not relaunch. Independent ordinary updates across .13/.14/.15, no cached admin authorization, retained settings/work, active draft and clock-shift, beta/stable controls, bad bytes and actual guest reboot. Current clean native x64/ARM64 run 44528893237 passed; prior CI not used for the new compiled companion.
+
+New AC-003 failures F-API-03 (invalid installation → lstat-only UI) and F-API-04 (insufficient space after successful authorization → generic exit status only in UI). Refusal, rollback and privacy controls passed. See evidence/API-04e-06d-recovery-findings.md and current report Cases/Acceptance-Criteria Proof. More recovery evidence: sync/attribute failure, actual small-volume refusal, real three-minute private handler timeout and discarded activation reply with fresh signed status. Durable writer/main_test.go extended; local complete Go suite and 152 current updater/shutdown tests passed. Earlier baseline and historic gaps are not current classifications. Overall 87.0%, Fail; request focused failure-origin review, not successful-test or release handoff. Next round targets the two desktop failure/recovery paths without weakening authorization; retained test-owned fixtures only.
+TESTING.md adds a general graphical-installer refusal rule: inspect visible recovery advice separately from safe rollback or a helper stderr message. No release-guide change.

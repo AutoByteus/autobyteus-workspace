@@ -1,0 +1,6 @@
+# API-06e | API-06e-timeout | 2026-11-19 | CRR-004 (reviewed product c90f3ba8f2); Linux x64 repository / isolated native fixture
+=== RUN   TestQASlowFixtureRead
+    qa_timeout_test.go:86: one private fixture timeout in 3m0.095245835s; live 1.5.13; orphan=0
+--- PASS: TestQASlowFixtureRead (180.10s)
+PASS
+ok  	autobyteus.local/desktop/linux-install/cmd/writer	180.118s
