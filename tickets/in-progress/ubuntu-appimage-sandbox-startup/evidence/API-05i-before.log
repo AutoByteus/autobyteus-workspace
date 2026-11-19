@@ -1,0 +1,42 @@
+# API-05i-before | 2026-11-19 | reviewed product 8f10fa9287 | Ubuntu 26.04 x64 (CLI/local fixtures or explicit real update); operation: see matching case in execution report
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+
+332aefbf8bc26b353bd270fd3d1bcf088a6ddfc0139516c56a471e8eea568b53  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+8e0193bcd79e65db92762ad8549b5ec4f82eb7174319d01565fef22b9c1dc67c  /home/witness/qa4-update-profile/server-data/temp_workspace/qa4-saved
+temp-grants-query=0
+{"supervisor": [{"pid": "3865", "ppid": "1", "exe": "/tmp/.mount_AutoBys0Z5T9/AppRun", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["3865"]}], "main": [{"pid": "3951", "ppid": "3865", "exe": "/tmp/.mount_AutoBys0Z5T9/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["3951"]}], "server": [{"pid": "4053", "ppid": "3951", "exe": "/tmp/.mount_AutoBys0Z5T9/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["4053"]}], "renderer": [{"pid": "4208", "ppid": "3996", "exe": "/tmp/.mount_AutoBys0Z5T9/autobyteus", "uid": "1000", "NoNewPrivs": "1", "Seccomp": "2", "NSpid": ["4208", "4", "1"]}]}

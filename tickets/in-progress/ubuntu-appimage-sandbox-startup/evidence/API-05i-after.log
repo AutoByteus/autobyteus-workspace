@@ -1,0 +1,11 @@
+# API-05i-after | 2026-11-19 | reviewed product 8f10fa9287 | Ubuntu 26.04 x64 (CLI/local fixtures or explicit real update); operation: see matching case in execution report
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Could not connect to server
+{"status":"ok","message":"Server is running"}
+b0d5cf5087a56b2c3aaa9a93dad9bdb89266572e989a4e638bb29c414311bf50  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+8e0193bcd79e65db92762ad8549b5ec4f82eb7174319d01565fef22b9c1dc67c  /home/witness/qa4-update-profile/server-data/temp_workspace/qa4-saved
+autobyteus
+{"supervisor": [{"pid": "3865", "ppid": "1", "exe": "/tmp/.mount_AutoBy8SgZ5S/AppRun", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["3865"]}], "main": [{"pid": "4530", "ppid": "3865", "exe": "/tmp/.mount_AutoBy8SgZ5S/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["4530"]}], "server": [{"pid": "4586", "ppid": "4530", "exe": "/tmp/.mount_AutoBy8SgZ5S/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["4586"]}], "renderer": [{"pid": "4669", "ppid": "4536", "exe": "/tmp/.mount_AutoBy8SgZ5S/autobyteus", "uid": "1000", "NoNewPrivs": "1", "Seccomp": "2", "NSpid": ["4669", "4", "1"]}]}

@@ -1,0 +1,15 @@
+# API-08d-native | 2026-11-19 | reviewed product 8f10fa9287 | GitHub native Linux x64/ARM64; operation: see matching case in execution report
+build-linux-arm64	Install Linux build deps	2026-11-19T13:55:54.7810108Z Linux aarch64
+build-linux-arm64	Setup pinned native toolchain	2026-11-19T13:56:45.2335144Z go version go1.27.4 linux/arm64
+build-linux-arm64	Sign build-only final bytes with disposable trust	2026-11-19T14:02:18.1093749Z Verified signed desktop release 1.5.13 arm64
+build-linux-arm64	Verify Linux ARM64 AppImage and updater metadata	2026-11-19T14:02:19.4752726Z Verified native AppRun, unchanged Electron ELF, provisioner/client and sandbox-preserving desktop Exec
+build-linux-arm64	Verify Linux ARM64 packaged server startup	2026-11-19T14:02:23.6164271Z Packaged server startup validation passed for /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+build-linux-arm64	Record verified architecture and digest	2026-11-19T14:02:24.0197257Z 108a578c25a60b076d782ec9c987388f374a1ad8778bf6ec1634772611787df0  autobyteus-web/electron-dist/AutoByteus_personal_linux-arm64-1.5.13.AppImage
+build-linux-arm64	Assert packaged native companion architecture	2026-11-19T14:02:24.0782687Z autobyteus-web/electron-dist/linux-arm64-unpacked/managed-restart.node: ELF 64-bit LSB shared object, ARM aarch64, version 1 (SYSV), dynamically linked, BuildID[sha1]=5e5c1d7fc26595a6dc706fd9bce434aff62cfb94, not stripped
+build-linux-x64	Install Linux build deps	2026-11-19T13:56:26.3771200Z Linux x86_64
+build-linux-x64	Setup pinned native toolchain	2026-11-19T13:57:04.0226455Z go version go1.27.4 linux/amd64
+build-linux-x64	Sign build-only final bytes with disposable trust	2026-11-19T14:03:10.9763972Z Verified signed desktop release 1.5.13 x64
+build-linux-x64	Verify Linux x64 AppImage and updater metadata	2026-11-19T14:03:12.9068856Z Verified native AppRun, unchanged Electron ELF, provisioner/client and sandbox-preserving desktop Exec
+build-linux-x64	Verify Linux x64 packaged server startup	2026-11-19T14:03:17.3428771Z Packaged server startup validation passed for /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/electron-dist/linux-unpacked/resources/server
+build-linux-x64	Record verified architecture and digest	2026-11-19T14:03:18.9695105Z b48ce67f56e90297774020ff2710bfc8a41a285e66c4ef9947ffd7959095869f  autobyteus-web/electron-dist/AutoByteus_personal_linux-x64-1.5.13.AppImage
+build-linux-x64	Assert packaged native companion architecture	2026-11-19T14:03:18.9967629Z autobyteus-web/electron-dist/linux-unpacked/managed-restart.node: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, BuildID[sha1]=ad26b26f0270a75c3534d2b0feff76a5f91da365, not stripped
