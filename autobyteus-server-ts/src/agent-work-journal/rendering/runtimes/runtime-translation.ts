@@ -55,6 +55,11 @@ export type RuntimeTranslation = Readonly<{
   normalizeResult(result: RecordedResult): NormalizedToolResult;
   /** Rewrites an older wrapped call into its recorded inner call (AGY `call_mcp_tool`). */
   unwrapCall?(call: RecordedCall): RecordedCall;
+  /**
+   * This recorded call (as recorded, before `unwrapCall`) is the runtime's own plumbing and says nothing about the agent's work.
+   * The renderer leaves it out only when its result is in the same file and succeeded; any other outcome still renders.
+   */
+  isRuntimePlumbing?(call: RecordedCall): boolean;
   /** Splits a name this runtime qualifies with its server (`server.tool`); null for an unqualified name. */
   splitToolName?(name: string): QualifiedToolName | null;
   normalizeAgentText?(text: string): string;

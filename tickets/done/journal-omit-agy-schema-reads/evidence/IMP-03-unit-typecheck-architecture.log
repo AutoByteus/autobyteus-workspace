@@ -1,0 +1,18 @@
+Check: IMP-03
+Command: pnpm test:unit; node scripts/typecheck.mjs; vitest run tests/architecture
+Commit: 383bbf6ea5
+Environment: macOS arm64, Node 22, pnpm 10.28.2; the ticket worktree after pnpm install --frozen-lockfile, prepare:shared, prisma generate
+Date: 2026-11-19
+
+ FAIL  tests/architecture/tracked-imports.test.ts > tracked imports > finds no tracked code importing an untracked file in this repository
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports definition changes per folder and ignores skills and other files
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > re-arms a root whose folder was replaced in place (GitHub update rename swap)
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > repairs a folder that stays unwatched only once, warns, and reconciles on every catch-up
+ Test Files  2 failed | 1028 passed | 5 skipped (1035)
+      Tests  4 failed | 8507 passed | 9 skipped (8520)
+The architecture test (tracked-imports) failed in that run only because the new files were not yet committed; after the commit: tests/architecture 13 files passed.
+typecheck: production errors: 0; test-file errors: 1006 in 315 files (baseline 1006 in 315 files)  PASS
+
+agent-package-folder-watcher.test.ts (fs.watch timing, 30-40 s timeouts) fails intermittently in this environment and also on the BASE source (69e89271fb): 'Tests  1 failed | 21 passed (22)'. It does not touch the Work Journal.
+     × re-arms a root whose folder was replaced in place (GitHub update rename swap) 35249ms
+      Tests  1 failed | 21 passed (22)
