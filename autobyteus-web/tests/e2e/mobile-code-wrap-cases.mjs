@@ -168,6 +168,9 @@ const measureRoot = (root, fences) => {
   // RSK-001: the root fits inside every ancestor's box (nothing of it cut off or pushing a host wider).
   const cutBy = [];
   for (let el = root.parentElement; el && el !== document.documentElement; el = el.parentElement) {
+    // An element with `display: contents` makes no box (its rect is empty), so it cuts nothing: its children are laid out
+    // in its parent (the phone shell's single-pane wrappers, autobyteus-279).
+    if (getComputedStyle(el).display === 'contents') continue;
     const box = el.getBoundingClientRect();
     const innerRight = box.left + el.clientLeft + (el.clientWidth || box.width);
     if (rootBox.right > innerRight + 1 || rootBox.left < box.left - 1) cutBy.push({ tag: el.tagName.toLowerCase(), cls: String(el.className).slice(0, 60), right: Math.round(innerRight), rootRight: Math.round(rootBox.right) });
