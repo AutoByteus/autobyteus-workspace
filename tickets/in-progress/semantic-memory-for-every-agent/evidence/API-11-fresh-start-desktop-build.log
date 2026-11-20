@@ -1,0 +1,68 @@
+# API-11 fresh-start desktop build (macOS ARM64) | commit 42c2f5189b | clone /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ec554-fresh-start.J32383 | 2026-11-20T19:16:01Z | load { 52.22 51.97 52.75 }
+
+## git clone --no-local + checkout | 2026-11-20T19:16:01Z
+build output present before install: 3 dist folders (tracked only)
+
+## pnpm install --frozen-lockfile | 2026-11-20T19:17:34Z
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 8.7s using pnpm v10.28.2
+
+## build:electron:mac -- --arm64 | 2026-11-20T19:17:43Z
+> cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm typecheck && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --mac -- --arm64
+> autobyteus@1.5.14-beta.1 guard:web-boundary /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ec554-fresh-start.J32383/repo/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+[guard:web-boundary] Passed.
+> autobyteus@1.5.14-beta.1 guard:localization-boundary /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ec554-fresh-start.J32383/repo/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+[guard:localization-boundary] Passed.
+[typecheck] Nuxt app (tsconfig.json): 60 errors, exit 2, 44.5s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.0s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 25.1s
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS
+Starting electron-builder...
+  • electron-builder  version=25.1.8 os=25.5.0
+  • @electron/rebuild already used by electron-builder, please consider to remove excess dependency from devDependencies
+To ensure your native dependencies are always matched electron version, simply add script `"postinstall": "electron-builder install-app-deps" to your `package.json`
+  • building        target=DMG arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.14-beta.1.dmg
+  • building        target=macOS zip arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.14-beta.1.zip
+  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.5.14-beta.1.dmg.blockmap
+  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.5.14-beta.1.zip.blockmap
+  '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ec554-fresh-start.J32383/repo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.14-beta.1.dmg.blockmap',
+  '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ec554-fresh-start.J32383/repo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.14-beta.1.dmg',
+  '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ec554-fresh-start.J32383/repo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.14-beta.1.zip.blockmap',
+  '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ec554-fresh-start.J32383/repo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.14-beta.1.zip'
+build exit 0
+
+## Verify bundled Prisma ARM64 engine target | 2026-11-20T19:24:04Z
+Prisma engines dir: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+Prisma client dir: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client
+prisma verify ok
+
+## Verify packaged terminal runtime ARM64 | 2026-11-20T19:24:05Z
+[terminal-runtime] node-pty root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ec554-fresh-start.J32383/repo/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ec554-fresh-start.J32383/repo/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ec554-fresh-start.J32383/repo/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] node-pty root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ec554-fresh-start.J32383/repo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ec554-fresh-start.J32383/repo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ec554-fresh-start.J32383/repo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] node-pty root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ec554-fresh-start.J32383/repo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ec554-fresh-start.J32383/repo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ec554-fresh-start.J32383/repo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+terminal runtime verify ok
+AutoByteus_personal_macos-arm64-1.5.14-beta.1.dmg
+AutoByteus_personal_macos-arm64-1.5.14-beta.1.dmg.blockmap
+AutoByteus_personal_macos-arm64-1.5.14-beta.1.zip
+AutoByteus_personal_macos-arm64-1.5.14-beta.1.zip.blockmap
+builder-debug.yml
+latest-mac.yml
+mac-arm64
+
+## cleanup | 2026-11-20T19:24:12Z
+clone removed: yes
+exit 0

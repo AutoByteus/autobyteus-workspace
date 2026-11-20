@@ -1,0 +1,10 @@
+# API-14 the four stale E2E files after rewrite, each file in one run | commit effb76b6b3 + working-tree rewrites | 2026-11-20T16:32:05Z | load { 56.84 54.49 56.44 }
+ ✓ tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts (1 test) 58942ms
+ ✓ tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts (4 tests) 1367ms
+     ✓ keeps ordinary native tools and configured skill reads explicit in the same active run  1022ms
+ ✓ tests/e2e/memory-sync/memory-sync-api.e2e.test.ts (1 test) 351ms
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-skills-data-SDVzfB/.env
+ ✓ tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts (6 tests) 283ms
+ Test Files  4 passed (4)
+      Tests  12 passed (12)
+exit 0

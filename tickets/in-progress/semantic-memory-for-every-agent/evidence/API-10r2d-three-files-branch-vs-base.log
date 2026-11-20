@@ -1,0 +1,64 @@
+## semantic-memory-for-every-agent (42c2f5189b) | 2026-11-20T18:57:54Z | load { 50.65 51.00 54.44 } | fseventsd 123.2%
+ ❯ tests/e2e/projects/embedding-settings.e2e.test.ts (6 tests | 3 failed) 17469ms
+     × answers models and Project indexes in one read-only document: fresh install is Not downloaded and Not indexed (AC-011) 12150ms
+ ❯ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts (11 tests | 2 failed) 11437ms
+     × accepts each allowed-origin class and refuses near misses (AC-002) 5005ms
+ ✓ tests/e2e/node-access/node-access-model.e2e.test.ts (23 tests) 2666ms
+     ✓ NAS-01 the launch owner credential opens GraphQL, REST and a WebSocket route  1769ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts each allowed-origin c
+ ❯ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts:165:3
+    165|   it("accepts each allowed-origin class and refuses near misses (AC-00…
+ ❯ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts:274:28
+ FAIL  tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > answers models and Project indexes in one r
+ ❯ tests/e2e/projects/embedding-settings.e2e.test.ts:96:3
+     96|   it("answers models and Project indexes in one read-only document: fr…
+ ❯ tests/e2e/projects/embedding-settings.e2e.test.ts:121:54
+ ❯ tests/e2e/projects/embedding-settings.e2e.test.ts:170:41
+      Tests  5 failed | 35 passed (40)
+## ec554-api-e2e-base (8430d9ef12) | 2026-11-20T18:58:42Z | load { 48.00 50.24 53.98 } | fseventsd 164.8%
+ ❯ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts (11 tests | 2 failed) 20563ms
+     × accepts each allowed-origin class and refuses near misses (AC-002) 7817ms
+ ❯ tests/e2e/projects/embedding-settings.e2e.test.ts (6 tests) 26851ms
+     ✓ answers models and Project indexes in one read-only document: fresh install is Not downloaded and Not indexed (AC-011)  4761ms
+ ✓ tests/e2e/node-access/node-access-model.e2e.test.ts (23 tests) 5848ms
+     ✓ NAS-01 the launch owner credential opens GraphQL, REST and a WebSocket route  2148ms
+ ❯ tests/e2e/projects/embedding-settings.e2e.test.ts:89:3
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts each allowed-origin c
+ ❯ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts:165:3
+    165|   it("accepts each allowed-origin class and refuses near misses (AC-00…
+ ❯ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts:341:28
+      Tests  2 failed | 38 passed (40)
+## semantic-memory-for-every-agent (42c2f5189b) | 2026-11-20T18:59:52Z | load { 47.05 49.60 53.43 } | fseventsd 131.8%
+ ❯ tests/e2e/projects/embedding-settings.e2e.test.ts (6 tests) 18184ms
+     ✓ answers models and Project indexes in one read-only document: fresh install is Not downloaded and Not indexed (AC-011)  3865ms
+ ❯ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts (11 tests | 2 failed) 24097ms
+     × accepts each allowed-origin class and refuses near misses (AC-002) 5008ms
+ ✓ tests/e2e/node-access/node-access-model.e2e.test.ts (23 tests) 5959ms
+     ✓ NAS-01 the launch owner credential opens GraphQL, REST and a WebSocket route  3917ms
+ ❯ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts:130:3
+ ❯ tests/e2e/projects/embedding-settings.e2e.test.ts:89:3
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts each allowed-origin c
+ ❯ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts:165:3
+    165|   it("accepts each allowed-origin class and refuses near misses (AC-00…
+ ❯ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts:341:28
+      Tests  2 failed | 38 passed (40)
+## ec554-api-e2e-base (8430d9ef12) | 2026-11-20T19:00:58Z | load { 57.28 51.65 53.89 } | fseventsd 175.5%
+ ❯ tests/e2e/projects/embedding-settings.e2e.test.ts (6 tests) 18488ms
+     ✓ answers models and Project indexes in one read-only document: fresh install is Not downloaded and Not indexed (AC-011)  988ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts (11 tests) 10841ms
+     ✓ accepts each allowed-origin class and refuses near misses (AC-002)  2893ms
+ ❯ tests/e2e/node-access/node-access-model.e2e.test.ts (23 tests) 17130ms
+     ✓ NAS-01 the launch owner credential opens GraphQL, REST and a WebSocket route  1876ms
+ ❯ tests/e2e/node-access/node-access-model.e2e.test.ts:217:3
+ ❯ tests/e2e/projects/embedding-settings.e2e.test.ts:89:3
+      Tests  40 passed (40)
+# embedding-settings alone, 3 alternating runs each | 2026-11-20T19:02:24Z
+## semantic-memory-for-every-agent run 1 | load { 49.66 51.50 53.60 } | first test: � 6133ms | Tests  1 failed | 5 passed (6)
+## ec554-api-e2e-base run 1 | load { 50.07 51.32 53.45 } | first test: � 5544ms | Tests  3 failed | 3 passed (6)
+## semantic-memory-for-every-agent run 2 | load { 47.46 50.73 53.17 } | first test: � 989ms | Tests  6 passed (6)
+## ec554-api-e2e-base run 2 | load { 48.64 50.77 53.11 } | first test: � 3682ms | Tests  6 passed (6)
+## semantic-memory-for-every-agent run 3 | load { 49.44 50.64 52.99 } | first test: � 1836ms | Tests  6 passed (6)
+## ec554-api-e2e-base run 3 | load { 46.38 50.05 52.72 } | first test:  | Tests  6 passed (6)

@@ -1,0 +1,26 @@
+{
+  "before": {
+    "toolNames": [],
+    "skillNames": [],
+    "skillScope": "CONFIGURED",
+    "inputProcessorNames": [],
+    "llmResponseProcessorNames": [],
+    "toolExecutionResultProcessorNames": [],
+    "toolInvocationPreprocessorNames": [],
+    "lifecycleProcessorNames": [],
+    "avatarUrl": null,
+    "defaultLaunchConfig": null
+  },
+  "final": {
+    "toolNames": [],
+    "skillNames": [],
+    "skillScope": "CONFIGURED",
+    "inputProcessorNames": [],
+    "llmResponseProcessorNames": [],
+    "toolExecutionResultProcessorNames": [],
+    "toolInvocationPreprocessorNames": [],
+    "lifecycleProcessorNames": [],
+    "avatarUrl": null,
+    "defaultLaunchConfig": null
+  }
+}

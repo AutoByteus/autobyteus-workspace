@@ -4,25 +4,25 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 
 ## Investigation Meta
 
-- Requirements Doc: `requirements-doc.md` (SR-008, Approved; UI approved by the founder 2026-11-20)
+- Requirements Doc: `requirements-doc.md` (SR-009: adds AC-013, AC-014, DEC-015, DEC-016)
 - Investigation Notes: `investigation-notes.md`, `global-semantic-memory-investigation.md`
 - Solution Revision Record: `solution-revision-record.md`
-- Design Spec: `design-spec.md` (SR-008)
+- Design Spec: `design-spec.md` (SR-009)
 - Supplemental Task Artifacts: Product UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/semantic-memory-view-554/ui-ux-spec.md` (Approved; VIS-001…VIS-019); `follow-ups.md` (FU-001…FU-003)
 - Design Review Report: `design-review-report.md` (ARCH-REV-004, Pass)
 - Architecture Review Revision Record: `architecture-review-revision-record.md`
-- Implementation Handoff: `implementation-handoff.md` (IR-002)
+- Implementation Handoff: `implementation-handoff.md` (IR-003)
 - Implementation Revision Record: `implementation-revision-record.md`
-- Code Review Report: `code-review-report.md` (CRR-002, Pass)
+- Code Review Report: `code-review-report.md` (CRR-004, Pass)
 - Code Review Revision Record: `code-review-revision-record.md`
 - Delivery Revision Record: N/A
-- API/E2E Revision Record: `api-e2e-revision-record.md` (after the first result)
-- Current API/E2E Revision ID: `API-REV-001` (on completion)
-- Current Investigation Round: 1
-- Trigger: CRR-002 Pass (Large / High), message from `/code_reviewer`
-- Prior Investigation Reviewed: N/A
-- Latest Authoritative Investigation: this file, round 1
-- Code validated: branch `codex/semantic-memory-for-every-agent`, code at `cd26f4d913` (HEAD `2e5f786091` adds records); server source unchanged since `56b02294d0` (later commits touch only `autobyteus-web`)
+- API/E2E Revision Record: `api-e2e-revision-record.md`
+- Current API/E2E Revision ID: `API-REV-002` (on completion; round 1 was `API-REV-001`, Fail)
+- Current Investigation Round: 2
+- Trigger: CRR-004 Pass (Large / High) after IR-003 (SR-009 fixes round 1's ENAMETOOLONG), message from `/code_reviewer`
+- Prior Investigation Reviewed: round 1 (this file), API-REV-001
+- Latest Authoritative Investigation: this file, round 2 (section "Round 2" below; round 1 sections kept as the basis)
+- Code validated: round 1 `cd26f4d913`; round 2 `f393f403d5` (records `effb76b6b3`)
 
 ## Current Requirement And Design Basis
 
@@ -151,8 +151,55 @@ None.
 
 None before execution.
 
+## Round 2
+
+### What changed since round 1
+
+`f393f403d5` (SR-009): one definition folder name rule (DEC-016: `encodeURIComponent(id)` up to 200 bytes, else a 120-byte prefix cut between characters, `#`, 16 hex of the id's SHA-256) used by the semantic folder, the episodic catalog folder and the Semantic tab's lookup; preparation contained per folder (DEC-015: a folder that cannot be prepared is left out of the run, `SEMANTIC_MEMORY_PREPARE_FAILED` logged). Changed server files: `agent-memory-layout.ts`, `agent-semantic-memory.ts`, `episodic-catalog-store.ts`, `carpenter-prompt-composer.ts`, Claude and Codex bootstrappers. No web source change (only the probe).
+
+`#` in a folder name, checked by reading: the web builds content URLs with `encodeURIComponent` (`workspaceResourceUrl.ts`, `nodeFileContent.ts`, `contextAttachmentPresentation.ts`, the `local-file://` codec), and the semantic view's paths are workspace-relative below the folder; Codex gets the folders as JSON (`thread/start` config), Claude as an SDK options array; the episodic `index.md` names folders in code spans, not Markdown links. No surface parses the name as a URL.
+
+### Reuse decisions
+
+| Earlier result | Holds? | Why |
+| --- | --- | --- |
+| IMP-17, IMP-18 (SR-009 units, server unit impact set, typecheck at `f393f403d5`) | Yes (Reused) | ran on the commit validated |
+| IMP-19 (RA-04, IC-01, RE-05 11/11 at `f393f403d5`) | Rechecked inside API-10 | round 1's failure; the whole suite reruns anyway |
+| IMP-20 (scripted-AGY SM + explorer 12/12) | Superseded by API-05 rerun | SM-12 is added to that file |
+| IMP-21 (rendered probe 38/38 with SMV-100…102 at `f393f403d5`) | Yes (Reused) | no web source change since; the probe file it ran is the committed one |
+| API-01, API-02 web, API-04 web units, API-06, API-12 (round 1) | Yes | no code they exercise changed (`git diff --name-only cd26f4d913 f393f403d5`: server memory/prompt/runtime files and the probe only) |
+| API-03 server unit suite (round 1) | Yes, with IMP-18 | the files changed since are covered by IMP-17/18's impact set |
+| API-07 (round 1) | Yes, with IMP-21 | same |
+| API-09 server integration (round 1) | No: rerun | the run-start path changed (`prepareForRun`, bootstrappers); integration runs real factories |
+
+### Durable coverage decisions (round 2)
+
+| Path / Test | Decision | Why |
+| --- | --- | --- |
+| `tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts` | Needs Update (made untrue by this change) | its workspace double lacks `getOrCreateRunWorkspace` / `getRegisteredWorkspaceRootPath`, which the factory now calls (as API-09b) |
+| `tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts` | Needs Update (made untrue) | the same double; its expected `##` list lacks the two sections every run now gets (REQ-001) |
+| `tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts` | Needs Update (made untrue) | reads `AgentWithMemorySummary.memory`, removed (handoff: no reader left); raw traces stay proven by its synced-file list |
+| `tests/e2e/memory-sync/memory-sync-api.e2e.test.ts` | Needs Update (made untrue) | the same removed field; and its schema-only server binds no episodic catalog, which local agent cards now read (REQ-006): bind one as a composition root does, as `memory-explorer-graphql.e2e` does; raw traces stay proven by `getAgentRunMemoryView` |
+| `tests/e2e/runtime/application-import-codex-launch.e2e.test.ts` | Add IC-03 (AC-013) | no test checks a bundled member end to end: the Memory page lookup (`listAgentTeamsWithMemory` → `listMemoryGroupMembers` → `agentSemanticMemoryFolder`), the Codex thread's writable roots and prompt sections, the episodic catalog folder under the same name, and the name against DEC-016 written from the decision |
+| `tests/fixtures/agent-runtimes-fake-cli.mjs` | Update | also record `thread/start` `baseInstructions` (the prompt) for IC-03 |
+| `tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts` | Add SM-12 (AC-014) | DEC-015 at the real run start: with `semantic/` unwritable a new agent's run starts, without its own section, with the global one, and the log names the agent and the reason (units cover the service only) |
+
+### Planned cases (round 2)
+
+| Case ID | Criteria | Boundary / Surface | Kind | Planned Command Or Steps | Why |
+| --- | --- | --- | --- | --- | --- |
+| API-00 | — | build | — | `pnpm -C autobyteus-server-ts build` at `f393f403d5` | e2e and live use `dist/` for restarts |
+| API-14 | the four stale files | rewrites, then each file alone | Durable update | `env -i … vitest run <file>` | come first after the fix (skill) |
+| API-15 | AC-013 | IC-03 | Durable | `env -i … vitest run tests/e2e/runtime/application-import-codex-launch.e2e.test.ts` | bundled member end to end |
+| API-16 | AC-014 | SM-12 (scripted AGY) | Durable | `RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=… vitest run agent-semantic-memory.e2e` (+ internal-agents, explorer: API-05) | DEC-015 at a real run start |
+| API-05 | AC-001, AC-003, AC-008, AC-009, AC-011, AC-014 | scripted-AGY e2e | rerun | as round 1 | run start changed |
+| API-09 | all | server integration | rerun | `test:integration` | run start changed |
+| API-10 | all | whole server E2E | rerun | `env -i … pnpm test:e2e` | round 1 Fail; recheck RA-04, IC-01, RE-05 first |
+| API-08 | AC-001, AC-009 | live SML (Codex, Claude, native) | gated, paid | header command, each runtime alone | real CLIs' access roots |
+| API-11 | build inputs | fresh-start desktop build | as TESTING.md | fresh clone → frozen install → desktop build | web `package.json`, `generated/graphql.ts` changed |
+
 ## Investigation Decision
 
 - Proceed To API/E2E Execution: `Yes`
-- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` (probe SMV-090/091)
+- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` (round 1: probe SMV-090/091, three integration doubles; round 2: the four stale E2E files, IC-03, SM-12, the fake CLI's prompt record)
 - Reroute Required Before Validation Execution: `No`

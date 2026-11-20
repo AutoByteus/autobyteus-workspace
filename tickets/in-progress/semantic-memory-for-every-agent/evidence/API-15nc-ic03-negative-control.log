@@ -1,0 +1,10 @@
+# API-15 NEGATIVE CONTROL: IC-03 with the layout's prefix changed to 100 bytes (DEC-016 says 120), restored afterwards | 2026-11-20T16:41:14Z
+     ✓ IC-01 imports Brief Studio, reads it as runnable and launches its Codex drafting team without a restart (AC-001)  31435ms
+     ✓ IC-02 a signed-out Codex blocks the imported application with today's reason, not a spawn failure (AC-002)  489ms
+     × IC-03 the launched bundled agent has its semantic memory, its episodic catalog and its Memory page folder under one shortened name, and its run is told both folders (autobyteus-554 AC-013) 25ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: Brief Studio Researcher: expected '/private/var/folders/7w/9r4_s1_s42z3f…' to be '/private/var/folders/7w/9r4_s1_s42z3f…' // Object.is equality
+Expected: "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imported-app-codex-e2e-vHZ6f8/data/memory/semantic/team-local-agent%3Abundle-team__<hex>#363076e64f8794dc"
+Received: "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imported-app-codex-e2e-vHZ6f8/data/memory/semantic/team-local-agent%3Abundle-team__<hex>#363076e64f8794dc"
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)

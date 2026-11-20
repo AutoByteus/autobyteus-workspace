@@ -1,0 +1,62 @@
+{
+  "teamRunId": "sm_live_team_dcd47048_d8eb1c3cf2564779beb1a7870d8dc323",
+  "keeperRunId": "sm_live_keeper_codex_dcd47048_b13ec8eb4c824d22aa438b8921ef55ca",
+  "reply": "SMCODE-CODEX-dcd47048",
+  "tools": [
+    "run_bash {\"command\":\"/bin/bash -lc \\\"find /Users/normy/.autobyteus-e2e/semantic-memory-live-ZtNpaG/app-data/memory/semantic/sm-live-keeper-codex-dcd47048 /Users/normy/.autobyteus-e2e/semantic-memory-live-ZtNpaG/app-data/memory/semantic-global -type f -not -path '*/.git/*' -print -exec cat {} \\\\\\\\;\\\"\",\"cwd\":\""
+  ],
+  "approvals": [],
+  "wire": [
+    {
+      "method": "thread/start",
+      "sandbox": "workspace-write",
+      "approvalPolicy": "on-request",
+      "cwd": "/Users/normy/.autobyteus-e2e/semantic-memory-live-ZtNpaG/ws-codex-a",
+      "configKeys": [
+        "mcp_servers",
+        "sandbox_workspace_write"
+      ],
+      "sandbox_workspace_write": {
+        "writable_roots": [
+          "/Users/normy/.autobyteus-e2e/semantic-memory-live-ZtNpaG/app-data/memory/semantic/sm-live-keeper-codex-dcd47048",
+          "/Users/normy/.autobyteus-e2e/semantic-memory-live-ZtNpaG/app-data/memory/semantic-global"
+        ]
+      },
+      "semanticSection": "## Semantic Memory\n\nYour semantic memory is the folder `/Users/normy/.autobyteus-e2e/semantic-memory-live-ZtNpaG/app-data/memory/semantic/sm-live-keeper-codex-dcd47048`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.\n\n## Global Semantic Memory\n\nThe global semantic memory of this node is the folder `/Users/normy/.autobyteus-e2e/semantic-memory-live-ZtNpaG/app-data/memory/semantic-global`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.\n\n## Long-Running Commands\n\n- Start a long build or test suite once with `exec_command`. When it outlasts its wait, it keeps running in its session.\n- To wait for it, call `write_stdin` on that same session with empty input and a long `yield_time_ms`, as often as needed, instead of starting it again.\n- Do not wait with loops of `sleep` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+    },
+    {
+      "method": "thread/start",
+      "sandbox": "workspace-write",
+      "approvalPolicy": "on-request",
+      "cwd": "/Users/normy/.autobyteus-e2e/semantic-memory-live-ZtNpaG/ws-codex-b",
+      "configKeys": [
+        "mcp_servers",
+        "sandbox_workspace_write"
+      ],
+      "sandbox_workspace_write": {
+        "writable_roots": [
+          "/Users/normy/.autobyteus-e2e/semantic-memory-live-ZtNpaG/app-data/memory/semantic/sm-live-keeper-codex-dcd47048",
+          "/Users/normy/.autobyteus-e2e/semantic-memory-live-ZtNpaG/app-data/memory/semantic-global"
+        ]
+      },
+      "semanticSection": "## Semantic Memory\n\nYour semantic memory is the folder `/Users/normy/.autobyteus-e2e/semantic-memory-live-ZtNpaG/app-data/memory/semantic/sm-live-keeper-codex-dcd47048`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.\n\n## Global Semantic Memory\n\nThe global semantic memory of this node is the folder `/Users/normy/.autobyteus-e2e/semantic-memory-live-ZtNpaG/app-data/memory/semantic-global`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.\n\n## Long-Running Commands\n\n- Start a long build or test suite once with `exec_command`. When it outlasts its wait, it keeps running in its session.\n- To wait for it, call `write_stdin` on that same session with empty input and a long `yield_time_ms`, as often as needed, instead of starting it again.\n- Do not wait with loops of `sleep` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+    },
+    {
+      "method": "thread/start",
+      "sandbox": "workspace-write",
+      "approvalPolicy": "on-request",
+      "cwd": "/Users/normy/.autobyteus-e2e/semantic-memory-live-ZtNpaG/ws-codex-team",
+      "configKeys": [
+        "mcp_servers",
+        "sandbox_workspace_write"
+      ],
+      "sandbox_workspace_write": {
+        "writable_roots": [
+          "/Users/normy/.autobyteus-e2e/semantic-memory-live-ZtNpaG/app-data/memory/semantic/sm-live-keeper-codex-dcd47048",
+          "/Users/normy/.autobyteus-e2e/semantic-memory-live-ZtNpaG/app-data/memory/semantic-global"
+        ]
+      },
+      "semanticSection": "## Semantic Memory\n\nYour semantic memory is the folder `/Users/normy/.autobyteus-e2e/semantic-memory-live-ZtNpaG/app-data/memory/semantic/sm-live-keeper-codex-dcd47048`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.\n\n## Global Semantic Memory\n\nThe global semantic memory of this node is the folder `/Users/normy/.autobyteus-e2e/semantic-memory-live-ZtNpaG/app-data/memory/semantic-global`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.\n\n## Long-Running Commands\n\n- Start a long build or test suite once with `exec_command`. When it outlasts its wait, it keeps running in its session.\n- To wait for it, call `write_stdin` on that same session with empty input and a long `yield_time_ms`, as often as needed, instead of starting it again.\n- Do not wait with loops of `sleep` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+    }
+  ]
+}

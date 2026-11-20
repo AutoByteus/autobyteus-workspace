@@ -1,0 +1,8 @@
+# API-08 live SML, native AutoByteus alone (RUN_AUTOBYTEUS_SEMANTIC_MEMORY_E2E=1, test vault Anthropic key, paid) | commit 42c2f5189b (code f393f403d5) | 2026-11-20T19:14:43Z | load { 50.27 52.22 52.93 }
+ ✓ tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts (6 tests | 3 skipped) 39840ms
+       ✓ SML-WRITE (AC-001, AC-002): a run under Project A writes its codeword into its semantic memory, told only by its instructions  2815ms
+       ✓ SML-READ (AC-003): a new run under Project B reads the codeword from its semantic memory  2387ms
+       ✓ SML-GLOBAL (AC-009): another agent writes a fact into the global folder; the keeper's new run reads it  4858ms
+ Test Files  1 passed (1)
+      Tests  3 passed | 3 skipped (6)
+exit 0

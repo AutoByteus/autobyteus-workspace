@@ -26,3 +26,28 @@ Read first whenever the run is picked back up. Only add rows.
 | 2026-11-20 16:57 | API-02b | Completed | Pass | server typecheck with the double edits: 1006 in 315, at baseline |
 | 2026-11-20 16:57 | API-08, API-11 | Not Run | Next Round | the fix changes prepareForRun and server code |
 | 2026-11-20 16:57 | Round 1 | Closed | Fail | report and API-REV-001 written; failure-origin review requested from code_reviewer |
+| 2026-11-20 17:30 | Round 2 | Started | | CRR-004 / IR-003 at f393f403d5; investigation updated (Round 2 section) |
+| 2026-11-20 17:30 | API-00 | Started | | server build round 2 |
+| 2026-11-20 17:31 | API-00 | Completed | Pass | Sanitized built-module/bootstrap smoke passed |
+| 2026-11-20 17:31 | API-14 | Started | | stale E2E rewrites |
+| 2026-11-20 17:33 | API-14 | Completed | Pass | 4 files 12/12 after rewrite; committed 5edda27b2d |
+| 2026-11-20 17:42 | API-15/16 | Started | | IC-03 (passes; negative control fails as expected), SM-12 written |
+| 2026-11-20 17:50 | API-16 | Completed | Pass | API-05r2: 3 files 18/18 incl. SM-12 |
+| 2026-11-20 17:50 | API-15 | Completed | Pass | IC-03 + RA-04 + IC-01 pass; RE file 5/5 alone (all 5 failed in the joint run: Codex app-server exit not confirmed under load, quarantine at import); negative control (prefix 100) fails IC-03 |
+| 2026-11-20 17:51 | API-09 | Started | | test:integration:prepare + test:integration, round 2 |
+| 2026-11-20 18:52 | API-09 | Completed | Pass for this change | 501 passed / 13 failed, all OS folder-watcher timing under fseventsd 108-179% CPU from other worktrees' runs: file-system-watcher (base alike in round 1), skill-update-notice 30/30 alone, package-auto-refresh fails alike on base (3 and 1 vs branch 4 and 1; AC-012 in all four) |
+| 2026-11-20 18:52 | API-10 | Started | | whole server E2E round 2 |
+| 2026-11-20 18:53 | API-10 | Restarted | | first start ran the wrong command (pnpm -C <pkg> test:e2e: no such script), nothing ran; now root pnpm test:e2e as round 1 |
+| 2026-11-20 19:35 | API-10 | Checkpoint | | whole E2E: 116 passed / 12 failed files (11 tests + suite hooks); no ENAMETOOLONG; rerunning the 12 one after another |
+| 2026-11-20 20:05 | API-10 | Completed | Pass for this change | whole E2E 116 passed / 12 failed files, no ENAMETOOLONG; one file at a time (10r2b) 5 pass; the 7 left on base (10r2c): node-locality, request-origin, Grok compaction, update-notifications fail alike; branch reruns: live-refresh, node-access pass; embedding fails alike on base 1 of 3 vs branch 1 of 3 (10r2d) |
+| 2026-11-20 20:05 | API-08 Codex | Started | | live SML, RUN_CODEX_E2E=1, test vault |
+| 2026-11-20 20:13 | API-08 Codex | Completed | Pass | run 3 5/5 (restore included); run 1 terminateAgentRun success false after the denied control (not reproduced), run 2 the model answered without running the control command; writes, roots, instructions held in all 3 |
+| 2026-11-20 20:13 | API-08 Claude | Started | | RUN_CLAUDE_E2E=1 |
+| 2026-11-20 20:14 | API-08 Claude | Completed | Pass | 4/4 (SML-WRITE, READ, GLOBAL, CLAUDE-APPROVALS) |
+| 2026-11-20 20:14 | API-08 native | Started | | RUN_AUTOBYTEUS_SEMANTIC_MEMORY_E2E=1, vault Anthropic key |
+| 2026-11-20 20:15 | API-08 native | Completed | Pass | 3/3; no live data folder left |
+| 2026-11-20 20:16 | API-11 | Started | | fresh clone, frozen install, build:electron:mac --arm64, verify steps |
+| 2026-11-20 20:25 | API-11 | Completed | Pass | fresh clone, frozen install, build:electron:mac --arm64 exit 0 (typecheck PASS at baseline 87 in 37), Prisma and terminal runtime verify ok incl. spawn probe; clone removed |
+| 2026-11-20 20:25 | API-07 | Started | | rendered probe at HEAD (SMV-090/091, SMV-100-102) |
+| 2026-11-20 20:27 | API-07 | Completed | Pass | 38/38 incl. SMV-100-102 (shortened folder found and file opened), SMV-091 |
+| 2026-11-20 20:27 | Round 2 | Closed | Pass | report and API-REV-002 written; test-code review requested from code_reviewer |
