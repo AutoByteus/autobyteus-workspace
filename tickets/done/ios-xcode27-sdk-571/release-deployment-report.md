@@ -28,6 +28,13 @@
 
 - Archive, hygiene, Secret Gate, `finalize/ios-xcode27-sdk-571` from `origin/personal`, `--no-ff` merge, push; the commits, the user's checkout and the cleanup are recorded in the record commit after the merge (§ Finalization Result).
 
+## Finalization Result
+
+- Ticket branch `codex/ios-xcode27-sdk-571` @ `cbb14756be` pushed; hygiene exit 0; Secret Gate PASS over `origin/personal..codex/ios-xcode27-sdk-571` and over the merge.
+- Merge commit **`8f2d209b2c`** (`--no-ff`, from `finalize/ios-xcode27-sdk-571` on `origin/personal` @ `bfd95f73a9`) pushed to `origin/personal` at 12:47Z (2026-11-20); this record commit follows it.
+- The user's checkout: fast-forwarded with `git merge --ff-only origin/personal` only (result in the Delivery Completed message).
+- Cleanup: the worktree, local and remote `codex/ios-xcode27-sdk-571`, local `finalize/ios-xcode27-sdk-571`, `/tmp/dlv-571-*`.
+
 ## Release / Deployment
 
 - Release: `None` (REQ-005). Deployment: `None`.
