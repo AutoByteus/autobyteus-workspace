@@ -1,6 +1,6 @@
 # Delivery / Release / Deployment Report — ios-demo-mode-279 (autobyteus-279)
 
-Status: **holding before the merge into `personal`** (the founder's word on the merge is pending; REQ-014).
+Status: **finalized on `personal`; no release from this ticket** (the release team cuts v1.5.14-beta.3 from `personal` after the merge; its iOS run takes this build to TestFlight on the founder's word).
 
 ## Release / Publication / Deployment Scope
 
@@ -10,7 +10,8 @@ Status: **holding before the merge into `personal`** (the founder's word on the 
 ## The Founder's Words
 
 - On the push and the build-only run (relayed verbatim by the Solution Designer, 2026-11-20): **"Ok run it"**. He was told it is the build-only run with `publish_app_store_connect=false`: simulator build and test only, no signing, no upload, no contact with Apple, about 11 minutes.
-- On the merge into `personal`: **not given yet**. The Solution Designer's recommendation to him: merge after (a) its own App Reviewer sweep on the built app passes and (b) beta v1.5.14-beta.2 is out; the next beta then takes the demo to TestFlight. Why it needs his word: `release-ios.yml` runs on every `v*` tag push and a tag run publishes (beta.1's iOS run 44358782422 ran "Archive And Upload To App Store Connect"), so once this is on `personal` the next release uploads this build.
+- On the merge into `personal` (relayed verbatim by the PM through the Solution Designer, 2026-11-20): **"If the iOS demo mode is finished we should release"**. The Solution Designer's GO followed with both conditions met: (a) its App Reviewer sweep passed, (b) v1.5.14-beta.2 is published (a pre-release; `origin/personal` @ `568f9ae032`). His word covers the TestFlight upload by the next beta's iOS run; delivery cuts no tag and submits nothing to Apple.
+- Before that, on the merge: The Solution Designer's recommendation to him: merge after (a) its own App Reviewer sweep on the built app passes and (b) beta v1.5.14-beta.2 is out; the next beta then takes the demo to TestFlight. Why it needs his word: `release-ios.yml` runs on every `v*` tag push and a tag run publishes (beta.1's iOS run 44358782422 ran "Archive And Upload To App Store Connect"), so once this is on `personal` the next release uploads this build.
 
 ## Project Release Guide
 
@@ -37,6 +38,12 @@ Status: **holding before the merge into `personal`** (the founder's word on the 
 
 - Not rerun after the merge, and why: the iOS app and the phone screens are untouched by the base; the iOS build and tests ran on the runner from the merged state (NT-01, below).
 
+## Second Delivery Integration Refresh
+
+- `origin/personal` moved to `568f9ae032` (v1.5.14-beta.2: `a728fbcad3` the version bump and the released-migration order, `568f9ae032` its record). Shared file: `autobyteus-web/package.json` (the version line; the ticket changed scripts), merged cleanly.
+- Merge `a1147ba90f`, no conflicts; outside `tickets/` it brings only `autobyteus-web/package.json` (version) and `autobyteus-server-ts/src/app-data-migrations/released-migration-order.json`.
+- Rerun: both typechecks PASS at their baselines (server 1006 in 315, web 87 in 37) (`DEL-06-typechecks-refresh2.log`). Nothing else rerun: no code the ticket uses changed.
+
 ## Verification From Evidence
 
 - Judgement: the evidence proves the change works on iOS simulators with a real node; the parts only the founder can check come after his word (REQ-014). Details and the files relied on: `handoff-summary.md` § Verification Summary.
@@ -61,11 +68,11 @@ Status: **holding before the merge into `personal`** (the founder's word on the 
   - Native: a Release simulator build of the worktree; `DemoUITests` and `DemoIPadUITests` on its own iPhone 17 Pro Max and iPad Air simulators pass, except the kept-share test once in 9 runs (the first run on a newly created simulator, 97 s on the start screen; the other 8 runs, 3 on freshly erased simulators, pass in about 10 s).
 - Residual risks it records (not blocking): R-1 the kept share at the first launch (for the real-iPhone check: share the demo link from Safari, then open the app); R-2 what simulators cannot prove (camera scan of the printed QR, the Camera app's link, airplane mode, the review notes on a device).
 - Its note on copy: the build's "press Show QR code" is right; the Product specification is out of date (FU-007).
-- Condition (b), beta v1.5.14-beta.2 out, and the founder's word on the merge: pending.
+- Condition (b): v1.5.14-beta.2 published (2026-11-20). The founder's word: above.
 
 ## Finalization
 
-- Pending the founder's word on the merge. When it comes: re-check `origin/personal`, merge it into the ticket branch again if it moved (with the checks after integration), archive the ticket, Secret Gate, `finalize/ios-demo-mode-279` from `origin/personal`, `--no-ff` merge, push, fast-forward the user's checkout, cleanup.
+- Archive to `tickets/done/ios-demo-mode-279/`; hygiene; Secret Gate; `finalize/ios-demo-mode-279` from `origin/personal`, `git merge --no-ff codex/ios-demo-mode-279`, push to `origin/personal`. Commits, the user's checkout and cleanup: in the record commit after the merge (§ Finalization Result).
 
 ## Release / Deployment
 

@@ -6,7 +6,7 @@
 - Date: `2026-11-19`
 - Classification: `task_size: Large`, `architectural_risk: High`.
 - Route: architecture review ARCH-REV-001…004 → implementation IR-001, IR-002 → source review CRR-001 Pass, CRR-002 (Design Impact F-1 → SR-003/SR-004), CRR-003 Pass → API/E2E API-REV-001 Fail F-1, API-REV-002 Pass (91%) → test-code review CRR-004 Pass → delivery DR-001.
-- Current Status: `Verified from evidence, base integrated and docs synced locally; NT-01 passed (on the founder's "Ok run it"), the App Reviewer sweep passed; waiting for the founder's word on the merge (REQ-014)`.
+- Current Status: `Verified from evidence; NT-01 passed; the App Reviewer sweep passed; finalized on personal on the founder's word; no release by delivery`.
 - Branch: `codex/ios-demo-mode-279` (local only), base `origin/personal` @ `8430d9ef12`; delivery checkpoint `7a88198a2b`; base refresh `422a2955c5` merged as `0e58926e03`; docs sync `09aabdc4f9`.
 
 ## Delivery Summary
