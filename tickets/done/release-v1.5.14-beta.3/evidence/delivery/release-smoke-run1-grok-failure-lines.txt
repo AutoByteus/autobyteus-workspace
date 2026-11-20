@@ -1,0 +1,4 @@
++   "{\"code\":\"COLLABORATION_AGENT_ACTIVATION_FAILED\",\"message\":\"ACP_REQUEST_TIMEOUT: initialize did not respond in time.\",\"error_scope\":\"runtime\",\"error_effect\":\"terminal\",\"turn_id\":null,\"change_sequence\":2,\"agent_run_id\":\"link_probe_agent_25a3781c_5bedfb70cabd4216b2fa5007ed62158e\"}",
++   "{\"code\":\"TEAM_SEND_MESSAGE_REJECTED\",\"message\":\"ACP_REQUEST_TIMEOUT: initialize did not respond in time.\",\"details\":\"AGENT_RUN_ACTIVATION_FAILED\",\"error_scope\":null,\"error_effect\":null,\"turn_id\":null,\"change_sequence\":null,\"agent_run_id\":\"link_probe_agent_25a3781c_5bedfb70cabd4216b2fa5007ed62158e\"}",
+AssertionError: AgentCreationError: ACP_REQUEST_TIMEOUT: initialize did not respond in time.: expected { success: false, …(2) } to match object { success: true }
+AssertionError: AgentCreationError: ACP_REQUEST_TIMEOUT: initialize did not respond in time.: expected { success: false, …(2) } to match object { success: true, …(1) }
