@@ -2,30 +2,30 @@
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: no architecture review (Medium / Low, direct route). After implementation the rules give API/E2E. This round goes to the Solution Designer instead, because of the Design Impact DI-001 below (`get_handoff_rules`: "a Design Impact … that must be resolved in the requirements or design").
-- Requirements doc: `requirements-doc.md` (SR-002, Approved by the user)
+- Upstream review applicability and handoff-rule result: no architecture review (Medium / Low, direct route). IR-001 first went to the Solution Designer for DI-001 (below). DI-001 was resolved by SR-003 (`a301dcf60e`) with no implementation change, so the package now goes to API/E2E (`get_handoff_rules`: Small/Medium + Low, self-review done).
+- Requirements doc: `requirements-doc.md` (SR-003; REQ-002 means absolute paths, DEC-003)
 - Investigation notes: `investigation-notes.md`
 - Solution revision record: `solution-revision-record.md`
-- Design spec (required on every route): `design-spec.md` (SR-002, Ready)
-- Supplemental task artifacts: `handoff-architecture-design-complete.md`; `follow-ups.md` (FU-001; FU-002 added by this round)
+- Design spec (required on every route): `design-spec.md` (SR-003, Ready)
+- Supplemental task artifacts: `handoff-architecture-design-complete.md`; `follow-ups.md` (FU-001; FU-002 from this round; FU-003 relative links, from SR-003)
 - Design review report: N/A (direct route)
 - Triggering rework report, revision record, or evidence: N/A (initial round)
 - Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/tickets/in-progress/chat-media-path-playback`
-- Worktree / branch: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback`, `codex/chat-media-path-playback`. Code commits `02320583a5` (server), `d165d3143a` (web) and `04034bc797` (the audio spec's names); documents and evidence in the commit after them (`git log`). Base `origin/personal` `bfd95f73a9`.
+- Worktree / branch: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback`, `codex/chat-media-path-playback`. Code commits `02320583a5` (server), `d165d3143a` (web), `04034bc797` (the audio spec's names) and the MSP-89 comment commit after SR-003 (`git log`); documents and evidence in the commit after them (`git log`). Base `origin/personal` `bfd95f73a9`.
 
 ## Current Implementation Summary
 
 - Implementation cycle: `Initial`
 - Implementation revision record: `implementation-revision-record.md`
 - Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-002`
+- Related solution revision IDs: `SR-002`, `SR-003` (DI-001 resolved: absolute paths only)
 - Related architecture-review revision IDs: `N/A`
 - Related code-review revision IDs: `N/A`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
 - Triggering finding IDs: `N/A`
 
-**Design Impact DI-001 (for the Solution Designer).** REQ-002 says a tapped video or audio path plays "absolute or relative". The design's Current-State Read puts relative paths on the workspace route. In a conversation, though, only **absolute** paths become file links:
+**DI-001, resolved by SR-003 (`a301dcf60e`, Solution Designer, 2026-11-20): REQ-002/UC-001 mean absolute paths (DEC-003); making relative links tappable is FU-003. IR-001 needed no change; MSP-89's comment now cites the decision.** The finding as raised: REQ-002 says a tapped video or audio path plays "absolute or relative". The design's Current-State Read puts relative paths on the workspace route. In a conversation, though, only **absolute** paths become file links:
 - `resolveEventMonitorMarkdownFileDestination` (`autobyteus-web/utils/eventMonitorFilePaths/absoluteFilePathAction.ts`) returns `not-file` for anything that is not an absolute path or a `file://` URI. Its spec says so.
 - `openMobileFilePath` takes `absolutePath` only.
 - So `[rel-572.mp4](media/rel-572.mp4)` renders as an ordinary `<a href="media/rel-572.mp4">`. This holds for every file type, on the phone and the desktop, today and after this change (MSP-89 records `relativeLink: {"fileControl": false, "href": "media/rel-572.mp4"}`).
@@ -74,9 +74,9 @@ Options as I see them: (a) REQ-002/UC-001 mean absolute paths only, with relativ
   - Server: one header plus a mechanical `size` at 13 call sites.
   - Web: 1 helper, 1 view, 2 viewers, 1 composable and the phone viewer, all inside their existing owners.
   - No credential, gate, route-permission or path-rule change. MSP-89 shows every media read carries the key in its header and no URL carries one.
-- Selected route (`Direct API/E2E`/`Code Review`/`Solution Designer`): `Solution Designer` (DI-001); otherwise `Direct API/E2E`
+- Selected route (`Direct API/E2E`/`Code Review`/`Solution Designer`): `Direct API/E2E` (after DI-001 went to the Solution Designer and was resolved by SR-003)
 - Lightweight implementation self-review completed for the direct route: `Yes` (below)
-- New design impact or escalation trigger: `DI-001` (relative paths; above). No security escalation trigger was hit.
+- New design impact or escalation trigger: `DI-001` (relative paths), resolved by SR-003. No security escalation trigger was hit.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -84,11 +84,11 @@ Options as I see them: (a) REQ-002/UC-001 mean absolute paths only, with relativ
 | --- | --- | --- | --- |
 | REQ-001 / AC-001 | Loading, never "URL is not available.", while a file loads; then plays | `useAuthorizedObjectUrl` (loading, progress) → `VideoPlayer`/`AudioPlayer` → `MediaLoadingState` | Unit (`VideoPlayer.spec`, `AudioPlayer.spec`, `useAuthorizedObjectUrl.spec`); IMP-07 (the reproduction now passes); MSP-89 (no "not available" in any of 9 timelines) |
 | REQ-002 / AC-002 | ~10 MB at 8 Mbit/s, in and outside the folder: progress rises, then plays | DS-001 workspace route; DS-002 `useMobileNodeFile` → `loadNodeFileFromUrl(onProgress)` → `MobileFileViewer`; server `Content-Length` | MSP-89 insideBig/outsideBig: 94 progress texts "0.1 of 9.8 MB" → "9.7 of 9.8 MB", plays at ~10 s (IMP-08) |
-| REQ-002 / AC-003 | Video and audio, inside/outside, delegated run's conversation, play on the phone | as above | MSP-89: 6 small files play (blob:, 3 s), incl. a run delegated on the same node ("Producer"). **Relative: DI-001** |
+| REQ-002 / AC-003 | Video and audio, inside/outside, delegated run's conversation, play on the phone | as above | MSP-89: 6 small files play (blob:, 3 s), incl. a run delegated on the same node ("Producer"). Relative links: out of scope (SR-003 DEC-003, FU-003) |
 | REQ-003 / AC-004 | Desktop windows play the same links | Desktop path unchanged (direct URL; node file via the Files panel) | MSP-90 (node URL for the folder, blob via `/rest/node-files/content` outside); MSP-31/37 pass (IMP-09) |
 | REQ-004 / AC-005 | No key in any URL; gate and path rules unchanged | No change to `node-access`, route permissions or path rules; only `Content-Length` added | MSP-89 `mediaReads`: 9 of 9 with the key in `Authorization`, `keyInUrl: []`, no 401/403. Existing `node-route-permissions` and `user-file-replies` architecture tests pass (IMP-05) |
 | REQ-005 / AC-006 | Failure: plain message + Retry | `VideoPlayer`/`AudioPlayer` failure state | Unit (both players: failure text + Retry; no raw error); MSP-89 missing video: "This video could not be played." + Retry |
-| REQ-006 | Probe cases, desktop cases, unit tests, synthetic media | `MSP-89`, `MSP-90`; specs listed below | Done, except the relative-path case (DI-001) |
+| REQ-006 | Probe cases, desktop cases, unit tests, synthetic media | `MSP-89`, `MSP-90`; specs listed below | Done (relative paths out of scope by SR-003) |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`
 
@@ -120,7 +120,7 @@ Options as I see them: (a) REQ-002/UC-001 mean absolute paths only, with relativ
 - Reviewed root-cause classification: a missing state (loading) between "no URL" and "URL".
 - Reviewed refactor decision: no refactor; one shared helper and one shared view.
 - Implementation matched the reviewed assessment: `Yes`
-- If challenged, routed as `Design Impact`: DI-001 (relative paths), which is not a challenge to the assessment.
+- If challenged, routed as `Design Impact`: DI-001 (relative paths; not a challenge to the assessment), resolved by SR-003.
 - Evidence / notes: the two download owners keep their ownership; the helper is used by both, and the view by three places.
 
 ## Legacy / Compatibility Removal Check
@@ -167,7 +167,7 @@ Evidence: `tickets/in-progress/chat-media-path-playback/evidence/implementation/
 | IMP-05 | `pnpm -C autobyteus-server-ts test:unit`; reruns after the commits; FSEvents latency | tree, then `d165d3143a` | macOS, Node 22, fseventsd 157% | whole server unit suite; file routes; node files | AC-005 (gate/rules unchanged) | Pass for the changed code; watcher = FSEvents | `IMP-05-server-unit-full.log` | tracked-imports `2 passed` after commit; watcher fails alone 19/22 with fs.watch 950 ms / >10 s |
 | IMP-06 | Targeted web suites after the commits (viewers, phone views, composables, download, fileExplorer, remoteAccess utils) | `d165d3143a` | macOS, Node 22 | everything changed on the web | AC-001, AC-006 | Pass | `IMP-06-web-targeted-after-commit.log` | `Test Files  34 passed (34)`, `Tests  234 passed (234)` |
 | IMP-07 | IMP-01 again after the fix | tree before commits (1024 units) | as IMP-01 | as IMP-01 | AC-001, AC-002 | Pass | `IMP-07-phone-repro-after-fix/` | "Loading video…" then "0.1 of 9.2 MB" … "9.2 of 9.2 MB", plays at 9719 ms |
-| IMP-08 | `node tests/e2e/mobile-shell-probe.mjs --cases=MSP-89,MSP-90` | tree = commits | macOS, Chrome 158, ffmpeg, loopback; big videos at 8 Mbit/s | DS-001, DS-002, desktop window | AC-001…AC-006 (relative: DI-001) | Pass | `IMP-08-media-probe-msp-89-90/` (README, JSON, 15 PNGs) | `MSP-89 Pass`, `MSP-90 Pass`, `unknownBrowserErrors 0`; `keyInHeader 9`, `keyInUrl []`; `relativeLink.fileControl false` |
+| IMP-08 | `node tests/e2e/mobile-shell-probe.mjs --cases=MSP-89,MSP-90` | tree = commits | macOS, Chrome 158, ffmpeg, loopback; big videos at 8 Mbit/s | DS-001, DS-002, desktop window | AC-001…AC-006 | Pass | `IMP-08-media-probe-msp-89-90/` (README, JSON, 15 PNGs) | `MSP-89 Pass`, `MSP-90 Pass`, `unknownBrowserErrors 0`; `keyInHeader 9`, `keyInUrl []`; `relativeLink.fileControl false` |
 | IMP-09 | `--cases=MSP-16,MSP-28,MSP-29,MSP-30,MSP-31,MSP-37` | tree = commits | as IMP-08 | existing phone/desktop file opening | REQ-003 | Pass | `IMP-09-file-open-regression/` | all six Pass |
 
 - Not run, and why:
@@ -200,8 +200,7 @@ Evidence: `tickets/in-progress/chat-media-path-playback/evidence/implementation/
 - Retry after a transient failure (stop the node mid-download, start it, tap Retry).
 - A media file sent as an Org / Team / agent-collaboration reference: shows "Loading video… x MB" without a total (size `null` on those routes), then plays.
 - zh-CN: "正在加载视频…" and "x / y MB".
-- Once DI-001 is decided: the relative-path case.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes: as listed above, after the Solution Designer settles DI-001.
+Yes: as listed above.

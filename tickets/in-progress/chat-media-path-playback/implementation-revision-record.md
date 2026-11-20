@@ -6,7 +6,7 @@ The current code and `implementation-handoff.md` are the authority. This record 
 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
-| IR-001 | Solution Designer, `handoff-architecture-design-complete.md` (SR-002, direct route) | DI-001 (raised by this round) | `Initial Baseline` | SR-002; ARCH N/A; CRR N/A; API-REV N/A; DR N/A | Implemented and validated; DI-001 (relative paths) to the Solution Designer |
+| IR-001 | Solution Designer, `handoff-architecture-design-complete.md` (SR-002, direct route) | DI-001 (raised by this round; resolved by SR-003) | `Initial Baseline` | SR-002, SR-003; ARCH N/A; CRR N/A; API-REV N/A; DR N/A | Implemented and validated; DI-001 resolved with no code change; to API/E2E |
 
 ## Revision Entries
 
@@ -29,5 +29,5 @@ The current code and `implementation-handoff.md` are the authority. This record 
   - Web (commits `d165d3143a`, and `04034bc797` for the audio spec's names): the progress-reading helper and its two callers (D-1); `loading`/`progress` and the players' order of states (D-2); `MediaLoadingState` (D-3); the phone node-file view (D-4); the audio failure + Retry (D-6); localization; durable probe cases MSP-89 and MSP-90 replacing the scratch MSP-572.
 - Changed files or areas: see `implementation-handoff.md`, Key Files Or Areas.
 - Local validation and result: see `implementation-handoff.md`, Checks Run (IMP-01…IMP-09).
-- Next recipient or routing: Solution Designer (DI-001). With the answer "absolute only", the package is ready for API/E2E as it stands.
+- Next recipient or routing: Solution Designer (DI-001), which decided by SR-003 (`a301dcf60e`): absolute paths only, relative links FU-003, no implementation change. Then API/E2E (Medium / Low, direct). After SR-003 only MSP-89's comment changed, to cite the decision.
 - Remaining limitations or risks: see `implementation-handoff.md`, Known Risks.
