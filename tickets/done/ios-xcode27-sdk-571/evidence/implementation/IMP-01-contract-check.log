@@ -1,0 +1,26 @@
+# IMP-01 iOS release contract check, positive and negative (AC-004)
+# command: autobyteus-ios/scripts/ios-release-contract-check.py, on the change, then with one revert at a time (each file restored after its case)
+# commit: e3950f9d07 (its tree; run just before that commit was made)
+# env: macOS 26.5.2, Python 3.9.6
+# date: 2026-11-20T11:49:09Z
+
+== the change
+iOS release contract checks passed.
+exit=0
+== floor reverted to 26 in the script
+error: /Users/normy/autobyteus_org/autobyteus-worktrees/ios-xcode27-sdk-571/autobyteus-ios/scripts/select-release-xcode.sh is missing required release-contract text: MINIMUM_MAJOR=27
+
+exit=1
+== default reverted to Xcode_26.3
+error: /Users/normy/autobyteus_org/autobyteus-worktrees/ios-xcode27-sdk-571/.github/workflows/release-ios.yml is missing required release-contract text: IOS_XCODE_APP_PATH: ${{ vars.IOS_XCODE_APP_PATH || '/Applications/Xcode_27.2.app' }}
+exit=1
+== upload-testflight runner reverted to macos-latest
+error: /Users/normy/autobyteus_org/autobyteus-worktrees/ios-xcode27-sdk-571/.github/workflows/release-ios.yml is missing required release-contract text:     runs-on: xcode-27
+
+exit=1
+== script not executable
+error: /Users/normy/autobyteus_org/autobyteus-worktrees/ios-xcode27-sdk-571/autobyteus-ios/scripts/select-release-xcode.sh must be executable; the workflow runs it directly.
+exit=1
+== restored
+iOS release contract checks passed.
+exit=0

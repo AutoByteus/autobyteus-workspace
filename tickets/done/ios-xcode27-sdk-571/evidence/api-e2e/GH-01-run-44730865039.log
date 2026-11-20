@@ -1,0 +1,51 @@
+# GH-01: my own read of build-only run 44730865039 (read only: gh run view 44730865039 --json …; gh run view 44730865039 --log, 7583 lines, grepped); 2026-11-20T12:35:02Z
+== run
+head e3950f9d07261725f0ce8c7abcba5e1703ae2d37 branch codex/ios-xcode27-sdk-571 event workflow_dispatch created 2026-11-20T11:50:35Z conclusion success
+job: Resolve iOS Release Metadata: success
+job: Build And Test iOS App: success
+job: Validate iOS Publish Secrets: skipped
+job: Archive And Upload To App Store Connect: skipped
+== the dispatch input
+Resolve release metadata	2026-11-20T11:51:51.8460409Z   INPUT_PUBLISH_APP_STORE_CONNECT: false
+== runner images
+Resolve iOS Release Metadata	2026-11-20T11:50:39.3146832Z Version: 20261103.629
+Resolve iOS Release Metadata	2026-11-20T11:50:39.3163467Z Image: ubuntu-26.04
+Resolve iOS Release Metadata	2026-11-20T11:50:39.3164410Z Version: 20261111.196.1
+Build And Test iOS App	2026-11-20T11:52:01.2537180Z Version: 20261103.629
+Build And Test iOS App	2026-11-20T11:52:01.2543960Z Image: xcode-27-arm64
+Build And Test iOS App	2026-11-20T11:52:01.2544380Z Version: 20261104.0337.1
+== step 'Select Xcode 27 or newer'
+2026-11-20T11:54:52.1806880Z Selected Xcode app: /Applications/Xcode_27.2.app
+2026-11-20T11:54:52.1912480Z Xcode 27.2
+2026-11-20T11:54:52.2014980Z Build version 27B52
+2026-11-20T11:54:52.2056530Z Selected iPhoneOS SDK: 27.2
+== DEVELOPER_DIR in the later steps' environment
+Build the bundled demo: DEVELOPER_DIR: /Applications/Xcode_27.2.app/Contents/Developer
+Generate, build, and run implementation checks: DEVELOPER_DIR: /Applications/Xcode_27.2.app/Contents/Developer
+Install XcodeGen: DEVELOPER_DIR: /Applications/Xcode_27.2.app/Contents/Developer
+Install workspace dependencies: DEVELOPER_DIR: /Applications/Xcode_27.2.app/Contents/Developer
+Select available iOS simulator: DEVELOPER_DIR: /Applications/Xcode_27.2.app/Contents/Developer
+Setup Node: DEVELOPER_DIR: /Applications/Xcode_27.2.app/Contents/Developer
+Setup pnpm: DEVELOPER_DIR: /Applications/Xcode_27.2.app/Contents/Developer
+Upload iOS build/test artifacts: DEVELOPER_DIR: /Applications/Xcode_27.2.app/Contents/Developer
+Write publish secret readiness summary: DEVELOPER_DIR: /Applications/Xcode_27.2.app/Contents/Developer
+== every SDK and Xcode path named in the log (count)
+ 394 /Applications/Xcode_27.2.app
+   3 iPhoneOS27.2.sdk
+  76 iPhoneSimulator27.2.sdk
+== build, contract check, tests, smoke
+Build the bundled demo	2026-11-20T11:57:33.2187340Z The demo answers all 252 compiled operations (handled or listed as unreachable).
+Generate, build, and run implementation checks	2026-11-20T11:57:34.2674910Z iOS release contract checks passed.
+Generate, build, and run implementation checks	2026-11-20T11:58:30.4608590Z ** BUILD SUCCEEDED **
+Generate, build, and run implementation checks	2026-11-20T12:05:09.9954590Z ** TEST SUCCEEDED **
+Generate, build, and run implementation checks	2026-11-20T12:18:18.0818080Z ** TEST SUCCEEDED **
+Generate, build, and run implementation checks	2026-11-20T12:18:26.4684830Z Xcode version: Xcode 27.2 Build version 27B52
+Generate, build, and run implementation checks	2026-11-20T12:18:26.5273750Z Smoke UI tests: executed and passed without skips
+Generate, build, and run implementation checks 2026-11-20T12:03:53.7187640Z   Executed 56 tests, with 0 failures (0 unexpected) in 30.498 (66.777) seconds
+
+Generate, build, and run implementation checks 2026-11-20T12:03:54.2954120Z   Executed 56 tests, with 0 failures (0 unexpected) in 30.498 (66.780) seconds
+
+Generate, build, and run implementation checks 2026-11-20T12:18:16.2257480Z   Executed 8 tests, with 0 failures (0 unexpected) in 479.058 (479.133) seconds
+
+Generate, build, and run implementation checks 2026-11-20T12:18:16.2261170Z   Executed 8 tests, with 0 failures (0 unexpected) in 479.058 (479.136) seconds
+== ITMS or SDK warnings in the log: 0

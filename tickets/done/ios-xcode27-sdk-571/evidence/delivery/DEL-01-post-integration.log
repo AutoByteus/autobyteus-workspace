@@ -1,0 +1,6 @@
+# merged state 68467597d0 (origin/personal bfd95f73a9 merged)
+iOS release contract checks passed.
+[typecheck] production errors: 0; test-file errors: 1006 in 315 files (baseline 1006 in 315 files)
+[typecheck] PASS
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS
