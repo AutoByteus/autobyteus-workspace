@@ -6,7 +6,7 @@
 - Date: `2026-11-20`
 - Classification: `task_size: Medium`, `architectural_risk: High`; route: reviewed. Architecture review ARCH-REV-001..005 (Fail, Fail, Pass, then SR-004/SR-005 after the implementation's Design Impact, Pass at ARCH-REV-005); implementation IR-001 (Design Impact), IR-002, IR-003; code review CRR-001 Fail (CR-001, one dead export) then CRR-002 Pass (average 9.5); API/E2E `API-REV-001` Pass, final confidence 95.1%; test-code review CRR-003 Pass.
 - Current Status: `Verified from evidence; finalized on personal; no release` (the finalization record is in `release-deployment-report.md`)
-- Branch: `codex/grok-self-started-turns-517`, base `origin/personal` @ `ca4317a386` at bootstrap and at delivery (no new base commits; `Already current`). Product code is final at `cc2701af8a`; everything after it is tests and ticket documents.
+- Branch: `codex/grok-self-started-turns-517`, base `origin/personal` @ `ca4317a386` at bootstrap and at the start of delivery; the base advanced to `9ffa985b45` (autobyteus-565, 20 commits) before the first push and was merged as `276ff28e5b`, no conflict. Product code is final at `cc2701af8a`; everything after it is tests and ticket documents.
 
 ## Delivery Summary
 
@@ -28,7 +28,7 @@
   - `evidence/IMP-04-grok-live-provider-turn.log`: real Grok 1.0.89, a real background job: notice `sender_id system.grok_provider_turn`, content "Background task … completed (exit code: 0)", the reply text with the job's output, `end TURN_COMPLETED`.
   - `evidence/IMP-03-acp-scripted-suites.log`: Grok compaction replay 3 passed; DeepSeek scripted provider (real dsh over the changed connection) 6 passed. `IMP-05` units 299/299, typechecks at baseline; `API-03` typechecks at baseline after the test additions.
 - Reviews: source review CRR-001 Fail (CR-001, an unused exported type) then CRR-002 Pass after the fix, test-code review CRR-003 Pass with no findings.
-- Integrated-state check: not needed; the ticket branch is not behind `origin/personal`.
+- Integrated-state check after the base merge: both typechecks PASS at baseline, the ACP, Grok, DeepSeek, connection and memory units 299/299, and the scripted Grok replay and compaction replay E2E 13/13 (each file shows the known `afterAll` stall after all its tests passed). The live Grok run, the DeepSeek scripted-provider suite and the gap-case repeat were not rerun: the merge touches no ACP file.
 - Secret Gate and artifact hygiene: recorded in `release-deployment-report.md`.
 
 ## Residual Risks For The User

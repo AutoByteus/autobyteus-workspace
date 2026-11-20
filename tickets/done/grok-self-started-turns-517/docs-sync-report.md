@@ -5,8 +5,8 @@
 - Ticket: `grok-self-started-turns-517` (Project Task `autobyteus-517`, round 3: the Grok follow-up `483-FU-004`, option (b) decided by the user), `task_size: Medium`, `architectural_risk: High`, route: reviewed (architecture review ARCH-REV-005 Pass on SR-001..SR-005; code review CRR-001 Fail then CRR-002 Pass; API/E2E `API-REV-001` Pass at 95.1%; test-code review CRR-003 Pass).
 - Trigger: the code reviewer's handoff after the post-API/E2E test-code review (CRR-003 Pass).
 - Bootstrap base reference: `origin/personal` @ `ca4317a386`.
-- Integrated base reference used for docs sync: `origin/personal` @ `ca4317a386` (`Already current`: the fetch at the start of delivery shows the ticket branch is 0 commits behind it).
-- Post-integration verification reference: none needed (no base commits were integrated); the validated state is product code `cc2701af8a` plus the test commit `a933bc9f09`, as API/E2E tested it (`API-03`, both typechecks at baseline).
+- Integrated base reference used for docs sync: `origin/personal` @ `ca4317a386` (`Already current` at the start of delivery: the ticket branch was 0 commits behind it). Before the first push the base advanced to `9ffa985b45` (autobyteus-565, 20 commits); it was merged as `276ff28e5b` with no conflict. Its docs changes (`collaboration_model.md`, `agent_communication.md`, `remote_collaboration.md`, `run_history.md`, web docs) are not the docs this ticket changed, so the sync below stands.
+- Post-integration verification reference: ticket branch `276ff28e5b`: both typechecks PASS at baseline, 299 ACP, Grok, DeepSeek, connection and memory unit tests PASS, the 13 scripted Grok replay and compaction E2E cases PASS (see `release-deployment-report.md`).
 
 ## Why Docs Were Updated
 

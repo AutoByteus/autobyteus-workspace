@@ -23,17 +23,22 @@
 ## Initial Delivery Integration Refresh
 
 - Bootstrap base reference: `origin/personal` @ `ca4317a386`
-- Latest tracked remote base reference checked: `origin/personal` @ `ca4317a386` (fetched 2026-11-20 at the start of delivery)
-- Base advanced since bootstrap or previous refresh: `No`
-- New base commits integrated into the ticket branch: `No`
+- Latest tracked remote base reference checked: `origin/personal` @ `ca4317a386` at the start of delivery (the branch was 0 commits behind), then `origin/personal` @ `9ffa985b45` at the re-fetch before the first push (see below)
+- Base advanced since bootstrap or previous refresh: `No` at the start of delivery; `Yes` before the first push: 20 commits of autobyteus-565 (Messages for standalone runs, with its delivery record) were merged into `origin/personal` meanwhile
+- New base commits integrated into the ticket branch: `Yes` (merge `276ff28e5b`, after verification and docs sync, before any push; no conflict, and no file is changed by both sides)
 - Local checkpoint commit result: `Completed`: `b2d7051d44` kept the code reviewer's uncommitted `code-review-report.md`, `code-review-revision-record.md` and `api-e2e-test-review-report.md`. It is a delivery-safety commit; the integration did not need one because the base had not moved.
-- Integration method: `Already current`
+- Integration method: `Already current` at the start of delivery; `Merge` (`git merge origin/personal`, merge commit `276ff28e5b`) when the base advanced before the first push.
 - Integration result: `Completed`
-- Post-integration executable checks rerun: `No`
-- Post-integration verification result: `Passed` (no change since validation)
-- No-rerun rationale (only if no new base commits were integrated): `origin/personal` is the ticket branch's merge base (`git merge-base HEAD origin/personal` = `ca4317a386`; 0 commits behind), so API/E2E validated exactly this base. Product code did not change after `cc2701af8a` (`git diff --name-only cc2701af8a HEAD` lists only the two test files API/E2E added, and ticket documents); API/E2E ran both typechecks and the replay suite on that state (`API-01`, `API-03`). RELEASE.md asks for a rerun only when new base commits come in.
-- Delivery edits started only after integrated state was current: `Yes`
-- Handoff state current with latest tracked remote base: `Yes` (re-checked before each push, see Repository Finalization)
+- Post-integration executable checks rerun: `Yes` (after the merge)
+  - Rerun plan by impact (TESTING.md, Rerun by impact): the incoming base changes the collaboration and run-history server code (the standalone run root, the Messages feed, remote collaboration), the `autobyteus-collaboration-stream-contracts` package (`src` and tracked `dist`), `autobyteus-web/generated/graphql.ts`, web UI and web docs, and the web `package.json` version. None of the 20 commits touches a file this ticket changed (`comm` of the two file lists is empty), nor the ACP connection, session, Grok profile or the memory recorder. A contract package did change, so the typechecks (which build and read it) and the real-server cases that start the whole server run: both typechecks, the ACP, Grok, DeepSeek, connection and memory unit suites, and the two scripted Grok replay E2E files. Still valid (nothing they exercise changed): the live Grok run (`IMP-04`), the gated DeepSeek scripted-provider suite (`IMP-03`; the merge touches no ACP file) and the 3x gap-case repeat (`API-02`).
+  - `pnpm -C autobyteus-server-ts typecheck`: PASS (`/tmp/517r3-server-typecheck.log`): production 0 errors; test files 1006 in 315 files = baseline.
+  - `pnpm -C autobyteus-web typecheck`: PASS (`/tmp/517r3-web-typecheck.log`): production 0 errors; test files 86 in 36 files = baseline.
+  - `pnpm exec vitest run tests/unit/agent-execution/backends/acp tests/unit/agent-execution/backends/grok tests/unit/agent-execution/backends/deepseek tests/unit/runtime-management/acp tests/unit/runtime-management/grok tests/unit/agent-memory --no-watch` (in `autobyteus-server-ts`): 39 files, 299 tests PASS (`/tmp/517r3-units.log`), the same counts as the implementation's `IMP-05`.
+  - `pnpm exec vitest run tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts --no-watch --reporter=verbose`: 13 of 13 tests PASS (the 6 existing replay cases, the 4 provider-turn cases including the hand-over gap, and the 3 compaction cases; `/tmp/517r3-replay.log`). Each file reports its `afterAll` `Hook timed out in 60000ms` / `10000ms` (the known in-process `app.close()` stall, `FU-002` of `tickets/done/followups-483-517/follow-ups.md`), as in the earlier runs of both files.
+- Post-integration verification result: `Passed`
+- No-rerun rationale (only if no new base commits were integrated): N/A (new base commits were integrated and checked). The earlier result stands for the validated state: `git merge-base` at the start of delivery was `ca4317a386`, and product code did not change after `cc2701af8a` (`git diff --name-only cc2701af8a HEAD` lists only the two test files API/E2E added, and ticket documents).
+- Delivery edits started only after integrated state was current: `Yes` at the time (the base had not moved); the docs sync, summary and records were committed before the base advanced and the merge `276ff28e5b` then went on top of them. The advance touched none of the docs this ticket changed, so no doc needed to change again.
+- Handoff state current with latest tracked remote base: `Yes` (`origin/personal` @ `9ffa985b45` merged; re-checked before each push, see Repository Finalization)
 - Blocker (if applicable): None
 
 ## Verification
@@ -58,7 +63,7 @@
 - More evidence requested (from whom, what, result): `None`
 - User check needed: `No`
 - User check reference, when needed: N/A
-- Re-verification after later re-integration: `Not needed` (`origin/personal` did not move; see Repository Finalization)
+- Re-verification after later re-integration: `Done` after merge `276ff28e5b` (the typechecks, the 299 units and the 13 replay E2E cases above, from the rerun evidence); the user-facing behavior and the docs did not change, so no user check was involved and no doc changed again.
 
 ## Release Decision
 
