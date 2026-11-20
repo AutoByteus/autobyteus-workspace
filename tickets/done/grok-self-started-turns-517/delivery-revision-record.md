@@ -13,7 +13,7 @@
 - Delivery round and trigger: first delivery round; code reviewer handoff after the proportional test-code review (CRR-003 Pass) of API/E2E `API-REV-001` (reviewed route, `task_size: Medium`, `architectural_risk: High`).
 - Triggering upstream report, verification, or evidence: `api-e2e-test-review-report.md` (CRR-003), `code-review-report.md` (CRR-002 Pass), `api-e2e-execution-coverage-report.md` (final confidence 95.1%), `implementation-handoff.md` (IR-002, IR-003), `design-review-report.md` (ARCH-REV-005 Pass), `requirements-doc.md` and `design-spec.md` at SR-001..SR-005.
 - Prior authoritative result: N/A
-- Current authoritative result: verified from evidence and finalized on `personal`; docs synced; no release. The finalization commits are in `release-deployment-report.md`.
+- Current authoritative result: verified from evidence and finalized on `personal`; docs synced; no release. `--no-ff` merge `44a3ee6c68` pushed to `origin/personal` (`3f93bca4d1..44a3ee6c68`), followed by the record commit; details in `release-deployment-report.md`.
 - Docs sync report: `docs-sync-report.md` (Updated: `grok_build_runtime.md`, `agent_execution.md`; `GLOSSARY.md` confirmed)
 - Handoff summary: `handoff-summary.md`
 - Release/publication/deployment report: `release-deployment-report.md`

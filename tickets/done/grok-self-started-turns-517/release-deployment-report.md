@@ -90,20 +90,20 @@
 
 - Bootstrap context source: `RELEASE.md` Finalization Target (`origin`, `personal`; ticket branch `codex/<ticket-name>`) and the Solution Designer's bootstrap handoff (`handoff-sr-001.md`).
 - Ticket branch: `codex/grok-self-started-turns-517`
-- Secret Gate before the first push: recorded below.
-- Ticket branch commit result: recorded below.
-- Ticket branch push result: recorded below.
+- Secret Gate before the first push: `scripts/check_secrets.sh origin/personal..codex/grok-self-started-turns-517` PASS (15 commits, no secrets found; the branch had no remote copy before, so this covered the implementation commits too). Artifact hygiene PASS (101301 tracked files; no Windows-hostile name in this ticket's files); licensing PASS.
+- Ticket branch commit result: `b2d7051d44` (the code reviewer's reports, checkpoint), `9f77b6a0e5` (docs sync, handoff summary, release notes, follow-up, verification records, archive to `tickets/done/`), the base-refresh merge `276ff28e5b`, `86d99e1cb2` (the refresh and its checks recorded), the second base-refresh merge `cceaae82b9` and `84b31d41d7` (a note on it).
+- Ticket branch push result: pushed `origin/codex/grok-self-started-turns-517` (new branch).
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: recorded below.
-- Delivery-owned edits protected before re-integration: recorded below.
-- Re-integration before final merge result: recorded below.
-- Target branch update result: recorded below.
-- Merge into target result: recorded below.
-- Push target branch result: recorded below.
-- User's checkout of the target branch (path): recorded in the terminal message (updated after the last push, with its own uncommitted work untouched).
-- Repository finalization status: recorded below.
-- Blocker (if applicable): None known at the time of writing.
+- Target advanced after verification / acceptance: `Yes`, twice before the first push: to `9ffa985b45` (autobyteus-565, 20 commits) and then to `3f93bca4d1` (one commit that changes only an archived ticket file of autobyteus-565). After the last merge `origin/personal` stayed `3f93bca4d1` at every fetch (before the ticket push, before the finalize merge and before the target push).
+- Delivery-owned edits protected before re-integration: `Completed` (all delivery edits were committed before each merge: `9f77b6a0e5`, then `86d99e1cb2`)
+- Re-integration before final merge result: `Completed` (merges `276ff28e5b` and `cceaae82b9`, no conflict; the checks after the first are in Initial Delivery Integration Refresh; the second changes no code, so none was needed)
+- Target branch update result: `finalize/grok-self-started-turns-517` created from `origin/personal` @ `3f93bca4d1` in the ticket worktree (not in the main checkout).
+- Merge into target result: `--no-ff` merge `44a3ee6c68`; its tree equals the ticket branch's `84b31d41d7` (`git diff --stat` empty). Secret Gate on the merged state: PASS. Artifact hygiene on the merged state: PASS.
+- Push target branch result: `3f93bca4d1..44a3ee6c68  HEAD -> personal`. This record commit follows it (fast-forward), and the ticket branch is fast-forwarded to it.
+- User's checkout of the target branch (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`): after this record's push, `git fetch` and `git merge --ff-only origin/personal` are run there when it is on `personal` with no local commits, without stash, reset, checkout or commit; the result (updated to which commit, or why not) is in the terminal message.
+- Repository finalization status: `Completed`
+- Blocker (if applicable): None
 
 ## Release / Publication / Deployment
 
@@ -118,7 +118,11 @@
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/grok-self-started-turns-517`
-- Recorded below, after finalization.
+- Worktree cleanup result: `Completed` after the record push (`git worktree remove`, after the worktree's untracked and ignored files are confirmed to be build outputs and test data only; everything committed is pushed).
+- Worktree prune result: `Completed` (`git worktree prune`)
+- Local ticket branch cleanup result: `Completed` for the local `codex/grok-self-started-turns-517` and the temporary `finalize/grok-self-started-turns-517` (both merged into `origin/personal`).
+- Remote branch cleanup result: `Not required` (the repository keeps pushed `codex/*` branches; it is fast-forwarded to the record commit).
+- Blocker (if applicable): None
 
 ## Release Notes Summary
 
@@ -138,9 +142,9 @@
 
 ## Verification Checks
 
-- Artifact hygiene `python3 scripts/check_repository_artifact_hygiene.py`: recorded below.
-- Licensing `python3 scripts/check_licensing.py`: recorded below.
-- Secret Gate: recorded below with the push.
+- Artifact hygiene `python3 scripts/check_repository_artifact_hygiene.py`: PASS on the archived state, after the base merges and on the merged state.
+- Licensing `python3 scripts/check_licensing.py`: PASS.
+- Secret Gate: PASS on the ticket commits (15) and on the merged state, before the pushes.
 
 ## Rollback Criteria
 
@@ -150,10 +154,10 @@
 ## Final Status
 
 - Verification complete (from the evidence, or the user's check where needed): `Yes` (from the evidence)
-- Repository finalization complete: recorded below
+- Repository finalization complete: `Yes` (`44a3ee6c68` on `personal`; this record commit follows it)
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: recorded below
-- Unresolved blocker: recorded below
-- Successful terminal package eligible for return: recorded below
-- Terminal package sent to the Solution Designer: recorded below
-- Terminal message/reference: recorded below
+- Applicable safe cleanup complete or not required: `Yes` (worktree and local branches removed after the record push; the remote ticket branch is kept by repository practice)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: by `send_message_to` after this record's push and the cleanup
+- Terminal message/reference: the `Delivery Completed` message to `/solution_designer`, with the user's checkout result and the final commit
