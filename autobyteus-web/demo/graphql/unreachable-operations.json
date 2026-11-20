@@ -16,8 +16,7 @@
     "tracePages": "Earlier trace pages: read only when a projection reports earlier trace events, and the demo's projections never do (hasEarlierActiveTraceEvents: false).",
     "cancelPrepared": "Cancelling a prepared run: only when its first message fails to reach the run; the demo node takes every message.",
     "registeredWorkspace": "A folder's metadata: read only for a folder the node's workspace list lacks; every demo run works in demo-workspace, which the list has.",
-    "staticCatalog": "Reloading a provider's catalog: only for discovered providers (Ollama, LM Studio, custom endpoints); the demo's one provider is static.",
-    "unused": "Defined in a module the phone bundles but imported by no code, so nothing sends it (a follow-up removes the dead document)."
+    "staticCatalog": "Reloading a provider's catalog: only for discovered providers (Ollama, LM Studio, custom endpoints); the demo's one provider is static."
   },
   "operations": {
     "AcceptPeerInvite": "peers",
@@ -25,7 +24,6 @@
     "AddProjectWorkspace": "projects",
     "AddSkillSource": "skills",
     "AgentRuntimes": "settings",
-    "ApproveToolInvocation": "unused",
     "ArchiveStoredAgentOrgRun": "runAdmin",
     "ArchiveStoredAgentRunGroup": "runAdmin",
     "ArchiveStoredRun": "runAdmin",
@@ -82,7 +80,6 @@
     "GetAgentOrgReferencedAgent": "definitions",
     "GetAgentOrgReferencedTeam": "definitions",
     "GetAgentPackages": "definitions",
-    "GetAgentRunCollaborationMemberProjection": "unused",
     "GetAgentRunMemoryView": "memory",
     "GetAgentRunTokenUsageSummary": "tokenUsage",
     "GetAgentRunWorkJournal": "memory",
@@ -186,7 +183,6 @@
     "ResetAgentOrgPersonalSetting": "definitions",
     "ResetAgentPersonalSetting": "definitions",
     "ResetAgentTeamPersonalSetting": "definitions",
-    "RestoreAgentRun": "unused",
     "RetryEmbeddingModel": "settings",
     "RevokeMemoryHubSourceCredential": "memory",
     "RunAppDataMigration": "settings",

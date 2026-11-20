@@ -7,6 +7,7 @@ import json
 import os
 import re
 import subprocess
+import tempfile
 import sys
 from pathlib import Path
 
@@ -215,6 +216,80 @@ def check_release_toolchain(workflow_path: Path, workflow: str, script_path: Pat
         fail(f"{script_path} must be executable; the workflow runs it directly.")
 
 
+SIMULATOR_CHOOSER = "autobyteus-ios/scripts/select-ios-simulator.py"
+SIMULATOR_FIXTURE = {
+    "devices": {
+        "com.apple.CoreSimulator.SimRuntime.iOS-27-0": [
+            {"name": "iPhone 17e", "udid": "E-27-0", "state": "Shutdown", "isAvailable": True},
+            {"name": "iPhone 17", "udid": "17-27-0", "state": "Shutdown", "isAvailable": True},
+        ],
+        "com.apple.CoreSimulator.SimRuntime.iOS-27-2": [
+            {"name": "iPad Air 11-inch (M3)", "udid": "IPAD-27-2", "state": "Shutdown", "isAvailable": True},
+            {"name": "iPhone 17e", "udid": "E-27-2", "state": "Shutdown", "isAvailable": True},
+            {"name": "iPhone 17 Pro", "udid": "PRO-27-2", "state": "Shutdown", "isAvailable": True},
+            {"name": "iPhone 17", "udid": "17-27-2", "state": "Booted", "isAvailable": True},
+        ],
+        "com.apple.CoreSimulator.SimRuntime.iOS-27-3": [
+            {"name": "iPhone 17", "udid": "17-27-3-BETA", "state": "Shutdown", "isAvailable": True},
+        ],
+        "com.apple.CoreSimulator.SimRuntime.watchOS-27-0": [
+            {"name": "iPhone 17", "udid": "NOT-IOS", "state": "Shutdown", "isAvailable": True},
+        ],
+    }
+}
+
+
+def run_simulator_chooser(chooser: Path, devices: dict, sdk: str, name: str | None) -> subprocess.CompletedProcess:
+    """The chooser against a stand-in `xcrun` (an iOS simulator SDK version and a `simctl list -j` fixture)."""
+    with tempfile.TemporaryDirectory() as folder:
+        fixture = Path(folder) / "devices.json"
+        fixture.write_text(json.dumps(devices), encoding="utf-8")
+        fake = Path(folder) / "xcrun"
+        fake.write_text(
+            "#!/bin/sh\n"
+            f'case "$*" in *show-sdk-version*) echo "{sdk}";; *simctl*) cat "{fixture}";; *) exit 2;; esac\n',
+            encoding="utf-8",
+        )
+        fake.chmod(0o755)
+        env = os.environ.copy()
+        env["PATH"] = f"{folder}{os.pathsep}{env.get('PATH', '')}"
+        env.pop("IOS_SIMULATOR_NAME", None)
+        if name is not None:
+            env["IOS_SIMULATOR_NAME"] = name
+        return subprocess.run([sys.executable, str(chooser)], env=env, capture_output=True, text=True, check=False)
+
+
+def check_simulator_chooser(chooser: Path) -> None:
+    """autobyteus-568: the exact name on the newest runtime the Xcode can run (not a beta runtime above its SDK, not a
+    longer name that contains it), else the first iPhone there with a notice, else a failure."""
+    exact = run_simulator_chooser(chooser, SIMULATOR_FIXTURE, "27.2", None)
+    if exact.returncode != 0 or exact.stdout.strip() != "17-27-2":
+        fail(f"{chooser} must choose iPhone 17 on iOS 27.2 under the 27.2 SDK; got {exact.stdout.strip()!r} ({exact.stderr.strip()}).")
+    fallback = run_simulator_chooser(chooser, SIMULATOR_FIXTURE, "27.2", "iPhone 99")
+    if fallback.returncode != 0 or fallback.stdout.strip() != "E-27-2" or "No 'iPhone 99' simulator" not in fallback.stderr:
+        fail(f"{chooser} must fall back to the first iPhone on iOS 27.2 with a notice; got {fallback.stdout.strip()!r} ({fallback.stderr.strip()}).")
+    older_sdk = run_simulator_chooser(chooser, SIMULATOR_FIXTURE, "27.0", None)
+    if older_sdk.returncode != 0 or older_sdk.stdout.strip() != "17-27-0":
+        fail(f"{chooser} must keep to runtimes not above the SDK; got {older_sdk.stdout.strip()!r} under 27.0.")
+    none = run_simulator_chooser(chooser, {"devices": {"com.apple.CoreSimulator.SimRuntime.iOS-27-2": []}}, "27.2", None)
+    if none.returncode == 0 or none.stdout.strip():
+        fail(f"{chooser} must fail with no UDID when no iPhone is available.")
+
+
+def check_simulator_wiring(workflow_path: Path, workflow: str, smoke_path: Path, smoke: str, chooser: Path) -> None:
+    """Both callers ask the one chooser; no inline device match is left."""
+    job = workflow_job_block(workflow_path, workflow, "build-ios")
+    require_contains(workflow_path, job, f'UDID="$({SIMULATOR_CHOOSER})"')
+    require_order(workflow_path, job, "      - name: Select Xcode 27 or newer", f'UDID="$({SIMULATOR_CHOOSER})"', "build-ios simulator choice")
+    require_contains(smoke_path, smoke, 'UDID="$("$ROOT_DIR/scripts/select-ios-simulator.py")"')
+    for path, text in ((workflow_path, workflow), (smoke_path, smoke)):
+        if re.search(r"simctl list devices[^\n]*\|\s*awk", text):
+            fail(f"{path} still matches a simulator inline; use {SIMULATOR_CHOOSER}.")
+    if not os.access(chooser, os.X_OK):
+        fail(f"{chooser} must be executable; its callers run it directly.")
+    check_simulator_chooser(chooser)
+
+
 def check_static_files(repo_root: Path) -> None:
     workflow_path = repo_root / ".github/workflows/release-ios.yml"
     project_path = repo_root / "autobyteus-ios/project.yml"
@@ -267,6 +342,8 @@ def check_static_files(repo_root: Path) -> None:
     require_contains(smoke_path, smoke, 'CURRENT_PROJECT_VERSION="$CURRENT_PROJECT_VERSION"')
     require_contains(smoke_path, smoke, "App bundle ID: $IOS_BUNDLE_ID")
     require_contains(smoke_path, smoke, "iOS marketing version: $MARKETING_VERSION")
+
+    check_simulator_wiring(workflow_path, workflow, smoke_path, smoke, repo_root / SIMULATOR_CHOOSER)
 
 
 def main() -> None:
