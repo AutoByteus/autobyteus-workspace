@@ -452,18 +452,19 @@ describe("Memory Sync multi-process backend e2e", () => {
     ]));
 
     const importedAgents = await graphql<{
-      listAgentsWithMemory: { total: number; entries: Array<{ agentDefinitionId: string | null; runCount: number; memory: { hasRawTraces: boolean } }> };
+      listAgentsWithMemory: { total: number; entries: Array<{ agentDefinitionId: string | null; runCount: number }> };
     }>(hubServer, `
       query ImportedAgents($source: MemoryExplorerSourceInput!, $search: String!) {
         listAgentsWithMemory(source: $source, search: $search, page: 1, pageSize: 10) {
           total
-          entries { agentDefinitionId runCount memory { hasRawTraces } }
+          entries { agentDefinitionId runCount }
         }
       }
     `, { source: { type: "IMPORTED", memorySyncSourceId }, search: "mp-agent" });
     expect(importedAgents.listAgentsWithMemory).toMatchObject({
       total: 1,
-      entries: [expect.objectContaining({ agentDefinitionId: "mp-agent", runCount: 1, memory: { hasRawTraces: true } })],
+      entries: [expect.objectContaining({ agentDefinitionId: "mp-agent", runCount: 1 })],
     });
+    // The card no longer carries availability (autobyteus-554); the imported raw trace is read from the hub above.
   }, 120_000);
 });

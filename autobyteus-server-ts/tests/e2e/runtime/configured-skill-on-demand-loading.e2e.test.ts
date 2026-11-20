@@ -204,6 +204,13 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
       workspaceManager: {
         getWorkspaceById: (workspaceId: string) =>
           workspaceId === workspace.workspaceId ? workspace : undefined,
+        // A run's workspace is opened through the run-workspace check (autobyteus-554), as in WorkspaceManager.
+        getOrCreateRunWorkspace: async (workspaceId: string) => {
+          if (workspaceId !== workspace.workspaceId) throw new Error(`Workspace '${workspaceId}' not found.`);
+          return workspace;
+        },
+        getRegisteredWorkspaceRootPath: async (workspaceId: string) =>
+          workspaceId === workspace.workspaceId ? workspace.getBasePath() : null,
         getOrCreateTempWorkspace: async () => workspace,
       } as any,
     });
@@ -291,6 +298,9 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
     ]);
     expect(noReaderContext.processedSystemPrompt.match(/^## .+$/gm)).toEqual([
       "## Agent Identity",
+      // Every agent's run is told its semantic memory folder and the node's global one (autobyteus-554 REQ-001).
+      "## Semantic Memory",
+      "## Global Semantic Memory",
       "## Working Environment",
       "## Bash Operating Practice",
       "## File And Directory Practice",
