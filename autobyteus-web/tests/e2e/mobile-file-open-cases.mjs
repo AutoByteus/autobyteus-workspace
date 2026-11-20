@@ -98,7 +98,7 @@ export const runFileOpenCases = async (probe) => {
     page.on('requestfailed', request => evidence.failedRequests.push({ case: caseOf(), label, url: redact(request.url()), error: request.failure()?.errorText ?? null }));
   };
 
-  if (['MSP-28', 'MSP-29', 'MSP-30'].some(wants)) {
+  if (['MSP-28', 'MSP-29', 'MSP-30', 'MSP-572'].some(wants)) {
     const [epsilon, zeta] = await Promise.all([serverAt('epsilon', await freePort(), { AGY_FAKE_CASE: 'linked_skills' }), serverAt('zeta', await freePort(), { AGY_FAKE_CASE: 'linked_skills' })]);
     const phoneOrigin = `http://${PHONE_HOST}:${epsilon.port}`;
     let phoneBrowser = null;
@@ -212,6 +212,60 @@ export const runFileOpenCases = async (probe) => {
       };
       const linkControl = target => conv.locator(`[data-event-monitor-file-action-control="true"][title="${target}"]`);
       await openRun(`agent:${run}`, 'PATH-ATTACH-450');
+
+      // autobyteus-572 reproduction (Solution Designer, scratch): media file links tapped on the phone. Synthetic media made
+      // with ffmpeg (SD572_FFMPEG, default `ffmpeg`): a short video and an audio file in the run's folder and outside it, and a
+      // ~10 MB video in the folder. Optional SD572_THROTTLE_KBPS throttles the phone page (CDP) like a phone link.
+      await runCase('MSP-572', async () => {
+        currentCase = 'MSP-572';
+        const { execFileSync } = await import('node:child_process');
+        const ffmpeg = process.env.SD572_FFMPEG || 'ffmpeg';
+        const outside = path.join(epsilon.dataDir, '..', 'outside-media');
+        await fs.mkdir(path.join(workspace, 'media'), { recursive: true });
+        await fs.mkdir(outside, { recursive: true });
+        const media = { insideVideo: path.join(workspace, 'media', 'clip-572.mp4'), outsideVideo: path.join(outside, 'clip-572-out.mp4'),
+          insideAudio: path.join(workspace, 'media', 'tone-572.mp3'), outsideAudio: path.join(outside, 'tone-572-out.mp3'), bigVideo: path.join(workspace, 'media', 'big-572.mp4') };
+        const make = (args) => execFileSync(ffmpeg, ['-y', '-loglevel', 'error', ...args]);
+        make(['-f', 'lavfi', '-i', 'testsrc=size=320x240:rate=25', '-t', '3', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', media.insideVideo]);
+        await fs.copyFile(media.insideVideo, media.outsideVideo);
+        make(['-f', 'lavfi', '-i', 'sine=frequency=440:duration=3', media.insideAudio]);
+        await fs.copyFile(media.insideAudio, media.outsideAudio);
+        make(['-f', 'lavfi', '-i', 'mandelbrot=size=1280x720:rate=30', '-t', '20', '-b:v', '4M', '-minrate', '4M', '-maxrate', '4M', '-bufsize', '8M', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', media.bigVideo]);
+        const sizes = Object.fromEntries(await Promise.all(Object.entries(media).map(async ([k, f]) => [k, (await fs.stat(f)).size])));
+        await linkMessage('MEDIA-572', Object.entries(media).map(([k, f]) => [path.basename(f), f]));
+        await waitFor('the media links on the phone', async () => (await linkControl(media.bigVideo).count()) > 0, 30_000);
+        const cdp = await page.context().newCDPSession(page);
+        const throttle = Number(process.env.SD572_THROTTLE_KBPS || 0);
+        if (throttle > 0) await cdp.send('Network.emulateNetworkConditions', { offline: false, latency: 80, downloadThroughput: throttle * 1024 / 8, uploadThroughput: throttle * 1024 / 8 });
+        const results = {};
+        for (const [key, target] of Object.entries(media)) {
+          const from = Date.now();
+          const control = linkControl(target).last();
+          await control.scrollIntoViewIfNeeded();
+          await control.tap();
+          const timeline = [];
+          let last = '';
+          const deadline = Date.now() + 25_000;
+          while (Date.now() < deadline) {
+            const state = await page.evaluate(() => {
+              const el = document.querySelector('[data-testid="mobile-file-viewer"]');
+              if (!el) return { viewer: false };
+              const media = el.querySelector('video, audio');
+              return { viewer: true, text: el.innerText.replace(/\s+/g, ' ').slice(0, 160), media: media ? { tag: media.tagName, src: media.src ? media.src.slice(0, 40) : null, readyState: media.readyState, error: media.error?.code ?? null, duration: Number.isFinite(media.duration) ? Math.round(media.duration * 10) / 10 : null } : null };
+            });
+            const sig = JSON.stringify(state);
+            if (sig !== last) { timeline.push({ at: Date.now() - from, ...state }); last = sig; }
+            if (state.media && state.media.readyState >= 1) break;
+            await sleep(100);
+          }
+          await shot(page, `MSP-572-${key}`);
+          results[key] = { timeline, requests: netSince(from).filter(e => e.path.startsWith('/rest')).map(e => ({ at: e.at - from, path: e.path.replace(/[0-9a-f-]{20,}/g, '…'), status: e.status, type: e.type })) };
+          await page.goBack();
+          await waitFor(`${key}: back`, conversationShown, 15_000).catch(() => undefined);
+        }
+        if (throttle > 0) await cdp.send('Network.emulateNetworkConditions', { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
+        return { sizes, throttleKbps: throttle, results };
+      });
 
       await runCase('MSP-28', async () => {
         currentCase = 'MSP-28';
