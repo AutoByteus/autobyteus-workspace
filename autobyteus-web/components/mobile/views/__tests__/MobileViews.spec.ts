@@ -147,6 +147,51 @@ describe('the phone\'s view screens read the open target (autobyteus-277 DS-005,
       }
     });
 
+    // autobyteus-572 D-7: Retry where the phone viewer itself fails to open a file.
+    it('a node file that was not there offers Retry, which reads it again and opens it; a folder offers no Retry', async () => {
+      const fetchSpy = vi.spyOn(globalThis, 'fetch')
+        .mockResolvedValueOnce(new Response(JSON.stringify({ code: 'NODE_FILE_NOT_FOUND', message: 'x' }), { status: 404 }))
+        .mockResolvedValueOnce(new Response('# Rendered at last', { status: 200, headers: { 'content-type': 'text/markdown' } }));
+      const { wrapper } = await mountView(MobileFiles, targetOf(), { screen: 'files', nodeFile: '/Users/normy/elsewhere/late.md' });
+      await flushPromises();
+      expect(wrapper.get('[data-testid="mobile-file-preview-error"]').text()).toBe('workspace.components.mobile.views.MobileFiles.node_file_not_found');
+      await wrapper.get('[data-testid="mobile-file-preview-retry"]').trigger('click');
+      await flushPromises();
+      expect(fetchSpy).toHaveBeenCalledTimes(2);
+      expect(String(fetchSpy.mock.calls[1]?.[0])).toBe(String(fetchSpy.mock.calls[0]?.[0]));
+      expect(wrapper.find('[data-testid="mobile-file-preview-error"]').exists()).toBe(false);
+      expect(wrapper.get('[data-testid="mobile-file-preview-content"]').text()).toBe('/Users/normy/elsewhere/late.md:# Rendered at last');
+      wrapper.unmount();
+      fetchSpy.mockRestore();
+
+      const folderSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(JSON.stringify({ code: 'NODE_FILE_IS_FOLDER', message: 'x' }), { status: 400 }));
+      const folder = await mountView(MobileFiles, targetOf(), { screen: 'files', nodeFile: '/Users/normy/elsewhere' });
+      await flushPromises();
+      expect(folder.wrapper.get('[data-testid="mobile-file-preview-error"]').text()).toBe('workspace.components.mobile.views.MobileFiles.node_file_is_folder');
+      expect(folder.wrapper.find('[data-testid="mobile-file-preview-retry"]').exists()).toBe(false);
+      folderSpy.mockRestore();
+    });
+
+    it('a file of the open folder that failed to open offers Retry, which opens it again', async () => {
+      seedTree(new TreeNode('project', '', false, [new TreeNode('notes.md', 'notes.md', true, [], 'notes', true)], 'root', true));
+      const explorer = useFileExplorerStore();
+      const open = vi.spyOn(explorer, 'openFilePreview')
+        .mockRejectedValueOnce(new Error('The file could not be read.'))
+        .mockImplementationOnce(async (filePath, workspaceId) => {
+          const state = explorer._getOrCreateWorkspaceState(workspaceId);
+          state.openFiles.push({ path: filePath, type: 'Text', mode: 'preview', content: '# Notes', url: null, contentRevision: 0, relativeResourceContext: null, isLoading: false, error: null });
+          state.activeFile = filePath;
+        });
+      const { wrapper } = await mountView(MobileFiles, targetOf(), { screen: 'files', workspace: 'workspace-1', file: 'notes.md' });
+      await flushPromises();
+      expect(wrapper.find('[data-testid="mobile-file-preview-error"]').exists()).toBe(true);
+      await wrapper.get('[data-testid="mobile-file-preview-retry"]').trigger('click');
+      await flushPromises();
+      expect(open).toHaveBeenCalledTimes(2);
+      expect(open.mock.calls[1]).toEqual(['notes.md', 'workspace-1']);
+      expect(wrapper.get('[data-testid="mobile-file-preview-content"]').text()).toBe('notes.md:# Notes');
+    });
+
     it('a run on another node: its files are on that node (278 wording)', async () => {
       seedPeerRows(useRunTreeStore(), 'host-run', [peerAgentRow('run-1', 'agent:host-run', { nodeName: 'docker', reachable: true })]);
       const { wrapper } = await mountView(MobileFiles, targetOf({ workspaceRootPath: null }));

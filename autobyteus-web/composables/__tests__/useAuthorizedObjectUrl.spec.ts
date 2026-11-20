@@ -2,7 +2,7 @@ import { flushPromises, mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { defineComponent, h } from 'vue'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { useAuthorizedObjectUrlMap } from '~/composables/useAuthorizedObjectUrl'
+import { useAuthorizedObjectUrl, useAuthorizedObjectUrlMap } from '~/composables/useAuthorizedObjectUrl'
 import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore'
 import type { MobileNodeSession } from '~/types/remoteAccess'
 
@@ -124,6 +124,73 @@ describe('useAuthorizedObjectUrlMap credential generations', () => {
     expect(resources.resolvedUrlsBySource.value).toEqual({ [source]: source })
     expect(createObjectUrl).not.toHaveBeenCalled()
 
+    wrapper.unmount()
+  })
+})
+
+describe('useAuthorizedObjectUrl while a protected file downloads on the phone (autobyteus-572 D-2)', () => {
+  it('is loading with rising progress, then resolves to an object URL and clears both', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    useMobileNodeSessionStore().$patch({ session: sessionWithCredential('credential-a') })
+    let push!: (bytes: Uint8Array | null) => void
+    const body = new ReadableStream<Uint8Array>({ start(controller) { push = (bytes) => (bytes ? controller.enqueue(bytes) : controller.close()) } })
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(body, { status: 200, headers: { 'content-length': '10', 'content-type': 'video/mp4' } }))
+    vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:video-1')
+    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => undefined)
+
+    let media!: ReturnType<typeof useAuthorizedObjectUrl>
+    const wrapper = mount(defineComponent({
+      setup() {
+        media = useAuthorizedObjectUrl(() => '/rest/workspaces/ws/content?path=big.mp4')
+        return () => h('div')
+      },
+    }), { global: { plugins: [pinia] } })
+
+    expect(media.loading.value).toBe(true)
+    expect(media.resolvedUrl.value).toBeNull()
+    await flushPromises()
+    push(new Uint8Array(6))
+    await flushPromises()
+    expect(media.progress.value).toEqual({ loaded: 6, total: 10 })
+    push(new Uint8Array(4)); push(null)
+    await flushPromises()
+    expect(media.loading.value).toBe(false)
+    expect(media.progress.value).toBeNull()
+    expect(media.resolvedUrl.value).toBe('blob:video-1')
+    wrapper.unmount()
+  })
+
+  it('a failed download ends loading with the error', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    useMobileNodeSessionStore().$patch({ session: sessionWithCredential('credential-a') })
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('gone', { status: 404, statusText: 'Not Found' }))
+    let media!: ReturnType<typeof useAuthorizedObjectUrl>
+    const wrapper = mount(defineComponent({
+      setup() {
+        media = useAuthorizedObjectUrl(() => '/rest/workspaces/ws/content?path=gone.mp4')
+        return () => h('div')
+      },
+    }), { global: { plugins: [pinia] } })
+    await flushPromises()
+    expect(media.loading.value).toBe(false)
+    expect(media.error.value).toContain('404')
+    wrapper.unmount()
+  })
+
+  it('a desktop window (no phone key) gets the URL at once and never loads', () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    let media!: ReturnType<typeof useAuthorizedObjectUrl>
+    const wrapper = mount(defineComponent({
+      setup() {
+        media = useAuthorizedObjectUrl(() => '/rest/workspaces/ws/content?path=big.mp4')
+        return () => h('div')
+      },
+    }), { global: { plugins: [pinia] } })
+    expect(media.loading.value).toBe(false)
+    expect(media.resolvedUrl.value).toBe('/rest/workspaces/ws/content?path=big.mp4')
     wrapper.unmount()
   })
 })

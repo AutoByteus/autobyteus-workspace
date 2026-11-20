@@ -1753,7 +1753,8 @@ const runCases = async () => {
         await viewer.waitFor({ timeout: 20_000 }).catch(() => undefined);
         await waitFor(`${name} settled in the viewer`, async () => {
           const text = await viewer.innerText().catch(() => '');
-          return !/Opening…/.test(text) && text.length > 0;
+          // A file on its way says "Opening…" or, not text, "Loading … " with its progress (autobyteus-572).
+          return !/Opening…|Loading (video|audio|file)…/.test(text) && text.length > 0;
         }, 20_000).catch(() => undefined);
         await sleep(500);
         const facts = {

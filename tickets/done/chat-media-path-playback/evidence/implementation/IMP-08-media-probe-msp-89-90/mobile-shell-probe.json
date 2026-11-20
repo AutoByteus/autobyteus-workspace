@@ -1,0 +1,1801 @@
+{
+  "startedAt": "2026-11-20T15:38:35.642Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 58297,
+      "nodeId": "srv_8l_yrB_vCUWkzd7iVM6-hmQ25R_h2wJs",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 58296,
+      "nodeId": "srv_hn42dW1QBRJW-vsYPrihFeBpTfjKp2wl",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "zeta": {
+      "port": 58521,
+      "nodeId": "srv_KIX95Rampg0DTHiKG7bxKdPzm5ZSkchs",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "epsilon": {
+      "port": 58520,
+      "nodeId": "srv_mLqXR70crFlbowIQ_GkRouGF-IYJa3eP",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_421c852935f845a5a8bd77b3f2095c8f",
+    "writerRun": "release_notes_writer_8ce8be3da3024448b5190e9fe157fafb",
+    "squadRun": "docs_review_team_6f8755531eb348288e77462ad167a2cf",
+    "reviewer": "release_notes_writer_dc65e09fccb04297b1672dfb9a31f58b",
+    "memberDelegated": "fact_checker_66e764c2467b418cbb43984aa78d682e",
+    "remoteAgentRun": "publisher_4f3e6b9c31df4141a1c86f08e7a7d66a",
+    "remoteTeamRun": "studio_team_81ce9d42eaec4b4a81ff048815cf2d31",
+    "plain": [
+      "fact_checker_8bb0fbeea0944e969f1815462266cb10",
+      "fact_checker_065dc70afc734d55b6931dc12e503297",
+      "fact_checker_8c32452cfc6b480db0836f016c7eae94"
+    ],
+    "org": "delivery_org_8c43c2634f3a42029536ac82b2bd6ce7",
+    "orgPlanner": "release_notes_writer_d2fbffefc6714ba18fa2efeb5803a13e",
+    "reviewOrg": "review_org_90a86043f59b4634810837864611635a",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_29ef532f9aee4dce828253dad916e658",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_72277e43976545f2b3311f0b257b9d01",
+    "deliveryLead": "fact_checker_9c151bbf35544624b22409de02afe73b",
+    "deliveryMate": "release_notes_writer_f9780d91561a4d13bb88defa0efddd5d",
+    "leadDelegated": "changelog_helper_e538e19eea0f4052b2029df7617f4674",
+    "approver": "approver_35433a126f1145cabbea9f4a32d1c1a2",
+    "taskA": "launch-ed6a20-1",
+    "taskB": "launch-ed6a20-2"
+  },
+  "cases": {
+    "MSP-89": {
+      "result": "Pass",
+      "seconds": 40.4,
+      "sizes": {
+        "bigBytes": 9785004,
+        "bigShownAs": "9.8 MB"
+      },
+      "relativeLink": {
+        "fileControl": false,
+        "href": "media/rel-572.mp4"
+      },
+      "results": {
+        "insideVideo": {
+          "final": {
+            "viewer": true,
+            "text": "clip-572.mp4",
+            "loading": false,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": {
+              "tag": "video",
+              "blob": true,
+              "readyState": 4,
+              "error": null,
+              "duration": 3
+            }
+          },
+          "backToConversation": true,
+          "seconds": 0.6,
+          "notAvailableShown": false,
+          "progress": [],
+          "timeline": [
+            {
+              "at": 94,
+              "viewer": false
+            },
+            {
+              "at": 196,
+              "viewer": true,
+              "text": "clip-572.mp4",
+              "loading": false,
+              "progress": null,
+              "alert": null,
+              "retry": false,
+              "media": {
+                "tag": "video",
+                "blob": true,
+                "readyState": 0,
+                "error": null,
+                "duration": null
+              }
+            },
+            {
+              "at": 301,
+              "viewer": true,
+              "text": "clip-572.mp4",
+              "loading": false,
+              "progress": null,
+              "alert": null,
+              "retry": false,
+              "media": {
+                "tag": "video",
+                "blob": true,
+                "readyState": 4,
+                "error": null,
+                "duration": 3
+              }
+            }
+          ]
+        },
+        "insideAudio": {
+          "final": {
+            "viewer": true,
+            "text": "tone-572.mp3",
+            "loading": false,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": {
+              "tag": "audio",
+              "blob": true,
+              "readyState": 4,
+              "error": null,
+              "duration": 3
+            }
+          },
+          "backToConversation": true,
+          "seconds": 0.4,
+          "notAvailableShown": false,
+          "progress": [],
+          "timeline": [
+            {
+              "at": 59,
+              "viewer": false
+            },
+            {
+              "at": 162,
+              "viewer": true,
+              "text": "tone-572.mp3",
+              "loading": false,
+              "progress": null,
+              "alert": null,
+              "retry": false,
+              "media": {
+                "tag": "audio",
+                "blob": true,
+                "readyState": 4,
+                "error": null,
+                "duration": 3
+              }
+            }
+          ]
+        },
+        "outsideVideo": {
+          "final": {
+            "viewer": true,
+            "text": "clip-572-out.mp4",
+            "loading": false,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": {
+              "tag": "video",
+              "blob": true,
+              "readyState": 4,
+              "error": null,
+              "duration": 3
+            }
+          },
+          "backToConversation": true,
+          "seconds": 0.4,
+          "notAvailableShown": false,
+          "progress": [],
+          "timeline": [
+            {
+              "at": 70,
+              "viewer": false
+            },
+            {
+              "at": 171,
+              "viewer": true,
+              "text": "clip-572-out.mp4",
+              "loading": false,
+              "progress": null,
+              "alert": null,
+              "retry": false,
+              "media": {
+                "tag": "video",
+                "blob": true,
+                "readyState": 4,
+                "error": null,
+                "duration": 3
+              }
+            }
+          ]
+        },
+        "outsideAudio": {
+          "final": {
+            "viewer": true,
+            "text": "tone-572-out.mp3",
+            "loading": false,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": {
+              "tag": "audio",
+              "blob": true,
+              "readyState": 4,
+              "error": null,
+              "duration": 3
+            }
+          },
+          "backToConversation": true,
+          "seconds": 0.4,
+          "notAvailableShown": false,
+          "progress": [],
+          "timeline": [
+            {
+              "at": 71,
+              "viewer": false
+            },
+            {
+              "at": 173,
+              "viewer": true,
+              "text": "tone-572-out.mp3",
+              "loading": false,
+              "progress": null,
+              "alert": null,
+              "retry": false,
+              "media": {
+                "tag": "audio",
+                "blob": true,
+                "readyState": 4,
+                "error": null,
+                "duration": 3
+              }
+            }
+          ]
+        },
+        "insideBig": {
+          "final": {
+            "viewer": true,
+            "text": "big-572.mp4",
+            "loading": false,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": {
+              "tag": "video",
+              "blob": true,
+              "readyState": 4,
+              "error": null,
+              "duration": 20
+            }
+          },
+          "backToConversation": true,
+          "seconds": 10.2,
+          "notAvailableShown": false,
+          "progress": [
+            "0.1 of 9.8 MB",
+            "0.2 of 9.8 MB",
+            "0.3 of 9.8 MB",
+            "0.4 of 9.8 MB",
+            "0.5 of 9.8 MB",
+            "0.6 of 9.8 MB",
+            "0.7 of 9.8 MB",
+            "0.8 of 9.8 MB",
+            "0.9 of 9.8 MB",
+            "1.0 of 9.8 MB",
+            "1.1 of 9.8 MB",
+            "1.2 of 9.8 MB",
+            "1.3 of 9.8 MB",
+            "1.4 of 9.8 MB",
+            "1.5 of 9.8 MB",
+            "1.6 of 9.8 MB",
+            "1.7 of 9.8 MB",
+            "1.8 of 9.8 MB",
+            "1.9 of 9.8 MB",
+            "2.0 of 9.8 MB",
+            "2.1 of 9.8 MB",
+            "2.2 of 9.8 MB",
+            "2.3 of 9.8 MB",
+            "2.4 of 9.8 MB",
+            "2.5 of 9.8 MB",
+            "2.6 of 9.8 MB",
+            "2.7 of 9.8 MB",
+            "2.8 of 9.8 MB",
+            "3.0 of 9.8 MB",
+            "3.1 of 9.8 MB",
+            "3.2 of 9.8 MB",
+            "3.3 of 9.8 MB",
+            "3.5 of 9.8 MB",
+            "3.6 of 9.8 MB",
+            "3.7 of 9.8 MB",
+            "3.8 of 9.8 MB",
+            "3.9 of 9.8 MB",
+            "4.0 of 9.8 MB",
+            "4.1 of 9.8 MB",
+            "4.2 of 9.8 MB",
+            "4.3 of 9.8 MB",
+            "4.4 of 9.8 MB",
+            "4.5 of 9.8 MB",
+            "4.6 of 9.8 MB",
+            "4.7 of 9.8 MB",
+            "4.8 of 9.8 MB",
+            "4.9 of 9.8 MB",
+            "5.0 of 9.8 MB",
+            "5.1 of 9.8 MB",
+            "5.2 of 9.8 MB",
+            "5.3 of 9.8 MB",
+            "5.4 of 9.8 MB",
+            "5.5 of 9.8 MB",
+            "5.6 of 9.8 MB",
+            "5.7 of 9.8 MB",
+            "5.8 of 9.8 MB",
+            "5.9 of 9.8 MB",
+            "6.0 of 9.8 MB",
+            "6.1 of 9.8 MB",
+            "6.2 of 9.8 MB",
+            "6.3 of 9.8 MB",
+            "6.4 of 9.8 MB",
+            "6.5 of 9.8 MB",
+            "6.6 of 9.8 MB",
+            "6.7 of 9.8 MB",
+            "6.8 of 9.8 MB",
+            "6.9 of 9.8 MB",
+            "7.0 of 9.8 MB",
+            "7.1 of 9.8 MB",
+            "7.2 of 9.8 MB",
+            "7.3 of 9.8 MB",
+            "7.4 of 9.8 MB",
+            "7.6 of 9.8 MB",
+            "7.7 of 9.8 MB",
+            "7.8 of 9.8 MB",
+            "7.9 of 9.8 MB",
+            "8.0 of 9.8 MB",
+            "8.1 of 9.8 MB",
+            "8.2 of 9.8 MB",
+            "8.3 of 9.8 MB",
+            "8.4 of 9.8 MB",
+            "8.5 of 9.8 MB",
+            "8.6 of 9.8 MB",
+            "8.7 of 9.8 MB",
+            "8.8 of 9.8 MB",
+            "8.9 of 9.8 MB",
+            "9.0 of 9.8 MB",
+            "9.1 of 9.8 MB",
+            "9.2 of 9.8 MB",
+            "9.3 of 9.8 MB",
+            "9.4 of 9.8 MB",
+            "9.5 of 9.8 MB",
+            "9.6 of 9.8 MB",
+            "9.7 of 9.8 MB"
+          ],
+          "timeline": [
+            {
+              "at": 67,
+              "viewer": false
+            },
+            {
+              "at": 168,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video…",
+              "loading": true,
+              "progress": null,
+              "alert": null,
+              "retry": false,
+              "media": null
+            },
+            {
+              "at": 268,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 0.1 of 9.8 MB",
+              "loading": true,
+              "progress": "0.1 of 9.8 MB",
+              "alert": null,
+              "retry": false,
+              "media": null
+            },
+            {
+              "at": 9929,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 9.7 of 9.8 MB",
+              "loading": true,
+              "progress": "9.7 of 9.8 MB",
+              "alert": null,
+              "retry": false,
+              "media": null
+            },
+            {
+              "at": 10033,
+              "viewer": true,
+              "text": "big-572.mp4",
+              "loading": false,
+              "progress": null,
+              "alert": null,
+              "retry": false,
+              "media": {
+                "tag": "video",
+                "blob": true,
+                "readyState": 4,
+                "error": null,
+                "duration": 20
+              }
+            }
+          ]
+        },
+        "outsideBig": {
+          "final": {
+            "viewer": true,
+            "text": "big-572-out.mp4",
+            "loading": false,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": {
+              "tag": "video",
+              "blob": true,
+              "readyState": 4,
+              "error": null,
+              "duration": 20
+            }
+          },
+          "backToConversation": true,
+          "seconds": 10.1,
+          "notAvailableShown": false,
+          "progress": [
+            "0.1 of 9.8 MB",
+            "0.2 of 9.8 MB",
+            "0.3 of 9.8 MB",
+            "0.4 of 9.8 MB",
+            "0.5 of 9.8 MB",
+            "0.6 of 9.8 MB",
+            "0.7 of 9.8 MB",
+            "0.8 of 9.8 MB",
+            "0.9 of 9.8 MB",
+            "1.0 of 9.8 MB",
+            "1.1 of 9.8 MB",
+            "1.2 of 9.8 MB",
+            "1.3 of 9.8 MB",
+            "1.4 of 9.8 MB",
+            "1.5 of 9.8 MB",
+            "1.6 of 9.8 MB",
+            "1.7 of 9.8 MB",
+            "1.8 of 9.8 MB",
+            "1.9 of 9.8 MB",
+            "2.0 of 9.8 MB",
+            "2.1 of 9.8 MB",
+            "2.2 of 9.8 MB",
+            "2.4 of 9.8 MB",
+            "2.5 of 9.8 MB",
+            "2.6 of 9.8 MB",
+            "2.7 of 9.8 MB",
+            "2.8 of 9.8 MB",
+            "2.9 of 9.8 MB",
+            "3.0 of 9.8 MB",
+            "3.1 of 9.8 MB",
+            "3.2 of 9.8 MB",
+            "3.3 of 9.8 MB",
+            "3.4 of 9.8 MB",
+            "3.5 of 9.8 MB",
+            "3.6 of 9.8 MB",
+            "3.7 of 9.8 MB",
+            "3.8 of 9.8 MB",
+            "3.9 of 9.8 MB",
+            "4.1 of 9.8 MB",
+            "4.2 of 9.8 MB",
+            "4.3 of 9.8 MB",
+            "4.4 of 9.8 MB",
+            "4.5 of 9.8 MB",
+            "4.6 of 9.8 MB",
+            "4.7 of 9.8 MB",
+            "4.8 of 9.8 MB",
+            "4.9 of 9.8 MB",
+            "5.0 of 9.8 MB",
+            "5.1 of 9.8 MB",
+            "5.2 of 9.8 MB",
+            "5.3 of 9.8 MB",
+            "5.4 of 9.8 MB",
+            "5.5 of 9.8 MB",
+            "5.6 of 9.8 MB",
+            "5.7 of 9.8 MB",
+            "5.8 of 9.8 MB",
+            "5.9 of 9.8 MB",
+            "6.0 of 9.8 MB",
+            "6.1 of 9.8 MB",
+            "6.2 of 9.8 MB",
+            "6.3 of 9.8 MB",
+            "6.4 of 9.8 MB",
+            "6.5 of 9.8 MB",
+            "6.6 of 9.8 MB",
+            "6.7 of 9.8 MB",
+            "6.8 of 9.8 MB",
+            "6.9 of 9.8 MB",
+            "7.0 of 9.8 MB",
+            "7.1 of 9.8 MB",
+            "7.2 of 9.8 MB",
+            "7.3 of 9.8 MB",
+            "7.4 of 9.8 MB",
+            "7.5 of 9.8 MB",
+            "7.7 of 9.8 MB",
+            "7.8 of 9.8 MB",
+            "7.9 of 9.8 MB",
+            "8.0 of 9.8 MB",
+            "8.1 of 9.8 MB",
+            "8.2 of 9.8 MB",
+            "8.3 of 9.8 MB",
+            "8.4 of 9.8 MB",
+            "8.5 of 9.8 MB",
+            "8.6 of 9.8 MB",
+            "8.7 of 9.8 MB",
+            "8.8 of 9.8 MB",
+            "8.9 of 9.8 MB",
+            "9.0 of 9.8 MB",
+            "9.1 of 9.8 MB",
+            "9.2 of 9.8 MB",
+            "9.3 of 9.8 MB",
+            "9.4 of 9.8 MB",
+            "9.5 of 9.8 MB",
+            "9.6 of 9.8 MB",
+            "9.7 of 9.8 MB"
+          ],
+          "timeline": [
+            {
+              "at": 70,
+              "viewer": false
+            },
+            {
+              "at": 172,
+              "viewer": true,
+              "text": "big-572-out.mp4 Loading video…",
+              "loading": true,
+              "progress": null,
+              "alert": null,
+              "retry": false,
+              "media": null
+            },
+            {
+              "at": 272,
+              "viewer": true,
+              "text": "big-572-out.mp4 Loading video… 0.1 of 9.8 MB",
+              "loading": true,
+              "progress": "0.1 of 9.8 MB",
+              "alert": null,
+              "retry": false,
+              "media": null
+            },
+            {
+              "at": 9731,
+              "viewer": true,
+              "text": "big-572-out.mp4 Loading video… 9.7 of 9.8 MB",
+              "loading": true,
+              "progress": "9.7 of 9.8 MB",
+              "alert": null,
+              "retry": false,
+              "media": null
+            },
+            {
+              "at": 9836,
+              "viewer": true,
+              "text": "big-572-out.mp4",
+              "loading": false,
+              "progress": null,
+              "alert": null,
+              "retry": false,
+              "media": {
+                "tag": "video",
+                "blob": true,
+                "readyState": 4,
+                "error": null,
+                "duration": 20
+              }
+            }
+          ]
+        },
+        "missing": {
+          "final": {
+            "viewer": true,
+            "text": "gone-572.mp4 This video could not be played. Retry",
+            "loading": false,
+            "progress": null,
+            "alert": "This video could not be played. Retry",
+            "retry": true,
+            "media": null
+          },
+          "backToConversation": true,
+          "seconds": 0.4,
+          "notAvailableShown": false,
+          "progress": [],
+          "timeline": [
+            {
+              "at": 66,
+              "viewer": false
+            },
+            {
+              "at": 168,
+              "viewer": true,
+              "text": "gone-572.mp4 This video could not be played. Retry",
+              "loading": false,
+              "progress": null,
+              "alert": "This video could not be played. Retry",
+              "retry": true,
+              "media": null
+            }
+          ]
+        },
+        "delegatedVideo": {
+          "final": {
+            "viewer": true,
+            "text": "clip-572.mp4",
+            "loading": false,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": {
+              "tag": "video",
+              "blob": true,
+              "readyState": 4,
+              "error": null,
+              "duration": 3
+            }
+          },
+          "backToConversation": true,
+          "seconds": 0.4,
+          "notAvailableShown": false,
+          "progress": [],
+          "timeline": [
+            {
+              "at": 74,
+              "viewer": false
+            },
+            {
+              "at": 177,
+              "viewer": true,
+              "text": "clip-572.mp4",
+              "loading": false,
+              "progress": null,
+              "alert": null,
+              "retry": false,
+              "media": {
+                "tag": "video",
+                "blob": true,
+                "readyState": 4,
+                "error": null,
+                "duration": 3
+              }
+            }
+          ]
+        },
+        "delegatedAudio": {
+          "final": {
+            "viewer": true,
+            "text": "tone-572-out.mp3",
+            "loading": false,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": {
+              "tag": "audio",
+              "blob": true,
+              "readyState": 4,
+              "error": null,
+              "duration": 3
+            }
+          },
+          "backToConversation": true,
+          "seconds": 0.4,
+          "notAvailableShown": false,
+          "progress": [],
+          "timeline": [
+            {
+              "at": 80,
+              "viewer": false
+            },
+            {
+              "at": 180,
+              "viewer": true,
+              "text": "tone-572-out.mp3",
+              "loading": false,
+              "progress": null,
+              "alert": null,
+              "retry": false,
+              "media": {
+                "tag": "audio",
+                "blob": true,
+                "readyState": 4,
+                "error": null,
+                "duration": 3
+              }
+            }
+          ]
+        }
+      },
+      "bigProgress": {
+        "insideBig": [
+          {
+            "loaded": 0.1,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 0.2,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 0.3,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 0.4,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 0.5,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 0.6,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 0.7,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 0.8,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 0.9,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 1,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 1.1,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 1.2,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 1.3,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 1.4,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 1.5,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 1.6,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 1.7,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 1.8,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 1.9,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 2,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 2.1,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 2.2,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 2.3,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 2.4,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 2.5,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 2.6,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 2.7,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 2.8,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 3,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 3.1,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 3.2,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 3.3,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 3.5,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 3.6,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 3.7,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 3.8,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 3.9,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 4,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 4.1,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 4.2,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 4.3,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 4.4,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 4.5,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 4.6,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 4.7,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 4.8,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 4.9,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 5,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 5.1,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 5.2,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 5.3,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 5.4,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 5.5,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 5.6,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 5.7,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 5.8,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 5.9,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 6,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 6.1,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 6.2,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 6.3,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 6.4,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 6.5,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 6.6,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 6.7,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 6.8,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 6.9,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 7,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 7.1,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 7.2,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 7.3,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 7.4,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 7.6,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 7.7,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 7.8,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 7.9,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 8,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 8.1,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 8.2,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 8.3,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 8.4,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 8.5,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 8.6,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 8.7,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 8.8,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 8.9,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 9,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 9.1,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 9.2,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 9.3,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 9.4,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 9.5,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 9.6,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 9.7,
+            "total": "9.8 MB"
+          }
+        ],
+        "outsideBig": [
+          {
+            "loaded": 0.1,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 0.2,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 0.3,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 0.4,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 0.5,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 0.6,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 0.7,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 0.8,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 0.9,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 1,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 1.1,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 1.2,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 1.3,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 1.4,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 1.5,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 1.6,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 1.7,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 1.8,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 1.9,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 2,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 2.1,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 2.2,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 2.4,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 2.5,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 2.6,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 2.7,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 2.8,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 2.9,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 3,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 3.1,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 3.2,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 3.3,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 3.4,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 3.5,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 3.6,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 3.7,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 3.8,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 3.9,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 4.1,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 4.2,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 4.3,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 4.4,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 4.5,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 4.6,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 4.7,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 4.8,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 4.9,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 5,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 5.1,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 5.2,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 5.3,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 5.4,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 5.5,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 5.6,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 5.7,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 5.8,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 5.9,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 6,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 6.1,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 6.2,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 6.3,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 6.4,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 6.5,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 6.6,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 6.7,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 6.8,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 6.9,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 7,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 7.1,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 7.2,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 7.3,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 7.4,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 7.5,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 7.7,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 7.8,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 7.9,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 8,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 8.1,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 8.2,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 8.3,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 8.4,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 8.5,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 8.6,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 8.7,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 8.8,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 8.9,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 9,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 9.1,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 9.2,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 9.3,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 9.4,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 9.5,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 9.6,
+            "total": "9.8 MB"
+          },
+          {
+            "loaded": 9.7,
+            "total": "9.8 MB"
+          }
+        ]
+      },
+      "mediaReads": {
+        "count": 9,
+        "routes": [
+          "/rest/workspaces/…/content",
+          "/rest/node-files/content"
+        ],
+        "keyInHeader": 9,
+        "keyInUrl": []
+      },
+      "refused": [],
+      "mainFrameNodeNavigations": []
+    },
+    "MSP-90": {
+      "result": "Pass",
+      "seconds": 12.9,
+      "media": {
+        "insideVideo": {
+          "src": "node URL",
+          "readyState": 4,
+          "error": null,
+          "duration": 3,
+          "text": "clip-572.mp4"
+        },
+        "insideAudio": {
+          "src": "node URL",
+          "readyState": 4,
+          "error": null,
+          "duration": 3,
+          "text": "clip-572.mp4 tone-572.mp3"
+        },
+        "outsideVideo": {
+          "src": "blob",
+          "readyState": 4,
+          "error": null,
+          "duration": 3,
+          "text": "clip-572.mp4 tone-572.mp3 clip-572-out.mp4"
+        },
+        "outsideAudio": {
+          "src": "blob",
+          "readyState": 4,
+          "error": null,
+          "duration": 3,
+          "text": "clip-572.mp4 tone-572.mp3 clip-572-out.mp4 tone-572-out.mp3"
+        }
+      },
+      "mediaReads": [
+        {
+          "route": "/rest/workspaces/…/content",
+          "file": "clip-572.mp4",
+          "status": 200
+        },
+        {
+          "route": "/rest/workspaces/…/content",
+          "file": "tone-572.mp3",
+          "status": 200
+        },
+        {
+          "route": "/rest/node-files/content",
+          "file": "clip-572-out.mp4",
+          "status": 200
+        },
+        {
+          "route": "/rest/node-files/content",
+          "file": "tone-572-out.mp3",
+          "status": 200
+        }
+      ]
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "file-open-setup",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "file-open-setup",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "file-open-setup",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "file-open-setup",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "known": true,
+      "cause": "MSP-89's missing video (autobyteus-572 AC-006)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    }
+  ],
+  "failedRequests": [
+    {
+      "case": "MSP-89",
+      "label": "phone",
+      "url": "http://192.168.77.10:58296/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-89",
+      "label": "phone",
+      "url": "http://192.168.77.10:58296/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-89",
+      "label": "phone",
+      "url": "http://192.168.77.10:58296/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-89",
+      "label": "phone",
+      "url": "http://192.168.77.10:58296/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-89",
+      "label": "phone",
+      "url": "http://192.168.77.10:58296/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-89",
+      "label": "phone",
+      "url": "http://192.168.77.10:58296/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-89",
+      "label": "phone",
+      "url": "http://192.168.77.10:58296/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-89",
+      "label": "phone-epsilon",
+      "url": "blob:http://192.168.77.40:58520/b01a2856-6275-487d-80ed-fbd818444e7c",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-89",
+      "label": "phone-epsilon",
+      "url": "blob:http://192.168.77.40:58520/2e5c61a9-0e5b-4aef-9c96-ed0a5f7a49c5",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "fileOpen": {
+    "runs": {
+      "run": "content_creator_7bc68dc7c0c44f5c910668a350d5f1fe",
+      "remoteRun": "publisher_97564dc9e85a418b9fd3a8bfd3805841"
+    }
+  },
+  "summary": {
+    "cases": {
+      "MSP-89": "Pass",
+      "MSP-90": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-20T15:41:03.564Z"
+}

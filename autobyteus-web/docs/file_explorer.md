@@ -207,7 +207,7 @@ The runtime locator rules are deliberately different by environment:
 | --- | --- |
 | Embedded Electron | An embedded node binding **and** trusted local-file bridge permit an absolute local path. Text uses the main-process read IPC boundary. Binary viewers use the shared canonical `local-file://local/<encoded-absolute-path>` codec and the default-session protocol boundary; both paths recheck absolute shape, existence, readability, and regular-file status immediately before bytes are returned. |
 | Browser / remote / missing local bridge | A path inside the selected workspace root is converted to a workspace-relative locator and read through the existing authorized content route. Any other absolute path opens read-only in the Files panel as a **node file** from the run's node (autobyteus-471): the store fetches it once through the shared loader (`utils/fileExplorer/nodeFileContent.ts`, `GET /rest/node-files/content?path=` with the window's credential); text becomes content, other types an object URL revoked when the file is closed or reloaded. A missing path shows "This file was not found on the computer.", a folder "This path is a folder, not a file.", any other refusal "The file preview could not be opened.". Every node file opens read-only, whoever opens it (a link, an attachment): the store gives it a read-only access intent (`source: 'node-file'`) when the caller gave none. A remote-node Electron window never falls back to client-local bytes. A path of a run on another node, a file link or a path attachment of its messages, shows "This file is on <node>, where this run runs." on the run view's file status line without a content request (`remoteRunFileNode`, `composables/remoteRuns/remoteRunFile.ts`, the one decision for both). |
-| Phone-first `/mobile` | A path in the open agent's folder (`activeWorkspaceTarget.workspaceRootPath`) opens as a workspace file, any other absolute path as a node file through the same loader (`useMobileNodeFile`, autobyteus-436). The file opens on the Files screen as a history entry (`useMobileNavigation`), full screen and read only, whatever its size (autobyteus-471). A path of a run on another node shows "This file is on <node>, where this run runs.". |
+| Phone-first `/mobile` | A path in the open agent's folder (`activeWorkspaceTarget.workspaceRootPath`) opens as a workspace file, any other absolute path as a node file through the same loader (`useMobileNodeFile`, autobyteus-436). The file opens on the Files screen as a history entry (`useMobileNavigation`), full screen and read only, whatever its size (autobyteus-471). A video or audio file is downloaded whole behind the loading view with its progress (`useMobileNodeFile` exposes `progress` and `refusal`; `MediaLoadingState`), and a failed or missing file offers **Retry** (`reload()`; for a workspace file, an explicit open again), never "Video URL is not available." while it loads (autobyteus-572). A path of a run on another node shows "This file is on <node>, where this run runs.". |
 
 Path recognition is opt-in to the Event Monitor Markdown renderer and passive
 output is inert. Explicit pointer or keyboard activation is required. The
@@ -311,8 +311,17 @@ workspace-relative content routes instead of the Electron scheme.
 
 `VideoPlayer.vue` uses the native controls and the streamed response, so a
 supported file can load finite metadata, play/pause, and seek without first
-buffering the whole source into renderer memory. If authorization/resource
-loading or Chromium decoding fails, the player leaves the black `0:00` state
+buffering the whole source into renderer memory, where the element is given the
+URL itself: the embedded window's `local-file:` URLs answer Range requests, so
+they seek; a desktop window's workspace URL plays progressively, but the node's
+file routes serve no part of a file, so it cannot seek past what has loaded.
+Where the node key must travel in a request header (the phone),
+`useAuthorizedObjectUrl` downloads the whole file into an object URL first;
+meanwhile the player shows `MediaLoadingState` (a spinner, "Loading video…", and
+"4.1 of 9.7 MB" when the node declared the file's length) instead of "Video URL
+is not available.", which appears only when there is no URL and nothing is
+loading (`AudioPlayer.vue` is the same, autobyteus-572). If
+authorization/resource loading or Chromium decoding fails, the player leaves the black `0:00` state
 and renders a localized accessible alert with **Retry**. Retry refreshes the
 resource resolver and remounts only the current media attempt; selecting a new
 URL also clears stale failure state. The preview never modifies, transcodes, or

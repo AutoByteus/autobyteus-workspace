@@ -15,6 +15,18 @@ const messages: TranslationCatalog = {
     'This video could not be played.',
   'tools.components.fileExplorer.viewers.VideoPlayer.retry':
     'Retry',
+  'tools.components.fileExplorer.viewers.AudioPlayer.audio_could_not_be_played':
+    'This audio could not be played.',
+  'tools.components.fileExplorer.viewers.AudioPlayer.retry':
+    'Retry',
+  'tools.components.fileExplorer.viewers.MediaLoadingState.loading_video':
+    'Loading video…',
+  'tools.components.fileExplorer.viewers.MediaLoadingState.loading_audio':
+    'Loading audio…',
+  'tools.components.fileExplorer.viewers.MediaLoadingState.loading_file':
+    'Loading file…',
+  'tools.components.fileExplorer.viewers.MediaLoadingState.progress_of_total':
+    '{{loaded}} of {{total}}',
 };
 
 export default messages;

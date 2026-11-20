@@ -30,13 +30,15 @@ export async function registerWorkspaceRoutes(app: FastifyInstance): Promise<voi
     try {
       const absolutePath = workspace.getAbsolutePath(filePath);
 
-      if (!fs.existsSync(absolutePath) || !fs.statSync(absolutePath).isFile()) {
+      const stat = fs.existsSync(absolutePath) ? fs.statSync(absolutePath) : null;
+      if (!stat?.isFile()) {
         throw new Error(`File does not exist at path: ${filePath}`);
       }
 
       return sendUserFile(reply, {
         mimeType: (lookupMime(absolutePath) || "application/octet-stream").toString(),
         body: fs.createReadStream(absolutePath),
+        size: stat.size,
       });
     } catch (error) {
       if (error instanceof Error && error.message.includes("Access denied")) {
@@ -77,13 +79,15 @@ export async function registerWorkspaceRoutes(app: FastifyInstance): Promise<voi
     try {
       const absolutePath = workspace.getAbsolutePath(filePath);
 
-      if (!fs.existsSync(absolutePath) || !fs.statSync(absolutePath).isFile()) {
+      const stat = fs.existsSync(absolutePath) ? fs.statSync(absolutePath) : null;
+      if (!stat?.isFile()) {
         throw new Error(`File does not exist at path: ${filePath}`);
       }
 
       return sendUserFile(reply, {
         mimeType: (lookupMime(absolutePath) || "application/octet-stream").toString(),
         body: fs.createReadStream(absolutePath),
+        size: stat.size,
       });
     } catch (error) {
       if (error instanceof Error && error.message.includes("Access denied")) {

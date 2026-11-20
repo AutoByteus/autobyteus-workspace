@@ -5,6 +5,7 @@ import {
   fetchAuthorizedResourceBlob,
   shouldLoadResourceThroughAuthorizedFetchWithCredential,
 } from '~/utils/remoteAccess/authorizedResourceUrl';
+import type { DownloadProgress } from '~/utils/download/responseBlobProgress';
 
 type UrlSource = () => string | null | undefined;
 
@@ -22,14 +23,20 @@ const normalizedSources = (sources: string[]): string[] => (
  * A displayable URL for a resource: an object URL of its bytes where the node key must be sent (the phone), else the URL
  * itself. `revision` (an open file's `contentRevision`, autobyteus-450) reloads the same URL: a reload always reads the
  * bytes again (`no-store`) into an object URL, since a browser shows an image it already has for a URL it saw before.
+ * While the bytes are read, `loading` is true and `progress` says how much has arrived (autobyteus-572 D-2): a viewer
+ * shows that, never "not available", for a file that is on its way.
  */
 export function useAuthorizedObjectUrl(source: UrlSource, options: Readonly<{ revision?: () => number }> = {}): {
   resolvedUrl: Ref<string | null>;
   error: Ref<string | null>;
+  loading: Ref<boolean>;
+  progress: Ref<DownloadProgress | null>;
   refresh: () => Promise<void>;
 } {
   const resolvedUrl = ref<string | null>(null);
   const error = ref<string | null>(null);
+  const loading = ref(false);
+  const progress = ref<DownloadProgress | null>(null);
   let activeObjectUrl: string | null = null;
   let loadToken = 0;
   const { activeCredential } = storeToRefs(useMobileNodeSessionStore());
@@ -45,6 +52,8 @@ export function useAuthorizedObjectUrl(source: UrlSource, options: Readonly<{ re
     const credentialSnapshot = activeCredential.value;
     resolvedUrl.value = null;
     error.value = null;
+    loading.value = false;
+    progress.value = null;
     clearObjectUrl();
 
     if (!nextSource) {
@@ -58,8 +67,11 @@ export function useAuthorizedObjectUrl(source: UrlSource, options: Readonly<{ re
       return;
     }
 
+    loading.value = true;
     try {
-      const blob = await fetchAuthorizedResourceBlob(nextSource, {}, credentialSnapshot);
+      const blob = await fetchAuthorizedResourceBlob(nextSource, {}, credentialSnapshot, (next) => {
+        if (currentToken === loadToken) progress.value = next;
+      });
       if (currentToken !== loadToken) {
         return;
       }
@@ -71,6 +83,11 @@ export function useAuthorizedObjectUrl(source: UrlSource, options: Readonly<{ re
       }
       error.value = fetchError instanceof Error ? fetchError.message : String(fetchError);
       resolvedUrl.value = null;
+    } finally {
+      if (currentToken === loadToken) {
+        loading.value = false;
+        progress.value = null;
+      }
     }
   };
 
@@ -86,10 +103,12 @@ export function useAuthorizedObjectUrl(source: UrlSource, options: Readonly<{ re
     loadToken += 1;
     resolvedUrl.value = null;
     error.value = null;
+    loading.value = false;
+    progress.value = null;
     clearObjectUrl();
   });
 
-  return { resolvedUrl, error, refresh };
+  return { resolvedUrl, error, loading, progress, refresh };
 }
 
 export function useAuthorizedObjectUrlMap(sourceUrls: () => string[]): {

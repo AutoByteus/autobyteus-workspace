@@ -1,0 +1,30 @@
+# IMP-03 web typecheck and guards
+# command: pnpm -C autobyteus-web typecheck ; pnpm -C autobyteus-web guard:web-boundary ; guard:localization-boundary ; audit:localization-literals
+# commit: working tree = 02320583a5 + d165d3143a (run 1 before the loading view's decimal units; run 2 after them, the committed files)
+# env: macOS, Node v22.23.1
+# date: 2026-11-20
+
+## typecheck run 1
+[typecheck] Nuxt app (tsconfig.json): 60 errors, exit 2, 140.2s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 6.8s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 2.0s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 74.2s
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS
+
+## typecheck run 2 (committed files)
+[typecheck] Nuxt app (tsconfig.json): 60 errors, exit 2, 52.1s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.3s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.7s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 27.8s
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS
+
+## guard:web-boundary (exit 0)
+[guard:web-boundary] Passed.
+
+## guard:localization-boundary (exit 0)
+[guard:localization-boundary] Passed.
+
+## audit:localization-literals (exit 0)
+[audit:localization-literals] Passed with zero unresolved findings.

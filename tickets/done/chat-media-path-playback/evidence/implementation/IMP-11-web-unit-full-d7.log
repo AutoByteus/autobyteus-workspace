@@ -1,0 +1,14 @@
+# IMP-11 whole web unit suite (IR-002, D-7)
+# command: cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run
+# commit: working tree = f2894c65e1 (run before committing; same files)
+# env: macOS, Node v22.23.1
+# date: 2026-11-20
+# result: 786 of 787 files pass; the 1 failure is the base's ServerSettingsBasicsPanel 'GitHub' spec (FU-002, IMP-04).
+# New D-7 cases: useMobileNodeFile.spec (refusal kinds; reload after not-found opens the file; reload mid-download
+#   starts over), MobileFileViewer.spec (Retry shown when retryable and emits retry; none for a folder),
+#   MobileViews.spec (node file: not-found -> Retry -> read again -> opens; folder: no Retry; workspace file: failed
+#   open -> Retry -> opened again).
+
+ FAIL  components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts > ServerSettingsBasicsPanel > composes only current endpoint and focused Basics cards
+ Test Files  1 failed | 786 passed (787)
+      Tests  1 failed | 5923 passed | 2 skipped (5926)

@@ -8,7 +8,7 @@ import { useAuthorizedObjectUrl } from '~/composables/useAuthorizedObjectUrl'
 // an image it already has for a URL it saw in the page (measured in Chrome: no second request), so the reload goes
 // through fetch with `no-store` into an object URL, with or without a key.
 
-const okBlob = (label: string) => ({ ok: true, status: 200, statusText: 'OK', blob: () => Promise.resolve(new Blob([label])) }) as Response
+const okBlob = (label: string) => ({ ok: true, status: 200, statusText: 'OK', headers: new Headers(), blob: () => Promise.resolve(new Blob([label])) }) as Response
 
 describe('useAuthorizedObjectUrl reload by revision', () => {
   beforeEach(() => {
