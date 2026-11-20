@@ -1,0 +1,444 @@
+21:30  up 32 days,  7:09, 10 users, load averages: 42.11 29.32 21.75
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:76114) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/.env // tip: ⌘ enable debugging { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mAgent Definition created successfully with ID: own-stream-manager-b509b1
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mAgent Definition created successfully with ID: own-stream-worker-b509b1
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/workspace.
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mCreated and registered workspace ID: agent_ws_7817a97662240b764dea4cf8bbdb470ce815274b0185f3e813b4c887f8bf6987
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/workspace.
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mReusing registered workspace ID: agent_ws_7817a97662240b764dea4cf8bbdb470ce815274b0185f3e813b4c887f8bf6987
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mAGYDIAG start {"args":["--help"],"bound":{"timeoutMs":10000,"byDeadline":false}}
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mAGYDIAG start {"args":["models"],"bound":{"timeoutMs":30000,"byDeadline":false}}
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mAGYDIAG start {"args":["--version"],"bound":{"timeoutMs":10000,"byDeadline":false}}
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mAGY compaction detection off for run own_stream_manager_b509b1_4c00b7aa7e5e490a8ed0a818df90e2e9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/memory/agents/own_stream_manager_b509b1_4c00b7aa7e5e490a8ed0a818df90e2e9/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mAgent websocket attached for run own_stream_manager_b509b1_4c00b7aa7e5e490a8ed0a818df90e2e9
+Created agent session 3144459b-e047-4f0e-973e-072f73f09b35 for run own_stream_manager_b509b1_4c00b7aa7e5e490a8ed0a818df90e2e9
+Agent WebSocket connected: session=3144459b-e047-4f0e-973e-072f73f09b35, run=own_stream_manager_b509b1_4c00b7aa7e5e490a8ed0a818df90e2e9
+
+[90mstderr[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/memory/agents/own_stream_manager_b509b1_4c00b7aa7e5e490a8ed0a818df90e2e9/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mAGYDIAG start {"args":["--help"],"bound":{"timeoutMs":10000,"byDeadline":false}}
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mAGYDIAG start {"args":["models"],"bound":{"timeoutMs":30000,"byDeadline":false}}
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/workspace.
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mReusing registered workspace ID: agent_ws_7817a97662240b764dea4cf8bbdb470ce815274b0185f3e813b4c887f8bf6987
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/workspace.
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mReusing registered workspace ID: agent_ws_7817a97662240b764dea4cf8bbdb470ce815274b0185f3e813b4c887f8bf6987
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mAGYDIAG start {"args":["--help"],"bound":{"timeoutMs":10000,"byDeadline":false}}
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mAGYDIAG start {"args":["models"],"bound":{"timeoutMs":30000,"byDeadline":false}}
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mAGY compaction detection off for run own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/memory/agents/own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mAgent websocket attached for run own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31
+Created agent session ea8a2765-5cba-4772-ab02-5e5f01ec74c9 for run own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31
+Agent WebSocket connected: session=ea8a2765-5cba-4772-ab02-5e5f01ec74c9, run=own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31
+
+[90mstderr[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/memory/agents/own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mAgent websocket attached for run own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31
+Created agent session 729266cd-7dbc-4d07-b899-8829869d24f2 for run own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31
+Agent WebSocket connected: session=729266cd-7dbc-4d07-b899-8829869d24f2, run=own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31
+
+[90mstderr[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/memory/agents/own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mClosed agent session 729266cd-7dbc-4d07-b899-8829869d24f2
+Agent WebSocket disconnected: 729266cd-7dbc-4d07-b899-8829869d24f2
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mAgent websocket attached for run own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mCreated agent session 3b69d4de-d0b6-4d6a-8338-2bff1ca87d36 for run own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31
+Agent WebSocket connected: session=3b69d4de-d0b6-4d6a-8338-2bff1ca87d36, run=own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31
+
+[90mstderr[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/memory/agents/own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mClosed agent session 3b69d4de-d0b6-4d6a-8338-2bff1ca87d36
+Agent WebSocket disconnected: 3b69d4de-d0b6-4d6a-8338-2bff1ca87d36
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mAGYDIAG start {"args":["--help"],"bound":{"timeoutMs":8000,"byDeadline":true}}
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mAGYDIAG start {"args":["models"],"bound":{"timeoutMs":7957,"byDeadline":true}}
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/workspace.
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mReusing registered workspace ID: agent_ws_7817a97662240b764dea4cf8bbdb470ce815274b0185f3e813b4c887f8bf6987
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mAGYDIAG start {"args":["--help"],"bound":{"timeoutMs":10000,"byDeadline":false}}
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mAGYDIAG start {"args":["models"],"bound":{"timeoutMs":30000,"byDeadline":false}}
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mAGY compaction detection off for run own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/memory/agents/own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/memory/agents/own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mAgent websocket attached for run own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31
+Created agent session 7bf20ae6-dc56-43c0-ad4d-daa2c351e486 for run own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31
+Agent WebSocket connected: session=7bf20ae6-dc56-43c0-ad4d-daa2c351e486, run=own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31
+
+[90mstderr[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/memory/agents/own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mClosed agent session ea8a2765-5cba-4772-ab02-5e5f01ec74c9
+Agent WebSocket disconnected: ea8a2765-5cba-4772-ab02-5e5f01ec74c9
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mClosed agent session 7bf20ae6-dc56-43c0-ad4d-daa2c351e486
+Agent WebSocket disconnected: 7bf20ae6-dc56-43c0-ad4d-daa2c351e486
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mAgent websocket attached for run own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mCreated agent session 583c9822-b1ca-4825-bcc0-90682d145137 for run own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31
+Agent WebSocket connected: session=583c9822-b1ca-4825-bcc0-90682d145137, run=own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31
+
+[90mstderr[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/memory/agents/own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mClosed agent session 583c9822-b1ca-4825-bcc0-90682d145137
+Agent WebSocket disconnected: 583c9822-b1ca-4825-bcc0-90682d145137
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mAGYDIAG start {"args":["--help"],"bound":{"timeoutMs":8000,"byDeadline":true}}
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mAGYDIAG start {"args":["models"],"bound":{"timeoutMs":7955,"byDeadline":true}}
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/workspace.
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mReusing registered workspace ID: agent_ws_7817a97662240b764dea4cf8bbdb470ce815274b0185f3e813b4c887f8bf6987
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mAGYDIAG start {"args":["--help"],"bound":{"timeoutMs":10000,"byDeadline":false}}
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mAGYDIAG start {"args":["models"],"bound":{"timeoutMs":30000,"byDeadline":false}}
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mAGY compaction detection off for run own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/memory/agents/own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mAgent websocket attached for run own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31
+Created agent session c13ce6b5-70f6-4e08-919e-3f482e17b41b for run own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31
+Agent WebSocket connected: session=c13ce6b5-70f6-4e08-919e-3f482e17b41b, run=own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31
+
+[90mstderr[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/own-stream-e2e-2S2AYC/memory/agents/own_stream_worker_b509b1_85fee90e5b1e4a978a3b6e674e067d31/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22m[2mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once
+[22m[39mClosed agent session c13ce6b5-70f6-4e08-919e-3f482e17b41b
+Agent WebSocket disconnected: c13ce6b5-70f6-4e08-919e-3f482e17b41b
+
+ [32m✓[39m tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22mOST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once[33m 18542[2mms[22m[39m
+[90mstdout[2m | tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22m[2mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)
+[22m[39mClosed agent session 3144459b-e047-4f0e-973e-072f73f09b35
+Agent WebSocket disconnected: 3144459b-e047-4f0e-973e-072f73f09b35
+
+ [2m[90m↓[39m[22m tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts[2m > [22mA run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY)[2m > [22mOST-3: an error-ended turn reads the same live, in a reconnect's snapshot and in the stopped run's full stored read
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m1 passed[39m[22m[2m | [22m[33m1 skipped[39m[90m (2)[39m
+[2m   Start at [22m 21:30:51
+[2m   Duration [22m 34.81s[2m (transform 7.13s, setup 74ms, import 9.70s, tests 24.37s, environment 0ms)[22m
+

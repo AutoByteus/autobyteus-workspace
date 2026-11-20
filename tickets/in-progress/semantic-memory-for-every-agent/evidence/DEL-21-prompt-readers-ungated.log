@@ -1,0 +1,178 @@
+21:22  up 32 days,  7:01, 10 users, load averages: 7.15 8.74 14.71
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:61448) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts[2m > [22m[2mCodex exact-turn rejection logging through the real Codex client path[2m > [22m[2mSCN-001: late tool items of stopped turns get one CONFLICT line per turn while the new turn's output is delivered
+[22m[39m[receipt] SCN-001 {"detailed":[{"runtimeKind":"codex_app_server","runId":"run-late-tools","nativeEventName":"item/completed","reasonCode":"CODEX_SEGMENT_TURN_CONFLICT","itemType":"commandExecution","turnId":"scripted-thread-1-turn-1","activeTurnId":"scripted-thread-1-turn-4"},{"runtimeKind":"codex_app_server","runId":"run-late-tools","nativeEventName":"item/completed","reasonCode":"CODEX_SEGMENT_TURN_CONFLICT","itemType":"commandExecution","turnId":"scripted-thread-1-turn-2","activeTurnId":"scripted-thread-1-turn-4"},{"runtimeKind":"codex_app_server","runId":"run-late-tools","nativeEventName":"item/completed","reasonCode":"CODEX_SEGMENT_TURN_CONFLICT","itemType":"commandExecution","turnId":"scripted-thread-1-turn-3","activeTurnId":"scripted-thread-1-turn-4"}],"summaries":[{"runtimeKind":"codex_app_server","runId":"run-late-tools","turnId":"scripted-thread-1-turn-1","count":1}]}
+
+ [32m✓[39m tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts[2m > [22mCodex exact-turn rejection logging through the real Codex client path[2m > [22mSCN-001: late tool items of stopped turns get one CONFLICT line per turn while the new turn's output is delivered[33m 553[2mms[22m[39m
+[90mstdout[2m | tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts[2m > [22m[2mCodex exact-turn rejection logging through the real Codex client path[2m > [22m[2mSCN-002: a whole turn rejected with no active turn writes one detailed line and one summary per boundary
+[22m[39m[receipt] SCN-002 {"detailed":[{"runtimeKind":"codex_app_server","runId":"run-whole-turn","nativeEventName":"item/started","reasonCode":"CODEX_SEGMENT_TURN_INACTIVE","itemType":"agentMessage","turnId":"codex-turn-not-adopted","activeTurnId":null},{"runtimeKind":"codex_app_server","runId":"run-whole-turn","nativeEventName":"item/agentMessage/delta","reasonCode":"CODEX_SEGMENT_TURN_INACTIVE","itemType":null,"turnId":null,"activeTurnId":null}],"summaries":[{"runtimeKind":"codex_app_server","runId":"run-whole-turn","turnId":"codex-turn-not-adopted","count":437},{"runtimeKind":"codex_app_server","runId":"run-whole-turn","turnId":null,"count":2},{"runtimeKind":"codex_app_server","runId":"run-whole-turn","turnId":"codex-turn-not-adopted","count":2}]}
+
+[90mstdout[2m | tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts[2m > [22m[2mCodex exact-turn rejection logging through the real Codex client path[2m > [22m[2mrun termination writes one summary per pending account, and nothing when nothing is pending (AC-005)
+[22m[39m[receipt] AC-005 pending {"detailed":[{"runtimeKind":"codex_app_server","runId":"run-terminated-pending","nativeEventName":"item/agentMessage/delta","reasonCode":"CODEX_SEGMENT_TURN_INACTIVE","itemType":null,"turnId":"codex-turn-a","activeTurnId":null},{"runtimeKind":"codex_app_server","runId":"run-terminated-pending","nativeEventName":"item/completed","reasonCode":"CODEX_SEGMENT_TURN_INACTIVE","itemType":"commandExecution","turnId":"codex-turn-b","activeTurnId":null}],"summaries":[{"runtimeKind":"codex_app_server","runId":"run-terminated-pending","turnId":"codex-turn-a","count":4},{"runtimeKind":"codex_app_server","runId":"run-terminated-pending","turnId":"codex-turn-b","count":2}]}
+[receipt] AC-005 clean {"detailed":[],"summaries":[]}
+
+ [32m✓[39m tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts[2m > [22mCodex exact-turn rejection logging through the real Codex client path[2m > [22mSCN-002: a whole turn rejected with no active turn writes one detailed line and one summary per boundary[32m 158[2mms[22m[39m
+ [32m✓[39m tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts[2m > [22mCodex exact-turn rejection logging through the real Codex client path[2m > [22mrun termination writes one summary per pending account, and nothing when nothing is pending (AC-005)[32m 41[2mms[22m[39m
+[90mstdout[2m | tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts[2m > [22m[2mCodex exact-turn rejection logging through the real Codex client path[2m > [22m[2man app-server exit writes the pending summaries (client close)
+[22m[39m[receipt] client close {"detailed":[{"runtimeKind":"codex_app_server","runId":"run-client-closed","nativeEventName":"item/agentMessage/delta","reasonCode":"CODEX_SEGMENT_TURN_INACTIVE","itemType":null,"turnId":"codex-turn-z","activeTurnId":null}],"summaries":[{"runtimeKind":"codex_app_server","runId":"run-client-closed","turnId":"codex-turn-z","count":2}]}
+
+ [32m✓[39m tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts[2m > [22mCodex exact-turn rejection logging through the real Codex client path[2m > [22man app-server exit writes the pending summaries (client close)[32m 88[2mms[22m[39m
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:61488) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/json-file-persistence-suite-XvRWmD
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mAgent Definition created successfully with ID: professor-agent-ac-1795206167508-436aa6
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mInitialized server settings service with 34 predefined settings
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mAgent Definition with ID professor-agent-ac-1795206167508-436aa6 updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mAgent Definition with ID professor-agent-ac-1795206167508-436aa6 updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mAgent Team Definition created successfully with ID: professor-team-ac-1795206167508-436aa6
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mAgent Team Definition with ID professor-team-ac-1795206167508-436aa6 updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mCachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Configuring MCP server with ID: stdio_ac_1795206167508_436aa6
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mPopulating MCP server config cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mMCP server config cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mIn-memory cache: Added new MCP config stdio_ac_1795206167508_436aa6.
+
+ [32m✓[39m tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json[32m 106[2mms[22m[39m
+[90mstdout[2m | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:61491) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts[2m > [22m[2mBrief package team prompt authority[2m > [22m[2mcomposes the exact graph-local package team and member semantics through Codex bootstrap
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts
+
+ [32m✓[39m tests/integration/application-backend/brief-package-team-prompt.integration.test.ts[2m > [22mBrief package team prompt authority[2m > [22mcomposes the exact graph-local package team and member semantics through Codex bootstrap[32m 29[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m3 passed[39m[22m[90m (3)[39m
+[2m      Tests [22m [1m[32m6 passed[39m[22m[90m (6)[39m
+[2m   Start at [22m 21:22:38
+[2m   Duration [22m 10.09s[2m (transform 4.86s, setup 102ms, import 8.29s, tests 1.04s, environment 0ms)[22m
+
+=== DEL-21-prompt-readers-ungated exit 0
