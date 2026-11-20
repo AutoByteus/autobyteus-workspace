@@ -1,0 +1,518 @@
+# API-09 test:integration:prepare + test:integration | commit 2e5f786091 (code cd26f4d913) | Node v22.23.1 | 2026-11-20T14:00:14Z | load 61.87 72.03 88.94
+Generated importable package at /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/applications/brief-studio/dist/importable-package
+Generated application root at /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/applications/brief-studio/dist/importable-package/applications/brief-studio
+Integration test prerequisites are present.
+prepare exit 0
+
+> autobyteus-server-ts@0.1.1 test:integration /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts
+> node ./scripts/integration-test-prerequisites.mjs check && vitest run tests/integration .integration.test.ts
+
+Integration test prerequisites are present.
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:6709) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8113) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8139) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8170) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts (14 tests | 1 failed) 5213ms
+     × publishes artifacts through an active tokenless run without leaking route identity 84ms
+(node:8202) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8227) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8247) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8260) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8278) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8299) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8704) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8984) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:9989) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:17104) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:17142) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-BdWlaK' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-BdWlaK' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-BdWlaK' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-BdWlaK
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-BdWlaK
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores default strategy paths like __pycache__
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-li8Wac' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores default strategy paths like __pycache__
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-li8Wac' completed in 0.0030 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores default strategy paths like __pycache__
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-li8Wac' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores default strategy paths like __pycache__
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-li8Wac
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores default strategy paths like __pycache__
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-li8Wac
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores specific folders like .git and their contents
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Dsevpz' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores specific folders like .git and their contents
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Dsevpz' completed in 0.0050 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores specific folders like .git and their contents
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Dsevpz' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores specific folders like .git and their contents
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Dsevpz
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores specific folders like .git and their contents
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Dsevpz
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-7DISzC' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-7DISzC' completed in 0.0040 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-7DISzC' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-7DISzC
+
+stderr | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+Watcher runtime for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Dsevpz did not stop within 5000ms; killing child
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-7DISzC
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-EskkE7' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-EskkE7' completed in 0.0100 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-EskkE7' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-EskkE7
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-EskkE7
+
+ ❯ tests/integration/file-explorer/file-system-watcher.integration.test.ts (14 tests | 5 failed) 254458ms
+     × emits folder creation and deletion events 30724ms
+     × ignores default strategy paths like __pycache__ 34202ms
+     × ignores specific folders like .git and their contents 34436ms
+     × respects nested .gitignore files 32401ms
+     × respects root .gitignore files 39992ms
+(node:25026) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:25713) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:26365) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:26386) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:26741) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:27073) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:27409) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:27446) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:28132) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:28825) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:28865) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:29191) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:29535) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:29579) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:29616) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:29646) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:29727) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:30667) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:31208) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:31518) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:31921) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > uses the edited definition instructions for the next run once the change is detected; reads and launch agree
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > uses the edited definition instructions for the next run once the change is detected; reads and launch agree
+Agent Definition created successfully with ID: fresh-agent-fresh-1795184230149-3d7a78
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > uses the edited definition instructions for the next run once the change is detected; reads and launch agree
+AgentRunManager initialized.
+
+stderr | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > uses the edited definition instructions for the next run once the change is detected; reads and launch agree
+Run 'fresh-agent-fresh-1795184230149-3d7a78-run' failed to activate and was kept: Error: The process AgentRunManager is not initialized.
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > falls back to description when fresh definition instructions are blank
+Agent Definition created successfully with ID: blank-instructions-agent-blank-1795184230231-24f819
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > falls back to description when fresh definition instructions are blank
+AgentRunManager initialized.
+
+stderr | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > falls back to description when fresh definition instructions are blank
+Run 'blank-instructions-agent-blank-1795184230231-24f819-run' failed to activate and was kept: Error: The process AgentRunManager is not initialized.
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts (2 tests | 2 failed) 136ms
+     × uses the edited definition instructions for the next run once the change is detected; reads and launch agree 83ms
+     × falls back to description when fresh definition instructions are blank 53ms
+(node:32178) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:32281) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:32311) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:32966) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:33294) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:33318) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:33327) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:33345) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:33688) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:33789) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:34903) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts
+
+stderr | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+Run 'real_memory_layout_agent_00000000000000000000000000000001' failed to activate and was kept: Error: The process AgentRunManager is not initialized.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts (1 test | 1 failed) 211ms
+     × persists single-agent traces only under memory/agents/<runId> for create + restore 209ms
+(node:34926) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:34938) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35317) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35732) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36066) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36074) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36431) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36466) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36474) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:37428) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:37432) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:37469) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:37475) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:37792) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:37802) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:38117) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:38781) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:39110) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:39118) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:39143) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:39169) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:39179) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:39189) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:39204) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+ FAIL  tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > uses the edited definition instructions for the next run once the change is detected; reads and launch agree
+ FAIL  tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > falls back to description when fresh definition instructions are blank
+TypeError: this.workspaceManager.getRegisteredWorkspaceRootPath is not a function
+ ❯ AutoByteusAgentRunBackendFactory.buildAgentConfig src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts:310:82
+    308|       } catch (error) {
+    309|         // WORKSPACE_NOT_RUNNABLE, or a registered workspace that fail…
+    310|         if (error instanceof WorkspaceAccessError || await this.worksp…
+       |                                                                                  ^
+    311|           throw error;
+    312|         }
+ ❯ AutoByteusAgentRunBackendFactory.createBackend src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts:194:19
+ ❯ Object.prepare src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts:166:13
+ ❯ src/agent-execution/services/agent-run-activation-operation.ts:48:25
+ ❯ StandaloneAgentRunLifecycleService.activatePrepared src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:235:23
+ ❯ StandaloneAgentRunLifecycleService.resolveInsideTransition src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:167:14
+ ❯ StandaloneAgentRunLifecycleService.withTransition src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:207:14
+ ❯ StandaloneRunAgentHandle.activateOnce src/standalone-agent-run-root/domain/standalone-run-agent-handle.ts:60:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+Error: INCONCLUSIVE: the watcher saw no change; a fresh fs.watch stream did. Under load the OS can drop one stream's events (FU-500-06); rerun where the OS delivers events.
+Changes before the guard: []
+ ❯ collectUntil tests/integration/file-explorer/file-system-watcher.integration.test.ts:95:11
+     93|     // The case's diagnostics: what arrived before the guard.
+     94|     const seen = JSON.stringify(changes.map((change) => ({ type: chang…
+     95|     throw new Error(`${await osDeliversFileEvents() ? INCONCLUSIVE_MES…
+       |           ^
+     96|   }
+     97|   return changes;
+ ❯ expectEventAfterAction tests/integration/file-explorer/file-system-watcher.integration.test.ts:109:36
+ ❯ tests/integration/file-explorer/file-system-watcher.integration.test.ts:368:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores default strategy paths like __pycache__
+Error: INCONCLUSIVE: the watcher saw no change; a fresh fs.watch stream did. Under load the OS can drop one stream's events (FU-500-06); rerun where the OS delivers events.
+Changes before the guard: []
+ ❯ collectUntil tests/integration/file-explorer/file-system-watcher.integration.test.ts:95:11
+     93|     // The case's diagnostics: what arrived before the guard.
+     94|     const seen = JSON.stringify(changes.map((change) => ({ type: chang…
+     95|     throw new Error(`${await osDeliversFileEvents() ? INCONCLUSIVE_MES…
+       |           ^
+     96|   }
+     97|   return changes;
+ ❯ expectNoEventAfterAction tests/integration/file-explorer/file-system-watcher.integration.test.ts:134:19
+ ❯ tests/integration/file-explorer/file-system-watcher.integration.test.ts:404:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores specific folders like .git and their contents
+Error: INCONCLUSIVE: the watcher saw no change; a fresh fs.watch stream did. Under load the OS can drop one stream's events (FU-500-06); rerun where the OS delivers events.
+Changes before the guard: []
+ ❯ collectUntil tests/integration/file-explorer/file-system-watcher.integration.test.ts:95:11
+     93|     // The case's diagnostics: what arrived before the guard.
+     94|     const seen = JSON.stringify(changes.map((change) => ({ type: chang…
+     95|     throw new Error(`${await osDeliversFileEvents() ? INCONCLUSIVE_MES…
+       |           ^
+     96|   }
+     97|   return changes;
+ ❯ expectNoEventAfterAction tests/integration/file-explorer/file-system-watcher.integration.test.ts:134:19
+ ❯ tests/integration/file-explorer/file-system-watcher.integration.test.ts:418:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+Error: INCONCLUSIVE: the watcher saw no change; a fresh fs.watch stream did. Under load the OS can drop one stream's events (FU-500-06); rerun where the OS delivers events.
+Changes before the guard: []
+ ❯ collectUntil tests/integration/file-explorer/file-system-watcher.integration.test.ts:95:11
+     93|     // The case's diagnostics: what arrived before the guard.
+     94|     const seen = JSON.stringify(changes.map((change) => ({ type: chang…
+     95|     throw new Error(`${await osDeliversFileEvents() ? INCONCLUSIVE_MES…
+       |           ^
+     96|   }
+     97|   return changes;
+ ❯ expectEventAfterAction tests/integration/file-explorer/file-system-watcher.integration.test.ts:109:36
+ ❯ tests/integration/file-explorer/file-system-watcher.integration.test.ts:439:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+Error: INCONCLUSIVE: the watcher saw no change; a fresh fs.watch stream did. Under load the OS can drop one stream's events (FU-500-06); rerun where the OS delivers events.
+Changes before the guard: []
+ ❯ collectUntil tests/integration/file-explorer/file-system-watcher.integration.test.ts:95:11
+     93|     // The case's diagnostics: what arrived before the guard.
+     94|     const seen = JSON.stringify(changes.map((change) => ({ type: chang…
+     95|     throw new Error(`${await osDeliversFileEvents() ? INCONCLUSIVE_MES…
+       |           ^
+     96|   }
+     97|   return changes;
+ ❯ expectEventAfterAction tests/integration/file-explorer/file-system-watcher.integration.test.ts:109:36
+ ❯ tests/integration/file-explorer/file-system-watcher.integration.test.ts:479:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts > Agent Tools MCP route-backed execution > publishes artifacts through an active tokenless run without leaking route identity
+AssertionError: expected { error: { …(2) } } to match object { success: true, …(1) }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "artifacts": [
+-     {
+-       "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-tools-mcp-publish-workspace-KcHr87/reports/mcp-published-artifact.md",
+-       "runId": "run-agent-tools-mcp-publish",
+-       "status": "available",
++   "error": {
++     "code": "publish_artifacts_failed",
++     "message": "this.workspaceManager.getOrCreateRunWorkspace is not a function",
+    },
+-   ],
+-   "success": true,
+  }
+
+ ❯ tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts:644:23
+    642|       };
+    643|       const canonicalPath = (await fs.realpath(artifactAbsolutePath)).…
+    644|       expect(payload).toMatchObject({
+       |                       ^
+    645|         success: true,
+    646|         artifacts: [{ runId, path: canonicalPath, status: "available" …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+
+ Test Files  4 failed | 85 passed | 20 skipped (109)
+      Tests  9 failed | 505 passed | 69 skipped (583)
+   Start at  15:00:55
+   Duration  1157.37s (transform 78.43s, setup 8.54s, import 392.53s, tests 733.80s, environment 7ms)
+
+ ELIFECYCLE  Command failed with exit code 1.
+exit 1

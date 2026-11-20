@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils'
 import AgentDefinitionDetailSections from '../AgentDefinitionDetailSections.vue'
 import { useLocalization } from '~/composables/useLocalization'
 
-/** agent-semantic-memory (REQ-002, AC-007): the agent detail shows whether semantic memory is on and, when on, its folder. */
+/** autobyteus-554 (REQ-004, AC-004): the agent detail shows every agent's semantic memory folder; there is no on/off. */
 const translate = (key: string): string => useLocalization().t(key as never)
 const agent = (overrides: Record<string, unknown> = {}) => ({
   id: 'computer-use-operator', name: 'Computer Use Operator', description: 'Operates', instructions: 'Operate.',
@@ -16,21 +16,15 @@ const mountSections = (agentDef: Record<string, unknown>) => mount(AgentDefiniti
 })
 
 describe('AgentDefinitionDetailSections semantic memory', () => {
-  it('shows On and the selectable folder when on', () => {
+  it('shows the folder sentence and the selectable folder for an agent whose config has no field', () => {
     const folder = '/home/u/.autobyteus/server-data/memory/semantic/computer-use-operator'
-    const section = mountSections(agent({ semanticMemoryEnabled: true, semanticMemoryPath: folder })).get('[data-testid="agent-semantic-memory"]')
+    const section = mountSections(agent({ semanticMemoryPath: folder })).get('[data-testid="agent-semantic-memory"]')
     expect(section.text()).toContain(translate('agents.components.agents.AgentDetail.semanticMemoryHeading'))
-    expect(section.text()).toContain(translate('agents.components.agents.AgentDetail.semanticMemoryOn'))
+    expect(translate('agents.components.agents.AgentDetail.semanticMemoryFolder')).toBe('The agent keeps its reusable knowledge in this folder:')
+    expect(section.text()).toContain(translate('agents.components.agents.AgentDetail.semanticMemoryFolder'))
     const path = section.get('code')
     expect(path.text()).toBe(folder)
     expect(path.classes()).toContain('select-all')
-  })
-
-  it('shows Off without a folder when off or absent', () => {
-    for (const definition of [agent({ semanticMemoryEnabled: false, semanticMemoryPath: null }), agent()]) {
-      const section = mountSections(definition).get('[data-testid="agent-semantic-memory"]')
-      expect(section.text()).toContain(translate('agents.components.agents.AgentDetail.semanticMemoryOff'))
-      expect(section.find('code').exists()).toBe(false)
-    }
+    expect(section.text()).not.toMatch(/\bOff\b|\bOn\./)
   })
 })

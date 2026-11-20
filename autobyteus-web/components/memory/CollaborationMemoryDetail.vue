@@ -1,9 +1,10 @@
 <template>
-  <div class="mx-auto max-w-7xl space-y-5 p-8">
-    <button class="text-sm font-medium text-blue-600 hover:underline" @click="$emit('back')">← {{ $t('memory.components.memory.CollaborationMemoryDetail.back_to_memory') }}</button>
+  <!-- autobyteus-554: `embedded` is the team or org page's Runs tab on the Memory page (no back link or title). -->
+  <div :class="embedded ? 'space-y-5' : 'mx-auto max-w-7xl space-y-5 p-8'">
+    <button v-if="!embedded" class="text-sm font-medium text-blue-600 hover:underline" @click="$emit('back')">← {{ $t('memory.components.memory.CollaborationMemoryDetail.back_to_memory') }}</button>
 
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
+    <div class="flex flex-wrap items-center gap-3" :class="embedded ? 'justify-end' : 'justify-between'">
+      <div v-if="!embedded" class="flex items-center gap-3">
         <h1 class="text-xl font-semibold text-gray-900">{{ title }}</h1>
         <span v-if="readOnly" class="rounded-full bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-700">{{ $t('memory.components.memory.common.importedReadOnly') }}</span>
       </div>
@@ -99,6 +100,7 @@ const props = defineProps<{
   totalPages: number;
   search: string;
   readOnly: boolean;
+  embedded?: boolean;
 }>();
 const emit = defineEmits<{
   back: [];

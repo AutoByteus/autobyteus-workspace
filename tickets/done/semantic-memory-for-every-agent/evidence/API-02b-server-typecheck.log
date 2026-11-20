@@ -1,0 +1,6 @@
+# API-02b pnpm -C autobyteus-server-ts typecheck (with the integration double edits) | commit e571b1dd9e | 2026-11-20T15:46:18Z
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 13.5s
+[typecheck] server tests (tsconfig.tests.json): 1006 errors, exit 2, 39.1s
+[typecheck] production errors: 0; test-file errors: 1006 in 315 files (baseline 1006 in 315 files)
+[typecheck] PASS
+exit 0

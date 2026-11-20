@@ -49,7 +49,7 @@ const valuesOf = (read: KindDefinitionReadResult): PersonalSettingValues | null 
     const agent = read.result.definition;
     return {
       toolNames: agent.toolNames, skillNames: agent.skillNames, avatarUrl: agent.avatarUrl ?? null,
-      defaultLaunchConfig: agent.defaultLaunchConfig ?? null, semanticMemoryEnabled: agent.semanticMemoryEnabled === true,
+      defaultLaunchConfig: agent.defaultLaunchConfig ?? null,
     };
   }
   const definition = read.result.definition;
@@ -57,8 +57,8 @@ const valuesOf = (read: KindDefinitionReadResult): PersonalSettingValues | null 
 };
 
 const sameValues = (left: PersonalSettingValues, right: PersonalSettingValues): boolean =>
-  JSON.stringify([left.toolNames, left.skillNames, left.avatarUrl ?? null, left.defaultLaunchConfig, left.semanticMemoryEnabled ?? false])
-  === JSON.stringify([right.toolNames, right.skillNames, right.avatarUrl ?? null, right.defaultLaunchConfig, right.semanticMemoryEnabled ?? false]);
+  JSON.stringify([left.toolNames, left.skillNames, left.avatarUrl ?? null, left.defaultLaunchConfig])
+  === JSON.stringify([right.toolNames, right.skillNames, right.avatarUrl ?? null, right.defaultLaunchConfig]);
 
 /** Relative paths of every file under `dir`. */
 const listFiles = async (dir: string): Promise<string[]> => {

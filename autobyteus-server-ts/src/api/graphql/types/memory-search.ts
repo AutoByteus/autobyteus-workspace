@@ -1,39 +1,13 @@
 import path from "node:path";
 import { Arg, Field, Int, Mutation, ObjectType, Query, Resolver } from "type-graphql";
-import type { MemoryRunSubject as DomainSubject } from "../../../agent-memory/domain/discovered-run.js";
 import type {
   MemoryIndexStatus as DomainIndexStatus,
   MemorySearchMatch as DomainMatch,
   MemorySearchRunResult as DomainRunResult,
 } from "../../../memory-search/domain/memory-search-models.js";
 import { getMemorySearch } from "../../../memory-search/memory-search.js";
+import { MemoryRunSubject, toMemoryRunSubject } from "./memory-run-subject.js";
 import { readWorkJournalView, WorkJournalView, WorkJournalWindowInput } from "./work-journal-view.js";
-
-/** How the page opens a result: the run's memory view by its subject (one shape per run kind). */
-@ObjectType()
-export class MemoryRunSubject {
-  /** `AGENT`, `TEAM_MEMBER`, `ORG_MEMBER` or `RUN_FOLDER`. */
-  @Field(() => String)
-  kind!: DomainSubject["kind"];
-
-  @Field(() => String, { nullable: true })
-  runId!: string | null;
-
-  @Field(() => String, { nullable: true })
-  agentDefinitionId!: string | null;
-
-  @Field(() => String, { nullable: true })
-  teamRunId!: string | null;
-
-  @Field(() => String, { nullable: true })
-  orgRunId!: string | null;
-
-  @Field(() => String, { nullable: true })
-  agentRunId!: string | null;
-
-  @Field(() => String, { nullable: true })
-  runKey!: string | null;
-}
 
 @ObjectType()
 export class MemorySearchMatch {
@@ -176,15 +150,6 @@ export class MemoryIndexStatus {
 /** `meaningIndex` → `MEANING_INDEX`. */
 const constantCase = (value: string): string => value.replace(/([a-z])([A-Z])/g, "$1_$2").toUpperCase();
 
-const toSubject = (subject: DomainSubject): MemoryRunSubject => ({
-  kind: subject.kind,
-  runId: subject.kind === "AGENT" ? subject.runId : null,
-  agentDefinitionId: subject.kind === "AGENT" ? subject.agentDefinitionId : null,
-  teamRunId: subject.kind === "TEAM_MEMBER" ? subject.teamRunId : null,
-  orgRunId: subject.kind === "ORG_MEMBER" ? subject.orgRunId : null,
-  agentRunId: subject.kind === "TEAM_MEMBER" || subject.kind === "ORG_MEMBER" ? subject.agentRunId : null,
-  runKey: subject.kind === "RUN_FOLDER" ? subject.runKey : null,
-});
 
 const toMatch = (match: DomainMatch): MemorySearchMatch => ({
   journalFile: match.journalFile, journalFileName: path.basename(match.journalFile), lineStart: match.lineStart, lineEnd: match.lineEnd,
@@ -194,7 +159,7 @@ const toMatch = (match: DomainMatch): MemorySearchMatch => ({
 
 const toRunResult = (run: DomainRunResult): MemorySearchRunResult => ({
   agent: run.agent, team: run.team, member: run.member, org: run.org, runId: run.runId, workspace: run.workspace,
-  firstDay: run.firstDay, latestDay: run.latestDay, source: run.source, matches: run.matches.map(toMatch), subject: toSubject(run.subject),
+  firstDay: run.firstDay, latestDay: run.latestDay, source: run.source, matches: run.matches.map(toMatch), subject: toMemoryRunSubject(run.subject),
 });
 
 const toStatus = (status: DomainIndexStatus): MemoryIndexStatus => ({

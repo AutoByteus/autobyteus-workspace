@@ -325,9 +325,9 @@ Codex filesystem sandbox behavior is controlled by the Codex-specific server set
   `buildCodexSandboxWorkspaceWriteConfig`
   (`src/agent-execution/backends/codex/backend/codex-sandbox-workspace-write-config.ts`), for
   `workspace-write` runs only: `network_access: true` for a run with integration variables
-  ([Credential Proxy](./credential_proxy.md)) and `writable_roots: [<folder>]` for an agent with semantic memory
-  ([Agent Memory](./agent_memory.md#semantic-memory)), so the agent can write its own folder outside the working
-  directory. Without either the key is left out. `read-only` stays read-only; `danger-full-access` needs nothing.
+  ([Credential Proxy](./credential_proxy.md)) and `writable_roots: [<agent folder>, <global folder>]`, the agent's
+  semantic memory and the node's global one ([Agent Memory](./agent_memory.md#semantic-memory)), so the agent can
+  write both outside the working directory. Every agent has them, so every `workspace-write` run has the key. `read-only` stays read-only; `danger-full-access` needs nothing.
 
 Server-side semantics are owned by
 `src/runtime-management/codex/codex-sandbox-mode-setting.ts` so the settings

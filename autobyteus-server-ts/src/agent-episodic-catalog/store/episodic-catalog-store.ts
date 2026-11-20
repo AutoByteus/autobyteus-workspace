@@ -13,14 +13,16 @@ export const EPISODIC_INDEX_FILE_NAME = "index.md";
 export class EpisodicCatalogStore {
   constructor(private readonly layout: Pick<AgentMemoryLayout, "getEpisodicRootDirPath" | "getAgentEpisodicDirPath">) {}
 
-  /** An agent definition's folder name under `episodic/` (the same encoded name as its semantic folder). */
+  /** An agent definition's folder name under `episodic/` (the layout's definition folder name, as its semantic folder). */
   folderNameOf(agentDefinitionId: string): string {
     return path.basename(this.layout.getAgentEpisodicDirPath(agentDefinitionId));
   }
 
   /**
-   * The agent definitions that already have an episodic folder, decoded from the folder names. A folder whose name is
-   * not an encoded definition ID is not a catalog folder and is left alone.
+   * The agent definitions that already have an episodic folder, decoded from the folder names: a name counts only when
+   * the layout gives it back for the decoded ID. A shortened name (an ID too long for one name, `<prefix>#<hash>`)
+   * cannot be decoded to its ID and is skipped here; the start pass reaches it through the definitions it discovers.
+   * A folder whose name is not a definition folder name is not a catalog folder and is left alone.
    */
   async listCatalogDefinitionIds(): Promise<string[]> {
     const entries = await fs.readdir(this.layout.getEpisodicRootDirPath(), { withFileTypes: true }).catch(() => []);
@@ -28,7 +30,7 @@ export class EpisodicCatalogStore {
     for (const entry of entries) {
       if (!entry.isDirectory()) continue;
       const id = decodeFolderName(entry.name);
-      if (id !== null && encodeURIComponent(id) === entry.name) ids.push(id);
+      if (id !== null && this.isFolderNameOf(id, entry.name)) ids.push(id);
     }
     return ids.sort();
   }
@@ -41,6 +43,15 @@ export class EpisodicCatalogStore {
   /** Writes `index.md` when its content changed; true when it was written. */
   writeIndex(markdown: string): Promise<boolean> {
     return this.writeIfChanged(path.join(this.layout.getEpisodicRootDirPath(), EPISODIC_INDEX_FILE_NAME), markdown);
+  }
+
+  /** Whether `name` is the definition folder name of `id`; an ID the layout refuses (blank, say) has none. */
+  private isFolderNameOf(id: string, name: string): boolean {
+    try {
+      return this.folderNameOf(id) === name;
+    } catch {
+      return false;
+    }
   }
 
   private async writeIfChanged(filePath: string, content: string): Promise<boolean> {

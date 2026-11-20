@@ -1,0 +1,47 @@
+{
+  "entries": [
+    {
+      "attribution": "DEFINITION",
+      "agentDefinitionId": "autobyteus-daily-assistant",
+      "displayName": "Daily Assistant",
+      "runCount": 0
+    },
+    {
+      "attribution": "DEFINITION",
+      "agentDefinitionId": "sm-manager-05d0cd",
+      "displayName": "sm manager 05d0cd",
+      "runCount": 0
+    },
+    {
+      "attribution": "DEFINITION",
+      "agentDefinitionId": "sm-plain-05d0cd",
+      "displayName": "sm plain 05d0cd",
+      "runCount": 0
+    },
+    {
+      "attribution": "DEFINITION",
+      "agentDefinitionId": "sm-scout-05d0cd",
+      "displayName": "sm scout 05d0cd",
+      "runCount": 0
+    },
+    {
+      "attribution": "DEFINITION",
+      "agentDefinitionId": "sm-declared-off-05d0cd",
+      "displayName": "sm-declared-off-05d0cd",
+      "runCount": 0
+    },
+    {
+      "attribution": "DEFINITION",
+      "agentDefinitionId": "sm-declared-on-05d0cd",
+      "displayName": "sm-declared-on-05d0cd",
+      "runCount": 0
+    },
+    {
+      "attribution": "DEFINITION",
+      "agentDefinitionId": "sm-pkg-plain-05d0cd",
+      "displayName": "sm-pkg-plain-05d0cd",
+      "runCount": 0
+    }
+  ],
+  "total": 7
+}

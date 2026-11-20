@@ -1,3 +1,4 @@
+import type { MemoryRunSubject } from "./discovered-run.js";
 import type { ContextFileReference } from "autobyteus-ts/agent/message/context-file-reference.js";
 import type { RawTraceMedia } from "autobyteus-ts/memory/models/raw-trace-item.js";
 
@@ -75,6 +76,7 @@ export type AgentWithMemorySelector = {
   agentDefinitionId?: string | null;
 };
 
+/** An Agents card on the Memory page (autobyteus-554): the agent, its run count and its latest change. */
 export type AgentWithMemorySummary = {
   attribution: AgentMemoryAttribution;
   agentDefinitionId?: string | null;
@@ -82,25 +84,46 @@ export type AgentWithMemorySummary = {
   stableId: string;
   runCount: number;
   latestMemoryAt?: string | null;
-  memory: MemoryAvailabilitySummary;
 };
 
-export type AgentRunMemorySummary = {
+/** Where an episode ran: a team or org run it was a member of. */
+export type AgentEpisodePlace = Readonly<{ kind: "TEAM" | "ORG"; name: string | null }>;
+
+/**
+ * One episode of an agent (autobyteus-554): one of its runs, from any place it works. `place` is null for the agent's
+ * own (standalone or delegated) run. `subject` opens the run's memory view.
+ */
+export type AgentEpisode = Readonly<{
   runId: string;
-  agentDefinitionId?: string | null;
-  agentName?: string | null;
-  summary?: string | null;
-  workspaceRootPath?: string | null;
-  createdAt?: string | null;
-  lastUpdatedAt?: string | null;
+  subject: MemoryRunSubject;
+  place: AgentEpisodePlace | null;
+  summary: string | null;
+  taskTitle: string | null;
+  workspaceRootPath: string | null;
+  lastActivityAt: string | null;
   memory: MemoryAvailabilitySummary;
-};
+}>;
+
+export type MemoryGroupKind = "TEAM" | "ORG";
+
+/** A member of a team or org on its Memory page: an agent (shared or local) or, in an org, a team. */
+export type MemoryGroupMember = Readonly<{
+  kind: "AGENT" | "TEAM";
+  id: string;
+  name: string;
+  /** An agent that is a shared (standalone) definition: one memory wherever it appears. */
+  shared: boolean;
+  /** A team member's own member count; null for an agent. */
+  memberCount: number | null;
+}>;
 
 export type AgentTeamWithMemorySummary = {
   teamDefinitionId: string;
   teamDefinitionName: string;
   teamRunCount: number;
   memberMemoryCount: number;
+  /** Members of the definition (local), else of its newest stored run; null when neither is known. */
+  memberCount: number | null;
   latestMemoryAt?: string | null;
   memory: MemoryAvailabilitySummary;
 };
@@ -149,6 +172,8 @@ export type AgentOrgWithMemorySummary = {
   orgDefinitionName: string;
   orgRunCount: number;
   memberMemoryCount: number;
+  /** Members of the definition (local), else of its newest stored run; null when neither is known. */
+  memberCount: number | null;
   latestMemoryAt?: string | null;
   memory: MemoryAvailabilitySummary;
 };

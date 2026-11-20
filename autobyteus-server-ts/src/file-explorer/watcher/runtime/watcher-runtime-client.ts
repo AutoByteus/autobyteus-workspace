@@ -30,6 +30,7 @@ export type WatcherRuntimeClientCallbacks = {
 
 export type WatcherRuntimeStartOptions = WatcherRuntimeIdentity & {
   workspaceRootPath: string;
+  followSymbolicLinks: boolean;
 };
 
 export type WatcherRuntimeClientOptions = WatcherRuntimeClientCallbacks & {
@@ -114,6 +115,7 @@ export class WatcherRuntimeClient {
       watcherId: options.watcherId,
       generation: options.generation,
       workspaceRootPath: options.workspaceRootPath,
+      followSymbolicLinks: options.followSymbolicLinks,
     });
 
     try {

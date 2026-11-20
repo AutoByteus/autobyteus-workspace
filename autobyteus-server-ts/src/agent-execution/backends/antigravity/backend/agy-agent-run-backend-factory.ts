@@ -60,9 +60,10 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
     const definition = await this.definitions.getAgentDefinitionById(config.agentDefinitionId);
     if (!definition) throw new Error(`AGY_AGENT_DEFINITION_MISSING: ${config.agentDefinitionId}`);
     const bindings = this.skills.resolveConfiguredSkillBindingsForAgent(definition);
-    const semanticMemoryPath = await this.semanticMemory.prepareForRun(definition);
+    const semanticMemory = await this.semanticMemory.prepareForRun(config.agentDefinitionId);
     const identity = composeSharedCarpenterPrompt({ agentDefinition: definition, memberExecutionContext: config.memberExecutionContext,
-      project: config.project, semanticMemoryPath, longRunningCommandSection: ANTIGRAVITY_LONG_RUNNING_COMMAND_SECTION });
+      project: config.project, semanticMemoryPath: semanticMemory.agentFolder, globalSemanticMemoryPath: semanticMemory.globalFolder,
+      longRunningCommandSection: ANTIGRAVITY_LONG_RUNNING_COMMAND_SECTION });
     assertAccepting();
     const exposure = resolveRuntimeAgentToolExposure(definition, config.memberExecutionContext);
     const descriptor = this.activateMcp(runId, config, workspacePath, exposure);

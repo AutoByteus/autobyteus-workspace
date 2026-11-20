@@ -319,6 +319,14 @@ const createAutoByteusRuntimeProbe = (workspaceRoot: string): {
       getWorkspaceById: vi.fn((workspaceId: string) =>
         workspaceId === workspace.workspaceId ? workspace : undefined,
       ),
+      // A run's workspace is opened through the run-workspace check (autobyteus-554), as in WorkspaceManager.
+      getOrCreateRunWorkspace: vi.fn(async (workspaceId: string) => {
+        if (workspaceId !== workspace.workspaceId) throw new Error(`Workspace '${workspaceId}' not found.`);
+        return workspace;
+      }),
+      getRegisteredWorkspaceRootPath: vi.fn(async (workspaceId: string) =>
+        workspaceId === workspace.workspaceId ? workspace.getBasePath() : null,
+      ),
       getOrCreateTempWorkspace: vi.fn(async () => workspace),
     } as any,
     agentFactory: {

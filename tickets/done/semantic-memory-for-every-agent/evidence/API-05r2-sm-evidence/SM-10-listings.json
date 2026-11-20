@@ -1,0 +1,117 @@
+{
+  "semanticFolders": [
+    "sm-declared-off-05d0cd",
+    "sm-manager-05d0cd",
+    "sm-scout-05d0cd",
+    "team-local-agent%3Asm-pkg-team-05d0cd%3Asm-scout-05d0cd"
+  ],
+  "memoryPageAgents": {
+    "entries": [
+      {
+        "attribution": "DEFINITION",
+        "agentDefinitionId": "autobyteus-daily-assistant",
+        "displayName": "Daily Assistant",
+        "runCount": 0
+      },
+      {
+        "attribution": "DEFINITION",
+        "agentDefinitionId": "sm-manager-05d0cd",
+        "displayName": "sm manager 05d0cd",
+        "runCount": 0
+      },
+      {
+        "attribution": "DEFINITION",
+        "agentDefinitionId": "sm-plain-05d0cd",
+        "displayName": "sm plain 05d0cd",
+        "runCount": 0
+      },
+      {
+        "attribution": "DEFINITION",
+        "agentDefinitionId": "sm-scout-05d0cd",
+        "displayName": "sm scout 05d0cd",
+        "runCount": 0
+      },
+      {
+        "attribution": "DEFINITION",
+        "agentDefinitionId": "sm-declared-off-05d0cd",
+        "displayName": "sm-declared-off-05d0cd",
+        "runCount": 0
+      },
+      {
+        "attribution": "DEFINITION",
+        "agentDefinitionId": "sm-declared-on-05d0cd",
+        "displayName": "sm-declared-on-05d0cd",
+        "runCount": 0
+      },
+      {
+        "attribution": "DEFINITION",
+        "agentDefinitionId": "sm-pkg-plain-05d0cd",
+        "displayName": "sm-pkg-plain-05d0cd",
+        "runCount": 0
+      }
+    ],
+    "total": 7
+  },
+  "memoryPageRunIds": [],
+  "memorySearchRuns": [
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Moc5tS/memory/agent_teams/sm_team_05d0cd_5de016f1223645cbb5d34eed2cd1cdde/sm_scout_05d0cd_82bf89007da34305b77b6b43e75e81f1",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Moc5tS/memory/agents/sm_manager_05d0cd_0a3c9ead90944dfe81039e9a8d897037",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Moc5tS/memory/agents/sm_scout_05d0cd_208c51c38253407cbfe5c120464f3b6d"
+  ],
+  "memorySyncFiles": [
+    "agent_teams/sm_pkg_team_05d0cd_02063704ab41402f83a5e8b32e682a48/sm_scout_05d0cd_9888870c22904a81916d3f5e98cfa6c1/agy-project/.agents/agents/autobyteus-43c68ab5b4f226ce/agent.md",
+    "agent_teams/sm_pkg_team_05d0cd_02063704ab41402f83a5e8b32e682a48/sm_scout_05d0cd_9888870c22904a81916d3f5e98cfa6c1/agy-project/.agents/mcp_config.json",
+    "agent_teams/sm_pkg_team_05d0cd_02063704ab41402f83a5e8b32e682a48/sm_scout_05d0cd_9888870c22904a81916d3f5e98cfa6c1/agy-project/manifest.json",
+    "agent_teams/sm_pkg_team_05d0cd_02063704ab41402f83a5e8b32e682a48/team_communication_messages_active.jsonl",
+    "agent_teams/sm_pkg_team_05d0cd_02063704ab41402f83a5e8b32e682a48/team_run_execution_tree.json",
+    "agent_teams/sm_team_05d0cd_5de016f1223645cbb5d34eed2cd1cdde/sm_manager_05d0cd_400fadd471fc4dd08bbda0526aa567cd/agy-project/.agents/agents/autobyteus-2ce24bd6d5f466d9/agent.md",
+    "agent_teams/sm_team_05d0cd_5de016f1223645cbb5d34eed2cd1cdde/sm_manager_05d0cd_400fadd471fc4dd08bbda0526aa567cd/agy-project/.agents/mcp_config.json",
+    "agent_teams/sm_team_05d0cd_5de016f1223645cbb5d34eed2cd1cdde/sm_manager_05d0cd_400fadd471fc4dd08bbda0526aa567cd/agy-project/manifest.json",
+    "agent_teams/sm_team_05d0cd_5de016f1223645cbb5d34eed2cd1cdde/sm_scout_05d0cd_82bf89007da34305b77b6b43e75e81f1/agy-project/.agents/agents/autobyteus-68a7789ad5aacf62/agent.md",
+    "agent_teams/sm_team_05d0cd_5de016f1223645cbb5d34eed2cd1cdde/sm_scout_05d0cd_82bf89007da34305b77b6b43e75e81f1/agy-project/.agents/mcp_config.json",
+    "agent_teams/sm_team_05d0cd_5de016f1223645cbb5d34eed2cd1cdde/sm_scout_05d0cd_82bf89007da34305b77b6b43e75e81f1/agy-project/manifest.json",
+    "agent_teams/sm_team_05d0cd_5de016f1223645cbb5d34eed2cd1cdde/sm_scout_05d0cd_82bf89007da34305b77b6b43e75e81f1/raw_traces_active.jsonl",
+    "agent_teams/sm_team_05d0cd_5de016f1223645cbb5d34eed2cd1cdde/sm_scout_05d0cd_82bf89007da34305b77b6b43e75e81f1/seen_skill_versions.json",
+    "agent_teams/sm_team_05d0cd_5de016f1223645cbb5d34eed2cd1cdde/sm_scout_05d0cd_82bf89007da34305b77b6b43e75e81f1/seen_tool_names.json",
+    "agent_teams/sm_team_05d0cd_5de016f1223645cbb5d34eed2cd1cdde/sm_scout_05d0cd_82bf89007da34305b77b6b43e75e81f1/work_journal/work_journal_active.md",
+    "agent_teams/sm_team_05d0cd_5de016f1223645cbb5d34eed2cd1cdde/sm_scout_05d0cd_82bf89007da34305b77b6b43e75e81f1/work_journal/work_journal_manifest.json",
+    "agent_teams/sm_team_05d0cd_5de016f1223645cbb5d34eed2cd1cdde/team_communication_messages_active.jsonl",
+    "agent_teams/sm_team_05d0cd_5de016f1223645cbb5d34eed2cd1cdde/team_run_execution_tree.json",
+    "agents/sm_declared_off_05d0cd_0c376afd17c8433e8af3b14951d5586b/agy-project/.agents/agents/autobyteus-89f167fda12c7d03/agent.md",
+    "agents/sm_declared_off_05d0cd_0c376afd17c8433e8af3b14951d5586b/agy-project/.agents/mcp_config.json",
+    "agents/sm_declared_off_05d0cd_0c376afd17c8433e8af3b14951d5586b/agy-project/manifest.json",
+    "agents/sm_declared_off_05d0cd_0c376afd17c8433e8af3b14951d5586b/run_metadata.json",
+    "agents/sm_declared_off_05d0cd_0c376afd17c8433e8af3b14951d5586b/seen_skill_versions.json",
+    "agents/sm_declared_off_05d0cd_0c376afd17c8433e8af3b14951d5586b/seen_tool_names.json",
+    "agents/sm_manager_05d0cd_0a3c9ead90944dfe81039e9a8d897037/agy-project/.agents/agents/autobyteus-55ea220969d425c4/agent.md",
+    "agents/sm_manager_05d0cd_0a3c9ead90944dfe81039e9a8d897037/agy-project/.agents/mcp_config.json",
+    "agents/sm_manager_05d0cd_0a3c9ead90944dfe81039e9a8d897037/agy-project/manifest.json",
+    "agents/sm_manager_05d0cd_0a3c9ead90944dfe81039e9a8d897037/raw_traces_active.jsonl",
+    "agents/sm_manager_05d0cd_0a3c9ead90944dfe81039e9a8d897037/run_metadata.json",
+    "agents/sm_manager_05d0cd_0a3c9ead90944dfe81039e9a8d897037/seen_skill_versions.json",
+    "agents/sm_manager_05d0cd_0a3c9ead90944dfe81039e9a8d897037/seen_tool_names.json",
+    "agents/sm_manager_05d0cd_0a3c9ead90944dfe81039e9a8d897037/work_journal/work_journal_active.md",
+    "agents/sm_manager_05d0cd_0a3c9ead90944dfe81039e9a8d897037/work_journal/work_journal_manifest.json",
+    "agents/sm_scout_05d0cd_208c51c38253407cbfe5c120464f3b6d/agy-project/.agents/agents/autobyteus-7ad242b599163fcd/agent.md",
+    "agents/sm_scout_05d0cd_208c51c38253407cbfe5c120464f3b6d/agy-project/.agents/mcp_config.json",
+    "agents/sm_scout_05d0cd_208c51c38253407cbfe5c120464f3b6d/agy-project/manifest.json",
+    "agents/sm_scout_05d0cd_208c51c38253407cbfe5c120464f3b6d/raw_traces_active.jsonl",
+    "agents/sm_scout_05d0cd_208c51c38253407cbfe5c120464f3b6d/run_metadata.json",
+    "agents/sm_scout_05d0cd_208c51c38253407cbfe5c120464f3b6d/seen_skill_versions.json",
+    "agents/sm_scout_05d0cd_208c51c38253407cbfe5c120464f3b6d/seen_tool_names.json",
+    "agents/sm_scout_05d0cd_208c51c38253407cbfe5c120464f3b6d/work_journal/work_journal_active.md",
+    "agents/sm_scout_05d0cd_208c51c38253407cbfe5c120464f3b6d/work_journal/work_journal_manifest.json",
+    "agents/sm_scout_05d0cd_2cbcc23d42e146f0b91e63491cf58397/agy-project/.agents/agents/autobyteus-586a818b2fb48507/agent.md",
+    "agents/sm_scout_05d0cd_2cbcc23d42e146f0b91e63491cf58397/agy-project/.agents/mcp_config.json",
+    "agents/sm_scout_05d0cd_2cbcc23d42e146f0b91e63491cf58397/agy-project/manifest.json",
+    "agents/sm_scout_05d0cd_2cbcc23d42e146f0b91e63491cf58397/run_metadata.json",
+    "agents/sm_scout_05d0cd_2cbcc23d42e146f0b91e63491cf58397/seen_skill_versions.json",
+    "agents/sm_scout_05d0cd_2cbcc23d42e146f0b91e63491cf58397/seen_tool_names.json",
+    "agents/sm_scout_05d0cd_fc746a3e7cb14722bbc990292af3c443/agy-project/.agents/agents/autobyteus-1b3c5f7744500c6c/agent.md",
+    "agents/sm_scout_05d0cd_fc746a3e7cb14722bbc990292af3c443/agy-project/.agents/mcp_config.json",
+    "agents/sm_scout_05d0cd_fc746a3e7cb14722bbc990292af3c443/agy-project/manifest.json",
+    "agents/sm_scout_05d0cd_fc746a3e7cb14722bbc990292af3c443/run_metadata.json",
+    "agents/sm_scout_05d0cd_fc746a3e7cb14722bbc990292af3c443/seen_skill_versions.json",
+    "agents/sm_scout_05d0cd_fc746a3e7cb14722bbc990292af3c443/seen_tool_names.json"
+  ]
+}

@@ -1,0 +1,41 @@
+# API-08 live SML, Codex alone (RUN_CODEX_E2E=1, test vault, paid) | commit 42c2f5189b (code f393f403d5) | 2026-11-20T19:05:38Z | load { 50.45 50.74 52.90 } | codex codex-cli 0.171.0
+ ❯ tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts (6 tests | 1 failed | 1 skipped) 104857ms
+       × SML-WRITE (AC-001, AC-002): a run under Project A writes its codeword into its semantic memory, told only by its instructions 24945ms
+       ✓ SML-READ (AC-003): a new run under Project B reads the codeword from its semantic memory  9563ms
+       ✓ SML-CODEX-TEAM (AC-004): the agent as a shared team member reads the codeword  10937ms
+       ✓ SML-CODEX-INTEGRATION (AC-002): with integration variables the shell reaches the proxy and the memory is written in one run  10416ms
+       ✓ SML-GLOBAL (AC-009): another agent writes a fact into the global folder; the keeper's new run reads it  22639ms
+       ↓ SML-CLAUDE-APPROVALS (AC-002, REQ-006): with auto-execute off the memory asks no approval the workspace does not ask
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-WRITE (AC-001, AC-002): a run under Project A writes its codeword into its semantic memory, told only by its instructions
+AssertionError: expected false to be true // Object.is equality
+ ❯ tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts:415:68
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed | 1 skipped (6)
+exit 1
+## run 2 (with a temporary print of terminateAgentRun's message, reverted after) | 2026-11-20T19:07:59Z | load { 51.90 51.88 53.04 }
+ ❯ tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts (6 tests | 1 failed | 1 skipped) 128979ms
+       × SML-WRITE (AC-001, AC-002): a run under Project A writes its codeword into its semantic memory, told only by its instructions 27762ms
+       ✓ SML-READ (AC-003): a new run under Project B reads the codeword from its semantic memory  7220ms
+       ✓ SML-CODEX-TEAM (AC-004): the agent as a shared team member reads the codeword  8520ms
+       ✓ SML-CODEX-INTEGRATION (AC-002): with integration variables the shell reaches the proxy and the memory is written in one run  24859ms
+       ✓ SML-GLOBAL (AC-009): another agent writes a fact into the global folder; the keeper's new run reads it  24621ms
+       ↓ SML-CLAUDE-APPROVALS (AC-002, REQ-006): with auto-execute off the memory asks no approval the workspace does not ask
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-WRITE (AC-001, AC-002): a run under Project A writes its codeword into its semantic memory, told only by its instructions
+AssertionError: the sandbox refused or asked: expected 0 to be greater than 0
+ ❯ tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts:411:98
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed | 1 skipped (6)
+exit 1
+## run 3 (same temporary print, reverted after) | 2026-11-20T19:10:43Z | load { 53.26 52.82 53.23 }
+TERMDIAG {"terminateAgentRun":{"success":true,"message":"Agent run terminated successfully."}}
+ ✓ tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts (6 tests | 1 skipped) 134313ms
+       ✓ SML-WRITE (AC-001, AC-002): a run under Project A writes its codeword into its semantic memory, told only by its instructions  35522ms
+       ✓ SML-READ (AC-003): a new run under Project B reads the codeword from its semantic memory  10169ms
+       ✓ SML-CODEX-TEAM (AC-004): the agent as a shared team member reads the codeword  15812ms
+       ✓ SML-CODEX-INTEGRATION (AC-002): with integration variables the shell reaches the proxy and the memory is written in one run  9213ms
+       ✓ SML-GLOBAL (AC-009): another agent writes a fact into the global folder; the keeper's new run reads it  16645ms
+ Test Files  1 passed (1)
+      Tests  5 passed | 1 skipped (6)
+exit 0

@@ -61,10 +61,31 @@ The GraphQL `workspaces()` query is the canonical visible workspace-list source 
 - registered filesystem workspaces from the registry; and
 - transient active workspaces such as temp or skill workspaces that are not duplicated by registry entries.
 
+A semantic memory workspace (kind `semantic_memory`) is never listed (see below).
+
 Internal workspaces (`<appData>/internal-workspaces/`, `internal-workspaces.ts`; the Model Router agent's) are left
 out while "Show internal agents" is off (`WorkspaceManager.listVisibleWorkspaces`). Opening a run by ID still
 resolves its workspace. See [Model Routing](./model_routing.md) and
 [Agent Definition: Internal Agents](./agent_definition.md#internal-agents).
+
+## Semantic Memory Workspaces
+
+`SemanticMemoryWorkspace` (`src/workspaces/semantic-memory-workspace.ts`, autobyteus-554) is the Memory page's
+read-only view of a semantic memory folder: `semantic_ws_<encodeURIComponent(agentDefinitionId)>` for an agent's
+folder, `semantic_global_ws` for the node's global folder ([Agent Memory](./agent_memory.md#semantic-memory)).
+
+- `WorkspaceManager.getOrCreateWorkspace` creates it on demand for an existing folder only and caches it; a missing
+  folder, a folder that is itself a link, or an ID that names no folder (malformed, or leaving `semantic/`) is
+  refused. The view never creates a folder.
+- It is `readOnly` and does not follow symbolic links ([File Explorer](./file_explorer.md#read-only-and-link-aware-workspaces)).
+- `listVisibleWorkspaces` never lists it, whatever the internal-agents setting.
+- `getOrCreateRunWorkspace(id)` is how every runtime resolves a run's workspace ID (the AutoByteus factory, and the
+  Claude and Codex workspace resolvers, which ACP (Grok, DeepSeek harness) and Antigravity use too) and how published
+  artifacts read their run's workspace: it refuses a semantic memory workspace ID, cached or not, before creating
+  anything, and any read-only workspace, with `WORKSPACE_NOT_RUNNABLE`; the caller never falls back to the temp
+  workspace for it. Provisioning a run by a root path (the run form) is unaffected: a semantic folder's path picked by
+  hand is an ordinary filesystem workspace.
+- The instance stays cached after the view closes; the web registers and releases its own transient copy.
 
 Run history is not an authority for top-level workspace visibility. A historical run under an unregistered or removed workspace root must not recreate a top-level workspace row by itself.
 

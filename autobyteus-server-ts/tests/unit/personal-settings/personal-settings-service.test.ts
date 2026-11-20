@@ -135,21 +135,11 @@ describe("edits and resets (contract §6)", () => {
     expect(published).toEqual([]);
   });
 
-  it("keeps the semantic memory switch only when it differs from the base; reset removes it; agents only", () => {
+  it("has no semantic memory setting: every agent has semantic memory (autobyteus-554 REQ-002)", () => {
     const service = create();
-    service.setEdited("agent", "solution-designer", agent(), { semanticMemoryEnabled: false });
-    expect(fs.existsSync(filePath)).toBe(false);
-    service.setEdited("agent", "solution-designer", agent(), { semanticMemoryEnabled: true });
-    expect(fileJson()).toEqual({ "agent:solution-designer": { semanticMemoryEnabled: true } });
-    expect(service.personalSettingsOf("agent", "solution-designer")).toEqual(["SEMANTIC_MEMORY"]);
-    expect(service.apply("agent", agent(), "registered_package").semanticMemoryEnabled).toBe(true);
-    // A package that turns it on itself: the personal "off" is kept as a difference from that base.
-    service.setEdited("agent", "solution-designer", agent({ semanticMemoryEnabled: true }), { semanticMemoryEnabled: false });
-    expect(fileJson()).toEqual({ "agent:solution-designer": { semanticMemoryEnabled: false } });
-    expect(service.apply("agent", agent({ semanticMemoryEnabled: true }), "registered_package").semanticMemoryEnabled).toBe(false);
-    service.reset("agent", "solution-designer", "SEMANTIC_MEMORY");
-    expect(fileJson()).toEqual({});
-    expect(() => service.reset("agent_team", "t", "SEMANTIC_MEMORY")).toThrow("not personal for a agent_team");
+    service.setEdited("agent", "solution-designer", agent(), { avatarUrl: "/mine.png" });
+    expect(service.personalSettingsOf("agent", "solution-designer")).toEqual(["AVATAR"]);
+    expect(() => service.reset("agent", "solution-designer", "SEMANTIC_MEMORY" as never)).toThrow();
   });
 
   it("announces only the lists of the changed kinds", () => {
@@ -229,17 +219,25 @@ describe("the file (contract §2, §4)", () => {
     expect(fileJson()).toEqual({ "agent:solution-designer": { avatarUrl: "/mine.png" } });
   });
 
-  it("skips a semantic memory value that is not a boolean, and on a Team", () => {
+  it("skips a stored semanticMemoryEnabled, applies the record's other fields, and drops it at the record's next write (autobyteus-554 REQ-003, DEC-006)", () => {
     fs.mkdirSync(path.dirname(filePath), { recursive: true });
     fs.writeFileSync(filePath, JSON.stringify({
-      "agent:a": { semanticMemoryEnabled: "yes", avatarUrl: "/a.png" },
-      "agent:b": { semanticMemoryEnabled: true },
-      "agent_team:t": { semanticMemoryEnabled: true, avatarUrl: "/t.png" },
+      "agent:solution-designer": { semanticMemoryEnabled: true, avatarUrl: "/a.png" },
+      "agent:b": { semanticMemoryEnabled: false },
     }));
     const service = create();
-    expect(service.apply("agent", agent({ id: "a" }), "registered_package")).toMatchObject({ semanticMemoryEnabled: false, avatarUrl: "/a.png" });
-    expect(service.apply("agent", agent({ id: "b" }), "registered_package").semanticMemoryEnabled).toBe(true);
-    expect(service.personalSettingsOf("agent_team", "t")).toEqual(["AVATAR"]);
+    const applied = service.apply("agent", agent(), "registered_package");
+    expect(applied.avatarUrl).toBe("/a.png");
+    expect(applied).not.toHaveProperty("semanticMemoryEnabled");
+    expect(service.personalSettingsOf("agent", "b")).toEqual([]);
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("PERSONAL_SETTINGS_ENTRY_SKIPPED:agent:solution-designer: semanticMemoryEnabled"));
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("PERSONAL_SETTINGS_ENTRY_SKIPPED:agent:b: semanticMemoryEnabled, <record>"));
+
+    service.setEdited("agent", "solution-designer", agent(), { avatarUrl: "/b.png" });
+    expect(fileJson()).toEqual({
+      "agent:solution-designer": { avatarUrl: "/b.png" },
+      "agent:b": { semanticMemoryEnabled: false },
+    });
   });
 
   it("keeps entries it skips when it writes another record", () => {

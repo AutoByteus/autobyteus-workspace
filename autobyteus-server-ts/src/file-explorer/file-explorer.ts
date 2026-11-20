@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import type { Dirent } from "node:fs";
 import path from "node:path";
-import { DirectoryTraversal } from "./directory-traversal.js";
+import { DirectoryTraversal, classifyEntryWithoutFollowingLinks } from "./directory-traversal.js";
 import type { FileSystemChangeEvent } from "./file-system-changes.js";
 import type { FileSystemWatcher } from "./watcher/file-system-watcher.js";
 import { TreeNode } from "./tree-node.js";
@@ -16,7 +16,7 @@ import { RenameFileOperation } from "./operations/rename-file-operation.js";
 import { WriteFileOperation } from "./operations/write-file-operation.js";
 import { createWorkspaceIgnoreStrategies } from "./traversal-ignore-strategy/workspace-ignore-strategies.js";
 import { WorkspaceSearchSnapshotController } from "./search-snapshot/workspace-search-snapshot-controller.js";
-import { resolveWorkspaceRelativePath } from "../workspaces/workspace-path-utils.js";
+import { assertNoSymbolicLinkOnPath, resolveWorkspaceRelativePath } from "../workspaces/workspace-path-utils.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -31,6 +31,11 @@ type DirectoryTreeBuildOptions = {
   signal?: AbortSignal;
 };
 
+export type WorkspaceFileExplorerOptions = {
+  /** Default true. When false, links are listed as link nodes and never entered, opened or watched through. */
+  followSymbolicLinks?: boolean;
+};
+
 export type WatcherLease = {
   readonly reason: string;
   release(): Promise<void>;
@@ -38,6 +43,7 @@ export type WatcherLease = {
 
 export class WorkspaceFileExplorer {
   workspaceRootPath: string;
+  readonly followSymbolicLinks: boolean;
   rootNode: TreeNode | null = null;
   ignoreStrategies: TraversalIgnoreStrategy[];
   fileWatcher: FileSystemWatcher | null = null;
@@ -46,8 +52,9 @@ export class WorkspaceFileExplorer {
   private watcherLeaseCount = 0;
   private searchSnapshotController: WorkspaceSearchSnapshotController;
 
-  constructor(workspaceRootPath: string) {
+  constructor(workspaceRootPath: string, options: WorkspaceFileExplorerOptions = {}) {
     this.workspaceRootPath = path.resolve(workspaceRootPath);
+    this.followSymbolicLinks = options.followSymbolicLinks ?? true;
     this.ignoreStrategies = createWorkspaceIgnoreStrategies(this.workspaceRootPath);
     this.searchSnapshotController = new WorkspaceSearchSnapshotController(this);
   }
@@ -65,7 +72,11 @@ export class WorkspaceFileExplorer {
     }
 
     this.throwIfAborted(options.signal, "Directory tree build aborted");
-    const directoryTraversal = new DirectoryTraversal(this.ignoreStrategies);
+    const directoryTraversal = new DirectoryTraversal(
+      this.ignoreStrategies,
+      new DefaultSortStrategy(),
+      this.followSymbolicLinks,
+    );
     const nextRootNode = await directoryTraversal.buildTree(this.workspaceRootPath, maxDepth, options);
     this.throwIfAborted(options.signal, "Directory tree build aborted");
     this.rootNode = nextRootNode;
@@ -145,6 +156,7 @@ export class WorkspaceFileExplorer {
       }
       throw error;
     }
+    await this.refuseLinkOnPath(absoluteFilePath);
 
     let stats: Awaited<ReturnType<typeof fs.stat>>;
     try {
@@ -178,6 +190,7 @@ export class WorkspaceFileExplorer {
     const relativeFolderPath = this.normalizeRelativeFolderPath(folderPath);
     const absoluteFolderPath = this.getPath(relativeFolderPath);
     const ignoreMatcher = new WorkspaceIgnoreMatcher(this.workspaceRootPath, this.ignoreStrategies);
+    await this.refuseLinkOnPath(absoluteFolderPath);
     const stats = await fs.stat(absoluteFolderPath).catch(() => null);
     if (!stats) {
       throw new Error(`Folder not found: ${folderPath}`);
@@ -199,8 +212,12 @@ export class WorkspaceFileExplorer {
       options.signal,
     );
     folderNode.children = entries.map((entry) => {
+      const isLink = entry.isSymbolicLink?.() === true;
       const isFileChild = entry.isFile();
-      return new TreeNode(entry.name, isFileChild, folderNode, isFileChild);
+      // A link is a leaf that is never entered: not a file (nothing to open), and its children count as loaded.
+      const child = new TreeNode(entry.name, isFileChild, folderNode, isFileChild || isLink);
+      child.isSymbolicLink = isLink;
+      return child;
     });
     folderNode.childrenLoaded = true;
     return folderNode;
@@ -321,8 +338,8 @@ export class WorkspaceFileExplorer {
       for await (const dirent of dir) {
         this.throwIfAborted(signal);
         const entryPath = path.join(folderPath, dirent.name);
-        const { isFile, isDirectory } = await this.resolveFolderProjectionEntryType(dirent, entryPath);
-        if (!isFile && !isDirectory) {
+        const { isFile, isDirectory, isSymbolicLink } = await this.resolveFolderProjectionEntryType(dirent, entryPath);
+        if (!isFile && !isDirectory && !isSymbolicLink) {
           continue;
         }
         if (ignoreMatcher.shouldIgnore(entryPath, isDirectory)) {
@@ -333,6 +350,7 @@ export class WorkspaceFileExplorer {
           path: entryPath,
           isFile: () => isFile,
           isDirectory: () => isDirectory,
+          isSymbolicLink: () => isSymbolicLink,
         });
       }
     } finally {
@@ -345,16 +363,25 @@ export class WorkspaceFileExplorer {
   private async resolveFolderProjectionEntryType(
     dirent: Dirent,
     entryPath: string,
-  ): Promise<{ isFile: boolean; isDirectory: boolean }> {
+  ): Promise<{ isFile: boolean; isDirectory: boolean; isSymbolicLink: boolean }> {
+    if (!this.followSymbolicLinks) {
+      const kind = await classifyEntryWithoutFollowingLinks(entryPath);
+      return { isFile: kind === "file", isDirectory: kind === "directory", isSymbolicLink: kind === "link" };
+    }
     if (dirent.isSymbolicLink()) {
       try {
         const stats = await fs.stat(entryPath);
-        return { isFile: stats.isFile(), isDirectory: stats.isDirectory() };
+        return { isFile: stats.isFile(), isDirectory: stats.isDirectory(), isSymbolicLink: false };
       } catch {
-        return { isFile: false, isDirectory: false };
+        return { isFile: false, isDirectory: false, isSymbolicLink: false };
       }
     }
-    return { isFile: dirent.isFile(), isDirectory: dirent.isDirectory() };
+    return { isFile: dirent.isFile(), isDirectory: dirent.isDirectory(), isSymbolicLink: false };
+  }
+
+  /** In an explorer that does not follow links, a path through a link is refused `WORKSPACE_LINK_NOT_OPENED`. */
+  private async refuseLinkOnPath(absolutePath: string): Promise<void> {
+    if (!this.followSymbolicLinks) await assertNoSymbolicLinkOnPath(this.workspaceRootPath, absolutePath);
   }
 
   private throwIfAborted(signal?: AbortSignal, message = "Folder children projection aborted"): void {

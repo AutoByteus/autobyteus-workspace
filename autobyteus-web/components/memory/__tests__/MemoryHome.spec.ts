@@ -2,116 +2,35 @@ import { describe, it, expect, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
 import MemoryHome from '../MemoryHome.vue';
-import { useMemoryExplorerStore } from '~/stores/memoryExplorerStore';
 import { useMemorySearchStore } from '~/stores/memorySearchStore';
 
+/** The Memory page's home: the Browse / Search / Index control; Browse is MemoryBrowse (its own spec). */
 describe('MemoryHome', () => {
-  it('renders concise agent catalog copy and emits selection', async () => {
-    const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
-    const store = useMemoryExplorerStore();
-    store.homeTab = 'agents';
-    store.agents.entries = [{
-      attribution: 'DEFINITION',
-      agentDefinitionId: 'codex',
-      displayName: 'Codex',
-      stableId: 'codex',
-      runCount: 2,
-      latestMemoryAt: '2026-06-19T10:06:04.000Z',
-      memory: { latestMemoryAt: '2026-06-19T10:06:04.000Z', hasWorkJournal: true, hasRawTraces: true, hasRawArchive: false },
-    }];
+  const mountHome = (props: Record<string, unknown> = {}) => mount(MemoryHome, {
+    props: { section: 'browse', nodeKey: 'agents', pane: null, ...props },
+    global: {
+      plugins: [createTestingPinia({ createSpy: vi.fn, stubActions: true })],
+      stubs: { MemoryBrowse: { props: ['nodeKey', 'pane'], template: '<div data-test="browse-stub">{{ nodeKey }}</div>' } },
+    },
+  });
 
-    const wrapper = mount(MemoryHome, { global: { plugins: [pinia] } });
-
+  it('shows Browse, Search and Index, and passes the Browse address to MemoryBrowse', async () => {
+    const wrapper = mountHome({ nodeKey: 'teams/team:se', pane: 'runs' });
     expect(wrapper.findAll('[role="tab"]').map((tab) => tab.text())).toEqual(['Browse', 'Search', 'Index']);
-    const browseTabs = wrapper.find('[data-test="memory-browse"]').findAll('button').slice(0, 3).map((button) => button.text());
-    expect(browseTabs).toEqual(['Agents', 'Agent Teams', 'Agent Orgs']);
-    expect(wrapper.find('h1').exists()).toBe(false);
-    // One memory source: no source selector; no availability badge while nothing is missing.
-    expect(wrapper.text()).not.toContain('Memory source');
-    expect(wrapper.text()).not.toMatch(/agents with memory|work journal|raw traces/i);
-    expect(wrapper.find('[data-test="memory-browse-filter"]').attributes('placeholder')).toBe('Search agents'); // the template's key (test $t fallback)
-    expect(wrapper.text()).toContain('Codex');
-    expect(wrapper.text()).not.toContain('Latest memory:');
-    await wrapper.findAll('button').find((button) => button.text().includes('Codex'))!.trigger('click');
-    expect(wrapper.emitted('selectAgent')?.[0]?.[0]).toMatchObject({ displayName: 'Codex' });
+    expect(wrapper.find('[data-test="browse-stub"]').text()).toBe('teams/team:se');
+    await wrapper.find('[data-test="memory-section-search"]').trigger('click');
+    expect(wrapper.emitted('changeSection')?.[0]).toEqual(['search']);
   });
 
-  it('switches to concise Agent Teams tab copy', async () => {
-    const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
-    const store = useMemoryExplorerStore();
-    const wrapper = mount(MemoryHome, { global: { plugins: [pinia] } });
-
-    await wrapper.findAll('button').find((button) => /agent teams/i.test(button.text()))!.trigger('click');
-
-    expect(wrapper.text()).not.toMatch(/agent teams with memory/i);
-    expect(store.setHomeTab).toHaveBeenCalledWith('teams');
-  });
-
-  it('renders Agent Orgs cards, searches orgs and emits org selection', async () => {
-    const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
-    const store = useMemoryExplorerStore();
-    store.homeTab = 'orgs';
-    store.orgs.entries = [{
-      orgDefinitionId: 'org-a',
-      orgDefinitionName: 'Alpha Org',
-      orgRunCount: 5,
-      memberMemoryCount: 16,
-      latestMemoryAt: '2026-09-01T01:00:00.000Z',
-      memory: { latestMemoryAt: null, hasWorkJournal: true, hasRawTraces: false, hasRawArchive: false },
-    }];
-
-    const wrapper = mount(MemoryHome, { global: { plugins: [pinia] } });
-
-    expect(wrapper.find('[data-test="memory-browse-filter"]').attributes('placeholder')).toBe('Search agent orgs');
-    expect(wrapper.text()).toContain('Alpha Org');
-    expect(wrapper.text()).toContain('org-a');
-    expect(wrapper.text()).toContain('5 runs');
-    expect(wrapper.text()).toContain('16');
-
-    // The filter applies on Enter (and as you type, after 300 ms).
-    await wrapper.find('[data-test="memory-browse-filter"]').setValue(' alpha ');
-    await wrapper.find('[data-test="memory-browse-filter"]').trigger('keyup.enter');
-    expect(store.setOrgsSearch).toHaveBeenCalledWith('alpha');
-
-    await wrapper.findAll('button').find((button) => button.text().includes('Alpha Org'))!.trigger('click');
-    expect(wrapper.emitted('selectOrg')?.[0]?.[0]).toMatchObject({ orgDefinitionId: 'org-a' });
-  });
-
-  it('shows the Agent Orgs empty state and retries the active org tab', async () => {
-    const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
-    const store = useMemoryExplorerStore();
-    store.homeTab = 'orgs';
-    const empty = mount(MemoryHome, { global: { plugins: [pinia] } });
-    expect(empty.text()).toMatch(/no org memories yet/i);
-
-    store.orgs.error = 'boom';
-    await empty.vm.$nextTick();
-    await empty.findAll('button').find((button) => button.text() === 'Retry')!.trigger('click');
-    expect(store.fetchHomeTab).toHaveBeenCalledWith('orgs');
-  });
-
-  it('shows the missing-memory note only when something is missing; a team carries no task-team tag (autobyteus-461)', () => {
-    const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
-    const store = useMemoryExplorerStore();
-    store.homeTab = 'teams';
-    store.teams.entries = [
-      { teamDefinitionId: 'task-team-x', teamDefinitionName: 'Release Crew', teamRunCount: 1, memberMemoryCount: 2,
-        memory: { latestMemoryAt: null, hasWorkJournal: false, hasRawTraces: true, hasRawArchive: false } },
-      { teamDefinitionId: 'team-a', teamDefinitionName: 'Alpha Team', teamRunCount: 3, memberMemoryCount: 4,
-        memory: { latestMemoryAt: null, hasWorkJournal: true, hasRawTraces: true, hasRawArchive: false } },
-    ];
-    const wrapper = mount(MemoryHome, { global: { plugins: [pinia] } });
-    expect(wrapper.findAll('[data-test="memory-task-team-tag"]')).toHaveLength(0);
-    expect(wrapper.text().match(/No Work Journal/g)).toHaveLength(1);
-  });
-
-  it('shows the Index tab badge from the memory index status', () => {
+  it('shows the Index tab badge from the memory index status', async () => {
     const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
     const search = useMemorySearchStore();
     search.index = { phase: 'needs_index', steps: [], builtWithModel: null, activeModel: 'granite', updatedAt: null, runCount: 0, textIndexHasContent: false };
-    const wrapper = mount(MemoryHome, { props: { section: 'browse' }, global: { plugins: [pinia] } });
-    const indexTab = wrapper.find('[data-test="memory-section-index"]');
-    expect(indexTab.find('.bg-amber-400').exists()).toBe(true);
+    const wrapper = mount(MemoryHome, {
+      props: { section: 'browse', nodeKey: 'agents', pane: null },
+      global: { plugins: [pinia], stubs: { MemoryBrowse: true } },
+    });
+    expect(wrapper.find('[data-test="memory-section-index"]').find('.bg-amber-400').exists()).toBe(true);
     expect(search.loadIndexStatus).toHaveBeenCalled();
   });
 });

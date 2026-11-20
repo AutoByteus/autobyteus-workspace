@@ -2,17 +2,18 @@ import { defineStore } from 'pinia';
 import { getApolloClient } from '~/utils/apolloClient';
 import {
   LIST_AGENTS_WITH_MEMORY,
-  LIST_AGENT_RUNS_WITH_MEMORY,
+  LIST_AGENT_EPISODES,
   LIST_AGENT_TEAMS_WITH_MEMORY,
   LIST_AGENT_TEAM_RUNS_WITH_MEMORY,
   LIST_AGENT_ORGS_WITH_MEMORY,
   LIST_AGENT_ORG_RUNS_WITH_MEMORY,
   LIST_MEMORY_EXPLORER_SOURCES,
+  LIST_MEMORY_GROUP_MEMBERS,
 } from '~/graphql/queries/memoryExplorerQueries';
 import type {
+  AgentEpisode,
   AgentOrgRunMemorySummary,
   AgentOrgWithMemorySummary,
-  AgentRunMemorySummary,
   AgentTeamRunMemorySummary,
   AgentTeamWithMemorySummary,
   AgentWithMemorySelector,
@@ -20,9 +21,9 @@ import type {
   MemoryExplorerPage,
   MemoryExplorerSourceInput,
   MemoryExplorerSourceOption,
+  MemoryGroupKind,
+  MemoryGroupMember,
 } from '~/types/memory';
-
-export type MemoryHomeTab = 'agents' | 'teams' | 'orgs';
 
 type ListState<T> = MemoryExplorerPage<T> & {
   search: string;
@@ -31,37 +32,56 @@ type ListState<T> = MemoryExplorerPage<T> & {
   requestId: number;
 };
 
-type ListSourcesQuery = { listMemoryExplorerSources?: MemoryExplorerSourceOption[] | null };
-type ListAgentsQuery = { listAgentsWithMemory?: MemoryExplorerPage<AgentWithMemorySummary> | null };
-type ListAgentRunsQuery = { listAgentRunsWithMemory?: MemoryExplorerPage<AgentRunMemorySummary> | null };
-type ListTeamsQuery = { listAgentTeamsWithMemory?: MemoryExplorerPage<AgentTeamWithMemorySummary> | null };
-type ListTeamRunsQuery = { listAgentTeamRunsWithMemory?: MemoryExplorerPage<AgentTeamRunMemorySummary> | null };
-type ListOrgsQuery = { listAgentOrgsWithMemory?: MemoryExplorerPage<AgentOrgWithMemorySummary> | null };
-type ListOrgRunsQuery = { listAgentOrgRunsWithMemory?: MemoryExplorerPage<AgentOrgRunMemorySummary> | null };
+/** A team's or org's members on its page; `key` names whose they are (`TEAM:<id>` or `ORG:<id>`). */
+interface MembersState {
+  key: string | null;
+  entries: MemoryGroupMember[];
+  loading: boolean;
+  error: string | null;
+  requestId: number;
+}
 
+/** Where an agent works, for its page's subtitle: a team or org whose definition (or newest run) names it. */
+export interface AgentPlace {
+  kind: MemoryGroupKind;
+  id: string;
+  name: string;
+  /** The agent is local to this team (team-local), not a shared agent. */
+  local: boolean;
+}
+
+type ListSourcesQuery = { listMemoryExplorerSources?: MemoryExplorerSourceOption[] | null };
+type ListMembersQuery = { listMemoryGroupMembers?: MemoryGroupMember[] | null };
 type PageVariables = { source?: MemoryExplorerSourceInput | null; search?: string | null; page?: number; pageSize?: number };
-type AgentRunsVariables = PageVariables & { selector: AgentWithMemorySelector };
-type TeamRunsVariables = PageVariables & { teamDefinitionId: string };
-type OrgRunsVariables = PageVariables & { orgDefinitionId: string };
 
 interface MemoryExplorerState {
-  homeTab: MemoryHomeTab;
   sources: MemoryExplorerSourceOption[];
   selectedSource: MemoryExplorerSourceOption;
   /** True once a sources request has succeeded; the list is page-lifetime state. */
   sourcesLoaded: boolean;
   sourceLoading: boolean;
   sourceError: string | null;
+  /** The source whose owners (the Browse cards) are loaded; null until the first load. */
+  ownersSourceKey: string | null;
   agents: ListState<AgentWithMemorySummary>;
-  agentRuns: ListState<AgentRunMemorySummary>;
   teams: ListState<AgentTeamWithMemorySummary>;
-  teamRuns: ListState<AgentTeamRunMemorySummary>;
   orgs: ListState<AgentOrgWithMemorySummary>;
+  /** One agent's episodes; `ownerKey` names whose (`DEFINITION:<id>` or `UNATTRIBUTED`). */
+  episodes: ListState<AgentEpisode> & { ownerKey: string | null };
+  members: MembersState;
+  /** Every team's and org's members loaded so far for the selected source, by `TEAM:<id>` / `ORG:<id>`. */
+  groupMembers: Record<string, MemoryGroupMember[]>;
+  /** `loadAllGroupMembers` is running: an owner known only as a member is not "not found" yet. */
+  groupMembersLoading: boolean;
+  teamRuns: ListState<AgentTeamRunMemorySummary>;
   orgRuns: ListState<AgentOrgRunMemorySummary>;
-  selectedAgent: AgentWithMemorySummary | null;
   selectedTeam: AgentTeamWithMemorySummary | null;
   selectedOrg: AgentOrgWithMemorySummary | null;
 }
+
+/** Browse shows every owner of a kind as cards with no paging: a node holds few agents, teams and orgs. */
+const OWNERS_PAGE_SIZE = 500;
+const EPISODES_PAGE_SIZE = 24;
 
 const localSource = (): MemoryExplorerSourceOption => ({
   key: 'local',
@@ -86,7 +106,7 @@ const createListState = <T>(pageSize: number): ListState<T> => ({
   requestId: 0,
 });
 
-/** Clears a detail list when the selected agent, team or org changes, so another selection's runs never show. */
+/** Clears a list when its owner changes, so another owner's entries never show. */
 const resetList = <T>(state: ListState<T>) => {
   state.entries = [];
   state.total = 0;
@@ -117,24 +137,36 @@ const sourceInputFor = (source: MemoryExplorerSourceOption): MemoryExplorerSourc
     : { type: 'LOCAL' }
 );
 
+export const episodesOwnerKey = (selector: AgentWithMemorySelector): string =>
+  selector.attribution === 'UNATTRIBUTED' ? 'UNATTRIBUTED' : `DEFINITION:${selector.agentDefinitionId ?? ''}`;
+export const groupMembersKey = (kind: MemoryGroupKind, definitionId: string): string => `${kind}:${definitionId}`;
+
+const errorMessage = (errors: ReadonlyArray<{ message: string }>) => errors.map((e) => e.message).join(', ');
+
 /** In-flight sources request per store instance, so concurrent `loadSources()` calls share one request. */
 const sourcesRequests = new WeakMap<object, Promise<MemoryExplorerSourceOption[]>>();
 
+/**
+ * The Memory page's Browse, organised by owner (autobyteus-554, UI/UX spec): the Agents, Agent Teams and Agent Orgs
+ * cards, one agent's episodes (its runs from every place it works), a team's or org's members, and their runs.
+ */
 export const useMemoryExplorerStore = defineStore('memoryExplorerStore', {
   state: (): MemoryExplorerState => ({
-    homeTab: 'agents',
     sources: [localSource()],
     selectedSource: localSource(),
     sourcesLoaded: false,
     sourceLoading: false,
     sourceError: null,
-    agents: createListState<AgentWithMemorySummary>(25),
-    agentRuns: createListState<AgentRunMemorySummary>(25),
-    teams: createListState<AgentTeamWithMemorySummary>(25),
+    ownersSourceKey: null,
+    agents: createListState<AgentWithMemorySummary>(OWNERS_PAGE_SIZE),
+    teams: createListState<AgentTeamWithMemorySummary>(OWNERS_PAGE_SIZE),
+    orgs: createListState<AgentOrgWithMemorySummary>(OWNERS_PAGE_SIZE),
+    episodes: { ...createListState<AgentEpisode>(EPISODES_PAGE_SIZE), ownerKey: null },
+    members: { key: null, entries: [], loading: false, error: null, requestId: 0 },
+    groupMembers: {},
+    groupMembersLoading: false,
     teamRuns: createListState<AgentTeamRunMemorySummary>(25),
-    orgs: createListState<AgentOrgWithMemorySummary>(25),
     orgRuns: createListState<AgentOrgRunMemorySummary>(25),
-    selectedAgent: null,
     selectedTeam: null,
     selectedOrg: null,
   }),
@@ -150,6 +182,25 @@ export const useMemoryExplorerStore = defineStore('memoryExplorerStore', {
     },
     isImportedSource(state): boolean {
       return state.selectedSource.type === 'IMPORTED';
+    },
+    ownersLoading(state): boolean {
+      return state.agents.loading || state.teams.loading || state.orgs.loading;
+    },
+    ownersError(state): string | null {
+      return state.agents.error || state.teams.error || state.orgs.error;
+    },
+    /** The teams and orgs an agent is a member of, from the members loaded so far (`loadAllGroupMembers`). */
+    placesOf(state) {
+      return (agentDefinitionId: string): AgentPlace[] => {
+        const places: AgentPlace[] = [];
+        const add = (kind: MemoryGroupKind, id: string, name: string) => {
+          const member = state.groupMembers[groupMembersKey(kind, id)]?.find((entry) => entry.kind === 'AGENT' && entry.id === agentDefinitionId);
+          if (member) places.push({ kind, id, name, local: !member.shared });
+        };
+        for (const team of state.teams.entries) add('TEAM', team.teamDefinitionId, team.teamDefinitionName);
+        for (const org of state.orgs.entries) add('ORG', org.orgDefinitionId, org.orgDefinitionName);
+        return places;
+      };
     },
   },
 
@@ -174,7 +225,7 @@ export const useMemoryExplorerStore = defineStore('memoryExplorerStore', {
           query: LIST_MEMORY_EXPLORER_SOURCES,
           fetchPolicy: 'network-only',
         });
-        if (errors?.length) throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
+        if (errors?.length) throw new Error(errorMessage(errors));
         this.sources = data?.listMemoryExplorerSources?.length ? data.listMemoryExplorerSources : [localSource()];
         this.sourcesLoaded = true;
         return this.sources;
@@ -193,84 +244,108 @@ export const useMemoryExplorerStore = defineStore('memoryExplorerStore', {
     setSelectedSourceByKey(key?: string | null): boolean {
       const normalizedKey = key && key.trim() ? key.trim() : 'local';
       const source = this.sources.find((candidate) => candidate.key === normalizedKey);
-      if (!source) {
-        this.selectedSource = this.sources[0] || localSource();
-        this.resetPagesForSourceChange();
-        return false;
+      const next = source ?? this.sources[0] ?? localSource();
+      if (this.selectedSource.key !== next.key || !source) {
+        this.selectedSource = next;
+        this.resetForSourceChange();
       }
-      if (this.selectedSource.key !== source.key) {
-        this.selectedSource = source;
-        this.resetPagesForSourceChange();
+      return Boolean(source);
+    },
+
+    /** The Browse cards of the selected source: agents, teams and orgs, all of them. */
+    async fetchOwners(): Promise<void> {
+      this.ownersSourceKey = this.selectedSource.key;
+      await Promise.all([
+        this.fetchList(this.agents, LIST_AGENTS_WITH_MEMORY, 'listAgentsWithMemory'),
+        this.fetchList(this.teams, LIST_AGENT_TEAMS_WITH_MEMORY, 'listAgentTeamsWithMemory'),
+        this.fetchList(this.orgs, LIST_AGENT_ORGS_WITH_MEMORY, 'listAgentOrgsWithMemory'),
+      ]);
+    },
+
+    /** The cards for an owner's page reached directly by its address: loaded once per source. */
+    async ensureOwners(): Promise<void> {
+      if (this.ownersSourceKey !== this.selectedSource.key) await this.fetchOwners();
+    },
+
+    /** One agent's episodes (or the unattributed runs); another owner's list is cleared first. */
+    async fetchEpisodes(selector: AgentWithMemorySelector): Promise<void> {
+      const ownerKey = episodesOwnerKey(selector);
+      if (this.episodes.ownerKey !== ownerKey) {
+        resetList(this.episodes);
+        this.episodes.ownerKey = ownerKey;
       }
-      return true;
+      await this.fetchList(this.episodes, LIST_AGENT_EPISODES, 'listAgentEpisodes', { selector });
     },
 
-    setHomeTab(tab: MemoryHomeTab) {
-      this.homeTab = tab;
-      this.clearSelections();
+    async setEpisodesSearch(selector: AgentWithMemorySelector, search: string) {
+      this.episodes.search = search;
+      this.episodes.page = 1;
+      await this.fetchEpisodes(selector);
     },
 
-    async fetchAgents(): Promise<MemoryExplorerPage<AgentWithMemorySummary> | null> {
-      return await this.fetchList(this.agents, LIST_AGENTS_WITH_MEMORY, 'listAgentsWithMemory');
+    async changeEpisodesPage(selector: AgentWithMemorySelector, page: number) {
+      this.episodes.page = Math.max(1, page);
+      await this.fetchEpisodes(selector);
     },
 
-    async fetchTeams(): Promise<MemoryExplorerPage<AgentTeamWithMemorySummary> | null> {
-      return await this.fetchList(this.teams, LIST_AGENT_TEAMS_WITH_MEMORY, 'listAgentTeamsWithMemory');
-    },
-
-    async fetchOrgs(): Promise<MemoryExplorerPage<AgentOrgWithMemorySummary> | null> {
-      return await this.fetchList(this.orgs, LIST_AGENT_ORGS_WITH_MEMORY, 'listAgentOrgsWithMemory');
-    },
-
-    async fetchAgentRuns(selector: AgentWithMemorySelector): Promise<MemoryExplorerPage<AgentRunMemorySummary> | null> {
-      return await this.fetchList(
-        this.agentRuns,
-        LIST_AGENT_RUNS_WITH_MEMORY,
-        'listAgentRunsWithMemory',
-        { selector },
-      );
-    },
-
-    async fetchTeamRuns(teamDefinitionId: string): Promise<MemoryExplorerPage<AgentTeamRunMemorySummary> | null> {
-      return await this.fetchList(
-        this.teamRuns,
-        LIST_AGENT_TEAM_RUNS_WITH_MEMORY,
-        'listAgentTeamRunsWithMemory',
-        { teamDefinitionId },
-      );
-    },
-
-    async fetchOrgRuns(orgDefinitionId: string): Promise<MemoryExplorerPage<AgentOrgRunMemorySummary> | null> {
-      return await this.fetchList(
-        this.orgRuns,
-        LIST_AGENT_ORG_RUNS_WITH_MEMORY,
-        'listAgentOrgRunsWithMemory',
-        { orgDefinitionId },
-      );
-    },
-
-    setSelectedAgentFromRoute(selector: AgentWithMemorySelector, displayName?: string | null) {
-      const agentDefinitionId = selector.agentDefinitionId ?? null;
-      const current = this.selectedAgent;
-      if (!current || current.attribution !== selector.attribution || (current.agentDefinitionId ?? null) !== agentDefinitionId) {
-        resetList(this.agentRuns);
+    /** A team's or org's members for its page; another group's list is cleared first. */
+    async fetchMembers(kind: MemoryGroupKind, definitionId: string): Promise<void> {
+      const key = groupMembersKey(kind, definitionId);
+      if (this.members.key !== key) this.members = { key, entries: [], loading: false, error: null, requestId: this.members.requestId + 1 };
+      const requestId = ++this.members.requestId;
+      this.members.loading = true;
+      this.members.error = null;
+      try {
+        const entries = await this.requestMembers(kind, definitionId);
+        if (requestId !== this.members.requestId) return;
+        this.members.entries = entries;
+      } catch (error: any) {
+        if (requestId === this.members.requestId) this.members.error = error?.message || 'Failed to load the members.';
+      } finally {
+        if (requestId === this.members.requestId) this.members.loading = false;
       }
-      this.clearSelections();
-      this.selectedAgent = {
-        attribution: selector.attribution,
-        agentDefinitionId,
-        displayName: displayName || (selector.attribution === 'UNATTRIBUTED' ? 'Unattributed runs' : selector.agentDefinitionId || 'Agent'),
-        stableId: selector.agentDefinitionId || 'unattributed',
-        runCount: this.agentRuns.total,
-        latestMemoryAt: null,
-        memory: this.emptyMemory(),
-      };
+    },
+
+    /** Every team's and org's members not loaded yet, for an agent page's "Belongs to" / "Also works in" line. */
+    async loadAllGroupMembers(): Promise<void> {
+      const groups: Array<[MemoryGroupKind, string]> = [
+        ...this.teams.entries.map((team) => ['TEAM', team.teamDefinitionId] as [MemoryGroupKind, string]),
+        ...this.orgs.entries.map((org) => ['ORG', org.orgDefinitionId] as [MemoryGroupKind, string]),
+      ];
+      this.groupMembersLoading = true;
+      try {
+        await Promise.all(groups
+          .filter(([kind, id]) => !this.groupMembers[groupMembersKey(kind, id)])
+          .map(([kind, id]) => this.requestMembers(kind, id).catch(() => [])));
+      } finally {
+        this.groupMembersLoading = false;
+      }
+    },
+
+    async requestMembers(kind: MemoryGroupKind, definitionId: string): Promise<MemoryGroupMember[]> {
+      const sourceKey = this.selectedSource.key;
+      const { data, errors } = await getApolloClient().query<ListMembersQuery>({
+        query: LIST_MEMORY_GROUP_MEMBERS,
+        variables: { kind, definitionId, source: this.selectedSourceInput },
+        fetchPolicy: 'network-only',
+      });
+      if (errors?.length) throw new Error(errorMessage(errors));
+      const entries = data?.listMemoryGroupMembers ?? [];
+      if (sourceKey === this.selectedSource.key) this.groupMembers[groupMembersKey(kind, definitionId)] = entries;
+      return entries;
+    },
+
+    async fetchTeamRuns(teamDefinitionId: string) {
+      return await this.fetchList(this.teamRuns, LIST_AGENT_TEAM_RUNS_WITH_MEMORY, 'listAgentTeamRunsWithMemory', { teamDefinitionId });
+    },
+
+    async fetchOrgRuns(orgDefinitionId: string) {
+      return await this.fetchList(this.orgRuns, LIST_AGENT_ORG_RUNS_WITH_MEMORY, 'listAgentOrgRunsWithMemory', { orgDefinitionId });
     },
 
     setSelectedTeamFromRoute(teamDefinitionId: string, teamDefinitionName?: string | null) {
       if (this.selectedTeam?.teamDefinitionId !== teamDefinitionId) resetList(this.teamRuns);
-      this.clearSelections();
-      this.selectedTeam = {
+      this.selectedTeam = this.teams.entries.find((team) => team.teamDefinitionId === teamDefinitionId) ?? {
         teamDefinitionId,
         teamDefinitionName: teamDefinitionName || teamDefinitionId,
         teamRunCount: this.teamRuns.total,
@@ -282,8 +357,7 @@ export const useMemoryExplorerStore = defineStore('memoryExplorerStore', {
 
     setSelectedOrgFromRoute(orgDefinitionId: string, orgDefinitionName?: string | null) {
       if (this.selectedOrg?.orgDefinitionId !== orgDefinitionId) resetList(this.orgRuns);
-      this.clearSelections();
-      this.selectedOrg = {
+      this.selectedOrg = this.orgs.entries.find((org) => org.orgDefinitionId === orgDefinitionId) ?? {
         orgDefinitionId,
         orgDefinitionName: orgDefinitionName || orgDefinitionId,
         orgRunCount: this.orgRuns.total,
@@ -291,30 +365,6 @@ export const useMemoryExplorerStore = defineStore('memoryExplorerStore', {
         latestMemoryAt: null,
         memory: this.emptyMemory(),
       };
-    },
-
-    async setAgentsSearch(search: string) {
-      this.agents.search = search;
-      this.agents.page = 1;
-      await this.fetchAgents();
-    },
-
-    async setTeamsSearch(search: string) {
-      this.teams.search = search;
-      this.teams.page = 1;
-      await this.fetchTeams();
-    },
-
-    async setOrgsSearch(search: string) {
-      this.orgs.search = search;
-      this.orgs.page = 1;
-      await this.fetchOrgs();
-    },
-
-    async setAgentRunsSearch(selector: AgentWithMemorySelector, search: string) {
-      this.agentRuns.search = search;
-      this.agentRuns.page = 1;
-      await this.fetchAgentRuns(selector);
     },
 
     async setTeamRunsSearch(teamDefinitionId: string, search: string) {
@@ -329,11 +379,6 @@ export const useMemoryExplorerStore = defineStore('memoryExplorerStore', {
       await this.fetchOrgRuns(orgDefinitionId);
     },
 
-    async changeAgentRunsPage(selector: AgentWithMemorySelector, page: number) {
-      this.agentRuns.page = Math.max(1, page);
-      await this.fetchAgentRuns(selector);
-    },
-
     async changeTeamRunsPage(teamDefinitionId: string, page: number) {
       this.teamRuns.page = Math.max(1, page);
       await this.fetchTeamRuns(teamDefinitionId);
@@ -344,37 +389,18 @@ export const useMemoryExplorerStore = defineStore('memoryExplorerStore', {
       await this.fetchOrgRuns(orgDefinitionId);
     },
 
-    async changeHomePage(tab: MemoryHomeTab, page: number) {
-      if (tab === 'agents') {
-        this.agents.page = Math.max(1, page);
-        await this.fetchAgents();
-      } else if (tab === 'teams') {
-        this.teams.page = Math.max(1, page);
-        await this.fetchTeams();
-      } else {
-        this.orgs.page = Math.max(1, page);
-        await this.fetchOrgs();
-      }
-    },
-
-    async fetchHomeTab(tab: MemoryHomeTab) {
-      if (tab === 'agents') await this.fetchAgents();
-      else if (tab === 'teams') await this.fetchTeams();
-      else await this.fetchOrgs();
-    },
-
-    resetPagesForSourceChange() {
-      this.agents.page = 1;
-      this.agentRuns.page = 1;
-      this.teams.page = 1;
-      this.teamRuns.page = 1;
-      this.orgs.page = 1;
-      this.orgRuns.page = 1;
-      this.clearSelections();
-    },
-
-    clearSelections() {
-      this.selectedAgent = null;
+    /** Another source: nothing of the previous one shows (its cards, episodes, members and runs). */
+    resetForSourceChange() {
+      this.ownersSourceKey = null;
+      resetList(this.agents);
+      resetList(this.teams);
+      resetList(this.orgs);
+      resetList(this.episodes);
+      resetList(this.teamRuns);
+      resetList(this.orgRuns);
+      this.episodes.ownerKey = null;
+      this.members = { key: null, entries: [], loading: false, error: null, requestId: this.members.requestId + 1 };
+      this.groupMembers = {};
       this.selectedTeam = null;
       this.selectedOrg = null;
     },
@@ -393,7 +419,7 @@ export const useMemoryExplorerStore = defineStore('memoryExplorerStore', {
       state.error = null;
       const currentRequestId = ++state.requestId;
       try {
-        const { data, errors } = await getApolloClient().query<any, PageVariables | AgentRunsVariables | TeamRunsVariables | OrgRunsVariables>({
+        const { data, errors } = await getApolloClient().query<any, PageVariables & Record<string, unknown>>({
           query,
           variables: {
             ...extraVariables,
@@ -404,7 +430,7 @@ export const useMemoryExplorerStore = defineStore('memoryExplorerStore', {
           },
           fetchPolicy: 'network-only',
         });
-        if (errors?.length) throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
+        if (errors?.length) throw new Error(errorMessage(errors));
         if (currentRequestId !== state.requestId) return null;
         const payload = data?.[dataKey] as MemoryExplorerPage<T> | undefined;
         applyPage(state, payload);

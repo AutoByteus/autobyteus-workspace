@@ -7,13 +7,13 @@ import { OFF_DISCOVERY } from "../../../../helpers/explicit-host-collaborators.j
 
 describe('native registered workspace resolution before provider acquisition',()=>{
  it('propagates a registered directory failure rather than falling back',async()=>{
-  const workspaceManager={getWorkspaceById:()=>undefined,getRegisteredWorkspaceRootPath:vi.fn(async()=>'/ordinary/registered'),
-   getOrCreateWorkspace:vi.fn(async()=>{throw Error('registered filesystem unavailable');}),getOrCreateTempWorkspace:vi.fn()};
+  const workspaceManager={getRegisteredWorkspaceRootPath:vi.fn(async()=>'/ordinary/registered'),
+   getOrCreateRunWorkspace:vi.fn(async()=>{throw Error('registered filesystem unavailable');}),getOrCreateTempWorkspace:vi.fn()};
   const createLLM=vi.fn();
   const factory=new AutoByteusAgentRunBackendFactory({ peerDiscovery: OFF_DISCOVERY, nativeCommandProcessScope: new NativeCommandProcessScope(),workspaceManager:workspaceManager as never,createLLM,
    agentDefinitionService:{getAgentDefinitionById:async()=>new AgentDefinition({id:'fixture',name:'Fixture',role:'test',description:'fixture'})} as never});
   await expect(factory.beginPreparation({kind:'new',runId:'registered-run',config:new AgentRunConfig({runtimeKind:'autobyteus',agentDefinitionId:'fixture',llmModelIdentifier:'',autoExecuteTools:false,workspaceId:'registered'})}).prepare()).rejects.toThrow('registered filesystem unavailable');
-  expect(workspaceManager.getOrCreateWorkspace).toHaveBeenCalledWith('registered');
+  expect(workspaceManager.getOrCreateRunWorkspace).toHaveBeenCalledWith('registered');
   expect(workspaceManager.getOrCreateTempWorkspace).not.toHaveBeenCalled();expect(createLLM).not.toHaveBeenCalled();
  });
 });

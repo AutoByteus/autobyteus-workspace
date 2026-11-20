@@ -1,0 +1,149 @@
+# IMP-09-ac012-electron-node.json
+# Command: ELECTRON_RUN_AS_NODE=1 <Electron binary> evidence/ac012-measure.mjs autobyteus-server-ts/dist <same clone> <scratch>
+# Commit tested: working tree later committed as 56b02294d0
+# Environment: macOS (Darwin 25.5), Electron 42 node (ELECTRON_RUN_AS_NODE=1, Node v24.19.0); shared host
+# Date: 2026-11-20
+# Note: same clone, deleted afterwards
+# ----------------------------------------------------------------------
+AgentFactory (Singleton) initialized.
+{
+  "node": "v24.19.0",
+  "copy": "/tmp/554-measure/memory",
+  "measuredAt": "2026-11-20T12:37:25.796Z",
+  "local": {
+    "startPass": {
+      "ms": 22356,
+      "discoveries": {
+        "findRuns": 1,
+        "findRunsOfRoot": 0
+      },
+      "definitions": 122,
+      "runs": 3825
+    },
+    "busiestAgent": {
+      "runs": 527
+    },
+    "steps": [
+      {
+        "step": "Agents cards (round 1)",
+        "ms": 253,
+        "cards": 123
+      },
+      {
+        "step": "episodes of the busiest agent (round 1)",
+        "ms": 18,
+        "total": 527
+      },
+      {
+        "step": "episodes filtered by \"memory\" (round 1)",
+        "ms": 6,
+        "total": 4
+      },
+      {
+        "step": "unattributed runs (round 1)",
+        "ms": 45,
+        "total": 200
+      },
+      {
+        "step": "Agents cards (round 2)",
+        "ms": 204,
+        "cards": 123
+      },
+      {
+        "step": "episodes of the busiest agent (round 2)",
+        "ms": 20,
+        "total": 527
+      },
+      {
+        "step": "episodes filtered by \"memory\" (round 2)",
+        "ms": 8,
+        "total": 4
+      },
+      {
+        "step": "unattributed runs (round 2)",
+        "ms": 132,
+        "total": 200
+      }
+    ],
+    "discoveriesByTheExplorer": {
+      "findRuns": 0,
+      "findRunsOfRoot": 0
+    }
+  },
+  "imported": [
+    {
+      "sourceId": "docker-node-1",
+      "runs": 474,
+      "discoveries": {
+        "findRuns": 2,
+        "findRunsOfRoot": 0
+      },
+      "steps": [
+        {
+          "step": "Agents cards",
+          "ms": 438,
+          "cards": 13
+        },
+        {
+          "step": "episodes of the busiest agent",
+          "ms": 203,
+          "total": 31
+        },
+        {
+          "step": "Agent Teams cards",
+          "ms": 0,
+          "cards": 0
+        },
+        {
+          "step": "Agent Orgs cards",
+          "ms": 0,
+          "cards": 0
+        }
+      ],
+      "withinBudget": true
+    }
+  ]
+}
+
+# stderr (masked IDs, counted lines)
+ 205 }
+ 205 RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE {
+ 203   record: 'team_run_execution_tree.json',
+  74   reason: 'ROOT_RUN_PACKAGE_MANIFEST_INVALID: Current package still contains retired root authorities: team_communication_messages.json.',
+  66   root: 'agent_team:software_engineering_team<id>',
+  59   runFolders: 1
+  58   reason: 'ROOT_RUN_PACKAGE_MANIFEST_INVALID: Current package is missing required authorities: team_communication_messages.',
+  44   root: 'agent_team:software_development_department<id>',
+  44   root: 'agent_team:marketing_team<id>',
+  43   runFolders: 2
+  38   reason: 'ROOT_RUN_PACKAGE_MANIFEST_INVALID: Current package still contains retired root authorities: team_run_metadata.json, team_communication_messages.json.',
+  28   reason: 'ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED: rootTeam is missing required field(s): teamDefinitionName.',
+  24   runFolders: 4
+  24   runFolders: 3
+  23   runFolders: 6
+  12   runFolders: 5
+  10   runFolders: 7
+  10   root: 'agent_team:classroomsimulation<id>',
+   6   root: 'agent_team:nested_classroom_test_team<id>',
+   6   root: 'agent_team:job_application_team<id>',
+   4   runFolders: 8
+   4   root: 'agent_team:requirements_engineering_team<id>',
+   4   root: 'agent_team:job_search_application_team<id>',
+   4   root: 'agent_team:fundraising_team<id>',
+   3   reason: 'ROOT_RUN_PACKAGE_MISSING_TREE: Execution tree is missing; package preserved.',
+   2   runFolders: 9
+   2   runFolders: 11
+   2   runFolders: 10
+   2   root: 'agent_team:team_classroomsimulation_edf9dd4e',
+   2   root: 'agent_team:supervised_research_team<id>',
+   2   root: 'agent_team:northstar_operating_company<id>',
+   2   root: 'agent_team:middle_school_mathematics_team<id>',
+   2   root: 'agent_team:evidence_driven_delivery_team<id>',
+   2   root: 'agent_team:bible_study_group<id>',
+   2   root: 'agent:project_task_manager<id>',
+   2   record: 'run_metadata.json',
+   2   reason: 'delegatedFrom.delegatingRun must be an object.',
+   2   reason: 'ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED: delegatedFrom.delegatingRun must be an object.',
+   1   root: 'agent_team:team_video-tutorial-creation-team_48955b3c',
+   1   root: 'agent_team:team_software-engineering-team_359ede01',
+   1   root: 'agent_team:team_northstar-operating-company_6af4b5ba',

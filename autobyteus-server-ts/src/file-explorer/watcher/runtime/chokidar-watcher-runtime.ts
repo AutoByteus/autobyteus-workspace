@@ -40,6 +40,8 @@ export class ChokidarWatcherRuntime {
     const watcher = chokidar.watch(command.workspaceRootPath, {
       ignoreInitial: true,
       persistent: true,
+      // false: a change inside a linked folder's target never reaches the tree (autobyteus-554).
+      followSymlinks: command.followSymbolicLinks,
       ignored: (targetPath, stats) => ignoreMatcher.shouldIgnoreForWatch(targetPath, stats),
       awaitWriteFinish: {
         stabilityThreshold: 200,

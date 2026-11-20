@@ -6,7 +6,7 @@ import {
 /**
  * The records of `<app-data>/agent-packages/personal-settings.json` (personal-settings-file-contract.md
  * §3): one record per definition, keyed `<kind>:<definitionId>`, holding the user's own tools, skills,
- * avatar, runtime/model and (agents) semantic memory switch as differences from the definition's base value.
+ * avatar and runtime/model as differences from the definition's base value.
  */
 
 /** A runtime/model choice that names both, as one unit (contract §3.2). */
@@ -23,14 +23,12 @@ export type PersonalSettingRecord = Readonly<{
   skillsRemoved?: readonly string[];
   avatarUrl?: string;
   defaultLaunchConfig?: PersonalLaunchConfig;
-  /** The agent's semantic memory switch, kept only when it differs from the base value. */
-  semanticMemoryEnabled?: boolean;
 }>;
 
 export type PersonalSettingField = keyof PersonalSettingRecord;
 
 /** The settings the user sees; one reset removes the record fields of one setting. */
-export const PERSONAL_SETTINGS = ["TOOLS", "SKILLS", "AVATAR", "DEFAULT_LAUNCH_CONFIG", "SEMANTIC_MEMORY"] as const;
+export const PERSONAL_SETTINGS = ["TOOLS", "SKILLS", "AVATAR", "DEFAULT_LAUNCH_CONFIG"] as const;
 export type PersonalSetting = (typeof PERSONAL_SETTINGS)[number];
 
 /** Which base the personal settings of a definition sit on: a package's files, or a built-in agent's template. */
@@ -40,7 +38,7 @@ const LIST_FIELDS = ["toolsAdded", "toolsRemoved", "skillsAdded", "skillsRemoved
 type ListField = (typeof LIST_FIELDS)[number];
 
 /** Field order in the file. */
-const FIELD_ORDER: readonly PersonalSettingField[] = [...LIST_FIELDS, "avatarUrl", "defaultLaunchConfig", "semanticMemoryEnabled"];
+const FIELD_ORDER: readonly PersonalSettingField[] = [...LIST_FIELDS, "avatarUrl", "defaultLaunchConfig"];
 
 export const FIELDS_OF_KIND: Readonly<Record<AgentPackageDefinitionKind, readonly PersonalSettingField[]>> = {
   agent: FIELD_ORDER,
@@ -53,10 +51,9 @@ export const FIELDS_OF_SETTING: Readonly<Record<PersonalSetting, readonly Person
   SKILLS: ["skillsAdded", "skillsRemoved"],
   AVATAR: ["avatarUrl"],
   DEFAULT_LAUNCH_CONFIG: ["defaultLaunchConfig"],
-  SEMANTIC_MEMORY: ["semanticMemoryEnabled"],
 };
 
-/** The settings a kind can hold: tools, skills and semantic memory are agents' only. */
+/** The settings a kind can hold: tools and skills are agents' only. */
 export const settingsOfKind = (kind: AgentPackageDefinitionKind): readonly PersonalSetting[] =>
   PERSONAL_SETTINGS.filter((setting) => FIELDS_OF_SETTING[setting].every((field) => FIELDS_OF_KIND[kind].includes(field)));
 
@@ -93,7 +90,6 @@ export const isPersonalLaunchConfig = (value: unknown): value is PersonalLaunchC
 const isValidField = (field: PersonalSettingField, value: unknown): boolean => {
   if ((LIST_FIELDS as readonly string[]).includes(field)) return isNameList(value);
   if (field === "avatarUrl") return typeof value === "string" && value.length > 0;
-  if (field === "semanticMemoryEnabled") return typeof value === "boolean";
   return isPersonalLaunchConfig(value);
 };
 

@@ -40,9 +40,9 @@ Memory files live under the configured memory root:
   large file being uploaded by a source. Not a run folder and never part of `imports/`: a file moves into
   `imports/` only after its size and SHA-256 are verified, and an abandoned partial is removed after 24 h
   (see [Memory Sync](../features/memory_sync.md#sync-behavior)).
-- Agents' semantic memories: `memory/semantic/<encodeURIComponent(agentDefinitionId)>/` (see
-  [Semantic Memory](#semantic-memory)); not a run folder.
-- Agents' episodic catalogs: `memory/episodic/<encodeURIComponent(agentDefinitionId)>/catalog.md` and the node
+- Agents' semantic memories: `memory/semantic/<definition folder name>/` (see [Folders](#semantic-memory)), and the node's global
+  semantic memory `memory/semantic-global/` (see [Semantic Memory](#semantic-memory)); not run folders.
+- Agents' episodic catalogs: `memory/episodic/<definition folder name>/catalog.md` and the node
   overview `memory/episodic/index.md` (see [Agent Episodic Catalog](agent_episodic_catalog.md)); not a run folder.
   Unrelated to the `episodic.jsonl` rows below.
 
@@ -136,29 +136,63 @@ The old monolithic `raw_traces_archive.jsonl` file is no longer an active read/w
 
 ## Semantic Memory
 
-An agent definition with `semanticMemoryEnabled` (in `agent-config.json`, or a personal setting for package and
-built-in agents) has a semantic memory: one folder of documents with the reusable knowledge the agent learns, shared
-by every run of that definition on this node, standalone, as a team member (`refScope: shared` resolves to the same
-definition ID) or as a delegated run, in any Project. Team-local, Org-owned and application-owned agents are their
-own definitions with their own folders.
+Every agent definition has a semantic memory (autobyteus-554; there is no switch): one folder of documents with the
+reusable knowledge the agent learns, shared by every run of that definition on this node, standalone, as a team member
+(`refScope: shared` resolves to the same definition ID), as an org member or as a delegated run, in any Project.
+Team-local, Org-owned and application-owned agents are their own definitions with their own folders. The node also has
+one **global semantic memory**, a folder shared by every agent on the node, in every Project and team: facts that are
+true for everyone (what the product is, the words it uses, the user's standing rules).
 
-- **Folder:** `AgentMemoryLayout.getAgentSemanticMemoryDirPath(agentDefinitionId)` =
-  `<memory>/semantic/<encodeURIComponent(agentDefinitionId)>` (absolute; a team-local ID's `:` becomes `%3A`, so the
-  name is valid on every desktop OS and distinct per definition). The `semantic/` folder sits next to the run roots;
-  the memory explorer, memory search and Memory Sync walk only the run roots, so they never list it.
+- **Folders:** `AgentMemoryLayout.getAgentSemanticMemoryDirPath(agentDefinitionId)` =
+  `<memory>/semantic/<definition folder name>` (absolute; an ID that would leave `semantic/` is refused), and
+  `getGlobalSemanticMemoryDirPath()` = `<memory>/semantic-global` (a sibling, so no definition ID can collide with it).
+- **Definition folder name** (autobyteus-554 DEC-016; the layout's `definitionFolderName`, the only rule, shared by
+  `semantic/`, `episodic/` and the folder view's lookup): `encodeURIComponent(agentDefinitionId)` when that is at most
+  200 bytes (a team-local ID's `:` becomes `%3A`, so the name is valid on every desktop OS and distinct per
+  definition); otherwise its first 120 bytes, cut between characters (never inside a `%XX` escape or between the
+  escapes of one character, so the prefix decodes), then `#`, then the first 16 hex characters of the ID's SHA-256.
+  File systems allow 255 bytes per name; an application-bundled team-local ID holds its bundle's path in hex and
+  reaches about 440 bytes encoded. `encodeURIComponent` always escapes `#`, so a shortened name never equals a full
+  one. A shortened name cannot be decoded back to its ID: nothing reads IDs from these names except the episodic
+  catalog, which skips them ([Agent Episodic Catalog](agent_episodic_catalog.md#files)). A `#` is a URL fragment
+  character: a path holding one is always URL-encoded where it goes into a URL (the node-file loader's `?path=`), and
+  the folder view's content route takes paths relative to the folder.
+  Both sit next to the run roots; the memory explorer, memory search and Memory Sync walk only the run roots, so they
+  never list them, and Memory Sync does not carry them.
 - **Owner:** `AgentSemanticMemory` (`src/agent-memory/services/agent-semantic-memory.ts`) holds the rule and is the only
-  caller of the layout's semantic path. `folderOf(definition)` returns the folder or `null` (no file access; GraphQL
-  `semanticMemoryPath` reads it); `prepareForRun(definition)` also creates the folder (`mkdir -p`). An agent without the
-  setting causes no file access.
-- **Runs:** each runtime backend calls `prepareForRun` when it composes a run's instructions (create, and restore where
-  the runtime composes again; Antigravity at create only) and passes the path to the carpenter composer, which adds the
-  `## Semantic Memory` section (exact text in
-  [prompt_engineering.md](prompt_engineering.md)). Codex adds the folder to the `workspace-write` sandbox's
-  `writable_roots`; Claude gets it as an additional directory. Native AutoByteus, Grok and Antigravity already write
-  outside the workspace; the DeepSeek harness asks a sandbox escalation for it while auto-execute is off.
-- **Lifecycle:** the system never deletes or rewrites what is in the folder: turning the setting off, deleting or
-  renaming the agent, or updating its package leaves it; turning it on again gives the same folder. Concurrent runs
-  writing the same document are not coordinated; the agent's skills decide how documents are organized.
+  caller of the layout's semantic paths. `folderOf(id)` and `globalFolder()` return the paths with no file access
+  (GraphQL `AgentDefinition.semanticMemoryPath` reads the first); `prepareForRun(id)` creates both folders
+  (`mkdir -p`), each independently, and returns `{ agentFolder, globalFolder }`. A folder that cannot be prepared (a
+  permission, a full disk, a name the file system refuses) is `null` and logged as `SEMANTIC_MEMORY_PREPARE_FAILED
+  { definitionId, folder: "agent" | "global", reason }`: memory is auxiliary to a run, so the run still starts (DEC-015).
+  `null` means only that; the agent still has semantic memory; `folderState(id)` and `globalFolderState()` report
+  `{ folderPath, exists, isEmpty }` from one `readdir` and never create a folder (the Memory page's GraphQL
+  `agentSemanticMemoryFolder(agentDefinitionId)` and `globalSemanticMemoryFolder`, `api/graphql/types/semantic-memory-view.ts`).
+- **Runs:** each runtime backend calls `prepareForRun` with the run's definition ID when it composes a run's
+  instructions (create, and restore where the runtime composes again; Antigravity at create only) and passes both paths
+  to the carpenter composer, which adds the `## Semantic Memory` section and, right after it, the
+  `## Global Semantic Memory` section (exact texts in [prompt_engineering.md](prompt_engineering.md)); a folder that
+  could not be prepared for that run has no section. Codex adds the prepared folders to the `workspace-write`
+  sandbox's `writable_roots`; Claude gets them as additional directories (`preparedSemanticMemoryFolders`). Native
+  AutoByteus, Grok and Antigravity already write outside the workspace; the DeepSeek harness asks a sandbox escalation
+  for them while auto-execute is off. A native AutoByteus agent whose definition lists no file tool is told both
+  folders but cannot use them until a file tool is added.
+- **Lifecycle:** the system never deletes or rewrites what is in the folders: deleting or renaming the agent, or
+  updating its package, leaves them. Concurrent runs writing the same document (the global folder especially) are not
+  coordinated; the agents' skills decide how documents are organized.
+- **Stored switch:** `semanticMemoryEnabled` in an `agent-config.json` or a `personal-settings.json` record is
+  ignored on read and absent after that file's or record's next write; no file is rewritten for it
+  ([Agent Definition](agent_definition.md#semantic-memory), [Personal Settings](personal_settings.md)).
+- **The Memory page's folder view:** a folder is shown read only through `SemanticMemoryWorkspace`
+  (`src/workspaces/semantic-memory-workspace.ts`, kind `semantic_memory`): `semantic_ws_<encodeURIComponent(id)>` for an
+  agent (always the full encoded ID, not the folder name: the lookup gives the folder by the rule above), `semantic_global_ws` for the global folder. `WorkspaceManager` creates it on demand for an existing folder
+  only (a missing folder, or a folder that is itself a link, is refused; the view never creates one), never lists it
+  (`listVisibleWorkspaces`), and refuses it as a run's workspace (`getOrCreateRunWorkspace` → `WORKSPACE_NOT_RUNNABLE`,
+  the call every runtime resolves a run's workspace ID through). The workspace is `readOnly` (every file-explorer
+  write is refused `WORKSPACE_READ_ONLY` before any file is touched) and does not follow symbolic links: a link is
+  listed as a link row and never entered or opened (`WORKSPACE_LINK_NOT_OPENED`), and its watcher does not follow
+  links ([File Explorer](file_explorer.md)). The instance stays cached on the server after the view closes (bounded by
+  the folders viewed, never listed, never runnable).
 
 ## Conversation Activity Classification For Restore
 
@@ -359,21 +393,37 @@ source evidence.
 
 ## Memory Explorer Read Model
 
-The memory explorer is a backend-for-frontend read model for the `/memory` UI. It is memory-derived: configured agents, teams, or orgs with no persisted memory do not appear.
-
-Explorer services scan persisted memory roots at request time, derive memory availability flags, enrich with run-history metadata when available, sort by latest memory update, and paginate server-side.
+The memory explorer is a backend-for-frontend read model for the `/memory` UI, organised by owner (autobyteus-554):
+the Agents, Agent Teams and Agent Orgs cards, one agent's episodes, and a team's or org's members and runs.
 
 Memory availability (`MemoryAvailabilitySummary`) is `latestMemoryAt`, `hasWorkJournal` (the run has `work_journal/work_journal_manifest.json`), `hasRawTraces` and `hasRawArchive`. A run is listed when it has a Work Journal, raw traces, a raw archive or a working-context snapshot (`hasMemoryAvailability`).
 
 ### Independent Agents
 
-`AgentMemoryExplorerService` reads standalone run directories from `memory/agents/<runId>` and includes only runs with at least one memory artifact. It groups included runs as follows:
+`AgentMemoryExplorerService` answers the Agents cards (`listAgentsWithMemory`) and one agent's episodes
+(`listAgentEpisodes`): its runs from every place it works (standalone, delegated, as a team or org member).
 
-- `DEFINITION` groups use `agentDefinitionId` from run metadata or run-history catalog rows.
-- Runs without metadata/history attribution are grouped under `UNATTRIBUTED` / `Unattributed runs` so legacy standalone memory remains discoverable.
-- Runs of an internal agent are left out while "Show internal agents" is off: no group, and not moved under `UNATTRIBUTED` (see [Agent Definition: Internal Agents](./agent_definition.md#internal-agents)).
-
-Agent explorer summaries include display name, stable ID, run count, latest memory timestamp, and merged memory availability. Agent-run summaries include run ID, optional agent metadata, workspace path, created/updated timestamps, and per-run memory availability.
+- **This node (`LOCAL`):** both come from the [episodic catalog](agent_episodic_catalog.md)'s in-memory entries
+  (`agentDefinitionIds()`, `runsOf(id)`), after its start pass (`whenStartPassDone()`; a page asked during the pass
+  waits, so a card's latest change is never partial after a restart). No request discovers the memory folder. The
+  service reaches the catalog through the process binding `getProcessEpisodicCatalog()`, which both composition roots
+  set right after creating the catalog (before the HTTP server serves) and release at close; a missing binding throws
+  `EPISODIC_CATALOG_NOT_COMPOSED` (no fallback). A run reaches the catalog after its journal's first write (the
+  catalog's 5 s quiet window), or at the next start.
+- **Cards:** the shared (not team-local) agent definitions, with or without runs, and every definition the catalog
+  holds runs of (team-local ones included), newest change first, then "Unattributed runs": the standalone runs with
+  memory that no record attributes (a run's history row names its definition without a file read; its metadata is read
+  only for runs without one). A card has the display name (definition, else the newest run's agent name), the ID, the
+  run count and the latest change (the newest run's last journal time, else its start).
+- **Episodes:** filtered by run ID, Task title and run summary (the history row's, or the team's or org's root row),
+  newest first, paged in memory; memory availability is built only for the page. An episode has the run ID, the
+  `subject` that opens its memory view (`AGENT`, `TEAM_MEMBER`, `ORG_MEMBER`), its `place` (the team or org it ran in,
+  null for the agent's own run), summary, Task title, workspace, last activity and memory availability.
+- **An imported source:** cards and episodes come from one run-folder discovery of that source per request
+  (attributed runs by definition; the standalone unattributed ones as "Unattributed runs"); the order is by the
+  recorded start.
+- Runs of an internal agent are left out while "Show internal agents" is off: no card, no episodes, and not moved under
+  `UNATTRIBUTED` (see [Agent Definition: Internal Agents](./agent_definition.md#internal-agents)).
 
 ### Agent Teams And Agent Orgs
 
@@ -450,13 +500,19 @@ The explorer GraphQL surface is:
 
 - `listMemoryExplorerSources()`
 - `listAgentsWithMemory(source, search, page, pageSize)`
-- `listAgentRunsWithMemory(selector, source, search, page, pageSize)`
+- `listAgentEpisodes(selector, source, search, page, pageSize)`
+- `listMemoryGroupMembers(kind: TEAM | ORG, definitionId, source)`
 - `listAgentTeamsWithMemory(source, search, page, pageSize)`
 - `listAgentTeamRunsWithMemory(teamDefinitionId, source, search, page, pageSize)`
 - `listAgentOrgsWithMemory(source, search, page, pageSize)`
 - `listAgentOrgRunsWithMemory(orgDefinitionId, source, search, page, pageSize)`
 
-All list queries return a `MemoryExplorerPage` shape with `entries`, `total`, `page`, `pageSize`, and `totalPages`. Search is applied within the active surface: agent/team/org cards on home, selected-agent runs on agent detail, or selected-team/org runs and member targets (including task agents and task-team members) on team/org detail.
+All list queries return a `MemoryExplorerPage` shape with `entries`, `total`, `page`, `pageSize`, and `totalPages`. Search is applied within the active surface: the cards, one agent's episodes, or a team's or org's runs and member targets (including task agents and task-team members).
+
+`listMemoryGroupMembers` returns a team's or org's members as `MemoryGroupMember` (`kind: AGENT | TEAM`, `id`, `name`,
+`shared`, `memberCount` for a team): from the definition on this node (team-local agents by their team-local ID;
+`shared` for a `refScope: shared` member), else from the newest stored run of that team or org in the source. Team and
+org cards carry `memberCount` the same way, and this node's cards include the definitions with no runs yet.
 
 Team-run and org-run entries share the member type
 `CollaborationMemberMemoryTargetSummary` (`memberAddress`, `displayName`,

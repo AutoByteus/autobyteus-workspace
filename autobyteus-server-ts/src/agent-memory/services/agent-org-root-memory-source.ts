@@ -1,5 +1,6 @@
 import { AgentOrgExecutionTreeLocationService } from "../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
 import { AgentOrgRunHistoryCatalogService } from "../../run-history/services/agent-org-run-history-catalog-service.js";
+import { isConfiguredTeamExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import { toCollaborationMemberMemoryLocation } from "./collaboration-member-memory-targets.js";
 import type {
   CollaborationRootCatalogEntry,
@@ -52,6 +53,9 @@ export class AgentOrgRootMemorySource implements CollaborationRootMemorySource {
       definitionName: tree.rootOrg.orgDefinitionName,
       createdAt: tree.createdAt ?? null,
       members: located.map((item) => toCollaborationMemberMemoryLocation(item, toOrgDisplayName)),
+      configuredMembers: tree.rootOrg.members.map((member) => isConfiguredTeamExecution(member)
+        ? { kind: "TEAM" as const, id: member.teamDefinitionId, name: toOrgDisplayName(member.address), memberCount: member.members.length }
+        : { kind: "AGENT" as const, id: member.agentDefinitionId, name: toOrgDisplayName(member.address) }),
     };
   }
 

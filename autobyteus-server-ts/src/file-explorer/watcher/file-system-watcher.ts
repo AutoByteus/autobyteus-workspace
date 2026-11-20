@@ -126,6 +126,7 @@ export class FileSystemWatcher {
         watcherId,
         generation,
         workspaceRootPath: this.fileExplorer.workspaceRootPath,
+        followSymbolicLinks: this.fileExplorer.followSymbolicLinks,
       })
       .then(() => {
         if (!this.isCurrentRuntime({ watcherId, generation })) {

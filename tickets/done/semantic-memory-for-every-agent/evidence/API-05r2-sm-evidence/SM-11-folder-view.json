@@ -1,0 +1,21 @@
+{
+  "listed": [
+    {
+      "workspaceId": "temp_ws_default",
+      "kind": "temp"
+    }
+  ],
+  "before": {
+    "agent": {
+      "secret-link.md": "link:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-outside-MgAj2i/secret.md",
+      "shared": "link:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-outside-MgAj2i",
+      "sites/linkedin/controls.md": "cef691da8787d57610a683bfb29ce0ce09c5b0bb77c7723c75f115756398cc3f"
+    },
+    "global": {
+      "product.md": "82f9f8c66c233ae485ac40ac28c2e9ba32daa36fa10065c52b0e066be93f3b13"
+    },
+    "outside": {
+      "secret.md": "b37e50cedcd3e3f1ff64f4afc0422084ae694253cf399326868e07a35f4a45fb"
+    }
+  }
+}

@@ -23,6 +23,7 @@ import { LlmProviderResolver } from './types/llm-provider.js';
 import { ToolManagementResolver } from './types/tool-management.js';
 import { McpServerResolver } from './types/mcp-server.js';
 import { MemoryExplorerResolver } from './types/memory-explorer.js';
+import { SemanticMemoryViewResolver } from './types/semantic-memory-view.js';
 import { MemoryViewResolver } from './types/memory-view.js';
 import { MemorySearchResolver } from './types/memory-search.js';
 import { MemorySyncResolver } from './types/memory-sync.js';
@@ -77,6 +78,7 @@ export async function buildGraphqlSchema() {
       ToolManagementResolver,
       McpServerResolver,
       MemoryExplorerResolver,
+      SemanticMemoryViewResolver,
       MemoryViewResolver,
       MemorySearchResolver,
       MemorySyncResolver,

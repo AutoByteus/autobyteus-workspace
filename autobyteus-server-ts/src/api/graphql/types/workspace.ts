@@ -5,6 +5,7 @@ import { getWorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import { WorkspaceConverter } from "../converters/workspace-converter.js";
 import { WorkspacePathRefusedError } from "../../../workspaces/workspace-folder-check.js";
 import { buildFilesystemWorkspaceId } from "../../../workspaces/workspace-registry-store.js";
+import type { WorkspaceKind } from "../../../workspaces/workspace-metadata.js";
 import {
   canonicalizeWorkspaceRootPath,
   workspaceDisplayNameFromRootPath,
@@ -36,7 +37,7 @@ export class WorkspaceMetadataInfo {
   absolutePath?: string | null;
 
   @Field(() => String)
-  kind!: "filesystem" | "skill" | "temp";
+  kind!: WorkspaceKind;
 
   @Field(() => Boolean)
   isTemp!: boolean;

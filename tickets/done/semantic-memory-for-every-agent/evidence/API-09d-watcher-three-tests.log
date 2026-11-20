@@ -1,0 +1,30 @@
+## semantic-memory-for-every-agent run 1 load 64.72 56.31 73.57
+does not emit events for pre-existing nested .gitignore excluded directories 14249ms
+emits add + modify + delete events 8714ms
+returns one idle event stream without stopping other subscribers 34144ms
+      Tests  1 failed | 2 passed | 11 skipped (14)
+## ec554-api-e2e-base run 1 load 68.81 59.17 73.57
+does not emit events for pre-existing nested .gitignore excluded directories 6239ms
+emits add + modify + delete events 35238ms
+returns one idle event stream without stopping other subscribers 1224ms
+      Tests  1 failed | 2 passed | 11 skipped (14)
+## semantic-memory-for-every-agent run 2 load 69.81 60.89 73.46
+does not emit events for pre-existing nested .gitignore excluded directories 8637ms
+emits add + modify + delete events 4847ms
+returns one idle event stream without stopping other subscribers 5111ms
+      Tests  3 passed | 11 skipped (14)
+## ec554-api-e2e-base run 2 load 74.13 62.49 73.75
+does not emit events for pre-existing nested .gitignore excluded directories 23280ms
+emits add + modify + delete events 40209ms
+returns one idle event stream without stopping other subscribers 40147ms
+      Tests  2 failed | 1 passed | 11 skipped (14)
+## semantic-memory-for-every-agent run 3 load 117.97 79.47 78.89
+does not emit events for pre-existing nested .gitignore excluded directories 6434ms
+emits add + modify + delete events 3092ms
+returns one idle event stream without stopping other subscribers 5409ms
+      Tests  3 passed | 11 skipped (14)
+## ec554-api-e2e-base run 3 load 125.31 83.58 80.38
+does not emit events for pre-existing nested .gitignore excluded directories 6858ms
+emits add + modify + delete events 6761ms
+returns one idle event stream without stopping other subscribers 3128ms
+      Tests  3 passed | 11 skipped (14)

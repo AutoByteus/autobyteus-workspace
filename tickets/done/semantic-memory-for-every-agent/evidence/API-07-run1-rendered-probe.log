@@ -1,0 +1,3 @@
+# API-07 node autobyteus-web/tests/e2e/semantic-memory-view-probe.mjs --output-dir evidence/API-07-probe | commit 2e5f786091 (code cd26f4d913) + SMV-090/091 | Node v22.23.1 | 2026-11-20T13:30:36Z | load 46.64 59.04 63.75
+semantic memory view probe: Fail (30/30 checks) → /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/tickets/in-progress/semantic-memory-for-every-agent/evidence/API-07-probe
+exit 1

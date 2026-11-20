@@ -294,4 +294,63 @@ describe("EpisodicCatalog", () => {
     expect(node.calls.findRunsOfRoot).toEqual([]);
     expect(headings("agent-def", "catalog.md")).toEqual(["## start unknown · a_1"]);
   });
+
+  describe("read API for the Memory page (autobyteus-554)", () => {
+    it("settles whenStartPassDone after the start pass, and then reads each definition's entries from memory", async () => {
+      const lead = node.run("agent_teams/team_1/designer_1", teamRoot, { agentName: "designer", attribution: { kind: "attributed", agentDefinitionId: "designer-def" } });
+      node.journal(lead, "2026-11-01 09:01", "2026-11-02 10:00");
+      node.run("agents/helper_1", agentRoot, { attribution: { kind: "attributed", agentDefinitionId: "helper-def" } });
+      fs.mkdirSync(episodic("gone-def"), { recursive: true });
+      const catalog = create();
+      let settled = false;
+      void catalog.whenStartPassDone().then(() => { settled = true; });
+      await new Promise((resolve) => setTimeout(resolve, 20));
+      expect(settled).toBe(false);
+
+      catalog.start({ taskTitles });
+      await catalog.whenStartPassDone();
+      expect([...catalog.agentDefinitionIds()].sort()).toEqual(["designer-def", "gone-def", "helper-def"]);
+      expect(catalog.runsOf("designer-def").map((entry) => [entry.runId, entry.root, entry.lastActivityAt, entry.taskTitle])).toEqual([
+        ["designer_1", teamRoot, "2026-11-02 10:00", "Ship the catalog"],
+      ]);
+      expect(catalog.runsOf("gone-def")).toEqual([]);
+      expect(catalog.runsOf("unknown-def")).toEqual([]);
+      expect(node.calls.findRuns).toBe(1);
+    });
+
+    it("settles whenStartPassDone when the start pass fails or the catalog stops first", async () => {
+      vi.spyOn(console, "warn").mockImplementation(() => undefined);
+      node.discovery.findRuns = async () => { throw new Error("discovery failed"); };
+      const failed = create();
+      failed.start({ taskTitles });
+      await expect(failed.whenStartPassDone()).resolves.toBeUndefined();
+      expect(failed.agentDefinitionIds()).toEqual([]);
+
+      const neverStarted = create();
+      await neverStarted.stop();
+      await expect(neverStarted.whenStartPassDone()).resolves.toBeUndefined();
+    });
+  });
+});
+
+describe("the process episodic catalog binding (autobyteus-554)", () => {
+  it("throws EPISODIC_CATALOG_NOT_COMPOSED until a composition root sets it, and clears only its own catalog on release", async () => {
+    const { getProcessEpisodicCatalog, releaseProcessEpisodicCatalog, setProcessEpisodicCatalog } =
+      await import("../../../src/agent-episodic-catalog/services/episodic-catalog.js");
+    const memoryDir = fs.mkdtempSync(path.join(os.tmpdir(), "episodic-binding-"));
+    try {
+      const make = () => new EpisodicCatalog({ layout: new AgentMemoryLayout(memoryDir), discovery: {} as never, journals: {} as never, tasks: {} as never });
+      expect(() => getProcessEpisodicCatalog()).toThrow("EPISODIC_CATALOG_NOT_COMPOSED");
+      const first = make();
+      const second = make();
+      setProcessEpisodicCatalog(first);
+      expect(getProcessEpisodicCatalog()).toBe(first);
+      releaseProcessEpisodicCatalog(second);
+      expect(getProcessEpisodicCatalog()).toBe(first);
+      releaseProcessEpisodicCatalog(first);
+      expect(() => getProcessEpisodicCatalog()).toThrow("EPISODIC_CATALOG_NOT_COMPOSED");
+    } finally {
+      fs.rmSync(memoryDir, { recursive: true, force: true });
+    }
+  });
 });

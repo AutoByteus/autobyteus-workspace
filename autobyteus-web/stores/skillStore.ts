@@ -33,7 +33,7 @@ export const useSkillStore = defineStore('skill', () => {
     const nextRoots = new Map(next.map(skill => [skill.name, skill.rootPath]))
     for (const previous of skills.value) {
       if (nextRoots.get(previous.name) !== previous.rootPath) {
-        useWorkspaceStore().unregisterSkillWorkspace(`skill_ws_${previous.name}`)
+        useWorkspaceStore().unregisterTransientWorkspace(`skill_ws_${previous.name}`)
       }
     }
     skills.value = next

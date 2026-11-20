@@ -10,6 +10,11 @@ export class TreeNode {
    * Files always have childrenLoaded=true since they have no children.
    */
   childrenLoaded: boolean
+  /**
+   * A symbolic link in a workspace that does not follow links (the Memory page's semantic memory view): listed,
+   * never entered or opened (autobyteus-554). From the server's `is_symbolic_link`.
+   */
+  isLink = false
 
   constructor(
     name: string,
@@ -38,7 +43,7 @@ export class TreeNode {
     const childrenLoaded = obj.childrenLoaded !== undefined 
       ? obj.childrenLoaded 
       : (obj.is_file || (obj.children && obj.children.length > 0))
-    return new TreeNode(
+    const node = new TreeNode(
       obj.name,
       obj.path,
       obj.is_file,
@@ -46,6 +51,8 @@ export class TreeNode {
       obj.id || '',
       childrenLoaded
     )
+    node.isLink = obj.is_symbolic_link === true
+    return node
   }
 
 
@@ -90,11 +97,14 @@ function findInsertIndex(children: readonly TreeNode[], node: TreeNode): number 
 
 /**
  * Compare function that ensures directories appear first,
- * then files, then name-based comparison ignoring case.
+ * then files (and links), then name-based comparison ignoring case.
  */
 function compareNodes(a: TreeNode, b: TreeNode): number {
-  if (a.is_file !== b.is_file) {
-    return a.is_file ? 1 : -1
+  // A link is never entered: it sorts with the files, as the node lists it (autobyteus-554).
+  const aIsFolder = !a.is_file && !a.isLink
+  const bIsFolder = !b.is_file && !b.isLink
+  if (aIsFolder !== bIsFolder) {
+    return aIsFolder ? -1 : 1
   }
   return a.name.toLowerCase().localeCompare(b.name.toLowerCase())
 }

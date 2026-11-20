@@ -39,10 +39,11 @@ const createFakeRegistry = (): FakeRegistry => {
   } as FakeRegistry;
 };
 
-const createExplorerContext = (workspaceRootPath: string): WorkspaceFileExplorer => {
+const createExplorerContext = (workspaceRootPath: string, followSymbolicLinks = true): WorkspaceFileExplorer => {
   const rootNode = new TreeNode(path.basename(workspaceRootPath), false, null, false);
   return {
     workspaceRootPath,
+    followSymbolicLinks,
     rootPath: workspaceRootPath,
     rootNode,
     findNodeByPath: (relativePath: string) => {
@@ -64,6 +65,15 @@ describe("FileSystemWatcher runtime boundary", () => {
 
   afterEach(async () => {
     await fs.rm(workspaceRootPath, { recursive: true, force: true });
+  });
+
+  it.each([true, false])("starts its runtime with the explorer's link policy (followSymbolicLinks: %s; autobyteus-554)", async (followSymbolicLinks) => {
+    const registry = createFakeRegistry();
+    const watcher = new FileSystemWatcher(createExplorerContext(workspaceRootPath, followSymbolicLinks), [], registry);
+    watcher.start();
+    await watcher.waitUntilReady();
+    expect(registry.client.startOptions).toMatchObject({ workspaceRootPath, followSymbolicLinks });
+    await watcher.stop("unit-test-stop");
   });
 
   it("logical stop returns after requesting child stop without waiting for child stopped", async () => {

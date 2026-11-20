@@ -1,0 +1,28 @@
+{
+  "runId": "sm_live_keeper_claude_2be448fc_845abe6bdbdd4e15bb50446eea6247c6",
+  "model": "haiku",
+  "reply": "SAVED",
+  "tools": [
+    "Write {\"file_path\":\"/Users/normy/.autobyteus-e2e/semantic-memory-live-RBG6gK/app-data/memory/semantic/sm-live-keeper-claude-2be448fc/deploy-codeword.md\",\"content\":\"# Deploy codeword\\n\\n- Codeword: `SMCODE-CLAUDE-2be448fc`\\n- Scope: applies to all future work, in every Project.\\n- Source: user instruction "
+  ],
+  "failures": [],
+  "approvals": [],
+  "errors": [],
+  "folder": "/Users/normy/.autobyteus-e2e/semantic-memory-live-RBG6gK/app-data/memory/semantic/sm-live-keeper-claude-2be448fc",
+  "files": {
+    "deploy-codeword.md": "# Deploy codeword\n\n- Codeword: `SMCODE-CLAUDE-2be448fc`\n- Scope: applies to all future work, in every Project.\n- Source: user instruction to remember it for deploys.\n"
+  },
+  "workspaceFiles": {},
+  "instructionsHaveSection": [
+    true
+  ],
+  "instructionsExcerpt": "## Project\\n\\nYou work in the Project SM live A 2be448fc (Project ID project_6e48745a-2f34-4c47-8073-b6b88b2becbc). Use this Project ID with the Project tools; ask the user before working on another Project.\\n\\n## Semantic Memory\\n\\nYour semantic memory is the folder `/Users/normy/.autobyteus-e2e/semantic-memory-live-RBG6gK/app-data/memory/semantic/sm-live-keeper-claude-2be448fc`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.\\n\\n## Global Semantic Memory\\n\\nThe global semantic memory of this node is the folder `/Users/normy/.autobyteus-e2e/semantic-memory-live-RBG6gK/app-data/memory/semantic-global`. It is shared by every",
+  "addDirArgs": [
+    [
+      "--add-dir",
+      "/Users/normy/.autobyteus-e2e/semantic-memory-live-RBG6gK/app-data/memory/semantic/sm-live-keeper-claude-2be448fc",
+      "--add-dir",
+      "/Users/normy/.autobyteus-e2e/semantic-memory-live-RBG6gK/app-data/memory/semantic-global"
+    ]
+  ]
+}

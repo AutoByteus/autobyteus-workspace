@@ -1,0 +1,13 @@
+# API-05c agent-semantic-memory.e2e whole file (SM-04 cannot run alone) | commit 2e5f786091 | 2026-11-20T13:28:10Z | load 54.47 65.22 66.35
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > SM-01 (AC-003, AC-004): every agent has its path; a stored key is read without it and dropped at the next save; reads create no folder 105ms
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > SM-02 (AC-002, AC-003): a package agent's file holding the key reads like any agent's; no personal setting holds it 31ms
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > SM-11 (AC-005, AC-006, AC-010, AC-011): the folder view's workspace through the API: read only, links never opened, never listed 88ms
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > run start paths (scripted AGY CLI) > SM-04 (AC-001, AC-009): a run under Project A is told both folders after the Project section; both exist outside the workspace and the package 22008ms
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > run start paths (scripted AGY CLI) > SM-05: a run under Project B, the agent as a shared team member and as a delegated copy are told the same folders; every other agent its own and the same global one 1943ms
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > run start paths (scripted AGY CLI) > SM-06: a team-local agent with the same local name has its own folder 389ms
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > run start paths (scripted AGY CLI) > SM-07 (AC-001): an agent whose package file says false gets both sections; the folders' files are kept across runs 325ms
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > run start paths (scripted AGY CLI) > SM-10: the Memory page, memory search and memory sync list neither semantic folder 36ms
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > run start paths (scripted AGY CLI) > SM-08 (REQ-010): deleting the agent leaves its semantic memory folder and the global folder 70ms
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+exit 0

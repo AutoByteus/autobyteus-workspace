@@ -1,0 +1,15 @@
+# host snapshot during API-09 round 2 reruns | 2026-11-20T17:27:40Z | load { 55.21 84.05 84.41 }
+ %CPU COMM
+157.6 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd
+100.0 /Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python
+ 47.3 /System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine
+ 20.7 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 15.3 /Applications/AutoByteus.app/Contents/MacOS/AutoByteus
+ 15.3 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared
+ 11.2 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared
+other worktrees' test processes running:
+   1 autobyteus-worktrees/[^
+   1 autobyteus-worktrees/grok-self-started-turns-517
+   1 autobyteus-worktrees/standalone-run-messages-565
+   1 node /Users/normy/.nvm/versions/node/v22.21.1/bin/corepack pnpm exec nuxt dev --host 127.0.0.1 --port 4570
+   4 vitest (other)

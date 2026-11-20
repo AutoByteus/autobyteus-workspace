@@ -134,8 +134,8 @@ suite("Internal agents: hidden unless \"Show internal agents\" is on (real HTTP/
     .flatMap((record) => typeof record.runId === "string" ? [record.runId as string] : []);
   const memoryAgents = async () => ((await graphql(`{listAgentsWithMemory(pageSize:200){entries{attribution agentDefinitionId displayName runCount}}}`)).listAgentsWithMemory.entries as Rec[]);
   const memoryRunsOf = async (attribution: string, agentDefinitionId: string | null) => ((await graphql(
-    `query($s:AgentWithMemorySelectorInput!){listAgentRunsWithMemory(selector:$s,pageSize:200){entries{runId agentDefinitionId}}}`,
-    { s: { attribution, agentDefinitionId } })).listAgentRunsWithMemory.entries as Rec[]).map((entry) => entry.runId as string);
+    `query($s:AgentWithMemorySelectorInput!){listAgentEpisodes(selector:$s,pageSize:200){entries{runId}}}`,
+    { s: { attribution, agentDefinitionId } })).listAgentEpisodes.entries as Rec[]).map((entry) => entry.runId as string);
 
   beforeAll(async () => {
     dataDir = await fs.mkdtemp(path.join(os.tmpdir(), "internal-agents-e2e-"));
@@ -236,7 +236,9 @@ suite("Internal agents: hidden unless \"Show internal agents\" is on (real HTTP/
     await setShown("true");
     expect(await historyRunIds(), "in run history once shown").toContain(internalRunId);
     expect((await memoryAgents()).find((entry) => entry.agentDefinitionId === INTERNAL_ID), "on the Memory page once shown").toMatchObject({ displayName: INTERNAL_NAME });
-    expect(await memoryRunsOf("DEFINITION", INTERNAL_ID)).toContain(internalRunId);
+    // autobyteus-554: an agent's episodes come from the episodic catalog, which takes a run in after its journal's first
+    // write and the catalog's quiet window (5 s).
+    await until(async () => (await memoryRunsOf("DEFINITION", INTERNAL_ID)).includes(internalRunId), "the internal agent's run among its episodes once shown", 60_000);
     await setShown("false");
     expect(await historyRunIds(), "hidden again").not.toContain(internalRunId);
   }, 180_000);

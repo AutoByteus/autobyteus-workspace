@@ -78,7 +78,9 @@ import { composeAgentPackageDefinitionFeed, type AgentPackageDefinitionFeed } fr
 import { closeStudioProcessResources, stopStudioFileWatchesForProcessExit, type StudioApiHandle } from "./studio-process-resources.js";
 import { createPlatformNoticeSources, type PlatformNoticeSources } from "./platform-notice-sources.js";
 import { getWorkJournalService } from "../agent-work-journal/services/work-journal-service.js";
-import { createEpisodicCatalog, type EpisodicCatalog } from "../agent-episodic-catalog/services/episodic-catalog.js";
+import {
+  createEpisodicCatalog, releaseProcessEpisodicCatalog, setProcessEpisodicCatalog, type EpisodicCatalog,
+} from "../agent-episodic-catalog/services/episodic-catalog.js";
 import { readPendingRuntimeHandover } from "../agent-memory/services/runtime-handover-reader.js";
 import { RuntimeSwitchRecorder } from "../agent-memory/services/runtime-switch-recorder.js";
 import { RuntimeHandoverNoticeService } from "../runtime-handover-notices/services/runtime-handover-notice-service.js";
@@ -194,6 +196,7 @@ export const buildStudioServer = async (input: {
     if (processResourcesClosed) return;
     processResourcesClosed = true;
     await episodicCatalog?.stop();
+    if (episodicCatalog) releaseProcessEpisodicCatalog(episodicCatalog);
     await nodeAccess?.close();
     releaseRemoteCollaboration?.();
     collaboration?.release();
@@ -255,6 +258,8 @@ export const buildStudioServer = async (input: {
     // autobyteus-493: the run services (steps 3–8) tell the episodic catalogs about deletes; they start after step 8.
     const currentEpisodicCatalog = episodicCatalog = createEpisodicCatalog({ memoryDir: input.appConfig.getMemoryDir(),
       journals: getWorkJournalService(), tasks: taskSide.tree });
+    // autobyteus-554: the Memory page's explorer reads it per request (set before the HTTP server serves; released at close).
+    setProcessEpisodicCatalog(currentEpisodicCatalog);
     platformNotices = createPlatformNoticeSources({
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
       definitionChanges: hostDefinitionServices.agentDefinitionChanges,

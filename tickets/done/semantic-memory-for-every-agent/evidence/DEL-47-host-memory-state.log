@@ -1,0 +1,22 @@
+# DEL-47 host memory state during delivery (2026-11-20, 22:29 local)
+# commands: sysctl vm.swapusage; vm_stat; ps -axo rss,comm | sort -rn | head
+vm.swapusage: total = 21504.00M  used = 20610.81M  free = 893.19M  (encrypted)
+hw.memsize: 68719476736
+hw.ncpu: 10
+Pages free:                                     3538.
+Pages active:                                1230540.
+Pages inactive:                              1226721.
+Pages wired down:                             303269.
+Pages occupied by compressor:                1371797.
+Pageins:                                  1370197914.
+Pageouts:                                   14305846.
+Swapins:                                    39513433.
+Swapouts:                                   54807603.
+--- largest resident processes (MB):
+24903 MB /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd
+3594 MB /System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine
+396 MB /Applications/Google
+366 MB /Applications/AutoByteus.app/Contents/MacOS/AutoByteus
+341 MB /Users/normy/.local/bin/claude
+325 MB /Users/normy/.local/bin/claude
+--- event-loop stall seen by the temporary AGYLAG monitor (DEL-46-sm04-agy-diagnostic-run1.log): gapMs 12958 at 21:28:29Z, 925 at 21:28:16Z

@@ -16,6 +16,11 @@ import { AgentOrgRunHistoryIndexStore } from "../../../src/run-history/store/age
 import { validateAgentOrgRunExecutionTreePayload } from "../../../src/run-history/store/agent-org-run-execution-tree-schema.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgLaunchConfiguration, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 
+/** No definitions on this node: cards and members come from the stored runs alone (autobyteus-554). */
+const noDefinitions = {
+  teamById: async () => null, orgById: async () => null, allTeams: async () => [], allOrgs: async () => [], agentNames: async () => new Map<string, string>(),
+};
+
 const touch = async (filePath: string, mtime: number) => {
   await fs.mkdir(path.dirname(filePath), { recursive: true });
   await fs.writeFile(filePath, "{}", "utf8");
@@ -89,13 +94,15 @@ describe("AgentOrgMemoryExplorerService", () => {
   });
 
   it("groups org runs with member memory by org definition and prefers the history catalog name", async () => {
-    const page = await new AgentOrgMemoryExplorerService(memoryDir).listAgentOrgsWithMemory();
+    const page = await new AgentOrgMemoryExplorerService(memoryDir, { definitions: noDefinitions }).listAgentOrgsWithMemory();
     expect(page).toMatchObject({ total: 1, page: 1, totalPages: 1 });
     expect(page.entries).toEqual([{
       orgDefinitionId: "org-a",
       orgDefinitionName: "Alpha Org",
       orgRunCount: 2,
       memberMemoryCount: 2,
+      // The newest run's own members: `/ceo` and the configured team `/engineering`.
+      memberCount: 2,
       latestMemoryAt: "2026-09-02T01:00:00Z",
       memory: {
         latestMemoryAt: "2026-09-02T01:00:00Z",
@@ -107,7 +114,7 @@ describe("AgentOrgMemoryExplorerService", () => {
   });
 
   it("lists every agent of the org with memory in its structure, depth-first (REQ-012, AC-014); a run it delegated to is its own run", async () => {
-    const page = await new AgentOrgMemoryExplorerService(memoryDir).listAgentOrgRunsWithMemory("org-a");
+    const page = await new AgentOrgMemoryExplorerService(memoryDir, { definitions: noDefinitions }).listAgentOrgRunsWithMemory("org-a");
     expect(page.entries.map((entry) => entry.orgRunId)).toEqual(["org-a-2", "org-a-1"]);
     expect(page.entries[0]).toMatchObject({ orgDefinitionName: "Alpha Org", summary: null, workspaceRootPath: null, createdAt: "2026-09-02T00:00:00.000Z" });
     expect(page.entries[1]).toMatchObject({ summary: "first alpha run", workspaceRootPath: "/tmp/alpha", lastUpdatedAt: "2026-09-01T02:00:00Z" });
@@ -127,7 +134,7 @@ describe("AgentOrgMemoryExplorerService", () => {
   });
 
   it("searches org runs by summary, workspace and any member's address or own run ID, and pages", async () => {
-    const service = new AgentOrgMemoryExplorerService(memoryDir);
+    const service = new AgentOrgMemoryExplorerService(memoryDir, { definitions: noDefinitions });
     const runIds = async (search: string) =>
       (await service.listAgentOrgRunsWithMemory("org-a", search)).entries.map((entry) => entry.orgRunId);
     expect(await runIds("first alpha")).toEqual(["org-a-1"]);
@@ -146,14 +153,14 @@ describe("AgentOrgMemoryExplorerService", () => {
 
   it("omits a member that has no memory", async () => {
     await fs.rm(orgDir("org-a-1", "org-a-1-engineering"), { recursive: true, force: true });
-    const page = await new AgentOrgMemoryExplorerService(memoryDir).listAgentOrgRunsWithMemory("org-a", "org-a-1");
+    const page = await new AgentOrgMemoryExplorerService(memoryDir, { definitions: noDefinitions }).listAgentOrgRunsWithMemory("org-a", "org-a-1");
     expect((page.entries[0]?.memberTargets ?? []).map((member) => member.agentRunId)).toEqual(["org-a-1-ceo"]);
   });
 
   it("falls back to the tree name and createdAt when the org has no history row", async () => {
     await fs.rm(path.join(memoryDir, "agent_org_run_history_index.json"));
     resetCollaborationRunHistoryCatalogState(memoryDir, "agent_org");
-    const service = new AgentOrgMemoryExplorerService(memoryDir);
+    const service = new AgentOrgMemoryExplorerService(memoryDir, { definitions: noDefinitions });
     expect((await service.listAgentOrgsWithMemory()).entries[0]).toMatchObject({ orgDefinitionName: "Tree Org Name" });
     expect((await service.listAgentOrgRunsWithMemory("org-a")).entries[0]).toMatchObject({
       orgDefinitionName: "Tree Org Name",
@@ -167,7 +174,7 @@ describe("AgentOrgMemoryExplorerService", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     const store = new AgentOrgRunExecutionTreeStore();
     const read = vi.spyOn(store, "read");
-    const service = new AgentOrgMemoryExplorerService(memoryDir, {
+    const service = new AgentOrgMemoryExplorerService(memoryDir, { definitions: noDefinitions,
       source: new AgentOrgRootMemorySource(memoryDir, { locations: new AgentOrgExecutionTreeLocationService({ memoryDir, store }) }),
     });
 
@@ -179,7 +186,7 @@ describe("AgentOrgMemoryExplorerService", () => {
   });
 
   it("returns an empty page for an unknown org definition and requires a definition ID", async () => {
-    const service = new AgentOrgMemoryExplorerService(memoryDir);
+    const service = new AgentOrgMemoryExplorerService(memoryDir, { definitions: noDefinitions });
     await expect(service.listAgentOrgRunsWithMemory("missing")).resolves.toMatchObject({ entries: [], total: 0, totalPages: 1 });
     await expect(service.listAgentOrgRunsWithMemory("  ")).rejects.toThrow("orgDefinitionId is required.");
   });

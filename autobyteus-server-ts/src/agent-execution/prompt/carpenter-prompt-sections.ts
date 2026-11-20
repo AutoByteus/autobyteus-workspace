@@ -43,10 +43,15 @@ export const renderProjectSection = (project: RunProjectContext): string => `## 
 
 You work in the Project ${requirePromptScalar(project.name, "Project name")} (Project ID ${requirePromptScalar(project.projectId, "Project ID")}). Use this Project ID with the Project tools; ask the user before working on another Project.`;
 
-/** An enabled agent's semantic memory folder (semantic-memory-prompt-contract.md §2): exactly this text. */
+/** The agent's semantic memory folder (semantic-memory-prompt-contract.md §2): exactly this text. */
 export const renderSemanticMemorySection = (semanticMemoryPath: string): string => `## Semantic Memory
 
 Your semantic memory is the folder \`${semanticMemoryPath}\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.`;
+
+/** The node's global semantic memory folder (autobyteus-554 DEC-013): exactly this text; it follows the agent's own section. */
+export const renderGlobalSemanticMemorySection = (globalSemanticMemoryPath: string): string => `## Global Semantic Memory
+
+The global semantic memory of this node is the folder \`${globalSemanticMemoryPath}\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.`;
 
 export const renderWorkingEnvironmentSection = (workspaceRootPath: string): string => `## Working Environment
 

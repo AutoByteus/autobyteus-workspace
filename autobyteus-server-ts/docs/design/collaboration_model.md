@@ -129,6 +129,7 @@ memory/
   agent_teams/<teamRunId>/          # a Team run, or a delegated Team run; members inside
   agent_orgs/<orgRunId>/            # an Org run; its direct agents and mounted Teams inside
   semantic/<agentDefinitionId>/     # not a run: an agent's semantic memory, shared by all its runs
+  semantic-global/                  # not a run: the node's global semantic memory, shared by every agent
 ```
 
 - A Team's members and an Org's units live inside that run's folder (they are

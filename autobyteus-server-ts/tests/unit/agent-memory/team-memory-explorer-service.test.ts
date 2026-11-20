@@ -14,6 +14,11 @@ import { TeamCommunicationStore } from "../../../src/services/team-communication
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { address, testAgentNode, testExecutionTree, writeCurrentTeamRunPackage } from "../../fixtures/current-team-run-fixtures.js";
 
+/** No definitions on this node: cards and members come from the stored runs alone (autobyteus-554). */
+const noDefinitions = {
+  teamById: async () => null, orgById: async () => null, allTeams: async () => [], allOrgs: async () => [], agentNames: async () => new Map<string, string>(),
+};
+
 const STORED_ONLY_MANAGER = { getManagedTeamRun: () => null, listManagedTeamRunIds: () => [] };
 
 
@@ -87,14 +92,14 @@ describe("TeamMemoryExplorerService current V1 tree", () => {
     const before = await fileHashes(memoryDir);
     const read = vi.spyOn(TeamRunExecutionTreeStore.prototype, "read");
     try {
-      const teams = await new TeamMemoryExplorerService(memoryDir).listAgentTeamsWithMemory();
+      const teams = await new TeamMemoryExplorerService(memoryDir, { definitions: noDefinitions }).listAgentTeamsWithMemory();
       expect(teams.entries).toHaveLength(1);
       expect(read.mock.calls.map(([, rootTeamRunId]) => rootTeamRunId).sort())
         .toEqual(["classroom-run-1", "classroom-run-2"]);
       expect(await fileHashes(memoryDir)).toEqual(before);
 
       read.mockClear();
-      const runs = await new TeamMemoryExplorerService(memoryDir)
+      const runs = await new TeamMemoryExplorerService(memoryDir, { definitions: noDefinitions })
         .listAgentTeamRunsWithMemory("classroom-team");
       expect(runs.entries).toHaveLength(2);
       expect(read.mock.calls.map(([, rootTeamRunId]) => rootTeamRunId).sort())
@@ -106,7 +111,7 @@ describe("TeamMemoryExplorerService current V1 tree", () => {
   });
 
   it("groups stored V1 roots by Team definition and exact configured Agent address", async () => {
-    const page = await new TeamMemoryExplorerService(memoryDir).listAgentTeamsWithMemory();
+    const page = await new TeamMemoryExplorerService(memoryDir, { definitions: noDefinitions }).listAgentTeamsWithMemory();
     expect(page.entries).toEqual([expect.objectContaining({
       teamDefinitionId: "classroom-team",
       teamDefinitionName: "Classroom Team",
@@ -117,7 +122,7 @@ describe("TeamMemoryExplorerService current V1 tree", () => {
   });
 
   it("lists and filters current run/member targets without route/path compatibility identity", async () => {
-    const service = new TeamMemoryExplorerService(memoryDir);
+    const service = new TeamMemoryExplorerService(memoryDir, { definitions: noDefinitions });
     const page = await service.listAgentTeamRunsWithMemory("classroom-team", "second lesson");
     expect(page.entries).toEqual([expect.objectContaining({
       teamRunId: "classroom-run-2",
@@ -134,7 +139,7 @@ describe("TeamMemoryExplorerService current V1 tree", () => {
     const store = new TeamRunExecutionTreeStore();
     const read = vi.spyOn(store, "read");
     const locations = new TeamRunExecutionTreeLocationService({ memoryDir, manager: STORED_ONLY_MANAGER, store });
-    const service = new TeamMemoryExplorerService(memoryDir, { source: new TeamRootMemorySource(memoryDir, { locations }) });
+    const service = new TeamMemoryExplorerService(memoryDir, { definitions: noDefinitions, source: new TeamRootMemorySource(memoryDir, { locations }) });
 
     await service.listAgentTeamsWithMemory();
     expect(read.mock.calls.map(([, rootTeamRunId]) => rootTeamRunId)).toEqual(["classroom-run-1", "classroom-run-2"]);
@@ -145,7 +150,7 @@ describe("TeamMemoryExplorerService current V1 tree", () => {
   });
 
   it("orders runs newest first and pages them", async () => {
-    const service = new TeamMemoryExplorerService(memoryDir);
+    const service = new TeamMemoryExplorerService(memoryDir, { definitions: noDefinitions });
     const all = await service.listAgentTeamRunsWithMemory("classroom-team");
     expect(all.entries.map((entry) => entry.teamRunId)).toEqual(["classroom-run-2", "classroom-run-1"]);
     expect(all.entries[1]).toMatchObject({
@@ -166,7 +171,7 @@ describe("TeamMemoryExplorerService member identity and invalid roots", () => {
   let memoryDir: string;
   let layout: AgentMemoryLayout;
 
-  const serviceWithoutHistory = () => new TeamMemoryExplorerService(memoryDir, {
+  const serviceWithoutHistory = () => new TeamMemoryExplorerService(memoryDir, { definitions: noDefinitions,
     source: new TeamRootMemorySource(memoryDir, { catalogRows: { listCatalogRows: async () => [] } }),
   });
 

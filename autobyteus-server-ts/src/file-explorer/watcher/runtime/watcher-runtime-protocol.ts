@@ -16,6 +16,8 @@ export type WatcherRuntimeStartCommand = {
   watcherId: string;
   generation: number;
   workspaceRootPath: string;
+  /** False for a workspace whose links are listed but never entered (chokidar `followSymlinks`). */
+  followSymbolicLinks: boolean;
 };
 
 export type WatcherRuntimeStopCommand = {
@@ -119,7 +121,11 @@ export const isWatcherRuntimeCommand = (value: unknown): value is WatcherRuntime
 
   switch (value.type) {
     case "start":
-      return typeof value.workspaceRootPath === "string" && value.workspaceRootPath.length > 0;
+      return (
+        typeof value.workspaceRootPath === "string"
+        && value.workspaceRootPath.length > 0
+        && typeof value.followSymbolicLinks === "boolean"
+      );
     case "stop":
     case "shutdown":
       return value.reason === undefined || typeof value.reason === "string";

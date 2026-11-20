@@ -1,0 +1,45 @@
+# API-12 imported team/org cards, base 8430d9ef12 vs branch (code cd26f4d913) dist services, over an APFS clone of ~/.autobyteus/server-data/memory/imports (cp -cR; source only read; no server; clone removed) | 2026-11-20T13:39:39Z
+{
+ "label": "base",
+ "node": "v22.23.1",
+ "sources": [
+  {
+   "sourceId": "docker-node-1",
+   "teamFolders": 113,
+   "orgFolders": 0,
+   "teamCards": "{\"entries\":[],\"total\":0,\"page\":1,\"pageSize\":500,\"totalPages\":1}",
+   "orgCards": "{\"entries\":[],\"total\":0,\"page\":1,\"pageSize\":500,\"totalPages\":1}",
+   "teamCardKeys": [
+    "entries",
+    "total",
+    "page",
+    "pageSize",
+    "totalPages"
+   ]
+  }
+ ],
+ "warningCodes": {},
+ "warningSample": []
+}
+{
+ "label": "branch",
+ "node": "v22.23.1",
+ "sources": [
+  {
+   "sourceId": "docker-node-1",
+   "teamFolders": 113,
+   "orgFolders": 0,
+   "teamCards": "{\"entries\":[],\"total\":0,\"page\":1,\"pageSize\":500,\"totalPages\":1}",
+   "orgCards": "{\"entries\":[],\"total\":0,\"page\":1,\"pageSize\":500,\"totalPages\":1}",
+   "teamCardKeys": [
+    "entries",
+    "total",
+    "page",
+    "pageSize",
+    "totalPages"
+   ]
+  }
+ ],
+ "warningCodes": {},
+ "warningSample": []
+}

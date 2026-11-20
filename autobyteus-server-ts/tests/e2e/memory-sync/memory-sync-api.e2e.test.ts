@@ -27,6 +27,12 @@ import { resetMemorySyncWorkerForTests } from "../../../src/memory-sync/source/m
 import { resetServerAddressCandidateServiceForTests } from "../../../src/server-addressing/server-address-candidate-service.js";
 import type { MemoryFileOperation, MemorySyncBatch } from "../../../src/memory-sync/shared/memory-sync-types.js";
 import { configureMemorySyncCapability } from "../../../src/memory-sync/shared/memory-sync-capability.js";
+import {
+  createEpisodicCatalog,
+  releaseProcessEpisodicCatalog,
+  setProcessEpisodicCatalog,
+  type EpisodicCatalog,
+} from "../../../src/agent-episodic-catalog/services/episodic-catalog.js";
 import { registerTestNodeAccess } from "../../helpers/node-access-test-gate.js";
 
 const SOURCE_NODE_ID = "cluster-a__finance__autobyteus-server";
@@ -87,6 +93,7 @@ describe("Memory Sync public API and imported memory e2e", () => {
   let memoryDir: string;
   let hubBaseUrl: string;
   let sourceToken: string;
+  let catalog: EpisodicCatalog | null = null;
   const originalEnv: Record<string, string | undefined> = {};
 
   beforeAll(async () => {
@@ -107,6 +114,15 @@ describe("Memory Sync public API and imported memory e2e", () => {
     const config = appConfigProvider.initialize({ appDataDir: tempRoot });
     config.initialize();
     memoryDir = config.getMemoryDir();
+    // As a composition root does (autobyteus-554): the local agent cards read this memory folder's episodic catalog.
+    catalog = createEpisodicCatalog({
+      memoryDir,
+      journals: { readJournalSpans: async () => ({ kind: "none" }), onJournalChanged: () => () => undefined },
+      tasks: { currentTaskOf: () => null },
+    });
+    setProcessEpisodicCatalog(catalog);
+    catalog.start({ taskTitles: { taskTitleOf: async () => null } });
+    await catalog.whenStartPassDone();
 
     app = fastify();
     // The hub's routes sit behind the node access gate (autobyteus-437): the source's `mhub_` credential is its identity.
@@ -126,6 +142,10 @@ describe("Memory Sync public API and imported memory e2e", () => {
 
   afterAll(async () => {
     await app?.close();
+    if (catalog) {
+      releaseProcessEpisodicCatalog(catalog);
+      await catalog.stop();
+    }
     appConfigProvider.resetForTests();
     resetMemorySyncSingletons();
     for (const [key, value] of Object.entries(originalEnv)) {
@@ -415,11 +435,11 @@ describe("Memory Sync public API and imported memory e2e", () => {
     expect(localOnlySearch.listAgentsWithMemory.total).toBe(0);
 
     const importedAgents = await execGraphql<{
-      listAgentsWithMemory: { total: number; entries: Array<{ agentDefinitionId: string | null; runCount: number; memory: { hasRawTraces: boolean } }> };
+      listAgentsWithMemory: { total: number; entries: Array<{ agentDefinitionId: string | null; runCount: number }> };
     }>(`
       query ImportedAgents($source: MemoryExplorerSourceInput!, $search: String!) {
         listAgentsWithMemory(source: $source, search: $search, page: 1, pageSize: 10) {
-          entries { agentDefinitionId runCount memory { hasRawTraces } }
+          entries { agentDefinitionId runCount }
           total
         }
       }
@@ -428,8 +448,8 @@ describe("Memory Sync public API and imported memory e2e", () => {
     expect(importedAgents.listAgentsWithMemory.entries[0]).toMatchObject({
       agentDefinitionId: "rest-only-agent",
       runCount: 1,
-      memory: { hasRawTraces: true },
     });
+    // The card no longer carries availability (autobyteus-554); the imported raw trace is read through the run view.
 
     const importedView = await execGraphql<{ getAgentRunMemoryView: { runId: string; rawTraces: Array<{ id: string | null; content: string | null }> } }>(`
       query ImportedView($source: MemoryExplorerSourceInput!, $runId: String!) {

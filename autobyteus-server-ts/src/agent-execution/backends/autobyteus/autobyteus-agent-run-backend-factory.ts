@@ -28,6 +28,8 @@ import { mergeMandatoryAndOptional } from "../../../agent-definition/utils/proce
 import { RuntimeKind, runtimeKindFromString } from "../../../runtime-management/runtime-kind-enum.js";
 import { SkillService } from "../../../skills/services/skill-service.js";
 import { TempWorkspace } from "../../../workspaces/temp-workspace.js";
+import type { FileSystemWorkspace } from "../../../workspaces/filesystem-workspace.js";
+import { WorkspaceAccessError } from "../../../workspaces/workspace-access-error.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import { AgentCreationError } from "../../errors.js";
 import { AgentRunConfig } from "../../domain/agent-run-config.js";
@@ -296,21 +298,20 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     }
 
     if (!agentDef) {
-      throw new AgentCreationError(
-        `AgentDefinition with ID ${agentDefinitionId} not found.`,
-      );
+      throw new AgentCreationError(`AgentDefinition with ID ${agentDefinitionId} not found.`);
     }
 
-    let workspaceInstance = workspaceId
-      ? this.workspaceManager.getWorkspaceById(workspaceId)
-      : undefined;
-    if (workspaceId && !workspaceInstance && await this.workspaceManager.getRegisteredWorkspaceRootPath(workspaceId)) {
-      workspaceInstance = await this.workspaceManager.getOrCreateWorkspace(workspaceId);
-    }
-    if (workspaceId && !workspaceInstance) {
-      logger.warn(
-        `Workspace with ID ${workspaceId} not found. Falling back to temp workspace.`,
-      );
+    let workspaceInstance: FileSystemWorkspace | undefined;
+    if (workspaceId) {
+      try {
+        workspaceInstance = await this.workspaceManager.getOrCreateRunWorkspace(workspaceId);
+      } catch (error) {
+        // WORKSPACE_NOT_RUNNABLE, or a registered workspace that failed to open, is never replaced by the temp workspace.
+        if (error instanceof WorkspaceAccessError || await this.workspaceManager.getRegisteredWorkspaceRootPath(workspaceId)) {
+          throw error;
+        }
+        logger.warn(`Workspace with ID ${workspaceId} not found. Falling back to temp workspace.`);
+      }
     }
     if (!workspaceInstance) {
       workspaceInstance = await this.workspaceManager.getOrCreateTempWorkspace();
@@ -337,12 +338,14 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       peerDiscovery: this.peerDiscovery,
       logger,
     });
+    const semanticMemory = await (this.options.semanticMemory ?? getAgentSemanticMemory()).prepareForRun(agentDefinitionId);
     const resolvedPrompt = composeNativeAutoByteusPrompt({
       agentDefinition: agentDef,
       workspaceRootPath,
       memberExecutionContext: options.memberExecutionContext ?? null,
       project: options.project,
-      semanticMemoryPath: await (this.options.semanticMemory ?? getAgentSemanticMemory()).prepareForRun(agentDef),
+      semanticMemoryPath: semanticMemory.agentFolder,
+      globalSemanticMemoryPath: semanticMemory.globalFolder,
     });
 
     const inputProcessors: BaseAgentUserInputMessageProcessor[] = [];

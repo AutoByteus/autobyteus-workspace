@@ -1,0 +1,365 @@
+# IMP-02-server-architecture-and-watcher-rerun.log
+# Command: env -i HOME PATH TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/architecture tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts; then the watcher file alone
+# Commit tested: working tree later committed as 56b02294d0
+# Environment: macOS (Darwin 25.5), Node v22.23.1, pnpm; shared host, load average 60-130
+# Date: 2026-11-20
+# Note: architecture pins pass; the watcher file fails varying cases under load (it is untouched by this change)
+# ----------------------------------------------------------------------
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stderr | tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports UNAVAILABLE when a running watcher fails
+AGENT_PACKAGE_FOLDER_WATCH_UNAVAILABLE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/apar-monitor-i3cL9L/pkg Error: too many open files
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts/tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:206:67
+    at Array.forEach (<anonymous>)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts/tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:206:22
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/node_modules/.pnpm/@vitest+runner@4.1.12/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20 {
+  code: 'EMFILE'
+}
+
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts (22 tests | 1 failed) 154596ms
+     ✓ reports definition changes per folder and ignores skills and other files  45958ms
+     ✓ moves a root to FOLDER_MISSING when it is renamed away and resumes watching when it returns  32534ms
+     × re-arms a root whose folder was replaced in place (GitHub update rename swap) 38962ms
+     ✓ starts a registered root that is missing as FOLDER_MISSING and arms it when it appears  24725ms
+     ✓ reports UNAVAILABLE when watching cannot be set up, and re-arms on the next sync 134ms
+     ✓ reports UNAVAILABLE for a root whose definition folder cannot be listed, and re-arms once it can 26ms
+     ✓ reports UNAVAILABLE when a running watcher fails  560ms
+     ✓ stops watching a removed root and releases it  988ms
+     ✓ asks once, after the delay, when a watch is armed (default 300 ms)  859ms
+     ✓ asks once per quiet period after added or removed folders, however many there are 248ms
+     ✓ keeps file events on their own folder report and asks for nothing  2063ms
+     ✓ asks for nothing after close() 140ms
+     ✓ stops for a process exit without closing its OS watches, handles no event after it, and a later close() does nothing 10ms
+     ✓ closes its OS watches on close() without a process-exit stop 2ms
+     ✓ asks for nothing once the package folder is missing  471ms
+     ✓ asks for nothing once the watch is UNAVAILABLE 39ms
+     ✓ re-arms quietly once when a definition folder on disk is not in the watch, then reconciles after the new ready  460ms
+     ✓ repairs a folder that stays unwatched only once, warns, and reconciles on every catch-up  695ms
+     ✓ allows another repair after a folder is added or removed  2418ms
+     ✓ does not re-arm when every definition folder on disk is watched, and ignores unwatched layouts 214ms
+     ✓ checks that the package folder is still there first: a folder renamed away is reported missing, with no coverage repair  1588ms
+     ✓ drops the request of a watch that was re-armed and asks again for the new watch  1499ms
+stdout | tests/architecture/web-generated-graphql-current.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:43754) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/architecture/web-generated-graphql-current.test.ts (1 test) 7810ms
+     ✓ equals the web codegen output for the current server schema, and the check fails on a changed schema  7676ms
+ ✓ tests/architecture/tracked-imports.test.ts (2 tests) 4776ms
+     ✓ finds no tracked code importing an untracked file in this repository  4300ms
+     ✓ fails on tracked code importing an untracked or ignored file, and passes once it is tracked  473ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts (13 tests) 13117ms
+     ✓ closes retired symbols and provider-specific construction below supported roots  899ms
+     ✓ closes complete Agent manager and AgentRun construction to production roots  3435ms
+     ✓ selects one host validator and propagates it to the two exact lifecycle roots  4068ms
+     ✓ keeps context translation provider-neutral and all path authority explicit  3441ms
+     ✓ rejects retired root-bound execution construction symbols  420ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts (20 tests) 8536ms
+     ✓ keeps the complete current TS/JS/Vue tree inside AFB-001 through AFB-005  1317ms
+     ✓ keeps required tool registration behind the single lifecycle readiness owner  3031ms
+     ✓ guards the exact SR-011 host definition and public/general run authority  2294ms
+     ✓ guards the revised root-neutral Agent and flat-Team execution boundary  979ms
+ ✓ tests/architecture/server-package-contents.test.ts (5 tests) 20716ms
+ ✓ tests/architecture/runtime-labels-source-check.test.ts (1 test) 2618ms
+     ✓ do not occur as string literals in current source outside the sealed migration area  2615ms
+ ✓ tests/architecture/app-data-migration-boundaries.test.ts (3 tests) 1375ms
+     ✓ allows no import between production code and migration code, nor between migration folders  936ms
+     ✓ reaches every frozen file from a migration folder  425ms
+ ✓ tests/architecture/node-access-boundaries.test.ts (4 tests) 1501ms
+     ✓ names every scenario of the contract's table (NAS-01…) in at least one test  1296ms
+ ✓ tests/architecture/projects-boundaries.test.ts (4 tests) 68ms
+ ✓ tests/architecture/e2e-node-credential-paths.test.ts (4 tests) 146ms
+ ✓ tests/architecture/user-file-replies.test.ts (3 tests) 119ms
+ ✓ tests/architecture/agent-tool-result-boundaries.test.ts (5 tests) 44ms
+ ✓ tests/architecture/application-agent-addressing-boundaries.test.ts (6 tests) 39ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > re-arms a root whose folder was replaced in place (GitHub update rename swap)
+Error: Timed out waiting for the monitor.
+ ❯ waitFor tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:46:49
+     44|   const started = Date.now();
+     45|   while (!predicate()) {
+     46|     if (Date.now() - started > timeoutMs) throw new Error("Timed out w…
+       |                                                 ^
+     47|     await new Promise((resolve) => setTimeout(resolve, 25));
+     48|   }
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:137:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 13 passed (14)
+      Tests  1 failed | 92 passed (93)
+   Start at  13:18:25
+   Duration  255.09s (transform 27.49s, setup 963ms, import 35.30s, tests 215.46s, environment 1ms)
+
+
+===== watcher-only rerun =====
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stderr | tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports UNAVAILABLE when a running watcher fails
+AGENT_PACKAGE_FOLDER_WATCH_UNAVAILABLE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/apar-monitor-0QScrU/pkg Error: too many open files
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts/tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:206:67
+    at Array.forEach (<anonymous>)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts/tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:206:22
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/node_modules/.pnpm/@vitest+runner@4.1.12/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20 {
+  code: 'EMFILE'
+}
+
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts (22 tests | 3 failed) 168003ms
+     ✓ reports definition changes per folder and ignores skills and other files  8277ms
+     × moves a root to FOLDER_MISSING when it is renamed away and resumes watching when it returns 49444ms
+     × re-arms a root whose folder was replaced in place (GitHub update rename swap) 41782ms
+     ✓ starts a registered root that is missing as FOLDER_MISSING and arms it when it appears  9211ms
+     ✓ reports UNAVAILABLE when watching cannot be set up, and re-arms on the next sync  11842ms
+     ✓ reports UNAVAILABLE for a root whose definition folder cannot be listed, and re-arms once it can  1315ms
+     ✓ reports UNAVAILABLE when a running watcher fails  5096ms
+     ✓ stops watching a removed root and releases it  438ms
+     ✓ asks once, after the delay, when a watch is armed (default 300 ms)  7363ms
+     ✓ asks once per quiet period after added or removed folders, however many there are 72ms
+     ✓ keeps file events on their own folder report and asks for nothing  1527ms
+     ✓ asks for nothing after close() 6ms
+     ✓ stops for a process exit without closing its OS watches, handles no event after it, and a later close() does nothing 11ms
+     ✓ closes its OS watches on close() without a process-exit stop 3ms
+     ✓ asks for nothing once the package folder is missing  2902ms
+     ✓ asks for nothing once the watch is UNAVAILABLE  332ms
+     ✓ re-arms quietly once when a definition folder on disk is not in the watch, then reconciles after the new ready  1206ms
+     × repairs a folder that stays unwatched only once, warns, and reconciles on every catch-up 19704ms
+     ✓ allows another repair after a folder is added or removed  1807ms
+     ✓ does not re-arm when every definition folder on disk is watched, and ignores unwatched layouts  417ms
+     ✓ checks that the package folder is still there first: a folder renamed away is reported missing, with no coverage repair  1757ms
+     ✓ drops the request of a watch that was re-armed and asks again for the new watch  3488ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > moves a root to FOLDER_MISSING when it is renamed away and resumes watching when it returns
+Error: Timed out waiting for the monitor.
+ ❯ waitFor tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:46:49
+     44|   const started = Date.now();
+     45|   while (!predicate()) {
+     46|     if (Date.now() - started > timeoutMs) throw new Error("Timed out w…
+       |                                                 ^
+     47|     await new Promise((resolve) => setTimeout(resolve, 25));
+     48|   }
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:111:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > re-arms a root whose folder was replaced in place (GitHub update rename swap)
+Error: Timed out waiting for the monitor.
+ ❯ waitFor tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:46:49
+     44|   const started = Date.now();
+     45|   while (!predicate()) {
+     46|     if (Date.now() - started > timeoutMs) throw new Error("Timed out w…
+       |                                                 ^
+     47|     await new Promise((resolve) => setTimeout(resolve, 25));
+     48|   }
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:137:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > repairs a folder that stays unwatched only once, warns, and reconciles on every catch-up
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:435:3
+    433|   });
+    434|
+    435|   it("repairs a folder that stays unwatched only once, warns, and reco…
+       |   ^
+    436|     const rootPath = path.join(base, "pkg");
+    437|     await agentFolderOnDisk(rootPath, "stubborn");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 19 passed (22)
+   Start at  13:22:46
+   Duration  170.45s (transform 652ms, setup 415ms, import 485ms, tests 168.00s, environment 2ms)
+

@@ -15,6 +15,11 @@ import {
   pageMemoryExplorerEntries,
 } from "./memory-explorer-page.js";
 
+/** A top-level member of a stored team or org run, as its execution tree records it (named by its address). */
+export type StoredGroupMember =
+  | Readonly<{ kind: "AGENT"; id: string; name: string }>
+  | Readonly<{ kind: "TEAM"; id: string; name: string; memberCount: number }>;
+
 /** One stored team or org root, read from exactly one execution tree. */
 export type CollaborationRootMemoryRecord = Readonly<{
   rootRunId: string;
@@ -22,6 +27,8 @@ export type CollaborationRootMemoryRecord = Readonly<{
   definitionName: string;
   createdAt: string | null;
   members: readonly CollaborationMemberMemoryLocation[];
+  /** The root's own members (agents; an org's teams too), for the Members tab when no definition is known. */
+  configuredMembers: readonly StoredGroupMember[];
 }>;
 
 /** History-sourced facts about one root. */
@@ -48,6 +55,8 @@ export type CollaborationDefinitionMemory = Readonly<{
   runCount: number;
   memberMemoryCount: number;
   memory: MemoryAvailabilitySummary;
+  /** The configured members of its newest stored run. */
+  latestMembers: readonly StoredGroupMember[];
 }>;
 
 export type CollaborationRootRunMemory = Readonly<{
@@ -94,6 +103,12 @@ export class CollaborationRootMemoryCatalog {
       .map((group) => this.toDefinition(group))
       .sort(compareDefinitions);
     return pageMemoryExplorerEntries(definitions, page, pageSize);
+  }
+
+  /** The configured members of a definition's newest stored run with memory; null when it has none. */
+  async latestMembersOf(definitionId: string): Promise<readonly StoredGroupMember[] | null> {
+    const runs = await this.collectRuns(definitionId);
+    return runs.length ? newestRun(runs).record.configuredMembers : null;
   }
 
   async listRuns(
@@ -200,11 +215,16 @@ export class CollaborationRootMemoryCatalog {
       runCount: group.runs.length,
       memberMemoryCount: memberAddresses.size,
       memory: merged.availability,
+      latestMembers: newestRun(group.runs).record.configuredMembers,
     };
   }
 }
 
 const createdAtOf = (run: CatalogRun): string => run.entry?.createdAt ?? run.record.createdAt ?? "";
+
+/** The run created last (`runs` is never empty). */
+const newestRun = (runs: readonly CatalogRun[]): CatalogRun =>
+  runs.reduce((newest, run) => (createdAtOf(run) > createdAtOf(newest) ? run : newest));
 
 const compareDefinitions = (a: CollaborationDefinitionMemory, b: CollaborationDefinitionMemory): number => {
   const timeCompare = (b.memory.latestMemoryAt ?? "").localeCompare(a.memory.latestMemoryAt ?? "");

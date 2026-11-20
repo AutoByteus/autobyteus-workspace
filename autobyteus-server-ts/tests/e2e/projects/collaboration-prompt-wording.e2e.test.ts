@@ -67,13 +67,14 @@ const expectedCollaboration = (row: Row): string => {
 };
 /**
  * The collaboration part of a composed prompt: from the first collaboration heading to the next section that is not
- * part of it, the working environment or the runtime's Long-Running Commands section (autobyteus-483), whichever comes
- * first. On AGY the composed prompt ends with Long-Running Commands and the capsule's Working Environment follows it.
+ * part of it, the working environment, the Semantic Memory or Global Semantic Memory section (autobyteus-554) or the
+ * runtime's Long-Running Commands section (autobyteus-483), whichever comes first. On AGY the composed prompt ends with
+ * Long-Running Commands and the capsule's Working Environment follows it.
  */
 const collaborationPart = (prompt: string): string => {
   const starts = ["## Team Instruction", "## AgentTeam Addressing", "## Working With Other Agents"].map((heading) => prompt.indexOf(heading)).filter((i) => i >= 0);
   const start = Math.min(...starts);
-  const ends = ["\n\n## Working Environment", "\n\n## Long-Running Commands\n"].map((heading) => prompt.indexOf(heading, start)).filter((i) => i >= 0);
+  const ends = ["\n\n## Working Environment", "\n\n## Semantic Memory\n", "\n\n## Global Semantic Memory\n", "\n\n## Long-Running Commands\n"].map((heading) => prompt.indexOf(heading, start)).filter((i) => i >= 0);
   return (ends.length ? prompt.slice(start, Math.min(...ends)) : prompt.slice(start)).trim();
 };
 

@@ -6,6 +6,8 @@ export type TreeNodeDict = {
   name: string;
   path: string;
   is_file: boolean;
+  /** A symbolic link listed and never entered (workspaces that do not follow links); always a leaf. */
+  is_symbolic_link: boolean;
   children: TreeNodeDict[];
   children_loaded?: boolean;
 };
@@ -13,6 +15,8 @@ export type TreeNodeDict = {
 export class TreeNode {
   name: string;
   isFile: boolean;
+  /** Set only by a traversal that does not follow links: the entry is a link, shown and never entered. */
+  isSymbolicLink = false;
   children: TreeNode[] = [];
   parent: TreeNode | null;
   id: string;
@@ -79,28 +83,14 @@ export class TreeNode {
   }
 
   toDict(): TreeNodeDict {
-    const rootDict: TreeNodeDict = {
-      id: this.id,
-      name: this.name,
-      path: this.getPath(),
-      is_file: this.isFile,
-      children: [],
-      children_loaded: this.childrenLoaded,
-    };
+    const rootDict = nodeFields(this);
 
     const stack: Array<{ node: TreeNode; dict: TreeNodeDict }> = [{ node: this, dict: rootDict }];
 
     while (stack.length > 0) {
       const { node, dict } = stack.pop()!;
       for (const child of node.children) {
-        const childDict: TreeNodeDict = {
-          id: child.id,
-          name: child.name,
-          path: child.getPath(),
-          is_file: child.isFile,
-          children: [],
-          children_loaded: child.childrenLoaded,
-        };
+        const childDict = nodeFields(child);
         dict.children.push(childDict);
         if (!child.isFile) {
           stack.push({ node: child, dict: childDict });
@@ -112,14 +102,7 @@ export class TreeNode {
   }
 
   toShallowDict(depth = 1): TreeNodeDict {
-    const rootDict: TreeNodeDict = {
-      id: this.id,
-      name: this.name,
-      path: this.getPath(),
-      is_file: this.isFile,
-      children: [],
-      children_loaded: this.childrenLoaded,
-    };
+    const rootDict = nodeFields(this);
 
     if (this.isFile) {
       return rootDict;
@@ -133,14 +116,7 @@ export class TreeNode {
       const { node, dict, depth: currentDepth } = queue.shift()!;
       if (currentDepth < depth) {
         for (const child of node.children) {
-          const childDict: TreeNodeDict = {
-            id: child.id,
-            name: child.name,
-            path: child.getPath(),
-            is_file: child.isFile,
-            children: [],
-            children_loaded: child.childrenLoaded,
-          };
+          const childDict = nodeFields(child);
           dict.children.push(childDict);
           if (!child.isFile) {
             queue.push({ node: child, dict: childDict, depth: currentDepth + 1 });
@@ -154,6 +130,7 @@ export class TreeNode {
 
   static fromDict(data: TreeNodeDict, parent: TreeNode | null = null): TreeNode {
     const node = new TreeNode(data.name, data.is_file, parent, data.children_loaded ?? false);
+    node.isSymbolicLink = data.is_symbolic_link === true;
     node.id = data.id;
     node.pathValue = data.path ?? null;
     for (const childData of data.children ?? []) {
@@ -167,3 +144,13 @@ export class TreeNode {
     return JSON.stringify(this.toDict(), null, 4);
   }
 }
+
+const nodeFields = (node: TreeNode): TreeNodeDict => ({
+  id: node.id,
+  name: node.name,
+  path: node.getPath(),
+  is_file: node.isFile,
+  is_symbolic_link: node.isSymbolicLink,
+  children: [],
+  children_loaded: node.childrenLoaded,
+});

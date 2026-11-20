@@ -72,7 +72,7 @@ describe.each([
     composeNativeAutoByteusPrompt({ ...input, workspaceRootPath: "/tmp/workspace" })],
 ] as const)("collaboration prompt on the %s path", (_path, compose) => {
   it.each(VIEWS)("renders the approved text for a %s", (_label, input) => {
-    const prompt = compose({ agentDefinition: agent, memberExecutionContext: context(input), semanticMemoryPath: null });
+    const prompt = compose({ agentDefinition: agent, memberExecutionContext: context(input), semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global" });
     expect(prompt).toMatchSnapshot();
   });
 });
@@ -90,7 +90,7 @@ describe("collaboration prompt properties", () => {
   });
 
   it.each(VIEWS)("never states the agent's own address, nor uses a word the agent should not read (%s)", (_label, input) => {
-    const prompt = composeShared({ semanticMemoryPath: null, agentDefinition: agent, memberExecutionContext: context(input) });
+    const prompt = composeShared({ semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global", agentDefinition: agent, memberExecutionContext: context(input) });
     expect(prompt).not.toContain(input.address);
     expect(prompt).not.toMatch(/\b(your address|Your Agent address)\b/i);
     expect(renderCollaborationSections(context(input))).not.toMatch(/(?<!Task's |Task |Unknown )\bIDs?\b|\bsender id\b/);
@@ -128,7 +128,7 @@ describe("collaboration prompt properties", () => {
   });
 
   it("keeps the authored Team Instruction whenever the agent has one, before the collaboration sections", () => {
-    const prompt = composeShared({ semanticMemoryPath: null, agentDefinition: agent, memberExecutionContext: context(VIEWS[4]![1]) });
+    const prompt = composeShared({ semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global", agentDefinition: agent, memberExecutionContext: context(VIEWS[4]![1]) });
     expect(prompt.indexOf("## Team Instruction")).toBeGreaterThan(prompt.indexOf("## Agent Identity"));
     expect(prompt.indexOf("## Team Instruction")).toBeLessThan(prompt.indexOf("## Working With Other Agents"));
   });

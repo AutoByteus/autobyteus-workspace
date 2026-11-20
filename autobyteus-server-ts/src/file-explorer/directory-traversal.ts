@@ -23,16 +23,34 @@ const createAbortError = (): Error => {
   return error;
 };
 
+export type UnfollowedEntryKind = "directory" | "file" | "link";
+
+/**
+ * An entry classified without following links (`lstat`): a folder, a regular file, or a link (listed, never entered).
+ * Anything else (socket, FIFO, device) or an entry gone meanwhile is `null` and skipped (autobyteus-554 N-4).
+ */
+export const classifyEntryWithoutFollowingLinks = async (entryPath: string): Promise<UnfollowedEntryKind | null> => {
+  const stats = await fs.lstat(entryPath).catch(() => null);
+  if (!stats) return null;
+  if (stats.isSymbolicLink()) return "link";
+  if (stats.isDirectory()) return "directory";
+  return stats.isFile() ? "file" : null;
+};
+
 export class DirectoryTraversal {
   private fileIgnoreStrategies: TraversalIgnoreStrategy[];
   private sortStrategy: SortStrategy;
+  private followSymbolicLinks: boolean;
 
+  /** `followSymbolicLinks: false` lists links as link nodes and never enters them. */
   constructor(
     fileIgnoreStrategies: TraversalIgnoreStrategy[] = [],
     sortStrategy: SortStrategy = new DefaultSortStrategy(),
+    followSymbolicLinks = true,
   ) {
     this.fileIgnoreStrategies = fileIgnoreStrategies;
     this.sortStrategy = sortStrategy;
+    this.followSymbolicLinks = followSymbolicLinks;
   }
 
   async buildTree(
@@ -83,14 +101,9 @@ export class DirectoryTraversal {
         for await (const dirent of dir) {
           this.throwIfAborted(options.signal);
           const entryPath = path.join(currentPath, dirent.name);
-          const { isFile, isDirectory } = await this.resolveEntryType(dirent, entryPath);
+          const entry = await this.toDirectoryEntry(dirent, entryPath);
           this.throwIfAborted(options.signal);
-          entries.push({
-            name: dirent.name,
-            path: entryPath,
-            isFile: () => isFile,
-            isDirectory: () => isDirectory,
-          });
+          if (entry) entries.push(entry);
         }
         node.childrenLoaded = true;
       } catch (error) {
@@ -111,16 +124,19 @@ export class DirectoryTraversal {
 
       for (const entry of sortedEntries) {
         this.throwIfAborted(options.signal);
-        const isDir = !entry.isFile();
+        const isLink = entry.isSymbolicLink?.() === true;
+        const isDir = !entry.isFile() && !isLink;
         if (updatedStrategies.some((strategy) => strategy.shouldIgnore(entry.path, isDir))) {
           continue;
         }
 
         const isFileChild = !isDir;
-        const childNode = new TreeNode(entry.name, isFileChild, node, isFileChild);
+        // A link is a leaf that is never entered: not a file (nothing to open), and its children count as loaded.
+        const childNode = new TreeNode(entry.name, isFileChild && !isLink, node, isFileChild);
+        childNode.isSymbolicLink = isLink;
         node.addChild(childNode);
 
-        if (!isFileChild) {
+        if (isDir) {
           queue.push({
             node: childNode,
             currentPath: entry.path,
@@ -151,6 +167,22 @@ export class DirectoryTraversal {
       logger.warn(`Unable to stat path '${targetPath}': ${String(error)}`);
       return false;
     }
+  }
+
+  private async toDirectoryEntry(dirent: fsSync.Dirent, entryPath: string): Promise<DirectoryEntry | null> {
+    if (!this.followSymbolicLinks) {
+      const kind = await classifyEntryWithoutFollowingLinks(entryPath);
+      if (!kind) return null;
+      return {
+        name: dirent.name,
+        path: entryPath,
+        isFile: () => kind === "file",
+        isDirectory: () => kind === "directory",
+        isSymbolicLink: () => kind === "link",
+      };
+    }
+    const { isFile, isDirectory } = await this.resolveEntryType(dirent, entryPath);
+    return { name: dirent.name, path: entryPath, isFile: () => isFile, isDirectory: () => isDirectory };
   }
 
   private async resolveEntryType(

@@ -2,7 +2,7 @@ import type { IntegrationRunAccess } from "../../../../../../src/credential-prox
 import { testCodexLeaseManager } from "../../../../../fixtures/agent-run-preparation-fixtures.js";
 import { createAgentRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { CODEX_LONG_RUNNING_COMMAND_SECTION } from "../../../../../../src/agent-execution/prompt/long-running-command-sections.js";
 import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
@@ -36,6 +36,9 @@ import { AgentSemanticMemory } from "../../../../../../src/agent-memory/services
 import { createTestRunWorkspaceSkills, testPreparationGuard } from "../../../../../fixtures/run-workspace-skills-fixtures.js";
 
 const WORKING_DIRECTORY = "/tmp/codex-workspace";
+/** Every run creates its semantic folders (autobyteus-554): tests without their own memory folder use this one. */
+const DEFAULT_MEMORY_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "codex-bootstrapper-memory-"));
+afterAll(() => fs.rmSync(DEFAULT_MEMORY_DIR, { recursive: true, force: true }));
 const resolvedBinding = (skill: Skill): ConfiguredAgentSkillBinding => ({ kind: "resolved", skill });
 
 const createRunContext = (input: {
@@ -155,7 +158,8 @@ const createBootstrapper = (input: {
   materializeImplementation?: WorkspaceSkillMaterializer["materializeConfiguredWorkspaceSkills"];
   skillScope?: "CONFIGURED" | "ALL_INSTALLED";
   integrationRunAccess?: IntegrationRunAccess | null;
-  semanticMemory?: { memoryDir: string; enabled: boolean };
+  /** The memory folder, and the retired `semanticMemoryEnabled` key a definition file may still hold (ignored). */
+  semanticMemory?: { memoryDir: string; storedKey?: boolean };
 }) => {
   const workspaceSkillMaterializer = createMaterializerMock();
   if (input.materializeImplementation) {
@@ -175,7 +179,7 @@ const createBootstrapper = (input: {
       instructions: "Run the test.",
       description: "Test agent",
       id: "agent-def",
-      semanticMemoryEnabled: input.semanticMemory?.enabled === true,
+      ...(input.semanticMemory?.storedKey === undefined ? {} : { semanticMemoryEnabled: input.semanticMemory.storedKey }),
     })),
   } as unknown as AgentDefinitionService;
   const skillService = {
@@ -210,7 +214,7 @@ const createBootstrapper = (input: {
     skillService,
     clientManager,
     input.integrationRunAccess ?? null,
-    new AgentSemanticMemory({ memoryDir: input.semanticMemory?.memoryDir ?? "/nonexistent-memory" }),
+    new AgentSemanticMemory({ memoryDir: input.semanticMemory?.memoryDir ?? DEFAULT_MEMORY_DIR }),
   );
 
   return {
@@ -359,67 +363,79 @@ describe("CodexThreadBootstrapper", () => {
       const without = createBootstrapper({ skills: [], requestImplementation: async () => ({ data: [] }),
         integrationRunAccess: { environmentForRun: async () => ({}), integrationsStartingOnRestart: async () => [] } });
       const plain = await without.bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }), guard);
-      expect(Object.keys(plain.runtimeContext.codexThreadConfig.appServerConfig ?? {})).toEqual(["mcp_servers"]);
+      // No variables: no network and no shell policy; the writable roots are the run's semantic folders (autobyteus-554).
+      expect(Object.keys(plain.runtimeContext.codexThreadConfig.appServerConfig ?? {})).toEqual(["mcp_servers", "sandbox_workspace_write"]);
+      expect(plain.runtimeContext.codexThreadConfig.appServerConfig).not.toHaveProperty("sandbox_workspace_write.network_access");
     });
   });
 
-  describe("semantic memory (REQ-005, REQ-006, AC-005)", () => {
+  describe("semantic memory, every agent (autobyteus-554 AC-001, AC-009)", () => {
     const guard = { assertAccepting: () => undefined, workspaceSkills: createTestRunWorkspaceSkills(), ownCodexClient: () => undefined };
     let memoryDir: string;
     beforeEach(() => { memoryDir = fs.mkdtempSync(path.join(os.tmpdir(), "codex-semantic-memory-")); });
     afterEach(() => fs.rmSync(memoryDir, { recursive: true, force: true }));
+    const agentFolder = () => path.join(memoryDir, "semantic", "agent-def");
+    const globalFolder = () => path.join(memoryDir, "semantic-global");
 
-    it("tells an enabled agent its folder and makes it a writable root of the workspace-write sandbox, on create and restore", async () => {
+    it.each([undefined, false, true])("tells an agent (stored key: %s) both folders and makes both writable roots of the workspace-write sandbox, on create and restore", async (storedKey) => {
       process.env.CODEX_APP_SERVER_SANDBOX = "workspace-write";
-      const folder = path.join(memoryDir, "semantic", "agent-def");
       const { bootstrapper } = createBootstrapper({ skills: [], requestImplementation: async () => ({ data: [] }),
-        semanticMemory: { memoryDir, enabled: true } });
+        semanticMemory: { memoryDir, storedKey } });
       for (const runContext of [
         await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }), guard),
         await bootstrapper.bootstrapForRestore(createRestoreRunContext({ autoExecuteTools: false }), guard),
       ]) {
-        expect(runContext.runtimeContext.codexThreadConfig.baseInstructions).toContain(
-          `## Semantic Memory\n\nYour semantic memory is the folder \`${folder}\`. It belongs to you`);
+        const instructions = runContext.runtimeContext.codexThreadConfig.baseInstructions ?? "";
+        expect(instructions).toContain(`## Semantic Memory\n\nYour semantic memory is the folder \`${agentFolder()}\`. It belongs to you`);
+        expect(instructions).toContain(`## Global Semantic Memory\n\nThe global semantic memory of this node is the folder \`${globalFolder()}\`.`);
         expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toMatchObject({
-          sandbox_workspace_write: { writable_roots: [folder] },
+          sandbox_workspace_write: { writable_roots: [agentFolder(), globalFolder()] },
         });
         expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).not.toHaveProperty("sandbox_workspace_write.network_access");
       }
-      expect(fs.statSync(folder).isDirectory()).toBe(true);
+      expect(fs.statSync(agentFolder()).isDirectory()).toBe(true);
+      expect(fs.statSync(globalFolder()).isDirectory()).toBe(true);
     });
 
-    it("keeps network access next to the writable root for a run with integration variables (one owner of the key)", async () => {
+    it("keeps network access next to the writable roots for a run with integration variables (one owner of the key)", async () => {
       process.env.CODEX_APP_SERVER_SANDBOX = "workspace-write";
       const { bootstrapper } = createBootstrapper({ skills: [], requestImplementation: async () => ({ data: [] }),
-        semanticMemory: { memoryDir, enabled: true },
+        semanticMemory: { memoryDir },
         integrationRunAccess: { environmentForRun: async () => ({ GIT_TERMINAL_PROMPT: "0" }), integrationsStartingOnRestart: async () => [] } });
       const runContext = await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }), guard);
       expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toMatchObject({
-        sandbox_workspace_write: { network_access: true, writable_roots: [path.join(memoryDir, "semantic", "agent-def")] },
+        sandbox_workspace_write: { network_access: true, writable_roots: [agentFolder(), globalFolder()] },
       });
+    });
+
+    it("starts a run whose own folder cannot be created: no section, only the global folder as a writable root, logged (AC-014)", async () => {
+      process.env.CODEX_APP_SERVER_SANDBOX = "workspace-write";
+      fs.writeFileSync(path.join(memoryDir, "semantic"), "a file where semantic/ belongs\n");
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+      try {
+        const { bootstrapper } = createBootstrapper({ skills: [], requestImplementation: async () => ({ data: [] }), semanticMemory: { memoryDir } });
+        const runContext = await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }), guard);
+        const instructions = runContext.runtimeContext.codexThreadConfig.baseInstructions ?? "";
+        expect(instructions).not.toContain("## Semantic Memory\n");
+        expect(instructions).toContain(`## Global Semantic Memory\n\nThe global semantic memory of this node is the folder \`${globalFolder()}\`.`);
+        expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toMatchObject({ sandbox_workspace_write: { writable_roots: [globalFolder()] } });
+        expect(warn).toHaveBeenCalledWith("SEMANTIC_MEMORY_PREPARE_FAILED", expect.objectContaining({ definitionId: "agent-def", folder: "agent" }));
+      } finally {
+        warn.mockRestore();
+      }
     });
 
     it("leaves read-only read-only and full access as it is", async () => {
       process.env.CODEX_APP_SERVER_SANDBOX = "read-only";
       const { bootstrapper } = createBootstrapper({ skills: [], requestImplementation: async () => ({ data: [] }),
-        semanticMemory: { memoryDir, enabled: true } });
+        semanticMemory: { memoryDir } });
       for (const autoExecuteTools of [false, true]) {
         const runContext = await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools }), guard);
         expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).not.toHaveProperty("sandbox_workspace_write");
-        expect(runContext.runtimeContext.codexThreadConfig.baseInstructions).toContain("## Semantic Memory");
+        expect(runContext.runtimeContext.codexThreadConfig.baseInstructions).toContain("## Global Semantic Memory");
         // autobyteus-483 AC-011: Codex's own Long-Running Commands section ends the instructions.
         expect(runContext.runtimeContext.codexThreadConfig.baseInstructions?.endsWith(`\n\n${CODEX_LONG_RUNNING_COMMAND_SECTION}`)).toBe(true);
       }
-    });
-
-    it("gives an agent without semantic memory no section, no folder and an unchanged thread config", async () => {
-      process.env.CODEX_APP_SERVER_SANDBOX = "workspace-write";
-      const { bootstrapper } = createBootstrapper({ skills: [], requestImplementation: async () => ({ data: [] }),
-        semanticMemory: { memoryDir, enabled: false } });
-      const runContext = await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }), guard);
-      expect(runContext.runtimeContext.codexThreadConfig.baseInstructions).not.toContain("Semantic Memory");
-      expect(Object.keys(runContext.runtimeContext.codexThreadConfig.appServerConfig ?? {})).toEqual(["mcp_servers"]);
-      expect(fs.readdirSync(memoryDir)).toEqual([]);
     });
   });
 
@@ -778,7 +794,7 @@ describe("CodexThreadBootstrapper", () => {
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), testPreparationGuard(bootstrapper));
 
     expect(runContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
-    expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toEqual({
+    expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toMatchObject({
       mcp_servers: {
         autobyteus_agent_tools: {
           url: "http://127.0.0.1:3000/mcp/agent-tools/session-codex",
@@ -886,7 +902,7 @@ describe("CodexThreadBootstrapper", () => {
 
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), testPreparationGuard(bootstrapper));
 
-    expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toEqual({
+    expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toMatchObject({
       mcp_servers: {
         autobyteus_agent_tools: {
           url: "http://127.0.0.1:3000/mcp/agent-tools/session-codex",

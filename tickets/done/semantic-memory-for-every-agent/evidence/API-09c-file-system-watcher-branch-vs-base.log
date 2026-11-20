@@ -1,0 +1,39 @@
+## semantic-memory-for-every-agent run 1 (2e5f786091) load 97.37 110.66 111.57
+      Tests  6 failed | 8 passed (14)
+     95|     throw new Error(`${await osDeliversFileEvents() ? INCONCLUSIVE_MES…
+     × does not emit events for pre-existing nested .gitignore excluded directories 30711ms
+     × emits add + modify + delete events 36555ms
+     × emits folder creation and deletion events 38447ms
+     × ignores default strategy paths like __pycache__ 40031ms
+     × respects nested .gitignore files 36400ms
+     × returns one idle event stream without stopping other subscribers 36467ms
+Error: INCONCLUSIVE: the watcher saw no change; a fresh fs.watch stream did. Under load the OS can drop one stream's events (FU-500-06); rerun where the OS deli
+## ec554-api-e2e-base run 1 (8430d9ef12) load 89.03 100.93 107.00
+      Tests  6 failed | 8 passed (14)
+     95|     throw new Error(`${await osDeliversFileEvents() ? INCONCLUSIVE_MES…
+     × does not emit events for pre-existing root .gitignore excluded directories 31451ms
+     × emits delete events even if the in-memory node is missing 35081ms
+     × emits folder creation and deletion events 40158ms
+     × ignores default strategy paths like __pycache__ 40135ms
+     × respects root .gitignore files 40243ms
+     × treats moves into ignored directories as deletes from the visible tree 40070ms
+Error: INCONCLUSIVE: the watcher saw no change; a fresh fs.watch stream did. Under load the OS can drop one stream's events (FU-500-06); rerun where the OS deli
+## semantic-memory-for-every-agent run 2 (2e5f786091) load 50.03 77.70 95.44
+      Tests  7 failed | 7 passed (14)
+     95|     throw new Error(`${await osDeliversFileEvents() ? INCONCLUSIVE_MES…
+     × does not emit events for pre-existing nested .gitignore excluded directories 41701ms
+     × emits add + modify + delete events 42015ms
+     × emits file creation event with node metadata 36888ms
+     × emits folder creation and deletion events 33516ms
+     × ignores default strategy paths like __pycache__ 40133ms
+     × respects nested .gitignore files 30690ms
+     × returns one idle event stream without stopping other subscribers 41781ms
+Error: INCONCLUSIVE: the watcher saw no change; a fresh fs.watch stream did. Under load the OS can drop one stream's events (FU-500-06); rerun where the OS deli
+## ec554-api-e2e-base run 2 (8430d9ef12) load 45.04 56.74 80.23
+      Tests  4 failed | 10 passed (14)
+     95|     throw new Error(`${await osDeliversFileEvents() ? INCONCLUSIVE_MES…
+     × captures rapid changes without dropping events 36294ms
+     × emits file creation event with node metadata 40154ms
+     × emits move/rename event 42107ms
+     × respects nested .gitignore files 31593ms
+Error: INCONCLUSIVE: the watcher saw no change; a fresh fs.watch stream did. Under load the OS can drop one stream's events (FU-500-06); rerun where the OS deli

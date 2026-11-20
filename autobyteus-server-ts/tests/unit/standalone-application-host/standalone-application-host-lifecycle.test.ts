@@ -204,7 +204,9 @@ const composeCollaboration = vi.hoisted(() => vi.fn(async () => ({ release: vi.f
 // autobyteus-493: the episodic catalogs of the host's memory folder (faked: this test reads no memory folder).
 const episodicCatalog = vi.hoisted(() => ({ runDeleted: vi.fn(), start: vi.fn(), stop: vi.fn(async () => undefined) }));
 const createEpisodicCatalog = vi.hoisted(() => vi.fn(() => episodicCatalog));
-vi.mock("../../../src/agent-episodic-catalog/services/episodic-catalog.js", () => ({ createEpisodicCatalog }));
+vi.mock("../../../src/agent-episodic-catalog/services/episodic-catalog.js", () => ({
+  createEpisodicCatalog, setProcessEpisodicCatalog: vi.fn(), releaseProcessEpisodicCatalog: vi.fn(),
+}));
 vi.mock("../../../src/compositions/collaboration-composition.js", async (importOriginal) => ({
   ...await importOriginal<typeof import("../../../src/compositions/collaboration-composition.js")>(), composeCollaboration,
 }));

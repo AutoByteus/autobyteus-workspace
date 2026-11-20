@@ -29,6 +29,26 @@ export const LIST_AGENTS_WITH_MEMORY = gql`
         stableId
         runCount
         latestMemoryAt
+      }
+    }
+  }
+`
+
+export const LIST_AGENT_EPISODES = gql`
+  query ListAgentEpisodes($selector: AgentWithMemorySelectorInput!, $source: MemoryExplorerSourceInput, $search: String, $page: Int, $pageSize: Int) {
+    listAgentEpisodes(selector: $selector, source: $source, search: $search, page: $page, pageSize: $pageSize) {
+      total
+      page
+      pageSize
+      totalPages
+      entries {
+        runId
+        subject { kind runId agentDefinitionId teamRunId orgRunId agentRunId runKey }
+        place { kind name }
+        summary
+        taskTitle
+        workspaceRootPath
+        lastActivityAt
         memory {
           latestMemoryAt
           hasWorkJournal
@@ -40,28 +60,14 @@ export const LIST_AGENTS_WITH_MEMORY = gql`
   }
 `
 
-export const LIST_AGENT_RUNS_WITH_MEMORY = gql`
-  query ListAgentRunsWithMemory($selector: AgentWithMemorySelectorInput!, $source: MemoryExplorerSourceInput, $search: String, $page: Int, $pageSize: Int) {
-    listAgentRunsWithMemory(selector: $selector, source: $source, search: $search, page: $page, pageSize: $pageSize) {
-      total
-      page
-      pageSize
-      totalPages
-      entries {
-        runId
-        agentDefinitionId
-        agentName
-        summary
-        workspaceRootPath
-        createdAt
-        lastUpdatedAt
-        memory {
-          latestMemoryAt
-          hasWorkJournal
-          hasRawTraces
-          hasRawArchive
-        }
-      }
+export const LIST_MEMORY_GROUP_MEMBERS = gql`
+  query ListMemoryGroupMembers($kind: MemoryGroupKind!, $definitionId: String!, $source: MemoryExplorerSourceInput) {
+    listMemoryGroupMembers(kind: $kind, definitionId: $definitionId, source: $source) {
+      kind
+      id
+      name
+      shared
+      memberCount
     }
   }
 `
@@ -78,6 +84,7 @@ export const LIST_AGENT_TEAMS_WITH_MEMORY = gql`
         teamDefinitionName
         teamRunCount
         memberMemoryCount
+        memberCount
         latestMemoryAt
         memory {
           latestMemoryAt
@@ -150,6 +157,7 @@ export const LIST_AGENT_ORGS_WITH_MEMORY = gql`
         orgDefinitionName
         orgRunCount
         memberMemoryCount
+        memberCount
         latestMemoryAt
         memory {
           latestMemoryAt

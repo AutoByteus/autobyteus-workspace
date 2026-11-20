@@ -114,7 +114,7 @@ implements PublishedArtifactPublisher {
 
     const workspaceRootPath = run?.config.workspaceId?.trim()
       ? normalizeOptionalNonEmptyString(
-          (await this.workspaceManager.getOrCreateWorkspace(run.config.workspaceId)).getBasePath(),
+          (await this.workspaceManager.getOrCreateRunWorkspace(run.config.workspaceId)).getBasePath(),
         )
       : normalizeOptionalNonEmptyString(fallbackRuntimeContext?.workspaceRootPath);
 

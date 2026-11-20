@@ -1,0 +1,21 @@
+{
+  "runId": "sm_live_keeper_autobyteus_4545224d_cc1784041e7244b582732b3e493ed6ec",
+  "model": "claude-haiku-5-5",
+  "reply": "{\"command\": \"mkdir -p \\\"/Users/normy/.autobyteus-e2e/semantic-memory-live-J60sDK/app-data/memory/semantic/sm-live-keeper-autobyteus-4545224d\\\" && cat > \\\"/Users/normy/.autobyteus-e2e/semantic-memory-live-J60sDK/app-data/memory/semantic/sm-live-keeper-autobyteus-4545224d/deploy-codeword.md\\\" <<'EOF'\\",
+  "tools": [
+    "run_bash {\"command\":\"mkdir -p \\\"/Users/normy/.autobyteus-e2e/semantic-memory-live-J60sDK/app-data/memory/semantic/sm-live-keeper-autobyteus-4545224d\\\" && cat > \\\"/Users/normy/.autobyteus-e2e/semantic-memory-live-J60sDK/app-data/memory/semantic/sm-live-keeper-autobyteus-4545224d/deploy-codeword.md\\\" <<'EOF'\\n"
+  ],
+  "failures": [],
+  "approvals": [],
+  "errors": [],
+  "folder": "/Users/normy/.autobyteus-e2e/semantic-memory-live-J60sDK/app-data/memory/semantic/sm-live-keeper-autobyteus-4545224d",
+  "files": {
+    "deploy-codeword.md": "# Deploy Codeword\n\nThe deploy codeword is `SMCODE-AUTOBYTEUS-4545224d`.\n\nApplies to all future work in every Project.\n"
+  },
+  "workspaceFiles": {},
+  "instructionsHaveSection": [
+    true,
+    true
+  ],
+  "instructionsExcerpt": "## Project\n\nYou work in the Project SM live A 4545224d (Project ID project_376a7d41-66b1-4ccd-91c5-a37f7a0a329c). Use this Project ID with the Project tools; ask the user before working on another Project.\n\n## Semantic Memory\n\nYour semantic memory is the folder `/Users/normy/.autobyteus-e2e/semantic-memory-live-J60sDK/app-data/memory/semantic/sm-live-keeper-autobyteus-4545224d`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.\n\n## Global Semantic Memory\n\nThe global semantic memory of this node is the folder `/Users/normy/.autobyteus-e2e/semantic-memory-live-J60sDK/app-data/memory/semantic-global`. It is shared by every age"
+}

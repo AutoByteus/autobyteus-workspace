@@ -74,6 +74,8 @@ describe("AGY backend capability admission and preserved bindings", () => {
       { resolveSkillScope: () => "CONFIGURED", hasEffectiveSkills: () => false, resolveConfiguredSkillBindingsForAgent: () => [] } as never,
       { resolveWorkingDirectory: async () => workspace } as never,
       createAgentToolMcpRunSessionsStub() as never,
+      null,
+      new AgentSemanticMemory({ memoryDir: path.join(base, "server-memory") }),
     );
     config = new AgentRunConfig({ agentDefinitionId: "test-agent", llmModelIdentifier: "test-model",
       autoExecuteTools: true, workspaceId: "workspace", memoryDir: path.join(base, "memory"),
@@ -98,6 +100,8 @@ describe("AGY backend capability admission and preserved bindings", () => {
         { resolveSkillScope: () => scope, hasEffectiveSkills: () => true, resolveConfiguredSkillBindingsForAgent: () => [binding] } as never,
         { resolveWorkingDirectory: async () => workspace } as never,
         createAgentToolMcpRunSessionsStub() as never,
+        null,
+        new AgentSemanticMemory({ memoryDir: path.join(base, "server-memory") }),
       );
       const preloaded = new AgentRunConfig({ ...config } as never);
       if (outcome === "rejects") {
@@ -123,23 +127,26 @@ describe("AGY backend capability admission and preserved bindings", () => {
     await backend.terminate();
   });
 
-  it("writes an enabled agent's Semantic Memory section into the agent file and creates the folder (REQ-005)", async () => {
+  it("writes both semantic memory sections into the agent file and creates both folders, for an agent whose file still says false (autobyteus-554 AC-001, AC-009)", async () => {
     const memoryDir = path.join(base, "server-memory");
-    const enabled = new AgyAgentRunBackendFactory(
+    const created = new AgyAgentRunBackendFactory(
       { getAgentDefinitionById: async () => ({ id: "test-agent", name: "Test agent", description: "Unit test",
-        instructions, toolNames: [], skillNames: [], semanticMemoryEnabled: true }) } as never,
+        instructions, toolNames: [], skillNames: [], semanticMemoryEnabled: false }) } as never,
       { resolveSkillScope: () => "CONFIGURED", hasEffectiveSkills: () => false, resolveConfiguredSkillBindingsForAgent: () => [] } as never,
       { resolveWorkingDirectory: async () => workspace } as never,
       createAgentToolMcpRunSessionsStub() as never,
       null,
       new AgentSemanticMemory({ memoryDir }),
     );
-    const backend = await prepareAndReleaseOnFailure(enabled.beginPreparation({ kind: "new", config, runId: "run" }));
+    const backend = await prepareAndReleaseOnFailure(created.beginPreparation({ kind: "new", config, runId: "run" }));
     const manifest = JSON.parse(await fs.readFile(path.join(config.memoryDir!, "agy-project", "manifest.json"), "utf8"));
     const markdown = await fs.readFile(path.join(config.memoryDir!, "agy-project", ".agents", "agents", manifest.agentName, "agent.md"), "utf8");
     const folder = path.join(memoryDir, "semantic", "test-agent");
+    const globalFolder = path.join(memoryDir, "semantic-global");
     expect(markdown).toContain(`## Semantic Memory\n\nYour semantic memory is the folder \`${folder}\`. It belongs to you`);
+    expect(markdown).toContain(`## Global Semantic Memory\n\nThe global semantic memory of this node is the folder \`${globalFolder}\`.`);
     expect((await fs.stat(folder)).isDirectory()).toBe(true);
+    expect((await fs.stat(globalFolder)).isDirectory()).toBe(true);
     await backend.terminate();
   });
 
@@ -261,6 +268,7 @@ describe("AGY backend capability admission and preserved bindings", () => {
       { resolveWorkingDirectory: async () => workspace } as never,
       createAgentToolMcpRunSessionsStub() as never,
       { environmentForRun, integrationsStartingOnRestart: async () => [] },
+      new AgentSemanticMemory({ memoryDir: path.join(base, "server-memory") }),
     );
     const initial = await prepareAndReleaseOnFailure(withAccess.beginPreparation({ kind: "new", config, runId: "run" }));
     await initial.terminate();

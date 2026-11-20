@@ -49,6 +49,37 @@ Boundary expectations:
 - Rejected boundary operations remain snapshot-only and must not start a live
   watcher lease.
 
+## Read-Only And Link-Aware Workspaces
+
+Two workspace properties drive the explorer; the explorer never decides them
+itself (autobyteus-554; the Memory page's semantic memory view, a
+`SemanticMemoryWorkspace`, is the one workspace that sets them, see
+[Workspaces](./workspaces.md#semantic-memory-workspaces)). Every other workspace
+keeps the defaults and today's behavior.
+
+- `readOnly` (default false): every file-explorer GraphQL mutation (write,
+  create, rename, move, delete) resolves the workspace through
+  `resolveWritableWorkspace` and is refused `WORKSPACE_READ_ONLY` before the file
+  explorer or any file is touched (`FileSystemWorkspace.assertWritable`).
+- `followSymbolicLinks` (default true): when false, the explorer
+  (`WorkspaceFileExplorer` with `{ followSymbolicLinks: false }`) classifies
+  entries by `lstat` (`classifyEntryWithoutFollowingLinks`): a folder, a regular
+  file, or a link, which becomes a leaf `TreeNode` with `isSymbolicLink = true`
+  (JSON `is_symbolic_link`; `is_file: false`, children loaded) and is never
+  entered; any other entry (socket, FIFO, device) is skipped. `folderChildren`,
+  `fileContent` and the workspace content and static routes refuse a path with a
+  link anywhere on it, from the root down (`assertNoSymbolicLinkOnPath`,
+  `WORKSPACE_LINK_NOT_OPENED`; the REST routes answer 403 with the code), so a
+  file is only ever read inside the root. The whole-tree traversal behind the
+  file-name search does not enter links either, and `rg --files` does not follow
+  them (its default). The watcher runtime is started with chokidar
+  `followSymlinks: false`, so a change inside a linked folder's target never
+  reaches the tree. A link created while the view is open arrives as an ordinary
+  add event (a file row) until the folder is read again; opening it is refused.
+- The refusals carry the code at the start of the message
+  (`WorkspaceAccessError`, `src/workspaces/workspace-access-error.ts`), so the
+  GraphQL error, the JSON error string and the REST body all name it.
+
 ## Live WebSocket Watcher Lifecycle
 
 Live filesystem changes are served by `/ws/file-explorer/{workspaceId}`. The route resolves the workspace, obtains the workspace file explorer, and delegates to `FileExplorerStreamHandler`.
@@ -79,7 +110,7 @@ A client must be able to refresh an open file whatever its tree has loaded (auto
 
 The backend parent process owns File Explorer tree state, watcher leases, event subscribers, path validation, ignored-path policy, search, and mutation echo suppression. It does **not** own native chokidar watcher lifecycle directly.
 
-`FileSystemWatcher` creates a `WatcherRuntimeClient` for each active watcher generation. The client forks `src/file-explorer/watcher/runtime/watcher-runtime-process.ts`, sends a `start` command with `{ watcherId, generation, workspaceRootPath }`, and receives raw add/change/unlink events over IPC. Only the runtime adapter (`chokidar-watcher-runtime.ts`) imports and closes chokidar.
+`FileSystemWatcher` creates a `WatcherRuntimeClient` for each active watcher generation. The client forks `src/file-explorer/watcher/runtime/watcher-runtime-process.ts`, sends a `start` command with `{ watcherId, generation, workspaceRootPath, followSymbolicLinks }`, and receives raw add/change/unlink events over IPC. Only the runtime adapter (`chokidar-watcher-runtime.ts`) imports and closes chokidar.
 
 Important runtime-boundary rules:
 

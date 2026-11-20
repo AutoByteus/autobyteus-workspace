@@ -375,32 +375,52 @@ export const useWorkspaceStore = defineStore('workspace', {
     },
 
     registerSkillWorkspace(skillId: string): string {
-      const workspaceId = `skill_ws_${skillId}`;
+      return this.registerTransientWorkspace({
+        workspaceId: `skill_ws_${skillId}`, displayName: skillId, metadataRootPath: `/skills/${skillId}`, kind: 'skill',
+      });
+    },
+
+    /**
+     * The Memory page's read-only view of a semantic memory folder (autobyteus-554): the node's semantic memory
+     * workspace (`semantic_ws_*` / `semantic_global_ws`), transient like a skill's: never listed or offered as a workspace.
+     */
+    registerSemanticMemoryWorkspace(workspaceId: string, displayName: string, folderPath: string): string {
+      return this.registerTransientWorkspace({
+        workspaceId, displayName, metadataRootPath: folderPath, kind: 'semantic_memory', readOnly: true,
+      });
+    },
+
+    registerTransientWorkspace(input: {
+      workspaceId: string;
+      displayName: string;
+      metadataRootPath: string;
+      kind: 'skill' | 'semantic_memory';
+      readOnly?: boolean;
+    }): string {
+      const { workspaceId, displayName } = input;
       if (this.workspaces[workspaceId]) {
         return workspaceId;
       }
-
-      const workspaceInfo: WorkspaceInfo = {
+      this.workspaces[workspaceId] = {
         workspaceId,
-        name: skillId,
-        displayName: skillId,
-        workspaceConfig: { isTransient: true },
+        name: displayName,
+        displayName,
+        workspaceConfig: { isTransient: true, ...(input.readOnly ? { readOnly: true } : {}) },
         absolutePath: null,
         workspaceRootPath: null,
-        kind: 'skill',
+        kind: input.kind,
         isTemp: false,
       };
-      this.workspaces[workspaceId] = workspaceInfo;
       this.workspaceMetadataById[workspaceId] = createWorkspaceMetadata({
         workspaceId,
-        workspaceRootPath: `/skills/${skillId}`,
-        displayName: skillId,
-        kind: 'skill',
+        workspaceRootPath: input.metadataRootPath,
+        displayName,
+        kind: input.kind,
       });
       return workspaceId;
     },
 
-    unregisterSkillWorkspace(workspaceId: string) {
+    unregisterTransientWorkspace(workspaceId: string) {
       if (!this.workspaces[workspaceId]) return;
       this.clearFileExplorerLiveSessionForWorkspace(workspaceId);
       delete this.workspaces[workspaceId];

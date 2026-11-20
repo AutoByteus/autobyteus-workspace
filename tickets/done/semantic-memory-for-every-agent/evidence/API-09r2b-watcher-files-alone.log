@@ -1,0 +1,36 @@
+## tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts alone | commit 42c2f5189b | 2026-11-20T17:11:01Z | load { 50.63 57.48 61.48 }
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed (1)
+      Tests  1 failed | 14 passed (15)
+## tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts alone | commit 42c2f5189b | 2026-11-20T17:19:45Z | load { 157.18 112.20 83.93 }
+ Test Files  1 passed (1)
+      Tests  30 passed (30)
+## tests/integration/file-explorer/file-system-watcher.integration.test.ts alone | commit 42c2f5189b | 2026-11-20T17:20:07Z | load { 143.03 111.89 84.48 }
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed (1)
+      Tests  10 failed | 4 passed (14)
+## semantic-memory-for-every-agent (42c2f5189b) package-auto-refresh | 2026-11-20T17:28:49Z | load { 62.89 80.32 82.95 } | fseventsd 144.6%
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-006: a 50-file burst is coalesced 
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-011: an imported root is watched; 
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-012: a root renamed away keeps its
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AR-001: a Team created before its age
+ Test Files  1 failed (1)
+      Tests  4 failed | 11 passed (15)
+## ec554-api-e2e-base (8430d9ef12) package-auto-refresh | 2026-11-20T17:38:48Z | load { 52.66 57.85 69.12 } | fseventsd 177.8%
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-002/AC-015(b)/QR-004: edits reach 
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-006: a 50-file burst is coalesced 
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-012: a root renamed away keeps its
+ Test Files  1 failed (1)
+      Tests  3 failed | 12 passed (15)
+## semantic-memory-for-every-agent (42c2f5189b) package-auto-refresh | 2026-11-20T17:45:37Z | load { 60.94 57.07 63.96 } | fseventsd 179.4%
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-012: a root renamed away keeps its
+ Test Files  1 failed (1)
+      Tests  1 failed | 14 passed (15)
+## ec554-api-e2e-base (8430d9ef12) package-auto-refresh | 2026-11-20T17:48:55Z | load { 74.48 67.78 67.09 } | fseventsd 159.2%
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-012: a root renamed away keeps its
+ Test Files  1 failed (1)
+      Tests  1 failed | 14 passed (15)

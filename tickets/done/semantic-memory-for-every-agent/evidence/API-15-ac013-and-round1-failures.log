@@ -1,0 +1,46 @@
+# API-15 IC-03 (AC-013) + recheck of round 1's failures RA-04, IC-01, RE-05 | commit 5edda27b2d + working-tree IC-03/SM-12/fake codex-turn | 2026-11-20T16:45:51Z | load { 62.67 57.46 55.38 }
+ ✓ tests/e2e/runtime/application-import-codex-launch.e2e.test.ts (3 tests) 29012ms
+     ✓ IC-01 imports Brief Studio, reads it as runnable and launches its Codex drafting team without a restart (AC-001)  9663ms
+     ✓ IC-02 a signed-out Codex blocks the imported application with today's reason, not a spawn failure (AC-002)  741ms
+     ✓ IC-03 the launched bundled agent has its semantic memory, its episodic catalog and its Memory page folder under one shortened name, and its run is told both folders (autobyteus-554 AC-013)  4317ms
+ ❯ tests/e2e/runtime/application-reload-repair.e2e.test.ts (5 tests | 5 failed) 52548ms
+     × RE-01 an ACTIVE application stays usable after a package reload (AC-001) 16845ms
+     × RE-02 a repair of an ACTIVE application answers ACTIVE and keeps it usable (AC-002) 147ms
+     × RE-03 imported while Codex is signed out, it is quarantined with the reason; after sign-in a repair returns it to ACTIVE (AC-003, AC-004) 147ms
+     × RE-04 after the worker process crashes, a repair resets it to stopped and the application is usable again (MP-001) 5ms
+     × RE-05 a run event recorded while the application is quarantined is dispatched after a repair makes it ACTIVE (BEH-002) 4ms
+ ✓ tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts (4 tests) 66213ms
+     ✓ RA-01 Application launch readiness for Codex keeps its rule and reason text through the sign-in reader (SCN-A3)  1049ms
+     ✓ RA-02 Application launch readiness for Claude: signed out (JSON + exit 1) keeps today's reason, signed in is runnable  1802ms
+     ✓ RA-03 Update is refused while a standalone Codex agent runs and allowed once it has ended (AC-004)  2469ms
+     ✓ RA-04 a live Application team member counts too: Brief Studio's drafting run blocks Codex's Update, alone and with a standalone agent (AC-004, SR-011/AR-008)  2451ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs) > RE-01 an ACTIVE application stays usable after a package reload (AC-001)
+AssertionError: after import: launch settings {"detail":"Application 'bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324673656d616e7469632d6d656d6f72792d666f722d65766572792d6167656e742532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f' is currently quarantined: Application setup is required: brief-studio/slot:draftingTeam: The model list of Codex App Server could not be read: Codex exact process exit could not be confirmed. Try again.; : expected 503 to be 200 // Object.is equality
+ ❯ expectUsable tests/e2e/runtime/application-reload-repair.e2e.test.ts:79:74
+ ❯ tests/e2e/runtime/application-reload-repair.e2e.test.ts:135:5
+ FAIL  tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs) > RE-02 a repair of an ACTIVE application answers ACTIVE and keeps it usable (AC-002)
+AssertionError: {"applicationId":"bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324673656d616e7469632d6d656d6f72792d666f722d65766572792d6167656e742532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f","state":"QUARANTINED","detail":"Application setup is required: brief-studio/slot:draftingTeam: The model list of Codex App Server could not be read: Codex client generation for '/Users/normy/autobyteus_org/auto: expected { …(4) } to match object { …(3) }
+ ❯ tests/e2e/runtime/application-reload-repair.e2e.test.ts:147:51
+ FAIL  tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs) > RE-03 imported while Codex is signed out, it is quarantined with the reason; after sign-in a repair returns it to ACTIVE (AC-003, AC-004)
+AssertionError: expected 'Application \'bundle-app__6170706c696…' to contain 'Codex App Server authentication is un…'
+ ❯ tests/e2e/runtime/application-reload-repair.e2e.test.ts:165:47
+ FAIL  tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs) > RE-04 after the worker process crashes, a repair resets it to stopped and the application is usable again (MP-001)
+AssertionError: {"detail":"Application 'bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324673656d616e7469632d6d656d6f72792d666f722d65766572792d6167656e742532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f' is currently quarantined: Application setup is required: brief-studio/slot:draftingTeam: The model list of Codex App Server could not be read: Codex client generation for '/Users/normy/autobyteus_org/auto: expected undefined to be 'ready' // Object.is equality
+ ❯ tests/e2e/runtime/application-reload-repair.e2e.test.ts:180:49
+ FAIL  tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs) > RE-05 a run event recorded while the application is quarantined is dispatched after a repair makes it ACTIVE (BEH-002)
+TypeError: Cannot read properties of undefined (reading 'data')
+ ❯ tests/e2e/runtime/application-reload-repair.e2e.test.ts:200:41
+ Test Files  1 failed | 2 passed (3)
+      Tests  5 failed | 7 passed (12)
+exit 1
+## application-reload-repair alone | 2026-11-20T16:48:51Z | load { 55.51 55.98 55.12 }
+ ✓ tests/e2e/runtime/application-reload-repair.e2e.test.ts (5 tests) 93413ms
+     ✓ RE-01 an ACTIVE application stays usable after a package reload (AC-001)  4903ms
+     ✓ RE-02 a repair of an ACTIVE application answers ACTIVE and keeps it usable (AC-002)  999ms
+     ✓ RE-03 imported while Codex is signed out, it is quarantined with the reason; after sign-in a repair returns it to ACTIVE (AC-003, AC-004)  939ms
+     ✓ RE-04 after the worker process crashes, a repair resets it to stopped and the application is usable again (MP-001)  1159ms
+     ✓ RE-05 a run event recorded while the application is quarantined is dispatched after a repair makes it ACTIVE (BEH-002)  1541ms
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+exit 0

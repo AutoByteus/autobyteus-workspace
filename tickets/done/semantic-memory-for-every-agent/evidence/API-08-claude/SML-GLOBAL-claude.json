@@ -1,0 +1,17 @@
+{
+  "writeRun": "sm_live_writer_claude_2be448fc_37e5db33d6aa4e5eacf87a0ca6309e36",
+  "readRun": "sm_live_keeper_claude_2be448fc_7c9ca3e2fb454dab8f0039aefa6e956f",
+  "written": "SAVED",
+  "writeTools": [
+    "Bash {\"command\":\"mkdir -p /Users/normy/.autobyteus-e2e/semantic-memory-live-RBG6gK/app-data/memory/semantic-global && cat > /Users/normy/.autobyteus-e2e/semantic-memory-live-RBG6gK/app-data/memory/semantic-global/product-release-name.md <<'EOF'\\n# Product release name\\n\\n- The product's release name is *"
+  ],
+  "files": {
+    "product-release-name.md": "# Product release name\n\n- The product's release name is **SMGLOBAL-CLAUDE-2be448fc**.\n- Recorded: 2026-11-20 by sm live writer claude 2be448fc.\n"
+  },
+  "read": "SMGLOBAL-CLAUDE-2be448fc",
+  "readTools": [
+    "Glob {\"pattern\":\"**/*\",\"path\":\"/Users/normy/.autobyteus-e2e/semantic-memory-live-RBG6gK/app-data/memory/semantic-global\"}",
+    "Read {\"file_path\":\"/Users/normy/.autobyteus-e2e/semantic-memory-live-RBG6gK/app-data/memory/semantic-global/product-release-name.md\"}"
+  ],
+  "approvals": []
+}

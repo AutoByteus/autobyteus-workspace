@@ -32,5 +32,4 @@ export const personalEditsOf = (data: AgentDefinitionUpdate): PersonalSettingEdi
   ...(data.skillNames !== undefined && data.skillNames !== null ? { skillNames: data.skillNames } : {}),
   ...(data.avatarUrl !== undefined ? { avatarUrl: normalizeOptionalString(data.avatarUrl) } : {}),
   ...(data.defaultLaunchConfig !== undefined ? { defaultLaunchConfig: normalizeDefaultLaunchConfigInput(data.defaultLaunchConfig) ?? null } : {}),
-  ...(typeof data.semanticMemoryEnabled === "boolean" ? { semanticMemoryEnabled: data.semanticMemoryEnabled } : {}),
 });

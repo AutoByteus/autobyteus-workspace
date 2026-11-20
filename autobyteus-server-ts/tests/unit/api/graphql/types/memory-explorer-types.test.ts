@@ -1,13 +1,13 @@
 import "reflect-metadata";
 import { describe, expect, it } from "vitest";
 import {
+  AgentEpisode,
+  AgentEpisodePage,
   AgentMemoryAttribution,
   AgentOrgRunMemoryPage,
   AgentOrgRunMemorySummary,
   AgentOrgWithMemoryPage,
   AgentOrgWithMemorySummary,
-  AgentRunMemoryPage,
-  AgentRunMemorySummary,
   AgentTeamRunMemoryPage,
   AgentTeamRunMemorySummary,
   AgentTeamWithMemoryPage,
@@ -16,6 +16,8 @@ import {
   AgentWithMemorySummary,
   CollaborationMemberMemoryTargetSummary,
   MemoryAvailabilitySummary,
+  MemoryGroupMember,
+  MemoryGroupMemberKind,
 } from "../../../../../src/api/graphql/types/memory-explorer-schema.js";
 
 describe("memory explorer graphql types", () => {
@@ -28,14 +30,13 @@ describe("memory explorer graphql types", () => {
     return summary;
   };
 
-  it("supports assigning agent home and run detail fields", () => {
+  it("supports assigning agent cards, episodes and group members", () => {
     const agent = new AgentWithMemorySummary();
     agent.attribution = AgentMemoryAttribution.DEFINITION;
     agent.agentDefinitionId = "codex";
     agent.displayName = "Codex";
     agent.stableId = "codex";
     agent.runCount = 2;
-    agent.memory = memory();
 
     const agentsPage = new AgentWithMemoryPage();
     agentsPage.entries = [agent];
@@ -44,20 +45,28 @@ describe("memory explorer graphql types", () => {
     agentsPage.pageSize = 25;
     agentsPage.totalPages = 1;
 
-    const run = new AgentRunMemorySummary();
-    run.runId = "run-1";
-    run.agentDefinitionId = "codex";
-    run.memory = memory();
+    const episode = new AgentEpisode();
+    episode.runId = "run-1";
+    episode.place = { kind: "TEAM", name: "Software Engineering Team" };
+    episode.memory = memory();
 
-    const runsPage = new AgentRunMemoryPage();
-    runsPage.entries = [run];
-    runsPage.total = 1;
-    runsPage.page = 1;
-    runsPage.pageSize = 25;
-    runsPage.totalPages = 1;
+    const episodesPage = new AgentEpisodePage();
+    episodesPage.entries = [episode];
+    episodesPage.total = 1;
+    episodesPage.page = 1;
+    episodesPage.pageSize = 25;
+    episodesPage.totalPages = 1;
+
+    const member = new MemoryGroupMember();
+    member.kind = MemoryGroupMemberKind.AGENT;
+    member.id = "codex";
+    member.name = "Codex";
+    member.shared = true;
+    member.memberCount = null;
 
     expect(agentsPage.entries[0]?.displayName).toBe("Codex");
-    expect(runsPage.entries[0]?.runId).toBe("run-1");
+    expect(episodesPage.entries[0]?.place?.name).toBe("Software Engineering Team");
+    expect(member.shared).toBe(true);
   });
 
   it("supports assigning team home, team run, and member target fields", () => {
@@ -66,6 +75,7 @@ describe("memory explorer graphql types", () => {
     team.teamDefinitionName = "Software Engineering Team";
     team.teamRunCount = 3;
     team.memberMemoryCount = 6;
+    team.memberCount = 4;
     team.memory = memory();
 
     const teamsPage = new AgentTeamWithMemoryPage();
@@ -105,6 +115,7 @@ describe("memory explorer graphql types", () => {
     org.orgDefinitionName = "Software Development Department";
     org.orgRunCount = 2;
     org.memberMemoryCount = 9;
+    org.memberCount = 3;
     org.memory = memory();
 
     const orgsPage = new AgentOrgWithMemoryPage();

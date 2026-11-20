@@ -27,7 +27,6 @@ export const GetAgentDefinitions = gql`
       ownerPackageId
       ownerLocalApplicationId
       internal
-      semanticMemoryEnabled
       semanticMemoryPath
       personalSettings
       personalSettingsBase

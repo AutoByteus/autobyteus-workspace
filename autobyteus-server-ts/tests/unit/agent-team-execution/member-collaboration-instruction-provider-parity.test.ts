@@ -35,10 +35,10 @@ describe("member collaboration instruction provider parity", () => {
     });
     const expected = renderCollaborationSections(memberExecutionContext);
     const providerSharedPrompt = composeSharedCarpenterPrompt({
-      semanticMemoryPath: null, agentDefinition, memberExecutionContext, longRunningCommandSection: CODEX_LONG_RUNNING_COMMAND_SECTION,
+      semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global", agentDefinition, memberExecutionContext, longRunningCommandSection: CODEX_LONG_RUNNING_COMMAND_SECTION,
     });
     const nativeAutoByteusPrompt = composeNativeAutoByteusPrompt({
-      semanticMemoryPath: null,
+      semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global",
       agentDefinition,
       workspaceRootPath: "/tmp/classroom-workspace",
       memberExecutionContext,
@@ -73,10 +73,10 @@ describe("member collaboration instruction provider parity", () => {
 
   it("does not inject the collaboration sections or intrinsic tools for standalone Agents without a member context", () => {
     const providerSharedPrompt = composeSharedCarpenterPrompt({
-      semanticMemoryPath: null, agentDefinition, memberExecutionContext: null, longRunningCommandSection: CODEX_LONG_RUNNING_COMMAND_SECTION,
+      semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global", agentDefinition, memberExecutionContext: null, longRunningCommandSection: CODEX_LONG_RUNNING_COMMAND_SECTION,
     });
     const nativeAutoByteusPrompt = composeNativeAutoByteusPrompt({
-      semanticMemoryPath: null,
+      semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global",
       agentDefinition,
       workspaceRootPath: "/tmp/standalone-workspace",
       memberExecutionContext: null,

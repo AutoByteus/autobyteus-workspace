@@ -1,0 +1,19 @@
+# API-05 round 2 (with API-16 SM-12) scripted-AGY e2e: agent-semantic-memory, internal-agents, memory-explorer-graphql | commit 5edda27b2d + working-tree SM-12/IC-03 | 2026-11-20T16:43:11Z | load { 57.08 54.14 54.05 }
+SEMANTIC_MEMORY_PREPARE_FAILED {
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts (10 tests) 85874ms
+       ✓ SM-04 (AC-001, AC-009): a run under Project A is told both folders after the Project section; both exist outside the workspace and the package  51604ms
+       ✓ SM-05: a run under Project B, the agent as a shared team member and as a delegated copy are told the same folders; every other agent its own and the same global one  1842ms
+       ✓ SM-06: a team-local agent with the same local name has its own folder  392ms
+       ✓ SM-07 (AC-001): an agent whose package file says false gets both sections; the folders' files are kept across runs  336ms
+       ✓ SM-08 (REQ-010): deleting the agent leaves its semantic memory folder and the global folder  4037ms
+       ✓ SM-12 (AC-014, DEC-015): when an agent's folder cannot be made, its run still starts, told only the global folder, and the log names the agent and the reason  3989ms
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-explorer-bCmIO9/.env
+ ✓ tests/e2e/memory/memory-explorer-graphql.e2e.test.ts (3 tests) 210ms
+SEND_MESSAGE command not accepted for agent run ia_scout_530406_ba2dff2331294545b5ef151bfc577954: [COLLABORATOR_ADD_FAILED] 'e2e-internal-helper' is not a shared Agent that can be mentioned.
+ ✓ tests/e2e/agent-definitions/internal-agents.e2e.test.ts (5 tests) 44548ms
+     ✓ IA-01 the agent list leaves the internal agent out while hidden and lists it with internal: true once shown; it opens by ID either way (AC-001, AC-005, AC-007, REQ-008)  4274ms
+     ✓ IA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)  5643ms
+     ✓ IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)  1274ms
+ Test Files  3 passed (3)
+      Tests  18 passed (18)
+exit 0

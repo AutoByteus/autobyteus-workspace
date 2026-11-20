@@ -1,0 +1,7 @@
+# API-05b rerun SM-04 and IA-02 | commit 2e5f786091 | 2026-11-20T13:26:43Z | load 53.87 69.05 67.70
+ × tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > run start paths (scripted AGY CLI) > SM-04 (AC-001, AC-009): a run under Project A is told both folders after the Project section; both exist outside the workspace and the package 10ms
+ ✓ tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-02 saving the internal agent keeps "internal": true in its file; saving a normal agent adds no key (AC-006) 60ms
+Error: [{"message":"Variable \"$input\" got invalid value { workspaceRootPath: \"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-2iL6Ya/workspace\", llmModelIdentifier: \"gemini-3.8-flash-low\", llmConfig: null, autoExecuteTools: true, runtimeKind: \"antigravity_cli\", projectId: \"project_b926ff14-139e-449d-aff1-7f21ddd1b8f8\" }; Field \"agentDefinitionId\" of required type \"String!\" was not provided.","locations":[{"line":1,"column":10}]}]
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 1 passed | 12 skipped (14)
+exit 1

@@ -120,13 +120,9 @@ export class AgentDefinition {
   @Field(() => Boolean)
   internal!: boolean;
 
-  /** The agent has a semantic memory (its own folder of reusable knowledge, shared by all its runs). */
-  @Field(() => Boolean)
-  semanticMemoryEnabled!: boolean;
-
-  /** The absolute semantic memory folder on this node; null when semantic memory is off. */
-  @Field(() => String, { nullable: true })
-  semanticMemoryPath!: string | null;
+  /** The agent's absolute semantic memory folder on this node (its own reusable knowledge, shared by all its runs). */
+  @Field(() => String)
+  semanticMemoryPath!: string;
 
   /** Set when the definition is served from its last working version; names the file and reason. */
   @Field(() => DefinitionLoadIssue, { nullable: true })
@@ -187,9 +183,6 @@ export class CreateAgentDefinitionInput {
 
   @Field(() => GraphqlDefaultLaunchConfigInput, { nullable: true })
   defaultLaunchConfig?: GraphqlDefaultLaunchConfigInput | null;
-
-  @Field(() => Boolean, { nullable: true })
-  semanticMemoryEnabled?: boolean | null;
 }
 
 @InputType()
@@ -241,9 +234,6 @@ export class UpdateAgentDefinitionInput {
 
   @Field(() => GraphqlDefaultLaunchConfigInput, { nullable: true })
   defaultLaunchConfig?: GraphqlDefaultLaunchConfigInput | null;
-
-  @Field(() => Boolean, { nullable: true })
-  semanticMemoryEnabled?: boolean | null;
 }
 
 @ObjectType()
@@ -329,7 +319,6 @@ export class AgentDefinitionResolver {
         skillNames: input.skillNames ?? undefined,
         skillScope: input.skillScope ?? undefined,
         defaultLaunchConfig: toDomainDefaultLaunchConfig(input.defaultLaunchConfig),
-        semanticMemoryEnabled: input.semanticMemoryEnabled ?? undefined,
       });
       return await AgentDefinitionConverter.toGraphql(domainDefinition);
     } catch (error) {

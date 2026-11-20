@@ -2,6 +2,8 @@ import { SkillService } from "../skills/services/skill-service.js";
 import { appConfigProvider } from "../config/app-config-provider.js";
 import { FileSystemWorkspace } from "./filesystem-workspace.js";
 import { SkillWorkspace } from "./skill-workspace.js";
+import { SemanticMemoryWorkspace, isSemanticMemoryWorkspaceId } from "./semantic-memory-workspace.js";
+import { WorkspaceAccessError } from "./workspace-access-error.js";
 import { TempWorkspace } from "./temp-workspace.js";
 import type { WorkspaceInput } from "./workspace-input.js";
 import {
@@ -131,6 +133,12 @@ export class WorkspaceManager {
       }
     }
 
+    if (isSemanticMemoryWorkspaceId(workspaceId)) {
+      const semanticWorkspace = await SemanticMemoryWorkspace.open(workspaceId);
+      this.activeWorkspaces.set(workspaceId, semanticWorkspace);
+      return semanticWorkspace;
+    }
+
     const filesystemRootPath = await this.workspaceRegistryStore.getRootPathByWorkspaceId(
       workspaceId,
     );
@@ -139,6 +147,17 @@ export class WorkspaceManager {
     }
 
     throw new Error(`Workspace '${workspaceId}' not found`);
+  }
+
+  /**
+   * The workspace a run will work in. A read-only workspace (the Memory page's semantic memory view) is refused
+   * `WORKSPACE_NOT_RUNNABLE`, also before it would be created; every runtime resolves a run's workspace ID here.
+   */
+  async getOrCreateRunWorkspace(workspaceId: string): Promise<FileSystemWorkspace> {
+    if (isSemanticMemoryWorkspaceId(workspaceId)) throw notRunnable(workspaceId);
+    const workspace = await this.getOrCreateWorkspace(workspaceId);
+    if (workspace.readOnly) throw notRunnable(workspaceId);
+    return workspace;
   }
 
   async invalidateStaleSkillWorkspaces(workspaceId?: string): Promise<void> {
@@ -160,9 +179,9 @@ export class WorkspaceManager {
   }
 
   /**
-   * The Workspaces list: registered and active workspaces, except internal workspaces while internal agents are hidden
-   * (autobyteus-32 REQ-008; the autobyteus-308 setting, read on each list). Opening a run by ID still resolves its
-   * workspace (`getOrCreateWorkspace`).
+   * The Workspaces list: registered and active workspaces, never a semantic memory view's (autobyteus-554), and no
+   * internal workspaces while internal agents are hidden (autobyteus-32 REQ-008; the autobyteus-308 setting, read on
+   * each list). Opening a run by ID still resolves its workspace (`getOrCreateRunWorkspace`).
    */
   async listVisibleWorkspaces(): Promise<FileSystemWorkspace[]> {
     const registeredWorkspaces = await this.listRegisteredFilesystemWorkspaces();
@@ -170,7 +189,9 @@ export class WorkspaceManager {
     const transientActiveWorkspaces = Array.from(this.activeWorkspaces.values()).filter(
       (workspace) => !registeredIds.has(workspace.workspaceId),
     );
-    const all = [...registeredWorkspaces, ...transientActiveWorkspaces];
+    const all = [...registeredWorkspaces, ...transientActiveWorkspaces].filter(
+      (workspace) => workspace.metadata.kind !== "semantic_memory",
+    );
     if (readShowInternalAgents()) return all;
     return all.filter((workspace) => !this.internalWorkspaces.isInternal(workspace.getBasePath()));
   }
@@ -356,6 +377,9 @@ export class WorkspaceManager {
     }
   }
 }
+
+const notRunnable = (workspaceId: string): WorkspaceAccessError =>
+  new WorkspaceAccessError("WORKSPACE_NOT_RUNNABLE", `Workspace '${workspaceId}' is read-only and cannot be a run's workspace.`);
 
 let cachedWorkspaceManager: WorkspaceManager | null = null;
 

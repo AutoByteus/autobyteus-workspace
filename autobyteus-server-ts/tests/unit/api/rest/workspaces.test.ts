@@ -25,7 +25,7 @@ describe("REST workspaces routes", () => {
     fs.writeFileSync(filePath, "hello world", "utf-8");
 
     const workspace = {
-      getAbsolutePath: vi.fn().mockReturnValue(filePath),
+      resolveReadablePath: vi.fn().mockResolvedValue(filePath),
     };
     mockWorkspaceManager.getWorkspaceById.mockReturnValue(workspace);
 
@@ -39,7 +39,7 @@ describe("REST workspaces routes", () => {
 
     expect(response.statusCode).toBe(200);
     expect(response.payload).toBe("hello world");
-    expect(workspace.getAbsolutePath).toHaveBeenCalledWith("hello.txt");
+    expect(workspace.resolveReadablePath).toHaveBeenCalledWith("hello.txt");
 
     fs.rmSync(tempDir, { recursive: true, force: true });
   });
@@ -67,7 +67,7 @@ describe("REST workspaces routes", () => {
     fs.writeFileSync(assetPath, "console.log('ok');", "utf-8");
 
     const workspace = {
-      getAbsolutePath: vi.fn().mockReturnValue(assetPath),
+      resolveReadablePath: vi.fn().mockResolvedValue(assetPath),
     };
     mockWorkspaceManager.getWorkspaceById.mockReturnValue(workspace);
 
@@ -81,16 +81,14 @@ describe("REST workspaces routes", () => {
 
     expect(response.statusCode).toBe(200);
     expect(response.payload).toContain("console.log");
-    expect(workspace.getAbsolutePath).toHaveBeenCalledWith("static/app.js");
+    expect(workspace.resolveReadablePath).toHaveBeenCalledWith("static/app.js");
 
     fs.rmSync(tempDir, { recursive: true, force: true });
   });
 
   it("returns 400 for workspace path violations", async () => {
     const workspace = {
-      getAbsolutePath: vi.fn().mockImplementation(() => {
-        throw new Error("Access denied: Path resolves outside the workspace boundary.");
-      }),
+      resolveReadablePath: vi.fn().mockRejectedValue(new Error("Access denied: Path resolves outside the workspace boundary.")),
     };
     mockWorkspaceManager.getWorkspaceById.mockReturnValue(workspace);
 
@@ -121,7 +119,7 @@ describe("REST workspaces routes", () => {
       );
       fs.writeFileSync(path.join(root, "site", "style.css"), "h1 { color: teal; }");
       mockWorkspaceManager.getWorkspaceById.mockReturnValue({
-        getAbsolutePath: (relative: string) => {
+        resolveReadablePath: async (relative: string) => {
           if (relative === "escape/secret.html") {
             throw new Error("Access denied: Path resolves outside the workspace boundary.");
           }
@@ -196,7 +194,7 @@ it("preserves healthy media bytes, encoded paths, HTML and relative static asset
       fs.mkdirSync(path.dirname(path.join(root, relative)), { recursive: true });
       fs.writeFileSync(path.join(root, relative), fixture.bytes);
     }
-    mockWorkspaceManager.getWorkspaceById.mockReturnValue({ getAbsolutePath: (relative: string) => path.join(root, relative) });
+    mockWorkspaceManager.getWorkspaceById.mockReturnValue({ resolveReadablePath: async (relative: string) => path.join(root, relative) });
     await registerWorkspaceRoutes(app);
     for (const [relative, fixture] of files) {
       for (const url of [

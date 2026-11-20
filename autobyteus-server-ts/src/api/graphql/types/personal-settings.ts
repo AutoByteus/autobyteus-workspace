@@ -8,7 +8,6 @@ export enum PersonalSetting {
   SKILLS = "SKILLS",
   AVATAR = "AVATAR",
   DEFAULT_LAUNCH_CONFIG = "DEFAULT_LAUNCH_CONFIG",
-  SEMANTIC_MEMORY = "SEMANTIC_MEMORY",
 }
 registerEnumType(PersonalSetting, { name: "PersonalSetting" });
 

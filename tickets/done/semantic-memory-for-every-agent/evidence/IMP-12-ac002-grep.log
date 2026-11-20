@@ -1,0 +1,13 @@
+# IMP-12-ac002-grep.log
+# Command: see the first line of the log
+# Commit tested: cff2a6596a
+# Environment: macOS (Darwin 25.5), Node v22.23.1, pnpm; shared host, load average 60-130
+# Date: 2026-11-20
+# ----------------------------------------------------------------------
+$ git grep -n -i "semanticMemoryEnabled\|semantic_memory_enabled\|SEMANTIC_MEMORY_ENABLED" -- autobyteus-server-ts/src autobyteus-web ":!autobyteus-web/generated" ":!*__tests__*" ":!*.spec.ts" ":!*.test.ts" ":!autobyteus-web/tests"
+autobyteus-server-ts/src/agent-definition/providers/agent-definition-config.ts:78:      // Retired keys: nothing reads them, and a save drops them (`semanticMemoryEnabled`: every agent has semantic
+autobyteus-server-ts/src/agent-definition/providers/agent-definition-config.ts:80:      ([key]) => key !== "selfEvolution" && key !== "semanticMemoryEnabled"
+EXIT 0
+
+$ git grep -c (generated GraphQL)
+EXIT 1

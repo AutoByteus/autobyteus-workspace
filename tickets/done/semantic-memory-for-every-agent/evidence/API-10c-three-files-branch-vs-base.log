@@ -1,0 +1,57 @@
+## ec554-api-e2e-base (8430d9ef12) load 69.58 62.09 77.68
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP: selected default host executes equivalent compact m… 351ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-FILES: multipart bytes, saved ownership, typed deltas an… 1498ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected list_projects adapter … 9ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected create_project adapter… 65ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected update_project adapter… 97ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-AGG: public registration is not mkdir; failed aggregate … 186ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > E-005: selected HTTP and native Project create/patch save de… 509ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > E-006: path links retain descriptions; lists replace, blanks… 825ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CTX-E2E-001: context_files create/patch over MCP and native … 400ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CTX-E2E-002: invalid context_files fail with a path-naming e… 2825ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CLS-API-001: CANCELLED patch/ack, DONE<->CANCELLED, reopen, list filter, tool schemas, errors, G
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > TKD-API-001: keys as Task IDs, depends_on by key / any case … 4501ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > POF-API-001: part_of by key / any case / long ID, "" clears,… 3319ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CMT-API-001: update_task add_comment by key / any case / lon… 1224ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CMT-API-002: a parent's close names the part it could not cl… 385ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > TTL-API-001: a Task title is required, trimmed and kept whol… 2078ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > GET-API-001: get_project_task returns one Task in full by ke… 419ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > E-007: current Projects/Tasks/context/assignments/history/re… 629ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > answers models and Project indexes in one read-only document… 125ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > downloads the active model (Preparing with bytes, not cancel… 164ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > downloads another model ahead, refuses removal while it down… 41ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > switches the active model through the setting, prepares it a… 44ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > shows an unavailable model with its reason, and Retry prepar… 37ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > indexes a Project a few seconds after Task writes, with no s… 3149ms
+      Tests  24 passed | 5 skipped (29)
+## semantic-memory-for-every-agent (2e5f786091) load 59.89 61.31 76.11
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP: selected default host executes equivalent compact m… 1268ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-FILES: multipart bytes, saved ownership, typed deltas an… 457ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected list_projects adapter … 6ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected create_project adapter… 22ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected update_project adapter… 34ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-AGG: public registration is not mkdir; failed aggregate … 126ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > E-005: selected HTTP and native Project create/patch save de… 316ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > E-006: path links retain descriptions; lists replace, blanks… 483ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CTX-E2E-001: context_files create/patch over MCP and native … 289ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CTX-E2E-002: invalid context_files fail with a path-naming e… 606ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CLS-API-001: CANCELLED patch/ack, DONE<->CANCELLED, reopen, list filter, tool schemas, errors, G
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > TKD-API-001: keys as Task IDs, depends_on by key / any case … 2611ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > POF-API-001: part_of by key / any case / long ID, "" clears,… 2741ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CMT-API-001: update_task add_comment by key / any case / lon… 1164ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CMT-API-002: a parent's close names the part it could not cl… 409ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > TTL-API-001: a Task title is required, trimmed and kept whol… 1232ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > GET-API-001: get_project_task returns one Task in full by ke… 295ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > E-007: current Projects/Tasks/context/assignments/history/re… 320ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > answers models and Project indexes in one read-only document… 84ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > downloads the active model (Preparing with bytes, not cancel… 92ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > downloads another model ahead, refuses removal while it down… 20ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > switches the active model through the setting, prepares it a… 26ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > shows an unavailable model with its reason, and Retry prepar… 13ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > indexes a Project a few seconds after Task writes, with no s… 3135ms
+ ✓ tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs) > RE-01 an ACTIVE application stays usable after a packag
+ ✓ tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs) > RE-02 a repair of an ACTIVE application answers ACTIVE 
+ ✓ tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs) > RE-03 imported while Codex is signed out, it is quarant
+ ✓ tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs) > RE-04 after the worker process crashes, a repair resets
+ × tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs) > RE-05 a run event recorded while the application is quar
+      Tests  1 failed | 28 passed (29)

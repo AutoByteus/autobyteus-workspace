@@ -1,0 +1,466 @@
+# IMP-08-e2e-internal-agents.log
+# Command: env -i PATH HOME TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/agent-definitions/internal-agents.e2e.test.ts --no-watch
+# Commit tested: working tree later committed as 56b02294d0
+# Environment: macOS (Darwin 25.5), Node v22.23.1, pnpm; env -i with HOME, PATH, TMPDIR only; shared host, load average 60-130
+# Date: 2026-11-20
+# Note: the run before it failed IA-03 (and IA-04/05 after it): episodes come from the catalog after its 5 s quiet window; IA-03 now waits up to 60 s
+# ----------------------------------------------------------------------
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:73864) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/.env // tip: ◈ secrets for agents [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+AgentRunManager initialized.
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Node access: local control socket not opened. The node's local control socket path is 106 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/node-access/local-control.sock. Use a shorter data folder path.
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+AgentRunManager initialized.
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Agent Definition created successfully with ID: ia-normal-8fd872
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Agent Definition created successfully with ID: ia-scout-8fd872
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-01 the agent list leaves the internal agent out while hidden and lists it with internal: true once shown; it opens by ID either way (AC-001, AC-005, AC-007, REQ-008)
+Server setting 'AUTOBYTEUS_SHOW_INTERNAL_AGENTS' updated
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-01 the agent list leaves the internal agent out while hidden and lists it with internal: true once shown; it opens by ID either way (AC-001, AC-005, AC-007, REQ-008)
+Server setting 'AUTOBYTEUS_SHOW_INTERNAL_AGENTS' updated
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-02 saving the internal agent keeps "internal": true in its file; saving a normal agent adds no key (AC-006)
+Agent Definition with ID e2e-internal-helper updated successfully.
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-02 saving the internal agent keeps "internal": true in its file; saving a normal agent adds no key (AC-006)
+Agent Definition with ID ia-normal-8fd872 updated successfully.
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/workspace.
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+Created and registered workspace ID: agent_ws_d0f47b57ee151e2542cf67147fe782be389a758f60d88f9c5ac310af599040d8
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/workspace.
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+Reusing registered workspace ID: agent_ws_d0f47b57ee151e2542cf67147fe782be389a758f60d88f9c5ac310af599040d8
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+AGY compaction detection off for run e2e_internal_helper_284ce4bf3a2548bfb55fa26df0875de1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/e2e_internal_helper_284ce4bf3a2548bfb55fa26df0875de1/raw_traces_manifest.json
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+Agent websocket attached for run e2e_internal_helper_284ce4bf3a2548bfb55fa26df0875de1
+Created agent session d904146f-f0f8-4bac-b12a-574565cff81e for run e2e_internal_helper_284ce4bf3a2548bfb55fa26df0875de1
+Agent WebSocket connected: session=d904146f-f0f8-4bac-b12a-574565cff81e, run=e2e_internal_helper_284ce4bf3a2548bfb55fa26df0875de1
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/e2e_internal_helper_284ce4bf3a2548bfb55fa26df0875de1/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/e2e_internal_helper_284ce4bf3a2548bfb55fa26df0875de1/raw_traces_manifest.json
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/workspace.
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+Reusing registered workspace ID: agent_ws_d0f47b57ee151e2542cf67147fe782be389a758f60d88f9c5ac310af599040d8
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/workspace.
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+Reusing registered workspace ID: agent_ws_d0f47b57ee151e2542cf67147fe782be389a758f60d88f9c5ac310af599040d8
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+AGY compaction detection off for run ia_normal_8fd872_5a9237f2028d43c286c4a7591903995c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/ia_normal_8fd872_5a9237f2028d43c286c4a7591903995c/raw_traces_manifest.json
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+Agent websocket attached for run ia_normal_8fd872_5a9237f2028d43c286c4a7591903995c
+Created agent session 3e00edd2-ce4f-4337-bbb8-e93e34cbea73 for run ia_normal_8fd872_5a9237f2028d43c286c4a7591903995c
+Agent WebSocket connected: session=3e00edd2-ce4f-4337-bbb8-e93e34cbea73, run=ia_normal_8fd872_5a9237f2028d43c286c4a7591903995c
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/ia_normal_8fd872_5a9237f2028d43c286c4a7591903995c/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/e2e_internal_helper_284ce4bf3a2548bfb55fa26df0875de1/raw_traces_manifest.json
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+Server setting 'AUTOBYTEUS_SHOW_INTERNAL_AGENTS' updated
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)
+Server setting 'AUTOBYTEUS_SHOW_INTERNAL_AGENTS' updated
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/workspace.
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Reusing registered workspace ID: agent_ws_d0f47b57ee151e2542cf67147fe782be389a758f60d88f9c5ac310af599040d8
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/workspace.
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Reusing registered workspace ID: agent_ws_d0f47b57ee151e2542cf67147fe782be389a758f60d88f9c5ac310af599040d8
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+AGY compaction detection off for run ia_scout_8fd872_c443611e3f634536becdddb4c3114d49: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/ia_scout_8fd872_c443611e3f634536becdddb4c3114d49/raw_traces_manifest.json
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Agent websocket attached for run ia_scout_8fd872_c443611e3f634536becdddb4c3114d49
+Created agent session 7448ac30-b779-43e8-a1b9-cb549e517972 for run ia_scout_8fd872_c443611e3f634536becdddb4c3114d49
+Agent WebSocket connected: session=7448ac30-b779-43e8-a1b9-cb549e517972, run=ia_scout_8fd872_c443611e3f634536becdddb4c3114d49
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/ia_scout_8fd872_c443611e3f634536becdddb4c3114d49/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/ia_scout_8fd872_c443611e3f634536becdddb4c3114d49/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/ia_scout_8fd872_c443611e3f634536becdddb4c3114d49/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/ia_scout_8fd872_c443611e3f634536becdddb4c3114d49/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/ia_scout_8fd872_c443611e3f634536becdddb4c3114d49/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/ia_scout_8fd872_c443611e3f634536becdddb4c3114d49/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/ia_scout_8fd872_c443611e3f634536becdddb4c3114d49/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/ia_scout_8fd872_c443611e3f634536becdddb4c3114d49/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+SEND_MESSAGE command not accepted for agent run ia_scout_8fd872_c443611e3f634536becdddb4c3114d49: [COLLABORATOR_ADD_FAILED] 'e2e-internal-helper' is not a shared Agent that can be mentioned.
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Server setting 'AUTOBYTEUS_SHOW_INTERNAL_AGENTS' updated
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/ia_scout_8fd872_c443611e3f634536becdddb4c3114d49/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/ia_scout_8fd872_c443611e3f634536becdddb4c3114d49/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/ia_scout_8fd872_c443611e3f634536becdddb4c3114d49/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/ia_scout_8fd872_c443611e3f634536becdddb4c3114d49/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/ia_scout_8fd872_c443611e3f634536becdddb4c3114d49/raw_traces_manifest.json
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/workspace.
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Reusing registered workspace ID: agent_ws_d0f47b57ee151e2542cf67147fe782be389a758f60d88f9c5ac310af599040d8
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/ia_scout_8fd872_c443611e3f634536becdddb4c3114d49/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/ia_scout_8fd872_c443611e3f634536becdddb4c3114d49/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/ia_scout_8fd872_c443611e3f634536becdddb4c3114d49/raw_traces_manifest.json
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/workspace.
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Reusing registered workspace ID: agent_ws_d0f47b57ee151e2542cf67147fe782be389a758f60d88f9c5ac310af599040d8
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/ia_scout_8fd872_c443611e3f634536becdddb4c3114d49/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/ia_scout_8fd872_c443611e3f634536becdddb4c3114d49/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/ia_scout_8fd872_c443611e3f634536becdddb4c3114d49/raw_traces_manifest.json
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+AGY compaction detection off for run e2e_internal_helper_b0644f2c0b0e425ca49365967bb12cb6: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/e2e_internal_helper_b0644f2c0b0e425ca49365967bb12cb6/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/ia_scout_8fd872_c443611e3f634536becdddb4c3114d49/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/ia_scout_8fd872_c443611e3f634536becdddb4c3114d49/raw_traces_manifest.json
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Server setting 'AUTOBYTEUS_SHOW_INTERNAL_AGENTS' updated
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/ia_scout_8fd872_c443611e3f634536becdddb4c3114d49/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/internal-agents-e2e-IH0ddR/memory/agents/ia_scout_8fd872_c443611e3f634536becdddb4c3114d49/raw_traces_manifest.json
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Closed agent session 7448ac30-b779-43e8-a1b9-cb549e517972
+Agent WebSocket disconnected: 7448ac30-b779-43e8-a1b9-cb549e517972
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Closed agent session 3e00edd2-ce4f-4337-bbb8-e93e34cbea73
+Agent WebSocket disconnected: 3e00edd2-ce4f-4337-bbb8-e93e34cbea73
+
+stdout | tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Closed agent session d904146f-f0f8-4bac-b12a-574565cff81e
+Agent WebSocket disconnected: d904146f-f0f8-4bac-b12a-574565cff81e
+
+ ✓ tests/e2e/agent-definitions/internal-agents.e2e.test.ts (5 tests) 14671ms
+     ✓ IA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)  5957ms
+     ✓ IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)  1502ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  13:33:21
+   Duration  57.57s (transform 32.82s, setup 149ms, import 40.98s, tests 14.67s, environment 0ms)
+

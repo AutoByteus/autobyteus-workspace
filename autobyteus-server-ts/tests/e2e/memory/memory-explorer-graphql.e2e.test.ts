@@ -9,6 +9,12 @@ import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
+import {
+  createEpisodicCatalog,
+  releaseProcessEpisodicCatalog,
+  setProcessEpisodicCatalog,
+  type EpisodicCatalog,
+} from "../../../src/agent-episodic-catalog/services/episodic-catalog.js";
 
 const touch = (filePath: string, mtime: number) => {
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
@@ -53,6 +59,19 @@ describe("Memory explorer GraphQL e2e", () => {
     }
   });
 
+  /** As a composition root does (autobyteus-554): this memory folder's catalog, started and bound for the resolvers. */
+  const composeCatalog = async (): Promise<EpisodicCatalog> => {
+    const catalog = createEpisodicCatalog({
+      memoryDir,
+      journals: { readJournalSpans: async () => ({ kind: "none" }), onJournalChanged: () => () => undefined },
+      tasks: { currentTaskOf: () => null },
+    });
+    setProcessEpisodicCatalog(catalog);
+    catalog.start({ taskTitles: { taskTitleOf: async () => null } });
+    await catalog.whenStartPassDone();
+    return catalog;
+  };
+
   const execGraphql = async <T>(query: string, variables?: Record<string, unknown>): Promise<T> => {
     const result = await graphql({ schema, source: query, variableValues: variables });
     if (result.errors?.length) {
@@ -76,7 +95,7 @@ describe("Memory explorer GraphQL e2e", () => {
     });
   };
 
-  it("lists agents with memory and selected-agent runs through BFF queries", async () => {
+  it("lists the agents and one agent's episodes from the episodic catalog through BFF queries (autobyteus-554)", async () => {
     const alphaRun = `gql-memory-alpha-${Date.now()}`;
     const betaRun = `gql-memory-beta-${Date.now()}`;
     createdAgentRunIds.push(alphaRun, betaRun);
@@ -84,39 +103,53 @@ describe("Memory explorer GraphQL e2e", () => {
     await writeAgentMetadata(betaRun, "gql-memory-beta-agent");
     touch(path.join(memoryDir, "agents", alphaRun, "raw_traces_active.jsonl"), 4000000000);
     touch(path.join(memoryDir, "agents", betaRun, "raw_traces_active.jsonl"), 4000000100);
+    const catalog = await composeCatalog();
+    try {
+      const agentsData = await execGraphql<{
+        listAgentsWithMemory: { entries: Array<{ agentDefinitionId: string; runCount: number }> };
+      }>(`query ListAgentsWithMemory($search: String!) {
+        listAgentsWithMemory(search: $search, page: 1, pageSize: 10) { entries { attribution agentDefinitionId displayName runCount latestMemoryAt } total }
+      }`, { search: "gql-memory" });
+      expect(agentsData.listAgentsWithMemory.entries.map((entry) => [entry.agentDefinitionId, entry.runCount]).sort()).toEqual([
+        ["gql-memory-alpha-agent", 1],
+        ["gql-memory-beta-agent", 1],
+      ]);
 
-    const agentsQuery = `
-      query ListAgentsWithMemory($search: String!) {
-        listAgentsWithMemory(search: $search, page: 1, pageSize: 10) {
-          entries { attribution agentDefinitionId displayName runCount memory { hasRawTraces } }
+      const episodesData = await execGraphql<{
+        listAgentEpisodes: { entries: Array<{ runId: string; subject: { kind: string; runId: string }; place: unknown; memory: { hasRawTraces: boolean } }>; total: number };
+      }>(`query ListAgentEpisodes($selector: AgentWithMemorySelectorInput!) {
+        listAgentEpisodes(selector: $selector, page: 1, pageSize: 10) {
+          entries { runId subject { kind runId agentDefinitionId } place { kind name } summary taskTitle workspaceRootPath lastActivityAt memory { hasRawTraces } }
           total
         }
-      }
-    `;
-    const agentsData = await execGraphql<{
-      listAgentsWithMemory: { entries: Array<{ agentDefinitionId: string; runCount: number }> };
-    }>(agentsQuery, { search: "gql-memory" });
+      }`, { selector: { attribution: "DEFINITION", agentDefinitionId: "gql-memory-alpha-agent" } });
+      expect(episodesData.listAgentEpisodes.total).toBe(1);
+      expect(episodesData.listAgentEpisodes.entries[0]).toMatchObject({
+        runId: alphaRun, subject: { kind: "AGENT", runId: alphaRun }, place: null, memory: { hasRawTraces: true },
+      });
+    } finally {
+      releaseProcessEpisodicCatalog(catalog);
+      await catalog.stop();
+    }
+  });
 
-    expect(agentsData.listAgentsWithMemory.entries.map((entry) => entry.agentDefinitionId).sort()).toEqual([
-      "gql-memory-alpha-agent",
-      "gql-memory-beta-agent",
-    ]);
+  it("answers the folder states without creating a folder, and an empty member list for an unknown team (autobyteus-554)", async () => {
+    const data = await execGraphql<{
+      agentSemanticMemoryFolder: { folderPath: string; exists: boolean; isEmpty: boolean };
+      globalSemanticMemoryFolder: { folderPath: string; exists: boolean; isEmpty: boolean };
+      listMemoryGroupMembers: unknown[];
+    }>(`query {
+      agentSemanticMemoryFolder(agentDefinitionId: "gql-memory-alpha-agent") { folderPath exists isEmpty }
+      globalSemanticMemoryFolder { folderPath exists isEmpty }
+      listMemoryGroupMembers(kind: TEAM, definitionId: "gql-memory-no-team") { kind id name shared memberCount }
+    }`);
+    expect(data.agentSemanticMemoryFolder).toEqual({ folderPath: path.join(memoryDir, "semantic", "gql-memory-alpha-agent"), exists: false, isEmpty: true });
+    expect(data.globalSemanticMemoryFolder).toEqual({ folderPath: path.join(memoryDir, "semantic-global"), exists: false, isEmpty: true });
+    expect(fs.existsSync(path.join(memoryDir, "semantic", "gql-memory-alpha-agent"))).toBe(false);
+    expect(data.listMemoryGroupMembers).toEqual([]);
+  });
 
-    const runsQuery = `
-      query ListAgentRunsWithMemory($selector: AgentWithMemorySelectorInput!) {
-        listAgentRunsWithMemory(selector: $selector, page: 1, pageSize: 10) {
-          entries { runId memory { hasRawTraces } }
-          total
-        }
-      }
-    `;
-    const runsData = await execGraphql<{
-      listAgentRunsWithMemory: { entries: Array<{ runId: string }>; total: number };
-    }>(runsQuery, {
-      selector: { attribution: "DEFINITION", agentDefinitionId: "gql-memory-alpha-agent" },
-    });
-
-    expect(runsData.listAgentRunsWithMemory.entries).toHaveLength(1);
-    expect(runsData.listAgentRunsWithMemory.entries[0]?.runId).toBe(alphaRun);
+  it("refuses the agents list when no composition root bound the catalog (EPISODIC_CATALOG_NOT_COMPOSED)", async () => {
+    await expect(execGraphql(`query { listAgentsWithMemory(page: 1, pageSize: 10) { total } }`)).rejects.toThrow("EPISODIC_CATALOG_NOT_COMPOSED");
   });
 });

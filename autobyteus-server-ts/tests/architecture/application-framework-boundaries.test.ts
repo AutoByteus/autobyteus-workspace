@@ -3005,6 +3005,9 @@ describe("application framework architecture boundaries", () => {
       "autobyteus-server-ts/src/agent-execution/services/agent-run-identity-allocator.ts",
       // Default factory of the injectable agent-definition lookup port (3e3a7b08cc); the service itself takes the port.
       "autobyteus-server-ts/src/agent-memory/services/agent-memory-explorer-service.ts",
+      // Default factory of the Memory page's group-definitions port (autobyteus-554): agent names and team definitions.
+      "autobyteus-server-ts/src/agent-memory/services/memory-group-members.ts",
+      "autobyteus-server-ts/src/agent-memory/services/memory-group-members.ts",
       "autobyteus-server-ts/src/agent-org-definition/services/agent-org-definition-service.ts",
       "autobyteus-server-ts/src/agent-org-definition/services/agent-org-definition-service.ts",
       "autobyteus-server-ts/src/agent-packages/services/agent-package-service.ts",

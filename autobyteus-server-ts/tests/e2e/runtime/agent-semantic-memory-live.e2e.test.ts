@@ -17,24 +17,25 @@ import { chooseLiveModel } from "../helpers/live-model-choice.js";
 import { agentStreamFramesOf, waitConnected } from "../helpers/agent-stream-frames.js";
 
 /**
- * Agent semantic memory with real runtimes (agent-semantic-memory, Task autobyteus-12; AC-001..AC-005, REQ-006).
+ * Semantic memory with real runtimes (agent-semantic-memory, Task autobyteus-12; autobyteus-554: every agent, and the
+ * node's global folder, AC-001, AC-009).
  *
- * An agent with semantic memory is told its folder only through its instructions. Through the real Studio server
+ * Every agent is told its folder and the global folder only through its instructions. Through the real Studio server
  * (GraphQL definitions, Projects and runs, the agent and team WebSockets) each enabled runtime:
  *  - SML-WRITE (AC-001, AC-002): a run under Project A saves a codeword "in its semantic memory"; the file is on disk in
  *    `<data>/memory/semantic/<agent>/` afterwards, without a sandbox denial, and the instructions the runtime received
  *    hold the contract's §2 paragraph with that folder.
  *  - SML-READ (AC-003): a new run under Project B answers the codeword from its semantic memory.
- * Codex also (auto-execute off: `workspace-write` + `on-request`, the case the writable root exists for):
- *  - the wire `thread/start` carries `sandbox_workspace_write.writable_roots = [folder]`; no approval is asked for the
+ *  - SML-GLOBAL (AC-009): another agent's run writes a fact into the global folder; the keeper's new run reads it.
+ * Codex also (auto-execute off: `workspace-write` + `on-request`, the case the writable roots exist for):
+ *  - the wire `thread/start` carries `sandbox_workspace_write.writable_roots = [folder, global folder]`; no approval is asked for the
  *    memory write, while a write elsewhere outside the workspace asks one (denied; the file is not created) (QR-002);
  *  - after terminate and restore, `thread/resume` carries the same folder (REQ-009);
  *  - SML-CODEX-INTEGRATION: an agent that also has an imported integration's skill (no token connected: the proxy
  *    answers without GitHub) reaches the loopback proxy from its shell and writes its memory in the same run; the wire
- *    object is `{ network_access: true, writable_roots: [folder] }`;
- *  - SML-CODEX-OFF (AC-005): an agent without the setting: `config` keys exactly `["mcp_servers"]`, no section, no folder;
+ *    object is `{ network_access: true, writable_roots: [folder, global folder] }`;
  *  - SML-CODEX-TEAM (AC-004): the agent as a shared team member reads the codeword.
- * Claude also: the CLI gets `--add-dir <folder>`; SML-CLAUDE-APPROVALS with auto-execute off: reading and writing the
+ * Claude also: the CLI gets `--add-dir <folder>` and `--add-dir <global folder>`; SML-CLAUDE-APPROVALS with auto-execute off: reading and writing the
  * memory asks no approval the same operation in the workspace does not ask, and reading a file outside both does ask.
  *
  * The recorded wire: for Codex and Claude the suite points CODEX_APP_SERVER_COMMAND / CLAUDE_CODE_EXECUTABLE_PATH (and
@@ -85,7 +86,9 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /** semantic-memory-prompt-contract.md §2, the paragraph, with the folder (copied from the contract, not the source). */
 const paragraph = (folder: string) => `Your semantic memory is the folder \`${folder}\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.`;
-const section = (folder: string) => `## Semantic Memory\n\n${paragraph(folder)}`;
+/** DEC-013 (autobyteus-554), with the global folder (copied from the requirements, not the source). */
+const globalSection = (folder: string) => `## Global Semantic Memory\n\nThe global semantic memory of this node is the folder \`${folder}\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.`;
+const section = (folder: string, global: string) => `## Semantic Memory\n\n${paragraph(folder)}\n\n${globalSection(global)}`;
 /** Instructions up to the runtime's Long-Running Commands section, which ends every composed prompt (autobyteus-483). */
 const beforeLongRunningCommands = (instructions: string): string => {
   const at = instructions.lastIndexOf("\n\n## Long-Running Commands\n");
@@ -156,6 +159,7 @@ describeLive("agent semantic memory with real runtimes", () => {
   const previousEnv: Record<string, string | undefined> = {};
   const setEnv = (key: string, value: string) => { if (!(key in previousEnv)) previousEnv[key] = process.env[key]; process.env[key] = value; };
   const folderOf = (definitionId: string) => path.join(memoryDir, "semantic", encodeURIComponent(definitionId));
+  const globalFolder = () => path.join(memoryDir, "semantic-global");
 
   const graphql = async <T = Rec>(query: string, variables?: Record<string, unknown>): Promise<T> => {
     const response = await fetch(new URL("/graphql", url), {
@@ -286,7 +290,7 @@ describeLive("agent semantic memory with real runtimes", () => {
   const turnErrors = (errors: string[]) => `turn errors: ${errors.join(" | ").slice(0, 400)}`;
 
   const createAgent = async (name: RuntimeName, label: string, extra: Rec = {}) => (await graphql<Rec>(
-    "mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id semanticMemoryEnabled semanticMemoryPath } }",
+    "mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id semanticMemoryPath } }",
     { input: { name: `sm live ${label} ${name} ${unique}`, role: "assistant", category: "sm-live-e2e",
       description: "Semantic memory live test agent", toolNames: RUNTIMES[name].toolNames, skillNames: [],
       instructions: `You are a concise test agent (${label} ${name}). Do exactly what the user asks, with your own tools, and keep your replies short.`,
@@ -360,9 +364,9 @@ describeLive("agent semantic memory with real runtimes", () => {
       const choice = chooseLiveModel(name === "agy" ? "grok" : name, pin, available, runtime.override);
       models.set(name, choice.model);
       console.info("SEMANTIC_MEMORY_LIVE_MODEL", JSON.stringify({ runtime: name, model: choice.model, ...(choice.fallbackFrom ? { pinned: choice.fallbackFrom } : {}) }));
-      agent = await createAgent(name, "keeper", { semanticMemoryEnabled: true });
+      agent = await createAgent(name, "keeper");
       folder = folderOf(agent.id);
-      expect(agent).toMatchObject({ semanticMemoryEnabled: true, semanticMemoryPath: folder });
+      expect(agent).toMatchObject({ semanticMemoryPath: folder });
     }, 300_000);
 
     it("SML-WRITE (AC-001, AC-002): a run under Project A writes its codeword into its semantic memory, told only by its instructions", async () => {
@@ -391,12 +395,12 @@ describeLive("agent semantic memory with real runtimes", () => {
       for (const text of instructions) expect(text).toContain(paragraph(folder));
       if (name === "autobyteus") {
         const system = instructions[0]!;
-        expect(system).toContain(`(Project ID ${projects.A}). Use this Project ID with the Project tools; ask the user before working on another Project.\n\n${section(folder)}\n\n## Working Environment`);
+        expect(system).toContain(`(Project ID ${projects.A}). Use this Project ID with the Project tools; ask the user before working on another Project.\n\n${section(folder, globalFolder())}\n\n## Working Environment`);
       }
       if (name === "codex") {
         const [start] = codexThreadRequests(`(keeper ${name})`);
         expect(start!.params).toMatchObject({ sandbox: "workspace-write", approvalPolicy: "on-request" });
-        expect(start!.params.config.sandbox_workspace_write).toEqual({ writable_roots: [folder] });
+        expect(start!.params.config.sandbox_workspace_write).toEqual({ writable_roots: [folder, globalFolder()] });
         // Control (QR-002): a write elsewhere outside the workspace still needs an approval; it is denied.
         const control = path.join(memoryDir, `not-semantic-${unique}.txt`);
         const denied = await ask(stream, runId, `Now run this exact shell command once: echo control > ${control} — then reply DONE.`, () => false);
@@ -418,7 +422,7 @@ describeLive("agent semantic memory with real runtimes", () => {
         const resume = codexThreadRequests(`(keeper ${name})`).filter((m) => m.method === "thread/resume");
         await keep("SML-WRITE-codex-restore.json", resume.map(excerpt));
         expect(resume.length).toBeGreaterThan(0);
-        expect(resume.at(-1)!.params.config.sandbox_workspace_write).toEqual({ writable_roots: [folder] });
+        expect(resume.at(-1)!.params.config.sandbox_workspace_write).toEqual({ writable_roots: [folder, globalFolder()] });
         expect(String(resume.at(-1)!.params.baseInstructions)).toContain(paragraph(folder));
         again.socket.close();
       } else {
@@ -426,7 +430,9 @@ describeLive("agent semantic memory with real runtimes", () => {
       }
       if (name === "claude") {
         const addDir = readWire(wirePrefix.claude!).filter((p) => p.sentText.includes(`(keeper ${name})`)).map((p) => p.argv);
-        expect(addDir.some((argv) => argv.some((arg, i) => arg === "--add-dir" && argv[i + 1] === folder))).toBe(true);
+        for (const dir of [folder, globalFolder()]) {
+          expect(addDir.some((argv) => argv.some((arg, i) => arg === "--add-dir" && argv[i + 1] === dir)), dir).toBe(true);
+        }
       }
     }, 900_000);
 
@@ -474,8 +480,8 @@ describeLive("agent semantic memory with real runtimes", () => {
       expect(reply.errors, turnErrors(reply.errors)).toEqual([]);
       expect(reply.text).toContain(codeword);
       expect(wire.length).toBeGreaterThan(0);
-      expect(beforeLongRunningCommands(String(wire.at(-1)!.params.baseInstructions)).endsWith(`\n\n${section(folder)}`)).toBe(true);
-      expect(wire.at(-1)!.params.config.sandbox_workspace_write).toEqual({ writable_roots: [folder] });
+      expect(beforeLongRunningCommands(String(wire.at(-1)!.params.baseInstructions)).endsWith(`\n\n${section(folder, globalFolder())}`)).toBe(true);
+      expect(wire.at(-1)!.params.config.sandbox_workspace_write).toEqual({ writable_roots: [folder, globalFolder()] });
       stream.socket.close();
     }, 900_000);
 
@@ -487,7 +493,7 @@ describeLive("agent semantic memory with real runtimes", () => {
       await fs.writeFile(path.join(source, "github", "SKILL.md"), "---\nname: github-integration\ndescription: Reach GitHub through the AutoByteus proxy.\n---\n\nUse $AUTOBYTEUS_GITHUB_API_URL.\n");
       const imported = (await graphql<Rec>("mutation($location: String!) { importIntegrations(location: $location) { id state } }", { location: source })).importIntegrations;
       expect(imported).toEqual([{ id: "github", state: "NEEDS_TOKEN" }]);
-      const integrated = await createAgent(name, "integrated", { semanticMemoryEnabled: true, skillNames: ["github-integration"] });
+      const integrated = await createAgent(name, "integrated", { skillNames: ["github-integration"] });
       const integratedFolder = folderOf(integrated.id);
       const integrationCode = `SMNET-${unique}`;
       const runId = await createRun(integrated.id, runConfig(name, await workspace("codex-integration")), projects.A);
@@ -501,7 +507,7 @@ describeLive("agent semantic memory with real runtimes", () => {
       console.info("SEMANTIC_MEMORY_LIVE_CODEX_INTEGRATION", JSON.stringify(summary).slice(0, 2000));
       await keep("SML-CODEX-INTEGRATION.json", summary);
       expect(reply.errors, turnErrors(reply.errors)).toEqual([]);
-      expect(start!.params.config.sandbox_workspace_write).toEqual({ network_access: true, writable_roots: [integratedFolder] });
+      expect(start!.params.config.sandbox_workspace_write).toEqual({ network_access: true, writable_roots: [integratedFolder, globalFolder()] });
       expect(Object.keys(start!.params.config).sort()).toEqual(["mcp_servers", "sandbox_workspace_write", "shell_environment_policy"]);
       expect(reply.approvals).toEqual([]);
       const saved = Object.values(files).find((text) => text.includes(integrationCode));
@@ -511,22 +517,30 @@ describeLive("agent semantic memory with real runtimes", () => {
       stream.socket.close();
     }, 900_000);
 
-    it.skipIf(name !== "codex")("SML-CODEX-OFF (AC-005): an agent without the setting gets an unchanged thread config, no section and no folder", async () => {
-      const plain = await createAgent(name, "plain");
-      expect(plain).toMatchObject({ semanticMemoryEnabled: false, semanticMemoryPath: null });
-      const runId = await createRun(plain.id, runConfig(name, await workspace("codex-plain")), projects.A);
-      const stream = await openSocket(`/ws/agent/${runId}`);
-      const reply = await ask(stream, runId, "Reply with only the word OK.");
-      const [start] = codexThreadRequests(`(plain ${name})`);
-      await keep("SML-CODEX-OFF.json", { runId, reply: reply.text.slice(0, 100), wire: start ? excerpt(start) : null,
-        folderExists: existsSync(folderOf(plain.id)), baseInstructionsTail: String(start?.params.baseInstructions ?? "").slice(-400) });
-      expect(reply.errors, turnErrors(reply.errors)).toEqual([]);
-      expect(start!.params).toMatchObject({ sandbox: "workspace-write", approvalPolicy: "on-request" });
-      expect(Object.keys(start!.params.config)).toEqual(["mcp_servers"]);
-      expect(String(start!.params.baseInstructions)).not.toContain("Semantic Memory");
-      expect(beforeLongRunningCommands(String(start!.params.baseInstructions)).endsWith(`(Project ID ${projects.A}). Use this Project ID with the Project tools; ask the user before working on another Project.`)).toBe(true);
-      expect(existsSync(folderOf(plain.id))).toBe(false);
-      stream.socket.close();
+    it("SML-GLOBAL (AC-009): another agent writes a fact into the global folder; the keeper's new run reads it", async () => {
+      const writer = await createAgent(name, "writer");
+      const fact = `SMGLOBAL-${name.toUpperCase()}-${unique}`;
+      const writeRun = await createRun(writer.id, runConfig(name, await workspace(`${name}-global-write`)), projects.A);
+      const writeStream = await openSocket(`/ws/agent/${writeRun}`);
+      const written = await ask(writeStream, writeRun, `This is true for every agent on this node: the product's release name is ${fact}. `
+        + "Save it now as a short Markdown document in the node's global semantic memory (the folder your instructions name for facts shared by every agent), then reply SAVED.",
+        name === "codex" ? undefined : () => true);
+      writeStream.socket.close();
+      const files = filesUnder(globalFolder());
+      const readRun = await createRun(agent.id, runConfig(name, await workspace(`${name}-global-read`)), projects.B);
+      const readStream = await openSocket(`/ws/agent/${readRun}`);
+      const read = await ask(readStream, readRun, "What is the product's release name? Look it up in the global semantic memory and reply with only the name.",
+        name === "codex" ? undefined : () => true);
+      readStream.socket.close();
+      const summary = { writeRun, readRun, written: written.text.slice(0, 300), writeTools: written.tools, files,
+        read: read.text.slice(0, 300), readTools: read.tools, approvals: [...written.approvals, ...read.approvals] };
+      console.info(`SEMANTIC_MEMORY_LIVE_GLOBAL ${name}`, JSON.stringify(summary).slice(0, 2000));
+      await keep(`SML-GLOBAL-${name}.json`, summary);
+      expect(written.errors, turnErrors(written.errors)).toEqual([]);
+      expect(Object.values(files).some((text) => text.includes(fact)), JSON.stringify(summary).slice(0, 1500)).toBe(true);
+      expect(Object.values(filesUnder(folderOf(writer.id))).some((text) => text.includes(fact))).toBe(false);
+      expect(read.errors, turnErrors(read.errors)).toEqual([]);
+      expect(read.text).toContain(fact);
     }, 900_000);
 
     it.skipIf(name !== "claude")("SML-CLAUDE-APPROVALS (AC-002, REQ-006): with auto-execute off the memory asks no approval the workspace does not ask", async () => {
@@ -541,7 +555,7 @@ describeLive("agent semantic memory with real runtimes", () => {
       expect(memoryDoc, "the document SML-WRITE saved").toBeTruthy();
       const runId = await createRun(agent.id, runConfig(name, ws, false), projects.A);
       const stream = await openSocket(`/ws/agent/${runId}`);
-      const classify = (args: string) => args.includes(folder) || args.includes(encodeURIComponent(agent.id)) ? "semantic"
+      const classify = (args: string) => args.includes(folder) || args.includes(encodeURIComponent(agent.id)) || args.includes(globalFolder()) ? "semantic"
         : args.includes(outside) ? "outside" : "workspace";
       const reads = await ask(stream, runId, `Use your Read tool (not the shell) to read these two files: ${path.join(ws, "ws-fact.md")} and `
         + `${path.join(folder, memoryDoc!)}. Reply with both codewords.`, () => true);

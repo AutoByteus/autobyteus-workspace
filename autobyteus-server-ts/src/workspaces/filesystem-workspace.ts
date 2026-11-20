@@ -3,9 +3,11 @@ import {
   WorkspaceFileExplorer,
 } from '../file-explorer/file-explorer.js';
 import { buildFilesystemWorkspaceId } from './workspace-registry-store.js';
+import { WorkspaceAccessError } from './workspace-access-error.js';
 import type { WorkspaceInput } from './workspace-input.js';
 import type { WorkspaceKind, WorkspaceMetadata } from './workspace-metadata.js';
 import {
+  assertNoSymbolicLinkOnPath,
   canonicalizeWorkspaceRootPath,
   resolveWorkspaceRelativePath,
 } from './workspace-path-utils.js';
@@ -28,6 +30,10 @@ export class FileSystemWorkspace {
   readonly config: WorkspaceInput;
   readonly rootPath: string;
   protected readonly workspaceKind: WorkspaceKind = 'filesystem';
+  /** The node refuses every write to a read-only workspace, and it can never be a run's workspace. */
+  readonly readOnly: boolean = false;
+  /** When false, symbolic links are listed but never entered or opened. */
+  readonly followSymbolicLinks: boolean = true;
   private fileExplorer: WorkspaceFileExplorer | null = null;
   private fileExplorerLeaseCount = 0;
 
@@ -80,6 +86,20 @@ export class FileSystemWorkspace {
     return resolveWorkspaceRelativePath(this.rootPath, relativePath);
   }
 
+  /** The absolute path of a file to read; in a workspace that does not follow links, a path through a link is refused. */
+  async resolveReadablePath(relativePath: string): Promise<string> {
+    const absolutePath = this.getAbsolutePath(relativePath);
+    if (!this.followSymbolicLinks) await assertNoSymbolicLinkOnPath(this.rootPath, absolutePath);
+    return absolutePath;
+  }
+
+  /** Refuses `WORKSPACE_READ_ONLY` before any file is touched. */
+  assertWritable(): void {
+    if (this.readOnly) {
+      throw new WorkspaceAccessError('WORKSPACE_READ_ONLY', `Workspace '${this.workspaceId}' is read-only.`);
+    }
+  }
+
   async initialize(): Promise<void> {
     logger.warn(
       `FileSystemWorkspace.initialize() is metadata-only for ${this.workspaceId}; file explorer acquisition is explicit.`,
@@ -90,7 +110,9 @@ export class FileSystemWorkspace {
     reason: WorkspaceFileExplorerConsumerReason,
   ): Promise<WorkspaceFileExplorerLease> {
     if (!this.fileExplorer) {
-      this.fileExplorer = new WorkspaceFileExplorer(this.rootPath);
+      this.fileExplorer = new WorkspaceFileExplorer(this.rootPath, {
+        followSymbolicLinks: this.followSymbolicLinks,
+      });
       logger.info(`Created WorkspaceFileExplorer for ${this.workspaceId} (${reason}).`);
     }
 

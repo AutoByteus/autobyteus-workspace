@@ -67,8 +67,7 @@ export class AgentDefinitionConverter {
         ownerLocalApplicationId: domainDefinition.ownerLocalApplicationId ?? null,
         defaultLaunchConfig: toGraphqlDefaultLaunchConfig(domainDefinition.defaultLaunchConfig),
         internal: domainDefinition.internal === true,
-        semanticMemoryEnabled: domainDefinition.semanticMemoryEnabled === true,
-        semanticMemoryPath: getAgentSemanticMemory().folderOf(domainDefinition),
+        semanticMemoryPath: getAgentSemanticMemory().folderOf(String(domainDefinition.id ?? "")),
         loadIssue: toGraphqlDefinitionLoadIssue(loadIssue),
         ...toGraphqlPersonalSettings(personalSettings),
       };

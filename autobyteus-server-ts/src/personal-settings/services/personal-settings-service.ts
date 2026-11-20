@@ -29,13 +29,12 @@ import { PersonalSettingsStore } from "../stores/personal-settings-store.js";
 /** Where a definition was read from (the store entry's source class). */
 export type PersonalSettingsSourceClass = RegisteredPackageRoot["sourceClass"];
 
-/** The settings of a definition's base value (tools, skills and semantic memory only for agents). */
+/** The settings of a definition's base value (tools and skills only for agents). */
 export type PersonalSettingValues = Readonly<{
   toolNames?: readonly string[];
   skillNames?: readonly string[];
   avatarUrl?: string | null;
   defaultLaunchConfig: DefaultLaunchConfig | null;
-  semanticMemoryEnabled?: boolean;
 }>;
 
 /** The settings as the editor sent them; an absent field leaves that personal setting as it is. */
@@ -44,7 +43,6 @@ export type PersonalSettingEdits = Readonly<{
   skillNames?: readonly string[];
   avatarUrl?: string | null;
   defaultLaunchConfig?: DefaultLaunchConfig | null;
-  semanticMemoryEnabled?: boolean;
 }>;
 
 /** One definition's settings in the installed revision and in the files on disk (contract §7.2). */
@@ -87,7 +85,7 @@ const copyDefinition = <T extends object>(definition: T): T =>
 
 /**
  * The node's personal settings (personal-settings-file-contract.md): the user's own tools, skills,
- * avatar, runtime/model and semantic memory switch for definitions from agent packages and for built-in agents, kept outside
+ * avatar and runtime/model for definitions from agent packages and for built-in agents, kept outside
  * their files and applied on top of the base value when a definition is read. The only reader and
  * writer of the personal settings file; a change is announced through the publisher set on it.
  */
@@ -152,7 +150,6 @@ export class PersonalSettingsService {
       const agent = effective as DefinitionByKind["agent"];
       agent.toolNames = effectiveList(agent.toolNames, record.toolsAdded, record.toolsRemoved);
       agent.skillNames = effectiveList(agent.skillNames, record.skillsAdded, record.skillsRemoved);
-      if (record.semanticMemoryEnabled !== undefined) agent.semanticMemoryEnabled = record.semanticMemoryEnabled;
     }
     if (record.avatarUrl !== undefined) effective.avatarUrl = record.avatarUrl;
     if (record.defaultLaunchConfig !== undefined) {
@@ -194,9 +191,6 @@ export class PersonalSettingsService {
         const editedNames = uniqueNames(edited[list]);
         next[added] = editedNames.filter((name) => !baseNames.includes(name));
         next[removed] = baseNames.filter((name) => !editedNames.includes(name));
-      }
-      if (edited.semanticMemoryEnabled !== undefined) {
-        next.semanticMemoryEnabled = edited.semanticMemoryEnabled === (base.semanticMemoryEnabled === true) ? undefined : edited.semanticMemoryEnabled;
       }
     }
     if (edited.avatarUrl !== undefined) {
@@ -242,10 +236,6 @@ export class PersonalSettingsService {
             .filter((name) => !priorRemoved.includes(name) || add.includes(name));
           next[addedField] = added;
           next[removedField] = [...new Set([...priorRemoved, ...remove])].filter((name) => !added.includes(name));
-        }
-        const semanticMemoryEnabled = edit.onDisk.semanticMemoryEnabled === true;
-        if (semanticMemoryEnabled !== (edit.installed.semanticMemoryEnabled === true) && next.semanticMemoryEnabled === undefined) {
-          next.semanticMemoryEnabled = semanticMemoryEnabled;
         }
       }
       const avatarUrl = edit.onDisk.avatarUrl?.trim() || null;

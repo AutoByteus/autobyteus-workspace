@@ -62,8 +62,8 @@ describe("record shape", () => {
     expect(toRecord({ toolsAdded: [] })).toBeNull();
   });
 
-  it("allows tools, skills and semantic memory on agents only", () => {
-    expect(settingsOfKind("agent")).toEqual(["TOOLS", "SKILLS", "AVATAR", "DEFAULT_LAUNCH_CONFIG", "SEMANTIC_MEMORY"]);
+  it("allows tools and skills on agents only; there is no semantic memory setting (autobyteus-554)", () => {
+    expect(settingsOfKind("agent")).toEqual(["TOOLS", "SKILLS", "AVATAR", "DEFAULT_LAUNCH_CONFIG"]);
     expect(settingsOfKind("agent_team")).toEqual(["AVATAR", "DEFAULT_LAUNCH_CONFIG"]);
     expect(settingsOfKind("agent_org")).toEqual(["AVATAR", "DEFAULT_LAUNCH_CONFIG"]);
   });

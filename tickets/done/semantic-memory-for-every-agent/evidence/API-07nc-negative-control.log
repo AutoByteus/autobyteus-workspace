@@ -1,0 +1,6 @@
+# API-07nc NEGATIVE CONTROL: the probe against SemanticMemoryFolder.vue from cff2a6596a (before the CR-001 fix), restored afterwards | 2026-11-20T13:35:07Z
+semantic memory view probe: Fail (30/31 checks) → /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/tickets/in-progress/semantic-memory-for-every-agent/evidence/API-07nc-probe
+exit 1
+[{'message': 'SMV-091: Left during the first listing (same page, store kept): the chat workspace menu offers no workspace of the folder view', 'details': {'sameDocument': True, 'menuOptions': [{'id': 'chat-workspace-option-temp', 'text': 'Temp workspaceDefaultScratch folder for quick chats'}, {'id': 'chat-workspace-option-semantic_ws_probe-researcher', 'text': 'Research Assistant'}]}}]
+SMV-090 True semantic_ws_probe-researcher
+SMV-091 False {'sameDocument': True, 'menuOptions': [{'id': 'chat-workspace-option-temp', 'text': 'Temp workspaceDefaultScratch folder for quick chats'}, {'id': 'chat-workspace-option-semantic_ws_probe-researcher', 'text': 'Research Assistant'}]}

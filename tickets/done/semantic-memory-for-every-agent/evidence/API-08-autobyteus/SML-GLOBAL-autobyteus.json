@@ -1,0 +1,16 @@
+{
+  "writeRun": "sm_live_writer_autobyteus_4545224d_4e12e9f945d741ada215ebee5bf12394",
+  "readRun": "sm_live_keeper_autobyteus_4545224d_a5b27f168d0b41c5846ef7fa70b826bf",
+  "written": "{\"command\": \"mkdir -p /Users/normy/.autobyteus-e2e/semantic-memory-live-J60sDK/app-data/memory/semantic-global && cat > /Users/normy/.autobyteus-e2e/semantic-memory-live-J60sDK/app-data/memory/semantic-global/product-release-name.md <<'EOF'\\n# Product Release Name\\n\\nThe product's release name is **",
+  "writeTools": [
+    "run_bash {\"command\":\"mkdir -p /Users/normy/.autobyteus-e2e/semantic-memory-live-J60sDK/app-data/memory/semantic-global && cat > /Users/normy/.autobyteus-e2e/semantic-memory-live-J60sDK/app-data/memory/semantic-global/product-release-name.md <<'EOF'\\n# Product Release Name\\n\\nThe product's release name is **S"
+  ],
+  "files": {
+    "product-release-name.md": "# Product Release Name\n\nThe product's release name is **SMGLOBAL-AUTOBYTEUS-4545224d**.\n\n- Scope: true for every agent on this node.\n- Recorded by: sm live writer autobyteus 4545224d.\n"
+  },
+  "read": "{\"command\": \"rg -n -i \\\"release\\\" /Users/normy/.autobyteus-e2e/semantic-memory-live-J60sDK/app-data/memory/semantic-global | head -50\"}SMGLOBAL-AUTOBYTEUS-4545224d",
+  "readTools": [
+    "run_bash {\"command\":\"rg -n -i \\\"release\\\" /Users/normy/.autobyteus-e2e/semantic-memory-live-J60sDK/app-data/memory/semantic-global | head -50\"}"
+  ],
+  "approvals": []
+}

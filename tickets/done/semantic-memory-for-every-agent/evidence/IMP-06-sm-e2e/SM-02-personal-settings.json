@@ -1,0 +1,33 @@
+{
+  "settings": {
+    "agent:sm-declared-off-d03088": {
+      "toolsAdded": [
+        "read_file"
+      ]
+    }
+  },
+  "packageFilesBefore": {
+    "agent-teams/sm-pkg-team-d03088/agents/sm-scout-d03088/agent-config.json": "ffa677acebad1e6c35eac5a86babb51802a0a49dd415449e796bba6978834b78",
+    "agent-teams/sm-pkg-team-d03088/agents/sm-scout-d03088/agent.md": "6222ce6a575fcc69c02ab08243501f75f235c91e10b6ea35ddc2515da9dd9f07",
+    "agent-teams/sm-pkg-team-d03088/team-config.json": "d7779929f97f52a519ddc073dd8365fb9fe076a683e62da2f64d7b73edfc820f",
+    "agent-teams/sm-pkg-team-d03088/team.md": "5515723d26a8f04efe763c00b322ba8ea1dfb02afc5e1388703aa3138f785f16",
+    "agents/sm-declared-off-d03088/agent-config.json": "d97a42c0f0b3a8927cf38a6df1f7323b9be13c6f4877d5a231860562ce98d55f",
+    "agents/sm-declared-off-d03088/agent.md": "490b7ba504d47616d9e22fee0b047f32f1b7ea80adca2c3c8d1e5c9a9b449caf",
+    "agents/sm-declared-on-d03088/agent-config.json": "aedf05fea27214a4738cb7146432b2d01c6873fa16027de4fc6a9fa505f290ed",
+    "agents/sm-declared-on-d03088/agent.md": "d1e084ed469aa7300d66ce730bed122bc0cdea5275b181c0e7751e73a43faafb",
+    "agents/sm-pkg-plain-d03088/agent-config.json": "ffa677acebad1e6c35eac5a86babb51802a0a49dd415449e796bba6978834b78",
+    "agents/sm-pkg-plain-d03088/agent.md": "fa949fb1fb2bb74c4732ae64f4458ccb3fcf96dd253c74047af4cddce1c70942"
+  },
+  "packageFilesAfter": {
+    "agent-teams/sm-pkg-team-d03088/agents/sm-scout-d03088/agent-config.json": "ffa677acebad1e6c35eac5a86babb51802a0a49dd415449e796bba6978834b78",
+    "agent-teams/sm-pkg-team-d03088/agents/sm-scout-d03088/agent.md": "6222ce6a575fcc69c02ab08243501f75f235c91e10b6ea35ddc2515da9dd9f07",
+    "agent-teams/sm-pkg-team-d03088/team-config.json": "d7779929f97f52a519ddc073dd8365fb9fe076a683e62da2f64d7b73edfc820f",
+    "agent-teams/sm-pkg-team-d03088/team.md": "5515723d26a8f04efe763c00b322ba8ea1dfb02afc5e1388703aa3138f785f16",
+    "agents/sm-declared-off-d03088/agent-config.json": "d97a42c0f0b3a8927cf38a6df1f7323b9be13c6f4877d5a231860562ce98d55f",
+    "agents/sm-declared-off-d03088/agent.md": "490b7ba504d47616d9e22fee0b047f32f1b7ea80adca2c3c8d1e5c9a9b449caf",
+    "agents/sm-declared-on-d03088/agent-config.json": "aedf05fea27214a4738cb7146432b2d01c6873fa16027de4fc6a9fa505f290ed",
+    "agents/sm-declared-on-d03088/agent.md": "d1e084ed469aa7300d66ce730bed122bc0cdea5275b181c0e7751e73a43faafb",
+    "agents/sm-pkg-plain-d03088/agent-config.json": "ffa677acebad1e6c35eac5a86babb51802a0a49dd415449e796bba6978834b78",
+    "agents/sm-pkg-plain-d03088/agent.md": "fa949fb1fb2bb74c4732ae64f4458ccb3fcf96dd253c74047af4cddce1c70942"
+  }
+}

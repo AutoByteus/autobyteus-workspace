@@ -38,7 +38,7 @@ const teamContext = (teamInstruction: string | null = "## Coordination\n\nShare 
 describe("composeNativeAutoByteusPrompt", () => {
   it("renders the exact ordered standalone foundation without role or fallbacks", () => {
     const prompt = composeNativeAutoByteusPrompt({
-      semanticMemoryPath: null,
+      semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global",
       agentDefinition: definition({ role: "Ignored role" }),
       workspaceRootPath: "/tmp/carpenter-workspace",
       memberExecutionContext: null,
@@ -81,7 +81,7 @@ describe("composeNativeAutoByteusPrompt", () => {
 
   it("renders the authored Team instruction before the exact sibling AgentTeam sections", () => {
     const prompt = composeNativeAutoByteusPrompt({
-      semanticMemoryPath: null,
+      semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global",
       agentDefinition: definition(),
       workspaceRootPath: "/tmp/carpenter-workspace",
       memberExecutionContext: teamContext(),
@@ -114,7 +114,7 @@ describe("composeNativeAutoByteusPrompt", () => {
 
   it("omits blank optional identity and team bodies", () => {
     const prompt = composeNativeAutoByteusPrompt({
-      semanticMemoryPath: null,
+      semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global",
       agentDefinition: definition({ description: " ", instructions: "\n" }),
       workspaceRootPath: "/tmp/carpenter-workspace",
       memberExecutionContext: teamContext("  "),
@@ -129,17 +129,17 @@ describe("composeNativeAutoByteusPrompt", () => {
 
   it("fails required scalars and unresolved placeholders before provider projection", () => {
     expect(() => composeNativeAutoByteusPrompt({
-      semanticMemoryPath: null,
+      semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global",
       agentDefinition: definition({ name: " " }),
       workspaceRootPath: "/tmp/workspace",
     })).toThrow(/name must be non-blank/);
     expect(() => composeNativeAutoByteusPrompt({
-      semanticMemoryPath: null,
+      semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global",
       agentDefinition: definition(),
       workspaceRootPath: "relative/path",
     })).toThrow(/absolute path/);
     expect(() => composeNativeAutoByteusPrompt({
-      semanticMemoryPath: null,
+      semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global",
       agentDefinition: definition({ instructions: "Use {{missing}}." }),
       workspaceRootPath: "/tmp/workspace",
     })).toThrow(/unresolved documentation placeholder/);
@@ -149,7 +149,7 @@ describe("composeNativeAutoByteusPrompt", () => {
 describe("composeSharedCarpenterPrompt", () => {
   it("renders shared identity and collaboration without native workspace or file-operation guidance", () => {
     const prompt = composeSharedCarpenterPrompt({
-      semanticMemoryPath: null,
+      semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global",
       agentDefinition: definition(),
       memberExecutionContext: teamContext(),
       longRunningCommandSection: CODEX_LONG_RUNNING_COMMAND_SECTION,
@@ -169,7 +169,7 @@ describe("composeSharedCarpenterPrompt", () => {
 
   it("does not require a workspace path for standalone external composition", () => {
     const prompt = composeSharedCarpenterPrompt({
-      semanticMemoryPath: null,
+      semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global",
       agentDefinition: definition(),
       longRunningCommandSection: CODEX_LONG_RUNNING_COMMAND_SECTION,
     });
@@ -180,7 +180,7 @@ describe("composeSharedCarpenterPrompt", () => {
 
   it("preserves placeholder validation without a native workspace", () => {
     expect(() => composeSharedCarpenterPrompt({
-      semanticMemoryPath: null,
+      semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global",
       agentDefinition: definition({ instructions: "Use {{missing}}." }),
       longRunningCommandSection: CODEX_LONG_RUNNING_COMMAND_SECTION,
     })).toThrow(/unresolved documentation placeholder/);
@@ -188,7 +188,7 @@ describe("composeSharedCarpenterPrompt", () => {
 
   it("refuses a blank long-running command section", () => {
     expect(() => composeSharedCarpenterPrompt({
-      semanticMemoryPath: null,
+      semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global",
       agentDefinition: definition(),
       longRunningCommandSection: " \n",
     })).toThrow(/long-running command section is required/);
@@ -196,7 +196,7 @@ describe("composeSharedCarpenterPrompt", () => {
 });
 
 describe("Long-Running Commands section (autobyteus-483, REQ-007, AC-011)", () => {
-  const base = () => ({ semanticMemoryPath: null, agentDefinition: definition(), memberExecutionContext: teamContext() });
+  const base = () => ({ semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global", agentDefinition: definition(), memberExecutionContext: teamContext() });
 
   it.each([
     ["Claude", CLAUDE_LONG_RUNNING_COMMAND_SECTION],
@@ -287,5 +287,30 @@ describe("containAuthoredMarkdownHeadings", () => {
     expect(containAuthoredMarkdownHeadings("# A\n### B\n###### C", 3)).toBe(
       "#### A\n###### B\n**C**",
     );
+  });
+});
+
+describe("semantic memory folders a run could not prepare (autobyteus-554 DEC-015, AC-014)", () => {
+  const compose = (semanticMemoryPath: string | null, globalSemanticMemoryPath: string | null) => composeSharedCarpenterPrompt({
+    semanticMemoryPath, globalSemanticMemoryPath, agentDefinition: definition(), longRunningCommandSection: CODEX_LONG_RUNNING_COMMAND_SECTION,
+  });
+
+  it("leaves out only the section of a folder that is null, and keeps the rest of the prompt", () => {
+    const both = compose("/memory/semantic/agent", "/memory/semantic-global");
+    const withoutAgent = compose(null, "/memory/semantic-global");
+    const withoutGlobal = compose("/memory/semantic/agent", null);
+    const neither = compose(null, null);
+    expect(withoutAgent).not.toContain("## Semantic Memory\n");
+    expect(withoutAgent).toContain("## Global Semantic Memory\n\nThe global semantic memory of this node is the folder `/memory/semantic-global`.");
+    expect(withoutGlobal).toContain("## Semantic Memory\n\nYour semantic memory is the folder `/memory/semantic/agent`.");
+    expect(withoutGlobal).not.toContain("## Global Semantic Memory");
+    expect(neither).not.toMatch(/Semantic Memory/);
+    expect(neither.endsWith(`\n\n${CODEX_LONG_RUNNING_COMMAND_SECTION}`)).toBe(true);
+    expect(both.replace(/\n\n## Semantic Memory\n\n[^\n]+/, "").replace(/\n\n## Global Semantic Memory\n\n[^\n]+/, "")).toBe(neither);
+  });
+
+  it("still refuses a relative folder", () => {
+    expect(() => compose("memory/semantic/agent", null)).toThrow("Semantic memory folder must be an absolute path.");
+    expect(() => compose(null, "memory/semantic-global")).toThrow("Semantic memory folder must be an absolute path.");
   });
 });

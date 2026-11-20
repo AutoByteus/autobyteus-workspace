@@ -198,7 +198,9 @@ const createClaudeRunContext = (input: {
   workspaceRoot: string;
 }): AgentRunContext<ClaudeAgentRunContext> => {
   const carpenterSystemPrompt = composeSharedCarpenterPrompt({
-    semanticMemoryPath: null,
+    // Only named in the prompt (autobyteus-554): test-owned paths under the run's workspace, never created here.
+    semanticMemoryPath: path.join(input.workspaceRoot, ".semantic-memory", "agent"),
+    globalSemanticMemoryPath: path.join(input.workspaceRoot, ".semantic-memory", "global"),
     longRunningCommandSection: CLAUDE_LONG_RUNNING_COMMAND_SECTION,
     agentDefinition: new AgentDefinition({
       name: "Claude WebSocket E2E Agent",

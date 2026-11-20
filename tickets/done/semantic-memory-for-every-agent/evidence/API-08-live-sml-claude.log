@@ -1,0 +1,9 @@
+# API-08 live SML, Claude alone (RUN_CLAUDE_E2E=1, host login, paid) | commit 42c2f5189b (code f393f403d5) | 2026-11-20T19:13:19Z | load { 53.03 53.14 53.30 } | claude 2.1.328 (Claude Code)
+ ✓ tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts (6 tests | 2 skipped) 65282ms
+       ✓ SML-WRITE (AC-001, AC-002): a run under Project A writes its codeword into its semantic memory, told only by its instructions  6228ms
+       ✓ SML-READ (AC-003): a new run under Project B reads the codeword from its semantic memory  9356ms
+       ✓ SML-GLOBAL (AC-009): another agent writes a fact into the global folder; the keeper's new run reads it  20853ms
+       ✓ SML-CLAUDE-APPROVALS (AC-002, REQ-006): with auto-execute off the memory asks no approval the workspace does not ask  8262ms
+ Test Files  1 passed (1)
+      Tests  4 passed | 2 skipped (6)
+exit 0
