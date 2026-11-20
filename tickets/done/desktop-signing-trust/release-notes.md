@@ -1,0 +1,2 @@
+# Desktop release preparation
+Before preparing a stable or beta release, the release helper now verifies that both Linux signing records match the current protected desktop key. This check runs even with --no-push and stops before the release changes files or tags. When it refuses, follow the Desktop signing readiness section of RELEASE.md rather than replacing the key. No application or user data migration is required.
