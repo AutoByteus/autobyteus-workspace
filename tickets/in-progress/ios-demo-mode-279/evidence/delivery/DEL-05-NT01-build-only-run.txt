@@ -1,0 +1,22 @@
+# NT-01: build-only release-ios.yml run 44683214480 on codex/ios-demo-mode-279 @ a46471f61a (publish_app_store_connect=false), 2026-11-20 05:46-06:05Z
+conclusion: success
+  Resolve iOS Release Metadata: success 2026-11-20T05:46:12Z 2026-11-20T05:47:31Z
+  Build And Test iOS App: success 2026-11-20T05:47:34Z 2026-11-20T06:05:04Z
+  Archive And Upload To App Store Connect: skipped 2026-11-20T06:05:04Z 2026-11-20T06:05:04Z
+  Validate iOS Publish Secrets: skipped 2026-11-20T06:05:04Z 2026-11-20T06:05:04Z
+## run log
+Build And Test iOS App	Select Xcode 26 or newer	2026-11-20T05:50:01.2366410Z Selected iPhoneOS SDK: 26.2
+Build And Test iOS App	Build the bundled demo	2026-11-20T05:52:19.8016790Z The demo answers all 252 compiled operations (handled or listed as unreachable).
+Build And Test iOS App	Build the bundled demo	2026-11-20T05:52:20.0597230Z Demo web content copied to /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios/DemoWeb ( 13M).
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T06:02:59.6999660Z Xcode version: Xcode 26.3 Build version 17C529
+## artifact ios-build-test-artifacts (id 14605478916, expires 2026-12-04)
+core tests: Executed 56 tests, with 0 failures (0 unexpected) in 4.074 (8.243) seconds
+smoke: Executed 8 tests, with 0 failures (0 unexpected) in 183.642 (183.651) seconds
+iOS marketing version: 0.1.0
+iOS build number: 341
+Smoke UI tests: executed and passed without skips
+Publish requested: false
+Missing iOS publish secrets: none detected
+simulator app: AutoByteus_personal_ios-ci-341-simulator-app.zip, 272 DemoWeb entries incl. 1 index.html
+## contract check
+iOS release contract checks passed.
