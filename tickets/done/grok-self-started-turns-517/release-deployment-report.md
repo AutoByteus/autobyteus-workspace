@@ -38,7 +38,7 @@
 - Post-integration verification result: `Passed`
 - No-rerun rationale (only if no new base commits were integrated): N/A (new base commits were integrated and checked). The earlier result stands for the validated state: `git merge-base` at the start of delivery was `ca4317a386`, and product code did not change after `cc2701af8a` (`git diff --name-only cc2701af8a HEAD` lists only the two test files API/E2E added, and ticket documents).
 - Delivery edits started only after integrated state was current: `Yes` at the time (the base had not moved); the docs sync, summary and records were committed before the base advanced and the merge `276ff28e5b` then went on top of them. The advance touched none of the docs this ticket changed, so no doc needed to change again.
-- Handoff state current with latest tracked remote base: `Yes` (`origin/personal` @ `9ffa985b45` merged; re-checked before each push, see Repository Finalization)
+- Handoff state current with latest tracked remote base: `Yes` (`origin/personal` @ `9ffa985b45` merged as `276ff28e5b`; it then advanced once more to `3f93bca4d1`, one commit that changes only a file of the archived autobyteus-565 ticket, merged as the next merge commit with no rerun needed; re-checked before each push, see Repository Finalization)
 - Blocker (if applicable): None
 
 ## Verification
