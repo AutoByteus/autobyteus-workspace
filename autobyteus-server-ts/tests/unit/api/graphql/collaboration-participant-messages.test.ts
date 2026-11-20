@@ -148,4 +148,32 @@ describe("collaborationParticipantMessages", () => {
       () => withHubRecords(records, () => readCollaborationParticipantMessages({ rootKind: "agent", rootRunId: "worker", agentRunId })));
     expect((await read("helper")).messages.map((entry) => entry.messageId)).toEqual(["w2"]);
   });
+
+  describe("autobyteus-565 step 1: today's Team/Org and non-host outcomes, pinned before the change (REQ-006, AC-005)", () => {
+    it("a Team member's messages with an unrelated local run and with a run on another node stay out of its list", async () => {
+      const executionTree = testExecutionTree({ rootTeamRunId: "team-root", coordinatorAddress: "/coordinator",
+        children: [testAgentNode("/coordinator", { agentRunId: "coordinator-run" }), testAgentNode("/worker", { agentRunId: "worker-run" })] });
+      vi.spyOn(TeamCommunicationProjectionService.prototype, "getCollaborationRecordsSnapshot").mockResolvedValue({
+        executionTree, messages: { schemaVersion: 1, rootTeamRunId: "team-root", messages: [
+          message("t1", "coordinator-run", "worker-run"), message("t2", "worker-run", "other-pm"), message("t3", REMOTE_RUN_ID, "worker-run"),
+        ] },
+      } as never);
+      vi.spyOn(AgentTeamRunManager, "getInstance").mockReturnValue({} as never);
+      const result = await withStudioServices({ delegatedRunAgents: new DelegatedRunAgentsReader(noDelegations()) },
+        () => readCollaborationParticipantMessages({ rootKind: "agent_team", rootRunId: "team-root", agentRunId: "worker-run" }));
+      expect(result.messages.map((entry) => entry.messageId)).toEqual(["t1"]);
+    });
+
+    it("an agent of an open row below an Agent root (not the root's own agent) keeps today's rule: its unrelated and remote messages stay out", async () => {
+      const w1 = message("w1", "manager", "worker", "2026-11-01T00:00:01.000Z");
+      const w4 = message("w4", "worker", "other-pm", "2026-11-01T00:00:04.000Z");
+      const w5 = message("w5", REMOTE_RUN_ID, "worker", "2026-11-01T00:00:05.000Z");
+      const logs: Record<string, unknown[]> = { manager: [w1], worker: [w1, w4, w5] };
+      const records = async (runId: string) => ({ agent: { agentRunId: runId, address: `/${runId}` }, messages: { schemaVersion: 1, subjectKind: "agent", agentRunId: runId, messages: logs[runId] ?? [] } });
+      const result = await withStudioServices({ delegatedRunAgents: new DelegatedRunAgentsReader(treeBelow(["worker"], ["worker"])) },
+        () => withHubRecords(records, () => readCollaborationParticipantMessages({ rootKind: "agent", rootRunId: "manager", agentRunId: "worker" })));
+      expect(result.messages.map((entry) => entry.messageId)).toEqual(["w1"]);
+    });
+  });
 });
+
