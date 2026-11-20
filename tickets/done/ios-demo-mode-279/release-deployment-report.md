@@ -74,6 +74,13 @@ Status: **finalized on `personal`; no release from this ticket** (the release te
 
 - Archive to `tickets/done/ios-demo-mode-279/`; hygiene; Secret Gate; `finalize/ios-demo-mode-279` from `origin/personal`, `git merge --no-ff codex/ios-demo-mode-279`, push to `origin/personal`. Commits, the user's checkout and cleanup: in the record commit after the merge (§ Finalization Result).
 
+## Finalization Result
+
+- Ticket branch `codex/ios-demo-mode-279` @ `5e4643ef99` pushed; hygiene exit 0; Secret Gate PASS over `origin/personal..codex/ios-demo-mode-279` and over the merge.
+- Merge commit **`f7b24c8622`** (`--no-ff`, from `finalize/ios-demo-mode-279` on `origin/personal` @ `568f9ae032`) pushed to `origin/personal` at 10:18Z (2026-11-20). This record commit follows it.
+- The user's checkout: fast-forwarded with `git merge --ff-only origin/personal` only (result in the Delivery Completed message).
+- Cleanup: the worktree, the local and remote `codex/ios-demo-mode-279`, the local `finalize/ios-demo-mode-279` and `/tmp/dlv-279` (after the private record copy).
+
 ## Release / Deployment
 
 - Release: `None` from this ticket. Deployment: `None`.
