@@ -1,0 +1,5 @@
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts > ServerSettingsBasicsPanel > composes only current endpoint and focused Basics cards
+ Test Files  1 failed | 102 passed (103)
+      Tests  1 failed | 717 passed (718)
+exit=1

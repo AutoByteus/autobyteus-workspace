@@ -1,0 +1,21 @@
+# API-04b-update: ApiE2E279UITests/testUpdateOpensTheSavedComputer on apie2e279-iphone (C56265A1-C55D-4693-8507-C262E9991100); fresh-start clone build (4ad317c20d + the temporary test file); 2026-11-19T22:14:16Z; load 411.92 446.19 358.18
+# links made just before: 
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testUpdateOpensTheSavedComputer]' started.
+API279 update-page-names: page node button: Test Node 279, Connected. Connection
+API279 update-page-names: page sheet texts: ["Connected", "Test Node 279"]
+API279 update-native-names: native rows: ["AutoByteus node, Online, current node"]
+API279 update-native-names: native More buttons: ["More for AutoByteus node"]
+API279 update-native-names: remove sheet texts: ["AutoByteus node", "Remove from this phone"]
+API279 update-native-names: remove confirmation texts: ["AutoByteus node", "Remove AutoByteus node from this phone? Scan its QR code again to add it back.", "Cancel", "Remove"]
+API279 update-reopened-page-names: page node button: Test Node 279, Connected. Connection
+API279 update-reopened-page-names: page sheet texts: ["Connected", "Test Node 279"]
+API279 update-reopened-native-names: native rows: ["AutoByteus node, Online, current node"]
+API279 update-reopened-native-names: native More buttons: ["More for AutoByteus node"]
+API279 update-reopened-native-names: remove sheet texts: ["AutoByteus node", "Remove from this phone"]
+API279 update-reopened-native-names: remove confirmation texts: ["AutoByteus node", "Remove AutoByteus node from this phone? Scan its QR code again to add it back.", "Cancel", "Remove"]
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testUpdateOpensTheSavedComputer]' passed (35.183 seconds).
+	 Executed 1 test, with 0 failures (0 unexpected) in 35.183 (35.184) seconds
+	 Executed 1 test, with 0 failures (0 unexpected) in 35.183 (35.186) seconds
+	 Executed 1 test, with 0 failures (0 unexpected) in 35.183 (35.187) seconds
+** TEST EXECUTE SUCCEEDED **
+# exit: 0

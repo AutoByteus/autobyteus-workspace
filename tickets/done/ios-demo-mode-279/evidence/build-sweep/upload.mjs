@@ -1,0 +1,17 @@
+import { createRequire } from 'node:module'; import fs from 'node:fs';
+const require = createRequire('/Users/normy/autobyteus_org/autobyteus-web-design/package.json');
+const { chromium } = require('playwright-core');
+const b = await chromium.launch({ headless: true, executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' });
+const p = await b.newPage({ viewport: { width: 440, height: 956 }, isMobile: true, hasTouch: true });
+const errs = []; p.on('console', m => { if (['error','warning'].includes(m.type())) errs.push(m.text().slice(0, 160)); }); p.on('requestfailed', r => errs.push('reqfail ' + r.url().slice(0, 100)));
+fs.writeFileSync('/tmp/abt279b/sample.txt', 'Sample notes for the demo upload.\n');
+await p.goto((process.env.DEMO_BASE + '/'), { waitUntil: 'networkidle' });
+await p.waitForTimeout(500); await p.waitForTimeout(1000);
+await p.getByRole('button', { name: /Daily Assistant, Summarize/ }).click(); await p.waitForTimeout(1200);
+const [fc] = await Promise.all([p.waitForEvent('filechooser'), p.getByRole('button', { name: 'Upload files' }).click()]);
+await fc.setFiles('/tmp/abt279b/sample.txt'); await p.waitForTimeout(2500);
+await p.screenshot({ path: '/tmp/abt279b/upload-1-attached.png' });
+const box = p.locator('textarea:visible').last(); await box.fill('Use the attached notes'); await p.getByRole('button', { name: 'Send message' }).last().click();
+await p.waitForTimeout(8000); await p.screenshot({ path: '/tmp/abt279b/upload-2-sent.png' });
+console.log(JSON.stringify({ text: (await p.locator('body').innerText()).replace(/\s+/g, ' ').slice(-500), errs }));
+await b.close();

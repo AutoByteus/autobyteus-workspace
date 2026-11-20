@@ -1,0 +1,4 @@
+autobyteus.migrations.saved-node-display-name-placeholder done
+autobyteus.saved-node-entries:before-display-name-placeholder [{'displayName': 'AutoByteus Desktop', 'baseURL': 'http://192.168.2.158:49768'}]
+autobyteus.saved-node-entries [{'baseURL': 'http://192.168.2.158:49768', 'displayName': '192.168.2.158'}]
+autobyteus.selected-node-entry-id http://192.168.2.158:49768

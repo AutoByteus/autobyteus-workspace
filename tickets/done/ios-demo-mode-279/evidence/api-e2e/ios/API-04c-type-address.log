@@ -1,0 +1,9 @@
+# API-04c-type-address: ApiE2E279UITests/testTypeAnAddress on apie2e279-iphone (87FD7BD4-527F-4396-8F0F-15E34D1FA345); fresh-start clone build (429af9bd66 + the temporary test file); 2026-11-19T20:27:04Z; load 62.52 132.26 161.86
+# links made just before: 
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testTypeAnAddress]' started.
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testTypeAnAddress]' passed (83.775 seconds).
+	 Executed 1 test, with 0 failures (0 unexpected) in 83.775 (83.776) seconds
+	 Executed 1 test, with 0 failures (0 unexpected) in 83.775 (83.777) seconds
+	 Executed 1 test, with 0 failures (0 unexpected) in 83.775 (83.778) seconds
+** TEST EXECUTE SUCCEEDED **
+# exit: 0

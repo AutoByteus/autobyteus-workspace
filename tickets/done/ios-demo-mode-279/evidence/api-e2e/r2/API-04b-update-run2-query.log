@@ -1,0 +1,12 @@
+# API-04b-update: ApiE2E279UITests/testUpdateOpensTheSavedComputer on apie2e279-iphone (C56265A1-C55D-4693-8507-C262E9991100); fresh-start clone build (4ad317c20d + the temporary test file); 2026-11-19T22:08:09Z; load 523.60 485.26 312.71
+# links made just before: 
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testUpdateOpensTheSavedComputer]' started.
+API279 update-no-node-button: page texts: []
+API279 update-no-node-button: page buttons: ["New run", "Fact Checker, RUN-279 Please read [big-279.pdf](/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest..., Idle"]
+/Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobileUITests/ApiE2E279UITests.swift:243: error: -[AutoByteusMobileUITests.ApiE2E279UITests testUpdateOpensTheSavedComputer] : XCTAssertTrue failed - The page's node button
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testUpdateOpensTheSavedComputer]' failed (36.967 seconds).
+	 Executed 1 test, with 1 failure (0 unexpected) in 36.967 (36.968) seconds
+	 Executed 1 test, with 1 failure (0 unexpected) in 36.967 (36.969) seconds
+	 Executed 1 test, with 1 failure (0 unexpected) in 36.967 (36.971) seconds
+** TEST EXECUTE FAILED **
+# exit: 65

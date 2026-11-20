@@ -1,0 +1,89 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "87FD7BD4-527F-4396-8F0F-15E34D1FA345",
+        "deviceName" : "apie2e279-iphone",
+        "exportedFileName" : "E8406A16-224D-4F78-9DD7-F7BD96005AD1.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "page-share-blank-extension-text_0_A0E292A5-2E72-4E49-A8FE-D9EEE7051361.txt",
+        "timestamp" : 1795121338.866
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "87FD7BD4-527F-4396-8F0F-15E34D1FA345",
+        "deviceName" : "apie2e279-iphone",
+        "exportedFileName" : "0A116CD8-C7BA-4FBF-89B3-FA2B29F15692.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "page-share-blank-extension_0_566D714C-9019-4918-983C-150A4E90D4A2.png",
+        "timestamp" : 1795121338.865
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "87FD7BD4-527F-4396-8F0F-15E34D1FA345",
+        "deviceName" : "apie2e279-iphone",
+        "exportedFileName" : "85D59BEC-ACDC-4429-B81E-A961858BDCB7.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "page-share-blank-share-sheet_0_C9C7D3AC-0979-4125-B95B-3528E57F1F92.png",
+        "timestamp" : 1795121335.989
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "87FD7BD4-527F-4396-8F0F-15E34D1FA345",
+        "deviceName" : "apie2e279-iphone",
+        "exportedFileName" : "F9045B56-9AC9-4812-B31C-4F79A0142F24.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "page-blank_0_24C33063-C0C5-4C03-BE0A-EA62E0EE7E41.png",
+        "timestamp" : 1795121333.132
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "87FD7BD4-527F-4396-8F0F-15E34D1FA345",
+        "deviceName" : "apie2e279-iphone",
+        "exportedFileName" : "AEEA76D4-A77E-4F7A-B87E-4AE76A20A5C4.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "share-demo-link-app_0_B5666467-D86C-45AB-8AE1-D5B6E3443522.png",
+        "timestamp" : 1795121316.16
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "87FD7BD4-527F-4396-8F0F-15E34D1FA345",
+        "deviceName" : "apie2e279-iphone",
+        "exportedFileName" : "2A0AF0F7-B43C-456C-9272-91AFF2E7ECCE.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "page-share-demo-extension-text_0_93E609B4-5BA1-467A-968A-E22CE21E7EDF.txt",
+        "timestamp" : 1795121311.737
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "87FD7BD4-527F-4396-8F0F-15E34D1FA345",
+        "deviceName" : "apie2e279-iphone",
+        "exportedFileName" : "96A57122-7923-4226-B1EE-36A4E2BCFEEC.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "page-share-demo-extension_0_C4ABFDE0-083E-4C68-B175-2E26A0DC5AFA.png",
+        "timestamp" : 1795121311.736
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "87FD7BD4-527F-4396-8F0F-15E34D1FA345",
+        "deviceName" : "apie2e279-iphone",
+        "exportedFileName" : "223E8F02-4B6A-4562-A571-D83801AD1D26.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "page-share-demo-share-sheet_0_FE00529E-8F82-4236-90D8-515EE04CD9CF.png",
+        "timestamp" : 1795121308.829
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "87FD7BD4-527F-4396-8F0F-15E34D1FA345",
+        "deviceName" : "apie2e279-iphone",
+        "exportedFileName" : "DD038013-D7D0-4831-A4BF-AC62793EA736.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "page-demo_0_CDB6A7AC-6176-443D-86CD-1CC20E00BF26.png",
+        "timestamp" : 1795121304.52
+      }
+    ],
+    "testIdentifier" : "ApiE2E279UITests/testShareFromSafariSelectedText()",
+    "testIdentifierURL" : "test://com.apple.xcode/AutoByteusMobile/AutoByteusMobileUITests/ApiE2E279UITests/testShareFromSafariSelectedText"
+  }
+]

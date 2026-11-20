@@ -26,11 +26,12 @@ final class AutoByteusMobileUITests: XCTestCase {
         _ = try requiredFakeNodeURL()
         let app = launchApp(resetSavedNodes: true)
         connect(app: app, nodeURL: "http://127.0.0.1:9/mobile")
-        let diagnostic = app.staticTexts.containing(NSPredicate(format: "label CONTAINS[c] %@", "unreachable")).firstMatch
-        // A refused port fails at once; the bound stays above the connection timeout so even a hanging
-        // connection reaches the diagnostic before this wait ends.
-        XCTAssertTrue(diagnostic.waitForExistence(timeout: connectionTimeoutSeconds + uiReadyTimeout),
-                      "Expected native unreachable diagnostic")
+        // autobyteus-279: "Can't reach <node>" with the plain reason (Android's screen). A refused port fails at once; the
+        // bound stays above the connection timeout so even a hanging connection reaches it before this wait ends.
+        let title = app.staticTexts["cantReach.title"]
+        XCTAssertTrue(title.waitForExistence(timeout: connectionTimeoutSeconds + uiReadyTimeout), "Expected Can't reach")
+        XCTAssertTrue(title.label.hasPrefix("Can’t reach"), "Expected Can't reach <node>, got \(title.label)")
+        XCTAssertTrue(app.buttons["cantReach.retry"].exists, "A node that does not answer offers Retry")
         attachScreenshot(from: app, name: "native-unreachable-diagnostic")
     }
 
@@ -68,22 +69,26 @@ final class AutoByteusMobileUITests: XCTestCase {
         return trimmed
     }
 
+    /// autobyteus-279: the start screen's Other ways to connect › Type an address (Android's sheet): the address, the
+    /// plain-HTTP tick when it is `http://`, Connect.
     private func connect(app: XCUIApplication, nodeURL: String) {
-        let input = app.textViews["connection.input"]
+        tapWhenHittable(app.buttons["start.otherWays"], name: "Other ways to connect")
+        tapWhenHittable(app.buttons["start.typeAddress"], name: "Type an address")
+        let input = app.textFields["typeAddress.field"]
         XCTAssertTrue(waitUntil(input, matches: "exists == true AND hittable == true", timeout: uiReadyTimeout),
-                      "Connection input should be visible and hittable")
-        input.tap()
+                      "Address field should be visible and hittable")
+        if !waitUntil(input, matches: "hasKeyboardFocus == true", timeout: 5) { input.tap() }
         XCTAssertTrue(waitUntil(input, matches: "hasKeyboardFocus == true", timeout: uiReadyTimeout),
-                      "Connection input should have keyboard focus before typing")
+                      "Address field should have keyboard focus before typing")
         input.typeText(nodeURL)
         XCTAssertTrue(waitUntil(input, matches: NSPredicate(format: "value CONTAINS %@", nodeURL), timeout: uiReadyTimeout),
-                      "Connection input should contain the typed node URL before Connect")
+                      "Address field should contain the typed node URL before Connect")
         if nodeURL.lowercased().hasPrefix("http://") {
-            let acknowledgement = app.switches["connection.httpAcknowledgement"]
+            let acknowledgement = app.switches["typeAddress.httpAcknowledgement"]
             turnOn(acknowledgement, name: "HTTP acknowledgement switch")
             XCTAssertTrue(isOn(acknowledgement), "HTTP acknowledgement switch should be on before Connect")
         }
-        tapWhenHittable(app.buttons["connection.connect"], name: "Connect button")
+        tapWhenHittable(app.buttons["typeAddress.connect"], name: "Connect button")
     }
 
     /// On a loaded simulator a delivered tap can have no effect, so the switch state is confirmed

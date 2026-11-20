@@ -1,0 +1,53 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "87FD7BD4-527F-4396-8F0F-15E34D1FA345",
+        "deviceName" : "apie2e279-iphone",
+        "exportedFileName" : "D189D6F8-7B74-440C-AB35-CC717EC00CF0.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "share-other-text-app_0_2E85DE76-03CD-4AFB-9536-F4DCA2EB4661.png",
+        "timestamp" : 1795120840.331
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "87FD7BD4-527F-4396-8F0F-15E34D1FA345",
+        "deviceName" : "apie2e279-iphone",
+        "exportedFileName" : "FDD1E525-D586-413E-8436-C814152B3D30.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "safari-other-extension-text_0_D99072E2-3FA7-423E-8D91-45053D88B69F.txt",
+        "timestamp" : 1795120835.84
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "87FD7BD4-527F-4396-8F0F-15E34D1FA345",
+        "deviceName" : "apie2e279-iphone",
+        "exportedFileName" : "16A6DB14-EE10-4366-91AD-5524600BA32D.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "safari-other-extension_0_94BD58A3-0B65-449C-A69C-4D4F082EEFFD.png",
+        "timestamp" : 1795120835.84
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "87FD7BD4-527F-4396-8F0F-15E34D1FA345",
+        "deviceName" : "apie2e279-iphone",
+        "exportedFileName" : "2F1A41C9-1E0C-416A-9F51-6F0A42F60673.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "safari-other-share-sheet_0_E59ADA59-D0D5-490C-848E-6C4718C2DFA2.png",
+        "timestamp" : 1795120832.892
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "87FD7BD4-527F-4396-8F0F-15E34D1FA345",
+        "deviceName" : "apie2e279-iphone",
+        "exportedFileName" : "1BBC3C18-0E34-4C78-811A-1EA475AE39A1.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "safari-page_0_7A49433C-358B-4E83-947D-B7723E6ECE1C.png",
+        "timestamp" : 1795120824.816
+      }
+    ],
+    "testIdentifier" : "ApiE2E279UITests/testShareFromSafariOtherText()",
+    "testIdentifierURL" : "test://com.apple.xcode/AutoByteusMobile/AutoByteusMobileUITests/ApiE2E279UITests/testShareFromSafariOtherText"
+  }
+]

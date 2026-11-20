@@ -1,0 +1,3 @@
+# API-04a: the shipped app (base 8430d9ef12) on apie2e279-iphone; temporary test ApiE2E279ShippedAppUITests; build-for-testing, then a fresh link, then test-without-building; 2026-11-19T19:50:11Z
+2026-11-19 21:09:57.220 xcodebuild[1636:520951717] [MT] IDELaunchReport: 907a6a88c0468640:907a6a88c0468640: Finished with error: The operation couldn’t be completed. (Mach error -308 - (ipc/mig) server died)
+# exit: 143

@@ -1,0 +1,65 @@
+[
+ {
+  "size": "iphone-440x956",
+  "findings": [],
+  "errors": [],
+  "log": [
+   {
+    "where": "settings reopened",
+    "length": 205,
+    "head": "Settings Daily Assistant Stopped Runtime AutoByteus Model demo/sample-reasoning-model Thinking Use the model settings below to control thinking. Use setting Adv"
+   },
+   {
+    "where": "demo sheet",
+    "length": 1284,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "new demo",
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves "
+   }
+  ]
+ },
+ {
+  "size": "ipad-portrait-820x1180",
+  "findings": [],
+  "errors": [],
+  "log": [
+   {
+    "where": "settings reopened",
+    "length": 205,
+    "head": "Settings Daily Assistant Stopped Runtime AutoByteus Model demo/sample-reasoning-model Thinking Use the model settings below to control thinking. Use setting Adv"
+   },
+   {
+    "where": "demo sheet",
+    "length": 1284,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "new demo",
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves "
+   }
+  ]
+ },
+ {
+  "size": "ipad-landscape-1180x820",
+  "findings": [],
+  "errors": [],
+  "log": [
+   {
+    "where": "settings reopened",
+    "length": 1278,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "demo sheet",
+    "length": 3501,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "new demo",
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves "
+   }
+  ]
+ }
+]

@@ -1,0 +1,2 @@
+message=Saved. Open AutoByteus to use it as an address.
+previewLength=33

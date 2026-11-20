@@ -1,0 +1,9 @@
+  Test Case '-[AutoByteusMobileUITests.DemoUITests testAKeptShareIsUsedOnce]' passed (21.118 seconds).
+  Test Case '-[AutoByteusMobileUITests.DemoUITests testFirstScreen]' passed (6.970 seconds).
+  Test Case '-[AutoByteusMobileUITests.DemoUITests testScanningTheDemoCodeOpensTheDemo]' passed (8.363 seconds).
+  Test Case '-[AutoByteusMobileUITests.DemoUITests testTheDemoLinkOpensTheDemo]' passed (14.037 seconds).
+  Test Case '-[AutoByteusMobileUITests.DemoUITests testTheDemoWebViewBlocksTheNetwork]' passed (6.954 seconds).
+  Test Case '-[AutoByteusMobileUITests.DemoUITests testTryDemoThenLeaveDemoThenColdLaunch]' passed (18.372 seconds).
+  	 Executed 6 tests, with 0 failures (0 unexpected) in 75.813 (75.816) seconds
+  	 Executed 6 tests, with 0 failures (0 unexpected) in 75.813 (75.816) seconds
+  	 Executed 6 tests, with 0 failures (0 unexpected) in 75.813 (75.819) seconds

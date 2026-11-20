@@ -180,6 +180,25 @@ jobs:
           echo "IOS_SIMULATOR_DESTINATION=platform=iOS Simulator,id=$UDID" >> "$GITHUB_ENV"
           echo "Selected simulator UDID: $UDID"
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.2
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install workspace dependencies
+        run: pnpm install --frozen-lockfile
+
+      # The app bundles the demo build of the phone screens as DemoWeb/ (autobyteus-279); the app build fails without it.
+      - name: Build the bundled demo
+        shell: bash
+        run: autobyteus-ios/scripts/prepare-demo-web.sh --build
+
       - name: Generate, build, and run implementation checks
         shell: bash
         env:
@@ -487,6 +506,25 @@ jobs:
             echo "app_profile_uuid=$APP_PROFILE_UUID"
             echo "share_profile_uuid=$SHARE_PROFILE_UUID"
           } >> "$GITHUB_OUTPUT"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.2
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install workspace dependencies
+        run: pnpm install --frozen-lockfile
+
+      # The app bundles the demo build of the phone screens as DemoWeb/ (autobyteus-279); the app build fails without it.
+      - name: Build the bundled demo
+        shell: bash
+        run: autobyteus-ios/scripts/prepare-demo-web.sh --build
 
       - name: Generate project and ExportOptions.plist
         shell: bash

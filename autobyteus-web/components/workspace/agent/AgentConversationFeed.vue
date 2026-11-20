@@ -101,6 +101,7 @@ import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absol
 import EventMonitorBrowseAssistantRow from './EventMonitorBrowseAssistantRow.vue';
 import type { EventMonitorActiveTraceBrowsePresentationItem } from '~/services/eventMonitor/eventMonitorActiveTraceBrowsePresentation';
 import type { EventMonitorActiveTraceBrowseState } from '~/services/eventMonitor/eventMonitorActiveTraceBrowse';
+import { useOwnSendFollow } from '~/composables/workspace/useOwnSendFollow';
 
 const props = withDefaults(defineProps<{
   conversation: Conversation;
@@ -286,6 +287,7 @@ const updatePinnedStateFromScrollPosition = (el?: HTMLElement | null): void => {
   if (shouldStickToBottom.value) hasUnseenActivity.value = false;
 };
 const scrollToBottom = (): void => { writeScrollTop(el => { el.scrollTop = el.scrollHeight; }); };
+const followLatest = (): void => { shouldStickToBottom.value = true; hasUnseenActivity.value = false; void nextTick(scrollToBottom); };
 const captureBrowseAnchor = (): BrowseAnchor | null => {
   const el = getConversationScrollContainer();
   if (!el) return null;
@@ -332,10 +334,8 @@ const restoreBrowseAnchor = async (): Promise<void> => {
 const jumpToLatest = (): void => {
   beginScrollWork();
   if (props.browseState !== 'latest') emit('jump-to-latest');
-  shouldStickToBottom.value = true;
-  hasUnseenActivity.value = false;
   pendingBrowseAnchor.value = null;
-  void nextTick(scrollToBottom);
+  followLatest();
 };
 
 const inputCanQualifyScroll = (session: IntentSession, inputAt: number): boolean => {
@@ -457,10 +457,8 @@ const scheduleAutoScrollCheck = useOncePerFrame(syncAutoScrollIfPinned); // a la
 const resetForSubject = (): void => {
   beginScrollWork();
   pendingBrowseAnchor.value = null;
-  shouldStickToBottom.value = true;
-  hasUnseenActivity.value = false;
   revisionBaseline.value = props.presentationRevision;
-  void nextTick(scrollToBottom);
+  followLatest();
 };
 const invalidateForLostInteraction = (): void => {
   activeTouch = false;
@@ -493,6 +491,7 @@ onBeforeUnmount(() => {
 });
 
 watch(() => [props.conversation.id, props.runId], resetForSubject);
+useOwnSendFollow(() => props.conversation.messages, () => props.browseState === 'latest', followLatest); // DC-007
 watch(() => props.presentationRevision, revision => {
   if (revision <= revisionBaseline.value) {
     revisionBaseline.value = revision;

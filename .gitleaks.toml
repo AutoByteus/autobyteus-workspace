@@ -193,3 +193,20 @@ regexes = [
 paths = [
   '''^tickets/(in-progress|done)/atomic-agent-run-creation/evidence/API-349-probe\.mjs$''',
 ]
+
+# ios-demo-mode-279 (autobyteus-279): the first line of API/E2E's log `API-02x-explore-safari.log` names its UI test,
+# "API-02x-explore-safari: ApiE2E279UITests/testExploreSafari on apie2e279-iphone …"; the broad rule reads the test
+# name after "API…:" as a key. It is an XCTest class and method name, not a credential; checked by shape and context
+# (delivery, 2026-11-20). Only that exact value, only for the generic rule, and only in that log (in-progress and
+# archived paths).
+[[allowlists]]
+description = "UI test name ApiE2E279UITests/testExploreSafari in the autobyteus-279 API/E2E log (generic rule only)"
+targetRules = ["generic-api-key"]
+condition = "AND"
+regexTarget = "secret"
+regexes = [
+  '''^ApiE2E279UITests/testExploreSafari$''',
+]
+paths = [
+  '''^tickets/(in-progress|done)/ios-demo-mode-279/evidence/api-e2e/ios/API-02x-explore-safari\.log$''',
+]

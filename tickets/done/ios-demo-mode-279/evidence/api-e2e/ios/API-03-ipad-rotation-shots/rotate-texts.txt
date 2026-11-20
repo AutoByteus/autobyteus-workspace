@@ -1,0 +1,3 @@
+run=Daily Assistant, Summarize the 1.6 release notes for the pilot customers, Background task running
+portrait=[]
+landscape=[]
