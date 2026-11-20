@@ -3,6 +3,17 @@
 Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/tickets/in-progress/semantic-memory-for-every-agent`
 Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent`, branch `codex/semantic-memory-for-every-agent` (base `personal` at `8430d9ef12`). Commits: `56b02294d0` (code, tests, docs), `a9ca3c48c6` (an owner known only as a member shows loading while the cards or members load; the rendered-UI probe and its package script), `cff2a6596a` (a link row sorts with the files, as the reference shows; probe check SMV-039), `ecbb4741ca` (ticket records and evidence); after CRR-001: `cd26f4d913` (CR-001 fix and specs), `2e5f786091` (its records and evidence IMP-14…IMP-16); after SR-009 (ARCH-REV-005): `f393f403d5` (code, tests, docs, probe), then these records and evidence IMP-17…IMP-22 (§ Checks Run).
 
+## Delivery Local Fixes On The Merged State (IR-004)
+
+Requested by the delivery engineer after merging origin/personal @ `74d046320a` (`7ac6b392c1`; HEAD was `e804d4d5f3`). Fixed in `27498a16ac`; no requirement or design change.
+
+- **LF-1** (web production typecheck error, DEL-03): the base's offline demo world built an `AgentDefinition` with the removed `semanticMemoryEnabled` and `semanticMemoryPath: null`. It now gives `/demo/memory/semantic/<encodeURIComponent(id)>`. The AC-002 grep on the merged tree again finds only the retired-key drop list in live code (IMP-24).
+- **LF-2** (CPW-P1…P3 stale, DEL-13): `collaborationPart` also ends at `## Semantic Memory` and at `## Global Semantic Memory`.
+- **LF-3** (OT-1 racy, DEL-17/DEL-19): OT-1 waits up to 60 s for the three closed runs among the worker's episodes before asserting. OT-2 is deterministic (on-disk runs, start-pass wait). The other episode readers are not stale (see `implementation-revision-record.md` IR-004).
+- **LF-4**: the personal settings service comment drops the semantic memory switch.
+- The delivery engineer's `icons:build` commit `a1df50ecd4` is kept as is.
+- Changed e2e test files for the proportional test review and the API/E2E rerun: `tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts`, `tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts`.
+
 ## SR-009: Definition Folder Names And Preparation Failures (IR-003)
 
 Built against `design-spec.md` § Definition Folder Names And Preparation Failures, REQ-001/REQ-010 (reworded), AC-013, AC-014, DEC-015, DEC-016, with the ARCH-REV-005 notes N-12…N-14.
@@ -80,15 +91,15 @@ the approved UI: Browse tabs Global · Agents · Agent Teams · Agent Orgs with 
 Semantic), team and org pages (Members, Runs), the read-only folder view (the file explorer's new read-only mode),
 en and zh-CN strings, regenerated GraphQL types. Docs and glossary are updated.
 
-- Implementation cycle: `Design Impact` (SR-009; after `Initial` IR-001 and `Local Fix` IR-002)
+- Implementation cycle: `Local Fix` (delivery LF-1…LF-4; after `Initial` IR-001, `Local Fix` IR-002, `Design Impact` IR-003)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-003`
+- Current implementation revision ID: `IR-004`
 - Related solution revision IDs: `SR-008`, `SR-009`
 - Related architecture-review revision IDs: `ARCH-REV-005` (SR-009), `ARCH-REV-004` (`ARCH-REV-002` for N-4)
 - Related code-review revision IDs: `CRR-001`, `CRR-002`, `CRR-003`
 - Related API/E2E revision IDs: API/E2E round 1 (API-10)
-- Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-002` (CRR-003; CR-001 resolved in CRR-002)
+- Related delivery revision IDs: the merged-state delivery round (DEL-01…DEL-30)
+- Triggering finding IDs: `LF-1`…`LF-4` (delivery; CR-002 resolved in CRR-004, CR-001 in CRR-002)
 
 ## Routing Classification (Mandatory)
 
@@ -194,6 +205,10 @@ Evidence files are in `evidence/`; each has a header with the command, the commi
 | IMP-20 | e2e `agent-semantic-memory` (scripted AGY) + `memory-explorer-graphql` | `f393f403d5` | 2 files, 12/12 tests | `IMP-20-sr009-e2e-semantic-memory-and-explorer.log` |
 | IMP-21 | Rendered probe with the long-ID team (after `pnpm -C autobyteus-server-ts build`) | `f393f403d5` | 38/38 checks; SMV-100…102 open a file inside a shortened folder through the Semantic tab | `IMP-21-sr009-rendered-probe.log`, `IMP-21-long-id-semantic-file-open.png` |
 | IMP-22 | Premise: folder name lengths on the founder's node (names only) | N/A | `episodic/` 125 folders, longest 117 bytes; `semantic/` 4, longest 56; none over 200 | `IMP-22-sr009-founder-folder-name-lengths.log` |
+| IMP-23 | LF-1/LF-4: web typecheck, web demo specs, server typecheck (merged state) | `27498a16ac` | Web PASS, 0 production errors (DEL-03 had 1), test files at baseline 86 in 36; demo 4 files, 15 tests; server PASS at baseline | `IMP-23-lf1-lf4-typechecks-and-demo-specs.log` |
+| IMP-24 | LF-1: AC-002 grep on the merged tree | `27498a16ac` | Live code: only the drop list; `semanticMemoryPath: null` only in archived ticket documents | `IMP-24-lf1-ac002-grep.log` |
+| IMP-25 | LF-2: `collaboration-prompt-wording` (scripted AGY gate) | `27498a16ac` | 14/14, CPW-P1…P3 included | `IMP-25-lf2-e2e-collaboration-prompt-wording.log` |
+| IMP-26 | LF-3: `open-task-tree-upgrade-startup`, twice | `27498a16ac` | 3/3 and 3/3 | `IMP-26-lf3-e2e-open-task-tree-two-runs.log` |
 
 The IMP-01 failures, one by one:
 - Prompt snapshots (20): the new Global section. The diffs were additions only; snapshots updated.

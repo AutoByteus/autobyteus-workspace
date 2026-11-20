@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-001 | Architecture reviewer, `design-review-report.md`, ARCH-REV-004 pass of SR-008 (the pause of 2026-11-19 ended) | N/A (review notes N-8…N-11 applied) | `Initial Baseline` | SR-008, ARCH-REV-004 | Implemented design steps 1–7 and the AC-012 measurement; ready for code review |
 | IR-002 | Code reviewer, `code-review-report.md`, CRR-001 (`Fail`, `Local Fix`) | CR-001 | `Local Fix` | IR-001, CRR-001 | The folder view's workspace lives exactly as long as the view; ready for targeted code review |
 | IR-003 | Architecture reviewer, `design-review-report.md`, ARCH-REV-005 pass of SR-009 (the design response to CRR-003 CR-002, API/E2E API-10) | CR-002 | `Design Impact` | IR-002, SR-009, ARCH-REV-005, CRR-003 | One definition folder name rule for long IDs (DEC-016); a folder that cannot be prepared never fails a run (DEC-015); ready for code review |
+| IR-004 | Delivery engineer, Local Fix request on the merged state (`7ac6b392c1`, origin/personal @ `74d046320a`), evidence DEL-03, DEL-13, DEL-17, DEL-19, DEL-30 | LF-1, LF-2, LF-3, LF-4 | `Local Fix` | IR-003, CRR-004, CRR-005 | Demo fixture, two stale e2e tests, one comment; ready for the proportional test review |
 
 ## Revision Entries
 
@@ -73,4 +74,26 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - Tests: `definition-folder-names.test.ts` (new), AC-014 cases for the owner, composer, Claude and Codex; the rendered probe opens a file inside a shortened folder through the Semantic tab (SMV-100…102).
 - Premise checked: "ids that fit keep their names" also holds for existing folders on the founder's node: no name in `episodic/` or `semantic/` is over 200 bytes (IMP-22, names only). An ID of 201–255 encoded bytes had a valid folder before and is now shortened; none exists there.
 - Commits: `f393f403d5` (code, tests, docs, probe), then the evidence and these records
+
+### IR-004 — Delivery Local Fixes LF-1…LF-4 on the merged state
+
+- Triggering role, report path, and round: delivery engineer (`/delivery_engineer`), its Local Fix request after merging origin/personal @ `74d046320a` (`7ac6b392c1`); evidence `DEL-03-web-typecheck.log`, `DEL-13-e2e-prompts-and-runtimes.log`, `DEL-17-rerun-open-task-tree.log`, `DEL-19-ot1-wait-diagnostic.log`, `DEL-30-prompt-reader-files.md`
+- Triggering finding IDs: LF-1, LF-2, LF-3, LF-4
+- Classification: `Local Fix`
+- Prior authoritative result: IR-003 (`f393f403d5`), passed in CRR-004 and CRR-005
+- Current authoritative result: implemented in `27498a16ac`; checks IMP-23…IMP-26
+- Related solution revision IDs: SR-009 (no requirement or design change)
+- Related architecture-review revision IDs: ARCH-REV-005
+- Related code-review revision IDs: CRR-004, CRR-005
+- Related API/E2E revision IDs: API/E2E round 1 (API-10) and its later rounds
+- Related delivery revision IDs: the delivery engineer's merged-state round (DEL-01…DEL-30)
+- Why this revision exists: the base's new offline demo world (autobyteus-279) and a TESTING.md rule added on the base reach this ticket's clean cut and prompt change; OT-1 read the catalog without the wait its rewrite needed.
+- Implementation delta:
+  - LF-1 `autobyteus-web/demo/graphql/definitions.ts`: the `AgentDefinition` fixture drops `semanticMemoryEnabled` and gives `semanticMemoryPath` the demo node's folder, `/demo/memory/semantic/<encodeURIComponent(id)>` (demo IDs are short, so the name is the full encoded ID).
+  - LF-2 `collaboration-prompt-wording.e2e.test.ts`: `collaborationPart` also ends at `## Semantic Memory` and at `## Global Semantic Memory` (the latter for a run whose own folder could not be prepared, DEC-015).
+  - LF-3 `open-task-tree-upgrade-startup.e2e.test.ts` OT-1: waits up to 60 s (the `until` helper, as IA-03) until the worker's episodes include the three closed runs, then asserts; on a timeout it reads once more so the assertion names the missing run. OT-2 is left as it is: it reads runs that were on disk before its server started, and the episodes query waits for the catalog's start pass (N-9).
+  - LF-4 `personal-settings-service.ts`: the class comment no longer lists a semantic memory switch.
+- Other readers checked for the same race (asked by delivery): `task-agent-own-run-startup` reads hand-built runs on disk before its server starts (start pass, N-9); `agent-semantic-memory` SM-10 asserts an absence; `internal-agents` IA-03 already waits; `memory-explorer-graphql` composes its catalog itself. None stale.
+- Kept: the delivery engineer's `icons:build` commit `a1df50ecd4` (the `heroicons:user` icon the Memory components name), as asked; no other way is needed.
+- Commits: `27498a16ac` (fixes), then the evidence and these records
 

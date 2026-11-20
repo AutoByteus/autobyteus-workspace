@@ -1,0 +1,18 @@
+# IMP-24-lf1-ac002-grep.log
+# Command: see the lines starting with $
+# Commit tested: working tree committed as 27498a16ac (on the merged state e804d4d5f3)
+# Environment: macOS (Darwin 25.5), Node v22.23.1, pnpm; shared host, load average 60-130
+# Date: 2026-11-20
+# Note: live code: only the retired-key drop list; "semanticMemoryPath: null" only in archived ticket documents
+# ----------------------------------------------------------------------
+$ git grep -n -i "semanticMemoryEnabled|semantic_memory_enabled|SEMANTIC_MEMORY_ENABLED" (live code: server src, web without tests and generated, electron, ios)
+autobyteus-server-ts/src/agent-definition/providers/agent-definition-config.ts:78:      // Retired keys: nothing reads them, and a save drops them (`semanticMemoryEnabled`: every agent has semantic
+autobyteus-server-ts/src/agent-definition/providers/agent-definition-config.ts:80:      ([key]) => key !== "selfEvolution" && key !== "semanticMemoryEnabled"
+EXIT 0
+$ git grep -n "semanticMemoryPath: null" (everything)
+tickets/done/agent-semantic-memory/api-e2e-coverage-investigation.md:125:| `tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts` | composed prompt of real roots equals approved views (agents without the setting) | AC-005 (preserved instructions) | Still Valid | composer callers pass `semanticMemoryPath: null` for disabled agents | Run (API-05b) |
+tickets/done/agent-semantic-memory/evidence/IMP-04-web-test-nuxt.log:19:Fix 7e5f90d7f: fixture adds semanticMemoryEnabled: false, semanticMemoryPath: null.
+tickets/done/agent-semantic-memory/implementation-handoff.md:45:| BEH-001 | Section with the absolute folder when on; byte-identical instructions when off (REQ-004/005/008/009, AC-001, AC-005) | `agent-execution/prompt/carpenter-prompt-sections.ts` `renderSemanticMemorySection`; `carpenter-prompt-composer.ts` required `semanticMemoryPath: string \| null`, pushed after `## Project`, refuses a relative path; callers: `autobyteus-agent-run-backend-factory.ts`, `codex-thread-bootstrapper.ts`, `claude-session-bootstrapper.ts`, `acp-agent-run-backend-factory.ts` (`prepare()` → `composeInstructions(prepared, …)`, create and restore), `agy-agent-run-backend-factory.ts` (create only, REQ-009) | Contract §5.1/5.2/5.3/5.4 asserted verbatim (`semantic-memory-prompt-section.test.ts`); existing prompt snapshots (`collaboration-prompt-sections` snapshots, parity tests) unchanged with `semanticMemoryPath: null` |
+tickets/done/agent-semantic-memory/implementation-handoff.md:59:- Tests added: server `tests/unit/agent-memory/agent-semantic-memory.test.ts`, `tests/unit/agent-execution/prompt/semantic-memory-prompt-section.test.ts`, `tests/unit/agent-definition/agent-definition-config-semantic-memory.test.ts`, `tests/unit/agent-execution/backends/codex/backend/codex-sandbox-workspace-write-config.test.ts`, `tests/unit/api/graphql/converters/agent-definition-converter-semantic-memory.test.ts`; cases added to the Codex/Claude/ACP/AGY/AutoByteus backend tests, Claude SDK client/session config/query options tests, personal-settings service/record/write-forms tests and the package-edit capture test. Web `AgentDefinitionForm.semanticMemory.spec.ts`, `AgentDefinitionDetailSections.semanticMemory.spec.ts`. Existing composer callers in tests pass `semanticMemoryPath: null` (required key).
+tickets/done/agent-semantic-memory/semantic-memory-prompt-contract.md:121:  to the output for the same inputs without the feature (`semanticMemoryPath: null`);
+EXIT 0

@@ -1,0 +1,145 @@
+# IMP-23-lf1-lf4-typechecks-and-demo-specs.log
+# Command: env -i HOME PATH TMPDIR pnpm -C autobyteus-web typecheck; pnpm -C autobyteus-web test:nuxt run demo; pnpm -C autobyteus-server-ts typecheck
+# Commit tested: working tree committed as 27498a16ac (on the merged state e804d4d5f3)
+# Environment: macOS (Darwin 25.5), Node v22.23.1, pnpm; shared host, load average 60-130
+# Date: 2026-11-20
+# Note: LF-1: web production errors 0 (DEL-03 had 1); demo specs 4 files, 15 tests; server at baseline
+# ----------------------------------------------------------------------
+
+> autobyteus@1.5.14-beta.3 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web
+> pnpm prepare:shared-types && nuxt prepare && node ./scripts/typecheck.mjs
+
+
+> autobyteus@1.5.14-beta.3 prepare:shared-types /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web
+> pnpm -C ../autobyteus-server-ts prepare:source
+
+
+> autobyteus-server-ts@0.1.1 prepare:source /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 153ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Curious about the SQL queries Prisma ORM generates? Optimize helps you enhance your visibility: https://pris.ly/tip-2-optimize
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+│
+◆  Types generated in .nuxt.
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 41.8s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.0s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 23.6s
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+
+===== web demo specs =====
+
+> autobyteus@1.5.14-beta.3 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web
+> cross-env NUXT_TEST=true vitest run demo
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+ ✓ scripts/__tests__/demoImportBoundary.spec.ts (2 tests) 450ms
+   ✓ the demo boundary > has no product file importing demo/  448ms
+stderr | demo/__tests__/demoWorld.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | demo/__tests__/demoStreams.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | demo/__tests__/demoInventory.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | demo/__tests__/demoInventory.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | demo/__tests__/demoStreams.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | demo/__tests__/demoWorld.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ demo/__tests__/demoWorld.spec.ts (5 tests) 23ms
+ ✓ demo/__tests__/demoInventory.spec.ts (3 tests) 14ms
+ ✓ demo/__tests__/demoStreams.spec.ts (5 tests) 144ms
+
+ Test Files  4 passed (4)
+      Tests  15 passed (15)
+   Start at  21:38:06
+   Duration  7.74s (transform 3.92s, setup 19.92s, collect 944ms, tests 631ms, environment 829ms, prepare 710ms)
+
+
+===== server typecheck =====
+
+> autobyteus-server-ts@0.1.1 pretypecheck /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts
+> pnpm prepare:source
+
+
+> autobyteus-server-ts@0.1.1 prepare:source /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 147ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to react to database changes in your app as they happen? Discover how with Pulse: https://pris.ly/tip-1-pulse
+
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts
+> node ./scripts/typecheck.mjs
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 9.9s
+[typecheck] server tests (tsconfig.tests.json): 1006 errors, exit 2, 28.1s
+[typecheck] production errors: 0; test-file errors: 1006 in 315 files (baseline 1006 in 315 files)
+[typecheck] PASS
