@@ -1,0 +1,173 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/.env
+◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/.env // tip: ⌘ suppress logs { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:56656
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:56656
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/db/probe.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:53171) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-20T13:33:53.720Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 34 predefined settings
+AgentRunManager initialized.
+Node access: local control socket not opened. The node's local control socket path is 144 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/node-access/local-control.sock. Use a shorter data folder path.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1795181634376,"pid":53171,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:56683"}
+{"level":30,"time":1795181634403,"pid":53171,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:56656"}
+[2026-11-20T13:33:54.403Z] [INFO] [server.runtime] Server listening on 127.0.0.1:56656
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Hub Staging Sweep' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/memory/semantic/probe-researcher.
+Created WorkspaceFileExplorer for semantic_ws_probe-researcher (graphql-folder-children).
+FileSystemWatcher initialized for '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/memory/semantic/probe-researcher' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Watcher detected creation: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/memory/semantic/probe-researcher/secret-link.md
+Watcher detected creation: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/memory/semantic/probe-researcher/shared
+Started filesystem watcher for workspace /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/memory/semantic/probe-researcher
+Acquired file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/memory/semantic/probe-researcher (file-explorer-websocket); active leases: 1
+FileExplorerSession created: b292c7c4-9165-41d4-84f9-99bb42d9d750 for workspace semantic_ws_probe-researcher
+Created file explorer session b292c7c4-9165-41d4-84f9-99bb42d9d750 for workspace semantic_ws_probe-researcher. Active sessions: 1
+File explorer WebSocket connected: b292c7c4-9165-41d4-84f9-99bb42d9d750 for workspace semantic_ws_probe-researcher
+File explorer websocket attached for workspace semantic_ws_probe-researcher
+Starting directory traversal for: '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/memory/semantic/probe-researcher' with max_depth=null
+Directory traversal for '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/memory/semantic/probe-researcher' completed in 0.0020 seconds.
+FileNameIndexer refreshing snapshot index...
+[Search] Trying strategy: FuzzysortSearchStrategy for query 'secret'
+[Search] FuzzysortSearchStrategy completed in 0.50ms, found 0 results (total: 0.54ms)
+Starting directory traversal for: '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/memory/semantic/probe-researcher' with max_depth=null
+Directory traversal for '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/memory/semantic/probe-researcher' completed in 0.0020 seconds.
+FileNameIndexer refreshing snapshot index...
+[Search] Trying strategy: FuzzysortSearchStrategy for query 'controls'
+[Search] FuzzysortSearchStrategy completed in 0.22ms, found 1 results (total: 0.24ms)
+{"level":30,"time":1795181667706,"pid":53171,"hostname":"MacBookPro","reqId":"req-1b","err":{"type":"GraphQLError","message":"WORKSPACE_READ_ONLY: Workspace 'semantic_ws_probe-researcher' is read-only.","stack":"WorkspaceAccessError: WORKSPACE_READ_ONLY: Workspace 'semantic_ws_probe-researcher' is read-only.\n    at SemanticMemoryWorkspace.assertWritable (file:///Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts/dist/workspaces/filesystem-workspace.js:73:19)\n    at FileExplorerResolver.resolveWritableWorkspace (file:///Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts/dist/api/graphql/types/file-explorer.js:45:19)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async FileExplorerResolver.writeFileContent (file:///Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-server-ts/dist/api/graphql/types/file-explorer.js:116:27)\n    at async Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/node_modules/.pnpm/mercurius@16.12.1_graphql@16.12.0/node_modules/mercurius/index.js:713:23)","path":["writeFileContent"],"locations":[{"line":1,"column":12}],"extensions":{}},"msg":"WORKSPACE_READ_ONLY: Workspace 'semantic_ws_probe-researcher' is read-only."}
+Refused shared/secret.md in workspace semantic_ws_probe-researcher: WORKSPACE_LINK_NOT_OPENED: 'shared' is a symbolic link; links in this workspace are listed but never opened.
+{"level":40,"time":1795181667715,"pid":53171,"hostname":"MacBookPro","reqId":"req-1d","method":"GET","url":"/rest/workspaces/semantic_ws_probe-researcher/content?path=shared%2Fsecret.md","statusCode":403,"elapsedMs":0.4836250000007567,"msg":"http request completed"}
+Released file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/memory/semantic/probe-researcher (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/memory/semantic/probe-researcher
+FileExplorerSession closed: b292c7c4-9165-41d4-84f9-99bb42d9d750
+Closed file explorer session b292c7c4-9165-41d4-84f9-99bb42d9d750. Active sessions: 0
+File explorer WebSocket disconnected: b292c7c4-9165-41d4-84f9-99bb42d9d750
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/memory/semantic-global.
+Created WorkspaceFileExplorer for semantic_global_ws (graphql-folder-children).
+FileSystemWatcher initialized for '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/memory/semantic-global' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/memory/semantic-global
+Acquired file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/memory/semantic-global (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 779f0f1a-a66b-454c-8963-14d3557b692d for workspace semantic_global_ws
+Created file explorer session 779f0f1a-a66b-454c-8963-14d3557b692d for workspace semantic_global_ws. Active sessions: 1
+File explorer WebSocket connected: 779f0f1a-a66b-454c-8963-14d3557b692d for workspace semantic_global_ws
+File explorer websocket attached for workspace semantic_global_ws
+Released file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/memory/semantic-global (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/memory/semantic-global
+FileExplorerSession closed: 779f0f1a-a66b-454c-8963-14d3557b692d
+Closed file explorer session 779f0f1a-a66b-454c-8963-14d3557b692d. Active sessions: 0
+File explorer WebSocket disconnected: 779f0f1a-a66b-454c-8963-14d3557b692d
+FileSystemWatcher initialized for '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/memory/semantic-global' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/memory/semantic-global
+Acquired file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/memory/semantic-global (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 329f1dcd-f5bd-4442-b17b-7cdf4999edb8 for workspace semantic_global_ws
+Created file explorer session 329f1dcd-f5bd-4442-b17b-7cdf4999edb8 for workspace semantic_global_ws. Active sessions: 1
+File explorer WebSocket connected: 329f1dcd-f5bd-4442-b17b-7cdf4999edb8 for workspace semantic_global_ws
+File explorer websocket attached for workspace semantic_global_ws
+Released file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/memory/semantic-global (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/memory/semantic-global
+FileExplorerSession closed: 329f1dcd-f5bd-4442-b17b-7cdf4999edb8
+Closed file explorer session 329f1dcd-f5bd-4442-b17b-7cdf4999edb8. Active sessions: 0
+File explorer WebSocket disconnected: 329f1dcd-f5bd-4442-b17b-7cdf4999edb8
+Watcher runtime for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-1LdJ5u/server-data/memory/semantic-global did not stop within 5000ms; killing child
