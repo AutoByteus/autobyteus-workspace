@@ -1,0 +1,20 @@
+# grok models before the smoke run (2 calls)
+You are logged in with grok.com.
+
+Default model: grok-4.7
+
+Available models:
+  * grok-4.7 (default)
+You are logged in with grok.com.
+
+Default model: grok-4.7
+
+Available models:
+  * grok-4.7 (default)
+
+# Grok ACP initialize timing, one JSON-RPC initialize via 'grok agent --no-leader stdio' at load average about 42 (CLI 1.0.89); the server's bound is INITIALIZE_TIMEOUT_MS = 30000 (acp-client-connection.ts:28)
+initialize answered,  after 16534 ms
+initialize answered,  after 34631 ms
+initialize answered,  after 31447 ms
+grok --version: 0.01 s each (3 calls)
+beta.1 records, older CLI, load about 52: initialize answered in 15196, 3197 and 4587 ms (tickets/done/release-v1.5.14-beta.1/evidence/delivery/DR2-grok-initialize-timing.txt)
