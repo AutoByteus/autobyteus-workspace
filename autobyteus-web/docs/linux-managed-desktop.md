@@ -38,6 +38,8 @@ The Applications entry and running managed windows share the desktop ID
 icon in `~/.local/share/autobyteus-managed/desktop-icon.png` so it remains
 available after quit. The first corrected installed launch replaces the exact
 older flat shortcut without changing its desktop ID or editing favorites.
+GNOME may briefly show the old artwork while it refreshes its index. You do not
+need to unpin the favorite, log out or enroll the app again.
 Customized resources are left intact; a menu publication problem is reported
 without reinstalling the app.
 Opening a new launcher-bearing download redirects to the installed copy for
