@@ -76,6 +76,67 @@ describe('SemanticMemoryFolder', () => {
     expect(workspaces.unregisterTransientWorkspace).toHaveBeenCalledWith(workspaceId);
   });
 
+  it('releases the workspace when the view is left while its first listing is pending, and ignores the late listing (CR-001)', async () => {
+    const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
+    const folders = useSemanticMemoryFolderStore();
+    vi.spyOn(folders, 'open').mockResolvedValue(undefined as never);
+    vi.spyOn(folders, 'folderOf').mockReturnValue({ folderPath: '/m/semantic/operator', exists: true, isEmpty: false });
+    const workspaces = useWorkspaceStore();
+    let finishListing!: () => void;
+    vi.spyOn(workspaces, 'fetchFolderChildren').mockImplementation(() => new Promise<void>((resolve) => { finishListing = resolve; }));
+    const semanticEntries = () => Object.keys(workspaces.workspaces).filter((id) => id.startsWith('semantic_'));
+    const wrapper = mount(SemanticMemoryFolder, {
+      props: { agentDefinitionId: 'operator', agentName: 'Operator', imported: false },
+      global: { plugins: [pinia], mocks: { $t: translate }, stubs: { FileExplorer: true, FileExplorerTabs: true } },
+    });
+    await flushPromises();
+    expect(workspaces.fetchFolderChildren).toHaveBeenCalledWith('semantic_ws_operator', '');
+    expect(semanticEntries()).toEqual(['semantic_ws_operator']);
+    expect(workspaces.workspaceMetadataById.semantic_ws_operator?.kind).toBe('semantic_memory');
+    expect(wrapper.text()).toContain('Loading the folder');
+
+    wrapper.unmount();
+    expect(semanticEntries()).toEqual([]);
+    expect(workspaces.workspaceMetadataById.semantic_ws_operator).toBeUndefined();
+    finishListing();
+    await flushPromises();
+    expect(semanticEntries()).toEqual([]);
+    expect(Object.values(workspaces.workspaceMetadataById).some((metadata: any) => metadata?.kind === 'semantic_memory')).toBe(false);
+  });
+
+  it('shows only the current folder when the agent changes while the first listing is pending (CR-001)', async () => {
+    const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
+    const folders = useSemanticMemoryFolderStore();
+    vi.spyOn(folders, 'open').mockResolvedValue(undefined as never);
+    vi.spyOn(folders, 'folderOf').mockImplementation((id: string | null) => ({ folderPath: `/m/semantic/${id}`, exists: true, isEmpty: false }));
+    const workspaces = useWorkspaceStore();
+    const pending = new Map<string, () => void>();
+    vi.spyOn(workspaces, 'fetchFolderChildren').mockImplementation((id: string) => new Promise<void>((resolve) => { pending.set(id, resolve); }));
+    const semanticEntries = () => Object.keys(workspaces.workspaces).filter((id) => id.startsWith('semantic_'));
+    const wrapper = mount(SemanticMemoryFolder, {
+      props: { agentDefinitionId: 'first', agentName: 'First', imported: false },
+      global: {
+        plugins: [pinia],
+        mocks: { $t: translate },
+        stubs: { FileExplorer: { props: { workspaceId: String }, template: '<div data-test="explorer">{{ workspaceId }}</div>' }, FileExplorerTabs: true },
+      },
+    });
+    await flushPromises();
+    await wrapper.setProps({ agentDefinitionId: 'second', agentName: 'Second' });
+    await flushPromises();
+    expect(semanticEntries()).toEqual(['semantic_ws_second']);
+
+    pending.get('semantic_ws_first')!();
+    await flushPromises();
+    expect(wrapper.find('[data-test="explorer"]').exists()).toBe(false);
+    pending.get('semantic_ws_second')!();
+    await flushPromises();
+    expect(wrapper.get('[data-test="explorer"]').text()).toBe('semantic_ws_second');
+    expect(semanticEntries()).toEqual(['semantic_ws_second']);
+    wrapper.unmount();
+    expect(semanticEntries()).toEqual([]);
+  });
+
   it('uses the global workspace for Global', async () => {
     const { workspaces } = mountFolder({ agentDefinitionId: null }, { folderPath: '/m/semantic-global', exists: true, isEmpty: false });
     await flushPromises();

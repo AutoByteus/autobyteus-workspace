@@ -66,9 +66,16 @@ const emptyBody = computed(() => {
   return folder.value?.exists ? t('memory.semantic.empty_body', { name: props.agentName }) : t('memory.semantic.missing_body', { name: props.agentName });
 });
 
+/** The workspace shown, once its first listing is read. */
 const workspaceId = ref<string | null>(null);
+/** The workspace registered, from the moment of registration: leaving during its first listing releases it too. */
+let registeredId: string | null = null;
+/** Each release starts a new generation; a listing that completes after one is ignored. */
+let generation = 0;
 const release = () => {
-  if (workspaceId.value) workspaceStore.unregisterTransientWorkspace(workspaceId.value);
+  generation += 1;
+  if (registeredId) workspaceStore.unregisterTransientWorkspace(registeredId);
+  registeredId = null;
   workspaceId.value = null;
 };
 
@@ -88,11 +95,14 @@ watch(() => [props.imported, folder.value?.folderPath, folder.value?.exists, fol
   const current = folder.value;
   if (props.imported || !current?.exists || current.isEmpty) return;
   const id = workspaceStore.registerSemanticMemoryWorkspace(semanticMemoryWorkspaceId(props.agentDefinitionId), props.agentName, current.folderPath);
+  registeredId = id;
+  const mine = generation;
   try {
     await workspaceStore.fetchFolderChildren(id, '');
-    workspaceId.value = id;
+    if (mine === generation) workspaceId.value = id;
   } catch (cause: any) {
-    workspaceStore.unregisterTransientWorkspace(id);
+    if (mine !== generation) return;
+    release();
     workspaceError.value = cause?.message || 'Failed to read the folder.';
   }
 }, { immediate: true });
