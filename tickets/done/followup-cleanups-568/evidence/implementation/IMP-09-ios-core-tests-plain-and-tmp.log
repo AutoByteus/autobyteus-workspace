@@ -1,0 +1,47 @@
+# IMP-09 iOS core tests from the worktree and from a clone under /tmp (D-3)
+# command: (autobyteus-ios) scripts/generate-project.sh; xcodebuild -project AutoByteusMobile.xcodeproj -scheme AutoByteusMobile -destination id=<my iPhone 17 simulator> -only-testing:AutoByteusMobileCoreTests CODE_SIGNING_ALLOWED=NO test — in the worktree, then in git clone --no-local <worktree> /tmp/autobyteus-568-ios (DemoWeb/ copied in; it is generated)
+# commit: eb7e4bf2af
+# env: macOS 26.5.2, Xcode 26.1.1; my iPhone 17 simulator, iOS 26.1
+# date: 2026-11-20T13:49:13Z
+
+== the worktree (/Users/normy/autobyteus_org/autobyteus-worktrees/followup-cleanups-568)
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.005 (0.006) seconds
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.016 (0.017) seconds
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.004 (0.023) seconds
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.029 (0.029) seconds
+	 Executed 9 tests, with 0 failures (0 unexpected) in 0.319 (0.322) seconds
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.004 (0.006) seconds
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.136 (0.139) seconds
+Test Case '-[AutoByteusMobileCoreTests.SavedNodeEntryKeysMigrationTests testOnlyTheStartUpCallSiteReferencesTheMigrationFolder]' started.
+Test Case '-[AutoByteusMobileCoreTests.SavedNodeEntryKeysMigrationTests testOnlyTheStartUpCallSiteReferencesTheMigrationFolder]' passed (0.037 seconds).
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.133 (0.134) seconds
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.001 (0.002) seconds
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.023 (0.024) seconds
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+	 Executed 56 tests, with 0 failures (0 unexpected) in 0.690 (0.733) seconds
+	 Executed 56 tests, with 0 failures (0 unexpected) in 0.690 (0.734) seconds
+** TEST SUCCEEDED **
+exit=0
+
+== the clone under /tmp (/tmp/autobyteus-568-ios, a symlink to /private/tmp; HEAD eb7e4bf2af)
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.010 (0.012) seconds
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.053 (0.054) seconds
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.084 (0.086) seconds
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.020 (0.020) seconds
+	 Executed 9 tests, with 0 failures (0 unexpected) in 0.421 (0.424) seconds
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.005 (0.006) seconds
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.011) seconds
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.085 (0.087) seconds
+Test Case '-[AutoByteusMobileCoreTests.SavedNodeEntryKeysMigrationTests testOnlyTheStartUpCallSiteReferencesTheMigrationFolder]' started.
+Test Case '-[AutoByteusMobileCoreTests.SavedNodeEntryKeysMigrationTests testOnlyTheStartUpCallSiteReferencesTheMigrationFolder]' passed (0.030 seconds).
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.101 (0.103) seconds
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.018 (0.019) seconds
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+	 Executed 56 tests, with 0 failures (0 unexpected) in 0.813 (0.909) seconds
+	 Executed 56 tests, with 0 failures (0 unexpected) in 0.813 (0.910) seconds
+** TEST SUCCEEDED **
+exit=0

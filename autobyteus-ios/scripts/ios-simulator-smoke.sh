@@ -2,7 +2,6 @@
 set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 EVIDENCE_DIR="${1:-$ROOT_DIR/build/simulator-smoke-evidence}"
-SIMULATOR_NAME="${IOS_SIMULATOR_NAME:-iPhone 17}"
 PORT="${AUTOBYTEUS_FAKE_NODE_PORT:-29876}"
 FAKE_NODE_URL="http://127.0.0.1:$PORT/mobile"
 IOS_BUNDLE_ID="${IOS_BUNDLE_ID:-org.autobyteus.mobile}"
@@ -29,14 +28,8 @@ SERVER_PID=$!
 trap 'kill "$SERVER_PID" >/dev/null 2>&1 || true' EXIT
 sleep 1
 
-UDID="$(xcrun simctl list devices available | awk -v name="$SIMULATOR_NAME" '$0 ~ name && $0 ~ /Shutdown|Booted/ { gsub(/[()]/,"",$0); print $(NF-1); exit }')"
-if [[ -z "$UDID" ]]; then
-  UDID="$(xcrun simctl list devices available | awk '/iPhone/ && /Shutdown|Booted/ { gsub(/[()]/,"",$0); print $(NF-1); exit }')"
-fi
-if [[ -z "$UDID" ]]; then
-  echo "No available iOS simulator found." >&2
-  exit 1
-fi
+# The device: IOS_SIMULATOR_NAME (default iPhone 17) on the newest runtime the selected Xcode can run.
+UDID="$("$ROOT_DIR/scripts/select-ios-simulator.py")"
 xcrun simctl boot "$UDID" >/dev/null 2>&1 || true
 xcrun simctl bootstatus "$UDID" -b
 

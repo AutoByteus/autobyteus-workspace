@@ -140,15 +140,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          SIMULATOR_NAME="${IOS_SIMULATOR_NAME:-iPhone 17}"
-          UDID="$(xcrun simctl list devices available | awk -v name="$SIMULATOR_NAME" '$0 ~ name && $0 ~ /Shutdown|Booted/ { gsub(/[()]/,"",$0); print $(NF-1); exit }')"
-          if [[ -z "$UDID" ]]; then
-            UDID="$(xcrun simctl list devices available | awk '/iPhone/ && /Shutdown|Booted/ { gsub(/[()]/,"",$0); print $(NF-1); exit }')"
-          fi
-          if [[ -z "$UDID" ]]; then
-            echo "::error::No available iOS simulator found."
-            exit 1
-          fi
+          UDID="$(autobyteus-ios/scripts/select-ios-simulator.py)"
           echo "IOS_SIMULATOR_DESTINATION=platform=iOS Simulator,id=$UDID" >> "$GITHUB_ENV"
           echo "Selected simulator UDID: $UDID"
 

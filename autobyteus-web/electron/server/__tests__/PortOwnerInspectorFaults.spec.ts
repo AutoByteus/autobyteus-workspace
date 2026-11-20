@@ -21,8 +21,8 @@ describe.skipIf(!['darwin', 'linux'].includes(process.platform))('actual advisor
     expect(value).toMatchObject({ kind: 'port-conflict', port, inspection: 'unavailable', owners: [] })
     expect(Number.isFinite(Date.parse(value.observedAt))).toBe(true)
   }
-  const script = (body: string) => {
-    writeFileSync(executable, `#!${process.execPath}\n${body}\n`, { mode: 0o700 })
+  const script = (body: string, interpreter = process.execPath) => {
+    writeFileSync(executable, `#!${interpreter}\n${body}\n`, { mode: 0o700 })
     chmodSync(executable, 0o700)
   }
   beforeEach(async () => {
@@ -65,9 +65,12 @@ describe.skipIf(!['darwin', 'linux'].includes(process.platform))('actual advisor
   })
   it('enforces the real 1000ms subprocess deadline and reaps only its owned child', async () => {
     const receipt = join(root, 'child-pid')
-    script(`require('node:fs').writeFileSync(${JSON.stringify(receipt)}, String(process.pid));
-      process.stdout.write('p123\\ncpartial-before-timeout\\n');
-      setTimeout(() => process.exit(0), 5000)`)
+    // A shell child is running within milliseconds even under suite load (a Node child's start-up could outlast the
+    // 1000 ms deadline, so it was killed before writing its receipt). `exec` keeps the pid the receipt names and forks
+    // nothing; PATH is the fixture folder only, so sleep is named by its path.
+    script(`echo $$ > '${receipt}'
+printf 'p123\\ncpartial-before-timeout\\n'
+exec /bin/sleep 5`, '/bin/sh')
     const start = performance.now()
     unavailable(await inspectPortOwner(port))
     const elapsed = performance.now() - start
