@@ -102,7 +102,8 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
 - **User file reply:** a node route's answer with a user file's content
   (`sendUserFile`, `user-file-reply.ts`): the file's type,
   `Content-Security-Policy: sandbox allow-scripts` (it runs in an opaque
-  origin, never the node's) and `X-Content-Type-Options: nosniff`.
+  origin, never the node's), `X-Content-Type-Options: nosniff` and, where the
+  route knows it, the file's `Content-Length`.
 - **Phone WebSocket route:** a WebSocket route pattern a paired phone's
   credential may open (`PHONE_WEBSOCKET_ROUTES`). A phone credential on any
   other WebSocket route is refused with `PHONE_ACCESS_ROUTE_REFUSED`.

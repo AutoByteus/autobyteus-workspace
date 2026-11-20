@@ -1,0 +1,14 @@
+
+> autobyteus@1.5.14-beta.3 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --cases=MSP-89,MSP-90,MSP-91,MSP-92 --output-dir=/tmp/del572/phone-merged
+
+[mobile-shell] MSP-89 …
+[mobile-shell] MSP-89 Pass
+[mobile-shell] MSP-91 …
+[mobile-shell] MSP-91 Pass
+[mobile-shell] MSP-92 …
+[mobile-shell] MSP-92 Pass
+[mobile-shell] MSP-90 …
+[mobile-shell] MSP-90 Pass
+mobile-shell probe: Pass
+probe exit 0
