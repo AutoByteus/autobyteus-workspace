@@ -1,0 +1,16 @@
+API-01 • 2026-11-20 UTC • sha256sum original public .2 (release commit a728fbcad3) and signed IR-001 .3. Unpack the real AppImages unchanged except launcher/client/provision/managed-restart/identity built from the respective source using buildNative desktop_test, pinned 127.0.0.1:18889, and disposable QA key. Repack, sign-release/verify-release final bytes. Signed records and fixture hashes follow; no production signing, runtime override or uploaded artifact.
+a5cf04ffb8f0ab1d17e0fc63634add581f1a7b90728bdd8737a4c7a3a03a9a13  /home/ryan-ai/hdd_drive/autobyteus_org/icon12-qa-asqaxW/assets/AutoByteus_personal_linux-x64-1.5.14-beta.2.AppImage
+Verified signed desktop release 1.5.14-beta.2 x64
+11b2e3684e90bada7ce2f6ea6523ac4d3c1a36ac203afc6c6dbd41e46e6f7cc9  /home/ryan-ai/hdd_drive/autobyteus_org/icon12-qa-asqaxW/assets/test2/AutoByteus_personal_linux-x64-1.5.14-beta.2.AppImage
+19d79ac724bbd0e2a506d4dd77a6c24c48d58f183a5282f538f1769ac0e070bd  /home/ryan-ai/hdd_drive/autobyteus_org/icon12-qa-asqaxW/build/sq2/resources/app.asar
+086af959f4f4305c45a77655bd9e2b0a88a04d9816c7dd734929b4a5977a237a  /home/ryan-ai/hdd_drive/autobyteus_org/managed-icon-check.8kKbBY/verified-package/AutoByteus_personal_linux-x64-1.5.14-beta.3.AppImage
+Verified signed desktop release 1.5.14-beta.3 x64
+dd22d4ef5c6423008cd9eb19ba5525a3bf566973555064748dd122223d302056  /home/ryan-ai/hdd_drive/autobyteus_org/icon12-qa-asqaxW/assets/test3/AutoByteus_personal_linux-x64-1.5.14-beta.3.AppImage
+3967722e405c9dc607af0c58e5eda4f301a0077a4810046bba7110275163577a  /home/ryan-ai/hdd_drive/autobyteus_org/icon12-qa-asqaxW/build/sq3/resources/app.asar
+Initial zstd repacks above: signed but not eligible as runnable fixtures (AppImage runtime supports gzip/xz). Replacement verified gzip repacks used for GUI:
+Verified signed desktop release 1.5.14-beta.2 x64
+Verified native AppRun, unchanged Electron ELF, provisioner/client and sandbox-preserving desktop Exec
+5f89530293a0964f3e6eba4be33988e4a1287c311b9051d4eab97fa581088d98  /home/ryan-ai/hdd_drive/autobyteus_org/icon12-qa-asqaxW/assets/gzip2/AutoByteus_personal_linux-x64-1.5.14-beta.2.AppImage
+Verified signed desktop release 1.5.14-beta.3 x64
+Verified native AppRun, unchanged Electron ELF, provisioner/client and sandbox-preserving desktop Exec
+3b17adc6716710028a290ad42d7edd1a7051416b7881acb866279afbe90e9042  /home/ryan-ai/hdd_drive/autobyteus_org/icon12-qa-asqaxW/assets/gzip3/AutoByteus_personal_linux-x64-1.5.14-beta.3.AppImage

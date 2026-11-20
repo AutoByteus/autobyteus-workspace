@@ -1,0 +1,12 @@
+API-04-clean-uninstall | 2026-11-20 UTC | actual isolated Ubuntu 24.04.5 GNOME Shell 46 / Ubuntu Dock 90ubuntu3 | IR-001 960fb46ad0; exact step/build mapping in API-REV-001 Cases
+Ubuntu will request one-shot authorization for /opt/autobyteus-desktop/1000/support/provision (program path, not a publisher verification).
+Removed "/etc/systemd/system/sockets.target.wants/autobyteus-desktop-1000.socket".
+exit=0
+no-live-image
+no-owned-entry
+no-owned-icon
+keep-custom
+keep-other-art
+c564b691b1d0452d8a95daffcd0f71ecc0b28903d5f348d02191d5e5c9193c82  /home/qa/.autobyteus/server-data/temp_workspace/icon-work.txt
+['org.gnome.Nautilus.desktop', 'autobyteus-managed.desktop']
+no-writer-account
