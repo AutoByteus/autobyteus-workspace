@@ -487,5 +487,41 @@ describe("Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)",
         run.restore();
       }
     }, 60_000);
+
+    it("keeps a message sent in the hand-over's gap (after Grok ended the input prompt, before its response) held through Grok's own turn (AC-006)", async () => {
+      const { rows, sessionId } = await opening();
+      const script = grokProviderTurnScript(sessionId);
+      const run = await createGrokRun({ fixture: await writeFixture("provider-turn-b-gap", [...rows, ...script.orderBGap(3_000)]), autoExecuteTools: true });
+      try {
+        const { socket, messages } = await openAgentSocket(run.runId);
+        sendE2eSendMessageCommand(socket, { agent_run_id: run.runId, content: "Start the job, then run long.sh." });
+        await waitFor(messages, (message) => message.type === "SEGMENT_CONTENT" && String(message.payload.delta).includes("working"), "input turn running");
+        // The agent writes `turn_completed(input)` and `queue/changed(provider)` right after "working", then pauses 3 s
+        // before the response: a message sent 1 s after "working" arrives in that gap.
+        await wait(1_000);
+        const sentAt = messages.length;
+        sendE2eSendMessageCommand(socket, { agent_run_id: run.runId, content: "Sent in the hand-over gap." });
+        await waitFor(messages, () => turnStarts(messages).length === 3, "the held message's turn", 30_000);
+        const [input, provider, heldTurn] = turnStarts(messages).map((message) => String(message.payload.turn_id));
+        await waitFor(messages, () => endsOf(messages, heldTurn!).length > 0, "the held message answered", 30_000);
+
+        const at = (message: WsMessage | undefined) => messages.indexOf(message!);
+        // The message was accepted while the input turn was still open (the response had not arrived yet).
+        const ack = messages.slice(sentAt).find((message) => message.type === "AGENT_COMMAND_ACK" && message.payload.command_type === "SEND_MESSAGE");
+        expect(ack, "the message's command acknowledgement").toBeDefined();
+        expect(ack!.payload.accepted).not.toBe(false);
+        expect(at(ack)).toBeLessThan(at(endsOf(messages, input!)[0]));
+        // Input end and Grok's own turn in one hand-over; the held message's turn only after Grok's own turn ended.
+        expect(at(endsOf(messages, input!)[0])).toBeLessThan(at(turnStarts(messages)[1]));
+        expect(messages.find((message) => message.type === "SYSTEM_TASK_NOTIFICATION")?.payload).toMatchObject({ turn_id: provider, content: script.notice });
+        expect(textOf(messages, provider!)).toContain("FINISHED");
+        expect(at(turnStarts(messages)[2])).toBeGreaterThan(at(endsOf(messages, provider!)[0]));
+        expect(textOf(messages, heldTurn!)).toContain("HELD-MESSAGE-ANSWERED");
+        expect(shownFailures(messages)).toEqual([]);
+        expect((await run.recorded()).filter((message) => message.method === "session/prompt")).toHaveLength(2);
+      } finally {
+        run.restore();
+      }
+    }, 60_000);
   });
 });

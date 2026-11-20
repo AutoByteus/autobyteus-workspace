@@ -98,6 +98,15 @@ export const grokProviderTurnScript = (sessionId: string) => {
       text("agent_message_chunk", "working", inputPrompt), pause(pauseMs), running(inputPrompt, "Start the job, then run long.sh."),
       ext("_x.ai/queue/changed", { entries: [] }), turnCompleted(inputPrompt, "end_turn"), running(wake, reminder),
       promptComplete(inputPrompt), result(99), pause(1_200), ...providerContent, ...heldMessage(100)],
+    /**
+     * (b'): as (b), but the pause is in the hand-over's gap: after Grok's `turn_completed(input)` and its
+     * `queue/changed(provider)`, before `prompt_complete(input)` and the `session/prompt` response. A message sent in the
+     * pause reaches the run while the input prompt is complete for Grok but its response has not arrived.
+     */
+    orderBGap: (gapMs = 3_000): GrokScriptRow[] => [prompt(99), running(inputPrompt, "Start the job, then run long.sh."),
+      text("agent_message_chunk", "working", inputPrompt), ext("_x.ai/queue/changed", { entries: [] }),
+      turnCompleted(inputPrompt, "end_turn"), running(wake, reminder), pause(gapMs),
+      promptComplete(inputPrompt), result(99), pause(1_200), ...providerContent, ...heldMessage(100)],
     /** (c): Grok's wake; the client cancels it (in the pause); Grok ends it `cancelled` at once. */
     orderC: (pauseMs = 1_500): GrokScriptRow[] => [...inputTurn(99, "Run job.sh in the background."), running(wake, reminder),
       text("agent_thought_chunk", "Running the next step.", wake), pause(pauseMs),
