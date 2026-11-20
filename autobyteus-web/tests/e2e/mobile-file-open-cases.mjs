@@ -38,7 +38,7 @@
 //                  folder, not a file."; no "host workspace" text; the files are unchanged.
 //   MSP-89 autobyteus-572 AC-001…AC-003, AC-005, AC-006  On the phone (after MSP-30): media links in the run's conversation.
 //                  A 3 s video and a 3 s tone in the run's folder and outside it play (`blob:` URLs); a relative link's
-//                  form is recorded (not a file link today). Two ~9.7 MB videos (in and outside the folder) on an 8 Mbit/s link (CDP)
+//                  form is recorded (not a file link; SR-003 DEC-003, FU-003). Two ~9.7 MB videos (in and outside the folder) on an 8 Mbit/s link (CDP)
 //                  show "Loading video…" with "x of 9.7 MB" rising, never "URL is not available.", then play. A missing
 //                  video says so plainly with Retry. A run delegated by the open run (on epsilon, "Producer") has a video
 //                  and an audio link that play. Every media read carries the phone's key in its header; no URL carries
@@ -433,7 +433,7 @@ export const runFileOpenCases = async (probe) => {
         const results = {};
         for (const key of ['insideVideo', 'insideAudio', 'outsideVideo', 'outsideAudio']) results[key] = await watchMedia(key, linkControl(media[key]).last());
         // A relative Markdown link is not a file link in a conversation (only absolute paths are; `absoluteFilePathAction.ts`):
-        // recorded, not tapped, until the Solution Designer decides REQ-002's relative paths (autobyteus-572 IR-001).
+        // recorded, not tapped. REQ-002 means absolute paths (autobyteus-572 SR-003, DEC-003); relative links are FU-003.
         const relativeLink = await conv.locator('a').filter({ hasText: /^rel-572\.mp4$/ }).last().evaluate(a => ({
           fileControl: a.getAttribute('data-event-monitor-file-action-control') === 'true', href: a.getAttribute('href') })).catch(() => null);
         await throttle(true);
