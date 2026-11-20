@@ -1,8 +1,9 @@
 // Files attached to a conversation open on the phone, and every explicit open of a file shows its current content
 // (autobyteus-450). Cases of `pnpm -C autobyteus-web test:e2e:mobile-shell`, run by `mobile-shell-probe.mjs` after all its
-// other cases (`--cases=MSP-28,MSP-29,MSP-30,MSP-31,MSP-37` runs only these).
+// other cases (`--cases=MSP-28,MSP-29,MSP-30,MSP-31,MSP-37,MSP-89,MSP-90` runs only these). MSP-89 and MSP-90 need ffmpeg
+// (`FFMPEG` names it) for their synthetic media.
 //
-// Stack of MSP-28…30 (owned by these cases, removed at their end, inside the probe's temp root):
+// Stack of MSP-28…30 and MSP-89 (owned by these cases, removed at their end, inside the probe's temp root):
 // - epsilon and its peer zeta, two more nodes from this worktree's `autobyteus-server-ts/dist/app.js` with the probe's owner
 //   credential, on the scripted AGY CLI (`linked_skills`: `ECHO_INPUT <text>` answers `ECHO:"<text>"`, so an agent message
 //   can carry Markdown links to absolute paths; `CALL_TOOL:{…}` calls the real tool). On epsilon a "Content Creator" run
@@ -35,9 +36,20 @@
 //                  read-only in the Files panel through `GET /rest/node-files/content` (no edit control, typing changes
 //                  nothing); a missing path says "This file was not found on the computer.", a folder "This path is a
 //                  folder, not a file."; no "host workspace" text; the files are unchanged.
+//   MSP-89 autobyteus-572 AC-001…AC-003, AC-005, AC-006  On the phone (after MSP-30): media links in the run's conversation.
+//                  A 3 s video and a 3 s tone in the run's folder and outside it play (`blob:` URLs); a relative link's
+//                  form is recorded (not a file link today). Two ~9.7 MB videos (in and outside the folder) on an 8 Mbit/s link (CDP)
+//                  show "Loading video…" with "x of 9.7 MB" rising, never "URL is not available.", then play. A missing
+//                  video says so plainly with Retry. A run delegated by the open run (on epsilon, "Producer") has a video
+//                  and an audio link that play. Every media read carries the phone's key in its header; no URL carries
+//                  a key; no refusal.
+//   MSP-90 autobyteus-572 AC-004  A desktop window (`nuxt dev` against alpha, as MSP-37): a run's links to a video and an
+//                  audio file in its folder and outside it play in the Files panel; the outside ones through
+//                  `GET /rest/node-files/content`.
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import zlib from 'node:zlib';
+import { execFileSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { attachToBrowserContext, ownerSocketUrl, pairNodes } from './fixtures/probe-node-access.mjs';
 import { waitForDevServerReady } from './fixtures/dev-server-ready.mjs';
@@ -75,6 +87,29 @@ const pdf = (text) => {
 };
 
 /**
+ * Synthetic media (autobyteus-572), made with ffmpeg's `lavfi` sources (`FFMPEG` names the binary, default `ffmpeg`): a
+ * 3 s test-pattern video, a 3 s tone, and a 20 s video of about 9.7 MB (a 4 Mbit/s Mandelbrot zoom).
+ */
+const SYNTHETIC_MEDIA = {
+  clip: ['-f', 'lavfi', '-i', 'testsrc=size=320x240:rate=25', '-t', '3', '-pix_fmt', 'yuv420p', '-movflags', '+faststart'],
+  tone: ['-f', 'lavfi', '-i', 'sine=frequency=440:duration=3'],
+  big: ['-f', 'lavfi', '-i', 'mandelbrot=size=1280x720:rate=30', '-t', '20', '-b:v', '4M', '-minrate', '4M', '-maxrate', '4M', '-bufsize', '8M',
+    '-pix_fmt', 'yuv420p', '-movflags', '+faststart'],
+};
+const makeMedia = async (kind, target, ...copies) => {
+  await fs.mkdir(path.dirname(target), { recursive: true });
+  try { execFileSync(process.env.FFMPEG || 'ffmpeg', ['-y', '-loglevel', 'error', ...SYNTHETIC_MEDIA[kind], target]); } catch (error) {
+    throw new Error(`ffmpeg made no ${kind} media (install ffmpeg or set FFMPEG): ${error.message}`);
+  }
+  for (const copy of copies) { await fs.mkdir(path.dirname(copy), { recursive: true }); await fs.copyFile(target, copy); }
+  return (await fs.stat(target)).size;
+};
+/** A media viewer's words that would show an internal error rather than a plain message (autobyteus-572 AC-006). */
+const INTERNAL_WORDS = /Failed to fetch|protected resource|HTTP|\b[45]\d\d\b|Error:|TypeError|undefined|null/;
+/** The text of a loading view's progress, "4.1 of 9.7 MB" (decimal units). */
+const PROGRESS_TEXT = /^(\d+(?:\.\d)?) of (\d+(?:\.\d)?) (MB|KB)$/;
+
+/**
  * @param probe the probe's helpers: `runCase`, `serverAt`, `freePort`, `chromium`, `executablePath`, `outputDir`,
  *   `evidence`, `selected`, `sleep`, `waitFor`, `assert`, `redact`; for MSP-31 also `browser`, `alpha`, `stack`,
  *   `desktopRunsView`.
@@ -98,7 +133,7 @@ export const runFileOpenCases = async (probe) => {
     page.on('requestfailed', request => evidence.failedRequests.push({ case: caseOf(), label, url: redact(request.url()), error: request.failure()?.errorText ?? null }));
   };
 
-  if (['MSP-28', 'MSP-29', 'MSP-30', 'MSP-572'].some(wants)) {
+  if (['MSP-28', 'MSP-29', 'MSP-30', 'MSP-89'].some(wants)) {
     const [epsilon, zeta] = await Promise.all([serverAt('epsilon', await freePort(), { AGY_FAKE_CASE: 'linked_skills' }), serverAt('zeta', await freePort(), { AGY_FAKE_CASE: 'linked_skills' })]);
     const phoneOrigin = `http://${PHONE_HOST}:${epsilon.port}`;
     let phoneBrowser = null;
@@ -163,10 +198,17 @@ export const runFileOpenCases = async (probe) => {
       assert(pairing.status === 201 && pairing.body.mobileUrl, 'epsilon pairing session', pairing.status);
       const context = await phoneBrowser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2, locale: 'en-US', timezoneId: 'UTC' });
       const page = await context.newPage();
-      watchBrowser(page, 'phone-epsilon', phoneOrigin, () => currentCase);
+      // MSP-89's missing video: the node answers 404 for it on purpose (AC-006).
+      watchBrowser(page, 'phone-epsilon', phoneOrigin, () => currentCase, {
+        test: (line, sourceUrl) => currentCase === 'MSP-89' && /: Failed to load resource: the server responded with a status of 404 \(Not Found\)$/.test(line)
+          && /gone-572\.mp4/.test(decodeURIComponent(sourceUrl)),
+        cause: 'MSP-89\'s missing video (autobyteus-572 AC-006)',
+      });
       const net = [];
       context.on('request', (request) => { if (!request.url().startsWith(phoneOrigin)) return;
-        net.push({ at: Date.now(), path: new URL(request.url()).pathname, type: request.resourceType(), navigation: request.isNavigationRequest(), mainFrame: request.frame() === page.mainFrame(), status: null, request }); });
+        net.push({ at: Date.now(), path: new URL(request.url()).pathname, type: request.resourceType(), navigation: request.isNavigationRequest(), mainFrame: request.frame() === page.mainFrame(), status: null,
+          // autobyteus-572 AC-005: whether the phone's key went in the header, and whether any key went in the URL.
+          keyInHeader: /^Bearer mra_/.test(request.headers().authorization ?? ''), keyInUrl: /mra_|[?&](token|access_token|key|credential)=/i.test(request.url()), request }); });
       context.on('response', (response) => { const entry = net.find(e => e.request === response.request()); if (entry) entry.status = response.status(); });
       const popups = [];
       context.on('page', other => { if (other !== page) popups.push(redact(other.url())); });
@@ -212,60 +254,6 @@ export const runFileOpenCases = async (probe) => {
       };
       const linkControl = target => conv.locator(`[data-event-monitor-file-action-control="true"][title="${target}"]`);
       await openRun(`agent:${run}`, 'PATH-ATTACH-450');
-
-      // autobyteus-572 reproduction (Solution Designer, scratch): media file links tapped on the phone. Synthetic media made
-      // with ffmpeg (SD572_FFMPEG, default `ffmpeg`): a short video and an audio file in the run's folder and outside it, and a
-      // ~10 MB video in the folder. Optional SD572_THROTTLE_KBPS throttles the phone page (CDP) like a phone link.
-      await runCase('MSP-572', async () => {
-        currentCase = 'MSP-572';
-        const { execFileSync } = await import('node:child_process');
-        const ffmpeg = process.env.SD572_FFMPEG || 'ffmpeg';
-        const outside = path.join(epsilon.dataDir, '..', 'outside-media');
-        await fs.mkdir(path.join(workspace, 'media'), { recursive: true });
-        await fs.mkdir(outside, { recursive: true });
-        const media = { insideVideo: path.join(workspace, 'media', 'clip-572.mp4'), outsideVideo: path.join(outside, 'clip-572-out.mp4'),
-          insideAudio: path.join(workspace, 'media', 'tone-572.mp3'), outsideAudio: path.join(outside, 'tone-572-out.mp3'), bigVideo: path.join(workspace, 'media', 'big-572.mp4') };
-        const make = (args) => execFileSync(ffmpeg, ['-y', '-loglevel', 'error', ...args]);
-        make(['-f', 'lavfi', '-i', 'testsrc=size=320x240:rate=25', '-t', '3', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', media.insideVideo]);
-        await fs.copyFile(media.insideVideo, media.outsideVideo);
-        make(['-f', 'lavfi', '-i', 'sine=frequency=440:duration=3', media.insideAudio]);
-        await fs.copyFile(media.insideAudio, media.outsideAudio);
-        make(['-f', 'lavfi', '-i', 'mandelbrot=size=1280x720:rate=30', '-t', '20', '-b:v', '4M', '-minrate', '4M', '-maxrate', '4M', '-bufsize', '8M', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', media.bigVideo]);
-        const sizes = Object.fromEntries(await Promise.all(Object.entries(media).map(async ([k, f]) => [k, (await fs.stat(f)).size])));
-        await linkMessage('MEDIA-572', Object.entries(media).map(([k, f]) => [path.basename(f), f]));
-        await waitFor('the media links on the phone', async () => (await linkControl(media.bigVideo).count()) > 0, 30_000);
-        const cdp = await page.context().newCDPSession(page);
-        const throttle = Number(process.env.SD572_THROTTLE_KBPS || 0);
-        if (throttle > 0) await cdp.send('Network.emulateNetworkConditions', { offline: false, latency: 80, downloadThroughput: throttle * 1024 / 8, uploadThroughput: throttle * 1024 / 8 });
-        const results = {};
-        for (const [key, target] of Object.entries(media)) {
-          const from = Date.now();
-          const control = linkControl(target).last();
-          await control.scrollIntoViewIfNeeded();
-          await control.tap();
-          const timeline = [];
-          let last = '';
-          const deadline = Date.now() + 25_000;
-          while (Date.now() < deadline) {
-            const state = await page.evaluate(() => {
-              const el = document.querySelector('[data-testid="mobile-file-viewer"]');
-              if (!el) return { viewer: false };
-              const media = el.querySelector('video, audio');
-              return { viewer: true, text: el.innerText.replace(/\s+/g, ' ').slice(0, 160), media: media ? { tag: media.tagName, src: media.src ? media.src.slice(0, 40) : null, readyState: media.readyState, error: media.error?.code ?? null, duration: Number.isFinite(media.duration) ? Math.round(media.duration * 10) / 10 : null } : null };
-            });
-            const sig = JSON.stringify(state);
-            if (sig !== last) { timeline.push({ at: Date.now() - from, ...state }); last = sig; }
-            if (state.media && state.media.readyState >= 1) break;
-            await sleep(100);
-          }
-          await shot(page, `MSP-572-${key}`);
-          results[key] = { timeline, requests: netSince(from).filter(e => e.path.startsWith('/rest')).map(e => ({ at: e.at - from, path: e.path.replace(/[0-9a-f-]{20,}/g, '…'), status: e.status, type: e.type })) };
-          await page.goBack();
-          await waitFor(`${key}: back`, conversationShown, 15_000).catch(() => undefined);
-        }
-        if (throttle > 0) await cdp.send('Network.emulateNetworkConditions', { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
-        return { sizes, throttleKbps: throttle, results };
-      });
 
       await runCase('MSP-28', async () => {
         currentCase = 'MSP-28';
@@ -364,6 +352,134 @@ export const runFileOpenCases = async (probe) => {
         const details = { first: { post: brief(first.post), chart: brief(first.chart) }, newLinks: { post: brief(newLinks.post), chart: brief(newLinks.chart) }, oldLinks: { post: brief(oldLinks.post), chart: brief(oldLinks.chart) } };
         assert(first.post.ready && first.chart.ready, 'the first opens show VERSION-ONE and the 2×1 image', details);
         assert(newLinks.post.ready && newLinks.chart.ready && oldLinks.post.ready && oldLinks.chart.ready, 'after the rewrite every open, new link or old, shows VERSION-TWO and the 3×1 image (AC-004)', details);
+        return details;
+      });
+      await runCase('MSP-89', async () => {
+        currentCase = 'MSP-89';
+        // Synthetic media in the run's folder and outside it; a relative link; a delegated run's conversation; two ~9.7 MB
+        // videos on an 8 Mbit/s link; a missing video.
+        const outside = path.join(epsilon.dataDir, '..', 'outside-media-572');
+        const media = {
+          insideVideo: path.join(workspace, 'media', 'clip-572.mp4'), outsideVideo: path.join(outside, 'clip-572-out.mp4'),
+          insideAudio: path.join(workspace, 'media', 'tone-572.mp3'), outsideAudio: path.join(outside, 'tone-572-out.mp3'),
+          relativeVideo: path.join(workspace, 'media', 'rel-572.mp4'),
+          insideBig: path.join(workspace, 'media', 'big-572.mp4'), outsideBig: path.join(outside, 'big-572-out.mp4'),
+        };
+        const missing = path.join(workspace, 'media', 'gone-572.mp4');
+        await makeMedia('clip', media.insideVideo, media.outsideVideo, media.relativeVideo);
+        await makeMedia('tone', media.insideAudio, media.outsideAudio);
+        const bigSize = await makeMedia('big', media.insideBig, media.outsideBig);
+        // A run delegated by the open run, on this node (the founder's case: a task agent's message with a video path).
+        await def(epsilon, 'Producer');
+        const before = (await conversationOf(epsilon, run)).split('CALLED:').length;
+        await sendOver(epsilon, run, `CALL_TOOL:${JSON.stringify({ name: 'delegate_task', arguments: { recipient_address: '/producer', description: 'Make the clip. Marker DELEGATED-572.' } })}`);
+        let delegatedText = '';
+        await waitFor('the delegation on epsilon', async () => (delegatedText = await conversationOf(epsilon, run)).split('CALLED:').length > before, 60_000);
+        const taskRun = new RegExp('target_agent_run_id\\\\*"\\s*:\\s*\\\\*"([^"\\\\]+)').exec(delegatedText.split('CALLED:').at(-1))?.[1];
+        assert(taskRun, 'the delegated run on epsilon', delegatedText.split('CALLED:').at(-1));
+        await sendOver(epsilon, taskRun, `ECHO_INPUT MEDIA-DELEGATED-572 [clip-572.mp4](${media.insideVideo}) [tone-572-out.mp3](${media.outsideAudio})`);
+        await waitFor('the echo of MEDIA-DELEGATED-572', async () => { const text = await conversationOf(epsilon, taskRun); return text.includes('ECHO:') && text.includes('MEDIA-DELEGATED-572'); }, 60_000);
+        await linkMessage('MEDIA-572', [['clip-572.mp4', media.insideVideo], ['tone-572.mp3', media.insideAudio], ['clip-572-out.mp4', media.outsideVideo],
+          ['tone-572-out.mp3', media.outsideAudio], ['rel-572.mp4', 'media/rel-572.mp4'], ['big-572.mp4', media.insideBig], ['big-572-out.mp4', media.outsideBig],
+          ['gone-572.mp4', missing]]);
+
+        const from = Date.now();
+        await toList();
+        await openRun(`agent:${run}`, 'MEDIA-572');
+        const cdp = await page.context().newCDPSession(page);
+        const throttle = on => cdp.send('Network.emulateNetworkConditions', on
+          ? { offline: false, latency: 80, downloadThroughput: 8000 * 1024 / 8, uploadThroughput: 8000 * 1024 / 8 }
+          : { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
+        /** Taps a media link and samples the viewer every 100 ms until the file plays or fails; then Back. */
+        const watchMedia = async (label, control) => {
+          const started = Date.now();
+          await control.scrollIntoViewIfNeeded();
+          await control.tap();
+          const timeline = [];
+          let last = '';
+          let state = null;
+          let loadingShot = false;
+          while (Date.now() - started < 40_000) {
+            state = await page.evaluate(() => {
+              const el = document.querySelector('[data-testid="mobile-file-viewer"]');
+              if (!el) return { viewer: false };
+              const element = el.querySelector('video, audio');
+              return { viewer: true, text: el.innerText.replace(/\s+/g, ' ').slice(0, 200),
+                // The player's loading view, or the phone viewer's (a node file; it keeps its own test id).
+                loading: Boolean(el.querySelector('[data-testid="media-loading-state"], [role="status"][data-testid="mobile-file-preview-loading"]')),
+                progress: el.querySelector('[data-testid="media-loading-progress"]')?.textContent?.trim() ?? null,
+                alert: el.querySelector('[role="alert"]')?.innerText.replace(/\s+/g, ' ').trim() ?? null,
+                retry: Boolean(el.querySelector('.retry-button')),
+                media: element ? { tag: element.tagName.toLowerCase(), blob: element.src.startsWith('blob:'), readyState: element.readyState, error: element.error?.code ?? null,
+                  duration: Number.isFinite(element.duration) ? Math.round(element.duration * 10) / 10 : null } : null };
+            });
+            const signature = JSON.stringify(state);
+            if (signature !== last) { timeline.push({ at: Date.now() - started, ...state }); last = signature; }
+            if (!loadingShot && state.loading && state.progress && Date.now() - started > 3_000) { loadingShot = true; await shot(page, `MSP-89-${label}-loading`); }
+            if ((state.media && state.media.readyState >= 1) || state.alert) break;
+            await sleep(100);
+          }
+          await shot(page, `MSP-89-${label}`);
+          await page.goBack();
+          let backToConversation = false;
+          try { await waitFor(`${label}: back to the conversation`, conversationShown, 15_000); backToConversation = true; } catch { /* recorded */ }
+          const final = state ?? { viewer: false };
+          return { final, backToConversation, seconds: Math.round((Date.now() - started) / 100) / 10,
+            notAvailableShown: timeline.some(entry => /URL is not available/.test(entry.text ?? '')),
+            progress: [...new Set(timeline.map(entry => entry.progress).filter(Boolean))], timeline };
+        };
+        const played = (result, tag, seconds) => Boolean(result.final.media?.tag === tag && result.final.media.blob && result.final.media.readyState >= 1
+          && result.final.media.error === null && Math.abs((result.final.media.duration ?? 0) - seconds) < 1 && !result.notAvailableShown && result.backToConversation);
+        const results = {};
+        for (const key of ['insideVideo', 'insideAudio', 'outsideVideo', 'outsideAudio']) results[key] = await watchMedia(key, linkControl(media[key]).last());
+        // A relative Markdown link is not a file link in a conversation (only absolute paths are; `absoluteFilePathAction.ts`):
+        // recorded, not tapped, until the Solution Designer decides REQ-002's relative paths (autobyteus-572 IR-001).
+        const relativeLink = await conv.locator('a').filter({ hasText: /^rel-572\.mp4$/ }).last().evaluate(a => ({
+          fileControl: a.getAttribute('data-event-monitor-file-action-control') === 'true', href: a.getAttribute('href') })).catch(() => null);
+        await throttle(true);
+        for (const key of ['insideBig', 'outsideBig']) results[key] = await watchMedia(key, linkControl(media[key]).last());
+        await throttle(false);
+        results.missing = await watchMedia('missing', linkControl(missing).last());
+        // The delegated run, under the open run in the run list.
+        await toList();
+        const host = page.locator(`[data-testid="mobile-run-row-agent:${run}"]`);
+        if ((await host.getAttribute('aria-expanded')) === 'false') await host.locator('[data-testid="mobile-run-toggle"]').click();
+        const taskRow = page.locator(`[data-testid^="mobile-run-row-"][data-testid$="${taskRun}"]`).first();
+        await taskRow.waitFor({ timeout: 30_000 });
+        await openRun((await taskRow.getAttribute('data-testid')).replace('mobile-run-row-', ''), 'MEDIA-DELEGATED-572');
+        results.delegatedVideo = await watchMedia('delegatedVideo', linkControl(media.insideVideo).last());
+        results.delegatedAudio = await watchMedia('delegatedAudio', linkControl(media.outsideAudio).last());
+
+        const mediaReads = net.filter(entry => entry.at >= from && /^\/rest\/(workspaces\/[^/]+\/content|node-files\/content)$/.test(entry.path));
+        const requests = netSince(from);
+        const bigProgress = key => results[key].progress.map(text => PROGRESS_TEXT.exec(text)).filter(Boolean).map(match => ({ loaded: Number(match[1]), total: `${match[2]} ${match[3]}` }));
+        const details = {
+          sizes: { bigBytes: bigSize, bigShownAs: `${(bigSize / 1e6).toFixed(1)} MB` },
+          relativeLink,
+          results: Object.fromEntries(Object.entries(results).map(([key, result]) => [key, { ...result, timeline: key.endsWith('Big') ? result.timeline.filter((_, index, all) => index < 3 || index > all.length - 3) : result.timeline }])),
+          bigProgress: { insideBig: bigProgress('insideBig'), outsideBig: bigProgress('outsideBig') },
+          mediaReads: { count: mediaReads.length, routes: [...new Set(mediaReads.map(entry => entry.path.replace(/workspaces\/[^/]+/, 'workspaces/…')))],
+            keyInHeader: mediaReads.filter(entry => entry.keyInHeader).length, keyInUrl: requests.filter(entry => entry.keyInUrl).map(entry => entry.path) },
+          refused: requests.filter(entry => entry.status === 401 || entry.status === 403).map(entry => `${entry.path} ${entry.status}`),
+          mainFrameNodeNavigations: requests.filter(entry => entry.navigation && entry.mainFrame && /^\/(rest|graphql)/.test(entry.path)).map(entry => entry.path),
+        };
+        const failures = [
+          [played(results.insideVideo, 'video', 3) && played(results.insideAudio, 'audio', 3), 'AC-003 a video and an audio file in the run\'s folder play'],
+          [played(results.outsideVideo, 'video', 3) && played(results.outsideAudio, 'audio', 3), 'AC-003 a video and an audio file outside the folder play'],
+          [played(results.delegatedVideo, 'video', 3) && played(results.delegatedAudio, 'audio', 3), 'AC-003 a delegated run\'s video and audio links play'],
+          ...['insideBig', 'outsideBig'].map(key => {
+            const samples = details.bigProgress[key];
+            const rising = samples.length >= 10 && samples.every((sample, index) => index === 0 || sample.loaded >= samples[index - 1].loaded) && samples.at(-1).loaded > samples[0].loaded;
+            return [played(results[key], 'video', 20) && rising && samples.every(sample => sample.total === details.sizes.bigShownAs),
+              `AC-001, AC-002 the ~9.7 MB video (${key}) at 8 Mbit/s shows "Loading video…" with its progress rising toward ${details.sizes.bigShownAs}, never "not available", then plays`];
+          }),
+          [Boolean(results.missing.final.alert) && !INTERNAL_WORDS.test(results.missing.final.alert) && results.missing.final.retry && !results.missing.notAvailableShown,
+            'AC-006 a missing video: a plain message with Retry'],
+          [mediaReads.length > 0 && details.mediaReads.keyInHeader === mediaReads.length && details.mediaReads.keyInUrl.length === 0,
+            'AC-005 every media read carries the phone\'s key in its header; no URL carries a key'],
+          [details.refused.length === 0 && details.mainFrameNodeNavigations.length === 0, 'no refusal and no main-frame node navigation'],
+        ].filter(([ok]) => !ok).map(([, label]) => label);
+        assert(failures.length === 0, failures.join('; '), details);
         return details;
       });
     } finally {
@@ -551,6 +667,71 @@ export const runFileOpenCases = async (probe) => {
         assert(folder.alert.endsWith('This path is a folder, not a file.'), 'AC-002 a folder says so', details);
         assert(['notes-471.md', 'chart-471.png', 'gone-471.md', 'reports-471.md'].every(file => details.nodeFileRequests.some(r => r.file === file)), 'each opens through the node-file route', details);
         assert(!details.hostWorkspaceText && details.unchanged, 'no "host workspace" text; the file is unchanged', details);
+        return details;
+      } finally {
+        await context.close().catch(() => undefined);
+      }
+    });
+  }
+  if (wants('MSP-90')) {
+    const { browser, alpha, stack, desktopRunsView } = probe;
+    await runCase('MSP-90', async () => {
+      // autobyteus-572 AC-004: a desktop window (`nuxt dev` against alpha, the owner credential on its requests as the desktop
+      // app attaches it) plays the same media links: in the run's folder (the player gets the node URL) and outside it (the
+      // Files panel's node file).
+      const outside = path.join(path.dirname(stack.workspace), 'outside-572');
+      const media = { insideVideo: path.join(stack.workspace, 'media-572', 'clip-572.mp4'), insideAudio: path.join(stack.workspace, 'media-572', 'tone-572.mp3'),
+        outsideVideo: path.join(outside, 'clip-572-out.mp4'), outsideAudio: path.join(outside, 'tone-572-out.mp3') };
+      await makeMedia('clip', media.insideVideo, media.outsideVideo);
+      await makeMedia('tone', media.insideAudio, media.outsideAudio);
+      const created = (await alpha.gql('mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}', { i: { agentDefinitionId: stack.ids.checker, ...stack.runConfig } })).createAgentRun;
+      assert(created.success, created.message);
+      const run = created.runId;
+      await stack.agentSay(run, `ECHO_INPUT MEDIA-DESKTOP-572 ${Object.values(media).map(file => `[${path.basename(file)}](${file})`).join(' ')}`);
+      await waitFor('the echo of MEDIA-DESKTOP-572', async () => { const text = await stack.projection(run); return text.includes('ECHO:') && text.includes('MEDIA-DESKTOP-572'); }, 60_000);
+      const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'en-US', timezoneId: 'UTC' });
+      await attachToBrowserContext(context);
+      await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
+      const page = await context.newPage();
+      watchBrowser(page, 'desktop', stack.frontendUrl, () => 'MSP-90');
+      const mediaReads = [];
+      page.on('response', response => {
+        const url = new URL(response.url());
+        if (/\/rest\/(workspaces\/[^/]+\/content|node-files\/content)$/.test(url.pathname)) mediaReads.push({ route: url.pathname.replace(/workspaces\/[^/]+/, 'workspaces/…'), file: path.basename(url.searchParams.get('path') ?? ''), status: response.status() });
+      });
+      try {
+        await waitForDevServerReady(stack.frontendUrl, { timeoutMs: 120_000 });
+        await page.goto(stack.frontendUrl, { waitUntil: 'networkidle', timeout: 240_000 }).catch(() => undefined);
+        await sleep(3_000);
+        await page.goto(stack.frontendUrl, { waitUntil: 'domcontentloaded', timeout: 240_000 });
+        await desktopRunsView(page);
+        const showOlder = page.locator('[data-test="run-list-show-older"]');
+        if (await showOlder.count() && (await showOlder.innerText()).startsWith('Show older')) await showOlder.click();
+        await page.locator(`[data-test="run-list-row"][data-run-id="${run}"] [data-test="workspace-agent-run-row"]`).first().click({ timeout: 60_000 });
+        const link = filePath => page.locator(`[data-event-monitor-file-action-control="true"][title="${filePath}"]`).last();
+        await link(media.insideVideo).waitFor({ timeout: 60_000 });
+        const viewer = page.locator('#contentViewer:visible').first();
+        const facts = {};
+        for (const [key, filePath] of Object.entries(media)) {
+          const tag = key.endsWith('Video') ? 'video' : 'audio';
+          await link(filePath).scrollIntoViewIfNeeded();
+          await link(filePath).click();
+          const element = () => viewer.locator(tag).first();
+          let shown = null;
+          await waitFor(`${key} plays in the Files panel`, async () => {
+            if (!(await element().count())) return false;
+            shown = await element().evaluate(el => ({ src: el.src.startsWith('blob:') ? 'blob' : el.src.startsWith('http') ? 'node URL' : el.src.split(':')[0], readyState: el.readyState,
+              error: el.error?.code ?? null, duration: Number.isFinite(el.duration) ? Math.round(el.duration * 10) / 10 : null }));
+            return shown.readyState >= 1 || shown.error !== null;
+          }, 30_000).catch(() => undefined);
+          facts[key] = { ...(shown ?? { readyState: null }), text: (await viewer.innerText().catch(() => '')).replace(/\s+/g, ' ').slice(0, 160) };
+          await shot(page, `MSP-90-${key}`);
+        }
+        const details = { media: facts, mediaReads };
+        const plays = fact => fact.readyState >= 1 && fact.error === null && Math.abs((fact.duration ?? 0) - 3) < 1 && !/URL is not available|could not be played/.test(fact.text);
+        assert(Object.values(facts).every(plays), 'AC-004 the desktop window plays video and audio links in the run\'s folder and outside it', details);
+        assert(['clip-572-out.mp4', 'tone-572-out.mp3'].every(file => mediaReads.some(read => read.file === file && read.route === '/rest/node-files/content' && read.status === 200)),
+          'the files outside the folder are read through the node-file route', details);
         return details;
       } finally {
         await context.close().catch(() => undefined);

@@ -80,6 +80,7 @@
       :path="mobileNodeFileName(nodeFileSource)"
       :file-state="nodeFileState"
       :error-message="nodeFileError"
+      :progress="nodeFileProgress"
       @close="navigation.back()"
     />
   </section>
@@ -140,7 +141,7 @@ const nodeFileSource = computed<MobileNodeFileSource | null>(() => {
   const attached = navigation.openContextFileEntry.value;
   return attached ? { kind: 'contextFile', locator: attached.locator, name: attached.name } : null;
 });
-const { fileState: nodeFileState, errorMessage: nodeFileError } = useMobileNodeFile(nodeFileSource);
+const { fileState: nodeFileState, errorMessage: nodeFileError, progress: nodeFileProgress } = useMobileNodeFile(nodeFileSource);
 
 const openNode = async (node: MobileWorkspaceFileNode): Promise<void> => {
   if (node.is_file) {

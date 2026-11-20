@@ -5,6 +5,7 @@ import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { determineFileType } from '~/utils/fileExplorer/fileUtils';
 import { loadNodeFileFromUrl, NODE_FILE_REFUSAL_MESSAGE_KEYS, nodeFileContentUrl } from '~/utils/fileExplorer/nodeFileContent';
 import { resolveContextAttachmentUrl } from '~/utils/contextFiles/contextAttachmentUrl';
+import type { DownloadProgress } from '~/utils/download/responseBlobProgress';
 
 /**
  * A node file the phone viewer opens: a file on the node's computer by its absolute path (autobyteus-436), or a file
@@ -25,13 +26,15 @@ const contentUrlOf = (source: MobileNodeFileSource, restBaseUrl: string): string
  * The phone's open-file state for one node file, read-only (autobyteus-436 DS-001). It is fetched once with the phone
  * credential by the shared node-file loader (`nodeFileContent.ts`, autobyteus-471); its type comes from its name; text
  * is kept as content, anything else as an object URL (revoked when the file closes, so the blob never outlives the
- * viewer). A refusal becomes the viewer's message: not found, a folder, or "could not be opened".
+ * viewer). A refusal becomes the viewer's message: not found, a folder, or "could not be opened". While a file that is
+ * not text downloads, `progress` says how much has arrived (autobyteus-572 D-4).
  */
 export function useMobileNodeFile(source: Ref<MobileNodeFileSource | null>) {
   const { t } = useLocalization();
   const windowNodeContextStore = useWindowNodeContextStore();
   const fileState = ref<OpenFileState | null>(null);
   const errorMessage = ref<string | null>(null);
+  const progress = ref<DownloadProgress | null>(null);
   let objectUrl: string | null = null;
   let loadSerial = 0;
 
@@ -51,8 +54,11 @@ export function useMobileNodeFile(source: Ref<MobileNodeFileSource | null>) {
     fileState.value = state;
     errorMessage.value = null;
     const restBaseUrl = windowNodeContextStore.getBoundEndpoints().rest;
-    const loaded = await loadNodeFileFromUrl(contentUrlOf(next, restBaseUrl), type === 'Text');
+    const loaded = await loadNodeFileFromUrl(contentUrlOf(next, restBaseUrl), type === 'Text', (arrived) => {
+      if (serial === loadSerial) progress.value = arrived;
+    });
     if (serial !== loadSerial) return;
+    progress.value = null;
     if (loaded.kind === 'refused') {
       errorMessage.value = t(NODE_FILE_REFUSAL_MESSAGE_KEYS[loaded.refusal]);
       fileState.value = { ...state, isLoading: false, error: errorMessage.value };
@@ -73,6 +79,7 @@ export function useMobileNodeFile(source: Ref<MobileNodeFileSource | null>) {
     release();
     fileState.value = null;
     errorMessage.value = null;
+    progress.value = null;
     if (source.value) void load(source.value);
   }, { immediate: true });
 
@@ -81,5 +88,5 @@ export function useMobileNodeFile(source: Ref<MobileNodeFileSource | null>) {
     release();
   });
 
-  return { fileState, errorMessage };
+  return { fileState, errorMessage, progress };
 }

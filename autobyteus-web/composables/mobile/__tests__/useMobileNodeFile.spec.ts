@@ -54,6 +54,22 @@ describe('useMobileNodeFile (autobyteus-436)', () => {
     expect(revoked).toEqual(['blob:node/1', 'blob:node/2']);
   });
 
+  it('reports a video\'s download progress while it loads, then clears it (autobyteus-572 D-4)', async () => {
+    let push!: (bytes: Uint8Array | null) => void;
+    const body = new ReadableStream<Uint8Array>({ start(controller) { push = (bytes) => (bytes ? controller.enqueue(bytes) : controller.close()); } });
+    transport.fetch.mockResolvedValue(new Response(body, { status: 200, headers: { 'content-length': '6', 'content-type': 'video/mp4' } }));
+    const { result } = mountWith(ref('/w/clip.mp4'));
+    await flushPromises();
+    expect(result.fileState.value).toMatchObject({ type: 'Video', isLoading: true });
+    push(new Uint8Array([1, 2, 3, 4]));
+    await flushPromises();
+    expect(result.progress.value).toEqual({ loaded: 4, total: 6 });
+    push(new Uint8Array([5, 6])); push(null);
+    await flushPromises();
+    expect(result.fileState.value).toMatchObject({ type: 'Video', isLoading: false, url: 'blob:node/1' });
+    expect(result.progress.value).toBeNull();
+  });
+
   it('maps the node\'s refusal codes to the messages; a failed request says the preview could not be opened', async () => {
     const cases = [
       [new Response(JSON.stringify({ code: 'NODE_FILE_NOT_FOUND' }), { status: 404 }), 'workspace.components.mobile.views.MobileFiles.node_file_not_found'],

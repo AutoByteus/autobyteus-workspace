@@ -15,6 +15,18 @@ const messages: TranslationCatalog = {
     '无法播放此视频。',
   'tools.components.fileExplorer.viewers.VideoPlayer.retry':
     '重试',
+  'tools.components.fileExplorer.viewers.AudioPlayer.audio_could_not_be_played':
+    '无法播放此音频。',
+  'tools.components.fileExplorer.viewers.AudioPlayer.retry':
+    '重试',
+  'tools.components.fileExplorer.viewers.MediaLoadingState.loading_video':
+    '正在加载视频…',
+  'tools.components.fileExplorer.viewers.MediaLoadingState.loading_audio':
+    '正在加载音频…',
+  'tools.components.fileExplorer.viewers.MediaLoadingState.loading_file':
+    '正在加载文件…',
+  'tools.components.fileExplorer.viewers.MediaLoadingState.progress_of_total':
+    '{{loaded}} / {{total}}',
 };
 
 export default messages;

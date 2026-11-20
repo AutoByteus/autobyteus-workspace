@@ -1,3 +1,4 @@
+import { readResponseBlobWithProgress, type DownloadProgress } from '~/utils/download/responseBlobProgress';
 import {
   fetchWithRemoteAccessCredential,
   getActiveRemoteAccessCredential,
@@ -60,10 +61,12 @@ export function shouldLoadResourceThroughAuthorizedFetchWithCredential(
   return isProtectedRemoteAccessResourceUrl(url) && Boolean(credential);
 }
 
+/** A protected resource's bytes; `onProgress` reports each part as it arrives (autobyteus-572 D-1). */
 export async function fetchAuthorizedResourceBlob(
   url: string,
   init: RequestInit = {},
   credentialSnapshot: string | null = getActiveRemoteAccessCredential(),
+  onProgress?: (progress: DownloadProgress) => void,
 ): Promise<Blob> {
   const response = await fetchWithRemoteAccessCredential(
     url,
@@ -73,5 +76,5 @@ export async function fetchAuthorizedResourceBlob(
   if (!response.ok) {
     throw new Error(`Failed to fetch protected resource (${response.status} ${response.statusText})`);
   }
-  return response.blob();
+  return onProgress ? readResponseBlobWithProgress(response, onProgress) : response.blob();
 }

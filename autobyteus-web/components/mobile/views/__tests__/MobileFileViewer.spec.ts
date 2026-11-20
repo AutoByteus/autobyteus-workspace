@@ -7,9 +7,9 @@ import type { FileDataType, OpenFileState } from '~/stores/fileExplorerState';
 let pinia: Pinia;
 
 
-function mountSubject(fileState: OpenFileState, path = fileState.path) {
+function mountSubject(fileState: OpenFileState, path = fileState.path, progress: { loaded: number; total: number | null } | null = null) {
   return mount(MobileFileViewer, {
-    props: { path, fileState, openError: null },
+    props: { path, fileState, openError: null, progress },
     global: {
       plugins: [pinia],
       stubs: {
@@ -26,6 +26,27 @@ describe('MobileFileViewer', () => {
   beforeEach(() => {
     pinia = createPinia();
     setActivePinia(pinia);
+  });
+
+  // autobyteus-572 D-4: a node media file loading shows what is loading and how much has arrived; text says "Opening…".
+  it.each([
+    ['Video', '/w/clip.mp4', 'Loading video'],
+    ['Audio', '/w/tone.mp3', 'Loading audio'],
+    ['Image', '/w/pic.png', 'Loading file'],
+  ] satisfies Array<[FileDataType, string, string]>)('a loading %s node file shows the loading view with its progress', (type, path, label) => {
+    const wrapper = mountSubject({ path, type, mode: 'edit', content: null, url: null, contentRevision: 0,
+      relativeResourceContext: null, isLoading: true, error: null }, path, { loaded: 2_000_000, total: 8_000_000 });
+    const loading = wrapper.get('[data-testid="mobile-file-preview-loading"]');
+    expect(loading.attributes('role')).toBe('status');
+    expect(loading.text()).toContain(label);
+    expect(loading.text()).toContain('2.0 of 8.0 MB');
+    expect(loading.text()).not.toContain('Opening…');
+  });
+
+  it('a loading text file still says "Opening…"', () => {
+    const wrapper = mountSubject({ path: '/w/notes.md', type: 'Text', mode: 'edit', content: null, url: null, contentRevision: 0,
+      relativeResourceContext: null, isLoading: true, error: null });
+    expect(wrapper.get('[data-testid="mobile-file-preview-loading"]').text()).toBe('Opening…');
   });
 
   it.each([
