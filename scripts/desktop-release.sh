@@ -181,6 +181,7 @@ run_release() {
 
   local tag="v$version"
   ensure_tag_absent "$tag"
+  node "$SCRIPT_DIR/desktop-package/check-release-trust.mjs"
   bump_package_version "$version"
   sync_release_notes_file "$release_notes_file"
   record_released_migration_order
@@ -230,6 +231,7 @@ run_beta() {
   ensure_clean_worktree
   ensure_on_branch "$branch"
 
+  node "$SCRIPT_DIR/desktop-package/check-release-trust.mjs"
   git -C "$REPO_ROOT" fetch --tags origin
 
   local next_beta_args=(next-beta)
