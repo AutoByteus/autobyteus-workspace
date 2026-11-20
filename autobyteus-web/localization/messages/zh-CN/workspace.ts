@@ -51,6 +51,7 @@ const messages = {
   "workspace.collaboration.identity.hostRun": "宿主运行",
   "workspace.collaboration.identity.executionRun": "执行运行",
   "workspace.collaboration.identity.teamRun": "团队运行",
+  "workspace.collaboration.identity.node": "节点",
   "workspace.agentOrg.history.collectionLabel": "组织",
   "workspace.agentOrg.history.stopLabel": "停止智能体组织",
   "workspace.agentOrg.history.archiveLabel": "归档智能体组织历史记录",
@@ -205,6 +206,16 @@ const messages = {
     "暂无团队消息",
   "workspace.components.workspace.team.TeamCommunicationPanel.empty_detail":
     "已接受的智能体间消息及其引用文件会显示在这里。",
+  "workspace.components.workspace.team.TeamCommunicationPanel.empty_title_own":
+    "暂无消息",
+  "workspace.components.workspace.team.TeamCommunicationPanel.empty_detail_own":
+    "此智能体发送或接收的消息及其引用文件会显示在这里。",
+  "workspace.components.workspace.team.TeamCommunicationPanel.load_more":
+    "加载更多",
+  "workspace.components.workspace.team.TeamCommunicationPanel.loading_more":
+    "正在加载…",
+  "workspace.components.workspace.team.TeamCommunicationPanel.load_more_failed":
+    "无法加载更多消息",
   "workspace.components.workspace.team.TeamCommunicationPanel.select_message":
     "选择一条消息以查看完整内容。",
   "workspace.components.workspace.team.TeamCommunicationPanel.loading_reference":

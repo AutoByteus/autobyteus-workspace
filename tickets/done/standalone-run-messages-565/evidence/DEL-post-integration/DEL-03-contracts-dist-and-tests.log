@@ -1,0 +1,9 @@
+# Merged state 09e8c7270c
+# Command: pnpm -C autobyteus-collaboration-stream-contracts build, then git status (tracked dist/ must be unchanged), then pnpm -C autobyteus-collaboration-stream-contracts test
+# build exit:
+exit=0
+# git status of the contracts package after the build: clean (no output)
+# tests 39
+# pass 39
+# fail 0
+exit=0

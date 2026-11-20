@@ -25,7 +25,7 @@ const TAIL_CHUNK_BYTES = 64 * 1024;
 const asError = (cause: unknown): Error => cause instanceof Error ? cause : new Error(String(cause));
 const isMissing = (error: unknown): boolean => (error as NodeJS.ErrnoException | null)?.code === "ENOENT";
 
-/** One message as one line: exactly the seven message fields, compact JSON, `\n`-terminated. */
+/** One message as one line: the seven message fields and this log's `counterpart` record when it has one, compact JSON, `\n`-terminated. */
 const encodeLine = (message: CollaborationCommunicationMessage): string => `${JSON.stringify({
   messageId: message.messageId,
   senderAgentRunId: message.senderAgentRunId,
@@ -34,6 +34,7 @@ const encodeLine = (message: CollaborationCommunicationMessage): string => `${JS
   messageType: message.messageType,
   referenceFiles: [...message.referenceFiles],
   createdAt: message.createdAt,
+  ...(message.counterpart ? { counterpart: { address: message.counterpart.address, nodeId: message.counterpart.nodeId } } : {}),
 })}\n`;
 
 /**

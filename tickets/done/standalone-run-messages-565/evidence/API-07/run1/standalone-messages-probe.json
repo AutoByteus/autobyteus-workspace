@@ -1,0 +1,86 @@
+{
+  "startedAt": "2026-11-20T16:08:50.216Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 64522,
+      "nodeId": "srv_U76z-mg5cWbzYHCxAssfFDFWUp2VkMXx"
+    },
+    "alpha": {
+      "port": 64521,
+      "nodeId": "srv_qQWQfuDwsnO446Wow5M2HU-3xKtflzNE"
+    }
+  },
+  "runs": {
+    "pm": "project_task_manager_10d5bca2a06f41699af7699620ee2b83",
+    "neighbour": "neighbour_6cb83ecad0ee486f98b65df019337a11",
+    "quiet": "quiet_dfa3aede450149c1b21dd5297b646efc",
+    "betaPm": "project_task_manager_1176b2396ae247578f1e861a9a007e92",
+    "storedAtStart": 58
+  },
+  "cases": {
+    "SMP-01": {
+      "result": "Pass",
+      "tabsAtOpen": [
+        {
+          "name": "Projects",
+          "selected": false
+        },
+        {
+          "name": "Files",
+          "selected": false
+        },
+        {
+          "name": "Messages",
+          "selected": false
+        },
+        {
+          "name": "Terminal",
+          "selected": false
+        },
+        {
+          "name": "Activity",
+          "selected": true
+        },
+        {
+          "name": "Token",
+          "selected": false
+        },
+        {
+          "name": "Artifacts",
+          "selected": false
+        },
+        {
+          "name": "VNC Viewer",
+          "selected": false
+        }
+      ],
+      "empty": "Messages 0 Messages No messages yet Messages this agent sends or receives will appear here with their reference files."
+    },
+    "SMP-02": {
+      "result": "Fail",
+      "error": "Timed out waiting for the first page",
+      "details": null
+    },
+    "SMP-03": {
+      "result": "Fail",
+      "error": "Timed out waiting for both live rows",
+      "details": null
+    },
+    "SMP-04": {
+      "result": "Pass",
+      "reloadFirst": 50,
+      "total": 61,
+      "rows": 61
+    }
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "finishedAt": "2026-11-20T16:15:47.341Z"
+}

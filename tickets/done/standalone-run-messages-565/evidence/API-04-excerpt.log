@@ -1,0 +1,26 @@
+# API-04 whole server integration suite
+# Command: pnpm -C autobyteus-server-ts test:integration
+# Commit: 5b45e9222b (code 56e39312b0/ffec4d785d/143edb93f8; my edits are E2E/probe files only); Node 22.23.1; macOS 26; load ~60; FSEvents probe before the run: no event / 1994 ms / 2835 ms
+# Date: 2026-11-20
+
+ Test Files  2 failed | 87 passed | 20 skipped (109)
+      Tests  8 failed | 506 passed | 69 skipped (583)
+EXIT 1
+   1  FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts
+   7  FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-005: a new invalid Team is unavailable with a diagnostic and other Teams are unaffected
+Error: Hook timed out in 60000ms.
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing nested .gitignore excluded directories
+Error: ENVIRONMENT: the OS delivered no file event within 10 s (FSEvents under load); this watcher result is not meaningful
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+Error: INCONCLUSIVE: the watcher saw no change; a fresh fs.watch stream did. Under load the OS can drop one stream's events (FU-500-06); rerun where the OS delivers events.
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+Error: INCONCLUSIVE: the watcher saw no change; a fresh fs.watch stream did. Under load the OS can drop one stream's events (FU-500-06); rerun where the OS delivers events.
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+Error: ENVIRONMENT: the OS delivered no file event within 10 s (FSEvents under load); this watcher result is not meaningful
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+Error: INCONCLUSIVE: the watcher saw no change; a fresh fs.watch stream did. Under load the OS can drop one stream's events (FU-500-06); rerun where the OS delivers events.
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > treats moves into ignored directories as deletes from the visible tree
+Error: ENVIRONMENT: the OS delivered no file event within 10 s (FSEvents under load); this watcher result is not meaningful
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits delete events even if the in-memory node is missing
+Error: ENVIRONMENT: the OS delivered no file event within 10 s (FSEvents under load); this watcher result is not meaningful

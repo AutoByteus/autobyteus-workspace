@@ -115,7 +115,7 @@ describe('A running hub fetches its Team-tab list again only when a message coul
 
   it('a reconnect to another publisher (a stop and resume, or a restart) fetches the list although its base is below the old one', async () => {
     await selectRunningHub()
-    event(Socket.instances[0]!, 5, { kind: 'communication', message: message('m2') })
+    event(Socket.instances[0]!, 5, { kind: 'communication', message: message('m2'), parties: { sender: { agentRunId: 'pp-run', address: null, nodeName: null }, receiver: { agentRunId: 'host-run', address: null, nodeName: null } } })
     storeParticipantMessages('agent', HOST, [message('m1'), message('m2')])
     await settle()
     expect(listed()).toEqual(['m1', 'm2'])

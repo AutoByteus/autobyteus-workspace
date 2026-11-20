@@ -97,7 +97,7 @@ const createSubject = (options: Readonly<{
     persistence: options.persistence?.(orgRunId) ?? {
       commitMessageAppend: vi.fn(runAppendDurably),
     } as never,
-    publisher, messageFeed: messageFeedInto(publisher, agentOrgMessageEvent),
+    publisher, messageFeed: messageFeedInto(publisher, agentOrgMessageEvent, root),
   });
   run.activate();
   const sender = (agentRunId: string, memberAddress: string) => ({

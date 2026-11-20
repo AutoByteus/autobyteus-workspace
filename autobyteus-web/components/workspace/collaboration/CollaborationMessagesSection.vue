@@ -11,7 +11,7 @@
         {{ $t('workspace.components.workspace.team.TeamOverviewPanel.messages') }}
       </h3>
       <span class="text-xs font-medium text-gray-600">
-        {{ messageCount }} {{ $t('workspace.components.workspace.team.TeamOverviewPanel.messages_count') }}
+        {{ messageCount }}{{ messages.hasMore() ? '+' : '' }} {{ $t('workspace.components.workspace.team.TeamOverviewPanel.messages_count') }}
       </span>
     </div>
 

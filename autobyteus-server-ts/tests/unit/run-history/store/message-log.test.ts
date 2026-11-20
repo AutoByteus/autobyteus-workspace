@@ -269,4 +269,43 @@ describe("MessageLog", () => {
   it("rotates at 4 MiB by default", () => {
     expect(MESSAGE_LOG_ROTATION_LIMIT_BYTES).toBe(4 * 1024 * 1024);
   });
+
+  describe("autobyteus-565: a line's record of the other agent (`counterpart`)", () => {
+    it("writes the record after the seven fields only when the message has one, and reads it back; a line without one reads as before", async () => {
+      const dir = await tempDir();
+      const log = new MessageLog(dir, "communication_messages");
+      const remote = { ...message("m1", 1), counterpart: { address: "/publisher", nodeId: "srv_b" } };
+      const unrelated = { ...message("m2", 2), counterpart: { address: null, nodeId: null } };
+      await log.append(remote);
+      await log.append(unrelated);
+      await log.append(message("m3", 3));
+      const lines = (await text(dir, "communication_messages_active.jsonl")).split("\n");
+      expect(Object.keys(JSON.parse(lines[0]!))).toEqual([
+        "messageId", "senderAgentRunId", "receiverAgentRunId", "content", "messageType", "referenceFiles", "createdAt", "counterpart",
+      ]);
+      expect(Object.keys(JSON.parse(lines[2]!))).not.toContain("counterpart");
+      expect(await log.read()).toEqual([remote, unrelated, message("m3", 3)]);
+    });
+
+    it("refuses a malformed record, naming its file and line", async () => {
+      const dir = await tempDir();
+      const { counterpart: _dropped, ...fields } = { ...message("m1", 1), counterpart: null };
+      await fs.writeFile(path.join(dir, "communication_messages_active.jsonl"), `${JSON.stringify({ ...fields, counterpart: { address: 7, nodeId: null } })}\n`);
+      await expect(new MessageLog(dir, "communication_messages").read()).rejects.toThrow("communication_messages_active.jsonl");
+    });
+
+    it("reads a 2,500-message log with records (the participant read's input), within the budget", async () => {
+      const dir = await tempDir();
+      const log = new MessageLog(dir, "communication_messages");
+      await log.writeInitial(Array.from({ length: 2500 }, (_, index) => ({ ...message(`b${String(index).padStart(4, "0")}`, index % 3000,
+        "x".repeat(400)), counterpart: { address: `/peer_${index % 40}`, nodeId: index % 5 ? null : "srv_b" } })));
+      const started = performance.now();
+      const read = await log.read();
+      const elapsed = performance.now() - started;
+      process.stdout.write(`[autobyteus-565 measure] read of a 2,500-message log from disk: ${elapsed.toFixed(1)} ms, ${read?.length} messages\n`);
+      expect(read).toHaveLength(2500);
+      expect(elapsed).toBeLessThan(2000);
+    });
+  });
 });
+

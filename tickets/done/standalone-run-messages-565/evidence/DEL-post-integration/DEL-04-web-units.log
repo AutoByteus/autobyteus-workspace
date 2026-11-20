@@ -1,0 +1,6 @@
+# Merged state 09e8c7270c
+# Command: pnpm -C autobyteus-web exec vitest run components/mobile components/workspace/collaboration composables/__tests__/useRightSideTabs.spec.ts composables/__tests__/useRightSideTabs.contextualDefault.spec.ts services/agentCollaboration services/collaborationMessages stores/__tests__/agentRunCollaborationStore.spec.ts stores/__tests__/agentRunCollaborationParticipantReloads.spec.ts
+ Test Files  29 passed (29)
+      Tests  261 passed (261)
+   Duration  23.30s (transform 5.77s, setup 147.61s, collect 11.64s, tests 11.08s, environment 9.65s, prepare 6.00s)
+exit=0

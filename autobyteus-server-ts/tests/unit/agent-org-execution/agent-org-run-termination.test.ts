@@ -72,7 +72,7 @@ describe("AgentOrgRun termination stabilization", () => {
       teams: teams as never,
       callbacks: {} as never,
       persistence: persistence as never,
-      publisher, messageFeed: messageFeedInto(publisher, agentOrgMessageEvent),
+      publisher, messageFeed: messageFeedInto(publisher, agentOrgMessageEvent, createAgentOrgRootExecutionIdentity(orgRunId)),
     });
     run.activate();
 

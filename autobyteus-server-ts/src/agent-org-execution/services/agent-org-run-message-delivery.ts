@@ -95,7 +95,7 @@ export class AgentOrgRunMessageDelivery {
       endpoint: unlinkedRunEndpoint({ nodeId: input.fromNodeId, agentRunId: input.message.senderAgentRunId, pairedAgentRunId: receiver.agentRunId }),
       receiverIdentity: this.identityFor(receiver.agentRunId, receiver.address),
       receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId,
-      senderNodeName: input.fromNodeName,
+      senderNodeName: input.fromNodeName, senderAddress: input.senderAddress,
     });
   }
 
@@ -112,7 +112,7 @@ export class AgentOrgRunMessageDelivery {
       endpoint,
       receiverIdentity: this.identityFor(receiver.agentRunId, receiver.address),
       receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId,
-      senderNodeName: input.fromNodeName,
+      senderNodeName: input.fromNodeName, senderAddress: input.senderAddress,
     });
   }
 

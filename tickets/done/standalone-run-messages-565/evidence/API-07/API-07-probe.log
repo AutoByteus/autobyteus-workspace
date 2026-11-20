@@ -1,0 +1,9 @@
+# API-07 desktop browser probe (new): pnpm -C autobyteus-web test:e2e:standalone-messages --output-dir=<dir>
+# Code 5b45e9222b, worktree dist, nuxt dev, Chrome (playwright-core) 1440 px; Node 22.23.1; macOS 26; 2026-11-20
+# Run 1 (run1/): SMP-01, SMP-04 Pass; SMP-02, SMP-03 failed in the probe (it clicked the tab before the newly selected run's own tab, default Activity, settled: run1/SMP-02-fail.png shows the PM selected on Activity); fixed: wait for the URL to name the run, then select the tab until aria-selected.
+
+SMP-01: Pass
+SMP-02: Pass
+SMP-03: Pass
+SMP-04: Pass
+standalone-messages probe: Pass
