@@ -1,0 +1,14 @@
+import { createRequire } from 'node:module';
+const require = createRequire('/Users/normy/autobyteus_org/autobyteus-web-design/package.json');
+const { chromium } = require('playwright-core');
+const b = await chromium.launch({ headless: true, executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' });
+const p = await b.newPage({ viewport: { width: 440, height: 956 }, isMobile: true, hasTouch: true });
+const errs = []; p.on('pageerror', e => errs.push(e.message.slice(0, 150))); p.on('console', m => { if (['error','warning'].includes(m.type())) errs.push(m.text().slice(0, 150)); }); p.on('request', r => { if (!r.url().startsWith(process.env.DEMO_BASE) && !r.url().startsWith('data:') && !r.url().startsWith('blob:')) errs.push('external ' + r.url().slice(0, 80)); });
+await p.goto(process.env.DEMO_BASE + '/', { waitUntil: 'networkidle' }); await p.waitForTimeout(1500);
+await p.getByRole('button', { name: /Daily Assistant, Summarize/ }).click(); await p.waitForTimeout(1200);
+await p.getByRole('button', { name: 'More' }).click(); await p.getByRole('menuitem', { name: /VNC/ }).click(); await p.waitForTimeout(2500);
+const before = (await p.locator('body').innerText()).replace(/\s+/g, ' ').slice(0, 80);
+await p.getByRole('button', { name: /View only/ }).click(); await p.waitForTimeout(2500);
+const after = (await p.locator('body').innerText()).replace(/\s+/g, ' ').slice(0, 80);
+await p.screenshot({ path: '/tmp/abt279b/vnc-control.png' });
+console.log(JSON.stringify({ before, after, errs })); await b.close();

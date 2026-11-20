@@ -1,0 +1,6 @@
+  2026-11-20 08:13:09.069 xcodebuild[85235:522438464] [MT] IDELaunchReport: a1f59d8e82616000:a1f59d8e82616000: Finished with error: Simulator device failed to install the application.
+      FunctionName = "+[IXPlaceholder _placeholderForBundle:client:withParent:installType:metadata:placeholderType:mayBeDeltaPackage:isFromSerializedPlaceholder:location:error:]";
+      SimCallingSelector = "installApplication:withOptions:error:";
+      FunctionName = "+[IXPlaceholder _placeholderForBundle:client:withParent:installType:metadata:placeholderType:mayBeDeltaPackage:isFromSerializedPlaceholder:location:error:]";
+      FunctionName = "-[IXSClientConnection _fetchPlaceholderForUUID:method:andRunWithPromise:error:]";
+  Testing failed:

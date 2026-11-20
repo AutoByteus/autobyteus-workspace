@@ -54,6 +54,15 @@ Status: **holding before the merge into `personal`** (the founder's word on the 
   - Validate iOS Publish Secrets and Archive And Upload To App Store Connect: **skipped**; "Publish requested: false". Nothing was signed or uploaded; nothing reached Apple.
   - Artifact `ios-build-test-artifacts` (id 14605478916, expires 2026-12-04): the simulator app `AutoByteus_personal_ios-ci-341-simulator-app.zip` (Debug, with `DemoWeb/`), logs and result bundles.
 
+## The Solution Designer's App Reviewer Sweep On The Built App (merge condition (a))
+
+- Verdict: **pass** (2026-11-20), `evidence/build-sweep/verdict.md` (copied from `/Users/normy/autobyteus_org/autobyteus-worktrees/_solution-designer-reports/ios-demo-279-build-sweep/` with its scripts, run summaries and screens).
+  - Web: the demo bundle `dist-mobile-demo/public` from the integrated state, served as the app's scheme handler serves it, at 440×956, 1180×820 and 820×1180: 40 rows each, 0 findings, 0 console errors, 0 external requests; sheets, attach and VNC Control clean.
+  - Native: a Release simulator build of the worktree; `DemoUITests` and `DemoIPadUITests` on its own iPhone 17 Pro Max and iPad Air simulators pass, except the kept-share test once in 9 runs (the first run on a newly created simulator, 97 s on the start screen; the other 8 runs, 3 on freshly erased simulators, pass in about 10 s).
+- Residual risks it records (not blocking): R-1 the kept share at the first launch (for the real-iPhone check: share the demo link from Safari, then open the app); R-2 what simulators cannot prove (camera scan of the printed QR, the Camera app's link, airplane mode, the review notes on a device).
+- Its note on copy: the build's "press Show QR code" is right; the Product specification is out of date (FU-007).
+- Condition (b), beta v1.5.14-beta.2 out, and the founder's word on the merge: pending.
+
 ## Finalization
 
 - Pending the founder's word on the merge. When it comes: re-check `origin/personal`, merge it into the ticket branch again if it moved (with the checks after integration), archive the ticket, Secret Gate, `finalize/ios-demo-mode-279` from `origin/personal`, `--no-ff` merge, push, fast-forward the user's checkout, cleanup.
