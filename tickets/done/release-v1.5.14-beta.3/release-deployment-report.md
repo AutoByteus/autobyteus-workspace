@@ -29,7 +29,7 @@
 - Follow-ups FU-1 and FU-2 (this folder).
 
 ## Cutting the release
-- `bash scripts/desktop-release.sh beta --branch finalize/release-1514-3 --no-push`: release commit `fa6632cbca`, annotated tag `v1.5.14-beta.3`; `origin/personal` was still `67b85023b2`; pushed `67b85023b2..fa6632cbca` to `personal`, then the tag, 2026-11-20 about 10:34Z.
+- `bash scripts/desktop-release.sh beta --branch finalize/release-1514-3 --no-push`: release commit `fa6632cbca`, annotated tag `v1.5.14-beta.3`; `origin/personal` was still `67b85023b2`; pushed `67b85023b2..fa6632cbca` to `personal`, then the tag, 2026-11-20 at 10:39Z (tag created 10:39:41Z, workflows started 10:39:58Z).
 
 ## Failures
 - None. All four workflows succeeded on the first attempt, with no rerun. The Linux production trust step (Task 564) passed; the macOS staple failure of earlier releases did not recur; GitHub gave runners to all jobs.
