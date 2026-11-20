@@ -15,3 +15,5 @@
 - Findings that shaped it: the phone hides Messages for standalone runs; the desktop shows them only with an open delegated run; the stored read and the live feed leave out unrelated and cross-node messages; a cross-node counterpart's node is not recorded for unlinked messages; the PM's history is 5.4 MB.
 - Approval: pending (DEC-001, DEC-002 Needs user). Design: not started.
 - Next action: the founder's answers, approval, design.
+
+- 2026-11-20 (within SR-001): the founder confirmed paging with "load more" (DEC-004 now his); DEC-001 and DEC-002 still open.
