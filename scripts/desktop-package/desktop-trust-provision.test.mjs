@@ -5,13 +5,15 @@ import { chmodSync, mkdirSync, writeFileSync, mkdtempSync, rmSync, readFileSync,
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createPublicKey } from 'node:crypto';
+import { historyFixture } from './test-fixtures/first-use-history.mjs';
 import { provision } from './generate-desktop-signing-key.mjs';
 import { envName, pub, priv, lock, pattern, anchor, checkPolicy } from './desktop-trust-state.mjs';
 function fixture(t,failAt=0) {
   const home=mkdtempSync(join(tmpdir(),'disposable-desktop-')); t.after(()=>rmSync(home,{recursive:true,force:true}));
   const s={claim:null,pem:null,environment:null,secret:null,policies:[]},writes=[];
   function record(action){writes.push(action); if(failAt===writes.length)throw Error('simulated interruption');}
-  const options={home,read:()=>structuredClone(s),write:(path,method,body)=>{
+  const history=historyFixture();
+  const options={home,historyRequest:history.request,read:()=>structuredClone(s),write:(path,method,body)=>{
     if(method==='POST' && body.name===lock){assert.equal(s.claim,null);s.claim=body.value;record('claim');}
     else if(method==='PUT'){assert.ok(s.claim);s.environment={name:envName,id:9,deployment_branch_policy:body.deployment_branch_policy,protection_rules:[{type:'branch_policy'}]};record('env');}
     else if(body?.type==='tag'){s.policies.push(body);record('tag');}
@@ -24,10 +26,12 @@ function fixture(t,failAt=0) {
     assert.equal(anchor(createPublicKey(bytes).export({type:'spki',format:'pem'})),anchor(s.pem));
     s.secret={name:priv,created_at:'2026-01-01T00:00:00Z',updated_at:'2026-01-01T00:00:00Z'};record('upload');
   }};
-  return {options,s,writes,home};
+  return {options,s,writes,home,history};
 }
 test('ordered first setup, sole backup, no accidental replacement',t=>{
-  const {options,writes,home}=fixture(t);const m=provision(options);
+  const {options,writes,home,history}=fixture(t);const m=provision(options);
+  assert.equal(history.calls[0],'graphql');
+  assert.ok(history.calls.some(p=>p.includes('/attempts/1/jobs?')));
   assert.deepEqual(writes,['claim','env','tag','public','upload','unlock']);
   assert.match(m.fingerprint,/^[a-f0-9]{64}$/);assert.doesNotMatch(JSON.stringify(m),/BEGIN PRIVATE/);
   assert.equal(statSync(join(home,'.autobyteus-desktop-signing-backup')).mode&0o777,0o700);
@@ -126,4 +130,55 @@ test('CLI refuses tracing before it can acquire a claim or generate material',()
   const r=spawnSync(process.execPath,[fileURLToPath(new URL('./generate-desktop-signing-key.mjs',import.meta.url))],{
     env:{PATH:'/usr/bin:/bin',NODE_DEBUG:'child_process'},encoding:'utf8'});
   assert.equal(r.status,1);assert.match(r.stderr,/clean Node invocation/);assert.equal(r.stdout,'');
+});
+
+
+for(const [scenario,change] of Object.entries({
+  'one prior signed sidecar on an older release':h=>{h.releases.nodes[1].releaseAssets.nodes[0].name='AutoByteus_personal_linux-arm64-1.5.13.AppImage.release.json.sig';},
+  'prior signer executed but assets absent':h=>{h.job.conclusion='success';},
+  'prior ambiguous execution':h=>{h.job.conclusion='failure';},
+  'active managed release':h=>{h.run.status='in_progress';},
+  'release metadata denied':h=>{h.denied='graphql';},
+  'job metadata denied':h=>{h.denied='/jobs?';},
+  'release disappeared':h=>{h.releases.nodes.shift();h.releases.totalCount--;},
+  'previously observed run unavailable':h=>{h.runs.length=0;},
+  'unknown workflow code':h=>{h.file.sha='e'.repeat(40);},
+  'partial release page':h=>{h.releases.totalCount++;},
+  'partial asset listing':h=>{h.releases.nodes[1].releaseAssets.pageInfo.hasNextPage=true;},
+  'attempt mismatch':h=>{h.job.run_attempt=2;},
+  'missing signer':h=>{h.jobs.length=0;},
+  'earlier successful attempt later skipped':h=>{h.run.run_attempt=2;h.job.conclusion='success';},
+}))test('empty settings do not allow first provisioning: '+scenario,t=>{
+  const {options,history,writes,home}=fixture(t);
+  change(history);
+  assert.throws(()=>provision(options),/Reconcile official release/);
+  assert.deepEqual(writes,[]); // claim, settings, stdin upload: all untouched
+  assert.deepEqual(readdirSync(home),[]); // no backup directory/file or new key
+});
+
+test('complete paginated history with unsigned legacy workflow and originally skipped managed signer permits first setup',t=>{
+  const {options,history:h,writes}=fixture(t);
+  const legacy={...h.run,id:234,head_sha:'d'.repeat(40),head_branch:'v1.5.13',run_attempt:2};
+  h.runs.push(legacy);
+  const more=Array.from({length:24},(_,i)=>({...h.releases.nodes[1],id:'historical-'+i}));
+  const all=[...more,...h.releases.nodes]; let pages=0;
+  options.historyRequest=(path,method,body,...rest)=>{
+    if(path==='graphql'){
+      const second=++pages===2;
+      assert.equal(body.variables.cursor,second?'page-1':null);
+      return {data:{repository:{nameWithOwner:'AutoByteus/autobyteus-workspace',releases:{
+        nodes:second?all.slice(25):all.slice(0,25),totalCount:26,pageInfo:{hasNextPage:!second,endCursor:'page-1'}
+      }}}};
+    }
+    if(path.endsWith('ref='+legacy.head_sha))return {...h.file,sha:'bac612b9d71a4832bb91945e885e941ec312dc97'};
+    return h.request(path,method,body,...rest);
+  };
+  provision(options);assert.equal(pages,2);assert.equal(writes.at(0),'claim');assert.equal(writes.at(-1),'unlock');
+});
+
+test('scope conflict appearing during read-only history inspection still refuses before claim',t=>{
+  const {options,history,s,writes,home}=fixture(t);
+  options.historyRequest=(...args)=>{s.claim='another-custodian';return history.request(...args);};
+  assert.throws(()=>provision(options),/claim conflict/);
+  assert.deepEqual(writes,[]);assert.deepEqual(readdirSync(home),[]);
 });

@@ -4,11 +4,9 @@ import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 import { fileURLToPath,pathToFileURL } from 'node:url';
-import { api, base, complete, gh, inventory, paged, repo, requireState } from './desktop-trust-state.mjs';
+import { api, base, complete, gh, inventory, paged, repo, requireState, signerJob, workflow } from './desktop-trust-state.mjs';
 import { channelFor, verifyRecord } from './release-record.mjs';
 
-const workflow='.github/workflows/release-desktop.yml';
-const jobName='Sign authenticated Linux desktop releases';
 const stepName='Sign final AppImages and verify metadata against the embedded public anchor';
 // Reviewed at a728fbcad3: tag-only push entry, tagged checkout, protected job,
 // private/public equality and verification of both final images. Review changes to these pins.
@@ -34,7 +32,7 @@ export function verifyWitness(s,run,source) {
     typeof run.head_branch==='string' && /^v\d+\.\d+\.\d+(?:-beta\.\d+)?$/.test(run.head_branch));
   const tag=run.head_branch, version=tag.slice(1);
   try{channelFor(version);}catch{proof(false);}
-  const jobs=source.jobs(run).filter(j=>j.name===jobName);
+  const jobs=source.jobs(run).filter(j=>j.name===signerJob);
   proof(jobs.length===1);
   const j=jobs[0],start=timestamp(j.started_at);
   proof(start<=timestamp(run.updated_at) && j.run_id===run.id && j.run_attempt===run.run_attempt && j.head_sha===run.head_sha && j.status==='completed' && j.conclusion==='success' &&

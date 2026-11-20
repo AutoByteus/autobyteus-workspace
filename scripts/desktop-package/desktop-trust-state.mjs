@@ -4,6 +4,7 @@ import { createHash, createPublicKey } from 'node:crypto';
 import { userInfo } from 'node:os';
 
 export const repo = 'AutoByteus/autobyteus-workspace', base = 'repos/' + repo;
+export const workflow='.github/workflows/release-desktop.yml', signerJob='Sign authenticated Linux desktop releases';
 export const envName = 'desktop-release-signing', envPath = base + '/environments/' + envName;
 export const pub = 'DESKTOP_RELEASE_PUBLIC_KEY', priv = 'DESKTOP_RELEASE_PRIVATE_KEY';
 export const lock = 'DESKTOP_RELEASE_PROVISIONING_CLAIM', pattern = 'v*.*.*';

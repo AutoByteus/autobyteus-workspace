@@ -46,8 +46,15 @@ not evidence of a safe configuration.
 custodian, in an exclusive operator window, may run
 `(ulimit -c 0; node scripts/desktop-package/generate-desktop-signing-key.mjs)`.
 Use a trusted local owner-controlled home outside Git/cloud/shared storage, no
-debugging or tracing. The generator checks all scopes, acquires a create-only
-repository claim, creates one 0600 backup under a 0700 directory, reads back
+debugging or tracing. Empty settings or an empty home alone do **not** prove
+first use. Before claiming or generating a key the generator checks official
+release assets (including legacy releases) for managed Linux sidecars and
+inspects Desktop Release attempts since the protected job was introduced.
+The known failed initial tag with its skipped signer and unrelated assets is
+eligible; a signed sidecar, an executed signer, or unavailable, changed or
+incomplete evidence requires reconciliation with the custodian. Do not
+bootstrap by deleting settings. This is not the positive pre-tag witness.
+After rechecking scopes, the generator acquires a create-only repository claim, creates one 0600 backup under a 0700 directory, reads back
 tag-only protection and the public anchor, and sets the environment secret
 through stdin. Record only nonsecret fingerprint/IDs/times and successful
 submission, **not** remote content verification. Promptly relay this footprint

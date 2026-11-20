@@ -7,13 +7,14 @@ import { userInfo } from 'node:os';
 import { pathToFileURL } from 'node:url';
 import { api, gh, envName, envPath, base, repo, priv, pub, lock, pattern, anchor, complete, checkPolicy, inventory, requireState } from './desktop-trust-state.mjs';
 
+import { requireFirstUse } from './desktop-first-use.mjs';
 import { check } from './check-release-trust.mjs';
 import { removeSavedBackup } from './desktop-key-custody.mjs';
 
 const vars=base+'/actions/variables';
 export function uploadPrivate(bytes,invoke=gh) { invoke(['secret','set',priv,'--env',envName,'--repo',repo],bytes); }
 export function provision({read=inventory,write=api,upload=uploadPrivate,
-  home=userInfo().homedir,expected=null,existingWitness=check}={}) {
+  home=userInfo().homedir,expected=null,historyRequest=api,existingWitness=check}={}) {
   process.umask(0o077);
   const h=lstatSync(home), uid=process.getuid(), nonce=randomUUID();
   requireState(uid!==0 && realpathSync(home)===home && h.uid===uid && !(h.mode&0o022),'Trusted login home required');
@@ -39,6 +40,7 @@ export function provision({read=inventory,write=api,upload=uploadPrivate,
       JSON.stringify(state.secret)===JSON.stringify(initial.secret),'Existing generation changed');
   }
   // POST is create-only. Never clean up on ambiguous writes or after a partial setup.
+  if(!expected) { requireFirstUse(historyRequest); samePrior(null); local(); }
   write(vars,'POST',{name:lock,value:nonce}); samePrior(nonce);local();
   mkdirSync(dir,{mode:0o700});
   const fd=openSync(file,constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);
