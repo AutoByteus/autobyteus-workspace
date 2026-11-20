@@ -2,5 +2,7 @@
 
 | ID | Found by (role, document) | What is wrong, where | Evidence | Why it is outside this ticket | Urgent (`Yes`/`No`) | Suggested Task description | Sent (to, date) |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| FU-001 | Implementation engineer, `implementation-handoff.md` IMP-04 | `autobyteus-web/components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts:51` fails on the base: the Basics panel renders the Update checks card unstubbed, whose summary ("Find new versions of your GitHub agent packages and skill sources.") contains "GitHub", which the test (autobyteus-337) forbids | `evidence/web-unit-full.log`; fails alone too; the panel, card, test and strings are untouched by this branch (card change `985246c53b` is in the base) | Settings Basics, not Messages; no file of this ticket is involved | No | Stub `UpdateChecksCard` in the Basics panel test (or narrow the "no GitHub" assertion to the GitHub integration card), so the test checks what autobyteus-337 meant | — |
+| FU-002 | Implementation engineer, `implementation-handoff.md` IMP-03 | `autobyteus-server-ts/tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts` times out ("Timed out waiting for the monitor") on this machine: `fs.watch` delivers no events at all here (a plain probe in `/tmp` saw 0 events) | `evidence/server-unit-full.log`; probe recorded in the handoff | The machine's file events, not the code; the watcher module is untouched | No | Make the folder-watcher tests skip with a clear reason (or fail fast with "file events are not delivered on this machine") when a one-shot `fs.watch` probe sees no event | — |
 
-None found during investigation and design.
+FU-001 and FU-002 were found during implementation; none during investigation and design.
