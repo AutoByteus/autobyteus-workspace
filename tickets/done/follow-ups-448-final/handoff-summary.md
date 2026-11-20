@@ -8,7 +8,7 @@
   - Architecture review, code review and test-code review: `Not Applicable` (not selected on this route).
   - SR-002 changed the FU-001 approach after IR-001 hit its escalation trigger.
 - Current Status: `Verified from evidence / finalized on personal; no release`
-- Branch: `codex/follow-ups-448-final`, base `origin/personal` @ `8f2d209b2c`. Integrated by merge of `01ebb4ddce` (a delivery record only) as `f68268060d`. Code tested at `03d3ff8e04`.
+- Branch: `codex/follow-ups-448-final`, base `origin/personal` @ `8f2d209b2c`. Integrated by merge of `01ebb4ddce` (a delivery record only) as `f68268060d`. Code tested at `03d3ff8e04`. Finalized: `--no-ff` merge `df12d95629` pushed to `origin/personal`.
 
 ## Delivery Summary
 
