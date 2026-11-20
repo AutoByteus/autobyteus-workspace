@@ -1,76 +1,67 @@
-# Source review — desktop signing trust
+# Code review — desktop signing trust
 
-**CRR-001: Fail — implementation-owned Local Fix (F-CR-001).** The pre-tag gate and the scoped secret-upload path are separate from the defect. The default generator checks whether settings and a local backup exist, but not the **release state** required to decide whether this is genuinely first provisioning. Missing settings are not affirmative evidence that a desktop signing identity has never been established. **This does not invalidate M1 or authorize provisioning again.**
+**CRR-002: Pass for independent executable validation.** F-CR-001 is resolved. The default generator now makes a positive decision about **first use before its first write**. Today’s published desktop signatures are grounds to refuse fresh provisioning; the existing protected signer run and both signatures are, separately, evidence that may satisfy the read-only pre-tag gate. Neither result authorizes another provisioning run, rotation or release.
 
-## Round and basis
+## Review round and authority
 
-- Initial Implementation Review, **Full Review**, 2026-11-20. **Medium / High confirmed**: bounded release-tooling change, high impact of establishing a durable signing identity used for installed software. Independent review required.
-- `fix/desktop-signing-trust` → `origin/personal`, base `a728fbcad3`, source `88646150044118bc368238a9331fe646cc375f68`, received evidence HEAD `150b17d80e`. No prior CRR, API-REV or DR. No client or frontend work.
-- Basis: `requirements-doc.md`, `investigation-notes.md`, `solution-revision-record.md` (SR-001); `design-spec.md` DS-001, architecture handoff/report/revision record ARCH-REV-001 Pass; IR-001 implementation handoff/checks/history; M1 and IMP-01–03. Applied shared design principles and scope rules, root AGENTS/DESIGN/TESTING/RELEASE. No behavior-defining supplement or closer scripts instructions. The historical Ubuntu ticket is not an alternative authority for this ticket.
-- Read the changed production scripts, tests and guide, the shell callers/mutation tail, existing workflow checkout/sign/publish and release-record checks. Reviewed the clean disposable test evidence before running anything. Did not rerun the recorded suites, provision, invoke a tag creator, sign, publish, alter remote state or access the founder's backup. A new diagnostic intercepted the first mutation and used only simulated read-only metadata.
+- Round 2, **Full Re-Audit**: IR-002 adds a read-only history stage to the privileged provisioning sequence and shares the workflow/job names with the verifier. Rechecked the complete non-ticket delta from CRR-001, affected callers and existing trust boundaries; reconsidered all structural checks and scores. Unchanged custody, workflow, shell integration and failure tests retain their original evidence, not new execution claims.
+- `fix/desktop-signing-trust` → `origin/personal`; base `a728fbcad3`, source `291a6c0d33`, received `89f45b99c9e6ce92fbd2e253a3d26f0ce4eb8e18`. Prior CRR-001 Fail at `72d59d7796`; IR-001/002. Approved SR-001, DS-001, ARCH-REV-001 Pass; API-REV and DR N/A. **Medium / High confirmed**, given durable signing authority despite bounded release-tool changes.
+- Basis: requirements, investigation, solution and architecture history, design spec and review, implementation handoff/revision record, M1 and IMP-01–05. Project AGENTS/DESIGN/TESTING/RELEASE, shared design principles, ticket scope and scenario gate. No new supplement, business decision or support promise.
 
-## Behaviors, supported triggers and production paths
+## Behavior and supported production paths
 
-| Approved scenario | Trigger, path and outcome | Result |
-| --- | --- | --- |
-| 001 / normal first setup | Authorized custodian, exclusive window → default generator → inspect scopes → create-only nonce claim → exclusive local pair → environment restriction/readback → public variable → environment secret over stdin → verify footprint, remove owned claim, relay M1. | Actual first setup had separate prior investigation and founder context. Reusable initial eligibility is incomplete (F-CR-001). |
-| 002 / normal founder custody | Custodian gives path only. After explicit founder saved confirmation, removal command checks designated directory/file, owner/mode, dev:ino, link count and public fingerprint before unlink/absence check. | Pass in source/disposable evidence. No assumption that a CLI flag supplies human confirmation; only custodian may act after it. No real removal verified by this review. |
-| 003 / explicit repeat, interruption or conflict | Same/other designated operator may encounter a prior trust generation, partial external state or ambiguous API result. Existing settings/claim/local directory refuse; failed writes are not retried/destructively rolled back. Explicit replacement requires fingerprint + previous witness. | Claim/partial-write boundaries pass for inspected state. Default path misses prior/conflicting release evidence even when release inspection is unavailable. |
-| 004 / stable or beta release preparation | Release owner invokes release/prepare or beta, including no-push. Read-only check before bump/commit/tag/push (also before beta fetch). It validates official origin, complete scoped state and current-generation witness; shell aborts on failure. | Source pass; positive hosted witness remains an execution gate. No release action taken. |
-| 005 / delivery | Reviewer → executable validation → authorized integration/cleanup and M2 via coordinator. Mac alone owns existing-tag release decisions. | Boundaries preserved; not complete, no handoff to delivery. |
-
-## Finding and candidate/mechanism gate
-
-**F-CR-001 — default first setup does not inspect conflicting or unknown release state. Promote / this ticket / High consequence.** DS-001 §1 explicitly includes release state in preinspection, and AC-001/003 require absence of conflicting state and no silent replacement on repeat/unknown. The real investigation used the failed tag run and its eight **non-desktop** assets, separately from empty settings, when establishing first setup. After a normal founder save/removal or on another designated machine, the absence of a local backup directory is expected. If the settings are also absent but official release evidence indicates the prior managed desktop signing identity, this is a reconciliation decision, not a fresh installation. An inability to inspect the required release evidence is not proof of absence. No hostile administrator or stolen credential is needed for this contract.
-
-- `scripts/desktop-package/generate-desktop-signing-key.mjs:24–47`: default `prior` tests claim/public variable/environment/secret. Only explicit replacement calls `existingWitness`. Default calls `read` (= `desktop-trust-state.mjs:inventory`), then posts the claim, creates custody storage and generates a new key. Reinspection repeats the same inventory. No release read or other required release-state input. RELEASE.md's reusable first-setup instructions do not impose that missing inspection either.
-- `evidence/CRR-001-preclaim.mjs` and `.txt`: empty settings and a clean disposable home, metadata reader configured to refuse release-state queries. The real inventory/default decision reached the first claim POST **without requesting any release metadata**; the diagnostic intercepted it before any write or generation. IMP-02's success fixture demonstrates what the default flow does after claim success. This establishes the decision gap; it does **not** claim a second production key was created.
-- **Correction:** distinguish verified first setup from existing/conflicting desktop signing evidence or indeterminate release state before the first mutation; preserve first setup on the documented failed/skipped-signer/no-desktop-sidecar case. Bound inspection to the relevant official desktop release evidence; do not equate unrelated or legacy assets with existing managed trust. Stop for explicit reconciliation if history is inconclusive, not remote repair. Add disposable positive/negative cases showing no claim/key/backup/upload on conflicting or inaccessible evidence. Document the operator's decision. **No production replay, rotation, credential access, new workflow or privileged release required.**
-
-Other candidate dispositions:
-
-- **Use:** cooperative create-only claim is justified by approved repeat/partial/concurrent provisioning, including cross-host operation. It is not a lock against independent admin edits. No need to invent a stronger distributed lock.
-- **Use:** compare secret creation/update, public update and environment creation/update strictly against signer start; verify both canonical signed release records and reviewed signer at the matching tagged commit. Actual provisioning receipts cannot substitute for that positive witness.
-- **Reject:** requiring a successful prior signing witness for genuine *first* setup would deadlock the approved bootstrap. F-CR-001 is an absence/conflict check, not that requirement. Reject branch secret access, a local production signing challenge, retry via a new tag and guarantees against future admin edits.
-- No new scenario, ambiguous requirement, held evidence item or architecture redesign. ARCH-REV-001 material-premise rulings retained; defect is implementation alignment with the existing first-use contract.
-
-## Other source and structural checks
-
-| Check group | Result and evidence |
+| Approved basis / independent trigger | Source conclusion |
 | --- | --- |
-| Design health / supplements / data-flow map | One bounded setup transaction and one pre-tag trust gate. M1 and custody completion correctly separate. Contract shortfall is specifically the input to first-use admission. |
-| Ownership, boundaries and off-spine work | Shared state reader handles official metadata/policy; generator owns writes; custody owns confirmed unlink; verifier owns witness; shell owns mutations. No app/server-signing responsibility moved. |
-| Existing capabilities and shared model | Reuses existing release-record verification, official signing job, Node crypto, authenticated gh and release helper. One SPKI fingerprint, explicit environment ID and secret-generation metadata, no new key service or second persisted client identity. |
-| Repeated coordination / indirection | One verifier used by both tag creators. Read/write injection supports isolated tests; code pins verified against all five reviewed files, including the tag-triggered workflow. No empty coordinator identified. |
-| Separation, dependencies, placement and layout | Concrete responsibilities under scripts/desktop-package, with two shell calls. No package-manager build needed by a clean checkout; setup depends on verifier only for explicit rotation, not vice versa. |
-| Authoritative boundary / explicit interfaces | gh uses fixed official repo/host, sanitized child environment and suppressed child error content. Secret input via stdin only to named environment. Typed single tag policy with no extra gate accepted before upload. Public anchor is canonical Ed25519 SPKI; build jobs retain only public input. |
-| Scope, naming, duplication | Desktop-only variable/secret/claim and environment; complete scope listing paginates/count-checks and refuses conflicting declarations. Distinct meanings for setup, local pair, sign witness and release; no server key reuse. |
-| Failure handling and legacy | No blind retry or fallback when claim/writes ambiguous; preserving a claim/backup is deliberate. Clean/checked first-use decision still needs F-CR-001. Existing signer checks remain necessary; no compatibility bypass, dead alternate implementation or unnecessary migration. |
-| Runtime witness contract | Official successful push, exact workflow/ref/attempt/SHA and signer step, dereferenced tag commit, reviewed code digests, published canonical x64/arm64 record/signature assets with bounded sizes, actual cryptographic verification using today's anchor, scope/generation reread. Bounded automatic search plus validated explicit run ID, not a bypass. Source pins are intentional maintenance points. |
-| Tests, fixtures, staleness and executable readiness | 57 Node, six helper and 21 workflow-control checks reported passing. Disposable state and keys; shell tests use temporary repos with a controlled checker to prove no mutation on denial. Not a hosted positive-path or founder-cleanup proof. New first-use case needed before API/E2E. |
-| Docs, persistence and cleanup | RELEASE.md documents authority, positive vs negative evidence, custody, bootstrap and no-push gate, but misses conflicting historical release state in initial eligibility. No client/profile/schema transition. Only new external trust metadata and a restricted backup; actual custody/merge tracked separately. Nothing to remove as legacy. |
+| SCN/BEH-001: designated custodian sets up trust once | Validate official admin-visible scopes/local destination → inspect release evidence → recheck scopes/destination → create-only nonce claim → generate one Ed25519 pair and exclusive private backup → verify exact environment policy before private upload → read back public footprint. Pass. M1 remains provisioning evidence, not proof of remote signing. |
+| 002: founder needs a durable backup | Only the custodian communicates its path. Exact file identity, owner/mode/link count and public fingerprint guard removal after explicit saved confirmation. Pass at source; real acknowledgement/removal is **not** asserted. |
+| 003: unexpected, partial, concurrent or repeated setup | Missing settings alone cannot establish first use. Conflicting history/read errors stop before claim; ambiguous writes preserve custody/claim, no blind retry. Separately authorized replacement requires prior fingerprint and positive witness; it is not a recovery path here. Pass. |
+| 004: owner prepares a stable/beta release (including no-push) | Both shell paths invoke the read-only verifier before version/commit/tag/push. Verifier requires official origin, exact settings/policy, qualifying push/tag commit and attempt, pinned signing code, successful signer after current generation, both signed records under current anchor, then rereads settings. No private read, sign operation, or witness bypass. Pass. |
+| 005: integration and milestone reporting | Guide covers routine release readiness, once-only setup and founder confirmation. Independent validation, approved merge, verified cleanup and M2 remain downstream. Mac owns existing-tag release operations. |
 
-### Source size
+### Prior finding and candidate gate
 
-Nonempty lines, base → product: check-release-trust.mjs **0→111**; desktop-key-custody.mjs **0→26**; desktop-trust-state.mjs **0→93**; generate-desktop-signing-key.mjs **0→94**; desktop-release.sh **395→397**. No source exceeds 500 or grows by >220. Tests and guide excluded. No size-based finding.
+**F-CR-001 — resolved at source; supported SCN-001/003, this ticket.** The trigger was an authorized operator seeing empty settings/local destination while official evidence of a previous desktop signer might exist or could not be inspected. That decision is explicitly in DS-001; it does not rely on a hostile administrator or a synthetic caller.
 
-## Evidence limits
+1. In `generate-desktop-signing-key.mjs`, the default branch calls `requireFirstUse(historyRequest)`, then `samePrior(null)` and `local()` **before** the claim POST, directory creation, key generation or stdin upload. A settings/claim change observed during inspection cannot inherit the earlier eligibility. The explicit replacement branch retains its stronger existing-witness requirement.
+2. `desktop-first-use.mjs:inspectAssets` queries the fixed official repository for release IDs, tags and asset **names** only. It bounds the collection, checks total/unique releases and cursor progress, refuses incomplete asset lists and any managed sidecar (even a partial pair), and requires the known bootstrap release to be accounted for. Unsigned legacy AppImages, Android and server assets do not themselves imply managed desktop trust.
+3. `inspectRuns` checks the official workflow's counted run history from the introduction day, including non-push events; matches the known bootstrap run/tag/SHA; distinguishes known pre-managed workflow bytes from the managed workflow at the run commit. Every relevant managed attempt must be accounted for and its named signer completed/skipped. Unknown code, changed identity, executed signer, denial, missing history or inspection bounds refuse with reconciliation guidance. This is an absence-of-conflict check, **not** a demand for a previously successful signer to bootstrap.
+4. IMP-04 demonstrates the old first-mutation counterexample, clean 73/73 Node tests, genuine first-use fixture, earlier successful attempt despite a later skip, conflict/denial/truncation and no-write/no-backup controls. IMP-05 shows the actual current history reader refusing on the four public managed sidecars. No real first setup was repeated to prove the fix.
 
-IMP-01/M1 establish the public settings, verified local pair and successful one-time submission, **not remote key equality**. IMP-03 records the correct refusal while no complete witness was available. Read-only reviewer spot-check of official run **44685600710**, attempt 2, matched the actual run/commit/job fields used by the verifier. At the sampled point the signing job had succeeded but publication was still in progress and the two published signature assets were not present. That observation is not a complete witness or a prediction of the eventual result. No release polling/dispatch is required to correct F-CR-001. Do not access the backup in review/QA. Custodian and coordinator alone track explicit founder confirmation; neither final cleanup nor M2 is asserted here.
+**Other candidates:** The fixed bootstrap identifiers and two workflow blob identities are public evidence anchors for this official repository, not signing keys or a replaceable registry. Review checked the actual six returned run IDs/SHAs in the introduction window read-only; the five pre-bootstrap run commits resolve locally to the configured legacy blob and beta.2 to the managed blob. This supports the historical compatibility decision; unknown history intentionally asks for reconciliation. A guarantee that a privileged administrator can never erase history, an unlimited archive scan or a production rotation exercise is unsupported and not required. No held candidate, new material premise or follow-up.
+
+## Structural and design checks
+
+| Checks | Result / basis |
+| --- | --- |
+| Design health, approved artifacts, data-flow ordering | Pass. Two distinct trust decisions: default absence-of-conflict and release-time positive proof. New input arrives before mutation; normal release preparation does not scan first-use history. |
+| Ownership/boundaries, off-spine concerns | Pass. First-use reader is metadata-only; shared module owns official scope/policy names; generator owns writes; separate custody cleanup and signer-witness readers; shell alone owns tag mutation. |
+| Existing capabilities, reusable structures, shared model | Pass. Existing API/pagination and crypto verifier reused. No parallel truth store or new private data format. Fixed public historical anchors are not fallback keys. |
+| Coordination, empty indirection, separation of concerns | Pass. One first-use eligibility stage, one cooperative claim; history reader performs distinct bounded work. No retry or key generation in the history reader. |
+| Dependency direction, visible dependencies, authoritative boundaries | Pass. Explicit request injection is for tests; CLI uses fixed production reader. Exact typed tag-only policy, environment ID and public readback before scoped stdin upload. Verification uses only public metadata and bytes. No server or build-job private access. |
+| Placement, split/flat layout, interface and naming | Pass. Coherent scripts under desktop-package. Shared workflow/signer names extracted unchanged. First-use guard, confirmed removal and pre-tag witness have distinct APIs and outcomes. |
+| Duplication, accumulated patches, dead code, legacy | Pass. No fallback from first-use refusal to replacement, no duplicate workflow, no stale unguarded tag branch. Supported legacy asset recognition does not authorize signing or schema compatibility. |
+| Behavioral assertions, fixture isolation/cohesion, stale tests | Pass. Disposable history fixture and clean temp home, explicit before-write assertions, multi-page/attempt cases and preserved rotation isolation. Existing stable/beta helper tests use controlled checker exits, not the real cloud wire. No stale duplicate identified. |
+| API/E2E readiness | Pass. Real negative **and** positive read-only boundaries now have evidence; QA can independently validate both without handling the backup or running a release. |
+
+**Size, data and docs:** Effective lines base → current: check-release-trust 0→109, desktop-first-use 0→76, desktop-trust-state 0→94, desktop-key-custody 0→26, generate-desktop-signing-key 0→96, desktop-release.sh 395→397. All ≤500, no >220 effective delta. Tests/fixtures excluded. No client/profile migration, signer format change, backward-compatibility layer or obsolete path to remove. RELEASE.md now distinguishes an eligible historical bootstrap from missing settings alone and documents the reconciliation boundary. Documented M1 and founder cleanup remain separate.
+
+## Evidence and limits
+
+Reviewed IMP-04/05 against the actual source and test deltas. IMP-05 separately records the successful read-only pre-tag verifier result for the **Mac-owned** existing tag `v1.5.14-beta.2`, official run `44685600710` attempt 2, commit `a728fbcad3`. It used public release records/signatures for both architectures and current scope/generation metadata. IMP-03's earlier refusal was correct at that earlier time. IMP-02's 57 Node, six helper and 21 workflow controls retain their original scope; only the 73 Node tests are claimed as rerun by implementation in IR-002. The reviewer checked public run metadata and git blobs, not a second generator run, live mutation, suite rerun, or inspection of the founder's backup. Approval is a source finding disposition, not a guarantee about future administrative changes.
 
 ## Scorecard
 
 | Priority | Category | /10 | Rationale / action |
 | --- | --- | ---: | --- |
-| 1 | Data-flow spine clarity | 9.2 | Paths explicit; first-use decision must include release state. |
-| 2 | Ownership / boundary encapsulation | 9.3 | Narrow writer, verifier and custody owners. |
-| 3 | API / interface / command clarity | 9.2 | Scope-qualified upload and witness selection; no new release API. |
-| 4 | Separation and placement | 9.4 | Existing release tooling remains the integration point. |
-| 5 | Shared structure / data model | 9.3 | One inventory/policy format and fingerprint; extend absence evidence, not signer authority. |
-| 6 | Naming / readability | 9.1 | Setup, completion, witness and custody distinguished. |
-| 7 | API/E2E readiness | 7.5 | Release-evidence conflict/denial never reaches the default setup decision. |
-| 8 | Runtime fidelity | 7.2 | F-CR-001 can misclassify a prior or unknown trust state as first setup. |
-| 9 | No compatibility/legacy retention | 9.5 | No weaker fallback or alternate signer. |
-| 10 | Cleanup completeness | 9.2 | Reconciliation and confirmed unlink appropriately bounded; real confirmation pending. |
+| 1 | Data-flow spine clarity | 9.4 | First-use eligibility now explicitly precedes claiming trust. |
+| 2 | Ownership / boundaries | 9.3 | Public inspection separated from mutation and private custody. |
+| 3 | API/interface/command clarity | 9.2 | No more implicit first-use inference; signer selection cannot bypass proof. |
+| 4 | Separation / placement | 9.4 | Single focused history reader, limited to initial setup. |
+| 5 | Shared model | 9.3 | Existing scope/policy representation and signature formats retained. |
+| 6 | Naming / readability | 9.1 | Setup, claim, first use, witness and confirmation distinct. |
+| 7 | API/E2E readiness | 9.3 | Safe executable cases with realistic metadata and bounded read-only real controls. |
+| 8 | Runtime fidelity | 9.3 | Previously missing conflict/unknown decision now covered before any write. |
+| 9 | No legacy retention | 9.5 | No alternate trust mechanism or tag bypass. |
+| 10 | Cleanup completeness | 9.2 | Source cleanup controls retained; operator confirmation remains a delivery dependency. |
 
-**Overall 8.9/10** rounded; F-CR-001 overrides the mean. No follow-ups. **Latest authoritative result: Fail, implementation-owned Local Fix → /implementation_engineer.** Return a source/evidence delta for rereview before API/E2E. M1 stands; no production operation authorized by this review.
+**Overall 9.3/10; Pass.** No open findings. Primary next owner **/api_e2e_engineer**. Independent validation: exercise both historical decisions, denied/incomplete reads and preclaim no-mutation using disposable fixtures; validate release-helper stable/beta/no-push/prepare guards in isolated repos and verify available real official evidence **read-only**. Never rerun production provisioning, use the real private backup/key, rotate, sign, dispatch, tag or publish for this review/QA. M1 stands. M2 is not complete.
