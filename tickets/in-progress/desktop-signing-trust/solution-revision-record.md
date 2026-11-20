@@ -1,0 +1,2 @@
+# autobyteus-11 solution revisions
+SR-001: first approved requirements and DS-001; no prior review for this Task. Founder-directed first production provisioning only, confirmed by Solution Designer in conversation 2026-11-20. UC/BEH/SCN/REQ/AC 001–005. Prior autobyteus-5 was release-free; its evidence does not establish production trust. Review new admin, custody and trust-check boundary. M1, backup confirmation, M2, Mac release evidence pending at design handoff.
