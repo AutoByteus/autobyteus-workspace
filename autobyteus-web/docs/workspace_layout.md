@@ -121,7 +121,7 @@ Right-tool order is also centralized there and should remain:
 
 1. Projects, on desktop (not in the mobile runtime)
 2. Files
-3. Team members, when applicable
+3. Team members, when applicable (a standalone run has Messages in this slot, autobyteus-565; Activity stays its default)
 4. Terminal
 5. Activity
 6. Token, when applicable

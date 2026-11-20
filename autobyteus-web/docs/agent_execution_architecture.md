@@ -792,7 +792,7 @@ while the remaining rows move up, at once under `prefers-reduced-motion`. New
 rows appear without motion. A selected run whose row left hands selection to the
 Agent run's own agent (Agent root), to the Team's focused member (Team root), or
 to the Org agent that delegated it (Org root, CR-461-109), and keyboard focus on a
-leaving row moves to that row. Messages with closed runs stay in the Team tab,
+leaving row moves to that row. Messages with closed runs stay in the Team tab (an Agent run's Messages tab),
 which reads the names of agents that left the tree from the server
 (`reloadNamingUnknown`, autobyteus-469 AC-011), and nothing is deleted from disk.
 Reactivation reverses closure for one run: after the Task leaves DONE, the
