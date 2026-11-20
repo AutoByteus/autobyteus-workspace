@@ -14,6 +14,8 @@
 //   grok-latest                  latest version `grok update --check --json` reports (default = installed)
 //   <codex|grok>-login           write `complete` to let a waiting login finish signed in
 //   codex-models                 comma-separated model ids for app-server `model/list` (default gpt-5.6-luna)
+//   codex-turn                   inProgress (a turn runs until it is stopped) | complete (each turn ends at once,
+//                                with no output, as a real turn ends)                               (default inProgress)
 // The Claude Agent SDK's own start (stream-json) gets one model, `claude-fake-sonnet`; the `claude-models` state file
 // changes that while a server runs: comma-separated model ids (a CLI update starts offering a model), or `none` (the CLI
 // offers no model, as when it fails or is signed out).
@@ -32,6 +34,7 @@
 // Records: <runtime>-<command>.pid (pid of a running login/update), emitted-secrets.log (every secret-looking
 // value this fake printed, so a secret scan can prove it had something to find), app-server-requests.log,
 // codex-thread-start-configs.jsonl (each `thread/start` params.config, e.g. its Agent Tools MCP server),
+// codex-thread-start-instructions.jsonl (each `thread/start` params.baseInstructions, the run's prompt; same order),
 // claude-stdin-frames.log (`<type> <subtype>` of every frame the SDK wrote to the CLI, so a test can prove no `user`
 // message was sent), grok-acp-requests.log, hung-pids.log (`<runtime> <step> <pid>` of every call told to hang), and
 // codex-app-server.pids (every app-server started), cli-calls.log (`<epoch ms> <pid> <runtime> <args>` of every call).
@@ -113,6 +116,7 @@ const codexAppServer = () => {
       }
       case "thread/start":
         append("codex-thread-start-configs.jsonl", JSON.stringify(message.params?.config ?? null));
+        append("codex-thread-start-instructions.jsonl", JSON.stringify(message.params?.baseInstructions ?? null));
         thread += 1;
         result = { thread: { id: `fake-thread-${process.pid}-${thread}` } };
         break;
@@ -124,8 +128,12 @@ const codexAppServer = () => {
         turn += 1;
         result = { turn: { id: `fake-turn-${process.pid}-${turn}` } };
         send({ id: message.id, result });
-        // The turn stays in progress: the agent keeps running until it is stopped.
+        // By default the turn stays in progress: the agent keeps running until it is stopped.
         send({ method: "turn/started", params: { threadId: message.params?.threadId, turn: result.turn } });
+        if (state("codex-turn", "inProgress") === "complete") {
+          send({ method: "thread/status/changed", params: { threadId: message.params?.threadId, status: { type: "idle" } } });
+          send({ method: "turn/completed", params: { threadId: message.params?.threadId, turn: { id: result.turn.id, status: "completed", error: null } } });
+        }
         return;
       case "turn/interrupt":
         // Codex 0.160's order for a Stop: the response, then idle, then the interrupted turn.

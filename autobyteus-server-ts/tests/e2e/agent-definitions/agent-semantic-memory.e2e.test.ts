@@ -39,6 +39,8 @@ import { LocalMemoryExportScanner } from "../../../src/memory-sync/source/local-
  *  - SM-07 (AC-001): an agent whose package file says false gets both sections; the folders' files are kept across runs.
  *  - SM-10: the Memory page, memory search's run discovery and memory sync's scanner list neither semantic folder.
  *  - SM-08 (REQ-010): deleting the agent leaves its folder and the global folder.
+ *  - SM-12 (AC-014, DEC-015): with `semantic/` unwritable, a new agent's run still starts, told only the global folder,
+ *    and `SEMANTIC_MEMORY_PREPARE_FAILED` names the agent and the reason.
  * SM-01/SM-02/SM-11 run ungated; the run cases need the scripted AGY CLI:
  *   env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
  *     ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
@@ -432,5 +434,31 @@ describe("Semantic memory for every agent at the real server boundary", () => {
       expect(deleted, JSON.stringify(deleted)).toMatchObject({ success: true });
       expect({ agent: await treeHashes(folderOf(ids.scout)), global: await treeHashes(globalFolder()) }).toEqual(before);
     }, 60_000);
+
+    it("SM-12 (AC-014, DEC-015): when an agent's folder cannot be made, its run still starts, told only the global folder, and the log names the agent and the reason", async () => {
+      const id = await h.agentDefinition(`sm unprepared ${unique}`);
+      const semanticRoot = path.join(memoryDir, "semantic");
+      const globalSection = semanticSections(folderOf(id), globalFolder());
+      const warn = vi.spyOn(console, "warn");
+      await fs.chmod(semanticRoot, 0o555);
+      try {
+        const root = await h.startRoot("agent", { manager: id });
+        const prompt = await composedOf(root.managerRunId);
+        await keep("SM-12-prompt-unprepared-folder.md", prompt);
+        expect(prompt.endsWith(globalSection.slice(globalSection.indexOf("## Global Semantic Memory")))).toBe(true);
+        expect(prompt).not.toContain("## Semantic Memory\n");
+        expect(prompt).not.toContain(folderOf(id));
+        expect(existsSync(folderOf(id))).toBe(false);
+        expect((await fs.stat(globalFolder())).isDirectory()).toBe(true);
+        const logged = warn.mock.calls.filter((call) => call[0] === "SEMANTIC_MEMORY_PREPARE_FAILED");
+        await keep("SM-12-log.json", logged);
+        expect(logged).toEqual([["SEMANTIC_MEMORY_PREPARE_FAILED", { definitionId: id, folder: "agent", reason: expect.stringContaining("EACCES") }]]);
+        root.close();
+        await h.terminate("agent", root.rootId);
+      } finally {
+        await fs.chmod(semanticRoot, 0o755);
+        warn.mockRestore();
+      }
+    }, 120_000);
   });
 });

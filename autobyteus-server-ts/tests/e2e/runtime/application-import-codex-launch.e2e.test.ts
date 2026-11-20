@@ -14,6 +14,7 @@
  *     pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/application-import-codex-launch.e2e.test.ts --no-watch
  */
 import "reflect-metadata";
+import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
@@ -30,6 +31,23 @@ const fake = await vi.hoisted(async () => {
 });
 
 const MODEL = "gpt-5.6-luna";
+
+/**
+ * An agent definition's folder name under `semantic/` and `episodic/`, written here from DEC-016 (autobyteus-554), not
+ * from the layout's code: `encodeURIComponent(id)` when it is at most 200 bytes; otherwise its first 120 bytes cut
+ * between characters, then `#`, then the first 16 hex characters of the id's SHA-256.
+ */
+const definitionFolderNameByDecision = (id: string): string => {
+  const encoded = encodeURIComponent(id);
+  if (Buffer.byteLength(encoded) <= 200) return encoded;
+  let prefix = "";
+  for (const character of id) {
+    const piece = encodeURIComponent(character);
+    if (Buffer.byteLength(prefix + piece) > 120) break;
+    prefix += piece;
+  }
+  return `${prefix}#${createHash("sha256").update(id).digest("hex").slice(0, 16)}`;
+};
 
 describe("Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)", () => {
   const states = fakeRuntimeState(fake.stateDir);
@@ -67,6 +85,9 @@ describe("Codex-default application imported while the server runs (real studio 
     assertBriefStudioPackageBuilt();
     states.set("codex-account", "signedIn");
     states.set("codex-models", MODEL);
+    // Each Codex turn ends, as a real one does, so the drafting run's journal is written and the episodic catalog
+    // follows it (IC-03); the studio cannot end an application's run (RA-04).
+    states.set("codex-turn", "complete");
     // No AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS: the application is not present at startup.
     fs.writeFileSync(path.join(fake.dataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n");
     appConfigProvider.config.setCustomAppDataDir(fake.dataDir);
@@ -117,5 +138,53 @@ describe("Codex-default application imported while the server runs (real studio 
 
     states.set("codex-account", "signedIn");
     expect((await view()).readiness).toEqual({ status: "RUNNABLE", issues: [] });
+  }, 120_000);
+
+  it("IC-03 the launched bundled agent has its semantic memory, its episodic catalog and its Memory page folder under one shortened name, and its run is told both folders (autobyteus-554 AC-013)", async () => {
+    const memoryDir = appConfigProvider.config.getMemoryDir();
+    const globalFolder = path.join(memoryDir, "semantic-global");
+    // The Memory page's way to a team member's Semantic tab: the team card, its members, the member's folder state.
+    const teams = (await gql(`{ listAgentTeamsWithMemory(page: 1, pageSize: 100) { entries { teamDefinitionId teamDefinitionName } } }`))
+      .listAgentTeamsWithMemory.entries as Array<{ teamDefinitionId: string; teamDefinitionName: string }>;
+    const members: Array<{ kind: string; id: string; name: string }> = [];
+    for (const team of teams) {
+      const listed = (await gql(`query($id: String!) { listMemoryGroupMembers(kind: TEAM, definitionId: $id) { kind id name } }`, { id: team.teamDefinitionId }))
+        .listMemoryGroupMembers as Array<{ kind: string; id: string; name: string }>;
+      members.push(...listed.filter((member) => member.kind === "AGENT" && member.id.includes("bundle-team__")));
+    }
+    expect(members.length, JSON.stringify(teams)).toBeGreaterThan(0);
+
+    const startPrompts = (states.read("codex-thread-start-instructions.jsonl") ?? "").split("\n").filter(Boolean).map((line) => JSON.parse(line) as string | null);
+    const started: string[] = [];
+    for (const member of members) {
+      // A bundled member's id holds the package path in hex: over the 200 bytes a full name may have (439 in API-10).
+      expect(Buffer.byteLength(encodeURIComponent(member.id)), member.id).toBeGreaterThan(200);
+      const name = definitionFolderNameByDecision(member.id);
+      expect(Buffer.byteLength(name)).toBeLessThanOrEqual(255);
+      const folder = path.join(memoryDir, "semantic", name);
+      const state = (await gql(`query($id: String!) { agentSemanticMemoryFolder(agentDefinitionId: $id) { folderPath exists } }`, { id: member.id }))
+        .agentSemanticMemoryFolder as { folderPath: string; exists: boolean };
+      expect(state.folderPath, member.name).toBe(folder);
+      const prompt = startPrompts.find((entry) => entry?.includes(folder));
+      if (!prompt) continue;
+      // This member's Codex thread started: its folder was made and its prompt holds both sections, each naming its
+      // folder once. (This run is not `workspace-write`, so Codex gets no writable roots; the live suite proves them.)
+      started.push(member.name);
+      expect(state.exists).toBe(true);
+      expect(prompt!.split("\n## Semantic Memory\n").length).toBe(2);
+      expect(prompt!.split("\n## Global Semantic Memory\n").length).toBe(2);
+      expect(prompt!.split(folder).length).toBe(2);
+      expect(prompt!).toContain(globalFolder);
+    }
+    expect(started.length, `members ${members.map((member) => member.name).join(", ")}`).toBeGreaterThan(0);
+
+    // The started member's turn ended (`codex-turn`), its journal was written and the catalog followed it: its episodic
+    // catalog folder has the same shortened name as its semantic folder.
+    for (const member of members.filter((entry) => started.includes(entry.name))) {
+      const name = definitionFolderNameByDecision(member.id);
+      await until(() => fs.existsSync(path.join(memoryDir, "episodic", name, "catalog.md")), `episodic catalog of ${member.name}`, 30_000);
+    }
+    const episodicNames = fs.readdirSync(path.join(memoryDir, "episodic"));
+    for (const entry of [...fs.readdirSync(path.join(memoryDir, "semantic")), ...episodicNames]) expect(Buffer.byteLength(entry)).toBeLessThanOrEqual(255);
   }, 120_000);
 });
