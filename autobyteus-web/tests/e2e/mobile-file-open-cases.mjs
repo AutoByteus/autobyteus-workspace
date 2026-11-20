@@ -49,7 +49,7 @@
 //                  ~9.7 MB video in the run's folder on an 8 Mbit/s link; the node stops mid-download (killed: the
 //                  connection breaks) and starts again: a plain message with Retry, never "not available"; Retry loads it
 //                  again with its progress and it plays. The same for a video outside the folder (the node-file route): a
-//                  plain message with Retry (REQ-005); tapping the link again plays it. (Chrome's offline emulation does not break a download
+//                  plain message with the phone viewer's Retry (REQ-005, D-7); Retry loads it again and it plays. (Chrome's offline emulation does not break a download
 //                  already under way, so the node itself goes away.) A second phone in Chinese (zh-CN): "正在加载视频…" with "x / y MB" rising, then
 //                  the video plays. The node's gate and path rules on the media routes: no key → 401 on the workspace and
 //                  node-file routes; the phone's key with a path that climbs out of the folder → refused, no bytes.
@@ -595,8 +595,19 @@ export const runFileOpenCases = async (probe) => {
           await shot(page, `MSP-91-${label}-failed`);
           await network('fast');
           await epsilon.start();
-          await sleep(3_000);
-          return { ...run, wentOffline, progressBeforeOffline: [...new Set(run.timeline.map((entry) => entry.progress).filter(Boolean))].slice(-3) };
+          // The user taps Retry once the node is back and serves the file again. Right after a restart the node answers
+          // a read of the run's folder 404 ("non-existent workspace") until it has registered that folder again.
+          const url = net.filter((entry) => /^\/rest\/(workspaces\/[^/]+\/content|node-files\/content)$/.test(entry.path)).at(-1)?.request.url() ?? null;
+          const key = await page.evaluate(() => { try { const s = JSON.parse(localStorage.getItem('autobyteus.remote_access.mobile_session') ?? 'null'); return s?.credential ?? s?.token ?? s?.accessToken ?? null; } catch { return null; } });
+          const back = Date.now(); let servedAfterMs = null; const readsAfterRestart = [];
+          while (url && key && Date.now() - back < 60_000) {
+            const response = await fetch(url.replace(phoneOrigin, epsilon.baseUrl), { method: 'GET', headers: { authorization: `Bearer ${key}`, host: new URL(phoneOrigin).host } }).catch(() => null);
+            const statusCode = response?.status ?? null; await response?.body?.cancel().catch(() => undefined);
+            if (readsAfterRestart.at(-1)?.[1] !== statusCode) readsAfterRestart.push([Date.now() - back, statusCode]);
+            if (statusCode === 200) { servedAfterMs = Date.now() - back; break; }
+            await sleep(500);
+          }
+          return { ...run, wentOffline, servedAfterMs, readsAfterRestart, progressBeforeOffline: [...new Set(run.timeline.map((entry) => entry.progress).filter(Boolean))].slice(-3) };
         };
 
         // Inside the folder: the player's Retry.
@@ -613,14 +624,17 @@ export const runFileOpenCases = async (probe) => {
         await network('fast');
         await backToConversation();
 
-        // Outside the folder: the node-file route; the user taps the link again.
+        // Outside the folder: the node-file route; the phone viewer's own Retry (D-7), on the same slow link.
         const outsideRun = await failMidway('outside', linkControl(media.outside).last());
+        let outsideAgain = null;
+        if (outsideRun.state?.retry) {
+          await network('slow');
+          await page.locator(`${VIEWER} .retry-button`).first().click();
+          outsideAgain = await sample(VIEWER, (state) => plays(state, 20) || Boolean(state.alert), 60_000);
+          await shot(page, 'MSP-91-outside-after-retry');
+        }
         offlineWindow.on = false;
         await network('fast');
-        await backToConversation();
-        await linkControl(media.outside).last().tap();
-        const outsideAgain = await sample(VIEWER, (state) => plays(state, 20) || Boolean(state.alert), 60_000);
-        await shot(page, 'MSP-91-outside-again');
         await backToConversation();
 
         // The node's gate and path rules on the media routes (the probe's own requests, as any client).
@@ -680,7 +694,8 @@ export const runFileOpenCases = async (probe) => {
           [outsideRun.wentOffline !== null && Boolean(outsideRun.state?.alert) && !INTERNAL_WORDS.test(outsideRun.state.alert) && !outsideRun.notAvailableShown,
             'AC-006 outside: the network lost mid-download shows a plain message, never "not available"'],
           [Boolean(outsideRun.state?.retry), 'REQ-005, AC-006 outside: the failure offers Retry (a plain message with Retry)'],
-          [plays(outsideAgain.state, 20) && !outsideAgain.notAvailableShown, 'outside: tapping the link again plays the video'],
+          [Boolean(outsideAgain) && plays(outsideAgain.state, 20) && outsideAgain.timeline.some((entry) => entry.loading) && !outsideAgain.notAvailableShown,
+            'outside: Retry shows the loading view again and the video plays'],
           [gate.keyRead && gate.workspaceWithKey?.status === 200 && gate.workspaceWithKey.length === String(size) && gate.workspaceNoKey?.status === 401 && gate.nodeFileNoKey?.status === 401,
             'AC-005 the media routes: the phone\'s key reads (Content-Length = the file\'s size); no key → 401 on the workspace and node-file routes'],
           [gate.climbingWithKey && gate.climbingWithKey.status >= 400 && gate.climbingWithKey.bytes < 1000, 'AC-005 the path rules: a path climbing out of the folder is refused, no file bytes'],
