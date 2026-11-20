@@ -1,0 +1,4 @@
+codegen:check exit=0
+[SUCCESS] Generate to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codegen-local-eL9TS6/graphql.ts
+[SUCCESS] Generate outputs
+autobyteus-web/generated/graphql.ts is current.
