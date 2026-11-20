@@ -1,0 +1,3 @@
+first mutation would be claim POST (intercepted)
+metadata paths read: repos/AutoByteus/autobyteus-workspace, repos/AutoByteus/autobyteus-workspace/actions/variables?per_page=100&page=1, repos/AutoByteus/autobyteus-workspace/actions/organization-variables?per_page=100&page=1, repos/AutoByteus/autobyteus-workspace/actions/secrets?per_page=100&page=1, repos/AutoByteus/autobyteus-workspace/actions/organization-secrets?per_page=100&page=1, repos/AutoByteus/autobyteus-workspace/environments?per_page=100&page=1
+temporary home entries: 0

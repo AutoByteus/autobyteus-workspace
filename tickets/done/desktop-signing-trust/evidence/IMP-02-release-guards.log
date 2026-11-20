@@ -1,0 +1,369 @@
+IMP-02 | source 8864615004 | 2026-11-20 | Linux x64, Node 22.23.2, Python 3.14.4
+Clean git archive of scripts, autobyteus-web/linux-install/contract and .github/workflows. Temporary home, cwd and bare fixture remotes. No dependency installation, production auth, inherited workspace output or production keys.
+An initial scripts-only export omitted the existing contract fixtures.json (ENOENT). The final export included the tracked contract; no source fix or build output needed.
+Command: node --test scripts/desktop-package/*.test.mjs
+TAP version 13
+# Subtest: current generation with both verified architectures; unrelated failed run not authoritative
+ok 1 - current generation with both verified architectures; unrelated failed run not authoritative
+  ---
+  duration_ms: 7.010122
+  type: 'test'
+  ...
+# Subtest: missing secret refuses
+ok 2 - missing secret refuses
+  ---
+  duration_ms: 0.66944
+  type: 'test'
+  ...
+# Subtest: branch policy refuses
+ok 3 - branch policy refuses
+  ---
+  duration_ms: 0.509069
+  type: 'test'
+  ...
+# Subtest: extra policy refuses
+ok 4 - extra policy refuses
+  ---
+  duration_ms: 0.501748
+  type: 'test'
+  ...
+# Subtest: review gate refuses
+ok 5 - review gate refuses
+  ---
+  duration_ms: 0.511108
+  type: 'test'
+  ...
+# Subtest: setup claim refuses
+ok 6 - setup claim refuses
+  ---
+  duration_ms: 0.529262
+  type: 'test'
+  ...
+# Subtest: public-only input refuses
+ok 7 - public-only input refuses
+  ---
+  duration_ms: 0.550011
+  type: 'test'
+  ...
+# Subtest: secret updated at job start refuses
+ok 8 - secret updated at job start refuses
+  ---
+  duration_ms: 0.598699
+  type: 'test'
+  ...
+# Subtest: later creation refuses
+ok 9 - later creation refuses
+  ---
+  duration_ms: 0.688403
+  type: 'test'
+  ...
+# Subtest: recreated env refuses
+ok 10 - recreated env refuses
+  ---
+  duration_ms: 0.998429
+  type: 'test'
+  ...
+# Subtest: anchor overwritten refuses
+ok 11 - anchor overwritten refuses
+  ---
+  duration_ms: 0.628553
+  type: 'test'
+  ...
+# Subtest: job failed refuses
+ok 12 - job failed refuses
+  ---
+  duration_ms: 0.829476
+  type: 'test'
+  ...
+# Subtest: wrong attempt refuses
+ok 13 - wrong attempt refuses
+  ---
+  duration_ms: 0.644165
+  type: 'test'
+  ...
+# Subtest: wrong repo refuses
+ok 14 - wrong repo refuses
+  ---
+  duration_ms: 0.420907
+  type: 'test'
+  ...
+# Subtest: manual run refuses
+ok 15 - manual run refuses
+  ---
+  duration_ms: 0.386595
+  type: 'test'
+  ...
+# Subtest: unbound tag refuses
+ok 16 - unbound tag refuses
+  ---
+  duration_ms: 0.460917
+  type: 'test'
+  ...
+# Subtest: different signer code refuses
+ok 17 - different signer code refuses
+  ---
+  duration_ms: 0.461713
+  type: 'test'
+  ...
+# Subtest: label only refuses
+ok 18 - label only refuses
+  ---
+  duration_ms: 0.428708
+  type: 'test'
+  ...
+# Subtest: missing arch refuses
+ok 19 - missing arch refuses
+  ---
+  duration_ms: 0.603245
+  type: 'test'
+  ...
+# Subtest: wrong version refuses
+ok 20 - wrong version refuses
+  ---
+  duration_ms: 0.439854
+  type: 'test'
+  ...
+# Subtest: superseded asset refuses
+ok 21 - superseded asset refuses
+  ---
+  duration_ms: 0.429541
+  type: 'test'
+  ...
+# Subtest: wrong public key refuses
+ok 22 - wrong public key refuses
+  ---
+  duration_ms: 0.745496
+  type: 'test'
+  ...
+# Subtest: invalid arm64 signature refuses
+ok 23 - invalid arm64 signature refuses
+  ---
+  duration_ms: 0.737909
+  type: 'test'
+  ...
+# Subtest: metadata not record refuses
+ok 24 - metadata not record refuses
+  ---
+  duration_ms: 0.558223
+  type: 'test'
+  ...
+# Subtest: permission failure refuses
+ok 25 - permission failure refuses
+  ---
+  duration_ms: 0.487392
+  type: 'test'
+  ...
+# Subtest: no successful current witness, including first bootstrap
+ok 26 - no successful current witness, including first bootstrap
+  ---
+  duration_ms: 0.610976
+  type: 'test'
+  ...
+# Subtest: ordered first setup, sole backup, no accidental replacement
+ok 27 - ordered first setup, sole backup, no accidental replacement
+  ---
+  duration_ms: 9.959228
+  type: 'test'
+  ...
+# Subtest: interruption after material write 1 cannot regenerate
+ok 28 - interruption after material write 1 cannot regenerate
+  ---
+  duration_ms: 0.848611
+  type: 'test'
+  ...
+# Subtest: interruption after material write 2 cannot regenerate
+ok 29 - interruption after material write 2 cannot regenerate
+  ---
+  duration_ms: 1.128505
+  type: 'test'
+  ...
+# Subtest: interruption after material write 3 cannot regenerate
+ok 30 - interruption after material write 3 cannot regenerate
+  ---
+  duration_ms: 1.030471
+  type: 'test'
+  ...
+# Subtest: interruption after material write 4 cannot regenerate
+ok 31 - interruption after material write 4 cannot regenerate
+  ---
+  duration_ms: 1.612643
+  type: 'test'
+  ...
+# Subtest: interruption after material write 5 cannot regenerate
+ok 32 - interruption after material write 5 cannot regenerate
+  ---
+  duration_ms: 2.322589
+  type: 'test'
+  ...
+# Subtest: interruption after material write 6 cannot regenerate
+ok 33 - interruption after material write 6 cannot regenerate
+  ---
+  duration_ms: 1.884141
+  type: 'test'
+  ...
+# Subtest: claimed or partial setup refuses before generation
+ok 34 - claimed or partial setup refuses before generation
+  ---
+  duration_ms: 0.441666
+  type: 'test'
+  ...
+# Subtest: stdin-only exact destination; child diagnostics not surfaced on failure
+ok 35 - stdin-only exact destination; child diagnostics not surfaced on failure
+  ---
+  duration_ms: 0.721093
+  type: 'test'
+  ...
+# Subtest: claim race is create-only; second operator cannot create file
+ok 36 - claim race is create-only; second operator cannot create file
+  ---
+  duration_ms: 0.686982
+  type: 'test'
+  ...
+# Subtest: explicit saved confirmation and exact backup identity required
+ok 37 - explicit saved confirmation and exact backup identity required
+  ---
+  duration_ms: 3.990854
+  type: 'test'
+  ...
+# Subtest: inventory fails closed on wider declarations, shadow/claim, denied or truncated lists
+ok 38 - inventory fails closed on wider declarations, shadow/claim, denied or truncated lists
+  ---
+  duration_ms: 1.141656
+  type: 'test'
+  ...
+# Subtest: disposable rotation checks the prior witness and fingerprint; unused on production
+ok 39 - disposable rotation checks the prior witness and fingerprint; unused on production
+  ---
+  duration_ms: 4.976845
+  type: 'test'
+  ...
+# Subtest: unsafe directory or existing destination never overwritten
+ok 40 - unsafe directory or existing destination never overwritten
+  ---
+  duration_ms: 0.704205
+  type: 'test'
+  ...
+# Subtest: changed protection or lost claim refuses before upload and preserves custody
+ok 41 - changed protection or lost claim refuses before upload and preserves custody
+  ---
+  duration_ms: 1.799034
+  type: 'test'
+  ...
+# Subtest: CLI refuses tracing before it can acquire a claim or generate material
+ok 42 - CLI refuses tracing before it can acquire a claim or generate material
+  ---
+  duration_ms: 41.378743
+  type: 'test'
+  ...
+# Subtest: production trust cannot use absent provisioning or a build-only key implicitly
+ok 43 - production trust cannot use absent provisioning or a build-only key implicitly
+  ---
+  duration_ms: 101.281592
+  type: 'test'
+  ...
+# Subtest: build-only trust is fresh, separate from supplied production public key
+ok 44 - build-only trust is fresh, separate from supplied production public key
+  ---
+  duration_ms: 32.204681
+  type: 'test'
+  ...
+# Subtest: signing/metadata CLI binds exact final bytes, canonical asset, version, arch and key
+ok 45 - signing/metadata CLI binds exact final bytes, canonical asset, version, arch and key
+  ---
+  duration_ms: 450.885134
+  type: 'test'
+  ...
+# Subtest: canonical
+ok 46 - canonical
+  ---
+  duration_ms: 2.02397
+  type: 'test'
+  ...
+# Subtest: duplicate
+ok 47 - duplicate
+  ---
+  duration_ms: 0.340715
+  type: 'test'
+  ...
+# Subtest: unknown
+ok 48 - unknown
+  ---
+  duration_ms: 0.138021
+  type: 'test'
+  ...
+# Subtest: missing
+ok 49 - missing
+  ---
+  duration_ms: 0.182704
+  type: 'test'
+  ...
+# Subtest: float
+ok 50 - float
+  ---
+  duration_ms: 0.147711
+  type: 'test'
+  ...
+# Subtest: channel
+ok 51 - channel
+  ---
+  duration_ms: 0.199738
+  type: 'test'
+  ...
+# Subtest: version
+ok 52 - version
+  ---
+  duration_ms: 0.174865
+  type: 'test'
+  ...
+# Subtest: writer
+ok 53 - writer
+  ---
+  duration_ms: 0.115435
+  type: 'test'
+  ...
+# Subtest: too-large
+ok 54 - too-large
+  ---
+  duration_ms: 0.322015
+  type: 'test'
+  ...
+# Subtest: no-newline
+ok 55 - no-newline
+  ---
+  duration_ms: 0.406525
+  type: 'test'
+  ...
+# Subtest: wrong-product
+ok 56 - wrong-product
+  ---
+  duration_ms: 0.195143
+  type: 'test'
+  ...
+# Subtest: wrong-signature
+ok 57 - wrong-signature
+  ---
+  duration_ms: 0.241193
+  type: 'test'
+  ...
+1..57
+# tests 57
+# suites 0
+# pass 57
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 647.038316
+Command: python3 -m unittest discover -s scripts/tests -p test_desktop_release_beta.py
+......
+----------------------------------------------------------------------
+Ran 6 tests in 1.730s
+
+OK
+Worktree control: python3 -m unittest discover -s scripts/tests -p test_release_channel_workflow_steps.py
+.....................
+----------------------------------------------------------------------
+Ran 21 tests in 2.165s
+
+OK
+bash -n scripts/desktop-release.sh; git diff a728fbcad3..8864615004 --check: both exit 0.

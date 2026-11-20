@@ -1,0 +1,4 @@
+# autobyteus-11 — desktop signing readiness
+Medium / High, independently reviewed. The stable and beta helpers refuse to change versions or refs without a current, scoped signing witness. First use and recovery fail closed on conflicting or unknown state. M1 established production setup; the existing Mac-owned release subsequently established a separate positive witness. Founder confirmed secure backup and the designated custodian verified exact local removal.
+
+Integrated 74d046320a into the reviewed branch at 2eea70194f. Signed-record and provisioning suite (74), six real CLI refusal subcases, frozen install and both typechecks passed. See release-deployment-report.md for ACs, limits and repository state, docs-sync-report.md for the operator guide and the milestone receipts for custody and finalization. No new tag, signing run, deployment or release.

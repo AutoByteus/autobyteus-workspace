@@ -1,0 +1,9 @@
+API-03: real shell + verifier, Git file-only origin | python3 -B -m unittest discover -v -s scripts/tests -p test_desktop_release_trust_boundary.py | six subcases
+2026-11-20 UTC | 3a693c7d4f (IR-002 291a6c0d33) | Ubuntu x64, Node 22.23.2, Python 3.14.4, gh 2.46.0
+
+test_untrusted_origin_refuses_before_mutation (test_desktop_release_trust_boundary.ReleaseTrustBoundary.test_untrusted_origin_refuses_before_mutation) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.555s
+
+OK

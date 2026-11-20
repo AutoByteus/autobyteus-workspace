@@ -1,0 +1,15 @@
+IMP-05 | source 291a6c0d33 | 2026-11-20 07:38 UTC | official GitHub read-only, Linux x64 / Node 22.23.2 / gh 2.46.0
+Check 1: called requireFirstUse from scripts/desktop-package/desktop-first-use.mjs directly (NOT the generator), with production api reader and a wrapper counting first-page release and sidecar names. No key generation, backup/configuration access, claim or mutation in this check.
+First desktop signing setup is not established. Reconcile official release and signer history with the custodian; do not generate a key.
+Official first page: 25 of 466 releases; bootstrap release: v1.5.14-beta.2
+Managed sidecars present: 4
+
+Check 2: node scripts/desktop-package/check-release-trust.mjs (read-only). Exit 0:
+Desktop signing witness: {
+  fingerprint: 'e26a2e7404817c8277f6d64d2bd77e40852c172f576f18ebd673a4070ad9debe',
+  tag: 'v1.5.14-beta.2',
+  sha: 'a728fbcad32a21410e7427bdc70aed9a5baed528',
+  runId: 44685600710,
+  attempt: 2
+}
+This is new evidence from the independently operated existing-tag release, not part of M1. Public metadata, key, signing code and both bounded record/signature pairs only. No tag, dispatch, production signing, private backup access or production changes by this node. No M2.

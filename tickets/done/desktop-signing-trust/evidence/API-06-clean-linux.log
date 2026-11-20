@@ -1,0 +1,19 @@
+API-06 • 2026-11-20 UTC • Ubuntu 26.04 x64, Node 22.23.2 / pnpm 10.28.2 / Go 1.27.4 / GCC 15.2 / bsdtar 3.8.5
+git clone --depth 1 --single-branch --no-tags --no-local --branch fix/desktop-signing-trust <ticket-worktree> <new-dir>
+HEAD 3a693c7d4fd458418eb17ca3990a55f350dfaaba; empty QA HOME/allowlisted process environment; no workspace node_modules or prior build outputs.
+pnpm install --frozen-lockfile
+node --test scripts/desktop-package/*.test.mjs (reviewed baseline CI glob 73/73)
+cd autobyteus-web/linux-install && go test ./... (all packages pass; writer socket test requires short TMPDIR)
+cd autobyteus-web && AUTOBYTEUS_BUILD_FLAVOR=personal pnpm build:electron:linux:x64
+Build environment: GITHUB_REPOSITORY identifies repository; AUTOBYTEUS_DESKTOP_PUBLIC_KEY_FILE points only to an ephemeral public test anchor; no production secrets, release ref, publishing, signing, upload or OS install. Compiler and archive tooling staged privately, not installed on host.
+Checks: actual verify-layout.mjs with same test public anchor; file architecture; validate_linux_updater_metadata.py --arch-token linux-x64 with latest-linux.yml and image; both 1.1.x and 3.0.x bundled Prisma query/schema engines and client; verify-packaged-server-startup.mjs with linux-unpacked Electron executable and resources/server.
+Earlier local setup errors: Go temporary Unix socket path too long, runner make/compiler missing, relocated gcc could not find cc1. Corrected fixture path and supplied distro toolchain; discarded intermediate outputs and repeated frozen install/build from clean source. No product change.
+Observed final clean run (excerpt):
+Done in 4.5s using pnpm v10.28.2
+  • building        target=AppImage arch=x64 file=electron-dist/AutoByteus_personal_linux-x64-1.5.14-beta.2.AppImage
+autobyteus-web/electron-dist/AutoByteus_personal_linux-x64-1.5.14-beta.2.AppImage: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.6.18, stripped
+Verified native AppRun, unchanged Electron ELF, provisioner/client and sandbox-preserving desktop Exec
+Validated autobyteus-web/electron-dist/latest-linux.yml: linux-x64 AppImage metadata includes embedded blockMapSize
+Packaged server startup validation passed for [clean-dir]/src/autobyteus-web/electron-dist/linux-unpacked/resources/server
+Unsigned clean build/verification complete. No signing, tagging, upload or dispatch.
+Local unsigned fixture image: 360335756 bytes; SHA256 bc5122aeabc89234301a6fd656f9f4d7456d4a4c9614864b181f1fbf9bda9f45
