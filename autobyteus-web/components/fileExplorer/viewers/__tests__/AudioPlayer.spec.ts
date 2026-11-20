@@ -62,7 +62,7 @@ afterEach(() => {
 });
 
 describe('AudioPlayer while its file loads (autobyteus-572 AC-001)', () => {
-  it('shows the loading view with progress, never "not available", then the video', async () => {
+  it('shows the loading view with progress, never "not available", then the audio', async () => {
     loading.value = true;
     progress.value = { loaded: 4_100_000, total: 9_684_568 };
     const wrapper = mountSubject('/rest/workspaces/ws/content?path=big.mp3');
@@ -98,33 +98,33 @@ describe('AudioPlayer media attempts', () => {
   });
 
   it('renders native controls without autoplay for an available source', () => {
-    resolvedUrl.value = 'local-file://local/tmp/video.mp3';
-    const wrapper = mountSubject('local-file://local/tmp/video.mp3');
-    const video = wrapper.get("audio");
+    resolvedUrl.value = 'local-file://local/tmp/tone.mp3';
+    const wrapper = mountSubject('local-file://local/tmp/tone.mp3');
+    const audio = wrapper.get("audio");
 
-    expect(video.attributes('src')).toBe('local-file://local/tmp/video.mp3');
-    expect(video.attributes()).toHaveProperty('controls');
-    expect(video.attributes()).not.toHaveProperty('autoplay');
-    expect(video.attributes('data-media-attempt')).toBe('0');
+    expect(audio.attributes('src')).toBe('local-file://local/tmp/tone.mp3');
+    expect(audio.attributes()).toHaveProperty('controls');
+    expect(audio.attributes()).not.toHaveProperty('autoplay');
+    expect(audio.attributes('data-media-attempt')).toBe('0');
   });
 
   it('replaces a native media failure with a generic accessible Retry state', async () => {
-    resolvedUrl.value = 'local-file://local/tmp/private-video.mp3';
-    const wrapper = mountSubject('local-file://local/tmp/private-video.mp3');
+    resolvedUrl.value = 'local-file://local/tmp/private-tone.mp3';
+    const wrapper = mountSubject('local-file://local/tmp/private-tone.mp3');
 
     await wrapper.get("audio").trigger('error');
 
     expect(wrapper.find("audio").exists()).toBe(false);
     const alert = wrapper.get('[role="alert"]');
     expect(alert.text()).toContain('This audio could not be played.');
-    expect(alert.text()).not.toContain('/tmp/private-video.mp3');
+    expect(alert.text()).not.toContain('/tmp/private-tone.mp3');
     expect(alert.get('button').text()).toBe('Retry');
     expect(alert.get('button').attributes('type')).toBe('button');
   });
 
   it('uses the same generic state for resource failures without exposing raw errors', async () => {
     resourceError.value = 'fetch failed for /Users/person/secret.mp3';
-    const wrapper = mountSubject('https://example.com/video.mp3');
+    const wrapper = mountSubject('https://example.com/tone.mp3');
     await nextTick();
 
     expect(wrapper.get('[role="alert"]').text()).toContain('This audio could not be played.');
@@ -133,8 +133,8 @@ describe('AudioPlayer media attempts', () => {
   });
 
   it('refreshes the resource and mounts a new media attempt on Retry', async () => {
-    resolvedUrl.value = 'local-file://local/tmp/video.mp3';
-    const wrapper = mountSubject('local-file://local/tmp/video.mp3');
+    resolvedUrl.value = 'local-file://local/tmp/tone.mp3';
+    const wrapper = mountSubject('local-file://local/tmp/tone.mp3');
     await wrapper.get("audio").trigger('error');
 
     await wrapper.get('button').trigger('click');
@@ -152,9 +152,9 @@ describe('AudioPlayer media attempts', () => {
     resolvedUrl.value = 'local-file://local/tmp/second.mp3';
     await wrapper.setProps({ url: 'local-file://local/tmp/second.mp3' });
 
-    const video = wrapper.get("audio");
-    expect(video.attributes('src')).toBe('local-file://local/tmp/second.mp3');
-    expect(video.attributes('data-media-attempt')).toBe('1');
+    const audio = wrapper.get("audio");
+    expect(audio.attributes('src')).toBe('local-file://local/tmp/second.mp3');
+    expect(audio.attributes('data-media-attempt')).toBe('1');
     expect(wrapper.find('[role="alert"]').exists()).toBe(false);
   });
 });
