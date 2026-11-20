@@ -1,0 +1,5 @@
+
+> autobyteus@1.5.14-beta.3 test:e2e:background-contention /Users/normy/autobyteus_org/autobyteus-worktrees/follow-ups-448-final/autobyteus-web
+> node tests/e2e/background-agent-renderer-contention-probe.mjs --output-dir /tmp/r2-bg-fix2
+
+Background contention browser probe passed. Evidence: /tmp/r2-bg-fix2/evidence.json

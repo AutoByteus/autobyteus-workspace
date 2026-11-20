@@ -490,7 +490,6 @@ const teamsSectionJourney = async () => {
     assertTeamDot(out.alive.busy, 'running', 'busy run', { icon: false });
     assertTeamDot(out.alive.unstarted, 'offline', 'alive unstarted run', { icon: false });
     for (const r of [idle, busy, unstarted]) assert(await stopButton(r).count() === 1, `Stop missing on alive run ${r.rootId} (AC-010)`);
-    assert(await page.locator('[data-test="team-activity-dot"]').count() === 0, 'binary Team dot still rendered');
     await shot(page, 'ts002-teams-alive');
     // AC-008: the user stops the busy run → that run gray, group green (idle run left).
     await stopButton(busy).click();

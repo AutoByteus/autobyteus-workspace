@@ -1,0 +1,16 @@
+# V-07 watcher unit test x10 at load 64-66 (fseventsd ~157% CPU), then tests/unit/agent-package-definitions
+run 1 exit=0  Tests 22 passed (22)  Duration 1.17s (transform 98ms, setup 61ms, import 75ms, tests 144ms, environment 0ms)  load=65.60
+run 2 exit=0  Tests 22 passed (22)  Duration 744ms (transform 70ms, setup 60ms, import 44ms, tests 125ms, environment 0ms)  load=65.60
+run 3 exit=0  Tests 22 passed (22)  Duration 752ms (transform 76ms, setup 68ms, import 45ms, tests 148ms, environment 0ms)  load=65.60
+run 4 exit=0  Tests 22 passed (22)  Duration 811ms (transform 91ms, setup 65ms, import 64ms, tests 184ms, environment 0ms)  load=64.83
+run 5 exit=0  Tests 22 passed (22)  Duration 747ms (transform 74ms, setup 62ms, import 47ms, tests 136ms, environment 0ms)  load=64.83
+run 6 exit=0  Tests 22 passed (22)  Duration 1.16s (transform 87ms, setup 68ms, import 62ms, tests 196ms, environment 0ms)  load=64.83
+run 7 exit=0  Tests 22 passed (22)  Duration 818ms (transform 79ms, setup 65ms, import 51ms, tests 159ms, environment 0ms)  load=64.83
+run 8 exit=0  Tests 22 passed (22)  Duration 783ms (transform 72ms, setup 60ms, import 45ms, tests 144ms, environment 0ms)  load=64.20
+run 9 exit=0  Tests 22 passed (22)  Duration 794ms (transform 80ms, setup 68ms, import 49ms, tests 150ms, environment 0ms)  load=64.20
+run 10 exit=0  Tests 22 passed (22)  Duration 726ms (transform 71ms, setup 59ms, import 46ms, tests 131ms, environment 0ms)  load=64.20
+ Test Files  7 passed (7)
+      Tests  95 passed (95)
+# mutation (temporary, reverted): FakeWatch.emit delivers nothing
+      Tests  16 failed | 6 passed (22)
+   Duration  22.81s (transform 82ms, setup 64ms, import 56ms, tests 22.12s, environment 0ms)

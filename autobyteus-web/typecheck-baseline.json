@@ -15,7 +15,6 @@
   "electron/server/services/__tests__/AppDataService.spec.ts": 2,
   "electron/server/services/__tests__/HealthChecker.spec.ts": 9,
   "layouts/__tests__/default-drawer.spec.ts": 2,
-  "tests/e2e/fixtures/agent-org-draft-retention.page.vue": 1,
   "tests/e2e/fixtures/background-agent-renderer-contention.page.vue": 5,
   "tests/e2e/fixtures/composer-mention-discoverability.page.vue": 2,
   "tests/e2e/fixtures/interrupt-result-presentation.page.vue": 1,
