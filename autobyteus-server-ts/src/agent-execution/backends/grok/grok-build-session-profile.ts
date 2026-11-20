@@ -17,6 +17,11 @@ import {
   interpretGrokMcpServerStatus,
 } from "./grok-build-mcp-readiness.js";
 import { projectGrokToolCall } from "./grok-build-tool-projection.js";
+import {
+  GROK_QUEUE_CHANGED_METHOD,
+  interpretGrokQueueChanged,
+  interpretGrokTurnCompleted,
+} from "./grok-build-prompt-signals.js";
 import { GROK_LONG_RUNNING_COMMAND_SECTION } from "../../prompt/long-running-command-sections.js";
 
 const GROK_SESSION_NOTIFICATION_METHOD = "_x.ai/session_notification";
@@ -27,8 +32,10 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 /**
  * Grok Build session concerns: `_meta.rules` carries the composed AutoByteus prompt into
  * Grok's system prompt, `_meta.yoloMode` mirrors auto-execute, Agent Tools MCP attaches over
- * HTTP, and only per-call usage, context compaction and MCP readiness are read from
- * `_x.ai/*` traffic.
+ * HTTP, and only per-call usage, context compaction, MCP readiness and Grok's prompt signals
+ * (the prompt it runs, from `_x.ai/queue/changed`, and its end, `turn_completed`) are read from
+ * `_x.ai/*` traffic. The prompt signals let the session show a turn Grok starts itself
+ * (a provider-started turn, e.g. after a background command ended; autobyteus-517).
  */
 export const grokBuildSessionProfile: AcpAgentSessionProfile = Object.freeze({
   longRunningCommandSection: GROK_LONG_RUNNING_COMMAND_SECTION,
@@ -58,7 +65,13 @@ export const grokBuildSessionProfile: AcpAgentSessionProfile = Object.freeze({
       const effect = interpretGrokMcpServerStatus(params);
       return effect ? [effect] : [];
     }
+    if (method === GROK_QUEUE_CHANGED_METHOD) {
+      const effect = interpretGrokQueueChanged(params);
+      return effect ? [effect] : [];
+    }
     if (method === GROK_SESSION_NOTIFICATION_METHOD && isRecord(params.update)) {
+      const completed = interpretGrokTurnCompleted(params.update);
+      if (completed) return [completed];
       if (params.update.sessionUpdate === "response_completed") {
         const payload = buildGrokBuildCallUsagePayload(params.update.usage, context);
         return payload ? [{ kind: "usage", payload }] : [];
@@ -66,7 +79,8 @@ export const grokBuildSessionProfile: AcpAgentSessionProfile = Object.freeze({
       const compaction = interpretGrokCompactionUpdate(params.update, params);
       if (compaction) return [compaction];
     }
-    // Announcements, settings, queue/session bookkeeping, turn totals: never chat content.
+    // Announcements, settings, queue entries without a running prompt, session bookkeeping, turn summaries:
+    // never chat content.
     return [];
   },
 

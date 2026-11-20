@@ -17,6 +17,7 @@ import { RuntimeToolTraceSequencer } from "./runtime-tool-trace-sequencer.js";
 import {
   BACKGROUND_TASK_NOTICE_SENDER_ID,
   CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID,
+  GROK_PROVIDER_TURN_NOTICE_SENDER_ID,
   MODEL_ROUTER_REQUEST_SENDER_ID,
   RESTART_RESUME_NOTICE_SENDER_ID,
   SKILL_UPDATE_NOTICE_SENDER_ID,
@@ -27,6 +28,7 @@ import { readPlatformInputPreface } from "autobyteus-ts/agent/message/platform-i
 /** Producers whose system notices are recorded (other producers keep their history behavior). */
 const RECORDED_SYSTEM_NOTICE_SENDER_IDS: ReadonlySet<string> = new Set([
   CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID,
+  GROK_PROVIDER_TURN_NOTICE_SENDER_ID,
   SKILL_UPDATE_NOTICE_SENDER_ID,
   TOOL_LIST_UPDATE_NOTICE_SENDER_ID,
   MODEL_ROUTER_REQUEST_SENDER_ID,

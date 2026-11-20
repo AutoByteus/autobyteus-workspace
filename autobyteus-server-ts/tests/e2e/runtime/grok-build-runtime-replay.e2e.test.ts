@@ -13,8 +13,10 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 import {
   createFakeGrokCommand,
   grokAcpFixturePath,
+  grokProviderTurnScript,
   overrideEnv,
   type FakeGrokCommand,
+  type GrokScriptRow,
 } from "../helpers/grok-fake-cli.js";
 import { agentStreamFramesOf } from "../helpers/agent-stream-frames.js";
 
@@ -260,7 +262,7 @@ describe("Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)",
     }
   }, 60_000);
 
-  const writeFixture = async (name: string, rows: FixtureRow[]): Promise<string> => {
+  const writeFixture = async (name: string, rows: Array<FixtureRow | GrokScriptRow>): Promise<string> => {
     const file = path.join(dataDir, `${name}.jsonl`);
     await fs.writeFile(file, `${rows.map((row) => JSON.stringify(row)).join("\n")}\n`);
     return file;
@@ -361,4 +363,165 @@ describe("Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)",
       run.restore();
     }
   }, 60_000);
+
+  /**
+   * Provider-started turns (autobyteus-517 round 3): Grok's own prompt after a background job ended, in the probes'
+   * frame orders (`grokProviderTurnScript`), after the recorded `prompt` fixture's session opening.
+   */
+  describe("turns Grok starts itself", () => {
+    const opening = async () => {
+      const rows = await readFixture("prompt");
+      const firstPrompt = rows.findIndex((row) => row.dir === "out" && row.msg.method === "session/prompt");
+      return { rows: rows.slice(0, firstPrompt), sessionId: String(rows[firstPrompt]!.msg.params.sessionId) };
+    };
+    const turnStarts = (messages: WsMessage[]) => messages.filter((message) => message.type === "TURN_STARTED");
+    const endsOf = (messages: WsMessage[], turnId: string) => messages.filter((message) =>
+      (message.type === "TURN_COMPLETED" || message.type === "TURN_INTERRUPTED") && message.payload.turn_id === turnId);
+    const textOf = (messages: WsMessage[], turnId: string) => messages.filter((message) =>
+      message.type === "SEGMENT_CONTENT" && message.payload.turn_id === turnId).map((message) => String(message.payload.delta ?? "")).join("");
+    /** What the run's stream shows the user as failures: ERROR frames and SEND_MESSAGE commands not accepted. */
+    const shownFailures = (messages: WsMessage[]) => messages.filter((message) => message.type === "ERROR"
+      || (message.type === "AGENT_COMMAND_ACK" && message.payload.command_type === "SEND_MESSAGE" && message.payload.accepted === false));
+
+    it("shows Grok's own turn after a background job ended: notice, content, tool card, usage, end; keeps the notice in history (AC-001, AC-003)", async () => {
+      const { rows, sessionId } = await opening();
+      const script = grokProviderTurnScript(sessionId);
+      const run = await createGrokRun({ fixture: await writeFixture("provider-turn-a", [...rows, ...script.orderA()]), autoExecuteTools: true });
+      try {
+        const { socket, messages } = await openAgentSocket(run.runId);
+        sendE2eSendMessageCommand(socket, { agent_run_id: run.runId, content: "Run job.sh in the background." });
+        await waitFor(messages, () => turnStarts(messages).length === 2, "Grok's own turn started");
+        const inputTurnId = String(turnStarts(messages)[0]!.payload.turn_id);
+        const turnId = String(turnStarts(messages)[1]!.payload.turn_id);
+        expect(turnId).not.toBe(inputTurnId);
+        await waitFor(messages, () => endsOf(messages, turnId).length > 0, "Grok's own turn ended", 30_000);
+
+        const notice = messages.find((message) => message.type === "SYSTEM_TASK_NOTIFICATION");
+        expect(notice?.payload).toMatchObject({ sender_id: "system.grok_provider_turn", content: script.notice, turn_id: turnId });
+        expect(script.notice).toContain("Background task \"f60f2c3b\" completed (exit code: 0).");
+        expect(messages.indexOf(notice!)).toBeGreaterThan(messages.indexOf(turnStarts(messages)[1]!));
+        expect(textOf(messages, turnId)).toContain("FINISHED");
+        expect(messages.some((message) => message.type === "TOOL_EXECUTION_SUCCEEDED" && message.payload.turn_id === turnId)).toBe(true);
+        expect(messages.some((message) => message.type === "TOKEN_USAGE_UPDATED" && message.payload.turn_id === turnId)).toBe(true);
+        expect(endsOf(messages, turnId)).toEqual([expect.objectContaining({ type: "TURN_COMPLETED" })]);
+        // The run reads busy from Grok's own turn's start to its end (the status goes out just before TURN_STARTED, as
+        // for an input turn), and idle after it.
+        const ended = messages.indexOf(endsOf(messages, turnId)[0]!);
+        const statusAt = (index: number) =>
+          messages.slice(0, index).reverse().find((message) => message.type === "AGENT_STATUS")?.payload.status;
+        expect(statusAt(messages.indexOf(turnStarts(messages)[1]!))).toBe("running");
+        expect(statusAt(ended)).toBe("running");
+        await waitFor(messages, () => statusAt(messages.length) === "idle", "idle after Grok's own turn");
+
+        // AC-003: the notice is in the run's memory, so its history shows it (what a reload reads).
+        const projection = await graphql<{ getRunProjection: { conversation: Array<Record<string, unknown>> } }>(
+          "query($id: String!) { getRunProjection(runId: $id) { conversation } }", { id: run.runId });
+        expect(projection.getRunProjection.conversation).toEqual(expect.arrayContaining([expect.objectContaining({
+          kind: "system_task_notification", senderId: "system.grok_provider_turn", content: script.notice })]));
+      } finally {
+        run.restore();
+      }
+    }, 60_000);
+
+    it("holds a message sent during Grok's own turn until it ends, and Stop cancels Grok's own turn (AC-002)", async () => {
+      const { rows, sessionId } = await opening();
+      const script = grokProviderTurnScript(sessionId);
+      const held = await createGrokRun({ fixture: await writeFixture("provider-turn-held", [...rows, ...script.orderA(script.heldMessage(100))]), autoExecuteTools: true });
+      try {
+        const { socket, messages } = await openAgentSocket(held.runId);
+        sendE2eSendMessageCommand(socket, { agent_run_id: held.runId, content: "Run job.sh in the background." });
+        await waitFor(messages, () => turnStarts(messages).length === 2, "Grok's own turn started");
+        const turnId = String(turnStarts(messages)[1]!.payload.turn_id);
+        sendE2eSendMessageCommand(socket, { agent_run_id: held.runId, content: "Sent during Grok's own turn." });
+        await waitFor(messages, () => turnStarts(messages).length === 3, "the held message's turn", 30_000);
+        const heldTurnId = String(turnStarts(messages)[2]!.payload.turn_id);
+        await waitFor(messages, () => endsOf(messages, heldTurnId).length > 0, "the held message answered", 30_000);
+        expect(messages.indexOf(turnStarts(messages)[2]!)).toBeGreaterThan(messages.indexOf(endsOf(messages, turnId)[0]!));
+        expect(textOf(messages, heldTurnId)).toContain("HELD-MESSAGE-ANSWERED");
+        expect(shownFailures(messages)).toEqual([]);
+        expect((await held.recorded()).filter((message) => message.method === "session/prompt")).toHaveLength(2);
+      } finally {
+        held.restore();
+      }
+
+      const stopped = await createGrokRun({ fixture: await writeFixture("provider-turn-cancel", [...rows, ...script.orderC()]), autoExecuteTools: true });
+      try {
+        const { socket, messages } = await openAgentSocket(stopped.runId);
+        sendE2eSendMessageCommand(socket, { agent_run_id: stopped.runId, content: "Run job.sh in the background." });
+        await waitFor(messages, () => turnStarts(messages).length === 2, "Grok's own turn started");
+        const turnId = String(turnStarts(messages)[1]!.payload.turn_id);
+        socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION", payload: { command_id: randomUUID() } }));
+        await waitFor(messages, () => endsOf(messages, turnId).length > 0, "Grok's own turn stopped", 30_000);
+        expect(endsOf(messages, turnId)).toEqual([expect.objectContaining({ type: "TURN_INTERRUPTED" })]);
+        expect((await stopped.recorded()).some((message) => message.method === "session/cancel")).toBe(true);
+        expect(shownFailures(messages)).toEqual([]);
+      } finally {
+        stopped.restore();
+      }
+    }, 90_000);
+
+    it("keeps a message held through the hand-over when a job ends during an input turn, and sends it after Grok's own turn (AC-006)", async () => {
+      const { rows, sessionId } = await opening();
+      const script = grokProviderTurnScript(sessionId);
+      const run = await createGrokRun({ fixture: await writeFixture("provider-turn-b", [...rows, ...script.orderB()]), autoExecuteTools: true });
+      try {
+        const { socket, messages } = await openAgentSocket(run.runId);
+        sendE2eSendMessageCommand(socket, { agent_run_id: run.runId, content: "Start the job, then run long.sh." });
+        await waitFor(messages, (message) => message.type === "SEGMENT_CONTENT" && String(message.payload.delta).includes("working"), "input turn running");
+        sendE2eSendMessageCommand(socket, { agent_run_id: run.runId, content: "Sent during the input turn." });
+        await waitFor(messages, () => turnStarts(messages).length === 3, "the held message's turn", 30_000);
+        const [input, provider, heldTurn] = turnStarts(messages).map((message) => String(message.payload.turn_id));
+        await waitFor(messages, () => endsOf(messages, heldTurn!).length > 0, "the held message answered", 30_000);
+
+        const at = (message: WsMessage | undefined) => messages.indexOf(message!);
+        // Input end, then Grok's own turn and its notice, then the held message's turn only after Grok's own turn ended.
+        expect(at(endsOf(messages, input!)[0])).toBeLessThan(at(turnStarts(messages)[1]));
+        expect(messages.find((message) => message.type === "SYSTEM_TASK_NOTIFICATION")?.payload).toMatchObject({ turn_id: provider, content: script.notice });
+        expect(textOf(messages, provider!)).toContain("FINISHED");
+        expect(at(turnStarts(messages)[2])).toBeGreaterThan(at(endsOf(messages, provider!)[0]));
+        expect(textOf(messages, heldTurn!)).toContain("HELD-MESSAGE-ANSWERED");
+        // Never failed, and exactly one prompt per message: none went out while the first was outstanding.
+        expect(shownFailures(messages)).toEqual([]);
+        expect((await run.recorded()).filter((message) => message.method === "session/prompt")).toHaveLength(2);
+      } finally {
+        run.restore();
+      }
+    }, 60_000);
+
+    it("keeps a message sent in the hand-over's gap (after Grok ended the input prompt, before its response) held through Grok's own turn (AC-006)", async () => {
+      const { rows, sessionId } = await opening();
+      const script = grokProviderTurnScript(sessionId);
+      const run = await createGrokRun({ fixture: await writeFixture("provider-turn-b-gap", [...rows, ...script.orderBGap(3_000)]), autoExecuteTools: true });
+      try {
+        const { socket, messages } = await openAgentSocket(run.runId);
+        sendE2eSendMessageCommand(socket, { agent_run_id: run.runId, content: "Start the job, then run long.sh." });
+        await waitFor(messages, (message) => message.type === "SEGMENT_CONTENT" && String(message.payload.delta).includes("working"), "input turn running");
+        // The agent writes `turn_completed(input)` and `queue/changed(provider)` right after "working", then pauses 3 s
+        // before the response: a message sent 1 s after "working" arrives in that gap.
+        await wait(1_000);
+        const sentAt = messages.length;
+        sendE2eSendMessageCommand(socket, { agent_run_id: run.runId, content: "Sent in the hand-over gap." });
+        await waitFor(messages, () => turnStarts(messages).length === 3, "the held message's turn", 30_000);
+        const [input, provider, heldTurn] = turnStarts(messages).map((message) => String(message.payload.turn_id));
+        await waitFor(messages, () => endsOf(messages, heldTurn!).length > 0, "the held message answered", 30_000);
+
+        const at = (message: WsMessage | undefined) => messages.indexOf(message!);
+        // The message was accepted while the input turn was still open (the response had not arrived yet).
+        const ack = messages.slice(sentAt).find((message) => message.type === "AGENT_COMMAND_ACK" && message.payload.command_type === "SEND_MESSAGE");
+        expect(ack, "the message's command acknowledgement").toBeDefined();
+        expect(ack!.payload.accepted).not.toBe(false);
+        expect(at(ack)).toBeLessThan(at(endsOf(messages, input!)[0]));
+        // Input end and Grok's own turn in one hand-over; the held message's turn only after Grok's own turn ended.
+        expect(at(endsOf(messages, input!)[0])).toBeLessThan(at(turnStarts(messages)[1]));
+        expect(messages.find((message) => message.type === "SYSTEM_TASK_NOTIFICATION")?.payload).toMatchObject({ turn_id: provider, content: script.notice });
+        expect(textOf(messages, provider!)).toContain("FINISHED");
+        expect(at(turnStarts(messages)[2])).toBeGreaterThan(at(endsOf(messages, provider!)[0]));
+        expect(textOf(messages, heldTurn!)).toContain("HELD-MESSAGE-ANSWERED");
+        expect(shownFailures(messages)).toEqual([]);
+        expect((await run.recorded()).filter((message) => message.method === "session/prompt")).toHaveLength(2);
+      } finally {
+        run.restore();
+      }
+    }, 60_000);
+  });
 });

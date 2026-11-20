@@ -1,0 +1,171 @@
+# IMP-02 scripted Grok E2E: provider-started turns (AC-001, AC-002, AC-003, AC-006) and the existing replay cases (AC-004)
+# command: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts --no-watch
+#   (run 2: the same with -t "^(?!.*turns Grok starts itself)", the six existing cases only, as a control for the afterAll)
+# commits: run 0 (final, --reporter=verbose) at 39686a67ac; runs 1-2 at eb7dcef228 + the same test changes uncommitted.
+# node v22.23.1; macOS 26.5.2; 2026-11-20
+# machine: load average 42-84 from other processes, fseventsd ~195% CPU (an FSEvents backlog); no load imposed.
+#
+# Case -> AC:
+#   "shows Grok's own turn after a background job ended ..."       AC-001 (TURN_STARTED, SYSTEM_TASK_NOTIFICATION
+#       sender system.grok_provider_turn with the reminder text unwrapped, reasoning/text, tool card, usage,
+#       TURN_COMPLETED; run reads running from the turn's start to its end, idle after) and AC-003 (the notice in
+#       getRunProjection's conversation, what a reload reads)
+#   "holds a message sent during Grok's own turn ... Stop cancels ..." AC-002 (the held message's turn starts after the
+#       provider TURN_COMPLETED, answered, no ERROR / refused SEND_MESSAGE, 2 session/prompt in total; INTERRUPT_GENERATION
+#       -> session/cancel -> TURN_INTERRUPTED)
+#   "keeps a message held through the hand-over ..."               AC-006 (order probe 2 A: input end, provider
+#       TURN_STARTED + notice, the held message's turn only after the provider TURN_COMPLETED, never failed, exactly
+#       2 session/prompt: none sent while one was outstanding)
+#
+# First attempt (before the fix): AC-001's case failed at its status check: AGENT_STATUS running is published just
+# before TURN_STARTED (for input turns as well), and the assertion looked for it after; the frame dump showed
+#   AGENT_STATUS idle | AGENT_STATUS running | TURN_STARTED <provider> | SYSTEM_TASK_NOTIFICATION | ... | TURN_COMPLETED | AGENT_STATUS idle
+# The assertion now reads the status in force at TURN_STARTED and at the end. Product behaviour unchanged.
+#
+# afterAll "Hook timed out in 60000ms" in both runs: the in-process server's app.close() under the FSEvents backlog
+# (known: tickets/done/followups-483-517 IMP-04 timed it at 296,921 ms). Run 2 shows it without the new cases.
+
+## run 0 (final): whole file at 39686a67ac, verbose
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > lists the Grok Build catalog from the agent handshake with the reasoning-effort schema (AC-002) 295ms
+
+
+
+
+
+
+
+
+
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > streams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009) 1285ms
+
+
+
+
+
+
+
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns a recorded Grok permission request into a run_bash approval answered over the WebSocket (AC-004) 342ms
+
+
+
+
+
+
+
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > completes the turn when Grok ends it after a denied run_bash, and the run takes the next message (AC-004) 375ms
+
+
+
+
+
+
+
+
+
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > fails run creation with Grok's own authentication error text when Grok is not logged in (AC-012) 225ms
+
+
+
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006) 317ms
+
+
+
+
+
+
+
+
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > shows Grok's own turn after a background job ended: notice, content, tool card, usage, end; keeps the notice in history (AC-001, AC-003) 1827ms
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > holds a message sent during Grok's own turn until it ends, and Stop cancels Grok's own turn (AC-002) 3635ms
+
+
+
+
+
+
+
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > keeps a message held through the hand-over when a job ends during an input turn, and sends it after Grok's own turn (AC-006) 2968ms
+
+
+
+
+
+
+
+
+
+
+
+Error: Hook timed out in 60000ms.
+ ❯ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts:83:3
+
+
+
+ Test Files  1 failed (1)
+      Tests  9 passed (9)
+   Duration  703.56s (transform 6.61s, setup 65ms, import 9.00s, tests 693.98s, environment 0ms)
+
+
+## run 1: whole file
+Error: Hook timed out in 60000ms.
+ ❯ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts:83:3
+ Test Files  1 failed (1)
+      Tests  9 passed (9)
+   Duration  463.87s (transform 8.84s, setup 66ms, import 11.94s, tests 451.26s, environment 0ms)
+
+## run 2: the six existing cases only
+Error: Hook timed out in 60000ms.
+ ❯ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts:83:3
+ Test Files  1 failed (1)
+      Tests  6 passed | 3 skipped (9)
+   Duration  604.44s (transform 8.89s, setup 63ms, import 11.81s, tests 591.67s, environment 0ms)
