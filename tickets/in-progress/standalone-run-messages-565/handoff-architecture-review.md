@@ -9,3 +9,4 @@
 - Please review especially: `MessageViewScope` keeping Team/Org outcomes identical live and stored; replacing 492's `publishToViews` with `relation`; the `counterpart` line field (Case 14); paging and live merge; the entry-form table.
 - Documents: this file, `requirements-doc.md`, `investigation-notes.md`, `solution-revision-record.md`, `design-spec.md`, `follow-ups.md` (none).
 - Route: `get_handoff_rules` 2026-11-20 → `/architecture_reviewer` (Large or High).
+- ARCH-REV-002, 2026-11-20: Pass for SR-004 (71c85a0381); AR-001 … AR-005 resolved; the reviewer handed off to `/implementation_engineer`. Citation nit (peerName at `remote-run-channel.ts:120`) corrected in the design spec.
