@@ -2,3 +2,5 @@
 **Medium / High; reviewed route.** Checked the integrated implementation (product 291a6c0d33; reviewed tip 08a773b476, including base a728fbcad3). RELEASE.md is the canonical operator guide. Its readiness section matches the CLI's two pre-mutation call sites, official-origin requirement, current-generation signed-record evidence, fail-closed recovery and exclusive custody procedure. Added a link from “Checks Before Tagging” so an operator entering through the checklist sees the no-push requirement as well. No new release authority or procedure for Mac is implied.
 
 DESIGN.md and TESTING.md require no changes: no new platform, application boundary or project-wide testing rule. Current tests exercise operator behavior with isolated settings and local Git refs; real service evidence is read-only. No client behavior, data, release format or signer job changed. No private path or key needed in this report.
+
+Rechecked after merging origin/personal 74d046320a: upstream changes to this guide concern the iOS toolchain. Both guide updates are present, and no merged change affects the desktop preflight, first-use logic, signing workflow or custody procedure.
