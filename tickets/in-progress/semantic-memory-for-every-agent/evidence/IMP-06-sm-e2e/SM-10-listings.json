@@ -1,0 +1,119 @@
+{
+  "semanticFolders": [
+    "sm-declared-off-d03088",
+    "sm-manager-d03088",
+    "sm-scout-d03088",
+    "team-local-agent%3Asm-pkg-team-d03088%3Asm-scout-d03088"
+  ],
+  "memoryPageAgents": {
+    "entries": [
+      {
+        "attribution": "DEFINITION",
+        "agentDefinitionId": "autobyteus-daily-assistant",
+        "displayName": "Daily Assistant",
+        "runCount": 0
+      },
+      {
+        "attribution": "DEFINITION",
+        "agentDefinitionId": "sm-manager-d03088",
+        "displayName": "sm manager d03088",
+        "runCount": 0
+      },
+      {
+        "attribution": "DEFINITION",
+        "agentDefinitionId": "sm-plain-d03088",
+        "displayName": "sm plain d03088",
+        "runCount": 0
+      },
+      {
+        "attribution": "DEFINITION",
+        "agentDefinitionId": "sm-scout-d03088",
+        "displayName": "sm scout d03088",
+        "runCount": 0
+      },
+      {
+        "attribution": "DEFINITION",
+        "agentDefinitionId": "sm-declared-off-d03088",
+        "displayName": "sm-declared-off-d03088",
+        "runCount": 0
+      },
+      {
+        "attribution": "DEFINITION",
+        "agentDefinitionId": "sm-declared-on-d03088",
+        "displayName": "sm-declared-on-d03088",
+        "runCount": 0
+      },
+      {
+        "attribution": "DEFINITION",
+        "agentDefinitionId": "sm-pkg-plain-d03088",
+        "displayName": "sm-pkg-plain-d03088",
+        "runCount": 0
+      }
+    ],
+    "total": 7
+  },
+  "memoryPageRunIds": [],
+  "memorySearchRuns": [
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-NlsQ5e/memory/agent_teams/sm_team_d03088_6776f07f1249424a99532188610914f2/sm_scout_d03088_e665568236184e66ab349bc9cb1d4460",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-NlsQ5e/memory/agents/sm_manager_d03088_38326a1ee75d4ea3804ca2e3f652cef6",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-NlsQ5e/memory/agents/sm_scout_d03088_e313f3b6e1ae471799f6882cacd54640"
+  ],
+  "memorySyncFiles": [
+    "agent_teams/sm_pkg_team_d03088_b95660c9dd02462c80e3c2d84c11cc6e/sm_scout_d03088_1d07f35ea4c54e94aa6ae86bfc5848bf/agy-project/.agents/agents/autobyteus-fc0150b893e97489/agent.md",
+    "agent_teams/sm_pkg_team_d03088_b95660c9dd02462c80e3c2d84c11cc6e/sm_scout_d03088_1d07f35ea4c54e94aa6ae86bfc5848bf/agy-project/.agents/mcp_config.json",
+    "agent_teams/sm_pkg_team_d03088_b95660c9dd02462c80e3c2d84c11cc6e/sm_scout_d03088_1d07f35ea4c54e94aa6ae86bfc5848bf/agy-project/manifest.json",
+    "agent_teams/sm_pkg_team_d03088_b95660c9dd02462c80e3c2d84c11cc6e/sm_scout_d03088_1d07f35ea4c54e94aa6ae86bfc5848bf/seen_skill_versions.json",
+    "agent_teams/sm_pkg_team_d03088_b95660c9dd02462c80e3c2d84c11cc6e/sm_scout_d03088_1d07f35ea4c54e94aa6ae86bfc5848bf/seen_tool_names.json",
+    "agent_teams/sm_pkg_team_d03088_b95660c9dd02462c80e3c2d84c11cc6e/team_communication_messages_active.jsonl",
+    "agent_teams/sm_pkg_team_d03088_b95660c9dd02462c80e3c2d84c11cc6e/team_run_execution_tree.json",
+    "agent_teams/sm_team_d03088_6776f07f1249424a99532188610914f2/sm_manager_d03088_5120cc112c1e4a119edd7290f7eaf74a/agy-project/.agents/agents/autobyteus-d902b7e5869e0db8/agent.md",
+    "agent_teams/sm_team_d03088_6776f07f1249424a99532188610914f2/sm_manager_d03088_5120cc112c1e4a119edd7290f7eaf74a/agy-project/.agents/mcp_config.json",
+    "agent_teams/sm_team_d03088_6776f07f1249424a99532188610914f2/sm_manager_d03088_5120cc112c1e4a119edd7290f7eaf74a/agy-project/manifest.json",
+    "agent_teams/sm_team_d03088_6776f07f1249424a99532188610914f2/sm_scout_d03088_e665568236184e66ab349bc9cb1d4460/agy-project/.agents/agents/autobyteus-aca471d2a4a4f68f/agent.md",
+    "agent_teams/sm_team_d03088_6776f07f1249424a99532188610914f2/sm_scout_d03088_e665568236184e66ab349bc9cb1d4460/agy-project/.agents/mcp_config.json",
+    "agent_teams/sm_team_d03088_6776f07f1249424a99532188610914f2/sm_scout_d03088_e665568236184e66ab349bc9cb1d4460/agy-project/manifest.json",
+    "agent_teams/sm_team_d03088_6776f07f1249424a99532188610914f2/sm_scout_d03088_e665568236184e66ab349bc9cb1d4460/raw_traces_active.jsonl",
+    "agent_teams/sm_team_d03088_6776f07f1249424a99532188610914f2/sm_scout_d03088_e665568236184e66ab349bc9cb1d4460/seen_skill_versions.json",
+    "agent_teams/sm_team_d03088_6776f07f1249424a99532188610914f2/sm_scout_d03088_e665568236184e66ab349bc9cb1d4460/seen_tool_names.json",
+    "agent_teams/sm_team_d03088_6776f07f1249424a99532188610914f2/sm_scout_d03088_e665568236184e66ab349bc9cb1d4460/work_journal/work_journal_active.md",
+    "agent_teams/sm_team_d03088_6776f07f1249424a99532188610914f2/sm_scout_d03088_e665568236184e66ab349bc9cb1d4460/work_journal/work_journal_manifest.json",
+    "agent_teams/sm_team_d03088_6776f07f1249424a99532188610914f2/team_communication_messages_active.jsonl",
+    "agent_teams/sm_team_d03088_6776f07f1249424a99532188610914f2/team_run_execution_tree.json",
+    "agents/sm_declared_off_d03088_335dd11534f74df7b776fd75b79a928a/agy-project/.agents/agents/autobyteus-16362cd4d5c62dfb/agent.md",
+    "agents/sm_declared_off_d03088_335dd11534f74df7b776fd75b79a928a/agy-project/.agents/mcp_config.json",
+    "agents/sm_declared_off_d03088_335dd11534f74df7b776fd75b79a928a/agy-project/manifest.json",
+    "agents/sm_declared_off_d03088_335dd11534f74df7b776fd75b79a928a/run_metadata.json",
+    "agents/sm_declared_off_d03088_335dd11534f74df7b776fd75b79a928a/seen_skill_versions.json",
+    "agents/sm_declared_off_d03088_335dd11534f74df7b776fd75b79a928a/seen_tool_names.json",
+    "agents/sm_manager_d03088_38326a1ee75d4ea3804ca2e3f652cef6/agy-project/.agents/agents/autobyteus-e1cd62cc2c3ad6dc/agent.md",
+    "agents/sm_manager_d03088_38326a1ee75d4ea3804ca2e3f652cef6/agy-project/.agents/mcp_config.json",
+    "agents/sm_manager_d03088_38326a1ee75d4ea3804ca2e3f652cef6/agy-project/manifest.json",
+    "agents/sm_manager_d03088_38326a1ee75d4ea3804ca2e3f652cef6/raw_traces_active.jsonl",
+    "agents/sm_manager_d03088_38326a1ee75d4ea3804ca2e3f652cef6/run_metadata.json",
+    "agents/sm_manager_d03088_38326a1ee75d4ea3804ca2e3f652cef6/seen_skill_versions.json",
+    "agents/sm_manager_d03088_38326a1ee75d4ea3804ca2e3f652cef6/seen_tool_names.json",
+    "agents/sm_manager_d03088_38326a1ee75d4ea3804ca2e3f652cef6/work_journal/work_journal_active.md",
+    "agents/sm_manager_d03088_38326a1ee75d4ea3804ca2e3f652cef6/work_journal/work_journal_manifest.json",
+    "agents/sm_scout_d03088_0f2f407af7704bd1b4904e4b07825221/agy-project/.agents/agents/autobyteus-eefb8787738277b2/agent.md",
+    "agents/sm_scout_d03088_0f2f407af7704bd1b4904e4b07825221/agy-project/.agents/mcp_config.json",
+    "agents/sm_scout_d03088_0f2f407af7704bd1b4904e4b07825221/agy-project/manifest.json",
+    "agents/sm_scout_d03088_0f2f407af7704bd1b4904e4b07825221/run_metadata.json",
+    "agents/sm_scout_d03088_0f2f407af7704bd1b4904e4b07825221/seen_skill_versions.json",
+    "agents/sm_scout_d03088_0f2f407af7704bd1b4904e4b07825221/seen_tool_names.json",
+    "agents/sm_scout_d03088_9e9d2934bcf74c1a8117cca01080fe38/agy-project/.agents/agents/autobyteus-8debec7ee9c85864/agent.md",
+    "agents/sm_scout_d03088_9e9d2934bcf74c1a8117cca01080fe38/agy-project/.agents/mcp_config.json",
+    "agents/sm_scout_d03088_9e9d2934bcf74c1a8117cca01080fe38/agy-project/manifest.json",
+    "agents/sm_scout_d03088_9e9d2934bcf74c1a8117cca01080fe38/run_metadata.json",
+    "agents/sm_scout_d03088_9e9d2934bcf74c1a8117cca01080fe38/seen_skill_versions.json",
+    "agents/sm_scout_d03088_9e9d2934bcf74c1a8117cca01080fe38/seen_tool_names.json",
+    "agents/sm_scout_d03088_e313f3b6e1ae471799f6882cacd54640/agy-project/.agents/agents/autobyteus-9d598cc1b6cfdd6b/agent.md",
+    "agents/sm_scout_d03088_e313f3b6e1ae471799f6882cacd54640/agy-project/.agents/mcp_config.json",
+    "agents/sm_scout_d03088_e313f3b6e1ae471799f6882cacd54640/agy-project/manifest.json",
+    "agents/sm_scout_d03088_e313f3b6e1ae471799f6882cacd54640/raw_traces_active.jsonl",
+    "agents/sm_scout_d03088_e313f3b6e1ae471799f6882cacd54640/run_metadata.json",
+    "agents/sm_scout_d03088_e313f3b6e1ae471799f6882cacd54640/seen_skill_versions.json",
+    "agents/sm_scout_d03088_e313f3b6e1ae471799f6882cacd54640/seen_tool_names.json",
+    "agents/sm_scout_d03088_e313f3b6e1ae471799f6882cacd54640/work_journal/work_journal_active.md",
+    "agents/sm_scout_d03088_e313f3b6e1ae471799f6882cacd54640/work_journal/work_journal_manifest.json"
+  ]
+}
