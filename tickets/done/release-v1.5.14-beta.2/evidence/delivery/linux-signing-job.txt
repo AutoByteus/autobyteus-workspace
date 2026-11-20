@@ -1,0 +1,18 @@
+# Sign authenticated Linux desktop releases: steps and verification lines (no key material)
+Set up job: success
+Run actions/checkout@v4: success
+Run actions/setup-node@v4: success
+Run actions/download-artifact@v4: success
+Sign final AppImages and verify metadata against the embedded public anchor: success
+Run actions/upload-artifact@v4: success
+Post Run actions/setup-node@v4: success
+Post Run actions/checkout@v4: success
+Complete job: success
+
+SHA256 digest of downloaded artifact is 87284c36983917332a5f3412277444e00e764e8f2c6fa121395aa33079ab7d62
+SHA256 digest of downloaded artifact is 4def094435e092210bf099d969e80af4bbc926a08e4a1fbe071f61df6d44d0ca
+  python3 scripts/validate_linux_updater_metadata.py --metadata "$META" --arch-token "linux-$ARCH" --image "$IMAGE" --public-key "$PUBLIC"
+Verified signed desktop release 1.5.14-beta.2 x64
+Validated signing-artifacts/linux-x64/latest-linux.yml: linux-x64 AppImage metadata includes embedded blockMapSize
+Verified signed desktop release 1.5.14-beta.2 arm64
+Validated signing-artifacts/linux-arm64/latest-linux-arm64.yml: linux-arm64 AppImage metadata includes embedded blockMapSize
