@@ -82,6 +82,7 @@ const sendDraftRouteError = (error: unknown, reply: { code(status: number): { se
 const contextFileContent = (filePath: string): UserFileContent => ({
   mimeType: String(lookupMime(filePath) || "application/octet-stream"),
   body: fs.createReadStream(filePath),
+  size: fs.statSync(filePath).size,
 });
 
 export async function registerContextFileRoutes(app: FastifyInstance): Promise<void> {

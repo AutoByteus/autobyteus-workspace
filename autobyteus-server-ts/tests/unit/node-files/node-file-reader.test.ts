@@ -31,6 +31,8 @@ describe("NodeFileReader (autobyteus-436)", () => {
     expect(opened.ok).toBe(true);
     if (!opened.ok) return;
     expect(opened.mimeType).toBe("text/markdown");
+    // autobyteus-572 D-5: its length, from the opened handle, for the reply's Content-Length.
+    expect(opened.size).toBe(Buffer.byteLength("# Notes\n"));
     expect(await readAll(opened)).toBe("# Notes\n");
   });
 

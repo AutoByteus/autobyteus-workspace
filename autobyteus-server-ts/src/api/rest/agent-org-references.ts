@@ -19,7 +19,7 @@ const send = async (
   try {
     const content = await resolve();
     reply.header("cache-control", "no-store");
-    return sendUserFile(reply, { mimeType: content.mimeType, body: content.stream });
+    return sendUserFile(reply, { mimeType: content.mimeType, body: content.stream, size: null });
   } catch (error) {
     if (error instanceof AgentOrgReferenceContentError) {
       return reply.code(status(error)).send({ detail: error.message, code: error.code });

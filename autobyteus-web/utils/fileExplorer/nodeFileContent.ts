@@ -1,4 +1,5 @@
 import { authorizedFetch } from '~/utils/remoteAccess/authorizedTransport';
+import { readResponseBlobWithProgress, type DownloadProgress } from '~/utils/download/responseBlobProgress';
 
 /**
  * A node file (autobyteus-436): a file on the node's computer opened by its absolute path, read-only, through
@@ -33,9 +34,14 @@ export const NODE_FILE_REFUSAL_MESSAGE_KEYS: Readonly<Record<NodeFileRefusal, st
 
 /**
  * Fetches a file once from its node URL: text as content, anything else as a blob; a refused or failed request is a
- * refusal (never an exception). `asText` comes from the file's type, read from its name.
+ * refusal (never an exception). `asText` comes from the file's type, read from its name. `onProgress` reports each part
+ * of a blob as it arrives (autobyteus-572 D-1).
  */
-export const loadNodeFileFromUrl = async (url: string, asText: boolean): Promise<LoadedNodeFile> => {
+export const loadNodeFileFromUrl = async (
+  url: string,
+  asText: boolean,
+  onProgress?: (progress: DownloadProgress) => void,
+): Promise<LoadedNodeFile> => {
   try {
     const response = await authorizedFetch(url);
     if (!response.ok) {
@@ -43,7 +49,8 @@ export const loadNodeFileFromUrl = async (url: string, asText: boolean): Promise
       const refusal = typeof body?.code === 'string' ? REFUSAL_BY_CODE[body.code] : undefined;
       return { kind: 'refused', refusal: refusal ?? 'failed' };
     }
-    return asText ? { kind: 'text', content: await response.text() } : { kind: 'blob', blob: await response.blob() };
+    if (asText) return { kind: 'text', content: await response.text() };
+    return { kind: 'blob', blob: onProgress ? await readResponseBlobWithProgress(response, onProgress) : await response.blob() };
   } catch {
     return { kind: 'refused', refusal: 'failed' };
   }

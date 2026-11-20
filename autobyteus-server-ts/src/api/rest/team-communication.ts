@@ -37,7 +37,7 @@ export async function registerTeamCommunicationRoutes(
       try {
         const resolved = await contentService.resolveContent({ teamRunId, messageId, referenceId });
         reply.header("cache-control", "no-store");
-        return sendUserFile(reply, { mimeType: resolved.mimeType, body: resolved.stream });
+        return sendUserFile(reply, { mimeType: resolved.mimeType, body: resolved.stream, size: null });
       } catch (error) {
         if (error instanceof TeamCommunicationReferenceContentError) {
           return reply

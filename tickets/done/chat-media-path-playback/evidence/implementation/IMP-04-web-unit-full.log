@@ -1,0 +1,36 @@
+# IMP-04 whole web unit suite
+# command: cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run
+# commit: working tree = d165d3143a except the loading view's decimal units (changed after this run; its 11 spec files rerun in IMP-06)
+# env: macOS, Node v22.23.1
+# date: 2026-11-20
+# result: 786 of 787 files pass. The 1 failure is not from this ticket:
+#   ServerSettingsBasicsPanel.spec 'composes only current endpoint and focused Basics cards' expects no 'GitHub' text, but
+#   the panel's UpdateChecksCard (not stubbed by the spec) renders 'Downloads new revisions from GitHub…'
+#   (localization/messages/en/updateNotifications.ts). The panel, the card, that catalog and the spec are unchanged by this
+#   ticket (git diff 315d6d94cf); it fails the same way alone. Recorded in follow-ups.md (FU-002).
+# (Full output is ~50k lines; the failure block and the summary are kept.)
+
+50777: FAIL  components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts > ServerSettingsBasicsPanel > composes only current endpoint and focused Basics cards
+50778-AssertionError: expected 'Endpoint CardsApplicationsMedia Model…' not to contain 'GitHub'
+50779-
+50780-Expected: [32m"GitHub"[39m
+50781-Received: [31m"Endpoint CardsApplicationsMedia ModelsCodex Full AccessClaude runtimeLive responseInternal agentsInternal agents are the system's own helpers, such as the Model Router.Show internal agentsShow them in the Agents list, pickers and history, for debugging. While off, they are also not offered to other agents or peer nodes.Show internal agentsFeatured CatalogWeb SearchCompactionT
+50782-
+50783- ❯ components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts:51:32
+50784-     49|     expect(wrapper.find('[data-testid="web-search-configuration-card-s…
+50785-     50|     // autobyteus-337 (REQ-007): GitHub is set up on the Integrations …
+50786-     51|     expect(wrapper.text()).not.toContain('GitHub')
+50787-       |                                ^
+50788-     52|     expect(wrapper.find('[data-testid="compaction-config-card-stub"]')…
+50789-     53|     expect(wrapper.find('[data-testid="streaming-parser-card"]').exist…
+50790-
+50791-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 786 passed (787)
+      Tests  1 failed | 5915 passed | 2 skipped (5918)
+   Start at  13:29:41
+   Duration  520.92s (transform 58.64s, setup 3541.50s, collect 388.04s, tests 133.34s, environment 254.14s, prepare 147.48s)
+
