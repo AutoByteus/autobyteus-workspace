@@ -286,8 +286,8 @@ describe("task agent own run: the built server upgrades a faithful released inst
     expect(agents.find((entry) => entry["agentDefinitionId"] === "helper"), JSON.stringify(agents)).toMatchObject({ displayName: "helper" });
     expect((await first.gql(`{listAgentsWithMemory(search:"Code Reviewer",pageSize:100){entries{agentDefinitionId}}}`)).listAgentsWithMemory.entries
       .map((entry: Json) => entry["agentDefinitionId"]), "search matches the name").toContain("code-reviewer");
-    const reviewerRuns = (await first.gql(`query($s:AgentWithMemorySelectorInput!){listAgentRunsWithMemory(selector:$s,pageSize:100){entries{runId}}}`,
-      { s: { attribution: agents.find((entry) => entry["agentDefinitionId"] === "code-reviewer")!["attribution"], agentDefinitionId: "code-reviewer" } })).listAgentRunsWithMemory.entries as Json[];
+    const reviewerRuns = (await first.gql(`query($s:AgentWithMemorySelectorInput!){listAgentEpisodes(selector:$s,pageSize:100){entries{runId}}}`,
+      { s: { attribution: agents.find((entry) => entry["agentDefinitionId"] === "code-reviewer")!["attribution"], agentDefinitionId: "code-reviewer" } })).listAgentEpisodes.entries as Json[];
     expect(reviewerRuns.map((entry) => entry["runId"])).toContain("c1-reviewer");
     await first.stop();
 
@@ -393,8 +393,8 @@ describe("task agent own run: the built server upgrades a faithful released inst
     const listed = await historyRunIds(first.gql);
     expect(listed, "the deleted hub is not listed").not.toContain("hub");
     expect(listed, "the hub's task agent is listed as a run of its own").toContain("c1-reviewer");
-    const reviewerRuns = (await first.gql(`query($s:AgentWithMemorySelectorInput!){listAgentRunsWithMemory(selector:$s,pageSize:100){entries{runId}}}`,
-      { s: { attribution: reviewer["attribution"], agentDefinitionId: "code-reviewer" } })).listAgentRunsWithMemory.entries as Json[];
+    const reviewerRuns = (await first.gql(`query($s:AgentWithMemorySelectorInput!){listAgentEpisodes(selector:$s,pageSize:100){entries{runId}}}`,
+      { s: { attribution: reviewer["attribution"], agentDefinitionId: "code-reviewer" } })).listAgentEpisodes.entries as Json[];
     expect(reviewerRuns.map((entry) => entry["runId"]), "listed on the Memory page as a run of its own").toContain("c1-reviewer");
     await first.stop();
     // A later start keeps the detached folders and reports nothing about them.

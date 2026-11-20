@@ -5,7 +5,19 @@ import {
 } from "../../../src/file-explorer/watcher/runtime/watcher-runtime-protocol.js";
 
 describe("watcher runtime protocol guards", () => {
-  it("accepts start commands with explicit watcher identity", () => {
+  it("accepts start commands with explicit watcher identity and link policy", () => {
+    expect(
+      isWatcherRuntimeCommand({
+        type: "start",
+        watcherId: "watcher-1",
+        generation: 1,
+        workspaceRootPath: "/tmp/workspace",
+        followSymbolicLinks: false,
+      }),
+    ).toBe(true);
+  });
+
+  it("rejects a start command without its link policy (autobyteus-554)", () => {
     expect(
       isWatcherRuntimeCommand({
         type: "start",
@@ -13,7 +25,7 @@ describe("watcher runtime protocol guards", () => {
         generation: 1,
         workspaceRootPath: "/tmp/workspace",
       }),
-    ).toBe(true);
+    ).toBe(false);
   });
 
   it("rejects commands without watcher generation identity", () => {

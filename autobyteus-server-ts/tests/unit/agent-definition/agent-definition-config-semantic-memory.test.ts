@@ -6,30 +6,30 @@ import {
   normalizeAgentConfigRecord,
 } from "../../../src/agent-definition/providers/agent-definition-config.js";
 
-/** `semanticMemoryEnabled` in `agent-config.json` (REQ-001, REQ-002, REQ-008): absent means off; written only when on. */
-const agent = (semanticMemoryEnabled: boolean) => new AgentDefinition({
-  id: "computer-use-operator", name: "Operator", description: "d", instructions: "i", semanticMemoryEnabled,
+/**
+ * The retired `semanticMemoryEnabled` key of `agent-config.json` (autobyteus-554 REQ-003, AC-003): every agent has
+ * semantic memory, so a stored `true` or `false` is not read, never written, and dropped at the file's next save,
+ * with every other key kept. Nothing rewrites a file just for this.
+ */
+const agent = () => new AgentDefinition({
+  id: "computer-use-operator", name: "Operator", description: "d", instructions: "i", toolNames: ["read_file"],
 });
 
-describe("agent-config.json semanticMemoryEnabled", () => {
-  it("reads true only for `true`; absent or anything else is off", () => {
-    expect(normalizeAgentConfigRecord({ semanticMemoryEnabled: true }).semanticMemoryEnabled).toBe(true);
-    for (const value of [undefined, false, "true", 1, null]) {
-      expect(normalizeAgentConfigRecord({ semanticMemoryEnabled: value }).semanticMemoryEnabled).toBe(false);
-    }
-    expect(normalizeAgentConfigRecord({}).semanticMemoryEnabled).toBe(false);
+describe("agent-config.json and the retired semanticMemoryEnabled key", () => {
+  it.each([true, false])("a stored %s is not read", (value) => {
+    const record = normalizeAgentConfigRecord({ toolNames: ["read_file"], semanticMemoryEnabled: value });
+    expect(record).not.toHaveProperty("semanticMemoryEnabled");
+    expect(record.toolNames).toEqual(["read_file"]);
   });
 
-  it("writes the field only when on, so an agent without it keeps its file as it was", () => {
-    expect(buildAgentConfigRecord(agent(true))).toMatchObject({ semanticMemoryEnabled: true });
-    expect(buildAgentConfigRecord(agent(false))).not.toHaveProperty("semanticMemoryEnabled");
+  it("is never written", () => {
+    expect(buildAgentConfigRecord(agent())).not.toHaveProperty("semanticMemoryEnabled");
   });
 
-  it("merge sets it, keeps unknown fields, and removes a stale `true` when turned off", () => {
-    const existing = { toolNames: ["read_file"], authorNote: "kept", semanticMemoryEnabled: true };
-    expect(mergeAgentConfigRecord(existing, agent(true))).toMatchObject({ authorNote: "kept", semanticMemoryEnabled: true });
-    const off = mergeAgentConfigRecord(existing, agent(false));
-    expect(off).toMatchObject({ authorNote: "kept" });
-    expect(off).not.toHaveProperty("semanticMemoryEnabled");
+  it.each([true, false])("is dropped at the next save (stored %s); every other key is kept", (value) => {
+    const existing = { toolNames: ["read_file"], authorNote: "kept", semanticMemoryEnabled: value };
+    const merged = mergeAgentConfigRecord(existing, agent());
+    expect(merged).toMatchObject({ authorNote: "kept", toolNames: ["read_file"] });
+    expect(merged).not.toHaveProperty("semanticMemoryEnabled");
   });
 });

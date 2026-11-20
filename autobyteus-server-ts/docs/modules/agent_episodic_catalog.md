@@ -143,6 +143,13 @@ Both composition roots that run agents keep catalogs for their own memory folder
 `Pick<EpisodicCatalog, "runDeleted">`; right after `composeCollaboration` the root calls
 `start({ taskTitles: collaboration.tasks })`; it stops it when it closes.
 
+The Memory page reads the catalogs too (autobyteus-554): `agentDefinitionIds()`, `runsOf(id)` (the entries in memory,
+any order) and `whenStartPassDone()` (settles when the start pass has ended, built, failed or stopped; never rejects).
+The explorer service is built per GraphQL request, so it reaches the catalog through a process binding: each root calls
+`setProcessEpisodicCatalog(catalog)` right after creating it (before the HTTP server serves) and
+`releaseProcessEpisodicCatalog(catalog)` after stopping it; `getProcessEpisodicCatalog()` throws
+`EPISODIC_CATALOG_NOT_COMPOSED` when no root has set it. The catalog does not use the explorer.
+
 ## Key Source Files
 
 - Owner: `src/agent-episodic-catalog/services/episodic-catalog.ts`

@@ -45,7 +45,7 @@ const register = async () => {
 const unregister = async () => {
   if (workspaceId.value) {
     try {
-      await workspaceStore.unregisterSkillWorkspace(workspaceId.value);
+      await workspaceStore.unregisterTransientWorkspace(workspaceId.value);
       workspaceId.value = '';
     } catch (e) {
       console.error('Error unregistering skill workspace:', e);

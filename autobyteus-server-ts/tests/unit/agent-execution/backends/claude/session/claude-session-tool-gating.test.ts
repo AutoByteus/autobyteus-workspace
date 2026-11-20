@@ -91,7 +91,7 @@ const createSession = (requestedToolNames: string[] = [], input: {
     }),
     runtimeContext: new ClaudeAgentRunContext({ workspaceSkills: createTestRunWorkspaceSkills(),
       carpenterSystemPrompt: composeSharedCarpenterPrompt({
-        semanticMemoryPath: null,
+        semanticMemoryPath: "/memory/semantic/agent-1", globalSemanticMemoryPath: "/memory/semantic-global",
         longRunningCommandSection: CLAUDE_LONG_RUNNING_COMMAND_SECTION,
         agentDefinition: new AgentDefinition({
           name: "Test agent",

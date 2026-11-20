@@ -88,8 +88,8 @@ const createDefinitions = async (s: Server): Promise<Defs> => {
 };
 const runTokens = async (s: Server, runId: string) => (await s.gql(`query($r:String!){getAgentRunTokenUsageSummary(runId:$r){totalTokens}}`, { r: runId })).getAgentRunTokenUsageSummary.totalTokens as number;
 const standaloneTokens = async (s: Server, runId: string) => (await s.gql(`query($r:String!){getStandaloneRunTokenUsageSummary(runId:$r){totalTokens}}`, { r: runId })).getStandaloneRunTokenUsageSummary.totalTokens as number;
-const memoryRunsOf = async (s: Server, agentDefinitionId: string) => ((await s.gql(`query($selector:AgentWithMemorySelectorInput!){listAgentRunsWithMemory(selector:$selector,page:1,pageSize:100){entries{runId}}}`,
-  { selector: { attribution: "DEFINITION", agentDefinitionId } })).listAgentRunsWithMemory.entries as Rec[]).map((entry) => entry.runId as string);
+const memoryRunsOf = async (s: Server, agentDefinitionId: string) => ((await s.gql(`query($selector:AgentWithMemorySelectorInput!){listAgentEpisodes(selector:$selector,page:1,pageSize:100){entries{runId}}}`,
+  { selector: { attribution: "DEFINITION", agentDefinitionId } })).listAgentEpisodes.entries as Rec[]).map((entry) => entry.runId as string);
 
 
 // ---- files on disk ----------------------------------------------------------------------------------------------------------

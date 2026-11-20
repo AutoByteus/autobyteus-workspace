@@ -66,6 +66,9 @@ export class EpisodicCatalog {
   private oldestRequestAt: number | null = null;
   private pass: Promise<void> | null = null;
   private stopped = false;
+  /** Settles when the start pass has ended (built, failed or stopped); readers of the entries await it. */
+  private readonly startPassDone: Promise<void>;
+  private settleStartPass: () => void = () => undefined;
 
   constructor(deps: EpisodicCatalogDependencies) {
     this.discovery = deps.discovery;
@@ -74,6 +77,7 @@ export class EpisodicCatalog {
     this.store = new EpisodicCatalogStore(deps.layout);
     this.quietMs = deps.quietMs ?? EPISODIC_CATALOG_QUIET_MS;
     this.maxWaitMs = deps.maxWaitMs ?? EPISODIC_CATALOG_MAX_WAIT_MS;
+    this.startPassDone = new Promise<void>((resolve) => { this.settleStartPass = resolve; });
   }
 
   /**
@@ -84,7 +88,22 @@ export class EpisodicCatalog {
     if (this.taskTitles) throw new Error("EpisodicCatalog is already started.");
     this.taskTitles = input.taskTitles;
     this.unsubscribe = this.journals.onJournalChanged((change) => this.journalChanged(change));
-    this.runPass(() => this.startPass());
+    this.runPass(() => this.startPass().finally(() => this.settleStartPass()));
+  }
+
+  /** The agent definitions the catalogs hold (with or without entries). Read API for the Memory page (autobyteus-554). */
+  agentDefinitionIds(): readonly string[] {
+    return [...this.catalogs.keys()];
+  }
+
+  /** The entries of one definition's runs on this node (any order); empty for a definition the catalogs do not hold. */
+  runsOf(agentDefinitionId: string): readonly CatalogEntry[] {
+    return [...(this.catalogs.get(agentDefinitionId)?.values() ?? [])];
+  }
+
+  /** Settles when the start pass has ended; before it the entries are not yet built. Never rejects. */
+  whenStartPassDone(): Promise<void> {
+    return this.startPassDone;
   }
 
   /** After a committed delete of a root (agent, team or org run): its runs leave the catalogs in the next pass. */
@@ -101,6 +120,7 @@ export class EpisodicCatalog {
     this.timer = null;
     this.pending.clear();
     await this.pass;
+    this.settleStartPass();
   }
 
   private journalChanged(change: WorkJournalChange): void {
@@ -269,3 +289,26 @@ export class EpisodicCatalog {
  */
 export const createEpisodicCatalog = (input: Readonly<{ memoryDir: string; journals: Journals; tasks: RunTasks }>): EpisodicCatalog =>
   new EpisodicCatalog({ layout: new AgentMemoryLayout(input.memoryDir), discovery: new RunFolderDiscovery(input.memoryDir), journals: input.journals, tasks: input.tasks });
+
+let processCatalog: EpisodicCatalog | null = null;
+
+/**
+ * The process's catalog, for readers built per request (the Memory page's explorer service). The composition root sets
+ * it right after creating the catalog, before the HTTP server serves, and releases it at close.
+ */
+export const setProcessEpisodicCatalog = (catalog: EpisodicCatalog): void => {
+  processCatalog = catalog;
+};
+
+/** Clears the binding when it still holds this catalog (close). */
+export const releaseProcessEpisodicCatalog = (catalog: EpisodicCatalog): void => {
+  if (processCatalog === catalog) processCatalog = null;
+};
+
+/** The process's catalog; throws `EPISODIC_CATALOG_NOT_COMPOSED` when no composition root has set it (no fallback). */
+export const getProcessEpisodicCatalog = (): EpisodicCatalog => {
+  if (!processCatalog) {
+    throw new Error("EPISODIC_CATALOG_NOT_COMPOSED: no composition root has set the process episodic catalog.");
+  }
+  return processCatalog;
+};

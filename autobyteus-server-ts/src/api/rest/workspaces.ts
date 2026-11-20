@@ -2,6 +2,7 @@ import fs from "node:fs";
 import type { FastifyInstance } from "fastify";
 import { lookup as lookupMime } from "mime-types";
 import { getWorkspaceManager } from "../../workspaces/workspace-manager.js";
+import { WorkspaceAccessError } from "../../workspaces/workspace-access-error.js";
 import { sendUserFile } from "./user-file-reply.js";
 
 const logger = {
@@ -28,7 +29,7 @@ export async function registerWorkspaceRoutes(app: FastifyInstance): Promise<voi
     }
 
     try {
-      const absolutePath = workspace.getAbsolutePath(filePath);
+      const absolutePath = await workspace.resolveReadablePath(filePath);
 
       if (!fs.existsSync(absolutePath) || !fs.statSync(absolutePath).isFile()) {
         throw new Error(`File does not exist at path: ${filePath}`);
@@ -39,6 +40,11 @@ export async function registerWorkspaceRoutes(app: FastifyInstance): Promise<voi
         body: fs.createReadStream(absolutePath),
       });
     } catch (error) {
+      if (error instanceof WorkspaceAccessError) {
+        logger.warn(`Refused ${filePath} in workspace ${workspaceId}: ${error.message}`);
+        return reply.code(403).send({ detail: error.message, code: error.code });
+      }
+
       if (error instanceof Error && error.message.includes("Access denied")) {
         logger.error(
           `Security error accessing path ${filePath} in workspace ${workspaceId}: ${error.message}`,
@@ -75,7 +81,7 @@ export async function registerWorkspaceRoutes(app: FastifyInstance): Promise<voi
     }
 
     try {
-      const absolutePath = workspace.getAbsolutePath(filePath);
+      const absolutePath = await workspace.resolveReadablePath(filePath);
 
       if (!fs.existsSync(absolutePath) || !fs.statSync(absolutePath).isFile()) {
         throw new Error(`File does not exist at path: ${filePath}`);
@@ -86,6 +92,11 @@ export async function registerWorkspaceRoutes(app: FastifyInstance): Promise<voi
         body: fs.createReadStream(absolutePath),
       });
     } catch (error) {
+      if (error instanceof WorkspaceAccessError) {
+        logger.warn(`Refused ${filePath} in workspace ${workspaceId}: ${error.message}`);
+        return reply.code(403).send({ detail: error.message, code: error.code });
+      }
+
       if (error instanceof Error && error.message.includes("Access denied")) {
         logger.error(
           `Security error accessing path ${filePath} in workspace ${workspaceId}: ${error.message}`,

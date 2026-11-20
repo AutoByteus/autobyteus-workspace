@@ -38,6 +38,9 @@ const definitionFolderName = (agentDefinitionId: string): string =>
 /** The folder of agents' semantic memories, a sibling of the run folders; run tooling never walks it. */
 export const SEMANTIC_MEMORY_DIR_NAME = "semantic";
 
+/** The node's global semantic memory folder, shared by every agent (autobyteus-554); a sibling of `semantic/`. */
+export const GLOBAL_SEMANTIC_MEMORY_DIR_NAME = "semantic-global";
+
 /** The folder of agents' episodic catalogs, a sibling of the semantic folder; run tooling never walks it. */
 export const EPISODIC_MEMORY_DIR_NAME = "episodic";
 
@@ -46,6 +49,7 @@ export class AgentMemoryLayout {
   private readonly teamRootDir: string;
   private readonly orgRootDir: string;
   private readonly semanticRootDir: string;
+  private readonly globalSemanticMemoryDir: string;
   private readonly episodicRootDir: string;
 
   constructor(memoryDir: string) {
@@ -53,6 +57,7 @@ export class AgentMemoryLayout {
     this.teamRootDir = path.join(memoryDir, "agent_teams");
     this.orgRootDir = path.join(memoryDir, "agent_orgs");
     this.semanticRootDir = path.join(memoryDir, SEMANTIC_MEMORY_DIR_NAME);
+    this.globalSemanticMemoryDir = path.join(memoryDir, GLOBAL_SEMANTIC_MEMORY_DIR_NAME);
     this.episodicRootDir = path.join(memoryDir, EPISODIC_MEMORY_DIR_NAME);
   }
 
@@ -75,6 +80,11 @@ export class AgentMemoryLayout {
    */
   getAgentSemanticMemoryDirPath(agentDefinitionId: string): string {
     return resolveSafePath(this.semanticRootDir, definitionFolderName(agentDefinitionId));
+  }
+
+  /** `<memory>/semantic-global/`: the node's global semantic memory folder, shared by every agent. */
+  getGlobalSemanticMemoryDirPath(): string {
+    return this.globalSemanticMemoryDir;
   }
 
   /** `<memory>/episodic/`: every agent's episodic folder and the node overview `index.md`. */

@@ -59,7 +59,7 @@ describe("PublishedArtifactPublicationService", () => {
         getActiveRun: vi.fn().mockReturnValue(input.run),
       } as any,
       workspaceManager: {
-        getOrCreateWorkspace: vi.fn().mockResolvedValue({
+        getOrCreateRunWorkspace: vi.fn().mockResolvedValue({
           getBasePath: () => input.workspaceRoot ?? "",
         }),
       } as any,

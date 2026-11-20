@@ -210,12 +210,13 @@ export class CodexThreadBootstrapper {
       agentDefinition,
       runContext.config.memberExecutionContext,
     );
-    const semanticMemoryPath = await this.semanticMemory.prepareForRun(agentDefinition);
+    const semanticMemory = await this.semanticMemory.prepareForRun(runContext.config.agentDefinitionId);
     const carpenterSystemPrompt = composeSharedCarpenterPrompt({
       agentDefinition,
       memberExecutionContext: runContext.config.memberExecutionContext,
       project: runContext.config.project,
-      semanticMemoryPath,
+      semanticMemoryPath: semanticMemory.agentFolder,
+      globalSemanticMemoryPath: semanticMemory.globalFolder,
       longRunningCommandSection: CODEX_LONG_RUNNING_COMMAND_SECTION,
     });
     const dynamicToolRegistrations: CodexDynamicToolRegistration[] | null = null;
@@ -233,7 +234,7 @@ export class CodexThreadBootstrapper {
         ...buildCodexSandboxWorkspaceWriteConfig({
           sandbox: resolveEffectiveCodexSandboxModeForRunConfig(runContext.config),
           networkAccess: Object.keys(integrationVariables).length > 0,
-          writableRoots: semanticMemoryPath ? [semanticMemoryPath] : [],
+          writableRoots: [semanticMemory.agentFolder, semanticMemory.globalFolder],
         }),
       },
       dynamicToolRegistrations,

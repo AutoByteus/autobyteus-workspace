@@ -1,4 +1,4 @@
-export type WorkspaceKind = "filesystem" | "skill" | "temp";
+export type WorkspaceKind = "filesystem" | "skill" | "temp" | "semantic_memory";
 
 export interface WorkspaceMetadata {
   workspaceId: string;

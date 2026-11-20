@@ -8,6 +8,7 @@ import {
   FILE_AND_DIRECTORY_PRACTICE_SECTION,
   renderAgentIdentitySection,
   renderProjectSection,
+  renderGlobalSemanticMemorySection,
   renderSemanticMemorySection,
   renderTeamInstructionSection,
   renderWorkingEnvironmentSection,
@@ -19,8 +20,10 @@ type CarpenterPromptComposerInput = {
   memberExecutionContext?: MemberExecutionContext | null;
   /** The Project the run was started under; its section is omitted when there is none. */
   project?: RunProjectContext | null;
-  /** The agent's semantic memory folder (absolute), or null when the agent has none; its section follows the Project's. */
-  semanticMemoryPath: string | null;
+  /** The agent's semantic memory folder (absolute); its section follows the Project's. Every agent has one. */
+  semanticMemoryPath: string;
+  /** The node's global semantic memory folder (absolute); its section follows the agent's own. */
+  globalSemanticMemoryPath: string;
 };
 
 export type SharedCarpenterPromptComposerInput = CarpenterPromptComposerInput & {
@@ -54,12 +57,10 @@ const buildSharedCarpenterPromptSections = (
     sections.push(renderCollaborationSections(member));
   }
   if (input.project) sections.push(renderProjectSection(input.project));
-  if (input.semanticMemoryPath !== null) {
-    if (!path.isAbsolute(input.semanticMemoryPath)) {
-      throw new Error("Semantic memory folder must be an absolute path.");
-    }
-    sections.push(renderSemanticMemorySection(input.semanticMemoryPath));
+  if (!path.isAbsolute(input.semanticMemoryPath) || !path.isAbsolute(input.globalSemanticMemoryPath)) {
+    throw new Error("Semantic memory folder must be an absolute path.");
   }
+  sections.push(renderSemanticMemorySection(input.semanticMemoryPath), renderGlobalSemanticMemorySection(input.globalSemanticMemoryPath));
   return sections;
 };
 

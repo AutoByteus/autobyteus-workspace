@@ -6,6 +6,7 @@ import { CLAUDE_LONG_RUNNING_COMMAND_SECTION } from "../../../../../../src/agent
 import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
 import { ClaudeSessionBootstrapper } from "../../../../../../src/agent-execution/backends/claude/backend/claude-session-bootstrapper.js";
+import { AgentSemanticMemory } from "../../../../../../src/agent-memory/services/agent-semantic-memory.js";
 import { MemberExecutionContext } from "../../../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
 import { Skill } from "../../../../../../src/skills/domain/models.js";
@@ -15,7 +16,12 @@ import { testPreparationGuard } from "../../../../../fixtures/run-workspace-skil
 
 // A test-owned workspace: preparation creates its `.claude/skills` folder (SR-004).
 const WORKING_DIRECTORY = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "claude-bootstrapper-workspace-")));
-afterAll(() => { fs.rmSync(WORKING_DIRECTORY, { recursive: true, force: true }); });
+// Every run creates its semantic folders (autobyteus-554): in a test-owned memory folder.
+const MEMORY_DIR = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "claude-bootstrapper-memory-")));
+afterAll(() => {
+  fs.rmSync(WORKING_DIRECTORY, { recursive: true, force: true });
+  fs.rmSync(MEMORY_DIR, { recursive: true, force: true });
+});
 
 const createMemberExecutionContext = () =>
   testMemberExecutionContext({
@@ -49,7 +55,7 @@ const createRunContext = (input: {
   });
 
 const createBootstrapper = (bindings: ConfiguredAgentSkillBinding[] = [], skillScope: "CONFIGURED" | "ALL_INSTALLED" = "CONFIGURED",
-  workingDirectory = WORKING_DIRECTORY) => {
+  workingDirectory = WORKING_DIRECTORY, storedSemanticMemoryKey?: boolean) => {
   const workspaceSkillMaterializer = { materializeConfiguredWorkspaceSkills: vi.fn(async (input: { requests?: unknown[] }) => ({ materializedSkills: [], effectiveRequests: input.requests ?? [] })) };
   const bootstrapper = new ClaudeSessionBootstrapper(
     { resolveWorkingDirectory: vi.fn(async () => workingDirectory) } as any,
@@ -61,9 +67,11 @@ const createBootstrapper = (bindings: ConfiguredAgentSkillBinding[] = [], skillS
         description: "Professor",
         skillNames: bindings.map((binding) => binding.kind === "resolved" ? binding.skill.name : binding.name),
         toolNames: [],
+        ...(storedSemanticMemoryKey === undefined ? {} : { semanticMemoryEnabled: storedSemanticMemoryKey }),
       })),
     } as any,
     { resolveSkillScope: () => skillScope, resolveConfiguredSkillBindingsForAgent: vi.fn(() => bindings) } as any,
+    new AgentSemanticMemory({ memoryDir: MEMORY_DIR }),
   );
   return { bootstrapper, workspaceSkillMaterializer };
 };
@@ -98,6 +106,18 @@ describe("ClaudeSessionBootstrapper", () => {
     expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## Working Environment");
     expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## Bash Operating Practice");
     expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## File And Directory Practice");
+  });
+
+  it.each([undefined, false, true])("gives every agent (stored key: %s) both semantic folders: the sections, the folders created, and both as additional directories (autobyteus-554 AC-001, AC-009)", async (storedKey) => {
+    const { bootstrapper } = createBootstrapper([], "CONFIGURED", WORKING_DIRECTORY, storedKey);
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }), testPreparationGuard(bootstrapper));
+    const agentFolder = path.join(MEMORY_DIR, "semantic", "agent-def-claude");
+    const globalFolder = path.join(MEMORY_DIR, "semantic-global");
+    expect(runContext.runtimeContext.carpenterSystemPrompt).toContain(`## Semantic Memory\n\nYour semantic memory is the folder \`${agentFolder}\`.`);
+    expect(runContext.runtimeContext.carpenterSystemPrompt).toContain(`## Global Semantic Memory\n\nThe global semantic memory of this node is the folder \`${globalFolder}\`.`);
+    expect(runContext.runtimeContext.sessionConfig.additionalDirectories).toEqual([agentFolder, globalFolder]);
+    expect(fs.statSync(agentFolder).isDirectory()).toBe(true);
+    expect(fs.statSync(globalFolder).isDirectory()).toBe(true);
   });
 
   it("tells a run started under a Project its Project (REQ-006, DS-005)", async () => {

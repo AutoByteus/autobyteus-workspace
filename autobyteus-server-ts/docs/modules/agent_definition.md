@@ -115,13 +115,11 @@ Every agent definition carries `skillScope` (`AgentSkillScope`), persisted in `a
 
 ## Semantic Memory
 
-An agent definition may carry `"semanticMemoryEnabled": true` in its `agent-config.json` (absent or anything but
-`true` is off). `AgentDefinition.semanticMemoryEnabled` holds it; `buildAgentConfigRecord` writes the key only when it
-is on and `mergeAgentConfigRecord` drops a stale `true` when it is turned off, so an agent without it keeps its file as
-it was. For package and built-in agents the app's switch is a personal setting (`SEMANTIC_MEMORY`, see
-[Personal Settings](./personal_settings.md)); for the user's own agents it is saved in their `agent-config.json`.
-GraphQL exposes `semanticMemoryEnabled` (read, create and update inputs; `null`/absent on update leaves it as it is) and
-the computed, read-only `semanticMemoryPath` (the folder, `null` when off). What the setting does at run time:
+Every agent has a semantic memory (autobyteus-554); there is no switch. GraphQL exposes the computed, read-only
+`semanticMemoryPath: String!`, the agent's folder (reading it creates nothing). An `agent-config.json` that still holds
+`"semanticMemoryEnabled"` (true or false, from before) is read without it: no reader looks at the key, and
+`mergeAgentConfigRecord` keeps it only in its retired-key drop list, so the key is gone after that file's next save while
+every other key is kept. No file is rewritten just for it. What every run gets:
 [Agent Memory § Semantic Memory](./agent_memory.md#semantic-memory).
 
 ## Internal Agents

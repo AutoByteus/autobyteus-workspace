@@ -2,12 +2,14 @@
 
 ## Overview
 
-The Memory page (`/memory`) is a page-based memory browser for stored agent, agent-team, and agent-org memory. It is intentionally memory-derived: it lists only independent agents, agent teams, or agent orgs that have persisted memory-bearing runs. Configured agents, teams, or orgs that have never produced memory do not appear.
+The Memory page (`/memory`) is a page-based browser for the node's memory, organised by owner (autobyteus-554, UI/UX
+spec `semantic-memory-view-554`): Global, Agents, Agent Teams and Agent Orgs. An agent owns its episodic memory (its
+runs, from every place it works) and its semantic memory (its folder); the node owns its global semantic memory.
 
 The page has three tabs (`section` in the route query):
 
-- **Browse** (the entry) — choose `Agents`, `Agent Teams`, or `Agent Orgs`, then an agent's runs or a team's or
-  org's runs and their members. When the current server is a Memory Hub, an imported source can be selected.
+- **Browse** (the entry) — owner tabs `Global · Agents · Agent Teams · Agent Orgs` with their cards, opening on
+  Agents; a card opens its owner's page. When the current server is a Memory Hub, an imported source can be selected.
 - **Search** — memory search over the Work Journals of every local run (see [Memory Search](#memory-search)).
 - **Index** — the memory index pipeline: its four steps, `Index now`, `Try again` and `Rebuild` (see
   [Memory Index](#memory-index)).
@@ -16,13 +18,15 @@ A run opens in the **run detail** (the Memory Inspector) on its `Work Journal` t
 There is no Working Context tab and no tab for the per-run category files of an early compaction design: the Work
 Journal is the readable account of a run and the raw traces its authority.
 
-Route query state (`view`, `section`, `tab`, `source`, `q`, and the selected definition/run
-identifiers) preserves deep links and refreshes for home, source selection,
-agent detail, team detail, org detail, agent-run inspector, team-member
-inspector, org-member inspector and run-folder inspector views. Each card, run, member, or Back click
-navigates immediately and issues exactly one data request for the target view;
-detail views show `Loading runs…` until their own data arrives and never show a
-previous selection's runs.
+Route query state (`view`, `section`, `node`, `pane`, `source`, `q`, and the run identifiers) preserves deep links and
+refreshes. Browse's address is `node` (`utils/memoryBrowseNode.ts`): a tab (`global`, `agents`, `teams`, `orgs`) or an
+owner reached through it, for example `agents/agent:<id>`, `teams/team:<id>/agent:<id>`, `orgs/org:<id>/team:<id>` or
+`agents/unattributed`, each ID URI-encoded in its segment (a team-local agent ID keeps its `:` inside the segment); `pane`
+is the owner page's tab (`semantic`, `runs`). A run opened from an owner page carries `back`, `backPane` and `backName`,
+so the inspector's Back reads `Back to <owner>` and returns to that page and tab. The old agent, team and org runs pages
+(`view=agent-detail|team-detail|org-detail`) are gone; such an address opens Browse on Agents. Each card, run, member or
+Back click navigates immediately and the page (the single fetch owner) issues the requests of the target view only;
+an owner page shows `Loading runs…` until its own data arrives and never shows a previous owner's runs.
 
 ## Current Native Compaction And Historical Categories
 
@@ -39,96 +43,93 @@ See [core memory design](../../autobyteus-ts/docs/agent_memory_design.md).
 
 ## Memory Home (Browse)
 
-Memory Home starts directly with the `Browse · Search · Index` tab control, without a page title, flat on the
-page like the Skills page. Browse has three quiet sub-tabs and a name filter that applies as you type (300 ms) or
-on Enter:
+Memory Home starts directly with the `Browse · Search · Index` tab control, without a page title, flat on the page like
+the Skills page. Browse (`MemoryBrowse.vue`) has the owner tabs `Global · Agents · Agent Teams · Agent Orgs` and no list
+filter: a node holds few agents, teams and orgs.
 
-- `Agents`
-- `Agent Teams`
-- `Agent Orgs`
-
-When more than one memory source exists (imported Memory Sync sources), a source
-selector is shown beside the filter. `Local Memory` is the default for initial page load and for missing or
-invalid source route state. Imported options are labeled as read-only imported
-corpora and use `source=imported:<memorySyncSourceId>` in the route query.
+When more than one memory source exists (imported Memory Sync sources), a source selector and the amber
+`Imported · read-only` pill are shown at the right of the tabs. `Local Memory` is the default for initial page load and
+for missing or invalid source route state. Imported options use `source=imported:<memorySyncSourceId>` in the route
+query; choosing one keeps the owner and its tab.
 
 The sources list is refreshed in the background every time the Memory home view
-is shown (including first page entry); the refresh never delays the home list,
+is shown (including first page entry); the refresh never delays the cards,
 so sources imported by another node appear when the user returns home without
 reloading the app. A route that names an imported source not yet in the loaded
 list triggers one awaited refresh; if the source is still unknown the view falls
-back to `Local Memory` and drops it from the URL. Detail and inspector
-navigation never request the sources list. A failed refresh keeps the previously
-loaded list and shows the source error text.
+back to `Local Memory` and drops it from the URL. Inspector navigation never
+requests the sources list. A failed refresh keeps the previously loaded list and
+shows the source error text.
 
-Cards show display names, stable IDs, run counts, compact latest-update timestamps and member counts for teams and orgs. Availability says nothing in the normal case: a card shows `No Work Journal`, `No Raw traces` or `Archive` only when something is missing or archived. Filter placeholders are scoped to the selected tab, and filtering/pagination are backed by GraphQL rather than by client-side grouping.
+- **Agents:** the shared agents (with or without runs) and every agent with runs on this node (team-local ones
+  included), newest change first, then `Unattributed runs` (standalone runs that no agent definition names). A card
+  shows the name, the ID (`unattributed` for that card) and the latest change; no run count. Internal agents appear
+  only while Settings → Server Settings → "Show internal agents" is on.
+- **Agent Teams / Agent Orgs:** a card shows the name, the ID, an `N runs` pill and `N members · <latest change>`; this
+  node's cards include the definitions with no runs yet.
+- **Global:** "Global memory", the line "Knowledge shared by every agent, agent team and agent org on this node. Every
+  agent reads it and writes to it.", and the node's global semantic memory folder (below).
 
-A team run that an agent delegated to is listed as the team run it is (autobyteus-461); there is no task-team tag.
+The cards come from one request per kind (`fetchOwners`, every owner at once). For this node they come from the
+server's episodic catalog, so they appear after its start pass; for an imported source from that source's runs.
 
-Agent cards are grouped primarily by `agentDefinitionId` when metadata exists. Standalone memory directories without run-history or metadata remain visible under an explicit `Unattributed runs` agent group so legacy stored memory is not hidden.
+## Owner Pages
 
-Agent-team cards are grouped by `teamDefinitionId` from team-run metadata. A team appears only when at least one member memory target exists.
+Every owner page has `← Back to Memory` (or `← Back to <team or org>` when reached through one) above its header.
 
-Agent-org cards are grouped by `orgDefinitionId` in the same way and appear only
-when at least one org member has memory. Memory Sync does not export
-`agent_orgs`, so imported sources always show the `No agent org memories yet.`
-empty state on this tab.
+**An agent** (`AgentMemoryPage.vue`): the name; "Belongs to <team>" for a team-local agent, "Also works in <teams ·
+orgs>" for a shared agent that is a member somewhere (from the teams' and orgs' members), or "Runs that no agent
+definition names." for Unattributed runs; the ID; and the tabs **Episodic memory · N** and **Semantic memory** (short
+labels below 640 px). A shared agent opens the same page from Agents, a team or an org.
 
-## Detail Pages
+- *Episodic memory:* the agent's episodes, its runs from every place it works, newest first, 24 to a page: summary (else
+  the Task title, else the run ID), run ID, "In <team or org>" with its icon when the agent works in more than one
+  place, workspace and time. The filter "Filter runs by title or run ID…" asks the node as you type (run ID, Task title,
+  run summary). A run opens its run detail; Back returns to this tab. Unattributed runs has this tab only.
+- *Semantic memory:* the agent's folder (below).
 
-Agent detail pages use the selected agent name as the run-list card heading without a separate subject summary card. The list is sorted by latest memory update and exposes run labels, run IDs, workspace paths when available, compact updated timestamps, and memory availability badges. Selecting a run opens the Memory Inspector for that agent run.
+**A team or an org** (`GroupMemoryPage.vue`): the name, "Agent Team" or "Agent Org", the ID, and the tabs **Members · N**
+and **Runs · N**. Member cards show an agent (user icon, name, ID; a shared agent carries the `Shared agent` pill, "A
+shared agent: one memory, the same page wherever it appears.") or, in an org, a team ("Agent Team · N members"); a
+member opens its own page. Runs is the team's or org's run list (`CollaborationMemoryDetail` with `embedded`: no second
+title or Back); a member of a run opens its run detail, and Back returns to the Runs tab.
 
-Team and org detail pages share one component (`CollaborationMemoryDetail`) and use the selected team or org name as the run-list card heading without a separate subject summary card. Root runs are sorted by latest member-memory update. Backend summaries are resolved from the stored execution tree of each root run and the server memory-location service. Logical `memberAddress` identifies the Agent placement; physical memory resolution uses the root run id plus ancestor team run ids plus `agentRunId` rather than a flattened or address-derived directory.
+## Semantic Memory Folder View
 
-Each run's member chips form a tree (no `Members` label) that mirrors the run-history sidebar
-structure. It shows every agent run of that root run that has memory on disk:
+`SemanticMemoryFolder.vue` shows an agent's semantic memory folder or the node's global one, read only, as the Skills
+page shows a skill's folder: the path (selectable), then one panel with the file explorer (260 px, search box, tree) and
+the Files panel's tabs; below 768 px the explorer sits above the open file. The node answers the folder's state first
+(`agentSemanticMemoryFolder` / `globalSemanticMemoryFolder`, `stores/semanticMemoryFolderStore.ts`):
 
-- configured agents;
-- configured teams as group rows containing their members;
-- delegated task agents (marked as tasks, with their start time);
-- delegated task teams as group rows (marked as tasks, with their start time)
-  containing their members, including task teams that their members delegated
-  in turn, at any depth. Teams are flat: a team's members are agents.
+- missing: "No semantic memory yet · The folder is created when <agent> next runs." (Global: "No global memory yet · The
+  folder is created when an agent next runs."); empty: "<agent> has not written anything to its folder yet." (Global:
+  "Nothing has been written to global memory yet."); no path and no panel, and the view never creates the folder;
+- an imported source: "Semantic memory is not part of synced memory · Memory Sync copies runs and their Work Journals.
+  An agent’s semantic memory stays on the node where the agent runs." and nothing is asked of the node.
 
-Group rows are structural only and have no memory of their own; a group row
-appears only when something inside it has memory. Every agent row shows the
-member's display name (for orgs, its address path inside the org, for example
-`software_engineering_team/solution_designer`) and its own run ID, and opens the
-inspector for exactly that run, so the row's badge, run ID, and inspected memory
-always refer to the same run. Memory folders on disk that the run's execution
-tree does not reference are not shown. A team run without delegated tasks
-renders as a flat member list.
+While a folder with files is shown, the web registers the node's read-only semantic memory workspace for it
+(`workspaceStore.registerSemanticMemoryWorkspace`: `semantic_ws_<encoded agent ID>` or `semantic_global_ws`, transient
+like a skill's, never in the Workspaces sidebar or a picker) and releases it on leaving
+(`unregisterTransientWorkspace`). `FileExplorer`, `FileItem` and `FileExplorerTabs` run in their `read-only` mode: no
+context menu, rename, drag and drop or upload; every file opens in preview (Markdown rendered), no edit and no Save;
+the empty tab reads "No file selected · Select a file to read it."; a symbolic link is a link row (link icon, name,
+"Link · not opened", a tooltip, no hover, `aria-disabled`) that opens nothing. The node refuses every write and every
+link's content itself ([server File Explorer](../../autobyteus-server-ts/docs/modules/file_explorer.md)).
 
-The tree is built client-side (`components/memory/collaborationMemberTree.ts`)
-from each member target's `groupPath`, `executionKind`, and `startedAt`.
-
-The filter on detail pages (`Filter runs by title or run ID…`) narrows only within the selected agent's runs or the selected team's/org's runs and member targets (including task agents and task-team members). Subject-level run-count and ID metadata are intentionally not repeated above the list; per-run and per-team-run metadata remains visible inside the list cards.
-
-The run detail's heading is the run's name: the agent, or `member · team` / `member · org`, with the run ID (and workspace) below; no path words. Back links preserve the previous destination while using concise subject labels, for example `Back to Codex`, `Back to <team name>`, `Back to <org name>`, or `Back to search results` when the run was opened from a search.
-
-Imported source detail and inspector views keep the selected source in route and
-store state. Imported memory is browse-only; the UI must not add restore,
-continue, archive, delete, or other local-runtime actions for imported sources.
-
-## Frontend State Ownership
-
-Frontend memory state is split by role:
-
-- `stores/memoryExplorerStore.ts` owns Memory Home and detail-page lists (agents, teams, orgs), searches, pagination, the sources list and selected source, selected agent/team/org summaries, and request-staleness guards. `pages/memory.vue` owns route-driven fetching: it decides which single request a navigation issues and when the sources list is refreshed.
-- `stores/memoryInspectorStore.ts` owns the explicit inspect target, selected inspector tab, raw-trace loading state, selected raw-trace file name, raw-trace limit, and request-staleness guards. It reads the memory view only when Raw Traces are shown.
-- `stores/memoryJournalStore.ts` owns the Work Journal view of one run: its files, the selected file, the window of lines shown, the matched lines a search result opened it at, and request-staleness guards.
 - `stores/memorySearchStore.ts` owns the memory search (cue, results, coverage, error) and the memory index status, read again about every 2 s while a build runs; `composables/useMemoryIndexView.ts` turns the status into the Index tab's headline, badge and step text.
 - `stores/memorySyncStore.ts` owns the Nodes -> Memory Sync setup/status UI for the currently bound backend node.
 
-The page shell renders `MemoryHome` (with `MemorySearchPanel`, `MemorySearchResults` and `MemoryIndexPanel` for the Search and Index tabs), `AgentMemoryDetail`, `CollaborationMemoryDetail` (teams and orgs), or `MemoryInspector` (with `WorkJournalTab` and `RawTracesTab`) according to `/memory` query parameters.
+The page shell renders `MemoryHome` (with `MemoryBrowse` and its owner pages, and `MemorySearchPanel`, `MemorySearchResults` and `MemoryIndexPanel` for the Search and Index tabs) or `MemoryInspector` (with `WorkJournalTab` and `RawTracesTab`) according to `/memory` query parameters. `stores/memoryExplorerStore.ts` owns the sources, the owner cards, an agent's episodes, a team's or org's members (and every group's members for the agent subtitle), and the team and org runs lists.
 
 ## GraphQL Explorer Contract
 
 The Memory page uses backend-for-frontend explorer queries for lists:
 
 - `listMemoryExplorerSources()` returns `Local Memory` plus any imported Memory Sync sources.
-- `listAgentsWithMemory(source, search, page, pageSize)` returns memory-bearing agent groups.
-- `listAgentRunsWithMemory(selector, source, search, page, pageSize)` returns memory-bearing runs for a selected attributed agent or the `UNATTRIBUTED` group.
+- `listAgentsWithMemory(source, search, page, pageSize)` returns the Agents cards.
+- `listAgentEpisodes(selector, source, search, page, pageSize)` returns one agent's episodes (or the `UNATTRIBUTED` runs), each with the `subject` that opens it and its `place`.
+- `listMemoryGroupMembers(kind, definitionId, source)` returns a team's or org's members.
+- `agentSemanticMemoryFolder(agentDefinitionId)` and `globalSemanticMemoryFolder` return a semantic memory folder's `{ folderPath, exists, isEmpty }`.
 - `listAgentTeamsWithMemory(source, search, page, pageSize)` returns memory-bearing agent-team groups.
 - `listAgentTeamRunsWithMemory(teamDefinitionId, source, search, page, pageSize)` returns memory-bearing team runs and member memory targets for one team definition.
 - `listAgentOrgsWithMemory(source, search, page, pageSize)` returns memory-bearing agent-org groups.
@@ -374,4 +375,4 @@ Coverage includes:
 - Backend Memory Sync API/E2E checks for hub enablement, URL candidates, one-time token handling, source config redaction, explicit draft and saved connection-test modes, REST batch ingestion, imported-source Memory Explorer reads, duplicate retry, source-token binding, latest-error source status, and unsafe path rejection.
 - Backend multi-process Memory Sync E2E starts two real server processes with isolated app-data directories, configures hub/source through HTTP GraphQL, validates saved-mode connection testing, syncs over HTTP, and asserts hub import files without requiring browser, Electron, Docker, or Kubernetes. Its large-file case (`tests/e2e/memory-sync/memory-sync-large-files.e2e.test.ts`) puts a counting proxy between the two: a 40 MiB attachment and two 20 MiB files sync with every request within the limits, an interrupted upload resumes, and a corrupted piece fails only its own file.
 - `components/settings/__tests__/MemorySyncCard.spec.ts` covers the card's status lines and the "files could not be synced" block (nothing extra without failures, many failures with "and N more", one failure); how long paths wrap is checked in a browser, because jsdom does no line breaking.
-- Frontend store/component/page tests for memory search (result mapping, found words, words-not-found/none/coverage/error states, opening each run kind by its subject), the memory index (status mapping, polling while building, Index now/Try again/Rebuild with confirmation, model changed), the Work Journal view (windows, jumps, matched lines, missing-journal states), Memory Home (Browse/Search/Index tabs, task-team tag), source selection and home-only sources refresh, one request per navigation, agent detail, team and org detail with the member tree, inspector targets, direct route restoration, search/pagination behavior, tab-specific raw-trace fetching, raw-trace file selector state/rendering, Memory Sync tab entry, source-aware query variables, form-preserving Memory Sync status refresh, saved-vs-draft connection-test dispatch, inline connection feedback, `Current job`/`Last sync` precedence, and sync button loading state.
+- Frontend store/component/page tests for memory search (result mapping, found words, words-not-found/none/coverage/error states, opening each run kind by its subject), the memory index (status mapping, polling while building, Index now/Try again/Rebuild with confirmation, model changed), the Work Journal view (windows, jumps, matched lines, missing-journal states), Memory Home (Browse/Search/Index tabs), Browse by owner (`MemoryBrowse`, `AgentMemoryPage`, `GroupMemoryPage`: tabs, cards, owner pages, Back, not found, the agent subtitle and episodes), the read-only semantic memory folder (`SemanticMemoryFolder`: states, the transient workspace, read-only explorer mode and link rows in `FileItem.readOnly.spec.ts`), source selection and home-only sources refresh, one request per navigation, team and org runs with the member tree, inspector targets, direct route restoration, search/pagination behavior, tab-specific raw-trace fetching, raw-trace file selector state/rendering, Memory Sync tab entry, source-aware query variables, form-preserving Memory Sync status refresh, saved-vs-draft connection-test dispatch, inline connection feedback, `Current job`/`Last sync` precedence, and sync button loading state.

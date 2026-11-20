@@ -61,7 +61,7 @@ export type AgentDefinitionFileStore = Pick<
 >;
 
 /** The settings that are personal for package and built-in agents (the rest goes to the files). */
-const PERSONAL_FIELDS: ReadonlySet<string> = new Set(["toolNames", "skillNames", "avatarUrl", "defaultLaunchConfig", "semanticMemoryEnabled"]);
+const PERSONAL_FIELDS: ReadonlySet<string> = new Set(["toolNames", "skillNames", "avatarUrl", "defaultLaunchConfig"]);
 
 /** A stored definition with where it was read from (null for an application-owned agent). */
 type BaseRead = Readonly<{ definition: AgentDefinition | null; sourceClass: PersonalSettingsSourceClass | null }>;
@@ -96,7 +96,6 @@ export type AgentDefinitionCreateInput = {
   skillNames?: string[];
   skillScope?: AgentSkillScope;
   defaultLaunchConfig?: AgentDefinitionDefaultLaunchConfig | null;
-  semanticMemoryEnabled?: boolean;
 };
 
 export type AgentDefinitionUpdateInput = Partial<AgentDefinitionCreateInput>;
@@ -227,7 +226,6 @@ export class AgentDefinitionService {
       skillNames: data.skillNames ?? [],
       skillScope: normalizeAgentSkillScope(data.skillScope),
       defaultLaunchConfig: normalizeDefaultLaunchConfigInput(data.defaultLaunchConfig) ?? null,
-      semanticMemoryEnabled: data.semanticMemoryEnabled === true,
     });
 
     const created = await this.fileStore.create(definition);
@@ -426,9 +424,6 @@ export class AgentDefinitionService {
           break;
         case "skillScope":
           nextValue = normalizeAgentSkillScope(value);
-          break;
-        case "semanticMemoryEnabled":
-          nextValue = value === true;
           break;
         default:
           break;

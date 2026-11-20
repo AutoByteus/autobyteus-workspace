@@ -1,25 +1,35 @@
 import type {
-  AgentMemoryAttribution,
-  AgentRunMemorySummary,
+  AgentEpisode,
   AgentWithMemorySelector,
   AgentWithMemorySummary,
-  MemoryAvailabilityBuildResult,
   MemoryExplorerPage,
 } from "../domain/models.js";
+import type { DiscoveredRun } from "../domain/discovered-run.js";
 import type { MemoryFileStore } from "../store/memory-file-store.js";
 import { AgentRunMetadataStore } from "../../run-history/store/agent-run-metadata-store.js";
 import { AgentRunHistoryCatalogService } from "../../run-history/services/agent-run-history-catalog-service.js";
-import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
+import type { RunHistoryIndexRow } from "../../run-history/domain/agent-run-history-index-types.js";
+import {
+  getProcessEpisodicCatalog,
+  type EpisodicCatalog,
+} from "../../agent-episodic-catalog/services/episodic-catalog.js";
 import {
   getInternalAgentVisibility,
   type InternalAgentVisibility,
 } from "../../agent-definition/services/internal-agent-visibility.js";
-import type { RunHistoryIndexRow } from "../../run-history/domain/agent-run-history-index-types.js";
+import { MemoryRunSummaryBuilder, hasMemoryAvailability } from "./memory-run-summary-builder.js";
+import { RunFolderDiscovery } from "./run-folder-discovery.js";
+import { TeamRootMemorySource } from "./team-root-memory-source.js";
+import { AgentOrgRootMemorySource } from "./agent-org-root-memory-source.js";
+import type { CollaborationRootCatalogEntry } from "./collaboration-root-memory-catalog.js";
 import {
-  MemoryRunSummaryBuilder,
-  hasMemoryAvailability,
-  mergeMemoryAvailability,
-} from "./memory-run-summary-builder.js";
+  candidateFromCatalog,
+  candidateFromDiscovery,
+  pageEpisodes,
+  subjectOf,
+  type EpisodeCandidate,
+  type EpisodeHistory,
+} from "./agent-episodes.js";
 import {
   includesMemoryExplorerQuery,
   normalizeMemoryExplorerSearch,
@@ -29,248 +39,236 @@ import {
 const UNATTRIBUTED_STABLE_ID = "unattributed";
 const UNATTRIBUTED_DISPLAY_NAME = "Unattributed runs";
 
-type AgentRunRecord = {
-  runId: string;
-  metadata: AgentRunMetadata | null;
-  catalogRow: RunHistoryIndexRow | null;
-  memory: MemoryAvailabilityBuildResult;
+/** The episodic catalog's read API: this node's runs per agent definition, built at start and kept current. */
+type EpisodeCatalog = Pick<EpisodicCatalog, "agentDefinitionIds" | "runsOf" | "whenStartPassDone">;
+type Discovery = Pick<RunFolderDiscovery, "findRuns">;
+type RootRows = Readonly<{ readCatalogEntries(): Promise<ReadonlyMap<string, CollaborationRootCatalogEntry>> }>;
+
+/** The agent definitions the Agents cards come from: the shared ones (not team-local) and every name by ID. */
+export type AgentCardDefinitions = Readonly<{
+  sharedIds(): Promise<ReadonlySet<string>>;
+  names(): Promise<ReadonlyMap<string, string>>;
+}>;
+
+const PROCESS_AGENT_DEFINITIONS: AgentCardDefinitions = {
+  sharedIds: async () => new Set((await (await agentDefinitionService()).getAllAgentDefinitions()).flatMap((d) => (d.id ? [d.id] : []))),
+  names: async () => new Map((await (await agentDefinitionService()).getAgentDefinitionsWithTeamLocal())
+    .flatMap((d) => (d.id ? [[d.id, d.name] as const] : []))),
 };
 
-const definitionOf = (run: AgentRunRecord): string | null =>
-  run.metadata?.agentDefinitionId?.trim() || run.catalogRow?.agentDefinitionId?.trim() || null;
-const workspaceOf = (run: AgentRunRecord): string | null =>
-  run.metadata?.workspaceRootPath ?? run.catalogRow?.workspaceRootPath ?? null;
-const createdAtOf = (run: AgentRunRecord): string | null =>
-  run.catalogRow?.createdAt ?? run.metadata?.startedAt ?? run.metadata?.preparedAt ?? null;
+const agentDefinitionService = async () =>
+  (await import("../../agent-definition/services/agent-definition-service.js")).AgentDefinitionService.getInstance();
 
-/** Resolves an agent definition's display name; `null` when the definition can no longer be found. */
-type AgentDefinitionLookup = {
-  getAgentDefinitionById(agentDefinitionId: string): Promise<{ name?: string | null } | null>;
-};
+/** One owner's runs, before the card is built: its ID (null: unattributed) and its episodes. */
+type Owner = { agentDefinitionId: string | null; candidates: EpisodeCandidate[]; recordedName: string | null };
 
-const PROCESS_AGENT_DEFINITIONS: AgentDefinitionLookup = {
-  getAgentDefinitionById: async (agentDefinitionId) => {
-    const { AgentDefinitionService } = await import("../../agent-definition/services/agent-definition-service.js");
-    return AgentDefinitionService.getInstance().getAgentDefinitionById(agentDefinitionId);
-  },
-};
-
-type AgentGroup = {
-  attribution: AgentMemoryAttribution;
-  agentDefinitionId: string | null;
-  displayName: string;
-  stableId: string;
-  runs: AgentRunRecord[];
-};
-
+/**
+ * The Memory page's agents (autobyteus-554): the Agents cards and one agent's episodes, its runs from every place it
+ * works. For this node (`local`) both come from the episodic catalog, after its start pass, with no discovery of the
+ * memory folder; "Unattributed runs" is the standalone runs no definition names (the standalone scan). For an imported
+ * source, everything comes from one discovery of that source per request. Internal agents are hidden while they are
+ * hidden on the node (autobyteus-308).
+ */
 export class AgentMemoryExplorerService {
+  private readonly local: boolean;
+  private readonly catalog: () => EpisodeCatalog;
+  private readonly discovery: Discovery;
   private readonly metadataStore: AgentRunMetadataStore;
-  private readonly catalogService: AgentRunHistoryCatalogService;
+  private readonly agentRows: AgentRunHistoryCatalogService;
+  private readonly teamRows: RootRows;
+  private readonly orgRows: RootRows;
   private readonly summaryBuilder: MemoryRunSummaryBuilder;
-  private readonly agentDefinitions: AgentDefinitionLookup;
+  private readonly definitions: AgentCardDefinitions;
   private readonly visibility: Pick<InternalAgentVisibility, "hiddenDefinitionIds">;
-  private readonly memoryDir: string;
 
   constructor(
     private readonly store: MemoryFileStore,
     memoryDir: string,
     dependencies: {
+      /** This node's memory (default); false for an imported source. */
+      local?: boolean;
+      catalog?: () => EpisodeCatalog; // default: the process catalog (local only)
+      discovery?: Discovery; // default: a discovery of `memoryDir` (imported only)
       metadataStore?: AgentRunMetadataStore;
-      catalogService?: AgentRunHistoryCatalogService;
+      agentRows?: AgentRunHistoryCatalogService;
+      teamRows?: RootRows;
+      orgRows?: RootRows;
       summaryBuilder?: MemoryRunSummaryBuilder;
-      agentDefinitions?: AgentDefinitionLookup; // default: the process agent definition service
-      visibility?: Pick<InternalAgentVisibility, "hiddenDefinitionIds">; // default: the process internal-agent rule
+      definitions?: AgentCardDefinitions;
+      visibility?: Pick<InternalAgentVisibility, "hiddenDefinitionIds">;
     } = {},
   ) {
-    this.memoryDir = memoryDir;
+    this.local = dependencies.local ?? true;
+    this.catalog = dependencies.catalog ?? getProcessEpisodicCatalog;
+    this.discovery = dependencies.discovery ?? new RunFolderDiscovery(memoryDir);
     this.metadataStore = dependencies.metadataStore ?? new AgentRunMetadataStore(memoryDir);
-    this.catalogService = dependencies.catalogService ?? new AgentRunHistoryCatalogService(memoryDir);
+    this.agentRows = dependencies.agentRows ?? new AgentRunHistoryCatalogService(memoryDir);
+    this.teamRows = dependencies.teamRows ?? new TeamRootMemorySource(memoryDir);
+    this.orgRows = dependencies.orgRows ?? new AgentOrgRootMemorySource(memoryDir);
     this.summaryBuilder = dependencies.summaryBuilder ?? new MemoryRunSummaryBuilder(store);
-    this.agentDefinitions = dependencies.agentDefinitions ?? PROCESS_AGENT_DEFINITIONS;
+    this.definitions = dependencies.definitions ?? PROCESS_AGENT_DEFINITIONS;
     this.visibility = dependencies.visibility ?? getInternalAgentVisibility();
   }
 
+  /** The Agents cards: shared agents and every agent with runs, newest change first, then "Unattributed runs". */
   async listAgentsWithMemory(
     search?: string | null,
     page = 1,
     pageSize = 25,
   ): Promise<MemoryExplorerPage<AgentWithMemorySummary>> {
     const query = normalizeMemoryExplorerSearch(search);
-    const groups = await this.buildGroups();
-    const filtered = query
-      ? groups.filter((group) => this.groupMatches(group, query))
-      : groups;
-    const summaries = filtered
-      .map((group) => this.toAgentSummary(group))
-      .sort((a, b) => this.compareAgentSummaries(a, b));
-    return pageMemoryExplorerEntries(summaries, page, pageSize);
+    const [owners, names] = await Promise.all([this.listOwners(), this.definitions.names()]);
+    const cards = owners.map((owner) => toCard(owner, names));
+    const attributed = cards.filter((card) => card.attribution === "DEFINITION").sort(compareCards);
+    const unattributed = cards.filter((card) => card.attribution === "UNATTRIBUTED");
+    const matching = [...attributed, ...unattributed].filter((card) => !query
+      || includesMemoryExplorerQuery(card.displayName, query) || includesMemoryExplorerQuery(card.stableId, query));
+    return pageMemoryExplorerEntries(matching, page, pageSize);
   }
 
-  async listAgentRunsWithMemory(
+  /** One agent's episodes (or the unattributed runs), filtered by run ID, Task title and summary, newest first. */
+  async listAgentEpisodes(
     selector: AgentWithMemorySelector,
     search?: string | null,
     page = 1,
     pageSize = 25,
-  ): Promise<MemoryExplorerPage<AgentRunMemorySummary>> {
-    const normalizedSelector = this.normalizeSelector(selector);
-    const query = normalizeMemoryExplorerSearch(search);
-    const groups = await this.buildGroups();
-    const group = groups.find((candidate) => this.groupMatchesSelector(candidate, normalizedSelector));
-    if (!group) {
-      return pageMemoryExplorerEntries([], page, pageSize);
-    }
-
-    const runs = group.runs
-      .filter((run) => !query || this.runMatches(run, query))
-      .sort((a, b) => this.compareRuns(a, b))
-      .map((run) => this.toRunSummary(run));
-    return pageMemoryExplorerEntries(runs, page, pageSize);
+  ): Promise<MemoryExplorerPage<AgentEpisode>> {
+    const agentDefinitionId = normalizeSelector(selector);
+    const candidates = await this.candidatesOf(agentDefinitionId);
+    return pageEpisodes(candidates, await this.readHistory(), normalizeMemoryExplorerSearch(search), page, pageSize);
   }
 
-  /** Agents and their runs with memory; an internal agent's group is left out while it is hidden (autobyteus-308). */
-  private async buildGroups(): Promise<AgentGroup[]> {
-    const [catalogRows, hidden] = await Promise.all([this.readCatalogRowsByRunId(), this.visibility.hiddenDefinitionIds()]);
-    const groups = new Map<string, AgentGroup>();
+  private async listOwners(): Promise<Owner[]> {
+    const hidden = await this.visibility.hiddenDefinitionIds();
+    if (!this.local) {
+      const owners = groupDiscovered(await this.discovery.findRuns());
+      return owners.filter((owner) => !owner.agentDefinitionId || !hidden.has(owner.agentDefinitionId));
+    }
+    const catalog = this.catalog();
+    await catalog.whenStartPassDone(); // N-9: the cards' latest change is never partial after a restart
+    // Shared agents, with or without runs, and every definition with runs here (team-local ones included).
+    const sharedIds = await this.definitions.sharedIds();
+    const owners: Owner[] = [...new Set([...sharedIds, ...catalog.agentDefinitionIds()])]
+      .filter((id) => !hidden.has(id))
+      .map((id) => {
+        const entries = catalog.runsOf(id);
+        return { agentDefinitionId: id, candidates: entries.map((entry) => candidateFromCatalog(entry, id)), recordedName: newestName(entries) };
+      })
+      .filter((owner) => owner.candidates.length > 0 || sharedIds.has(owner.agentDefinitionId));
+    const unattributed = await this.scanUnattributed();
+    return unattributed.length ? [...owners, { agentDefinitionId: null, candidates: unattributed, recordedName: null }] : owners;
+  }
 
+  private async candidatesOf(agentDefinitionId: string | null): Promise<EpisodeCandidate[]> {
+    if (agentDefinitionId && (await this.visibility.hiddenDefinitionIds()).has(agentDefinitionId)) return [];
+    if (!this.local) {
+      const owner = groupDiscovered(await this.discovery.findRuns()).find((candidate) => candidate.agentDefinitionId === agentDefinitionId);
+      return owner?.candidates ?? [];
+    }
+    if (!agentDefinitionId) return this.scanUnattributed();
+    const catalog = this.catalog();
+    await catalog.whenStartPassDone();
+    return catalog.runsOf(agentDefinitionId).map((entry) => candidateFromCatalog(entry, agentDefinitionId));
+  }
+
+  /**
+   * This node's standalone runs that no definition names and that hold memory. A run's history row names its
+   * definition without a file read; the run's metadata is read only for runs without one.
+   */
+  private async scanUnattributed(): Promise<EpisodeCandidate[]> {
+    const rows = await this.readAgentRows();
+    const candidates: EpisodeCandidate[] = [];
     for (const runId of this.store.listRunDirs()) {
-      const memory = this.summaryBuilder.build(runId);
-      if (!hasMemoryAvailability(memory)) {
-        continue;
-      }
+      const row = rows.get(runId) ?? null;
+      if (row?.agentDefinitionId?.trim()) continue;
       const metadata = await this.metadataStore.readMetadata(runId);
-      const catalogRow = catalogRows.get(runId) ?? null;
-      const run: AgentRunRecord = { runId, metadata, catalogRow, memory };
-      const agentDefinitionId = definitionOf(run);
-      if (agentDefinitionId && hidden.has(agentDefinitionId)) continue;
-      const key = agentDefinitionId ? `definition:${agentDefinitionId}` : UNATTRIBUTED_STABLE_ID;
-      let group = groups.get(key);
-      if (!group) {
-        group = {
-          attribution: agentDefinitionId ? "DEFINITION" : "UNATTRIBUTED",
-          agentDefinitionId,
-          displayName: agentDefinitionId
-            ? catalogRow?.agentName?.trim() || agentDefinitionId
-            : UNATTRIBUTED_DISPLAY_NAME,
-          stableId: agentDefinitionId ?? UNATTRIBUTED_STABLE_ID,
-          runs: [],
-        };
-        groups.set(key, group);
-      } else if (catalogRow?.agentName?.trim() && group.displayName === group.stableId) {
-        group.displayName = catalogRow.agentName.trim();
-      }
-      group.runs.push(run);
+      if (metadata?.agentDefinitionId?.trim()) continue;
+      const memory = this.summaryBuilder.build(runId);
+      if (!hasMemoryAvailability(memory)) continue;
+      const root = { rootSubjectKind: "agent", rootRunId: runId } as const;
+      candidates.push({
+        runId, memoryDir: this.store.getRunDir(runId), subject: subjectOf(root, runId, null), root,
+        workspaceRootPath: metadata?.workspaceRootPath ?? row?.workspaceRootPath ?? null,
+        time: memory.availability.latestMemoryAt ?? row?.createdAt ?? metadata?.startedAt ?? null,
+        taskTitle: null, recordedPlaceName: null, memory,
+      });
     }
-
-    // A group no history row names (e.g. only task agents, which G1 keeps out of the history) shows its
-    // definition's name; the id only when the definition can no longer be found (D-5, DEC-018).
-    for (const group of groups.values()) {
-      if (group.agentDefinitionId && group.displayName === group.stableId) {
-        group.displayName = await this.definitionName(group.agentDefinitionId);
-      }
-    }
-    return Array.from(groups.values());
+    return candidates;
   }
 
-  private async definitionName(agentDefinitionId: string): Promise<string> {
-    try {
-      return (await this.agentDefinitions.getAgentDefinitionById(agentDefinitionId))?.name?.trim() || agentDefinitionId;
-    } catch (error) {
-      console.warn(`Failed reading agent definition '${agentDefinitionId}' for memory explorer: ${String(error)}`);
-      return agentDefinitionId;
-    }
+  private async readHistory(): Promise<EpisodeHistory> {
+    const [agentRows, teamRoots, orgRoots] = await Promise.all([
+      this.readAgentRows(),
+      this.readRootRows(this.teamRows, "team"),
+      this.readRootRows(this.orgRows, "agent org"),
+    ]);
+    return { agentSummaries: new Map([...agentRows].map(([runId, row]) => [runId, row.summary])), teamRoots, orgRoots };
   }
 
-  private async readCatalogRowsByRunId(): Promise<Map<string, RunHistoryIndexRow>> {
+  private async readAgentRows(): Promise<Map<string, RunHistoryIndexRow>> {
     try {
-      const rows = await this.catalogService.listCatalogRows();
-      return new Map(rows.map((row) => [row.runId, row]));
+      return new Map((await this.agentRows.listCatalogRows()).map((row) => [row.runId, row]));
     } catch (error) {
       console.warn(`Failed reading agent run history catalog for memory explorer: ${String(error)}`);
       return new Map();
     }
   }
 
-  private normalizeSelector(selector: AgentWithMemorySelector): AgentWithMemorySelector {
-    const attribution = selector.attribution === "UNATTRIBUTED" ? "UNATTRIBUTED" : "DEFINITION";
-    if (attribution === "UNATTRIBUTED") {
-      return { attribution };
+  private async readRootRows(rows: RootRows, family: string): Promise<ReadonlyMap<string, CollaborationRootCatalogEntry>> {
+    try {
+      return await rows.readCatalogEntries();
+    } catch (error) {
+      console.warn(`Failed reading ${family} run history catalog for memory explorer: ${String(error)}`);
+      return new Map();
     }
-    const agentDefinitionId = selector.agentDefinitionId?.trim();
-    if (!agentDefinitionId) {
-      throw new Error("agentDefinitionId is required for attributed agent memory.");
-    }
-    return { attribution, agentDefinitionId };
-  }
-
-  private groupMatchesSelector(group: AgentGroup, selector: AgentWithMemorySelector): boolean {
-    if (selector.attribution === "UNATTRIBUTED") {
-      return group.attribution === "UNATTRIBUTED";
-    }
-    return group.attribution === "DEFINITION" && group.agentDefinitionId === selector.agentDefinitionId;
-  }
-
-  private groupMatches(group: AgentGroup, query: string): boolean {
-    return (
-      includesMemoryExplorerQuery(group.displayName, query) ||
-      includesMemoryExplorerQuery(group.stableId, query) ||
-      group.runs.some((run) => this.runMatches(run, query))
-    );
-  }
-
-  private runMatches(run: AgentRunRecord, query: string): boolean {
-    return (
-      includesMemoryExplorerQuery(run.runId, query) ||
-      includesMemoryExplorerQuery(run.catalogRow?.agentName, query) ||
-      includesMemoryExplorerQuery(run.catalogRow?.summary, query) ||
-      includesMemoryExplorerQuery(run.catalogRow?.workspaceRootPath, query) ||
-      includesMemoryExplorerQuery(run.metadata?.agentDefinitionId, query) ||
-      includesMemoryExplorerQuery(run.metadata?.workspaceRootPath, query)
-    );
-  }
-
-  private toAgentSummary(group: AgentGroup): AgentWithMemorySummary {
-    const merged = mergeMemoryAvailability(group.runs.map((run) => run.memory));
-    return {
-      attribution: group.attribution,
-      agentDefinitionId: group.agentDefinitionId,
-      displayName: group.displayName,
-      stableId: group.stableId,
-      runCount: group.runs.length,
-      latestMemoryAt: merged.availability.latestMemoryAt,
-      memory: merged.availability,
-    };
-  }
-
-  private toRunSummary(run: AgentRunRecord): AgentRunMemorySummary {
-    return {
-      runId: run.runId,
-      agentDefinitionId: run.metadata?.agentDefinitionId ?? run.catalogRow?.agentDefinitionId ?? null,
-      agentName: run.catalogRow?.agentName ?? null,
-      summary: run.catalogRow?.summary ?? null,
-      workspaceRootPath: workspaceOf(run),
-      createdAt: createdAtOf(run),
-      lastUpdatedAt: run.memory.availability.latestMemoryAt,
-      memory: run.memory.availability,
-    };
-  }
-
-  private compareAgentSummaries(a: AgentWithMemorySummary, b: AgentWithMemorySummary): number {
-    const timeCompare = (b.memory.latestMemoryAt ?? "").localeCompare(a.memory.latestMemoryAt ?? "");
-    if (timeCompare !== 0) {
-      return timeCompare;
-    }
-    return a.displayName.localeCompare(b.displayName);
-  }
-
-  private compareRuns(a: AgentRunRecord, b: AgentRunRecord): number {
-    if (a.memory.latestMemoryMtime !== b.memory.latestMemoryMtime) {
-      return b.memory.latestMemoryMtime - a.memory.latestMemoryMtime;
-    }
-    const aCreated = createdAtOf(a) ?? "";
-    const bCreated = createdAtOf(b) ?? "";
-    if (aCreated !== bCreated) {
-      return bCreated.localeCompare(aCreated);
-    }
-    return b.runId.localeCompare(a.runId);
   }
 }
+
+const normalizeSelector = (selector: AgentWithMemorySelector): string | null => {
+  if (selector.attribution === "UNATTRIBUTED") return null;
+  const agentDefinitionId = selector.agentDefinitionId?.trim();
+  if (!agentDefinitionId) throw new Error("agentDefinitionId is required for attributed agent memory.");
+  return agentDefinitionId;
+};
+
+/**
+ * One discovery's runs by owner: attributed runs by their definition; a standalone run no readable record attributes
+ * is unattributed (as on this node). Collaboration folders no record attributes have no owner here.
+ */
+const groupDiscovered = (runs: readonly DiscoveredRun[]): Owner[] => {
+  const owners = new Map<string | null, Owner>();
+  for (const run of runs) {
+    const agentDefinitionId = run.attribution.kind === "attributed" ? run.attribution.agentDefinitionId : null;
+    if (!agentDefinitionId && run.root.rootSubjectKind !== "agent") continue;
+    let owner = owners.get(agentDefinitionId);
+    if (!owner) owners.set(agentDefinitionId, owner = { agentDefinitionId, candidates: [], recordedName: null });
+    owner.candidates.push(candidateFromDiscovery(run));
+    owner.recordedName ??= run.agentName;
+  }
+  return [...owners.values()];
+};
+
+const newestName = (entries: ReturnType<EpisodeCatalog["runsOf"]>): string | null =>
+  [...entries].sort((a, b) => (b.lastActivityAt ?? b.startedAt ?? "").localeCompare(a.lastActivityAt ?? a.startedAt ?? ""))[0]?.agentName ?? null;
+
+const toCard = (owner: Owner, names: ReadonlyMap<string, string>): AgentWithMemorySummary => {
+  const latest = owner.candidates.reduce<string | null>((max, candidate) =>
+    (candidate.time && (!max || candidate.time > max) ? candidate.time : max), null);
+  if (!owner.agentDefinitionId) {
+    return {
+      attribution: "UNATTRIBUTED", agentDefinitionId: null, displayName: UNATTRIBUTED_DISPLAY_NAME,
+      stableId: UNATTRIBUTED_STABLE_ID, runCount: owner.candidates.length, latestMemoryAt: latest,
+    };
+  }
+  return {
+    attribution: "DEFINITION",
+    agentDefinitionId: owner.agentDefinitionId,
+    displayName: names.get(owner.agentDefinitionId) ?? owner.recordedName ?? owner.agentDefinitionId,
+    stableId: owner.agentDefinitionId,
+    runCount: owner.candidates.length,
+    latestMemoryAt: latest,
+  };
+};
+
+const compareCards = (a: AgentWithMemorySummary, b: AgentWithMemorySummary): number =>
+  (b.latestMemoryAt ?? "").localeCompare(a.latestMemoryAt ?? "") || a.displayName.localeCompare(b.displayName);

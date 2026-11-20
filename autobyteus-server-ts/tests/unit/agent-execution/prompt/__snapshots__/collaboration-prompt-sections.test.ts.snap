@@ -61,6 +61,14 @@ Use \`send_message_to\` for a purpose: to hand off your work, to ask for input y
 
 When you finish your work or get stuck, call \`get_handoff_rules\`. Select the single rule whose \`when\` condition most specifically matches your outcome, and message only its \`recipient_address\` with \`send_message_to\`. Don't notify anyone else about the same outcome. If no rule fits and another agent gave you the task, tell that agent using its run id; otherwise finish normally.
 
+## Semantic Memory
+
+Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.
+
+## Global Semantic Memory
+
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
+
 ## Working Environment
 
 - Agent workspace: \`/tmp/workspace\`
@@ -148,6 +156,14 @@ Use \`send_message_to\` for a purpose: to hand off your work, to ask for input y
 
 When you finish your work or get stuck, call \`get_handoff_rules\`. Select the single rule whose \`when\` condition most specifically matches your outcome, and message only its \`recipient_address\` with \`send_message_to\`. Don't notify anyone else about the same outcome. If no rule fits and another agent gave you the task, tell that agent using its run id; otherwise finish normally.
 
+## Semantic Memory
+
+Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.
+
+## Global Semantic Memory
+
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
+
 ## Working Environment
 
 - Agent workspace: \`/tmp/workspace\`
@@ -234,6 +250,14 @@ On receiving a request, follow your own instructions and skills.
 - If the user mentions agents or agent teams, they are listed at the end of the user's message; follow that note.
 
 Use \`send_message_to\` for a purpose: to hand off your work, to ask for input you need, to follow up with one of your task agents or answer its question, or to reply to the agent that gave you a task. Don't send acknowledgements, status chatter or promises to work.
+
+## Semantic Memory
+
+Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.
+
+## Global Semantic Memory
+
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
 
 ## Working Environment
 
@@ -326,6 +350,14 @@ Use \`send_message_to\` for a purpose: to hand off your work, to ask for input y
 
 When you finish your work or get stuck, call \`get_handoff_rules\`. Select the single rule whose \`when\` condition most specifically matches your outcome, and message only its \`recipient_address\` with \`send_message_to\`. Don't notify anyone else about the same outcome. If no rule fits and another agent gave you the task, tell that agent using its run id; otherwise finish normally.
 
+## Semantic Memory
+
+Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.
+
+## Global Semantic Memory
+
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
+
 ## Working Environment
 
 - Agent workspace: \`/tmp/workspace\`
@@ -417,6 +449,14 @@ Use \`send_message_to\` for a purpose: to hand off your work, to ask for input y
 
 When you finish your work or get stuck, call \`get_handoff_rules\`. Select the single rule whose \`when\` condition most specifically matches your outcome, and message only its \`recipient_address\` with \`send_message_to\`. Don't notify anyone else about the same outcome. If no rule fits and another agent gave you the task, tell that agent using its run id; otherwise finish normally.
 
+## Semantic Memory
+
+Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.
+
+## Global Semantic Memory
+
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
+
 ## Working Environment
 
 - Agent workspace: \`/tmp/workspace\`
@@ -469,6 +509,14 @@ You can delegate tasks to other agents and agent teams.
 - If the user mentions agents or agent teams, they are listed at the end of the user's message; follow that note.
 
 On receiving a request, follow your own instructions and skills. Use \`send_message_to\` for a purpose: to follow up with a task agent, or to answer a question it asks you. Don't send acknowledgements, status chatter or promises to work.
+
+## Semantic Memory
+
+Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.
+
+## Global Semantic Memory
+
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
 
 ## Working Environment
 
@@ -525,6 +573,14 @@ You can also delegate tasks to other agents and agent teams.
 
 On receiving a request, follow your own instructions and skills. Use \`send_message_to\` for a purpose: to report your result, to ask for input you need, or to follow up with one of your task agents or answer its question. Don't send acknowledgements, status chatter or promises to work.
 
+## Semantic Memory
+
+Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.
+
+## Global Semantic Memory
+
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
+
 ## Working Environment
 
 - Agent workspace: \`/tmp/workspace\`
@@ -580,6 +636,14 @@ You can also delegate tasks to other agents and agent teams.
 
 On receiving a request, follow your own instructions and skills. Use \`send_message_to\` for a purpose: to report your result, to ask for input you need, or to follow up with one of your task agents or answer its question. Don't send acknowledgements, status chatter or promises to work.
 
+## Semantic Memory
+
+Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.
+
+## Global Semantic Memory
+
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
+
 ## Working Environment
 
 - Agent workspace: \`/tmp/workspace\`
@@ -634,6 +698,14 @@ You can also delegate tasks to other agents and agent teams.
 - If the user mentions agents or agent teams, they are listed at the end of the user's message; follow that note.
 
 On receiving a request, follow your own instructions and skills. Use \`send_message_to\` for a purpose: to report your result, to ask for input you need, or to follow up with one of your task agents or answer its question. Don't send acknowledgements, status chatter or promises to work.
+
+## Semantic Memory
+
+Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.
+
+## Global Semantic Memory
+
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
 
 ## Working Environment
 
@@ -697,6 +769,14 @@ On receiving a request, follow your own instructions and skills. Use \`send_mess
 ### Handoffs
 
 When you finish your work or get stuck, call \`get_handoff_rules\`. Select the single rule whose \`when\` condition most specifically matches your outcome, and message only its \`recipient_address\` with \`send_message_to\`. Don't notify anyone else about the same outcome. If no rule fits and another agent gave you the task, tell that agent using its run id; otherwise finish normally.
+
+## Semantic Memory
+
+Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.
+
+## Global Semantic Memory
+
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
 
 ## Working Environment
 
@@ -789,6 +869,14 @@ Use \`send_message_to\` for a purpose: to hand off your work, to ask for input y
 
 When you finish your work or get stuck, call \`get_handoff_rules\`. Select the single rule whose \`when\` condition most specifically matches your outcome, and message only its \`recipient_address\` with \`send_message_to\`. Don't notify anyone else about the same outcome. If no rule fits and another agent gave you the task, tell that agent using its run id; otherwise finish normally.
 
+## Semantic Memory
+
+Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.
+
+## Global Semantic Memory
+
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
+
 ## Long-Running Commands
 
 - Start a long build or test suite once with \`exec_command\`. When it outlasts its wait, it keeps running in its session.
@@ -853,6 +941,14 @@ Use \`send_message_to\` for a purpose: to hand off your work, to ask for input y
 
 When you finish your work or get stuck, call \`get_handoff_rules\`. Select the single rule whose \`when\` condition most specifically matches your outcome, and message only its \`recipient_address\` with \`send_message_to\`. Don't notify anyone else about the same outcome. If no rule fits and another agent gave you the task, tell that agent using its run id; otherwise finish normally.
 
+## Semantic Memory
+
+Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.
+
+## Global Semantic Memory
+
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
+
 ## Long-Running Commands
 
 - Start a long build or test suite once with \`exec_command\`. When it outlasts its wait, it keeps running in its session.
@@ -916,6 +1012,14 @@ On receiving a request, follow your own instructions and skills.
 - If the user mentions agents or agent teams, they are listed at the end of the user's message; follow that note.
 
 Use \`send_message_to\` for a purpose: to hand off your work, to ask for input you need, to follow up with one of your task agents or answer its question, or to reply to the agent that gave you a task. Don't send acknowledgements, status chatter or promises to work.
+
+## Semantic Memory
+
+Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.
+
+## Global Semantic Memory
+
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
 
 ## Long-Running Commands
 
@@ -985,6 +1089,14 @@ Use \`send_message_to\` for a purpose: to hand off your work, to ask for input y
 
 When you finish your work or get stuck, call \`get_handoff_rules\`. Select the single rule whose \`when\` condition most specifically matches your outcome, and message only its \`recipient_address\` with \`send_message_to\`. Don't notify anyone else about the same outcome. If no rule fits and another agent gave you the task, tell that agent using its run id; otherwise finish normally.
 
+## Semantic Memory
+
+Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.
+
+## Global Semantic Memory
+
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
+
 ## Long-Running Commands
 
 - Start a long build or test suite once with \`exec_command\`. When it outlasts its wait, it keeps running in its session.
@@ -1053,6 +1165,14 @@ Use \`send_message_to\` for a purpose: to hand off your work, to ask for input y
 
 When you finish your work or get stuck, call \`get_handoff_rules\`. Select the single rule whose \`when\` condition most specifically matches your outcome, and message only its \`recipient_address\` with \`send_message_to\`. Don't notify anyone else about the same outcome. If no rule fits and another agent gave you the task, tell that agent using its run id; otherwise finish normally.
 
+## Semantic Memory
+
+Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.
+
+## Global Semantic Memory
+
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
+
 ## Long-Running Commands
 
 - Start a long build or test suite once with \`exec_command\`. When it outlasts its wait, it keeps running in its session.
@@ -1082,6 +1202,14 @@ You can delegate tasks to other agents and agent teams.
 - If the user mentions agents or agent teams, they are listed at the end of the user's message; follow that note.
 
 On receiving a request, follow your own instructions and skills. Use \`send_message_to\` for a purpose: to follow up with a task agent, or to answer a question it asks you. Don't send acknowledgements, status chatter or promises to work.
+
+## Semantic Memory
+
+Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.
+
+## Global Semantic Memory
+
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
 
 ## Long-Running Commands
 
@@ -1115,6 +1243,14 @@ You can also delegate tasks to other agents and agent teams.
 
 On receiving a request, follow your own instructions and skills. Use \`send_message_to\` for a purpose: to report your result, to ask for input you need, or to follow up with one of your task agents or answer its question. Don't send acknowledgements, status chatter or promises to work.
 
+## Semantic Memory
+
+Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.
+
+## Global Semantic Memory
+
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
+
 ## Long-Running Commands
 
 - Start a long build or test suite once with \`exec_command\`. When it outlasts its wait, it keeps running in its session.
@@ -1147,6 +1283,14 @@ You can also delegate tasks to other agents and agent teams.
 
 On receiving a request, follow your own instructions and skills. Use \`send_message_to\` for a purpose: to report your result, to ask for input you need, or to follow up with one of your task agents or answer its question. Don't send acknowledgements, status chatter or promises to work.
 
+## Semantic Memory
+
+Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.
+
+## Global Semantic Memory
+
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
+
 ## Long-Running Commands
 
 - Start a long build or test suite once with \`exec_command\`. When it outlasts its wait, it keeps running in its session.
@@ -1178,6 +1322,14 @@ You can also delegate tasks to other agents and agent teams.
 - If the user mentions agents or agent teams, they are listed at the end of the user's message; follow that note.
 
 On receiving a request, follow your own instructions and skills. Use \`send_message_to\` for a purpose: to report your result, to ask for input you need, or to follow up with one of your task agents or answer its question. Don't send acknowledgements, status chatter or promises to work.
+
+## Semantic Memory
+
+Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.
+
+## Global Semantic Memory
+
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
 
 ## Long-Running Commands
 
@@ -1218,6 +1370,14 @@ On receiving a request, follow your own instructions and skills. Use \`send_mess
 ### Handoffs
 
 When you finish your work or get stuck, call \`get_handoff_rules\`. Select the single rule whose \`when\` condition most specifically matches your outcome, and message only its \`recipient_address\` with \`send_message_to\`. Don't notify anyone else about the same outcome. If no rule fits and another agent gave you the task, tell that agent using its run id; otherwise finish normally.
+
+## Semantic Memory
+
+Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.
+
+## Global Semantic Memory
+
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
 
 ## Long-Running Commands
 

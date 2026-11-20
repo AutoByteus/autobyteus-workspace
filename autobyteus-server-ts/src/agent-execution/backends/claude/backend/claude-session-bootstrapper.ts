@@ -100,12 +100,13 @@ export class ClaudeSessionBootstrapper {
       assertPreparing: guard.assertAccepting,
     });
     guard.assertAccepting();
-    const semanticMemoryPath = await this.semanticMemory.prepareForRun(agentDefinition);
+    const semanticMemory = await this.semanticMemory.prepareForRun(runContext.config.agentDefinitionId);
     const carpenterSystemPrompt = composeSharedCarpenterPrompt({
       agentDefinition,
       memberExecutionContext: runContext.config.memberExecutionContext,
       project: runContext.config.project,
-      semanticMemoryPath,
+      semanticMemoryPath: semanticMemory.agentFolder,
+      globalSemanticMemoryPath: semanticMemory.globalFolder,
       longRunningCommandSection: CLAUDE_LONG_RUNNING_COMMAND_SECTION,
     });
     const sessionConfig = buildClaudeSessionConfig({
@@ -113,7 +114,7 @@ export class ClaudeSessionBootstrapper {
       workingDirectory,
       permissionMode: DEFAULT_CLAUDE_PERMISSION_MODE,
       autoExecuteTools: runContext.config.autoExecuteTools,
-      additionalDirectories: semanticMemoryPath ? [semanticMemoryPath] : [],
+      additionalDirectories: [semanticMemory.agentFolder, semanticMemory.globalFolder],
       llmConfig: runContext.config.llmConfig,
     });
     return new AgentRunContext({

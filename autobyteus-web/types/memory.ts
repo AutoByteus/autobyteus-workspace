@@ -1,3 +1,5 @@
+import type { MemoryRunSubject } from '~/types/memorySearch';
+
 export type AgentMemoryAttribution = 'DEFINITION' | 'UNATTRIBUTED';
 export type MemoryExplorerSourceType = 'LOCAL' | 'IMPORTED';
 
@@ -29,6 +31,7 @@ export interface AgentWithMemorySelector {
   agentDefinitionId?: string | null;
 }
 
+/** An Agents card on the Memory page (autobyteus-554): the agent, its run count and its latest change. */
 export interface AgentWithMemorySummary {
   attribution: AgentMemoryAttribution;
   agentDefinitionId?: string | null;
@@ -36,18 +39,29 @@ export interface AgentWithMemorySummary {
   stableId: string;
   runCount: number;
   latestMemoryAt?: string | null;
+}
+
+/** One episode of an agent: one of its runs from any place it works; `place` is null for the agent's own run. */
+export interface AgentEpisode {
+  runId: string;
+  subject: MemoryRunSubject;
+  place?: { kind: 'TEAM' | 'ORG'; name?: string | null } | null;
+  summary?: string | null;
+  taskTitle?: string | null;
+  workspaceRootPath?: string | null;
+  lastActivityAt?: string | null;
   memory: MemoryAvailabilitySummary;
 }
 
-export interface AgentRunMemorySummary {
-  runId: string;
-  agentDefinitionId?: string | null;
-  agentName?: string | null;
-  summary?: string | null;
-  workspaceRootPath?: string | null;
-  createdAt?: string | null;
-  lastUpdatedAt?: string | null;
-  memory: MemoryAvailabilitySummary;
+export type MemoryGroupKind = 'TEAM' | 'ORG';
+
+/** A member of a team or org on its Memory page: an agent (shared or local) or, in an org, a team. */
+export interface MemoryGroupMember {
+  kind: 'AGENT' | 'TEAM';
+  id: string;
+  name: string;
+  shared: boolean;
+  memberCount?: number | null;
 }
 
 export interface AgentTeamWithMemorySummary {
@@ -55,6 +69,8 @@ export interface AgentTeamWithMemorySummary {
   teamDefinitionName: string;
   teamRunCount: number;
   memberMemoryCount: number;
+  /** Members of the definition (this node), else of its newest stored run. */
+  memberCount?: number | null;
   latestMemoryAt?: string | null;
   memory: MemoryAvailabilitySummary;
 }
@@ -101,6 +117,8 @@ export interface AgentOrgWithMemorySummary {
   orgDefinitionName: string;
   orgRunCount: number;
   memberMemoryCount: number;
+  /** Members of the definition (this node), else of its newest stored run. */
+  memberCount?: number | null;
   latestMemoryAt?: string | null;
   memory: MemoryAvailabilitySummary;
 }

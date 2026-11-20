@@ -106,6 +106,7 @@ export class AddChange extends FileSystemChange {
       name: node.name,
       path: node.getPath(),
       is_file: node.isFile,
+      is_symbolic_link: node.isSymbolicLink,
       id: node.id,
       children: [],
     };

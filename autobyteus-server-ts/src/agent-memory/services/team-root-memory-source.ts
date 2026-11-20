@@ -52,6 +52,9 @@ export class TeamRootMemorySource implements CollaborationRootMemorySource {
       definitionName: tree.rootTeam.teamDefinitionName,
       createdAt: tree.createdAt ?? null,
       members: located.map((item) => toCollaborationMemberMemoryLocation(item, toTeamDisplayName)),
+      configuredMembers: tree.rootTeam.members.map((member) => ({
+        kind: "AGENT" as const, id: member.agentDefinitionId, name: toTeamDisplayName(member.address),
+      })),
     };
   }
 

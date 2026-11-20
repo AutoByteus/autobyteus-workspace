@@ -1,4 +1,5 @@
 import { Field, InputType, Int, ObjectType, registerEnumType } from "type-graphql";
+import { MemoryRunSubject } from "./memory-run-subject.js";
 
 export enum AgentMemoryAttribution {
   DEFINITION = "DEFINITION",
@@ -114,9 +115,6 @@ export class AgentWithMemorySummary {
 
   @Field(() => String, { nullable: true })
   latestMemoryAt?: string | null;
-
-  @Field(() => MemoryAvailabilitySummary)
-  memory!: MemoryAvailabilitySummary;
 }
 
 @ObjectType()
@@ -138,36 +136,48 @@ export class AgentWithMemoryPage {
 }
 
 @ObjectType()
-export class AgentRunMemorySummary {
+export class AgentEpisodePlace {
+  /** `TEAM` or `ORG`. */
+  @Field(() => String)
+  kind!: "TEAM" | "ORG";
+
+  @Field(() => String, { nullable: true })
+  name?: string | null;
+}
+
+/** One episode of an agent (autobyteus-554): one of its runs from any place it works. */
+@ObjectType()
+export class AgentEpisode {
   @Field(() => String)
   runId!: string;
 
-  @Field(() => String, { nullable: true })
-  agentDefinitionId?: string | null;
+  @Field(() => MemoryRunSubject)
+  subject!: MemoryRunSubject;
 
-  @Field(() => String, { nullable: true })
-  agentName?: string | null;
+  /** Null for the agent's own run. */
+  @Field(() => AgentEpisodePlace, { nullable: true })
+  place?: AgentEpisodePlace | null;
 
   @Field(() => String, { nullable: true })
   summary?: string | null;
 
   @Field(() => String, { nullable: true })
+  taskTitle?: string | null;
+
+  @Field(() => String, { nullable: true })
   workspaceRootPath?: string | null;
 
   @Field(() => String, { nullable: true })
-  createdAt?: string | null;
-
-  @Field(() => String, { nullable: true })
-  lastUpdatedAt?: string | null;
+  lastActivityAt?: string | null;
 
   @Field(() => MemoryAvailabilitySummary)
   memory!: MemoryAvailabilitySummary;
 }
 
 @ObjectType()
-export class AgentRunMemoryPage {
-  @Field(() => [AgentRunMemorySummary])
-  entries!: AgentRunMemorySummary[];
+export class AgentEpisodePage {
+  @Field(() => [AgentEpisode])
+  entries!: AgentEpisode[];
 
   @Field(() => Int)
   total!: number;
@@ -180,6 +190,41 @@ export class AgentRunMemoryPage {
 
   @Field(() => Int)
   totalPages!: number;
+}
+
+export enum MemoryGroupKind {
+  TEAM = "TEAM",
+  ORG = "ORG",
+}
+
+registerEnumType(MemoryGroupKind, { name: "MemoryGroupKind" });
+
+export enum MemoryGroupMemberKind {
+  AGENT = "AGENT",
+  TEAM = "TEAM",
+}
+
+registerEnumType(MemoryGroupMemberKind, { name: "MemoryGroupMemberKind" });
+
+/** A member of a team or org on its Memory page. */
+@ObjectType()
+export class MemoryGroupMember {
+  @Field(() => MemoryGroupMemberKind)
+  kind!: MemoryGroupMemberKind;
+
+  @Field(() => String)
+  id!: string;
+
+  @Field(() => String)
+  name!: string;
+
+  /** An agent that is a shared definition: one memory wherever it appears. */
+  @Field(() => Boolean)
+  shared!: boolean;
+
+  /** A team member's own member count; null for an agent. */
+  @Field(() => Int, { nullable: true })
+  memberCount?: number | null;
 }
 
 @ObjectType()
@@ -195,6 +240,10 @@ export class AgentTeamWithMemorySummary {
 
   @Field(() => Int)
   memberMemoryCount!: number;
+
+  /** Members of the definition (this node), else of its newest stored run. */
+  @Field(() => Int, { nullable: true })
+  memberCount?: number | null;
 
   @Field(() => String, { nullable: true })
   latestMemoryAt?: string | null;
@@ -330,6 +379,10 @@ export class AgentOrgWithMemorySummary {
 
   @Field(() => Int)
   memberMemoryCount!: number;
+
+  /** Members of the definition (this node), else of its newest stored run. */
+  @Field(() => Int, { nullable: true })
+  memberCount?: number | null;
 
   @Field(() => String, { nullable: true })
   latestMemoryAt?: string | null;

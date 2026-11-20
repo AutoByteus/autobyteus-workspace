@@ -66,7 +66,9 @@ import { getCodexAppServerClientManager } from "../runtime-management/codex/clie
 import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import { createProcessAgentProviderFactoryBuilder } from "../compositions/create-process-agent-provider-factory-builder.js";
 import { composeCollaboration, composeTaskSide, type Collaboration } from "../compositions/collaboration-composition.js";
-import { createEpisodicCatalog, type EpisodicCatalog } from "../agent-episodic-catalog/services/episodic-catalog.js";
+import {
+  createEpisodicCatalog, releaseProcessEpisodicCatalog, setProcessEpisodicCatalog, type EpisodicCatalog,
+} from "../agent-episodic-catalog/services/episodic-catalog.js";
 import { getWorkJournalService } from "../agent-work-journal/services/work-journal-service.js";
 import { createCollaborationRootResolver } from "../compositions/collaboration-root-resolver.js";
 import { composeRunningAgents } from "../compositions/running-agents-composition.js";
@@ -251,6 +253,8 @@ export const startStandaloneApplicationHost = async (
     // autobyteus-493: the episodic catalogs of this host's own memory folder, as in the studio (started after step 8).
     const currentEpisodicCatalog = episodicCatalog = createEpisodicCatalog({ memoryDir: processResources.appConfig.getMemoryDir(),
       journals: getWorkJournalService(), tasks: taskSide.tree });
+    // autobyteus-554: the Memory page's explorer reads it per request (set before the HTTP server serves; released at close).
+    setProcessEpisodicCatalog(currentEpisodicCatalog);
     platformNotices = createPlatformNoticeSources({
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
       definitionChanges: hostDefinitionServices.agentDefinitionChanges,
@@ -343,6 +347,7 @@ export const startStandaloneApplicationHost = async (
           // Platform notices stop first, so none go out while runs stop.
           await platformNotices?.close();
           await episodicCatalog?.stop();
+          if (episodicCatalog) releaseProcessEpisodicCatalog(episodicCatalog);
           // Reverse order: steps 8 … 4, then the run services.
           collaboration?.release();
           try {
@@ -381,6 +386,7 @@ export const startStandaloneApplicationHost = async (
     } finally {
       await platformNotices?.close();
       await episodicCatalog?.stop();
+      if (episodicCatalog) releaseProcessEpisodicCatalog(episodicCatalog);
       collaboration?.release();
       if (processResources) {
         try {

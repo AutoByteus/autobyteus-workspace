@@ -1,3 +1,4 @@
+import path from "node:path";
 import { spawnSync } from "node:child_process";
 import fastify, { type FastifyInstance } from "fastify";
 import websocket from "@fastify/websocket";
@@ -82,7 +83,9 @@ const buildRunContext = (
         autoExecuteTools: true,
       }),
       carpenterSystemPrompt: composeSharedCarpenterPrompt({
-        semanticMemoryPath: null,
+        // Only named in the prompt (autobyteus-554): test-owned paths under the run's workspace, never created here.
+        semanticMemoryPath: path.join(workspaceRoot, ".semantic-memory", "agent"),
+        globalSemanticMemoryPath: path.join(workspaceRoot, ".semantic-memory", "global"),
         longRunningCommandSection: CLAUDE_LONG_RUNNING_COMMAND_SECTION,
         agentDefinition: {
           name: "Claude Live E2E Agent",

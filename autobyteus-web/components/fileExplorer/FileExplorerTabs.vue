@@ -158,8 +158,8 @@
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-16 h-16 mb-4 text-gray-300">
             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
         </svg>
-        <h3 class="text-lg font-medium text-gray-500 mb-1">No file selected</h3>
-        <p class="text-sm">Select a file from the explorer to view or edit its content.</p>
+        <h3 class="text-lg font-medium text-gray-500 mb-1">{{ readOnly ? $t('memory.semantic.no_file_selected') : 'No file selected' }}</h3>
+        <p class="text-sm">{{ readOnly ? $t('memory.semantic.select_a_file') : 'Select a file from the explorer to view or edit its content.' }}</p>
       </div>
 
       <div v-else class="flex-1 flex flex-col min-h-0">
@@ -230,8 +230,11 @@ const { isZenMode } = storeToRefs(fileContentDisplayModeStore)
 const props = withDefaults(defineProps<{
   workspaceId?: string
   active?: boolean
+  /** Read only (autobyteus-554): preview only, no edit mode and no Save. */
+  readOnly?: boolean
 }>(), {
   active: true,
+  readOnly: false,
 })
 
 const currentWorkspaceId = computed(() => props.workspaceId || workspaceStore.activeWorkspace?.workspaceId)
@@ -285,7 +288,7 @@ const isPreviewableText = computed(() => {
 })
 
 const activeFileMode = computed(() => activeFileData.value?.mode ?? 'edit')
-const activeFileIsReadOnly = computed(() => activeFileData.value?.accessIntent?.readOnly === true)
+const activeFileIsReadOnly = computed(() => props.readOnly || activeFileData.value?.accessIntent?.readOnly === true)
 const activeFileDisplayMode = computed(() => activeFileIsReadOnly.value ? 'preview' : activeFileMode.value)
 const isActiveZenMode = computed(() => props.active && isZenMode.value)
 const toggleZenMode = () => fileContentDisplayModeStore.toggleZenMode()

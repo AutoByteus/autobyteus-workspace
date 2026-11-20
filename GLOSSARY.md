@@ -195,10 +195,24 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   definition ID>/` on the node. Every run of that agent definition (standalone,
   team member, delegated run, in any Project) is told its path and shares it;
   the agent and its skills write and organize it, and the system never deletes
-  it. An agent has one when `semanticMemoryEnabled` is on in its definition.
-  It is not the memory of a run, and not the retired `semantic.jsonl` rows of
-  old run folders (unread, kept on disk)
+  it. Every agent has one (autobyteus-554; there is no switch). It is not the
+  memory of a run, and not the retired `semantic.jsonl` rows of old run folders
+  (unread, kept on disk)
   ([agent_memory.md](autobyteus-server-ts/docs/modules/agent_memory.md)).
+- **Global semantic memory** (of a node): the node's one folder of facts that are
+  true for every agent, `<memory>/semantic-global/`, shared by every agent on the
+  node in every Project and team (what the product is, the words it uses, the
+  user's standing rules). Every run is told its path right after its own
+  semantic memory, and every agent may read and write it; the system creates it
+  when missing at a run's start and never writes into it otherwise. Shown read
+  only in Memory → Browse → Global. Team- or org-level shared memory is not part
+  of it ([agent_memory.md](autobyteus-server-ts/docs/modules/agent_memory.md)).
+- **Episodes** (of an agent): its runs from every place it works (standalone,
+  delegated, as a team or org member), newest first: the Episodic memory of its
+  Memory page, from its episodic catalog on this node.
+- **Owner** (on the Memory page): what a Browse card stands for: Global, an
+  agent, a team or an org. A shared agent has one memory and opens the same page
+  wherever it appears; membership is not ownership.
 - **Work Journal:** a run's readable Markdown record, rendered from its raw
   traces by the journal service; one file per raw-trace segment
   (`work_journal/`).
@@ -489,14 +503,13 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
 - **Base value:** the value of a setting in a definition's files: a package's
   files, or a built-in agent's template copied at every start. A personal
   setting sits on top of it.
-- **Personal setting:** one of five settings (tools, skills, avatar, default
-  runtime/model, semantic memory; Teams and Orgs have only avatar and default
-  runtime/model) of a definition from an
+- **Personal setting:** one of four settings (tools, skills, avatar, default
+  runtime/model; Teams and Orgs have only avatar and default runtime/model) of a definition from an
   agent package or of a built-in agent, kept on this node in
   `<app-data>/agent-packages/personal-settings.json` instead of in the
   definition's files, so package updates and restarts keep it. Tools and skills
-  are kept as names added to and removed from the base value; avatar,
-  runtime/model and semantic memory replace it. The **effective** value (the base value with the
+  are kept as names added to and removed from the base value; avatar and
+  runtime/model replace it. The **effective** value (the base value with the
   personal settings applied) is what every reader gets. "Reset to the package's
   setting" removes one. The user's own definitions in the app's storage have no
   personal settings: edits go into their files. Contract and rules:

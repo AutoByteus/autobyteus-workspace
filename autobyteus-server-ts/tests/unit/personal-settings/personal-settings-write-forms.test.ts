@@ -163,75 +163,40 @@ describe("agents (shared, team-local, Org-owned; built-in; the user's own)", () 
   });
 });
 
-describe("semantic memory switch (REQ-002, AC-007, DEC-012)", () => {
-  const formSave = async (id: string, edits: Record<string, unknown>) => {
+describe("no semantic memory switch (autobyteus-554 REQ-002, REQ-003, AC-003)", () => {
+  const formSave = async (id: string) => {
     const loaded = (await definitions.agentDefinitionService.getAgentDefinitionById(id))!;
     return definitions.agentDefinitionService.updateAgentDefinition(id, {
-      name: loaded.name, role: loaded.role || undefined, category: loaded.category || undefined, description: loaded.description,
+      name: loaded.name, role: loaded.role || undefined, category: loaded.category || undefined, description: "Edited",
       instructions: loaded.instructions, avatarUrl: loaded.avatarUrl ?? null, skillNames: loaded.skillNames, skillScope: loaded.skillScope,
       toolNames: loaded.toolNames, defaultLaunchConfig: loaded.defaultLaunchConfig ?? null,
-      semanticMemoryEnabled: loaded.semanticMemoryEnabled, ...edits,
     });
   };
   const configOf = async (file: string) => JSON.parse(await read(file)) as Record<string, unknown>;
 
-  it("a package agent's switch is a personal setting: package files unchanged, reset returns the package's value", async () => {
-    const before = await snapshot(pkg);
-    const saved = await formSave("solution-designer", { semanticMemoryEnabled: true });
-    expect(await snapshot(pkg)).toEqual(before);
-    expect(saved.semanticMemoryEnabled).toBe(true);
-    expect(await personalJson()).toEqual({ "agent:solution-designer": { semanticMemoryEnabled: true } });
-    expect(await definitions.agentDefinitionService.getPersonalSettingsView("solution-designer")).toEqual({ base: "PACKAGE", settings: ["SEMANTIC_MEMORY"] });
-    expect((await definitions.agentDefinitionService.getAgentDefinitionById("solution-designer"))?.semanticMemoryEnabled).toBe(true);
+  it.each([true, false])("the user's own agent with a stored %s loads without it, and a save drops the key and keeps every other one", async (stored) => {
+    const configPath = path.join(data, "agents", "my-agent", "agent-config.json");
+    const before = await configOf(configPath);
+    await write(configPath, JSON.stringify({ ...before, semanticMemoryEnabled: stored }, null, 2));
+    await definitions.agentDefinitionService.reloadAgentPackageDefinitions();
+    expect(await definitions.agentDefinitionService.getAgentDefinitionById("my-agent")).not.toHaveProperty("semanticMemoryEnabled");
 
-    const reset = await definitions.agentDefinitionService.resetPersonalSetting("solution-designer", "SEMANTIC_MEMORY");
-    expect(reset.semanticMemoryEnabled).toBe(false);
-    expect(await personalJson()).toEqual({});
-    expect(await snapshot(pkg)).toEqual(before);
+    await formSave("my-agent");
+    const after = await configOf(configPath);
+    expect(after).not.toHaveProperty("semanticMemoryEnabled");
+    expect(after).toMatchObject(before);
   });
 
-  it("a package file with the setting reads as on; turning it off is personal, back to the package's value removes the record", async () => {
+  it("a package agent's file with the key is read without it, and a save writes no semantic memory personal setting and drops the key", async () => {
     const configPath = path.join(pkg, "agents", "solution-designer", "agent-config.json");
     await write(configPath, JSON.stringify({ ...(await configOf(configPath)), semanticMemoryEnabled: true }, null, 2));
     await definitions.agentDefinitionService.reloadAgentPackageDefinitions();
-    expect((await definitions.agentDefinitionService.getAgentDefinitionById("solution-designer"))?.semanticMemoryEnabled).toBe(true);
+    expect(await definitions.agentDefinitionService.getAgentDefinitionById("solution-designer")).not.toHaveProperty("semanticMemoryEnabled");
 
-    const before = await snapshot(pkg);
-    expect((await formSave("solution-designer", { semanticMemoryEnabled: false })).semanticMemoryEnabled).toBe(false);
-    expect(await personalJson()).toEqual({ "agent:solution-designer": { semanticMemoryEnabled: false } });
-    expect((await formSave("solution-designer", { semanticMemoryEnabled: true })).semanticMemoryEnabled).toBe(true);
-    expect(await personalJson()).toEqual({});
-    expect(await snapshot(pkg)).toEqual(before);
-  });
-
-  it("a built-in agent's switch is personal too", async () => {
-    const builtInDir = path.join(data, "agents", "autobyteus-daily-assistant");
-    const before = await snapshot(builtInDir);
-    await formSave("autobyteus-daily-assistant", { semanticMemoryEnabled: true });
-    expect(await snapshot(builtInDir)).toEqual(before);
-    expect(await definitions.agentDefinitionService.getPersonalSettingsView("autobyteus-daily-assistant")).toEqual({ base: "BUILT_IN", settings: ["SEMANTIC_MEMORY"] });
-  });
-
-  it("the user's own agent saves it in agent-config.json, keeping the other fields; off removes it", async () => {
-    const configPath = path.join(data, "agents", "my-agent", "agent-config.json");
-    const before = await configOf(configPath);
-    await formSave("my-agent", { semanticMemoryEnabled: true });
-    const on = await configOf(configPath);
-    expect(on).toMatchObject({ ...before, semanticMemoryEnabled: true });
-    expect((await definitions.agentDefinitionService.getAgentDefinitionById("my-agent"))?.semanticMemoryEnabled).toBe(true);
-
-    await formSave("my-agent", { semanticMemoryEnabled: false });
-    const { semanticMemoryEnabled: _removed, ...offExpected } = on;
-    expect(await configOf(configPath)).toEqual(offExpected);
-    await expect(read(personalFile())).rejects.toMatchObject({ code: "ENOENT" });
-  });
-
-  it("an agent created with it on has it in its agent-config.json", async () => {
-    const created = await definitions.agentDefinitionService.createAgentDefinition({
-      name: "Learner", description: "Learns", instructions: "Learn.", semanticMemoryEnabled: true,
-    });
-    expect(created.semanticMemoryEnabled).toBe(true);
-    expect((await configOf(path.join(data, "agents", String(created.id), "agent-config.json"))).semanticMemoryEnabled).toBe(true);
+    await formSave("solution-designer");
+    expect(await configOf(configPath)).not.toHaveProperty("semanticMemoryEnabled");
+    expect(JSON.stringify(await personalJson().catch(() => ({})))).not.toContain("semanticMemoryEnabled");
+    expect((await definitions.agentDefinitionService.getPersonalSettingsView("solution-designer")).settings).not.toContain("SEMANTIC_MEMORY");
   });
 });
 

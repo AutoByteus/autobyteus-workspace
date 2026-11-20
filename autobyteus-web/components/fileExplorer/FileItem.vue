@@ -10,15 +10,16 @@
         'relative': true
       }
     ]"
-    draggable="true"
+    :draggable="readOnly ? 'false' : 'true'"
+    :data-link="file.isLink ? 'true' : undefined"
     @click.stop="handleClick"
     @contextmenu.prevent="handleContextMenu"
-    @dragstart="onDragStart"
-    @dragenter="onDragEnter"
-    @dragover="onDragOver"
-    @dragleave="onDragLeave"
-    @drop="onDrop"
-    @dragend="onDragEnd"
+    @dragstart="readOnly ? $event.preventDefault() : onDragStart($event)"
+    @dragenter="readOnly ? undefined : onDragEnter($event)"
+    @dragover="readOnly ? undefined : onDragOver($event)"
+    @dragleave="readOnly ? undefined : onDragLeave($event)"
+    @drop="readOnly ? $event.preventDefault() : onDrop($event)"
+    @dragend="readOnly ? undefined : onDragEnd($event)"
     v-if="file.is_file || !file.is_file"
   >
     <!-- Hidden drag preview -->
@@ -34,7 +35,22 @@
       </div>
     </div>
 
+    <!-- autobyteus-554: a symbolic link in a folder that does not follow links: listed, never entered or opened. -->
     <div
+      v-if="file.isLink"
+      class="file-header flex cursor-default items-center space-x-1.5 rounded-r border-l-2 border-transparent !bg-transparent px-2 py-0.5 ml-[8px]"
+      :title="$t('memory.semantic.link_help')"
+      aria-disabled="true"
+      data-test="file-item-link"
+    >
+      <div class="icon w-4 h-4 flex-shrink-0 flex items-center justify-center">
+        <Icon icon="heroicons:link-20-solid" class="h-3.5 w-3.5 text-gray-400" aria-hidden="true" />
+      </div>
+      <span class="min-w-0 truncate select-none text-[0.9375rem] text-gray-500">{{ file.name }}</span>
+      <span class="flex-shrink-0 select-none whitespace-nowrap text-xs text-gray-400">{{ $t('memory.semantic.link_not_opened') }}</span>
+    </div>
+    <div
+      v-else
       class="file-header flex items-center space-x-1.5 rounded-r px-2 py-0.5 border-l-2 ml-[8px]"
       :class="{
         'hover:bg-gray-200': !isDragging && !isActive,
@@ -89,6 +105,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch, nextTick, inject } from 'vue'
+import { Icon } from '@iconify/vue'
 import type { ComputedRef, Ref } from 'vue'
 import type { TreeNode } from '~/utils/fileExplorer/TreeNode'
 import { useWorkspaceStore } from '~/stores/workspace'
@@ -104,6 +121,8 @@ const requestFileExplorerContextMenu = inject<RequestFileExplorerContextMenu | n
 const renameRequest = inject<Ref<FileExplorerRenameRequest | null>>('fileExplorerRenameRequest', ref(null))
 const outsideDragSignal = inject<Ref<number>>('fileExplorerOutsideDragSignal', ref(0))
 const globalDragResetSignal = inject<Ref<number>>('fileExplorerGlobalDragResetSignal', ref(0))
+const readOnlyRef = inject<ComputedRef<boolean>>('fileExplorerReadOnly', computed(() => false))
+const readOnly = computed(() => readOnlyRef.value)
 
 const workspaceStore = useWorkspaceStore()
 const isLoadingChildren = ref(false)
@@ -140,6 +159,13 @@ const onGlobalDragEnd = () => {
 
 const handleClick = async () => {
   if (!panelActive.value) return
+  // A link opens nothing: it is never expanded as a folder and never opens a tab.
+  if (props.file.isLink) return
+  // A read-only folder opens every file in preview (no edit mode).
+  if (readOnly.value && props.file.is_file) {
+    explorer.openFilePreview(props.file.path)
+    return
+  }
 
   if (props.file.is_file) {
     if (isPreviewable.value) {
@@ -170,7 +196,7 @@ const handleClick = async () => {
 const handleContextMenu = (event: MouseEvent) => {
   event.preventDefault()
   event.stopPropagation()
-  if (!panelActive.value || !requestFileExplorerContextMenu) return
+  if (readOnly.value || !panelActive.value || !requestFileExplorerContextMenu) return
 
   requestFileExplorerContextMenu({
     target: createFileExplorerNodeContextTarget(props.file),
@@ -400,6 +426,11 @@ watch(panelActive, (isActive) => {
 .folder-leave-to {
   opacity: 0;
   transform: translateY(-10px);
+}
+
+/* autobyteus-554: a link row opens nothing, so it does not light up on hover. */
+.file-item[data-link='true'] > .file-header:hover {
+  background-color: transparent;
 }
 
 .file-header:hover:not(.dragging) {

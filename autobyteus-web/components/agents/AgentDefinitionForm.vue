@@ -114,8 +114,6 @@
         />
       </div>
 
-      <AgentSemanticMemoryField v-model="semanticMemoryEnabled" :personal-base="personalBase" :personal="isPersonal('SEMANTIC_MEMORY')"
-        :busy="resetting !== null" @reset-personal="resetPersonal('SEMANTIC_MEMORY')" />
     </fieldset>
 
 
@@ -252,7 +250,6 @@ import { usePersonalSettingReset } from '~/composables/usePersonalSettingReset';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import type { PersonalSetting } from '~/types/personalSettings';
 import GroupableTagInput from '~/components/agents/GroupableTagInput.vue';
-import AgentSemanticMemoryField from '~/components/agents/AgentSemanticMemoryField.vue';
 import type { GroupedSource, FlatSource } from '~/components/agents/GroupableTagInput.vue';
 import {
   normalizeDefaultLaunchConfig,
@@ -385,12 +382,11 @@ const { resetting, resetError, isApplyingReset, runReset } = usePersonalSettingR
 const formData = reactive(getInitialValue());
 const launchPreferences = reactive(toEditableDefaultLaunchConfig(null));
 const useAllInstalledSkills = ref(false);
-const semanticMemoryEnabled = ref(false);
 
 /** What the form fills from a loaded definition; a re-delivery with the same values keeps the user's unsaved edits. */
 const filledValuesOf = (data: any): string => JSON.stringify(data ? [
   data.name, data.role, data.category, data.description, data.instructions, data.avatarUrl || data.avatar_url || '',
-  data.defaultLaunchConfig ?? null, data.skillScope, data.semanticMemoryEnabled === true, ...componentFields.value.map(f => data[f.camelCase] || data[f.name] || []),
+  data.defaultLaunchConfig ?? null, data.skillScope, ...componentFields.value.map(f => data[f.camelCase] || data[f.name] || []),
 ] : null);
 let filledFrom: string | null = null;
 
@@ -409,7 +405,6 @@ watch(initialData, (newData) => {
     formData.avatar_url = newData.avatarUrl || newData.avatar_url || '';
     Object.assign(launchPreferences, toEditableDefaultLaunchConfig(newData.defaultLaunchConfig));
     useAllInstalledSkills.value = newData.skillScope === 'ALL_INSTALLED';
-    semanticMemoryEnabled.value = newData.semanticMemoryEnabled === true;
     componentFields.value.forEach(field => {
       const key = field.name as keyof typeof formData;
       formData[key] = newData[field.camelCase] || newData[key] || [];
@@ -418,7 +413,6 @@ watch(initialData, (newData) => {
     Object.assign(formData, getInitialValue());
     Object.assign(launchPreferences, toEditableDefaultLaunchConfig(null));
     useAllInstalledSkills.value = false;
-    semanticMemoryEnabled.value = false;
   }
 }, { immediate: true, deep: true });
 
@@ -433,7 +427,6 @@ const resetPersonal = (setting: PersonalSetting) => runReset(
     if (setting === 'TOOLS') formData.tool_names = [...reset.toolNames];
     else if (setting === 'SKILLS') formData.skill_names = [...reset.skillNames];
     else if (setting === 'AVATAR') formData.avatar_url = reset.avatarUrl || '';
-    else if (setting === 'SEMANTIC_MEMORY') semanticMemoryEnabled.value = reset.semanticMemoryEnabled === true;
     else Object.assign(launchPreferences, toEditableDefaultLaunchConfig(reset.defaultLaunchConfig));
   },
 );
@@ -528,7 +521,6 @@ const handleSubmit = () => {
     toolInvocationPreprocessorNames: formData.tool_invocation_preprocessor_names,
     lifecycleProcessorNames: formData.lifecycle_processor_names,
     defaultLaunchConfig: normalizeDefaultLaunchConfig(launchPreferences),
-    semanticMemoryEnabled: semanticMemoryEnabled.value,
   };
   emit('submit', submissionData);
 };
