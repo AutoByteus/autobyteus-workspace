@@ -99,6 +99,13 @@ describe("AgentRunService real memory layout integration", () => {
                 getBasePath: () => workspaceDir,
               }
             : null,
+        // A run's workspace is opened through the run-workspace check (autobyteus-554); an unknown, unregistered id
+        // falls back to the temp workspace, as in WorkspaceManager.
+        getOrCreateRunWorkspace: async (workspaceId: string) => {
+          if (workspaceId !== "workspace-real-layout") throw new Error(`Workspace '${workspaceId}' not found.`);
+          return { workspaceId, getName: () => "workspace-real-layout", getBasePath: () => workspaceDir };
+        },
+        getRegisteredWorkspaceRootPath: async () => null,
         getOrCreateTempWorkspace: async () => ({
           workspaceId: "temp_ws_real_layout",
           getName: () => "Temp Workspace",

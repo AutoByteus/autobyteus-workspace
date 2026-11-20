@@ -52,6 +52,13 @@ describe("AgentRunService fresh definition runtime integration", () => {
         return workspace;
       },
       getWorkspaceById: (workspaceId: string) => workspaceById.get(workspaceId) ?? null,
+      // A run's workspace is opened through the run-workspace check (autobyteus-554), as in WorkspaceManager.
+      getOrCreateRunWorkspace: async (workspaceId: string) => {
+        const workspace = workspaceById.get(workspaceId);
+        if (!workspace) throw new Error(`Workspace '${workspaceId}' not found.`);
+        return workspace;
+      },
+      getRegisteredWorkspaceRootPath: async (workspaceId: string) => workspaceById.get(workspaceId)?.getBasePath() ?? null,
       getOrCreateTempWorkspace: async () => ({
         workspaceId: "ws_runtime_fresh_definition",
         getBasePath: () => appConfigProvider.config.getMemoryDir(),

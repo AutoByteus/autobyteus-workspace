@@ -301,6 +301,45 @@ try {
   check('SMV-064', !existsSync(path.join(memoryDir, 'semantic', encodeURIComponent('team-local-agent:probe-product-team:reviewer'))), 'The view created no folder');
   await shot(page, 'VIS-007-agent-semantic-missing-1440x900');
 
+  // CR-001 (REQ-007): leave the agent's Semantic tab while "Loading the folder…" shows (its first listing held), then
+  // let the listing complete: the chat workspace menu (the same menu as Run Settings) offers no workspace of the
+  // folder view. The navigation stays in the page, so the web store keeps what it held.
+  let releaseHeld = () => undefined;
+  const held = new Promise((resolve) => { releaseHeld = resolve; });
+  let heldListing = null;
+  await page.route('**/graphql', async (route) => {
+    let body = null;
+    try { body = route.request().postDataJSON(); } catch { body = null; }
+    const operations = Array.isArray(body) ? body : [body];
+    const listing = operations.find((operation) => operation?.operationName === 'GetFolderChildren'
+      && String(operation?.variables?.workspaceId ?? '').startsWith('semantic_'));
+    if (listing) { heldListing = listing.variables.workspaceId; await held; }
+    await route.continue();
+  });
+  await goto('');
+  await agentCard.click();
+  await page.locator('[data-test="agent-memory-page"]').waitFor();
+  await page.locator('[data-test="agent-memory-tab-semantic"]').click();
+  await waitFor('the held first listing', async () => heldListing !== null);
+  check('SMV-090', (await page.locator('text=Loading the folder…').count()) > 0 && heldListing === `semantic_ws_${AGENT_ID}`,
+    'The Semantic tab shows "Loading the folder…" while its first listing is held', heldListing);
+  // Leave as the user does: the left panel's Chat (a client-side route change; the marker proves the page was not reloaded).
+  await page.evaluate(() => { window.__smvSameDocument = true; });
+  await page.locator('[data-test="app-left-panel-chat"]').click();
+  await page.waitForURL(/\/chat/);
+  releaseHeld();
+  await sleep(2000);
+  await page.unroute('**/graphql');
+  const sameDocument = await page.evaluate(() => window.__smvSameDocument === true);
+  await page.locator('[data-test="chat-workspace-trigger"]').first().click();
+  await page.locator('[data-test="chat-workspace-menu"]').waitFor();
+  const menuOptions = await page.locator('[data-test^="chat-workspace-option-"]').evaluateAll((elements) =>
+    elements.map((element) => ({ id: element.getAttribute('data-test'), text: (element.textContent || '').trim() })));
+  check('SMV-091', sameDocument && menuOptions.length > 0 && !menuOptions.some((option) => option.id.includes('semantic') || option.text.includes(AGENT_NAME)),
+    'Left during the first listing (same page, store kept): the chat workspace menu offers no workspace of the folder view', { sameDocument, menuOptions });
+  await shot(page, 'CR-001-chat-workspace-menu-after-leaving-1440x900');
+  await page.keyboard.press('Escape');
+
   // UXJ-002: Global.
   await goto('?view=home&section=browse&node=global');
   await page.locator('[data-test="global-memory-page"]').waitFor();

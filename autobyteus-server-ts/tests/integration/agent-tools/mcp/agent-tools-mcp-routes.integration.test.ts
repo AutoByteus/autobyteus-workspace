@@ -580,7 +580,8 @@ describe("Agent Tools MCP route-backed execution", () => {
         }),
       } as never,
       workspaceManager: {
-        getOrCreateWorkspace: vi.fn().mockResolvedValue({ getBasePath: () => workspaceRoot }),
+        // The publication service opens a run's workspace through the run-workspace check (autobyteus-554).
+        getOrCreateRunWorkspace: vi.fn().mockResolvedValue({ getBasePath: () => workspaceRoot }),
       } as never,
       projectionStore,
       snapshotStore,
