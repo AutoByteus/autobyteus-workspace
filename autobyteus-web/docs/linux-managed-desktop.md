@@ -32,7 +32,14 @@ only this protected installation. A locked non-login account `abdesk-<uid>` owns
 the app store. The desktop user cannot replace the image directly. Other
 applications and global Ubuntu policy are unchanged.
 
-The user's menu entry is `~/.local/share/applications/autobyteus-managed.desktop`.
+The Applications entry and running managed windows share the desktop ID
+`autobyteus-managed.desktop`. The installed app publishes its shortcut at
+`~/.local/share/applications/autobyteus/managed.desktop` and keeps the branded
+icon in `~/.local/share/autobyteus-managed/desktop-icon.png` so it remains
+available after quit. The first corrected installed launch replaces the exact
+older flat shortcut without changing its desktop ID or editing favorites.
+Customized resources are left intact; a menu publication problem is reported
+without reinstalling the app.
 Opening a new launcher-bearing download redirects to the installed copy for
 that UID. Old releases lacking this launcher are not retrofitted. The application
 ID, profile/data location, selected channel and automatic-update preference stay
@@ -66,7 +73,7 @@ Quit the application before removal. Run the installed image with
 `/opt/autobyteus-desktop/$(id -u)/app/AutoByteus.AppImage --autobyteus-uninstall`).
 This requests a fresh one-shot Ubuntu authorization. It stops the owned socket
 and writer, unloads the owned profile and removes verified installer-owned
-files/account and the unmodified user menu entry. It **does not delete user
+files/account and its unchanged user menu entries and icon. It **does not delete user
 profile or server data**. Modified/unrecognized resources are left intact with
 an error, not force-deleted.
 

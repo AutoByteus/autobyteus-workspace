@@ -8,16 +8,18 @@
 import { it, expect, vi, beforeEach, describe } from 'vitest'
 
 const mocks = vi.hoisted(() => ({
+  detectManaged: vi.fn(),
   updaterOptions: [] as Array<{ recoverAfterFailedInstall?: () => void; testFeedUrl?: string }>,
   serverManager: { stopServer: vi.fn(), isServerProcessGone: vi.fn(), setRuntimeEnvOverrides: vi.fn() },
   logger: { error: vi.fn(), warn: vi.fn(), info: vi.fn(), debug: vi.fn(), close: vi.fn(), child: vi.fn() },
-  app: { on: vi.fn(), quit: vi.fn(), exit: vi.fn(), relaunch: vi.fn(), getPath: vi.fn(() => '/test-owned-data'), isPackaged: false },
+  app: { setDesktopName: vi.fn(), on: vi.fn(), quit: vi.fn(), exit: vi.fn(), relaunch: vi.fn(), getPath: vi.fn(() => '/test-owned-data'), isPackaged: false },
 }))
 
 vi.mock('electron', () => ({
   app: mocks.app,
   BrowserWindow: { getAllWindows: () => [] }, dialog: {}, ipcMain: { handle: vi.fn(), on: vi.fn() }, shell: {},
 }))
+vi.mock('../../updater/linuxManagedInstall', () => ({ detectLinuxManagedInstall: mocks.detectManaged }))
 vi.mock('electron-is-dev', () => ({ default: true }))
 vi.mock('../../logger', () => { mocks.logger.child.mockReturnValue(mocks.logger); return { logger: mocks.logger } })
 vi.mock('../../server/serverManagerFactory', () => ({ ServerManagerFactory: { createServerManager: () => mocks.serverManager } }))
@@ -50,6 +52,24 @@ const createApplication = (profile: Record<string, unknown> = { updaterEnabled: 
 })
 
 beforeEach(() => { vi.clearAllMocks(); mocks.updaterOptions = [] })
+
+it('sets the desktop ID during construction, before start can create windows, only for a verified packaged installation', () => {
+  try {
+    mocks.detectManaged.mockReturnValue({})
+    createApplication()
+    expect(mocks.detectManaged).not.toHaveBeenCalled()
+    mocks.app.isPackaged = true
+    mocks.detectManaged.mockReturnValue(null)
+    createApplication()
+    expect(mocks.app.setDesktopName).not.toHaveBeenCalled()
+    mocks.detectManaged.mockReturnValue({})
+    createApplication()
+    expect(mocks.app.setDesktopName.mock.calls).toEqual([['autobyteus-managed.desktop']])
+  } finally {
+    mocks.app.isPackaged = false
+    mocks.detectManaged.mockReset()
+  }
+})
 
 describe('recoverAfterFailedInstall (SR-003 AR-001)', () => {
   it.each([
