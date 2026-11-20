@@ -1,0 +1,4 @@
+autobyteus-server-ts/src/agent-definition/providers/agent-definition-config.ts:78:      // Retired keys: nothing reads them, and a save drops them (`semanticMemoryEnabled`: every agent has semantic
+autobyteus-server-ts/src/agent-definition/providers/agent-definition-config.ts:80:      ([key]) => key !== "selfEvolution" && key !== "semanticMemoryEnabled"
+git grep exit 0
+=== DEL-37-ac002-grep exit 0
