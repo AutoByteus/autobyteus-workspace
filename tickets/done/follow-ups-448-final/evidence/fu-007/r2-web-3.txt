@@ -1,0 +1,73 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/follow-ups-448-final/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/follow-ups-448-final/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/follow-ups-448-final/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/follow-ups-448-final/autobyteus-web/stores/serverStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/follow-ups-448-final/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/follow-ups-448-final/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/follow-ups-448-final/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/follow-ups-448-final/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/follow-ups-448-final/autobyteus-web/stores/serverStore.ts" is used
+stderr | components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectTaskBoard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectTaskBoard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts (2 tests | 1 failed) 84ms
+   × ServerSettingsBasicsPanel > composes only current endpoint and focused Basics cards 72ms
+     → expected 'Endpoint CardsApplicationsMedia Model…' not to contain 'GitHub'
+   ✓ ServerSettingsBasicsPanel > owns Basics notifications emitted by endpoint and web search cards 11ms
+ ✓ components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts (3 tests) 3208ms
+   ✓ Collaboration messages on a large Agent Org root > projects once and hashes only the displayed preview on mount and on a member switch (42,000 references)  468ms
+   ✓ Collaboration messages on a large Agent Org root > reveals and opens the last reference with the server identity; switching member collapses the list  1299ms
+   ✓ Collaboration messages on a large Agent Org root > applies a live communication message with one projection and identity work bounded by the visible rows  1441ms
+ ✓ components/projects/__tests__/ProjectTaskBoard.spec.ts (16 tests) 5312ms
+   ✓ ProjectTaskBoard > searches across columns, updates counts and recovers from no matches  618ms
+   ✓ ProjectTaskBoard > invites a sentence, debounces typing into one request, and lists matches best-first in their lanes  316ms
+   ✓ ProjectTaskBoard > shows exact matches while meaning search prepares, says how far it is, and updates without retyping  2418ms
+   ✓ ProjectTaskBoard > explains an unavailable model with Retry, and Retry asks the server to try again before searching again  309ms
+   ✓ ProjectTaskBoard > shows a failed search request with Retry, keeping the board  307ms
+   ✓ ProjectTaskBoard > keeps only the latest request: a slow answer for an earlier query never replaces a newer one  613ms
+   ✓ ProjectTaskBoard > omits the Cancelled toggle with no Cancelled Task, and searches only what is shown (AC-008)  320ms
+   ✓ ProjectTaskBoard > shows the results for 150 Tasks within half a second after typing stops (QR-001)  334ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts > ServerSettingsBasicsPanel > composes only current endpoint and focused Basics cards
+AssertionError: expected 'Endpoint CardsApplicationsMedia Model…' not to contain 'GitHub'
+
+Expected: [32m"GitHub"[39m
+Received: [31m"Endpoint CardsApplicationsMedia ModelsCodex Full AccessClaude runtimeLive responseInternal agentsInternal agents are the system's own helpers, such as the Model Router.Show internal agentsShow them in the Agents list, pickers and history, for debugging. While off, they are also not offered to other agents or peer nodes.Show internal agentsFeatured CatalogWeb SearchCompactionTitleSummaryLabelDescriptionTitlePackagesUpdatesTitleAgent packageEveryMinutesHoursSkill sourceEveryMinutesHoursRange Github noteTitleSummaryAgent packagesDownloads new revisions from GitHub and installs them without asking. They can change what your agents do. Your personal tools, skills, avatars and runtime/model are kept; other local changes are replaced, with a backup.Skill sourcesDownloads new revisions from GitHub and installs them without asking. They can change what your agents do. Local changes are replaced.Scope"[39m
+
+ ❯ components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts:51:32
+     49|     expect(wrapper.find('[data-testid="web-search-configuration-card-s…
+     50|     // autobyteus-337 (REQ-007): GitHub is set up on the Integrations …
+     51|     expect(wrapper.text()).not.toContain('GitHub')
+       |                                ^
+     52|     expect(wrapper.find('[data-testid="compaction-config-card-stub"]')…
+     53|     expect(wrapper.find('[data-testid="streaming-parser-card"]').exist…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 20 passed (21)
+   Start at  15:17:10
+   Duration  18.59s (transform 7.46s, setup 33.26s, collect 3.22s, tests 8.60s, environment 1.31s, prepare 852ms)
+
+exit=1
