@@ -168,4 +168,17 @@ describe('MobileRunScreen', () => {
     expect(wrapper.find('[data-testid="mobile-run-conversation"]').exists()).toBe(false);
     expect(wrapper.get('[data-testid="mobile-run-subtitle"]').text()).toBe('Not reachable');
   });
+
+  // autobyteus-279 REQ-008 (VIS-034): an iPad in landscape shows the list beside the run, so the run has no ←.
+  it('has no Back to runs at 1024 px and wider, and has it below', async () => {
+    const original = window.matchMedia;
+    for (const [wide, back] of [[true, false], [false, true]] as const) {
+      window.matchMedia = ((query: string) => ({ matches: wide && query === '(min-width: 1024px)', media: query, addEventListener: vi.fn(), removeEventListener: vi.fn() })) as never;
+      active.state!.target = targetOf('standalone_agent', 'run-1', 'Daily Assistant');
+      const { wrapper } = await mountScreen();
+      expect(wrapper.find('[data-testid="mobile-run-back"]').exists()).toBe(back);
+      wrapper.unmount();
+    }
+    window.matchMedia = original;
+  });
 });

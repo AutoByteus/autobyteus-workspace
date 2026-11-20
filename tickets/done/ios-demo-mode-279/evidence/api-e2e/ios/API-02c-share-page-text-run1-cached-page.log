@@ -1,0 +1,10 @@
+# API-02c-share-page-text: ApiE2E279UITests/testShareFromSafariSelectedText on apie2e279-iphone (87FD7BD4-527F-4396-8F0F-15E34D1FA345); fresh-start clone build (429af9bd66 + the temporary test file); 2026-11-19T20:45:37Z; load 99.87 139.13 151.29
+# links made just before: 
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testShareFromSafariSelectedText]' started.
+/Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobileUITests/ApiE2E279UITests.swift:272: error: -[AutoByteusMobileUITests.ApiE2E279UITests testShareFromSafariSelectedText] : XCTAssertTrue failed - The page's Share button
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testShareFromSafariSelectedText]' failed (40.546 seconds).
+	 Executed 1 test, with 1 failure (0 unexpected) in 40.546 (40.547) seconds
+	 Executed 1 test, with 1 failure (0 unexpected) in 40.546 (40.547) seconds
+	 Executed 1 test, with 1 failure (0 unexpected) in 40.546 (40.548) seconds
+** TEST EXECUTE FAILED **
+# exit: 65

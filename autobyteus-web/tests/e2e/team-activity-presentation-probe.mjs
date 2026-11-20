@@ -170,23 +170,6 @@ const dotDetails = async (locator) => {
 
 const expectedColor = (isActive) => isActive ? 'rgb(59, 130, 246)' : 'rgb(153, 153, 153)';
 
-const assertDot = async (locator, { isActive, label }) => {
-  const details = await dotDetails(locator);
-  assert(details.dataActive === String(isActive), 'Dot data-active does not match exact boolean', details);
-  assert(details.role === 'img', 'Dot must expose role=img', details);
-  assert(details.ariaLabel === label, 'Dot aria-label mismatch', { expected: label, details });
-  assert(details.title === label, 'Dot title mismatch', { expected: label, details });
-  assert(details.backgroundColor === expectedColor(isActive), 'Dot computed color mismatch', {
-    expected: expectedColor(isActive),
-    details,
-  });
-  assert(!details.className.split(/\s+/).includes('animate-pulse'), 'Binary team dot must not use animate-pulse', details);
-  assert(details.animationName === 'none', 'Binary team dot must have no computed animation', details);
-  assert(details.width === 8 && details.height === 8, 'Binary team dot must remain compact 8x8px', details);
-  assert(details.visibility === 'visible' && details.opacity === '1', 'Binary team dot must be visible', details);
-  return details;
-};
-
 // delegated-team-aggregate-status: the history surface shows the universal Team status
 // (busy blue with pulse > error red > idle green > offline gray; a stopped run is gray).
 const teamStatusPresentation = {
@@ -300,6 +283,8 @@ try {
     locale: 'en-US',
     colorScheme: 'light',
   });
+  // The history rows hold their runs on /ws/run-status; the fixture answers their states itself (it has no node).
+  await context.routeWebSocket(/\/ws\/run-status(\?|$)/, () => undefined);
   await context.route('**/rest/health', async (route) => {
     await route.fulfill({
       status: 200,
@@ -335,38 +320,24 @@ try {
   const historyGroup = page.locator('[data-test="history-surface"] [data-test="workspace-team-definition-row-team-def-browser"] [data-test="team-aggregate-status-dot"]');
   const historyActiveRun = page.locator('[data-test="history-surface"] [data-test="workspace-team-row-team-run-active-browser"] [data-test="team-aggregate-status-dot"]');
   const historyInactiveRun = page.locator('[data-test="history-surface"] [data-test="workspace-team-row-team-run-inactive-browser"] [data-test="team-aggregate-status-dot"]');
-  const runningDots = page.locator('[data-test="running-surface"] [data-test="team-activity-dot"]');
-  const runningGroup = runningDots.nth(0);
-  const runningActiveRun = runningDots.nth(1);
-  const runningInactiveRun = runningDots.nth(2);
 
-  await runScenario('SR006-BR-001', 'Mixed siblings: the history surface shows the universal Team status; the running surface keeps binary activity', async () => {
-    assert(await runningDots.count() === 3, 'Running surface must render group plus two exact run dots');
-    assert(await page.locator('[data-test="history-surface"] [data-test="team-activity-dot"]').count() === 0,
-      'The history surface must not keep the binary activity dot');
+  await runScenario('SR006-BR-001', 'Mixed siblings: the history surface shows the universal Team status', async () => {
     const details = {
       // The alive run's only member is in error; the stopped run is gray whatever its member reported.
       historyGroup: await assertTeamStatusDot(historyGroup, { status: 'error' }),
       historyActiveRun: await assertTeamStatusDot(historyActiveRun, { status: 'error' }),
       historyInactiveRun: await assertTeamStatusDot(historyInactiveRun, { status: 'offline' }),
-      runningGroup: await assertDot(runningGroup, { isActive: true, label: 'Active team runs' }),
-      runningActiveRun: await assertDot(runningActiveRun, { isActive: true, label: 'Active team run' }),
-      runningInactiveRun: await assertDot(runningInactiveRun, { isActive: false, label: 'Inactive team run' }),
     };
-    assert(await page.getByRole('img', { name: 'Active team runs' }).count() === 1, 'Only the running-surface group dot keeps binary semantics');
     assert(await page.getByRole('img', { name: 'Team status: Error' }).count() === 2, 'History group and alive run read error');
     await page.screenshot({ path: initialScreenshotPath, fullPage: true });
     return details;
   });
 
-  await runScenario('SR006-BR-002', 'Collapsed history group follows member status (not representative or Stop state); running surface stays binary', async () => {
+  await runScenario('SR006-BR-002', 'Collapsed history group follows member status (not representative or Stop state)', async () => {
     await page.locator('[data-test="workspace-team-definition-row-team-def-browser"]').click();
-    await page.locator('[data-test="running-surface"] .group-header').click();
     assert(await page.locator('[data-test="workspace-team-row-team-run-active-browser"]').count() === 0, 'History child rows must be collapsed');
-    assert(await runningDots.count() === 1, 'Running child rows must be collapsed while the parent dot remains');
     const collapsedBefore = {
       history: await assertTeamStatusDot(historyGroup, { status: 'error' }),
-      running: await assertDot(runningGroup, { isActive: true, label: 'Active team runs' }),
     };
 
     // The member goes from error to running (plus an unrelated representative flip).
@@ -376,24 +347,18 @@ try {
     await page.locator('[data-test="independent-facts"]').filter({ hasText: 'stopPending=true' }).waitFor();
     const pending = {
       history: await assertTeamStatusDot(historyGroup, { status: 'running' }),
-      running: await assertDot(runningGroup, { isActive: true, label: 'Active team runs' }),
     };
 
     await page.evaluate(() => window.__teamActivityProbe.failStop());
     await page.locator('[data-test="independent-facts"]').filter({ hasText: 'failures=1' }).waitFor();
     const failed = {
       history: await assertTeamStatusDot(historyGroup, { status: 'running' }),
-      running: await assertDot(runningGroup, { isActive: true, label: 'Active team runs' }),
     };
 
     await page.locator('[data-test="workspace-team-definition-row-team-def-browser"]').click();
-    await page.locator('[data-test="running-surface"] .group-header').click();
-    assert(await runningDots.count() === 3, 'Running exact rows must return after expansion');
     await assertTeamStatusDot(historyActiveRun, { status: 'running' });
     // The stopped sibling stays gray although its member last reported running.
     await assertTeamStatusDot(historyInactiveRun, { status: 'offline' });
-    await assertDot(runningActiveRun, { isActive: true, label: 'Active team run' });
-    await assertDot(runningInactiveRun, { isActive: false, label: 'Inactive team run' });
 
     return {
       collapsedBefore,
@@ -405,36 +370,26 @@ try {
 
   await runScenario('SR006-BR-003', 'Final active-to-inactive transition updates collapsed parents and exact run rows', async () => {
     await page.locator('[data-test="workspace-team-definition-row-team-def-browser"]').click();
-    await page.locator('[data-test="running-surface"] .group-header').click();
     await page.evaluate(() => window.__teamActivityProbe.settleActiveRun());
     const collapsedSettled = {
       history: await assertTeamStatusDot(historyGroup, { status: 'offline' }),
-      running: await assertDot(runningGroup, { isActive: false, label: 'No active team runs' }),
     };
 
     await page.locator('[data-test="workspace-team-definition-row-team-def-browser"]').click();
-    await page.locator('[data-test="running-surface"] .group-header').click();
-    assert(await runningDots.count() === 3, 'Running exact rows must return after settled expansion');
     const expandedSettled = {
       historyFormerActive: await assertTeamStatusDot(historyActiveRun, { status: 'offline' }),
       historyInactive: await assertTeamStatusDot(historyInactiveRun, { status: 'offline' }),
-      runningFormerActive: await assertDot(runningActiveRun, { isActive: false, label: 'Inactive team run' }),
-      runningInactive: await assertDot(runningInactiveRun, { isActive: false, label: 'Inactive team run' }),
     };
     return { collapsedSettled, expandedSettled };
   });
 
-  await runScenario('SR006-BR-004', 'English and Simplified Chinese catalogs provide the accessible Team status and binary running-surface meaning', async () => {
+  await runScenario('SR006-BR-004', 'English and Simplified Chinese catalogs provide the accessible Team status', async () => {
     await page.evaluate(async () => window.__teamActivityProbe.setLocale('zh-CN'));
     await page.locator('[data-test="resolved-locale"]').filter({ hasText: 'zh-CN' }).waitFor({ timeout: timeoutMs });
-    assert(await page.getByRole('img', { name: '无活跃团队运行' }).count() === 1, 'The running-surface group dot must use Simplified Chinese inactive meaning');
-    assert(await page.getByRole('img', { name: '非活跃团队运行' }).count() === 2, 'Running-surface run dots must use Simplified Chinese inactive meaning');
     assert(await page.getByRole('img', { name: '团队状态：离线' }).count() === 3, 'History group and run dots must use the Simplified Chinese Team status');
     const details = {
       historyGroup: await assertTeamStatusDot(historyGroup, { status: 'offline', label: '团队状态：离线' }),
       historyFormerActive: await assertTeamStatusDot(historyActiveRun, { status: 'offline', label: '团队状态：离线' }),
-      runningGroup: await assertDot(runningGroup, { isActive: false, label: '无活跃团队运行' }),
-      runningFormerActive: await assertDot(runningActiveRun, { isActive: false, label: '非活跃团队运行' }),
     };
     await page.screenshot({ path: finalScreenshotPath, fullPage: true });
     return details;

@@ -39,6 +39,19 @@ targets:
     deploymentTarget: "17.0"
     sources:
       - path: AutoByteusMobile
+      # autobyteus-279: the built-in demo's web content (scripts/prepare-demo-web.sh), bundled as one folder.
+      - path: DemoWeb
+        type: folder
+        buildPhase: resources
+        optional: true
+    preBuildScripts:
+      - name: Require the demo web content
+        basedOnDependencyAnalysis: false
+        script: |
+          if [ ! -f "${SRCROOT}/DemoWeb/index.html" ]; then
+            echo "error: DemoWeb/ is missing. Run autobyteus-ios/scripts/prepare-demo-web.sh --build (the demo build of the phone screens)."
+            exit 1
+          fi
     dependencies:
       - target: AutoByteusMobileCore
       - target: AutoByteusMobileShareExtension

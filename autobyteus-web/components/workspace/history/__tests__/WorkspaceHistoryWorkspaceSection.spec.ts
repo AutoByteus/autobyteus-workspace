@@ -377,7 +377,6 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     const runDot = (teamRunId: string) => wrapper.get(`[data-test="workspace-team-row-${teamRunId}"] [data-test="team-aggregate-status-dot"]`);
     const stopButtons = () => wrapper.findAll('button[title$="terminate_team"]');
 
-    expect(wrapper.find('[data-test="team-activity-dot"]').exists()).toBe(false);
     expect(wrapper.get('[data-test="workspace-team-definition-row-team-def-1"]').findAll('[data-test="team-aggregate-status-dot"]')).toHaveLength(1);
     expect(groupDot().attributes()).toMatchObject({
       'data-status': AgentStatus.Running, 'aria-label': 'Team status: Running', title: 'Team status: Running',

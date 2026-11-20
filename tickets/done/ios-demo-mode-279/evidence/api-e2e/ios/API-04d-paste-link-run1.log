@@ -1,0 +1,10 @@
+# API-04d-paste-link: ApiE2E279UITests/testPasteALink on apie2e279-iphone (87FD7BD4-527F-4396-8F0F-15E34D1FA345); fresh-start clone build (429af9bd66 + the temporary test file); 2026-11-19T20:21:22Z; load 71.95 132.92 171.05
+# links made just before: paste
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testPasteALink]' started.
+<unknown>:0: error: -[AutoByteusMobileUITests.ApiE2E279UITests testPasteALink] : Failed to get matching snapshots: Unable to perform work on main run loop, process main thread busy for 30.0s
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testPasteALink]' failed (103.675 seconds).
+	 Executed 1 test, with 1 failure (0 unexpected) in 103.675 (103.676) seconds
+	 Executed 1 test, with 1 failure (0 unexpected) in 103.675 (103.677) seconds
+	 Executed 1 test, with 1 failure (0 unexpected) in 103.675 (103.678) seconds
+** TEST EXECUTE FAILED **
+# exit: 65

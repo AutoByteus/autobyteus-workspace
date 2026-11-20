@@ -576,10 +576,6 @@ Teams inside an Org are live once the Org has been opened, and read gray before
 that. The server's Project Task worker status keeps the shared fold unchanged,
 so a starting delegated Team still reads `initializing` there.
 
-The unmounted `components/workspace/running/*` surface still uses the binary
-`TeamActivityDot.vue` (`isActive` only). It is not part of the Workspaces tree
-and is scheduled for removal.
-
 Delegated task executions are task-scoped execution projections rather than
 structural topology. Every Team Agent event carries one `agent_execution`
 binding with `kind`, exact `execution_address`, and an `agent_run_id` only when

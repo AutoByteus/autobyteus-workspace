@@ -1,0 +1,26 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "87FD7BD4-527F-4396-8F0F-15E34D1FA345",
+        "deviceName" : "apie2e279-iphone",
+        "exportedFileName" : "6D42FD95-9F29-4A43-9B69-584AABDE1106.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "update-node-name_0_CDE35D9C-431C-456A-8C3C-43CC97878D91.txt",
+        "timestamp" : 1795119458.149
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "87FD7BD4-527F-4396-8F0F-15E34D1FA345",
+        "deviceName" : "apie2e279-iphone",
+        "exportedFileName" : "3EEC7655-3DBA-4D93-AA2B-E09279950621.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "update-opened_0_307405C8-3F95-4728-819E-C5A0A5E5E36A.png",
+        "timestamp" : 1795119458.129
+      }
+    ],
+    "testIdentifier" : "ApiE2E279UITests/testUpdateOpensTheSavedComputer()",
+    "testIdentifierURL" : "test://com.apple.xcode/AutoByteusMobile/AutoByteusMobileUITests/ApiE2E279UITests/testUpdateOpensTheSavedComputer"
+  }
+]

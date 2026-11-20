@@ -1,0 +1,4 @@
+build:mobile-web --demo exit=0
+The demo answers all 249 compiled operations (handled or listed as unreachable).
+build:mobile-web exit=0
+The /mobile build holds no demo code.

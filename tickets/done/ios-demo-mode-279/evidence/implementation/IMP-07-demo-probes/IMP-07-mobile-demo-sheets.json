@@ -1,0 +1,239 @@
+[
+ {
+  "size": "iphone-440x956",
+  "findings": [],
+  "errors": [],
+  "log": [
+   {
+    "where": "new-run › AutoByteus models",
+    "length": 303,
+    "head": "New run Agent Project Task Manager Folder demo-workspace Runtime AutoByteus Model demo/sample-model Auto approve tools Create run Model demo/sample-model A samp"
+   },
+   {
+    "where": "new-run › AutoByteus",
+    "models": [
+     "demo/sample-model",
+     "demo/sample-reasoning-model"
+    ]
+   },
+   {
+    "where": "new-run › Codex App Server models",
+    "length": 366,
+    "head": "New run Agent Project Task Manager Folder demo-workspace Runtime Codex App Server Model Choose Auto approve tools Choose a model before creating the run. Create"
+   },
+   {
+    "where": "new-run › Codex App Server",
+    "models": [
+     "Sample Codex model",
+     "Sample Codex mini",
+     "Sample Codex fast"
+    ]
+   },
+   {
+    "where": "new-run › Claude Agent SDK models",
+    "length": 274,
+    "head": "New run Agent Project Task Manager Folder demo-workspace Runtime Claude Agent SDK Model Choose Auto approve tools Choose a model before creating the run. Create"
+   },
+   {
+    "where": "new-run › Claude Agent SDK",
+    "models": [
+     "demo/sample-claude-model"
+    ]
+   },
+   {
+    "where": "settings-stopped-run › AutoByteus models",
+    "length": 244,
+    "head": "Settings Codex Stopped Runtime AutoByteus Model demo/sample-model Save Model demo/sample-model A sample model. Its answers are scripted. demo/sample-reasoning-m"
+   },
+   {
+    "where": "settings-stopped-run › AutoByteus",
+    "models": [
+     "demo/sample-model",
+     "demo/sample-reasoning-model"
+    ]
+   },
+   {
+    "where": "settings-stopped-run › Codex App Server models",
+    "length": 267,
+    "head": "Settings Codex Stopped Runtime Codex App Server Model Choose Save Model Sample Codex model A sample model. Its answers are scripted. Sample Codex mini A sample "
+   },
+   {
+    "where": "settings-stopped-run › Codex App Server",
+    "models": [
+     "Sample Codex model",
+     "Sample Codex mini",
+     "Sample Codex fast"
+    ]
+   },
+   {
+    "where": "settings-stopped-run › Claude Agent SDK models",
+    "length": 175,
+    "head": "Settings Codex Stopped Runtime Claude Agent SDK Model Choose Save Model demo/sample-claude-model Sample Claude model · A sample model. Its answers are scripted."
+   },
+   {
+    "where": "settings-stopped-run › Claude Agent SDK",
+    "models": [
+     "demo/sample-claude-model"
+    ]
+   }
+  ]
+ },
+ {
+  "size": "ipad-portrait-820x1180",
+  "findings": [],
+  "errors": [],
+  "log": [
+   {
+    "where": "new-run › AutoByteus models",
+    "length": 303,
+    "head": "New run Agent Project Task Manager Folder demo-workspace Runtime AutoByteus Model demo/sample-model Auto approve tools Create run Model demo/sample-model A samp"
+   },
+   {
+    "where": "new-run › AutoByteus",
+    "models": [
+     "demo/sample-model",
+     "demo/sample-reasoning-model"
+    ]
+   },
+   {
+    "where": "new-run › Codex App Server models",
+    "length": 366,
+    "head": "New run Agent Project Task Manager Folder demo-workspace Runtime Codex App Server Model Choose Auto approve tools Choose a model before creating the run. Create"
+   },
+   {
+    "where": "new-run › Codex App Server",
+    "models": [
+     "Sample Codex model",
+     "Sample Codex mini",
+     "Sample Codex fast"
+    ]
+   },
+   {
+    "where": "new-run › Claude Agent SDK models",
+    "length": 274,
+    "head": "New run Agent Project Task Manager Folder demo-workspace Runtime Claude Agent SDK Model Choose Auto approve tools Choose a model before creating the run. Create"
+   },
+   {
+    "where": "new-run › Claude Agent SDK",
+    "models": [
+     "demo/sample-claude-model"
+    ]
+   },
+   {
+    "where": "settings-stopped-run › AutoByteus models",
+    "length": 244,
+    "head": "Settings Codex Stopped Runtime AutoByteus Model demo/sample-model Save Model demo/sample-model A sample model. Its answers are scripted. demo/sample-reasoning-m"
+   },
+   {
+    "where": "settings-stopped-run › AutoByteus",
+    "models": [
+     "demo/sample-model",
+     "demo/sample-reasoning-model"
+    ]
+   },
+   {
+    "where": "settings-stopped-run › Codex App Server models",
+    "length": 267,
+    "head": "Settings Codex Stopped Runtime Codex App Server Model Choose Save Model Sample Codex model A sample model. Its answers are scripted. Sample Codex mini A sample "
+   },
+   {
+    "where": "settings-stopped-run › Codex App Server",
+    "models": [
+     "Sample Codex model",
+     "Sample Codex mini",
+     "Sample Codex fast"
+    ]
+   },
+   {
+    "where": "settings-stopped-run › Claude Agent SDK models",
+    "length": 175,
+    "head": "Settings Codex Stopped Runtime Claude Agent SDK Model Choose Save Model demo/sample-claude-model Sample Claude model · A sample model. Its answers are scripted."
+   },
+   {
+    "where": "settings-stopped-run › Claude Agent SDK",
+    "models": [
+     "demo/sample-claude-model"
+    ]
+   }
+  ]
+ },
+ {
+  "size": "ipad-landscape-1180x820",
+  "findings": [],
+  "errors": [],
+  "log": [
+   {
+    "where": "new-run › AutoByteus models",
+    "length": 1375,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "new-run › AutoByteus",
+    "models": [
+     "demo/sample-model",
+     "demo/sample-reasoning-model"
+    ]
+   },
+   {
+    "where": "new-run › Codex App Server models",
+    "length": 1438,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "new-run › Codex App Server",
+    "models": [
+     "Sample Codex model",
+     "Sample Codex mini",
+     "Sample Codex fast"
+    ]
+   },
+   {
+    "where": "new-run › Claude Agent SDK models",
+    "length": 1346,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "new-run › Claude Agent SDK",
+    "models": [
+     "demo/sample-claude-model"
+    ]
+   },
+   {
+    "where": "settings-stopped-run › AutoByteus models",
+    "length": 1113,
+    "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 2m software engineering team Image context files don’t reach the model on the f"
+   },
+   {
+    "where": "settings-stopped-run › AutoByteus",
+    "models": [
+     "demo/sample-model",
+     "demo/sample-reasoning-model"
+    ]
+   },
+   {
+    "where": "settings-stopped-run › Codex App Server models",
+    "length": 1136,
+    "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 2m software engineering team Image context files don’t reach the model on the f"
+   },
+   {
+    "where": "settings-stopped-run › Codex App Server",
+    "models": [
+     "Sample Codex model",
+     "Sample Codex mini",
+     "Sample Codex fast"
+    ]
+   },
+   {
+    "where": "settings-stopped-run › Claude Agent SDK models",
+    "length": 1044,
+    "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 2m software engineering team Image context files don’t reach the model on the f"
+   },
+   {
+    "where": "settings-stopped-run › Claude Agent SDK",
+    "models": [
+     "demo/sample-claude-model"
+    ]
+   }
+  ]
+ }
+]

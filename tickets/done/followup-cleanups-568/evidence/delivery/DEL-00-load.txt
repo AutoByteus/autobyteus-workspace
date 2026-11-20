@@ -1,0 +1,2 @@
+16:09  up 32 days,  1:47, 10 users, load averages: 34.97 94.90 179.31
+16:13  up 32 days,  1:52, 10 users, load averages: 56.10 70.68 144.61

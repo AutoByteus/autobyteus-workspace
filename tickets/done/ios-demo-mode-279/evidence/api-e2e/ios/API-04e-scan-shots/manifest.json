@@ -1,0 +1,17 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "87FD7BD4-527F-4396-8F0F-15E34D1FA345",
+        "deviceName" : "apie2e279-iphone",
+        "exportedFileName" : "ED284069-17F7-4D34-B90D-CE8BB6B3D8E2.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "scan-paired_0_9944ABE2-DA16-4E34-A5A8-983B3100EC8F.png",
+        "timestamp" : 1795119956.512
+      }
+    ],
+    "testIdentifier" : "ApiE2E279UITests/testScannedPairingCode()",
+    "testIdentifierURL" : "test://com.apple.xcode/AutoByteusMobile/AutoByteusMobileUITests/ApiE2E279UITests/testScannedPairingCode"
+  }
+]

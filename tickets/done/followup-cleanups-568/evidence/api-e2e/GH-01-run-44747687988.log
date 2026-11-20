@@ -1,0 +1,34 @@
+# GH-01: my own read of build-only run 44747687988 (read only: gh run view --json, --log 8188 lines, grepped); 2026-11-20T14:36:49Z
+head eb7e4bf2af4856690d213c4108bd7e41b29d8976 branch codex/followup-cleanups-568 event workflow_dispatch created 2026-11-20T13:49:22Z conclusion success
+job: Resolve iOS Release Metadata: success
+job: Build And Test iOS App: success
+job: Validate iOS Publish Secrets: skipped
+job: Archive And Upload To App Store Connect: skipped
+== input
+2026-11-20T13:50:37.5848627Z   INPUT_PUBLISH_APP_STORE_CONNECT: false
+== iOS job image
+2026-11-20T13:50:47.9172750Z Image: xcode-27-arm64
+== Xcode
+2026-11-20T13:53:58.6189800Z Selected Xcode app: /Applications/Xcode_27.2.app
+2026-11-20T13:53:58.6489750Z Selected iPhoneOS SDK: 27.2
+== simulator choice (workflow step and smoke)
+Generate, build, and run implementation checks	2026-11-20T14:07:14.3596720Z Selected simulator: iPhone 17 (iOS 27.2), UDID D7F008F7-431D-408F-99E6-F1CD29A00482
+Select available iOS simulator	2026-11-20T13:54:26.8130740Z [36;1mecho "Selected simulator UDID: $UDID"[0m
+Select available iOS simulator	2026-11-20T13:54:30.7126910Z Selected simulator: iPhone 17 (iOS 27.2), UDID D7F008F7-431D-408F-99E6-F1CD29A00482
+Select available iOS simulator	2026-11-20T13:54:30.7228300Z Selected simulator UDID: D7F008F7-431D-408F-99E6-F1CD29A00482
+== runtimes on the image named in the log
+   2 iOS 27.0
+   2 iOS 27.1
+   8 iOS 27.2
+== destination used by xcodebuild
+IOS_SIMULATOR_DESTINATION: platform=iOS Simulator,id=D7F008F7-431D-408F-99E6-F1CD29A00482
+== build and tests
+Generate, build, and run implementation checks 2026-11-20T13:57:19.3397440Z iOS release contract checks passed.
+Generate, build, and run implementation checks 2026-11-20T13:58:21.8753140Z ** BUILD SUCCEEDED **
+Generate, build, and run implementation checks 2026-11-20T14:06:34.9769740Z   Executed 56 tests, with 0 failures (0 unexpected) in 2.129 (3.963) seconds
+Generate, build, and run implementation checks 2026-11-20T14:06:35.0227370Z   Executed 56 tests, with 0 failures (0 unexpected) in 2.129 (4.005) seconds
+Generate, build, and run implementation checks 2026-11-20T14:06:37.2917280Z ** TEST SUCCEEDED **
+Generate, build, and run implementation checks 2026-11-20T14:23:32.7814140Z   Executed 8 tests, with 0 failures (0 unexpected) in 627.462 (627.557) seconds
+Generate, build, and run implementation checks 2026-11-20T14:23:32.8062170Z   Executed 8 tests, with 0 failures (0 unexpected) in 627.462 (627.562) seconds
+Generate, build, and run implementation checks 2026-11-20T14:23:35.2748470Z ** TEST SUCCEEDED **
+Generate, build, and run implementation checks 2026-11-20T14:23:47.5040860Z Smoke UI tests: executed and passed without skips

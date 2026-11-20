@@ -1,0 +1,41 @@
+# PR-01: select-release-xcode.sh (fresh clone at b03bb0e609) against stand-in xcodebuild/xcrun; scripts/pr-01-standins.sh; 2026-11-20T12:34:21Z
+== 27.2 / SDK 27.2 (the pinned release) (app Xcode_27.2.app; xcodebuild -version: Xcode 27.2; SDK '27.2')
+Selected Xcode app: <temp>/Xcode_27.2.app
+Xcode 27.2
+Build version 27B52
+Selected iPhoneOS SDK: 27.2
+exit=0; GITHUB_ENV: DEVELOPER_DIR=<temp>/Xcode_27.2.app/Contents/Developer 
+== 27.0 / SDK 27.0 (the image's oldest 27) (app Xcode_27.0.app; xcodebuild -version: Xcode 27.0; SDK '27.0')
+Selected Xcode app: <temp>/Xcode_27.0.app
+Xcode 27.0
+Build version 27A1
+Selected iPhoneOS SDK: 27.0
+exit=0; GITHUB_ENV: DEVELOPER_DIR=<temp>/Xcode_27.0.app/Contents/Developer 
+== 28.0 / SDK 28.0 (a later Xcode) (app Xcode_28.0.app; xcodebuild -version: Xcode 28.0; SDK '28.0')
+Selected Xcode app: <temp>/Xcode_28.0.app
+Xcode 28.0
+Build version 28A1
+Selected iPhoneOS SDK: 28.0
+exit=0; GITHUB_ENV: DEVELOPER_DIR=<temp>/Xcode_28.0.app/Contents/Developer 
+== 27.2 with an iPhoneOS 26.2 SDK (app Xcode_27.2.app; xcodebuild -version: Xcode 27.2; SDK '26.2')
+::error::Selected iPhoneOS SDK must be 27 or newer; found '26.2' (Xcode at <temp>/Xcode_27.2.app).
+exit=1; GITHUB_ENV: 
+== 26.3 / SDK 26.2 (the beta.3 toolchain) (app Xcode_26.3.app; xcodebuild -version: Xcode 26.3; SDK '26.2')
+Xcode 26.3
+Build version 17C1
+::error::Selected Xcode must be 27 or newer; found '26.3' at <temp>/Xcode_26.3.app.
+exit=1; GITHUB_ENV: 
+== unparsable xcodebuild -version (app Xcode_27.2.app; xcodebuild -version: Something else; SDK '27.2')
+Something else
+Build version ?
+::error::Selected Xcode must be 27 or newer; found 'unknown' at <temp>/Xcode_27.2.app.
+exit=1; GITHUB_ENV: 
+== empty SDK version (app Xcode_27.2.app; xcodebuild -version: Xcode 27.2; SDK '')
+::error::Selected iPhoneOS SDK must be 27 or newer; found 'unknown' (Xcode at <temp>/Xcode_27.2.app).
+exit=1; GITHUB_ENV: 
+== xcodebuild fails (app Xcode_27.2.app; xcodebuild -version: Xcode 27.2; SDK '27.2'; xcodebuild fails)
+xcode-select: error: tool 'xcodebuild' requires Xcode
+exit=1; GITHUB_ENV: 
+== xcrun cannot find the iphoneos SDK (app Xcode_27.2.app; xcodebuild -version: Xcode 27.2; SDK '27.2'; xcrun fails)
+xcrun: error: SDK "iphoneos" cannot be located
+exit=1; GITHUB_ENV: 

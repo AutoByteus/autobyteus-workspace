@@ -1,0 +1,9 @@
+# API-02a-share-pairing-link: ApiE2E279UITests/testShareFromSafariPairingLink on apie2e279-iphone (87FD7BD4-527F-4396-8F0F-15E34D1FA345); fresh-start clone build (429af9bd66 + the temporary test file); 2026-11-19T20:40:50Z; load 155.52 147.64 156.35
+# links made just before: share
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testShareFromSafariPairingLink]' started.
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testShareFromSafariPairingLink]' passed (132.357 seconds).
+	 Executed 1 test, with 0 failures (0 unexpected) in 132.357 (132.359) seconds
+	 Executed 1 test, with 0 failures (0 unexpected) in 132.357 (132.360) seconds
+	 Executed 1 test, with 0 failures (0 unexpected) in 132.357 (132.361) seconds
+** TEST EXECUTE SUCCEEDED **
+# exit: 0

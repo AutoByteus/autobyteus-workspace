@@ -1,0 +1,53 @@
+[
+ {
+  "size": "iphone-440x956",
+  "findings": [],
+  "errors": [],
+  "log": [
+   {
+    "where": "attached",
+    "length": 2228,
+    "head": "Daily Assistant Background task running You You Summarize the 1.6 release notes for the pilot customers. Check the changelog, show me the latest commits and fix"
+   },
+   {
+    "where": "replied",
+    "length": 2650,
+    "head": "Daily Assistant Background task running You You Summarize the 1.6 release notes for the pilot customers. Check the changelog, show me the latest commits and fix"
+   }
+  ]
+ },
+ {
+  "size": "ipad-portrait-820x1180",
+  "findings": [],
+  "errors": [],
+  "log": [
+   {
+    "where": "attached",
+    "length": 2228,
+    "head": "Daily Assistant Background task running You You Summarize the 1.6 release notes for the pilot customers. Check the changelog, show me the latest commits and fix"
+   },
+   {
+    "where": "replied",
+    "length": 2650,
+    "head": "Daily Assistant Background task running You You Summarize the 1.6 release notes for the pilot customers. Check the changelog, show me the latest commits and fix"
+   }
+  ]
+ },
+ {
+  "size": "ipad-landscape-1180x820",
+  "findings": [],
+  "errors": [],
+  "log": [
+   {
+    "where": "attached",
+    "length": 3300,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "replied",
+    "length": 3722,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   }
+  ]
+ }
+]

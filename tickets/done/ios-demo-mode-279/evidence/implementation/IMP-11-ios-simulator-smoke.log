@@ -1,0 +1,21 @@
+# IMP-11 iOS simulator smoke (the release workflow's own step): every UI test on iPhone, none skipped, incl. the fake-node tests
+# command: IOS_SIMULATOR_NAME=autobyteus-279-iphone autobyteus-ios/scripts/ios-simulator-smoke.sh /tmp/autobyteus-279-dev/ios-smoke
+# commit: df18856ea4 (its tree; run just before that commit was made); DemoWeb from IMP-06
+# env: macOS 26.5.2, Xcode 26.1.1; my iPhone 17 Pro Max simulator, iOS 26.1; the script's local fake node
+# date: 2026-11-19T17:29:31Z
+
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker]' passed (27.185 seconds).
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testUnreachableNodeShowsNativeDiagnosticWhenSmokeEnvironmentIsPresent]' passed (19.408 seconds).
+	 Executed 2 tests, with 0 failures (0 unexpected) in 46.592 (46.595) seconds
+Test Case '-[AutoByteusMobileUITests.DemoUITests testAKeptShareIsUsedOnce]' passed (10.364 seconds).
+Test Case '-[AutoByteusMobileUITests.DemoUITests testFirstScreen]' passed (6.332 seconds).
+Test Case '-[AutoByteusMobileUITests.DemoUITests testScanningTheDemoCodeOpensTheDemo]' passed (9.471 seconds).
+Test Case '-[AutoByteusMobileUITests.DemoUITests testTheDemoLinkOpensTheDemo]' passed (13.859 seconds).
+Test Case '-[AutoByteusMobileUITests.DemoUITests testTheDemoWebViewBlocksTheNetwork]' passed (6.707 seconds).
+Test Case '-[AutoByteusMobileUITests.DemoUITests testTryDemoThenLeaveDemoThenColdLaunch]' passed (18.229 seconds).
+	 Executed 6 tests, with 0 failures (0 unexpected) in 64.962 (64.966) seconds
+	 Executed 8 tests, with 0 failures (0 unexpected) in 111.555 (111.567) seconds
+	 Executed 8 tests, with 0 failures (0 unexpected) in 111.555 (111.567) seconds
+** TEST SUCCEEDED **
+Smoke UI tests: executed and passed without skips
+exit=0

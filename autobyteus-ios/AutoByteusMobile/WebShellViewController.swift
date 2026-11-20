@@ -1,11 +1,21 @@
 import AutoByteusMobileCore
 import UIKit
 
-final class WebShellViewController: UIViewController {
-    private let entry: SavedNodeEntry
+final class WebShellViewController: UIViewController, ShellBridgeDelegate {
+    /// What the node's page asks the app beyond this screen (autobyteus-279, the shell bridge's contract).
+    struct BridgeActions {
+        let nodeCount: () -> Int
+        let onPaired: (_ nodeName: String) -> Void
+        let onShowNodeList: () -> Void
+        let onStartScan: () -> Void
+    }
+
+    let entry: SavedNodeEntry
     private let initialURL: String
     private let onEditNode: () -> Void
     private let onOpenExternal: (URL, UIViewController?) -> Void
+    private let bridgeActions: BridgeActions
+    private let fullScreen = DesktopFullScreen()
     private var webHost: AutoByteusWebViewController!
     private var overlayView: UIView?
 
@@ -13,16 +23,39 @@ final class WebShellViewController: UIViewController {
         entry: SavedNodeEntry,
         initialURL: String,
         onEditNode: @escaping () -> Void,
-        onOpenExternal: @escaping (URL, UIViewController?) -> Void
+        onOpenExternal: @escaping (URL, UIViewController?) -> Void,
+        bridgeActions: BridgeActions
     ) {
         self.entry = entry
         self.initialURL = initialURL
         self.onEditNode = onEditNode
         self.onOpenExternal = onOpenExternal
+        self.bridgeActions = bridgeActions
         super.init(nibName: nil, bundle: nil)
     }
 
     required init?(coder: NSCoder) { nil }
+
+    override var prefersStatusBarHidden: Bool { fullScreen.isOn }
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask { fullScreen.supportedOrientations }
+
+    // MARK: ShellBridgeDelegate
+
+    func shellBridgeHello() -> ShellHello {
+        ShellHello(nodeCount: bridgeActions.nodeCount(), deviceName: UIDevice.current.model, nodeName: entry.knownName ?? "")
+    }
+
+    func shellBridge(didReceive message: ShellBridgeMessage) {
+        switch message {
+        case .pageReady: clearDiagnostic()
+        case .paired(let nodeName): bridgeActions.onPaired(nodeName)
+        case .showNodeList: bridgeActions.onShowNodeList()
+        case .startScan: bridgeActions.onStartScan()
+        case .desktopFullScreen(let on): fullScreen.set(on, for: self)
+        case .saveFile(let fileName, let mimeType, let base64): ShellFileSaver.present(fileName: fileName, mimeType: mimeType, base64: base64, from: self)
+        case .hello, .leaveDemo: break
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,7 +71,8 @@ final class WebShellViewController: UIViewController {
             onPageStarted: { [weak self] _ in self?.clearDiagnostic() },
             onPageFinished: { [weak self] _ in self?.clearDiagnostic() },
             onDiagnostic: { [weak self] diagnostic in self?.showDiagnostic(diagnostic) },
-            onExternalURL: { [weak self] url in self?.onOpenExternal(url, self) }
+            onExternalURL: { [weak self] url in self?.onOpenExternal(url, self) },
+            bridgeDelegate: self
         )
         webHost = host
         addChild(host)

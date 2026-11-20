@@ -26,17 +26,3 @@ export const GetAgentRunCollaboration = gql`
     agentRunCollaboration(runId: $runId)
   }
 `
-
-export const GetAgentRunCollaborationMemberProjection = gql`
-  query GetAgentRunCollaborationMemberProjection($runId: String!, $memberAddress: String!, $agentRunId: String!) {
-    agentRunCollaborationMemberProjection(runId: $runId, memberAddress: $memberAddress, agentRunId: $agentRunId) {
-      agentRunId
-      memberAddress
-      conversation
-      activities
-      summary
-      lastActivityAt
-      hasEarlierActiveTraceEvents
-    }
-  }
-`

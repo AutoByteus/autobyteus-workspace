@@ -1,0 +1,34 @@
+# IMP-02 select-release-xcode.sh against this Mac's Xcode (AC-003)
+# commands: IOS_XCODE_APP_PATH=/Applications/Xcode.app GITHUB_ENV=$(mktemp) autobyteus-ios/scripts/select-release-xcode.sh; then a missing app path; then IOS_XCODE_APP_PATH unset
+# commit: e3950f9d07 (its tree; run just before that commit was made)
+# env: macOS 26.5.2; /Applications/Xcode.app = Xcode 26.1.1, iPhoneOS SDK 26.1
+# date: 2026-11-20T11:49:20Z
+
+== the local Xcode
+Xcode 26.1.1
+Build version 17B100
+::error::Selected Xcode must be 27 or newer; found '26.1.1' at /Applications/Xcode.app.
+exit=1
+GITHUB_ENV after: 0 bytes (DEVELOPER_DIR not exported on failure)
+
+== a missing app path
+Installed Xcode apps:
+/Applications/Xcode.app
+::error::Configured Xcode 27+ app path is unavailable: /Applications/Xcode_27.2.app
+exit=1
+
+== IOS_XCODE_APP_PATH unset
+::error::IOS_XCODE_APP_PATH is not set; the workflow's env gives the Xcode app to use.
+exit=1
+
+== stand-ins on PATH (temp folder with fake xcodebuild/xcrun and an empty Xcode_27.2.app): Xcode 27.2 with an iPhoneOS 26.2 SDK
+::error::Selected iPhoneOS SDK must be 27 or newer; found '26.2' (Xcode at <temp>/Xcode_27.2.app).
+exit=1
+
+== stand-ins: Xcode 27.2, SDK 27.2 (success)
+Selected Xcode app: <temp>/Xcode_27.2.app
+Xcode 27.2
+Build version 18C00
+Selected iPhoneOS SDK: 27.2
+exit=0
+GITHUB_ENV: DEVELOPER_DIR=<temp>/Xcode_27.2.app/Contents/Developer

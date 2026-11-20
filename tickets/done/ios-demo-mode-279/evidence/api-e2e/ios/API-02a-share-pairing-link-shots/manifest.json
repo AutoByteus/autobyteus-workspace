@@ -1,0 +1,62 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "87FD7BD4-527F-4396-8F0F-15E34D1FA345",
+        "deviceName" : "apie2e279-iphone",
+        "exportedFileName" : "5EF15817-9027-4E0B-B7CF-21DA42EA2188.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "share-pairing-link-relaunch_0_8DCDE81B-8167-4DCE-9368-96A5D9F40121.png",
+        "timestamp" : 1795121007.98
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "87FD7BD4-527F-4396-8F0F-15E34D1FA345",
+        "deviceName" : "apie2e279-iphone",
+        "exportedFileName" : "0A35CA0E-5DBC-473A-99BD-ABE54F7BD7CF.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "share-pairing-link-app_0_60E36FA5-004A-4A38-B2B4-AC40C44C122C.png",
+        "timestamp" : 1795120999.447
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "87FD7BD4-527F-4396-8F0F-15E34D1FA345",
+        "deviceName" : "apie2e279-iphone",
+        "exportedFileName" : "E869E4A6-4D0C-415B-8F74-9A1D9F40C0CF.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "safari-pairing-link-extension-text_0_84822E3C-BEC9-4064-BF27-681650393F02.txt",
+        "timestamp" : 1795120904.91
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "87FD7BD4-527F-4396-8F0F-15E34D1FA345",
+        "deviceName" : "apie2e279-iphone",
+        "exportedFileName" : "B56FE74C-D0F1-4373-8159-6D6B46A0F467.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "safari-pairing-link-extension_0_35866395-45CF-4133-822C-BCA4C25AC863.png",
+        "timestamp" : 1795120904.91
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "87FD7BD4-527F-4396-8F0F-15E34D1FA345",
+        "deviceName" : "apie2e279-iphone",
+        "exportedFileName" : "119576D3-F824-4CD9-B9C2-0D646580D636.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "safari-pairing-link-share-sheet_0_DDC1D81C-FC63-4931-B2F1-8F0D53BC25AA.png",
+        "timestamp" : 1795120901.911
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "87FD7BD4-527F-4396-8F0F-15E34D1FA345",
+        "deviceName" : "apie2e279-iphone",
+        "exportedFileName" : "90DAD36B-66C7-47FF-AADB-EE4AD3AC38AE.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "safari-page_0_043266A5-662C-4C3F-9499-9ADC3294F1AB.png",
+        "timestamp" : 1795120894.733
+      }
+    ],
+    "testIdentifier" : "ApiE2E279UITests/testShareFromSafariPairingLink()",
+    "testIdentifierURL" : "test://com.apple.xcode/AutoByteusMobile/AutoByteusMobileUITests/ApiE2E279UITests/testShareFromSafariPairingLink"
+  }
+]

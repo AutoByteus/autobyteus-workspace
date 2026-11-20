@@ -1,0 +1,9 @@
+# API-04a: the shipped app (base 8430d9ef12) on apie2e279-iphone; temporary test ApiE2E279ShippedAppUITests; 2026-11-19T19:25:04Z
+Test Case '-[AutoByteusMobileUITests.ApiE2E279ShippedAppUITests testShippedAppSavesAPairedComputer]' started.
+/tmp/abtest279/base/autobyteus-ios/AutoByteusMobileUITests/ApiE2E279ShippedAppUITests.swift:27: error: -[AutoByteusMobileUITests.ApiE2E279ShippedAppUITests testShippedAppSavesAPairedComputer] : XCTAssertTrue failed - The paired run list
+Test Case '-[AutoByteusMobileUITests.ApiE2E279ShippedAppUITests testShippedAppSavesAPairedComputer]' failed (155.123 seconds).
+	 Executed 1 test, with 1 failure (0 unexpected) in 155.123 (155.124) seconds
+	 Executed 1 test, with 1 failure (0 unexpected) in 155.123 (155.125) seconds
+	 Executed 1 test, with 1 failure (0 unexpected) in 155.123 (155.125) seconds
+** TEST FAILED **
+# exit: 65

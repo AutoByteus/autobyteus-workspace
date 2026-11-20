@@ -127,4 +127,39 @@ describe('MobileRunList', () => {
     expect(running!.get('[data-testid="mobile-run-status-dot"]').attributes('data-status')).toBe('running');
     expect(running!.html()).toContain('Running');
   });
+
+  // autobyteus-279 UIS-003 (VIS-004): in the iOS demo the node button names the demo, and the welcome card shows until ×.
+  it('in the demo: "Demo / Sample data" with the sparkles mark, no connection dot, and a closable welcome card', async () => {
+    setActivePinia(createPinia());
+    sessionStorage.clear();
+    const tree = { rows: computed(() => []), openRowKey: computed(() => null), toggle: vi.fn(), setTeamExpanded: vi.fn(), toggleTeam: vi.fn(), expandTeamMemberAncestors: vi.fn() };
+    const wrapper = mount(MobileRunList, { props: { tree: tree as never, nodeName: 'Demo', connection: 'connected', demo: true }, global: { plugins: [await createMobileTestRouter()] } });
+    await flushPromises();
+    const button = wrapper.get('[data-testid="mobile-node-button"]');
+    expect(button.attributes('aria-label')).toBe('Demo, sample data. About the demo');
+    expect(wrapper.get('[data-testid="mobile-node-name"]').text()).toBe('Demo');
+    expect(wrapper.get('[data-testid="mobile-node-state"]').text()).toBe('Sample data');
+    expect(wrapper.find('[data-testid="mobile-demo-avatar"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="mobile-connection-dot"]').exists()).toBe(false);
+    const welcome = wrapper.get('[data-testid="mobile-demo-welcome"]');
+    expect(welcome.text()).toContain('Welcome to the demo');
+    expect(welcome.text()).toContain('These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device.');
+    expect(welcome.text()).toContain('Open a run to read its work, send a message to get a reply, or start a new run with +.');
+    await wrapper.get('[data-testid="mobile-demo-welcome-close"]').trigger('click');
+    expect(wrapper.find('[data-testid="mobile-demo-welcome"]').exists()).toBe(false);
+    // Closed for the rest of this entry: the list mounted again keeps it closed.
+    const again = mount(MobileRunList, { props: { tree: tree as never, nodeName: 'Demo', connection: 'connected', demo: true }, global: { plugins: [await createMobileTestRouter()] } });
+    expect(again.find('[data-testid="mobile-demo-welcome"]').exists()).toBe(false);
+    sessionStorage.clear();
+  });
+
+  it('outside the demo: the node\'s own button, and no welcome card', async () => {
+    setActivePinia(createPinia());
+    const tree = { rows: computed(() => []), openRowKey: computed(() => null), toggle: vi.fn(), setTeamExpanded: vi.fn(), toggleTeam: vi.fn(), expandTeamMemberAncestors: vi.fn() };
+    const wrapper = mount(MobileRunList, { props: { tree: tree as never, nodeName: 'Office Mac', connection: 'connected' }, global: { plugins: [await createMobileTestRouter()] } });
+    await flushPromises();
+    expect(wrapper.get('[data-testid="mobile-node-name"]').text()).toBe('Office Mac');
+    expect(wrapper.find('[data-testid="mobile-demo-welcome"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="mobile-demo-avatar"]').exists()).toBe(false);
+  });
 });

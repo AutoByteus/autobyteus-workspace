@@ -1,0 +1,4 @@
+native rows: ["AutoByteus node, Online, current node"]
+native More buttons: ["More for AutoByteus node"]
+remove sheet texts: ["AutoByteus node", "Remove from this phone"]
+remove confirmation texts: ["AutoByteus node", "Remove AutoByteus node from this phone? Scan its QR code again to add it back.", "Cancel", "Remove"]

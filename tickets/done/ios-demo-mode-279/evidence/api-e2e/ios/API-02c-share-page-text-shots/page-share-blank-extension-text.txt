@@ -1,0 +1,2 @@
+message=AutoByteus couldn’t read text or a link from this share.
+previewLength=0

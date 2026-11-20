@@ -1,0 +1,3 @@
+# order on the release: every latest*.yml newer than all autobyteus-server-* files
+oldest latest*.yml: 2026-11-20T07:33:20Z
+newest server package file: 2026-11-20T06:16:11Z

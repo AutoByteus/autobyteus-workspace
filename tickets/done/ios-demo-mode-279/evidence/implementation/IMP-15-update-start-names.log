@@ -1,0 +1,26 @@
+# IMP-15 (IR-002) the new app starting over the shipped app's saved entries: the migration and the native names
+# commit: 930477c533 (its tree; run just before that commit was made)
+# env: macOS 26.5.2, Xcode 26; my iPhone 17 Pro Max simulator, iOS 26.1; no node (the addresses do not answer)
+# date: 2026-11-19 (22:39-22:44 local)
+
+Steps
+1. Installed the new build (Debug, unsigned) and launched it once (a fresh install: no entries; the migration only marks itself done).
+2. Reset its group defaults to the shipped app's state with the simulator's own `defaults` (through cfprefsd):
+   removed the marker `autobyteus.migrations.saved-node-display-name-placeholder`; wrote `autobyteus.saved-node-entries`
+   as the shipped app's JSONEncoder output of two entries, and selected the first:
+     {"id":"http://192.0.2.10:29695","displayName":"AutoByteus Desktop","host":"192.0.2.10","port":29695,...,"updatedAtEpochMilliseconds":3}
+     {"id":"https://desk.example.invalid","displayName":"Test Node 279","host":"desk.example.invalid",...,"updatedAtEpochMilliseconds":2}
+3. Launched the app (it opens the selected computer at start), screenshot after ~10 s; read the defaults back.
+4. A throwaway UI test (not committed) tapped Back to nodes, captured the start screen and the first row's Remove sheet,
+   and printed the rows' accessibility labels.
+5. Launched once more and read the defaults back.
+
+Results
+- After step 3: marker = done; entries read back (sorted keys, the migration's rewrite):
+  [{"displayName":"192.0.2.10","host":"192.0.2.10",...},{"displayName":"Test Node 279","host":"desk.example.invalid",...}]
+  i.e. the placeholder became the host; the pairing-link name was kept; every other field unchanged.
+- Connecting / Can't reach for the selected computer: "Can’t reach AutoByteus node" (IMP-15-1-cant-reach.png).
+- Start screen (step 4): ROWS: ["AutoByteus node, Not reachable", "Test Node 279, Not reachable"]
+                         MORE: ["More for AutoByteus node", "More for Test Node 279"]   (IMP-15-2-your-nodes.png)
+- Remove sheet: title "AutoByteus node", "Remove AutoByteus node from this phone? ..." (IMP-15-3-remove-sheet.png).
+- After step 5: 0 backup keys (`...:before-display-name-placeholder` removed by a later start); marker done.

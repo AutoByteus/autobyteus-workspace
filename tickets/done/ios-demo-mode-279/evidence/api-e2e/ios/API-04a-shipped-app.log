@@ -1,0 +1,8 @@
+# API-04a (run 6, a fresh install of the shipped app before the update): base 8430d9ef12; 2026-11-19T20:16:02Z
+Test Case '-[AutoByteusMobileUITests.ApiE2E279ShippedAppUITests testShippedAppSavesAPairedComputer]' started.
+Test Case '-[AutoByteusMobileUITests.ApiE2E279ShippedAppUITests testShippedAppSavesAPairedComputer]' passed (24.774 seconds).
+	 Executed 1 test, with 0 failures (0 unexpected) in 24.774 (24.775) seconds
+	 Executed 1 test, with 0 failures (0 unexpected) in 24.774 (24.776) seconds
+	 Executed 1 test, with 0 failures (0 unexpected) in 24.774 (24.777) seconds
+** TEST EXECUTE SUCCEEDED **
+# exit: 0

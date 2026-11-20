@@ -82,12 +82,14 @@ final class SavedNodeEntryKeysMigrationTests: XCTestCase {
     /// N-911 boundary: only the app's start-up call site references the migration, and the old key names exist only
     /// in the migration folder.
     func testOnlyTheStartUpCallSiteReferencesTheMigrationFolder() throws {
-        let iosRoot = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+        // Both sides resolved: under /tmp (a symlink to /private/tmp on macOS) the enumerator's URLs and #filePath
+        // differ by that prefix, which shifted every relative path.
+        let iosRoot = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().resolvingSymlinksInPath()
         let enumerator = try XCTUnwrap(FileManager.default.enumerator(at: iosRoot, includingPropertiesForKeys: nil))
         var references: [String] = []
         var oldKeyUses: [String] = []
         for case let url as URL in enumerator where url.pathExtension == "swift" {
-            let relative = String(url.path.dropFirst(iosRoot.path.count + 1))
+            let relative = String(url.resolvingSymlinksInPath().path.dropFirst(iosRoot.path.count + 1))
             if relative.hasPrefix("AutoByteusMobileCoreTests/") || relative.hasPrefix("AutoByteusMobileCore/DataMigrations/") { continue }
             let source = try String(contentsOf: url, encoding: .utf8)
             if source.contains("SavedNodeEntryKeysMigration") { references.append(relative) }

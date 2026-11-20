@@ -1,0 +1,2066 @@
+{
+ "label": "ipad",
+ "w": 1180,
+ "h": 820,
+ "findings": [],
+ "errors": [],
+ "log": [
+  {
+   "where": "other ways buttons",
+   "buttons": [
+    "Demo, sample data. About the demo",
+    "On this phone",
+    "Close",
+    "Project Task Manager, Dispatch the approved desktop app Tasks, Running",
+    "Hide delegated work of Project Task Manager",
+    "software engineering team, Image context files don’t reach the model on the first turn, Running",
+    "Show members of software engineering team",
+    "agent package creator, Package the release-notes agent for the agent store, 2 background tasks running",
+    "software engineering team, Members of a delegated team can’t reach the package creator, Background task running",
+    "Show members of software engineering team",
+    "marketing team, Plan the 1.6 launch campaign across email, social and the website, Running",
+    "Show members of marketing team",
+    "market researcher, Compare competitor pricing pages for the desktop app, Idle",
+    "support team, Triage the open desktop support threads, Stopped",
+    "Show members of support team",
+    "Daily Assistant, Summarize the 1.6 release notes for the pilot customers, Background task running",
+    "Product Launch Org, Prepare the 1.6 launch, Running",
+    "Hide members of Product Launch Org",
+    "launch lead, Running",
+    "content writer, Idle",
+    "release manager, Idle",
+    "Personal Assistant, Plan the week: school pickups, dentist, budget review, Stopped",
+    "Codex, Fix the failing probe test on the base branch, Stopped",
+    "Show older (8)",
+    "New run"
+   ]
+  },
+  {
+   "where": "run list",
+   "len": 1113,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "rows",
+   "count": 40,
+   "rows": [
+    "0:Project Task Manager",
+    "1:software engineering team",
+    "2:solution designer",
+    "2:implementation engineer",
+    "3:code searcher",
+    "2:code reviewer",
+    "1:agent package creator",
+    "1:software engineering team",
+    "2:solution designer",
+    "2:implementation engineer",
+    "2:code reviewer",
+    "1:marketing team",
+    "2:campaign lead",
+    "2:copywriter",
+    "2:designer",
+    "1:market researcher",
+    "1:support team",
+    "2:triage lead",
+    "2:answer writer",
+    "0:Daily Assistant",
+    "0:Product Launch Org",
+    "1:launch lead",
+    "1:content writer",
+    "1:release manager",
+    "0:Personal Assistant",
+    "0:Codex",
+    "0:Writing Coach",
+    "0:Billing Team",
+    "1:solution designer",
+    "1:implementation engineer",
+    "1:code reviewer",
+    "0:Weekly Planner",
+    "0:Agent Package Creator",
+    "0:Travel Planner",
+    "0:Refactoring Assistant",
+    "0:Documentation Team",
+    "1:solution designer",
+    "1:implementation engineer",
+    "1:code reviewer",
+    "0:Contract Reader"
+   ]
+  },
+  {
+   "where": "run 0:Project Task Manager",
+   "len": 2481,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Project Task Manager ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Project Task Manager › Artifacts",
+   "len": 2123,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Project Task Manager › Files",
+   "len": 2061,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Project Task Manager › Files › first file",
+   "len": 2362,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Project Task Manager › Activity",
+   "len": 2619,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Project Task Manager › VNC Viewer",
+   "len": 2057,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Project Task Manager › Settings",
+   "len": 2100,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 1:software engineering team",
+   "len": 2422,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run software engineering team ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run software engineering team › Artifacts",
+   "len": 2123,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run software engineering team › Files",
+   "len": 2061,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run software engineering team › Files › first file",
+   "len": 2362,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run software engineering team › Messages",
+   "len": 2253,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run software engineering team › Activity",
+   "len": 2112,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run software engineering team › VNC Viewer",
+   "len": 2057,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run software engineering team › Settings",
+   "len": 2125,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 2:solution designer",
+   "len": 2422,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run solution designer › Artifacts",
+   "len": 2123,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer › Files",
+   "len": 2061,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer › Files › first file",
+   "len": 2362,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer › Messages",
+   "len": 2253,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer › Activity",
+   "len": 2112,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer › VNC Viewer",
+   "len": 2057,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer › Settings",
+   "len": 2125,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 2:implementation engineer",
+   "len": 2505,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run implementation engineer › Artifacts",
+   "len": 2123,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer › Files",
+   "len": 2061,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer › Files › first file",
+   "len": 2362,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer › Messages",
+   "len": 2241,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer › Activity",
+   "len": 2149,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer › VNC Viewer",
+   "len": 2057,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer › Settings",
+   "len": 2134,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 3:code searcher",
+   "len": 2367,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code searcher ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run code searcher › Artifacts",
+   "len": 2123,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code searcher › Files",
+   "len": 2061,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code searcher › Files › first file",
+   "len": 2362,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code searcher › Activity",
+   "len": 2092,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code searcher › VNC Viewer",
+   "len": 2057,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code searcher › Settings",
+   "len": 2123,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 2:code reviewer",
+   "len": 2357,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run code reviewer › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer › Messages",
+   "len": 2242,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer › Activity",
+   "len": 2110,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer › Settings",
+   "len": 2122,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 1:agent package creator",
+   "len": 2383,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run agent package creator ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run agent package creator › Artifacts",
+   "len": 2123,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run agent package creator › Files",
+   "len": 2061,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run agent package creator › Files › first file",
+   "len": 2362,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run agent package creator › Activity",
+   "len": 2270,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run agent package creator › VNC Viewer",
+   "len": 2057,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run agent package creator › Settings",
+   "len": 2146,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 1:software engineering team",
+   "len": 2422,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run software engineering team ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run software engineering team › Artifacts",
+   "len": 2123,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run software engineering team › Files",
+   "len": 2061,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run software engineering team › Files › first file",
+   "len": 2362,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run software engineering team › Messages",
+   "len": 2253,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run software engineering team › Activity",
+   "len": 2112,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run software engineering team › VNC Viewer",
+   "len": 2057,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run software engineering team › Settings",
+   "len": 2125,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 2:solution designer",
+   "len": 2422,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run solution designer › Artifacts",
+   "len": 2123,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer › Files",
+   "len": 2061,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer › Files › first file",
+   "len": 2362,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer › Messages",
+   "len": 2253,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer › Activity",
+   "len": 2112,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer › VNC Viewer",
+   "len": 2057,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer › Settings",
+   "len": 2125,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 2:implementation engineer",
+   "len": 2522,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run implementation engineer › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer › Messages",
+   "len": 2242,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer › Activity",
+   "len": 2242,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer › Settings",
+   "len": 2151,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 2:code reviewer",
+   "len": 2357,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run code reviewer › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer › Messages",
+   "len": 2242,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer › Activity",
+   "len": 2110,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer › Settings",
+   "len": 2122,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 1:marketing team",
+   "len": 2407,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run marketing team ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run marketing team › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run marketing team › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run marketing team › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run marketing team › Messages",
+   "len": 2234,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run marketing team › Activity",
+   "len": 2135,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run marketing team › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run marketing team › Settings",
+   "len": 2114,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 2:campaign lead",
+   "len": 2407,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run campaign lead ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run campaign lead › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run campaign lead › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run campaign lead › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run campaign lead › Messages",
+   "len": 2234,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run campaign lead › Activity",
+   "len": 2135,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run campaign lead › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run campaign lead › Settings",
+   "len": 2114,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 2:copywriter",
+   "len": 2347,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run copywriter ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run copywriter › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run copywriter › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run copywriter › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run copywriter › Messages",
+   "len": 2240,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run copywriter › Activity",
+   "len": 2065,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run copywriter › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run copywriter › Settings",
+   "len": 2108,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 2:designer",
+   "len": 2298,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run designer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run designer › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run designer › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run designer › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run designer › Messages",
+   "len": 2240,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run designer › Activity",
+   "len": 2067,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run designer › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run designer › Settings",
+   "len": 2106,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 1:market researcher",
+   "len": 2369,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run market researcher ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run market researcher › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run market researcher › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run market researcher › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run market researcher › Activity",
+   "len": 2096,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run market researcher › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run market researcher › Settings",
+   "len": 2121,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 1:support team",
+   "len": 2322,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run support team ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run support team › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run support team › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run support team › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run support team › Messages",
+   "len": 2214,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run support team › Activity",
+   "len": 2106,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run support team › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run support team › Settings",
+   "len": 2110,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 2:triage lead",
+   "len": 2322,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run triage lead ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run triage lead › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run triage lead › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run triage lead › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run triage lead › Messages",
+   "len": 2214,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run triage lead › Activity",
+   "len": 2106,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run triage lead › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run triage lead › Settings",
+   "len": 2110,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 2:answer writer",
+   "len": 2314,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run answer writer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run answer writer › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run answer writer › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run answer writer › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run answer writer › Messages",
+   "len": 2210,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run answer writer › Activity",
+   "len": 2068,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run answer writer › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run answer writer › Settings",
+   "len": 2112,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 0:Daily Assistant",
+   "len": 4248,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Daily Assistant ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts",
+   "len": 2083,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Daily Assistant › Artifacts › first file",
+   "len": 2108,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Daily Assistant › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Daily Assistant › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Daily Assistant › Activity",
+   "len": 2632,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Daily Assistant › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Daily Assistant › Settings",
+   "len": 2112,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 0:Product Launch Org",
+   "len": 2463,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Product Launch Org ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Product Launch Org › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Product Launch Org › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Product Launch Org › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Product Launch Org › Messages",
+   "len": 2463,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Product Launch Org › Activity",
+   "len": 2149,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Product Launch Org › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Product Launch Org › Settings",
+   "len": 2116,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 1:launch lead",
+   "len": 2463,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run launch lead ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run launch lead › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run launch lead › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run launch lead › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run launch lead › Messages",
+   "len": 2463,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run launch lead › Activity",
+   "len": 2149,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run launch lead › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run launch lead › Settings",
+   "len": 2116,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 1:content writer",
+   "len": 2470,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run content writer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run content writer › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run content writer › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run content writer › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run content writer › Messages",
+   "len": 2256,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run content writer › Activity",
+   "len": 2151,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run content writer › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run content writer › Settings",
+   "len": 2116,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 1:release manager",
+   "len": 2353,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run release manager ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run release manager › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run release manager › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run release manager › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run release manager › Messages",
+   "len": 2217,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run release manager › Activity",
+   "len": 2063,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run release manager › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run release manager › Settings",
+   "len": 2117,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 0:Personal Assistant",
+   "len": 2331,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Personal Assistant ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Personal Assistant › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Personal Assistant › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Personal Assistant › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Personal Assistant › Activity",
+   "len": 2064,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Personal Assistant › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Personal Assistant › Settings",
+   "len": 2099,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 0:Codex",
+   "len": 2275,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Codex ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Codex › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Codex › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Codex › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Codex › Activity",
+   "len": 2069,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Codex › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Codex › Settings",
+   "len": 2086,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 0:Writing Coach",
+   "len": 2292,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Writing Coach ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Writing Coach › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Writing Coach › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Writing Coach › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Writing Coach › Activity",
+   "len": 2064,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Writing Coach › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Writing Coach › Settings",
+   "len": 2094,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 0:Billing Team",
+   "len": 2389,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Billing Team ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Billing Team › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Billing Team › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Billing Team › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Billing Team › Messages",
+   "len": 2230,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Billing Team › Activity",
+   "len": 2113,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Billing Team › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Billing Team › Settings",
+   "len": 2116,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 1:solution designer",
+   "len": 2389,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run solution designer › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer › Messages",
+   "len": 2230,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer › Activity",
+   "len": 2113,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer › Settings",
+   "len": 2116,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 1:implementation engineer",
+   "len": 2493,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run implementation engineer › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer › Messages",
+   "len": 2218,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer › Activity",
+   "len": 2150,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer › Settings",
+   "len": 2122,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 1:code reviewer",
+   "len": 2347,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run code reviewer › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer › Messages",
+   "len": 2218,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer › Activity",
+   "len": 2110,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer › Settings",
+   "len": 2112,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 0:Weekly Planner",
+   "len": 2261,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Weekly Planner ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Weekly Planner › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Weekly Planner › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Weekly Planner › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Weekly Planner › Activity",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Weekly Planner › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Weekly Planner › Settings",
+   "len": 2095,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 0:Agent Package Creator",
+   "len": 2348,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Agent Package Creator ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Agent Package Creator › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Agent Package Creator › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Agent Package Creator › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Agent Package Creator › Activity",
+   "len": 2068,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Agent Package Creator › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Agent Package Creator › Settings",
+   "len": 2102,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 0:Travel Planner",
+   "len": 2354,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Travel Planner ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Travel Planner › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Travel Planner › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Travel Planner › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Travel Planner › Activity",
+   "len": 2092,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Travel Planner › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Travel Planner › Settings",
+   "len": 2095,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 0:Refactoring Assistant",
+   "len": 2291,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Refactoring Assistant ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Refactoring Assistant › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Refactoring Assistant › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Refactoring Assistant › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Refactoring Assistant › Activity",
+   "len": 2064,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Refactoring Assistant › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Refactoring Assistant › Settings",
+   "len": 2102,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 0:Documentation Team",
+   "len": 2409,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Documentation Team ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Documentation Team › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Documentation Team › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Documentation Team › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Documentation Team › Messages",
+   "len": 2244,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Documentation Team › Activity",
+   "len": 2113,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Documentation Team › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Documentation Team › Settings",
+   "len": 2122,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 1:solution designer",
+   "len": 2409,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run solution designer › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer › Messages",
+   "len": 2244,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer › Activity",
+   "len": 2113,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run solution designer › Settings",
+   "len": 2122,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 1:implementation engineer",
+   "len": 2499,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run implementation engineer › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer › Messages",
+   "len": 2232,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer › Activity",
+   "len": 2150,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run implementation engineer › Settings",
+   "len": 2128,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 1:code reviewer",
+   "len": 2353,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run code reviewer › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer › Messages",
+   "len": 2232,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer › Activity",
+   "len": 2110,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run code reviewer › Settings",
+   "len": 2118,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 0:Contract Reader",
+   "len": 2338,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Contract Reader ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Contract Reader › Artifacts",
+   "len": 2124,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Contract Reader › Files",
+   "len": 2062,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Contract Reader › Files › first file",
+   "len": 2363,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Contract Reader › Activity",
+   "len": 2064,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Contract Reader › VNC Viewer",
+   "len": 2058,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Contract Reader › Settings",
+   "len": 2096,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "composer Upload files",
+   "fileChooser": true
+  },
+  {
+   "where": "composer › Upload files",
+   "len": 2482,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  }
+ ]
+}

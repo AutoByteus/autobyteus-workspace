@@ -1,0 +1,352 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/.cache/abtest279/fs-docker/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest279-node-dIyKbX/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest279-node-dIyKbX/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest279-node-dIyKbX/data/.env
+◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest279-node-dIyKbX/data/.env // tip: ⌘ suppress logs { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://192.168.2.158:51372
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/.cache/abtest279/fs-docker/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://192.168.2.158:51372
+APP ROOT DIRECTORY: /Users/normy/.cache/abtest279/fs-docker/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest279-node-dIyKbX/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest279-node-dIyKbX/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest279-node-dIyKbX/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest279-node-dIyKbX/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest279-node-dIyKbX/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest279-node-dIyKbX/data/db/test.db"
+
+SQLite database test.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest279-node-dIyKbX/data/db/test.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+(node:7739) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+AgentRunManager initialized.
+Node access: local control socket not opened. The node's local control socket path is 114 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest279-node-dIyKbX/data/node-access/local-control.sock. Use a shorter data folder path.
+AgentRunManager initialized.
+Overwriting existing tool definition for name: 'search_web'
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114971566,"pid":7739,"hostname":"MacBookPro","reqId":"req-1","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":12.22766700000011,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114972573,"pid":7739,"hostname":"MacBookPro","reqId":"req-2","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.5237919999999576,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114973580,"pid":7739,"hostname":"MacBookPro","reqId":"req-3","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.8634590000001481,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114974585,"pid":7739,"hostname":"MacBookPro","reqId":"req-4","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.5271250000005239,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114975594,"pid":7739,"hostname":"MacBookPro","reqId":"req-5","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":1.160250000000815,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114976630,"pid":7739,"hostname":"MacBookPro","reqId":"req-6","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":20.038916999999856,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114977644,"pid":7739,"hostname":"MacBookPro","reqId":"req-7","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.5426669999997102,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114978650,"pid":7739,"hostname":"MacBookPro","reqId":"req-8","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":1.3459590000002208,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114979659,"pid":7739,"hostname":"MacBookPro","reqId":"req-9","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":2.8717500000002474,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114980664,"pid":7739,"hostname":"MacBookPro","reqId":"req-a","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":1.4338749999988067,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114981675,"pid":7739,"hostname":"MacBookPro","reqId":"req-b","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":7.486458999999741,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114982680,"pid":7739,"hostname":"MacBookPro","reqId":"req-c","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.4498749999984284,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114983685,"pid":7739,"hostname":"MacBookPro","reqId":"req-d","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.6952500000006694,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114984689,"pid":7739,"hostname":"MacBookPro","reqId":"req-e","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.3989580000015849,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114985695,"pid":7739,"hostname":"MacBookPro","reqId":"req-f","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":1.2405829999988782,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114986719,"pid":7739,"hostname":"MacBookPro","reqId":"req-g","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":14.025541999999405,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114987723,"pid":7739,"hostname":"MacBookPro","reqId":"req-h","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.3906669999996666,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114988725,"pid":7739,"hostname":"MacBookPro","reqId":"req-i","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.2984169999981532,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114989728,"pid":7739,"hostname":"MacBookPro","reqId":"req-j","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.32566700000097626,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114990740,"pid":7739,"hostname":"MacBookPro","reqId":"req-k","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":7.347874999999476,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114991756,"pid":7739,"hostname":"MacBookPro","reqId":"req-l","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":14.575291000001016,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114992758,"pid":7739,"hostname":"MacBookPro","reqId":"req-m","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.7221250000002328,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114993767,"pid":7739,"hostname":"MacBookPro","reqId":"req-n","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":1.0528329999979178,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114994790,"pid":7739,"hostname":"MacBookPro","reqId":"req-o","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.3849159999990661,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114995797,"pid":7739,"hostname":"MacBookPro","reqId":"req-p","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":1.0625829999989946,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114996812,"pid":7739,"hostname":"MacBookPro","reqId":"req-q","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":10.72741699999824,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114997817,"pid":7739,"hostname":"MacBookPro","reqId":"req-r","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":1.7053339999984019,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114998823,"pid":7739,"hostname":"MacBookPro","reqId":"req-s","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":1.3101250000036089,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795114999827,"pid":7739,"hostname":"MacBookPro","reqId":"req-t","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.8620839999930467,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115000831,"pid":7739,"hostname":"MacBookPro","reqId":"req-u","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.6849169999986771,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115001836,"pid":7739,"hostname":"MacBookPro","reqId":"req-v","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.4313750000001164,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115002840,"pid":7739,"hostname":"MacBookPro","reqId":"req-w","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.45170800000050804,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115003871,"pid":7739,"hostname":"MacBookPro","reqId":"req-x","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":11.373250000004191,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115004876,"pid":7739,"hostname":"MacBookPro","reqId":"req-y","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":1.1913750000021537,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115005882,"pid":7739,"hostname":"MacBookPro","reqId":"req-z","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":2.2218749999956344,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115006889,"pid":7739,"hostname":"MacBookPro","reqId":"req-10","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":3.084415999997873,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115007896,"pid":7739,"hostname":"MacBookPro","reqId":"req-11","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.8939160000008997,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115008907,"pid":7739,"hostname":"MacBookPro","reqId":"req-12","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":8.54054200000246,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115009913,"pid":7739,"hostname":"MacBookPro","reqId":"req-13","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.7163749999963329,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115010919,"pid":7739,"hostname":"MacBookPro","reqId":"req-14","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.6491670000032173,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115011924,"pid":7739,"hostname":"MacBookPro","reqId":"req-15","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.5034169999998994,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115012926,"pid":7739,"hostname":"MacBookPro","reqId":"req-16","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.2976249999992433,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115013942,"pid":7739,"hostname":"MacBookPro","reqId":"req-17","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":11.098500000000058,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115014948,"pid":7739,"hostname":"MacBookPro","reqId":"req-18","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.6654579999958514,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115015951,"pid":7739,"hostname":"MacBookPro","reqId":"req-19","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.2942500000062864,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115016957,"pid":7739,"hostname":"MacBookPro","reqId":"req-1a","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.5876659999994445,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115017961,"pid":7739,"hostname":"MacBookPro","reqId":"req-1b","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.8682910000061383,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115018975,"pid":7739,"hostname":"MacBookPro","reqId":"req-1c","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":9.87233300000662,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115019979,"pid":7739,"hostname":"MacBookPro","reqId":"req-1d","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.3410829999993439,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115020984,"pid":7739,"hostname":"MacBookPro","reqId":"req-1e","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":1.5038340000028256,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115021988,"pid":7739,"hostname":"MacBookPro","reqId":"req-1f","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.721084000004339,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115022994,"pid":7739,"hostname":"MacBookPro","reqId":"req-1g","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":1.4745830000028946,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115024002,"pid":7739,"hostname":"MacBookPro","reqId":"req-1h","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":5.022624999997788,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115025006,"pid":7739,"hostname":"MacBookPro","reqId":"req-1i","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.8914999999979045,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115026012,"pid":7739,"hostname":"MacBookPro","reqId":"req-1j","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.8614579999994021,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115027018,"pid":7739,"hostname":"MacBookPro","reqId":"req-1k","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.6485830000019632,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115028023,"pid":7739,"hostname":"MacBookPro","reqId":"req-1l","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.8583749999961583,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115029026,"pid":7739,"hostname":"MacBookPro","reqId":"req-1m","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.2939159999950789,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115030035,"pid":7739,"hostname":"MacBookPro","reqId":"req-1n","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.8122919999950682,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115031040,"pid":7739,"hostname":"MacBookPro","reqId":"req-1o","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.27933399999164976,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115032043,"pid":7739,"hostname":"MacBookPro","reqId":"req-1p","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.29108399999677204,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115033047,"pid":7739,"hostname":"MacBookPro","reqId":"req-1q","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.46545899999910034,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115034060,"pid":7739,"hostname":"MacBookPro","reqId":"req-1r","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":9.56699999999546,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115035073,"pid":7739,"hostname":"MacBookPro","reqId":"req-1s","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":8.331999999994878,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115036077,"pid":7739,"hostname":"MacBookPro","reqId":"req-1t","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.8075000000098953,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115037081,"pid":7739,"hostname":"MacBookPro","reqId":"req-1u","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.3511670000007143,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115038087,"pid":7739,"hostname":"MacBookPro","reqId":"req-1v","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.9505000000062864,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115039096,"pid":7739,"hostname":"MacBookPro","reqId":"req-1w","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":5.713166999994428,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115040104,"pid":7739,"hostname":"MacBookPro","reqId":"req-1x","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.8470839999936288,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115041108,"pid":7739,"hostname":"MacBookPro","reqId":"req-1y","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.28849999999511056,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115042114,"pid":7739,"hostname":"MacBookPro","reqId":"req-1z","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":1.0225829999981215,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115043122,"pid":7739,"hostname":"MacBookPro","reqId":"req-20","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":1.7455420000042068,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115044137,"pid":7739,"hostname":"MacBookPro","reqId":"req-21","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":11.779166000007535,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115045143,"pid":7739,"hostname":"MacBookPro","reqId":"req-22","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.6656660000007832,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115046147,"pid":7739,"hostname":"MacBookPro","reqId":"req-23","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.64004099999147,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115047150,"pid":7739,"hostname":"MacBookPro","reqId":"req-24","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.29712499999732245,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115048152,"pid":7739,"hostname":"MacBookPro","reqId":"req-25","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.40537499998754356,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115049164,"pid":7739,"hostname":"MacBookPro","reqId":"req-26","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":7.181375000000116,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115050167,"pid":7739,"hostname":"MacBookPro","reqId":"req-27","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.35004200000548735,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115051174,"pid":7739,"hostname":"MacBookPro","reqId":"req-28","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.6708750000107102,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115052177,"pid":7739,"hostname":"MacBookPro","reqId":"req-29","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.33487500000046566,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115053185,"pid":7739,"hostname":"MacBookPro","reqId":"req-2a","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":3.582916999992449,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115054196,"pid":7739,"hostname":"MacBookPro","reqId":"req-2b","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":7.306541999991168,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115055205,"pid":7739,"hostname":"MacBookPro","reqId":"req-2c","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.9595830000034766,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115056210,"pid":7739,"hostname":"MacBookPro","reqId":"req-2d","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.801500000001397,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115057215,"pid":7739,"hostname":"MacBookPro","reqId":"req-2e","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":1.0545409999904223,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115058219,"pid":7739,"hostname":"MacBookPro","reqId":"req-2f","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.4925420000072336,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115059227,"pid":7739,"hostname":"MacBookPro","reqId":"req-2g","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.8780410000035772,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115060233,"pid":7739,"hostname":"MacBookPro","reqId":"req-2h","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.3169579999957932,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115061246,"pid":7739,"hostname":"MacBookPro","reqId":"req-2i","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.4243339999957243,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115062251,"pid":7739,"hostname":"MacBookPro","reqId":"req-2j","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.6214170000021113,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115063267,"pid":7739,"hostname":"MacBookPro","reqId":"req-2k","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":12.443417000002228,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115064275,"pid":7739,"hostname":"MacBookPro","reqId":"req-2l","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.888249999989057,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115065280,"pid":7739,"hostname":"MacBookPro","reqId":"req-2m","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.33995799999684095,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115066284,"pid":7739,"hostname":"MacBookPro","reqId":"req-2n","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.5941250000032596,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115067291,"pid":7739,"hostname":"MacBookPro","reqId":"req-2o","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.9197500000009313,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115068307,"pid":7739,"hostname":"MacBookPro","reqId":"req-2p","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":10.16679099999601,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115069310,"pid":7739,"hostname":"MacBookPro","reqId":"req-2q","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.5262090000032913,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115070321,"pid":7739,"hostname":"MacBookPro","reqId":"req-2r","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":2.6907910000008997,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115071333,"pid":7739,"hostname":"MacBookPro","reqId":"req-2s","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":1.5330829999875277,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115072337,"pid":7739,"hostname":"MacBookPro","reqId":"req-2t","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.39987500000279397,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115073352,"pid":7739,"hostname":"MacBookPro","reqId":"req-2u","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":10.953750000000582,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115074356,"pid":7739,"hostname":"MacBookPro","reqId":"req-2v","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.3324999999895226,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115075363,"pid":7739,"hostname":"MacBookPro","reqId":"req-2w","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.325542000005953,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115076370,"pid":7739,"hostname":"MacBookPro","reqId":"req-2x","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.361957999994047,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115077377,"pid":7739,"hostname":"MacBookPro","reqId":"req-2y","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.7584159999969415,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115078388,"pid":7739,"hostname":"MacBookPro","reqId":"req-2z","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":9.633874999999534,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115079393,"pid":7739,"hostname":"MacBookPro","reqId":"req-30","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.7120419999992009,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115080397,"pid":7739,"hostname":"MacBookPro","reqId":"req-31","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.8315000000002328,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115081404,"pid":7739,"hostname":"MacBookPro","reqId":"req-32","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":1.0569170000089798,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115082412,"pid":7739,"hostname":"MacBookPro","reqId":"req-33","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.7493749999994179,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115083432,"pid":7739,"hostname":"MacBookPro","reqId":"req-34","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":9.591583000001265,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115084437,"pid":7739,"hostname":"MacBookPro","reqId":"req-35","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.469916000001831,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115085441,"pid":7739,"hostname":"MacBookPro","reqId":"req-36","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.2918340000032913,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115086447,"pid":7739,"hostname":"MacBookPro","reqId":"req-37","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":1.0233750000043074,"msg":"http request completed"}
+Node request refused NODE_NETWORK_REFUSED /rest/health from 192.168.2.158
+{"level":40,"time":1795115087450,"pid":7739,"hostname":"MacBookPro","reqId":"req-38","method":"GET","url":"/rest/health","statusCode":403,"elapsedMs":0.3010000000067521,"msg":"http request completed"}

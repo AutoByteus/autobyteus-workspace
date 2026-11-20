@@ -1,0 +1,6 @@
+
+> autobyteus@1.5.14-beta.3 test:e2e:agent-org-draft-retention /Users/normy/autobyteus_org/autobyteus-worktrees/follow-ups-448-final/autobyteus-web
+> node tests/e2e/agent-org-draft-retention-probe.mjs --output-dir /tmp/r2-org-fix1
+
+Agent Org draft-retention browser probe failed. See /tmp/r2-org-fix1/evidence.json
+ ELIFECYCLE  Command failed with exit code 1.

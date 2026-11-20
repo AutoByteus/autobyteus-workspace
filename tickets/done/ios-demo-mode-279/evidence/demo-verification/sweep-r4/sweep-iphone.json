@@ -1,0 +1,1117 @@
+{
+ "label": "iphone",
+ "w": 440,
+ "h": 956,
+ "findings": [
+  {
+   "where": "run Project Task Manager › Artifacts",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    "Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Project Task Manager › Artifacts › first file",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    "Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Agent Package Creator › Artifacts",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    "Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Agent Package Creator › Artifacts › first file",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    "Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Market Researcher › Artifacts",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    "Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Market Researcher › Artifacts › first file",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    "Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Support Team › Activity",
+   "empty": "Activity No activity yet"
+  },
+  {
+   "where": "run 0:Daily Assistant",
+   "words": [
+    "failed",
+    "error"
+   ],
+   "context": [
+    " language, with the currency formatted for their country. A failed import now says which row failed, not only that somet",
+    " Invoice language Account language Customer language Import errors Count only Row and reason The new date is Thursday, 1"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    "Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts › first file",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    "Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Codex › Artifacts",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    "Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Codex › Artifacts › first file",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    "Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    "Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts › first file",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    "Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Software Engineering Team › Activity",
+   "empty": "Activity No activity yet"
+  },
+  {
+   "where": "run Project Task Manager › Artifacts",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    "Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Project Task Manager › Artifacts › first file",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    "Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Agent Package Creator › Artifacts",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    "Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Agent Package Creator › Artifacts › first file",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    "Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    "Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts › first file",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    "Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Codex › Artifacts",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    "Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Codex › Artifacts › first file",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    "Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Software Engineering Team › Activity",
+   "empty": "Activity No activity yet"
+  },
+  {
+   "where": "run Daily Assistant › Artifacts",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    "Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts › first file",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    "Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  }
+ ],
+ "errors": [
+  "warning [Vue warn] Set operation on key \"initialized\" failed: target is readonly. Proxy(RefImpl)",
+  "warning [Vue warn] Set operation on key \"currentPresetId\" failed: target is readonly. Proxy(RefImpl)",
+  "external-request https://api.iconify.design/heroicons.json?icons=cog-6-tooth-20-solid%2Cdocument-text-20-solid",
+  "external-request https://api.iconify.design/heroicons.json?icons=chat-bubble-left-20-solid",
+  "external-request https://api.iconify.design/heroicons.json?icons=document-20-solid",
+  "error Disconnection timed out.",
+  "warning [mobile] Failed to open run: Error: Team context 'mx-set-0001' is already mounted.\n    at openTeamRun (http://127.0.0.1:3279/_nuxt/services/runOpen/teamRunOpenCoordinator.ts:21:11)\n    at openTeamMemb",
+  "warning [mobile] Failed to open run: Error: Team context 'mx-set-0002' is already mounted.\n    at openTeamRun (http://127.0.0.1:3279/_nuxt/services/runOpen/teamRunOpenCoordinator.ts:21:11)\n    at openTeamMemb",
+  "warning [mobile] Failed to open run: Error: Team context 'mx-mkt-0001' is already mounted.\n    at openTeamRun (http://127.0.0.1:3279/_nuxt/services/runOpen/teamRunOpenCoordinator.ts:21:11)\n    at openTeamMemb",
+  "warning [mobile] Failed to open run: Error: Team context 'mx-sup-0001' is already mounted.\n    at openTeamRun (http://127.0.0.1:3279/_nuxt/services/runOpen/teamRunOpenCoordinator.ts:21:11)\n    at openTeamMemb",
+  "warning [mobile] Failed to open run: Error: Team context 'mx-org-0001' is already mounted.\n    at openTeamRun (http://127.0.0.1:3279/_nuxt/services/runOpen/teamRunOpenCoordinator.ts:21:11)\n    at openTeamMemb",
+  "warning [mobile] Failed to open run: Error: Team context 'mx-set-0003' is already mounted.\n    at openTeamRun (http://127.0.0.1:3279/_nuxt/services/runOpen/teamRunOpenCoordinator.ts:21:11)\n    at openTeamMemb",
+  "warning [mobile] Failed to open run: Error: Team context 'mx-set-0004' is already mounted.\n    at openTeamRun (http://127.0.0.1:3279/_nuxt/services/runOpen/teamRunOpenCoordinator.ts:21:11)\n    at openTeamMemb"
+ ],
+ "log": [
+  {
+   "where": "first screen",
+   "len": 151,
+   "head": "AutoByteus Scan the QR code on your computer On your computer, open Nodes › Phone Setup and choose Connect a phone. Other ways to connect Scan Try demo"
+  },
+  {
+   "where": "first screen › Other ways to connect",
+   "len": 180,
+   "head": "AutoByteus Scan the QR code on your computer On your computer, open Nodes › Phone Setup and choose Connect a phone. Other ways to connect Type an address Paste "
+  },
+  {
+   "where": "other ways buttons",
+   "buttons": [
+    "Other ways to connect",
+    "Type an address",
+    "Paste a link",
+    "Scan",
+    "Try demo"
+   ]
+  },
+  {
+   "where": "scanner",
+   "len": 54,
+   "head": "Scan Point the camera at the QR code on your computer."
+  },
+  {
+   "where": "run list",
+   "len": 737,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "rows",
+   "count": 40,
+   "rows": [
+    "0:Project Task Manager",
+    "1:Software Engineering Team",
+    "2:solution_designer",
+    "2:implementation_engineer",
+    "2:code_reviewer",
+    "2:Code Searcher",
+    "1:Agent Package Creator",
+    "1:Software Engineering Team",
+    "2:solution_designer",
+    "2:implementation_engineer",
+    "2:code_reviewer",
+    "1:Marketing Team",
+    "2:campaign_lead",
+    "2:copywriter",
+    "2:designer",
+    "1:Market Researcher",
+    "1:Support Team",
+    "2:triage_lead",
+    "2:answer_writer",
+    "0:Daily Assistant",
+    "0:Product Launch Org",
+    "1:launch_lead",
+    "1:content_writer",
+    "1:release_manager",
+    "0:Daily Assistant",
+    "0:Codex",
+    "0:Daily Assistant",
+    "0:Software Engineering Team",
+    "1:solution_designer",
+    "1:implementation_engineer",
+    "1:code_reviewer",
+    "0:Project Task Manager",
+    "0:Agent Package Creator",
+    "0:Daily Assistant",
+    "0:Codex",
+    "0:Software Engineering Team",
+    "1:solution_designer",
+    "1:implementation_engineer",
+    "1:code_reviewer",
+    "0:Daily Assistant"
+   ]
+  },
+  {
+   "where": "run 0:Project Task Manager",
+   "len": 410,
+   "head": "Project Task Manager Running You You Dispatch the approved desktop app Tasks. PT Project Task Manager Project Task Manager delegate_task delegate_task Delegated"
+  },
+  {
+   "where": "run Project Task Manager ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Project Task Manager › Artifacts",
+   "len": 151,
+   "head": "Artifacts README.md Content not available yet This file change will become viewable after the edit completes and the server captures the final content."
+  },
+  {
+   "where": "run Project Task Manager › Artifacts › first file",
+   "len": 151,
+   "head": "Artifacts README.md Content not available yet This file change will become viewable after the edit completes and the server captures the final content."
+  },
+  {
+   "where": "run 1:Software Engineering Team",
+   "len": 352,
+   "head": "solution_designer Idle · in Software Engineering Team S solution_designer solution_designer From Coordinator: Image context files don’t reach the model on the f"
+  },
+  {
+   "where": "run Software Engineering Team ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Software Engineering Team › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run Software Engineering Team › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run Software Engineering Team › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run Software Engineering Team › Messages",
+   "len": 433,
+   "head": "Messages From Code Searcher Nov 18, 10:14 PM Please add a test for the first-turn case before you hand over. To implementation engineer Nov 18, 10:12 PM Found i"
+  },
+  {
+   "where": "run Software Engineering Team › Activity",
+   "len": 134,
+   "head": "Activity read_file src/context/upload.ts success edit_file src/context/upload.ts success run_terminal_command pnpm test upload success"
+  },
+  {
+   "where": "run Software Engineering Team › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run Software Engineering Team › Settings",
+   "len": 110,
+   "head": "Settings solution_designer Idle · in Software Engineering Team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 2:solution_designer",
+   "len": 1621,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 2:implementation_engineer",
+   "len": 1621,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 2:code_reviewer",
+   "len": 1621,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 2:Code Searcher",
+   "len": 1621,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 1:Agent Package Creator",
+   "len": 323,
+   "head": "Research Assistant 2 background tasks running · in Project Task Manager You You Package the release-notes agent for the agent store Research Assistant Research "
+  },
+  {
+   "where": "run Agent Package Creator ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Agent Package Creator › Artifacts",
+   "len": 151,
+   "head": "Artifacts README.md Content not available yet This file change will become viewable after the edit completes and the server captures the final content."
+  },
+  {
+   "where": "run Agent Package Creator › Artifacts › first file",
+   "len": 151,
+   "head": "Artifacts README.md Content not available yet This file change will become viewable after the edit completes and the server captures the final content."
+  },
+  {
+   "where": "run 1:Software Engineering Team",
+   "len": 352,
+   "head": "solution_designer Idle · in Software Engineering Team S solution_designer solution_designer From Coordinator: Members of a delegated team can’t reach the packag"
+  },
+  {
+   "where": "run Software Engineering Team ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Software Engineering Team › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run Software Engineering Team › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run Software Engineering Team › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run Software Engineering Team › Messages",
+   "len": 433,
+   "head": "Messages From code reviewer Nov 18, 10:17 PM Please add a test for the first-turn case before you hand over. To implementation engineer Nov 18, 10:15 PM Found i"
+  },
+  {
+   "where": "run Software Engineering Team › Activity",
+   "len": 134,
+   "head": "Activity read_file src/context/upload.ts success edit_file src/context/upload.ts success run_terminal_command pnpm test upload success"
+  },
+  {
+   "where": "run Software Engineering Team › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run Software Engineering Team › Settings",
+   "len": 110,
+   "head": "Settings solution_designer Idle · in Software Engineering Team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 2:solution_designer",
+   "len": 1622,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 2:implementation_engineer",
+   "len": 1622,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 2:code_reviewer",
+   "len": 1621,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 1:Marketing Team",
+   "len": 344,
+   "head": "campaign_lead Running · in Marketing Team C campaign_lead campaign_lead From Coordinator: Plan the 1.6 launch campaign across email, social and the website. Ple"
+  },
+  {
+   "where": "run Marketing Team ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Marketing Team › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run Marketing Team › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run Marketing Team › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run Marketing Team › Messages",
+   "len": 402,
+   "head": "Messages From designer Nov 18, 10:19 PM Please add a test for the first-turn case before you hand over. To copywriter Nov 18, 10:17 PM Found it: the context fil"
+  },
+  {
+   "where": "run Marketing Team › Activity",
+   "len": 136,
+   "head": "Activity read_file src/context/upload.ts success edit_file src/context/upload.ts success run_terminal_command pnpm test upload executing"
+  },
+  {
+   "where": "run Marketing Team › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run Marketing Team › Settings",
+   "len": 98,
+   "head": "Settings campaign_lead Running · in Marketing Team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 2:campaign_lead",
+   "len": 1621,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 2:copywriter",
+   "len": 1621,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 2:designer",
+   "len": 1621,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 1:Market Researcher",
+   "len": 302,
+   "head": "Research Assistant Idle · in Project Task Manager You You Compare competitor pricing pages for the desktop app Research Assistant Research Assistant Here is a f"
+  },
+  {
+   "where": "run Market Researcher ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Market Researcher › Artifacts",
+   "len": 151,
+   "head": "Artifacts README.md Content not available yet This file change will become viewable after the edit completes and the server captures the final content."
+  },
+  {
+   "where": "run Market Researcher › Artifacts › first file",
+   "len": 151,
+   "head": "Artifacts README.md Content not available yet This file change will become viewable after the edit completes and the server captures the final content."
+  },
+  {
+   "where": "run 1:Support Team",
+   "len": 284,
+   "head": "triage_lead Stopped · in Support Team T triage_lead triage_lead From Coordinator: Triage the open desktop support threads. Please take your part of it. On it: m"
+  },
+  {
+   "where": "run Support Team ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Support Team › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run Support Team › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run Support Team › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run Support Team › Messages",
+   "len": 413,
+   "head": "Messages From answer writer Nov 18, 10:22 PM Please add a test for the first-turn case before you hand over. To answer writer Nov 18, 10:20 PM Found it: the con"
+  },
+  {
+   "where": "run Support Team › Activity",
+   "len": 24,
+   "head": "Activity No activity yet"
+  },
+  {
+   "where": "run Support Team › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run Support Team › Settings",
+   "len": 94,
+   "head": "Settings triage_lead Stopped · in Support Team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 2:triage_lead",
+   "len": 1622,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 2:answer_writer",
+   "len": 1622,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 0:Daily Assistant",
+   "len": 2245,
+   "head": "Daily Assistant Background task running You You Summarize the 1.6 release notes for the pilot customers. Check the changelog, show me the latest commits and fix"
+  },
+  {
+   "where": "run Daily Assistant ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts",
+   "len": 67,
+   "head": "Artifacts dashboard-after.png pilot-summary.md release-notes-1.6.md"
+  },
+  {
+   "where": "run Daily Assistant › Artifacts › first file",
+   "len": 92,
+   "head": "Artifacts docs/dashboard-after.png 100% Scroll to zoom • Drag to pan • Double-click to reset"
+  },
+  {
+   "where": "run Daily Assistant › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run Daily Assistant › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run Daily Assistant › Activity",
+   "len": 616,
+   "head": "Activity BACKGROUND TASKS 1 running Watch the upgrade check Running pnpm run upgrade:check --watch Started 10:16 PM Build the release notes site Completed pnpm "
+  },
+  {
+   "where": "run Daily Assistant › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run Daily Assistant › Settings",
+   "len": 96,
+   "head": "Settings Daily Assistant Background task running Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 0:Product Launch Org",
+   "len": 446,
+   "head": "launch_lead Running · in Product Launch Org You You Prepare the 1.6 launch: the announcement, the email to the pilot customers and the release checklist. L laun"
+  },
+  {
+   "where": "run Product Launch Org ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Product Launch Org › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run Product Launch Org › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run Product Launch Org › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run Product Launch Org › Messages",
+   "len": 447,
+   "head": "Messages From release manager Nov 18, 10:04 PM Checklist done. Two items wait for the connector 2.4 build. checklist.md From content writer Nov 18, 10:03 PM Bot"
+  },
+  {
+   "where": "run Product Launch Org › Activity",
+   "len": 133,
+   "head": "Activity read_file docs/release-notes-1.6.md success send_message_to /content_writer success send_message_to /release_manager success"
+  },
+  {
+   "where": "run Product Launch Org › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run Product Launch Org › Settings",
+   "len": 100,
+   "head": "Settings launch_lead Running · in Product Launch Org Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 1:launch_lead",
+   "len": 1622,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 1:content_writer",
+   "len": 1622,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 1:release_manager",
+   "len": 1622,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 0:Daily Assistant",
+   "len": 271,
+   "head": "Daily Assistant Stopped You You Plan the week: school pickups, dentist, budget review Daily Assistant Daily Assistant Here is a first pass. Tell me what to chan"
+  },
+  {
+   "where": "run Daily Assistant ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts",
+   "len": 151,
+   "head": "Artifacts README.md Content not available yet This file change will become viewable after the edit completes and the server captures the final content."
+  },
+  {
+   "where": "run Daily Assistant › Artifacts › first file",
+   "len": 151,
+   "head": "Artifacts README.md Content not available yet This file change will become viewable after the edit completes and the server captures the final content."
+  },
+  {
+   "where": "run 0:Codex",
+   "len": 272,
+   "head": "Research Assistant Stopped You You Fix the failing probe test on the base branch Research Assistant Research Assistant Here is a first pass. Tell me what to cha"
+  },
+  {
+   "where": "run Codex ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Codex › Artifacts",
+   "len": 151,
+   "head": "Artifacts README.md Content not available yet This file change will become viewable after the edit completes and the server captures the final content."
+  },
+  {
+   "where": "run Codex › Artifacts › first file",
+   "len": 151,
+   "head": "Artifacts README.md Content not available yet This file change will become viewable after the edit completes and the server captures the final content."
+  },
+  {
+   "where": "run 0:Daily Assistant",
+   "len": 223,
+   "head": "Daily Assistant Stopped You You hello Daily Assistant Daily Assistant Here is a first pass. Tell me what to change and I will keep this conversation as the one "
+  },
+  {
+   "where": "run Daily Assistant ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts",
+   "len": 151,
+   "head": "Artifacts README.md Content not available yet This file change will become viewable after the edit completes and the server captures the final content."
+  },
+  {
+   "where": "run Daily Assistant › Artifacts › first file",
+   "len": 151,
+   "head": "Artifacts README.md Content not available yet This file change will become viewable after the edit completes and the server captures the final content."
+  },
+  {
+   "where": "run 0:Software Engineering Team",
+   "len": 307,
+   "head": "solution_designer Stopped · in Software Engineering Team S solution_designer solution_designer From Coordinator: Review the invoice export migration. Please tak"
+  },
+  {
+   "where": "run Software Engineering Team ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Software Engineering Team › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run Software Engineering Team › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run Software Engineering Team › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run Software Engineering Team › Messages",
+   "len": 433,
+   "head": "Messages From code reviewer Nov 18, 10:28 PM Please add a test for the first-turn case before you hand over. To implementation engineer Nov 18, 10:26 PM Found i"
+  },
+  {
+   "where": "run Software Engineering Team › Activity",
+   "len": 24,
+   "head": "Activity No activity yet"
+  },
+  {
+   "where": "run Software Engineering Team › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run Software Engineering Team › Settings",
+   "len": 113,
+   "head": "Settings solution_designer Stopped · in Software Engineering Team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 1:solution_designer",
+   "len": 1622,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 1:implementation_engineer",
+   "len": 1622,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 1:code_reviewer",
+   "len": 1622,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 0:Project Task Manager",
+   "len": 270,
+   "head": "Project Task Manager Stopped You You Which Tasks are blocked this week? PT Project Task Manager Project Task Manager Here is a first pass. Tell me what to chang"
+  },
+  {
+   "where": "run Project Task Manager ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Project Task Manager › Artifacts",
+   "len": 151,
+   "head": "Artifacts README.md Content not available yet This file change will become viewable after the edit completes and the server captures the final content."
+  },
+  {
+   "where": "run Project Task Manager › Artifacts › first file",
+   "len": 151,
+   "head": "Artifacts README.md Content not available yet This file change will become viewable after the edit completes and the server captures the final content."
+  },
+  {
+   "where": "run 0:Agent Package Creator",
+   "len": 287,
+   "head": "Research Assistant Stopped You You Make a Product Video Producer package for the marketing team Research Assistant Research Assistant Here is a first pass. Tell"
+  },
+  {
+   "where": "run Agent Package Creator ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Agent Package Creator › Artifacts",
+   "len": 151,
+   "head": "Artifacts README.md Content not available yet This file change will become viewable after the edit completes and the server captures the final content."
+  },
+  {
+   "where": "run Agent Package Creator › Artifacts › first file",
+   "len": 151,
+   "head": "Artifacts README.md Content not available yet This file change will become viewable after the edit completes and the server captures the final content."
+  },
+  {
+   "where": "run 0:Daily Assistant",
+   "len": 266,
+   "head": "Daily Assistant Stopped You You Compare two flights to Berlin for the March trip Daily Assistant Daily Assistant Here is a first pass. Tell me what to change an"
+  },
+  {
+   "where": "run Daily Assistant ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts",
+   "len": 151,
+   "head": "Artifacts README.md Content not available yet This file change will become viewable after the edit completes and the server captures the final content."
+  },
+  {
+   "where": "run Daily Assistant › Artifacts › first file",
+   "len": 151,
+   "head": "Artifacts README.md Content not available yet This file change will become viewable after the edit completes and the server captures the final content."
+  },
+  {
+   "where": "run 0:Codex",
+   "len": 275,
+   "head": "Research Assistant Stopped You You Rename the export helpers and update the imports Research Assistant Research Assistant Here is a first pass. Tell me what to "
+  },
+  {
+   "where": "run Codex ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Codex › Artifacts",
+   "len": 151,
+   "head": "Artifacts README.md Content not available yet This file change will become viewable after the edit completes and the server captures the final content."
+  },
+  {
+   "where": "run Codex › Artifacts › first file",
+   "len": 151,
+   "head": "Artifacts README.md Content not available yet This file change will become viewable after the edit completes and the server captures the final content."
+  },
+  {
+   "where": "run 0:Software Engineering Team",
+   "len": 335,
+   "head": "solution_designer Stopped · in Software Engineering Team S solution_designer solution_designer From Coordinator: Simplify the NFS Guide and remove redundant ste"
+  },
+  {
+   "where": "run Software Engineering Team ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Software Engineering Team › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run Software Engineering Team › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run Software Engineering Team › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run Software Engineering Team › Messages",
+   "len": 433,
+   "head": "Messages From code reviewer Nov 18, 10:32 PM Please add a test for the first-turn case before you hand over. To implementation engineer Nov 18, 10:31 PM Found i"
+  },
+  {
+   "where": "run Software Engineering Team › Activity",
+   "len": 24,
+   "head": "Activity No activity yet"
+  },
+  {
+   "where": "run Software Engineering Team › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run Software Engineering Team › Settings",
+   "len": 113,
+   "head": "Settings solution_designer Stopped · in Software Engineering Team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 1:solution_designer",
+   "len": 1622,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 1:implementation_engineer",
+   "len": 1622,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 1:code_reviewer",
+   "len": 1622,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run 0:Daily Assistant",
+   "len": 279,
+   "head": "Daily Assistant Stopped You You Summarize the lease renewal and list what to ask the landlord Daily Assistant Daily Assistant Here is a first pass. Tell me what"
+  },
+  {
+   "where": "run Daily Assistant ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts",
+   "len": 151,
+   "head": "Artifacts README.md Content not available yet This file change will become viewable after the edit completes and the server captures the final content."
+  },
+  {
+   "where": "run Daily Assistant › Artifacts › first file",
+   "len": 151,
+   "head": "Artifacts README.md Content not available yet This file change will become viewable after the edit completes and the server captures the final content."
+  },
+  {
+   "where": "composer Upload files",
+   "fileChooser": true
+  },
+  {
+   "where": "composer › Upload files",
+   "len": 410,
+   "head": "Project Task Manager Running You You Dispatch the approved desktop app Tasks. PT Project Task Manager Project Task Manager delegate_task delegate_task Delegated"
+  }
+ ]
+}

@@ -1,0 +1,31 @@
+# IMP-10 build-only release run on GitHub (AC-005; DESIGN.md rule 12)
+# command: gh workflow run release-ios.yml --ref codex/followup-cleanups-568 -f publish_app_store_connect=false; then gh run view 44747687988 --log (excerpts) and --json jobs
+# run: 44747687988, head eb7e4bf2af4856690d213c4108bd7e41b29d8976, workflow_dispatch
+# env: GitHub-hosted runners (ubuntu for metadata; xcode-27-arm64 for the iOS job)
+# date: 2026-11-20T14:33:06Z
+
+Resolve iOS Release Metadata	Set up job	2026-11-20T13:49:27.0596300Z Image: ubuntu-26.04
+Build And Test iOS App	Set up job	2026-11-20T13:50:47.9172750Z Image: xcode-27-arm64
+Build And Test iOS App	Select Xcode 27 or newer	2026-11-20T13:53:58.6189800Z Selected Xcode app: /Applications/Xcode_27.2.app
+Build And Test iOS App	Select Xcode 27 or newer	2026-11-20T13:53:58.6287550Z Xcode 27.2
+Build And Test iOS App	Select Xcode 27 or newer	2026-11-20T13:53:58.6489750Z Selected iPhoneOS SDK: 27.2
+Build And Test iOS App	Select available iOS simulator	2026-11-20T13:54:30.7126910Z Selected simulator: iPhone 17 (iOS 27.2), UDID D7F008F7-431D-408F-99E6-F1CD29A00482
+Build And Test iOS App	Select available iOS simulator	2026-11-20T13:54:30.7228300Z Selected simulator UDID: D7F008F7-431D-408F-99E6-F1CD29A00482
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T13:58:21.8753140Z ** BUILD SUCCEEDED **
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T14:05:33.8390050Z 2026-11-20 14:05:28.672 xcodebuild[18570:50506]  iOSSimulator: 📱<DVTiPhoneSimulator (0x78202fa200), iPhone 17, unknown class, 27.2 (24B8117), D7F008F7-431D-408F-99E6-F1CD29A00482> unable to connect to "com.apple.instruments.deviceservice.lockdown" - timed out after 120 seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T14:06:34.9769740Z 	 Executed 56 tests, with 0 failures (0 unexpected) in 2.129 (3.963) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T14:06:35.0227370Z 	 Executed 56 tests, with 0 failures (0 unexpected) in 2.129 (4.005) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T14:06:37.2917280Z ** TEST SUCCEEDED **
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T14:07:14.3596720Z Selected simulator: iPhone 17 (iOS 27.2), UDID D7F008F7-431D-408F-99E6-F1CD29A00482
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T14:10:02.8420780Z Monitoring boot status for iPhone 17 (D7F008F7-431D-408F-99E6-F1CD29A00482).
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T14:23:32.7814140Z 	 Executed 8 tests, with 0 failures (0 unexpected) in 627.462 (627.557) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T14:23:32.8062170Z 	 Executed 8 tests, with 0 failures (0 unexpected) in 627.462 (627.562) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T14:23:35.2748470Z ** TEST SUCCEEDED **
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T14:23:47.5040860Z Smoke UI tests: executed and passed without skips
+
+# Job conclusions
+run: success
+Resolve iOS Release Metadata: success
+Build And Test iOS App: success
+Validate iOS Publish Secrets: skipped
+Archive And Upload To App Store Connect: skipped

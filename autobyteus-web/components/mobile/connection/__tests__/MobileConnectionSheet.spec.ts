@@ -82,4 +82,25 @@ describe('MobileConnectionSheet', () => {
     expect(posted).toEqual([{ type: 'hello' }, { type: 'showNodeList' }]);
     wrapper.unmount();
   });
+
+  // autobyteus-279 UIS-004 (VIS-006): the demo sheet says what the demo is and leaves it; nothing about a connection.
+  it('in the demo: the demo copy and Leave demo, no connection state, no Switch node, no Unpair', async () => {
+    const posted = installShell(2);
+    const wrapper = mount(MobileConnectionSheet, { props: { ...props, nodeName: 'Demo', demo: true }, attachTo: document.body });
+    await flushPromises();
+    expect(sheet().querySelector('[data-testid="mobile-demo-explainer"]')!.textContent).toBe(
+      'The agents, Teams and runs here are samples stored on this device. Nothing is real, nothing is sent anywhere, and what you change is forgotten when you leave.',
+    );
+    const leave = sheet().querySelector('[data-testid="mobile-leave-demo"]') as HTMLButtonElement;
+    expect(leave.textContent).toContain('Leave demo');
+    expect(leave.textContent).toContain('Back to connecting your own computer');
+    for (const id of ['mobile-connection-status', 'mobile-check-connection', 'mobile-switch-node', 'mobile-unpair']) {
+      expect(sheet().querySelector(`[data-testid="${id}"]`)).toBeNull();
+    }
+    leave.click();
+    expect(wrapper.emitted('leave-demo')).toHaveLength(1);
+    // The demo asks the app nothing on open (no node count to show).
+    expect(posted).toEqual([]);
+    wrapper.unmount();
+  });
 });
