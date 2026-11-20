@@ -19,8 +19,8 @@
 - Release/publication/deployment report: `release-deployment-report.md` (with its Finalization Record)
 - Integration and post-integration verification: `origin/personal` moved 81 commits since the bootstrap base (`bfd95f73a9` → `b072d93d8e`), merged clean as `367711125f`. Four ticket files were also touched on the base side (autobyteus-565's phone Messages work); no case-ID clash. Checks: both typechecks at baseline, the ticket's unit specs (server 18, web 337), server and phone bundle rebuilt, the ticket's four phone cases pass on the merged build (`DEL-01`…`DEL-03`), hygiene, frozen lockfile and the Secret Gate pass. No Fresh-start build: the ticket changes no build input.
 - Verification (evidence judgement or user check) and finalization state: every critical criterion directly proven by API/E2E on the phone bundle and desktop windows over real nodes; no user check needed; release decision: none (RELEASE.md default). The whole phone probe's Fail is MSP-41 only (outside the diff).
-- Terminal return to the Solution Designer: see the Finalization Record in `release-deployment-report.md`.
-- Terminal return message/reference: see the Finalization Record.
+- Terminal return to the Solution Designer: `Sent` after the record commit's push; the terminal message holds the user's-checkout result and the cleanup result.
+- Terminal return message/reference: the message to the Solution Designer; finalization: merge `20d1e52e78` on `origin/personal` (`release-deployment-report.md` § Finalization Record).
 - Why this baseline was recorded: first delivery of the ticket.
 - Next recipient/action: the Solution Designer verifies the package and sends the follow-ups FU-001 … FU-005 (none urgent).
 - Remaining blockers, rollback concerns, or untested scope: none blocking. R-1 (whole download), R-2, FU-005; a real phone and a real Wi-Fi drop were not tested (`handoff-summary.md` § Residual Risks For The User).

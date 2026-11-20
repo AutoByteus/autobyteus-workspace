@@ -95,7 +95,7 @@ None (no release).
 - Bootstrap context source: the Solution Designer's bootstrap (worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback`, branch `codex/chat-media-path-playback`, base `origin/personal`) and `RELEASE.md` "Finalization Target".
 - Ticket branch: `codex/chat-media-path-playback`
 - Finalization target remote / branch: `origin` / `personal`, `--no-ff` merge from a `finalize/chat-media-path-playback` branch (RELEASE.md).
-- The outcome (commits, push, the user's checkout, cleanup) is in the "Finalization Record" at the end of this report, written after the push.
+- The outcome (commits, push, the user's checkout, cleanup) is in the "Finalization Record" at the end of this report, written after the push. Merge `20d1e52e78` on `origin/personal`.
 
 ## Release / Publication / Deployment
 
@@ -122,10 +122,23 @@ Revert the merge commit on `personal` (`git revert -m 1 <merge>`). Nothing persi
 ## Final Status
 
 - Verification complete (from the evidence, or the user's check where needed): `Yes`
-- Repository finalization complete: see the Finalization Record
+- Repository finalization complete: `Yes` (Finalization Record below)
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: see the Finalization Record
+- Applicable safe cleanup complete or not required: run after the record commit's push (Finalization Record, last two bullets); its result is in the terminal message
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: after the Finalization Record
-- Terminal package sent to the Solution Designer: see the Finalization Record
-- Terminal message/reference: see the Finalization Record
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: by `send_message_to` after the record commit's push and the cleanup
+- Terminal message/reference: the `send_message_to` message to the Solution Designer, address from `get_handoff_rules`
+
+## Finalization Record
+
+Written after the push of the merge, the way earlier tickets recorded theirs.
+
+- Ticket branch `codex/chat-media-path-playback`: committed (tip `80da2137ce`) and pushed to `origin` (`[new branch]`); Secret Gate on `origin/personal..codex/chat-media-path-playback`: `PASS`, 19 commits.
+- Target refreshed before the merge and again before the push: `git fetch origin personal` showed `b072d93d8e` both times, which the ticket branch already contained (merge `367711125f`); no re-integration and no re-verification were needed.
+- Merge: on `finalize/chat-media-path-playback` (from `origin/personal` `b072d93d8e`), `git merge --no-ff codex/chat-media-path-playback` = `20d1e52e78` (parents `b072d93d8e` and `80da2137ce`; the merged tree equals the ticket branch's tree). Secret Gate on the merged state: `PASS`, 20 commits. Hygiene check on the archived tree: passed (101 665 tracked files).
+- Push: `git push origin HEAD:personal` `b072d93d8e..20d1e52e78`; `origin/personal` = `20d1e52e78` afterwards.
+- Release: none (no tag, no version bump, no pipeline).
+- This record: committed on `finalize/chat-media-path-playback` and pushed to `origin/personal` as the commit that follows `20d1e52e78`.
+- The user's checkout (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`, on `personal`): `git fetch`, then `git merge --ff-only origin/personal` after this record's push, only if it is on `personal` with no local commits and git accepts it; nothing is stashed, reset or checked out there. The result (commit, or why not) is in the terminal message.
+- Cleanup, after this record's push: `git worktree remove --force /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback` (only untracked build output `*/dist/` remains), `git worktree prune`, delete the local branches `finalize/chat-media-path-playback` and `codex/chat-media-path-playback`. Remote branch: `Not required` (the repository keeps pushed `codex/*` branches). The result is in the terminal message.
