@@ -11,6 +11,8 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | CRR-003 | `code-review-report.md` | API/E2E Failure-Origin Review (API-REV-001: RA-04, IC-01, RE-05) | `Pass` (CRR-002) | `Fail`: `Design Impact` | CR-002 (new) |
 | CRR-004 | `code-review-report.md` | Implementation Review, round 3 (IR-003, SR-009) | `Fail` (CRR-003) | `Pass` | CR-002 resolved |
 | CRR-005 | `api-e2e-test-review-report.md` | Proportional API/E2E test-code review (API-REV-002 `Pass`) | `Pass` (CRR-004, source) | `Pass` | None (TN-01, TN-02 non-blocking) |
+| CRR-006 | `code-review-report.md` | Implementation Review, round 4 (IR-004, delivery Local Fixes LF-1…LF-4 on the merged state) | `Pass` (CRR-005) | `Pass` | None |
+| CRR-007 | `api-e2e-test-review-report.md` | Proportional API/E2E test-code review, round 2 (API-REV-003 `Pass`, merged state) | `Pass` (CRR-006, source) | `Pass` | None |
 
 ## Revision Entries
 
@@ -187,3 +189,61 @@ None (first test review). The source findings CR-001 and CR-002 were resolved in
   - CF-11, CF-13 (delivery note);
   - Grok, DeepSeek and Antigravity live, signing and other platforms not tested;
   - FU-003…FU-005.
+
+### CRR-006 — Round 4: delivery Local Fixes on the merged state
+
+- Canonical review report updated: `code-review-report.md` (§ Latest Round CRR-006, Classification, Recipient, Latest Authoritative Result)
+- Review entry point and round: Implementation Review, round 4
+- Review scope: `Targeted Delta Review`. `27498a16ac`, four files: the demo fixture, a service comment, two e2e tests. Also the delivery engineer's generated `a1df50ecd4`.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` § Delivery Local Fixes On The Merged State (IR-004); the delivery engineer's LF-1…LF-4 (DEL-03, DEL-13, DEL-17/19)
+- Relevant solution revision IDs: SR-009
+- Relevant architecture-review revision IDs: ARCH-REV-005
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: the delivery round 1 checks (DEL-00…DEL-30)
+- Prior authoritative result: `Pass` (CRR-005)
+- Current authoritative result: `Pass`
+- What changed in the review result and why:
+  - LF-1 removes a production typecheck error that the base's new demo fixture introduced against this ticket's GraphQL clean cut.
+  - LF-2 and LF-3 make two e2e tests follow this change's behavior: the new prompt sections, and catalog-backed episodes. Neither is loosened.
+  - LF-4 corrects a stale comment.
+  - The icon bundle commit is generated output.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None open. CR-001 and CR-002 remain resolved.
+
+- New or remaining finding IDs: none. Non-blocking: the demo path uses `encodeURIComponent` without DEC-016 shortening, which only matters for ids over 200 encoded bytes; the demo has none.
+- Material score or classification changes: none
+- Recommended recipient: API/E2E, to rerun `collaboration-prompt-wording` and `open-task-tree-upgrade-startup` on the merged state; then the proportional test review; informational notice to implementation.
+- Remaining risks or uncertainty: as CRR-005 (CF-11, CF-13, TN-01, TN-02, FU-003…FU-008).
+
+### CRR-007 — Test review round 2: LF-2 and LF-3 on the merged state
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (§ Latest Round CRR-007, Latest Authoritative Result)
+- Review entry point and round: Successful API/E2E test-code review, round 2
+- Review scope: `N/A` (test review). `collaboration-prompt-wording.e2e.test.ts` (LF-2, plus the comment fix `d0770bcb5b`) and `open-task-tree-upgrade-startup.e2e.test.ts` (LF-3).
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md`, API-REV-003; API-17
+- Relevant solution revision IDs: SR-009
+- Relevant architecture-review revision IDs: ARCH-REV-005
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: the delivery round 1 checks (DEL-00…DEL-30)
+- Prior authoritative result: `Pass` (CRR-006, source review)
+- Current authoritative result: `Pass`
+- What changed in the review result and why:
+  - LF-2's excerpt boundary follows the new prompt sections, and its assertions are unchanged.
+  - LF-3 replaces a race with a bounded wait for the catalog's designed quiet window, and the per-run assertions are kept.
+  - The doc comment now matches the code.
+  - Each file passed twice on the merged state (API-17).
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None open. TN-01 and TN-02 remain non-blocking notes.
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: as CRR-005 and CRR-006 (CF-11, CF-13, TN-01, TN-02; the demo path without DEC-016 shortening, harmless; Grok, DeepSeek and Antigravity live and signing not tested; FU-003…FU-008).

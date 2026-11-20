@@ -1,6 +1,20 @@
 # API/E2E Test Review Report
 
-## Review Meta
+## Latest Round (CRR-007, test review round 2)
+
+- Trigger: API-REV-003 `Pass` on the merged state. Code `27498a16ac` (the delivery Local Fixes LF-1…LF-4 on the merge `7ac6b392c1`); API/E2E's comment-only test fix `d0770bcb5b`; reports `afdd1f7474`.
+- Changed durable tests: LF-2 `tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts` (`27498a16ac`, `d0770bcb5b`) and LF-3 `tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts` (`27498a16ac`). No other test file changed after `27498a16ac` (`git diff 27498a16ac afdd1f7474`).
+- Prior unresolved test-review findings rechecked: none. TN-01 and TN-02 remain non-blocking notes.
+- Proportional checks for the two files:
+  - **LF-2:** `collaborationPart` also ends at `## Semantic Memory` and `## Global Semantic Memory`, which every prompt now has after the collaboration block (REQ-001, REQ-011; the second alone when the agent's folder could not be prepared, DEC-015). The collaboration assertions are unchanged, so the excerpt still proves the same wording. `d0770bcb5b` brings the doc comment in line with the code.
+  - **LF-3:** OT-1 waits up to 60 s, with the `until` helper as IA-03 does, for the three closed runs among the worker's episodes (the catalog's designed quiet window, N-9). On a timeout it reads once more, so each `toContain` names the missing run. AC-012's assertion is kept, not loosened. OT-2 reads runs already on disk and waits for the start pass; it is deterministic and unchanged.
+  - Both enter through their real triggers (real servers and runs, the scripted AGY CLI as before) and are isolated as before.
+- Execution evidence: API-17. Each file alone, twice, on the rebuilt merged-state server (API-00 round 3): CPW 14/14 and 14/14; OT 3/3 and 3/3. The OT-1 test took 68 s and 21 s in total; its wait is bounded at 60 s within that.
+- Result: **`Pass`**. No findings.
+
+## Review Meta (round 1, CRR-005)
+
+
 
 - Review Round: 1
 - Trigger: API-REV-002 `Pass` (95.1%), with a request for proportional review of the durable tests changed in API/E2E rounds 1 and 2
@@ -72,8 +86,10 @@ None.
 
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- Changed durable test paths reviewed: the 10 paths in the scope table
+- Result: `Pass` (CRR-007, test review round 2: LF-2 and LF-3 on the merged state). Round 1 (CRR-005) also passed.
+- Changed durable test paths reviewed:
+  - round 2: `collaboration-prompt-wording.e2e.test.ts`, `open-task-tree-upgrade-startup.e2e.test.ts`;
+  - round 1: the 10 paths in the scope table.
 - Unresolved finding IDs: none
 - Recommended Recipient: `delivery_engineer`
 - Notes: carried for delivery:

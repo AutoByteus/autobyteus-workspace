@@ -1,6 +1,31 @@
 # Code Review Report
 
-## Latest Round: Implementation Review Round 3 (CRR-004)
+## Latest Round: Implementation Review Round 4 (CRR-006)
+
+- Review Entry Point: `Implementation Review`
+- Current Code Review Revision ID: `CRR-006`. Prior: CRR-005 (the test review) `Pass`; the delivery engineer then reported Local Fixes LF-1…LF-4 on the merged state.
+- Current Review Round: 4
+- Trigger: IR-004, the delivery Local Fixes after the base refresh. `origin/personal` at `74d046320a` was merged as `7ac6b392c1`; HEAD was `e804d4d5f3`.
+- Code reviewed: `27498a16ac`; records and evidence in `b4561b0b6d`. Also the delivery engineer's `a1df50ecd4`.
+- Review Scope: `Targeted Delta Review`. Four files, no shared interface, data shape or spine change; every other check and score is carried forward from CRR-004.
+  - Source: `autobyteus-web/demo/graphql/definitions.ts` (the base's new offline demo fixture) and a comment in `personal-settings-service.ts`.
+  - Tests: `collaboration-prompt-wording.e2e.test.ts`, `open-task-tree-upgrade-startup.e2e.test.ts`.
+- Checks not rerun (they ran on `27498a16ac`):
+  - IMP-23: web typecheck, 0 production errors (DEL-03 had 1); demo specs 4 files, 15 tests; server typecheck at baseline.
+  - IMP-24: the AC-002 grep on the merged tree finds only the retired-key drop list.
+  - IMP-25: CPW 14/14.
+  - IMP-26: OT 3/3 on each of two runs.
+
+### Delta verdict
+
+- **LF-1 (REQ-002, REQ-009).** The base's offline demo world built an `AgentDefinition` with the removed `semanticMemoryEnabled` and `semanticMemoryPath: null`, a production typecheck error that stops every desktop build. The fixture now gives a non-null path, `/demo/memory/semantic/<encodeURIComponent(id)>`, matching `semanticMemoryPath: String!`. For the demo's short ids it is the DEC-016 name. Non-blocking note: for an id over 200 encoded bytes it would not match the node's shortened name; the demo has none.
+- **LF-2.** The test's collaboration excerpt now also ends at `## Semantic Memory` and `## Global Semantic Memory`, which REQ-001 and REQ-011 place after it. The excerpt's meaning is unchanged.
+- **LF-3.** OT-1 waits up to 60 s for the three closed runs among the worker's episodes (the catalog takes a run within its quiet window, N-9), then reads once more so the assertion names a missing run. It is not loosened. OT-2 reads runs already on disk and waits for the start pass. The other episode readers were checked and none is stale.
+- **LF-4.** The comment no longer names the removed switch (Core Principle 7: no stale text in touched files).
+- **`a1df50ecd4` (delivery).** The generated icon bundle (`icons:build`) gains `heroicons:user`, which this branch's Memory components name. It is generated output, kept as is.
+- No new findings. The two test files still need the proportional test review after API/E2E reruns them.
+
+## Prior Round: Implementation Review Round 3 (CRR-004)
 
 - Review Entry Point: `Implementation Review`
 - Current Code Review Revision ID: `CRR-004` (prior: CRR-003 `Fail`, CR-002 `Design Impact`)
@@ -351,11 +376,11 @@ None new beyond the gate above. N-5…N-11 are confirmed as recorded.
 
 ## Classification
 
-- CRR-004: N/A (Pass). CR-002 (CRR-003) and CR-001 (CRR-001) are resolved.
+- CRR-006: N/A (Pass). CR-001 and CR-002 are resolved.
 
 ## Recommended Recipient
 
-CRR-004: `/api_e2e_engineer` (primary pass rule), with an informational notice to implementation.
+CRR-006: `/api_e2e_engineer` (primary pass rule: rerun the two changed e2e files on the merged state), with an informational notice to implementation. The proportional test review follows API/E2E's pass.
 
 ## Residual Risks
 
@@ -366,7 +391,7 @@ CRR-004: `/api_e2e_engineer` (primary pass rule), with an informational notice t
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass` (CRR-004, implementation review round 3, Full Re-Audit of the changed areas; CR-002 resolved). CRR-003 (failure-origin) was a `Fail`.
+- Review Decision: `Pass` (CRR-006, implementation review round 4, Targeted Delta Review of the delivery Local Fixes LF-1…LF-4). Earlier: CRR-004 `Pass` (CR-002 resolved); CRR-003 failure-origin `Fail`.
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
