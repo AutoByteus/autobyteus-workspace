@@ -14,7 +14,7 @@ describe("sendUserFile", () => {
     const app = fastify();
     app.get("/file", async (_request, reply) => {
       reply.header("cache-control", "no-store");
-      return sendUserFile(reply, { mimeType, body: Readable.from([Buffer.from(content)]) });
+      return sendUserFile(reply, { mimeType, body: Readable.from([Buffer.from(content)]), size: null });
     });
     try {
       const response = await app.inject({ method: "GET", url: "/file" });
@@ -24,6 +24,25 @@ describe("sendUserFile", () => {
       expect(response.headers["x-content-type-options"]).toBe("nosniff");
       expect(response.headers["cache-control"]).toBe("no-store");
       expect(response.body).toBe(content);
+    } finally {
+      await app.close();
+    }
+  });
+
+  // autobyteus-572 D-5: a client shows how much of the file has arrived only when its length is declared.
+  it.each([
+    [7, "7"],
+    [null, undefined],
+  ] as const)("declares size %s as Content-Length %s", async (size, header) => {
+    const app = fastify();
+    app.get("/file", async (_request, reply) =>
+      sendUserFile(reply, { mimeType: "video/mp4", body: Readable.from([Buffer.from("0123456")]), size }));
+    try {
+      const response = await app.inject({ method: "GET", url: "/file" });
+      expect(response.statusCode).toBe(200);
+      if (header === undefined) expect(response.headers["content-length"]).toBeUndefined();
+      else expect(response.headers["content-length"]).toBe(header);
+      expect(response.rawPayload.length).toBe(7);
     } finally {
       await app.close();
     }

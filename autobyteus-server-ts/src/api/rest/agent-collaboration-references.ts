@@ -38,7 +38,7 @@ export async function registerAgentCollaborationReferenceRoutes(
           orgRunId: request.params.runId, messageId: request.params.messageId, referenceId: request.params.referenceId,
         });
         reply.header("cache-control", "no-store");
-        return sendUserFile(reply, { mimeType: resolved.mimeType, body: resolved.stream });
+        return sendUserFile(reply, { mimeType: resolved.mimeType, body: resolved.stream, size: null });
       } catch (error) {
         if (error instanceof AgentOrgReferenceContentError) {
           const status = error.code === "INVALID_REFERENCE_PATH" ? 400 : error.code === "REFERENCE_CONTENT_FORBIDDEN" ? 403 : 404;

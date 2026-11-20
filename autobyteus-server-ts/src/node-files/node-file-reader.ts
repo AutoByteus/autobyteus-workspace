@@ -22,6 +22,8 @@ export type OpenedNodeFile = Readonly<{
   mimeType: string;
   /** The file's content, streamed (never buffered whole); closing it releases the file. */
   stream: NodeJS.ReadableStream;
+  /** Its length in bytes, from the opened handle (autobyteus-572 D-5). */
+  size: number;
 }>;
 
 const refusal = (statusCode: 400 | 404, code: NodeFileRefusalCode, message: string): NodeFileRefusal =>
@@ -63,6 +65,7 @@ export class NodeFileReader {
     } catch (error) {
       return refusalForError(error);
     }
+    let size: number;
     try {
       const stat = await handle.stat();
       if (stat.isDirectory()) {
@@ -73,6 +76,7 @@ export class NodeFileReader {
         await handle.close();
         return NODE_FILE_REFUSALS.unreadable;
       }
+      size = stat.size;
     } catch (error) {
       await handle.close().catch(() => undefined);
       return refusalForError(error);
@@ -82,6 +86,7 @@ export class NodeFileReader {
       realPath,
       mimeType: (lookupMime(realPath) || "application/octet-stream").toString(),
       stream: handle.createReadStream({ autoClose: true }),
+      size,
     });
   }
 }
