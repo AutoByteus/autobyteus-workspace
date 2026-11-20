@@ -1,6 +1,6 @@
 # IMP-02 select-release-xcode.sh against this Mac's Xcode (AC-003)
 # commands: IOS_XCODE_APP_PATH=/Applications/Xcode.app GITHUB_ENV=$(mktemp) autobyteus-ios/scripts/select-release-xcode.sh; then a missing app path; then IOS_XCODE_APP_PATH unset
-# commit: fa6632cbca + the uncommitted change under test
+# commit: e3950f9d07 (its tree; run just before that commit was made)
 # env: macOS 26.5.2; /Applications/Xcode.app = Xcode 26.1.1, iPhoneOS SDK 26.1
 # date: 2026-11-20T11:49:20Z
 

@@ -1,6 +1,6 @@
 # IMP-01 iOS release contract check, positive and negative (AC-004)
 # command: autobyteus-ios/scripts/ios-release-contract-check.py, on the change, then with one revert at a time (each file restored after its case)
-# commit: fa6632cbca + the uncommitted change under test
+# commit: e3950f9d07 (its tree; run just before that commit was made)
 # env: macOS 26.5.2, Python 3.9.6
 # date: 2026-11-20T11:49:09Z
 
