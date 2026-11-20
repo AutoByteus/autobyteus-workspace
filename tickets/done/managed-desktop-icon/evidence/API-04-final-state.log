@@ -1,0 +1,17 @@
+API-04-final-state | 2026-11-20 UTC | actual isolated Ubuntu 24.04.5 GNOME Shell 46 / Ubuntu Dock 90ubuntu3 | IR-001 960fb46ad0; exact step/build mapping in API-REV-001 Cases
+gdm3	46.2-1ubuntu1~24.04.9
+gnome-shell	46.0-0ubuntu6~24.04.17
+gnome-shell-extension-ubuntu-dock	90ubuntu3
+Linux 6.8.0-147-generic x86_64 GNU/Linux
+No-remaining-installer-accounts
+0
+/home/qa/Work/example 21
+/home/qa/.local/share/applications/autobyteus/managed.desktop: OK
+/home/qa/.local/share/autobyteus-managed/desktop-icon.png: OK
+/home/qa/.autobyteus/server-data/temp_workspace/icon-work.txt: OK
+Y
+b8446b68505464052d58655da5aebc017ef14377a4fa99c4751beba7630c7bab  /home/qa2/Work/example
+7ff2aceaae884284e081d7aa9fcf1eff0772d0eeb525a7afd32a99167d7c877b  /home/qa2/.autobyteus/server-data/temp_workspace/icon-work.txt
+202f3a70889b391d1960cb2e95b83657bec0b0abae23e28f3cc1f1e465b28ed8  /home/qa2/.local/share/gnome-shell/extensions/icon-qa@fixture.invalid/shell-probe.js
+202f3a70889b391d1960cb2e95b83657bec0b0abae23e28f3cc1f1e465b28ed8  test-support/managed-desktop-identity/shell-probe.js
+QA-only VM, inputs and repacks removed; original implementation fixture retained for Delivery.

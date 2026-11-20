@@ -1,0 +1,29 @@
+Integrated ff2910981f16b10b5cd988828cb96cae4cb42a22
+(cd autobyteus-web/linux-install && CGO_ENABLED=1 go test -race -count=1 ./...)
+?   	autobyteus.local/desktop/linux-install/cmd/client	[no test files]
+?   	autobyteus.local/desktop/linux-install/cmd/launcher	[no test files]
+ok  	autobyteus.local/desktop/linux-install/cmd/provision	1.011s
+ok  	autobyteus.local/desktop/linux-install/cmd/writer	1.064s
+ok  	autobyteus.local/desktop/linux-install/internal/acquire	1.032s
+?   	autobyteus.local/desktop/linux-install/internal/buildinfo	[no test files]
+?   	autobyteus.local/desktop/linux-install/internal/imagefile	[no test files]
+?   	autobyteus.local/desktop/linux-install/internal/install	[no test files]
+ok  	autobyteus.local/desktop/linux-install/internal/launch	1.537s
+?   	autobyteus.local/desktop/linux-install/internal/protocol	[no test files]
+ok  	autobyteus.local/desktop/linux-install/internal/release	1.022s
+ok  	autobyteus.local/desktop/linux-install/internal/sealed	1.016s
+ok  	autobyteus.local/desktop/linux-install/internal/store	1.053s
+CI=true pnpm install --frozen-lockfile
+Done in 2.8s using pnpm v10.28.2
+pnpm -C autobyteus-web typecheck
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 61.1s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 3.8s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 1.0s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 37.2s
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+pnpm -C autobyteus-server-ts typecheck
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 17.2s
+[typecheck] server tests (tsconfig.tests.json): 1006 errors, exit 2, 47.6s
+[typecheck] production errors: 0; test-file errors: 1006 in 315 files (baseline 1006 in 315 files)
+[typecheck] PASS

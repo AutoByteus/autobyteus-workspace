@@ -1,0 +1,15 @@
+API-04-fresh-install | 2026-11-20 UTC | actual isolated Ubuntu 24.04.5 GNOME Shell 46 / Ubuntu Dock 90ubuntu3 | IR-001 960fb46ad0; exact step/build mapping in API-REV-001 Cases
+a62a83956f5fafc8ba766c853b788bc725fb2cd262f0dd98f447e838fb9d4630  /home/qa/.local/share/autobyteus-managed/desktop-icon.png
+[Desktop Entry]
+Type=Application
+Name=AutoByteus
+Exec=/opt/autobyteus-desktop/1000/app/AutoByteus.AppImage %U
+Icon=/home/qa/.local/share/autobyteus-managed/desktop-icon.png
+Terminal=false
+Categories=Development;
+X-AutoByteus-Managed-UID=1000
+StartupWMClass=autobyteus-managed
+Nov 20 21:17:56 icon12 python3[2487]: 127.0.0.1 - - [20/Nov/2026 21:17:56] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.14-beta.3/AutoByteus_personal_linux-x64-1.5.14-beta.3.AppImage.release.json HTTP/1.1" 200 -
+Nov 20 21:17:56 icon12 python3[2487]: 127.0.0.1 - - [20/Nov/2026 21:17:56] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.14-beta.3/AutoByteus_personal_linux-x64-1.5.14-beta.3.AppImage.release.json.sig HTTP/1.1" 200 -
+Nov 20 21:23:19 icon12 python3[2487]: 127.0.0.1 - - [20/Nov/2026 21:23:19] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.14-beta.3/AutoByteus_personal_linux-x64-1.5.14-beta.3.AppImage.release.json HTTP/1.1" 200 -
+Nov 20 21:23:19 icon12 python3[2487]: 127.0.0.1 - - [20/Nov/2026 21:23:19] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.14-beta.3/AutoByteus_personal_linux-x64-1.5.14-beta.3.AppImage.release.json.sig HTTP/1.1" 200 -

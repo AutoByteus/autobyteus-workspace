@@ -1,0 +1,10 @@
+API-04-new-user-uninstall | 2026-11-20 UTC | actual isolated Ubuntu 24.04.5 GNOME Shell 46 / Ubuntu Dock 90ubuntu3 | IR-001 960fb46ad0; exact step/build mapping in API-REV-001 Cases
+Ubuntu will request one-shot authorization for /opt/autobyteus-desktop/1001/support/provision (program path, not a publisher verification).
+Removed "/etc/systemd/system/sockets.target.wants/autobyteus-desktop-1001.socket".
+exit=0
+absent /opt/autobyteus-desktop/1001
+absent /home/qa2/.local/share/applications/autobyteus
+absent /home/qa2/.local/share/autobyteus-managed
+b8446b68505464052d58655da5aebc017ef14377a4fa99c4751beba7630c7bab  /home/qa2/Work/example
+7ff2aceaae884284e081d7aa9fcf1eff0772d0eeb525a7afd32a99167d7c877b  /home/qa2/.autobyteus/server-data/temp_workspace/icon-work.txt
+['firefox-esr.desktop', 'org.gnome.Evolution.desktop', 'rhythmbox.desktop', 'libreoffice-writer.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Software.desktop', 'yelp.desktop']

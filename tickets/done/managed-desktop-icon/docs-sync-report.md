@@ -1,0 +1,4 @@
+# Documentation sync — managed Ubuntu icon
+Checked the current merged tree ff2910981f against the approved transition. The managed-desktop guide documents the per-user nested shortcut, persistent icon, unchanged logical desktop ID, repair of the exact old generated entry, preservation of custom resources and removal behavior. Added the observed GNOME indexing delay and clarified that no logout, re-enrollment or favorite edit is necessary.
+
+The implementation does not introduce new release assets, signers or release steps: RELEASE.md needs no change. DESIGN.md's existing ownership and preservation principles still apply. TESTING.md's real-system and isolated-user requirements remain accurate; the new test-support/managed-desktop-identity/README.md explains the actual Shell probe, the exact-count/backend checks, and the separate visual check. No new global testing rule. No obsolete active documentation for the flat shortcut found.

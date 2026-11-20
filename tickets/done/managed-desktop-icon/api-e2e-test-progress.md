@@ -1,0 +1,8 @@
+API-01/02 Started 2026-11-20T20:59:55+00:00. Real VM and signed fixtures.
+
+API-01 Completed 2026-11-20T21:06:43+00:00 — both full test-signed packages verified, substantive native tests passed. Exact IR .3 preserved for signed upgrade by .2 authenticated client; identical-application separate loopback .3 only for initial setup. Test fixture uses original released .2 renderer and prior source, not a stand-in.
+API-02 checkpoint 2026-11-20T21:17:47+00:00: Ubuntu 24.04.5 Wayland + real Ubuntu Dock, normal GNOME Terminal install and polkit approved. Original fixture .2 running app was tracked as window:3, then window:4 on menu activation. Genuine generic blue Applications entry plus separate anonymous running icon captured. First window was closed while the initially empty test database was still migrating; rerun healthy baseline before upgrade, without any source or installation changes.
+
+API-03 started 2026-11-20T21:17:54+00:00: actual old client stages authenticated exact IR-001 bytes via installed writer. Activate only after ordinary quit.
+API-02/03 Completed 2026-11-20T21:22:26+00:00 • genuine baseline, current exact signed upgrade, prior release redirect, actual native Wayland and XWayland primary/secondary confirmed. API-04 Started • cancel and approved uninstall followed by independent fresh enrollment.
+API-04 Completed 2026-11-20T21:29:17+00:00 • UID 1000 cancel/success plus custom reinstall/removal; independent previously clean UID 1001 (no prior menu/profile/favorite), real fresh Wayland install, close/unmount/search activation, persistent work; 1/2-window positive Wayland/XWayland durable probe and two deliberate negative controls.

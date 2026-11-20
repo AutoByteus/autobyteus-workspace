@@ -1,0 +1,16 @@
+IMP-04 | 2026-11-20 | compiled native launcher cmds from predecessor eb5ca25f57 and fixed 960fb46ad0; Ubuntu 26.04 amd64, Go 1.27.4; disposable trust
+Network-isolated container, no host /opt/profile access. Actual launcher ELF paths; each noncanonical APPIMAGE passes the real Managed() root/writer/store checks on test-owned paths. Test-owned canonical outer stand-in asserts args and presence/absence of flat file BEFORE retrying current native menu ensure. New launch must not have touched menu; old AppRun must have succeeded and recreated its legacy file. The installed destination is a stand-in, not real AppImage or authorization.
+canonical stand-in reached; argv verbatim; from /Downloads/current
+canonical stand-in reached; argv verbatim; from /Downloads/old
+one nested entry after two redirects; predecessor-created flat entry reconciled
+Inputs after the AppRun marker: one argument containing a space and one URL argument. Both preserved separately. Neither managing an actual installed window nor testing removal here.
+
+Current scoped canonical route control: actually extracted AppRun and artwork from first disposable signed x64 package at same source (sha256 4f9109464caff6a79318402dbd7701f524d672a164857d1d40d10c852826e130); adjacent Electron test child checks original arg boundaries. Real protected paths verified inside container, never the host. APPDIR deliberately unrelated.
+AutoByteus menu not updated: open /tmp/package/resources/icons/512x512.png: no such file or directory
+supervised ordinary test child reached with original arguments
+icon I/O failure preserved predecessor and did not block the normal child
+supervised ordinary test child reached with original arguments
+restored packaged icon reconciled exact old entry; icon/entry remain usable without original mount path
+First fixture copy made extracted parent dirs inaccessible (root-owned mode 0700); corrected fixture ownership to the extracting test user. Squashfs itself lists 0755 resources/icons dirs and regular 0644 PNG. No package modification to correct that fixture error.
+GioUnix desktop info lookup after native reconciliation under path with literal space/backslash:
+autobyteus-managed.desktop autobyteus-managed /tmp/Test Home\path/.local/share/autobyteus-managed/desktop-icon.png

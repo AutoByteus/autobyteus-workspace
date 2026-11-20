@@ -1,0 +1,32 @@
+{
+  "session": "wayland",
+  "dock": 1,
+  "favorites": [
+    "org.gnome.Nautilus.desktop",
+    "autobyteus-managed.desktop"
+  ],
+  "registry": "/home/qa/.local/share/applications/autobyteus/managed.desktop",
+  "icon": "/home/qa/.local/share/autobyteus-managed/desktop-icon.png",
+  "running": [
+    "window:13",
+    "org.gnome.Terminal.desktop"
+  ],
+  "windows": [
+    {
+      "title": "Terminal",
+      "pid": 17839,
+      "type": "Wayland",
+      "wmclass": "gnome-terminal-server",
+      "gtk": "org.gnome.Terminal",
+      "tracked": "org.gnome.Terminal.desktop"
+    },
+    {
+      "title": "AutoByteus installation",
+      "pid": 17873,
+      "type": "Wayland",
+      "wmclass": "zenity",
+      "gtk": null,
+      "tracked": "window:13"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+IMP-05 | source 960fb46ad0 | clean Ubuntu 26.04 x86_64, Node 22.23.2, pnpm 10.28.2, Go 1.27.4, compiler/make/libarchive tools, Electron 42.11.16 | 2026-11-20
+git clone --no-local --single-branch --depth=1 --branch fix/managed-desktop-icon <worktree> <fresh>; verify HEAD; pnpm install --frozen-lockfile; GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 AUTOBYTEUS_DESKTOP_PUBLIC_KEY_FILE=<disposable build-only public key> pnpm -C autobyteus-web build:electron:linux:x64
+First setup clone lacked make at native terminal rebuild and was not counted as a clean package pass. After preparing local standard build tools and checking the build, a separate pristine clone ran the complete command from frozen install, without sharing generated project dist or node_modules. Package manager/compiler download caches used; no production credentials or release job.
+[typecheck] PASS
+Icon generation completed successfully
+Build completed: [
+sign-release.mjs and verify-release.mjs on exact final x64 bytes with test-only Ed25519 pair; verify-layout.mjs; validate_linux_updater_metadata.py --arch-token linux-x64; AppImage --appimage-extract (no application execution) for resources/icons/512x512.png and resources/app.asar. Actual PNG byte-equal to the artwork in IMP-03; inspected the packaged ElectronApplication constructor.
+Verified signed desktop release 1.5.14-beta.3 x64
+Verified native AppRun, unchanged Electron ELF, provisioner/client and sandbox-preserving desktop Exec
+Verified signed desktop release 1.5.14-beta.3 x64
+Validated autobyteus-web/electron-dist/latest-linux.yml: linux-x64 AppImage metadata includes embedded blockMapSize
+a62a83956f5fafc8ba766c853b788bc725fb2cd262f0dd98f447e838fb9d4630  squashfs-root/resources/icons/512x512.png
+Final image contains desktop name call in dist/electron/application/electronApplication.js
+086af959f4f4305c45a77655bd9e2b0a88a04d9816c7dd734929b4a5977a237a  /home/ryan-ai/hdd_drive/autobyteus_org/managed-icon-check.8kKbBY/fresh/autobyteus-web/electron-dist/AutoByteus_personal_linux-x64-1.5.14-beta.3.AppImage
+This validates packaging, not actual guest auth, real tracked running windows, publishing or another platform.

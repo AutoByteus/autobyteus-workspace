@@ -1,0 +1,10 @@
+API-03-original-xwayland | 2026-11-20 UTC | actual isolated Ubuntu 24.04.5 GNOME Shell 46 / Ubuntu Dock 90ubuntu3 | IR-001 960fb46ad0; exact step/build mapping in API-REV-001 Cases
+a5cf04ffb8f0ab1d17e0fc63634add581f1a7b90728bdd8737a4c7a3a03a9a13  /home/qa/Downloads/OriginalRelease.AppImage
+086af959f4f4305c45a77655bd9e2b0a88a04d9816c7dd734929b4a5977a237a  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+c564b691b1d0452d8a95daffcd0f71ecc0b28903d5f348d02191d5e5c9193c82  /home/qa/.autobyteus/server-data/temp_workspace/icon-work.txt
+/home/qa/.local/share/applications/autobyteus/managed.desktop inode=1048763 mtime=1795209534
+/home/qa/.local/share/autobyteus-managed/desktop-icon.png inode=1048665 mtime=1795209534
+No-flat-file
+No-install-or-auth-request
+[2026-11-20T21:21:54.422Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1795209714422,"pid":17158,"hostname":"icon12","msg":"Server listening at http://127.0.0.1:296
+[2026-11-20T21:21:54.422Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1795209714422,"pid":17158,"hostname":"icon12","msg":"Server listening at http://10.0.2.15:296

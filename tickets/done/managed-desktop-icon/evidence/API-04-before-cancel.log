@@ -1,0 +1,5 @@
+API-04-before-cancel | 2026-11-20 UTC | actual isolated Ubuntu 24.04.5 GNOME Shell 46 / Ubuntu Dock 90ubuntu3 | IR-001 960fb46ad0; exact step/build mapping in API-REV-001 Cases
+No AutoByteus window or AppImage mount
+71566c9942f5671814aaf5471b2a1b4f32cb4b3545deb6910715600cb68d20bd  /home/qa/.local/share/applications/autobyteus/managed.desktop
+a62a83956f5fafc8ba766c853b788bc725fb2cd262f0dd98f447e838fb9d4630  /home/qa/.local/share/autobyteus-managed/desktop-icon.png
+c564b691b1d0452d8a95daffcd0f71ecc0b28903d5f348d02191d5e5c9193c82  /home/qa/.autobyteus/server-data/temp_workspace/icon-work.txt

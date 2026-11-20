@@ -1,0 +1,7 @@
+API-04-new-user-before | 2026-11-20 UTC | actual isolated Ubuntu 24.04.5 GNOME Shell 46 / Ubuntu Dock 90ubuntu3 | IR-001 960fb46ad0; exact step/build mapping in API-REV-001 Cases
+uid=1001(qa2) gid=1001(qa2) groups=1001(qa2),27(sudo),44(video),992(render)
+No-prior-app-profile
+No-system-install
+No-prior-menu
+['firefox-esr.desktop', 'org.gnome.Evolution.desktop', 'rhythmbox.desktop', 'libreoffice-writer.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Software.desktop', 'yelp.desktop']
+{"session": "wayland", "dock": 1, "favorites": ["firefox-esr.desktop", "org.gnome.Evolution.desktop", "rhythmbox.desktop", "libreoffice-writer.desktop", "org.gnome.Nautilus.desktop", "org.gnome.Software.desktop", "yelp.desktop"], "running": ["window:2", "org.gnome.Terminal.desktop"], "windows": [{"title": "Install AutoByteus", "pid": 21346, "type": "Wayland", "wmclass": "zenity", "gtk": null, "tracked": "window:2"}, {"title": "Terminal", "pid": 21277, "type": "Wayland", "wmclass": "gnome-terminal-server", "gtk": "org.gnome.Terminal", "tracked": "org.gnome.Terminal.desktop"}]}
