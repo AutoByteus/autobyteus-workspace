@@ -43,6 +43,18 @@
 //                  video says so plainly with Retry. A run delegated by the open run (on epsilon, "Producer") has a video
 //                  and an audio link that play. Every media read carries the phone's key in its header; no URL carries
 //                  a key; no refusal.
+//   MSP-91 autobyteus-572 AC-001, AC-005, AC-006 (API/E2E)  On the phone (after MSP-89): Retry after a real failure: a
+//                  ~9.7 MB video in the run's folder on an 8 Mbit/s link; the node stops mid-download (killed: the
+//                  connection breaks) and starts again: a plain message with Retry, never "not available"; Retry loads it
+//                  again with its progress and it plays. The same for a video outside the folder (the node-file route): a
+//                  plain message; tapping the link again plays it. (Chrome's offline emulation does not break a download
+//                  already under way, so the node itself goes away.) A second phone in Chinese (zh-CN): "正在加载视频…" with "x / y MB" rising, then
+//                  the video plays. The node's gate and path rules on the media routes: no key → 401 on the workspace and
+//                  node-file routes; the phone's key with a path that climbs out of the folder → refused, no bytes.
+//   MSP-92 autobyteus-572 REQ-001 (API/E2E)  A video sent as a Team message's reference: the phone's Messages → the
+//                  reference plays in the reference viewer on an 8 Mbit/s link; while it loads the viewer says it is
+//                  loading ("Loading reference file..."), never "not available" (the reference route sends no length; the
+//                  reference viewer has its own download and loading text, not the players' loading view).
 //   MSP-90 autobyteus-572 AC-004  A desktop window (`nuxt dev` against alpha, as MSP-37): a run's links to a video and an
 //                  audio file in its folder and outside it play in the Files panel; the outside ones through
 //                  `GET /rest/node-files/content`.
@@ -133,7 +145,7 @@ export const runFileOpenCases = async (probe) => {
     page.on('requestfailed', request => evidence.failedRequests.push({ case: caseOf(), label, url: redact(request.url()), error: request.failure()?.errorText ?? null }));
   };
 
-  if (['MSP-28', 'MSP-29', 'MSP-30', 'MSP-89'].some(wants)) {
+  if (['MSP-28', 'MSP-29', 'MSP-30', 'MSP-89', 'MSP-91', 'MSP-92'].some(wants)) {
     const [epsilon, zeta] = await Promise.all([serverAt('epsilon', await freePort(), { AGY_FAKE_CASE: 'linked_skills' }), serverAt('zeta', await freePort(), { AGY_FAKE_CASE: 'linked_skills' })]);
     const phoneOrigin = `http://${PHONE_HOST}:${epsilon.port}`;
     let phoneBrowser = null;
@@ -198,11 +210,18 @@ export const runFileOpenCases = async (probe) => {
       assert(pairing.status === 201 && pairing.body.mobileUrl, 'epsilon pairing session', pairing.status);
       const context = await phoneBrowser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2, locale: 'en-US', timezoneId: 'UTC' });
       const page = await context.newPage();
-      // MSP-89's missing video: the node answers 404 for it on purpose (AC-006).
+      // MSP-89's missing video: the node answers 404 for it on purpose (AC-006). MSP-91 takes the phone offline mid-download
+      // on purpose: the interrupted read and what the phone's open streams log while offline.
+      const deliberate = [
+        { test: (line, sourceUrl) => currentCase === 'MSP-89' && /: Failed to load resource: the server responded with a status of 404 \(Not Found\)$/.test(line)
+          && /gone-572\.mp4/.test(decodeURIComponent(sourceUrl)), cause: 'MSP-89\'s missing video (autobyteus-572 AC-006)' },
+        { test: (line) => currentCase === 'MSP-91' && offlineWindow.on && /ERR_CONNECTION_(REFUSED|RESET|CLOSED)|ERR_EMPTY_RESPONSE|ERR_INCOMPLETE_CHUNKED_ENCODING|ERR_CONTENT_LENGTH_MISMATCH|network error|Failed to fetch|WebSocket connection to .* failed|Agent WebSocket error|\[FileExplorerStreaming\] WebSocket error/i.test(line),
+          cause: 'MSP-91 stopped the node mid-download on purpose' },
+      ];
+      const offlineWindow = { on: false };
       watchBrowser(page, 'phone-epsilon', phoneOrigin, () => currentCase, {
-        test: (line, sourceUrl) => currentCase === 'MSP-89' && /: Failed to load resource: the server responded with a status of 404 \(Not Found\)$/.test(line)
-          && /gone-572\.mp4/.test(decodeURIComponent(sourceUrl)),
-        cause: 'MSP-89\'s missing video (autobyteus-572 AC-006)',
+        test: (line, sourceUrl) => deliberate.some((entry) => entry.test(line, sourceUrl)),
+        get cause() { return deliberate.map((entry) => entry.cause).join(' / '); },
       });
       const net = [];
       context.on('request', (request) => { if (!request.url().startsWith(phoneOrigin)) return;
@@ -480,6 +499,214 @@ export const runFileOpenCases = async (probe) => {
           [details.refused.length === 0 && details.mainFrameNodeNavigations.length === 0, 'no refusal and no main-frame node navigation'],
         ].filter(([ok]) => !ok).map(([, label]) => label);
         assert(failures.length === 0, failures.join('; '), details);
+        return details;
+      });
+
+      // ---- MSP-91, MSP-92 (autobyteus-572, API/E2E) ------------------------------------------------------------------------
+      const cdp = await page.context().newCDPSession(page);
+      const network = (mode) => cdp.send('Network.emulateNetworkConditions', mode === 'slow'
+        ? { offline: false, latency: 80, downloadThroughput: 8000 * 1024 / 8, uploadThroughput: 8000 * 1024 / 8 }
+        : mode === 'offline' ? { offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0 }
+          : { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
+      /** What a media viewer (`selector`) shows now. */
+      const mediaState = (selector) => page.evaluate((sel) => {
+        const el = document.querySelector(sel);
+        if (!el) return { viewer: false };
+        const element = el.querySelector('video, audio');
+        return { viewer: true, text: el.innerText.replace(/\s+/g, ' ').slice(0, 200),
+          loading: Boolean(el.querySelector('[data-testid="media-loading-state"], [role="status"]')),
+          progress: el.querySelector('[data-testid="media-loading-progress"]')?.textContent?.trim() ?? null,
+          alert: el.querySelector('[role="alert"], [data-testid="mobile-file-preview-error"]')?.innerText.replace(/\s+/g, ' ').trim() ?? null,
+          retry: Boolean(el.querySelector('.retry-button')),
+          media: element ? { tag: element.tagName.toLowerCase(), blob: element.src.startsWith('blob:'), readyState: element.readyState, error: element.error?.code ?? null,
+            duration: Number.isFinite(element.duration) ? Math.round(element.duration * 10) / 10 : null } : null };
+      }, selector);
+      /** Samples the viewer every 100 ms until `done(state)` or the time is up; returns the timeline and the last state. */
+      const sample = async (selector, done, ms = 60_000, onEach = async () => undefined) => {
+        const started = Date.now(); const timeline = []; let last = ''; let state = null;
+        while (Date.now() - started < ms) {
+          state = await mediaState(selector);
+          const signature = JSON.stringify(state);
+          if (signature !== last) { timeline.push({ at: Date.now() - started, ...state }); last = signature; }
+          await onEach(state, Date.now() - started);
+          if (done(state)) break;
+          await sleep(100);
+        }
+        return { state, timeline, notAvailableShown: timeline.some((entry) => /URL is not available|not available/i.test(entry.text ?? '')) };
+      };
+      const plays = (state, seconds) => Boolean(state?.media && state.media.blob && state.media.readyState >= 1 && state.media.error === null && Math.abs((state.media.duration ?? 0) - seconds) < 1);
+      const VIEWER = '[data-testid="mobile-file-viewer"]';
+      const backToConversation = async () => { await page.goBack(); await waitFor('back to the conversation', conversationShown, 15_000).catch(() => undefined); };
+
+      await runCase('MSP-91', async () => {
+        currentCase = 'MSP-91';
+        const outside = path.join(epsilon.dataDir, '..', 'outside-media-572');
+        const media = { inside: path.join(workspace, 'media', 'retry-572.mp4'), outside: path.join(outside, 'retry-572-out.mp4') };
+        const size = await makeMedia('big', media.inside, media.outside);
+        await linkMessage('RETRY-572', [['retry-572.mp4', media.inside], ['retry-572-out.mp4', media.outside]]);
+        await toList();
+        await openRun(`agent:${run}`, 'RETRY-572');
+        const from = Date.now();
+
+        /** A tap on a big video on the slow link; the node killed once it has loaded for 2.5 s, started again once the viewer failed. */
+        const failMidway = async (label, control) => {
+          await network('slow');
+          await control.scrollIntoViewIfNeeded();
+          await control.tap();
+          let wentOffline = null;
+          const run = await sample(VIEWER, (state) => Boolean(state.alert) || plays(state, 20), 60_000, async (state, at) => {
+            if (wentOffline === null && state.loading && at > 2_500) {
+              offlineWindow.on = true;
+              epsilon.child.kill('SIGKILL');
+              wentOffline = at;
+              await shot(page, `MSP-91-${label}-node-stopped`);
+            }
+          });
+          await shot(page, `MSP-91-${label}-failed`);
+          await network('fast');
+          await epsilon.start();
+          await sleep(3_000);
+          return { ...run, wentOffline, progressBeforeOffline: [...new Set(run.timeline.map((entry) => entry.progress).filter(Boolean))].slice(-3) };
+        };
+
+        // Inside the folder: the player's Retry.
+        const inside = await failMidway('inside', linkControl(media.inside).last());
+        let insideRetry = null;
+        if (inside.state?.retry) {
+          // Retry on the same slow link, so its loading view and progress show again.
+          await network('slow');
+          await page.locator(`${VIEWER} .retry-button`).first().click();
+          insideRetry = await sample(VIEWER, (state) => plays(state, 20) || Boolean(state.alert), 60_000);
+          await shot(page, 'MSP-91-inside-after-retry');
+        }
+        offlineWindow.on = false;
+        await network('fast');
+        await backToConversation();
+
+        // Outside the folder: the node-file route; the user taps the link again.
+        const outsideRun = await failMidway('outside', linkControl(media.outside).last());
+        offlineWindow.on = false;
+        await network('fast');
+        await backToConversation();
+        await linkControl(media.outside).last().tap();
+        const outsideAgain = await sample(VIEWER, (state) => plays(state, 20) || Boolean(state.alert), 60_000);
+        await shot(page, 'MSP-91-outside-again');
+        await backToConversation();
+
+        // The node's gate and path rules on the media routes (the probe's own requests, as any client).
+        const read = net.find((entry) => entry.at >= from && /^\/rest\/workspaces\/[^/]+\/content$/.test(entry.path))?.request.url() ?? null;
+        const nodeRead = net.find((entry) => entry.at >= from && entry.path === '/rest/node-files/content')?.request.url() ?? null;
+        const phoneKey = await page.evaluate(() => { try { const s = JSON.parse(localStorage.getItem('autobyteus.remote_access.mobile_session') ?? 'null'); return s?.credential ?? s?.token ?? s?.accessToken ?? null; } catch { return null; } });
+        const status = async (url, key) => { if (!url) return null; const response = await fetch(url.replace(phoneOrigin, epsilon.baseUrl), { headers: key ? { authorization: `Bearer ${key}`, host: new URL(phoneOrigin).host } : { host: new URL(phoneOrigin).host } }); const bytes = (await response.arrayBuffer()).byteLength; return { status: response.status, bytes, length: response.headers.get('content-length') }; };
+        const climbing = read ? (() => { const u = new URL(read); u.searchParams.set('path', '../outside-media-572/retry-572-out.mp4'); return u.toString(); })() : null;
+        const gate = {
+          workspaceWithKey: await status(read, phoneKey), workspaceNoKey: await status(read, null), nodeFileNoKey: await status(nodeRead, null),
+          climbingWithKey: await status(climbing, phoneKey), keyRead: Boolean(phoneKey),
+        };
+
+        // A phone in Chinese.
+        const zhContext = await phoneBrowser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2, locale: 'zh-CN', timezoneId: 'UTC' });
+        await zhContext.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'zh-CN'));
+        const zh = await zhContext.newPage();
+        watchBrowser(zh, 'phone-epsilon-zh', phoneOrigin, () => 'MSP-91');
+        const zhPairing = await epsilon.rest('POST', '/remote-access/pairing-sessions', { connectionWay: 'local_network', serverBaseUrl: phoneOrigin, serverName: 'Epsilon Test Node', trustedPrivateHttpAcknowledged: true });
+        assert(zhPairing.status === 201 && zhPairing.body.mobileUrl, 'a pairing session for the second phone', zhPairing.status);
+        await zh.goto(zhPairing.body.mobileUrl, { waitUntil: 'domcontentloaded', timeout: 120_000 });
+        await zh.locator('[data-testid="mobile-pair-button"]').click({ timeout: 60_000 });
+        await zh.locator('[data-testid="mobile-run-tree"]').waitFor({ timeout: 60_000 });
+        await zh.locator(`[data-testid="mobile-run-row-agent:${run}"] [data-testid="mobile-run-open"]`).click();
+        const zhConv = zh.locator('[data-testid="mobile-run-conversation"]');
+        await waitFor('RETRY-572 on the Chinese phone', async () => (await zhConv.innerText().catch(() => '')).includes('RETRY-572'), 30_000);
+        const zhCdp = await zhContext.newCDPSession(zh);
+        await zhCdp.send('Network.emulateNetworkConditions', { offline: false, latency: 80, downloadThroughput: 8000 * 1024 / 8, uploadThroughput: 8000 * 1024 / 8 });
+        const zhLink = zhConv.locator(`[data-event-monitor-file-action-control="true"][title="${media.inside}"]`).last();
+        await zhLink.scrollIntoViewIfNeeded();
+        await zhLink.tap();
+        const zhStarted = Date.now(); const zhTimeline = []; let zhLast = ''; let zhState = null; let zhShot = false;
+        while (Date.now() - zhStarted < 60_000) {
+          zhState = await zh.evaluate((sel) => { const el = document.querySelector(sel); if (!el) return { viewer: false }; const m = el.querySelector('video'); return { text: el.innerText.replace(/\s+/g, ' ').slice(0, 160),
+            progress: el.querySelector('[data-testid="media-loading-progress"]')?.textContent?.trim() ?? null, readyState: m?.readyState ?? null, blob: m ? m.src.startsWith('blob:') : null,
+            duration: m && Number.isFinite(m.duration) ? Math.round(m.duration * 10) / 10 : null }; }, VIEWER);
+          const sig = JSON.stringify(zhState); if (sig !== zhLast) { zhTimeline.push({ at: Date.now() - zhStarted, ...zhState }); zhLast = sig; }
+          if (!zhShot && zhState.progress && Date.now() - zhStarted > 3_000) { zhShot = true; await shot(zh, 'MSP-91-zh-CN-loading'); }
+          if (zhState.readyState >= 1) break;
+          await sleep(100);
+        }
+        await shot(zh, 'MSP-91-zh-CN-playing');
+        await zhCdp.send('Network.emulateNetworkConditions', { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
+        await zhContext.close();
+        const zhProgress = [...new Set(zhTimeline.map((entry) => entry.progress).filter(Boolean))];
+        const zhSamples = zhProgress.map((text) => /^(\d+(?:\.\d)?) \/ (\d+(?:\.\d)?) MB$/.exec(text)).filter(Boolean).map((m) => Number(m[1]));
+
+        const trim = (r) => r && ({ ...r, timeline: r.timeline.filter((_, i, all) => i < 4 || i > all.length - 4) });
+        const details = { size, inside: trim(inside), insideRetry: trim(insideRetry), outside: trim(outsideRun), outsideAgain: trim(outsideAgain), gate,
+          zh: { loadingWords: zhTimeline.some((entry) => (entry.text ?? '').includes('正在加载视频…')), progress: zhProgress.slice(0, 3).concat(zhProgress.slice(-3)), samples: zhSamples.length,
+            played: Boolean(zhState?.readyState >= 1 && zhState.blob && Math.abs((zhState.duration ?? 0) - 20) < 1), notAvailable: zhTimeline.some((entry) => /不可用|not available/i.test(entry.text ?? '')) } };
+        const failures = [
+          [inside.wentOffline !== null && Boolean(inside.state?.alert) && !INTERNAL_WORDS.test(inside.state.alert) && inside.state.retry && !inside.notAvailableShown,
+            'AC-006 inside: the network lost mid-download shows a plain message with Retry, never "not available"'],
+          [Boolean(insideRetry) && plays(insideRetry.state, 20) && insideRetry.timeline.some((entry) => entry.loading) && !insideRetry.notAvailableShown,
+            'AC-001 inside: Retry shows the loading view again and the video plays'],
+          [outsideRun.wentOffline !== null && Boolean(outsideRun.state?.alert) && !INTERNAL_WORDS.test(outsideRun.state.alert) && !outsideRun.notAvailableShown,
+            'AC-006 outside: the network lost mid-download shows a plain message, never "not available"'],
+          [plays(outsideAgain.state, 20) && !outsideAgain.notAvailableShown, 'outside: tapping the link again plays the video'],
+          [gate.keyRead && gate.workspaceWithKey?.status === 200 && gate.workspaceWithKey.length === String(size) && gate.workspaceNoKey?.status === 401 && gate.nodeFileNoKey?.status === 401,
+            'AC-005 the media routes: the phone\'s key reads (Content-Length = the file\'s size); no key → 401 on the workspace and node-file routes'],
+          [gate.climbingWithKey && gate.climbingWithKey.status >= 400 && gate.climbingWithKey.bytes < 1000, 'AC-005 the path rules: a path climbing out of the folder is refused, no file bytes'],
+          [details.zh.loadingWords && zhSamples.length >= 5 && zhSamples.at(-1) > zhSamples[0] && details.zh.played && !details.zh.notAvailable,
+            'zh-CN: "正在加载视频…" with "x / y MB" rising, then the video plays'],
+        ].filter(([ok]) => !ok).map(([, label]) => label);
+        assert(failures.length === 0, failures.join('; '), details);
+        return details;
+      });
+
+      await runCase('MSP-92', async () => {
+        currentCase = 'MSP-92';
+        // A Team on epsilon whose lead sends its mate a message with a video as its reference.
+        const leadDef = await def(epsilon, 'Ref Lead');
+        const mateDef = await def(epsilon, 'Ref Mate');
+        const teamDef = (await epsilon.gql('mutation($i:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$i){id}}', { i: { name: 'Clip Team', description: 'Clip Team (file open probe)',
+          instructions: 'Work together.', coordinatorMemberName: 'lead', nodes: [{ memberName: 'lead', ref: leadDef, refScope: 'SHARED' }, { memberName: 'mate', ref: mateDef, refScope: 'SHARED' }] } })).createAgentTeamDefinition.id;
+        const config = { workspaceRootPath: workspace, autoExecuteTools: true, ...agy };
+        const team = (await epsilon.gql('mutation($i:CreateAgentTeamRunInput!){createAgentTeamRun(input:$i){success message teamRunId}}', { i: { teamDefinitionId: teamDef,
+          teamConfigs: [{ teamAddress: '/', ...config }], memberConfigs: [{ memberAddress: '/lead', agentDefinitionId: leadDef, ...config }, { memberAddress: '/mate', agentDefinitionId: mateDef, ...config }] } })).createAgentTeamRun;
+        assert(team.success, team.message);
+        const tree = (await epsilon.gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: team.teamRunId })).getTeamRunResumeConfig.executionTree;
+        const lead = tree.root_team.members.find((m) => m.address === '/lead').agent_run_id;
+        const clip = path.join(workspace, 'media', 'ref-572.mp4');
+        const size = await makeMedia('big', clip);
+        const leadProjection = async () => JSON.stringify((await epsilon.gql('query($id:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$a){conversation}}', { id: team.teamRunId, a: lead })).getTeamMemberRunProjection?.conversation ?? []);
+        const socket = new WebSocket(ownerSocketUrl(`${epsilon.baseUrl.replace(/^http/, 'ws')}/ws/agent-team/${team.teamRunId}`));
+        await new Promise((resolve, reject) => { socket.onopen = resolve; socket.onerror = reject; });
+        await sleep(1_000);
+        socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { message_id: randomUUID(), dedupe_key: `team_member_input:probe:${randomUUID()}`, context_file_paths: [], image_urls: [], agent_run_id: lead,
+          content: `CALL_TOOL:${JSON.stringify({ name: 'send_message_to', arguments: { recipient_address: '/mate', content: 'The cut is ready. Marker REF-572.', reference_files: [clip] } })}` } }));
+        await waitFor('the lead\'s send_message_to', async () => (await leadProjection()).includes('CALLED:'), 60_000);
+        socket.close();
+
+        await toList();
+        await page.locator(`[data-testid="mobile-run-row-team:${team.teamRunId}"] [data-testid="mobile-run-open"]`).click();
+        await waitFor('the Team\'s run screen', async () => (await page.evaluate(() => document.querySelector('[data-testid="mobile-run-screen"]')?.getAttribute('data-state'))) === 'open', 30_000);
+        await page.locator('[data-testid="mobile-run-menu-button"]').click();
+        await page.locator('[data-testid="mobile-run-menu-messages"]').click();
+        await page.locator('[data-testid="mobile-messages"]').waitFor({ timeout: 20_000 });
+        const reference = page.locator('[data-testid="mobile-team-reference-row"]').filter({ hasText: 'ref-572.mp4' }).first();
+        await reference.waitFor({ timeout: 30_000 });
+        await network('slow');
+        await reference.click();
+        const REF = '[data-testid="mobile-team-reference-viewer"]';
+        let loadingShot = false;
+        const run = await sample(REF, (state) => plays(state, 20) || Boolean(state.alert), 60_000, async (state, at) => {
+          if (!loadingShot && at > 2_000 && !state.media) { loadingShot = true; await shot(page, 'MSP-92-reference-loading'); }
+        });
+        await network('fast');
+        await shot(page, 'MSP-92-reference-playing');
+        await page.locator(`${REF} [data-testid="mobile-screen-back"]`).click().catch(() => undefined);
+        const loadingTexts = [...new Set(run.timeline.filter((entry) => !entry.media).map((entry) => entry.text))];
+        const details = { size, teamRunId: team.teamRunId, loadingTexts, playersLoadingView: run.timeline.some((entry) => entry.progress), final: run.state, notAvailableShown: run.notAvailableShown,
+          timeline: run.timeline.filter((_, i, all) => i < 4 || i > all.length - 4) };
+        assert(plays(run.state, 20), 'the Team reference video plays', details);
+        assert(!run.notAvailableShown && loadingTexts.some((text) => /Loading reference file/.test(text ?? '')), 'while it loads the reference viewer says so ("Loading reference file..."), never "not available"', details);
         return details;
       });
     } finally {
