@@ -14,15 +14,15 @@
 - Relevant Architecture Review Revision IDs: ARCH-REV-004, ARCH-REV-005
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001, IR-002
+- Relevant Implementation Revision IDs: IR-001, IR-002, IR-003
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1
-- Review Scope: `Full Review`
-- Review Scope Evidence (round >1): N/A
-- Trigger: implementation handoff IR-002 (Medium / High), branch `codex/grok-self-started-turns-517` @ `5ab411af71`, base `origin/personal` @ `ca4317a386`
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: 2
+- Review Scope: `Targeted Delta Review`
+- Review Scope Evidence (round >1): the round-2 delta `5ab411af71..cc2701af8a` touches product code in one file only, `acp-agent-session.ts` (+4/−6): it removes `AcpTurnOrigin`, moves its doc onto `ActivePrompt` and changes one class-doc reference. Ticket documents and evidence IMP-07 also changed. The delta stays within CR-001: no logic, interface or data-shape change. Round-1 evidence carries forward for every other check.
+- Trigger: implementation IR-003 (CR-001 Local Fix), commit `cc2701af8a`. Round 1: IR-002 @ `5ab411af71`, base `origin/personal` @ `ca4317a386`
+- Prior Review Round Reviewed: 1 (CRR-001, Fail, CR-001)
+- Latest Authoritative Round: 2
 - Failure-origin fields: N/A
 
 ## Routing Classification Review
@@ -78,7 +78,7 @@
 
 | Candidate ID | Observation Or Mechanism | Scenario / Contract ID | Independent Trigger | Forward Path / Lifecycle / Consequence | Evidence | Disposition | Scope | Reason / Proportionate Response |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| CAND-001 | `export type AcpTurnOrigin = "input" \| "provider"` (`acp-agent-session.ts:64`): nothing imports it and no type references it. `ActivePrompt` (:67-69) restates the two literals itself. | Principle 7 (no dead code in touched files); Principle 15 (one concept, one representation) | Engineering contract | A reader takes it for the session's turn-origin contract. It is a second, unused representation of `ActivePrompt.origin`, and the two can drift. | `Grep AcpTurnOrigin` over `autobyteus-server-ts`: one declaration, one doc-comment mention (:79), no type use | Promote | This ticket | CR-001: use it as the origin type in `ActivePrompt`, or remove it and keep the doc on `ActivePrompt`. A one-line fix. |
+| CAND-001 (resolved in round 2) | `export type AcpTurnOrigin = "input" \| "provider"` (`acp-agent-session.ts:64`): nothing imports it and no type references it. `ActivePrompt` (:67-69) restates the two literals itself. | Principle 7 (no dead code in touched files); Principle 15 (one concept, one representation) | Engineering contract | A reader takes it for the session's turn-origin contract. It is a second, unused representation of `ActivePrompt.origin`, and the two can drift. | `Grep AcpTurnOrigin` over `autobyteus-server-ts`: one declaration, one doc-comment mention (:79), no type use | Promote | This ticket | CR-001: use it as the origin type in `ActivePrompt`, or remove it and keep the doc on `ActivePrompt`. A one-line fix. |
 | CAND-002 | Stop pressed in the gap between `turn_completed(input)` and the input response while a provider prompt is pending. The hand-over still opens the provider turn. | SC-003 combined with SC-002 | — | Frames 211-216 all arrive at t=60.0, so this needs a stop inside a sub-millisecond window. Even then the provider turn opens `prompting`, and Grok's `turn_completed(cancelled)` ends it interrupted. | probe 2 A timing | Reject | — | Artificial timing; the outcome is still coherent. |
 | CAND-003 | The inbound stage delivers notifications synchronously but permission requests through the SDK's async chain. A notification after a request on the wire can now reach the session before the request. | SC-004 | Agent sends `session/request_permission` followed by more frames for the same session | Grok and DeepSeek wait for the client's answer before that tool continues. The only thing that could change is the display order of an unrelated parallel tool's card. No turn end can overtake a request. | SDK `receive` :625 (no per-message await); probes show no updates between a request and its answer | Reject | — | No supported path with a material consequence. |
 | CAND-004 | A notification right after a response may be handled before the response's continuation (the design's one-direction caveat). | SC-004 | Grok frames after a `session/prompt` response | After a response, the next frames come ≥1 s later (probe 2: 216 → 217 at +1.0 s; 342 → 345 at +2.2 s, summaries the profile ignores). | probe 2 lines 215-220, 341-347 | Reject | — | Documented in the design (RSK-003). Not reachable with a consequence. |
@@ -106,10 +106,10 @@
 | File placement | Pass | The new file is in `backends/grok/`, next to its sibling interpreters. | — |
 | Flat-vs-over-split layout | Pass | One new 42-line file with one concern. | — |
 | Interface/API boundary clarity | Pass | `prompt_running {promptId, notice}` and `prompt_completed {promptId, stopReason}` have explicit identity. `notice(content, senderId)` sits beside `usage`/`compaction`. | — |
-| Naming / one vocabulary (P15) | Fail | `provider` / `input` origin and "Provider-started turn" are consistent with Claude and the glossary. But `AcpTurnOrigin` names the concept a second time and is unused (CR-001). | CR-001 |
+| Naming / one vocabulary (P15) | Pass | The `provider` / `input` origins and "Provider-started turn" are consistent with Claude and the glossary. Since round 2 the origins have one representation, `ActivePrompt` (CR-001 resolved). | — |
 | No unjustified duplication | Pass | The opening steps were deduplicated into `openTurn`. | — |
 | Patch-on-patch complexity control | Pass | IR-001's blocked work was resolved upstream (SR-004/005), not patched around in the session. | — |
-| Dead code removed in touched files (P7) | Fail | `AcpTurnOrigin` (CR-001). `filterForeignResponses` was correctly replaced. The SDK `sessionUpdate`/`extNotification` no-ops are required by the SDK's `Client` type (design SR-005). | CR-001 |
+| Dead code removed in touched files (P7) | Pass | `AcpTurnOrigin` removed in `cc2701af8a` (CR-001 resolved). `filterForeignResponses` was correctly replaced. The SDK `sessionUpdate`/`extNotification` no-ops are required by the SDK's `Client` type (design SR-005). | CR-001 |
 | Test scenarios and assertions requirement-aligned | Pass | 9 session rules over the real connection: batch shape asserted for the hand-over, state `prompting` after it, `startTurn` refused. Connection cases: IMP-01 order, non-`_` method, `$/`, malformed drop, throwing handler, permission/foreign. E2E: AC-001/002/003/006 with prompt counts and failure checks. | — |
 | Test fixtures/helpers reusable and coherent | Pass | `grokProviderTurnScript` orders a-c. The harness adds `batches`. The fake agent's `pause` row is minimal and documented. | — |
 | No stale/duplicated/compatibility-only tests | Pass | The memory test is parameterized rather than duplicated. | — |
@@ -119,7 +119,7 @@
 
 | Source File | Lines Before (base) | Lines After | `>500` Check | `>220` Delta Check | SoC / Ownership | Placement | Preliminary Classification | Required Action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `acp-agent-session.ts` | 387 | 490 | Pass (under 500) | Pass (+115/−12) | Pass. Turn lifecycle stays its concern. It is near the limit, so the next growth should go to an owned file. | Pass | Pass | — (watch: 10 lines of headroom) |
+| `acp-agent-session.ts` | 387 | 488 | Pass (under 500) | Pass | Pass. Turn lifecycle stays its concern. It is near the limit, so the next growth should go to an owned file. | Pass | Pass | — (watch: 12 lines of headroom) |
 | `acp-client-connection.ts` | 283 | 330 | Pass | Pass (+58/−11) | Pass | Pass | Pass | — |
 | `acp-session-update-converter.ts` | 341 | 354 | Pass | Pass (+13) | Pass | Pass | Pass | — |
 | `grok-build-session-profile.ts` | 77 | 91 | Pass | Pass | Pass | Pass | Pass | — |
@@ -134,7 +134,7 @@
 | --- | --- | --- |
 | No backward-compatibility mechanisms in changed scope | Pass | — |
 | No legacy old-behavior retention | Pass | `filterForeignResponses` replaced. |
-| Dead code removed in touched files | Fail | CR-001 |
+| Dead code removed in touched files | Pass | CR-001 resolved (`cc2701af8a`) |
 | Persisted-data transition decision followed | Pass | `Not Affected`. The notice is recorded through the existing trace path. |
 | No version-specific dual reads/writes | Pass | — |
 | Transition mechanics match design | Pass | N/A (no migration) |
@@ -143,7 +143,7 @@
 
 | Item / Path | Type | Evidence | Why It Must Be Removed | Required Action |
 | --- | --- | --- | --- | --- |
-| `AcpTurnOrigin` — `autobyteus-server-ts/src/agent-execution/backends/acp/session/acp-agent-session.ts:64` | `DeadCode` (unused export) | No importer and no type reference. The only mention is the class doc comment (:79). | It is a second, unused representation of `ActivePrompt.origin` that reads as a contract. | Use it as the type of `ActivePrompt`'s `origin` (e.g. `origin: Extract<AcpTurnOrigin, "input">`), or remove it and move its doc to `ActivePrompt` (and fix the :79 reference). |
+| (Resolved round 2) `AcpTurnOrigin` — `autobyteus-server-ts/src/agent-execution/backends/acp/session/acp-agent-session.ts:64` | `DeadCode` (unused export) | No importer and no type reference. The only mention is the class doc comment (:79). | It is a second, unused representation of `ActivePrompt.origin` that reads as a contract. | Use it as the type of `ActivePrompt`'s `origin` (e.g. `origin: Extract<AcpTurnOrigin, "input">`), or remove it and move its doc to `ActivePrompt` (and fix the :79 reference). |
 
 ## Docs-Impact Verdict
 
@@ -164,7 +164,7 @@ No new premises beyond CAND-002…006 above.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score: 9.5 / 10 (simple average; not the decision rule)
+- Overall score: 9.5 / 10 (round 2) (simple average; not the decision rule)
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
@@ -173,15 +173,19 @@ No new premises beyond CAND-002…006 above.
 | 3 | API / Interface / Query / Command Clarity | 9.5 | The effects are named after Grok's signals, with explicit ids. | — | — |
 | 4 | Separation of Concerns and File Placement | 9.4 | Placement is clean. | The session file is at 490/500. | Put the next lifecycle growth in an owned file. |
 | 5 | Shared-Structure / Data-Model Tightness | 9.4 | `ActivePrompt` union, `AcpPromptNotice` shared. | — | — |
-| 6 | Naming Quality and Local Readability | 9.0 | The vocabulary is consistent with Claude and the glossary. | `AcpTurnOrigin` duplicates the origin concept and is unused (CR-001). | Use or remove it. |
+| 6 | Naming Quality and Local Readability | 9.4 | The vocabulary is consistent with Claude and the glossary. The origins are named once, in `ActivePrompt`, with its doc. | — | — |
 | 7 | API/E2E Readiness | 9.6 | Scripted orders a-c, gated live case, coverage hints. | — | — |
 | 8 | Runtime Correctness And Behavioral Fidelity | 9.5 | Hand-over in one batch. Every end path (`finishTurn`, close, fail, idle) clears the prompts. The stage contains failures and keeps wire order. | One-direction ordering caveat (design-recorded). | — |
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | Clean replacement of `filterForeignResponses`. | — | — |
-| 10 | Cleanup Completeness | 9.0 | Everything else is clean. | One dead export in a touched file (CR-001). | Remove or use it. |
+| 10 | Cleanup Completeness | 9.5 | No dead code is left in the touched files (CR-001 resolved). | — | — |
 
 ## Findings
 
-### CR-001 — Unused exported `AcpTurnOrigin` in the session (Local Fix, implementation)
+### CR-001 — Unused exported `AcpTurnOrigin` in the session (Local Fix, implementation) — Resolved (round 2)
+
+- Resolution: `cc2701af8a` removes the export, moves its doc onto `ActivePrompt` and changes the class doc to point at `ActivePrompt`. A grep for `AcpTurnOrigin` over server `src`, `tests` and `GLOSSARY.md` finds nothing. IMP-07: `acp-provider-started-turns.test.ts` 9/9; server typecheck PASS (0 production errors, baseline test errors unchanged).
+
+Original finding:
 
 - Where: `autobyteus-server-ts/src/agent-execution/backends/acp/session/acp-agent-session.ts:61-64` (declaration) and :79 (doc mention).
 - Basis: CAND-001; Principle 7 (dead code in touched files; "exports that nothing imports") and Principle 15 (one concept, one representation).
@@ -194,26 +198,26 @@ No new premises beyond CAND-002…006 above.
 
 ## Classification
 
-- `Local Fix` (implementation-owned): CR-001.
+- None open. CR-001 (`Local Fix`, implementation-owned) was resolved in round 2.
 
 ## Recommended Recipient
 
-- Implementation engineer (the returned recipient for an implementation-owned Local Fix). Next round: `Targeted Delta Review` on CR-001, then API/E2E.
+- API/E2E engineer (implementation-review pass). The implementation engineer gets the informational pass notice.
 
 ## Residual Risks
 
 - One-direction ordering: a frame right after a response may be handled before the response's continuation. This is harmless for the observed Grok timing (≥1 s gap) and recorded as RSK-003.
 - RSK-001 (a client prompt at the instant Grok wakes) is recorded, not designed for.
-- `acp-agent-session.ts` is at 490 lines. Further session growth should move to an owned file.
+- `acp-agent-session.ts` is at 488 lines. Further session growth should move to an owned file.
 - The SDK's own `sessionUpdate`/`extNotification` path is now bypassed (RSK-004). An SDK upgrade must rerun the connection cases and the ACP suites.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
+- Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.5 average. Naming 9.0 and Cleanup 9.0, both from CR-001. All other categories ≥ 9.4.
+- Score Summary: 9.5 average; every category ≥ 9.4.
 - Failure Origin: N/A
-- Recommended Recipient: implementation engineer (`Local Fix`, CR-001)
-- Notes: the design is implemented faithfully. Wire-order delivery, provider-started turns, the one-batch hand-over, cancel/idle/close for both origins, the notice and memory all trace correctly against the probes. The only blocker is a one-line dead export.
+- Recommended Recipient: API/E2E engineer
+- Notes: the design is implemented faithfully. Wire-order delivery, provider-started turns, the one-batch hand-over, cancel/idle/close for both origins, the notice and memory all trace correctly against the probes. Round 2 resolved CR-001, the only finding.
