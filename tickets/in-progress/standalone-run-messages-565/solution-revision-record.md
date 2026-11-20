@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Requirements | Task autobyteus-565 and its screenshot; investigation 2026-11-20 | — | N/A | Ready for Approval | BEH-001…006, REQ-001…007, AC-001…006, DEC-001…005 | DEC-001, DEC-002 put to the founder |
 | SR-002 | Requirements | The founder's answers, 2026-11-20 | DEC-001, DEC-002, DEC-004 | Ready for Approval | Approved | DEC-001, DEC-002, DEC-004 | Approved as recommended; paging with "Load more" |
+| SR-003 | Design | Architecture design | — | Approved | Approved; design Ready | all | `MessageViewScope`, `relation`, `counterpart` record, paged reader; Large/High |
 
 ## Revision Entries
 
@@ -23,3 +24,9 @@
 
 - Trigger: the founder, 2026-11-20: paging ("when user click load more you'll load another certain amount of messages", DEC-004) and "I think you understand the project really well. I like your suggestion" (DEC-001 (a): Messages always shows, empty state when none; DEC-002: name with a node chip, node and address recorded from now on, older unlinked cross-node messages show the run ID and "another node").
 - Approval: `User`; baseline `requirements-doc.md` SR-002. Next: architecture design.
+
+### SR-003 — Design
+
+- Design spec written (Ready): one view rule (`MessageViewScope`) for live and stored; `relation` replaces 492's `publishToViews`; cross-node and unrelated lines record the counterpart's address and node (optional key; released readers ignore unknown keys, Case 14 checked); paged reader (50, cursor) with counterpart identities; web store paging, desktop "Messages" tab (default stays Activity), phone ⋮ Messages.
+- Evidence finding for the founder: older unlinked cross-node messages cannot get a node (nothing recorded it and it cannot be told from a deleted local run): they show the run ID without a chip, instead of "another node" (DEC-002 wording).
+- Classification: `Large` / `High`. Next: architecture review.
