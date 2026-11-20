@@ -1,0 +1,7 @@
+# Desktop run 44685600710 on tag v1.5.14-beta.2 (a728fbcad3): first attempt, Linux build failure (2026-11-20 06:12Z)
+  DESKTOP_RELEASE_PUBLIC_KEY: 
+  DESKTOP_TRUST_MODE: production
+  if (!pem || createPublicKey(pem).asymmetricKeyType!=='ed25519') throw Error('Production desktop public anchor is not provisioned');
+Error: Production desktop public anchor is not provisioned
+##[error]Process completed with exit code 1.
+(Build Linux ARM64 failed at the same step; the signing job and the publish job were skipped)

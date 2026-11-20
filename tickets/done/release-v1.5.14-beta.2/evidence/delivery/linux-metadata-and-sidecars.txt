@@ -1,0 +1,29 @@
+# Linux update metadata and sidecars of v1.5.14-beta.2 (public files)
+== latest-linux.yml
+version: 1.5.14-beta.2
+files:
+  - url: AutoByteus_personal_linux-x64-1.5.14-beta.2.AppImage
+    sha512: vWM0rdxZ+5HEXiQu1bRdX99Xsi5tzMCr0UxtE1e0LDF9MABw6Tn6kttOvn0b5ItrObZh2gPL9TNnDUXI03O0sg==
+    size: 360335650
+    blockMapSize: 375094
+path: AutoByteus_personal_linux-x64-1.5.14-beta.2.AppImage
+sha512: vWM0rdxZ+5HEXiQu1bRdX99Xsi5tzMCr0UxtE1e0LDF9MABw6Tn6kttOvn0b5ItrObZh2gPL9TNnDUXI03O0sg==
+releaseDate: '2026-11-20T07:27:28.711Z'
+
+== latest-linux-arm64.yml
+version: 1.5.14-beta.2
+files:
+  - url: AutoByteus_personal_linux-arm64-1.5.14-beta.2.AppImage
+    sha512: 8KqYZxEbo7Ag9xPggeAwFTor040oWy2YG3QHwOy9KbIIs9ugeoBtCOSAJZ2Z+N56TdpB8ajIHk8Qut1sEy9s+A==
+    size: 350291736
+    blockMapSize: 365156
+path: AutoByteus_personal_linux-arm64-1.5.14-beta.2.AppImage
+sha512: 8KqYZxEbo7Ag9xPggeAwFTor040oWy2YG3QHwOy9KbIIs9ugeoBtCOSAJZ2Z+N56TdpB8ajIHk8Qut1sEy9s+A==
+releaseDate: '2026-11-20T07:28:00.936Z'
+
+== AutoByteus_personal_linux-arm64-1.5.14-beta.2.AppImage.release.json
+{"format":1,"product":"autobyteus-personal-desktop","artifact":"AppImage","os":"linux","arch":"arm64","version":"1.5.14-beta.2","channel":"beta","size":350291736,"sha256":"70736600f50d7a81930d3bd01a891264ee9fbf057fd3a26b20aa4afc80b9fc3f","minWriter":1}
+
+== AutoByteus_personal_linux-x64-1.5.14-beta.2.AppImage.release.json
+{"format":1,"product":"autobyteus-personal-desktop","artifact":"AppImage","os":"linux","arch":"x64","version":"1.5.14-beta.2","channel":"beta","size":360335650,"sha256":"a5cf04ffb8f0ab1d17e0fc63634add581f1a7b90728bdd8737a4c7a3a03a9a13","minWriter":1}
+
