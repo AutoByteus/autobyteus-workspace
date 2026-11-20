@@ -58,7 +58,7 @@
     <!-- An owner's page: Back returns to the card it was opened from (its tab, or the team or org it was reached through). -->
     <template v-else>
       <button class="text-sm font-medium text-blue-600 hover:underline" data-test="memory-owner-back" @click="$emit('selectNode', parentKey)">← {{ backLabel }}</button>
-      <div v-if="ownerName === null && explorer.ownersLoading" class="py-16 text-center text-sm text-gray-500">{{ $t('memory.components.memory.MemoryHome.loading_memory_catalog') }}</div>
+      <div v-if="ownerName === null && ownersPending" class="py-16 text-center text-sm text-gray-500">{{ $t('memory.components.memory.MemoryHome.loading_memory_catalog') }}</div>
       <div v-else-if="ownerName === null" class="py-16 text-center text-sm text-gray-500" data-test="memory-owner-not-found">{{ $t('memory.browse.not_found') }}</div>
       <AgentMemoryPage
         v-else-if="owner.kind === 'agent' || owner.kind === 'unattributed'"
@@ -179,6 +179,9 @@ const nameOf = (ref: MemoryOwnerRef): string | null => {
   return explorer.orgs.entries.find((org) => org.orgDefinitionId === ref.id)?.orgDefinitionName ?? null;
 };
 const ownerName = computed(() => (owner.value ? nameOf(owner.value) : null));
+/** The cards or the members that could name the owner are still on their way (or not asked yet for this source). */
+const ownersPending = computed(() => explorer.ownersLoading || explorer.groupMembersLoading
+  || explorer.ownersSourceKey !== explorer.selectedSource.key);
 
 const backLabel = computed(() => {
   const parent = parseMemoryBrowseNode(parentKey.value);

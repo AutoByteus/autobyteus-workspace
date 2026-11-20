@@ -71,6 +71,8 @@ interface MemoryExplorerState {
   members: MembersState;
   /** Every team's and org's members loaded so far for the selected source, by `TEAM:<id>` / `ORG:<id>`. */
   groupMembers: Record<string, MemoryGroupMember[]>;
+  /** `loadAllGroupMembers` is running: an owner known only as a member is not "not found" yet. */
+  groupMembersLoading: boolean;
   teamRuns: ListState<AgentTeamRunMemorySummary>;
   orgRuns: ListState<AgentOrgRunMemorySummary>;
   selectedTeam: AgentTeamWithMemorySummary | null;
@@ -162,6 +164,7 @@ export const useMemoryExplorerStore = defineStore('memoryExplorerStore', {
     episodes: { ...createListState<AgentEpisode>(EPISODES_PAGE_SIZE), ownerKey: null },
     members: { key: null, entries: [], loading: false, error: null, requestId: 0 },
     groupMembers: {},
+    groupMembersLoading: false,
     teamRuns: createListState<AgentTeamRunMemorySummary>(25),
     orgRuns: createListState<AgentOrgRunMemorySummary>(25),
     selectedTeam: null,
@@ -309,9 +312,14 @@ export const useMemoryExplorerStore = defineStore('memoryExplorerStore', {
         ...this.teams.entries.map((team) => ['TEAM', team.teamDefinitionId] as [MemoryGroupKind, string]),
         ...this.orgs.entries.map((org) => ['ORG', org.orgDefinitionId] as [MemoryGroupKind, string]),
       ];
-      await Promise.all(groups
-        .filter(([kind, id]) => !this.groupMembers[groupMembersKey(kind, id)])
-        .map(([kind, id]) => this.requestMembers(kind, id).catch(() => [])));
+      this.groupMembersLoading = true;
+      try {
+        await Promise.all(groups
+          .filter(([kind, id]) => !this.groupMembers[groupMembersKey(kind, id)])
+          .map(([kind, id]) => this.requestMembers(kind, id).catch(() => [])));
+      } finally {
+        this.groupMembersLoading = false;
+      }
     },
 
     async requestMembers(kind: MemoryGroupKind, definitionId: string): Promise<MemoryGroupMember[]> {

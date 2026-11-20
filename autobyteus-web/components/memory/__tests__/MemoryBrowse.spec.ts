@@ -23,6 +23,7 @@ const mountBrowse = (nodeKey: string, pane: string | null = null, setup: (store:
   ];
   store.teams.entries = [{ teamDefinitionId: 'se-team', teamDefinitionName: 'Software Engineering Team', teamRunCount: 7, memberMemoryCount: 3, memberCount: 4, latestMemoryAt: null, memory }];
   store.orgs.entries = [{ orgDefinitionId: 'launch-org', orgDefinitionName: 'Launch Org', orgRunCount: 1, memberMemoryCount: 1, memberCount: 2, latestMemoryAt: null, memory }];
+  store.ownersSourceKey = 'local';
   setup(store);
   const wrapper = mount(MemoryBrowse, {
     props: { nodeKey, pane },
@@ -104,6 +105,17 @@ describe('MemoryBrowse', () => {
     const unknown = mountBrowse('agents/agent:router').wrapper;
     expect(unknown.get('[data-test="memory-owner-not-found"]').text()).toBe('This agent, team or org is not in this memory.');
     expect(unknown.find('[data-test="agent-page"]').exists()).toBe(false);
+  });
+
+  it("shows the loading state, not \"not found\", while the cards or the members that could name an owner are on their way", () => {
+    for (const setup of [
+      (store: ReturnType<typeof useMemoryExplorerStore>) => { store.ownersSourceKey = null; },
+      (store: ReturnType<typeof useMemoryExplorerStore>) => { store.groupMembersLoading = true; },
+    ]) {
+      const { wrapper } = mountBrowse('teams/team:se-team/agent:new-local', null, setup);
+      expect(wrapper.find('[data-test="memory-owner-not-found"]').exists()).toBe(false);
+      expect(wrapper.text()).toContain('Loading memory catalog');
+    }
   });
 
   it('shows the source select and the amber pill when an imported source exists', () => {
