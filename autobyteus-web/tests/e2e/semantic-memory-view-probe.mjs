@@ -232,6 +232,8 @@ try {
   const links = page.locator('[data-test="file-item-link"]');
   await links.first().waitFor();
   check('SMV-032', (await links.count()) === 2 && (await links.allTextContents()).every((row) => row.includes('Link · not opened')), 'Two link rows "Link · not opened"');
+  const topRows = await page.locator('[data-test="semantic-memory-explorer"] .file-header').evaluateAll((rows) => rows.map((row) => row.textContent.replace(/Link · not opened/, '').trim()));
+  check('SMV-039', JSON.stringify(topRows) === JSON.stringify(['sites', 'research-method.md', 'secret-link.md', 'shared']), 'Folders first, then files and links by name', topRows);
   check('SMV-033', await page.locator('text=No file selected').count() > 0 && await page.locator('text=Select a file to read it.').count() > 0, 'The read-only empty tab copy');
   const operationsBeforeLink = evidence.operations.length;
   await links.first().click();
@@ -263,13 +265,17 @@ try {
   check('SMV-040', !JSON.stringify(listed).includes('semantic'), 'The workspaces query lists no semantic memory workspace', listed);
   const write = await graphql(`mutation { writeFileContent(workspaceId: "semantic_ws_${AGENT_ID}", filePath: "research-method.md", content: "changed") }`);
   check('SMV-041', JSON.stringify(write).includes('WORKSPACE_READ_ONLY'), 'A write is refused', write);
-  const content = await fetch(`${backendUrl}/workspaces/semantic_ws_${AGENT_ID}/content?path=${encodeURIComponent('shared/secret.md')}`, { headers: ownerHeaders() });
-  check('SMV-042', content.status === 403, 'A path through a link is refused by the content route', content.status);
+  const contentOf = (file) => fetch(`${backendUrl}/rest/workspaces/semantic_ws_${AGENT_ID}/content?path=${encodeURIComponent(file)}`, { headers: ownerHeaders() });
+  const regular = await contentOf('research-method.md');
+  check('SMV-042', regular.status === 200, 'The content route serves a regular file of the folder', regular.status);
+  const throughLink = await contentOf('shared/secret.md');
+  check('SMV-043', throughLink.status === 403 && (await throughLink.json()).code === 'WORKSPACE_LINK_NOT_OPENED', 'A path through a link is refused by the content route', throughLink.status);
 
   // Narrow: the folder stacks below 768 px; short tab labels below 640 px.
   await page.setViewportSize({ width: 390, height: 844 });
   await sleep(800);
-  check('SMV-050', (await text('[data-test="agent-memory-tab-episodic"]')).startsWith('Episodic') && !(await text('[data-test="agent-memory-tab-episodic"]')).includes('memory'), 'Short tab labels below 640 px');
+  const narrowTabs = (await page.locator('[data-test^="agent-memory-tab-"]').allInnerTexts()).map((label) => label.replace(/\s+/g, ' ').trim());
+  check('SMV-050', narrowTabs[0]?.startsWith('Episodic') && narrowTabs[1] === 'Semantic' && narrowTabs.every((label) => !label.includes('memory')), 'Short tab labels below 640 px', narrowTabs);
   await shot(page, 'VIS-018-agent-semantic-narrow-390x844');
   await page.setViewportSize({ width: 1440, height: 900 });
 
@@ -291,7 +297,7 @@ try {
   await waitFor('the team-local subtitle', async () => (await text('[data-test="agent-memory-places"]')) === 'Belongs to Product Review Team');
   await page.locator('[data-test="agent-memory-tab-semantic"]').click();
   await page.locator('[data-test="semantic-memory-empty"]').waitFor();
-  check('SMV-063', (await text('[data-test="semantic-memory-empty"]')).replace(/\s+/g, ' ') === 'No semantic memory yet The folder is created when Reviewer next runs.', 'The missing folder state');
+  check('SMV-063', (await page.locator('[data-test="semantic-memory-empty"]').innerText()).replace(/\s+/g, ' ').trim() === 'No semantic memory yet The folder is created when Reviewer next runs.', 'The missing folder state');
   check('SMV-064', !existsSync(path.join(memoryDir, 'semantic', encodeURIComponent('team-local-agent:probe-product-team:reviewer'))), 'The view created no folder');
   await shot(page, 'VIS-007-agent-semantic-missing-1440x900');
 

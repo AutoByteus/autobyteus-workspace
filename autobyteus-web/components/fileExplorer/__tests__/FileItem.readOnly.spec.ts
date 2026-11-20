@@ -91,4 +91,12 @@ describe('FileItem read-only mode', () => {
     await wrapper.trigger('contextmenu')
     expect(requestContextMenu).toHaveBeenCalled()
   })
+
+  it('sorts a link with the files, after the folders, as the node lists it', () => {
+    const parent = new TreeNode('root', '', false, [], 'root', true)
+    const link = new TreeNode('a-link', 'a-link', false, [], 'link')
+    link.isLink = true
+    for (const node of [new TreeNode('zeta.md', 'zeta.md', true, [], 'z'), link, new TreeNode('sites', 'sites', false, [], 's'), new TreeNode('beta.md', 'beta.md', true, [], 'b')]) parent.addChild(node)
+    expect(parent.children.map((child) => child.name)).toEqual(['sites', 'a-link', 'beta.md', 'zeta.md'])
+  })
 })
