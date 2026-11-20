@@ -1,0 +1,18 @@
+# API-01: /Users/normy/.cache/abtest568/fs-docker/autobyteus-server-ts/dist/app.js on http://127.0.0.1:<port>; temp data root; 2026-11-20T14:40:09.290Z
+server up: /rest/health 200
+the removed mutation, as an older client sends it → errors: ["Unknown type \"ApproveToolInvocationInput\".","Cannot query field \"approveToolInvocation\" on type \"Mutation\"."]; data: null
+PASS the removed mutation is refused by validation: validation error, no data
+schema: 134 mutations, 132 queries, 379 types
+PASS no approveToolInvocation mutation: mutations include it: false
+PASS no ApproveToolInvocationInput / ApproveToolInvocationResult types: []
+PASS mutation terminateAgentRun still served: true
+PASS mutation createAgentRun still served: true
+PASS mutation prepareAgentRun still served: true
+PASS mutation cancelPreparedAgentRun still served: true
+PASS mutation restoreAgentRun still served: true
+PASS mutation updateStoppedAgentRunSelection still served: true
+PASS query agentRunCollaborationMemberProjection still served (out of scope, FU-001): true
+terminateAgentRun(unknown id) → {"terminateAgentRun":{"success":false,"message":"Agent run not found."}}
+PASS the same resolver still answers a live mutation: success false for an unknown run, no GraphQL error
+server stopped; temp root removed: true
+API-01 Pass

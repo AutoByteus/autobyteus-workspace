@@ -1,0 +1,10 @@
+# WEB-01: pnpm -C autobyteus-web exec vitest run components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts; worktree 52e75f2357; node v22.23.1; 2026-11-20T14:36:09Z; load 43.20 60.29 83.83
+
+ ✓ components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts (2 tests) 32ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  15:36:12
+   Duration  8.00s (transform 3.95s, setup 6.34s, collect 485ms, tests 32ms, environment 227ms, prepare 149ms)
+
+exit=0
