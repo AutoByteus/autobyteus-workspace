@@ -7,6 +7,7 @@
 | SR-001 | Requirements | Task autobyteus-565 and its screenshot; investigation 2026-11-20 | — | N/A | Ready for Approval | BEH-001…006, REQ-001…007, AC-001…006, DEC-001…005 | DEC-001, DEC-002 put to the founder |
 | SR-002 | Requirements | The founder's answers, 2026-11-20 | DEC-001, DEC-002, DEC-004 | Ready for Approval | Approved | DEC-001, DEC-002, DEC-004 | Approved as recommended; paging with "Load more" |
 | SR-003 | Design | Architecture design | — | Approved | Approved; design Ready | all | `MessageViewScope`, `relation`, `counterpart` record, paged reader; Large/High |
+| SR-004 | Design | ARCH-REV-001 (Fail) | AR-001 … AR-005 | Design Ready, review Fail | Design Ready for ARCH-REV-002 | DS-002, DS-003, DS-004, DEC-002, AC-006 | Parties on live events; publishing commits named; file mapping and collaborators; app-owned exclusion traced; old-line wording corrected |
 
 ## Revision Entries
 
@@ -30,3 +31,13 @@
 - Design spec written (Ready): one view rule (`MessageViewScope`) for live and stored; `relation` replaces 492's `publishToViews`; cross-node and unrelated lines record the counterpart's address and node (optional key; released readers ignore unknown keys, Case 14 checked); paged reader (50, cursor) with counterpart identities; web store paging, desktop "Messages" tab (default stays Activity), phone ⋮ Messages.
 - Evidence finding for the founder: older unlinked cross-node messages cannot get a node (nothing recorded it and it cannot be told from a deleted local run): they show the run ID without a chip, instead of "another node" (DEC-002 wording).
 - Classification: `Large` / `High`. Next: architecture review.
+
+### SR-004 — ARCH-REV-001 fixes
+
+- AR-001: every publishing commit carries `parties` (both agents' address and node name, known at the commit); the web names an unknown counterpart from them on `append`; the reader falls back to a run-ID identity, so no row vanishes.
+- AR-002: publishing commits named: `deliver`; the receiver's `acceptFromRun` (both chains); `commitSentToRemote` and `acceptFromRemote` (own chain); never `commitSentToRun`.
+- AR-003: file responsibility mapping; reader and identities in `run-history/services/`; collaborators passed from the composition; the resolver's process instance justified.
+- AR-004: DEC-002 and AC-006 corrected (older unlinked lines: run ID, no chip); founder informed 2026-11-20.
+- AR-005: application-owned runs have no view (`standalone-agent-run-root-manager.ts:347`), so no Messages.
+- Residual: one total order for page, cursor and web sort.
+- Next: ARCH-REV-002.

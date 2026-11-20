@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-004`
 - Package identifier: `standalone-run-messages-565`
 - Request / ticket: Project Task `autobyteus-565`
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c…`), for the founder
@@ -81,14 +81,14 @@ Standard (as the template).
 | AC-003 | 004 | Messages open; the run receives and sends a message (local and cross-node) | Both rows appear without reload, once | Server stream test; web store test; E2E |
 | AC-004 | 005 | A run with more messages than one page | Newest page first; "load earlier" brings the next; live rows never doubled | Server + web tests; payload measured on a 2,500-message fixture |
 | AC-005 | 006 | Team and Org Messages | Same rows and identities as before | Existing suites stay green |
-| AC-006 | 007 | A cross-node message sent and received after the change | Both logs carry the node (and address when known); an older one shows per DEC-002 | Server tests; E2E |
+| AC-006 | 007 | A cross-node message sent and received after the change | Both logs carry the counterpart's node and address; the row shows the name and node chip. An older unlinked cross-node line shows its run ID without a chip; an older linked one gets name and node from its Task entry | Server tests; E2E |
 
 ## Decisions
 
 | ID | Question | Options / Evidence | Reasoning And Recommendation | Owner | Status |
 | --- | --- | --- | --- | --- | --- |
 | DEC-001 | When does a standalone run show Messages? | (a) always, with "No messages yet" when empty; (b) only once it has a message | (a) is predictable: the entry does not appear and disappear, and Team/Org tabs always show. A run that never messaged shows an empty list. **Recommend (a).** Founder, 2026-11-20: "I like your suggestion" → **Decided (a).** | Founder | Decided (User) |
-| DEC-002 | How is a cross-node agent named? | The log keeps only run IDs; a linked remote run's address is in its Task entry; an unlinked one (a message between two PMs) has nothing | Show the agent's address name (e.g. "Project Task Manager") with a chip naming its node (this node's name for it, e.g. `ryan-ai-linux`); its run ID when the name is unknown. To know them from now on, each cross-node message records the other node and, when the other node gives it, the other agent's address (the receiving node returns its agent's address; the sender's address travels with the message). Older unlinked messages (5 on the PM) show the run ID and "another node". **Recommend this.** Founder, 2026-11-20: "I like your suggestion" → **Decided.** | Founder | Decided (User) |
+| DEC-002 | How is a cross-node agent named? | The log keeps only run IDs; a linked remote run's address is in its Task entry; an unlinked one (a message between two PMs) has nothing | Show the agent's address name (e.g. "Project Task Manager") with a chip naming its node (this node's name for it, e.g. `ryan-ai-linux`); its run ID when the name is unknown. To know them from now on, each cross-node message records the other node and, when the other node gives it, the other agent's address (the receiving node returns its agent's address; the sender's address travels with the message). Older unlinked messages (5 on the PM) show the run ID and "another node". **Recommend this.** Founder, 2026-11-20: "I like your suggestion" → **Decided.** Correction (SR-004, ARCH-REV-001 AR-004): older unlinked cross-node lines show the run ID **without** a chip, not "another node": nothing recorded their node, and such a counterpart cannot be told from a deleted local run (design § Persisted Data). The founder was told on 2026-11-20 in the Solution Designer's conversation; recorded as the Solution Designer's correction of an unachievable detail within his decision. | Founder | Decided (User) |
 | DEC-003 | Desktop tab label for a standalone run | Team/Org tabs say "Team"/"Org" | "Messages", as the phone menu says; a standalone run has no team. | Solution Designer | Decided |
 | DEC-004 | Paging | 5.4 MB for the PM at once (Measured); existing patterns: the conversation's earlier pages (`ACTIVE_TRACE_EARLIER_PAGE_SIZE = 50`, `active-trace-event-page-policy.ts:4`) and the Work Journal's "Load earlier" button (`WorkJournalTab.vue:86`) | Founder, 2026-11-20: "it's not like loading all the messages when you just open it … we only show a certain amount and then when user click load more you'll load another certain amount of messages." Newest 50 first; a "Load more" button at the end of the list loads the next 50, by cursor; the same page size as the existing pattern; one mechanism for standalone, Team and Org Messages (Team/Org rows unchanged; only a long history gets the button). | Founder | Decided (User) |
 | DEC-005 | Which messages | Founder: "messages to another node … delegated task agents or team members also contact the PM … so there will be messages" | Every message the run's own agent sent or received (REQ-002); 492's DEC-014 stays for Team/Org views and for the standalone run's view of others' messages. | Founder (Task) | Decided |

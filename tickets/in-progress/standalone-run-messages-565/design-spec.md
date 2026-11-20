@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-003`
+- Current solution revision ID: `SR-004` (ARCH-REV-001 findings AR-001 … AR-005 and the residual ordering note)
 - Approved requirements: `requirements-doc.md` SR-002, approved by the founder 2026-11-20 (DEC-001, DEC-002, DEC-004 in his words; DEC-003, DEC-005 by the Solution Designer within the direction).
 - Behavior-defining supplements: None. User approval of the design: `Not required`.
 - Design status: `Ready`
@@ -101,9 +101,9 @@ A standalone agent run's Messages show every message its own agent sent and rece
 ## Primary Execution Spine(s)
 
 - DS-001: `Messages panel / MobileMessages → participant store.load(key, cursor?) → fetchParticipantMessages(rootKind, rootRunId, agentRunId, before?) → GraphQL collaborationParticipantMessages → ParticipantMessagesReader.read → root records (log) → MessageViewScope.filter → page (newest 50 before cursor) → CounterpartIdentities.of(page) → DTO {messages, counterparts, hasMore}`
-- DS-002: `send_message_to → (route as autobyteus-492) → engine.deliver | acceptFromRun({relation}) | commitSentToRun → port.publishMessage({message, relation, senderRun, receiverRun}) → RunMessagesFeed.publish → MessageViewScope.inView(X, …) per open stream → stream event → web AgentRunCollaborationContext.applyEvent → participant store.append`
-- DS-003: `engine.commitSentToRemote(prepared, receiverAddress) | acceptFromRemote({…, senderAddress}) → line with counterpart {address, nodeId} → port.publishMessage({message, relation: "remote", localRun}) → feed → MessageViewScope (only an agent root's own view) → web append`
-- DS-004: `useAgentRunCollaborationSync (attaches the selected run's view, as today) → agentRunCollaborationStore.runMessagesView(runId) (no hasDelegatedRuns gate) → activeContextStore target.collaborationMessages → desktop tab "Messages" (rootKind agent) / phone ⋮ Messages (standalone_agent)`
+- DS-002: `send_message_to → (route as autobyteus-492) → publishing commit: engine.deliver (same run) | the receiver's engine.acceptFromRun({relation, parties}) (it fans out to both runs' chains; `commitSentToRun` never publishes, AR-002) → port.publishMessage({message, relation, parties, senderRun, receiverRun}) → RunMessagesFeed.publish → MessageViewScope.inView(X, …) per open stream → stream event {message, parties} → web AgentRunCollaborationContext.applyEvent → participant store.append(message, parties)`
+- DS-003: `RemoteMessageSend: links.deliver → answer {peerName, receiverAddress} → engine.commitSentToRemote(prepared, {address: receiverAddress, nodeId, nodeName: peerName}) | receiving root: engine.acceptFromRemote({…, senderAddress, senderNodeName}) → line with counterpart {address, nodeId} → port.publishMessage({message, relation: "remote", parties, localRun}) → feed → MessageViewScope (only an Agent root's own chain view) → web append(message, parties)`. Publishing commits on this spine: `commitSentToRemote` and `acceptFromRemote`, each to its own run's chain only.
+- DS-004 (an application-owned run has no collaboration root: `getInspection` returns null for a run that is not collaboration-eligible, `standalone-agent-run-root-manager.ts:347`, so `agentRunCollaboration` answers null, `agent-run-collaboration.ts:45-48`, no context exists and no Messages entry shows; AR-005): `useAgentRunCollaborationSync (attaches the selected run's view, as today) → agentRunCollaborationStore.runMessagesView(runId) (no hasDelegatedRuns gate) → activeContextStore target.collaborationMessages → desktop tab "Messages" (rootKind agent) / phone ⋮ Messages (standalone_agent)`
 
 ## Spine Narratives (Mandatory)
 
@@ -122,7 +122,40 @@ A standalone agent run's Messages show every message its own agent sent and rece
 - **Engine** (`root-communication-engine.ts`): order unchanged; passes `relation` to the port on every publishing commit, including `commitSentToRemote` and `acceptFromRemote` (local side only), and writes `counterpart` on lines with a remote or unrelated counterpart.
 - **`CrossRunMessageDelivery`**: states `relation` (`related` / `unrelated`) instead of `publishToViews`, and passes the counterpart's address to both sides: the sender's from its identity (`memberAddress`) into `acceptFromRun`; the receiver's from `acceptFromRun`'s accepted answer (target: the receiving root adds its agent's address to the answer) into `commitSentToRun`.
 - **`RemoteMessageSend` / `RemoteMessageReceiver` / `PeerClient` / `PeerGateway`**: carry `sender.address` and `receiverAddress`.
-- **Web participant store**: pages per list (stored pages + live, merged by ID), `loadMore(key)`; `CollaborationMessagesContextView` gains `hasMore()`, `loadMore()`, counterpart identity kinds `run` and `remote`.
+- **Parties of a live message (AR-001)**: every publishing commit attaches `parties: {sender: Party, receiver: Party}`, `Party = {agentRunId, address: string | null, nodeName: string | null}`, known at the commit without a lookup: a local agent's own `memberAddress`; the other run's agent's address from the delivering owner (CrossRun: sender identity, receiver identity in `acceptFromRun`); a remote side's address from the request (`sender.address`) or answer (`receiverAddress`) and its node name from the commit's own peer name (`RemoteAcceptInput.senderNodeName`; `RemoteRunLinks.deliver`'s `peerName`, `remote-run-links.ts:157`). The stream's message event carries `parties`.
+- **Web participant store**: pages per list (stored pages + live, merged by ID), `loadMore(key)`; on `append`, a counterpart the list does not know is named from the event's `parties` (kind `run`, or `remote` with `nodeName`), so the first live message from the Linux PM shows at once (`participantMessageRows.ts:24-25` drops a row without identity today). `CollaborationMessagesContextView` gains `hasMore()`, `loadMore()`, counterpart identity kinds `run` and `remote`.
+- **Every counterpart on a page has an identity (AR-001)**: `CounterpartIdentities` falls back to `{kind: "run", agentRunId, address: null}` (label: the run ID) for a counterpart it cannot name (old, deleted), so no row vanishes.
+
+## File Responsibility Mapping (AR-003)
+
+| File | Change | Owner / concern |
+| --- | --- | --- |
+| `autobyteus-server-ts/src/agent-collaboration/delegation/message-view-scope.ts` | Add | `MessageViewScope`: `inView`, `participantFilter` |
+| `autobyteus-server-ts/src/agent-collaboration/delegation/run-messages-feed.ts` | Modify | `publish({message, relation, parties, …})`; uses the scope; `inViewOf` removed |
+| `autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-engine.ts`, `root-communication-port.ts`, `root-message-append.ts` | Modify | `relation` + `parties` on publishing commits; `counterpart` on lines; `publishToViews` removed; `commitSentToRemote` takes the receiver party |
+| `…/execution/communication/collaboration-communication-message.ts`, `collaboration-communication-message-schema.ts` | Modify | optional `counterpart` read and written |
+| `…/communication/cross-run-message-delivery.ts`, `cross-run-accept-input.ts` | Modify | `relation`, parties |
+| `…/execution/remote/remote-message-send.ts`, `remote-run-links.ts` (`deliver` answer), `remote-run-channel.ts` (transmission and receipt types) | Modify | sender address out; `receiverAddress` back |
+| `autobyteus-server-ts/src/remote-collaboration/domain/remote-requests.ts`, `channel/peer-client.ts`, `channel/peer-gateway.ts`, `inbound/remote-message-receiver.ts` | Modify | `sender.address`, `receiverAddress` (strict readers) |
+| Root ports: `standalone-agent-run-root/services/standalone-root-communication-port.ts`, `services/team-communication/team-communication-port.ts`, `agent-org-execution/services/agent-org-communication-port.ts`; roots' `acceptRemoteMessage`/`acceptPeerRunMessage`/`acceptFromRun` (three roots) | Modify | pass parties; answer with the receiving agent's address |
+| `autobyteus-server-ts/src/run-history/services/participant-messages-reader.ts` | Add | `ParticipantMessagesReader` (beside `run-view-messages.ts`): records per kind, scope, page, identities |
+| `autobyteus-server-ts/src/run-history/services/counterpart-identities.ts` | Add | `CounterpartIdentities` |
+| `autobyteus-server-ts/src/api/graphql/types/collaboration-participant-messages.ts` | Modify | resolver parses args (`before`) and calls the reader; the record reads per kind move into the reader's collaborator `RunRecordsSource` (the existing `readRunRecords` body, unchanged) |
+| `autobyteus-server-ts/src/compositions/collaboration-composition.ts` | Modify | creates the reader with its collaborators |
+| `autobyteus-collaboration-stream-contracts` (participant DTO, message event) | Modify | `counterparts`, `hasMore`, `before`; event `parties` |
+| `autobyteus-web/services/collaborationMessages/collaborationParticipantMessages.ts`, `participantMessagesQuery.ts`, `participantMessageRows.ts` | Modify | paging, `loadMore`, parties, fallback identity |
+| `autobyteus-web/services/agentCollaboration/agentRunCollaborationContext.ts`, team/org contexts' `applyEvent` | Modify | pass `parties` to `append` |
+| `autobyteus-web/types/workspace/collaborationMessagesContextView.ts` | Modify | `hasMore`, `loadMore`, identity kinds |
+| `autobyteus-web/stores/agentRunCollaborationStore.ts` | Modify | `runMessagesView` without the gate |
+| `autobyteus-web/composables/useRightSideTabs.ts` | Modify | label "Messages" for `rootKind: 'agent'`; default stays Activity for standalone |
+| `autobyteus-web/components/workspace/collaboration/CollaborationMessagesPanel.vue`, `components/mobile/views/MobileMessages.vue`, `components/mobile/runScreen/MobileRunTargetView.vue` | Modify | node chip, "Load more", phone menu entry |
+| `autobyteus-web/localization/messages/{en,zh-CN}/…` | Modify | "Messages", "Load more", node chip text |
+
+**Collaborators (Principle 16).** `ParticipantMessagesReader` is created in `collaboration-composition.ts` and receives: `records: RunRecordsSource` (the per-kind reads now in the GraphQL file: standalone `getCollaborationRecordsSnapshot`, Team and Org stores), `scope: MessageViewScope`, `tree: Pick<DelegationIndex, …>`, `identities: CounterpartIdentities`. `CounterpartIdentities` receives `delegatedRunAgents` (today `getStudioDelegatedRunAgents()`, passed in), `peerName: (nodeId) => Promise<string>` from the composition's `input.remoteChannel` (`RemoteRunChannel.peerName`, `remote-run-channel.ts:107`; no channel → the node ID), `runMetadata: Pick<AgentRunMetadataStore, "readMetadata">`, `tree` (Task entries: `nodeId`, `recipientAddress`). The GraphQL resolver reaches the reader the way the other composed services are reached today (a process instance set by the composition, as `setProcessTaskDelegationToolService`): it is set before the server listens, a missing one throws, and it hides no cycle.
+
+## Paging Order (residual)
+
+One total order everywhere: `createdAt` descending, then `messageId` ascending (as `participantMessageRows.ts:32`). The cursor is the last row's `{createdAt, messageId}`; the next page is the rows strictly after it in that order, so ties are neither skipped nor repeated.
 
 ## Removal / Decommission Plan (Mandatory)
 
