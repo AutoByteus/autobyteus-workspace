@@ -1,6 +1,53 @@
 # Code Review Report
 
-## Latest Round: API/E2E Failure-Origin Review (CRR-003)
+## Latest Round: Implementation Review Round 3 (CRR-004)
+
+- Review Entry Point: `Implementation Review`
+- Current Code Review Revision ID: `CRR-004` (prior: CRR-003 `Fail`, CR-002 `Design Impact`)
+- Current Review Round: 3
+- Trigger: IR-003, which implements SR-009 (passed in ARCH-REV-005; N-12…N-14). Requirements: REQ-001 and REQ-010 reworded, AC-013, AC-014, DEC-015, DEC-016.
+- Code reviewed: `f393f403d5`; records and evidence in `effb76b6b3`. Delta: `git diff 2e5f786091 f393f403d5`. Of the commits in between, `e571b1dd9e` and `daba240ec1` are API/E2E's test edits and records.
+- Review Scope: `Full Re-Audit` of the changed areas. The delta changes a shared interface (`prepareForRun` → nullable folders), the shared folder-name rule (semantic folder, episodic catalog folder, the `semantic_ws_` lookup), the prompt composer and two runtime owners. Every structural check was rerun on those files. Results for the untouched files (workspace and explorer enforcement, owner queries, web) are carried forward from CRR-001 and CRR-002, because their code is unchanged.
+- Checks not rerun (they ran on `f393f403d5`):
+  - IMP-17: 40 files, 381 tests; a negative control on the reviewed source fails all 16 new or changed tests, and shows an escape-only cut throwing `URIError` on a multi-byte id.
+  - IMP-18: server impact run, 2,449 tests; typecheck at baseline.
+  - IMP-19: RA-04, IC-01, RE-05, 11/11.
+  - IMP-20: semantic memory and GraphQL e2e, 12/12.
+  - IMP-21: rendered probe 38/38; SMV-100…102 open a file inside a shortened folder (N-12).
+  - IMP-22: on the founder's node no folder name in `semantic/` or `episodic/` is over 200 bytes (names only).
+
+### CR-002: resolved
+
+- **Name rule (DEC-016).** The layout's private `definitionFolderName` is the only owner.
+  - `encodeURIComponent(id)` when it is at most 200 bytes.
+  - Otherwise `encodedPrefix(id, 120)`, then `#`, then the first 16 hex characters of `sha256(id)`.
+  - `#` is always escaped by `encodeURIComponent`, so a shortened name never equals a full one.
+  - The rule serves the semantic folder, the episodic catalog folder and the `semantic_ws_` lookup (through `folderOf`). The workspace id keeps the full encoded id.
+- **Deviation:** the cut falls between characters, not only outside a `%XX` escape. `Pass — deviation recorded, reason holds.`
+  - The reason is N-13's own purpose: the prefix must always decode.
+  - A cut outside every escape can still separate the escapes of one multi-byte character (`…%E7`), and `decodeURIComponent` then throws. IMP-17 demonstrates this.
+  - For ASCII ids, which include every bundled id, the two readings give the same name.
+  - Unit cases put an escape at bytes 117–120 around the cut, plus a multi-byte id.
+- **Catalog read-back.** `listCatalogDefinitionIds` keeps a folder only when the layout gives back that name for the decoded id.
+  - A shortened name decodes to a different id that would re-encode with `%23`, so it is skipped.
+  - A name the layout refuses (`%20`, which decodes to a blank id) is skipped instead of throwing.
+  - The agent behind a shortened folder is reached through the runs discovery finds.
+- **Contained preparation (DEC-015).** `prepareForRun` prepares each folder independently and logs `SEMANTIC_MEMORY_PREPARE_FAILED { definitionId, folder, reason }`, returning null for that folder.
+  - The composer adds a section only for a non-null folder and still refuses a relative path.
+  - Claude and Codex grant access only to prepared folders (`preparedSemanticMemoryFolders`).
+  - AutoByteus, ACP and Antigravity pass the folders only to the composer.
+  - N-14 holds: a repository grep shows no consumer treating null as "no semantic memory".
+  - A layout-refused id (`..`) now gives a logged null instead of a failed start, which falls under DEC-015's "a name the file system refuses".
+
+### Re-audit observations (CRR-004 candidates)
+
+| Candidate | Observation | Disposition | Reason |
+| --- | --- | --- | --- |
+| CF-11 | A shortened catalog folder whose agent's runs are all gone is not found again at start, because its name cannot be decoded; it keeps its last `catalog.md` | Reject (residual, documented) | Runs leave the catalog live on delete (`runDeleted`), which rewrites the catalog. Only removing run folders while the server is stopped leaves this, and manual removal is outside the supported scenarios by default (Principle 6). Documented in `agent_episodic_catalog.md:33-34`. |
+| CF-12 | `#` in a shortened folder path inside URLs (N-12) | Reject (verified) | The node-file loader encodes the path; the content route takes paths relative to the folder; `index.md` shows the name in a code span. The rendered probe opens a file inside a shortened folder (SMV-100…102). |
+| CF-13 | Ids of 201–255 encoded bytes had valid full-name folders before and are now shortened | Reject (no data affected) | IMP-22: no such folder on the founder's node; DEC-016 records that nothing needs migrating. For another user's node with such an id, the old folder would simply not be found, with no data loss (the files stay). Worth a delivery note. |
+
+## Prior Round: API/E2E Failure-Origin Review (CRR-003)
 
 - Review Entry Point: `API/E2E Failure-Origin Review`
 - Current Code Review Revision ID: `CRR-003` (prior: CRR-002 `Pass`)
@@ -278,7 +325,7 @@ None new beyond the gate above. N-5…N-11 are confirmed as recorded.
 | 5 | Shared-Structure / Data-Model Tightness | 9.4 | — | — | — |
 | 6 | Naming Quality and Local Readability | 9.4 | — | — | — |
 | 7 | API/E2E Readiness | 9.4 (CRR-002; CRR-001 8.8) | Strong node-side refusals and tests; CR-001 fixed and covered by two specs with a negative control | — | — |
-| 8 | Runtime Correctness And Behavioral Fidelity | 8.6 (CRR-003; CRR-002 9.4) | Node enforcement is complete across write, link, run and list; the web registration lives only as long as its view | CR-002: a bundled team-local agent's run start fails (folder name over 255 bytes) | A length-safe shared folder-name rule; a contained start (design) |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.4 (CRR-004; CRR-003 8.6) | Node enforcement is complete; the web registration lives only as long as its view; one length-safe folder-name rule; preparation failures are contained to the folder | CF-11 residual (documented) | — |
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | A clean cut | — | — |
 | 10 | Cleanup Completeness | 9.4 | — | — | — |
 
@@ -304,11 +351,11 @@ None new beyond the gate above. N-5…N-11 are confirmed as recorded.
 
 ## Classification
 
-- CRR-003: `Design Impact` (CR-002). CRR-002 was a Pass; CRR-001's CR-001 is resolved.
+- CRR-004: N/A (Pass). CR-002 (CRR-003) and CR-001 (CRR-001) are resolved.
 
 ## Recommended Recipient
 
-CRR-003: `/solution_designer` (design revision). Then implementation, a targeted source review and API/E2E.
+CRR-004: `/api_e2e_engineer` (primary pass rule), with an informational notice to implementation.
 
 ## Residual Risks
 
@@ -319,13 +366,13 @@ CRR-003: `/solution_designer` (design revision). Then implementation, a targeted
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (CRR-003, failure-origin: CR-002, `Design Impact`). CRR-002 (implementation review) was a `Pass`.
-- Review Entry Point: `API/E2E Failure-Origin Review`
+- Review Decision: `Pass` (CRR-004, implementation review round 3, Full Re-Audit of the changed areas; CR-002 resolved). CRR-003 (failure-origin) was a `Fail`.
+- Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
 - Score Summary: every category ≥ 9.4; average 9.5
 - Failure Origin: N/A
-- Recommended Recipient: Solution Designer (`Design Impact`, CR-002)
+- Recommended Recipient: API/E2E
 - Failure Origin (CRR-003): a design gap carried into the implementation. The folder-name rule fails for long ids, and the run start is not contained. Partly detectable in CRR-001 (an earlier review gap).
 - Notes:
   - Node-side enforcement (write, link, run, list refusals) is complete and verified on every runtime path.

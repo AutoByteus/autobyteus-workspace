@@ -9,6 +9,8 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | `Fail`: `Local Fix` (implementation) | CR-001 (new) |
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2 (IR-002, CR-001 Local Fix) | `Fail` (CRR-001) | `Pass` | CR-001 resolved |
 | CRR-003 | `code-review-report.md` | API/E2E Failure-Origin Review (API-REV-001: RA-04, IC-01, RE-05) | `Pass` (CRR-002) | `Fail`: `Design Impact` | CR-002 (new) |
+| CRR-004 | `code-review-report.md` | Implementation Review, round 3 (IR-003, SR-009) | `Fail` (CRR-003) | `Pass` | CR-002 resolved |
+| CRR-005 | `api-e2e-test-review-report.md` | Proportional API/E2E test-code review (API-REV-002 `Pass`) | `Pass` (CRR-004, source) | `Pass` | None (TN-01, TN-02 non-blocking) |
 
 ## Revision Entries
 
@@ -115,4 +117,73 @@ None.
 - Remaining risks or uncertainty:
   - the 493 episodic contract's "same encoded name" must change with the rule (approval route);
   - the stale E2E doubles, live SML and the fresh-start build are API/E2E's Next Round;
+  - FU-003…FU-005.
+
+### CRR-004 — Round 3: one folder-name rule for long ids; preparation failures contained
+
+- Canonical review report updated: `code-review-report.md` (§ Latest Round CRR-004, scorecard row 8, Classification, Recipient, Latest Authoritative Result)
+- Review entry point and round: Implementation Review, round 3
+- Review scope: `Full Re-Audit` of the changed areas. A shared interface (`prepareForRun`), the shared folder-name rule, the composer and two runtimes changed; the untouched areas are carried forward.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` § SR-009 (IR-003); CR-002
+- Relevant solution revision IDs: SR-009
+- Relevant architecture-review revision IDs: ARCH-REV-005 (N-12…N-14)
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: `Fail` (CRR-003)
+- Current authoritative result: `Pass`
+- What changed in the review result and why:
+  - DEC-016's rule is implemented once, in the layout, and shared by all three users. The cut between characters is a recorded deviation whose reason (N-13: the prefix always decodes) holds.
+  - The catalog read-back accepts only names the layout gives back.
+  - DEC-015 containment holds per folder, and N-14 holds (no null-as-off).
+  - N-12 is verified by opening a file inside a shortened folder in the rendered probe.
+  - RA-04, IC-01 and RE-05 pass.
+- Supported product scenario / material-premise basis changes:
+  - CF-11 (a shortened folder whose runs were all removed while the server was stopped) rejected as manual removal; it is documented.
+  - CF-13 (ids of 201–255 bytes renamed) has no data on the founder's node.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-002 | Open (`Design Impact`) | Resolved | SR-009, ARCH-REV-005, IR-003 | `git diff 2e5f786091 f393f403d5`; IMP-17 (381 tests; the negative control fails 16/16); IMP-19 (RA-04, IC-01, RE-05 11/11); IMP-21 (probe 38/38, SMV-100…102) |
+
+- New or remaining finding IDs: none
+- Material score or classification changes: Runtime Correctness 8.6 → 9.4; `Fail` → `Pass`
+- Recommended recipient: API/E2E; informational notice to implementation
+- Remaining risks or uncertainty:
+  - API/E2E's Next Round: the stale E2E doubles, the whole server E2E suite, live SML, the fresh-start build;
+  - CF-11 and CF-13 residuals;
+  - FU-003…FU-005.
+
+### CRR-005 — Proportional test-code review after API/E2E round 2
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (new)
+- Review entry point and round: Successful API/E2E test-code review, round 1
+- Review scope: `N/A` (test review). The durable test changes of `e571b1dd9e`, `5edda27b2d` and `42c2f5189b`: 10 paths.
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md`, API-REV-002; API-14, API-15/15nc, API-05r2 (SM-12), API-07r2 (SMV-090/091, SMV-100…102)
+- Relevant solution revision IDs: SR-009
+- Relevant architecture-review revision IDs: ARCH-REV-005
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-001, API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: `Pass` (CRR-004, source review)
+- Current authoritative result: `Pass`
+- What changed in the review result and why:
+  - IC-03 checks DEC-016 with an independent oracle (the rule rebuilt from the decision text, with a negative control), reached through the Memory page's own path and the real Codex prompt.
+  - SM-12 checks DEC-015's exact log and its partial sections at a real run start.
+  - SMV-091 is non-vacuous.
+  - The stale rewrites follow the real interfaces and removed fields without loosening what they prove.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None (first test review). The source findings CR-001 and CR-002 were resolved in CRR-002 and CRR-004.
+
+- New or remaining finding IDs: none. TN-01 (SM-12's `chmod` does not stop a root process) and TN-02 (`codex-turn complete` file-wide) are non-blocking notes.
+- Material score or classification changes: none
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty:
+  - CF-11, CF-13 (delivery note);
+  - Grok, DeepSeek and Antigravity live, signing and other platforms not tested;
   - FU-003…FU-005.
