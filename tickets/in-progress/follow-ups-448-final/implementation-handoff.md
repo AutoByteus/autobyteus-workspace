@@ -1,9 +1,12 @@
 # Implementation Handoff — autobyteus-526 round 2 (`follow-ups-448-final`)
 
-- Revision `IR-001` (2026-11-20), against design `SR-001` (`task_size: Small`, `architectural_risk: Low`, classification kept)
+- Revision `IR-002` (2026-11-20), against design `SR-002` (`task_size: Small`, `architectural_risk: Low`, classification kept)
 - Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/follow-ups-448-final`, branch `codex/follow-ups-448-final`, base `origin/personal` @ `8f2d209b2c`
-- Commits: `c443fa09c1` (FU-008 Org probe), `7caf3f866c` (FU-008 BG-BROWSER-004), `04ba12409c` (FU-007), plus this ticket-folder commit
-- Outcome: **REQ-001 and REQ-002 done. REQ-003 (FU-001) fails, 18 of 20 runs.** The design's escalation trigger ("FU-001 failing again: report back as a Design Impact") applies, so this goes to the Solution Designer as a **Design Impact**. No watcher code or test was changed.
+- Commits: `c443fa09c1` (FU-008 Org probe), `7caf3f866c` (FU-008 BG-BROWSER-004), `04ba12409c` (FU-007), `8484072726` (IR-001 documents), `c65a971c90` (FU-001 SR-002), plus this ticket-folder commit
+- Outcome: **REQ-001, REQ-002 and REQ-003 are done.**
+  - IR-001 reported FU-001 failing 18/20 as a Design Impact.
+  - SR-002 chose option (c), a unit test that does not wait for the OS. It is implemented and passed 20/20 (section "IR-002" below).
+  - Ready for direct API/E2E validation.
 
 ## REQ-002 / AC-002 — FU-008 probes (done)
 
@@ -62,7 +65,7 @@ The first Org run on the fresh worktree hit a cold Vite optimize (`504 Outdated 
     - this diff changes no settings file and no string containing "GitHub".
   - Follow-up candidate for the Solution Designer: decide which side changes, the assertion or the card text.
 
-## REQ-003 / AC-003 — FU-001 (fails: Design Impact)
+## REQ-003 / AC-003 — FU-001, IR-001: failed, reported as a Design Impact (history; resolved by IR-002 below)
 
 - Command, run 20 times in a row in `autobyteus-server-ts`: `pnpm exec vitest run tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts`
 - **Result: 2 of 20 runs pass (runs 5 and 19); 18 fail.** Each failing run has 1 to 4 of the 22 tests failing. Load average was 46 to 161.
@@ -88,11 +91,51 @@ The first Org run on the fresh worktree hit a cold Vite optimize (`504 Outdated 
 - Reading: the failures look environmental (OS event latency), not like a watcher regression. All the failures are waits for OS events, and the 2 passing runs pass every test. Even so, the requirement (20/20) is not met, and the design names this case as a Design Impact. I made no code change: AC-003 allows none, and raising the waits again or changing the test's approach is a design decision.
 - Evidence `evidence/fu-001/`: `r2-fw-1..20.txt`, `r2-fw-summary.txt`, `fswatch-latency.mjs`, `fswatch-latency-probe.txt`.
 
+## IR-002 — FU-001 under SR-002 (option c): done
+
+Commit `c65a971c90`. Only `autobyteus-server-ts/tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts` changed. These are unchanged:
+- `src/agent-package-definitions/monitor/agent-package-folder-watcher.ts`;
+- `tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts`, which still covers real OS delivery;
+- `tests/helpers/os-latency-under-load.ts`, which other tests still use.
+
+What changed:
+- **Test-owned fakes of both event sources**, injected through the existing options `createWatcher` and `createParentFolderWatch`.
+  - `FakeWatch` records its watched paths, its `ignored` filter and its `close` calls, and emits `all` (add, change, unlink, addDir, unlinkDir), `error` and `ready`.
+  - `FakeParentWatch` records its directory and `close` calls, and reports entry changes.
+  - `fakeOs()` provides both fakes and two ways to report events:
+    - `reportFile(event, path)` delivers a file event to every *open* watch that covers the path. It follows chokidar's delivery rule: only paths under a watched path, and not excluded by `ignored` (using real stats) for the path or any folder on the way to it.
+    - `reportEntry(directory, entryName)` delivers to every open one-level watch of that directory.
+  - With `readyOnCreate`, a new watch reports `ready` after its initial scan, as chokidar does. A closed watch receives nothing, so "stops watching" and "re-armed" cases still prove the close.
+- **Each case keeps its real folder operation** (mkdir, write, rename away and back, rename swap, chmod) and then reports the event the OS would:
+  - a rename away and back: `reportEntry(base, "pkg")` and `reportEntry(base, "pkg-moved")`;
+  - a root that appears later: `reportEntry(base, "later")` on the watched nearest ancestor;
+  - file writes and new folders: `reportFile("add"|"addDir", …)`.
+  - In the rename-swap case, the parent watch's swap events are deliberately not reported (commented in the test). That case proves the sync's identity check on its own, and the re-armed watch did not yet exist when the swap happened.
+- **The catch-up block** used real `fs.watch` for presence before; it now uses the same fakes, so no case in the file opens an OS watch. Its own `FakeWatch` moved up and is shared. The trailing real-chokidar helper (`realWatcher`) is gone.
+- **Timeouts back to vitest's defaults:**
+  - removed the describe `timeout: FILE_EVENT_TEST_TIMEOUT_MS`, the `afterEach` `IN_PROCESS_SERVER_HOOK_TIMEOUT_MS` and the 30 s `OS_FILE_EVENT_WAIT_MS`;
+  - `waitFor` now waits up to 2 s for the monitor's own async work (stat calls, its serial queue);
+  - the 300–400 ms OS settles were replaced by `settle()` (the monitor's `whenReady` plus 20 event-loop turns) before the "nothing happened" checks.
+- **Cases before and after:** the same 22 cases with the same names, 8 in `AgentPackageFolderWatcher` and 14 in `… catch-up request`.
+  - Lists: `evidence/fu-001-sr002/cases-before.txt` and `cases-after.txt`; a name diff shows them identical.
+  - Every assertion is kept: 62 `expect`s before, 64 after. The two new ones check that "stops watching a removed root" closes both the watch and the parent watch.
+- **The fakes really drive the cases** (mutation check, source restored; `git status` shows no source change). With the presence entry filter and `markFolderChanged` broken in the source, 5 cases fail:
+  - per-folder changes;
+  - renamed away and back;
+  - rename swap;
+  - the catch-up quiet period;
+  - file events on their own folder.
+- **Checks:**
+
+  | Check | Result | Log (`evidence/fu-001-sr002/`) |
+  | --- | --- | --- |
+  | Watcher test, 20 consecutive runs | **20/20 pass**, 22/22 tests each, 2.2–6.2 s per run | `runs-summary.txt`, `run-1..20.txt` |
+  | Machine state during those runs | as busy as or busier than during IR-001: load 95–117, `fseventsd` at 131–181% CPU | `runs-summary.txt` |
+  | `tests/unit/agent-package-definitions` | 7 files, 95 tests pass | `unit-agent-package-definitions.txt` |
+  | Server typecheck | PASS: src 0 errors; tests 1006 in 315, equal to the baseline; the changed file has none | `server-typecheck.txt` |
+
 ## Not done / open
 
-- AC-003 is not met; the Solution Designer decides. Possible routes:
-  - rerun on a quiet machine;
-  - accept FU-001 as environment-bound and record it;
-  - redesign the test so it does not depend on real fseventsd latency.
+- The `ServerSettingsBasicsPanel` failure that was already on the base is recorded by the Solution Designer as follow-up FU-001 in `follow-ups.md`.
 - The round's cleanup and record copy wait for the route to complete.
 - `autobyteus-application-backend-sdk/dist/` and `autobyteus-application-sdk-contracts/dist/` are untracked leftovers from a build. They are not part of this change and were not staged.

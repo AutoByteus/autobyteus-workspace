@@ -1,0 +1,5 @@
+# Follow-ups — follow-ups-448-final (autobyteus-526 round 2)
+
+| ID | Found by (role, document) | What is wrong, where | Evidence | Why it is outside this ticket | Urgent (`Yes`/`No`) | Suggested Task description | Sent (to, date) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FU-001 | Implementation engineer, `implementation-handoff.md` (full web unit suite) | `autobyteus-web` `ServerSettingsBasicsPanel.spec.ts` "composes only current endpoint and focused Basics cards" fails on every run on the base: the auto-update cards now say "Downloads new revisions from GitHub" (`25609abdf7`, `updateNotifications.ts`), while autobyteus-337's spec asserts the Basics panel never mentions GitHub | full web unit run at this branch, and the base `8f2d209b2c` | No settings file or GitHub text is changed by this ticket; it fails on the base | No | "Decide whether the Basics panel may mention GitHub (the auto-update card's text) and align either the card's wording or the autobyteus-337 spec; run the web unit suite green." | |
