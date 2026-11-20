@@ -87,6 +87,14 @@ import { SEND_MESSAGE_TO_LLM_DESCRIPTION, SEND_MESSAGE_TO_NODE_DESCRIPTION, targ
  *   every sender of alpha with and without node, and reached from beta and from a third node zeta (paired with beta only)
  *   while it runs; RC-06/RC-22 a teammate of the delegator reaches the remote run unlinked (DS-006); RC-27/RC-28 the running
  *   list's refusals equal list_available_agents' (and its 20 s bound); RC-20 audits both new routes.
+ * 565 (Messages of standalone runs): RC-05 form 5 (a linked remote run) and RC-48 form 6 (two Project Task Managers on two
+ *   nodes) live in each run's own view once, with both parties (the other with this node's name for its node), and after a
+ *   reload in the stored read with a `remote` counterpart (the chip); each line records `counterpart {address, nodeId}`;
+ *   beta's Team view never shows a remote message (form 7). RC-47 form 4 (unrelated local runs) in each own view and own
+ *   stored read (a task agent's own too), never in a Team view or an ancestor run's view. RC-50 pages: an own list and a Team
+ *   member's list over 50 (50, then the rest, newest first, nothing twice), a live message during Load more, and older lines
+ *   of the released shape (unlinked: run ID, no chip; linked: named from the Task entry). Every cross-node message carries
+ *   `sender.address` and its accepted answer `receiverAddress` (RC-06, RC-20).
  * Beta's agents (245): the shared Agents Publisher (scripted AGY default), Blank Slate (no default), Half Set (runtime only),
  * Codex Writer (a Codex default; Codex is unavailable on beta) and Fragile (a model AGY does not offer); a shared Team, an
  * Agent Org, and a file-authored Team with the team-local Agent "Local Scout" (a complete default). Nothing is published.
@@ -649,11 +657,21 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await until(async () => (toLines = await logLines(to.node, messageId)).length > 0, `${to.node.name} log of ${messageId}`, 20_000);
     expect(fromLines, `${from.node.name} log of ${content}`).toHaveLength(1);
     expect(toLines, `${to.node.name} log of ${content}`).toHaveLength(1);
+    const FIELDS = ["content", "createdAt", "messageId", "messageType", "receiverAgentRunId", "referenceFiles", "senderAgentRunId"];
     for (const { line } of [...fromLines, ...toLines]) {
       expect(line).toMatchObject({ messageId, senderAgentRunId: from.runId, receiverAgentRunId: to.runId, content });
-      expect(sortedKeys(line)).toEqual(["content", "createdAt", "messageId", "messageType", "receiverAgentRunId", "referenceFiles", "senderAgentRunId"]);
+      if (from.node === to.node) { expect(sortedKeys(line)).toEqual(FIELDS); continue; }
+      // autobyteus-565 REQ-007: a cross-node line records the other agent: its address in its own run and its node.
+      expect(sortedKeys(line)).toEqual([...FIELDS, "counterpart"].sort());
     }
-    return { messageId, files: { [from.node.name]: fromLines[0]!.file, [to.node.name]: toLines[0]!.file } };
+    const otherOf = (lines: typeof fromLines, other: Actor) => lines[0]!.line.counterpart as Rec;
+    const fromRecord = otherOf(fromLines, to), toRecord = otherOf(toLines, from);
+    if (from.node !== to.node) {
+      expect(fromRecord, `${from.node.name}'s line names the receiver`).toEqual({ address: expect.stringMatching(/^\//), nodeId: to.node.nodeId });
+      expect(toRecord, `${to.node.name}'s line names the sender`).toEqual({ address: expect.stringMatching(/^\//), nodeId: from.node.nodeId });
+    }
+    return { messageId, files: { [from.node.name]: fromLines[0]!.file, [to.node.name]: toLines[0]!.file },
+      ...(from.node !== to.node ? { counterparts: { [from.node.name]: fromRecord, [to.node.name]: toRecord } } : {}) };
   };
   const remoteRunDirs = async () => (await fsp.readdir(path.join(beta.memory, "agents")).catch(() => [] as string[])).sort();
   const betaMetadata = (runId: string) => readJson(path.join(beta.memory, "agents", runId, "run_metadata.json"));
@@ -852,7 +870,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     task: { text: "x", title: "x", taskKey: null, projectId: null, taskId: null } });
   const inboundMessage = (fromNodeId: string, toNodeId: string, messageId: string) => ({ fromNodeId, toNodeId, kind: "message", messageId,
     targetRoot: { kind: "agent", runId: "agent_probe_target" },
-    sender: { agentRunId: "agent_probe" }, target: { agentRunId: "agent_probe_target" }, content: "x", messageType: "agent_message", createdAt: new Date().toISOString() });
+    // autobyteus-565: a cross-node message names its sender's address in its own run (`sender.address`).
+    sender: { agentRunId: "agent_probe", address: "/agent_probe" }, target: { agentRunId: "agent_probe_target" }, content: "x", messageType: "agent_message", createdAt: new Date().toISOString() });
 
   it("RC-01 AC-101/AC-111: off by default; with the switch off, inbound requests of an unpaired node are refused at the gate and no invite can be made", async () => {
     for (const node of [alpha, beta]) {
@@ -1082,11 +1101,31 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const followUpLogs = await assertBothLogs("FOLLOWUP-FROM-ALPHA-1", solo, remote);
     // Contract TC-13: every agent run logs in its own folder (no `collaboration/` subfolder).
     expect(replyLogs.files).toEqual({ beta: `memory/agents/${r1}/communication_messages_active.jsonl`, alpha: `memory/agents/${ids.solo}/communication_messages_active.jsonl` });
+    // autobyteus-565 form 5 (a linked remote run): each line records the other agent and its node (REQ-007).
+    expect(replyLogs.counterparts).toEqual({ beta: { address: "/delegator", nodeId: alpha.nodeId }, alpha: { address: "/publisher", nodeId: beta.nodeId } });
+    // Live in solo's own Messages (REQ-004), once each, naming the remote agent with this node's name for beta (the chip).
+    await until(() => ["REPLY-FROM-BETA-1", "FOLLOWUP-FROM-ALPHA-1"].every((marker) => viewMessagesWith(view, marker).length > 0), "both remote messages in solo's own Messages", 20_000);
     await wait(2_000);
+    const remoteRows = ["REPLY-FROM-BETA-1", "FOLLOWUP-FROM-ALPHA-1"].map((marker) => viewMessagesWith(view, marker));
+    expect(remoteRows.map((rows) => rows.length), "each remote message once").toEqual([1, 1]);
+    const remoteParty = { agentRunId: r1, address: "/publisher", nodeName: LABEL.beta };
+    const soloParty = { agentRunId: ids.solo, address: "/delegator", nodeName: null };
+    expect(remoteRows.map((rows) => (rows[0]!.payload as Rec).event.parties)).toEqual([{ sender: remoteParty, receiver: soloParty }, { sender: soloParty, receiver: remoteParty }]);
+    // Stored (after a reload), on both nodes: both rows, the counterpart named with the other node's chip (AC-002, AC-006).
+    const soloPage = await teamTab(alpha, "agent", ids.solo, ids.solo);
+    const r1Page = await teamTab(beta, "agent", r1, r1);
+    for (const [page, label] of [[soloPage, "solo"], [r1Page, "r1"]] as const) {
+      expect(page.messages.filter((message) => ["REPLY-FROM-BETA-1", "FOLLOWUP-FROM-ALPHA-1"].includes(String(message.content))).length, label).toBe(2);
+    }
+    expect(soloPage.counterparts).toContainEqual({ kind: "remote", agentRunId: r1, address: "/publisher", nodeName: LABEL.beta });
+    expect(r1Page.counterparts).toContainEqual({ kind: "remote", agentRunId: ids.solo, address: "/delegator", nodeName: LABEL.alpha });
+    record("RC-05 565", { counterparts: replyLogs.counterparts, liveParties: remoteRows.map((rows) => (rows[0]!.payload as Rec).event.parties),
+      soloCounterparts: soloPage.counterparts, r1Counterparts: r1Page.counterparts });
     const sequences = sequenceCheck(view.frames, "ROOT_EXECUTION_VIEW_SNAPSHOT");
     expect(sequences.gaps, JSON.stringify(sequences)).toEqual([]);
     expect(sequences.errorFrames).toEqual([]);
-    // The standalone root view emits no sequenced events for this exchange; RC-06/RC-07 prove the sequence rule.
+    // Since autobyteus-565 the standalone root's own view carries the remote exchange (above), contiguously.
+    expect(sequences.sequenced, "the remote messages were sequenced events of solo's view").toBeGreaterThan(0);
     expect(view.closed(), "the view stream stays open").toBeNull();
     // Every request kind of the contract was exchanged, so RC-20 audits each of them.
     const kinds = new Set(remoteRequests().filter((entry) => entry.status === 200).map((entry) => entry.path === PATHS.runs ? "start"
@@ -1138,7 +1177,9 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(await receives(remote, "MATE-TO-REMOTE")).toContain(`You received a message from the agent with sender run id "${mate.runId}" on node "${LABEL.alpha}".`);
     const mateSent = sentRequests(sentBefore);
     expect(mateSent.map((entry) => `${entry.via} ${entry.path} ${(entry.answer as Rec)?.accepted}`), "one unlinked message, accepted").toEqual([`toBeta ${PATHS.runMessages} true`]);
-    expect(mateSent[0]!.body).toMatchObject({ fromNodeId: alpha.nodeId, toNodeId: beta.nodeId, sender: { agentRunId: mate.runId }, target: { agentRunId: r2 }, content: "MATE-TO-REMOTE" });
+    expect(mateSent[0]!.body).toMatchObject({ fromNodeId: alpha.nodeId, toNodeId: beta.nodeId, sender: { agentRunId: mate.runId, address: "/mate" }, target: { agentRunId: r2 }, content: "MATE-TO-REMOTE" });
+    expect(sortedKeys((mateSent[0]!.body as Rec).sender), "565: the sender's run ID and its address in its own run").toEqual(["address", "agentRunId"]);
+    expect(sortedKeys(mateSent[0]!.answer as Rec), "565: the answer names the receiving agent's address").toEqual(["accepted", "nodeId", "receiverAddress"]);
     const mateLogs = await assertBothLogs("MATE-TO-REMOTE", mate, remote);
     expect(mateLogs.files, "each side logs it in its own run's log").toEqual({ alpha: `memory/agent_teams/${teamRunId}/team_communication_messages_active.jsonl`,
       beta: `memory/agents/${r2}/communication_messages_active.jsonl` });
@@ -1216,7 +1257,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     // Requests a peer could send for runs that are not linked: refused at the receiving root, nothing written.
     // Every message names the root that receives it (247 contract): a standalone run is its own root.
     const forged = (fromNodeId: string, toNodeId: string, sender: string, target: string, messageId: string, targetRoot: Rec = { kind: "agent", runId: target }) => ({
-      fromNodeId, toNodeId, kind: "message", messageId, sender: { agentRunId: sender }, target: { agentRunId: target }, targetRoot,
+      fromNodeId, toNodeId, kind: "message", messageId, sender: { agentRunId: sender, address: "/forger" }, target: { agentRunId: target }, targetRoot,
       content: `FORGED ${messageId}`, messageType: "agent_message", createdAt: new Date().toISOString() });
     const toBystander = await beta.post(PATHS.messages, forged(alpha.nodeId, beta.nodeId, ids.solo, ids.bystander, "collabmsg_forged_bystander"));
     const toR1FromOther = await beta.post(PATHS.messages, forged(alpha.nodeId, beta.nodeId, ids.other, ids.r1, "collabmsg_forged_r1"));
@@ -1341,7 +1382,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
   };
   const terminateRun = async (node: NodeServer, runId: string) =>
     (await node.gql(`mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}`, { id: runId })).terminateAgentRun as Rec;
-  /** A message between two runs of one node: one line in each run's own log, under one message ID (CM-9). */
+  /** A message between two unrelated runs of one node: one line in each run's own log, under one message ID (CM-9). */
   const assertLocalLogs = async (content: string, from: Actor, to: Actor) => {
     const messageId = await messageIdOf(from.node, content);
     let lines: Awaited<ReturnType<typeof logLines>> = [];
@@ -1349,18 +1390,37 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(lines, `${content}: once in each run's log`).toHaveLength(2);
     for (const { line } of lines) {
       expect(line).toMatchObject({ messageId, senderAgentRunId: from.runId, receiverAgentRunId: to.runId, content });
-      expect(sortedKeys(line)).toEqual(["content", "createdAt", "messageId", "messageType", "receiverAgentRunId", "referenceFiles", "senderAgentRunId"]);
+      // autobyteus-565 REQ-007: a line of an unrelated message records the other agent (its address, no node).
+      expect(sortedKeys(line)).toEqual(["content", "counterpart", "createdAt", "messageId", "messageType", "receiverAgentRunId", "referenceFiles", "senderAgentRunId"]);
+      expect(line.counterpart, `${content}: the other agent`).toEqual({ address: expect.stringMatching(/^\//), nodeId: null });
     }
     expect(new Set(lines.map((entry) => entry.file)).size, "two different run logs").toBe(2);
-    return { messageId, files: lines.map((entry) => entry.file).sort() };
+    return { messageId, files: lines.map((entry) => entry.file).sort(), counterparts: lines.map((entry) => ({ file: entry.file, counterpart: entry.line.counterpart })) };
   };
   /** The message frames a run view carried after its snapshot (TEAM_COMMUNICATION_MESSAGE, ROOT_EXECUTION_EVENT) that hold `marker`. */
   const viewMessagesWith = (view: { frames: Frame[] }, marker: string) => view.frames
     .filter((frame) => (frame.type === "TEAM_COMMUNICATION_MESSAGE" || frame.type === "ROOT_EXECUTION_EVENT") && JSON.stringify(frame.payload).includes(marker));
-  /** The Team tab's stored read of one participant (`collaborationParticipantMessages`), as the window reads it after a reload. */
-  const teamTab = async (node: NodeServer, rootKind: "agent" | "agent_team" | "agent_org", rootRunId: string, agentRunId: string) =>
-    (await node.gql(`query($k:String!,$r:String!,$a:String!){collaborationParticipantMessages(rootKind:$k,rootRunId:$r,agentRunId:$a)}`,
-      { k: rootKind, r: rootRunId, a: agentRunId })).collaborationParticipantMessages as { messages: Rec[]; pastParticipants: Rec[] };
+  /**
+   * The Messages list's stored read of one participant (`collaborationParticipantMessages`), as the window reads it after a
+   * reload: one page, newest first (autobyteus-565: at most 50, `before` the last row of the page before, `hasMore`), and the
+   * counterparts the root's tree does not name (`past`, `run`, `remote` with this node's name for the peer: the chip).
+   */
+  type MessagesPage = { messages: Rec[]; counterparts: Rec[]; hasMore: boolean };
+  const teamTab = async (node: NodeServer, rootKind: "agent" | "agent_team" | "agent_org", rootRunId: string, agentRunId: string, before: Rec | null = null) =>
+    (await node.gql(`query($k:String!,$r:String!,$a:String!,$b:JSON){collaborationParticipantMessages(rootKind:$k,rootRunId:$r,agentRunId:$a,before:$b)}`,
+      { k: rootKind, r: rootRunId, a: agentRunId, b: before })).collaborationParticipantMessages as MessagesPage;
+  /** Every page of one participant's list, by "Load more" (the cursor is the last row of each page). */
+  const allPages = async (node: NodeServer, rootKind: "agent" | "agent_team" | "agent_org", rootRunId: string, agentRunId: string) => {
+    const pages: MessagesPage[] = [];
+    let before: Rec | null = null;
+    for (;;) {
+      const page = await teamTab(node, rootKind, rootRunId, agentRunId, before);
+      pages.push(page);
+      if (!page.hasMore) return pages;
+      const last = page.messages.at(-1)!;
+      before = { createdAt: last.createdAt, messageId: last.messageId };
+    }
+  };
   const teamTabHas = async (node: NodeServer, rootKind: "agent" | "agent_team" | "agent_org", rootRunId: string, agentRunId: string, marker: string) =>
     (await teamTab(node, rootKind, rootRunId, agentRunId)).messages.some((message) => String(message.content).includes(marker));
   /** An agent's launches on a node (the scripted CLI's argv log, one line per process start). */
@@ -1478,10 +1538,14 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await receives(other, "ROW3-ORG-TO-OTHER");
     await assertLocalLogs("ROW3-ORG-TO-OTHER", orgMate, other);
 
-    // G-1 (DEC-014) with the windows open: the Team's view, the G-1 delegator's view and the other root's view.
+    // Run views with the windows open (492 G-1, DEC-014, as narrowed by autobyteus-565): the Team's view, the G-1 delegator's
+    // view (an ancestor of the task agent), and the own Messages of the other root, of solo and of the task agent itself.
+    const rootView = (runId: string) => connect(alpha, "agent-collaboration", runId, (frames) => frames.some((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"));
     const teamView = await connect(alpha, "agent-team", ids.team.teamRunId, (frames) => frames.some((frame) => frame.type === "TEAM_EXECUTION_VIEW_SNAPSHOT"));
-    const g1View = await connect(alpha, "agent-collaboration", g1.runId, (frames) => frames.some((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"));
-    const otherView = await connect(alpha, "agent-collaboration", ids.other, (frames) => frames.some((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"));
+    const g1View = await rootView(g1.runId);
+    const otherView = await rootView(ids.other);
+    const soloView = await rootView(ids.solo);
+    const workerView = await rootView(worker.runId);
     // Unrelated: a Team member → another root a person started; the task agent → a root outside its Task.
     expect(await calls(lead, "send_message_to", { target_agent_run_id: ids.other, content: "G1-UNRELATED-LEAD-TO-OTHER" })).toMatchObject({ accepted: true });
     await receives(other, "G1-UNRELATED-LEAD-TO-OTHER");
@@ -1493,28 +1557,49 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await receives(g1, "G1-RELATED-TASKAGENT-TO-DELEGATOR");
     await until(() => viewMessagesWith(g1View, "G1-RELATED-TASKAGENT-TO-DELEGATOR").length > 0, "the related message in the delegator's view", 20_000);
     await wait(2_000);
+    await until(() => viewMessagesWith(otherView, "G1-UNRELATED-LEAD-TO-OTHER").length > 0, "the unrelated message in the other root's own Messages", 20_000);
+    await wait(2_000);
+    // autobyteus-565 REQ-002/REQ-004 (form 4): an unrelated message is in the own Messages of each standalone run whose agent
+    // sent or received it (the task agent's own run too), exactly once; never in a Team view (form 7) nor in an ancestor run's
+    // view (the G-1 delegator's: messages of the runs below it among themselves are theirs, Non-goals).
     const live = {
-      teamViewUnrelated: viewMessagesWith(teamView, "G1-UNRELATED-LEAD-TO-OTHER").length > 0,
-      otherViewUnrelated: viewMessagesWith(otherView, "G1-UNRELATED-LEAD-TO-OTHER").length > 0,
-      g1ViewUnrelated: viewMessagesWith(g1View, "G1-UNRELATED-TASKAGENT-TO-SOLO").length > 0,
-      g1ViewRelated: viewMessagesWith(g1View, "G1-RELATED-TASKAGENT-TO-DELEGATOR").length > 0,
+      teamViewUnrelated: viewMessagesWith(teamView, "G1-UNRELATED-LEAD-TO-OTHER").length,
+      otherViewUnrelated: viewMessagesWith(otherView, "G1-UNRELATED-LEAD-TO-OTHER").length,
+      soloViewUnrelated: viewMessagesWith(soloView, "G1-UNRELATED-TASKAGENT-TO-SOLO").length,
+      workerViewUnrelated: viewMessagesWith(workerView, "G1-UNRELATED-TASKAGENT-TO-SOLO").length,
+      g1ViewUnrelated: viewMessagesWith(g1View, "G1-UNRELATED-TASKAGENT-TO-SOLO").length,
+      g1ViewRelated: viewMessagesWith(g1View, "G1-RELATED-TASKAGENT-TO-DELEGATOR").length,
     };
-    expect(live, "live: unrelated messages in no run view; the Task-related one in its view").toEqual({ teamViewUnrelated: false, otherViewUnrelated: false, g1ViewUnrelated: false, g1ViewRelated: true });
-    // After a reload: the views' new snapshots, and the Team tab's stored read of each participant.
+    expect(live, "live: own Messages show unrelated messages once; Team and ancestor views don't").toEqual({ teamViewUnrelated: 0, otherViewUnrelated: 1,
+      soloViewUnrelated: 1, workerViewUnrelated: 1, g1ViewUnrelated: 0, g1ViewRelated: 1 });
+    // The live event names both parties, so the view names a counterpart it does not know yet (a local run: no node).
+    const otherEvent = viewMessagesWith(otherView, "G1-UNRELATED-LEAD-TO-OTHER")[0]!.payload as Rec;
+    expect(otherEvent.event.parties, JSON.stringify(otherEvent)).toEqual({ sender: { agentRunId: ids.team.lead, address: "/lead", nodeName: null },
+      receiver: { agentRunId: ids.other, address: expect.stringMatching(/^\//), nodeName: null } });
+    // After a reload: the views' new snapshots carry no message, and the stored read of each participant follows the same rule.
     const reloaded = [await connect(alpha, "agent-team", ids.team.teamRunId, (frames) => frames.some((frame) => frame.type === "TEAM_EXECUTION_VIEW_SNAPSHOT")),
-      await connect(alpha, "agent-collaboration", ids.other, (frames) => frames.some((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT")),
-      await connect(alpha, "agent-collaboration", g1.runId, (frames) => frames.some((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"))];
-    for (const view of reloaded) expect(JSON.stringify(view.frames), "no unrelated message in a reloaded view").not.toMatch(/G1-UNRELATED/);
+      await rootView(g1.runId)];
+    for (const view of reloaded) expect(JSON.stringify(view.frames), "no unrelated message in a reloaded Team or ancestor view").not.toMatch(/G1-UNRELATED/);
     const stored = {
       leadTab: await teamTabHas(alpha, "agent_team", ids.team.teamRunId, ids.team.lead, "G1-UNRELATED-LEAD-TO-OTHER"),
       otherTab: await teamTabHas(alpha, "agent", ids.other, ids.other, "G1-UNRELATED-LEAD-TO-OTHER"),
-      g1TabUnrelated: await teamTabHas(alpha, "agent", g1.runId, worker.runId, "G1-UNRELATED-TASKAGENT-TO-SOLO"),
       soloTab: await teamTabHas(alpha, "agent", ids.solo, ids.solo, "G1-UNRELATED-TASKAGENT-TO-SOLO"),
+      workerTab: await teamTabHas(alpha, "agent", worker.runId, worker.runId, "G1-UNRELATED-TASKAGENT-TO-SOLO"),
+      g1TabUnrelated: await teamTabHas(alpha, "agent", g1.runId, worker.runId, "G1-UNRELATED-TASKAGENT-TO-SOLO"),
       g1TabRelated: await teamTabHas(alpha, "agent", g1.runId, g1.runId, "G1-RELATED-TASKAGENT-TO-DELEGATOR"),
     };
-    expect(stored, "stored: the same rule as live").toEqual({ leadTab: false, otherTab: false, g1TabUnrelated: false, soloTab: false, g1TabRelated: true });
+    expect(stored, "stored: the same rule as live").toEqual({ leadTab: false, otherTab: true, soloTab: true, workerTab: true, g1TabUnrelated: false, g1TabRelated: true });
+    // AC-002 identities (form 4): the other local run's agent by its address, kind `run`, no node.
+    const otherPage = await teamTab(alpha, "agent", ids.other, ids.other);
+    expect(otherPage.counterparts, JSON.stringify(otherPage.counterparts)).toEqual(expect.arrayContaining([
+      { kind: "run", agentRunId: ids.team.lead, address: "/lead" }, { kind: "run", agentRunId: scout.runId, address: expect.stringMatching(/^\//) },
+      { kind: "run", agentRunId: ids.org.mate, address: "/mate" }]));
+    expect(otherPage.counterparts.every((entry) => entry.kind !== "remote"), "no node chip for a local run").toBe(true);
+    const soloPage = await teamTab(alpha, "agent", ids.solo, ids.solo);
+    expect(soloPage.counterparts).toEqual(expect.arrayContaining([{ kind: "run", agentRunId: worker.runId, address: expect.stringMatching(/^\//) }]));
     // Each agent's own conversation and both message logs keep the unrelated messages (CM-9).
-    const g1Logs = { leadToOther: await assertLocalLogs("G1-UNRELATED-LEAD-TO-OTHER", lead, other),
+    const g1Logs = { live, stored, otherCounterparts: otherPage.counterparts, soloCounterparts: soloPage.counterparts,
+      leadToOther: await assertLocalLogs("G1-UNRELATED-LEAD-TO-OTHER", lead, other),
       taskAgentToSolo: await assertLocalLogs("G1-UNRELATED-TASKAGENT-TO-SOLO", worker, solo) };
 
     // AC-007 / row 4: a stopped root and a member that never started are refused "not running" and are not woken.
@@ -1592,6 +1677,10 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     // AC-006 / RU-1: the scout picks the PM by name and Project and messages it with node; the PM answers with the node its
     // header names; one log line on each node under one message ID.
     const chosen = entries.find((entry) => entry.name === "Project Task Manager" && entry.project === "Beta Project")!;
+    // autobyteus-565 (RU-1, form 6): both PMs' own Messages open, and beta's Team view (form 7: never shows it).
+    const scoutView = await connect(alpha, "agent-collaboration", scout.runId, (frames) => frames.some((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"));
+    const pmView = await connect(beta, "agent-collaboration", pm.runId, (frames) => frames.some((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"));
+    const studioView = await connect(beta, "agent-team", studio.teamRunId, (frames) => frames.some((frame) => frame.type === "TEAM_EXECUTION_VIEW_SNAPSHOT"));
     const toPm = await calls(scout, "send_message_to", { node: chosen.node, target_agent_run_id: chosen.agent_run_id, content: "RU1-SCOUT-TO-BETA-PM" });
     expect(toPm, JSON.stringify(toPm)).toMatchObject({ accepted: true, target_agent_run_id: pm.runId });
     expect(textOf(toPm)).toBe(`Delivered message to ${pm.runId} on node "${LABEL.beta}".`);
@@ -1605,10 +1694,39 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const ru1Wire = remoteRequests(sentBefore).filter((entry) => entry.path === PATHS.runMessages);
     expect(ru1Wire.map((entry) => `${entry.via} ${(entry.answer as Rec)?.accepted}`)).toEqual(["toBeta true", "toAlpha true"]);
     expect(remoteRequests(sentBefore).filter((entry) => entry.path === PATHS.messages), "no linked message: nothing links the two runs").toEqual([]);
-    // A Team on beta is messaged through the coordinator the list gives.
+    // autobyteus-565 form 6: each line records the other PM and its node; both PMs' own Messages show both rows live, once,
+    // naming the other PM with this node's name for the other node (the chip), and again after a reload.
+    expect(ru1Logs.toPm.counterparts).toEqual({ alpha: { address: "/project_task_manager", nodeId: beta.nodeId }, beta: { address: "/running_scout", nodeId: alpha.nodeId } });
+    expect(ru1Logs.answer.counterparts).toEqual({ beta: { address: "/running_scout", nodeId: alpha.nodeId }, alpha: { address: "/project_task_manager", nodeId: beta.nodeId } });
+    const pmParty = { agentRunId: pm.runId, address: "/project_task_manager" }, scoutParty = { agentRunId: scout.runId, address: "/running_scout" };
+    const ru1Live: Rec = {};
+    for (const [view, label, here, there, thereNode] of [[scoutView, "scout", scoutParty, pmParty, LABEL.beta], [pmView, "pm", pmParty, scoutParty, LABEL.alpha]] as const) {
+      await until(() => ["RU1-SCOUT-TO-BETA-PM", "RU1-BETA-PM-TO-SCOUT"].every((marker) => viewMessagesWith(view, marker).length > 0), `both RU-1 messages in the ${label}'s own Messages`, 20_000);
+      const rows = ["RU1-SCOUT-TO-BETA-PM", "RU1-BETA-PM-TO-SCOUT"].map((marker) => viewMessagesWith(view, marker));
+      expect(rows.map((found) => found.length), `${label}: each once`).toEqual([1, 1]);
+      const parties = rows.map((found) => (found[0]!.payload as Rec).event.parties);
+      const herePart = { ...here, nodeName: null }, therePart = { ...there, nodeName: thereNode };
+      expect(parties, `${label}: the parties, the other with its node`).toEqual(label === "scout"
+        ? [{ sender: herePart, receiver: therePart }, { sender: therePart, receiver: herePart }]
+        : [{ sender: therePart, receiver: herePart }, { sender: herePart, receiver: therePart }]);
+      ru1Live[label] = parties;
+    }
+    const scoutPage = await teamTab(alpha, "agent", scout.runId, scout.runId);
+    const pmPage = await teamTab(beta, "agent", pm.runId, pm.runId);
+    for (const [page, label] of [[scoutPage, "scout"], [pmPage, "pm"]] as const) {
+      expect(page.messages.filter((message) => String(message.content).startsWith("RU1-")).map((message) => message.content), label)
+        .toEqual(["RU1-BETA-PM-TO-SCOUT", "RU1-SCOUT-TO-BETA-PM"]);
+    }
+    expect(scoutPage.counterparts).toContainEqual({ kind: "remote", ...pmParty, nodeName: LABEL.beta });
+    expect(pmPage.counterparts).toContainEqual({ kind: "remote", ...scoutParty, nodeName: LABEL.alpha });
+    // A Team on beta is messaged through the coordinator the list gives; it is not in the Team's Messages (form 7).
     const toStudio = await calls(scout, "send_message_to", { node: LABEL.beta, target_agent_run_id: byId(studio.teamRunId)!.team_coordinator_agent_run_id, content: "RU1-SCOUT-TO-STUDIO-LEAD" });
     expect(toStudio, JSON.stringify(toStudio)).toMatchObject({ accepted: true });
     expect(await receives(studioLead, "RU1-SCOUT-TO-STUDIO-LEAD")).toContain(`sender run id "${scout.runId}" on node "${LABEL.alpha}"`);
+    await until(() => viewMessagesWith(scoutView, "RU1-SCOUT-TO-STUDIO-LEAD").length > 0, "the scout's own Messages show its message to the Team", 20_000);
+    await wait(1_500);
+    expect(viewMessagesWith(studioView, "RU1-"), "no remote message in beta's Team view (form 7)").toEqual([]);
+    expect(await teamTabHas(beta, "agent_team", studio.teamRunId, studioMembers["/lead"]!, "RU1-SCOUT-TO-STUDIO-LEAD"), "nor in its stored Messages").toBe(false);
     // Any sender of alpha reaches a running agent of beta with node: an Org agent and a Team member.
     expect(await calls(orgActor(alpha, ids.org.orgRunId, "/lead", ids.org.lead, "alpha org lead"), "send_message_to",
       { node: LABEL.beta, target_agent_run_id: ids.bystander, content: "ROW7-ORG-TO-BYSTANDER" })).toMatchObject({ accepted: true });
@@ -1639,7 +1757,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const gate: Rec = {};
     for (const route of [PATHS.runMessages, PATHS.runningAgents]) {
       const body = route === PATHS.runningAgents ? { fromNodeId: alpha.nodeId, toNodeId: beta.nodeId }
-        : { fromNodeId: alpha.nodeId, toNodeId: beta.nodeId, messageId: `collabmsg_${randomUUID()}`, sender: { agentRunId: scout.runId },
+        : { fromNodeId: alpha.nodeId, toNodeId: beta.nodeId, messageId: `collabmsg_${randomUUID()}`, sender: { agentRunId: scout.runId, address: "/running_scout" },
           target: { agentRunId: pm.runId }, content: "QR003-FORGED", messageType: "agent_message", createdAt: new Date().toISOString() };
       const text = JSON.stringify(body);
       const unsigned = await rawPost(beta.port, route, text);
@@ -1657,14 +1775,15 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       expect(wrongTo, `${route} meant for another node`).toEqual({ status: 200, answer: { accepted: false, nodeId: beta.nodeId, code: "PEER_IDENTITY_MISMATCH", message: "This request was meant for another node." } });
       gate[route] = { unsigned, ownerBearer, wrongSecret, notPaired, wrongTo };
     }
-    const malformed = await beta.post(PATHS.runMessages, { fromNodeId: alpha.nodeId, toNodeId: beta.nodeId, sender: { agentRunId: scout.runId }, target: { agentRunId: pm.runId },
+    const malformed = await beta.post(PATHS.runMessages, { fromNodeId: alpha.nodeId, toNodeId: beta.nodeId, sender: { agentRunId: scout.runId, address: "/running_scout" }, target: { agentRunId: pm.runId },
       content: "x", messageType: "agent_message", createdAt: new Date().toISOString() });
     expect(malformed, "a run message without messageId").toMatchObject({ status: 400, answer: { accepted: false, nodeId: beta.nodeId, code: "REMOTE_REQUEST_INVALID" } });
     await neverReceives(pm, "QR003-FORGED", 1_000);
 
     expect(await terminateRun(beta, pm.runId)).toMatchObject({ success: true });
     expect((await beta.gql(`mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}`, { id: studio.teamRunId })).terminateAgentTeamRun).toMatchObject({ success: true });
-    record("RC-48", { entries, wire: wire[0], toPm: textOf(toPm), atPm, answer: textOf(answer), ru1Logs, ru1Wire: ru1Wire.map((entry) => ({ body: entry.body, answer: entry.answer })),
+    record("RC-48", { ru1Live, scoutCounterparts: scoutPage.counterparts, pmCounterparts: pmPage.counterparts, ru1Counterparts: { toPm: ru1Logs.toPm.counterparts, answer: ru1Logs.answer.counterparts },
+      entries, wire: wire[0], toPm: textOf(toPm), atPm, answer: textOf(answer), ru1Logs, ru1Wire: ru1Wire.map((entry) => ({ body: entry.body, answer: entry.answer })),
       refusals: { toStopped: textOf(toStopped), toChecker: textOf(toChecker), toUnknown: textOf(toUnknown), toTeamRun: textOf(toTeamRun), toUnknownNode: textOf(toUnknownNode) },
       gate, malformed });
   }, 600_000);
@@ -1729,6 +1848,99 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const betaPeers = ((await beta.gql(`{ peerNodes { name } }`)).peerNodes as Rec[]).map((peer) => peer.name);
     expect(betaPeers, "only alpha stays registered on beta").toEqual([LABEL.alpha]);
   }, 600_000);
+
+  it("RC-50 565 AC-004/AC-005/AC-006, REQ-005/REQ-006: an own list and a Team member's list over 50 messages load in pages of 50, newest first, every message once; a live message during Load more is not doubled; older lines of the released shape show a remote agent from its Task entry, an unlinked one by its run ID without a chip", async () => {
+    const scout = standaloneActor(alpha, ids.runningScout, "alpha running scout");
+    const other = standaloneActor(alpha, ids.other, "alpha other root");
+    const lead = teamActor(alpha, ids.team.teamRunId, ids.team.lead, "alpha team lead");
+    const pad = (n: number) => String(n).padStart(2, "0");
+    /** One turn of many `send_message_to` calls (the scripted CLI's `CALL_TOOLS`, 30 ms apart so their order is the send order). */
+    const sendMany = async (actor: Actor, target: string, contents: string[]) => {
+      const count = () => actor.conversation().then((conversation) => stringsOf(conversation).filter((value) => value.startsWith("CALLED_ALL:")).length);
+      const before = await count();
+      await actor.send(`CALL_TOOLS:${JSON.stringify(contents.map((content, index) => ({ name: "send_message_to", arguments: { target_agent_run_id: target, content }, delayMs: index * 30 })))}`);
+      await until(async () => (await count()) > before, `${actor.label} sent ${contents.length} messages`, 120_000);
+      const results = stringsOf(await actor.conversation()).filter((value) => value.startsWith("CALLED_ALL:")).at(-1)!;
+      const parsed = JSON.parse(results.slice("CALLED_ALL:".length)) as Rec[];
+      expect(parsed.map((result) => toolResult(JSON.stringify(result)).accepted), `${actor.label}: every message accepted`).toEqual(contents.map(() => true));
+    };
+    const order = (a: Rec, b: Rec) => (a.createdAt === b.createdAt ? String(a.messageId).localeCompare(String(b.messageId)) : String(b.createdAt).localeCompare(String(a.createdAt)));
+    const logOf = async (node: NodeServer, relative: string) => (await fsp.readFile(path.join(node.dataDir, relative), "utf8")).split("\n").filter(Boolean).map((line) => JSON.parse(line) as Rec);
+    const checkPages = (pages: MessagesPage[], label: string) => {
+      const rows = pages.flatMap((page) => page.messages);
+      pages.forEach((page, index) => {
+        expect(page.messages.length, `${label}: page ${index + 1} size`).toBe(index < pages.length - 1 ? 50 : page.messages.length);
+        expect(page.hasMore, `${label}: page ${index + 1} hasMore`).toBe(index < pages.length - 1);
+      });
+      expect(new Set(rows.map((row) => row.messageId)).size, `${label}: no message twice`).toBe(rows.length);
+      expect(rows.map((row) => row.messageId), `${label}: one order, newest first`).toEqual([...rows].sort(order).map((row) => row.messageId));
+      return rows;
+    };
+    // An own list over 50 (the founder's PM has 2,506): the scout messages the other root 55 times, the other root's own
+    // Messages open; every message arrives live once, then pages: 50, then the rest, nothing lost or repeated (AC-004).
+    const otherView = await connect(alpha, "agent-collaboration", ids.other, (frames) => frames.some((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"));
+    await sendMany(scout, ids.other, Array.from({ length: 55 }, (_, i) => `PAGE-${pad(i + 1)}`));
+    await until(() => viewMessagesWith(otherView, "PAGE-55").length > 0, "the last of 55 in the other root's own Messages", 30_000);
+    expect(Array.from({ length: 55 }, (_, i) => viewMessagesWith(otherView, `"PAGE-${pad(i + 1)}"`).length), "each of the 55 live once").toEqual(Array(55).fill(1));
+    const ownPages = await allPages(alpha, "agent", ids.other, ids.other);
+    const ownRows = checkPages(ownPages, "own list");
+    const otherLog = await logOf(alpha, `memory/agents/${ids.other}/communication_messages_active.jsonl`);
+    expect(ownRows.length, "the own list is the run's whole log").toBe(otherLog.length);
+    expect(ownRows.map((row) => row.messageId).sort()).toEqual(otherLog.map((line) => line.messageId).sort());
+    expect(ownPages.length, "more than one page").toBeGreaterThan(1);
+    expect(ownPages[0]!.messages.slice(0, 3).map((row) => row.content), "newest first").toEqual(["PAGE-55", "PAGE-54", "PAGE-53"]);
+    // A live message while the next page loads: it is newer than the cursor, so the next page never repeats it.
+    const firstPage = await teamTab(alpha, "agent", ids.other, ids.other);
+    const cursor = { createdAt: firstPage.messages.at(-1)!.createdAt, messageId: firstPage.messages.at(-1)!.messageId };
+    const liveDuring = calls(scout, "send_message_to", { target_agent_run_id: ids.other, content: "PAGE-LIVE-DURING-LOAD-MORE" });
+    const [nextPage] = await Promise.all([teamTab(alpha, "agent", ids.other, ids.other, cursor), liveDuring]);
+    await until(() => viewMessagesWith(otherView, "PAGE-LIVE-DURING-LOAD-MORE").length > 0, "the live message during Load more", 20_000);
+    expect(nextPage.messages.some((row) => row.content === "PAGE-LIVE-DURING-LOAD-MORE"), "not in the older page").toBe(false);
+    expect(new Set([...firstPage.messages, ...nextPage.messages].map((row) => row.messageId)).size, "the two pages share no message").toBe(firstPage.messages.length + nextPage.messages.length);
+    expect(viewMessagesWith(otherView, "PAGE-LIVE-DURING-LOAD-MORE").length, "live once").toBe(1);
+    expect((await teamTab(alpha, "agent", ids.other, ids.other)).messages[0]!.content, "a reload brings it first").toBe("PAGE-LIVE-DURING-LOAD-MORE");
+
+    // REQ-006: a Team member with more than 50 rows keeps its rows (Task-related and same-run only, as before), paged.
+    await sendMany(lead, ids.team.mate, Array.from({ length: 55 }, (_, i) => `TEAMPAGE-${pad(i + 1)}`));
+    let matePages: MessagesPage[] = [];
+    await until(async () => (matePages = await allPages(alpha, "agent_team", ids.team.teamRunId, ids.team.mate)).flatMap((page) => page.messages)
+      .some((row) => row.content === "TEAMPAGE-55"), "the mate's Team Messages hold the 55th", 30_000);
+    const mateRows = checkPages(matePages, "Team member");
+    const mateContents = mateRows.map((row) => String(row.content));
+    expect(Array.from({ length: 55 }, (_, i) => mateContents.filter((content) => content === `TEAMPAGE-${pad(i + 1)}`).length), "each Team message once").toEqual(Array(55).fill(1));
+    expect(mateContents, "a same-run message from before").toContain("LOCAL-AFTER-REMOTE-TEAM");
+    expect(mateContents.filter((content) => content.startsWith("MATE-TO-") || content.startsWith("ROW13-")), "no remote or unrelated message in a Team list (form 7)").toEqual([]);
+    expect(matePages.length).toBeGreaterThan(1);
+
+    // AC-006, older lines (the released shape: seven fields, no `counterpart`), in the logs of stopped runs (test-owned data).
+    // Unlinked: a cross-node peer's agent that nothing on this node names: its run ID, no node chip.
+    const elder = await createStandalone(alpha, defs.worker, "alpha elder run");
+    await warm(elder);
+    expect(await terminateRun(alpha, elder.runId)).toMatchObject({ success: true });
+    await until(async () => !(await processLive(elder.runId)), "the elder run ends", 30_000);
+    const oldLine = (messageId: string, sender: string, receiver: string, content: string) => `${JSON.stringify({ messageId, senderAgentRunId: sender,
+      receiverAgentRunId: receiver, content, messageType: "agent_message", referenceFiles: [], createdAt: new Date().toISOString() })}\n`;
+    const peerRunId = "project_task_manager_0ld0peer0000000000000000000000";
+    await fsp.appendFile(path.join(alpha.memory, "agents", elder.runId, "communication_messages_active.jsonl"), oldLine("collabmsg_old_unlinked_565", peerRunId, elder.runId, "OLD-UNLINKED"));
+    const elderPage = await teamTab(alpha, "agent", elder.runId, elder.runId);
+    expect(elderPage.messages.map((row) => row.content)).toContain("OLD-UNLINKED");
+    expect(elderPage.counterparts, JSON.stringify(elderPage.counterparts)).toContainEqual({ kind: "run", agentRunId: peerRunId, address: null });
+    // Linked: the run this run delegated to on beta, named with its address and node from the Task entry.
+    const linker = await createStandalone(alpha, defs.delegator, "alpha older-line delegator");
+    const linked = await delegateRemote(linker, "Older line work. Marker OLD-LINK-PACKET.");
+    expect(linked, JSON.stringify(linked)).toMatchObject({ delegated: true, node: LABEL.beta });
+    const r8 = linked.target_agent_run_id as string;
+    await receives(composeOnBeta(r8), "OLD-LINK-PACKET");
+    expect(await terminateRun(alpha, linker.runId)).toMatchObject({ success: true });
+    await until(async () => !(await processLive(linker.runId)), "the delegator ends", 30_000);
+    await fsp.appendFile(path.join(alpha.memory, "agents", linker.runId, "communication_messages_active.jsonl"), oldLine("collabmsg_old_linked_565", r8, linker.runId, "OLD-LINKED"));
+    const linkerPage = await teamTab(alpha, "agent", linker.runId, linker.runId);
+    expect(linkerPage.messages.map((row) => row.content)).toContain("OLD-LINKED");
+    expect(linkerPage.counterparts, JSON.stringify(linkerPage.counterparts)).toContainEqual({ kind: "remote", agentRunId: r8, address: "/publisher", nodeName: LABEL.beta });
+    record("RC-50", { ownPages: ownPages.map((page) => ({ size: page.messages.length, hasMore: page.hasMore })), ownLog: otherLog.length,
+      matePages: matePages.map((page) => ({ size: page.messages.length, hasMore: page.hasMore })), elderCounterparts: elderPage.counterparts,
+      linkerCounterparts: linkerPage.counterparts, liveDuring: { nextPageSize: nextPage.messages.length } });
+  }, 900_000);
 
   it("RC-21 247 AC-301: a Team member on alpha delegates beta's shared Studio Team; beta starts a Team run whose members use their own or the Team's default, and only its coordinator starts", async () => {
     const lead = teamActor(alpha, ids.team.teamRunId, ids.team.lead, "alpha team lead");
@@ -3282,13 +3494,24 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
         counts.runningAgentsEntries = (counts.runningAgentsEntries ?? 0) + (answer.agents as Rec[]).length;
       }
       if (entry.path === PATHS.runMessages) expect(sortedKeys(answer ?? {}), `answer ${entry.seq}`).toEqual(
-        (answer as Rec)?.accepted === true ? ["accepted", "nodeId"] : ["accepted", "code", "message", "nodeId"]);
+        (answer as Rec)?.accepted === true ? ["accepted", "nodeId", "receiverAddress"] : ["accepted", "code", "message", "nodeId"]);
+      // autobyteus-565 REQ-007: every message names its sender's address (`sender`), and an accepted message the
+      // receiving agent's (`receiverAddress`); a work packet (not a message) is answered without one.
+      if (entry.path === PATHS.runMessages || (entry.path === PATHS.messages && body.kind === "message")) {
+        expect(sortedKeys(body.sender as Rec), `sender of request ${entry.seq}`).toEqual(["address", "agentRunId"]);
+        expect(String((body.sender as Rec).address), `sender address of request ${entry.seq}`).toMatch(/^\//);
+        if ((answer as Rec)?.accepted === true) {
+          expect(String((answer as Rec).receiverAddress), `receiverAddress of answer ${entry.seq}`).toMatch(/^\//);
+          counts.receiverAddress = (counts.receiverAddress ?? 0) + 1;
+        }
+      }
       expect(sortedKeys(body), `fields of request ${entry.seq} (${kind})`).toEqual(keysByKind[kind]);
       expect(entry.method).toBe("POST");
       counts[kind] = (counts[kind] ?? 0) + 1;
     }
     expect(counts.status ?? 0, "the identity checks were captured").toBeGreaterThan(0);
     expect(counts[PATHS.runMessages] ?? 0, "492: unlinked messages were captured and audited").toBeGreaterThan(0);
+    expect(counts.receiverAddress ?? 0, "565: accepted message answers named the receiver").toBeGreaterThan(0);
     expect(counts.runningAgentsEntries ?? 0, "492: running-runs answers with entries were captured and audited").toBeGreaterThan(0);
     expect(evidence.nodes.alpha.canaryKeySaved, "the canary key was saved on alpha").toBe(true);
     expect(evidence.nodes.beta.canaryKeySaved, "the canary key was saved on beta").toBe(true);

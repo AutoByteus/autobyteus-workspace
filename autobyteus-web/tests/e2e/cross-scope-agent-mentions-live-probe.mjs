@@ -265,7 +265,19 @@ const waitHostIdle = (page, timeout = 300000) => waitFor('focused agent idle', (
 const waitNotBusy = (page, timeout = 300000) => waitFor('focused agent not busy', () => headerStatusIs(page, ['Idle', 'Offline']), timeout, 1000)
 const agentRootView = async (runId) => (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: runId })).agentRunCollaboration?.root_agent ?? null
 // autobyteus-358: the run's view carries no messages; the host's Team tab loads its messages with this query.
-const hostMessages = async (runId) => (await gql('query($k:String!,$r:String!,$a:String!){collaborationParticipantMessages(rootKind:$k,rootRunId:$r,agentRunId:$a)}', { k: 'agent', r: runId, a: runId }).catch(() => null))?.collaborationParticipantMessages?.messages ?? []
+// autobyteus-565: the read is paged (newest 50 first, `before`, `hasMore`); this reads every page, the whole list.
+const hostMessages = async (runId) => {
+  const all = []
+  let before = null
+  for (;;) {
+    const page = (await gql('query($k:String!,$r:String!,$a:String!,$b:JSON){collaborationParticipantMessages(rootKind:$k,rootRunId:$r,agentRunId:$a,before:$b)}', { k: 'agent', r: runId, a: runId, b: before }).catch(() => null))?.collaborationParticipantMessages
+    if (!page) return all
+    all.push(...page.messages)
+    if (!page.hasMore) return all
+    const last = page.messages.at(-1)
+    before = { createdAt: last.createdAt, messageId: last.messageId }
+  }
+}
 const agentRunActive = async (runId) => {
   const r = await gql('{ listWorkspaceRunHistory(limitPerAgent: 50) { agentDefinitions { runs { runId isActive status hasCollaboration } } } }')
   return r.listWorkspaceRunHistory.flatMap((w) => w.agentDefinitions).flatMap((a) => a.runs).find((run) => run.runId === runId)?.isActive ?? null

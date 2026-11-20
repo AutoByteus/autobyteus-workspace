@@ -56,9 +56,15 @@ export function registerLargeRunsLoadLessCases(h) {
     nodes: Object.entries(nodes).map(([memberName, ref]) => ({ memberName, ref, refScope: 'SHARED' })) } })).createAgentTeamDefinition.id
   const createOrg = async (name, members) => (await gql('mutation($input:CreateAgentOrgDefinitionInput!){createAgentOrgDefinition(input:$input){id}}', { input: {
     name, description: `${name}.`, instructions: 'Plan.', handoffs: [], members, defaultLaunchConfig: launch } })).createAgentOrgDefinition.id
-  const participantMessages = async (rootKind, rootRunId, agentRunId) => (await gql(
-    'query($k:String!,$r:String!,$a:String!){collaborationParticipantMessages(rootKind:$k,rootRunId:$r,agentRunId:$a)}',
-    { k: rootKind, r: rootRunId, a: agentRunId })).collaborationParticipantMessages.messages
+  // autobyteus-565: the read is one page (newest 50, `hasMore`); these Team lists are shorter than a page, so the first page
+  // is the whole list the Team tab shows. A longer list fails here instead of comparing a page with the whole tab.
+  const participantMessages = async (rootKind, rootRunId, agentRunId) => {
+    const page = (await gql(
+      'query($k:String!,$r:String!,$a:String!){collaborationParticipantMessages(rootKind:$k,rootRunId:$r,agentRunId:$a)}',
+      { k: rootKind, r: rootRunId, a: agentRunId })).collaborationParticipantMessages
+    assert(page.hasMore === false, 'the list fits one page (565: newest 50 first)', { rootKind, rootRunId, agentRunId, size: page.messages.length })
+    return page.messages
+  }
   const teamMembers = async (teamRunId) => {
     const tree = await teamTree(teamRunId)
     return Object.fromEntries((pick(tree, 'rootTeam')?.members ?? []).map((m) => [String(m.address).split('/').pop(), pick(m, 'agentRunId')]))
