@@ -1,7 +1,16 @@
 # Implementation Handoff
 
 Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/tickets/in-progress/semantic-memory-for-every-agent`
-Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent`, branch `codex/semantic-memory-for-every-agent` (base `personal` at `8430d9ef12`). Commits: `56b02294d0` (code, tests, docs), `a9ca3c48c6` (an owner known only as a member shows loading while the cards or members load; the rendered-UI probe and its package script), `cff2a6596a` (a link row sorts with the files, as the reference shows; probe check SMV-039), then the ticket records and evidence (§ Checks Run).
+Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent`, branch `codex/semantic-memory-for-every-agent` (base `personal` at `8430d9ef12`). Commits: `56b02294d0` (code, tests, docs), `a9ca3c48c6` (an owner known only as a member shows loading while the cards or members load; the rendered-UI probe and its package script), `cff2a6596a` (a link row sorts with the files, as the reference shows; probe check SMV-039), `ecbb4741ca` (ticket records and evidence); after CRR-001: `cd26f4d913` (CR-001 fix and specs), then these records and evidence IMP-14…IMP-16 (§ Checks Run).
+
+## Local Fix After CRR-001 (IR-002)
+
+- CR-001 (REQ-007): `SemanticMemoryFolder.vue` now keeps the id it registers from the moment of registration (`registeredId`). `release()` (on a folder or view change and on unmount) unregisters it and starts a new generation. A first listing that completes in an older generation is ignored: no `workspaceId` is set and no error is shown. A failed listing in the current generation releases the workspace and shows the error. Leaving the view while "Loading the folder…" shows therefore leaves no `semantic_memory` entry in the web store, and the chat and Run Settings menu has nothing to offer.
+- Specs (`SemanticMemoryFolder.spec.ts`, on the real workspace store):
+  - unmount during a pending listing: no `semantic_` entry and no `semantic_memory` metadata remain, also after the late listing completes;
+  - an agent change during a pending listing: only the current folder's workspace is registered and shown.
+  - Negative control: both specs fail on the reviewed component (IMP-14).
+- Scope: one component and its spec. FU-003 (the menus list transient workspaces; `SkillWorkspaceLoader` has the same pattern) is not touched.
 
 ## Upstream Artifact Package
 
@@ -48,15 +57,15 @@ the approved UI: Browse tabs Global · Agents · Agent Teams · Agent Orgs with 
 Semantic), team and org pages (Members, Runs), the read-only folder view (the file explorer's new read-only mode),
 en and zh-CN strings, regenerated GraphQL types. Docs and glossary are updated.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Local Fix` (after `Initial`, IR-001)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-008`
 - Related architecture-review revision IDs: `ARCH-REV-004` (`ARCH-REV-002` for N-4)
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `CR-001`
 
 ## Routing Classification (Mandatory)
 
@@ -152,6 +161,9 @@ Evidence files are in `evidence/`; each has a header with the command, the commi
 | IMP-11b | Web impact rerun: `components/fileExplorer`, `components/memory`, `utils/fileExplorer` | `cff2a6596a` | 37 files, 225 tests passed | `IMP-11b-web-file-explorer-and-memory.log` |
 | IMP-12 | AC-002: `git grep` for the switch's names in live server and web code | `cff2a6596a` | Only the retired-key drop list in `agent-definition-config.ts` (comment and filter); none in generated GraphQL | `IMP-12-ac002-grep.log` |
 | IMP-13 | Rendered UI probe (`pnpm -C autobyteus-web test:e2e:semantic-memory-view`): real server + Nuxt + Chromium on test-owned data | `cff2a6596a` | 33/33 checks pass, no page errors | `IMP-13-rendered-probe.log`, `IMP-13-screenshots/` |
+| IMP-14 | CR-001: `SemanticMemoryFolder.spec.ts`, then the same spec against the reviewed component (negative control) | `cd26f4d913` | 7/7 pass. With the `cff2a6596a` component, both new CR-001 specs fail (the leaked `semantic_ws_` entries) | `IMP-14-cr001-component-spec-and-negative-control.log` |
+| IMP-15 | CR-001 impact: `components/memory`, `components/fileExplorer`, the memory page and store specs; web typecheck | `cd26f4d913` | 31 files, 181 tests passed; typecheck PASS at baseline (87 in 37 test files) | `IMP-15-cr001-web-impact-and-typecheck.log` |
+| IMP-16 | CR-001: rendered probe rerun | `cd26f4d913` | 33/33 checks pass, no page errors | `IMP-16-cr001-rendered-probe.log` |
 
 The IMP-01 failures, one by one:
 - Prompt snapshots (20): the new Global section. The diffs were additions only; snapshots updated.

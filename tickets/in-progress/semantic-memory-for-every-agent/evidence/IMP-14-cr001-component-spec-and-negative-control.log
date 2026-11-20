@@ -1,0 +1,122 @@
+# IMP-14-cr001-component-spec-and-negative-control.log
+# Command: env -i HOME PATH TMPDIR pnpm -C autobyteus-web test:nuxt run components/memory/__tests__/SemanticMemoryFolder.spec.ts; then the same with the reviewed component checked out from cff2a6596a
+# Commit tested: cd26f4d913 (the negative control: its spec with the cff2a6596a component)
+# Environment: macOS (Darwin 25.5), Node v22.23.1, pnpm; shared host, load average 60-130
+# Date: 2026-11-20
+# Note: fix: 7/7 pass; reviewed component: both new CR-001 tests fail (the leaked semantic_ws_ entries)
+# ----------------------------------------------------------------------
+
+> autobyteus@1.5.14-beta.1 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web
+> cross-env NUXT_TEST=true vitest run components/memory/__tests__/SemanticMemoryFolder.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+stderr | components/memory/__tests__/SemanticMemoryFolder.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/memory/__tests__/SemanticMemoryFolder.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/memory/__tests__/SemanticMemoryFolder.spec.ts (7 tests) 35ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  14:15:53
+   Duration  8.81s (transform 4.58s, setup 7.72s, collect 347ms, tests 35ms, environment 221ms, prepare 161ms)
+
+
+===== negative control: the same spec against the reviewed component (git show cff2a6596a:autobyteus-web/components/memory/SemanticMemoryFolder.vue), restored afterwards =====
+
+> autobyteus@1.5.14-beta.1 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web
+> cross-env NUXT_TEST=true vitest run components/memory/__tests__/SemanticMemoryFolder.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+stderr | components/memory/__tests__/SemanticMemoryFolder.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/memory/__tests__/SemanticMemoryFolder.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/memory/__tests__/SemanticMemoryFolder.spec.ts (7 tests | 2 failed) 35ms
+   ✓ SemanticMemoryFolder > shows an imported source the not-synced note and asks the node nothing 8ms
+   ✓ SemanticMemoryFolder > shows an agent's missing and empty folder states without a path, a panel or a workspace 5ms
+   ✓ SemanticMemoryFolder > shows Global's own missing and empty copy 3ms
+   ✓ SemanticMemoryFolder > holds the node's read-only workspace for a folder with files, shows it read only, and releases it on leaving 7ms
+   × SemanticMemoryFolder > releases the workspace when the view is left while its first listing is pending, and ignores the late listing (CR-001) 6ms
+     → expected [ 'semantic_ws_operator' ] to deeply equal []
+   × SemanticMemoryFolder > shows only the current folder when the agent changes while the first listing is pending (CR-001) 4ms
+     → expected [ 'semantic_ws_first', …(1) ] to deeply equal [ 'semantic_ws_second' ]
+   ✓ SemanticMemoryFolder > uses the global workspace for Global 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/memory/__tests__/SemanticMemoryFolder.spec.ts > SemanticMemoryFolder > releases the workspace when the view is left while its first listing is pending, and ignores the late listing (CR-001)
+AssertionError: expected [ 'semantic_ws_operator' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "semantic_ws_operator",
++ ]
+
+ ❯ components/memory/__tests__/SemanticMemoryFolder.spec.ts:99:31
+     97| 
+     98|     wrapper.unmount();
+     99|     expect(semanticEntries()).toEqual([]);
+       |                               ^
+    100|     expect(workspaces.workspaceMetadataById.semantic_ws_operator).toBe…
+    101|     finishListing();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  components/memory/__tests__/SemanticMemoryFolder.spec.ts > SemanticMemoryFolder > shows only the current folder when the agent changes while the first listing is pending (CR-001)
+AssertionError: expected [ 'semantic_ws_first', …(1) ] to deeply equal [ 'semantic_ws_second' ]
+
+- Expected
++ Received
+
+  [
++   "semantic_ws_first",
+    "semantic_ws_second",
+  ]
+
+ ❯ components/memory/__tests__/SemanticMemoryFolder.spec.ts:127:31
+    125|     await wrapper.setProps({ agentDefinitionId: 'second', agentName: '…
+    126|     await flushPromises();
+    127|     expect(semanticEntries()).toEqual(['semantic_ws_second']);
+       |                               ^
+    128| 
+    129|     pending.get('semantic_ws_first')!();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 5 passed (7)
+   Start at  14:16:04
+   Duration  7.27s (transform 3.82s, setup 6.04s, collect 550ms, tests 35ms, environment 190ms, prepare 130ms)
+
+ ELIFECYCLE  Command failed with exit code 1.
