@@ -202,6 +202,7 @@ describe('the phone\'s view screens read the open target (autobyteus-277 DS-005,
   describe('Messages', () => {
     const view = (state: 'loading' | 'loaded' | 'error', messages: readonly unknown[] = []) => ({
       loadMessages: vi.fn(), listMessages: () => messages, messagesStatus: () => ({ state, error: state === 'error' ? 'gone' : null }),
+      hasMore: () => false, moreStatus: () => ({ state: 'idle', error: null }), loadMore: vi.fn(),
       referenceContentPath: (messageId: string, referenceId: string) => `team-runs/t/messages/${messageId}/references/${referenceId}/content`,
       memberIdentityByAgentRunId: () => ({}),
     });
@@ -232,6 +233,26 @@ describe('the phone\'s view screens read the open target (autobyteus-277 DS-005,
       await flushPromises();
       expect(wrapper.find('[data-testid="mobile-team-reference-viewer"]').exists()).toBe(false);
       expect(router.currentRoute.value.query.screen).toBe('messages');
+    });
+
+    // autobyteus-565 (AC-001 … AC-004): a standalone run's own messages: an agent on another node carries its node's
+    // chip; a longer history ends with Load more, once at a time; a failed page says why and can be asked again.
+    it('a standalone run: the node chip on another node\'s agent, and Load more for older messages', async () => {
+      const remoteMessage = { ...message, messageId: 'm-2', counterpart: { kind: 'remote', label: 'project task manager', nodeName: 'ryan-ai-linux' }, referenceFiles: [] };
+      const local = { ...message, messageId: 'm-3', counterpart: { kind: 'run', label: 'pm_old_run' }, referenceFiles: [] };
+      const messages = { ...view('loaded', [remoteMessage, local]), hasMore: () => true };
+      const { wrapper } = await mountView(MobileMessages, targetOf({ kind: 'standalone_agent', collaborationMessages: messages }), { screen: 'messages' });
+      const rows = wrapper.findAll('[data-testid="mobile-team-message-row"]');
+      expect(rows[0]!.text()).toContain('From project task manager');
+      expect(rows[0]!.find('[data-testid="mobile-team-message-node"]').attributes('data-node-name')).toBe('ryan-ai-linux');
+      expect(rows[1]!.find('[data-testid="mobile-team-message-node"]').exists()).toBe(false);
+      await wrapper.get('[data-testid="mobile-messages-load-more"]').trigger('click');
+      expect(messages.loadMore).toHaveBeenCalledOnce();
+      const failed = { ...messages, moreStatus: () => ({ state: 'error', error: 'log unreadable' }) };
+      const second = await mountView(MobileMessages, targetOf({ kind: 'standalone_agent', collaborationMessages: failed }), { screen: 'messages' });
+      expect(second.wrapper.get('[data-testid="mobile-messages-more-error"]').text()).toContain('log unreadable');
+      const done = await mountView(MobileMessages, targetOf({ kind: 'standalone_agent', collaborationMessages: view('loaded', [local]) }), { screen: 'messages' });
+      expect(done.wrapper.find('[data-testid="mobile-messages-load-more"]').exists()).toBe(false);
     });
   });
 

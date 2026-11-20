@@ -63,6 +63,7 @@
     "test:e2e:token-statistics-ui": "node tests/e2e/token-statistics-ui-probe.mjs",
     "test:e2e:provider-api-key-save": "node tests/e2e/provider-api-key-save-probe.mjs",
     "test:e2e:remote-runs-in-tree": "node tests/e2e/remote-runs-in-tree-probe.mjs",
+    "test:e2e:standalone-messages": "node tests/e2e/standalone-messages-probe.mjs",
     "test:e2e:mobile-shell": "node tests/e2e/mobile-shell-probe.mjs",
     "test:e2e:dev-proxy-websockets": "node tests/e2e/dev-proxy-websockets-probe.mjs",
     "test:e2e:remote-run-title": "node tests/e2e/remote-run-title-probe.mjs",

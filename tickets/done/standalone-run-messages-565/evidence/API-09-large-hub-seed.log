@@ -1,0 +1,11 @@
+# API-09 seed of delegated-copies-large-hub (pnpm -C autobyteus-web test:e2e:delegated-copies-large-hub --seed-to <dir> --teams 12 --unrelated 0), code 5b45e9222b, 2026-11-20
+
+> autobyteus@1.5.14-beta.2 test:e2e:delegated-copies-large-hub /Users/normy/autobyteus_org/autobyteus-worktrees/standalone-run-messages-565/autobyteus-web
+> node tests/e2e/delegated-copies-large-hub-probe.mjs --seed-to /tmp/api565/hub-seed --teams 12 --unrelated 0
+
+[2026-11-20T16:21:37.298Z] SEED start: Seed 12 Team copies, 0 unrelated team runs through public APIs
+  delegated 10/12
+[2026-11-20T16:22:30.115Z] SEED Fail: Cannot read properties of undefined (reading 'filter')
+{"result":"Fail","label":"current","cases":{"SEED":"Fail"},"errors":0,"cleanup":{"frontend":{"pid":null,"status":"not-running"},"backend":{"pid":85629,"status":"terminated","exit":0},"backendPortClosed":true,"frontendPortClosed":true,"seedKept":"/tmp/api565/hub-seed (test-owned seed; remove after the measurements)"},"evidencePath":"/tmp/api565/hub-seed-seed-evidence/evidence.json"}
+ ELIFECYCLE  Command failed with exit code 1.
+EXIT 1

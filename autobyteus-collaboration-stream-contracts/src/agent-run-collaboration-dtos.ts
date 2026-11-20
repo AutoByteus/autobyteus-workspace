@@ -31,14 +31,27 @@ export const agentRunCollaborationViewDtoSchema = z.object({
 }).strict();
 
 /**
+ * One agent of a live message as its commit knew it (autobyteus-565): its run ID, its address in its own run when known,
+ * and, for an agent on another node, the name the receiving node gives that node.
+ */
+export const messagePartyDtoSchema = z.object({
+  agentRunId: nonEmptyStringSchema,
+  address: nonEmptyStringSchema.nullable(),
+  nodeName: nonEmptyStringSchema.nullable(),
+}).strict();
+
+/**
  * The Agent root view's events: its messages and its tree's changes. Its agent presents on its own Agent stream, and each
- * run it delegated on its own (rule 2; a peer's run through `/ws/peer-run`, SR-086 G-D1).
+ * run it delegated on its own (rule 2; a peer's run through `/ws/peer-run`, SR-086 G-D1). A message comes with its two
+ * parties, so the view names a counterpart it does not know yet (another run, another node; autobyteus-565).
  */
 export const agentRunCollaborationEventDtoSchema = z.discriminatedUnion("kind", [
-  z.object({ kind: z.literal("communication"), message: agentOrgCommunicationMessageDtoSchema }).strict(),
+  z.object({ kind: z.literal("communication"), message: agentOrgCommunicationMessageDtoSchema,
+    parties: z.object({ sender: messagePartyDtoSchema, receiver: messagePartyDtoSchema }).strict() }).strict(),
   runTreeChangedEventDtoSchema,
 ]);
 
 export type AgentRunCollaborationTreeDto = Readonly<z.infer<typeof agentRunCollaborationTreeDtoSchema>>;
 export type AgentRunCollaborationViewDto = Readonly<z.infer<typeof agentRunCollaborationViewDtoSchema>>;
 export type AgentRunCollaborationEventDto = Readonly<z.infer<typeof agentRunCollaborationEventDtoSchema>>;
+export type MessagePartyDto = Readonly<z.infer<typeof messagePartyDtoSchema>>;

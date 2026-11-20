@@ -17,6 +17,14 @@ const H = { rootSubjectKind: "agent" as const, rootRunId: "helper" };
 const message = (messageId: string, senderAgentRunId: string, receiverAgentRunId: string) => ({ messageId, senderAgentRunId, receiverAgentRunId,
   content: "Status?", messageType: "agent_message", referenceFiles: [], createdAt: "2026-11-13T00:00:00.000Z" });
 
+const parties = (sender: string, receiver: string) => ({ sender: { agentRunId: sender, address: `/${sender}`, nodeName: null },
+  receiver: { agentRunId: receiver, address: `/${receiver}`, nodeName: null } });
+type Side = typeof M | typeof W | typeof H | Readonly<{ rootSubjectKind: "agent" | "agent_team" | "agent_org"; rootRunId: string }>;
+/** A committed message between two local runs, as its publishing commit hands it to the feed (related by default). */
+const publish = (w: Awaited<ReturnType<typeof world>>, msg: ReturnType<typeof message>, sender: Side, receiver: Side,
+  relation: "same_run" | "related" | "unrelated" = sender.rootRunId === receiver.rootRunId ? "same_run" : "related") =>
+  w.streams.messages.publish({ message: msg, relation, sender: { run: sender }, receiver: { run: receiver }, parties: parties(msg.senderAgentRunId, msg.receiverAgentRunId) });
+
 const world = async () => {
   const tasks = new InMemoryTaskExecutionResources();
   const tree = new DelegationIndex(() => tasks, NO_RUN_PARTS);
@@ -39,8 +47,9 @@ describe("RunMessagesFeed (SR-072)", () => {
   it("a message between the worker and its helper is numbered once in the helper's, the worker's and the Manager's views, as each kind's message event", async () => {
     const w = await world();
     const [atM, atW, atH] = [w.seen(M), w.seen(W), w.seen(H)];
-    w.streams.messages.publish({ message: message("x1", "worker-lead", "helper"), senderRun: W, receiverRun: H });
-    expect(atM.map((event) => event.event)).toEqual([{ kind: "communication", message: message("x1", "worker-lead", "helper") }]);
+    publish(w, message("x1", "worker-lead", "helper"), W, H);
+    // An Agent root's event carries the message's parties (autobyteus-565); a Team's does not.
+    expect(atM.map((event) => event.event)).toEqual([{ kind: "communication", message: message("x1", "worker-lead", "helper"), parties: parties("worker-lead", "helper") }]);
     expect(atW.map((event) => event.event)).toEqual([{ eventSourceType: "COMMUNICATION", payload: message("x1", "worker-lead", "helper") }]);
     expect(atH).toHaveLength(1);
     expect(w.streams.streamOf(M).getLivePosition()).toMatchObject({ changeSequence: 1, lastMessageChangeSequence: 1 });
@@ -49,7 +58,7 @@ describe("RunMessagesFeed (SR-072)", () => {
   it("a message inside the Manager reaches only its view", async () => {
     const w = await world();
     const [atM, atW, atH] = [w.seen(M), w.seen(W), w.seen(H)];
-    w.streams.messages.publish({ message: message("x3", "manager", "manager-mate"), senderRun: M, receiverRun: M });
+    publish(w, message("x3", "manager", "manager-mate"), M, M);
     expect([atM.length, atW.length, atH.length]).toEqual([1, 0, 0]);
   });
 
@@ -57,7 +66,7 @@ describe("RunMessagesFeed (SR-072)", () => {
     const w = await world();
     const [atM, atW, atH] = [w.seen(M), w.seen(W), w.seen(H)];
     // The worker's view: the helper is in its tree, the Manager is not, and neither is the worker's own.
-    w.streams.messages.publish({ message: message("x6", "manager", "helper"), senderRun: M, receiverRun: H });
+    publish(w, message("x6", "manager", "helper"), M, H);
     expect([atM.length, atW.length, atH.length]).toEqual([1, 0, 1]);
   });
 
@@ -65,17 +74,47 @@ describe("RunMessagesFeed (SR-072)", () => {
     const w = await world();
     w.tasks.close("T1");
     const [atM, atW] = [w.seen(M), w.seen(W)];
-    w.streams.messages.publish({ message: message("x4", "worker-lead", "helper"), senderRun: W, receiverRun: H });
+    publish(w, message("x4", "worker-lead", "helper"), W, H);
     expect([atM.length, atW.length]).toEqual([0, 1]);
-    w.streams.messages.publish({ message: message("x7", "worker-lead", "manager"), senderRun: W, receiverRun: M });
+    publish(w, message("x7", "worker-lead", "manager"), W, M);
     expect(atM).toHaveLength(1);
   });
 
   it("a view no one opened gets nothing; it reads the logs when it opens", async () => {
     const w = await world();
     const atH = w.seen(H);
-    w.streams.messages.publish({ message: message("x5", "worker-lead", "helper"), senderRun: W, receiverRun: H });
+    publish(w, message("x5", "worker-lead", "helper"), W, H);
     expect(atH).toHaveLength(1);
     expect(w.streams.streamOf(M).getLivePosition()).toMatchObject({ changeSequence: 0, lastMessageChangeSequence: 0 });
   });
+
+  describe("autobyteus-565: unrelated and remote messages, by MessageViewScope", () => {
+    const P = { rootSubjectKind: "agent" as const, rootRunId: "other-pm" };
+    const remoteParties = { sender: { agentRunId: "linux-pm", address: "/project_task_manager", nodeName: "ryan-ai-linux" },
+      receiver: { agentRunId: "manager", address: "/project_task_manager", nodeName: null } };
+
+    it("an unrelated message reaches only the view of an Agent root that is one of its runs, not the runs above, never a Team's", async () => {
+      const w = await world();
+      const [atM, atW, atH, atP] = [w.seen(M), w.seen(W), w.seen(H), w.seen(P)];
+      publish(w, message("u1", "manager", "other-pm"), M, P, "unrelated");
+      expect([atM.length, atP.length]).toEqual([1, 1]);
+      // The helper (an Agent root below W) talks with the other PM: its own view only; the worker (Team) and Manager above do not.
+      publish(w, message("u2", "helper", "other-pm"), H, P, "unrelated");
+      expect([atM.length, atW.length, atH.length, atP.length]).toEqual([1, 0, 1, 2]);
+      // A Team member and an unrelated run: no Team view shows it (autobyteus-492 DEC-014 kept there).
+      publish(w, message("u3", "worker-lead", "other-pm"), W, P, "unrelated");
+      expect([atM.length, atW.length, atP.length]).toEqual([1, 0, 3]);
+    });
+
+    it("a message with another node reaches only its local Agent root's own view, with the remote party's node", async () => {
+      const w = await world();
+      const [atM, atW, atH] = [w.seen(M), w.seen(W), w.seen(H)];
+      w.streams.messages.publish({ message: message("r1", "linux-pm", "manager"), relation: "remote", sender: { nodeId: "srv_linux" }, receiver: { run: M }, parties: remoteParties });
+      expect(atM.map((event) => event.event)).toEqual([{ kind: "communication", message: message("r1", "linux-pm", "manager"), parties: remoteParties }]);
+      w.streams.messages.publish({ message: message("r2", "helper", "linux-pm"), relation: "remote", sender: { run: H }, receiver: { nodeId: "srv_linux" }, parties: remoteParties });
+      w.streams.messages.publish({ message: message("r3", "worker-lead", "linux-pm"), relation: "remote", sender: { run: W }, receiver: { nodeId: "srv_linux" }, parties: remoteParties });
+      expect([atM.length, atW.length, atH.length]).toEqual([1, 0, 1]);
+    });
+  });
 });
+

@@ -1,0 +1,72 @@
+# API-05 whole ungated server E2E (pnpm test:e2e, env -i) and the rerun of its 21 failed files (API-05b)
+# Commit: bae91e808f (code 5b45e9222b + API/E2E test edits); Node 22.23.1; macOS 26; 2026-11-20
+# Load and FSEvents before the run: load averages: 51.44 56.79 57.80; {"at":"2026-11-20T16:29:12.493Z","results":[{"eventMs":2912,"closeMs":1840},{"eventMs":3920,"closeMs":1964},{"eventMs":3546,"closeMs":37}]}
+
+## Whole run
+ Test Files  21 failed | 107 passed | 155 skipped (283)
+      Tests  16 failed | 547 passed | 729 skipped (1292)
+   Duration  3424.58s (transform 26.62s, setup 7.53s, import 551.65s, tests 2834.71s, environment 15ms)
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire || Error: invalid Team diagnostic: not met within 30000 ms; last value: []
+ FAIL  tests/e2e/credential-proxy/integrations-graphql.e2e.test.ts > Integrations GraphQL (built server) > refuses connect, test and disconnect where  || Error: Test timed out in 5000ms.
+ FAIL  tests/e2e/credential-proxy/integrations-graphql.e2e.test.ts > Integrations GraphQL (built server) > removes the cards when the source is remove || Error: Test timed out in 5000ms.
+ FAIL  tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot || Error: Timed out waiting for FILE_SYSTEM_CHANGE for live-added.txt. Seen: 
+ FAIL  tests/e2e/mcp/mcp-gateway-token.e2e.test.ts > MCP gateway token on the real studio server (NAS-25) > admits a client connected through connectM || Error: Test timed out in 5000ms.
+ FAIL  tests/e2e/projects/project-mutation-node-locality.e2e.test.ts > E-008: separate built nodes accept the same local path but cannot patch remote  || AssertionError: Platform detection: Windows=false
+ FAIL  tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP: selected default host executes equi || Error: Test timed out in 5000ms.
+ FAIL  tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts > Project Task search with the real embedding layer when the model host is || Error: Test timed out in 5000ms.
+ FAIL  tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries > answers exact matches at || Error: Test timed out in 5000ms.
+ FAIL  tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts each allowe || Error: Test timed out in 5000ms.
+ FAIL  tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses a request a || AssertionError: expected [ …(20) ] to have a length of 14 but got 20
+ FAIL  tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR || AssertionError: expected { …(10) } to match object { installed: true, …(5) }
+ FAIL  tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts > provider and Gemini one-vault GraphQL E2E > keeps Gemini configurat || Error: Test timed out in 5000ms.
+ FAIL  tests/e2e/secret-management/test-vault-selection.e2e.test.ts > test vault selection E2E > the secret-lifecycle suites give the same results wit || AssertionError: sql
+ FAIL  tests/e2e/tool-management/mcp-bulk-import.e2e.test.ts > MCP bulk import through GraphQL > imports the content of the app's own mcps.json, keepi || Error: Test timed out in 5000ms.
+ FAIL  tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate > finds a workspace file for the owner an || Error: Test timed out in 5000ms.
+ FAIL (suite) model-metadata-provenance || Hook timed out in 10000ms.
+ FAIL (suite) memory-sync-held-back || Hook timed out in 10000ms.
+ FAIL (suite) package-personal-settings || Hook timed out in 10000ms.
+ FAIL (suite) embedding-settings || Hook timed out in 10000ms.
+ FAIL (suite) grok-build-compaction-replay || Hook timed out in 10000ms.
+ FAIL (suite) update-notifications-live || Hook timed out in 10000ms.
+ FAIL (suite) workspace-path-refusal-run-launch || Hook timed out in 10000ms.
+
+## API-05b rerun of the 21 files (load averages: 66.26 89.34 86.21)
+ Test Files  14 failed | 7 passed (21)
+      Tests  13 failed | 104 passed | 2 skipped (119)
+ ❯ tests/e2e/personal-settings/package-personal-settings.e2e.test.ts (7 tests) 87435ms
+ ❯ tests/e2e/update-notifications/update-notifications-live.e2e.test.ts (12 tests) 192969ms
+ ❯ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts (10 tests | 1 failed | 2 skipped) 376527ms
+ ❯ tests/e2e/secret-management/test-vault-selection.e2e.test.ts (5 tests | 1 failed) 28743ms
+ ❯ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts (14 tests | 2 failed) 38238ms
+ ❯ tests/e2e/projects/project-mutation-node-locality.e2e.test.ts (1 test | 1 failed) 40200ms
+ ❯ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts (11 tests | 2 failed) 41455ms
+ ❯ tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts (2 tests | 1 failed) 25784ms
+ ✓ tests/e2e/workspaces/search-files-through-gate.e2e.test.ts (1 test) 9076ms
+ ❯ tests/e2e/projects/project-task-boundaries.e2e.test.ts (18 tests | 1 failed) 56368ms
+ ❯ tests/e2e/projects/embedding-settings.e2e.test.ts (6 tests | 1 failed) 47966ms
+ ❯ tests/e2e/credential-proxy/integrations-graphql.e2e.test.ts (5 tests | 1 failed) 10247ms
+ ❯ tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts (1 test) 14905ms
+ ✓ tests/e2e/tool-management/mcp-bulk-import.e2e.test.ts (2 tests) 6854ms
+ ✓ tests/e2e/projects/project-task-search.e2e.test.ts (4 tests) 7447ms
+ ✓ tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts (3 tests) 13771ms
+ ❯ tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts (1 test) 10835ms
+ ✓ tests/e2e/mcp/mcp-gateway-token.e2e.test.ts (4 tests) 3885ms
+ ❯ tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts (6 tests | 2 failed) 21526ms
+ ✓ tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts (3 tests) 2986ms
+ ✓ tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts (3 tests) 4634ms
+ ❯ tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts (6 tests | 2 failed) 13619ms
+ ✓ tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts (1 test) 4535ms
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live r || Error: invalid Team diagnostic: not met within 30000 ms; last value: []
+ FAIL  tests/e2e/credential-proxy/integrations-graphql.e2e.test.ts > Integrations GraphQL (built server) > imports a fol || Error: Test timed out in 5000ms.
+ FAIL  tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > ans || Error: Test timed out in 5000ms.
+ FAIL  tests/e2e/projects/project-mutation-node-locality.e2e.test.ts > E-008: separate built nodes accept the same local || AssertionError: Platform detection: Windows=false
+ FAIL  tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP: selec || Error: Test timed out in 5000ms.
+ FAIL  tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts > Project Task search with the real embeddin || Error: Test timed out in 5000ms.
+ FAIL  tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocke || AssertionError: expected [ …(20) ] to have a length of 14 but got 20
+ FAIL  tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocke || Error: Test timed out in 5000ms.
+ FAIL  tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio serve || AssertionError: expected 1795196352342 to be greater than NaN
+ FAIL  tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio serve || AssertionError: expected null to be '2.1.200' // Object.is equality
+ FAIL  tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts > provider and Gemini one-vault GraphQL || Error: Test timed out in 5000ms.
+ FAIL  tests/e2e/secret-management/test-vault-selection.e2e.test.ts > test vault selection E2E > the secret-lifecycle su || AssertionError: execution_tree_v1/
+
+## None of the failing files reaches participant messages, message logs, counterparts or cross-node messages (grep for collaborationParticipantMessages|communication_messages|send_message_to|run-messages|/rest/remote/messages|counterpart|agentRunCollaboration: 0 matches, except 1 in agent-package-definitions-live-refresh, which fails on a watcher diagnostic). The same files failed the same ways on autobyteus-492's branch without this change: tickets/done/list-running-agents/follow-ups.md FU-005.

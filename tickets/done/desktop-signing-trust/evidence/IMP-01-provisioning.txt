@@ -1,0 +1,14 @@
+IMP-01 | 2026-11-20 07:18 UTC | controlled one-time first production setup
+Linux, Node 22, authenticated gh; uncommitted provisioning slice before helper completion; final reviewed source for this round: 8864615004.
+Procedure: first exercised disposable provisioning (8 checks passed at initial setup). Rechecked absent configuration then ran ordinary-user desktop generator with core dumps off, tracing disabled and exclusive custodian window. Do not repeat on production.
+Nonsecret post-submit readback (see milestone-1.md):
+Observed at: 2026-11-20T07:18:10.668Z
+Repository: AutoByteus/autobyteus-workspace
+Environment: desktop-release-signing (27960596791); created 2026-11-20T07:17:47Z
+Deployment policy: one tag v*.*.*; no branch, reviewer or timer
+Repository variable: DESKTOP_RELEASE_PUBLIC_KEY; updated 2026-11-20T07:17:52Z
+SPKI SHA256: e26a2e7404817c8277f6d64d2bd77e40852c172f576f18ebd673a4070ad9debe
+Environment secret: DESKTOP_RELEASE_PRIVATE_KEY; created/updated 2026-11-20T07:17:58Z; no wider matching declarations or conflicting environment override
+Local pair verified; successful stdin-only scoped upload; public readback matches; claim removed.
+One local owner-only backup: file mode 0600, directory 0700. Path-only notice sent to coordinator for founder at M1. No confirmed saved acknowledgment at this check; retained, not copied to this ticket.
+No remote private bytes were read or proven by this step. No release or production signing test.

@@ -1,0 +1,16 @@
+# API-12 fresh-start check (contracts package src+dist, autobyteus-web/generated/graphql.ts, autobyteus-web/package.json changed)
+# Commands: git clone --no-local <worktree> /tmp/api565/fresh; git checkout bae91e808f; pnpm install --frozen-lockfile; cd autobyteus-web; pnpm typecheck; pnpm prepare-server; then pnpm -C autobyteus-collaboration-stream-contracts build and git status (the committed dist equals a fresh build)
+# No .gitmodules; guards, generate:electron, packaging, signing and other OSes not run (they read no file this ticket changed beyond what typecheck and prepare-server read). Node 22.23.1; macOS 26 arm64; 2026-11-20
+
+Done in 9.6s using pnpm v10.28.2
+[typecheck] Nuxt app (tsconfig.json): 60 errors, exit 2, 44.2s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.0s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 25.6s
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS
+Done in 1.2s using pnpm v10.28.1
+   Server files prepared successfully!   
+EXIT 0
+git status after typecheck and prepare-server: only untracked autobyteus-application-backend-sdk/dist/, autobyteus-application-sdk-contracts/dist/ (build outputs)
+contracts build: EXIT 0; git status of the three contract packages afterwards: empty (committed dist = fresh build)

@@ -25,10 +25,10 @@ runtime".
 
 | Path (`src/`) | Layer | Owns |
 | --- | --- | --- |
-| `runtime-management/acp/` | ACP (neutral) | `AcpAgentProcess` (child spawn, Node↔Web stream bridge, stderr drain, exit, stop), `AcpClientConnection` (one `@agentclientprotocol/sdk` `ClientSideConnection` per process, `initialize`, request timeouts, per-`sessionId` callback routing, buffering for sessions still being opened), `AcpAgentCapabilities` (standard `initialize` fields + `requiredFor({restore, mcp})`), launch-profile contract, initialize-only discovery handshake, `acp-error-message.ts` |
+| `runtime-management/acp/` | ACP (neutral) | `AcpAgentProcess` (child spawn, Node↔Web stream bridge, stderr drain, exit, stop), `AcpClientConnection` (one `@agentclientprotocol/sdk` `ClientSideConnection` per process, `initialize`, request timeouts, per-`sessionId` callback routing, buffering for sessions still being opened; an inbound stage hands every notification to its session synchronously and in wire order, before a later frame, a response included, reaches the SDK: a `session/prompt` response can no longer overtake the notifications that preceded it), `AcpAgentCapabilities` (standard `initialize` fields + `requiredFor({restore, mcp})`), launch-profile contract, initialize-only discovery handshake, `acp-error-message.ts` |
 | `agent-execution/backends/acp/` | ACP (neutral) | `AcpAgentRunBackendFactory` (create/restore sequencing, rollback, start-time error conversion), `AcpAgentRunBackend`, `AcpAgentSession` (session state machine), `AcpPermissionBridge`, `AcpSessionUpdateConverter`, `AcpPromptBuilder`, session-profile contract |
 | `runtime-management/grok/` | Grok profile | Launch profile (command; run and discovery launches with the args and env below; no provider relay), model normalization, and `GrokBuildCapability` (version/agent-mode probe, safe diagnostics) |
-| `agent-execution/backends/grok/` | Grok profile | Session profile (`_meta`, MCP entry, extension notifications), tool projection, per-call usage, MCP readiness, `.grok/skills` materializer, factory binding |
+| `agent-execution/backends/grok/` | Grok profile | Session profile (`_meta`, MCP entry, extension notifications), prompt signals (`grok-build-prompt-signals.ts`), tool projection, per-call usage, MCP readiness, `.grok/skills` materializer, factory binding |
 | `llm-management/services/grok-build-model-catalog.ts` | Catalog | Handshake-based `ModelInfo[]` |
 
 Dependency rule: `backends/grok → backends/acp → runtime-management/acp →
@@ -172,7 +172,52 @@ any → failed | closed
   closes open segments, interrupts unfinished tools, and emits
   `TURN_INTERRUPTED` followed by a runtime `ERROR`. The backend then becomes
   inactive, stops the process, and releases its skills.
-- **Between turns.** Updates that arrive outside a prompt are ignored.
+- **Between turns.** Updates that arrive outside a prompt are ignored, except the
+  prompt signals of an agent whose profile reads them (Grok; see
+  [Turns Grok starts itself](#turns-grok-starts-itself)). DeepSeek Harness sends
+  none, so nothing changes for it.
+
+### Turns Grok starts itself
+
+When a background command of a Grok agent ends, Grok starts a turn of its own: it
+queues a prompt, runs it, and the agent acts on the completion, with no
+`session/prompt` from AutoByteus. The run shows that turn like a Claude run shows
+the turns the Claude CLI starts itself (autobyteus-517, GLOSSARY "Provider-started
+turn"):
+
+- **Signals.** `grok-build-prompt-signals.ts` reads two Grok notifications.
+  `_x.ai/queue/changed` with a non-empty `runningPromptId` means that prompt runs
+  now (`prompt_running`); its `runningText`, without Grok's `<system-reminder>`
+  wrapper, is the notice text. `_x.ai/session_notification` `turn_completed`
+  (`prompt_id`, `stop_reason`) ends a prompt (`prompt_completed`). A queue
+  without a running prompt says nothing.
+- **A provider turn.** In `ready`, `prompt_running` opens a turn the session
+  numbers itself (it has no client prompt): `TURN_STARTED`, then one
+  `SYSTEM_TASK_NOTIFICATION` (`sender_id: "system.grok_provider_turn"`) with Grok's
+  reminder text, for example `Background task "<id>" completed (exit code: 0)`, in
+  the same batch. The turn's reasoning, text, tool cards and per-call usage stream as
+  in any turn. It ends on its own `turn_completed`, whose `stop_reason` is classified
+  as for an input turn (see Turn end classification below). The run reads busy
+  for the whole turn.
+- **The notice is recorded.** `system.grok_provider_turn` is in the memory
+  recorder's allow-list of system notice senders, so the notice is in the run's
+  history after a reload, like Claude's background-task notice. Replayed history
+  of `session/load` still opens no turn: the session is `opening`, not `ready`.
+- **Held input.** A message sent during the turn waits for its end and is sent
+  after it (the session stays `prompting`). Stop sends `session/cancel` and ends
+  the turn interrupted.
+- **A job that ends during an input turn.** Grok then ends the input prompt
+  (`turn_completed`), queues its own prompt, and only then answers the client's
+  `session/prompt`. The session marks the input prompt completed, remembers the
+  pending prompt (the latest wins) and, at the response, hands over in one batch:
+  the input turn's end, the provider turn's start and its notice. The session never
+  reads idle in between, so a held message stays held, is never failed, and no
+  second `session/prompt` goes out while one is outstanding.
+- **Not covered.** A prompt AutoByteus sends at the instant Grok wakes itself, and
+  provider content that arrives before the input prompt's response, are not
+  designed for (neither was produced by Grok in the probes). An SDK upgrade
+  reruns the connection's wire-order cases and the ACP suites: the inbound stage
+  replaces the SDK's own notification path.
 
 ## Turns, events, approvals, and interrupt
 
@@ -192,8 +237,9 @@ advertises `image:false`.
 An open reasoning or text segment always ends before a tool card, a
 different segment kind, a usage record, or the turn end. Unknown update kinds
 and unknown `_x.ai/*` notifications, such as announcements, settings,
-command lists, and queue bookkeeping, are ignored and never shown as chat
-content.
+command lists, are ignored and never shown as chat content. Queue bookkeeping is
+ignored too, except `_x.ai/queue/changed` with a running prompt, which the Grok
+profile reads (see [Turns Grok starts itself](#turns-grok-starts-itself)).
 
 **Tool projection.** The Grok profile names tools from
 `_meta["x.ai/tool"].name`, never from the display title. Permission requests
@@ -239,7 +285,8 @@ A denial produces the fourth row because Grok ends its turn after
 **Interrupt.** Interrupt answers pending permissions `cancelled` and sends
 `session/cancel`. The resulting `cancelled` stop ends the turn as
 interrupted, and the process and session stay usable. The live check
-measured 101 ms.
+measured 101 ms. The same holds for a turn Grok started itself: the `cancelled`
+`turn_completed` of its prompt ends it interrupted.
 
 ## Token usage
 
@@ -363,16 +410,20 @@ migrated.
   `tests/e2e/runtime/runtime-capability-graphql.e2e.test.ts` covers all five
   runtime kinds, and `tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts`
   covers the catalog, stream and per-call usage, approve, deny→completed,
-  mid-turn exit, and unauthenticated start. Both run through the real
-  server at zero cost.
+  mid-turn exit, and unauthenticated start, and the turns Grok starts itself
+  (`grokProviderTurnScript`, the probes' recorded frame orders: a wake after an
+  input turn, a job ending during an input turn including the hand-over gap, and
+  a cancel of Grok's own prompt; notice, content, tool card, usage, end, memory
+  after a reload, held input). Both run through the real server at zero cost.
 - **Opt-in live suite.**
   `tests/e2e/runtime/grok-build-live-runtime.e2e.test.ts` runs only with
   `RUN_GROK_E2E=1` and a working `grok` command. It uses paid inference on
   the user's plan. Optional settings are `GROK_E2E_MODEL`,
   `GROK_E2E_REASONING_EFFORT` (default `low`), and
   `GROK_E2E_STEP_TIMEOUT_MS`. It covers standalone approve/deny/interrupt/
-  restore, a mixed Team with a Grok member talking to Claude, and an Org
-  relay with restore.
+  restore, a mixed Team with a Grok member talking to Claude, an Org
+  relay with restore, and a real background job that wakes Grok (its turn, its
+  notice and its history entry).
 - **Compaction.** Unit suites replay real Grok 1.0.46 compaction traffic
   (`tests/fixtures/grok-acp/compaction-*.jsonl`) through the ACP session and the
   memory recorder. `tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts`

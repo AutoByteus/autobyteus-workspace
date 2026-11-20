@@ -1,0 +1,28 @@
+# IMP-04 live Grok (AC-005): a real background job wakes Grok; the run shows Grok's own turn
+# command: RUN_GROK_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/grok-build-live-runtime.e2e.test.ts -t "autobyteus-517 AC-005" --no-watch --reporter=verbose
+# the case: an isolated in-process server (temp data dir, not the user's AutoByteus), Grok Build 1.0.89 with the host's
+#   own login, grok-4.7 at reasoning effort low, job.sh = `sleep 8; echo BGDONE-<id>`, the probe's prompt wording
+# commit: 39686a67ac content (the case added uncommitted at eb7dcef228 when run); 2026-11-20
+# credits: `grok -p "Reply with exactly: OK"` answered OK first, so AC-005 was run, not waived.
+#
+# attempts 1-2: beforeAll failed: "Grok Build model discovery timed out; check the CLI and retry." (the 15 s discovery
+#   bound). Not this change: the same discovery fails on base's acp-client-connection.ts too, and Grok's own log shows
+#   its bootstrap taking 4-35 s today (IMP-06). Attempt 3 below.
+
+## attempt 3
+GROK_LIVE_PROVIDER_TURN {"runId":"grok_live_provider_turn_d11493ed_b9cd_4477_82dc_e3c4d1a9e6ed4615becb8b69c490ef15","notice":{"turn_id":"6c3ae75a-3945-41bc-bf28-672e6cd9c7c2","sender_id":"system.grok_provider_turn","content":"Background task \"a1db29b1-e7d3-47ec-a64f-bf2b34cf4df9\" completed (exit code: 0).\nDescription: Run job.sh in the background | Duration: 8.1s\nUse get_command_or_subagent_output(\"a1db29b1-e7d3-47ec-a64f-bf2b34cf4df9\") to see the full output.","message_id":"754323a5-4fc3-4bb5-8205-e054e719d0c1"},"end":"TURN_COMPLETED","text":"The user asked me to reply with the job's output line when the job finishes. I need to get the output.Reply with the job's output line only.BGDONE-bd8ab412"}
+ ✓ tests/e2e/runtime/grok-build-live-runtime.e2e.test.ts > Grok Build live runtime e2e (real grok CLI) > shows the turn Grok starts itself when its background command ends: notice, reply, end, kept in history (autobyteus-517 AC-005) 22516ms
+Error: Hook timed out in 10000ms.
+ ❯ tests/e2e/runtime/grok-build-live-runtime.e2e.test.ts:71:3
+ Test Files  1 failed (1)
+      Tests  1 passed | 3 skipped (4)
+   Duration  67.15s (transform 7.07s, setup 67ms, import 9.57s, tests 56.79s, environment 0ms)
+
+## attempt 1
+Error: [{"message":"Grok Build model discovery timed out; check the CLI and retry.","locations":[{"line":1,"column":21}],"path":["providerModelCatalogSnapshots"]}]
+ ❯ tests/e2e/runtime/grok-build-live-runtime.e2e.test.ts:62:21
+Error: Hook timed out in 10000ms.
+ ❯ tests/e2e/runtime/grok-build-live-runtime.e2e.test.ts:71:3
+ Test Files  1 failed (1)
+      Tests  4 skipped (4)
+   Duration  346.82s (transform 9.14s, setup 63ms, import 12.16s, tests 333.90s, environment 0ms)

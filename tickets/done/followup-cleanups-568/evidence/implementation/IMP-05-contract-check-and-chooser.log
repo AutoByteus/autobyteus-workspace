@@ -1,0 +1,35 @@
+# IMP-05 the iOS release contract check (D-5 wiring and chooser fixtures), its negative cases, and the chooser on this Mac
+# commands: autobyteus-ios/scripts/ios-release-contract-check.py (on the commit, then with one break at a time, each restored with git checkout); autobyteus-ios/scripts/select-ios-simulator.py (default name; IOS_SIMULATOR_NAME='iPhone 99')
+# commit: eb7e4bf2af
+# env: macOS 26.5.2, Python 3.9.6, Xcode 26.1.1 (iOS simulator SDK 26.1)
+# date: 2026-11-20T13:31:58Z
+
+== the commit
+iOS release contract checks passed.
+exit=0
+== chooser ignores the SDK bound (would take the iOS 27.3 beta runtime)
+error: /Users/normy/autobyteus_org/autobyteus-worktrees/followup-cleanups-568/autobyteus-ios/scripts/select-ios-simulator.py must choose iPhone 17 on iOS 27.2 under the 27.2 SDK; got '17-27-3-BETA' (Selected simulator: iPhone 17 (iOS 27.3), UDID 17-27-3-BETA).
+exit=1
+== chooser matches a substring (would take iPhone 17e)
+error: /Users/normy/autobyteus_org/autobyteus-worktrees/followup-cleanups-568/autobyteus-ios/scripts/select-ios-simulator.py must choose iPhone 17 on iOS 27.2 under the 27.2 SDK; got 'E-27-2' (Selected simulator: iPhone 17e (iOS 27.2), UDID E-27-2).
+exit=1
+== the smoke back on an inline awk match
+error: /Users/normy/autobyteus_org/autobyteus-worktrees/followup-cleanups-568/autobyteus-ios/scripts/ios-simulator-smoke.sh is missing required release-contract text: UDID="$("$ROOT_DIR/scripts/select-ios-simulator.py")"
+exit=1
+== chooser not executable
+error: /Users/normy/autobyteus_org/autobyteus-worktrees/followup-cleanups-568/autobyteus-ios/scripts/select-ios-simulator.py must be executable; its callers run it directly.
+exit=1
+== restored
+iOS release contract checks passed.
+exit=0
+
+== the chooser on this Mac, default name
+Selected simulator: iPhone 17 (iOS 26.1), UDID AED15013-49CB-4DEE-9FCA-5A94B0E5650B
+AED15013-49CB-4DEE-9FCA-5A94B0E5650B
+exit=0
+
+== IOS_SIMULATOR_NAME='iPhone 99' (the fallback)
+No 'iPhone 99' simulator; using 'iPhone 17 Pro' (iOS 26.1).
+Selected simulator: iPhone 17 Pro (iOS 26.1), UDID 8E8844A9-04F1-4729-A417-52DE909E0A92
+8E8844A9-04F1-4729-A417-52DE909E0A92
+exit=0

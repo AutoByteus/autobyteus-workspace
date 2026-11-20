@@ -946,7 +946,9 @@ the model has not seen. A turn the CLI starts itself is preceded by a
 `SYSTEM_TASK_NOTIFICATION` (`sender_id: "system.claude_background_task"`), for
 example `Background task completed: <description> (<status>)`. For external
 runtimes, agent memory records system notices from an allow-list of senders as
-`system_task_notification` traces: these Claude background-task notices, skill
+`system_task_notification` traces: these Claude background-task notices, the
+Grok provider-turn notices (`system.grok_provider_turn`, see
+[Grok Build Runtime](./grok_build_runtime.md#turns-grok-starts-itself)), skill
 update notices (`system.skill_update_notifier`, see
 [Skill Update Notices](./skill_update_notices.md)) and tool list notices
 (`system.tool_list_update_notifier`, see [Tool List Updates](./tool_list_updates.md)). Run-history replay shows

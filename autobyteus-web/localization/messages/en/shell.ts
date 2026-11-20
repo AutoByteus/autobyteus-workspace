@@ -29,6 +29,7 @@ const shellMessages = {
   'shell.rightTabs.files': 'Files',
   'shell.rightTabs.team': 'Team',
   'shell.rightTabs.org': 'Org',
+  'shell.rightTabs.messages': 'Messages',
   'shell.rightTabs.agentOrg': 'Agent Org',
   'shell.rightTabs.terminal': 'Terminal',
   'shell.rightTabs.usage': 'Token',

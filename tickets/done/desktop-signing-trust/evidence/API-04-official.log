@@ -1,0 +1,20 @@
+API-04: official metadata only | node evidence/API-04-readonly.mjs via ticket path + node scripts/desktop-package/check-release-trust.mjs (discovery, then explicit run 44685600710)
+2026-11-20 UTC | 3a693c7d4f (IR-002 291a6c0d33) | Ubuntu x64, Node 22.23.2, Python 3.14.4, gh 2.46.0
+
+2026-11-20T07:45:21+00:00
+{"checkedAt":"2026-11-20T07:45:26.601Z","fingerprint":"e26a2e7404817c8277f6d64d2bd77e40852c172f576f18ebd673a4070ad9debe","publicUpdated":"2026-11-20T07:17:52Z","environment":"desktop-release-signing","environmentId":27960596791,"policy":[{"name":"v*.*.*","type":"tag"}],"secretName":"DESKTOP_RELEASE_PRIVATE_KEY","secretUpdated":"2026-11-20T07:17:58Z","claimAbsent":true}
+First-use refused; managed published sidecars observed: [["v1.5.14-beta.2","AutoByteus_personal_linux-x64-1.5.14-beta.2.AppImage.release.json.sig"],["v1.5.14-beta.2","AutoByteus_personal_linux-x64-1.5.14-beta.2.AppImage.release.json"],["v1.5.14-beta.2","AutoByteus_personal_linux-arm64-1.5.14-beta.2.AppImage.release.json.sig"],["v1.5.14-beta.2","AutoByteus_personal_linux-arm64-1.5.14-beta.2.AppImage.release.json"]]
+Desktop signing witness: {
+  fingerprint: 'e26a2e7404817c8277f6d64d2bd77e40852c172f576f18ebd673a4070ad9debe',
+  tag: 'v1.5.14-beta.2',
+  sha: 'a728fbcad32a21410e7427bdc70aed9a5baed528',
+  runId: 44685600710,
+  attempt: 2
+}
+Desktop signing witness: {
+  fingerprint: 'e26a2e7404817c8277f6d64d2bd77e40852c172f576f18ebd673a4070ad9debe',
+  tag: 'v1.5.14-beta.2',
+  sha: 'a728fbcad32a21410e7427bdc70aed9a5baed528',
+  runId: 44685600710,
+  attempt: 2
+}

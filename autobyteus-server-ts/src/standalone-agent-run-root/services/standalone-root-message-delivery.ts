@@ -134,7 +134,7 @@ export class StandaloneRootMessageDelivery {
     if (!this.options.getIndex().isRunAgent(receiver) || !this.options.agent.getActiveRun()?.isActive()) return Promise.resolve(remoteTargetNotRunning(receiver));
     return this.options.getCommunication().acceptFromRemote({ message: input.message,
       endpoint: unlinkedRunEndpoint({ nodeId: input.fromNodeId, agentRunId: input.message.senderAgentRunId, pairedAgentRunId: receiver }),
-      receiverIdentity: this.agentIdentity(), receiverDisplayName: this.hostName(), senderNodeName: input.fromNodeName });
+      receiverIdentity: this.agentIdentity(), receiverDisplayName: this.hostName(), senderNodeName: input.fromNodeName, senderAddress: input.senderAddress });
   }
 
   /** The inbound order from a peer: the link check, then the run's agent is made ready (N-8), then the engine admits it. */
@@ -142,7 +142,7 @@ export class StandaloneRootMessageDelivery {
     const endpoint = this.options.remoteLinks.inboundEndpoint(input.fromNodeId, input.message.senderAgentRunId, input.message.receiverAgentRunId);
     if (!endpoint || !this.options.getIndex().isRunAgent(input.message.receiverAgentRunId)) return Promise.resolve(notLinked);
     return this.whenReady(() => this.options.getCommunication().acceptFromRemote({
-      message: input.message, endpoint, receiverIdentity: this.agentIdentity(), receiverDisplayName: this.hostName(), senderNodeName: input.fromNodeName,
+      message: input.message, endpoint, receiverIdentity: this.agentIdentity(), receiverDisplayName: this.hostName(), senderNodeName: input.fromNodeName, senderAddress: input.senderAddress,
     }));
   }
 

@@ -30,24 +30,3 @@ export const CancelPreparedAgentRun = gql`
     }
   }
 `;
-
-export const RestoreAgentRun = gql`
-  mutation RestoreAgentRun($agentRunId: String!) {
-    restoreAgentRun(agentRunId: $agentRunId) {
-      __typename
-      success
-      message
-      runId
-    }
-  }
-`;
-
-export const ApproveToolInvocation = gql`
-  mutation ApproveToolInvocation($input: ApproveToolInvocationInput!) {
-    approveToolInvocation(input: $input) {
-      __typename
-      success
-      message
-    }
-  }
-`;

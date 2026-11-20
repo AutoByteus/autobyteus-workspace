@@ -1,0 +1,6 @@
+
+> autobyteus@1.5.14-beta.3 test:e2e:background-contention /Users/normy/autobyteus_org/autobyteus-worktrees/follow-ups-448-final/autobyteus-web
+> node tests/e2e/background-agent-renderer-contention-probe.mjs --output-dir /tmp/r2-bg-base
+
+Background contention browser probe failed. See /tmp/r2-bg-base/evidence.json
+ ELIFECYCLE  Command failed with exit code 1.

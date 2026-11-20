@@ -42,5 +42,7 @@ export type TeamRunEvent =
 export const isTeamRunMessageEvent = (event: TeamRunEvent): boolean =>
   event.eventSourceType === TeamRunEventSourceType.COMMUNICATION;
 /** A committed message as the Team's message event (SR-072: the node's message feed numbers it in each view). */
-export const teamRunMessageEvent = (message: CollaborationCommunicationMessage): TeamRunEvent => ({ eventSourceType: TeamRunEventSourceType.COMMUNICATION, payload: message });
+/** A Team view names its messages' agents from its own tree; a message's parties are not part of its event (autobyteus-565). */
+export const teamRunMessageEvent = (input: Readonly<{ message: CollaborationCommunicationMessage }>): TeamRunEvent =>
+  ({ eventSourceType: TeamRunEventSourceType.COMMUNICATION, payload: input.message });
 

@@ -364,20 +364,6 @@ const runLatest100 = () => {
     topologyRevision: runHistoryStore.navigationTopologyRevision,
   };
 };
-const inspectHierarchy = () => {
-  const team = runHistoryStore.navigationProjection?.teamNodes.find(
-    (candidate) => candidate.teamRunId === richTeam.view.getRootTeamRunId(),
-  );
-  return {
-    focusedAgentRunId: team?.focusedAgentRunId,
-    rows: team?.executionRows.map((row) => ({
-      kind: row.kind, memberAddress: row.memberAddress, agentRunId: row.agentRunId, depth: row.depth,
-      hasChildren: row.hasChildren,
-      delegatedRunKind: row.kind === 'delegated_run' ? row.delegatedRunKind : null,
-      status: row.kind === 'delegated_run' ? row.currentStatus : row.row.currentStatus,
-    })) ?? [],
-  };
-};
 const pasteFile = async (name = 'delayed-proof.txt') => {
   const target = document.querySelector('[data-test="composer-attachments"] [data-file-drop-target="true"]');
   if (!target) throw new Error('Paste target unavailable');
@@ -505,7 +491,7 @@ onMounted(() => {
   const globalWindow = window as typeof window & { __backgroundContentionProbe?: Record<string, unknown> };
   document.addEventListener('click', captureVoiceClick, true);
   globalWindow.__backgroundContentionProbe = {
-    startLoad, waitLoad, switchSurface, runNoEffectCheck, runLatest100, inspectHierarchy, pasteFile, resetVoice,
+    startLoad, waitLoad, switchSurface, runNoEffectCheck, runLatest100, pasteFile, resetVoice,
     armVoiceTimeline,
     getVoiceTimeline: () => ({ ...voiceTimeline, isStarting: voiceInputStore.isStarting, isRecording: voiceInputStore.isRecording }),
     getActionLatencies: () => [...actionLatencies.value],

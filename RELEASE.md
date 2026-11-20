@@ -14,6 +14,64 @@ For what each release workflow builds, signs and validates, and for the
 required secrets, see [Workflow Reference](#workflow-reference) at the end of
 this file.
 
+## Desktop signing readiness (before any stable or beta tag)
+
+From the official checkout, run `node scripts/desktop-package/check-release-trust.mjs`
+with an authenticated GitHub CLI login that can inspect the repository and
+environment settings. The stable/prepare and beta helpers call this read-only
+check automatically, **including with `--no-push`**, before changing the
+release tree or creating a tag. A missing permission or incomplete response is
+not evidence of a safe configuration.
+
+- Builds get **only** the repository Ed25519 public variable. The matching
+  private secret must exist only in the desktop signing environment with
+  one custom **tag** policy `v*.*.*`, no branches, reviewer or timer.
+- A secret name cannot establish that its bytes match. Require a successful
+  official tag-push Desktop Release run, its exact successful signing job and
+  step on that attempt, reviewed signing code at the resolved tag commit,
+  and both canonical signed release records under the current public key.
+  Environment and key metadata must predate job start; a changed secret,
+  re-created environment or ambiguous timestamp needs a new witness. The
+  checker searches up to 60 successful tag workflow candidates. To select an
+  older one use `DESKTOP_RELEASE_WITNESS_RUN_ID=<official-run-id>`; this
+  does not relax verification. Reviewed workflow/signer hash pins are in the
+  checker. Review contract changes before updating them. Signer-side equality
+  checks remain mandatory: preflight cannot prevent later admin edits.
+- **No current witness:** stop. The release owner can decide whether to finish
+  an already authorized existing-tag release to establish the first witness.
+  Do not create a bootstrap tag, sign locally with the production key, open
+  branch access, rerun on a competing node, or generate another key.
+
+**Initial setup is not a release step.** Only the designated, authorized
+custodian, in an exclusive operator window, may run
+`(ulimit -c 0; node scripts/desktop-package/generate-desktop-signing-key.mjs)`.
+Use a trusted local owner-controlled home outside Git/cloud/shared storage, no
+debugging or tracing. Empty settings or an empty home alone do **not** prove
+first use. Before claiming or generating a key the generator checks official
+release assets (including legacy releases) for managed Linux sidecars and
+inspects Desktop Release attempts since the protected job was introduced.
+The known failed initial tag with its skipped signer and unrelated assets is
+eligible; a signed sidecar, an executed signer, or unavailable, changed or
+incomplete evidence requires reconciliation with the custodian. Do not
+bootstrap by deleting settings. This is not the positive pre-tag witness.
+After rechecking scopes, the generator acquires a create-only repository claim, creates one 0600 backup under a 0700 directory, reads back
+tag-only protection and the public anchor, and sets the environment secret
+through stdin. Record only nonsecret fingerprint/IDs/times and successful
+submission, **not** remote content verification. Promptly relay this footprint
+and separately the **local backup path only**. Do not attach, print or copy
+the private key into another file. Do not inspect the founder's password manager.
+
+Retain the sole local backup until the founder explicitly confirms it was
+saved. Then use the nonsecret receipt to remove the exact owned file:
+`node scripts/desktop-package/generate-desktop-signing-key.mjs --remove-saved-backup FINGERPRINT DEV:INO PATH`.
+Verify absence; unlink is not a guarantee about storage snapshots. Unknown
+write result, unexpected state or surviving claim: stop and reconcile with
+the owner; do not clear the claim, retry an upload blindly or overwrite the
+backup. The default never replaces existing trust. Only a separately authorized
+coordinated rotation can use `--replace EXPECTED_OLD_SPKI_SHA256`, after a
+current witness and safe client-transition plan. A rotation is **not**
+authorized merely because an installation or preflight failed.
+
 ## Finalization Target
 
 - Remote `origin`, branch `personal`. Ticket branches are `codex/<ticket-name>`.
@@ -100,6 +158,10 @@ The user decides at verification. There are three options:
   taken from the ticket's `release-notes.md`.
 
 ## Checks Before Tagging
+
+For both stable and beta, the release helper also checks [desktop signing
+readiness](#desktop-signing-readiness-before-any-stable-or-beta-tag) before
+it changes a version or creates a tag. This applies even with `--no-push`.
 
 Run these checks on the merged `personal` state. The release workflows run
 the first two too, but by then the tag is already pushed. They do not run the
@@ -520,7 +582,7 @@ What the release workflows build, validate and need.
   - iOS automation uses `.github/workflows/release-ios.yml`
   - release tags and publish-enabled manual runs build/test first, then require complete iOS/App Store Connect secrets before signed archive/export/upload
   - manual workflow-dispatch build-only runs use `publish_app_store_connect=false` and upload private simulator build/test artifacts without requiring Apple distribution secrets
-  - simulator build/test and App Store archive/upload jobs select Xcode 26 or newer through `IOS_XCODE_APP_PATH` (default `/Applications/Xcode_26.3.app`) and log the selected Xcode plus iPhoneOS SDK before invoking `xcodebuild`
+  - simulator build/test and App Store archive/upload jobs run on GitHub's `xcode-27` runner image and select Xcode through `IOS_XCODE_APP_PATH` (default `/Applications/Xcode_27.2.app`) with `autobyteus-ios/scripts/select-release-xcode.sh`, which fails the job unless the Xcode and its iPhoneOS SDK are major version 27 or newer (App Store Connect refuses apps built with an older SDK, ITMS-90725) and logs the selected Xcode plus iPhoneOS SDK before invoking `xcodebuild`
   - publish requests with missing iOS secrets fail fast with exact missing `IOS_*` / `APP_STORE_CONNECT_*` names before keychain/profile/archive/upload
   - prerelease tags split metadata for App Store compatibility: `v1.2.7-rc1` builds with `MARKETING_VERSION=1.2.7`, uses numeric GitHub run number for `CURRENT_PROJECT_VERSION`, and keeps `1.2.7-rc1` only in artifact names/summaries
   - `IOS_BUNDLE_ID` and `IOS_SHARE_EXTENSION_BUNDLE_ID` drive generated Xcode target bundle IDs, simulator build/test/smoke, profile verification, archive/export mapping, and summaries

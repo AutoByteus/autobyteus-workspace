@@ -1,0 +1,452 @@
+IMP-04 | F-CR-001 | source 291a6c0d33 | 2026-11-20 07:38 UTC, Linux x64 Node 22.23.2
+Original repro on review baseline 72d59d7796: node tickets/in-progress/desktop-signing-trust/evidence/CRR-001-preclaim.mjs reached "first mutation would be claim POST (intercepted)" with clean disposable home and no release-history query. No write.
+Clean git archive (scripts, autobyteus-web/linux-install/contract and .github/workflows), temporary HOME and cwd; PATH/LANG only, no project install or production inputs: node --test scripts/desktop-package/*.test.mjs
+TAP version 13
+# Subtest: current generation with both verified architectures; unrelated failed run not authoritative
+ok 1 - current generation with both verified architectures; unrelated failed run not authoritative
+  ---
+  duration_ms: 8.380842
+  type: 'test'
+  ...
+# Subtest: missing secret refuses
+ok 2 - missing secret refuses
+  ---
+  duration_ms: 1.050362
+  type: 'test'
+  ...
+# Subtest: branch policy refuses
+ok 3 - branch policy refuses
+  ---
+  duration_ms: 0.754965
+  type: 'test'
+  ...
+# Subtest: extra policy refuses
+ok 4 - extra policy refuses
+  ---
+  duration_ms: 0.718274
+  type: 'test'
+  ...
+# Subtest: review gate refuses
+ok 5 - review gate refuses
+  ---
+  duration_ms: 0.703512
+  type: 'test'
+  ...
+# Subtest: setup claim refuses
+ok 6 - setup claim refuses
+  ---
+  duration_ms: 0.512728
+  type: 'test'
+  ...
+# Subtest: public-only input refuses
+ok 7 - public-only input refuses
+  ---
+  duration_ms: 0.785928
+  type: 'test'
+  ...
+# Subtest: secret updated at job start refuses
+ok 8 - secret updated at job start refuses
+  ---
+  duration_ms: 0.836918
+  type: 'test'
+  ...
+# Subtest: later creation refuses
+ok 9 - later creation refuses
+  ---
+  duration_ms: 1.035117
+  type: 'test'
+  ...
+# Subtest: recreated env refuses
+ok 10 - recreated env refuses
+  ---
+  duration_ms: 1.243333
+  type: 'test'
+  ...
+# Subtest: anchor overwritten refuses
+ok 11 - anchor overwritten refuses
+  ---
+  duration_ms: 0.971515
+  type: 'test'
+  ...
+# Subtest: job failed refuses
+ok 12 - job failed refuses
+  ---
+  duration_ms: 0.89557
+  type: 'test'
+  ...
+# Subtest: wrong attempt refuses
+ok 13 - wrong attempt refuses
+  ---
+  duration_ms: 0.794376
+  type: 'test'
+  ...
+# Subtest: wrong repo refuses
+ok 14 - wrong repo refuses
+  ---
+  duration_ms: 0.697346
+  type: 'test'
+  ...
+# Subtest: manual run refuses
+ok 15 - manual run refuses
+  ---
+  duration_ms: 0.682037
+  type: 'test'
+  ...
+# Subtest: unbound tag refuses
+ok 16 - unbound tag refuses
+  ---
+  duration_ms: 0.777488
+  type: 'test'
+  ...
+# Subtest: different signer code refuses
+ok 17 - different signer code refuses
+  ---
+  duration_ms: 0.741457
+  type: 'test'
+  ...
+# Subtest: label only refuses
+ok 18 - label only refuses
+  ---
+  duration_ms: 0.673187
+  type: 'test'
+  ...
+# Subtest: missing arch refuses
+ok 19 - missing arch refuses
+  ---
+  duration_ms: 0.9996
+  type: 'test'
+  ...
+# Subtest: wrong version refuses
+ok 20 - wrong version refuses
+  ---
+  duration_ms: 0.776021
+  type: 'test'
+  ...
+# Subtest: superseded asset refuses
+ok 21 - superseded asset refuses
+  ---
+  duration_ms: 0.70879
+  type: 'test'
+  ...
+# Subtest: wrong public key refuses
+ok 22 - wrong public key refuses
+  ---
+  duration_ms: 2.178443
+  type: 'test'
+  ...
+# Subtest: invalid arm64 signature refuses
+ok 23 - invalid arm64 signature refuses
+  ---
+  duration_ms: 1.08388
+  type: 'test'
+  ...
+# Subtest: metadata not record refuses
+ok 24 - metadata not record refuses
+  ---
+  duration_ms: 0.866387
+  type: 'test'
+  ...
+# Subtest: permission failure refuses
+ok 25 - permission failure refuses
+  ---
+  duration_ms: 0.741811
+  type: 'test'
+  ...
+# Subtest: no successful current witness, including first bootstrap
+ok 26 - no successful current witness, including first bootstrap
+  ---
+  duration_ms: 0.948259
+  type: 'test'
+  ...
+# Subtest: ordered first setup, sole backup, no accidental replacement
+ok 27 - ordered first setup, sole backup, no accidental replacement
+  ---
+  duration_ms: 10.039978
+  type: 'test'
+  ...
+# Subtest: interruption after material write 1 cannot regenerate
+ok 28 - interruption after material write 1 cannot regenerate
+  ---
+  duration_ms: 0.915071
+  type: 'test'
+  ...
+# Subtest: interruption after material write 2 cannot regenerate
+ok 29 - interruption after material write 2 cannot regenerate
+  ---
+  duration_ms: 1.490311
+  type: 'test'
+  ...
+# Subtest: interruption after material write 3 cannot regenerate
+ok 30 - interruption after material write 3 cannot regenerate
+  ---
+  duration_ms: 1.593741
+  type: 'test'
+  ...
+# Subtest: interruption after material write 4 cannot regenerate
+ok 31 - interruption after material write 4 cannot regenerate
+  ---
+  duration_ms: 2.41395
+  type: 'test'
+  ...
+# Subtest: interruption after material write 5 cannot regenerate
+ok 32 - interruption after material write 5 cannot regenerate
+  ---
+  duration_ms: 2.131148
+  type: 'test'
+  ...
+# Subtest: interruption after material write 6 cannot regenerate
+ok 33 - interruption after material write 6 cannot regenerate
+  ---
+  duration_ms: 2.569157
+  type: 'test'
+  ...
+# Subtest: claimed or partial setup refuses before generation
+ok 34 - claimed or partial setup refuses before generation
+  ---
+  duration_ms: 0.563673
+  type: 'test'
+  ...
+# Subtest: stdin-only exact destination; child diagnostics not surfaced on failure
+ok 35 - stdin-only exact destination; child diagnostics not surfaced on failure
+  ---
+  duration_ms: 0.725005
+  type: 'test'
+  ...
+# Subtest: claim race is create-only; second operator cannot create file
+ok 36 - claim race is create-only; second operator cannot create file
+  ---
+  duration_ms: 0.79025
+  type: 'test'
+  ...
+# Subtest: explicit saved confirmation and exact backup identity required
+ok 37 - explicit saved confirmation and exact backup identity required
+  ---
+  duration_ms: 3.456278
+  type: 'test'
+  ...
+# Subtest: inventory fails closed on wider declarations, shadow/claim, denied or truncated lists
+ok 38 - inventory fails closed on wider declarations, shadow/claim, denied or truncated lists
+  ---
+  duration_ms: 1.129104
+  type: 'test'
+  ...
+# Subtest: disposable rotation checks the prior witness and fingerprint; unused on production
+ok 39 - disposable rotation checks the prior witness and fingerprint; unused on production
+  ---
+  duration_ms: 5.456287
+  type: 'test'
+  ...
+# Subtest: unsafe directory or existing destination never overwritten
+ok 40 - unsafe directory or existing destination never overwritten
+  ---
+  duration_ms: 0.791227
+  type: 'test'
+  ...
+# Subtest: changed protection or lost claim refuses before upload and preserves custody
+ok 41 - changed protection or lost claim refuses before upload and preserves custody
+  ---
+  duration_ms: 2.09417
+  type: 'test'
+  ...
+# Subtest: CLI refuses tracing before it can acquire a claim or generate material
+ok 42 - CLI refuses tracing before it can acquire a claim or generate material
+  ---
+  duration_ms: 42.134579
+  type: 'test'
+  ...
+# Subtest: empty settings do not allow first provisioning: one prior signed sidecar on an older release
+ok 43 - empty settings do not allow first provisioning: one prior signed sidecar on an older release
+  ---
+  duration_ms: 0.693192
+  type: 'test'
+  ...
+# Subtest: empty settings do not allow first provisioning: prior signer executed but assets absent
+ok 44 - empty settings do not allow first provisioning: prior signer executed but assets absent
+  ---
+  duration_ms: 0.446469
+  type: 'test'
+  ...
+# Subtest: empty settings do not allow first provisioning: prior ambiguous execution
+ok 45 - empty settings do not allow first provisioning: prior ambiguous execution
+  ---
+  duration_ms: 0.365969
+  type: 'test'
+  ...
+# Subtest: empty settings do not allow first provisioning: active managed release
+ok 46 - empty settings do not allow first provisioning: active managed release
+  ---
+  duration_ms: 0.361198
+  type: 'test'
+  ...
+# Subtest: empty settings do not allow first provisioning: release metadata denied
+ok 47 - empty settings do not allow first provisioning: release metadata denied
+  ---
+  duration_ms: 0.361501
+  type: 'test'
+  ...
+# Subtest: empty settings do not allow first provisioning: job metadata denied
+ok 48 - empty settings do not allow first provisioning: job metadata denied
+  ---
+  duration_ms: 0.437803
+  type: 'test'
+  ...
+# Subtest: empty settings do not allow first provisioning: release disappeared
+ok 49 - empty settings do not allow first provisioning: release disappeared
+  ---
+  duration_ms: 0.368482
+  type: 'test'
+  ...
+# Subtest: empty settings do not allow first provisioning: previously observed run unavailable
+ok 50 - empty settings do not allow first provisioning: previously observed run unavailable
+  ---
+  duration_ms: 0.356485
+  type: 'test'
+  ...
+# Subtest: empty settings do not allow first provisioning: unknown workflow code
+ok 51 - empty settings do not allow first provisioning: unknown workflow code
+  ---
+  duration_ms: 0.432706
+  type: 'test'
+  ...
+# Subtest: empty settings do not allow first provisioning: partial release page
+ok 52 - empty settings do not allow first provisioning: partial release page
+  ---
+  duration_ms: 0.328796
+  type: 'test'
+  ...
+# Subtest: empty settings do not allow first provisioning: partial asset listing
+ok 53 - empty settings do not allow first provisioning: partial asset listing
+  ---
+  duration_ms: 0.403378
+  type: 'test'
+  ...
+# Subtest: empty settings do not allow first provisioning: attempt mismatch
+ok 54 - empty settings do not allow first provisioning: attempt mismatch
+  ---
+  duration_ms: 0.398582
+  type: 'test'
+  ...
+# Subtest: empty settings do not allow first provisioning: missing signer
+ok 55 - empty settings do not allow first provisioning: missing signer
+  ---
+  duration_ms: 0.406253
+  type: 'test'
+  ...
+# Subtest: empty settings do not allow first provisioning: earlier successful attempt later skipped
+ok 56 - empty settings do not allow first provisioning: earlier successful attempt later skipped
+  ---
+  duration_ms: 0.435098
+  type: 'test'
+  ...
+# Subtest: complete paginated history with unsigned legacy workflow and originally skipped managed signer permits first setup
+ok 57 - complete paginated history with unsigned legacy workflow and originally skipped managed signer permits first setup
+  ---
+  duration_ms: 2.802331
+  type: 'test'
+  ...
+# Subtest: scope conflict appearing during read-only history inspection still refuses before claim
+ok 58 - scope conflict appearing during read-only history inspection still refuses before claim
+  ---
+  duration_ms: 0.417951
+  type: 'test'
+  ...
+# Subtest: production trust cannot use absent provisioning or a build-only key implicitly
+ok 59 - production trust cannot use absent provisioning or a build-only key implicitly
+  ---
+  duration_ms: 123.942285
+  type: 'test'
+  ...
+# Subtest: build-only trust is fresh, separate from supplied production public key
+ok 60 - build-only trust is fresh, separate from supplied production public key
+  ---
+  duration_ms: 33.351733
+  type: 'test'
+  ...
+# Subtest: signing/metadata CLI binds exact final bytes, canonical asset, version, arch and key
+ok 61 - signing/metadata CLI binds exact final bytes, canonical asset, version, arch and key
+  ---
+  duration_ms: 446.999066
+  type: 'test'
+  ...
+# Subtest: canonical
+ok 62 - canonical
+  ---
+  duration_ms: 2.124546
+  type: 'test'
+  ...
+# Subtest: duplicate
+ok 63 - duplicate
+  ---
+  duration_ms: 0.362491
+  type: 'test'
+  ...
+# Subtest: unknown
+ok 64 - unknown
+  ---
+  duration_ms: 0.162274
+  type: 'test'
+  ...
+# Subtest: missing
+ok 65 - missing
+  ---
+  duration_ms: 0.223464
+  type: 'test'
+  ...
+# Subtest: float
+ok 66 - float
+  ---
+  duration_ms: 0.167197
+  type: 'test'
+  ...
+# Subtest: channel
+ok 67 - channel
+  ---
+  duration_ms: 0.194972
+  type: 'test'
+  ...
+# Subtest: version
+ok 68 - version
+  ---
+  duration_ms: 0.168275
+  type: 'test'
+  ...
+# Subtest: writer
+ok 69 - writer
+  ---
+  duration_ms: 0.122518
+  type: 'test'
+  ...
+# Subtest: too-large
+ok 70 - too-large
+  ---
+  duration_ms: 0.49822
+  type: 'test'
+  ...
+# Subtest: no-newline
+ok 71 - no-newline
+  ---
+  duration_ms: 0.505019
+  type: 'test'
+  ...
+# Subtest: wrong-product
+ok 72 - wrong-product
+  ---
+  duration_ms: 0.196737
+  type: 'test'
+  ...
+# Subtest: wrong-signature
+ok 73 - wrong-signature
+  ---
+  duration_ms: 0.247277
+  type: 'test'
+  ...
+1..73
+# tests 73
+# suites 0
+# pass 73
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 665.632519
+git diff 72d59d7796..291a6c0d33 --check: exit 0.

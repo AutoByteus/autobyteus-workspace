@@ -34,6 +34,13 @@ class DesktopReleaseBetaCommandTest(unittest.TestCase):
         self.git(self.repo, "remote", "add", "origin", str(self.origin))
 
         (self.repo / "scripts").mkdir()
+        # Release mechanics use a stand-in only inside this disposable checkout.
+        checker = self.repo / "scripts/desktop-package/check-release-trust.mjs"
+        checker.parent.mkdir()
+        self.deny = self.tmp / "deny"
+        checker.write_text("import {existsSync} from 'node:fs';\n"
+                           f"if(existsSync({json.dumps(str(self.deny))})) "
+                           "{console.error('trust refused');process.exit(1)}\n")
         shutil.copy(RELEASE_SCRIPT, self.repo / "scripts" / "desktop-release.sh")
         shutil.copy(RELEASE_VERSIONS_HELPER, self.repo / "scripts" / "release_versions.py")
         (self.repo / "autobyteus-web").mkdir()
@@ -82,6 +89,18 @@ class DesktopReleaseBetaCommandTest(unittest.TestCase):
     def origin_tags(self) -> set:
         output = self.git(self.repo, "ls-remote", "--tags", "--refs", "origin")
         return {line.split("refs/tags/")[1] for line in output.splitlines() if "refs/tags/" in line}
+
+    def test_both_tag_creators_refuse_before_mutation_even_no_push(self) -> None:
+        self.deny.touch()
+        before = (self.git(self.repo, "rev-parse", "HEAD"), self.git(self.repo, "show-ref"), self.origin_tags())
+        for action in (["beta"], ["release", "1.4.91", "--release-notes", CURATED_NOTES]):
+            for flags in ([], ["--no-push"]):
+                result = self.release(*action, *flags)
+                self.assertNotEqual(0, result.returncode)
+                self.assertIn("trust refused", result.stderr)
+                self.assertEqual(before, (self.git(self.repo, "rev-parse", "HEAD"),
+                                          self.git(self.repo, "show-ref"), self.origin_tags()))
+                self.assertEqual("", self.git(self.repo, "status", "--porcelain"))
 
     def test_beta_twice_publishes_consecutive_betas_without_curated_notes(self) -> None:
         notes_before = (self.repo / CURATED_NOTES).read_text(encoding="utf-8")

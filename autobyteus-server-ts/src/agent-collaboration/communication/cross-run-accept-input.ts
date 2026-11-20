@@ -10,10 +10,10 @@ export type CrossRunAcceptInput = Readonly<{
   /** The gate-head re-check from the Task side (AR-017); throws a Task refusal. */
   assertAllowed(): void;
   /**
-   * autobyteus-492 G-1 (DEC-014): whether the message enters run views (the Team tab): `true` between runs of one Task
-   * tree (related), `false` between unrelated runs, which stay out of run views like a message with another node.
+   * How the two runs relate (autobyteus-565): a Task relates them, or not (autobyteus-492 CM-13). `MessageViewScope`
+   * decides from it which views show the message; an unrelated message records its sender on the receiver's line.
    */
-  publishToViews: boolean;
+  relation: "related" | "unrelated";
 }>;
 
 /** The receiver is not an agent of this run (the run that the Task records name for it does not have it). */

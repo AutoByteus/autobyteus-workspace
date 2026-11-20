@@ -53,7 +53,7 @@ Simulator smoke path with a fake AutoByteus node:
 autobyteus-ios/scripts/ios-simulator-smoke.sh tickets/ios-wrapper-app/e2e-evidence
 ```
 
-The smoke script starts a local fake `/rest/remote-access/status` + `/mobile` server, injects the fake URL through UI-test build settings/Info.plist, runs the UI smoke tests (the fake node through Type an address, Can't reach, and the demo: Try demo, the demo code, the demo link, Leave demo, a kept share, the blocked network), fails if those tests skip, stores an `.xcresult` with screenshots, and captures signing-readiness output. API/E2E owns authoritative simulator evidence; implementation may run this as a confidence check when time/environment allow.
+The smoke script (like the release workflow's simulator build and tests) runs on the simulator `scripts/select-ios-simulator.py` chooses: the device named exactly `IOS_SIMULATOR_NAME` (default `iPhone 17`) on the newest available iOS runtime the selected Xcode can run (not above its iOS simulator SDK), else the first iPhone there with a notice. The smoke script starts a local fake `/rest/remote-access/status` + `/mobile` server, injects the fake URL through UI-test build settings/Info.plist, runs the UI smoke tests (the fake node through Type an address, Can't reach, and the demo: Try demo, the demo code, the demo link, Leave demo, a kept share, the blocked network), fails if those tests skip, stores an `.xcresult` with screenshots, and captures signing-readiness output. API/E2E owns authoritative simulator evidence; implementation may run this as a confidence check when time/environment allow.
 
 GitHub-hosted simulators are intermittently very slow, so the UI smoke tests wait for readiness (hittable controls, keyboard focus) with generous upper bounds instead of fixed waits. On a loaded simulator a delivered tap can have no effect, so before Connect the tests confirm that the URL field holds the typed node URL and that the HTTP acknowledgement switch is on: the switch state is checked before each tap and re-tapped up to 3 times, never toggling it off. The tests launch the app, including the restore relaunch, with `AUTOBYTEUS_CONNECTION_TIMEOUT_SECONDS=60`. That launch-environment override of the app's connection-check timeout is compiled only into Debug builds, which the scheme's test action uses; Release/TestFlight builds always keep the 5 s default (values above 120 s are capped; invalid values are ignored).
 
@@ -131,12 +131,12 @@ IOS_BUNDLE_ID=org.autobyteus.mobile
 IOS_SHARE_EXTENSION_BUNDLE_ID=org.autobyteus.mobile.share
 IOS_APP_SCHEME=AutoByteusMobile
 IOS_ARTIFACT_PREFIX=AutoByteus_personal_ios
-IOS_XCODE_APP_PATH=/Applications/Xcode_26.3.app
+IOS_XCODE_APP_PATH=/Applications/Xcode_27.2.app
 ```
 
 `IOS_BUNDLE_ID` and `IOS_SHARE_EXTENSION_BUNDLE_ID` are the single app/share target bundle-ID authority. The XcodeGen project defines target bundle identifiers from those build settings, and the workflow passes the same values to simulator build/test/smoke, profile verification, archive, `ExportOptions.plist`, and summaries.
 
-`IOS_XCODE_APP_PATH` selects the Xcode app bundle used by both the simulator build/test job and the App Store Connect archive/upload job. The workflow sets `DEVELOPER_DIR`, requires the selected Xcode major version to be 26 or newer, and logs the selected Xcode plus iPhoneOS SDK before building or archiving. Override this variable only when the GitHub-hosted runner moves the required Xcode 26+ installation to a different app path.
+`IOS_XCODE_APP_PATH` selects the Xcode app bundle used by both the simulator build/test job and the App Store Connect archive/upload job; both jobs run on GitHub's `xcode-27` runner image. `scripts/select-release-xcode.sh` sets `DEVELOPER_DIR`, requires the selected Xcode and its iPhoneOS SDK to be major version 27 or newer (App Store Connect refuses apps built with an older SDK, ITMS-90725), and logs the selected Xcode plus iPhoneOS SDK before building or archiving. When the app path is missing, its error lists the installed Xcode apps. Override this variable only when the runner image no longer has `/Applications/Xcode_27.2.app` (for example when GitHub retires that version); the workflow's `env` holds the only default.
 
 Release metadata is split for App Store compatibility. For a tag such as `v1.2.7-rc1`, the workflow uses `ios_marketing_version=1.2.7` for `MARKETING_VERSION` / `CFBundleShortVersionString`, keeps `artifact_version=1.2.7-rc1` for artifact names, records `prerelease_label=rc1` for summaries/TestFlight notes, and uses numeric `GITHUB_RUN_NUMBER` for `CURRENT_PROJECT_VERSION` / `CFBundleVersion`.
 

@@ -1,0 +1,8 @@
+# Merged state 09e8c7270c (origin/personal ca4317a386 merged into codex/standalone-run-messages-565)
+# Command (worktree root): pnpm install --frozen-lockfile   (both sides changed autobyteus-web/package.json; the base changed pnpm-lock.yaml)
+Done in 1.4s using pnpm v10.28.2
+exit=0
+
+# Command: pnpm -C autobyteus-web codegen:check   (both sides changed generated/graphql.ts)
+autobyteus-web/generated/graphql.ts is current.
+exit=0

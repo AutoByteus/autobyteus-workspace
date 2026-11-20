@@ -51,6 +51,7 @@ const messages = {
   "workspace.collaboration.identity.hostRun": "Host run",
   "workspace.collaboration.identity.executionRun": "Execution run",
   "workspace.collaboration.identity.teamRun": "Team run",
+  "workspace.collaboration.identity.node": "Node",
   "workspace.agentOrg.history.collectionLabel": "Orgs",
   "workspace.agentOrg.history.stopLabel": "Stop Agent Org",
   "workspace.agentOrg.history.archiveLabel": "Archive Agent Org history",
@@ -207,6 +208,16 @@ const messages = {
     "No team messages yet",
   "workspace.components.workspace.team.TeamCommunicationPanel.empty_detail":
     "Accepted inter-agent messages will appear here with their reference files.",
+  "workspace.components.workspace.team.TeamCommunicationPanel.empty_title_own":
+    "No messages yet",
+  "workspace.components.workspace.team.TeamCommunicationPanel.empty_detail_own":
+    "Messages this agent sends or receives will appear here with their reference files.",
+  "workspace.components.workspace.team.TeamCommunicationPanel.load_more":
+    "Load more",
+  "workspace.components.workspace.team.TeamCommunicationPanel.loading_more":
+    "Loading…",
+  "workspace.components.workspace.team.TeamCommunicationPanel.load_more_failed":
+    "Couldn't load more messages",
   "workspace.components.workspace.team.TeamCommunicationPanel.select_message":
     "Select a message to read the full content.",
   "workspace.components.workspace.team.TeamCommunicationPanel.loading_reference":

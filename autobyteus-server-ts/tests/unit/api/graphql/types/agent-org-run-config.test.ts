@@ -16,6 +16,7 @@ vi.mock('../../../../../src/api/graphql/studio-application-api-services.js', () 
 vi.mock('../../../../../src/run-history/services/agent-org-member-run-view-projection-service.js', () => ({ getAgentOrgMemberRunViewProjectionService: () => memberViews }));
 import { AgentOrgRunResolver } from '../../../../../src/api/graphql/types/agent-org-run.js';
 import { RunViewStreams } from '../../../../../src/agent-collaboration/delegation/run-view-stream.js';
+import { MessageViewScope } from '../../../../../src/agent-collaboration/delegation/message-view-scope.js';
 import { createAgentOrgRootExecutionIdentity } from '../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js';
 import { buildGraphqlSchema } from '../../../../../src/api/graphql/schema.js';
 const tree = { schemaVersion: 1, subjectKind: 'agent_org', createdAt: '2026-09-17T00:00:00Z', archivedAt: null,
@@ -107,7 +108,7 @@ describe('whole AgentOrg model configuration GraphQL transport', () => {
 
 describe('AgentOrg execution checkpoint (autobyteus-461 SR-045, SR-062)', () => {
   it('a stopped Org\'s checkpoint is its view\'s sequence, with no open work of its own', () => {
-    const streams = new RunViewStreams({ agent: () => false, agent_team: () => false, agent_org: () => false }, { tree: { chainOf: (run) => [run], collaborationTreeOf: () => ({ rows: () => [] }) as never }, events: { agent: (message) => message, agent_team: (message) => message, agent_org: (message) => message } });
+    const streams = new RunViewStreams({ agent: () => false, agent_team: () => false, agent_org: () => false }, { tree: { chainOf: (run) => [run] }, scope: new MessageViewScope({ tree: { collaborationTreeOf: () => ({ rows: () => [] }) as never } }), events: { agent: (message) => message, agent_team: (message) => message, agent_org: (message) => message } });
     const stream = streams.streamOf(createAgentOrgRootExecutionIdentity('org-stopped'))
     stream.publish({ kind: 'a row event' }); stream.publish({ kind: 'a status event' })
     viewStreams.current = streams

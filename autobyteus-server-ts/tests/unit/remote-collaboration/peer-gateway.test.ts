@@ -17,13 +17,13 @@ const startBody = (overrides: Record<string, unknown> = {}) => ({
 });
 const messageBody = (overrides: Record<string, unknown> = {}) => ({
   fromNodeId: PEER.nodeId, toNodeId: SELF, kind: "message", messageId: "collabmsg_1",
-  sender: { agentRunId: "agent_a1" }, targetRoot: { kind: "agent", runId: "publisher_7f3" }, target: { agentRunId: "publisher_7f3" },
+  sender: { agentRunId: "agent_a1", address: "/assistant" }, targetRoot: { kind: "agent", runId: "publisher_7f3" }, target: { agentRunId: "publisher_7f3" },
   content: "hello", messageType: "agent_message", createdAt: "2026-10-20T10:00:00.000Z", ...overrides,
 });
 
 const gateway = (input: { enabled?: boolean; registered?: boolean } = {}) => {
   const delegatedRuns = { start: vi.fn(async () => ({ accepted: true as const, kind: "agent" as const, agentRunId: "publisher_7f3" })) };
-  const messages = { accept: vi.fn(async () => ({ accepted: true as const })), acceptRunMessage: vi.fn(async () => ({ accepted: true as const })) };
+  const messages = { accept: vi.fn(async () => ({ accepted: true as const, receiverAddress: "/publisher" })), acceptRunMessage: vi.fn(async () => ({ accepted: true as const, receiverAddress: null })) };
   const runningAgents = { list: vi.fn(async () => ({ accepted: true as const, agents: [{ kind: "agent" as const, name: "PM", agent_run_id: "pm_b", state: "idle" as const }] })) };
   const availableAgents = { list: vi.fn(async () => ({ accepted: true as const, agents: [{ name: "Publisher", kind: "agent" as const, address: "/publisher" }] })) };
   const gate = new PeerGateway({
@@ -44,7 +44,8 @@ describe("PeerGateway", () => {
     const f = gateway();
     await expect(f.gate.startDelegatedRun(startBody(), PEER_CALLER)).resolves.toEqual({ status: 200, answer: { accepted: true, kind: "agent", agentRunId: "publisher_7f3", nodeId: SELF } });
     expect(f.delegatedRuns.start).toHaveBeenCalledWith(expect.objectContaining({ address: "/publisher", delegator: { agentRunId: "agent_a1" } }), PEER);
-    await expect(f.gate.deliverMessage(messageBody(), PEER_CALLER)).resolves.toEqual({ status: 200, answer: { accepted: true, nodeId: SELF } });
+    // autobyteus-565: the answer names the receiving agent's address, for the sender's line.
+    await expect(f.gate.deliverMessage(messageBody(), PEER_CALLER)).resolves.toEqual({ status: 200, answer: { accepted: true, nodeId: SELF, receiverAddress: "/publisher" } });
     expect(f.messages.accept).toHaveBeenCalledWith(expect.objectContaining({ kind: "message", messageId: "collabmsg_1",
       targetRoot: { kind: "agent", runId: "publisher_7f3" } }), PEER);
   });
@@ -122,15 +123,15 @@ describe("PeerGateway", () => {
 
   describe("autobyteus-492: run-messages and running-agents", () => {
     const runMessageBody = (overrides: Record<string, unknown> = {}) => ({
-      fromNodeId: PEER.nodeId, toNodeId: SELF, messageId: "collabmsg_9", sender: { agentRunId: "pm_a" }, target: { agentRunId: "pm_b" },
+      fromNodeId: PEER.nodeId, toNodeId: SELF, messageId: "collabmsg_9", sender: { agentRunId: "pm_a", address: "/project_task_manager" }, target: { agentRunId: "pm_b" },
       content: "hello B", messageType: "agent_message", createdAt: "2026-11-18T10:00:00.000Z", ...overrides,
     });
 
     it("a message by run ID is parsed without a root and handed to the receiver's acceptRunMessage, with the calling peer", async () => {
       const f = gateway();
-      await expect(f.gate.deliverRunMessage(runMessageBody(), PEER_CALLER)).resolves.toEqual({ status: 200, answer: { accepted: true, nodeId: SELF } });
+      await expect(f.gate.deliverRunMessage(runMessageBody(), PEER_CALLER)).resolves.toEqual({ status: 200, answer: { accepted: true, nodeId: SELF, receiverAddress: null } });
       expect(f.messages.acceptRunMessage).toHaveBeenCalledWith({ fromNodeId: PEER.nodeId, toNodeId: SELF, messageId: "collabmsg_9",
-        sender: { agentRunId: "pm_a" }, target: { agentRunId: "pm_b" }, content: "hello B", messageType: "agent_message", createdAt: "2026-11-18T10:00:00.000Z" }, PEER);
+        sender: { agentRunId: "pm_a", address: "/project_task_manager" }, target: { agentRunId: "pm_b" }, content: "hello B", messageType: "agent_message", createdAt: "2026-11-18T10:00:00.000Z" }, PEER);
       expect(f.messages.accept).not.toHaveBeenCalled();
     });
 

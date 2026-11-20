@@ -157,7 +157,22 @@ describe("Team communication API integration", () => {
     ]);
     const studio = configureStudioApplicationApiServices(new Proxy({ delegatedRunAgents: new DelegatedRunAgentsReader(noDelegations()) } as Record<string, unknown>,
       { get: (target, name) => target[name as string] ?? {} }) as never);
+    // autobyteus-565: the read is the process ParticipantMessagesReader, as the composition root creates it.
+    const [{ ParticipantMessagesReader, setProcessParticipantMessagesReader }, { runRecordsOfRootOwners }, { MessageViewScope },
+      { CounterpartIdentities }, { AgentRunMetadataStore }] = await Promise.all([
+      import("../../../src/run-history/services/participant-messages-reader.js"),
+      import("../../../src/run-history/services/run-records-source.js"),
+      import("../../../src/agent-collaboration/delegation/message-view-scope.js"),
+      import("../../../src/run-history/services/counterpart-identities.js"),
+      import("../../../src/run-history/store/agent-run-metadata-store.js"),
+    ]);
+    const tree = noDelegations();
+    const delegatedRunAgents = new DelegatedRunAgentsReader(tree);
+    const releaseReader = setProcessParticipantMessagesReader(new ParticipantMessagesReader({ records: runRecordsOfRootOwners,
+      scope: new MessageViewScope({ tree }), delegatedRunAgents, identities: new CounterpartIdentities({ delegatedRunAgents, tree,
+        runMetadata: new AgentRunMetadataStore(appConfigProvider.config.getMemoryDir()), peerName: async (nodeId) => nodeId }) }));
     releaseOwnedRunManagers = () => {
+      releaseReader();
       studio.close();
       AgentTeamRunManager.releaseProcessInstance(ownedTeamRunManager);
       AgentRunManager.releaseProcessInstance(ownedAgentRunManager);
@@ -216,7 +231,7 @@ describe("Team communication API integration", () => {
       content: expect.stringContaining(readableReferencePath),
       referenceFiles: [readableReferencePath, missingReferencePath, directoryReferencePath],
       createdAt: timestamp,
-    }], pastParticipants: [] });
+    }], counterparts: [], hasMore: false });
     // The sender sees the same message; a run that is not a participant is refused (autobyteus-358).
     expect((await execGraphql<{ collaborationParticipantMessages: { messages: unknown[] } }>(
       participantMessages, { rootRunId: teamRunId, agentRunId: "sender-run-1" })).collaborationParticipantMessages.messages).toHaveLength(1);

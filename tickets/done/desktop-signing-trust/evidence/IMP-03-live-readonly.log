@@ -1,0 +1,6 @@
+IMP-03 | 2026-11-20 07:24–07:28 UTC | 8864615004 checker | official GitHub read-only, Linux x64, gh 2.46.0
+Command: node scripts/desktop-package/check-release-trust.mjs (in official-origin worktree following M1). Exit 1:
+Production signing not yet proven for this key; no tag created. Check the protected tagged release, signer code and both published signatures. Verify official GitHub access and desktop signing configuration before retrying.
+Public metadata follow-up: gh api repos/AutoByteus/autobyteus-workspace/actions/runs/44685600710 --jq "{status,conclusion,run_attempt,head_sha,updated_at}"
+{"conclusion":null,"head_sha":"a728fbcad32a21410e7427bdc70aed9a5baed528","run_attempt":2,"status":"in_progress","updated_at":"2026-11-20T07:20:29Z"}
+This is a timestamped negative gate result, not a prediction of the Mac-owned release result. No live invocation of a tag helper, no dispatch and no mutation. Positive path tested with disposable signatures in IMP-02.

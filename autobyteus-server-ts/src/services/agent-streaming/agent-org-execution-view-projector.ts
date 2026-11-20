@@ -1,4 +1,5 @@
 import { projectAgentOrgExecutionTree } from "./collaboration-execution-tree-dto-projection.js";
+import { messageFields } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import {
   RootExecutionEventDtoSchema,
   RootExecutionViewDtoSchema,
@@ -61,7 +62,7 @@ export const projectAgentOrgExecutionEvent = (
       };
       break;
     case "communication":
-      event = { kind: "communication" as const, message: source.message };
+      event = { kind: "communication" as const, message: messageFields(source.message) };
       break;
   }
   return RootExecutionEventDtoSchema.parse({

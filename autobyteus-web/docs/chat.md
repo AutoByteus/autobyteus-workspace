@@ -543,9 +543,17 @@ target mode.
     retries.
 - **Names (F-03).** Rows, the Team/Org tab and "From <Sender>:" use one formatter,
   `utils/collaboration/memberDisplayName.ts` (`product prototyper`, and
-  `Product Prototyper` in sentences). In a standalone run's Team tab the run's own
+  `Product Prototyper` in sentences). In a standalone run's Messages tab the run's own
   agent reads in the title-case form (`Research Assistant`, as in "From Research
   Assistant:", VIS-013); delegated runs keep the row form.
+- **Messages (autobyteus-565).** Every standalone run that has a collaboration view (every run but an
+  application-owned one) offers Messages: the desktop's right-panel tab "Messages" (Activity stays the tab it opens
+  on) and the phone's ⋮ menu. It lists every message the run's own agent sent or received, whatever the other side:
+  its task agents and teams (open or closed Task), other runs on this node, and runs on other nodes, newest first, 50
+  at a time with "Load more" at the end of a longer list. Live messages appear without a reload. An agent of another
+  run is named by its address (`project task manager`), an agent on another node also carries a chip with this node's
+  name for that node (`RemoteNodeChip`); an older message whose other agent is unknown shows its run ID. A run it
+  delegated, selected under it, shows that run's own Messages.
 - **Agent-to-agent messages (RD-004).** A `send_message_to` delivery shows its
   sender with `InterAgentMessageSegment` ("From <Sender>:") inside the receiving
   agent's message block, live (`memberInputMessageHandler` for

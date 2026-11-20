@@ -1,7 +1,7 @@
 <template>
   <main data-test="team-activity-probe" class="min-h-screen bg-slate-100 p-6 text-slate-900">
     <header class="mx-auto mb-6 max-w-5xl rounded-lg bg-white p-4 shadow-sm">
-      <h1 class="text-xl font-semibold">Team status (history) and binary activity (running) presentation probe</h1>
+      <h1 class="text-xl font-semibold">Team status (history) presentation probe</h1>
       <p data-test="resolved-locale" class="mt-1 text-sm text-slate-600">{{ resolvedLocale }}</p>
       <p data-test="independent-facts" class="mt-1 text-sm text-slate-600">
         member={{ memberStatus }} stopPending={{ stopPending }} failures={{ stopFailureCount }}
@@ -17,7 +17,7 @@
       </div>
     </header>
 
-    <div class="mx-auto grid max-w-5xl grid-cols-1 gap-6 lg:grid-cols-2">
+    <div class="mx-auto max-w-5xl">
       <section data-test="history-surface" class="rounded-lg bg-white p-4 shadow-sm">
         <h2 class="mb-3 font-semibold">Workspace history surface</h2>
         <WorkspaceHistoryWorkspaceSection
@@ -29,28 +29,16 @@
           :actions="actions"
         />
       </section>
-
-      <section data-test="running-surface" class="rounded-lg bg-white p-4 shadow-sm">
-        <h2 class="mb-3 font-semibold">Running teams surface</h2>
-        <RunningTeamGroup
-          definition-name="Browser Review Team"
-          definition-id="team-def-browser"
-          :runs="runningRuns"
-          :selected-run-id="null"
-        />
-      </section>
     </div>
   </main>
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import WorkspaceHistoryWorkspaceSection from '~/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue';
-import RunningTeamGroup from '~/components/workspace/running/RunningTeamGroup.vue';
 import { useLocalization } from '~/composables/useLocalization';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
-import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
+import { useRunStatusStore } from '~/stores/runStatusStore';
 import type {
   TeamMemberTreeRow,
   TeamRunHistoryDefinitionGroup,
@@ -152,19 +140,18 @@ const historyGroups = computed<TeamRunHistoryDefinitionGroup[]>(() => [{
   })),
 }]);
 
-// A real Team execution view (the running components read activity, rows and contexts from AgentTeamContext.view).
-const runningRun = (teamRunId: string, isActive: boolean): AgentTeamContext => buildTestTeamContext({
-  teamRunId,
-  teamDefinitionId: 'team-def-browser',
-  teamDefinitionName: 'Browser Review Team',
-  rootChildren: [testAgentNode('/critic', { displayName: 'Critic', agentRunId: `${teamRunId}:critic`, currentStatus: memberStatus.value })],
-  isActive,
-});
-
-const runningRuns = computed<AgentTeamContext[]>(() => [
-  runningRun('team-run-active-browser', activeRunIsActive.value),
-  runningRun('team-run-inactive-browser', false),
-]);
+// A Team run's status is its run state, computed by its node from its own agents and read on /ws/run-status
+// (autobyteus-461 SR-086 G-A4). This fixture has no node, so it answers the store as the node would: the live run's state
+// follows its member; a stopped run is offline.
+const runStatus = useRunStatusStore();
+const runState = (teamRunId: string, alive: boolean) => {
+  const status = alive ? memberStatus.value : AgentStatus.Offline;
+  return { kind: 'agent_team' as const, runId: teamRunId, answer: 'ok' as const, node: null, status, backgroundTasksRunning: 0,
+    agents: [{ agentRunId: `${teamRunId}-critic`, status, backgroundTasksRunning: 0 }] };
+};
+watch([memberStatus, activeRunIsActive], () => runStatus.apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [
+  runState('team-run-active-browser', activeRunIsActive.value), runState('team-run-inactive-browser', false),
+] } }), { immediate: true });
 
 const workspaceNode: RunTreeWorkspaceNode = {
   workspaceId: 'workspace:browser-fixture',

@@ -38,7 +38,7 @@ describe("a closure stop and a follow-up Task delivered while the agent run stop
         roots.add(resolved.root);
         return resolved.root.acceptFromRun({ message: { messageId: "work-b", senderAgentRunId: "manager-run", receiverAgentRunId: HOST, content: input.content,
           messageType: input.messageType, referenceFiles: [], createdAt: "2026-11-11T10:00:00.000Z" },
-          senderIdentity: input.sender, senderDisplayName: "manager", senderAddress: "/manager", assertAllowed: () => undefined, publishToViews: true });
+          senderIdentity: input.sender, senderDisplayName: "manager", senderAddress: "/manager", assertAllowed: () => undefined, relation: "related" });
       } });
 
     // DONE(A): the closure stop checks "still closed" (true) and starts ending the run; its agent's end is held.

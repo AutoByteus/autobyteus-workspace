@@ -1,0 +1,8 @@
+-  'workspace.components.workspace.running.RunningTeamGroup.start_new_team_run': 'Start new team run',
+-  'workspace.components.workspace.running.RunningTeamGroup.active_team_runs': 'Active team runs',
+-  'workspace.components.workspace.running.RunningTeamGroup.no_active_team_runs': 'No active team runs',
+-  'workspace.components.workspace.running.RunningTeamRow.close_team_run': 'Close team run',
+-  'workspace.components.workspace.running.RunningTeamRow.active_team_run': 'Active team run',
+-  'workspace.components.workspace.running.RunningTeamRow.inactive_team_run': 'Inactive team run',
+-  'workspace.components.workspace.running.RunningTeamRow.no_members_yet': 'No members yet',
+-  'workspace.components.workspace.running.RunningTeamRow.stop_and_remove_team': 'Stop and remove team',

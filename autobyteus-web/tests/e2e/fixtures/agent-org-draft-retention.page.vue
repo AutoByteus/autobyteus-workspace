@@ -126,7 +126,10 @@ const createOrgView = (
     tool_name: null,
     error_message: null,
     error_details: null, background_tasks_running: 0,
+    recoverableBlock: null,
   })),
+  // The Org view's own agents' input states (the view's required part; none pending in this fixture).
+  agent_input_states: [],
 });
 
 const orgAContexts = {

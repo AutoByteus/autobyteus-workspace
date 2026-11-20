@@ -96,6 +96,8 @@ export type SessionHarness = {
   connection: AcpClientConnection;
   session: AcpAgentSession;
   events: AgentRunEvent[];
+  /** Each `emit` call as it was made: events the session publishes together. */
+  batches: AgentRunEvent[][];
   failures: { code: string; message: string }[];
 };
 
@@ -107,6 +109,7 @@ export const createSessionHarness = (options: FakeAgentOptions & {
 }): SessionHarness => {
   const connection = new AcpClientConnection(spawnFakeAgent(options), "Fake Agent");
   const events: AgentRunEvent[] = [];
+  const batches: AgentRunEvent[][] = [];
   const failures: { code: string; message: string }[] = [];
   const session = new AcpAgentSession({
     runId: "run-1",
@@ -114,12 +117,12 @@ export const createSessionHarness = (options: FakeAgentOptions & {
     profile: options.profile ?? grokBuildSessionProfile,
     model: "grok-4.7",
     autoExecuteTools: options.autoExecuteTools ?? false,
-    emit: (batch) => { events.push(...batch); },
+    emit: (batch) => { events.push(...batch); batches.push([...batch]); },
     onFailed: (failure) => { failures.push(failure); },
     idleTimeoutMs: options.idleTimeoutMs,
     now: options.now,
   });
-  return { connection, session, events, failures };
+  return { connection, session, events, batches, failures };
 };
 
 export const waitFor = async (predicate: () => boolean, timeoutMs = 5_000): Promise<void> => {

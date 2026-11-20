@@ -1,0 +1,199 @@
+# IMP-03 the other scripted ACP E2E suites (AC-004): Grok compaction replay, DeepSeek Harness with a scripted provider
+# commands (server package):
+#   pnpm exec vitest run tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts tests/e2e/runtime/deepseek-harness-standalone-host.e2e.test.ts --no-watch
+#     (the DeepSeek files are gated and skipped there; deepseek-harness-standalone-host stays gated: it tests the
+#      standalone application host, not the ACP session)
+#   RUN_DEEPSEEK_HARNESS_SCRIPTED_E2E=1 pnpm exec vitest run tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts --no-watch --reporter=verbose
+#     (real dsh 0.2.2-rc.5 over the changed ACP connection, scripted DeepSeek endpoint, no key)
+# commit: eb7dcef228 + the test working tree (no product change since); load 42-84; 2026-11-20
+# Each file's afterAll timed out at its own limit (10 s / 120 s) in app.close() under the FSEvents backlog, as in IMP-02.
+
+## Grok compaction replay (+ gated DeepSeek files skipped)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Error: Hook timed out in 10000ms.
+ ❯ tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts:77:3
+
+
+
+ Test Files  1 failed | 2 skipped (3)
+      Tests  3 passed | 7 skipped (10)
+   Duration  437.50s (transform 8.97s, setup 164ms, import 14.89s, tests 421.47s, environment 0ms)
+
+
+## DeepSeek scripted provider
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ✓ tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts > DeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key) > refuses a dsh run when the vault holds no DeepSeek key, naming the key and where to set it (AC-009) 6839ms
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ✓ tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts > DeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key) > uses the key the vault holds at each call: a changed key is used by the next call, a removed key fails the next turn with the relay's text, and a restore without it fails (AC-009) 13637ms
+
+
+
+
+
+
+
+
+
+ ✓ tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts > DeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key) > records each dsh compaction as a completed provider compaction boundary that archives the raw traces, and the conversation continues (AC-010, AC-011) 4899ms
+
+
+
+
+
+
+
+
+
+ ✓ tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts > DeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key) > records a refused compaction call as a failed compaction with no rotation (AC-010 failure) 17676ms
+
+
+
+
+
+
+
+
+
+ ✓ tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts > DeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key) > keeps a turn alive while the model streams only keep-alive events for longer than the idle timeout, and fails a stalled stream with ACP_TURN_IDLE_TIMEOUT (AC-012) 23796ms
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ✓ tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts > DeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key) > measures the memory of several concurrent dsh processes (RSK-004) 8915ms
+
+
+Error: Hook timed out in 120000ms.
+ ❯ tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts:225:3
+
+
+
+ Test Files  1 failed (1)
+      Tests  6 passed (6)
+   Duration  348.16s (transform 7.31s, setup 56ms, import 10.00s, tests 337.53s, environment 0ms)
+

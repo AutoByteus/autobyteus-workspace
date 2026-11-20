@@ -1,4 +1,5 @@
 import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
+import type { MessageParties } from "../../agent-collaboration/execution/communication/message-publication.js";
 
 /**
  * Events of one standalone run's view: its messages and its agent's lifecycle. The run's own agent presents on its own
@@ -6,10 +7,12 @@ import type { CollaborationCommunicationMessage } from "../../agent-collaboratio
  * tree's changes are `run_tree_changed` notices (`ChildRowsFeed`, SR-084); a row's status is its own run's (SR-083).
  */
 export type StandaloneRootEvent =
-  | Readonly<{ kind: "communication"; message: CollaborationCommunicationMessage }>
+  /** A committed message with its two parties: the view names a counterpart it does not know from them (autobyteus-565). */
+  | Readonly<{ kind: "communication"; message: CollaborationCommunicationMessage; parties: MessageParties }>
   | Readonly<{ kind: "lifecycle"; isActive: boolean }>;
 
 /** The Agent root's message events: the ones the client adds to the Team tab's lists (autobyteus-358, SR-008). */
 export const isStandaloneRootMessageEvent = (event: StandaloneRootEvent): boolean => event.kind === "communication";
 /** A committed message as the Agent root's message event (SR-072: the node's message feed numbers it in each view). */
-export const standaloneRootMessageEvent = (message: CollaborationCommunicationMessage): StandaloneRootEvent => ({ kind: "communication", message });
+export const standaloneRootMessageEvent = (input: Readonly<{ message: CollaborationCommunicationMessage; parties: MessageParties }>): StandaloneRootEvent =>
+  ({ kind: "communication", message: input.message, parties: input.parties });

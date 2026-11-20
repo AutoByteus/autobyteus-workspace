@@ -185,7 +185,7 @@ const twoNodes = async () => {
 };
 
 describe("the run ID is the address (autobyteus-492), in process", () => {
-  it("PRB-002 / AC-005 (DS-003): two PMs a person started on one node message each other by run ID; both logs hold both messages; no run view shows them", async () => {
+  it("PRB-002 / AC-005 (DS-003): two PMs a person started on one node message each other by run ID; both logs hold both messages; each is published once, as unrelated (autobyteus-565: each PM's own view shows it)", async () => {
     const { a } = await twoNodes();
     await a.startPm("pm_a1", "/work/a1");
     await a.startPm("pm_a2", "/work/a2");
@@ -196,8 +196,11 @@ describe("the run ID is the address (autobyteus-492), in process", () => {
     // Each agent's own conversation got the other's message (it waits for its turn: a reservation, BEH-007).
     expect(a.runOf("pm_a2").received.join("\n")).toContain("Do you own the release Task?");
     expect(a.runOf("pm_a1").received.join("\n")).toContain("Yes, I do.");
-    // G-1 (DEC-014): a message between unrelated runs enters no run view.
-    expect(a.viewPublications).not.toHaveBeenCalled();
+    // autobyteus-565 (reverses 492's DEC-014 for a standalone run's own view): each message between unrelated runs is published
+    // once, at the receiver's commit, as unrelated; MessageViewScope admits it into each PM's own Agent root view only.
+    expect(a.viewPublications.mock.calls.map(([publication]) => [publication.relation, publication.message.senderAgentRunId,
+      publication.parties.sender.agentRunId, publication.parties.receiver.agentRunId]))
+      .toEqual([["unrelated", "pm_a1", "pm_a1", "pm_a2"], ["unrelated", "pm_a2", "pm_a2", "pm_a1"]]);
   });
 
   it("AC-007 (REQ-010, DEC-003): a stopped run is refused not running and is not woken", async () => {
@@ -239,8 +242,11 @@ describe("the run ID is the address (autobyteus-492), in process", () => {
     expect(a.runOf("pm_a1").received.join("\n")).toContain('sender run id "pm_b" on node "docker"');
     expect(a.log("pm_a1")).toEqual(["pm_a1->pm_b:Can you take the Docker release?", "pm_b->pm_a1:Yes, starting now."]);
     expect(b.log("pm_b")).toEqual(["pm_a1->pm_b:Can you take the Docker release?", "pm_b->pm_a1:Yes, starting now."]);
-    expect(a.viewPublications).not.toHaveBeenCalled();
-    expect(b.viewPublications).not.toHaveBeenCalled();
+    // autobyteus-565: each node publishes each message once, at its own commit, as remote, naming the other node's agent.
+    const remotePublications = (node: typeof a) => node.viewPublications.mock.calls.map(([publication]) =>
+      [publication.relation, publication.message.senderAgentRunId, publication.parties.sender.nodeName, publication.parties.receiver.nodeName]);
+    expect(remotePublications(a)).toEqual([["remote", "pm_a1", null, "docker"], ["remote", "pm_b", "docker", null]]);
+    expect(remotePublications(b)).toEqual([["remote", "pm_a1", "desktop", null], ["remote", "pm_b", null, "desktop"]]);
   });
 
   it("entry-form row 8: a run ID that does not run on the peer is refused with this node's name for it; the peer wakes nothing; nothing is logged", async () => {

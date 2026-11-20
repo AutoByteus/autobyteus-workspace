@@ -443,6 +443,13 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   ended). Shown with the task's exit code, when there is one, as one line in the
   Background Tasks panel and the phone's Activity; with neither, the runtime's
   summary is shown.
+- **Provider-started turn:** a turn the agent runtime starts itself, without
+  input from AutoByteus, for example after a background command ended (turn
+  origin `provider`; Claude CLI and Grok Build). The run shows it like any turn,
+  opened by a system notice of what woke the agent (Claude:
+  `system.claude_background_task`; Grok: `system.grok_provider_turn`, Grok's own
+  reminder text), and reads busy while it runs; a message sent meanwhile waits for
+  its end, and Stop cancels it (autobyteus-517).
 - **Restart reminder:** the platform notice a run receives after a restart
   (`system.restart_resume`) when it was mid-turn or had a running background
   task: the restart cause (an update, a restart or an unexpected stop), that its

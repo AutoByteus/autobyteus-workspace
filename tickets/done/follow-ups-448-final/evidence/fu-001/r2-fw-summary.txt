@@ -1,0 +1,20 @@
+run 1 exit=1  Tests 2 failed | 20 passed (22) load=73.28 78.56 70.37
+run 2 exit=1  Tests 3 failed | 19 passed (22) load=57.38 70.97 68.32
+run 3 exit=1  Tests 2 failed | 20 passed (22) load=61.31 66.11 66.64
+run 4 exit=1  Tests 2 failed | 20 passed (22) load=46.64 59.04 63.75
+run 5 exit=0  Tests 22 passed (22) load=61.41 60.23 63.70
+run 6 exit=1  Tests 4 failed | 18 passed (22) load=73.49 64.26 64.52
+run 7 exit=1  Tests 3 failed | 19 passed (22) load=122.34 86.42 73.28
+run 8 exit=1  Tests 3 failed | 19 passed (22) load=131.00 99.80 79.96
+run 9 exit=1  Tests 2 failed | 20 passed (22) load=134.54 113.34 88.28
+run 10 exit=1  Tests 1 failed | 21 passed (22) load=142.78 122.75 94.76
+run 11 exit=1  Tests 1 failed | 21 passed (22) load=151.84 131.55 101.01
+run 12 exit=1  Tests 1 failed | 21 passed (22) load=161.70 140.20 107.59
+run 13 exit=1  Tests 2 failed | 20 passed (22) load=155.52 149.96 116.13
+run 14 exit=1  Tests 2 failed | 20 passed (22) load=85.89 126.58 111.07
+run 15 exit=1  Tests 4 failed | 18 passed (22) load=74.12 111.96 107.97
+run 16 exit=1  Tests 3 failed | 19 passed (22) load=79.36 103.20 105.18
+run 17 exit=1  Tests 2 failed | 20 passed (22) load=50.85 84.81 97.63
+run 18 exit=1  Tests 1 failed | 21 passed (22) load=52.74 79.00 94.52
+run 19 exit=0  Tests 22 passed (22) load=54.04 75.27 92.25
+run 20 exit=1  Tests 2 failed | 20 passed (22) load=61.66 72.33 89.24

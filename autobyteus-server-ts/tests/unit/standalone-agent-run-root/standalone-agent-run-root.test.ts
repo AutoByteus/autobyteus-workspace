@@ -30,7 +30,7 @@ describe("StandaloneAgentRunRoot (its own agent only)", () => {
     expect(root.hasAgentExecution(HOST)).toBe(true);
     expect(root.hasAgentExecution("someone-else")).toBe(false);
     const accepted = await root.acceptFromRun({ message: message("m-1"), senderIdentity: manager, senderDisplayName: "project_task_manager",
-      senderAddress: "/project_task_manager", assertAllowed: () => undefined, publishToViews: true });
+      senderAddress: "/project_task_manager", assertAllowed: () => undefined, relation: "related" });
     expect(accepted).toMatchObject({ accepted: true });
     expect(h.restores).toHaveBeenCalledOnce();
     expect(h.host.reserved).toEqual([expect.stringContaining("Please review.")]);
