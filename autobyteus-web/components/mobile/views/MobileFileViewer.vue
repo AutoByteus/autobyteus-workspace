@@ -17,7 +17,19 @@
       </template>
     </MobileScreenBar>
     <div class="min-h-0 flex-1 overflow-hidden">
-      <p v-if="viewerError" class="px-4 py-10 text-center text-sm text-red-700" role="alert" data-testid="mobile-file-preview-error">{{ errorMessage || 'Couldn’t open this file.' }}</p>
+      <!-- A file that could not be opened: the plain reason and, unless retrying cannot help (a folder), Retry (autobyteus-572 D-7). -->
+      <div v-if="viewerError" class="flex flex-col items-center gap-4 px-4 py-10">
+        <p class="text-center text-sm text-red-700" role="alert" data-testid="mobile-file-preview-error">{{ errorMessage || 'Couldn’t open this file.' }}</p>
+        <button
+          v-if="retryable"
+          type="button"
+          class="retry-button min-h-[2.75rem] min-w-[5.5rem] rounded-lg bg-slate-900 px-4 text-sm font-semibold text-white active:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          data-testid="mobile-file-preview-retry"
+          @click="$emit('retry')"
+        >
+          {{ $t('workspace.components.mobile.views.MobileFileViewer.retry') }}
+        </button>
+      </div>
       <!-- A media or other non-text file on its way: what is loading and how much has arrived (autobyteus-572 D-4). -->
       <MediaLoadingState
         v-else-if="isLoading && loadingKind"
@@ -63,8 +75,10 @@ const props = withDefaults(defineProps<{
   errorMessage?: string | null;
   /** How much of a node file has arrived while it loads (autobyteus-572 D-4). */
   progress?: DownloadProgress | null;
-}>(), { openError: null, errorMessage: null, progress: null });
-defineEmits<{ close: [] }>();
+  /** Whether reading the file again can help its failure; the owner reads it again on `retry` (autobyteus-572 D-7). */
+  retryable?: boolean;
+}>(), { openError: null, errorMessage: null, progress: null, retryable: false });
+defineEmits<{ close: []; retry: [] }>();
 
 const name = computed(() => props.path.split('/').filter(Boolean).at(-1) || props.path);
 const viewerError = computed(() => props.openError || props.fileState?.error || null);

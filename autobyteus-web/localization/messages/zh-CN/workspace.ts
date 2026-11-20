@@ -107,6 +107,8 @@ const messages = {
     "在这台计算机上找不到此文件。",
   "workspace.components.mobile.views.MobileFiles.node_file_is_folder":
     "此路径是文件夹，不是文件。",
+  "workspace.components.mobile.views.MobileFileViewer.retry":
+    "重试",
   "workspace.components.workspace.config.RunConfigPanel.title.agentConfiguration":
     "智能体配置",
   "workspace.components.workspace.config.RunConfigPanel.title.teamConfiguration":

@@ -91,6 +91,60 @@ describe('useMobileNodeFile (autobyteus-436)', () => {
     expect(result.errorMessage.value).toBe('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_preview_failed');
   });
 
+  // autobyteus-572 D-7: the viewer's Retry.
+  it('names the refusal: not found, a folder, or failed (a broken download)', async () => {
+    const cases = [
+      [() => Promise.resolve(new Response(JSON.stringify({ code: 'NODE_FILE_NOT_FOUND' }), { status: 404 })), 'not-found'],
+      [() => Promise.resolve(new Response(JSON.stringify({ code: 'NODE_FILE_IS_FOLDER' }), { status: 400 })), 'folder'],
+      [() => Promise.reject(new TypeError('network')), 'failed'],
+    ] as const;
+    for (const [answer, refusal] of cases) {
+      transport.fetch.mockImplementationOnce(answer);
+      const { wrapper, result } = mountWith(ref('/w/clip.mp4'));
+      await flushPromises();
+      expect(result.refusal.value).toBe(refusal);
+      wrapper.unmount();
+    }
+  });
+
+  it('reload() reads the same file again: a file created after a "not found" then opens, and the refusal clears', async () => {
+    transport.fetch.mockResolvedValueOnce(new Response(JSON.stringify({ code: 'NODE_FILE_NOT_FOUND' }), { status: 404 }));
+    const { result } = mountWith(ref('/w/clip.mp4'));
+    await flushPromises();
+    expect(result.refusal.value).toBe('not-found');
+    transport.fetch.mockResolvedValueOnce(new Response(new Uint8Array([1, 2, 3]), { status: 200, headers: { 'content-length': '3', 'content-type': 'video/mp4' } }));
+    result.reload();
+    expect(result.refusal.value).toBeNull();
+    expect(result.errorMessage.value).toBeNull();
+    await flushPromises();
+    expect(transport.fetch).toHaveBeenCalledTimes(2);
+    expect(transport.fetch.mock.calls[1]![0]).toBe(transport.fetch.mock.calls[0]![0]);
+    expect(result.fileState.value).toMatchObject({ type: 'Video', isLoading: false, error: null, url: 'blob:node/1' });
+  });
+
+  it('reload() during a download starts over: the old answer is ignored, progress starts again, the old blob is released', async () => {
+    transport.fetch.mockResolvedValueOnce(new Response(new Uint8Array([1]), { status: 200, headers: { 'content-type': 'video/mp4' } }));
+    const { result } = mountWith(ref('/w/clip.mp4'));
+    await flushPromises();
+    expect(result.fileState.value?.url).toBe('blob:node/1');
+    let push!: (bytes: Uint8Array | null) => void;
+    const body = new ReadableStream<Uint8Array>({ start(controller) { push = (bytes) => (bytes ? controller.enqueue(bytes) : controller.close()); } });
+    transport.fetch.mockResolvedValueOnce(new Response(body, { status: 200, headers: { 'content-length': '4', 'content-type': 'video/mp4' } }));
+    result.reload();
+    expect(revoked).toEqual(['blob:node/1']);
+    await flushPromises();
+    push(new Uint8Array([1, 2]));
+    await flushPromises();
+    expect(result.progress.value).toEqual({ loaded: 2, total: 4 });
+    result.reload();
+    expect(result.progress.value).toBeNull();
+    transport.fetch.mockResolvedValueOnce(new Response(new Uint8Array([9]), { status: 200, headers: { 'content-type': 'video/mp4' } }));
+    push(new Uint8Array([3, 4])); push(null);
+    await flushPromises();
+    expect(result.progress.value).toBeNull();
+    expect(result.fileState.value).toMatchObject({ isLoading: false, url: 'blob:node/2' });
+  });
+
   it('ignores the answer of a file that is no longer open', async () => {
     let settle!: (response: Response) => void;
     transport.fetch.mockReturnValueOnce(new Promise((resolve) => { settle = resolve; }));

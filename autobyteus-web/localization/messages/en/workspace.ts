@@ -107,6 +107,8 @@ const messages = {
     "This file was not found on the computer.",
   "workspace.components.mobile.views.MobileFiles.node_file_is_folder":
     "This path is a folder, not a file.",
+  "workspace.components.mobile.views.MobileFileViewer.retry":
+    "Retry",
   "workspace.components.workspace.config.RunConfigPanel.title.agentConfiguration":
     "Agent Configuration",
   "workspace.components.workspace.config.RunConfigPanel.title.teamConfiguration":

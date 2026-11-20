@@ -40,7 +40,9 @@
 //                  A 3 s video and a 3 s tone in the run's folder and outside it play (`blob:` URLs); a relative link's
 //                  form is recorded (not a file link; SR-003 DEC-003, FU-003). Two ~9.7 MB videos (in and outside the folder) on an 8 Mbit/s link (CDP)
 //                  show "Loading video…" with "x of 9.7 MB" rising, never "URL is not available.", then play. A missing
-//                  video says so plainly with Retry. A run delegated by the open run (on epsilon, "Producer") has a video
+//                  video says so plainly with Retry. Outside the folder (the phone viewer's own failure state, D-7): a
+//                  missing video says so with Retry; the file is then created and Retry opens and plays it; a folder
+//                  path says so without Retry. A run delegated by the open run (on epsilon, "Producer") has a video
 //                  and an audio link that play. Every media read carries the phone's key in its header; no URL carries
 //                  a key; no refusal.
 //   MSP-91 autobyteus-572 AC-001, AC-005, AC-006 (API/E2E)  On the phone (after MSP-89): Retry after a real failure: a
@@ -213,8 +215,8 @@ export const runFileOpenCases = async (probe) => {
       // MSP-89's missing video: the node answers 404 for it on purpose (AC-006). MSP-91 takes the phone offline mid-download
       // on purpose: the interrupted read and what the phone's open streams log while offline.
       const deliberate = [
-        { test: (line, sourceUrl) => currentCase === 'MSP-89' && /: Failed to load resource: the server responded with a status of 404 \(Not Found\)$/.test(line)
-          && /gone-572\.mp4/.test(decodeURIComponent(sourceUrl)), cause: 'MSP-89\'s missing video (autobyteus-572 AC-006)' },
+        { test: (line, sourceUrl) => currentCase === 'MSP-89' && /: Failed to load resource: the server responded with a status of 40[04] \((Not Found|Bad Request)\)$/.test(line)
+          && /gone-572(-out)?\.mp4|folder-572\.mp4/.test(decodeURIComponent(sourceUrl)), cause: 'MSP-89\'s missing videos and folder path (autobyteus-572 AC-006, D-7)' },
         { test: (line) => currentCase === 'MSP-91' && offlineWindow.on && /ERR_CONNECTION_(REFUSED|RESET|CLOSED)|ERR_EMPTY_RESPONSE|ERR_INCOMPLETE_CHUNKED_ENCODING|ERR_CONTENT_LENGTH_MISMATCH|network error|Failed to fetch|WebSocket connection to .* failed|Agent WebSocket error|\[FileExplorerStreaming\] WebSocket error/i.test(line),
           cause: 'MSP-91 stopped the node mid-download on purpose' },
       ];
@@ -385,6 +387,10 @@ export const runFileOpenCases = async (probe) => {
           insideBig: path.join(workspace, 'media', 'big-572.mp4'), outsideBig: path.join(outside, 'big-572-out.mp4'),
         };
         const missing = path.join(workspace, 'media', 'gone-572.mp4');
+        // Outside the folder (the node-file route, D-7): a video not there yet, and a folder whose name looks like a video.
+        const outsideMissing = path.join(outside, 'gone-572-out.mp4');
+        const outsideFolder = path.join(outside, 'folder-572.mp4');
+        await fs.mkdir(outsideFolder, { recursive: true });
         await makeMedia('clip', media.insideVideo, media.outsideVideo, media.relativeVideo);
         await makeMedia('tone', media.insideAudio, media.outsideAudio);
         const bigSize = await makeMedia('big', media.insideBig, media.outsideBig);
@@ -400,7 +406,7 @@ export const runFileOpenCases = async (probe) => {
         await waitFor('the echo of MEDIA-DELEGATED-572', async () => { const text = await conversationOf(epsilon, taskRun); return text.includes('ECHO:') && text.includes('MEDIA-DELEGATED-572'); }, 60_000);
         await linkMessage('MEDIA-572', [['clip-572.mp4', media.insideVideo], ['tone-572.mp3', media.insideAudio], ['clip-572-out.mp4', media.outsideVideo],
           ['tone-572-out.mp3', media.outsideAudio], ['rel-572.mp4', 'media/rel-572.mp4'], ['big-572.mp4', media.insideBig], ['big-572-out.mp4', media.outsideBig],
-          ['gone-572.mp4', missing]]);
+          ['gone-572.mp4', missing], ['gone-572-out.mp4', outsideMissing], ['folder-572.mp4', outsideFolder]]);
 
         const from = Date.now();
         await toList();
@@ -410,7 +416,26 @@ export const runFileOpenCases = async (probe) => {
           ? { offline: false, latency: 80, downloadThroughput: 8000 * 1024 / 8, uploadThroughput: 8000 * 1024 / 8 }
           : { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
         /** Taps a media link and samples the viewer every 100 ms until the file plays or fails; then Back. */
-        const watchMedia = async (label, control) => {
+        /** What the phone viewer shows now. */
+        const viewerNow = () => page.evaluate(() => {
+          const el = document.querySelector('[data-testid="mobile-file-viewer"]');
+          if (!el) return { viewer: false };
+          const element = el.querySelector('video, audio');
+          return { viewer: true, text: el.innerText.replace(/\s+/g, ' ').slice(0, 200),
+            // The player's loading view, or the phone viewer's (a node file; it keeps its own test id).
+            loading: Boolean(el.querySelector('[data-testid="media-loading-state"], [role="status"][data-testid="mobile-file-preview-loading"]')),
+            progress: el.querySelector('[data-testid="media-loading-progress"]')?.textContent?.trim() ?? null,
+            alert: el.querySelector('[role="alert"]')?.innerText.replace(/\s+/g, ' ').trim() ?? null,
+            // The players' Retry and the phone viewer's own (autobyteus-572 D-7) share the class.
+            retry: Boolean(el.querySelector('.retry-button')),
+            media: element ? { tag: element.tagName.toLowerCase(), blob: element.src.startsWith('blob:'), readyState: element.readyState, error: element.error?.code ?? null,
+              duration: Number.isFinite(element.duration) ? Math.round(element.duration * 10) / 10 : null } : null };
+        });
+        /**
+         * Taps a media link and samples the viewer every 100 ms until the file plays or fails; `onSettled(state)` may act
+         * on the viewer before Back (its result is returned as `after`).
+         */
+        const watchMedia = async (label, control, onSettled = null) => {
           const started = Date.now();
           await control.scrollIntoViewIfNeeded();
           await control.tap();
@@ -419,19 +444,7 @@ export const runFileOpenCases = async (probe) => {
           let state = null;
           let loadingShot = false;
           while (Date.now() - started < 40_000) {
-            state = await page.evaluate(() => {
-              const el = document.querySelector('[data-testid="mobile-file-viewer"]');
-              if (!el) return { viewer: false };
-              const element = el.querySelector('video, audio');
-              return { viewer: true, text: el.innerText.replace(/\s+/g, ' ').slice(0, 200),
-                // The player's loading view, or the phone viewer's (a node file; it keeps its own test id).
-                loading: Boolean(el.querySelector('[data-testid="media-loading-state"], [role="status"][data-testid="mobile-file-preview-loading"]')),
-                progress: el.querySelector('[data-testid="media-loading-progress"]')?.textContent?.trim() ?? null,
-                alert: el.querySelector('[role="alert"]')?.innerText.replace(/\s+/g, ' ').trim() ?? null,
-                retry: Boolean(el.querySelector('.retry-button')),
-                media: element ? { tag: element.tagName.toLowerCase(), blob: element.src.startsWith('blob:'), readyState: element.readyState, error: element.error?.code ?? null,
-                  duration: Number.isFinite(element.duration) ? Math.round(element.duration * 10) / 10 : null } : null };
-            });
+            state = await viewerNow();
             const signature = JSON.stringify(state);
             if (signature !== last) { timeline.push({ at: Date.now() - started, ...state }); last = signature; }
             if (!loadingShot && state.loading && state.progress && Date.now() - started > 3_000) { loadingShot = true; await shot(page, `MSP-89-${label}-loading`); }
@@ -439,11 +452,12 @@ export const runFileOpenCases = async (probe) => {
             await sleep(100);
           }
           await shot(page, `MSP-89-${label}`);
+          const after = onSettled && state ? await onSettled(state) : null;
           await page.goBack();
           let backToConversation = false;
           try { await waitFor(`${label}: back to the conversation`, conversationShown, 15_000); backToConversation = true; } catch { /* recorded */ }
           const final = state ?? { viewer: false };
-          return { final, backToConversation, seconds: Math.round((Date.now() - started) / 100) / 10,
+          return { final, after, backToConversation, seconds: Math.round((Date.now() - started) / 100) / 10,
             notAvailableShown: timeline.some(entry => /URL is not available/.test(entry.text ?? '')),
             progress: [...new Set(timeline.map(entry => entry.progress).filter(Boolean))], timeline };
         };
@@ -459,6 +473,17 @@ export const runFileOpenCases = async (probe) => {
         for (const key of ['insideBig', 'outsideBig']) results[key] = await watchMedia(key, linkControl(media[key]).last());
         await throttle(false);
         results.missing = await watchMedia('missing', linkControl(missing).last());
+        // The video appears (an agent still rendering it), then Retry: it opens and plays.
+        results.outsideMissing = await watchMedia('outsideMissing', linkControl(outsideMissing).last(), async (failedState) => {
+          if (!failedState.retry) return null;
+          await fs.copyFile(media.outsideVideo, outsideMissing);
+          await page.locator('[data-testid="mobile-file-viewer"] .retry-button').first().tap();
+          let now = null;
+          await waitFor('the video after Retry', async () => { now = await viewerNow(); return Boolean((now.media && now.media.readyState >= 1) || (now.alert && !now.retry)); }, 30_000).catch(() => undefined);
+          await shot(page, 'MSP-89-outsideMissing-after-retry');
+          return now;
+        });
+        results.outsideFolder = await watchMedia('outsideFolder', linkControl(outsideFolder).last());
         // The delegated run, under the open run in the run list.
         await toList();
         const host = page.locator(`[data-testid="mobile-run-row-agent:${run}"]`);
@@ -494,6 +519,11 @@ export const runFileOpenCases = async (probe) => {
           }),
           [Boolean(results.missing.final.alert) && !INTERNAL_WORDS.test(results.missing.final.alert) && results.missing.final.retry && !results.missing.notAvailableShown,
             'AC-006 a missing video: a plain message with Retry'],
+          [Boolean(results.outsideMissing.final.alert) && !INTERNAL_WORDS.test(results.outsideMissing.final.alert) && results.outsideMissing.final.retry
+            && played({ ...results.outsideMissing, final: results.outsideMissing.after ?? {} }, 'video', 3),
+            'AC-006, D-7 a missing video outside the folder: a plain message with Retry; once it exists, Retry opens it and it plays'],
+          [/folder/i.test(results.outsideFolder.final.alert ?? '') && !results.outsideFolder.final.retry && results.outsideFolder.backToConversation,
+            'AC-006, D-7 a folder outside the folder: its plain message, no Retry'],
           [mediaReads.length > 0 && details.mediaReads.keyInHeader === mediaReads.length && details.mediaReads.keyInUrl.length === 0,
             'AC-005 every media read carries the phone\'s key in its header; no URL carries a key'],
           [details.refused.length === 0 && details.mainFrameNodeNavigations.length === 0, 'no refusal and no main-frame node navigation'],

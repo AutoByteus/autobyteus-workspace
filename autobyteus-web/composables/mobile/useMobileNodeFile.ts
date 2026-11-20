@@ -3,7 +3,7 @@ import { useLocalization } from '~/composables/useLocalization';
 import type { OpenFileState } from '~/stores/fileExplorerState';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { determineFileType } from '~/utils/fileExplorer/fileUtils';
-import { loadNodeFileFromUrl, NODE_FILE_REFUSAL_MESSAGE_KEYS, nodeFileContentUrl } from '~/utils/fileExplorer/nodeFileContent';
+import { loadNodeFileFromUrl, NODE_FILE_REFUSAL_MESSAGE_KEYS, nodeFileContentUrl, type NodeFileRefusal } from '~/utils/fileExplorer/nodeFileContent';
 import { resolveContextAttachmentUrl } from '~/utils/contextFiles/contextAttachmentUrl';
 import type { DownloadProgress } from '~/utils/download/responseBlobProgress';
 
@@ -27,7 +27,8 @@ const contentUrlOf = (source: MobileNodeFileSource, restBaseUrl: string): string
  * credential by the shared node-file loader (`nodeFileContent.ts`, autobyteus-471); its type comes from its name; text
  * is kept as content, anything else as an object URL (revoked when the file closes, so the blob never outlives the
  * viewer). A refusal becomes the viewer's message: not found, a folder, or "could not be opened". While a file that is
- * not text downloads, `progress` says how much has arrived (autobyteus-572 D-4).
+ * not text downloads, `progress` says how much has arrived (autobyteus-572 D-4). `refusal` says why a file could not be
+ * opened, and `reload()` reads the same file again: the viewer's Retry (autobyteus-572 D-7).
  */
 export function useMobileNodeFile(source: Ref<MobileNodeFileSource | null>) {
   const { t } = useLocalization();
@@ -35,6 +36,7 @@ export function useMobileNodeFile(source: Ref<MobileNodeFileSource | null>) {
   const fileState = ref<OpenFileState | null>(null);
   const errorMessage = ref<string | null>(null);
   const progress = ref<DownloadProgress | null>(null);
+  const refusal = ref<NodeFileRefusal | null>(null);
   let objectUrl: string | null = null;
   let loadSerial = 0;
 
@@ -60,6 +62,7 @@ export function useMobileNodeFile(source: Ref<MobileNodeFileSource | null>) {
     if (serial !== loadSerial) return;
     progress.value = null;
     if (loaded.kind === 'refused') {
+      refusal.value = loaded.refusal;
       errorMessage.value = t(NODE_FILE_REFUSAL_MESSAGE_KEYS[loaded.refusal]);
       fileState.value = { ...state, isLoading: false, error: errorMessage.value };
       return;
@@ -72,21 +75,25 @@ export function useMobileNodeFile(source: Ref<MobileNodeFileSource | null>) {
     fileState.value = { ...state, url: objectUrl, isLoading: false };
   };
 
-  // Keyed by value: a new object for the same file does not read it again.
-  const sourceKey = computed(() => (source.value ? JSON.stringify(source.value) : null));
-  watch(sourceKey, () => {
+  /** Forgets what was read (any answer still on its way is ignored) and reads the current source. */
+  const start = (): void => {
     loadSerial += 1;
     release();
     fileState.value = null;
     errorMessage.value = null;
     progress.value = null;
+    refusal.value = null;
     if (source.value) void load(source.value);
-  }, { immediate: true });
+  };
+
+  // Keyed by value: a new object for the same file does not read it again.
+  const sourceKey = computed(() => (source.value ? JSON.stringify(source.value) : null));
+  watch(sourceKey, start, { immediate: true });
 
   onBeforeUnmount(() => {
     loadSerial += 1;
     release();
   });
 
-  return { fileState, errorMessage, progress };
+  return { fileState, errorMessage, progress, refusal, reload: start };
 }
