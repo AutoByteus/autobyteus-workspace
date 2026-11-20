@@ -1,7 +1,30 @@
 # Implementation Handoff
 
 Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/tickets/in-progress/semantic-memory-for-every-agent`
-Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent`, branch `codex/semantic-memory-for-every-agent` (base `personal` at `8430d9ef12`). Commits: `56b02294d0` (code, tests, docs), `a9ca3c48c6` (an owner known only as a member shows loading while the cards or members load; the rendered-UI probe and its package script), `cff2a6596a` (a link row sorts with the files, as the reference shows; probe check SMV-039), `ecbb4741ca` (ticket records and evidence); after CRR-001: `cd26f4d913` (CR-001 fix and specs), then these records and evidence IMP-14…IMP-16 (§ Checks Run).
+Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent`, branch `codex/semantic-memory-for-every-agent` (base `personal` at `8430d9ef12`). Commits: `56b02294d0` (code, tests, docs), `a9ca3c48c6` (an owner known only as a member shows loading while the cards or members load; the rendered-UI probe and its package script), `cff2a6596a` (a link row sorts with the files, as the reference shows; probe check SMV-039), `ecbb4741ca` (ticket records and evidence); after CRR-001: `cd26f4d913` (CR-001 fix and specs), `2e5f786091` (its records and evidence IMP-14…IMP-16); after SR-009 (ARCH-REV-005): `f393f403d5` (code, tests, docs, probe), then these records and evidence IMP-17…IMP-22 (§ Checks Run).
+
+## SR-009: Definition Folder Names And Preparation Failures (IR-003)
+
+Built against `design-spec.md` § Definition Folder Names And Preparation Failures, REQ-001/REQ-010 (reworded), AC-013, AC-014, DEC-015, DEC-016, with the ARCH-REV-005 notes N-12…N-14.
+
+- **One name rule (DEC-016).** `AgentMemoryLayout`'s private `definitionFolderName` is the only rule. It returns `encodeURIComponent(id)` when that is at most 200 bytes. Otherwise it returns the first 120 bytes, then `#`, then the first 16 hex characters of `sha256(id)` (the trimmed ID).
+  - It serves `getAgentSemanticMemoryDirPath`, `getAgentEpisodicDirPath` and, through `AgentSemanticMemory.folderOf`, the `semantic_ws_` lookup. The workspace ID stays the full encoded ID.
+  - Ids that fit are unchanged (unit). On the founder's node no existing folder name is over 200 bytes (IMP-22, names only).
+- **One deviation, toward N-13's purpose:** the cut falls between characters, not only outside a `%XX` escape.
+  - A cut outside every escape can still separate the escapes of one multi-byte character (`…%E7`), and `decodeURIComponent` throws on it (IMP-17 shows the throw). N-13 says the rule exists so decoding never throws.
+  - For an ASCII ID (every bundled ID: hex, `_`, `:`) both readings give the same name.
+  - The unit cases put an escape at bytes 117, 118, 119 and 120 around the 120-byte cut, and add a multi-byte ID.
+- **Read-back.** `EpisodicCatalogStore.listCatalogDefinitionIds` keeps a folder only when the layout gives back its name for the decoded ID. Shortened names are skipped, and so is a name the layout refuses (`%20` decodes to a blank ID, which used to pass the plain round trip). The start pass reaches a shortened folder through the discovered definitions.
+- **Contained preparation (DEC-015, N-14).**
+  - `prepareForRun` prepares each folder independently and returns `{ agentFolder: string | null, globalFolder: string | null }`.
+  - A failure (path refused or `mkdir` failing) logs `console.warn("SEMANTIC_MEMORY_PREPARE_FAILED", { definitionId, folder: "agent" | "global", reason })`.
+  - The composer adds a section only for a non-null folder and still refuses a relative one. Claude's additional directories and Codex's writable roots use `preparedSemanticMemoryFolders`.
+  - Every other runtime (AutoByteus, ACP, Antigravity) passes the folders to the composer only. No caller reads null as "no semantic memory"; the type's comment says so.
+  - One behavior change follows from DEC-015: an ID the layout refuses (`..`) no longer fails `prepareForRun`. It returns a null agent folder, logged, and the run starts.
+- **N-12.** Absolute folder paths reach URLs only through the node-file loader (`nodeFileContent.ts`: `encodeURIComponent(absolutePath)`). The folder view's content route takes paths relative to the workspace (`workspaceResourceUrl.ts`, encoded). The catalog's `index.md` shows the folder name in a code span, not a link.
+  - The rendered probe now seeds a team whose team-local member's encoded ID is 220 bytes, with its folder named by the built server's own layout.
+  - It opens that member's Semantic tab, finds the shortened folder and opens a file inside it (SMV-100…102, IMP-21).
+- **Docs:** `agent_memory.md` (the rule, `prepareForRun`, runs), `agent_episodic_catalog.md` (names and read-back), `prompt_engineering.md` (sections omitted only for an unprepared folder), `GLOSSARY.md`.
 
 ## Local Fix After CRR-001 (IR-002)
 
@@ -15,13 +38,13 @@ Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-
 ## Upstream Artifact Package
 
 - Upstream review applicability and handoff-rule result: Large / High → independent architecture review selected and passed (ARCH-REV-004 on SR-008; ARCH-REV-002 on SR-002 for N-4); source review next, by `get_handoff_rules`
-- Requirements doc: `requirements-doc.md` (SR-008, Approved; the UI approved by the founder on 2026-11-20)
+- Requirements doc: `requirements-doc.md` (SR-009, Approved; the UI approved by the founder on 2026-11-20)
 - Investigation notes: `investigation-notes.md`, `global-semantic-memory-investigation.md`
 - Solution revision record: `solution-revision-record.md`
-- Design spec (required on every route): `design-spec.md` (SR-008)
+- Design spec (required on every route): `design-spec.md` (SR-009)
 - Behavior-defining supplement: the Product UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/semantic-memory-view-554/ui-ux-spec.md` (Approved; runnable reference `personal@437bad9a`, VIS-001…VIS-019)
 - Supplemental task artifacts: `follow-ups.md` (FU-001, FU-002: not crossed)
-- Design review report: `design-review-report.md` (ARCH-REV-004, `Pass`; notes N-8…N-11 applied)
+- Design review report: `design-review-report.md` (ARCH-REV-005, `Pass`, notes N-12…N-14 applied; ARCH-REV-004 notes N-8…N-11 applied)
 - Architecture review revision record: `architecture-review-revision-record.md`
 - The pause of 2026-11-19: `implementation-progress.md` (kept as its record; superseded by IR-001)
 
@@ -57,15 +80,15 @@ the approved UI: Browse tabs Global · Agents · Agent Teams · Agent Orgs with 
 Semantic), team and org pages (Members, Runs), the read-only folder view (the file explorer's new read-only mode),
 en and zh-CN strings, regenerated GraphQL types. Docs and glossary are updated.
 
-- Implementation cycle: `Local Fix` (after `Initial`, IR-001)
+- Implementation cycle: `Design Impact` (SR-009; after `Initial` IR-001 and `Local Fix` IR-002)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
-- Related solution revision IDs: `SR-008`
-- Related architecture-review revision IDs: `ARCH-REV-004` (`ARCH-REV-002` for N-4)
-- Related code-review revision IDs: `CRR-001`
-- Related API/E2E revision IDs: `N/A`
+- Current implementation revision ID: `IR-003`
+- Related solution revision IDs: `SR-008`, `SR-009`
+- Related architecture-review revision IDs: `ARCH-REV-005` (SR-009), `ARCH-REV-004` (`ARCH-REV-002` for N-4)
+- Related code-review revision IDs: `CRR-001`, `CRR-002`, `CRR-003`
+- Related API/E2E revision IDs: API/E2E round 1 (API-10)
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-001`
+- Triggering finding IDs: `CR-002` (CRR-003; CR-001 resolved in CRR-002)
 
 ## Routing Classification (Mandatory)
 
@@ -126,14 +149,15 @@ Docs: server `agent_memory.md`, `agent_definition.md`, `personal_settings.md`, `
 ## Legacy / Compatibility Removal Check
 
 - Removed: the `semanticMemoryEnabled` field everywhere (Removal Plan), `SEMANTIC_MEMORY`, `AgentSemanticMemoryField.vue` and its spec, `AgentMemoryDetail.vue` and its spec, `listAgentRunsWithMemory` (server, web query, store, docs), `AgentRunMemorySummary`/`Page`, the old Browse card grids and filter in `MemoryHome.vue`, the page's agent/team/org detail views, `AgentWithMemorySummary.memory` (the new cards show no availability; no reader left), `unregisterSkillWorkspace` (renamed `unregisterTransientWorkspace`, used by skills and the folder view), the dropped `AgentSemanticMemoryBrowser` and its queries (never committed), `wip-uncommitted.patch`.
-- No compatibility wrappers: no deprecated GraphQL field, no alias query, no `null` path for semantic memory; an old `view=agent-detail|team-detail|org-detail` address opens Browse on Agents (the page's existing fallback for an unknown view).
+- No compatibility wrappers: no deprecated GraphQL field, no alias query, no switch-like `null` for semantic memory (a run's folder is `null` only when it could not be prepared, DEC-015); an old `view=agent-detail|team-detail|org-detail` address opens Browse on Agents (the page's existing fallback for an unknown view).
 - Kept on purpose: the retired-key drop list entry (`mergeAgentConfigRecord`), so a save removes the key.
 
 ## Persisted Data Transition Check (When Applicable)
 
 - `agent-config.json` / `personal-settings.json` holding `semanticMemoryEnabled`: `Directly Usable — No Migration` as designed: readers ignore it; a save drops it (unit + e2e SM-01/SM-02; personal-settings logs `PERSONAL_SETTINGS_ENTRY_SKIPPED … semanticMemoryEnabled`, DEC-006). No stored file is rewritten for it.
 - `<memory>/semantic-global/`: created empty at the first run start after the update; no existing data changes.
-- The founder's data was only read (APFS clone for the measurement, removed afterwards); nothing ran against it.
+- The founder's data was only read (APFS clone for the measurement, removed afterwards; for SR-009 a names-only listing of `episodic/` and `semantic/`, IMP-22); nothing ran against it.
+- SR-009 folder names: `Not Affected` as designed. Every ID that fits keeps its exact name. An ID over 200 encoded bytes gets the shortened name. Over 255 bytes it never had a folder. Between 201 and 255 bytes it had a valid one before, and none exists on the founder's node (IMP-22). No migration.
 
 ## Environment Or Dependency Notes
 
@@ -164,6 +188,12 @@ Evidence files are in `evidence/`; each has a header with the command, the commi
 | IMP-14 | CR-001: `SemanticMemoryFolder.spec.ts`, then the same spec against the reviewed component (negative control) | `cd26f4d913` | 7/7 pass. With the `cff2a6596a` component, both new CR-001 specs fail (the leaked `semantic_ws_` entries) | `IMP-14-cr001-component-spec-and-negative-control.log` |
 | IMP-15 | CR-001 impact: `components/memory`, `components/fileExplorer`, the memory page and store specs; web typecheck | `cd26f4d913` | 31 files, 181 tests passed; typecheck PASS at baseline (87 in 37 test files) | `IMP-15-cr001-web-impact-and-typecheck.log` |
 | IMP-16 | CR-001: rendered probe rerun | `cd26f4d913` | 33/33 checks pass, no page errors | `IMP-16-cr001-rendered-probe.log` |
+| IMP-17 | SR-009 unit: agent-memory (new `definition-folder-names.test.ts`, AC-014 cases), episodic catalog, prompt, Claude and Codex bootstrappers, workspaces; negative control against the `daba240ec1` source; escape-only cut proof | `f393f403d5` | 40 files, 381 tests pass. Against the reviewed source all 16 new or changed tests fail. An escape-only cut on a multi-byte ID throws `URIError` | `IMP-17-sr009-unit-and-negative-control.log` |
+| IMP-18 | SR-009 impact: server unit (agent-memory, catalog, workspaces, file explorer, api, agent-execution, parity, standalone host, architecture) and server typecheck | `f393f403d5` | 269 files, 2,449 tests passed (6 skipped). Typecheck PASS at baseline (1,006 in 315 test files) | `IMP-18-sr009-server-unit-impact-and-typecheck.log` |
+| IMP-19 | AC-013 at the boundary: `agent-runtimes-running-agents` (RA-04), `application-import-codex-launch` (IC-01), `application-reload-repair` (RE-05) | `f393f403d5` | 3 files, 11/11 tests (the three API-10 failures pass) | `IMP-19-sr009-e2e-ra04-ic01-re05.log` |
+| IMP-20 | e2e `agent-semantic-memory` (scripted AGY) + `memory-explorer-graphql` | `f393f403d5` | 2 files, 12/12 tests | `IMP-20-sr009-e2e-semantic-memory-and-explorer.log` |
+| IMP-21 | Rendered probe with the long-ID team (after `pnpm -C autobyteus-server-ts build`) | `f393f403d5` | 38/38 checks; SMV-100…102 open a file inside a shortened folder through the Semantic tab | `IMP-21-sr009-rendered-probe.log`, `IMP-21-long-id-semantic-file-open.png` |
+| IMP-22 | Premise: folder name lengths on the founder's node (names only) | N/A | `episodic/` 125 folders, longest 117 bytes; `semantic/` 4, longest 56; none over 200 | `IMP-22-sr009-founder-folder-name-lengths.log` |
 
 The IMP-01 failures, one by one:
 - Prompt snapshots (20): the new Global section. The diffs were additions only; snapshots updated.
@@ -223,6 +253,9 @@ Each imported request ran exactly one discovery. All steps are within the 3 s bu
 - Old addresses `view=agent-detail|team-detail|org-detail` open Browse on Agents.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
+
+- SR-009: the full server e2e suite again (API-10). Here only RA-04, IC-01 and RE-05's files and the semantic memory e2e files ran (IMP-19, IMP-20). The stale tests API/E2E listed for its next round (`agent-package-private-skills`, `configured-skill-on-demand-loading`, `memory-sync-multiprocess`, `memory-sync-api`) are API/E2E's and are not touched here.
+- AC-014 at the boundary, if wanted: a run started with an unwritable `semantic/` (here per owner, composer, Claude and Codex unit).
 
 - The live SML-GLOBAL run (gated, paid). It was not run here.
 - `pnpm -C autobyteus-server-ts test:integration` and the full server e2e suite. Here only the e2e files this change touches ran (IMP-05…08).

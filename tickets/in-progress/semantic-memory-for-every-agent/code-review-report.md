@@ -1,5 +1,104 @@
 # Code Review Report
 
+## Latest Round: API/E2E Failure-Origin Review (CRR-003)
+
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Current Code Review Revision ID: `CRR-003` (prior: CRR-002 `Pass`)
+- Review Scope: `N/A` (failure-origin round). The CRR-002 implementation-review result below stands except where this section updates it.
+- Trigger: API-REV-001 `Fail`. Code tested: `cd26f4d913`. Reports: `daba240ec1`; test edits: `e571b1dd9e`.
+- Coverage Investigation / Execution Coverage Report / API/E2E Revision Record reviewed: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md` (API-REV-001)
+- Failing Scenario IDs (AC-001 / REQ-001, the application-owned run kind):
+  - `tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts` RA-04;
+  - `application-import-codex-launch.e2e.test.ts` IC-01;
+  - `application-reload-repair.e2e.test.ts` RE-05.
+- Exact command: after `pnpm -C autobyteus-server-ts build`, run `env -i PATH HOME=<temp> TMPDIR USER pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/application-import-codex-launch.e2e.test.ts --no-watch`
+- Failure evidence: `evidence/API-10d-re05-launch-error.log` (`ENAMETOOLONG: name too long, mkdir '<memory>/semantic/team-local-agent%3Abundle-team__<hex>…%3Aresearcher'`, a 439-byte name), `API-10-server-e2e-suite.log`, `API-10b-failing-e2e-rerun.log`, `API-10c-three-files-branch-vs-base.log`
+- Testing guideline read: `TESTING.md` (§ Rules; test-owned data only)
+
+### The failing scenario is approved behavior
+
+- REQ-001 lists "application-owned" among the run kinds whose start must prepare the agent's folder and add the section. The three tests launch a Brief Studio draft run through the real application path (`launchDraftRun`) and expect it attached.
+- Scenario validity: `Supported Normal Scenario`. Any application with a bundled team-local agent, installed at a real path.
+- The tests are valid, and nothing in the environment caused it. The cause is in production code.
+
+### Production path of the failure (confirmed in code)
+
+1. A bundled team-local definition id embeds the application's package path in hex (`application-bundles/utils/application-bundle-identity.ts:1-7`: `bundle-team__<hex("application-local:"+package path)>__<hex app id>__<hex team id>`). Its length grows with the install path.
+2. `AgentMemoryLayout.definitionFolderName` uses `encodeURIComponent(id)` as one path segment (`agent-memory-layout.ts:35-36`), with no length rule. Any real install path takes the name past the 255-byte limit of macOS and Linux.
+3. At base this stayed latent. `prepareForRun` returned null unless `semanticMemoryEnabled`, and bundled agents carry no switch, so no folder was ever created for them.
+4. This change makes `prepareForRun` create the folder for every run (REQ-001), so `mkdir` throws `ENAMETOOLONG` and the run start fails, in every runtime owner, because the error is not contained.
+5. The same helper names the agent's episodic catalog folder (autobyteus-493) and the Memory page's `semantic_ws_<encoded id>` lookup, so the rule is shared:
+   - the catalog's write already fails for these agents; it is contained and logged (the 493 contract), so the agent has no `catalog.md`;
+   - the Semantic tab's `SemanticMemoryWorkspace.open` gets `ENAMETOOLONG` from `lstat`, which reads as "missing", so the page would show the missing-folder state for good.
+
+### Origin classification
+
+- Origin: **design gap, carried into the implementation.**
+  - The design kept the folder-name rule (`encodeURIComponent(definition id)`, "the same name as the semantic folder", shared with the 493 contract) and made folder creation unconditional for every run kind.
+  - It did not check that every kind's definition id fits one file name.
+  - The implementation follows the design.
+- Earlier review gap: **yes, partly detectable.** Core Principle 1 asks to trace each kind and entry form, and REQ-001 names the application-owned kind. In CRR-001 I verified that every runtime path calls `prepareForRun`, but I did not trace a bundled id's form to the folder name. Grepping the id builders would have shown it. The architecture reviews missed it as well.
+- Kind (ticket-scope): **this ticket.**
+  - Can the ticket reach its goal as is? No: AC-001 fails for application-owned runs, and those runs cannot start.
+  - Whose functionality is it? The folder rule this ticket makes unconditional.
+  - The episodic catalog's missing `catalog.md` for these agents comes from the same rule and the same helper. It predates this ticket (493, contained). Fixing the shared rule fixes it too, so it belongs in the same decision rather than a separate follow-up.
+- Classification: **`Design Impact`**, owned by the Solution Designer. It is not a bounded `Local Fix`, because it needs design decisions:
+  1. **The folder-name rule for ids that do not fit one name:** for example, a readable prefix plus a stable hash when the encoded id is over the limit, keeping `encodeURIComponent(id)` for every id that fits. It must stay one rule shared by the semantic folder, the episodic folder (whose 493 contract says "the same encoded name"), the `semantic_ws_` workspace lookup, and the docs and glossary. The 493 contract change may need the Solution Designer's approval route.
+  2. **Run start when preparation fails:** whether a start fails (as now), or the run starts without the section and with a warning. DESIGN.md rule 7 favors containing the failure to that one run; REQ-001 says every run carries the section. That makes it a requirement and design call.
+  3. **Existing data:** folders under the current rule are never renamed (every id that fits keeps its name). Ids over the limit never had a folder, so no migration should be needed; the design should confirm.
+- Requirement Gap? Not by itself: REQ-001 already says every run kind. Decision 2 may touch REQ-001's wording.
+- Task size / risk: unchanged (`Large` / `High`).
+
+### The round's other failures
+
+- **API/E2E-owned, already planned as Next Round:** stale test doubles this change made untrue.
+  - `agent-package-private-skills`, `configured-skill-on-demand-loading`: their doubles lack `getOrCreateRunWorkspace` and `getRegisteredWorkspaceRootPath`.
+  - `memory-sync-multiprocess`: queries the removed `AgentWithMemorySummary.memory`.
+  - `memory-sync-api`: its schema-only server sets no catalog binding (`EPISODIC_CATALOG_NOT_COMPOSED`). Both production composition roots set the binding, so this is a test-harness gap, not a product path.
+  - These are `Local Fix` (API/E2E), after the design fix.
+- **Load:** the six files that pass alone or fail on base too. No source origin.
+- **Pre-existing:** FU-005 (`package-personal-settings` `afterAll` timeout, also on base) and FU-004 (imported team and org cards at 0, the same on base).
+
+### CR-002 (new, CRR-003): a bundled team-local agent's run cannot start: its semantic folder name is too long
+
+- Basis: REQ-001 and AC-001 (the application-owned run kind); Core Principle 1. Candidate CF-10 below, `Promote`.
+- Evidence: the production path above; `API-10d-re05-launch-error.log`.
+- Required response: a design revision (decisions 1–3 above), then implementation, a targeted source review and API/E2E. The fix should be pinned with a unit test, for example an id longer than 255 encoded bytes prepares a folder and opens in the Semantic tab and the episodic catalog.
+
+| Candidate | Observation | Scenario / Contract | Evidence | Disposition | Scope | Response |
+| --- | --- | --- | --- | --- | --- | --- |
+| CF-10 (CRR-003) | `encodeURIComponent(definition id)` as a single folder name has no length rule; a bundled team-local id embeds the package path, and an unconditional `mkdir` fails the run start | REQ-001 / AC-001 (application-owned) | `application-bundle-identity.ts:1-7`, `agent-memory-layout.ts:35-36`, `agent-semantic-memory.ts` `prepareForRun`; API-10d | Promote | This ticket (`Design Impact`) | A length-safe, shared folder-name rule and a decision on start failure (CR-002) |
+
+## Prior Round: Implementation Review Round 2 (CRR-002)
+
+- Review Entry Point: `Implementation Review`
+- Current Code Review Revision ID: `CRR-002` (prior: CRR-001 `Fail`, CR-001 `Local Fix`)
+- Current Review Round: 2
+- Trigger: IR-002, the CR-001 Local Fix
+- Code reviewed: `cd26f4d913`; records and evidence in `2e5f786091`. Delta: `git diff cff2a6596a cd26f4d913`, two web files.
+- Review Scope: `Targeted Delta Review`. The change stays within CR-001's file and behavior (`SemanticMemoryFolder.vue` and its spec): no server, shared interface, data shape or other component. Every other check and score is carried forward from CRR-001, whose evidence is still valid.
+- Checks not rerun (they ran on `cd26f4d913`):
+  - IMP-14: spec 7/7, plus a negative control: both new specs fail on the `cff2a6596a` component.
+  - IMP-15: web impact rerun, 31 files and 181 tests passed; web typecheck PASS.
+  - IMP-16: rendered probe 33/33.
+
+### CR-001: resolved
+
+- **The fix:** `registeredId` is kept from the moment of registration.
+  - `release()` (on a folder or view change, and on unmount) unregisters it and starts a new generation.
+  - The watcher releases first, then registers and records its own generation before awaiting.
+  - A first listing that completes in an older generation sets nothing and shows no error.
+  - A failure in the current generation releases, then shows the error.
+  - The late listing writes only into the explorer state object it took before the await, so no store entry comes back. The spec asserts this after the late completion.
+- **Specs** (on the real workspace store):
+  1. Unmount while the first listing is pending: no `semantic_` entry and no `semantic_memory` metadata remain, also after the late listing completes.
+  2. An agent change while pending: only the current folder's workspace is registered and shown.
+- **REQ-007:** the folder view's workspace no longer outlives the view, so the chat and Run Settings menu cannot offer it.
+- **Scores:** API/E2E Readiness 8.8 → 9.4; Runtime Correctness 8.9 → 9.4.
+- **Unchanged:** FU-003 (the pre-existing skill-workspace exposure).
+
+## Prior Round: Implementation Review Round 1 (CRR-001)
+
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
@@ -130,7 +229,7 @@
 | Test scenarios requirement-aligned | Pass | Per-runtime units (no field, `false`, `true`); every mutation byte-identical; the content route returns 403; a chokidar negative control; the binding; the AC-012 measurement | — |
 | Test fixtures and structure | Pass | Unit tests now inject a test-owned `AgentSemanticMemory`; the stray folders were deleted | — |
 | No stale or compatibility-only tests | Pass | — | — |
-| API/E2E readiness | **Fail** | CR-001 must be fixed first: REQ-007's "never appears in any workspace list or picker" fails after leaving a loading folder view | Local Fix |
+| API/E2E readiness | Pass (CRR-002; CRR-001 Fail) | CR-001 is resolved | — |
 
 ## Source File Size And Structure Audit
 
@@ -178,8 +277,8 @@ None new beyond the gate above. N-5…N-11 are confirmed as recorded.
 | 4 | Separation of Concerns and File Placement | 9.4 | Owner-local splits | — | — |
 | 5 | Shared-Structure / Data-Model Tightness | 9.4 | — | — | — |
 | 6 | Naming Quality and Local Readability | 9.4 | — | — | — |
-| 7 | API/E2E Readiness | 8.8 | Strong node-side refusals and tests | CR-001: REQ-007's listing rule fails in one supported web sequence, and no spec covers unmount during load | Fix CR-001 with its spec |
-| 8 | Runtime Correctness And Behavioral Fidelity | 8.9 | Node enforcement is complete across write, link, run and list | CR-001 (the web lifecycle) | Fix CR-001 |
+| 7 | API/E2E Readiness | 9.4 (CRR-002; CRR-001 8.8) | Strong node-side refusals and tests; CR-001 fixed and covered by two specs with a negative control | — | — |
+| 8 | Runtime Correctness And Behavioral Fidelity | 8.6 (CRR-003; CRR-002 9.4) | Node enforcement is complete across write, link, run and list; the web registration lives only as long as its view | CR-002: a bundled team-local agent's run start fails (folder name over 255 bytes) | A length-safe shared folder-name rule; a contained start (design) |
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | A clean cut | — | — |
 | 10 | Cleanup Completeness | 9.4 | — | — | — |
 
@@ -205,11 +304,11 @@ None new beyond the gate above. N-5…N-11 are confirmed as recorded.
 
 ## Classification
 
-- `Local Fix`, owned by `implementation_engineer` (CR-001).
+- CRR-003: `Design Impact` (CR-002). CRR-002 was a Pass; CRR-001's CR-001 is resolved.
 
 ## Recommended Recipient
 
-`/implementation_engineer`. After the fix: source review (targeted delta), then API/E2E.
+CRR-003: `/solution_designer` (design revision). Then implementation, a targeted source review and API/E2E.
 
 ## Residual Risks
 
@@ -220,13 +319,14 @@ None new beyond the gate above. N-5…N-11 are confirmed as recorded.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Review Entry Point: `Implementation Review`
+- Review Decision: `Fail` (CRR-003, failure-origin: CR-002, `Design Impact`). CRR-002 (implementation review) was a `Pass`.
+- Review Entry Point: `API/E2E Failure-Origin Review`
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: average 9.3; API/E2E Readiness 8.8 and Runtime Correctness 8.9 (CR-001); every other category ≥ 9.4
+- Score Summary: every category ≥ 9.4; average 9.5
 - Failure Origin: N/A
-- Recommended Recipient: implementation engineer (`Local Fix`)
+- Recommended Recipient: Solution Designer (`Design Impact`, CR-002)
+- Failure Origin (CRR-003): a design gap carried into the implementation. The folder-name rule fails for long ids, and the run start is not contained. Partly detectable in CRR-001 (an earlier review gap).
 - Notes:
   - Node-side enforcement (write, link, run, list refusals) is complete and verified on every runtime path.
   - The four points the handoff raised:

@@ -1,0 +1,12 @@
+# IMP-22-sr009-founder-folder-name-lengths.log
+# Command: ls ~/.autobyteus/server-data/memory/{episodic,semantic} | awk (name lengths only)
+# Commit tested: N/A (the founder node, read only)
+# Environment: macOS (Darwin 25.5), Node v22.23.1, pnpm; shared host, load average 60-130
+# Date: 2026-11-20
+# Note: checks the premise that ids that fit keep their names: no existing folder name is over 200 bytes, so the rule renames nothing on this node
+# ----------------------------------------------------------------------
+# names only (ls), no file read, nothing written; awk counts name lengths in bytes
+== episodic
+folders=125 over200=0 longest=117
+== semantic
+folders=4 over200=0 longest=56

@@ -75,3 +75,15 @@ The requirements are approved within his direction; the user was informed (DEC-0
 - DS-003 has a decision for each workspace-id caller (AR-004, AR-005 d).
 - AR-006: the local source uses the episodic catalog's read API; imported sources use one discovery per request (AC-012 measures it).
 - Requirements: REQ-007 is extended; AC-008 is corrected; AC-011 and AC-012 are new; the DEC statuses are fixed.
+
+---
+
+## SR-009 resubmission (2026-11-20): over-long definition folder names (CRR-003 CR-002)
+
+- New design-spec section "Definition Folder Names And Preparation Failures":
+  - one name rule (DEC-016) for the semantic folder, the episodic catalog folder and the `semantic_ws_` lookup;
+  - preparation contained per folder, so the run starts without that section and logs (DEC-015);
+  - no migration;
+  - pinning tests.
+- Requirements: REQ-001 and REQ-010 are reworded; AC-013 and AC-014 are new.
+- Evidence: code-review-report CRR-003; `evidence/API-10d-re05-launch-error.log`.

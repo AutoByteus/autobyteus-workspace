@@ -8,6 +8,7 @@
 | ARCH-REV-002 | Round 2: SR-002 resubmission (2026-11-19) | SR-002 | Fail | Pass | AR-001, AR-002 resolved |
 | ARCH-REV-003 | Round 3: SR-007 resubmission (SR-003…SR-007; approved UI) (2026-11-20) | SR-003…SR-007 | Pass | Fail (Design Impact) | AR-003, AR-004, AR-005, AR-006 |
 | ARCH-REV-004 | Round 4: SR-008 resubmission (consolidated) (2026-11-20) | SR-008 | Fail | Pass | AR-003…AR-006 resolved |
+| ARCH-REV-005 | Round 5: SR-009 after CRR-003 CR-002 (2026-11-20) | SR-009 | Pass | Pass | none (notes N-12…N-14) |
 
 ## Revision Entries
 
@@ -119,3 +120,28 @@ None.
 - Material classification changes: none (`Large` / `High`)
 - Recommended recipient: Implementation Engineer; informational notice to the Solution Designer
 - Remaining risks or uncertainty: AC-012's measurement; N-5 (concurrent global writes, accepted)
+
+### ARCH-REV-005 — SR-009: a length-safe folder-name rule and contained preparation; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/semantic-memory-for-every-agent/tickets/in-progress/semantic-memory-for-every-agent/design-review-report.md`
+- Review round and trigger: round 5; the Solution Designer's SR-009 after the code reviewer's CRR-003 CR-002 (Design Impact; API/E2E RA-04, IC-01, RE-05; `evidence/API-10d-re05-launch-error.log`)
+- Triggering role, report path, and finding IDs: Code Reviewer, then the Solution Designer; `code-review-report.md`; CR-002 (code review)
+- Relevant solution revision IDs: SR-009
+- Prior authoritative decision: `Pass` (ARCH-REV-004)
+- Current authoritative decision: `Pass`
+- What changed:
+  - DEC-016: `definitionFolderName` is the one rule: the full encoded id when ≤ 200 bytes, else a 120-byte prefix plus `#` plus 16 hex of SHA-256. It serves the semantic folder, the episodic folder and the workspace lookup, and ids that fit are unchanged.
+  - DEC-015: `prepareForRun` is contained per folder and logs `SEMANTIC_MEMORY_PREPARE_FAILED`.
+  - REQ-001 and REQ-010 are reworded; AC-013 and AC-014 are added.
+  - The catalog store skips shortened names on read-back; the edge is accepted (MP-006 Not Reachable through a supported action).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-003…AR-006 | Resolved | Resolved (unchanged) | ARCH-REV-004 | SR-009 changes only the name rule and preparation |
+
+- New or remaining finding IDs: none. Implementation notes N-12 (`#` in URLs), N-13 (cuts at a `%XX`), N-14 (null means "failed", not "off").
+- Material classification changes: none (`Large` / `High`)
+- Recommended recipient: Implementation Engineer; informational notice to the Solution Designer
+- Remaining risks or uncertainty: AC-012's measurement; N-5

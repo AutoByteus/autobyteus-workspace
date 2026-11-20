@@ -5,6 +5,7 @@
 | Revision ID | Phase | Trigger | Finding IDs | Prior Status | Current Status | Affected IDs | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Mixed | Task autobyteus-554 (2026-11-19) | N/A | N/A | Requirements Approved; Design Ready | BEH-001…004, REQ-001…009, AC-001…007, DEC-001…007 | Architecture Design Complete, Large / High |
+| SR-009 | Mixed | CRR-003 CR-002 (API/E2E RA-04, IC-01, RE-05: `ENAMETOOLONG`) | CR-002 | Design Ready; API/E2E Fail | Design Ready | REQ-001, REQ-010, AC-013, AC-014 (new), DEC-015, DEC-016 | Architecture Design Complete, Large / High |
 | SR-008 | Design (+ requirement wording) | ARCH-REV-003 `Fail` | AR-003…AR-006 | Design Ready; review Fail | Design Ready (consolidated) | REQ-007, AC-008, AC-011 (new), AC-012 (new), DEC-004/010/011 status | Architecture Design Complete, Large / High |
 | SR-007 | Mixed | The founder approved the UI ("Approved", 2026-11-20); the final Product package | N/A | Ready for Approval | Requirements Approved; Design Ready | REQ-005, REQ-006, REQ-012; design DS-002 (SR-007 section) | Architecture Design Complete, Large / High |
 | SR-006 | Mixed | The founder: merge autobyteus-555 into 554 ("the global memory is just like other semantic memory, it's just a folder"); round 5's Global tab | N/A | Ready for Approval (round 4) | Ready for Approval (final UI pending) | BEH-005, REQ-006, REQ-010…012, AC-009, AC-010, DEC-012…014 | Design revised; waiting for the final UI/UX package |
@@ -153,3 +154,25 @@
 - Intended behavior: unchanged except the AR-004 hardening, which is a privacy and safety detail within REQ-007 (Solution Designer within the direction).
 - Classification: Large / High.
 - ARCH-REV-004 (informational `Pass` on SR-008): AR-003…AR-006 resolved. Delivered to `/implementation_engineer`, which resumes from `wip-uncommitted.patch` per Change Sequence step 1. The implementation notes N-8…N-11 (filter text; the cards await the start pass; ACP and Antigravity resolve through `ClaudeWorkspaceResolver`; provisioning by path unaffected) are in the review report.
+
+### SR-009 — Over-long definition folder names; contained preparation (CRR-003 CR-002)
+
+- Classification: `Design Impact`, with requirement wording.
+  - REQ-001 and REQ-010 gain the contained-failure clause (DEC-015).
+  - DEC-016 is the name rule.
+  - Both decided by the Solution Designer within the direction; user informed.
+- Cause: application-bundled team-local ids encode to 439 bytes (more than 255). The unconditional `prepareForRun` turned this latent problem into a failed start.
+- Design: the design-spec section "Definition Folder Names And Preparation Failures":
+  - one name rule in `AgentMemoryLayout` for the semantic folder, the episodic catalog folder and the `semantic_ws_` lookup;
+  - preparation contained per folder;
+  - no migration;
+  - tests that pin it.
+- Effect on the 493 contract: its "same name as the semantic folder" holds. Its literal `encodeURIComponent(id)` is now the rule's common case, and the live doc carries the rule.
+- My review lesson: trace every id form (Core Principle 1) into a path rule before making the rule unconditional.
+- Next action: architecture review (rule: Large / High), then implementation, a targeted source review and API/E2E.
+- ARCH-REV-005 (informational `Pass` on SR-009, no findings): delivered to `/implementation_engineer`.
+  - MP-006 (the stale shortened-catalog edge) is not reachable through a supported action: app deletes are live, and `runDeleted` rewrites the catalog to "0 runs".
+  - Implementation notes:
+    - N-12: `#` in URLs must be encoded; AC-013 opens a file in a shortened folder.
+    - N-13: unit cases where the cut falls on each position of a `%XX`.
+    - N-14: null means "failed", not "off".

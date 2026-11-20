@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-008`. This document is consolidated after ARCH-REV-003 (AR-003): it states only the current design. History is in `solution-revision-record.md` (SR-001…SR-008) and in git.
+- Current solution revision ID: `SR-009` (SR-008 consolidated after ARCH-REV-003; SR-009 adds the definition-folder name rule and contained preparation after CRR-003 CR-002): it states only the current design. History is in `solution-revision-record.md` (SR-001…SR-008) and in git.
 - Approved requirements: `requirements-doc.md` at SR-008.
   - SR-001/SR-002: approved by the Solution Designer within the direction, user informed.
   - SR-004…SR-007: the founder's words.
@@ -11,6 +11,47 @@
 - Design status: `Ready`
 - Investigation: `investigation-notes.md` (INV-1…INV-12); `global-semantic-memory-investigation.md`
 - Authorities read: `references/architecture-design.md`, `references/design-principles.md` (this conversation); `DESIGN.md` (rules 3, 5, 7, 8, 9, 11); Data Migration Guideline; node access model; the internal-agent rule (autobyteus-308)
+
+
+## Definition Folder Names And Preparation Failures (SR-009, CRR-003 CR-002)
+
+**Cause, confirmed by the code reviewer and reproduced by API/E2E:**
+- An application-bundled team-local id embeds the bundle's package path in hex (`application-bundles/utils/application-bundle-identity.ts:1-7`).
+- `AgentMemoryLayout.definitionFolderName` uses `encodeURIComponent(id)` as one path segment, with no length rule (`agent-memory/store/agent-memory-layout.ts:35-36`).
+- The result is 439 bytes; macOS and Linux allow 255.
+- Now that `prepareForRun` creates the folder for every run, `mkdir` throws `ENAMETOOLONG` and the start fails (RA-04, IC-01, RE-05; `evidence/API-10d-re05-launch-error.log`).
+- The same name is used by the episodic catalog (493; its write already fails, contained) and by the `semantic_ws_` lookup, where `lstat` reads `ENAMETOOLONG` as missing.
+
+**1. One name rule (DEC-016):**
+- `definitionFolderName(id)` in `agent-memory-layout.ts` stays the only owner.
+- It returns `encodeURIComponent(id)` when that is at most 200 bytes. Otherwise it returns the first 120 bytes of that string, never cutting inside a `%XX` escape, then `#`, then the first 16 hex characters of `sha256(id)`.
+- `#` is always escaped by `encodeURIComponent`, so a shortened name cannot collide with a full name.
+- It serves:
+  - `getAgentSemanticMemoryDirPath`;
+  - `getAgentEpisodicDirPath`;
+  - through `AgentSemanticMemory.folderOf`, the `semantic_ws_<encodeURIComponent(id)>` lookup, whose workspace id stays the full encoded id because it is not a path.
+- No other code builds or parses these names.
+
+**2. Names read back from disk:** the episodic catalog store lists existing catalog folders to keep agents whose runs are all gone (`episodic-catalog-store.ts:64`, `decodeURIComponent(name)`).
+- A shortened name cannot be decoded. The start pass reaches its agent through the definitions it discovers (id → name), and it skips a shortened folder that no discovered definition names; nothing else reads it.
+- Accepted edge: a shortened catalog folder whose agent's runs are all deleted keeps its last content instead of "0 runs".
+- `index.md` lists such agents by their discovered name as usual.
+
+**3. Contained preparation (DEC-015):**
+- `AgentSemanticMemory.prepareForRun` creates each folder independently and returns `{ agentFolder: string | null, globalFolder: string | null }`.
+- On a failure it logs `SEMANTIC_MEMORY_PREPARE_FAILED { definitionId, folder: "agent" | "global", reason }` and returns null for that folder.
+- The composer adds a section only for a non-null path. Claude and Codex add only non-null folders.
+- The run starts.
+
+**4. Existing data:** `Not Affected`. Ids that fit keep their exact names. Over-long ids never had a folder (they had no switch at base, and the 493 catalog write failed, contained). No migration.
+
+**5. Docs:** `agent_memory.md`, `agent_episodic_catalog.md` (its "same encoded name" now refers to this rule) and `GLOSSARY.md` describe the rule. The archived 493 contract stays historical; the live doc carries the rule.
+
+**6. Tests, pinning the fix:**
+- unit: a bundled team-local id over 200 bytes prepares a folder, `folderOf`, `getAgentEpisodicDirPath` and the `semantic_ws_` lookup resolve the same shortened name, and the catalog writes `catalog.md` there;
+- unit: ids that fit are unchanged;
+- unit: a forced `mkdir` failure starts the run without the section and logs (AC-014);
+- API/E2E: RA-04, IC-01 and RE-05 pass (AC-013).
 
 ## Current-State Read
 
