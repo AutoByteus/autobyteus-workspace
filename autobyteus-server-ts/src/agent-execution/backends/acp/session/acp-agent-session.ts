@@ -58,12 +58,10 @@ export type AcpAgentSessionOptions = Readonly<{
 type McpWaiter = Readonly<{ serverName: string; resolve: () => void; reject: (error: Error) => void }>;
 
 /**
- * Who started a turn: `input`, a prompt this client sent (`session/prompt`, ended by its response), or `provider`, a
- * prompt the agent runtime started itself (e.g. after a background command ended), ended by its `prompt_completed`.
+ * The agent's prompt behind the active turn, as its `prompt_running` / `prompt_completed` signals report it, by the
+ * turn's origin: `input`, a prompt this client sent (`session/prompt`, ended by its response), or `provider`, a prompt
+ * the agent runtime started itself (e.g. after a background command ended), ended by its `prompt_completed`.
  */
-export type AcpTurnOrigin = "input" | "provider";
-
-/** The agent's prompt behind the active turn, as its `prompt_running` / `prompt_completed` signals report it. */
 type ActivePrompt =
   | Readonly<{ origin: "input"; promptId: string | null; completed: boolean }>
   | Readonly<{ origin: "provider"; promptId: string }>;
@@ -76,7 +74,7 @@ type PendingProviderPrompt = Readonly<{ promptId: string; notice: AcpPromptNotic
  * history `session/load` replays, runs the turn idle timer, applies the effects of agent
  * extension notifications and provider calls, and answers every permission request.
  *
- * It owns the turn lifecycle of both origins (`AcpTurnOrigin`). From the agent's prompt signals: in `ready`, a
+ * It owns the turn lifecycle of both origins (`ActivePrompt`). From the agent's prompt signals: in `ready`, a
  * `prompt_running` opens a provider turn with its notice; in an input turn, the first `prompt_running` names the
  * input prompt and a different prompt that runs after the input prompt completed is pending. At the input prompt's
  * response a pending prompt is handed over in one batch (input end + provider start + notice), so the run never reads

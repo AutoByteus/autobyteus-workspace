@@ -14,14 +14,15 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/grok-self-started-tur
 
 ## Current Implementation Summary
 
-- Revision record `implementation-revision-record.md`: IR-001 (Design Impact, resolved by SR-004/SR-005) and IR-002 (this round).
+- Revision record `implementation-revision-record.md`: IR-001 (Design Impact, resolved by SR-004/SR-005), IR-002 (SR-005 implemented) and IR-003 (CRR-001 CR-001, this round).
 - Commits:
   - `dd79100fbb`: SR-003 items 1-3 and the notice converter.
   - `3076e1d6fb`: ticket documents and the IMP-01 evidence.
   - `0401d75bf3`: item 0, wire-order delivery.
   - `eb7dcef228`: items 4-6 and the Grok signal tests.
   - `39686a67ac`: item 7, scripted Grok, E2E and the live case.
-  - Then the documents commit.
+  - `5ab411af71`: documents (IR-002).
+  - Then the IR-003 commit: CR-001.
 
 ### Item 0: wire-order delivery (`src/runtime-management/acp/acp-client-connection.ts`)
 
@@ -55,6 +56,7 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/grok-self-started-tur
     - a matching input id is marked completed;
     - a matching pending prompt is dropped.
   - `finishTurn` (:407): when a provider prompt is pending at the input response, it emits **one batch** with the input end, the provider `TURN_STARTED` and the notice, and stays `prompting`.
+  - The two origins are named once, in `ActivePrompt` and its doc (IR-003, CR-001: the unused exported `AcpTurnOrigin` is removed; line numbers below are from before that change, about 4 lines lower now).
   - `close`/`fail` clear the prompts (`clearPrompts`, :422). The two effects are handled in `applyEffects` before the `!isInTurn()` filter (:290-292).
 - Converter `acp-session-update-converter.ts`: `notice(content, senderId)` → `SYSTEM_TASK_NOTIFICATION {turn_id, sender_id, content, message_id}`.
 
@@ -117,6 +119,7 @@ Evidence: `tickets/in-progress/grok-self-started-turns-517/evidence/`. macOS 26.
 | IMP-04 | `RUN_GROK_E2E=1 … grok-build-live-runtime.e2e.test.ts -t "autobyteus-517 AC-005"` (isolated server, real Grok 1.0.89, grok-4.7 low) | `39686a67ac` content | live provider-started turn | AC-005 | Pass (attempt 3) | `IMP-04-grok-live-provider-turn.log` | notice `sender_id system.grok_provider_turn`, "Background task … completed (exit code: 0)", text contains `BGDONE-bd8ab412`, `end TURN_COMPLETED`; ✓ |
 | IMP-05 | `pnpm -C autobyteus-server-ts typecheck`; `pnpm -C autobyteus-web typecheck`; unit suites acp/grok/deepseek/connection/runtime-management grok/agent-memory | `39686a67ac` content | all TS; session rules over the real connection | — | Pass | `IMP-05-typechecks-and-units.log` | `(baseline 1006 in 315 files)` PASS; web `(baseline 86 in 36 files)` PASS; `Tests  299 passed (299)` |
 | IMP-06 | discovery called directly on branch and base connection; raw `initialize`; Grok's own startup log | — | why live attempts 1-2 failed | — | Diagnosed: Grok startup, not this change | `IMP-06-grok-discovery-startup.log` | base and branch both `ACP_DISCOVERY_TIMEOUT`; `bootstrap elapsed_ms 34384` |
+| IMP-07 | CR-001 recheck: `acp-provider-started-turns.test.ts`; `pnpm -C autobyteus-server-ts typecheck`; grep for `AcpTurnOrigin` | IR-003 commit | the session after the type removal | CR-001 | Pass | `IMP-07-cr001-recheck.log` | `Tests  9 passed (9)`; `(baseline 1006 in 315 files)` PASS; no matches |
 
 - Earlier in this round: the connection's wire-order cases were run against the old `filterForeignResponses` code, and 7 of them failed.
 - Not run:

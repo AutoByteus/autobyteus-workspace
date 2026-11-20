@@ -8,6 +8,7 @@ The current code and the latest handoff are the authority. This record locates e
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture reviewer, `design-review-report.md` ARCH-REV-003 (Pass), SR-003 | N/A | `Design Impact` | SR-003; ARCH-REV-003; CRR N/A; API-REV N/A; DR N/A | SR-003 items 1-4 implemented; the one-batch hand-over cannot be detected because the ACP SDK delivers the prompt response before earlier extension notifications → Solution Designer |
 | IR-002 | Architecture reviewer, `design-review-report.md` ARCH-REV-005 (Pass), SR-005 | N/A | `Implementation complete` | SR-004, SR-005; ARCH-REV-004, ARCH-REV-005; CRR N/A; API-REV N/A; DR N/A | SR-005 Intended Change 0-7 implemented on dd79100fbb/3076e1d6fb; unit, scripted E2E and live Grok pass → code reviewer (Medium/High) |
+| IR-003 | Code reviewer, `code-review-report.md` CRR-001 (Fail) | CR-001 | `Local Fix` | SR-005; ARCH-REV-005; CRR-001; API-REV N/A; DR N/A | unused `AcpTurnOrigin` removed, its doc on `ActivePrompt`; unit 9/9, typecheck pass → code reviewer (Targeted Delta Review) |
 
 ## Revision Entries
 
@@ -55,4 +56,20 @@ The current code and the latest handoff are the authority. This record locates e
   - Every in-process E2E file's `afterAll` timed out in `app.close()` under the machine's FSEvents backlog, base cases alone included (IMP-02 run 2).
 - Next recipient or routing: `get_handoff_rules` → `/code_reviewer`.
 - Remaining limitations or risks: RSK-003 (provider content before the input prompt's response) not observed in probes, scripted orders or the live run. Candidate follow-up: discovery bound vs Grok startup (IMP-06).
+
+### IR-003 — CR-001: unused `AcpTurnOrigin` removed
+
+- Triggering role, report path, and round: code reviewer, `tickets/in-progress/grok-self-started-turns-517/code-review-report.md` (CRR-001 Fail), implementation round 3.
+- Triggering finding IDs: CR-001.
+- Classification: `Local Fix` (no behaviour change); routing `Medium` / `High` → code reviewer.
+- Prior authoritative result: IR-002 at `5ab411af71`.
+- Current authoritative result: the IR-003 commit.
+- Implementation delta: `acp-agent-session.ts`:
+  - the exported `AcpTurnOrigin` (no importer, no user) is removed (the reviewer's second option);
+  - its explanation of the two origins moves into the doc of `ActivePrompt`, the one place that names them;
+  - the class doc's "(`AcpTurnOrigin`)" now reads "(`ActivePrompt`)".
+  - The file is now 488 lines.
+- Local validation and result (IMP-07): `acp-provider-started-turns.test.ts` 9/9; server typecheck PASS at baseline; no `AcpTurnOrigin` left in src, tests or GLOSSARY.md.
+- Next recipient or routing: `get_handoff_rules` → `/code_reviewer`.
+- Remaining limitations or risks: unchanged from IR-002.
 
