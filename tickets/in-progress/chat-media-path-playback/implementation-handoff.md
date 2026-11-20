@@ -2,28 +2,39 @@
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: no architecture review (Medium / Low, direct route). IR-001 first went to the Solution Designer for DI-001 (below). DI-001 was resolved by SR-003 (`a301dcf60e`) with no implementation change, so the package now goes to API/E2E (`get_handoff_rules`: Small/Medium + Low, self-review done).
-- Requirements doc: `requirements-doc.md` (SR-003; REQ-002 means absolute paths, DEC-003)
+- Upstream review applicability and handoff-rule result: no architecture review (Medium / Low, direct route). IR-001 went to the Solution Designer for DI-001, resolved by SR-003 (`a301dcf60e`) with no implementation change, then to API/E2E. API-REV-001 failed API-03, and the failure-origin review CRR-001 classified it as a Design Impact. SR-004 added D-7, which IR-002 implements. It goes back to API/E2E (`get_handoff_rules`: Small/Medium + Low, self-review done).
+- Requirements doc: `requirements-doc.md` (SR-004; REQ-002 means absolute paths, DEC-003; Retry where the phone viewer fails, DEC-004; AC-006 with its folder exception)
 - Investigation notes: `investigation-notes.md`
 - Solution revision record: `solution-revision-record.md`
-- Design spec (required on every route): `design-spec.md` (SR-003, Ready)
-- Supplemental task artifacts: `handoff-architecture-design-complete.md`; `follow-ups.md` (FU-001; FU-002 from this round; FU-003 relative links, from SR-003)
+- Design spec (required on every route): `design-spec.md` (SR-004, Ready; D-7)
+- Supplemental task artifacts: `handoff-architecture-design-complete.md`, `handoff-design-revised-sr-004.md`; `follow-ups.md` (FU-001; FU-002 from this round; FU-003 relative links, from SR-003)
 - Design review report: N/A (direct route)
-- Triggering rework report, revision record, or evidence: N/A (initial round)
+- Triggering rework report, revision record, or evidence: IR-002: API/E2E `api-e2e-execution-coverage-report.md` (API-REV-001 Fail, API-03, `evidence/api-e2e/API-03-msp91-outside-retry/`); `code-review-report.md` (CRR-001, failure origin: Design Impact); design SR-004 (`da861a4a33`)
 - Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/tickets/in-progress/chat-media-path-playback`
-- Worktree / branch: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback`, `codex/chat-media-path-playback`. Code commits `02320583a5` (server), `d165d3143a` (web), `04034bc797` (the audio spec's names) and the MSP-89 comment commit after SR-003 (`git log`); documents and evidence in the commit after them (`git log`). Base `origin/personal` `bfd95f73a9`.
+- Worktree / branch: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback`, `codex/chat-media-path-playback`. Code commits `02320583a5` (server), `d165d3143a` (web), `04034bc797` (the audio spec's names) and the MSP-89 comment commit after SR-003 (IR-001); `f2894c65e1` (D-7, IR-002). Documents and evidence are in the commits after each round (`git log`). Base `origin/personal` `bfd95f73a9`.
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002, after a design revision)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-002`, `SR-003` (DI-001 resolved: absolute paths only)
+- Current implementation revision ID: `IR-002` (IR-001 baseline)
+- Related solution revision IDs: `SR-002`, `SR-003` (DI-001 resolved: absolute paths only), `SR-004` (D-7)
 - Related architecture-review revision IDs: `N/A`
-- Related code-review revision IDs: `N/A`
-- Related API/E2E revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001` (failure-origin review of API-03: Design Impact)
+- Related API/E2E revision IDs: `API-REV-001` (Fail: API-03)
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: API-03 / CRR-001 (no Retry on the phone viewer's own failure state, outside the folder)
+
+**IR-002: D-7 Retry on the phone viewer's own failure state (SR-004), commit `f2894c65e1`.**
+- `useMobileNodeFile` returns `refusal` (`not-found`, `folder` or `failed`) and `reload()`. `reload()` reads the current source again: a new serial so an answer still arriving is ignored, the old object URL released, progress and refusal reset. It is the same function the source watcher runs.
+- `MobileFileViewer` gets a `retryable` prop (default false) and a `retry` event.
+  - Its failure branch shows the plain message as before, keeping `role="alert"` and the `mobile-file-preview-error` test id.
+  - When `retryable` it adds a Retry button: 44 px high; class `retry-button`, shared with the players' Retry, which the probes look for; test id `mobile-file-preview-retry`; label from the new key `workspace.components.mobile.views.MobileFileViewer.retry` ("Retry" / "重试").
+- `MobileFiles`:
+  - Node-file mount: `retryable` when the refusal is `failed` or `not-found`, never for `folder`. `retry` → `reload()`.
+  - Workspace mount: `retryable` when the file is in the open agent's folder and an open error or the file's own error is shown. `retry` → `explorer.openFileReadOnly(openPath)`; an explicit open of a file already open reloads it (`_reloadOpenFile`, autobyteus-450).
+  - One judgement call within the design's "an open error is shown": no Retry for a file of *another* folder. Its error is `unavailable` and reading again cannot help.
+- The players keep their own failure + Retry (D-2, D-6). Every file type the phone viewer opens now offers Retry on a broken download or a missing file (DEC-004).
 
 **DI-001, resolved by SR-003 (`a301dcf60e`, Solution Designer, 2026-11-20): REQ-002/UC-001 mean absolute paths (DEC-003); making relative links tappable is FU-003. IR-001 needed no change; MSP-89's comment now cites the decision.** The finding as raised: REQ-002 says a tapped video or audio path plays "absolute or relative". The design's Current-State Read puts relative paths on the workspace route. In a conversation, though, only **absolute** paths become file links:
 - `resolveEventMonitorMarkdownFileDestination` (`autobyteus-web/utils/eventMonitorFilePaths/absoluteFilePathAction.ts`) returns `not-file` for anything that is not an absolute path or a `file://` URI. Its spec says so.
@@ -87,7 +98,7 @@ Options as I see them: (a) REQ-002/UC-001 mean absolute paths only, with relativ
 | REQ-002 / AC-003 | Video and audio, inside/outside, delegated run's conversation, play on the phone | as above | MSP-89: 6 small files play (blob:, 3 s), incl. a run delegated on the same node ("Producer"). Relative links: out of scope (SR-003 DEC-003, FU-003) |
 | REQ-003 / AC-004 | Desktop windows play the same links | Desktop path unchanged (direct URL; node file via the Files panel) | MSP-90 (node URL for the folder, blob via `/rest/node-files/content` outside); MSP-31/37 pass (IMP-09) |
 | REQ-004 / AC-005 | No key in any URL; gate and path rules unchanged | No change to `node-access`, route permissions or path rules; only `Content-Length` added | MSP-89 `mediaReads`: 9 of 9 with the key in `Authorization`, `keyInUrl: []`, no 401/403. Existing `node-route-permissions` and `user-file-replies` architecture tests pass (IMP-05) |
-| REQ-005 / AC-006 | Failure: plain message + Retry | `VideoPlayer`/`AudioPlayer` failure state | Unit (both players: failure text + Retry; no raw error); MSP-89 missing video: "This video could not be played." + Retry |
+| REQ-005 / AC-006 (SR-004) | Broken download or missing file, any file the phone viewer opens, in or outside the folder: plain message + Retry; Retry reads again; a folder: no Retry | Players' failure state (inside); D-7 `MobileFileViewer` `retryable`/`retry` ← `MobileFiles` ← `useMobileNodeFile.reload()` / `explorer.openFileReadOnly` | Unit (players; `useMobileNodeFile` reload/refusal; viewer Retry; `MobileFiles` wiring both routes, folder without Retry). MSP-89: inside missing (player Retry); outside missing → Retry → created → plays; outside folder: no Retry. MSP-91: outside Retry after a killed node (IMP-12) |
 | REQ-006 | Probe cases, desktop cases, unit tests, synthetic media | `MSP-89`, `MSP-90`; specs listed below | Done (relative paths out of scope by SR-003) |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`
@@ -100,6 +111,8 @@ Options as I see them: (a) REQ-002/UC-001 mean absolute paths only, with relativ
   - Modified: `utils/remoteAccess/authorizedResourceUrl.ts`, `utils/fileExplorer/nodeFileContent.ts`, `composables/useAuthorizedObjectUrl.ts`, `composables/mobile/useMobileNodeFile.ts`, `components/fileExplorer/viewers/{VideoPlayer,AudioPlayer}.vue`, `components/mobile/views/{MobileFileViewer,MobileFiles}.vue`, `localization/messages/{en,zh-CN}/tools.ts`, `tests/e2e/{mobile-file-open-cases,mobile-shell-probe}.mjs`.
   - Tests: new `responseBlobProgress.spec.ts`, `MediaLoadingState.spec.ts`, `AudioPlayer.spec.ts`; cases added to `VideoPlayer.spec.ts`, `useAuthorizedObjectUrl.spec.ts`, `useMobileNodeFile.spec.ts`, `MobileFileViewer.spec.ts`.
   - `useAuthorizedObjectUrl.reload.spec.ts`: its mocked reply gained `headers`, as a real `Response` has (the reload path now passes a progress callback, which reads them).
+
+- IR-002 (D-7): `composables/mobile/useMobileNodeFile.ts`, `components/mobile/views/{MobileFileViewer,MobileFiles}.vue`, `localization/messages/{en,zh-CN}/workspace.ts`, `tests/e2e/mobile-file-open-cases.mjs` (MSP-89's outside missing and folder steps). Tests: `useMobileNodeFile.spec.ts` (+3), `MobileFileViewer.spec.ts` (+3), `MobileViews.spec.ts` (+2).
 
 ## Important Assumptions
 
@@ -132,7 +145,7 @@ Options as I see them: (a) REQ-002/UC-001 mean absolute paths only, with relativ
 - Shared structures remain tight: `Yes` (`DownloadProgress` is `{ loaded, total }`).
 - Canonical shared design guidance was reapplied during implementation: `Yes`
 - Deviations from a design principle decided during implementation: `None`
-- Changed source implementation files stayed within proactive size-pressure guardrails: `Yes`. Largest: `context-files.ts` 251 (+1), `useAuthorizedObjectUrl.ts` 203 (+19), `MobileFiles.vue` 172 (+1). Largest delta: `AudioPlayer.vue` +73 (now 114). The probe file `mobile-file-open-cases.mjs` is 741 lines (+181; a test module of cases).
+- Changed source implementation files stayed within proactive size-pressure guardrails: `Yes`. Largest: `context-files.ts` 251 (+1), `useAuthorizedObjectUrl.ts` 203 (+19), `MobileFiles.vue` 172 (+1). Largest delta: `AudioPlayer.vue` +73 (now 114). The probe file `mobile-file-open-cases.mjs` is 741 lines (+181; a test module of cases). IR-002: `MobileFiles.vue` 184 (+12), `MobileFileViewer.vue` 124 (+14), `useMobileNodeFile.ts` 99 (+7).
 
 ## Persisted Data Transition Check (When Applicable)
 
@@ -169,6 +182,10 @@ Evidence: `tickets/in-progress/chat-media-path-playback/evidence/implementation/
 | IMP-07 | IMP-01 again after the fix | tree before commits (1024 units) | as IMP-01 | as IMP-01 | AC-001, AC-002 | Pass | `IMP-07-phone-repro-after-fix/` | "Loading video…" then "0.1 of 9.2 MB" … "9.2 of 9.2 MB", plays at 9719 ms |
 | IMP-08 | `node tests/e2e/mobile-shell-probe.mjs --cases=MSP-89,MSP-90` | tree = commits | macOS, Chrome 158, ffmpeg, loopback; big videos at 8 Mbit/s | DS-001, DS-002, desktop window | AC-001…AC-006 | Pass | `IMP-08-media-probe-msp-89-90/` (README, JSON, 15 PNGs) | `MSP-89 Pass`, `MSP-90 Pass`, `unknownBrowserErrors 0`; `keyInHeader 9`, `keyInUrl []`; `relativeLink.fileControl false` |
 | IMP-09 | `--cases=MSP-16,MSP-28,MSP-29,MSP-30,MSP-31,MSP-37` | tree = commits | as IMP-08 | existing phone/desktop file opening | REQ-003 | Pass | `IMP-09-file-open-regression/` | all six Pass |
+| IMP-10 | IR-002: `pnpm -C autobyteus-web typecheck`; the three guards | tree = `f2894c65e1` | macOS, Node 22 | web app incl. D-7 | QR | Pass | `IMP-10-web-typecheck-and-guards-d7.log` | `production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)`; guards Passed |
+| IMP-11 | IR-002: whole web suite | tree = `f2894c65e1` | macOS, Node 22 | whole web suite incl. 8 new D-7 cases | AC-006 (unit) | Pass for the changed code; 1 base failure (FU-002) | `IMP-11-web-unit-full-d7.log` | `1 failed \| 5923 passed`: ServerSettingsBasicsPanel only |
+| IMP-12 | IR-002: `build:mobile-web`; `--cases=MSP-89,MSP-91` | tree = `f2894c65e1` | macOS, Chrome 158, ffmpeg, loopback | D-7 on the node-file route; players' Retry | AC-006, REQ-005 (and AC-001…AC-005 again) | Pass | `IMP-12-probe-d7-msp-89-91/` | outsideMissing `retry: true` → `after.media.readyState 4`; outsideFolder `retry: false`; MSP-91 `outside.state.retry: true` |
+| IMP-13 | IR-002: `--cases=MSP-16,MSP-28,MSP-29,MSP-30` | tree = `f2894c65e1` | as IMP-12 | phone file opening (MobileFiles changed) | REQ-003 | Pass | `IMP-13-phone-file-open-regression-d7/` | all four Pass |
 
 - Not run, and why:
   - Whole `test:e2e:mobile-shell` (all cases), server `test:integration`, `pnpm test:e2e`: left to API/E2E (heavy; one heavy run at a time). The file-opening subset ran (IMP-09).
@@ -188,6 +205,7 @@ Evidence: `tickets/in-progress/chat-media-path-playback/evidence/implementation/
   - node-file loading on white (`MSP-89-outsideBig-loading.png`);
   - playing video and audio; failure + Retry (`MSP-89-missing.png`);
   - desktop players (`MSP-90-*.png`); Back to the conversation after each.
+- IR-002 states inspected (IMP-12 screenshots): outside missing video, plain red message and a dark 44 px Retry under it (`MSP-89-outsideMissing.png`); after Retry, the video plays; a folder, message only (`MSP-89-outsideFolder.png`); MSP-91's broken outside download with Retry (`MSP-91-outside-failed.png`). The Retry is centered under the message at 390 px.
 - Visual or interaction issues found and corrected: the units (1024 → decimal, see Known Risks); the `role` lost to a fragment root (fixed before the first render).
 - Check IDs with the supporting evidence, and remaining unverified states or limitations: IMP-07, IMP-08.
   - zh-CN loading text was not rendered on a device (unit-covered keys only).
@@ -197,7 +215,7 @@ Evidence: `tickets/in-progress/chat-media-path-playback/evidence/implementation/
 
 - Run MSP-89/90 in the whole `test:e2e:mobile-shell` (they run after MSP-30 and MSP-37 respectively).
 - A real phone (Android app or browser) on Wi-Fi with a large synthetic video: the loading text rises and the video then plays.
-- Retry after a transient failure (stop the node mid-download, start it, tap Retry).
+- IR-002: rerun API-03 (MSP-91; its outside step now has Retry) and the API/E2E rounds marked Next Round (server `test:integration`, `pnpm test:e2e`). Optionally tap the outside Retry in MSP-91 itself, not only tap the link again. MSP-89 covers Retry after a not-found file.
 - A media file sent as an Org / Team / agent-collaboration reference: shows "Loading video… x MB" without a total (size `null` on those routes), then plays.
 - zh-CN: "正在加载视频…" and "x / y MB".
 
