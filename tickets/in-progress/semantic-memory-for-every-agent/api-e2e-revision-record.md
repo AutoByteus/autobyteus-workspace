@@ -26,3 +26,12 @@ One entry per API/E2E round. The current report is `api-e2e-execution-coverage-r
 - Failures seen and classified, none caused by this change: OS folder-watcher integration files and timing-sensitive E2E files under a host loaded by other worktrees (`fseventsd` 108–179%), each failing alike on a built base worktree or passing alone (API-09, API-10); the Codex live suite's run 1 (`terminateAgentRun` `success: false` once, not reproduced) and run 2 (the model did not run the control command).
 - Durable coverage changed: see the report's table (round 2 rows).
 - Residuals: CF-11, CF-13 (delivery note), Grok/DeepSeek/Antigravity live, signing and other platforms, host load. Follow-ups FU-003…FU-005 unchanged.
+
+## API-REV-003: round 3 (merged state), `Pass`
+
+- Date: 2026-11-20
+- Trigger: CRR-006 `Pass` (Targeted Delta Review) of the delivery Local Fixes LF-1…LF-4 (IR-004) on the merged state
+- Code tested: `27498a16ac` (records `b4561b0b6d`) on `origin/personal` `74d046320a` merged as `7ac6b392c1`
+- Rerun delta: API-00 (server build, merged state); API-17 new: LF-2 `collaboration-prompt-wording` 14/14 twice, LF-3 `open-task-tree-upgrade-startup` 3/3 twice. Reused at `27498a16ac`: IMP-23 (typechecks, demo specs), IMP-24 (AC-002 grep). Reused from delivery on the merged state: DEL-11, DEL-14, DEL-16, DEL-30.
+- Test-code change: `collaborationPart`'s comment (`d0770bcb5b`).
+- Result: `Pass`; confidence unchanged (95.1%). Residuals as API-REV-002; the demo fixture's path uses `encodeURIComponent(id)` without DEC-016 (no demo id is over 200 encoded bytes; code reviewer's note).

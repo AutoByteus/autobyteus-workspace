@@ -198,6 +198,14 @@ None before execution.
 | API-08 | AC-001, AC-009 | live SML (Codex, Claude, native) | gated, paid | header command, each runtime alone | real CLIs' access roots |
 | API-11 | build inputs | fresh-start desktop build | as TESTING.md | fresh clone → frozen install → desktop build | web `package.json`, `generated/graphql.ts` changed |
 
+## Round 3
+
+- Trigger: CRR-006 `Pass` (Targeted Delta Review) of the delivery engineer's Local Fixes LF-1…LF-4 (IR-004, `27498a16ac`) on the merged state (`origin/personal` `74d046320a` merged as `7ac6b392c1`, plus `a1df50ecd4`).
+- Scope by impact: the two test files the fixes changed (LF-2 `collaboration-prompt-wording`, LF-3 `open-task-tree-upgrade-startup`), each alone twice (API-17). LF-1 (web demo fixture) and LF-4 (a comment): reuse IMP-23 (web and server typechecks, demo specs) and IMP-24 (AC-002 grep), both at `27498a16ac`.
+- The merged state's run of this ticket's other durable files is delivery's, on `7ac6b392c1` + `a1df50ecd4`: DEL-11 (scripted AGY 18/18, SM-12 included), DEL-14 (Codex import 3/3, IC-03 included), DEL-16 (rendered probe 38/38), DEL-30 (every prompt-reading file). Reused: the fixes since change only the two test files, a comment and the web demo.
+- Validity of the changed tests: LF-2 ends the collaboration excerpt at the two sections every prompt now has (approved REQ-001); LF-3 waits up to 60 s for the episodic catalog's quiet window (5 s after a journal's last change, the catalog's design) before asserting each closed run by name. Both keep their assertions.
+- Test-code fix of this round: `collaborationPart`'s comment named only two end headings (`d0770bcb5b`, comment only).
+
 ## Investigation Decision
 
 - Proceed To API/E2E Execution: `Yes`

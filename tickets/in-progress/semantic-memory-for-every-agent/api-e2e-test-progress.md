@@ -51,3 +51,6 @@ Read first whenever the run is picked back up. Only add rows.
 | 2026-11-20 20:25 | API-07 | Started | | rendered probe at HEAD (SMV-090/091, SMV-100-102) |
 | 2026-11-20 20:27 | API-07 | Completed | Pass | 38/38 incl. SMV-100-102 (shortened folder found and file opened), SMV-091 |
 | 2026-11-20 20:27 | Round 2 | Closed | Pass | report and API-REV-002 written; test-code review requested from code_reviewer |
+| 2026-11-20 21:46 | Round 3 | Started | | CRR-006 / IR-004 on the merged state (27498a16ac, records b4561b0b6d): rerun LF-2/LF-3 files |
+| 2026-11-20 21:52 | API-17 | Completed | Pass | collaboration-prompt-wording 14/14 x2, open-task-tree 3/3 x2; comment fix d0770bcb5b |
+| 2026-11-20 21:52 | Round 3 | Closed | Pass | API-REV-003; test-code review requested |

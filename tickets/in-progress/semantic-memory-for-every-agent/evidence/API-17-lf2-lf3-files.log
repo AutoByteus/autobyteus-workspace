@@ -1,0 +1,55 @@
+# API-17 round 3: LF-2 collaboration-prompt-wording and LF-3 open-task-tree-upgrade-startup, each file alone, twice | commit b4561b0b6d (code 27498a16ac, dist from API-00 round 3) | Node v22.23.1
+## run 1 tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts | 2026-11-20T20:47:16Z | load { 20.56 31.49 33.19 }
+exit 0
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts (14 tests) 85404ms
+     ✓ CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs  7497ms
+     ✓ CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team  4741ms
+     ✓ CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team  1972ms
+     ✓ CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)  1579ms
+     ✓ CPW-R2 Agent root: a task agent messaging a running agent of a different Task is delivered (492 AC-008)  1161ms
+     ✓ CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)  937ms
+     ✓ CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate  1457ms
+     ✓ CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots  4687ms
+     ✓ CPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated  4690ms
+     ✓ CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it  798ms
+     ✓ CPW-M3 Org root: a sibling of the organization is reachable and delegable  524ms
+     ✓ CPW-M5 Team root: the user mentions a member of the team in a message to the team's task agent (a child row of the team's view)  1685ms
+     ✓ CPW-M7 C17-02: a run two hops down delegates to an address only the top run's catalog offers, as base answered a copy hosted in the top run  1468ms
+     ✓ CPW-M6 a task agent's in-run set is what it reaches by address (SR-059): delegate_task answers for its assigner's agents as base answered a hosted copy  2633ms
+ Test Files  1 passed (1)
+      Tests  14 passed (14)
+## run 1 tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts | 2026-11-20T20:48:53Z | load { 55.02 38.59 35.65 }
+exit 0
+ ✓ tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts (3 tests) 78265ms
+     ✓ OT-1 a closure removes the run from the tree (never stored in the tree file); token total and Memory page keep it  68081ms
+     ✓ OT-2 an upgraded data root: admitted at start; trees hold open runs only; a read writes nothing; a load reads no closed run; the first save keeps only what it must  5705ms
+     ✓ OT-3 a Task record that cannot be read hides its run with a warning naming the Task; restored, the run is back  4452ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+## run 2 tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts | 2026-11-20T20:50:22Z | load { 50.91 41.48 37.06 }
+exit 0
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts (14 tests) 48273ms
+     ✓ CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs  4541ms
+     ✓ CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team  4759ms
+     ✓ CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team  1975ms
+     ✓ CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)  1690ms
+     ✓ CPW-R2 Agent root: a task agent messaging a running agent of a different Task is delivered (492 AC-008)  1176ms
+     ✓ CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)  1073ms
+     ✓ CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate  1790ms
+     ✓ CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots  4556ms
+     ✓ CPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated  4691ms
+     ✓ CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it  733ms
+     ✓ CPW-M3 Org root: a sibling of the organization is reachable and delegable  499ms
+     ✓ CPW-M5 Team root: the user mentions a member of the team in a message to the team's task agent (a child row of the team's view)  1686ms
+     ✓ CPW-M7 C17-02: a run two hops down delegates to an address only the top run's catalog offers, as base answered a copy hosted in the top run  1409ms
+     ✓ CPW-M6 a task agent's in-run set is what it reaches by address (SR-059): delegate_task answers for its assigner's agents as base answered a hosted copy  2695ms
+ Test Files  1 passed (1)
+      Tests  14 passed (14)
+## run 2 tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts | 2026-11-20T20:51:22Z | load { 41.81 41.48 37.42 }
+exit 0
+ ✓ tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts (3 tests) 30828ms
+     ✓ OT-1 a closure removes the run from the tree (never stored in the tree file); token total and Memory page keep it  21176ms
+     ✓ OT-2 an upgraded data root: admitted at start; trees hold open runs only; a read writes nothing; a load reads no closed run; the first save keeps only what it must  5940ms
+     ✓ OT-3 a Task record that cannot be read hides its run with a warning naming the Task; restored, the run is back  3680ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)

@@ -5,9 +5,9 @@ The run record and the result. The coverage investigation (`api-e2e-coverage-inv
 ## Round
 
 - Coverage investigation: `api-e2e-coverage-investigation.md` (round 2 section "Round 2")
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-002`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-003` (round 3: merged state, LF-1…LF-4; round 2: `API-REV-002`)
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 2, CRR-004 `Pass` (Large / High) after IR-003 (SR-009: DEC-015, DEC-016)
+- Round and trigger: round 3, CRR-006 `Pass` (Targeted Delta Review) of the delivery Local Fixes LF-1…LF-4 (IR-004, `27498a16ac`) on the merged state (`7ac6b392c1`); round 2: CRR-004 after IR-003 (SR-009)
 - Prior round reviewed: round 1 (`API-REV-001`, Fail: `ENAMETOOLONG` for bundled team-local agents). Prior failure resolved: RA-04, IC-01, RE-05 pass (API-15) and the whole suite shows no `ENAMETOOLONG` (API-10)
 - Deviations from the investigation's plan, and why:
   - IC-03 needed two corrections found by running it: this Codex run is not `workspace-write`, so Codex gets no writable roots (the live suite proves them, API-08); and the scripted Codex never ends a turn, so the catalog had nothing to follow. The fixture got an opt-in `codex-turn complete` (a turn ends as a real one does) and records the prompt.
@@ -32,6 +32,7 @@ The run record and the result. The coverage investigation (`api-e2e-coverage-inv
 | ENV-2 | same | same | real CLIs: codex-cli 0.171.0, Claude Code 2.1.328, native AutoByteus (Anthropic, test vault) | live suite's own data root under `~/.autobyteus-e2e` (removed by the suite; 0 left) and its own `CODEX_HOME` linking the host `auth.json`; the user's CLI config untouched |
 | ENV-3 | same | same | rendered probe: built server + Nuxt dev + Chrome (Playwright), probe-owned data | 1440×900, 390×844, en and zh-CN |
 | ENV-4 | base `8430d9ef12`, own worktree (built), removed after | same | built `dist/` | comparison runs only (API-09, API-10) |
+| ENV-6 | round 3: `b4561b0b6d` (code `27498a16ac`, merged state) | same | server `dist/` rebuilt at API-00 round 3 | scripted AGY CLI |
 | ENV-5 | `42c2f5189b`, fresh `git clone --no-local` | same | `pnpm install --frozen-lockfile`, `build:electron:mac -- --arm64` | the release job's env (`NO_TIMESTAMP`, `AUTOBYTEUS_BUILD_FLAVOR=personal`, `PRISMA_CLI_BINARY_TARGETS`, `CSC_IDENTITY_AUTO_DISCOVERY=false`, `GITHUB_REPOSITORY`); clone removed |
 
 ## Cases
@@ -52,6 +53,7 @@ The run record and the result. The coverage investigation (`api-e2e-coverage-inv
 | API-11 | build inputs (`autobyteus-web/package.json`, `generated/graphql.ts`) | fresh-start desktop build | fresh clone of `42c2f5189b`, `pnpm install --frozen-lockfile`, `build:electron:mac -- --arm64` with the job's env, then "Verify bundled Prisma ARM64 engine target" and "Verify packaged terminal runtime ARM64" from the workflow | ENV-5 | Pass | `API-11-fresh-start-desktop-build.log` | `build exit 0`; `prisma verify ok`; `[terminal-runtime] ok: node-pty spawn probe`; `AutoByteus_personal_macos-arm64-1.5.14-beta.1.dmg`; `clone removed: yes` | signing, notarization, x64, Linux, Windows need the runner: Not Tested |
 | API-12 | S-4 | imported team and org cards | Reused (round 1) | — | Pass (pre-existing, FU-004) | `API-12-imported-team-org-cards.log` | base and branch `"teamFolders": 113`, 0 cards | — |
 | API-13 | — | folder-watcher units | within API-03 | — | Pass for this change | — | — | no quiet host this round either (see API-09) |
+| API-17 | merged state: LF-2, LF-3 (AC-001 prompt sections; AC-012 closed runs on the Memory page) | the two changed test files | each alone, twice: `env -i PATH HOME=<temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run <file>`; LF-1/LF-4 reused IMP-23/IMP-24; merged-state reruns of the other durable files reused from DEL-11/14/16 | ENV-6 | Pass | `API-00-server-build-round3.log`, `API-17-lf2-lf3-files.log` | `collaboration-prompt-wording` `Tests  14 passed (14)` twice (CPW-P1…P3 `✓`); `open-task-tree-upgrade-startup` `Tests  3 passed (3)` twice, OT-1 68081ms and 21176ms (within its 60 s wait) | comment fix `d0770bcb5b` |
 | API-14 | the four stale E2E files | rewrites (made untrue by this change) | each file after its rewrite, one run: `env -i … vitest run <4 files>` | ENV-1 | Pass | `API-14-stale-e2e-rewrites.log` | `Test Files  4 passed (4)`, `Tests  12 passed (12)` | commit `5edda27b2d` |
 | API-15 | **AC-013**, prior failure recheck | IC-03 + RA-04, IC-01, RE-05 | `env -i … vitest run agent-runtimes-running-agents application-import-codex-launch application-reload-repair`; RE file alone; negative control (layout prefix 100) | ENV-1 | Pass | `API-15-ac013-and-round1-failures.log`, `API-15nc-ic03-negative-control.log` | IC-01…03 `✓`, RA-04 `✓`, no `ENAMETOOLONG`; RE alone `Tests  5 passed (5)`; control `× IC-03`, `AssertionError: Brief Studio Researcher: expected '/private/var/folders/…' to be '/private/var/folders/…'` (the layout's 100-byte name against the decision's 120-byte one) | in the joint run RE-01…05 failed at import (Codex app-server exit not confirmed, quarantine), passing alone; the layout file restored (`git diff` empty) |
 | API-16 | **AC-014** | SM-12 | inside API-05 | ENV-1 | Pass | `API-05r2-scripted-agy-e2e.log`, `API-05r2-sm-evidence/SM-12-log.json`, `…/SM-12-prompt-unprepared-folder.md` | `✓ SM-12 (AC-014, DEC-015)`; the log `["SEMANTIC_MEMORY_PREPARE_FAILED", {"definitionId": …, "folder": "agent", "reason": "EACCES…"}]`; the prompt ends with the Global section and has no `## Semantic Memory` | — |
@@ -121,6 +123,7 @@ The run record and the result. The coverage investigation (`api-e2e-coverage-inv
 | `autobyteus-server-ts/tests/e2e/runtime/application-import-codex-launch.e2e.test.ts` (IC-03) | Added (`42c2f5189b`) | API-15 | — |
 | `autobyteus-server-ts/tests/fixtures/agent-runtimes-fake-cli.mjs` | Updated (`42c2f5189b`): records `thread/start` prompts; opt-in `codex-turn complete` | API-15 | — |
 | `autobyteus-server-ts/tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts` (SM-12) | Added (`42c2f5189b`) | API-16 | — |
+| `autobyteus-server-ts/tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts` (LF-2 by delivery, `27498a16ac`; its comment `d0770bcb5b`), `tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts` (LF-3 by delivery, `27498a16ac`) | Updated | API-17 | — |
 
 ## Dependencies Mocked Or Emulated
 
@@ -143,7 +146,7 @@ The run record and the result. The coverage investigation (`api-e2e-coverage-inv
 
 ## Latest Authoritative Result
 
-- Result: `Pass`
+- Result: `Pass` (round 3 on the merged state: API-17; confidence unchanged at 95.1%: the fixes touch two test files, a comment and the web demo, all rerun or reused at their commit)
 - Prior failure: resolved (API-15, API-10)
 - Next recipient from `get_handoff_rules`: `/code_reviewer` (proportional test-code review, Large / High)
 - Residuals: Codex run 1's `terminateAgentRun` `success: false` once after a denied approval (not reproduced; unchanged code); CF-11; CF-13 (delivery note); Grok/DeepSeek/Antigravity live and signing/other platforms not tested; host load. Follow-ups FU-003…FU-005 (pre-existing).
