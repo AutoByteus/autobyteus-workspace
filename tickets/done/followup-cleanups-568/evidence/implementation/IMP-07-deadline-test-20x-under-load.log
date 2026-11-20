@@ -1,0 +1,28 @@
+# IMP-07 the deadline case 20 times under CPU load (D-2)
+# command: 10 busy loops (yes > /dev/null, one per core) running; 20 x pnpm exec vitest run --config ./electron/vitest.config.ts server/__tests__/PortOwnerInspectorFaults.spec.ts -t 'enforces the real 1000ms'; then the loops are stopped
+# commit: eb7e4bf2af
+# env: macOS 26.5.2, node v22.23.1, pnpm 10.28.2; 10 cores
+# date: 2026-11-20T13:45:26Z
+
+load: 14:45  up 32 days, 24 mins, 10 users, load averages: 151.55 136.81 105.47
+run 1: exit=0 Tests  1 passed | 10 skipped  AC002 actual deadline receipt {"elapsedMs":1012,"pid":72219,"absent":true}
+run 2: exit=0 Tests  1 passed | 10 skipped  AC002 actual deadline receipt {"elapsedMs":1015,"pid":72258,"absent":true}
+run 3: exit=0 Tests  1 passed | 10 skipped  AC002 actual deadline receipt {"elapsedMs":1031,"pid":72297,"absent":true}
+run 4: exit=0 Tests  1 passed | 10 skipped  AC002 actual deadline receipt {"elapsedMs":1010,"pid":72346,"absent":true}
+run 5: exit=0 Tests  1 passed | 10 skipped  AC002 actual deadline receipt {"elapsedMs":1020,"pid":72386,"absent":true}
+run 6: exit=0 Tests  1 passed | 10 skipped  AC002 actual deadline receipt {"elapsedMs":1035,"pid":72428,"absent":true}
+run 7: exit=0 Tests  1 passed | 10 skipped  AC002 actual deadline receipt {"elapsedMs":1009,"pid":72473,"absent":true}
+run 8: exit=0 Tests  1 passed | 10 skipped  AC002 actual deadline receipt {"elapsedMs":1025,"pid":72537,"absent":true}
+run 9: exit=0 Tests  1 passed | 10 skipped  AC002 actual deadline receipt {"elapsedMs":1047,"pid":72581,"absent":true}
+run 10: exit=0 Tests  1 passed | 10 skipped  AC002 actual deadline receipt {"elapsedMs":1013,"pid":72622,"absent":true}
+run 11: exit=0 Tests  1 passed | 10 skipped  AC002 actual deadline receipt {"elapsedMs":1049,"pid":72670,"absent":true}
+run 12: exit=0 Tests  1 passed | 10 skipped  AC002 actual deadline receipt {"elapsedMs":1026,"pid":72711,"absent":true}
+run 13: exit=0 Tests  1 passed | 10 skipped  AC002 actual deadline receipt {"elapsedMs":1015,"pid":72757,"absent":true}
+run 14: exit=0 Tests  1 passed | 10 skipped  AC002 actual deadline receipt {"elapsedMs":1016,"pid":72804,"absent":true}
+run 15: exit=0 Tests  1 passed | 10 skipped  AC002 actual deadline receipt {"elapsedMs":1008,"pid":72851,"absent":true}
+run 16: exit=0 Tests  1 passed | 10 skipped  AC002 actual deadline receipt {"elapsedMs":1008,"pid":72904,"absent":true}
+run 17: exit=0 Tests  1 passed | 10 skipped  AC002 actual deadline receipt {"elapsedMs":1022,"pid":72948,"absent":true}
+run 18: exit=0 Tests  1 passed | 10 skipped  AC002 actual deadline receipt {"elapsedMs":1027,"pid":73010,"absent":true}
+run 19: exit=0 Tests  1 passed | 10 skipped  AC002 actual deadline receipt {"elapsedMs":1045,"pid":73051,"absent":true}
+run 20: exit=0 Tests  1 passed | 10 skipped  AC002 actual deadline receipt {"elapsedMs":1034,"pid":73095,"absent":true}
+load after: 14:46  up 32 days, 25 mins, 10 users, load averages: 197.61 154.60 115.20

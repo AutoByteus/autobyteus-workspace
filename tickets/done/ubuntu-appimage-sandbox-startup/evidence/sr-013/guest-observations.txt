@@ -1,0 +1,14 @@
+PRETTY_NAME="Ubuntu 24.04.5 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.5 LTS (Noble Numbat)"
+6.8.0-147-generic
+pkexec	124-2ubuntu1.24.04.4
+polkitd	124-2ubuntu1.24.04.4
+uid=1000(witness) gid=1000(witness) groups=1000(witness),4(adm),27(sudo)
+Nov 18 13:07:44 ab5-witness polkitd[788]: Operator of unix-process:1520:8602 FAILED to authenticate to gain authorization for action org.freedesktop.policykit.exec for unix-process:1520:8602 [python3 witness.py] (owned by unix-user:witness)
+Nov 18 13:07:54 ab5-witness polkitd[788]: Operator of unix-process:1642:9599 FAILED to authenticate to gain authorization for action org.freedesktop.policykit.exec for unix-process:1642:9599 [sshd: witness@pts/0] (owned by unix-user:witness)
+Nov 18 13:08:07 ab5-witness polkitd[788]: Operator of unix-process:1791:10931 successfully authenticated as unix-user:witness to gain ONE-SHOT authorization for action org.freedesktop.policykit.exec for unix-process:1791:10931 [python3 witness.py] (owned by unix-user:witness)
+Nov 18 13:08:23 ab5-witness polkitd[788]: Operator of unix-process:1934:12509 successfully authenticated as unix-user:witness to gain ONE-SHOT authorization for action org.freedesktop.policykit.exec for unix-process:1934:12509 [python3 uid-witness.py] (owned by unix-user:witness)
+04e8f2461a16a44e78a370284471f29616cdd9baf1893df25807b71f985b6c94 *noble-server-cloudimg-amd64.img
+Measured 2 separate one-shot authorizations from the VM tty, no retained grant and no guest polkit rule edits. First sealed Ubuntu id -u: result 0, exit 0. Second sealed Ubuntu printenv PKEXEC_UID: result 1000, exit 0. Auth prompt named /proc/<launcher>/fd/3 and authenticating account, not a publisher. Agent: ordinary registered pkttyagent. Negative control: builtin-agent SSH trials both stock id and snapshot failed No session for cookie. Not graphical UX, installer resource provisioning or full AppImage acceptance evidence.

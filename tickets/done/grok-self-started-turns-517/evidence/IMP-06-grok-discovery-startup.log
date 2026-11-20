@@ -1,0 +1,16 @@
+# IMP-06 why live attempts 1-2 (IMP-04) failed: Grok's startup, not this change
+# 1. discoverGrokBuildModels() called directly (a temporary vitest file, removed after), no server running:
+#      branch acp-client-connection.ts: DISCOVERY FAILED 16262 ms ACP_DISCOVERY_TIMEOUT: Grok Build discovery timed out.
+#      base   acp-client-connection.ts (git show ca4317a386:..., swapped in, then restored):
+#                                       DISCOVERY FAILED 17050 ms ACP_DISCOVERY_TIMEOUT: Grok Build discovery timed out.
+# 2. raw `grok agent --no-leader stdio` + `initialize` (no AutoByteus code): no byte on stdout/stderr within 30 s.
+# 3. ~/.grok/logs/unified.jsonl, the same process (pid 97218): silent from 17:25:11.440 to 17:25:45.636 UTC inside
+#    Grok's bootstrap; "startup phase bootstrap elapsed_ms 34384", then "agent initialized" and the initialize answer.
+#    Grok's own bootstrap times (startup phase "bootstrap", elapsed_ms), 1.0.89, recent starts:
+#      2026-11-20T10:33:37 16319 | 10:34:12 34582 | 10:34:43 31385 | 15:48:54 23029 | 17:24:07 7041 | 17:24:31 15608
+#      17:25:45 34384 | 17:27:01 10353 | 17:27:06 4584 (attempt 3's run)
+#    The discovery bound is 15 s (DISCOVERY_TIMEOUT_MS, runtime-management/acp/acp-discovery-handshake.ts:8); a start
+#    above it fails discovery on base and branch alike. Machine load 50-93 throughout.
+# 4. `grok --version` 0.09 s, `grok agent --help` 0.05 s, `grok models` 1.04 s: the CLI probes themselves are fast.
+# Reading: an environment/Grok-side startup delay; candidate follow-up for the Solution Designer (discovery bound vs
+# Grok's startup under load), outside this ticket's scope.

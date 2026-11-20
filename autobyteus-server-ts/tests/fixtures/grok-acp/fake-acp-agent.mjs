@@ -4,6 +4,8 @@
 //   `out` request/notification: wait until the client sends that method (ids are mapped).
 //   `out` response: wait until the client answers the agent request with that id.
 //   `in` message: send it; responses carry the client's actual request id.
+//   `{"dir":"pause","ms":N}`: wait N ms before the next row (the agent's own pause, e.g. a model call after a wake),
+//   so a test can act in between.
 // Env: FAKE_ACP_FIXTURE (required), FAKE_ACP_EXIT_AT_END=1 exits after the script ends,
 // FAKE_ACP_STOP_BEFORE=<method> exits before replaying that client method,
 // FAKE_ACP_RECORD=<file> appends every client message as one JSON line,
@@ -42,7 +44,11 @@ const tick = () => new Promise((resolve) => setImmediate(resolve));
 const SESSION_OPENING_METHODS = new Set(["session/new", "session/load"]);
 const pendingMcpReady = new Map();
 
-for (const { dir, msg } of rows) {
+for (const { dir, msg, ms } of rows) {
+  if (dir === "pause") {
+    await new Promise((resolve) => setTimeout(resolve, ms));
+    continue;
+  }
   if (dir === "out") {
     if ("method" in msg) {
       if (process.env.FAKE_ACP_STOP_BEFORE === msg.method) process.exit(3);

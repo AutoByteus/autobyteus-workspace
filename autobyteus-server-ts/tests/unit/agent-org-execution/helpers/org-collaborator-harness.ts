@@ -101,7 +101,7 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
   }
   const publisher = new RunViewStream<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
   let allocation = 0;
-  run = new AgentOrgRun({ remoteChannel: NO_PEER_CHANNEL, root, tree, messages, rootAgents, teams, callbacks, persistence, publisher, messageFeed: messageFeedInto(publisher, agentOrgMessageEvent),
+  run = new AgentOrgRun({ remoteChannel: NO_PEER_CHANNEL, root, tree, messages, rootAgents, teams, callbacks, persistence, publisher, messageFeed: messageFeedInto(publisher, agentOrgMessageEvent, root),
     activityInspector: { inspect: vi.fn(() => ({ kind: "present" as const })) } as never,
     collaboratorAdmission: admission(options.runnable ?? true),
     // Production always binds the Task side; every delegated copy belongs to a Task.

@@ -11,6 +11,7 @@ import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
+const { WebSocketServer } = require('ws');
 const { chromium } = require('playwright-core');
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const webDir = path.resolve(scriptDir, '../..');
@@ -155,7 +156,16 @@ const sendJson = (response, status, body) => {
   });
   response.end(JSON.stringify(body));
 };
-const graphQlData = (operationName, query) => {
+const graphQlData = (operationName, query, variables = {}) => {
+  // A member's stored conversation and file changes, read when its Org view opens: none stored in this fixture.
+  if (operationName === 'GetAgentOrgMemberRunProjection') return { getAgentOrgMemberRunProjection: {
+    agentRunId: variables.agentRunId, memberAddress: variables.memberAddress, summary: null, lastActivityAt: null,
+    conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
+  } };
+  if (operationName === 'GetAgentOrgMemberFileChanges') return { getAgentOrgMemberFileChanges: [] };
+  // The run history the app reads on start (asked by name first: their selections name `agentDefinitions` too).
+  if (operationName === 'ListWorkspaceRunHistory') return { listWorkspaceRunHistory: [] };
+  if (operationName === 'ListCollaborationRootHistory') return { listCollaborationRootHistory: [] };
   if (operationName === 'GetAgentDefinitions' || query.includes('agentDefinitions')) return { agentDefinitions: [] };
   if (operationName === 'GetAgentTeamDefinitions' || query.includes('agentTeamDefinitions')) return { agentTeamDefinitions: [] };
   if (operationName === 'GetAgentOrgDefinitions' || query.includes('agentOrgDefinitions')) return { agentOrgDefinitions: [] };
@@ -171,6 +181,7 @@ const pendingUploads = [];
 const releasePendingUploads = () => {
   while (pendingUploads.length > 0) pendingUploads.shift()?.();
 };
+const quietSockets = new WebSocketServer({ noServer: true });
 const restServer = http.createServer(async (request, response) => {
   try {
     if (request.method === 'OPTIONS') {
@@ -184,6 +195,11 @@ const restServer = http.createServer(async (request, response) => {
     }
     if (request.url === '/rest/health') {
       sendJson(response, 200, { status: 'ok' });
+      return;
+    }
+    // The composer reads the node's context-file size limits before it uploads (generous here: no file is refused).
+    if (request.url === '/rest/context-files/size-limits' && request.method === 'GET') {
+      sendJson(response, 200, { otherFileMaxBytes: 100 * 1024 * 1024, audioVideoMaxBytes: 1024 * 1024 * 1024, audioVideoMimeTypes: [] });
       return;
     }
     if (request.url === '/rest/context-files/upload' && request.method === 'POST') {
@@ -217,7 +233,8 @@ const restServer = http.createServer(async (request, response) => {
       const operationName = typeof payload.operationName === 'string' ? payload.operationName : '';
       const query = typeof payload.query === 'string' ? payload.query : '';
       evidence.otherRequests.push({ method: request.method, url: request.url, operationName, receivedAt: new Date().toISOString() });
-      sendJson(response, 200, { data: graphQlData(operationName, query) });
+      const variables = payload.variables && typeof payload.variables === 'object' ? payload.variables : {};
+      sendJson(response, 200, { data: graphQlData(operationName, query, variables) });
       return;
     }
     evidence.otherRequests.push({ method: request.method, url: request.url, receivedAt: new Date().toISOString() });
@@ -259,6 +276,12 @@ try {
   assert(executablePath, 'No Chrome/Chromium executable found; pass --browser-executable');
   await fs.copyFile(fixturePath, installedPagePath);
   fixtureInstalled = true;
+  // The app's own sockets (package definitions, update notifications, the Org's stream): accepted and left quiet, as a
+  // stopped node's are; the probe drives the views through the fixture's contexts, not the streams.
+  restServer.on('upgrade', (request, socket, head) => {
+    evidence.otherRequests.push({ method: 'UPGRADE', url: request.url, receivedAt: new Date().toISOString() });
+    quietSockets.handleUpgrade(request, socket, head, (client) => client.on('error', () => undefined));
+  });
   const restPort = await listenOnFreePort(restServer);
   const restBaseUrl = `http://127.0.0.1:${restPort}`;
   const port = await choosePort();
@@ -423,6 +446,8 @@ try {
   catch (error) { result = 'Fail'; evidence.cleanup.browser = `failed: ${error.message}`; }
   try { evidence.cleanup.nuxt = await stopOwnedProcess(nuxtProcess); }
   catch (error) { result = 'Fail'; evidence.cleanup.nuxt = `failed: ${error.message}`; }
+  for (const client of quietSockets.clients) client.terminate();
+  quietSockets.close();
   try { await closeServer(restServer); evidence.cleanup.restServer = 'closed'; }
   catch (error) { result = 'Fail'; evidence.cleanup.restServer = `failed: ${error.message}`; }
   try { if (nuxtLog) await new Promise((resolve) => nuxtLog.end(resolve)); evidence.cleanup.nuxtLog = 'closed'; }

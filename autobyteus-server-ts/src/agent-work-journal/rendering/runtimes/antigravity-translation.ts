@@ -13,6 +13,7 @@ import {
 import { commandLine, convertedCommandLine, editFileLine, writeFileLine } from "../journal-actions.js";
 import { interruptedFromError, normalizeRecordedResult } from "../result-envelopes.js";
 import { diffTexts } from "../text-diff.js";
+import { isAntigravityMcpSchemaRead } from "./antigravity-mcp-schema-read.js";
 import { okWith, type NormalizedToolResult } from "../tool-outcome.js";
 import type {
   BuiltInConverter,
@@ -145,5 +146,6 @@ export const antigravityTranslation: RuntimeTranslation = Object.freeze({
   ]),
   normalizeResult: normalizeAgyResult,
   unwrapCall,
+  isRuntimePlumbing: isAntigravityMcpSchemaRead,
   splitToolName,
 });

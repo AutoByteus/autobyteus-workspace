@@ -217,8 +217,20 @@ const copyInputFor = async (hostId) => {
   return sendToCopy;
 };
 const viewFor = async (id) => (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id })).agentRunCollaboration.root_agent;
-// autobyteus-358: the hub's view carries no messages; its Team tab loads the host's messages with this query.
-const hostMessagesFor = async (id) => (await gql('query($k:String!,$r:String!,$a:String!){collaborationParticipantMessages(rootKind:$k,rootRunId:$r,agentRunId:$a)}', { k: 'agent', r: id, a: id })).collaborationParticipantMessages.messages;
+// autobyteus-358: the hub's view carries no messages; its Messages tab loads the host's messages with this query.
+// autobyteus-565: one page at a time (newest 50 first, `before`, `hasMore`): the first page is what the tab shows at open.
+const hostMessagesPage = async (id, before = null) => (await gql('query($k:String!,$r:String!,$a:String!,$b:JSON){collaborationParticipantMessages(rootKind:$k,rootRunId:$r,agentRunId:$a,before:$b)}',
+  { k: 'agent', r: id, a: id, b: before })).collaborationParticipantMessages;
+/** Every page: the hub's whole stored list. */
+const hostMessagesFor = async (id) => {
+  const all = [];
+  for (let before = null; ;) {
+    const page = await hostMessagesPage(id, before);
+    all.push(...page.messages);
+    if (!page.hasMore) return all;
+    before = { createdAt: page.messages.at(-1).createdAt, messageId: page.messages.at(-1).messageId };
+  }
+};
 // autobyteus-461 rule 2: a delegated run is read by its own path (the member query serves peer runs only).
 const childProjection = async (_host, _address, run, teamRunId = null) => teamRunId
   ? (await gql('query($t:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$t,agentRunId:$a){conversation}}', { t: teamRunId, a: run })).getTeamMemberRunProjection?.conversation
@@ -441,9 +453,10 @@ const copyLoadedInPage = async ({ host, id }) => {
   const { memberLoader } = await import('/_nuxt/services/runHydration/memberLoader.ts');
   return memberLoader().isHydrated(`agent:${host}`, id);
 };
-/** The hub's stored participant messages (the Team tab's list for the hub), counted on the server. */
-const hubMessageCount = async () => (await gql('query($k:String!,$r:String!,$a:String!){collaborationParticipantMessages(rootKind:$k,rootRunId:$r,agentRunId:$a)}',
-  { k: 'agent', r: setup.hostId, a: setup.hostId })).collaborationParticipantMessages.messages.length;
+/** The hub's stored participant messages (its Messages tab's whole list), counted on the server over every page. */
+const hubMessageCount = async () => (await hostMessagesFor(setup.hostId)).length;
+/** What the hub's Messages tab shows at open: its first page (autobyteus-565 DEC-004). */
+const hubFirstPageCount = async () => (await hostMessagesPage(setup.hostId)).messages.length;
 /** Team-tab participant-list requests since `start`, by participant (large-runs-load-less). */
 const participantOps = (start) => requests.slice(start).filter((r) => r.operationName === 'CollaborationParticipantMessages')
   .reduce((m, r) => ({ ...m, [r.variables?.agentRunId ?? '-']: (m[r.variables?.agentRunId ?? '-'] || 0) + 1 }), {});
@@ -793,16 +806,17 @@ const liveJourneys = async () => {
     await shot('live-task-locate');
     return { clickToWorkerSelectedMs: ms, state: await storeState() };
   });
-  await runCase('L-012', 'A delegation whose new copy reports to the hub at once: the hub\'s Team-tab list is fetched at most once more and shows the report once (large-runs-load-less SR-007)', async () => {
+  await runCase('L-012', 'A delegation whose new copy reports to the hub at once: the hub\'s Messages list is fetched at most once more and shows the report once (large-runs-load-less SR-007; autobyteus-565: the hub is a standalone run, its tab is "Messages", its list the newest page plus live messages)', async () => {
     await ensureHubRunning();
     await coldOpenWorkspace();
     await timedClick(runRow(), HOST_READY, setup.hostId);
     await until('live collaboration snapshot', async () => (await storeState()).phase === 'live', 120000);
     await quiet(2000);
-    const teamTab = page.getByRole('tab', { name: 'Team', exact: true }).first();
-    if (await teamTab.getAttribute('aria-selected') !== 'true') { await teamTab.click(); await quiet(1500); }
+    const messagesTab = page.getByRole('tab', { name: 'Messages', exact: true }).first();
+    if (await messagesTab.getAttribute('aria-selected') !== 'true') { await messagesTab.click(); await quiet(1500); }
     const rows = () => page.locator('[data-test="collaboration-messages-section"] [data-test="team-communication-message-row"]');
-    await until('hub list shown', async () => (await rows().count()) === (await hubMessageCount()), 30000);
+    const firstPage = await hubFirstPageCount();
+    await until('hub list shown (its first page)', async () => (await rows().count()) === firstPage, 30000);
     const before = await hubMessageCount();
     const marker = `Early report ${randomUUID().slice(0, 8)}`;
     const start = requests.length;
@@ -816,9 +830,10 @@ const liveJourneys = async () => {
     const texts = (await rows().allInnerTexts()).map((t) => t.replace(/\s+/g, ' '));
     const shown = texts.filter((t) => t.includes(marker)).length;
     assert((participants[setup.hostId] ?? 0) <= 1, 'The hub\'s list was fetched more than once for one delegation', { participants });
-    assert(shown === 1 && texts.length === after, 'The report is not shown exactly once, or the list differs from the stored log', { shown, rows: texts.length, before, after, participants });
+    // The tab shows its first page and every message stored since it opened, live, once (565: older pages behind Load more).
+    assert(shown === 1 && texts.length === firstPage + (after - before), 'The report is not shown exactly once, or the list differs from the stored first page plus the new messages', { shown, rows: texts.length, firstPage, before, after, participants });
     await shot('live-delegation-with-report');
-    return { before, after, participants, hubListReloaded: (participants[setup.hostId] ?? 0) === 1, rowsShown: texts.length, markerShown: shown };
+    return { before, after, firstPage, participants, hubListReloaded: (participants[setup.hostId] ?? 0) === 1, rowsShown: texts.length, markerShown: shown };
   });
   await runCase('L-007', 'Composer send to an opened copy of a stopped hub wakes the copy, which answers; stored (AC-006, REQ-006)', async () => {
     for (const socket of sockets.splice(0)) socket.close();

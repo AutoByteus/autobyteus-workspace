@@ -1,0 +1,44 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "E52DCB67-867F-47DB-871A-ABE652C40055",
+        "deviceName" : "apie2e279-ipad",
+        "exportedFileName" : "CBB7E279-2D79-4DCB-9123-E2D4DC5D194B.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "rotate-texts_0_00A8E787-C0F0-4985-BAFB-924F02EECADF.txt",
+        "timestamp" : 1795123233.209
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "E52DCB67-867F-47DB-871A-ABE652C40055",
+        "deviceName" : "apie2e279-ipad",
+        "exportedFileName" : "F28D9D9F-4D52-49AD-81E0-439861D0759B.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "rotate-portrait-again_0_01360669-D4B8-4A10-AC1F-A9954E262716.png",
+        "timestamp" : 1795123233.209
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "E52DCB67-867F-47DB-871A-ABE652C40055",
+        "deviceName" : "apie2e279-ipad",
+        "exportedFileName" : "9DFC39BE-C582-401E-9D8B-F9943DDD043D.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "rotate-landscape_0_AB246F46-95A4-491C-9D82-30BC8B1AA2C8.png",
+        "timestamp" : 1795123228.698
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "E52DCB67-867F-47DB-871A-ABE652C40055",
+        "deviceName" : "apie2e279-ipad",
+        "exportedFileName" : "203BA469-125A-465C-9574-F8B9276FA211.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "rotate-portrait-open_0_C07FA66D-52CC-4C9B-9FBC-B082557FA735.png",
+        "timestamp" : 1795123224.135
+      }
+    ],
+    "testIdentifier" : "ApiE2E279UITests/testRotationKeepsTheOpenRun()",
+    "testIdentifierURL" : "test://com.apple.xcode/AutoByteusMobile/AutoByteusMobileUITests/ApiE2E279UITests/testRotationKeepsTheOpenRun"
+  }
+]

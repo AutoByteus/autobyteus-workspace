@@ -1,0 +1,21 @@
+# workflows of the tag v1.5.14-beta.3
+44721149038 Desktop Release: success
+44721148805 Server Docker Release: success
+44721148801 Android APK Release: success
+44721148794 iOS App Store Connect Release: success
+
+## Desktop run 44721149038 jobs
+Resolve Release Metadata: success
+Build Linux x64: success
+Build Windows x64: success
+Build macOS ARM64: success
+Build Linux ARM64: success
+Build macOS Intel x64: success
+Sign authenticated Linux desktop releases: success
+Publish GitHub Release: success
+
+## iOS run 44721148794 jobs
+Resolve iOS Release Metadata: success
+Build And Test iOS App: success
+Validate iOS Publish Secrets: success
+Archive And Upload To App Store Connect: success

@@ -1,0 +1,18 @@
+# IMP-10 iOS DemoUITests and DemoIPadUITests on iPad Air 11-inch (M3) simulator, iOS 26.1
+# command: (autobyteus-ios) xcodebuild -project AutoByteusMobile.xcodeproj -scheme AutoByteusMobile -destination id=<my iPad Air simulator> -derivedDataPath /tmp/autobyteus-279-dev/ios-dd -resultBundlePath /tmp/autobyteus-279-dev/ios-ui-ipad.xcresult -only-testing:AutoByteusMobileUITests/DemoUITests -only-testing:AutoByteusMobileUITests/DemoIPadUITests CODE_SIGNING_ALLOWED=NO test
+# commit: df18856ea4 (its tree; run just before that commit was made); DemoWeb from IMP-06
+# env: macOS 26.5.2, Xcode 26.1.1
+# date: 2026-11-19T17:34:15Z
+
+Test Case '-[AutoByteusMobileUITests.DemoIPadUITests testIPadLandscape]' passed (20.326 seconds).
+Test Case '-[AutoByteusMobileUITests.DemoUITests testAKeptShareIsUsedOnce]' passed (14.135 seconds).
+Test Case '-[AutoByteusMobileUITests.DemoUITests testFirstScreen]' passed (6.502 seconds).
+Test Case '-[AutoByteusMobileUITests.DemoUITests testScanningTheDemoCodeOpensTheDemo]' passed (13.598 seconds).
+Test Case '-[AutoByteusMobileUITests.DemoUITests testTheDemoLinkOpensTheDemo]' passed (15.930 seconds).
+Test Case '-[AutoByteusMobileUITests.DemoUITests testTheDemoWebViewBlocksTheNetwork]' passed (7.594 seconds).
+Test Case '-[AutoByteusMobileUITests.DemoUITests testTryDemoThenLeaveDemoThenColdLaunch]' passed (20.338 seconds).
+	 Executed 6 tests, with 0 failures (0 unexpected) in 78.097 (78.101) seconds
+	 Executed 7 tests, with 0 failures (0 unexpected) in 98.423 (98.429) seconds
+	 Executed 7 tests, with 0 failures (0 unexpected) in 98.423 (98.430) seconds
+** TEST SUCCEEDED **
+exit=0

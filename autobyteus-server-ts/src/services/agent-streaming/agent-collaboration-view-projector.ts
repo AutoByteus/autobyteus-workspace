@@ -8,6 +8,7 @@ import {
 import type { SequencedRootEvent } from "../../agent-collaboration/delegation/run-view-stream.js";
 import type { StandaloneRootPackageSnapshot } from "../../standalone-agent-run-root/domain/standalone-agent-run-root.js";
 import type { StandaloneRootEvent } from "../../standalone-agent-run-root/domain/standalone-root-event.js";
+import { messageFields } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 
 /** Agent-root view (root kind `agent`) on the collaboration-stream contracts. */
 export const projectAgentCollaborationView = (input: Readonly<{
@@ -40,7 +41,8 @@ export const projectAgentCollaborationEvent = (
     case "lifecycle":
       return null;
     case "communication":
-      event = { kind: "communication" as const, message: source.message };
+      // The message's own fields and its two parties (autobyteus-565): the view names a counterpart it does not know from them.
+      event = { kind: "communication" as const, message: messageFields(source.message), parties: source.parties };
       break;
   }
   return RootExecutionEventDtoSchema.parse({

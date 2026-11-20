@@ -254,6 +254,7 @@ const statusMessage = computed(() => {
     case 'downloading':
       return t('settings.components.settings.AboutSettingsManager.message.downloading');
     case 'downloaded':
+      if (appUpdateStore.activationMode === 'managed-quit' && appUpdateStore.automaticUpdate) return t('settings.notifications.app.readyOnQuit');
       return t(appUpdateStore.automaticInstallPreparing
         ? 'settings.components.settings.AboutSettingsManager.message.preparing'
         : 'settings.components.settings.AboutSettingsManager.message.downloaded');

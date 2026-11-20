@@ -12,7 +12,7 @@ import {
   type RootExecutionIdentity,
 } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { RunViewStream, type SequencedRootEvent } from "../../../src/agent-collaboration/delegation/run-view-stream.js";
-import type { AgentOrgRunEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
+import { agentOrgMessageEvent, type AgentOrgRunEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import { createAgentOrgCommunicationPort } from "../../../src/agent-org-execution/services/agent-org-communication-port.js";
 import type { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
@@ -21,7 +21,7 @@ import { projectAgentCollaborationEvent } from "../../../src/services/agent-stre
 import { projectAgentOrgExecutionEvent } from "../../../src/services/agent-streaming/agent-org-execution-view-projector.js";
 import { projectSequencedTeamRunEvent } from "../../../src/services/agent-streaming/team-execution-view-projector.js";
 import { createTeamCommunicationPort } from "../../../src/services/team-communication/team-communication-port.js";
-import type { StandaloneRootEvent } from "../../../src/standalone-agent-run-root/domain/standalone-root-event.js";
+import { standaloneRootMessageEvent, type StandaloneRootEvent } from "../../../src/standalone-agent-run-root/domain/standalone-root-event.js";
 import { createStandaloneRootCommunicationPort } from "../../../src/standalone-agent-run-root/services/standalone-root-communication-port.js";
 import { runAppendDurably } from "../agent-collaboration/helpers/communication-port-double.js";
 import { isTeamRunMessageEvent, teamRunMessageEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
@@ -51,12 +51,12 @@ const runConversation = async (engine: RootCommunicationEngine, root: RootExecut
   const endpoint = delegatedRunEndpoint({ kind: "agent", address: "/publisher", agentRunId: REMOTE, nodeId: "srv_peer", delegatorAgentRunId: LEAD, startedAt: "2026-10-20T09:00:00.000Z" });
   const prepared = engine.prepareRemoteSend({ senderIdentity: member(root, LEAD), endpoint, content: "to remote" });
   if (!prepared.ok) throw new Error(prepared.refusal.message);
-  await expect(engine.commitSentToRemote(prepared)).resolves.toMatchObject({ accepted: true });
+  await expect(engine.commitSentToRemote(prepared, { address: "/publisher", nodeName: "docker" })).resolves.toMatchObject({ accepted: true });
   const reply: CollaborationCommunicationMessage = Object.freeze({
     messageId: "msg_from_remote", senderAgentRunId: REMOTE, receiverAgentRunId: LEAD, content: "reply from remote",
     messageType: "agent_message", referenceFiles: Object.freeze([]), createdAt: "2026-10-20T10:00:00.000Z",
   });
-  await expect(engine.acceptFromRemote({ message: reply, endpoint, receiverIdentity: member(root, LEAD), receiverDisplayName: "lead", senderNodeName: "docker" }))
+  await expect(engine.acceptFromRemote({ message: reply, endpoint, receiverIdentity: member(root, LEAD), receiverDisplayName: "lead", senderNodeName: "docker", senderAddress: "/publisher" }))
     .resolves.toMatchObject({ accepted: true });
   await expect(deliverLocal("second local")).resolves.toMatchObject({ accepted: true });
   // The root's message state keeps both remote messages (logs and the local agent's stream show them).
@@ -90,7 +90,7 @@ describe("messages with a remote endpoint keep the root view stream consecutive 
       }) as unknown as TeamRun),
       commitMessageAppend: vi.fn(runAppendDurably),
       publish: (event) => { publisher.publish(event); },
-      messageFeed: messageFeedInto(publisher, teamRunMessageEvent),
+      messageFeed: messageFeedInto(publisher, teamRunMessageEvent, root),
     });
 
     await runConversation(new RootCommunicationEngine(adapter), root);
@@ -117,9 +117,11 @@ describe("messages with a remote endpoint keep the root view stream consecutive 
         root, persistence: persistence() as never, initial: { schemaVersion: 1, subjectKind: "agent", agentRunId: LEAD, messages: [] },
         isOpen: () => true, isCurrentAgent: () => true, messageLogOwnerOf: () => OWN_RUN_LOG, assertDeliveryAllowed: () => undefined,
         reserveRecipientInput: vi.fn(async (agentRunId: string) => ({ reserved: true as const, reservation: reservation(agentRunId) })),
-        messageFeed: messageFeedInto(publisher, (message) => ({ kind: "communication" as const, message })), presentCommittedMessage: vi.fn(),
+        messageFeed: messageFeedInto(publisher, standaloneRootMessageEvent, root), presentCommittedMessage: vi.fn(),
       }),
       project: (event: SequencedRootEvent<StandaloneRootEvent>) => projectAgentCollaborationEvent(LEAD, event),
+      // autobyteus-565: an Agent root's own view shows every message its agent sent or received, a remote one too.
+      shown: ["first local", "to remote", "reply from remote", "second local"],
     },
     {
       kind: "Org root",
@@ -128,17 +130,18 @@ describe("messages with a remote endpoint keep the root view stream consecutive 
         root, persistence: persistence() as never, initial: { schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org-root", messages: [] },
         isOpen: () => true, isCurrentAgent: () => true, messageLogOwnerOf: () => OWN_RUN_LOG, assertDeliveryAllowed: () => undefined,
         reserveRecipientInput: vi.fn(async (agentRunId: string) => ({ reserved: true as const, reservation: reservation(agentRunId) })),
-        messageFeed: messageFeedInto(publisher, (message) => ({ kind: "communication" as const, message })), presentCommittedMessage: vi.fn(),
+        messageFeed: messageFeedInto(publisher, agentOrgMessageEvent, root), presentCommittedMessage: vi.fn(),
       }),
       project: (event: SequencedRootEvent<AgentOrgRunEvent>) => projectAgentOrgExecutionEvent("org-root", event),
+      shown: ["first local", "second local"],
     },
-  ] as const)("$kind: only the local messages are published, with consecutive sequences", async ({ root, build, project }) => {
+  ] as const)("$kind: the messages its view shows are published, with consecutive sequences", async ({ root, build, project, shown }) => {
     const publisher = new RunViewStream<never>({ isMessageEvent: () => false });
     const events = collect(publisher);
     await runConversation(new RootCommunicationEngine(build(root, publisher as never) as never), root);
 
     const projected = events.map((event) => project(event as never));
     expectConsecutive(projected.map((dto) => dto!.change_sequence));
-    expect(projected.map((dto) => (dto!.event as { message: { content: string } }).message.content)).toEqual(["first local", "second local"]);
+    expect(projected.map((dto) => (dto!.event as { message: { content: string } }).message.content)).toEqual(shown);
   });
 });

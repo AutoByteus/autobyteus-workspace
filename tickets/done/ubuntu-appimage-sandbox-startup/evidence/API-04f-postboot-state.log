@@ -1,0 +1,26 @@
+# API-04f | API-04f-postboot-state | 2026-11-19 | CRR-004 (reviewed product c90f3ba8f2); Ubuntu26.04 x64 guest
+post-reboot
+a9166b86-f24e-4843-abd7-cdb265f6d611
+2026-11-19 13:21:16
+{"status":"ok","message":"Server is running"}autobyteus
+kernel.apparmor_restrict_unprivileged_userns = 1
+witness:witness 600 /run/autobyteus-desktop-1000.sock
+abdesk-1000:abdesk-1000 555 /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+{
+  "manualInstall": null,
+  "manualFailure": null,
+  "version": "1.5.15",
+  "fromVersion": "1.5.14",
+  "foundAt": "2026-11-19T13:17:02.221Z",
+  "read": false,
+  "handledVersion": "1.5.15",
+  "handledAt": "2026-11-19T13:23:59.536Z",
+  "automatic": null,
+  "automaticFailure": null,
+  "outcome": "AUTO_UPDATED"
+}
+{
+  "enabled": true
+}
+temp-grant-query=0
+{"supervisor": [{"pid": "1393", "ppid": "1", "exe": "/tmp/.mount_AutoByWSAobW/AppRun", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["1393"]}], "main": [{"pid": "1408", "ppid": "1393", "exe": "/tmp/.mount_AutoByWSAobW/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["1408"]}], "server": [{"pid": "1472", "ppid": "1408", "exe": "/tmp/.mount_AutoByWSAobW/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["1472"]}], "renderer": [{"pid": "1543", "ppid": "1415", "exe": "/tmp/.mount_AutoByWSAobW/autobyteus", "uid": "1000", "NoNewPrivs": "1", "Seccomp": "2", "NSpid": ["1543", "4", "1"]}], "file": "4d2cdcec096230953479833e9489387f9d033763b50c782d1b79e8e6991bb0e9", "work": "1375301c701d98fc044779ceb51a493bd5e2884c42c64c8f71bac721b4673071"}

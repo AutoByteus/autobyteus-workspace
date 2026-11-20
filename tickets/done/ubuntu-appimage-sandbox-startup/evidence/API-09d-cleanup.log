@@ -1,0 +1,16 @@
+# API-09d-cleanup | 2026-11-19 | reviewed product 8f10fa9287 | owned test workspace; operation: see matching case in execution report
+stopping owned guest pid=376223
+qmp_capabilities {}
+quit {}
+stopping owned guest pid=374865
+qmp_capabilities {}
+quit {}
+8e0193bcd79e65db92762ad8549b5ec4f82eb7174319d01565fef22b9c1dc67c  .autobyteus/server-data/temp_workspace/qa4-saved
+8e0193bcd79e65db92762ad8549b5ec4f82eb7174319d01565fef22b9c1dc67c  qa4-update-profile/server-data/temp_workspace/qa4-saved
+verified-updated-installation-removed-work-preserved
+stopping owned guest pid=376256
+qmp_capabilities {}
+quit {}
+All three private QEMU pids, SSH forwards and QA CDP tunnel checked after closes.
+No QA guest or tunnel listeners.
+Remote scratch ref removed after receipt 44538103449. Private stopped test overlays and CI object cache remain outside Git under the test-owned CRR-007 directory.

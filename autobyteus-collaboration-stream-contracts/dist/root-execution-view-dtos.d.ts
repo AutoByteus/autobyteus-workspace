@@ -695,6 +695,18 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
             referenceFiles: z.ZodArray<z.ZodString>;
             createdAt: z.ZodString;
         }, z.core.$strict>;
+        parties: z.ZodObject<{
+            sender: z.ZodObject<{
+                agentRunId: z.ZodString;
+                address: z.ZodNullable<z.ZodString>;
+                nodeName: z.ZodNullable<z.ZodString>;
+            }, z.core.$strict>;
+            receiver: z.ZodObject<{
+                agentRunId: z.ZodString;
+                address: z.ZodNullable<z.ZodString>;
+                nodeName: z.ZodNullable<z.ZodString>;
+            }, z.core.$strict>;
+        }, z.core.$strict>;
     }, z.core.$strict>, z.ZodObject<{
         added: z.ZodArray<z.ZodObject<{
             key: z.ZodString;
@@ -1374,6 +1386,18 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                 messageType: z.ZodString;
                 referenceFiles: z.ZodArray<z.ZodString>;
                 createdAt: z.ZodString;
+            }, z.core.$strict>;
+            parties: z.ZodObject<{
+                sender: z.ZodObject<{
+                    agentRunId: z.ZodString;
+                    address: z.ZodNullable<z.ZodString>;
+                    nodeName: z.ZodNullable<z.ZodString>;
+                }, z.core.$strict>;
+                receiver: z.ZodObject<{
+                    agentRunId: z.ZodString;
+                    address: z.ZodNullable<z.ZodString>;
+                    nodeName: z.ZodNullable<z.ZodString>;
+                }, z.core.$strict>;
             }, z.core.$strict>;
         }, z.core.$strict>, z.ZodObject<{
             added: z.ZodArray<z.ZodObject<{

@@ -1,0 +1,28 @@
+Thu Nov 19 11:44:44 UTC 2026
+After clicking Install and Restart; no secondary launch was issued
+36e63d2d70919dfbc466da6faf95bd743e80929ec5f5a83ff30b95551aad9b85  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+31a67222b1770743f2e34397a2ac52c3bf0d0dd22aa4b476cf77d39ec1b6123e  e2e-profile/server-data/temp_workspace/update-continuity.txt
+29695 HTTP=000
+29696 HTTP=000
+1280 900
+Visible windows:
+Openbox
+test harness remains live:
+Xvfb
+openbox
+python3
+[2026-11-19T11:43:01.857Z] [INFO] [electron] [updater] Checking for update
+[2026-11-19T11:43:01.949Z] [INFO] [electron] [updater] Found version 1.5.15 (url: AutoByteus_personal_linux-x64-1.5.15.AppImage)
+[2026-11-19T11:43:06.739Z] [INFO] [electron] [updater] Checking for update
+[2026-11-19T11:43:06.745Z] [INFO] [electron] [updater] Found version 1.5.15 (url: AutoByteus_personal_linux-x64-1.5.15.AppImage)
+[2026-11-19T11:43:07.241Z] [INFO] [electron] [updater] Downloading update from AutoByteus_personal_linux-x64-1.5.15.AppImage
+[2026-11-19T11:43:08.204Z] [INFO] [electron] [updater] Update has already been downloaded to /home/witness/.cache/autobyteus-updater/pending/AutoByteus_personal_linux-x64-1.5.15.AppImage).
+[2026-11-19T11:43:14.729Z] [INFO] [electron.server.base-server-manager] Server process exited with code 0
+Recovery control: separate operator menu action NOW (not spontaneous).
+Thu Nov 19 11:44:55 UTC 2026
+{"status":"ok","message":"Server is running"}
+autobyteus
+Recovered window and same healthy synthetic profile
+36e63d2d70919dfbc466da6faf95bd743e80929ec5f5a83ff30b95551aad9b85  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+31a67222b1770743f2e34397a2ac52c3bf0d0dd22aa4b476cf77d39ec1b6123e  e2e-profile/server-data/temp_workspace/update-continuity.txt
+Thu Nov 19 11:45:45 UTC 2026

@@ -1,0 +1,7 @@
+--- existing app processes ---
+1158058 ./AutoByteus_personal_linux-x64-1.4.78.AppImage --no-sandbox
+1162341 /bin/bash -lc set -uo pipefail out=tickets/in-progress/ubuntu-appimage-sandbox-startup/evidence printf '%s\n' '--- existing app processes ---' | tee "$out/runtime-probe.txt" pgrep -af 'AutoByteus|chrome-sandbox' 2>&1 | tee -a "$out/runtime-probe.txt" || true printf '\n--- normal launch (12-second cap) ---\n' | tee -a "$out/runtime-probe.txt" set +e timeout --signal=TERM --kill-after=2s 12s "$HOME/Downloads/AutoByteus_personal_linux-x64-1.4.78.AppImage" >>"$out/runtime-probe.txt" 2>&1 rc=$? set -e printf '\nnormal_exit=%s\n' "$rc" | tee -a "$out/runtime-probe.txt" tail -n 60 "$out/runtime-probe.txt" 
+
+--- normal launch (12-second cap) ---
+
+normal_exit=0

@@ -1,0 +1,39 @@
+IR-007 | 2026-11-19 UTC | source 8f10fa9287, prior product at review 2aa53e656a | native x64 Linux
+Command: cd autobyteus-web/linux-install && go test -count=1 -v ./... ; Node/gcc and pinned Go 1.27.4. Unit HTTP transport in the test process only, ephemeral Ed25519 key, temporary regular file. Real Fetch performs the usual checks. No host enrollment or remote requests.
+Regression contrast: git archive 2aa53e656a native module in private temp folder + only the new test; go test -run '^TestPreAuthorizationRecovery$' ./internal/acquire. Eight subcases failed on the old code (the offline and valid controls already passed).
+--- FAIL: TestPreAuthorizationRecovery/missing-record (0.00s)
+--- FAIL: TestPreAuthorizationRecovery/missing-signature (0.00s)
+--- FAIL: TestPreAuthorizationRecovery/interrupted-read (0.00s)
+--- FAIL: TestPreAuthorizationRecovery/oversize (0.00s)
+--- FAIL: TestPreAuthorizationRecovery/signature (0.00s)
+--- FAIL: TestPreAuthorizationRecovery/version (0.00s)
+--- FAIL: TestPreAuthorizationRecovery/length (0.00s)
+--- FAIL: TestPreAuthorizationRecovery/same-length-digest (0.00s)
+Current result: 20 top-level tests passed in the module, no skipped/failed tests. Fetch cases check request counts and exact pinned URLs/order; return no record/signature on failures; bounded text with action and no remote body/transport error echo; verified handle rewound on success. Existing redirect policy/response bounds and IR-006 status/managed tests retained.
+--- PASS: TestKnownInstallVolumeFailureStatus (0.00s)
+ok  	autobyteus.local/desktop/linux-install/cmd/provision	0.003s
+ok  	autobyteus.local/desktop/linux-install/cmd/writer	0.016s
+--- PASS: TestRedirectPolicy (0.00s)
+--- PASS: TestResponseBoundsAndStatus (0.00s)
+    --- PASS: TestPreAuthorizationRecovery/missing-record (0.00s)
+    --- PASS: TestPreAuthorizationRecovery/missing-signature (0.00s)
+    --- PASS: TestPreAuthorizationRecovery/offline (0.00s)
+    --- PASS: TestPreAuthorizationRecovery/interrupted-read (0.00s)
+    --- PASS: TestPreAuthorizationRecovery/oversize (0.00s)
+    --- PASS: TestPreAuthorizationRecovery/signature (0.00s)
+    --- PASS: TestPreAuthorizationRecovery/version (0.00s)
+    --- PASS: TestPreAuthorizationRecovery/length (0.00s)
+    --- PASS: TestPreAuthorizationRecovery/same-length-digest (0.00s)
+    --- PASS: TestPreAuthorizationRecovery/valid (0.00s)
+ok  	autobyteus.local/desktop/linux-install/internal/acquire	0.008s
+--- PASS: TestAuthorizationFailureGuidance (0.00s)
+--- PASS: TestAbsentAndIncompleteManagedInstallRemainDistinct (0.00s)
+ok  	autobyteus.local/desktop/linux-install/internal/launch	0.500s
+ok  	autobyteus.local/desktop/linux-install/internal/release	0.006s
+ok  	autobyteus.local/desktop/linux-install/internal/sealed	0.005s
+ok  	autobyteus.local/desktop/linux-install/internal/store	0.009s
+Local build: compile native release payloads including current launcher, copy into retained genuine IR-005 full .13 app/server payload, pack outer x64 AppImage, sign complete final bytes with disposable test trust, verify-release + verify-layout. Build-pinned loopback origin on fixture only. No production trust, CI push, detached arbitrary trusted input, or release.
+Verified signed desktop release 1.5.13 x64
+Verified native AppRun, unchanged Electron ELF, provisioner/client and sandbox-preserving desktop Exec
+332aefbf8bc26b353bd270fd3d1bcf088a6ddfc0139516c56a471e8eea568b53  /home/ryan-ai/hdd_drive/autobyteus_org/api-e2e-autobyteus-5/ir007-6SRvsr/AutoByteus_personal_linux-x64-1.5.13.AppImage
+Raw private fixture: /home/ryan-ai/hdd_drive/autobyteus_org/api-e2e-autobyteus-5/ir007-6SRvsr

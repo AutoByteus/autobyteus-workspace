@@ -35,16 +35,25 @@ export type AcpMcpServerStatus = "ready" | "unavailable" | "pending";
 /** Provider-reported phase of a context compaction. */
 export type AcpCompactionPhase = "started" | "completed" | "failed" | "cancelled";
 
+/** The system notice that says what woke the agent for a prompt it started itself (`SYSTEM_TASK_NOTIFICATION`). */
+export type AcpPromptNotice = Readonly<{ content: string; senderId: string }>;
+
 /**
  * Typed outcome of an agent extension notification or of a provider call observation; everything else is ignored.
  * `activity` is turn activity the agent sends no ACP frame for (its model is still streaming).
+ * `prompt_running` / `prompt_completed` are the agent's own prompt signals: a prompt it runs (the client's prompt, or
+ * one it queued itself, e.g. after a background command ended) and that prompt's end. The session decides what they
+ * mean (`AcpAgentSession`, provider-started turns); a profile that never reports them keeps client turns only.
  */
 export type AcpSessionEffect =
   | Readonly<{ kind: "usage"; payload: Record<string, unknown> }>
   | Readonly<{ kind: "mcp_status"; server: string; status: AcpMcpServerStatus; detail: string | null }>
   /** `details` are the agent's own fields, read back only by the profile's payload builder. */
   | Readonly<{ kind: "compaction"; phase: AcpCompactionPhase; eventId: string | null; details: Record<string, unknown> }>
-  | Readonly<{ kind: "activity" }>;
+  | Readonly<{ kind: "activity" }>
+  /** `notice` is shown only when the prompt opens a provider-started turn; null when the agent gave no text. */
+  | Readonly<{ kind: "prompt_running"; promptId: string; notice: AcpPromptNotice | null }>
+  | Readonly<{ kind: "prompt_completed"; promptId: string; stopReason: string }>;
 
 /**
  * One COMPACTION_STATUS to build. `operationId` identifies the compaction across its events;

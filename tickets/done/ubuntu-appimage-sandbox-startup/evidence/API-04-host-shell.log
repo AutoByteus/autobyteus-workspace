@@ -1,0 +1,14 @@
+API-04 | 2026-11-18 | source 0df0c901e4 | Ubuntu26 x64 user1000 existing display, no security weakening
+Command: node autobyteus-web/scripts/isolated-app/cli.mjs start --app <fresh linux-unpacked/autobyteus>
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "start",
+  "error": {
+    "code": "APP_EXITED_BEFORE_READY",
+    "message": "The app exited before it became ready.\nLast log lines (/tmp/autobyteus-isolated-app/iso-43849-7042.log):\n[219359:1118/153713.956061:FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:166] The SUID sandbox helper binary was found, but is not configured correctly. Rather than run without sandboxing I'm aborting now. You need to make sure that /home/ryan-ai/hdd_drive/autobyteus_org/api-e2e-autobyteus-5/fresh/autobyteus-web/electron-dist/linux-unpacked/chrome-sandbox is owned by root and has mode 4755.",
+    "details": {
+      "logPath": "/tmp/autobyteus-isolated-app/iso-43849-7042.log"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+Simulator UDID: 87FD7BD4-527F-4396-8F0F-15E34D1FA345
+Fake node URL: http://127.0.0.1:29876/mobile
+App bundle ID: org.autobyteus.mobile
+Share extension bundle ID: org.autobyteus.mobile.share
+iOS marketing version: 1.3.83
+iOS build number: 1
+Smoke UI tests: executed and passed without skips
+Expected fake marker: AUTOBYTEUS_FAKE_MOBILE_READY
+Xcode result bundle: /Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-mode-279/tickets/in-progress/ios-demo-mode-279/evidence/api-e2e/FS-iOS-smoke/AutoByteusMobile.xcresult
+Test log: /Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-mode-279/tickets/in-progress/ios-demo-mode-279/evidence/api-e2e/FS-iOS-smoke/xcodebuild-test.log
+Signing readiness: /Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-mode-279/tickets/in-progress/ios-demo-mode-279/evidence/api-e2e/FS-iOS-smoke/signing-readiness/ios-signing-readiness.txt

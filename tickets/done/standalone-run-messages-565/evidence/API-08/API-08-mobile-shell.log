@@ -1,0 +1,9 @@
+# API-08 mobile-shell MSP-08 on the phone bundle (alpha serves autobyteus-web/dist/public, built by build:mobile-web at this commit)
+# Command: pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<dir> --cases=MSP-08
+# Code 5b45e9222b; Node 22.23.1; macOS 26; Chrome 390x844; 2026-11-20
+# Run 1 (before the Load more extension): Pass; run 2 (this): Pass
+
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/tmp/api565/API-08 --cases=MSP-08
+[mobile-shell] MSP-08 …
+[mobile-shell] MSP-08 Pass
+mobile-shell probe: Pass

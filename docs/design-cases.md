@@ -287,7 +287,7 @@ Principle 1.
 - **Why it mattered:** restoring after a reload was the requirement; the main way to make a run on the phone missed it.
 - **Notice it by:** an identity a design stores or sends outward (a route, a URL, a record) taken from a callback or a creation call without tracing where that value is minted and whether it is re-keyed later (draft, temporary, pending IDs). Look for an existing "promote" or "re-key" step and for code that already follows it.
 
-### Case 21: A Premise Checked On A Stand-In Or One Platform Version (autobyteus-435, CRR-003 CR-002, CR-003; autobyteus-460, DI-001)
+### Case 21: A Premise Checked On A Stand-In Or One Platform Version (autobyteus-435, CRR-003 CR-002, CR-003; autobyteus-460, DI-001; autobyteus-5, F-API-02)
 
 Principle 1 (trace through the real dependency).
 
@@ -296,6 +296,7 @@ Principle 1 (trace through the real dependency).
 - **The fix:** the probe reads a readable Host-gate refusal and gives the exact cause (the opaque request stays for browser windows); full screen also turns the decor's fitting off on API < 35 and back on when it ends.
 - **Why it mattered:** both items failed in the product on the one runtime and the platform versions the design had not run.
 - **Again in autobyteus-460 (implementation DI-001):** the design said "the Claude CLI lists a skill folder linked into `.claude/skills` mid-session". The probe's workspace already had that folder, with a link, when the session started. Live, a run whose workspace had no `.claude/skills` at process start never listed the added skill: the CLI watches the folder only if it exists when it starts. Fix (SR-004): Claude preparation ensures the folder exists. Lesson: a probe's starting state is part of the premise; run it from each starting state the product has (here zero skills and some skills).
+- **Again in autobyteus-5 (F-API-02):** a signed update committed, and Electron’s relaunch call returned with the correct AppImage path. The real successor still could not mount the image on Ubuntu; opening those same bytes from the menu worked. DS-004 assigns explicit restart to the original desktop launcher after confirmed shutdown. The check is a spontaneous usable new window and server in the same profile—not a relaunch spy, a writer receipt or a later operator launch.
 - **Notice it by:** a premise measured in a stand-in for the real runtime (Chromium for Electron, a fake for a platform API, one OS version for a range), or a platform behaviour that changed at a version inside the supported range (here targetSdk 35 edge-to-edge). Run the premise in the real runtime, or mark it unproven and make the design hold either way.
 
 ### Case 22: A Guard That Reads "Active" Instead Of The Fact Ordered Before Release (autobyteus-460, ARCH-REV-001 AR-001)
@@ -317,3 +318,13 @@ Principle 1 (count callers at their call sites).
 - **The fix:** the process-shutdown owner (`server-runtime.ts`'s cleanup, and the handover close) calls one studio operation that stops the watchers for the exit before `app.close()`; every other close still releases the watches.
 - **Why it mattered:** a "process is exiting" shortcut taken on a path that is not exit-only leaks resources in every long-lived process that uses the same path.
 - **Notice it by:** a behavior justified by "only called from X" where the check stopped at the first caller; an exit-only shortcut placed in a close that a framework hook also runs. Follow the callers up to the entry points (hooks, tests, failure paths), or put the decision at the owner that knows the condition.
+
+### Case 24: A Stored Value Read By Its Type, Not By What Its Writer Meant (autobyteus-279, CRR-002 F-1)
+
+Principles 5 (persisted-data decision from the readers and writers) and 15 (one meaning per name).
+
+- **The design said:** iOS saved computers are "Directly Usable — No Migration": the new start screen reads `SavedNodeStore` as before. It checked the stored shape (the same fields, the same keys), not what the shipped app had written into them.
+- **What the code does:** the shipped app saved `displayName: status.serverName`, and `ConnectionValidator` fills `serverName` with the literal "AutoByteus Desktop" when the node gives no name. For those entries the value means "no name known". The new code's rule for "no known name" is `displayName == host`, so it took the placeholder for a real name: no rename after pairing, and the bridge's `hello` handed it to the page. An updated phone showed "AutoByteus Desktop" instead of its computer's name.
+- **The fix (SR-003, SR-004):** a one-time migration in the iOS migration owner rewrites the placeholder to the host (the current "no known name"). One rule, as on Android: `knownName` (for the flow and the bridge's `hello`, `""` when none) and `shownName` (every native label: the known name or "AutoByteus node", never an address). A migrated computer gets a native name when it is paired again; its run list shows the page's own pairing name meanwhile. The first revision (SR-003) promised a rename "at the next open", but the page reports its name only right after a pairing: a promised behavior is a premise too; trace its trigger.
+- **Why it mattered:** every phone that had saved a nameless computer would show the wrong name after updating, with no way for the user to fix it.
+- **Notice it by:** a persisted-data decision that cites the field list but not each writer of each field and the value it wrote when it had nothing to write (a default, a placeholder, an empty string); a new reader whose meaning for "absent" differs from the old writer's.

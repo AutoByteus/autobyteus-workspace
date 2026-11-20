@@ -75,7 +75,9 @@ const returnArrowSignature = (container: Element) => {
   return {
     targetClasses: sortedClasses(target),
     surfaceClasses: sortedClasses(surface),
-    glyphClasses: sortedClasses(glyph),
+    // The glyph's own layout classes; Iconify adds its markers (`iconify`, `iconify--<prefix>`) once the icon is drawn from
+    // the local bundle (autobyteus-279).
+    glyphClasses: sortedClasses(glyph).filter((name) => !name.startsWith('iconify')),
     targetStyles: computedStyles(target, ['position', 'bottom', 'left', 'transform', 'width', 'height']),
     surfaceStyles: computedStyles(surface, ['width', 'height', 'background-color', 'border-color', 'box-shadow', 'color']),
     glyphStyles: computedStyles(glyph, ['width', 'height', 'color']),
@@ -439,6 +441,36 @@ describe('AgentConversationFeed', () => {
     wrapper.unmount();
   });
 
+  // DC-007 (autobyteus-279, REQ-009): your own send moves the view to your message and follows the reply, even when you had
+  // scrolled up to read; activity you did not cause still waits behind "Jump to latest".
+  it('moves to your own new message from anywhere, but leaves others\' activity behind Jump to latest', async () => {
+    const conversation = {
+      id: 'run-own-send', createdAt: '2026-03-07T00:00:00.000Z', updatedAt: '2026-03-07T00:00:00.000Z',
+      messages: [{ type: 'user', text: 'first', timestamp: new Date() }, { type: 'ai', segments: [], timestamp: new Date(), isComplete: true }],
+    } as any;
+    const wrapper = mount(AgentConversationFeed, {
+      props: { conversation, presentationRevision: 0 },
+      attachTo: document.body,
+      global: { stubs: { UserMessage: { template: '<div />' }, AIMessage: { template: '<div />' }, Icon: iconStub }, mocks: { $t: () => 'Jump to latest activity' } },
+    });
+    const feed = wrapper.get('[data-testid="agent-conversation-feed"]');
+    Object.defineProperties(feed.element, {
+      scrollHeight: { configurable: true, value: 1000 },
+      clientHeight: { configurable: true, value: 400 },
+      scrollTop: { configurable: true, writable: true, value: 100 },
+    });
+    await feed.trigger('scroll');
+    await wrapper.setProps({ presentationRevision: 1 });
+    expect(wrapper.find('[data-testid="event-monitor-jump-to-latest"]').exists()).toBe(true);
+    expect((feed.element as HTMLElement).scrollTop).toBe(100);
+
+    await wrapper.setProps({ conversation: { ...conversation, messages: [...conversation.messages, { type: 'user', text: 'mine', timestamp: new Date() }] } });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect((feed.element as HTMLElement).scrollTop).toBe(1000);
+    expect(wrapper.find('[data-testid="event-monitor-jump-to-latest"]').exists()).toBe(false);
+    wrapper.unmount();
+  });
+
   it('keeps one native icon-only return action across every ordinary browse state', async () => {
     const wrapper = mount(AgentConversationFeed, {
       props: {
@@ -516,7 +548,8 @@ describe('AgentConversationFeed', () => {
       accessibleName: 'Jump to latest activity',
       title: null,
       text: '',
-      glyphViewBox: '0 0 16 16',
+      // heroicons:arrow-down, drawn from the local icon bundle (24 × 24).
+      glyphViewBox: '0 0 24 24',
       hasTooltipOrBadge: false,
     });
     expect(wrapper.getComponent(Icon).props('icon')).toBe('heroicons:arrow-down');

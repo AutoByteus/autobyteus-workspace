@@ -1,0 +1,10 @@
+# API-04c-type-address: ApiE2E279UITests/testTypeAnAddress on apie2e279-iphone (87FD7BD4-527F-4396-8F0F-15E34D1FA345); fresh-start clone build (429af9bd66 + the temporary test file); 2026-11-19T20:18:09Z; load 148.49 161.69 187.03
+# links made just before: 
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testTypeAnAddress]' started.
+/Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobileUITests/ApiE2E279UITests.swift:52: error: -[AutoByteusMobileUITests.ApiE2E279UITests testTypeAnAddress] : XCTAssertTrue failed - The node's page (pairing) opens
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testTypeAnAddress]' failed (137.604 seconds).
+	 Executed 1 test, with 1 failure (0 unexpected) in 137.604 (137.605) seconds
+	 Executed 1 test, with 1 failure (0 unexpected) in 137.604 (137.607) seconds
+	 Executed 1 test, with 1 failure (0 unexpected) in 137.604 (137.609) seconds
+** TEST EXECUTE FAILED **
+# exit: 65

@@ -1,0 +1,21 @@
+# Case: API-02
+# Command: cd autobyteus-server-ts && env -i PATH HOME=<fresh> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts --no-watch with the production src/agent-work-journal restored to 383bbf6ea5^ (git checkout of the base files, restored with git checkout HEAD and git status clean)
+# Commit: f0901fa9b6 (code = 383bbf6ea5; the new e2e file and the fixture line are committed with this round)
+# Environment: macOS arm64, Node v22.23.1, in-process real server (studio runtime server), owned temp data dir, private HOME, scripted Antigravity CLI (case mcp_calls)
+# Date: 2026-11-19
+
+## run 1 (an unrelated Antigravity model-discovery timeout, not the intended assertion; see report)
+     × JS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered 22181ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: AgyDiscoveryError: Antigravity model discovery timed out; check the CLI and retry.: expected false to be true // Object.is equality
+      Tests  1 failed (1)
+## run 2
+     × JS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered 583ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: no line for the schema read: expected '# Work Journal — run work_journal_neu…' not to match /Command: cat|view_file|\.gemini/
+      Tests  1 failed (1)
+## run 3
+     × JS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered 22529ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: no line for the schema read: expected '# Work Journal — run work_journal_neu…' not to match /Command: cat|view_file|\.gemini/
+      Tests  1 failed (1)

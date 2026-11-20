@@ -1,0 +1,20 @@
+2026-11-19T19:05:35.076Z # ios-demo-mode-279 node; repo /Users/normy/.cache/abtest279/fs-docker at 429af9bd66; big-279.pdf 41943398 bytes
+2026-11-19T19:05:41.029Z node up on http://192.168.2.158:51679; /mobile 200
+2026-11-19T19:05:53.961Z run fact_checker_2429f921f95d4dc287dcfeb5768e25d0; Phone Access on. Control: /tmp/abtest279/node/pair-<name>, /tmp/abtest279/node/stop
+2026-11-19T19:05:59.985Z pairing session for paste: 201 (link in /tmp/abtest279/node, not evidence)
+2026-11-19T19:05:59.988Z pairing session for pdf: 201 (link in /tmp/abtest279/node, not evidence)
+2026-11-19T19:05:59.991Z pairing session for scan: 201 (link in /tmp/abtest279/node, not evidence)
+2026-11-19T19:05:59.994Z pairing session for share: 201 (link in /tmp/abtest279/node, not evidence)
+2026-11-19T19:05:59.996Z pairing session for shipped: 201 (link in /tmp/abtest279/node, not evidence)
+2026-11-19T19:24:55.843Z pairing session for shipped2: 201 (link in /tmp/abtest279/node, not evidence)
+2026-11-19T19:29:40.064Z pairing session for shipped3: 201 (link in /tmp/abtest279/node, not evidence)
+2026-11-19T19:50:11.311Z pairing session for shipped4: 201 (link in /tmp/abtest279/node, not evidence)
+2026-11-19T20:10:13.966Z pairing session for shipped5: 201 (link in /tmp/abtest279/node, not evidence)
+2026-11-19T20:16:02.230Z pairing session for shipped6: 201 (link in /tmp/abtest279/node, not evidence)
+2026-11-19T20:21:22.029Z pairing session for paste-1795119681: 201 (link in /tmp/abtest279/node, not evidence)
+2026-11-19T20:23:53.249Z pairing session for scan-1795119832: 201 (link in /tmp/abtest279/node, not evidence)
+2026-11-19T20:29:12.336Z pairing session for paste-1795120152: 201 (link in /tmp/abtest279/node, not evidence)
+2026-11-19T20:32:47.370Z pairing session for share-1795120367: 201 (link in /tmp/abtest279/node, not evidence)
+2026-11-19T20:40:49.815Z pairing session for share-1795120849: 201 (link in /tmp/abtest279/node, not evidence)
+2026-11-19T20:49:12.112Z pairing session for pdf-1795121351: 201 (link in /tmp/abtest279/node, not evidence)
+2026-11-19T20:53:35.489Z pairing session for pdf-1795121615: 201 (link in /tmp/abtest279/node, not evidence)

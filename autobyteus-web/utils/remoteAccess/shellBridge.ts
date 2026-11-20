@@ -1,9 +1,10 @@
 /**
- * The Android app's shell bridge (`window.AutoByteusShell`): an androidx.webkit web-message object the app gives only
- * to the main frame of the open node's origin. The page tells the app it is ready or paired, asks it to show its node
- * list or its scanner, turns the VNC Viewer's desktop full screen (landscape, hidden system bars) on or off, or hands it
- * a PDF or image to save to the phone's Downloads (autobyteus-472); the app's `hello` reply tells the page about this
- * phone and the open node. It carries no credential. In a browser there is no bridge.
+ * The phone app's shell bridge (`window.AutoByteusShell`): a web-message object the app gives only to the main frame of
+ * the open origin (Android: androidx.webkit; iOS: a `WKScriptMessageHandler`, autobyteus-279, with the same contract).
+ * The page tells the app it is ready or paired, asks it to show its node list or its scanner, turns the VNC Viewer's
+ * desktop full screen (landscape, hidden system bars) on or off, hands it a PDF or image to save to the phone's
+ * Downloads (autobyteus-472), or (in the iOS demo) asks it to leave the demo; the app's `hello` reply tells the page about
+ * this phone and the open node. It carries no credential. In a browser there is no bridge.
  */
 export type ShellHello = {
   /** Saved nodes on this phone, for "N nodes on this phone". */
@@ -31,6 +32,11 @@ export type ShellBridge = {
    * "Couldn't save the file."); there is no reply. An app older than this ignores the message.
    */
   saveFile(file: ShellSaveFile): void;
+  /**
+   * Leave demo (autobyteus-279, UIS-004): the iOS app closes the demo and shows its first screen, forgetting everything
+   * the demo held. Only the iOS demo sends it; the Android app has no demo.
+   */
+  leaveDemo(): void;
 };
 
 /** A file the page hands the app to save: its bytes as base64, never a URL or a credential. */
@@ -94,5 +100,6 @@ export const getShellBridge = (): ShellBridge | null => {
     startScan: () => post({ type: 'startScan' }),
     desktopFullScreen: (on) => post({ type: 'desktopFullScreen', on }),
     saveFile: ({ fileName, mimeType, base64 }) => post({ type: 'saveFile', fileName, mimeType, base64 }),
+    leaveDemo: () => post({ type: 'leaveDemo' }),
   };
 };

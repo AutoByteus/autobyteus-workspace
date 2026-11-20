@@ -168,7 +168,7 @@ RightSideTabs owns tab visibility. For Terminal it hosts `TerminalPanel.vue` aft
 | Tab Name      | Label      | Visibility | Component          |
 | ------------- | ---------- | ---------- | ------------------ |
 | `files`       | Files      | Always     | FileExplorerLayout |
-| `teamMembers` | Team       | Team mode  | TeamOverviewPanel  |
+| `teamMembers` | Team (Org for an Org run, Messages for a standalone run) | A run with a collaboration view (every run but an application-owned one) | TeamOverviewPanel  |
 | `progress`    | Activity   | Always     | ProgressPanel (Background Tasks + Activity feed) |
 | `terminal`    | Terminal   | Always     | TerminalPanel (hosts Terminal children) |
 | `vnc`         | VNC Viewer | Always     | VncViewer          |

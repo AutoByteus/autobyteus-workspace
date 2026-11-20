@@ -64,9 +64,9 @@ export type DelegatedRunHandler = Readonly<{
   start(request: StartDelegatedRunRequest, from: PeerNode): Promise<StartedRunAnswer | PeerHandlerRefusal>;
 }>;
 export type RemoteMessageHandler = Readonly<{
-  accept(request: DeliverRemoteMessageRequest, from: PeerNode): Promise<Readonly<{ accepted: true }> | PeerHandlerRefusal>;
+  accept(request: DeliverRemoteMessageRequest, from: PeerNode): Promise<Readonly<{ accepted: true; receiverAddress: string | null }> | PeerHandlerRefusal>;
   /** autobyteus-492: a message by run ID only, for a running agent of this node. */
-  acceptRunMessage(request: DeliverRunMessageRequest, from: PeerNode): Promise<Readonly<{ accepted: true }> | PeerHandlerRefusal>;
+  acceptRunMessage(request: DeliverRunMessageRequest, from: PeerNode): Promise<Readonly<{ accepted: true; receiverAddress: string | null }> | PeerHandlerRefusal>;
 }>;
 /** autobyteus-261: what this node offers a peer for delegation. */
 export type AvailableAgentsHandler = Readonly<{
@@ -98,6 +98,11 @@ const field = <T>(read: () => T): T => {
 };
 const runRefOf = (value: unknown, label: string): DelegatingRunRef => field(() => parseDelegatingRunRef(value, label));
 const runRef = (value: unknown, label: string) => ({ agentRunId: field(() => requiredString(objectRecord(value, label).agentRunId, `${label}.agentRunId`)) });
+/** A message's sender: its run ID, and its address in its own run, a string or null (autobyteus-565). */
+const senderRef = (value: unknown) => {
+  const sender = field(() => objectRecord(value, "sender"));
+  return { ...runRef(sender, "sender"), address: field(() => nullableString(sender.address, "sender.address")) };
+};
 
 const parseEnvelope = (body: Record<string, unknown>): RemoteEnvelope => ({
   fromNodeId: field(() => requiredString(body.fromNodeId, "fromNodeId")),
@@ -139,7 +144,7 @@ const parseMessageRequest = (value: unknown): DeliverRemoteMessageRequest => {
     ...parseEnvelope(body),
     kind: body.kind,
     ...(body.kind === "message" ? { messageId: field(() => requiredString(body.messageId, "messageId")) } : {}),
-    sender: runRef(body.sender, "sender"),
+    sender: senderRef(body.sender),
     targetRoot: runRefOf(body.targetRoot, "targetRoot"),
     target: runRef(body.target, "target"),
     content: body.content,
@@ -155,7 +160,7 @@ const parseRunMessageRequest = (value: unknown): DeliverRunMessageRequest => {
   return {
     ...parseEnvelope(body),
     messageId: field(() => requiredString(body.messageId, "messageId")),
-    sender: runRef(body.sender, "sender"),
+    sender: senderRef(body.sender),
     target: runRef(body.target, "target"),
     content: body.content,
     messageType: field(() => requiredString(body.messageType, "messageType")),

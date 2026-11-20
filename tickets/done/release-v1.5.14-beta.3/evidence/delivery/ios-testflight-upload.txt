@@ -1,0 +1,11 @@
+# iOS App Store Connect/TestFlight job (run 44721148794): result lines from the workflow log
+      description : SDK version issue. This app was built with the iOS 26.2 SDK. Starting April 2027, iOS and iPadOS apps must be built with the iOS 27 SDK or later, included in Xcode 27 or later, in order to be uploaded to App Store Connect or submitted for d
+  CURRENT_PROJECT_VERSION="343" \
+  MARKETING_VERSION="1.5.14" \
+  echo "This workflow uploads to App Store Connect/TestFlight only. It does not submit for final App Store review or public release."
+  echo "iOS marketing/build: \`1.5.14 (343)\`"
+2026-11-20 11:03:58.549  WARN: [altool.102E6ED60] SDK version issue. This app was built with the iOS 26.2 SDK. Starting April 2027, iOS and iPadOS apps must be built with the iOS 27 SDK or later, included in Xcode 27 or later, in order to be uploaded to App St
+Delivery UUID: 0d5f2eb6-2742-4470-98bf-239b5606bce7
+UPLOAD SUCCEEDED with no errors, 1 warning
+
+steps: Build the bundled demo: success; Archive and export signed IPA: success; Upload IPA to App Store Connect/TestFlight: success; Summarize iOS TestFlight upload: success

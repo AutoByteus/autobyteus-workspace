@@ -1,0 +1,4 @@
+# API-05i-synthetic-release | 2026-11-19 | reviewed product 8f10fa9287 | Ubuntu 26.04 x64 (CLI/local fixtures or explicit real update); operation: see matching case in execution report
+Verified signed desktop release 1.5.14 x64
+Verified native AppRun, unchanged Electron ELF, provisioner/client and sandbox-preserving desktop Exec
+b0d5cf5087a56b2c3aaa9a93dad9bdb89266572e989a4e638bb29c414311bf50  /home/ryan-ai/hdd_drive/autobyteus_org/api-e2e-autobyteus-5/crr007-tWnvcj/extra14/AutoByteus_personal_linux-x64-1.5.14.AppImage

@@ -1,0 +1,4 @@
+prepare-demo-web --build exit=0
+The demo answers all 252 compiled operations (handled or listed as unreachable).
+Demo web assets written to /Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-mode-279/autobyteus-web/dist-mobile-demo/public
+Demo web content copied to /Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-mode-279/autobyteus-ios/DemoWeb ( 13M).

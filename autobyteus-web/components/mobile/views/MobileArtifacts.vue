@@ -25,7 +25,7 @@
       </li>
     </ul>
     <div v-else class="min-h-0 flex-1 overflow-hidden" data-testid="mobile-artifacts-viewer">
-      <ArtifactContentViewer :artifact="shown" :read-subject="target.browse" :refresh-signal="0" />
+      <ArtifactContentViewer :artifact="shown" :read-subject="target.browse" :refresh-signal="0" preview-only />
     </div>
   </section>
 </template>

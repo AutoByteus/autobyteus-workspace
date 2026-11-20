@@ -200,7 +200,7 @@ suite("A top run's tree is built from its open Tasks: upgrade, start, load, save
       const run = runs.get(r.kind)!;
       const tab = await managerTab(s, r);
       expect(tab.messages.some((m) => m.receiverAgentRunId === run.rc && String(m.content).includes(`Status of the ${r.kind} notes?`)), `${r.kind}: message kept`).toBe(true);
-      expect(tab.pastParticipants, `${r.kind}: the closed run is named`).toEqual(expect.arrayContaining([{ agentRunId: run.rc, address: addressOf(r.kind, "worker", defs) }]));
+      expect(tab.counterparts, `${r.kind}: the closed run is named`).toEqual(expect.arrayContaining([{ kind: "past", agentRunId: run.rc, address: addressOf(r.kind, "worker", defs) }]));
     }
     // AC-006: after the closure the standalone run's total still counts the closed run: it is the sum over the Manager and all
     // three runs (the Manager's own closing turn adds its usage; the closed run's usage stays in).
@@ -283,7 +283,7 @@ suite("A top run's tree is built from its open Tasks: upgrade, start, load, save
       const run = runs.get(r.kind)!;
       const tab = await managerMessages(r);
       expect(tab.messages.some((m) => m.receiverAgentRunId === run.rc || m.senderAgentRunId === run.rc), `${r.kind}: message with the closed run kept`).toBe(true);
-      expect(tab.pastParticipants, `${r.kind}: the closed run is named`).toEqual(expect.arrayContaining([{ agentRunId: run.rc, address: addressOf(r.kind, "worker", defs) }]));
+      expect(tab.counterparts, `${r.kind}: the closed run is named`).toEqual(expect.arrayContaining([{ kind: "past", agentRunId: run.rc, address: addressOf(r.kind, "worker", defs) }]));
     }
 
     // AC-009 (save): the first save stores no local delegated run (461: no stored list; the Agent run has no tree file).

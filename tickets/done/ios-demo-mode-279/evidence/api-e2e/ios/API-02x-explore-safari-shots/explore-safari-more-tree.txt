@@ -1,0 +1,113 @@
+Attributes: Application, 0x10322bf20, pid: 61079, label: 'Safari'
+Element subtree:
+ →Application, 0x10322bf20, pid: 61079, label: 'Safari'
+    Window (Main), 0x10322f5c0, {{0.0, 0.0}, {440.0, 956.0}}
+      Other, 0x1032208a0, {{0.0, 0.0}, {440.0, 956.0}}
+      Other, 0x103221cf0, {{0.0, 0.0}, {440.0, 956.0}}
+        Other, 0x10321c260, {{0.0, 0.0}, {440.0, 956.0}}
+          Other, 0x10322bb00, {{0.0, 0.0}, {440.0, 956.0}}
+            Other, 0x10321cb90, {{0.0, 0.0}, {440.0, 956.0}}
+              Other, 0x10321cfb0, {{0.0, 0.0}, {440.0, 956.0}}
+                Other, 0x10321d0d0, {{0.0, 0.0}, {440.0, 956.0}}
+                  Other, 0x103238990, {{0.0, 0.0}, {440.0, 956.0}}
+                    Other, 0x103238ab0, {{0.0, 0.0}, {440.0, 956.0}}
+                      Other, 0x103224880, {{0.0, 0.0}, {440.0, 956.0}}, identifier: 'SafariWindow?View=Narrow&BarsKeptMinimized=false&UUID=5C3F3843-3ABC-42C7-8CD6-7AA223CC9B5B&UsingLoweredBar=true&IsSecure=false&IsTabBarAvailable=true'
+                        Other, 0x1032249a0, {{0.0, 0.0}, {440.0, 956.0}}
+                          Other, 0x103222110, {{0.0, 0.0}, {440.0, 956.0}}
+                            Other, 0x103222230, {{0.0, 0.0}, {440.0, 49.0}}
+                              Other, 0x10323d900, {{0.0, 0.0}, {440.0, 49.0}}
+                              Other, 0x10323da20, {{0.0, 0.0}, {440.0, 49.0}}
+                            Other, 0x103237090, {{0.0, 0.0}, {440.0, 62.0}}
+                            ScrollView, 0x1032371b0, {{0.0, 0.0}, {440.0, 956.0}}
+                              Other, 0x1032372d0, {{0.0, 0.0}, {440.0, 956.0}}, identifier: 'TabDocument?IsLoadedUsingDesktopUserAgent=false&InReaderMode=false&UUID=6CCF6457-3EFC-406D-8A93-0241F88122CD&IsPrivate=false&IsPageLoaded=true&WebViewProcessID=61102'
+                                WebView, 0x103240070, {{0.0, 0.0}, {440.0, 956.0}}, identifier: 'WebView'
+                                  WebView, 0x103240190, {{0.0, 0.0}, {440.0, 956.0}}
+                                    Other, 0x1032402b0, {{0.0, 0.0}, {440.0, 956.0}}
+                                    WebView, 0x103220cc0, {{0.0, 0.0}, {440.0, 956.0}}
+                                      Other, 0x103220de0, {{0.0, 0.0}, {440.0, 956.0}}
+                                        Other, 0x103220f00, {{0.0, 0.0}, {440.0, 956.0}}
+                                          Other, 0x103222800, {{0.0, 62.0}, {440.0, 956.0}}
+                                            Other, 0x103222920, {{0.0, 62.0}, {440.0, 796.0}}, label: '279 plain page', Focused
+                                              Other, 0x103222a40, {{32.0, 112.0}, {376.0, 46.0}}, Focused
+                                                StaticText, 0x103226400, {{32.0, 112.0}, {344.0, 46.0}}, label: 'ios-demo-mode-279 API/E2E: a plain page whose address is shared.', value: ios-demo-mode-279 ..., Focused
+                                    Other, 0x103226520, {{0.0, 0.0}, {440.0, 956.0}}
+                                    Other, 0x103226640, {{407.0, 62.0}, {30.0, 832.0}}, label: 'Vertical scroll bar, 1 page', value: 0%
+                                      Other, 0x10322d1a0, {{434.0, 861.0}, {3.0, 30.0}}
+                                    Other, 0x10322d2c0, {{62.0, 923.0}, {316.0, 30.0}}, label: 'Horizontal scroll bar, 1 page', value: 0%
+                                      Other, 0x10322d3e0, {{368.0, 950.0}, {7.0, 3.0}}
+                                    Other, 0x10322d500, {{407.0, 62.0}, {30.0, 832.0}}, label: 'Vertical scroll bar, 1 page', value: 0%
+                                      Other, 0x10323c8e0, {{434.0, 861.0}, {3.0, 30.0}}
+                                    Other, 0x10323ca00, {{62.0, 923.0}, {316.0, 30.0}}, label: 'Horizontal scroll bar, 1 page', value: 0%
+                                      Other, 0x10323cb20, {{368.0, 950.0}, {7.0, 3.0}}
+                              Other, 0x10323cc40, {{62.0, 923.0}, {316.0, 30.0}}, label: 'Horizontal scroll bar, 1 page', value: 0%
+                                Other, 0x1032255e0, {{59.0, 950.0}, {322.0, 3.0}}
+                              Other, 0x103225700, {{62.0, 923.0}, {316.0, 30.0}}, label: 'Horizontal scroll bar, 1 page', value: 0%
+                                Other, 0x103225820, {{59.0, 950.0}, {322.0, 3.0}}
+                        Other, 0x103225940, {{0.0, 0.0}, {440.0, 956.0}}, identifier: 'CapsuleViewController'
+                          Other, 0x10323b5d0, {{0.0, 0.0}, {440.0, 62.0}}
+                            Other, 0x10323b6f0, {{0.0, 0.0}, {440.0, 62.0}}
+                          Other, 0x10323b810, {{0.0, 858.0}, {440.0, 98.0}}
+                            Other, 0x10323b930, {{0.0, 858.0}, {440.0, 98.0}}
+                            Other, 0x103240810, {{358.0, 874.0}, {48.0, 48.0}}
+                              Other, 0x103240930, {{358.0, 874.0}, {48.0, 48.0}}
+                                Button, 0x103240a50, {{358.0, 874.0}, {48.0, 48.0}}, label: 'More'
+                  Other, 0x103240b70, {{0.0, 0.0}, {440.0, 956.0}}
+                    Other, 0x103243480, {{0.0, 0.0}, {440.0, 956.0}}
+            Other, 0x1032435a0, {{0.0, 0.0}, {440.0, 956.0}}
+              Other, 0x1032436c0, {{0.0, 0.0}, {440.0, 956.0}}
+      Other, 0x1032437e0, {{0.0, 0.0}, {440.0, 956.0}}
+        Other, 0x103243900, {{0.0, 0.0}, {440.0, 956.0}}
+          Other, 0x103243a20, {{160.3, 593.0}, {250.0, 329.0}}
+            Other, 0x103243b40, {{160.3, 593.0}, {250.0, 329.0}}
+              Other, 0x103243c60, {{160.3, 593.0}, {250.0, 329.0}}
+                Other, 0x103243d80, {{160.3, 593.0}, {250.0, 329.0}}
+                CollectionView, 0x103243ea0, {{160.3, 593.0}, {250.0, 956.0}}
+                  Cell, 0x103243fc0, {{160.3, 603.0}, {250.0, 42.0}}
+                    Button, 0x1032440e0, {{160.3, 603.0}, {250.0, 42.0}}, label: 'Share'
+                      Image, 0x103244200, {{187.0, 612.0}, {19.0, 22.0}}, identifier: 'square.and.arrow.up', label: 'Share'
+                  Cell, 0x103244320, {{160.3, 645.0}, {250.0, 42.0}}
+                    Button, 0x103244440, {{160.3, 645.0}, {250.0, 42.0}}, label: 'Add to “Bookmarks”'
+                      Image, 0x103244560, {{187.7, 656.3}, {17.3, 20.0}}, identifier: 'bookmark', label: 'bookmark'
+                  Cell, 0x103244680, {{160.3, 687.0}, {250.0, 42.0}}
+                    Button, 0x1032447a0, {{160.3, 687.0}, {250.0, 42.0}}, label: 'Add Bookmark to…'
+                      Image, 0x1032448c0, {{185.0, 699.3}, {22.7, 17.7}}, identifier: 'book', label: 'bookmark'
+                  Other, 0x1032449e0, {{184.3, 739.0}, {202.0, 1.0}}
+                  Cell, 0x103244b00, {{160.3, 750.0}, {250.0, 42.0}}
+                    Button, 0x103244c20, {{160.3, 750.0}, {250.0, 42.0}}, label: 'New Tab'
+                      Image, 0x103244d40, {{187.3, 763.3}, {18.0, 16.0}}, identifier: 'plus', label: 'add'
+                  Cell, 0x103244e60, {{160.3, 792.0}, {250.0, 42.0}}
+                    Button, 0x103244f80, {{160.3, 792.0}, {250.0, 42.0}}, label: 'New Private Tab'
+                      Image, 0x1032450a0, {{186.3, 802.7}, {20.3, 20.3}}, identifier: 'hand.raised', label: 'block'
+                  Cell, 0x1032451c0, {{168.3, 845.0}, {117.0, 77.0}}
+                    Button, 0x1032452e0, {{168.3, 845.0}, {117.0, 77.0}}, label: 'Bookmarks'
+                      Image, 0x103245400, {{215.3, 864.7}, {23.3, 17.3}}, identifier: 'book.fill', label: 'bookmark'
+                  Other, 0x103245520, {{184.3, 844.0}, {202.0, 1.0}}
+                  Cell, 0x103245640, {{285.3, 845.0}, {117.0, 77.0}}
+                    Button, 0x103245760, {{285.3, 845.0}, {117.0, 77.0}}, label: 'All Tabs'
+                      Image, 0x103245880, {{333.0, 863.7}, {22.0, 20.7}}, identifier: 'square.fill.on.square.fill', label: 'square.fill.on.square.fill'
+                  Other, 0x1032459a0, {{377.3, 623.0}, {30.0, 269.0}}, label: 'Vertical scroll bar, 1 page', value: 0%
+                    Other, 0x103245ac0, {{404.3, 626.0}, {3.0, 263.0}}
+                  Other, 0x103245be0, {{222.3, 859.0}, {188.0, 30.0}}, label: 'Horizontal scroll bar, 1 page', value: 0%
+                    Other, 0x103245d00, {{225.3, 886.0}, {182.0, 3.0}}
+                  Other, 0x103245e20, {{377.3, 623.0}, {30.0, 269.0}}, label: 'Vertical scroll bar, 1 page', value: 0%
+                    Other, 0x103245f40, {{404.3, 626.0}, {3.0, 263.0}}
+                  Other, 0x103246060, {{222.3, 859.0}, {188.0, 30.0}}, label: 'Horizontal scroll bar, 1 page', value: 0%
+                    Other, 0x103246180, {{225.3, 886.0}, {182.0, 3.0}}
+              Other, 0x1032462a0, {{160.3, 593.0}, {250.0, 329.0}}
+                Other, 0x1032463c0, {{160.3, 593.0}, {250.0, 329.0}}
+                  Other, 0x1032464e0, {{160.3, 593.0}, {250.0, 329.0}}
+                    Other, 0x103246600, {{160.3, 593.0}, {250.0, 329.0}}
+                      Other, 0x103246720, {{160.3, 593.0}, {250.0, 329.0}}
+                        Other, 0x103246840, {{160.3, 593.0}, {250.0, 44.0}}
+                    Other, 0x103246960, {{160.3, 593.0}, {250.0, 329.0}}
+                      Other, 0x103246a80, {{160.3, 593.0}, {250.0, 44.0}}
+    Window, 0x103246ba0, {{0.0, 0.0}, {440.0, 956.0}}
+      Other, 0x103246cc0, {{0.0, 0.0}, {440.0, 956.0}}
+        Other, 0x103246de0, {{0.0, 0.0}, {440.0, 956.0}}
+Path to element:
+ →Application, 0x10322bf20, pid: 61079, label: 'Safari'
+Query chain:
+ →Find: Application 'com.apple.mobilesafari'
+  Output: {
+    Application, 0x10312f490, pid: 61079, label: 'Safari'
+  }

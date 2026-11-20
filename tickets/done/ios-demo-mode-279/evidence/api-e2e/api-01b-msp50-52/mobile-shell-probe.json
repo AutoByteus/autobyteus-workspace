@@ -1,0 +1,2430 @@
+{
+  "startedAt": "2026-11-19T18:58:55.136Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 50694,
+      "nodeId": "srv_4WbNHgboBoC4anWbjIPRbQ9Bk4aNVEDv",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 50695,
+      "nodeId": "srv_23ltoJYapWcox_EdzVxo3XSL5_qic2xJ",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_b4bf475ce89c43bd8398b759a813cc84",
+    "writerRun": "release_notes_writer_a0a4dffa96094a709da5c81f8ca26672",
+    "squadRun": "docs_review_team_0440b75dad5b408e9b8fc8a137569e72",
+    "reviewer": "release_notes_writer_f6cf80a62260494680e94a42c6ef6063",
+    "memberDelegated": "fact_checker_cb4673f1d76946c19e0386ca0b3d7d16",
+    "remoteAgentRun": "publisher_6ba4c74b4cbe49e88c0b8ab2c7818997",
+    "remoteTeamRun": "studio_team_11b7a279ba6344f189f1ff520a59592d",
+    "plain": [
+      "fact_checker_4a3d9d2488794eb1a1a6a2bf7e7246c2",
+      "fact_checker_8eb2a64d99214fc2a4a715fa18a4708f",
+      "fact_checker_7d17dc6f63eb4b0d9985981cc2970792"
+    ],
+    "org": "delivery_org_cb6f684837644f7d9c2e95c1e606a9cf",
+    "orgPlanner": "release_notes_writer_ea658c94ad37465ab6529c619d1f8ecb",
+    "reviewOrg": "review_org_38cd917f65244977b25c04f4de1bc92e",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_7a51384afae74ded9ad0839a78628620",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_1163466cfc0d431c9d635bdde8f77f33",
+    "deliveryLead": "fact_checker_c3e5796c8e8342e993910b8875c1c0e5",
+    "deliveryMate": "release_notes_writer_132789c2a4b44378993926a40637476f",
+    "leadDelegated": "changelog_helper_167ed999d5d2495d91684e5bb3f61e75",
+    "approver": "approver_ead3623dc3e74462be600da38fc6d8d0",
+    "taskA": "launch-ea0722-1",
+    "taskB": "launch-ea0722-2"
+  },
+  "cases": {
+    "MSP-50": {
+      "result": "Pass",
+      "seconds": 25.1,
+      "summary": [
+        {
+          "name": "MSP-50-desktop-answer-1280",
+          "viewport": "1280x900",
+          "rootWidth": 377,
+          "failures": [],
+          "past": [],
+          "midWordBreaks": []
+        },
+        {
+          "name": "MSP-50-desktop-answer-700",
+          "viewport": "700x900",
+          "rootWidth": 472,
+          "failures": [],
+          "past": [],
+          "midWordBreaks": []
+        },
+        {
+          "name": "MSP-50-desktop-message-1280",
+          "viewport": "1280x900",
+          "rootWidth": 317,
+          "failures": [],
+          "past": [],
+          "midWordBreaks": []
+        },
+        {
+          "name": "MSP-50-desktop-message-700",
+          "viewport": "700x900",
+          "rootWidth": 412,
+          "failures": [],
+          "past": [],
+          "midWordBreaks": []
+        }
+      ],
+      "results": [
+        {
+          "name": "MSP-50-desktop-answer-1280",
+          "viewport": "1280x900",
+          "failures": [],
+          "measured": {
+            "rootWidth": 377,
+            "rootOverflow": 0,
+            "pres": [
+              {
+                "inInterAgentMessage": false,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 377,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "156ch indent 0px 5 line(s)",
+                  "blank",
+                  "114ch indent 34px 3 line(s) gap 32px",
+                  "105ch indent 34px 3 line(s) gap 8px",
+                  "280ch indent 0px 7 line(s) gap 8px"
+                ]
+              },
+              {
+                "inInterAgentMessage": false,
+                "cls": "language-python",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 377,
+                "textEqualsSource": true,
+                "tokens": 9,
+                "coloredTokens": 9,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "28ch indent 0px 1 line(s)",
+                  "113ch indent 34px 3 line(s) gap 8px",
+                  "blank",
+                  "18ch indent 34px 1 line(s) gap 32px"
+                ]
+              },
+              {
+                "inInterAgentMessage": false,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 377,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": true,
+                "lines": [
+                  "75ch indent 0px 2 line(s)",
+                  "127ch indent 0px 4 line(s) gap 8px"
+                ]
+              }
+            ],
+            "tables": [
+              {
+                "overflowX": "auto",
+                "scrolls": false,
+                "tableWidth": 377,
+                "boxWidth": 377,
+                "scrollWidth": 377
+              },
+              {
+                "overflowX": "auto",
+                "scrolls": true,
+                "tableWidth": 1704,
+                "boxWidth": 377,
+                "scrollWidth": 1704
+              }
+            ],
+            "katex": [
+              {
+                "scrolls": true,
+                "clippedY": 0,
+                "boxWidth": 377,
+                "errors": 0
+              },
+              {
+                "scrolls": false,
+                "clippedY": 0,
+                "boxWidth": 377,
+                "errors": 0
+              },
+              {
+                "scrolls": true,
+                "clippedY": 0,
+                "boxWidth": 347,
+                "errors": 0
+              }
+            ],
+            "past": [],
+            "midWordBreaks": [],
+            "cutBy": [],
+            "hostsOverflowing": [],
+            "pageOverflow": 0,
+            "windowScrollX": 0,
+            "mermaidSvgs": 2
+          },
+          "copied": [
+            {
+              "what": "code block 0",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 659,
+              "sourceLength": 659
+            },
+            {
+              "what": "code block 1",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 162,
+              "sourceLength": 162
+            },
+            {
+              "what": "code block 2",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 203,
+              "sourceLength": 203
+            },
+            {
+              "what": "inline path",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 96,
+              "sourceLength": 96,
+              "visualLines": 3
+            },
+            {
+              "what": "bare URL",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 115,
+              "sourceLength": 115,
+              "visualLines": 4
+            }
+          ],
+          "scroll": {
+            "scrolledByUser": 302,
+            "lastCellReachable": true,
+            "windowScrollX": 0
+          },
+          "screenshots": [
+            "MSP-50-desktop-answer-1280-heading.png",
+            "MSP-50-desktop-answer-1280-inline.png",
+            "MSP-50-desktop-answer-1280-code.png",
+            "MSP-50-desktop-answer-1280-python.png",
+            "MSP-50-desktop-answer-1280-tables.png",
+            "MSP-50-desktop-answer-1280-math.png"
+          ]
+        },
+        {
+          "name": "MSP-50-desktop-answer-700",
+          "viewport": "700x900",
+          "failures": [],
+          "measured": {
+            "rootWidth": 472,
+            "rootOverflow": 0,
+            "pres": [
+              {
+                "inInterAgentMessage": false,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 472,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "156ch indent 0px 4 line(s)",
+                  "blank",
+                  "114ch indent 34px 3 line(s) gap 32px",
+                  "105ch indent 34px 3 line(s) gap 8px",
+                  "280ch indent 0px 6 line(s) gap 8px"
+                ]
+              },
+              {
+                "inInterAgentMessage": false,
+                "cls": "language-python",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 472,
+                "textEqualsSource": true,
+                "tokens": 9,
+                "coloredTokens": 9,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "28ch indent 0px 1 line(s)",
+                  "113ch indent 34px 3 line(s) gap 8px",
+                  "blank",
+                  "18ch indent 34px 1 line(s) gap 32px"
+                ]
+              },
+              {
+                "inInterAgentMessage": false,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 472,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": true,
+                "lines": [
+                  "75ch indent 0px 2 line(s)",
+                  "127ch indent 0px 3 line(s) gap 8px"
+                ]
+              }
+            ],
+            "tables": [
+              {
+                "overflowX": "auto",
+                "scrolls": false,
+                "tableWidth": 472,
+                "boxWidth": 472,
+                "scrollWidth": 472
+              },
+              {
+                "overflowX": "auto",
+                "scrolls": true,
+                "tableWidth": 1704,
+                "boxWidth": 472,
+                "scrollWidth": 1704
+              }
+            ],
+            "katex": [
+              {
+                "scrolls": true,
+                "clippedY": 0,
+                "boxWidth": 472,
+                "errors": 0
+              },
+              {
+                "scrolls": false,
+                "clippedY": 0,
+                "boxWidth": 472,
+                "errors": 0
+              },
+              {
+                "scrolls": false,
+                "clippedY": 0,
+                "boxWidth": 442,
+                "errors": 0
+              }
+            ],
+            "past": [],
+            "midWordBreaks": [],
+            "cutBy": [],
+            "hostsOverflowing": [],
+            "pageOverflow": 0,
+            "windowScrollX": 0,
+            "mermaidSvgs": 2
+          },
+          "copied": [
+            {
+              "what": "code block 0",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 659,
+              "sourceLength": 659
+            },
+            {
+              "what": "code block 1",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 162,
+              "sourceLength": 162
+            },
+            {
+              "what": "code block 2",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 203,
+              "sourceLength": 203
+            },
+            {
+              "what": "inline path",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 96,
+              "sourceLength": 96,
+              "visualLines": 3
+            },
+            {
+              "what": "bare URL",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 115,
+              "sourceLength": 115,
+              "visualLines": 3
+            }
+          ],
+          "scroll": {
+            "scrolledByUser": 378,
+            "lastCellReachable": true,
+            "windowScrollX": 0
+          },
+          "screenshots": [
+            "MSP-50-desktop-answer-700-heading.png",
+            "MSP-50-desktop-answer-700-inline.png",
+            "MSP-50-desktop-answer-700-code.png",
+            "MSP-50-desktop-answer-700-python.png",
+            "MSP-50-desktop-answer-700-tables.png",
+            "MSP-50-desktop-answer-700-math.png"
+          ]
+        },
+        {
+          "name": "MSP-50-desktop-message-1280",
+          "viewport": "1280x900",
+          "failures": [],
+          "measured": {
+            "rootWidth": 317,
+            "rootOverflow": 0,
+            "pres": [
+              {
+                "inInterAgentMessage": true,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 317,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "156ch indent 0px 5 line(s)",
+                  "blank",
+                  "114ch indent 34px 4 line(s) gap 32px",
+                  "105ch indent 34px 4 line(s) gap 8px",
+                  "280ch indent 0px 9 line(s) gap 8px"
+                ]
+              },
+              {
+                "inInterAgentMessage": true,
+                "cls": "language-python",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 317,
+                "textEqualsSource": true,
+                "tokens": 9,
+                "coloredTokens": 9,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "28ch indent 0px 1 line(s)",
+                  "113ch indent 34px 4 line(s) gap 8px",
+                  "blank",
+                  "18ch indent 34px 1 line(s) gap 32px"
+                ]
+              },
+              {
+                "inInterAgentMessage": true,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 317,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": true,
+                "lines": [
+                  "75ch indent 0px 3 line(s)",
+                  "127ch indent 0px 5 line(s) gap 8px"
+                ]
+              }
+            ],
+            "tables": [
+              {
+                "overflowX": "auto",
+                "scrolls": false,
+                "tableWidth": 317,
+                "boxWidth": 317,
+                "scrollWidth": 317
+              },
+              {
+                "overflowX": "auto",
+                "scrolls": true,
+                "tableWidth": 1704,
+                "boxWidth": 317,
+                "scrollWidth": 1704
+              }
+            ],
+            "katex": [
+              {
+                "scrolls": true,
+                "clippedY": 0,
+                "boxWidth": 317,
+                "errors": 0
+              },
+              {
+                "scrolls": false,
+                "clippedY": 0,
+                "boxWidth": 317,
+                "errors": 0
+              },
+              {
+                "scrolls": true,
+                "clippedY": 0,
+                "boxWidth": 287,
+                "errors": 0
+              }
+            ],
+            "past": [],
+            "midWordBreaks": [],
+            "cutBy": [],
+            "hostsOverflowing": [],
+            "pageOverflow": 0,
+            "windowScrollX": 0,
+            "mermaidSvgs": 2
+          },
+          "copied": [
+            {
+              "what": "code block 0",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 659,
+              "sourceLength": 659
+            },
+            {
+              "what": "code block 1",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 162,
+              "sourceLength": 162
+            },
+            {
+              "what": "code block 2",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 203,
+              "sourceLength": 203
+            },
+            {
+              "what": "inline path",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 96,
+              "sourceLength": 96,
+              "visualLines": 3
+            },
+            {
+              "what": "bare URL",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 115,
+              "sourceLength": 115,
+              "visualLines": 4
+            }
+          ],
+          "scroll": {
+            "scrolledByUser": 254,
+            "lastCellReachable": true,
+            "windowScrollX": 0
+          },
+          "screenshots": [
+            "MSP-50-desktop-message-1280-heading.png",
+            "MSP-50-desktop-message-1280-inline.png",
+            "MSP-50-desktop-message-1280-code.png",
+            "MSP-50-desktop-message-1280-python.png",
+            "MSP-50-desktop-message-1280-tables.png",
+            "MSP-50-desktop-message-1280-math.png"
+          ]
+        },
+        {
+          "name": "MSP-50-desktop-message-700",
+          "viewport": "700x900",
+          "failures": [],
+          "measured": {
+            "rootWidth": 412,
+            "rootOverflow": 0,
+            "pres": [
+              {
+                "inInterAgentMessage": true,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 412,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "156ch indent 0px 4 line(s)",
+                  "blank",
+                  "114ch indent 34px 3 line(s) gap 32px",
+                  "105ch indent 34px 3 line(s) gap 8px",
+                  "280ch indent 0px 7 line(s) gap 8px"
+                ]
+              },
+              {
+                "inInterAgentMessage": true,
+                "cls": "language-python",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 412,
+                "textEqualsSource": true,
+                "tokens": 9,
+                "coloredTokens": 9,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "28ch indent 0px 1 line(s)",
+                  "113ch indent 34px 3 line(s) gap 8px",
+                  "blank",
+                  "18ch indent 34px 1 line(s) gap 32px"
+                ]
+              },
+              {
+                "inInterAgentMessage": true,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 412,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": true,
+                "lines": [
+                  "75ch indent 0px 2 line(s)",
+                  "127ch indent 0px 4 line(s) gap 8px"
+                ]
+              }
+            ],
+            "tables": [
+              {
+                "overflowX": "auto",
+                "scrolls": false,
+                "tableWidth": 412,
+                "boxWidth": 412,
+                "scrollWidth": 412
+              },
+              {
+                "overflowX": "auto",
+                "scrolls": true,
+                "tableWidth": 1704,
+                "boxWidth": 412,
+                "scrollWidth": 1704
+              }
+            ],
+            "katex": [
+              {
+                "scrolls": true,
+                "clippedY": 0,
+                "boxWidth": 412,
+                "errors": 0
+              },
+              {
+                "scrolls": false,
+                "clippedY": 0,
+                "boxWidth": 412,
+                "errors": 0
+              },
+              {
+                "scrolls": false,
+                "clippedY": 0,
+                "boxWidth": 382,
+                "errors": 0
+              }
+            ],
+            "past": [],
+            "midWordBreaks": [],
+            "cutBy": [],
+            "hostsOverflowing": [],
+            "pageOverflow": 0,
+            "windowScrollX": 0,
+            "mermaidSvgs": 2
+          },
+          "copied": [
+            {
+              "what": "code block 0",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 659,
+              "sourceLength": 659
+            },
+            {
+              "what": "code block 1",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 162,
+              "sourceLength": 162
+            },
+            {
+              "what": "code block 2",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 203,
+              "sourceLength": 203
+            },
+            {
+              "what": "inline path",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 96,
+              "sourceLength": 96,
+              "visualLines": 3
+            },
+            {
+              "what": "bare URL",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 115,
+              "sourceLength": 115,
+              "visualLines": 3
+            }
+          ],
+          "scroll": {
+            "scrolledByUser": 330,
+            "lastCellReachable": true,
+            "windowScrollX": 0
+          },
+          "screenshots": [
+            "MSP-50-desktop-message-700-heading.png",
+            "MSP-50-desktop-message-700-inline.png",
+            "MSP-50-desktop-message-700-code.png",
+            "MSP-50-desktop-message-700-python.png",
+            "MSP-50-desktop-message-700-tables.png",
+            "MSP-50-desktop-message-700-math.png"
+          ]
+        }
+      ]
+    },
+    "MSP-51": {
+      "result": "Pass",
+      "seconds": 19.4,
+      "summary": [
+        {
+          "name": "MSP-51-desktop-file-1280-panel",
+          "viewport": "1280x900",
+          "rootWidth": 167,
+          "failures": [],
+          "past": [],
+          "midWordBreaks": []
+        },
+        {
+          "name": "MSP-51-desktop-file-1280-maximized",
+          "viewport": "1280x900",
+          "rootWidth": 1248,
+          "failures": [],
+          "past": [],
+          "midWordBreaks": []
+        },
+        {
+          "name": "MSP-51-desktop-file-700",
+          "viewport": "700x900",
+          "rootWidth": 418,
+          "failures": [],
+          "past": [],
+          "midWordBreaks": []
+        }
+      ],
+      "results": [
+        {
+          "name": "MSP-51-desktop-file-1280-panel",
+          "viewport": "1280x900",
+          "failures": [],
+          "measured": {
+            "rootWidth": 167,
+            "rootOverflow": 0,
+            "pres": [
+              {
+                "inInterAgentMessage": false,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 167,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "156ch indent 0px 12 line(s)",
+                  "blank",
+                  "114ch indent 34px 8 line(s) gap 32px",
+                  "105ch indent 34px 8 line(s) gap 8px",
+                  "280ch indent 0px 18 line(s) gap 8px"
+                ]
+              },
+              {
+                "inInterAgentMessage": false,
+                "cls": "language-python",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 167,
+                "textEqualsSource": true,
+                "tokens": 9,
+                "coloredTokens": 9,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "28ch indent 0px 3 line(s)",
+                  "113ch indent 34px 8 line(s) gap 8px",
+                  "blank",
+                  "18ch indent 34px 2 line(s) gap 32px"
+                ]
+              },
+              {
+                "inInterAgentMessage": false,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 167,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "75ch indent 0px 6 line(s)",
+                  "127ch indent 0px 9 line(s) gap 8px"
+                ]
+              }
+            ],
+            "tables": [
+              {
+                "overflowX": "auto",
+                "scrolls": false,
+                "tableWidth": 167,
+                "boxWidth": 167,
+                "scrollWidth": 167
+              },
+              {
+                "overflowX": "auto",
+                "scrolls": true,
+                "tableWidth": 1704,
+                "boxWidth": 167,
+                "scrollWidth": 1704
+              }
+            ],
+            "katex": [
+              {
+                "scrolls": true,
+                "clippedY": 0,
+                "boxWidth": 167,
+                "errors": 0
+              },
+              {
+                "scrolls": true,
+                "clippedY": 0,
+                "boxWidth": 167,
+                "errors": 0
+              },
+              {
+                "scrolls": true,
+                "clippedY": 0,
+                "boxWidth": 137,
+                "errors": 0
+              }
+            ],
+            "past": [],
+            "midWordBreaks": [],
+            "cutBy": [],
+            "hostsOverflowing": [],
+            "pageOverflow": 0,
+            "windowScrollX": 0,
+            "mermaidSvgs": 2
+          },
+          "copied": [
+            {
+              "what": "code block 0",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 659,
+              "sourceLength": 659
+            },
+            {
+              "what": "code block 1",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 162,
+              "sourceLength": 162
+            },
+            {
+              "what": "code block 2",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 203,
+              "sourceLength": 203
+            },
+            {
+              "what": "inline path",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 96,
+              "sourceLength": 96,
+              "visualLines": 6
+            },
+            {
+              "what": "bare URL",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 115,
+              "sourceLength": 115,
+              "visualLines": 7
+            }
+          ],
+          "scroll": {
+            "scrolledByUser": 134,
+            "lastCellReachable": true,
+            "windowScrollX": 0
+          },
+          "screenshots": [
+            "MSP-51-desktop-file-1280-panel-heading.png",
+            "MSP-51-desktop-file-1280-panel-inline.png",
+            "MSP-51-desktop-file-1280-panel-code.png",
+            "MSP-51-desktop-file-1280-panel-python.png",
+            "MSP-51-desktop-file-1280-panel-tables.png",
+            "MSP-51-desktop-file-1280-panel-math.png"
+          ]
+        },
+        {
+          "name": "MSP-51-desktop-file-1280-maximized",
+          "viewport": "1280x900",
+          "failures": [],
+          "measured": {
+            "rootWidth": 1248,
+            "rootOverflow": 0,
+            "pres": [
+              {
+                "inInterAgentMessage": false,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 1248,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "156ch indent 0px 2 line(s)",
+                  "blank",
+                  "114ch indent 34px 1 line(s) gap 32px",
+                  "105ch indent 34px 1 line(s) gap 8px",
+                  "280ch indent 0px 2 line(s) gap 8px"
+                ]
+              },
+              {
+                "inInterAgentMessage": false,
+                "cls": "language-python",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 1248,
+                "textEqualsSource": true,
+                "tokens": 9,
+                "coloredTokens": 9,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "28ch indent 0px 1 line(s)",
+                  "113ch indent 34px 1 line(s) gap 8px",
+                  "blank",
+                  "18ch indent 34px 1 line(s) gap 32px"
+                ]
+              },
+              {
+                "inInterAgentMessage": false,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 1248,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "75ch indent 0px 1 line(s)",
+                  "127ch indent 0px 1 line(s) gap 8px"
+                ]
+              }
+            ],
+            "tables": [
+              {
+                "overflowX": "auto",
+                "scrolls": false,
+                "tableWidth": 1248,
+                "boxWidth": 1248,
+                "scrollWidth": 1248
+              },
+              {
+                "overflowX": "auto",
+                "scrolls": true,
+                "tableWidth": 1704,
+                "boxWidth": 1248,
+                "scrollWidth": 1704
+              }
+            ],
+            "katex": [
+              {
+                "scrolls": false,
+                "clippedY": 0,
+                "boxWidth": 1248,
+                "errors": 0
+              },
+              {
+                "scrolls": false,
+                "clippedY": 0,
+                "boxWidth": 1248,
+                "errors": 0
+              },
+              {
+                "scrolls": false,
+                "clippedY": 0,
+                "boxWidth": 1218,
+                "errors": 0
+              }
+            ],
+            "past": [],
+            "midWordBreaks": [],
+            "cutBy": [],
+            "hostsOverflowing": [],
+            "pageOverflow": 0,
+            "windowScrollX": 0,
+            "mermaidSvgs": 2
+          },
+          "copied": [
+            {
+              "what": "code block 0",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 659,
+              "sourceLength": 659
+            },
+            {
+              "what": "code block 1",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 162,
+              "sourceLength": 162
+            },
+            {
+              "what": "code block 2",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 203,
+              "sourceLength": 203
+            },
+            {
+              "what": "inline path",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 96,
+              "sourceLength": 96,
+              "visualLines": 1
+            },
+            {
+              "what": "bare URL",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 115,
+              "sourceLength": 115,
+              "visualLines": 1
+            }
+          ],
+          "scroll": {
+            "scrolledByUser": 456,
+            "lastCellReachable": true,
+            "windowScrollX": 0
+          },
+          "screenshots": [
+            "MSP-51-desktop-file-1280-maximized-heading.png",
+            "MSP-51-desktop-file-1280-maximized-inline.png",
+            "MSP-51-desktop-file-1280-maximized-code.png",
+            "MSP-51-desktop-file-1280-maximized-python.png",
+            "MSP-51-desktop-file-1280-maximized-tables.png",
+            "MSP-51-desktop-file-1280-maximized-math.png"
+          ]
+        },
+        {
+          "name": "MSP-51-desktop-file-700",
+          "viewport": "700x900",
+          "failures": [],
+          "measured": {
+            "rootWidth": 418,
+            "rootOverflow": 0,
+            "pres": [
+              {
+                "inInterAgentMessage": false,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 418,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "156ch indent 0px 4 line(s)",
+                  "blank",
+                  "114ch indent 34px 3 line(s) gap 32px",
+                  "105ch indent 34px 3 line(s) gap 8px",
+                  "280ch indent 0px 7 line(s) gap 8px"
+                ]
+              },
+              {
+                "inInterAgentMessage": false,
+                "cls": "language-python",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 418,
+                "textEqualsSource": true,
+                "tokens": 9,
+                "coloredTokens": 9,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "28ch indent 0px 1 line(s)",
+                  "113ch indent 34px 3 line(s) gap 8px",
+                  "blank",
+                  "18ch indent 34px 1 line(s) gap 32px"
+                ]
+              },
+              {
+                "inInterAgentMessage": false,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 418,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "75ch indent 0px 2 line(s)",
+                  "127ch indent 0px 4 line(s) gap 8px"
+                ]
+              }
+            ],
+            "tables": [
+              {
+                "overflowX": "auto",
+                "scrolls": false,
+                "tableWidth": 418,
+                "boxWidth": 418,
+                "scrollWidth": 418
+              },
+              {
+                "overflowX": "auto",
+                "scrolls": true,
+                "tableWidth": 1704,
+                "boxWidth": 418,
+                "scrollWidth": 1704
+              }
+            ],
+            "katex": [
+              {
+                "scrolls": true,
+                "clippedY": 0,
+                "boxWidth": 418,
+                "errors": 0
+              },
+              {
+                "scrolls": false,
+                "clippedY": 0,
+                "boxWidth": 418,
+                "errors": 0
+              },
+              {
+                "scrolls": false,
+                "clippedY": 0,
+                "boxWidth": 388,
+                "errors": 0
+              }
+            ],
+            "past": [],
+            "midWordBreaks": [],
+            "cutBy": [],
+            "hostsOverflowing": [],
+            "pageOverflow": 0,
+            "windowScrollX": 0,
+            "mermaidSvgs": 2
+          },
+          "copied": [
+            {
+              "what": "code block 0",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 659,
+              "sourceLength": 659
+            },
+            {
+              "what": "code block 1",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 162,
+              "sourceLength": 162
+            },
+            {
+              "what": "code block 2",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 203,
+              "sourceLength": 203
+            },
+            {
+              "what": "inline path",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 96,
+              "sourceLength": 96,
+              "visualLines": 3
+            },
+            {
+              "what": "bare URL",
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 115,
+              "sourceLength": 115,
+              "visualLines": 3
+            }
+          ],
+          "scroll": {
+            "scrolledByUser": 334,
+            "lastCellReachable": true,
+            "windowScrollX": 0
+          },
+          "screenshots": [
+            "MSP-51-desktop-file-700-heading.png",
+            "MSP-51-desktop-file-700-inline.png",
+            "MSP-51-desktop-file-700-code.png",
+            "MSP-51-desktop-file-700-python.png",
+            "MSP-51-desktop-file-700-tables.png",
+            "MSP-51-desktop-file-700-math.png"
+          ]
+        }
+      ]
+    },
+    "MSP-52": {
+      "result": "Pass",
+      "seconds": 33,
+      "summary": [
+        {
+          "name": "MSP-52-phone-answer-390",
+          "viewport": "390x844",
+          "rootWidth": 366,
+          "failures": [],
+          "past": [],
+          "midWordBreaks": []
+        },
+        {
+          "name": "MSP-52-phone-answer-360",
+          "viewport": "360x800",
+          "rootWidth": 336,
+          "failures": [],
+          "past": [],
+          "midWordBreaks": []
+        },
+        {
+          "name": "MSP-52-phone-file-390",
+          "viewport": "390x844",
+          "rootWidth": 358,
+          "failures": [],
+          "past": [],
+          "midWordBreaks": []
+        },
+        {
+          "name": "MSP-52-phone-file-360",
+          "viewport": "360x800",
+          "rootWidth": 328,
+          "failures": [],
+          "past": [],
+          "midWordBreaks": []
+        },
+        {
+          "name": "MSP-52-phone-message-390",
+          "viewport": "390x844",
+          "rootWidth": 306,
+          "failures": [],
+          "past": [],
+          "midWordBreaks": []
+        },
+        {
+          "name": "MSP-52-phone-message-360",
+          "viewport": "360x800",
+          "rootWidth": 276,
+          "failures": [],
+          "past": [],
+          "midWordBreaks": []
+        }
+      ],
+      "results": [
+        {
+          "name": "MSP-52-phone-answer-390",
+          "viewport": "390x844",
+          "failures": [],
+          "measured": {
+            "rootWidth": 366,
+            "rootOverflow": 0,
+            "pres": [
+              {
+                "inInterAgentMessage": false,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 366,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "156ch indent 0px 5 line(s)",
+                  "blank",
+                  "114ch indent 34px 3 line(s) gap 26px",
+                  "105ch indent 34px 3 line(s) gap 5px",
+                  "280ch indent 0px 7 line(s) gap 5px"
+                ]
+              },
+              {
+                "inInterAgentMessage": false,
+                "cls": "language-python",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 366,
+                "textEqualsSource": true,
+                "tokens": 9,
+                "coloredTokens": 9,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "28ch indent 0px 1 line(s)",
+                  "113ch indent 33px 3 line(s) gap 5px",
+                  "blank",
+                  "18ch indent 33px 1 line(s) gap 26px"
+                ]
+              },
+              {
+                "inInterAgentMessage": false,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 366,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": true,
+                "lines": [
+                  "75ch indent 0px 2 line(s)",
+                  "127ch indent 0px 4 line(s) gap 5px"
+                ]
+              }
+            ],
+            "tables": [
+              {
+                "overflowX": "auto",
+                "scrolls": false,
+                "tableWidth": 366,
+                "boxWidth": 366,
+                "scrollWidth": 366
+              },
+              {
+                "overflowX": "auto",
+                "scrolls": true,
+                "tableWidth": 1867,
+                "boxWidth": 366,
+                "scrollWidth": 1867
+              }
+            ],
+            "katex": [
+              {
+                "scrolls": true,
+                "clippedY": 0,
+                "boxWidth": 366,
+                "errors": 0
+              },
+              {
+                "scrolls": false,
+                "clippedY": 0,
+                "boxWidth": 366,
+                "errors": 0
+              },
+              {
+                "scrolls": true,
+                "clippedY": 0,
+                "boxWidth": 336,
+                "errors": 0
+              }
+            ],
+            "past": [],
+            "midWordBreaks": [],
+            "cutBy": [],
+            "hostsOverflowing": [],
+            "pageOverflow": 0,
+            "windowScrollX": 0,
+            "mermaidSvgs": 2
+          },
+          "copied": [
+            {
+              "what": "code block 0",
+              "via": "selection",
+              "equal": true,
+              "length": 659,
+              "sourceLength": 659
+            },
+            {
+              "what": "code block 1",
+              "via": "selection",
+              "equal": true,
+              "length": 162,
+              "sourceLength": 162
+            },
+            {
+              "what": "code block 2",
+              "via": "selection",
+              "equal": true,
+              "length": 203,
+              "sourceLength": 203
+            },
+            {
+              "what": "inline path",
+              "via": "selection",
+              "equal": true,
+              "length": 96,
+              "sourceLength": 96,
+              "visualLines": 3
+            },
+            {
+              "what": "bare URL",
+              "via": "selection",
+              "equal": true,
+              "length": 115,
+              "sourceLength": 115,
+              "visualLines": 4
+            }
+          ],
+          "scroll": {
+            "scrolledByUser": 363,
+            "lastCellReachable": true,
+            "windowScrollX": 0
+          },
+          "screenshots": [
+            "MSP-52-phone-answer-390-heading.png",
+            "MSP-52-phone-answer-390-inline.png",
+            "MSP-52-phone-answer-390-code.png",
+            "MSP-52-phone-answer-390-python.png",
+            "MSP-52-phone-answer-390-tables.png",
+            "MSP-52-phone-answer-390-math.png"
+          ]
+        },
+        {
+          "name": "MSP-52-phone-answer-360",
+          "viewport": "360x800",
+          "failures": [],
+          "measured": {
+            "rootWidth": 336,
+            "rootOverflow": 0,
+            "pres": [
+              {
+                "inInterAgentMessage": false,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 336,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "156ch indent 0px 5 line(s)",
+                  "blank",
+                  "114ch indent 34px 4 line(s) gap 26px",
+                  "105ch indent 34px 4 line(s) gap 5px",
+                  "280ch indent 0px 8 line(s) gap 5px"
+                ]
+              },
+              {
+                "inInterAgentMessage": false,
+                "cls": "language-python",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 336,
+                "textEqualsSource": true,
+                "tokens": 9,
+                "coloredTokens": 9,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "28ch indent 0px 1 line(s)",
+                  "113ch indent 33px 4 line(s) gap 5px",
+                  "blank",
+                  "18ch indent 33px 1 line(s) gap 26px"
+                ]
+              },
+              {
+                "inInterAgentMessage": false,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 336,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": true,
+                "lines": [
+                  "75ch indent 0px 3 line(s)",
+                  "127ch indent 0px 4 line(s) gap 5px"
+                ]
+              }
+            ],
+            "tables": [
+              {
+                "overflowX": "auto",
+                "scrolls": false,
+                "tableWidth": 336,
+                "boxWidth": 336,
+                "scrollWidth": 336
+              },
+              {
+                "overflowX": "auto",
+                "scrolls": true,
+                "tableWidth": 1867,
+                "boxWidth": 336,
+                "scrollWidth": 1867
+              }
+            ],
+            "katex": [
+              {
+                "scrolls": true,
+                "clippedY": 0,
+                "boxWidth": 336,
+                "errors": 0
+              },
+              {
+                "scrolls": false,
+                "clippedY": 0,
+                "boxWidth": 336,
+                "errors": 0
+              },
+              {
+                "scrolls": true,
+                "clippedY": 0,
+                "boxWidth": 306,
+                "errors": 0
+              }
+            ],
+            "past": [],
+            "midWordBreaks": [],
+            "cutBy": [],
+            "hostsOverflowing": [],
+            "pageOverflow": 0,
+            "windowScrollX": 0,
+            "mermaidSvgs": 2
+          },
+          "copied": [
+            {
+              "what": "code block 0",
+              "via": "selection",
+              "equal": true,
+              "length": 659,
+              "sourceLength": 659
+            },
+            {
+              "what": "code block 1",
+              "via": "selection",
+              "equal": true,
+              "length": 162,
+              "sourceLength": 162
+            },
+            {
+              "what": "code block 2",
+              "via": "selection",
+              "equal": true,
+              "length": 203,
+              "sourceLength": 203
+            },
+            {
+              "what": "inline path",
+              "via": "selection",
+              "equal": true,
+              "length": 96,
+              "sourceLength": 96,
+              "visualLines": 3
+            },
+            {
+              "what": "bare URL",
+              "via": "selection",
+              "equal": true,
+              "length": 115,
+              "sourceLength": 115,
+              "visualLines": 4
+            }
+          ],
+          "scroll": {
+            "scrolledByUser": 344,
+            "lastCellReachable": true,
+            "windowScrollX": 0
+          },
+          "screenshots": [
+            "MSP-52-phone-answer-360-heading.png",
+            "MSP-52-phone-answer-360-inline.png",
+            "MSP-52-phone-answer-360-code.png",
+            "MSP-52-phone-answer-360-python.png",
+            "MSP-52-phone-answer-360-tables.png",
+            "MSP-52-phone-answer-360-math.png"
+          ]
+        },
+        {
+          "name": "MSP-52-phone-file-390",
+          "viewport": "390x844",
+          "failures": [],
+          "measured": {
+            "rootWidth": 358,
+            "rootOverflow": 0,
+            "pres": [
+              {
+                "inInterAgentMessage": false,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 358,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "156ch indent 0px 5 line(s)",
+                  "blank",
+                  "114ch indent 34px 3 line(s) gap 32px",
+                  "105ch indent 34px 4 line(s) gap 8px",
+                  "280ch indent 0px 8 line(s) gap 8px"
+                ]
+              },
+              {
+                "inInterAgentMessage": false,
+                "cls": "language-python",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 358,
+                "textEqualsSource": true,
+                "tokens": 9,
+                "coloredTokens": 9,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "28ch indent 0px 1 line(s)",
+                  "113ch indent 34px 3 line(s) gap 8px",
+                  "blank",
+                  "18ch indent 34px 1 line(s) gap 32px"
+                ]
+              },
+              {
+                "inInterAgentMessage": false,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 358,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "75ch indent 0px 2 line(s)",
+                  "127ch indent 0px 4 line(s) gap 8px"
+                ]
+              }
+            ],
+            "tables": [
+              {
+                "overflowX": "auto",
+                "scrolls": false,
+                "tableWidth": 358,
+                "boxWidth": 358,
+                "scrollWidth": 358
+              },
+              {
+                "overflowX": "auto",
+                "scrolls": true,
+                "tableWidth": 1704,
+                "boxWidth": 358,
+                "scrollWidth": 1704
+              }
+            ],
+            "katex": [
+              {
+                "scrolls": true,
+                "clippedY": 0,
+                "boxWidth": 358,
+                "errors": 0
+              },
+              {
+                "scrolls": false,
+                "clippedY": 0,
+                "boxWidth": 358,
+                "errors": 0
+              },
+              {
+                "scrolls": true,
+                "clippedY": 0,
+                "boxWidth": 328,
+                "errors": 0
+              }
+            ],
+            "past": [],
+            "midWordBreaks": [],
+            "cutBy": [],
+            "hostsOverflowing": [],
+            "pageOverflow": 0,
+            "windowScrollX": 0,
+            "mermaidSvgs": 2
+          },
+          "copied": [
+            {
+              "what": "code block 0",
+              "via": "selection",
+              "equal": true,
+              "length": 659,
+              "sourceLength": 659
+            },
+            {
+              "what": "code block 1",
+              "via": "selection",
+              "equal": true,
+              "length": 162,
+              "sourceLength": 162
+            },
+            {
+              "what": "code block 2",
+              "via": "selection",
+              "equal": true,
+              "length": 203,
+              "sourceLength": 203
+            },
+            {
+              "what": "inline path",
+              "via": "selection",
+              "equal": true,
+              "length": 96,
+              "sourceLength": 96,
+              "visualLines": 3
+            },
+            {
+              "what": "bare URL",
+              "via": "selection",
+              "equal": true,
+              "length": 115,
+              "sourceLength": 115,
+              "visualLines": 4
+            }
+          ],
+          "scroll": {
+            "scrolledByUser": 362,
+            "lastCellReachable": true,
+            "windowScrollX": 0
+          },
+          "screenshots": [
+            "MSP-52-phone-file-390-heading.png",
+            "MSP-52-phone-file-390-inline.png",
+            "MSP-52-phone-file-390-code.png",
+            "MSP-52-phone-file-390-python.png",
+            "MSP-52-phone-file-390-tables.png",
+            "MSP-52-phone-file-390-math.png"
+          ]
+        },
+        {
+          "name": "MSP-52-phone-file-360",
+          "viewport": "360x800",
+          "failures": [],
+          "measured": {
+            "rootWidth": 328,
+            "rootOverflow": 0,
+            "pres": [
+              {
+                "inInterAgentMessage": false,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 328,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "156ch indent 0px 5 line(s)",
+                  "blank",
+                  "114ch indent 34px 4 line(s) gap 32px",
+                  "105ch indent 34px 4 line(s) gap 8px",
+                  "280ch indent 0px 8 line(s) gap 8px"
+                ]
+              },
+              {
+                "inInterAgentMessage": false,
+                "cls": "language-python",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 328,
+                "textEqualsSource": true,
+                "tokens": 9,
+                "coloredTokens": 9,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "28ch indent 0px 1 line(s)",
+                  "113ch indent 34px 4 line(s) gap 8px",
+                  "blank",
+                  "18ch indent 34px 1 line(s) gap 32px"
+                ]
+              },
+              {
+                "inInterAgentMessage": false,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 328,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "75ch indent 0px 3 line(s)",
+                  "127ch indent 0px 4 line(s) gap 8px"
+                ]
+              }
+            ],
+            "tables": [
+              {
+                "overflowX": "auto",
+                "scrolls": false,
+                "tableWidth": 328,
+                "boxWidth": 328,
+                "scrollWidth": 328
+              },
+              {
+                "overflowX": "auto",
+                "scrolls": true,
+                "tableWidth": 1704,
+                "boxWidth": 328,
+                "scrollWidth": 1704
+              }
+            ],
+            "katex": [
+              {
+                "scrolls": true,
+                "clippedY": 0,
+                "boxWidth": 328,
+                "errors": 0
+              },
+              {
+                "scrolls": false,
+                "clippedY": 0,
+                "boxWidth": 328,
+                "errors": 0
+              },
+              {
+                "scrolls": true,
+                "clippedY": 0,
+                "boxWidth": 298,
+                "errors": 0
+              }
+            ],
+            "past": [],
+            "midWordBreaks": [],
+            "cutBy": [],
+            "hostsOverflowing": [],
+            "pageOverflow": 0,
+            "windowScrollX": 0,
+            "mermaidSvgs": 2
+          },
+          "copied": [
+            {
+              "what": "code block 0",
+              "via": "selection",
+              "equal": true,
+              "length": 659,
+              "sourceLength": 659
+            },
+            {
+              "what": "code block 1",
+              "via": "selection",
+              "equal": true,
+              "length": 162,
+              "sourceLength": 162
+            },
+            {
+              "what": "code block 2",
+              "via": "selection",
+              "equal": true,
+              "length": 203,
+              "sourceLength": 203
+            },
+            {
+              "what": "inline path",
+              "via": "selection",
+              "equal": true,
+              "length": 96,
+              "sourceLength": 96,
+              "visualLines": 3
+            },
+            {
+              "what": "bare URL",
+              "via": "selection",
+              "equal": true,
+              "length": 115,
+              "sourceLength": 115,
+              "visualLines": 4
+            }
+          ],
+          "scroll": {
+            "scrolledByUser": 323,
+            "lastCellReachable": true,
+            "windowScrollX": 0
+          },
+          "screenshots": [
+            "MSP-52-phone-file-360-heading.png",
+            "MSP-52-phone-file-360-inline.png",
+            "MSP-52-phone-file-360-code.png",
+            "MSP-52-phone-file-360-python.png",
+            "MSP-52-phone-file-360-tables.png",
+            "MSP-52-phone-file-360-math.png"
+          ]
+        },
+        {
+          "name": "MSP-52-phone-message-390",
+          "viewport": "390x844",
+          "failures": [],
+          "measured": {
+            "rootWidth": 306,
+            "rootOverflow": 0,
+            "pres": [
+              {
+                "inInterAgentMessage": true,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 306,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "156ch indent 0px 5 line(s)",
+                  "blank",
+                  "114ch indent 34px 4 line(s) gap 26px",
+                  "105ch indent 32px 4 line(s) gap 5px",
+                  "280ch indent 0px 9 line(s) gap 5px"
+                ]
+              },
+              {
+                "inInterAgentMessage": true,
+                "cls": "language-python",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 306,
+                "textEqualsSource": true,
+                "tokens": 9,
+                "coloredTokens": 9,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "28ch indent 0px 1 line(s)",
+                  "113ch indent 32px 4 line(s) gap 5px",
+                  "blank",
+                  "18ch indent 32px 1 line(s) gap 25px"
+                ]
+              },
+              {
+                "inInterAgentMessage": true,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 306,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": true,
+                "lines": [
+                  "75ch indent 0px 3 line(s)",
+                  "127ch indent 0px 5 line(s) gap 5px"
+                ]
+              }
+            ],
+            "tables": [
+              {
+                "overflowX": "auto",
+                "scrolls": false,
+                "tableWidth": 306,
+                "boxWidth": 306,
+                "scrollWidth": 306
+              },
+              {
+                "overflowX": "auto",
+                "scrolls": true,
+                "tableWidth": 1784,
+                "boxWidth": 306,
+                "scrollWidth": 1784
+              }
+            ],
+            "katex": [
+              {
+                "scrolls": true,
+                "clippedY": 0,
+                "boxWidth": 306,
+                "errors": 0
+              },
+              {
+                "scrolls": false,
+                "clippedY": 0,
+                "boxWidth": 306,
+                "errors": 0
+              },
+              {
+                "scrolls": true,
+                "clippedY": 0,
+                "boxWidth": 276,
+                "errors": 0
+              }
+            ],
+            "past": [],
+            "midWordBreaks": [],
+            "cutBy": [],
+            "hostsOverflowing": [],
+            "pageOverflow": 0,
+            "windowScrollX": 0,
+            "mermaidSvgs": 2
+          },
+          "copied": [
+            {
+              "what": "code block 0",
+              "via": "selection",
+              "equal": true,
+              "length": 659,
+              "sourceLength": 659
+            },
+            {
+              "what": "code block 1",
+              "via": "selection",
+              "equal": true,
+              "length": 162,
+              "sourceLength": 162
+            },
+            {
+              "what": "code block 2",
+              "via": "selection",
+              "equal": true,
+              "length": 203,
+              "sourceLength": 203
+            },
+            {
+              "what": "inline path",
+              "via": "selection",
+              "equal": true,
+              "length": 96,
+              "sourceLength": 96,
+              "visualLines": 4
+            },
+            {
+              "what": "bare URL",
+              "via": "selection",
+              "equal": true,
+              "length": 115,
+              "sourceLength": 115,
+              "visualLines": 4
+            }
+          ],
+          "scroll": {
+            "scrolledByUser": 268,
+            "lastCellReachable": true,
+            "windowScrollX": 0
+          },
+          "screenshots": [
+            "MSP-52-phone-message-390-heading.png",
+            "MSP-52-phone-message-390-inline.png",
+            "MSP-52-phone-message-390-code.png",
+            "MSP-52-phone-message-390-python.png",
+            "MSP-52-phone-message-390-tables.png",
+            "MSP-52-phone-message-390-math.png"
+          ]
+        },
+        {
+          "name": "MSP-52-phone-message-360",
+          "viewport": "360x800",
+          "failures": [],
+          "measured": {
+            "rootWidth": 276,
+            "rootOverflow": 0,
+            "pres": [
+              {
+                "inInterAgentMessage": true,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 276,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "156ch indent 0px 6 line(s)",
+                  "blank",
+                  "114ch indent 34px 5 line(s) gap 26px",
+                  "105ch indent 32px 4 line(s) gap 5px",
+                  "280ch indent 0px 10 line(s) gap 5px"
+                ]
+              },
+              {
+                "inInterAgentMessage": true,
+                "cls": "language-python",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 276,
+                "textEqualsSource": true,
+                "tokens": 9,
+                "coloredTokens": 9,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "28ch indent 0px 1 line(s)",
+                  "113ch indent 32px 4 line(s) gap 5px",
+                  "blank",
+                  "18ch indent 32px 1 line(s) gap 25px"
+                ]
+              },
+              {
+                "inInterAgentMessage": true,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 276,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": true,
+                "lines": [
+                  "75ch indent 0px 3 line(s)",
+                  "127ch indent 0px 5 line(s) gap 5px"
+                ]
+              }
+            ],
+            "tables": [
+              {
+                "overflowX": "auto",
+                "scrolls": false,
+                "tableWidth": 276,
+                "boxWidth": 276,
+                "scrollWidth": 276
+              },
+              {
+                "overflowX": "auto",
+                "scrolls": true,
+                "tableWidth": 1784,
+                "boxWidth": 276,
+                "scrollWidth": 1784
+              }
+            ],
+            "katex": [
+              {
+                "scrolls": true,
+                "clippedY": 0,
+                "boxWidth": 276,
+                "errors": 0
+              },
+              {
+                "scrolls": false,
+                "clippedY": 0,
+                "boxWidth": 276,
+                "errors": 0
+              },
+              {
+                "scrolls": true,
+                "clippedY": 0,
+                "boxWidth": 246,
+                "errors": 0
+              }
+            ],
+            "past": [],
+            "midWordBreaks": [],
+            "cutBy": [],
+            "hostsOverflowing": [],
+            "pageOverflow": 0,
+            "windowScrollX": 0,
+            "mermaidSvgs": 2
+          },
+          "copied": [
+            {
+              "what": "code block 0",
+              "via": "selection",
+              "equal": true,
+              "length": 659,
+              "sourceLength": 659
+            },
+            {
+              "what": "code block 1",
+              "via": "selection",
+              "equal": true,
+              "length": 162,
+              "sourceLength": 162
+            },
+            {
+              "what": "code block 2",
+              "via": "selection",
+              "equal": true,
+              "length": 203,
+              "sourceLength": 203
+            },
+            {
+              "what": "inline path",
+              "via": "selection",
+              "equal": true,
+              "length": 96,
+              "sourceLength": 96,
+              "visualLines": 4
+            },
+            {
+              "what": "bare URL",
+              "via": "selection",
+              "equal": true,
+              "length": 115,
+              "sourceLength": 115,
+              "visualLines": 5
+            }
+          ],
+          "scroll": {
+            "scrolledByUser": 266,
+            "lastCellReachable": true,
+            "windowScrollX": 0
+          },
+          "screenshots": [
+            "MSP-52-phone-message-360-heading.png",
+            "MSP-52-phone-message-360-inline.png",
+            "MSP-52-phone-message-360-code.png",
+            "MSP-52-phone-message-360-python.png",
+            "MSP-52-phone-message-360-tables.png",
+            "MSP-52-phone-message-360-math.png"
+          ]
+        }
+      ]
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "MSP-52",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-52",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-52",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-52",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-52",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-52",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-52",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-52",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-52",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    }
+  ],
+  "failedRequests": [
+    {
+      "case": "MSP-50",
+      "label": "desktop",
+      "url": "http://127.0.0.1:50694/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-50",
+      "label": "desktop",
+      "url": "http://127.0.0.1:50694/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-50",
+      "label": "desktop",
+      "url": "http://127.0.0.1:50694/graphql",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-50",
+      "label": "desktop",
+      "url": "http://127.0.0.1:50694/graphql",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-51",
+      "label": "desktop",
+      "url": "http://127.0.0.1:50694/graphql",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-51",
+      "label": "desktop",
+      "url": "http://127.0.0.1:50694/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-51",
+      "label": "desktop",
+      "url": "http://127.0.0.1:50694/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-51",
+      "label": "desktop",
+      "url": "http://127.0.0.1:50694/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-52",
+      "label": "phone",
+      "url": "http://192.168.77.23:50694/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-52",
+      "label": "phone",
+      "url": "http://192.168.77.23:50694/graphql",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "codeWrap": {
+    "replyRun": "fact_checker_cbde8b7a87cd4ec58efae767d62bd7be",
+    "host": "project_task_manager_3b84cd4a72f54663b2cd110f0d35bd2b",
+    "talkRun": "release_notes_writer_16547a38ff4c42b48a0716f093cc6fd3",
+    "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qtFbG6/alpha/workspace/code-wrap-23/code-wrap-23.md"
+  },
+  "summary": {
+    "cases": {
+      "MSP-50": "Pass",
+      "MSP-51": "Pass",
+      "MSP-52": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-19T19:02:27.801Z"
+}

@@ -1,0 +1,14 @@
+# API-07d-auth-audit | 2026-11-19 | reviewed product 8f10fa9287 | Ubuntu24.04 x64 guest; operation: see matching case in execution report
+type=SYSCALL msg=audit(1795096214.477:304) syscall=59 success=yes ppid=1600 pid=1737 exe=/usr/bin/pkexec key=qa4_auth
+type=SYSCALL msg=audit(1795096221.703:423) syscall=59 success=yes ppid=2352 pid=2497 exe=/usr/bin/pkexec key=qa4_auth
+type=SYSCALL msg=audit(1795096229.003:520) syscall=59 success=yes ppid=3007 pid=3142 exe=/usr/bin/pkexec key=qa4_auth
+type=SYSCALL msg=audit(1795096235.608:601) syscall=59 success=yes ppid=3591 pid=3727 exe=/usr/bin/pkexec key=qa4_auth
+type=SYSCALL msg=audit(1795096298.222:894) syscall=59 success=yes ppid=5848 pid=5859 exe=/usr/bin/pkexec key=qa4_auth
+type=SYSCALL msg=audit(1795096370.937:1651) syscall=59 success=yes ppid=10375 pid=10511 exe=/usr/bin/pkexec key=qa4_auth
+known-authorizations
+Nov 19 13:50:15 ab5-implementation polkitd[658]: Operator of unix-session:13 successfully authenticated as unix-user:witness to gain ONE-SHOT authorization for action org.freedesktop.policykit.exec for unix-process:1600:7520 [./QA4-Renamed.AppImage] (owned by unix-user:witness)
+Nov 19 13:50:23 ab5-implementation polkitd[658]: Operator of unix-session:26 successfully authenticated as unix-user:witness to gain ONE-SHOT authorization for action org.freedesktop.policykit.exec for unix-process:2352:8222 [./QA4-Renamed.AppImage] (owned by unix-user:witness)
+Nov 19 13:50:36 ab5-implementation polkitd[658]: Operator of unix-session:48 successfully authenticated as unix-user:witness to gain ONE-SHOT authorization for action org.freedesktop.policykit.exec for unix-process:3591:9627 [./QA4-Renamed.AppImage] (owned by unix-user:witness)
+Nov 19 13:51:39 ab5-implementation polkitd[658]: Operator of unix-session:79 successfully authenticated as unix-user:witness to gain ONE-SHOT authorization for action org.freedesktop.policykit.exec for unix-process:5848:16143 [./QA4-Renamed.AppImage --autobyteus-uninstall] (owned by unix-user:witness)
+enabled 1
+lost 0

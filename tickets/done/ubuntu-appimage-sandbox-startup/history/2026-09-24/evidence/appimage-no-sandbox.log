@@ -1,0 +1,276 @@
+mode=no-sandbox
+probe_root=/tmp/autobyteus-appimage-no-sandbox.PjmCem
+[1163816:0924/114241.410914:WARNING:ui/ozone/platform/wayland/common/drm_render_node_path_finder.cc:111] Preferred drm_render_node not found, picking nvidia-drm
+[2026-09-24T09:42:41.864Z] [INFO] [electron] Application started
+[2026-09-24T09:42:42.201Z] [INFO] [electron] Creating server manager for platform: linux
+[2026-09-24T09:42:42.201Z] [WARN] [electron.server.app-data] App data directory is missing .env. Reinitializing first-run data.
+[2026-09-24T09:42:42.201Z] [INFO] [electron.server.app-data] Created missing data directory: /tmp/autobyteus-appimage-no-sandbox.PjmCem/server-data/db
+[2026-09-24T09:42:42.201Z] [INFO] [electron.server.app-data] Created missing data directory: /tmp/autobyteus-appimage-no-sandbox.PjmCem/server-data/logs
+[2026-09-24T09:42:42.202Z] [INFO] [electron.server.app-data] Created missing data directory: /tmp/autobyteus-appimage-no-sandbox.PjmCem/server-data/download
+[1163816:0924/114242.218021:WARNING:ui/ozone/platform/wayland/common/wayland_object.cc:119] Binding to wl_shm version 1 but version 2 is available.
+[1163816:0924/114242.219953:WARNING:ui/ozone/platform/wayland/common/wayland_object.cc:119] Binding to zwp_pointer_gestures_v1 version 1 but version 3 is available.
+[1163816:0924/114242.220002:WARNING:ui/ozone/platform/wayland/common/wayland_object.cc:119] Binding to zwp_linux_dmabuf_v1 version 4 but version 5 is available.
+[1163816:0924/114242.220046:WARNING:ui/ozone/platform/wayland/common/wayland_object.cc:119] Binding to wp_color_manager_v1 version 1 but version 2 is available.
+[1163816:0924/114242.220058:WARNING:ui/ozone/platform/wayland/common/wayland_object.cc:119] Binding to wp_cursor_shape_manager_v1 version 1 but version 2 is available.
+[1163816:0924/114242.220775:WARNING:ui/ozone/platform/wayland/host/wayland_drm.cc:114] Drm prime capability is not supported
+[2026-09-24T09:42:42.496Z] [INFO] [electron] Browser bridge started on http://127.0.0.1:46363
+[2026-09-24T09:42:42.564Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-09-24T09:42:42.564Z] [INFO] [electron] ServerStatusManager: Emitting status change: starting
+[2026-09-24T09:42:42.564Z] [INFO] [electron.server.base-server-manager] Server installation directory: /tmp/.mount_AutoByI5lfYb/resources/server
+[2026-09-24T09:42:42.564Z] [INFO] [electron.server.base-server-manager] App data directory: /tmp/autobyteus-appimage-no-sandbox.PjmCem/server-data
+[2026-09-24T09:42:42.564Z] [INFO] [electron.server.app-data] Performing first-run initialization...
+[2026-09-24T09:42:42.565Z] [INFO] [electron.server.app-data] Generated runtime .env at: /tmp/autobyteus-appimage-no-sandbox.PjmCem/server-data/.env
+[2026-09-24T09:42:42.565Z] [INFO] [electron.server.app-data] First-run initialization completed successfully
+[2026-09-24T09:42:42.566Z] [INFO] [electron.server.base-server-manager] Port 58056 is free.
+[2026-09-24T09:42:42.684Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-09-24T09:42:42.684Z] [INFO] [electron] Login shell PATH: /home/ryan-ai/.local/bin:/tmp/.mount_AutoByI5lfYb:/tmp/.mount_AutoByI5lfYb/usr/sbin:/home/ryan-ai/.local/bin:/home/ryan-ai/.codex/packages/standalone/releases/0.155.1-x86_64-unknown-linux-musl/codex-path:/home/ryan-ai/.codex/tmp/arg0/codex-arg0QASTbb:/home/ryan-ai/.local/bin:/tmp/.mount_AutoBygX3Cf8:/tmp/.mount_AutoBygX3Cf8/usr/sbin:/home/ryan-ai/.local/bin:/home/ryan-ai/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin
+[2026-09-24T09:42:42.684Z] [INFO] [electron] Using PATH from login shell
+[2026-09-24T09:42:42.684Z] [INFO] [electron] Starting server with port: 58056
+[2026-09-24T09:42:42.684Z] [INFO] [electron] Setting AUTOBYTEUS_SERVER_HOST to: http://127.0.0.1:58056
+[2026-09-24T09:42:42.684Z] [INFO] [electron] Working directory: /tmp/.mount_AutoByI5lfYb/resources/server
+[2026-09-24T09:42:42.684Z] [INFO] [electron] App data directory: /tmp/autobyteus-appimage-no-sandbox.PjmCem/server-data
+[2026-09-24T09:42:42.684Z] [INFO] [electron] Executing: /tmp/.mount_AutoByI5lfYb/autobyteus /tmp/.mount_AutoByI5lfYb/resources/server/dist/app.js --port 58056 --data-dir /tmp/autobyteus-appimage-no-sandbox.PjmCem/server-data
+libEGL warning: pci id for fd 16: 10de:1b81, driver (null)
+
+pci id for fd 17: 10de:1b81, driver (null)
+pci id for fd 18: 10de:1b81, driver (null)
+libEGL warning: egl: failed to create dri2 screen
+libEGL warning: pci id for fd 16: 10de:1b81, driver (null)
+
+pci id for fd 17: 10de:1b81, driver (null)
+pci id for fd 18: 10de:1b81, driver (null)
+libEGL warning: egl: failed to create dri2 screen
+libEGL warning: pci id for fd 16: 10de:1b81, driver (null)
+
+[1163855:0924/114242.816726:WARNING:media/gpu/vaapi/vaapi_wrapper.cc:123] Should skip nVidia device named: nvidia-drm
+[1163855:0924/114242.816823:WARNING:media/gpu/vaapi/vaapi_wrapper.cc:1569] Forcibly using value of --render-node-override
+[1163855:0924/114242.822132:ERROR:media/gpu/vaapi/vaapi_wrapper.cc:1658] vaInitialize failed: unknown libva error
+[1163855:0924/114242.826267:WARNING:sandbox/policy/linux/sandbox_linux.cc:404] InitializeSandbox() called with multiple threads in process gpu-process.
+[2026-09-24T09:42:42.897Z] [INFO] [electron.embedded-server.stdout] Platform detection: Windows=false
+[2026-09-24T09:42:42.898Z] [INFO] [electron.embedded-server.stdout] App root directory: /tmp/.mount_AutoByI5lfYb/resources/server
+[2026-09-24T09:42:42.898Z] [INFO] [electron.embedded-server.stdout] App data directory: /tmp/autobyteus-appimage-no-sandbox.PjmCem/server-data
+[2026-09-24T09:42:42.898Z] [INFO] [electron.embedded-server.stdout] AppConfig instance created.
+[2026-09-24T09:42:42.898Z] [INFO] [electron.embedded-server.stdout] Config file path: /tmp/autobyteus-appimage-no-sandbox.PjmCem/server-data/.env
+[2026-09-24T09:42:42.898Z] [INFO] [electron.embedded-server.stdout] Loading environment from: /tmp/autobyteus-appimage-no-sandbox.PjmCem/server-data/.env
+[2026-09-24T09:42:42.898Z] [INFO] [electron.embedded-server.stdout] [dotenv@17.3.1] injecting env (0) from ../../../autobyteus-appimage-no-sandbox.PjmCem/server-data/.env -- tip: ⚙️  override existing env vars with { override: true }
+[2026-09-24T09:42:42.899Z] [INFO] [electron.embedded-server.stdout] Environment variables loaded successfully
+[2026-09-24T09:42:42.899Z] [INFO] [electron.embedded-server.stdout] Server public base URL configured to: http://127.0.0.1:58056
+[2026-09-24T09:42:42.899Z] [INFO] [electron.embedded-server.stdout] === Starting logging configuration ===
+[2026-09-24T09:42:42.899Z] [INFO] [electron.embedded-server.stdout] Logging config file is ignored in Node.js: /tmp/.mount_AutoByI5lfYb/resources/server/logging_config.ini
+[2026-09-24T09:42:42.899Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-09-24T09:42:42.899Z] [INFO] [electron.embedded-server.stdout] SERVER PUBLIC URL: http://127.0.0.1:58056
+[2026-09-24T09:42:42.899Z] [INFO] [electron.embedded-server.stdout] APP ROOT DIRECTORY: /tmp/.mount_AutoByI5lfYb/resources/server
+[2026-09-24T09:42:42.899Z] [INFO] [electron.embedded-server.stdout] APP DATA DIRECTORY: /tmp/autobyteus-appimage-no-sandbox.PjmCem/server-data
+[2026-09-24T09:42:42.899Z] [INFO] [electron.embedded-server.stdout] DB DIRECTORY: /tmp/autobyteus-appimage-no-sandbox.PjmCem/server-data/db
+[2026-09-24T09:42:42.899Z] [INFO] [electron.embedded-server.stdout] LOGS DIRECTORY: /tmp/autobyteus-appimage-no-sandbox.PjmCem/server-data/logs
+[2026-09-24T09:42:42.899Z] [INFO] [electron.embedded-server.stdout] DOWNLOAD DIRECTORY: /tmp/autobyteus-appimage-no-sandbox.PjmCem/server-data/download
+[2026-09-24T09:42:42.899Z] [INFO] [electron.embedded-server.stdout] MEMORY DIRECTORY: /tmp/autobyteus-appimage-no-sandbox.PjmCem/server-data/memory
+[2026-09-24T09:42:42.899Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-09-24T09:42:42.899Z] [INFO] [electron.embedded-server.stdout] AppConfig initialization completed successfully
+[2026-09-24T09:42:44.632Z] [INFO] [electron.embedded-server.stdout] AgentFactory (Singleton) initialized.
+[2026-09-24T09:42:44.982Z] [INFO] [electron.embedded-server.stdout] Running Prisma migrations...
+[2026-09-24T09:42:44.986Z] [INFO] [electron.embedded-server.stdout] Using Prisma engine overrides from bundled: /tmp/.mount_AutoByI5lfYb/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-debian-openssl-3.0.x.so.node, schema=schema-engine-debian-openssl-3.0.x)
+[2026-09-24T09:42:45.389Z] [INFO] [electron.embedded-server.stdout] Prisma schema loaded from prisma/schema.prisma
+[2026-09-24T09:42:45.398Z] [INFO] [electron.embedded-server.stdout] Datasource "db": SQLite database "production.db" at "file:/tmp/autobyteus-appimage-no-sandbox.PjmCem/server-data/db/production.db"
+[2026-09-24T09:42:45.559Z] [INFO] [electron.embedded-server.stdout] SQLite database production.db created at file:/tmp/autobyteus-appimage-no-sandbox.PjmCem/server-data/db/production.db
+[2026-09-24T09:42:45.585Z] [INFO] [electron.embedded-server.stdout] 25 migrations found in prisma/migrations
+[2026-09-24T09:42:45.607Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260203074245_init`
+[2026-09-24T09:42:45.610Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260208094000_add_external_channel_tables`
+[2026-09-24T09:42:45.611Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+[2026-09-24T09:42:45.612Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260209213000_remove_agent_conversation_tables`
+[2026-09-24T09:42:45.612Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260210101500_add_agent_avatar`
+[2026-09-24T09:42:45.613Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260210192000_add_agent_team_avatar`
+[2026-09-24T09:42:45.614Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260211214500_add_sync_columns_and_tombstones`
+[2026-09-24T09:42:45.617Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260212070000_remove_workflow_definition`
+[2026-09-24T09:42:45.617Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260309103000_add_channel_binding_launch_preset`
+[2026-09-24T09:42:45.619Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260310153000_add_channel_binding_team_definition_id`
+[2026-09-24T09:42:45.620Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260331102000_remove_channel_bindings_table`
+[2026-09-24T09:42:45.620Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+[2026-09-24T09:42:45.622Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260517090000_add_app_data_migration_records`
+[2026-09-24T09:42:45.623Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260624090000_add_token_usage_ledger_events`
+[2026-09-24T09:42:45.624Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260625193000_token_usage_component_pricing_explainability`
+[2026-09-24T09:42:45.628Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260629120000_add_token_usage_display_fields`
+[2026-09-24T09:42:45.630Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260702093000_token_usage_execution_address`
+[2026-09-24T09:42:45.631Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260726090000_add_secret_vault`
+[2026-09-24T09:42:45.632Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260730090000_add_token_usage_provider_name`
+[2026-09-24T09:42:45.632Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260801090000_token_usage_member_display_name`
+[2026-09-24T09:42:45.634Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260814090000_team_run_execution_tree_v1`
+[2026-09-24T09:42:45.635Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260819090000_add_token_usage_run_records`
+[2026-09-24T09:42:45.636Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260820090000_redesign_app_data_migration_summary`
+[2026-09-24T09:42:45.638Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260822090000_add_token_usage_analytics`
+[2026-09-24T09:42:45.639Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260923130000_add_claude_sdk_usage_state`
+[2026-09-24T09:42:45.640Z] [INFO] [electron.embedded-server.stdout] The following migration(s) have been applied:
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout] migrations/
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]   └─ 20260203074245_init/
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]   └─ 20260208094000_add_external_channel_tables/
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]   └─ 20260209174500_add_channel_message_receipt_turn_id/
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]   └─ 20260209213000_remove_agent_conversation_tables/
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]   └─ 20260210101500_add_agent_avatar/
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]   └─ 20260210192000_add_agent_team_avatar/
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]   └─ 20260211214500_add_sync_columns_and_tombstones/
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]   └─ 20260212070000_remove_workflow_definition/
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]   └─ 20260309103000_add_channel_binding_launch_preset/
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]   └─ 20260310153000_add_channel_binding_team_definition_id/
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]   └─ 20260331102000_remove_channel_bindings_table/
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]   └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]   └─ 20260517090000_add_app_data_migration_records/
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]   └─ 20260624090000_add_token_usage_ledger_events/
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]   └─ 20260625193000_token_usage_component_pricing_explainability/
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]   └─ 20260629120000_add_token_usage_display_fields/
+[2026-09-24T09:42:45.641Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-09-24T09:42:45.642Z] [INFO] [electron.embedded-server.stdout]   └─ 20260702093000_token_usage_execution_address/
+[2026-09-24T09:42:45.642Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-09-24T09:42:45.642Z] [INFO] [electron.embedded-server.stdout]   └─ 20260726090000_add_secret_vault/
+[2026-09-24T09:42:45.642Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-09-24T09:42:45.642Z] [INFO] [electron.embedded-server.stdout]   └─ 20260730090000_add_token_usage_provider_name/
+[2026-09-24T09:42:45.642Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-09-24T09:42:45.642Z] [INFO] [electron.embedded-server.stdout]   └─ 20260801090000_token_usage_member_display_name/
+[2026-09-24T09:42:45.642Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-09-24T09:42:45.642Z] [INFO] [electron.embedded-server.stdout]   └─ 20260814090000_team_run_execution_tree_v1/
+[2026-09-24T09:42:45.642Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-09-24T09:42:45.642Z] [INFO] [electron.embedded-server.stdout]   └─ 20260819090000_add_token_usage_run_records/
+[2026-09-24T09:42:45.642Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-09-24T09:42:45.642Z] [INFO] [electron.embedded-server.stdout]   └─ 20260820090000_redesign_app_data_migration_summary/
+[2026-09-24T09:42:45.642Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-09-24T09:42:45.642Z] [INFO] [electron.embedded-server.stdout]   └─ 20260822090000_add_token_usage_analytics/
+[2026-09-24T09:42:45.642Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-09-24T09:42:45.642Z] [INFO] [electron.embedded-server.stdout]   └─ 20260923130000_add_claude_sdk_usage_state/
+[2026-09-24T09:42:45.642Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-09-24T09:42:45.642Z] [INFO] [electron.embedded-server.stdout] All migrations have been successfully applied.
+[2026-09-24T09:42:45.667Z] [INFO] [electron.embedded-server.stdout] Database migrations completed successfully.
+[2026-09-24T09:42:45.802Z] [INFO] [electron.embedded-server.stdout] prisma:info Starting a sqlite pool with 9 connections.
+[2026-09-24T09:42:45.950Z] [INFO] [electron.embedded-server.stdout] Initialized server settings service with 20 predefined settings
+[2026-09-24T09:42:45.951Z] [INFO] [electron.embedded-server.stdout] CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-24T09:42:45.951Z] [INFO] [electron.embedded-server.stdout] [2026-09-24T09:42:45.951Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-24T09:42:46.213Z] [ERROR] [electron.embedded-server.stderr] DEFINITION_ADMISSION_UNAVAILABLE:agent_org:autobyteus-org:DEFINITION_REFERENCE_UNRESOLVED:/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-agents/agent-orgs/autobyteus-org
+[2026-09-24T09:42:46.223Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-09-24T09:42:46.225Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-09-24T09:42:46.324Z] [INFO] [electron.embedded-server.stdout] Loading workspace packages to trigger registration...
+[2026-09-24T09:42:46.325Z] [INFO] [electron.embedded-server.stdout] Successfully loaded workspace packages.
+[2026-09-24T09:42:46.328Z] [INFO] [electron.embedded-server.stdout] Creating temp workspace at: /tmp/autobyteus-appimage-no-sandbox.PjmCem/server-data/temp_workspace
+[2026-09-24T09:42:46.328Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/autobyteus-appimage-no-sandbox.PjmCem/server-data/temp_workspace.
+[2026-09-24T09:42:46.328Z] [INFO] [electron.embedded-server.stdout] Initialized TempWorkspace at /tmp/autobyteus-appimage-no-sandbox.PjmCem/server-data/temp_workspace with fixed ID 'temp_ws_default'
+[2026-09-24T09:42:46.328Z] [INFO] [electron.embedded-server.stdout] Temp workspace created and cached with ID: temp_ws_default
+[2026-09-24T09:42:46.328Z] [INFO] [electron.embedded-server.stdout] Registering agent customization processors...
+[2026-09-24T09:42:46.328Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[2026-09-24T09:42:46.328Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[2026-09-24T09:42:46.328Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[2026-09-24T09:42:46.328Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'UserInputContextBuildingProcessor'.
+[2026-09-24T09:42:46.328Z] [INFO] [electron.embedded-server.stdout] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[2026-09-24T09:42:46.328Z] [INFO] [electron.embedded-server.stdout] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[2026-09-24T09:42:46.328Z] [INFO] [electron.embedded-server.stdout] Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+[2026-09-24T09:42:46.328Z] [INFO] [electron.embedded-server.stdout] Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+[2026-09-24T09:42:46.328Z] [INFO] [electron.embedded-server.stdout] Agent customization processor registration complete.
+[2026-09-24T09:42:46.330Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_file'
+[2026-09-24T09:42:46.330Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'write_file'
+[2026-09-24T09:42:46.330Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_file'
+[2026-09-24T09:42:46.330Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_bash'
+[2026-09-24T09:42:46.330Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'start_background_process'
+[2026-09-24T09:42:46.330Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_background_processes'
+[2026-09-24T09:42:46.330Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_process_output'
+[2026-09-24T09:42:46.330Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'stop_background_process'
+[2026-09-24T09:42:46.330Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-09-24T09:42:46.330Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_media_file'
+[2026-09-24T09:42:46.330Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'download_media'
+[2026-09-24T09:42:46.330Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_url'
+[2026-09-24T09:42:46.330Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Core Tools
+[2026-09-24T09:42:46.343Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'delegate_task'
+[2026-09-24T09:42:46.343Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'submit_task_result'
+[2026-09-24T09:42:46.343Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'review_task_result'
+[2026-09-24T09:42:46.343Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_image'
+[2026-09-24T09:42:46.343Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_image'
+[2026-09-24T09:42:46.343Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_speech'
+[2026-09-24T09:42:46.343Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_video'
+[2026-09-24T09:42:46.343Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Task Delegation Tools
+[2026-09-24T09:42:46.343Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Media Tools
+[2026-09-24T09:42:46.344Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'open_tab'
+[2026-09-24T09:42:46.344Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'navigate_to'
+[2026-09-24T09:42:46.344Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'close_tab'
+[2026-09-24T09:42:46.344Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_tabs'
+[2026-09-24T09:42:46.345Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_page'
+[2026-09-24T09:42:46.345Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'screenshot'
+[2026-09-24T09:42:46.345Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'dom_snapshot'
+[2026-09-24T09:42:46.345Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_script'
+[2026-09-24T09:42:46.345Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'set_device_emulation'
+[2026-09-24T09:42:46.345Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Browser Tools
+[2026-09-24T09:42:46.345Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'publish_artifacts'
+[2026-09-24T09:42:46.345Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Published Artifact Tools
+[2026-09-24T09:42:46.345Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'send_message_to'
+[2026-09-24T09:42:46.345Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_handoff_rules'
+[2026-09-24T09:42:46.345Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Communication Tools
+[2026-09-24T09:42:46.347Z] [ERROR] [electron.embedded-server.stderr] Overwriting existing tool definition for name: 'search_web'
+[2026-09-24T09:42:46.347Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-09-24T09:42:46.347Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Search Tools
+[2026-09-24T09:42:46.356Z] [INFO] [electron.embedded-server.stdout] Populating agent definition cache for the first time...
+[2026-09-24T09:42:46.358Z] [INFO] [electron.embedded-server.stdout] Agent definition cache populated with 10 items.
+[2026-09-24T09:42:46.358Z] [INFO] [electron.embedded-server.stdout] Populating agent definition cache for the first time...
+[2026-09-24T09:42:46.358Z] [INFO] [electron.embedded-server.stdout] [2026-09-24T09:42:46.358Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-24T09:42:46.362Z] [INFO] [electron.embedded-server.stdout] Agent definition cache populated with 10 items.
+[2026-09-24T09:42:46.363Z] [INFO] [electron.embedded-server.stdout] [2026-09-24T09:42:46.363Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 12 items.
+[2026-09-24T09:42:46.372Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1790242966371,"pid":1163931,"hostname":"ryan-ai-linux","msg":"Server listening at http://127.0.0.1:44307"}
+[2026-09-24T09:42:46.404Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1790242966403,"pid":1163931,"hostname":"ryan-ai-linux","msg":"Server listening at http://0.0.0.0:58056"}
+[2026-09-24T09:42:46.404Z] [INFO] [electron.embedded-server.stdout] [2026-09-24T09:42:46.403Z] [INFO] [server.runtime] Server listening on 0.0.0.0:58056
+[2026-09-24T09:42:46.409Z] [INFO] [electron.embedded-server.stdout] [2026-09-24T09:42:46.409Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:58056
+[2026-09-24T09:42:46.411Z] [INFO] [electron.embedded-server.stdout] Scheduling Studio-only non-critical startup tasks...
+[2026-09-24T09:42:46.413Z] [INFO] [electron.embedded-server.stdout] Background cache pre-loading process has started.
+[2026-09-24T09:42:46.414Z] [INFO] [electron.embedded-server.stdout] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[2026-09-24T09:42:46.414Z] [INFO] [electron.embedded-server.stdout] Populating MCP server config cache for the first time...
+[2026-09-24T09:42:46.414Z] [INFO] [electron.embedded-server.stdout] Running MCP tool registration background task...
+[2026-09-24T09:42:46.414Z] [INFO] [electron.embedded-server.stdout] Loading and registering all MCP server configurations from file...
+[2026-09-24T09:42:46.414Z] [INFO] [electron.embedded-server.stdout] Background task 'Memory Sync Worker' completed successfully.
+[2026-09-24T09:42:46.414Z] [INFO] [electron.embedded-server.stdout] MCP server config cache populated with 0 items.
+[2026-09-24T09:42:46.414Z] [INFO] [electron.embedded-server.stdout] Found 0 total MCP server configs.
+[2026-09-24T09:42:46.415Z] [INFO] [electron.embedded-server.stdout] Synchronized cached configurations with the core MCP config service.
+[2026-09-24T09:42:46.415Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 0 MCP server configs into cache.
+[2026-09-24T09:42:46.415Z] [INFO] [electron.embedded-server.stdout] Finished loading and registering all MCP server configurations.
+[2026-09-24T09:42:46.416Z] [INFO] [electron.embedded-server.stdout] Background task 'MCP Tool Registration' completed successfully.
+[2026-09-24T09:42:46.416Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 33 LLM models into cache.
+[2026-09-24T09:42:46.416Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 7 image models into cache.
+[2026-09-24T09:42:46.416Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 4 audio models into cache.
+[2026-09-24T09:42:46.416Z] [INFO] [electron.embedded-server.stdout] Background application cache pre-loading completed.
+[2026-09-24T09:42:46.416Z] [INFO] [electron.embedded-server.stdout] Background task 'Cache Pre-loading' completed successfully.
+[2026-09-24T09:42:46.456Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+[2026-09-24T09:42:46.456Z] [INFO] [electron] ServerStatusManager: Server is ready
+[2026-09-24T09:42:46.456Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[1163816:0924/114246.482689:WARNING:ui/ozone/platform/wayland/host/wayland_surface.cc:170] Server doesn't support zcr_alpha_compositing_v1.
+[1163816:0924/114246.482715:WARNING:ui/ozone/platform/wayland/host/wayland_surface.cc:185] Server doesn't support overlay_prioritizer.
+[1163816:0924/114246.482720:WARNING:ui/ozone/platform/wayland/host/wayland_surface.cc:200] Server doesn't support wp_content_type_v1
+[2026-09-24T09:42:46.825Z] [INFO] [electron] Creating node-bound window for nodeId=embedded-local; url=file:///tmp/.mount_AutoByI5lfYb/resources/app.asar/dist/renderer/index.html
+[1164144:0924/114247.052099:ERROR:gpu/ipc/client/command_buffer_proxy_impl.cc:285] ContextResult::kTransientFailure: Failed to send GpuControl.CreateCommandBuffer.
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.
+[1163816:0924/114247.487036:INFO:CONSOLE:651] "serverStore: Initializing server config", source: file:///tmp/.mount_AutoByI5lfYb/resources/app.asar/dist/renderer/_nuxt/entry.Bltl83Qr.js (651)
+Error occurred in handler for 'app-update:get-state': Error: No handler registered for 'app-update:get-state'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+[1163816:0924/114247.491077:INFO:CONSOLE:651] "serverStore: Log file path: /tmp/autobyteus-appimage-no-sandbox.PjmCem/logs/app.log", source: file:///tmp/.mount_AutoByI5lfYb/resources/app.asar/dist/renderer/_nuxt/entry.Bltl83Qr.js (651)
+[1163816:0924/114247.495210:INFO:CONSOLE:651] "serverStore: Received server status: [object Object]", source: file:///tmp/.mount_AutoByI5lfYb/resources/app.asar/dist/renderer/_nuxt/entry.Bltl83Qr.js (651)
+[1163816:0924/114247.495266:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///tmp/.mount_AutoByI5lfYb/resources/app.asar/dist/renderer/_nuxt/entry.Bltl83Qr.js (651)
+[1163816:0924/114247.516439:INFO:CONSOLE:659] "ServerLoading: Component mounted with status: running", source: file:///tmp/.mount_AutoByI5lfYb/resources/app.asar/dist/renderer/_nuxt/entry.Bltl83Qr.js (659)
+[2026-09-24T09:42:47.653Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-09-24T09:42:47.656Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[1163816:0924/114247.707967:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///tmp/.mount_AutoByI5lfYb/resources/app.asar/dist/renderer/_nuxt/entry.Bltl83Qr.js (651)
+[1163816:0924/114247.708080:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///tmp/.mount_AutoByI5lfYb/resources/app.asar/dist/renderer/_nuxt/entry.Bltl83Qr.js (651)
+[2026-09-24T09:42:47.829Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-09-24T09:42:47.831Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[1163816:0924/114247.831900:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///tmp/.mount_AutoByI5lfYb/resources/app.asar/dist/renderer/_nuxt/entry.Bltl83Qr.js (651)
+[1163816:0924/114247.831970:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///tmp/.mount_AutoByI5lfYb/resources/app.asar/dist/renderer/_nuxt/entry.Bltl83Qr.js (651)
+[2026-09-24T09:42:47.902Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-09-24T09:42:47.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[1163816:0924/114247.933432:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///tmp/.mount_AutoByI5lfYb/resources/app.asar/dist/renderer/_nuxt/entry.Bltl83Qr.js (651)
+[1163816:0924/114247.933483:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///tmp/.mount_AutoByI5lfYb/resources/app.asar/dist/renderer/_nuxt/entry.Bltl83Qr.js (651)
+exit=124

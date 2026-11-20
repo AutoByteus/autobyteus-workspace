@@ -1,0 +1,78 @@
+# API-07d-verification | 2026-11-19 | reviewed product 8f10fa9287 | Ubuntu24.04 x64 guest; operation: see matching case in execution report
+before preauth pkexec=5
+CASE=missing-record
+Install AutoByteus
+AutoByteus installation
+launcher-exit=133
+The official verification files for this release are unavailable (HTTP 404). Try again later. If the files are still unavailable, contact AutoByteus support.
+9724c0ad7e5b6392c7f6e3120650270450a2a1c6cb01ee325785d0569978bf43  /home/witness/.autobyteus/server-data/temp_workspace/qa4-saved
+no-owned-installation-account-profile-units-socket-menu-or-running-app
+after missing-record pkexec=5
+CASE=missing-signature
+Install AutoByteus
+AutoByteus installation
+launcher-exit=133
+The official verification files for this release are unavailable (HTTP 404). Try again later. If the files are still unavailable, contact AutoByteus support.
+9724c0ad7e5b6392c7f6e3120650270450a2a1c6cb01ee325785d0569978bf43  /home/witness/.autobyteus/server-data/temp_workspace/qa4-saved
+no-owned-installation-account-profile-units-socket-menu-or-running-app
+after missing-signature pkexec=5
+CASE=malformed-metadata
+Install AutoByteus
+AutoByteus installation
+launcher-exit=133
+AutoByteus could not verify this AppImage against its official release. Download a fresh copy from the official AutoByteus releases page. If verification still fails, contact AutoByteus support.
+9724c0ad7e5b6392c7f6e3120650270450a2a1c6cb01ee325785d0569978bf43  /home/witness/.autobyteus/server-data/temp_workspace/qa4-saved
+no-owned-installation-account-profile-units-socket-menu-or-running-app
+after malformed-metadata pkexec=5
+CASE=wrong-signature
+Install AutoByteus
+AutoByteus installation
+launcher-exit=133
+AutoByteus could not verify this AppImage against its official release. Download a fresh copy from the official AutoByteus releases page. If verification still fails, contact AutoByteus support.
+9724c0ad7e5b6392c7f6e3120650270450a2a1c6cb01ee325785d0569978bf43  /home/witness/.autobyteus/server-data/temp_workspace/qa4-saved
+no-owned-installation-account-profile-units-socket-menu-or-running-app
+after wrong-signature pkexec=5
+CASE=other-image
+Install AutoByteus
+AutoByteus installation
+launcher-exit=133
+AutoByteus could not verify this AppImage against its official release. Download a fresh copy from the official AutoByteus releases page. If verification still fails, contact AutoByteus support.
+9724c0ad7e5b6392c7f6e3120650270450a2a1c6cb01ee325785d0569978bf43  /home/witness/.autobyteus/server-data/temp_workspace/qa4-saved
+no-owned-installation-account-profile-units-socket-menu-or-running-app
+after other-image pkexec=5
+CASE=offline
+Install AutoByteus
+AutoByteus installation
+launcher-exit=133
+cannot reach official release service; reconnect and retry
+9724c0ad7e5b6392c7f6e3120650270450a2a1c6cb01ee325785d0569978bf43  /home/witness/.autobyteus/server-data/temp_workspace/qa4-saved
+no-owned-installation-account-profile-units-socket-menu-or-running-app
+after offline pkexec=5
+CASE=restored connection + matching signed evidence
+Install AutoByteus
+Authenticate
+AutoByteus installation
+launcher-exit=133
+Ubuntu will request one-shot authorization for /proc/10375/fd/9 (program path, not a publisher verification).
+Ubuntu authorization was cancelled. Retry the requested action when you are ready to authorize it.
+9724c0ad7e5b6392c7f6e3120650270450a2a1c6cb01ee325785d0569978bf43  /home/witness/.autobyteus/server-data/temp_workspace/qa4-saved
+no-owned-installation-account-profile-units-socket-menu-or-running-app
+after positive-control pkexec=6
+127.0.0.1 - - [19/Nov/2026 13:50:13] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json.sig HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 13:50:20] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 13:50:20] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json.sig HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 13:50:28] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 13:50:28] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json.sig HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 13:50:34] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 13:50:34] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json.sig HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 13:52:15] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json HTTP/1.1" 404 -
+127.0.0.1 - - [19/Nov/2026 13:52:20] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 13:52:20] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json.sig HTTP/1.1" 404 -
+127.0.0.1 - - [19/Nov/2026 13:52:26] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 13:52:26] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json.sig HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 13:52:32] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 13:52:32] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json.sig HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 13:52:38] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 13:52:38] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json.sig HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 13:52:50] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 13:52:50] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json.sig HTTP/1.1" 200 -

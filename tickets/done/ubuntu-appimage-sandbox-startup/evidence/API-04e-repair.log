@@ -1,0 +1,11 @@
+# API-04e | API-04e-repair | 2026-11-19 | CRR-004 (reviewed product c90f3ba8f2); Ubuntu24.04 x64 guest
+AutoByteus installation
+lstat /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage: no such file or directory
+grants_status=0
+total 351904
+drwxr-xr-x 2 abdesk-1000 abdesk-1000      4096 Nov 19 13:11 .
+drwxr-xr-x 4 root        root             4096 Nov 19 13:00 ..
+-r-xr-xr-x 1 abdesk-1000 abdesk-1000 360331528 Nov 19 13:07 .qa3-restore
+-rw------- 1 abdesk-1000 abdesk-1000         0 Nov 19 13:02 .writer-lock
+curl: (7) Failed to connect to localhost port 29696 after 0 ms: Couldn't connect to server
+no-server

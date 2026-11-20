@@ -1,0 +1,30 @@
+API-04 / API-07 | 2026-11-18 | source 0df0c901e4 | Ubuntu24.04.5 kernel6.8.0-147-generic x64 guest
+Purpose: reproduce current full-package graphical authorization/sandbox/refusals without host policy or production data.
+
+Host owns /home/ryan-ai/hdd_drive/autobyteus_org/api-e2e-autobyteus-5 (RUN).
+Assigned QEMU/tool image resources /tmp/autobyteus-5-vm; original guest stopped before run.
+Q=/tmp/autobyteus-5-vm/tools/root
+LD_LIBRARY_PATH="$Q/usr/lib/x86_64-linux-gnu" "$Q/usr/bin/qemu-system-x86_64" \
+ -machine accel=kvm -cpu host -smp 2 -m 4096 -L "$Q/usr/share/qemu" \
+ -bios "$Q/usr/share/seabios/bios-256k.bin" -vga none \
+ -drive file=/tmp/autobyteus-5-vm/guest.qcow2,if=virtio,format=qcow2,snapshot=on \
+ -netdev user,id=n,hostfwd=tcp:127.0.0.1:21884-:22 -device virtio-net-pci,netdev=n,romfile= \
+ -display none -serial file:"$RUN/guest-serial.log" -qmp unix:"$RUN/qmp.sock",server=on,wait=off \
+ -pidfile "$RUN/guest.pid" -daemonize
+Owned PID219774. Initial QEMU attempts failed before start due missing VGA/PXE ROM defaults; explicit no VGA/PXE corrected setup (graphics provided by guest Xvfb).
+SSH: ssh -i /tmp/autobyteus-5-vm/guest-key -p21884 -o UserKnownHostsFile="$RUN/known_hosts" witness@127.0.0.1
+Guest setup via normal sudo with assigned disposable test account password from private file (not recorded):
+ apt-get update
+ DEBIAN_FRONTEND=noninteractive apt-get install -y xvfb openbox policykit-1-gnome zenity xdotool imagemagick dbus-x11 libnss3 libasound2t64 libgbm1 libxss1 libxtst6
+Full output retained outside Git at RUN/guest-setup.log. No host package installation or polkit/AppArmor weakening.
+
+Build via API-04-test-package.sh. Initial missing app-builder stage directory repaired and only failed package step resumed; full output retained API-04-test-package.log.
+SCP full signed test package as /home/witness/MyCurrentRenamed.AppImage and sidecars under /home/witness/feed/AutoByteus/autobyteus-workspace/releases/download/v1.5.13/.
+Run guest: dbus-run-session -- bash guest-gui.sh (copy from API-04-guest-gui.sh).
+Visual consent inspected at1280x900, clicked Install at778,583 via xdotool. Actual Ubuntu graphical agent prompt inspected; normal test password typed on its focused password field, not into application UI. No password in commandline/logs/evidence.
+Before auth: read /proc/3796/fd/9; fcntl F_GET_SEALS=15, hashlib.file_digest SHA256 matches built provisioner (API-04-helper-custody.txt).
+After auth: health http://127.0.0.1:29695/rest/health status ok; CDP18990/json/list contains packaged index.html#/chat. Native-state evidence reads /proc main4434,renderer4489,server4510 versus init1, owner/mode stats and normal one-shot journal. Screenshots support these assertions, not substitute.
+Ordinary Alt-F4 via xdotool on autobyteus window ended app and owning GUI script. Second original-download launch ran same GUI script, health/chat assertions and no feed GET/no auth log (API-04-redirect.txt), followed by Alt-F4.
+Removal: dbus-run-session -- bash guest-remove.sh (API-04-guest-remove.sh), second Ubuntu graphical auth from root-owned support/provision. Compare SHA256 list of synthetic guest profile before/after, assert owned install/socket/unit/profile/account/menu absent (API-04-removal.txt).
+Then API-07-refusals.py executes cancellation/404/oversize from actual renamed package, waiting for visible dialogs and recording errors; initial missing display-readiness wait repaired before successful run. Original sidecar restored in finally.
+Guest shutdown via owned QMP quit; snapshot discarded. No reboot, update, Ubuntu22/26 or native ARM64 claim. No production user data in this guest.

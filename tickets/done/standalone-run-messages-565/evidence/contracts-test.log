@@ -1,0 +1,253 @@
+
+> @autobyteus/collaboration-stream-contracts@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/standalone-run-messages-565/autobyteus-collaboration-stream-contracts
+> pnpm build && node --test tests/*.test.mjs
+
+
+> @autobyteus/collaboration-stream-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/standalone-run-messages-565/autobyteus-collaboration-stream-contracts
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: a agent_org batch envelope covers a contiguous range
+ok 1 - a agent_org batch envelope covers a contiguous range
+  ---
+  duration_ms: 3.198
+  type: 'test'
+  ...
+# Subtest: a agent_org batch requires a valid range and at least one SEGMENT_CONTENT item
+ok 2 - a agent_org batch requires a valid range and at least one SEGMENT_CONTENT item
+  ---
+  duration_ms: 1.134333
+  type: 'test'
+  ...
+# Subtest: a agent_org single event keeps its one sequence and rejects a range
+ok 3 - a agent_org single event keeps its one sequence and rejects a range
+  ---
+  duration_ms: 3.279959
+  type: 'test'
+  ...
+# Subtest: an Agent root view carries no presentation frames: its agent and each run it delegated present on their own streams (SR-086 G-D1)
+ok 4 - an Agent root view carries no presentation frames: its agent and each run it delegated present on their own streams (SR-086 G-D1)
+  ---
+  duration_ms: 32.350417
+  type: 'test'
+  ...
+# Subtest: an Agent root view is its own agent's: the runs it delegated, their statuses and input are not in it (autobyteus-461 SR-083, SR-084)
+ok 5 - an Agent root view is its own agent's: the runs it delegated, their statuses and input are not in it (autobyteus-461 SR-083, SR-084)
+  ---
+  duration_ms: 2.492542
+  type: 'test'
+  ...
+# Subtest: an Agent root view correlates its agent, and carries no message log (autobyteus-358)
+ok 6 - an Agent root view correlates its agent, and carries no message log (autobyteus-358)
+  ---
+  duration_ms: 0.557375
+  type: 'test'
+  ...
+# Subtest: an Agent root view names its live sequence, or null for a stored view; the field is required (autobyteus-358)
+ok 7 - an Agent root view names its live sequence, or null for a stored view; the field is required (autobyteus-358)
+  ---
+  duration_ms: 0.5615
+  type: 'test'
+  ...
+# Subtest: Agent root events, lifecycle and commands use root kind 'agent'; SEND_MESSAGE takes mentions
+ok 8 - Agent root events, lifecycle and commands use root kind 'agent'; SEND_MESSAGE takes mentions
+  ---
+  duration_ms: 1.297792
+  type: 'test'
+  ...
+# Subtest: Org trees have their own parts only: no collaborators list, no delegated runs (SR-084)
+ok 9 - Org trees have their own parts only: no collaborators list, no delegated runs (SR-084)
+  ---
+  duration_ms: 0.545
+  type: 'test'
+  ...
+# Subtest: an Agent root's message event carries its two parties; each names its run ID, its address and its node when another (autobyteus-565)
+ok 10 - an Agent root's message event carries its two parties; each names its run ID, its address and its node when another (autobyteus-565)
+  ---
+  duration_ms: 1.147208
+  type: 'test'
+  ...
+# Subtest: participant messages carry stored messages of every root kind; a Team message may be empty (autobyteus-358)
+ok 11 - participant messages carry stored messages of every root kind; a Team message may be empty (autobyteus-358)
+  ---
+  duration_ms: 2.343041
+  type: 'test'
+  ...
+# Subtest: a page is at most 50, says whether older ones follow, and starts after a strict cursor (autobyteus-565)
+ok 12 - a page is at most 50, says whether older ones follow, and starts after a strict cursor (autobyteus-565)
+  ---
+  duration_ms: 0.48925
+  type: 'test'
+  ...
+# Subtest: counterparts name each other agent the tree does not: past (autobyteus-469 D-5), another local run, another node (autobyteus-565)
+ok 13 - counterparts name each other agent the tree does not: past (autobyteus-469 D-5), another local run, another node (autobyteus-565)
+  ---
+  duration_ms: 0.966125
+  type: 'test'
+  ...
+# Subtest: current versionless Org snapshot carries exact live held/queued state
+ok 14 - current versionless Org snapshot carries exact live held/queued state
+  ---
+  duration_ms: 4.323625
+  type: 'test'
+  ...
+# Subtest: rejects duplicate/unowned input projections and missing live input field
+ok 15 - rejects duplicate/unowned input projections and missing live input field
+  ---
+  duration_ms: 1.118667
+  type: 'test'
+  ...
+# Subtest: live projection is strict and has no durable outbox or retired child fields
+ok 16 - live projection is strict and has no durable outbox or retired child fields
+  ---
+  duration_ms: 0.985542
+  type: 'test'
+  ...
+# Subtest: a wire Org tree of members without a pending switch is valid
+ok 17 - a wire Org tree of members without a pending switch is valid
+  ---
+  duration_ms: 2.768625
+  type: 'test'
+  ...
+# Subtest: a direct Agent that carries pendingRuntimeSwitch is not a wire tree
+ok 18 - a direct Agent that carries pendingRuntimeSwitch is not a wire tree
+  ---
+  duration_ms: 2.695583
+  type: 'test'
+  ...
+# Subtest: an Agent of a mounted Team that carries pendingRuntimeSwitch is not a wire tree
+ok 19 - an Agent of a mounted Team that carries pendingRuntimeSwitch is not a wire tree
+  ---
+  duration_ms: 0.95425
+  type: 'test'
+  ...
+# Subtest: a view carries no remote rows or their summaries: a peer run is a row of the run's tree (autobyteus-461 SR-084)
+ok 20 - a view carries no remote rows or their summaries: a peer run is a row of the run's tree (autobyteus-461 SR-084)
+  ---
+  duration_ms: 2.040166
+  type: 'test'
+  ...
+# Subtest: a view takes no Retry: a peer row's Retry goes over /ws/run-status (autobyteus-461 SR-090)
+ok 21 - a view takes no Retry: a peer row's Retry goes over /ws/run-status (autobyteus-461 SR-090)
+  ---
+  duration_ms: 0.137667
+  type: 'test'
+  ...
+# Subtest: requires explicit family and exact matching branch
+ok 22 - requires explicit family and exact matching branch
+  ---
+  duration_ms: 4.824042
+  type: 'test'
+  ...
+# Subtest: parses a native AGY Org snapshot at root, direct Agent, nested Team and nested Agent scopes
+ok 23 - parses a native AGY Org snapshot at root, direct Agent, nested Team and nested Agent scopes
+  ---
+  duration_ms: 2.755291
+  type: 'test'
+  ...
+# Subtest: keeps all pre-existing Org snapshot runtime kinds valid
+ok 24 - keeps all pre-existing Org snapshot runtime kinds valid
+  ---
+  duration_ms: 0.42275
+  type: 'test'
+  ...
+# Subtest: requires sequenced events and an exact Org-root client command
+ok 25 - requires sequenced events and an exact Org-root client command
+  ---
+  duration_ms: 0.867125
+  type: 'test'
+  ...
+# Subtest: requires one correlated status for every live own Agent; the runs it delegated are its tree's rows (SR-083, SR-084)
+ok 26 - requires one correlated status for every live own Agent; the runs it delegated are its tree's rows (SR-083, SR-084)
+  ---
+  duration_ms: 0.861833
+  type: 'test'
+  ...
+# Subtest: rejects duplicate and sidecar AgentOrg member identities
+ok 27 - rejects duplicate and sidecar AgentOrg member identities
+  ---
+  duration_ms: 0.352375
+  type: 'test'
+  ...
+# Subtest: requires each configured Team coordinator to be one of that Team's direct Agents
+ok 28 - requires each configured Team coordinator to be one of that Team's direct Agents
+  ---
+  duration_ms: 0.405917
+  type: 'test'
+  ...
+# Subtest: an Org's own agents are correlated by run identity and address
+ok 29 - an Org's own agents are correlated by run identity and address
+  ---
+  duration_ms: 0.40425
+  type: 'test'
+  ...
+# Subtest: autobyteus-448: an Org's own agent status carries the required running background task count
+ok 30 - autobyteus-448: an Org's own agent status carries the required running background task count
+  ---
+  duration_ms: 0.506541
+  type: 'test'
+  ...
+# Subtest: run-status: a client subscribes and unsubscribes by run (kind and ID)
+ok 31 - run-status: a client subscribes and unsubscribes by run (kind and ID)
+  ---
+  duration_ms: 2.095625
+  type: 'test'
+  ...
+# Subtest: run-status: the server's snapshot, change and tree notice
+ok 32 - run-status: the server's snapshot, change and tree notice
+  ---
+  duration_ms: 1.257042
+  type: 'test'
+  ...
+# Subtest: run-status (SR-086 G-A2 … G-A4): a run's own state: its status, not_found, or unreachable with its node
+ok 33 - run-status (SR-086 G-A2 … G-A4): a run's own state: its status, not_found, or unreachable with its node
+  ---
+  duration_ms: 0.381084
+  type: 'test'
+  ...
+# Subtest: run-status (SR-090): a client asks the nodes of held peer runs again, by run ID
+ok 34 - run-status (SR-090): a client asks the nodes of held peer runs again, by run ID
+  ---
+  duration_ms: 0.311708
+  type: 'test'
+  ...
+# Subtest: run-tree (autobyteus-461 SR-084): a row with its launch and peer answer; a row error has no target; unknown fields are refused
+ok 35 - run-tree (autobyteus-461 SR-084): a row with its launch and peer answer; a row error has no target; unknown fields are refused
+  ---
+  duration_ms: 3.338208
+  type: 'test'
+  ...
+# Subtest: run-tree: the view stream's tree snapshot and a numbered change event (agent and org views)
+ok 36 - run-tree: the view stream's tree snapshot and a numbered change event (agent and org views)
+  ---
+  duration_ms: 1.115958
+  type: 'test'
+  ...
+# Subtest: run-tree: a client applies a change to the rows it has, in display order (a new row under its parent, siblings in the order they came)
+ok 37 - run-tree: a client applies a change to the rows it has, in display order (a new row under its parent, siblings in the order they came)
+  ---
+  duration_ms: 0.286958
+  type: 'test'
+  ...
+# Subtest: the one task-execution key: agent:<id> or team:<id> (autobyteus-435)
+ok 38 - the one task-execution key: agent:<id> or team:<id> (autobyteus-435)
+  ---
+  duration_ms: 0.4005
+  type: 'test'
+  ...
+# Subtest: the shared team status fold ranks offline < idle < error < initializing < running
+ok 39 - the shared team status fold ranks offline < idle < error < initializing < running
+  ---
+  duration_ms: 0.433958
+  type: 'test'
+  ...
+1..39
+# tests 39
+# suites 0
+# pass 39
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 480.802166
+exit 0

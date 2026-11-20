@@ -3,7 +3,7 @@ import { computed, ref, shallowRef, watch, type Ref } from 'vue'
 import { getApolloClient } from '~/utils/apolloClient'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { useAppUpdateStore } from '~/stores/appUpdateStore'
-import type { AppUpdateAutomaticOutcome } from '~/shared/appUpdateTypes'
+import type { AppUpdateOutcome } from '~/shared/appUpdateTypes'
 import { useAgentPackagesStore } from '~/stores/agentPackagesStore'
 import { useSkillSourcesStore } from '~/stores/skillSourcesStore'
 import { useSkillStore } from '~/stores/skillStore'
@@ -65,8 +65,8 @@ export interface AppNotificationRow {
   handledVersion: string | null
   releasePageUrl: string | null
   error: string | null
-  /** What the app's automatic update did (autobyteus-356): AUTO_UPDATED when handled, AUTO_FAILED while waiting. */
-  outcome: AppUpdateAutomaticOutcome | null
+  /** App update outcome, including a managed manual refusal independent of automatic retry policy. */
+  outcome: AppUpdateOutcome | null
   outcomeReason: string | null
   /** `install`: the version is not tried again automatically. */
   outcomeStep: 'download' | 'install' | null

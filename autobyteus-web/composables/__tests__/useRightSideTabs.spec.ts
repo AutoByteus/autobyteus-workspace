@@ -66,4 +66,16 @@ describe('useRightSideTabs', () => {
       ariaLabel: 'Agent Org',
     })
   })
+
+  // autobyteus-565 (DEC-001, DEC-003): a standalone run's tab is "Messages"; a run without a messages view has none.
+  it('labels a standalone run\'s tab Messages, and shows none for a run without a messages view', () => {
+    state.activeWorkspaceTarget = { kind: 'standalone_agent', collaborationMessages: { rootKind: 'agent', rootRunId: 'pm' } }
+    const contextualTab = () => useRightSideTabs().visibleTabs.value.find((tab) => tab.name === 'teamMembers')
+    expect(contextualTab()).toMatchObject({ label: 'Messages', ariaLabel: undefined })
+    state.activeWorkspaceTarget = { kind: 'standalone_agent', context: { state: { runId: 'app-run' } } }
+    expect(contextualTab()).toBeUndefined()
+    state.activeWorkspaceTarget = { kind: 'standalone_team_member', collaborationMessages: { rootKind: 'agent_team' } }
+    expect(contextualTab()).toMatchObject({ label: 'Team' })
+  })
 })
+

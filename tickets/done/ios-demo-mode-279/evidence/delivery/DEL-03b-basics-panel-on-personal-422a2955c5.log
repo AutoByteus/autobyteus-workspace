@@ -1,0 +1,45 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/private/tmp/dlv-279/wt-personal/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/private/tmp/dlv-279/wt-personal/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/private/tmp/dlv-279/wt-personal/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/private/tmp/dlv-279/wt-personal/autobyteus-web/stores/serverStore.ts" is used
+
+ RUN  v3.2.7 /private/tmp/dlv-279/wt-personal/autobyteus-web
+
+Duplicated imports "getters", the one from "/private/tmp/dlv-279/wt-personal/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/private/tmp/dlv-279/wt-personal/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/private/tmp/dlv-279/wt-personal/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/private/tmp/dlv-279/wt-personal/autobyteus-web/stores/serverStore.ts" is used
+stderr | components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts (2 tests | 1 failed) 61ms
+   × ServerSettingsBasicsPanel > composes only current endpoint and focused Basics cards 53ms
+     → expected 'Endpoint CardsApplicationsMedia Model…' not to contain 'GitHub'
+   ✓ ServerSettingsBasicsPanel > owns Basics notifications emitted by endpoint and web search cards 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts > ServerSettingsBasicsPanel > composes only current endpoint and focused Basics cards
+AssertionError: expected 'Endpoint CardsApplicationsMedia Model…' not to contain 'GitHub'
+
+Expected: [32m"GitHub"[39m
+Received: [31m"Endpoint CardsApplicationsMedia ModelsCodex Full AccessClaude runtimeLive responseInternal agentsInternal agents are the system's own helpers, such as the Model Router.Show internal agentsShow them in the Agents list, pickers and history, for debugging. While off, they are also not offered to other agents or peer nodes.Show internal agentsFeatured CatalogWeb SearchCompactionTitleSummaryLabelDescriptionTitlePackagesUpdatesTitleAgent packageEveryMinutesHoursSkill sourceEveryMinutesHoursRange Github noteTitleSummaryAgent packagesDownloads new revisions from GitHub and installs them without asking. They can change what your agents do. Your personal tools, skills, avatars and runtime/model are kept; other local changes are replaced, with a backup.Skill sourcesDownloads new revisions from GitHub and installs them without asking. They can change what your agents do. Local changes are replaced.Scope"[39m
+
+ ❯ components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts:51:32
+     49|     expect(wrapper.find('[data-testid="web-search-configuration-card-s…
+     50|     // autobyteus-337 (REQ-007): GitHub is set up on the Integrations …
+     51|     expect(wrapper.text()).not.toContain('GitHub')
+       |                                ^
+     52|     expect(wrapper.find('[data-testid="compaction-config-card-stub"]')…
+     53|     expect(wrapper.find('[data-testid="streaming-parser-card"]').exist…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  23:36:19
+   Duration  8.10s (transform 3.79s, setup 6.90s, collect 464ms, tests 61ms, environment 167ms, prepare 138ms)
+

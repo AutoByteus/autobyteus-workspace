@@ -11,7 +11,8 @@ import type {
 } from '../../shared/appUpdateTypes';
 import { isAppUpdateChannelLocked } from '../../shared/appUpdateTypes';
 import { logger } from '../logger';
-import { classifyAppUpdateError } from './appUpdateErrorClassifier';
+import { AppUpdateErrorReporter } from './appUpdateErrorReporter';
+import type { ManagedUpdateSession, ManagedUpdateEvent } from '../application/managedUpdateSession';
 import { isAppUpdateChannel, loadAppUpdateChannel, saveAppUpdateChannel } from './appUpdateChannelStore';
 import { AppUpdateNotificationRecord } from './appUpdateNotificationRecord';
 import { loadAppUpdateAutomatic, saveAppUpdateAutomatic } from './appUpdateAutomaticStore';
@@ -21,7 +22,7 @@ import { resolveAppReleasePageUrl } from './appReleasePage';
 import { APP_UPDATE_STATE_CHANNEL, type AppUpdateController } from './appUpdateController';
 import { AppUpdateCheckSchedule, type AppUpdateCheckSource } from './appUpdateCheckSchedule';
 import { registerAppUpdateIpc } from './appUpdateIpc';
-import { buildErrorDedupeSignature, isPrereleaseVersion, normalizeReleaseNotes, toIsoNow } from './appUpdateStateFormat';
+import { isPrereleaseVersion, normalizeReleaseNotes, toIsoNow } from './appUpdateStateFormat';
 
 const CHANNEL_RECHECK_STATUSES: ReadonlySet<AppUpdateStatus> = new Set([
   'idle',
@@ -40,6 +41,8 @@ const CHECK_OPERATIONS: Readonly<Record<AppUpdateCheckSource | 'manual', AppUpda
 };
 
 type AppUpdaterOptions = {
+  managedSession?: ManagedUpdateSession;
+  showRestartUnavailable?: (message: string) => void;
   prepareForInstall?: () => Promise<void>;
   /** After a failed automatic install (autobyteus-356): the application relaunches the old version when it can. */
   recoverAfterFailedInstall?: () => void | Promise<void>;
@@ -61,7 +64,7 @@ export class AppUpdater implements AppUpdateController {
   private state: AppUpdateState;
   private initialized = false;
   private activeOperation: AppUpdateOperation | null = null;
-  private lastErrorSignature: string | null = null;
+  private readonly errors = new AppUpdateErrorReporter(partial => this.applyState(partial));
   private notificationRecord: AppUpdateNotificationRecord | null = null;
   private schedule: AppUpdateCheckSchedule | null = null;
   private automatic: AppUpdateAutomaticPolicy | null = null;
@@ -80,6 +83,7 @@ export class AppUpdater implements AppUpdateController {
       : process.resourcesPath ? path.join(process.resourcesPath, 'app-update.yml') : null;
     const currentVersion = app.getVersion();
     this.state = {
+      activationMode: options.managedSession ? 'managed-quit' : 'native',
       status: 'idle',
       currentVersion,
       currentVersionIsPrerelease: isPrereleaseVersion(currentVersion),
@@ -109,7 +113,7 @@ export class AppUpdater implements AppUpdateController {
     this.initialized = true;
 
     autoUpdater.autoDownload = false;
-    autoUpdater.autoInstallOnAppQuit = true;
+    autoUpdater.autoInstallOnAppQuit = !this.options.managedSession;
     autoUpdater.logger = {
       info: (message: string) => logger.info(`[updater] ${message}`),
       warn: (message: string) => logger.warn(`[updater] ${message}`),
@@ -130,6 +134,7 @@ export class AppUpdater implements AppUpdateController {
       downloadInFlight: () => this.downloadInFlight,
     }, {
       platform: this.options.platform ?? process.platform,
+      activation: this.options.managedSession ? 'managed-quit' : 'native',
       record: () => this.notificationRecord,
       settleInstall: async () => (await this.installAttempt?.abort()) ?? false,
       recoverAfterFailedInstall: () => this.options.recoverAfterFailedInstall?.(),
@@ -154,6 +159,9 @@ export class AppUpdater implements AppUpdateController {
       autoCheck: schedule.settings(),
     };
     this.applyChannelPolicy();
+    this.options.managedSession?.settingsChanged(this.state);
+    this.options.managedSession?.automaticInstallBlockChanged(this.notificationRecord.automaticInstallBlockedVersion);
+    this.options.managedSession?.onChange(event => this.managedEvent(event));
 
     this.registerAutoUpdaterListeners();
     registerAppUpdateIpc(this, schedule);
@@ -197,7 +205,7 @@ export class AppUpdater implements AppUpdateController {
       return this.getState();
     }
 
-    if (this.state.status === 'checking' || this.state.status === 'downloading' || this.automatic?.waiting) {
+    if (this.state.status === 'checking' || this.state.status === 'downloading' || this.automatic?.waiting || (this.options.managedSession && this.state.updateStaged)) {
       return this.getState();
     }
 
@@ -219,7 +227,7 @@ export class AppUpdater implements AppUpdateController {
       this.applyChannelPolicy();
       await autoUpdater.checkForUpdates();
     } catch (error) {
-      this.handleError(error, 'Failed to check for updates.', operation);
+      this.errors.report(error, 'Failed to check for updates.', operation);
     } finally {
       if (this.activeOperation === operation) {
         this.activeOperation = null;
@@ -281,7 +289,7 @@ export class AppUpdater implements AppUpdateController {
     } catch (error) {
       // macOS: a refused update also rejects the download; the automatic path's own state stands (F-API-002, DS-002).
       if (this.automatic?.settlingPreparationFailure || this.automatic?.installRequestedFor(this.state.availableVersion)) logger.warn('[updater] Download ended by the update\'s refusal.', error);
-      else this.handleError(error, 'Failed to download update.', 'download');
+      else this.errors.report(error, 'Failed to download update.', 'download');
     } finally {
       this.downloadInFlight = false;
       this.automatic?.downloadEnded();
@@ -294,10 +302,15 @@ export class AppUpdater implements AppUpdateController {
   }
 
   installUpdateAndRestart(): { accepted: boolean } {
-    if (this.state.status !== 'downloaded') {
+    if (this.state.status !== 'downloaded' || (this.options.managedSession && !this.state.updateStaged)) {
       return { accepted: false };
     }
 
+    if (this.options.managedSession) {
+      const result = this.options.managedSession.requestRestart();
+      if (result.accepted) this.applyState({ status: 'installing', message: 'Installing update and restarting...' });
+      return result;
+    }
     this.activeOperation = 'install';
     this.automatic?.installAccepted();
 
@@ -310,7 +323,7 @@ export class AppUpdater implements AppUpdateController {
     });
 
     const failed = (error: unknown): void => {
-      this.handleError(error, 'Failed to install update and restart.', 'install');
+      this.errors.report(error, 'Failed to install update and restart.', 'install');
       this.automatic?.installFailed();
     };
     this.installAttempt = new AppUpdateInstallAttempt({
@@ -331,6 +344,7 @@ export class AppUpdater implements AppUpdateController {
     // A failed save still applies the channel for this session; the caller reports it.
     const persisted = saveAppUpdateChannel(app.getPath('userData'), channel);
     this.applyState({ updateChannel: channel });
+    this.options.managedSession?.settingsChanged(this.state);
     this.applyChannelPolicy();
 
     // Re-check so an "available" result from the previous channel is replaced.
@@ -350,6 +364,7 @@ export class AppUpdater implements AppUpdateController {
     if (!this.initialized) this.initialize();
     const persisted = saveAppUpdateAutomatic(app.getPath('userData'), enabled);
     this.applyState({ automaticUpdate: enabled });
+    this.options.managedSession?.settingsChanged(this.state);
     this.automatic?.switched(enabled);
     return { accepted: true, persisted, state: this.getState() };
   }
@@ -391,6 +406,7 @@ export class AppUpdater implements AppUpdateController {
     });
 
     autoUpdater.on('update-available', (updateInfo: UpdateInfo) => {
+      const retainedManagedStage = this.options.managedSession && this.state.updateStaged && this.state.availableVersion === updateInfo.version;
       if (updateInfo.version) this.notificationRecord?.recordFound(updateInfo.version);
       this.applyState({
         notification: this.currentNotification(),
@@ -407,6 +423,9 @@ export class AppUpdater implements AppUpdateController {
         downloadTransferredBytes: null,
         downloadTotalBytes: null,
       });
+      if (retainedManagedStage) {
+        this.applyState({ status: 'downloaded', message: 'Ready for your next quit.' });
+      }
       if (updateInfo.version) this.automatic?.found(updateInfo.version);
     });
 
@@ -439,7 +458,13 @@ export class AppUpdater implements AppUpdateController {
       });
     });
 
-    autoUpdater.on('update-downloaded', (updateInfo: UpdateInfo) => {
+    autoUpdater.on('update-downloaded', (updateInfo: UpdateInfo & { downloadedFile?: string }) => {
+      if (this.options.managedSession) {
+        if (!updateInfo.downloadedFile || !updateInfo.version) { this.errors.report(new Error('Downloaded artifact identity missing'), 'Cannot verify update.', 'download'); return; }
+        this.applyState({ updateStaged: false, status: 'downloading', message: 'Verifying downloaded update...' });
+        void this.options.managedSession.stageDownloaded(updateInfo.downloadedFile, updateInfo.version);
+        return;
+      }
       this.applyState({
         status: 'downloaded',
         // Sticky for this process: the staged update installs on quit even if a
@@ -457,48 +482,47 @@ export class AppUpdater implements AppUpdateController {
     autoUpdater.on('error', (error: Error) => {
       if (this.automatic?.claimError(error)) return;
       const operation = this.activeOperation;
-      this.handleError(error, 'Auto-update failed.', operation ?? 'updater-event');
+      this.errors.report(error, 'Auto-update failed.', operation ?? 'updater-event');
       // Only the operation under way decides which automatic step failed (a native install refusal arrives here).
       if (operation === 'download') this.automatic?.downloadFailed(this.state.message);
       else if (operation === 'install') this.automatic?.installFailed();
     });
   }
 
-  private handleError(
-    error: unknown,
-    fallbackMessage: string,
-    operation: AppUpdateOperation = 'updater-event',
-  ): void {
-    const classification = classifyAppUpdateError(error, {
-      operation,
-      fallbackMessage,
-    });
-
-    const signature = buildErrorDedupeSignature(
-      classification.kind,
-      classification.code,
-      classification.diagnostic,
-    );
-    if (this.lastErrorSignature === signature && this.state.status === 'error') {
-      return;
+  private managedEvent(event: ManagedUpdateEvent): void {
+    if (event.type === 'restart-unavailable' || event.type === 'restart-write-failed') {
+      const message = 'Manual restart is unavailable. Quit AutoByteus and reopen it from the installed application menu.';
+      if (event.type === 'restart-write-failed') this.applyState({ status: 'error', updateStaged: false, errorKind: 'install', errorOperation: 'install', message });
+      this.options.showRestartUnavailable?.(message);
+    } else if (event.type === 'invalidated') {
+      this.applyState({ updateStaged: false, ...(this.state.status === 'downloaded' ? { status: 'available' } : {}) });
+    } else if (event.type === 'verification-cancelled') {
+      this.automatic?.downloaded(event.version); // end automatic download bookkeeping; no managed install on readiness
+      this.applyState({ status: 'available', updateStaged: false, message: 'Update is available for download.',
+        downloadPercent: null, downloadTransferredBytes: null, downloadTotalBytes: null });
+    } else if (event.type === 'stage-gone') {
+      this.notificationRecord?.clearLostStageAttempt(event.version);
+      if (!event.automatic) this.notificationRecord?.recordManualInstallFailure(event.version, 'stage-gone');
+      this.applyState({ updateStaged: false, status: 'available', notification: this.currentNotification(),
+        message: 'The pending update must be verified again. Download it again or wait for the next automatic check.' });
+    } else if (event.type === 'ready') {
+      this.applyState({ status: 'downloaded', updateStaged: true, availableVersion: event.version,
+        downloadPercent: 100, message: 'Ready for your next quit.' });
+      this.automatic?.downloaded(event.version);
+    } else if (event.type === 'activating') {
+      if (event.automatic) this.notificationRecord?.recordAutomaticInstall(event.version);
+      else this.notificationRecord?.recordManualInstall(event.version);
+      this.applyState({ status: 'installing', notification: this.currentNotification() });
+    } else if (event.type === 'stage-failed') {
+      this.automatic?.downloadFailed('The downloaded release could not be verified.');
+      this.applyState({ updateStaged: false, notification: this.currentNotification() });
+      this.errors.report(event.error, 'The downloaded release could not be verified.', 'download');
+    } else {
+      if (event.automatic) this.notificationRecord?.recordAutomaticFailure(event.version, 'install', 'The protected update could not be installed.');
+      else if (event.confirmedOld) this.notificationRecord?.recordManualInstallFailure(event.version);
+      this.applyState({ updateStaged: false, notification: this.currentNotification() });
+      this.errors.report(event.error, 'The protected update could not be installed.', 'install');
     }
-    this.lastErrorSignature = signature;
-
-    logger.error(
-      `[updater] ${fallbackMessage} `
-      + `(kind=${classification.kind}, operation=${classification.operation}, code=${classification.code ?? 'none'})\n`
-      + classification.diagnostic,
-      error,
-    );
-
-    const failedCheck = Object.values(CHECK_OPERATIONS).includes(classification.operation);
-    this.applyState({
-      status: 'error',
-      message: classification.message,
-      errorKind: classification.kind,
-      errorOperation: classification.operation,
-      ...(failedCheck ? { checkedAt: toIsoNow() } : {}),
-    });
   }
 
   private applyState(partial: Partial<AppUpdateState>): void {
@@ -510,10 +534,11 @@ export class AppUpdater implements AppUpdateController {
     if (partial.status && partial.status !== 'error') {
       nextState.errorKind = null;
       nextState.errorOperation = null;
-      this.lastErrorSignature = null;
+      this.errors.reset();
     }
 
     this.state = nextState;
+    this.options.managedSession?.automaticInstallBlockChanged(this.notificationRecord?.automaticInstallBlockedVersion ?? null);
     this.broadcastState();
   }
 

@@ -1,0 +1,65 @@
+TAP version 13
+#   Installed AppImage launcher: /tmp/autobyteus-hook-test-8FkyLY/autobyteus -> /tmp/autobyteus-hook-test-8FkyLY/autobyteus-real
+# Subtest: build hook installs an executable wrapper and preserves a real ELF; fails on duplicate or wrong layout
+ok 1 - build hook installs an executable wrapper and preserves a real ELF; fails on duplicate or wrong layout
+  ---
+  duration_ms: 3.89422
+  type: 'test'
+  ...
+# Subtest: Node mode and explicit no-sandbox preserve argv and bypass GUI decision
+ok 2 - Node mode and explicit no-sandbox preserve argv and bypass GUI decision
+  ---
+  duration_ms: 8.926701
+  type: 'test'
+  ...
+# Subtest: negative probe: sandboxed success remains sandboxed; exact startup fatal retries once
+ok 3 - negative probe: sandboxed success remains sandboxed; exact startup fatal retries once
+  ---
+  duration_ms: 257.512042
+  type: 'test'
+  ...
+# Subtest: negative probe: unrelated exit 133 is propagated without downgrade
+ok 4 - negative probe: unrelated exit 133 is propagated without downgrade
+  ---
+  duration_ms: 129.38055
+  type: 'test'
+  ...
+# Subtest: negative probe: fatal signature without status 133 cannot downgrade
+ok 5 - negative probe: fatal signature without status 133 cannot downgrade
+  ---
+  duration_ms: 126.603542
+  type: 'test'
+  ...
+# Subtest: positive probe: normal GUI exec remains sandboxed
+ok 6 - positive probe: normal GUI exec remains sandboxed
+  ---
+  duration_ms: 219.829454
+  type: 'test'
+  ...
+# Subtest: missing probe: successful sandboxed ELF stays unmodified, fatal retries only after confirmation
+ok 7 - missing probe: successful sandboxed ELF stays unmodified, fatal retries only after confirmation
+  ---
+  duration_ms: 45.845535
+  type: 'test'
+  ...
+# Subtest: ambiguous probe failure cannot itself downgrade a successful sandboxed ELF
+ok 8 - ambiguous probe failure cannot itself downgrade a successful sandboxed ELF
+  ---
+  duration_ms: 130.531979
+  type: 'test'
+  ...
+# Subtest: negative probe: wrapper forwards TERM to supervised child
+ok 9 - negative probe: wrapper forwards TERM to supervised child
+  ---
+  duration_ms: 233.167531
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1218.560109

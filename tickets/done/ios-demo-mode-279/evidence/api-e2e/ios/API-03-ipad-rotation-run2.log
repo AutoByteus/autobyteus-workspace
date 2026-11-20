@@ -1,0 +1,10 @@
+# API-03-ipad-rotation: ApiE2E279UITests/testRotationKeepsTheOpenRun on apie2e279-ipad (E52DCB67-867F-47DB-871A-ABE652C40055); fresh-start clone build (429af9bd66 + the temporary test file); 2026-11-19T21:02:12Z; load 117.50 195.31 183.10
+# links made just before: 
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testRotationKeepsTheOpenRun]' started.
+/Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobileUITests/ApiE2E279UITests.swift:212: error: -[AutoByteusMobileUITests.ApiE2E279UITests testRotationKeepsTheOpenRun] : XCTAssertTrue failed - The run is open (its composer)
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testRotationKeepsTheOpenRun]' failed (48.561 seconds).
+	 Executed 1 test, with 1 failure (0 unexpected) in 48.561 (48.561) seconds
+	 Executed 1 test, with 1 failure (0 unexpected) in 48.561 (48.562) seconds
+	 Executed 1 test, with 1 failure (0 unexpected) in 48.561 (48.562) seconds
+** TEST EXECUTE FAILED **
+# exit: 65

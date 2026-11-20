@@ -1,0 +1,42 @@
+# Probe P-01: run 44725773809 (branch probe/ios-xcode27-571, build-only, publish_app_store_connect=false), 2026-11-20
+# Excerpts from: gh run view 44725773809 --log
+Resolve iOS Release Metadata	Set up job	2026-11-20T11:13:12.6261149Z Image: ubuntu-26.04
+Build And Test iOS App	Set up job	2026-11-20T11:14:30.3039290Z Image: xcode-27-arm64
+Build And Test iOS App	Select Xcode 26 or newer	2026-11-20T11:17:57.7357050Z Selected Xcode app: /Applications/Xcode_27.2.app
+Build And Test iOS App	Select Xcode 26 or newer	2026-11-20T11:17:57.7360990Z Build version 27B52
+Build And Test iOS App	Select Xcode 26 or newer	2026-11-20T11:18:02.0451270Z Selected iPhoneOS SDK: 27.2
+Build And Test iOS App	Install XcodeGen	2026-11-20T11:18:22.8244260Z Build version 27B52
+Build And Test iOS App	Install XcodeGen	2026-11-20T11:18:26.4253410Z     iPhone 17e (0AC25E88-57C5-486B-A20F-84D7A683A99D) (Shutdown) 
+Build And Test iOS App	Select available iOS simulator	2026-11-20T11:18:27.1420770Z Selected simulator UDID: 0AC25E88-57C5-486B-A20F-84D7A683A99D
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T11:21:38.6749490Z ** BUILD SUCCEEDED **
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T11:24:13.4581480Z 2026-11-20 11:24:09.779 xcodebuild[14234:41149]  iOSSimulator: 📱<DVTiPhoneSimulator (0x75a1dd0a00), iPhone 17e, unknown class, 27.0 (24A434), 0AC25E88-57C5-486B-A20F-84D7A683A99D> unable to connect to "com.apple.instruments.deviceservice.lockdown" (Error Domain=DVTiPhoneSimulatorErrorDomain Code=-1 "DTServiceHubClient failed to bless service hub for simulator iPhone 17e (0AC25E88-57C5-486B-A20F-84D7A683A99D)" UserInfo={NSLocalizedDescription=DTServiceHubClient failed to bless service hub for simulator iPhone 17e (0AC25E88-57C5-486B-A20F-84D7A683A99D), NSUnderlyingError=0x75a20f7000 {Error Domain=DTServiceHubClient Code=2 "Connection to Simulator service hub (15034) interrupted. Simulator service hub IS still alive." UserInfo={NSLocalizedDescription=Connection to Simulator service hub (15034) interrupted. Simulator service hub IS still alive.}}})
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T11:28:04.7245270Z 	 Executed 2 tests, with 0 failures (0 unexpected) in 0.059 (0.278) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T11:28:06.4389080Z 	 Executed 2 tests, with 0 failures (0 unexpected) in 0.491 (0.493) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T11:28:08.1226520Z 	 Executed 6 tests, with 0 failures (0 unexpected) in 0.089 (0.180) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T11:28:08.2538410Z 	 Executed 2 tests, with 0 failures (0 unexpected) in 0.018 (0.020) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T11:28:11.2244950Z 	 Executed 56 tests, with 0 failures (0 unexpected) in 3.220 (99.643) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T11:28:11.2667620Z 	 Executed 56 tests, with 0 failures (0 unexpected) in 3.220 (99.650) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T11:28:22.3224700Z ** TEST SUCCEEDED **
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T11:32:23.9645130Z Monitoring boot status for iPhone 17e (0AC25E88-57C5-486B-A20F-84D7A683A99D).
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T11:35:53.3714930Z 	 Executed 2 tests, with 0 failures (0 unexpected) in 107.192 (107.231) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T11:39:36.9091550Z 	 Executed 6 tests, with 0 failures (0 unexpected) in 223.546 (223.554) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T11:39:36.9125280Z 	 Executed 8 tests, with 0 failures (0 unexpected) in 330.738 (330.793) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T11:39:36.9130430Z 	 Executed 8 tests, with 0 failures (0 unexpected) in 330.738 (330.795) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T11:39:38.1474200Z ** TEST SUCCEEDED **
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T11:39:44.2071320Z Xcode version: Xcode 27.2 Build version 27B52
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T11:39:44.4144010Z     iPhone 17e (0AC25E88-57C5-486B-A20F-84D7A683A99D) (Booted) 
+
+# Job conclusions
+run: success
+Resolve iOS Release Metadata: success
+Build And Test iOS App: success
+Validate iOS Publish Secrets: skipped
+Archive And Upload To App Store Connect: skipped
+
+# Beta.3 (run 44721148794) for comparison
+Build And Test iOS App	Set up job	2026-11-20T10:41:20.1877020Z Image: macos-26-arm64
+Build And Test iOS App	Select Xcode 26 or newer	2026-11-20T10:43:29.3491910Z Selected Xcode app: /Applications/Xcode_26.3.app
+Build And Test iOS App	Select Xcode 26 or newer	2026-11-20T10:43:31.1578750Z Selected iPhoneOS SDK: 26.2
+Archive And Upload To App Store Connect	Set up job	2026-11-20T10:55:57.8700380Z Image: macos-26-arm64
+Archive And Upload To App Store Connect	Select Xcode 26 or newer	2026-11-20T10:59:35.3639410Z Selected Xcode app: /Applications/Xcode_26.3.app
+Archive And Upload To App Store Connect	Select Xcode 26 or newer	2026-11-20T10:59:37.5292000Z Selected iPhoneOS SDK: 26.2

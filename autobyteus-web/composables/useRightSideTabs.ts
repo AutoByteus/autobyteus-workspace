@@ -44,9 +44,10 @@ export function useRightSideTabs() {
     return {
       projects: t('shell.rightTabs.projects'),
       files: t('shell.rightTabs.files'),
+      // A standalone run has no team: its tab is its agent's messages (autobyteus-565 DEC-003).
       teamMembers: messages.value?.rootKind === 'agent_org'
         ? t('shell.rightTabs.org')
-        : t('shell.rightTabs.team'),
+        : messages.value?.rootKind === 'agent' ? t('shell.rightTabs.messages') : t('shell.rightTabs.team'),
       terminal: t('shell.rightTabs.terminal'),
       progress: t('shell.rightTabs.activity'),
       usage: t('shell.rightTabs.usage'),
@@ -80,9 +81,13 @@ export function useRightSideTabs() {
     activeTab.value = tab;
   };
 
-  /** The collaboration scope key, else `standalone:<runId>` for a standalone run, else null. */
+  /**
+   * The Team's or Org's collaboration scope key; else `standalone:<runId>` for a standalone run, or a run it delegated
+   * selected under it (its Messages tab is the run's, autobyteus-565: it no longer implies a collaboration scope); else null.
+   */
   const contextualScopeKey = computed<string | null>(() => {
     const target = activeContextStore.activeWorkspaceTarget;
+    if (messages.value?.rootKind === 'agent') return `standalone:${messages.value.rootRunId}`;
     if (messages.value) return `${messages.value.rootKind}:${messages.value.rootRunId}`;
     return target?.kind === 'standalone_agent' ? `standalone:${target.context.state.runId}` : null;
   });
@@ -110,7 +115,8 @@ export function useRightSideTabs() {
     // Projects is not tied to a conversation scope: opening a worker from it keeps it (REQ-009).
     if (activeTab.value === 'projects') return;
     if (!scopeKey) return;
-    activeTab.value = messages.value ? 'teamMembers' : 'progress';
+    // A Team or an Org opens on its members' messages; a standalone run on its Activity (autobyteus-565).
+    activeTab.value = messages.value && messages.value.rootKind !== 'agent' ? 'teamMembers' : 'progress';
   };
 
   /**

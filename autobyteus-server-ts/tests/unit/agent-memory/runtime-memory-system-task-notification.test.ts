@@ -11,6 +11,7 @@ import { buildHistoricalReplayEvents } from "../../../src/run-history/projection
 import { buildRunProjectionBundleFromEvents } from "../../../src/run-history/projection/run-projection-utils.js";
 import {
   CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID,
+  GROK_PROVIDER_TURN_NOTICE_SENDER_ID,
   SKILL_UPDATE_NOTICE_SENDER_ID,
 } from "../../../src/agent-execution/domain/system-task-notification-senders.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
@@ -42,33 +43,22 @@ const setup = async () => {
 };
 
 describe("system task notification memory trace (REQ-003, ARCH-F-004)", () => {
-  it("records a Claude background-task notice for its turn and replays it into the conversation", async () => {
+  // Claude's background-task notice, and Grok's provider-started turn notice (autobyteus-517, REQ-004).
+  it.each([
+    ["a Claude background-task notice", CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID, "Background task completed: Build app (completed)"],
+    ["a Grok provider-started turn notice", GROK_PROVIDER_TURN_NOTICE_SENDER_ID,
+      "Background task \"f60f2c3b\" completed (exit code: 0).\nUse get_command_or_subagent_output(\"f60f2c3b\") to see the full output."],
+  ])("records %s for its turn and replays it into the conversation", async (_label, senderId, content) => {
     const { accumulator, readTraces } = await setup();
     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turn_id: "turn-2" }));
-    accumulator.recordRunEvent(event(AgentRunEventType.SYSTEM_TASK_NOTIFICATION, {
-      sender_id: CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID,
-      content: "Background task completed: Build app (completed)",
-      turn_id: "turn-2",
-    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SYSTEM_TASK_NOTIFICATION, { sender_id: senderId, content, turn_id: "turn-2" }));
 
     const traces = readTraces();
-    expect(traces).toEqual([expect.objectContaining({
-      traceType: "system_task_notification",
-      turnId: "turn-2",
-      content: "Background task completed: Build app (completed)",
-      senderId: CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID,
-    })]);
+    expect(traces).toEqual([expect.objectContaining({ traceType: "system_task_notification", turnId: "turn-2", content, senderId })]);
     const replay = buildHistoricalReplayEvents(traces);
-    expect(replay).toEqual([expect.objectContaining({
-      kind: "system_task_notification",
-      senderId: CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID,
-      content: "Background task completed: Build app (completed)",
-    })]);
+    expect(replay).toEqual([expect.objectContaining({ kind: "system_task_notification", senderId, content })]);
     expect(buildRunProjectionBundleFromEvents("run-1", replay).conversation).toEqual([expect.objectContaining({
-      kind: "system_task_notification",
-      role: null,
-      senderId: CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID,
-      content: "Background task completed: Build app (completed)",
+      kind: "system_task_notification", role: null, senderId, content,
     })]);
   });
 

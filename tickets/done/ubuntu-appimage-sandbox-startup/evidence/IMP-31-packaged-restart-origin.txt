@@ -1,0 +1,50 @@
+IMP-31 | 2026-11-19 | OS-level cause on Noble 24.04.5 x64, IR-004 9017bd351d signed fixture (restart source unchanged); captured around actual Settings click. Guest auditctl execve/exit_group/mount filtered to desktop uid=1000, guest Apport and kernel; JS inspector wrappers log, forward and return original calls. No debugger attached to renderer/native execution.
+2026-11-19T12:22:55.764Z pid=24176 armed
+2026-11-19T12:23:37.122Z pid=25314 armed
+2026-11-19T12:23:55.916Z pid=25314 activate started
+2026-11-19T12:23:57.643Z pid=25314 activate returned {"version":"1.5.15","sha256":"36e63d2d70919dfbc466da6faf95bd743e80929ec5f5a83ff30b95551aad9b85"}
+2026-11-19T12:23:57.643Z pid=25314 relaunch [{"execPath":"/opt/autobyteus-desktop/1000/app/AutoByteus.AppImage","args":[]}]
+2026-11-19T12:23:57.690Z pid=25314 relaunch returned
+2026-11-19T12:23:57.691Z pid=25314 exit [0]
+2026-11-19T12:23:57.693Z pid=25314 exit returned
+36e63d2d70919dfbc466da6faf95bd743e80929ec5f5a83ff30b95551aad9b85  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+c046b74a1031b06dc89164fa88a466641e7e7d8da8bc362278c3406a8e2c941c  e2e-profile/server-data/temp_workspace/ir004-marker
+29695 absent
+29696 absent
+ExecutablePath: /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+ProcCmdline: /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+ PPid:	25604
+ Uid:	1000	1000	1000	1000
+ NoNewPrivs:	1
+Signal: 11
+type=EXECVE msg=audit(1795091037.644:2902): argc=5 a0="/tmp/.mount_AutoBy6snQLY/autobyteus" a1="--type=relauncher" a2="--no-sandbox" a3="---" a4="/opt/autobyteus-desktop/1000/app/AutoByteus.AppImage"
+type=SYSCALL msg=audit(1795091037.740:2908): arch=c000003e syscall=59 success=yes exit=0 a0=3ee400018440 a1=3ee4000141a0 a2=7ffde9227708 a3=1999999999999999 items=2 ppid=25602 pid=25604 auid=1000 uid=1000 gid=1000 euid=1000 suid=1000 fsuid=1000 egid=1000 sgid=1000 fsgid=1000 tty=(none) ses=85 comm="AutoByteus.AppI" exe="/opt/autobyteus-desktop/1000/app/AutoByteus.AppImage" subj=autobyteus-desktop-1000 key="ir4exec"
+type=EXECVE msg=audit(1795091037.740:2908): argc=1 a0="/opt/autobyteus-desktop/1000/app/AutoByteus.AppImage"
+type=SYSCALL msg=audit(1795091037.742:2910): arch=c000003e syscall=165 success=no exit=-1 a0=d6b5dc0 a1=d6b5730 a2=d6b56b0 a3=7 items=1 ppid=25604 pid=25605 auid=1000 uid=1000 gid=1000 euid=1000 suid=1000 fsuid=1000 egid=1000 sgid=1000 fsgid=1000 tty=(none) ses=85 comm="AutoByteus.AppI" exe="/opt/autobyteus-desktop/1000/app/AutoByteus.AppImage" subj=autobyteus-desktop-1000 key="ir4mount"
+type=SYSCALL msg=audit(1795091037.742:2911): arch=c000003e syscall=59 success=yes exit=0 a0=763e1a39393d a1=7ffd90e20100 a2=d6b5e60 a3=1 items=2 ppid=25605 pid=25606 auid=1000 uid=1000 gid=1000 euid=1000 suid=1000 fsuid=1000 egid=1000 sgid=1000 fsgid=1000 tty=(none) ses=85 comm="fusermount" exe="/usr/bin/fusermount3" subj=autobyteus-desktop-1000 key="ir4exec"
+type=EXECVE msg=audit(1795091037.742:2911): argc=5 a0="fusermount" a1="-o" a2="ro,nosuid,nodev,subtype=AutoByteus.AppImage" a3="--" a4="/tmp/.mount_AutoByYIj4p8"
+type=SYSCALL msg=audit(1795091037.743:2912): arch=c000003e syscall=165 success=no exit=-1 a0=55aeedeb4bf0 a1=55aec76267d4 a2=55aeedeb4c40 a3=7 items=1 ppid=25605 pid=25606 auid=1000 uid=1000 gid=1000 euid=1000 suid=1000 fsuid=1000 egid=1000 sgid=1000 fsgid=1000 tty=(none) ses=85 comm="fusermount" exe="/usr/bin/fusermount3" subj=autobyteus-desktop-1000 key="ir4mount"
+type=SYSCALL msg=audit(1795091037.743:2913): arch=c000003e syscall=231 a0=1 a1=ffffffffffffff88 a2=e7 a3=7ffe0631034f items=0 ppid=25605 pid=25606 auid=1000 uid=1000 gid=1000 euid=1000 suid=1000 fsuid=1000 egid=1000 sgid=1000 fsgid=1000 tty=(none) ses=85 comm="fusermount" exe="/usr/bin/fusermount3" subj=autobyteus-desktop-1000 key="ir4end"
+type=SYSCALL msg=audit(1795091037.743:2914): arch=c000003e syscall=59 success=yes exit=0 a0=763e1a39393d a1=7ffd90e20100 a2=d6b5e60 a3=1 items=2 ppid=25605 pid=25607 auid=1000 uid=1000 gid=1000 euid=1000 suid=1000 fsuid=1000 egid=1000 sgid=1000 fsgid=1000 tty=(none) ses=85 comm="fusermount" exe="/usr/bin/fusermount3" subj=autobyteus-desktop-1000 key="ir4exec"
+type=EXECVE msg=audit(1795091037.743:2914): argc=5 a0="fusermount" a1="-o" a2="ro,nosuid,nodev" a3="--" a4="/tmp/.mount_AutoByYIj4p8"
+type=SYSCALL msg=audit(1795091037.744:2915): arch=c000003e syscall=165 success=no exit=-1 a0=64e10c809bb0 a1=64e0d219d7d4 a2=64e10c8082c0 a3=7 items=1 ppid=25605 pid=25607 auid=1000 uid=1000 gid=1000 euid=1000 suid=1000 fsuid=1000 egid=1000 sgid=1000 fsgid=1000 tty=(none) ses=85 comm="fusermount" exe="/usr/bin/fusermount3" subj=autobyteus-desktop-1000 key="ir4mount"
+type=SYSCALL msg=audit(1795091037.744:2916): arch=c000003e syscall=231 a0=1 a1=ffffffffffffff88 a2=e7 a3=7fff49fa2b4f items=0 ppid=25605 pid=25607 auid=1000 uid=1000 gid=1000 euid=1000 suid=1000 fsuid=1000 egid=1000 sgid=1000 fsgid=1000 tty=(none) ses=85 comm="fusermount" exe="/usr/bin/fusermount3" subj=autobyteus-desktop-1000 key="ir4end"
+type=ANOM_ABEND msg=audit(1795091037.745:2917): auid=1000 uid=1000 gid=1000 ses=85 subj=autobyteus-desktop-1000 pid=25605 comm="AutoByteus.AppI" exe="/opt/autobyteus-desktop/1000/app/AutoByteus.AppImage" sig=11 res=1
+type=EXECVE msg=audit(1795091037.755:2922): argc=6 a0="fusermount" a1="-u" a2="-q" a3="-z" a4="--" a5="/tmp/.mount_AutoBy6snQLY"
+type=SYSCALL msg=audit(1795091037.905:2925): arch=c000003e syscall=231 a0=7f a1=ffffffffffffff88 a2=e7 a3=7ffd90e2061f items=0 ppid=1 pid=25604 auid=1000 uid=1000 gid=1000 euid=1000 suid=1000 fsuid=1000 egid=1000 sgid=1000 fsgid=1000 tty=(none) ses=85 comm="AutoByteus.AppI" exe="/opt/autobyteus-desktop/1000/app/AutoByteus.AppImage" subj=autobyteus-desktop-1000 key="ir4end"
+Manual menu control, after failed successor observed (not a successful explicit relaunch):
+Thu Nov 19 12:24:22 UTC 2026
+{"status":"ok","message":"Server is running"}
+36e63d2d70919dfbc466da6faf95bd743e80929ec5f5a83ff30b95551aad9b85  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+c046b74a1031b06dc89164fa88a466641e7e7d8da8bc362278c3406a8e2c941c  e2e-profile/server-data/temp_workspace/ir004-marker
+type=SYSCALL msg=audit(1795091010.730:2726): arch=c000003e syscall=165 success=yes exit=0 a0=5ba26cbbcbf0 a1=5ba25d4017d4 a2=5ba26cbbcc40 a3=7 items=5 ppid=25303 pid=25304 auid=1000 uid=1000 gid=1000 euid=0 suid=0 fsuid=0 egid=1000 sgid=1000 fsgid=1000 tty=(none) ses=85 comm="fusermount" exe="/usr/bin/fusermount3" subj=autobyteus-desktop-1000 key="ir4mount"
+type=SYSCALL msg=audit(1795091037.743:2912): arch=c000003e syscall=165 success=no exit=-1 a0=55aeedeb4bf0 a1=55aec76267d4 a2=55aeedeb4c40 a3=7 items=1 ppid=25605 pid=25606 auid=1000 uid=1000 gid=1000 euid=1000 suid=1000 fsuid=1000 egid=1000 sgid=1000 fsgid=1000 tty=(none) ses=85 comm="fusermount" exe="/usr/bin/fusermount3" subj=autobyteus-desktop-1000 key="ir4mount"
+type=SYSCALL msg=audit(1795091037.744:2915): arch=c000003e syscall=165 success=no exit=-1 a0=64e10c809bb0 a1=64e0d219d7d4 a2=64e10c8082c0 a3=7 items=1 ppid=25605 pid=25607 auid=1000 uid=1000 gid=1000 euid=1000 suid=1000 fsuid=1000 egid=1000 sgid=1000 fsgid=1000 tty=(none) ses=85 comm="fusermount" exe="/usr/bin/fusermount3" subj=autobyteus-desktop-1000 key="ir4mount"
+type=SYSCALL msg=audit(1795091062.581:3059): arch=c000003e syscall=165 success=yes exit=0 a0=63b50ffd9bf0 a1=63b4dfac07d4 a2=63b50ffd9c40 a3=7 items=5 ppid=26027 pid=26029 auid=1000 uid=1000 gid=1000 euid=0 suid=0 fsuid=0 egid=1000 sgid=1000 fsgid=1000 tty=(none) ses=93 comm="fusermount" exe="/usr/bin/fusermount3" subj=autobyteus-desktop-1000 key="ir4mount"
+autobyteus
+{"status":"ok","message":"Server is running"}
+c046b74a1031b06dc89164fa88a466641e7e7d8da8bc362278c3406a8e2c941c  e2e-profile/server-data/temp_workspace/ir004-marker
+[2026-11-19T12:24:35.443Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-19T12:24:37.396Z] [INFO] [electron] [updater] Checking for update
+[2026-11-19T12:24:37.472Z] [INFO] [electron] [updater] Update for version 1.5.15 is not available (latest version: 1.5.15, downgrade is disallowed).
+clean-ordinary-close

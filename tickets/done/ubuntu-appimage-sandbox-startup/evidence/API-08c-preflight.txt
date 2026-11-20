@@ -1,0 +1,24 @@
+# API-08c | API-08c-preflight | 2026-11-19 | CRR-004 (reviewed product c90f3ba8f2); isolated native GitHub Actions Linux x64/ARM64
+Thu Nov 19 12:58:22 UTC 2026
+{"viewerPermission":"ADMIN","visibility":"PUBLIC"}
+{"allowed_actions":"all","enabled":true}
+{"ahead_by":246,"behind_by":0,"status":"ahead"}
+secret gate: scanning 1 commit(s) in f7b4d68711..7b8d843e81699295e7aba96b7d6d367e949b60ae
+secret gate: PASS (no secrets found)
+Reviewed all code/test/build input delta and grant. All changes text; docs/design-cases and ticket history excluded; exact non-ticket product/test/build tree verified. Source ac263c11f5 candidate 7b8d843e81699295e7aba96b7d6d367e949b60ae parent f7b4d68711 ref validation/autobyteus-5-crr004-linux-20261119125804. Two standard public runners, build only, no cache/artifact publication or protected env. No generated keys, private material or local diagnostics.
+remote:
+remote: Create a pull request for 'validation/autobyteus-5-crr004-linux-20261119125804' on GitHub by visiting:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/pull/new/validation/autobyteus-5-crr004-linux-20261119125804
+remote:
+remote: GitHub found 1108 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (21 critical, 459 high, 518 moderate, 110 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To https://github.com/AutoByteus/autobyteus-workspace.git
+ * [new branch]            7b8d843e81699295e7aba96b7d6d367e949b60ae -> validation/autobyteus-5-crr004-linux-20261119125804
+remote:
+remote: GitHub found 1108 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (21 critical, 459 high, 518 moderate, 110 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To https://github.com/AutoByteus/autobyteus-workspace.git
+ - [deleted]               validation/autobyteus-5-crr004-linux-20261119125804
+Both jobs green; owned scratch ref removed after receipt capture. No production keys or release.

@@ -1,0 +1,21 @@
+# API-04d-paste-link: ApiE2E279UITests/testPasteALink on apie2e279-iphone (C56265A1-C55D-4693-8507-C262E9991100); fresh-start clone build (4ad317c20d + the temporary test file); 2026-11-19T22:15:09Z; load 424.85 444.36 362.52
+# links made just before: paste
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testPasteALink]' started.
+API279 paste-link-page-names: page node button: Test Node 279, Connected. Connection
+API279 paste-link-page-names: page sheet texts: ["Connected", "Test Node 279"]
+API279 paste-link-native-names: native rows: ["Test Node 279, Online, current node"]
+API279 paste-link-native-names: native More buttons: ["More for Test Node 279"]
+API279 paste-link-native-names: remove sheet texts: ["Test Node 279", "Remove from this phone"]
+API279 paste-link-native-names: remove confirmation texts: ["Test Node 279", "Remove Test Node 279 from this phone? Scan its QR code again to add it back.", "Cancel", "Remove"]
+API279 paste-link-relaunch-page-names: page node button: Test Node 279, Connected. Connection
+API279 paste-link-relaunch-page-names: page sheet texts: ["Connected", "Test Node 279"]
+API279 paste-link-relaunch-native-names: native rows: ["Test Node 279, Online, current node"]
+API279 paste-link-relaunch-native-names: native More buttons: ["More for Test Node 279"]
+API279 paste-link-relaunch-native-names: remove sheet texts: ["Test Node 279", "Remove from this phone"]
+API279 paste-link-relaunch-native-names: remove confirmation texts: ["Test Node 279", "Remove Test Node 279 from this phone? Scan its QR code again to add it back.", "Cancel", "Remove"]
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testPasteALink]' passed (199.768 seconds).
+	 Executed 1 test, with 0 failures (0 unexpected) in 199.768 (199.769) seconds
+	 Executed 1 test, with 0 failures (0 unexpected) in 199.768 (199.770) seconds
+	 Executed 1 test, with 0 failures (0 unexpected) in 199.768 (199.772) seconds
+** TEST EXECUTE SUCCEEDED **
+# exit: 0

@@ -819,19 +819,6 @@ export enum ApplicationsCapabilitySource {
   ServerSetting = 'SERVER_SETTING'
 }
 
-export type ApproveToolInvocationInput = {
-  agentRunId: Scalars['String']['input'];
-  invocationId: Scalars['String']['input'];
-  isApproved: Scalars['Boolean']['input'];
-  reason?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type ApproveToolInvocationResult = {
-  __typename?: 'ApproveToolInvocationResult';
-  message: Scalars['String']['output'];
-  success: Scalars['Boolean']['output'];
-};
-
 export type ArchiveStoredAgentRunGroupMutationResult = {
   __typename?: 'ArchiveStoredAgentRunGroupMutationResult';
   /** Non-empty means the group had running runs and nothing was archived. */
@@ -1936,7 +1923,6 @@ export type Mutation = {
   addProjectTaskComment: ProjectTask;
   addProjectWorkspace: Project;
   addSkillSource: Array<SkillSource>;
-  approveToolInvocation: ApproveToolInvocationResult;
   archiveStoredAgentOrgRun: AgentOrgStoredRunMutationResult;
   archiveStoredAgentRunGroup: ArchiveStoredAgentRunGroupMutationResult;
   archiveStoredRun: ArchiveStoredRunMutationResult;
@@ -2089,11 +2075,6 @@ export type MutationAddProjectWorkspaceArgs = {
 
 export type MutationAddSkillSourceArgs = {
   path: Scalars['String']['input'];
-};
-
-
-export type MutationApproveToolInvocationArgs = {
-  input: ApproveToolInvocationInput;
 };
 
 
@@ -3136,6 +3117,7 @@ export type QueryApplicationPackageDetailsArgs = {
 
 export type QueryCollaborationParticipantMessagesArgs = {
   agentRunId: Scalars['String']['input'];
+  before?: InputMaybe<Scalars['JSON']['input']>;
   rootKind: Scalars['String']['input'];
   rootRunId: Scalars['String']['input'];
 };
@@ -4758,20 +4740,6 @@ export type CancelPreparedAgentRunMutationVariables = Exact<{
 
 export type CancelPreparedAgentRunMutation = { __typename?: 'Mutation', cancelPreparedAgentRun: { __typename?: 'CancelPreparedAgentRunResult', success: boolean, message: string } };
 
-export type RestoreAgentRunMutationVariables = Exact<{
-  agentRunId: Scalars['String']['input'];
-}>;
-
-
-export type RestoreAgentRunMutation = { __typename?: 'Mutation', restoreAgentRun: { __typename: 'RestoreAgentRunResult', success: boolean, message: string, runId?: string | null } };
-
-export type ApproveToolInvocationMutationVariables = Exact<{
-  input: ApproveToolInvocationInput;
-}>;
-
-
-export type ApproveToolInvocationMutation = { __typename?: 'Mutation', approveToolInvocation: { __typename: 'ApproveToolInvocationResult', success: boolean, message: string } };
-
 export type AgentOrgDefinitionFieldsFragment = { __typename?: 'AgentOrgDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, revision?: string | null, personalSettings: Array<PersonalSetting>, personalSettingsBase?: PersonalSettingsBase | null, handoffs: Array<{ __typename?: 'AgentOrgHandoff', from: string, to: string, rules: Array<string> }>, members: Array<{ __typename?: 'AgentOrgMember', memberName: string, ref: string, refType: AgentOrgMemberType, refScope: AgentOrgMemberScope }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssues: Array<{ __typename?: 'DefinitionLoadIssueEntry', kind: DefinitionKind, definitionId: string, name?: string | null, code: string, reason: string, definitionPath: string, packageRoot: string, usingLastGood: boolean }> };
 
 export type CreateAgentOrgDefinitionMutationVariables = Exact<{
@@ -5596,15 +5564,6 @@ export type GetAgentRunCollaborationQueryVariables = Exact<{
 
 
 export type GetAgentRunCollaborationQuery = { __typename?: 'Query', agentRunCollaboration?: any | null };
-
-export type GetAgentRunCollaborationMemberProjectionQueryVariables = Exact<{
-  runId: Scalars['String']['input'];
-  memberAddress: Scalars['String']['input'];
-  agentRunId: Scalars['String']['input'];
-}>;
-
-
-export type GetAgentRunCollaborationMemberProjectionQuery = { __typename?: 'Query', agentRunCollaborationMemberProjection: { __typename?: 'AgentRunCollaborationMemberProjectionPayload', agentRunId: string, memberAddress: string, conversation: Array<any>, activities: Array<any>, summary?: string | null, lastActivityAt?: string | null, hasEarlierActiveTraceEvents: boolean } };
 
 export type GetDefinitionProblemsQueryVariables = Exact<{
   kind: DefinitionKind;
@@ -7781,69 +7740,6 @@ export function useCancelPreparedAgentRunMutation(options: VueApolloComposable.U
   return VueApolloComposable.useMutation<CancelPreparedAgentRunMutation, CancelPreparedAgentRunMutationVariables>(CancelPreparedAgentRunDocument, options);
 }
 export type CancelPreparedAgentRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CancelPreparedAgentRunMutation, CancelPreparedAgentRunMutationVariables>;
-export const RestoreAgentRunDocument = gql`
-    mutation RestoreAgentRun($agentRunId: String!) {
-  restoreAgentRun(agentRunId: $agentRunId) {
-    __typename
-    success
-    message
-    runId
-  }
-}
-    `;
-
-/**
- * __useRestoreAgentRunMutation__
- *
- * To run a mutation, you first call `useRestoreAgentRunMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useRestoreAgentRunMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useRestoreAgentRunMutation({
- *   variables: {
- *     agentRunId: // value for 'agentRunId'
- *   },
- * });
- */
-export function useRestoreAgentRunMutation(options: VueApolloComposable.UseMutationOptions<RestoreAgentRunMutation, RestoreAgentRunMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RestoreAgentRunMutation, RestoreAgentRunMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<RestoreAgentRunMutation, RestoreAgentRunMutationVariables>(RestoreAgentRunDocument, options);
-}
-export type RestoreAgentRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RestoreAgentRunMutation, RestoreAgentRunMutationVariables>;
-export const ApproveToolInvocationDocument = gql`
-    mutation ApproveToolInvocation($input: ApproveToolInvocationInput!) {
-  approveToolInvocation(input: $input) {
-    __typename
-    success
-    message
-  }
-}
-    `;
-
-/**
- * __useApproveToolInvocationMutation__
- *
- * To run a mutation, you first call `useApproveToolInvocationMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useApproveToolInvocationMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useApproveToolInvocationMutation({
- *   variables: {
- *     input: // value for 'input'
- *   },
- * });
- */
-export function useApproveToolInvocationMutation(options: VueApolloComposable.UseMutationOptions<ApproveToolInvocationMutation, ApproveToolInvocationMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ApproveToolInvocationMutation, ApproveToolInvocationMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<ApproveToolInvocationMutation, ApproveToolInvocationMutationVariables>(ApproveToolInvocationDocument, options);
-}
-export type ApproveToolInvocationMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ApproveToolInvocationMutation, ApproveToolInvocationMutationVariables>;
 export const CreateAgentOrgDefinitionDocument = gql`
     mutation CreateAgentOrgDefinition($input: CreateAgentOrgDefinitionInput!) {
   createAgentOrgDefinition(input: $input) {
@@ -11683,48 +11579,6 @@ export function useGetAgentRunCollaborationLazyQuery(variables?: GetAgentRunColl
   return VueApolloComposable.useLazyQuery<GetAgentRunCollaborationQuery, GetAgentRunCollaborationQueryVariables>(GetAgentRunCollaborationDocument, variables, options);
 }
 export type GetAgentRunCollaborationQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentRunCollaborationQuery, GetAgentRunCollaborationQueryVariables>;
-export const GetAgentRunCollaborationMemberProjectionDocument = gql`
-    query GetAgentRunCollaborationMemberProjection($runId: String!, $memberAddress: String!, $agentRunId: String!) {
-  agentRunCollaborationMemberProjection(
-    runId: $runId
-    memberAddress: $memberAddress
-    agentRunId: $agentRunId
-  ) {
-    agentRunId
-    memberAddress
-    conversation
-    activities
-    summary
-    lastActivityAt
-    hasEarlierActiveTraceEvents
-  }
-}
-    `;
-
-/**
- * __useGetAgentRunCollaborationMemberProjectionQuery__
- *
- * To run a query within a Vue component, call `useGetAgentRunCollaborationMemberProjectionQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAgentRunCollaborationMemberProjectionQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param variables that will be passed into the query
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetAgentRunCollaborationMemberProjectionQuery({
- *   runId: // value for 'runId'
- *   memberAddress: // value for 'memberAddress'
- *   agentRunId: // value for 'agentRunId'
- * });
- */
-export function useGetAgentRunCollaborationMemberProjectionQuery(variables: GetAgentRunCollaborationMemberProjectionQueryVariables | VueCompositionApi.Ref<GetAgentRunCollaborationMemberProjectionQueryVariables> | ReactiveFunction<GetAgentRunCollaborationMemberProjectionQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberProjectionQuery, GetAgentRunCollaborationMemberProjectionQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberProjectionQuery, GetAgentRunCollaborationMemberProjectionQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberProjectionQuery, GetAgentRunCollaborationMemberProjectionQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetAgentRunCollaborationMemberProjectionQuery, GetAgentRunCollaborationMemberProjectionQueryVariables>(GetAgentRunCollaborationMemberProjectionDocument, variables, options);
-}
-export function useGetAgentRunCollaborationMemberProjectionLazyQuery(variables?: GetAgentRunCollaborationMemberProjectionQueryVariables | VueCompositionApi.Ref<GetAgentRunCollaborationMemberProjectionQueryVariables> | ReactiveFunction<GetAgentRunCollaborationMemberProjectionQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberProjectionQuery, GetAgentRunCollaborationMemberProjectionQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberProjectionQuery, GetAgentRunCollaborationMemberProjectionQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberProjectionQuery, GetAgentRunCollaborationMemberProjectionQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetAgentRunCollaborationMemberProjectionQuery, GetAgentRunCollaborationMemberProjectionQueryVariables>(GetAgentRunCollaborationMemberProjectionDocument, variables, options);
-}
-export type GetAgentRunCollaborationMemberProjectionQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentRunCollaborationMemberProjectionQuery, GetAgentRunCollaborationMemberProjectionQueryVariables>;
 export const GetDefinitionProblemsDocument = gql`
     query GetDefinitionProblems($kind: DefinitionKind!) {
   definitionProblems(kind: $kind) {

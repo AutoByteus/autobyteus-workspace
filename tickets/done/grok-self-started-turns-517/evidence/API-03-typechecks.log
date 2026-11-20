@@ -1,0 +1,11 @@
+# API-03: pnpm -C autobyteus-server-ts typecheck; pnpm -C autobyteus-web typecheck; HEAD cc2701af8a + the gap case; node v22.23.1; 2026-11-20T18:17:11Z
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 12.8s
+[typecheck] server tests (tsconfig.tests.json): 1006 errors, exit 2, 36.4s
+[typecheck] production errors: 0; test-file errors: 1006 in 315 files (baseline 1006 in 315 files)
+[typecheck] PASS
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 50.1s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.2s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.7s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 30.8s
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS

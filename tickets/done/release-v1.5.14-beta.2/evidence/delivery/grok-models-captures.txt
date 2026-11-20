@@ -1,0 +1,22 @@
+=== grok models (before-1)
+You are logged in with grok.com.
+
+Default model: grok-4.7
+
+Available models:
+  * grok-4.7 (default)
+=== grok models (before-2)
+You are logged in with grok.com.
+
+Default model: grok-4.7
+
+Available models:
+  * grok-4.7 (default)
+=== grok models (after-run2)
+You are logged in with grok.com.
+
+Default model: grok-4.7
+
+Available models:
+  * grok-4.7 (default)
+(the first smoke run's Grok fallback model grok-4.5 was chosen at its start; grok models showed only grok-4.7 before the rerun, twice, and after it)

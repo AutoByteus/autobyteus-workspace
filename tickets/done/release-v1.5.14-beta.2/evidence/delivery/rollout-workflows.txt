@@ -1,0 +1,16 @@
+# Desktop run 44685600710 after 'gh run rerun 44685600710 --failed' (same commit a728fbcad3), final job results
+headSha a728fbcad3 conclusion success
+Build Linux x64: success
+Build Linux ARM64: success
+Resolve Release Metadata: success
+Build macOS ARM64: success
+Build macOS Intel x64: success
+Build Windows x64: success
+Sign authenticated Linux desktop releases: success
+Publish GitHub Release: success
+
+## the other three workflows of the tag
+44685600710 Desktop Release: success
+44685600694 Server Docker Release: success
+44685600671 iOS App Store Connect Release: success
+44685600660 Android APK Release: success

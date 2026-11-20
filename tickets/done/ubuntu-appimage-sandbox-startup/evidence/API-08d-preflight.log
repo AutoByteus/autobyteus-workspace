@@ -1,0 +1,29 @@
+# API-08d-preflight | 2026-11-19 | reviewed product 8f10fa9287 | GitHub native Linux x64/ARM64; operation: see matching case in execution report
+{"viewerPermission":"ADMIN","visibility":"PUBLIC"}
+{"enabled":true,"allowed_actions":"all","sha_pinning_required":false}
+{"ahead_by":246,"behind_by":0,"status":"ahead"}
+secret gate: scanning 1 commit(s) in f7b4d68711a0d0aa11ee3802b1264293d1c4ae8c..0b04181f2c9d5bb1c3f2d3c9e576262c84a71c36
+secret gate: PASS (no secrets found)
+Public standard runners; reviewed Linux-only orchestration SHA-trigger checkout/contents:read/no persisted credentials/secret environments/upload or publish; other workflows tag-only. All product/build/test input trees match reviewed cbbdd24b5c94dd94e5c22b6796cb1d878e817f6b; no private ticket history or generated fixtures. Allowed contract vector unchanged. Public source delta since previous validated candidate inspected; no binary delta.
+First Git transport ended with signal 15 before creating any remote ref or run. Retry the SAME scanned candidate via an isolated object store; fetch the current public tip so push can negotiate the already-public base rather than packing unchanged history.
+From https://github.com/AutoByteus/autobyteus-workspace
+ * [new branch]            personal   -> origin/personal
+public tip available for pack negotiation: 8430d9ef12385bb77e9ee2f808bc123c891b97b7
+1
+remote:
+remote: Create a pull request for 'validation/autobyteus-5-crr007-linux-20261119134830' on GitHub by visiting:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/pull/new/validation/autobyteus-5-crr007-linux-20261119134830
+remote:
+remote: GitHub found 1108 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (21 critical, 459 high, 518 moderate, 110 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To https://github.com/AutoByteus/autobyteus-workspace.git
+ * [new branch]            0b04181f2c9d5bb1c3f2d3c9e576262c84a71c36 -> validation/autobyteus-5-crr007-linux-20261119134830
+pushed same reviewed candidate=0b04181f2c9d5bb1c3f2d3c9e576262c84a71c36
+remote:
+remote: GitHub found 1108 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (21 critical, 459 high, 518 moderate, 110 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To https://github.com/AutoByteus/autobyteus-workspace.git
+ - [deleted]               validation/autobyteus-5-crr007-linux-20261119134830
+Confirmed no remote validation ref after cleanup; no target/tag/release modified.

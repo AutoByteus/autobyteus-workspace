@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import type { SessionUpdate, ToolCallUpdate } from "@agentclientprotocol/sdk";
 import { AgentRunEventType, type AgentRunEvent, type AgentRunStatusHint } from "../../../domain/agent-run-event.js";
 import type {
@@ -132,6 +133,18 @@ export class AcpSessionUpdateConverter {
         ...this.toolPayload(turnId, toolCallId, tracked.projection), reason, error: reason,
       }),
     ];
+  }
+
+  /**
+   * The system notice of a provider-started turn: what woke the agent (`SYSTEM_TASK_NOTIFICATION`, the keys Claude's
+   * notice uses). One id per notice, shared by the published notice and its recorded trace.
+   */
+  notice(content: string, senderId: string): AgentRunEvent[] {
+    const turnId = this.turnId;
+    if (!turnId) return [];
+    return [this.event(AgentRunEventType.SYSTEM_TASK_NOTIFICATION, {
+      turn_id: turnId, sender_id: senderId, content, message_id: randomUUID(),
+    })];
   }
 
   usage(payload: Record<string, unknown>): AgentRunEvent[] {

@@ -1,0 +1,7 @@
+Check: IMP-01
+Command: vitest run tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts against the BASE renderer (new test file only)
+Commit: 69e89271fb
+Environment: macOS arm64, Node 22, pnpm 10.28.2; the ticket worktree after pnpm install --frozen-lockfile, prepare:shared, prisma generate
+Date: 2026-11-19
+
+Tests  14 failed | 22 passed (36): the 14 failures are exactly the omission cases (AC-001, AC-002); the 22 'unchanged' cases (AC-003, AC-004) already pass on the base, as they must.

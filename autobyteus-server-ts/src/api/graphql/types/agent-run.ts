@@ -20,8 +20,6 @@ import {
 } from "./run-model-config.js";
 
 const logger = {
-  info: (...args: unknown[]) => console.info(...args),
-  warn: (...args: unknown[]) => console.warn(...args),
   error: (...args: unknown[]) => console.error(...args),
 };
 
@@ -152,30 +150,6 @@ export class UpdateStoppedAgentRunSelectionResult {
 
   @Field(() => [RunModelConfigFieldErrorObject])
   fieldErrors!: RunModelConfigFieldErrorObject[];
-}
-
-@InputType()
-export class ApproveToolInvocationInput {
-  @Field(() => String)
-  agentRunId!: string;
-
-  @Field(() => String)
-  invocationId!: string;
-
-  @Field(() => Boolean)
-  isApproved!: boolean;
-
-  @Field(() => String, { nullable: true })
-  reason?: string | null;
-}
-
-@ObjectType()
-export class ApproveToolInvocationResult {
-  @Field(() => Boolean)
-  success!: boolean;
-
-  @Field(() => String)
-  message!: string;
 }
 
 @Resolver()
@@ -344,54 +318,6 @@ export class AgentRunResolver {
         editability: { editable: false, reason: "INTERNAL_ERROR" },
         canonicalSelection: null,
         fieldErrors: [],
-      };
-    }
-  }
-
-  @Mutation(() => ApproveToolInvocationResult)
-  async approveToolInvocation(
-    @Arg("input", () => ApproveToolInvocationInput) input: ApproveToolInvocationInput,
-  ): Promise<ApproveToolInvocationResult> {
-    try {
-      logger.info(
-        `Received tool invocation approval request for agent run '${input.agentRunId}', invocation '${input.invocationId}', approved: ${input.isApproved}`,
-      );
-
-      const activeRun = this.agentRunService.getAgentRun(input.agentRunId);
-      if (!activeRun) {
-        logger.warn(`approveToolInvocation: Agent run with ID '${input.agentRunId}' not found.`);
-        return {
-          success: false,
-          message: `Agent run with ID '${input.agentRunId}' not found.`,
-        };
-      }
-
-      const result = await activeRun.approveToolInvocation(
-        input.invocationId,
-        input.isApproved,
-        input.reason ?? null,
-      );
-      if (!result.accepted) {
-        return {
-          success: false,
-          message: result.message ?? "Runtime rejected tool approval.",
-        };
-      }
-
-      logger.info(
-        `Successfully posted tool execution approval for agent run '${input.agentRunId}', invocation '${input.invocationId}'.`,
-      );
-      return {
-        success: true,
-        message: "Tool invocation approval/denial successfully sent to agent.",
-      };
-    } catch (error) {
-      logger.error(
-        `Error in approveToolInvocation for agent run '${input.agentRunId}': ${String(error)}`,
-      );
-      return {
-        success: false,
-        message: `An unexpected error occurred: ${String(error)}`,
       };
     }
   }

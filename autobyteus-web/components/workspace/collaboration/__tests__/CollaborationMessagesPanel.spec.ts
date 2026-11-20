@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import CollaborationMessagesPanel from '../CollaborationMessagesPanel.vue';
 import CollaborationMessagesSection from '../CollaborationMessagesSection.vue';
@@ -247,3 +247,66 @@ it('closes identity on exact subject/item changes but preserves it across same-i
   await wrapper.findAll('[data-test="team-communication-message-summary"]')[1].trigger('click');
   expect(wrapper.get('[data-test="message-identity-toggle"]').attributes('aria-expanded')).toBe('false');
 });
+
+// autobyteus-565 (REQ-003, REQ-005; DEC-002, DEC-004): a standalone run's own Messages: an agent on another node carries
+// its node's chip; a long history ends with "Load more", which loads the next older page, once at a time.
+describe('CollaborationMessagesPanel, a standalone run\'s own list', () => {
+  const row = (messageId: string, counterpart: CollaborationMessagePerspectiveRow['counterpart'], direction: 'sent' | 'received' = 'received'):
+    CollaborationMessagePerspectiveRow => ({ messageId, senderAgentRunId: direction === 'sent' ? 'pm' : `${messageId}-agent`,
+    receiverAgentRunId: direction === 'sent' ? `${messageId}-agent` : 'pm', content: `${messageId} content`, messageType: 'agent_message',
+    createdAt: '2026-11-20T10:00:00.000Z', referenceFiles: [], direction, counterpartAgentRunId: `${messageId}-agent`, counterpart })
+  const rows = [
+    row('m3', { kind: 'remote', address: '/project_task_manager' as never, label: 'project task manager', nodeName: 'ryan-ai-linux' }),
+    row('m2', { kind: 'run', address: '/project_task_manager' as never, label: 'project task manager' }, 'sent'),
+    row('m1', { kind: 'run', address: null, label: 'pm_old_run' }),
+  ]
+  const ownView = (more: Readonly<{ hasMore: boolean; state: 'idle' | 'loading' | 'error'; error?: string }>) => {
+    const loadMore = vi.fn()
+    const view: CollaborationMessagesContextView = {
+      rootKind: 'agent', rootRunId: 'pm', focusedAgentRunId: 'pm', focusedMemberAddress: '/pm' as never,
+      memberIdentityByAgentRunId: () => ({ pm: { kind: 'configured', address: '/pm' as never, label: 'PM' } }),
+      listMessages: () => rows, messagesStatus: () => ({ state: 'loaded', error: null }), loadMessages: () => undefined,
+      hasMore: () => more.hasMore, moreStatus: () => ({ state: more.state, error: more.error ?? null }), loadMore,
+      referenceContentPath: () => '',
+    }
+    return { view, loadMore }
+  }
+
+  it('shows the node chip on an agent on another node only, and its node and run in the participant details', async () => {
+    const { view } = ownView({ hasMore: false, state: 'idle' })
+    const wrapper = mountPanel(view)
+    const chips = messageRows(wrapper).map((entry) => entry.find('[data-test="team-communication-node-chip"]'))
+    expect(chips.map((chip) => chip.exists() ? chip.attributes('data-node-name') : null)).toEqual(['ryan-ai-linux', null, null])
+    expect(messageRows(wrapper)[2]!.text()).toContain('pm_old_run')
+    expect(wrapper.find('[data-test="collaboration-messages-load-more"]').exists()).toBe(false)
+    await wrapper.get('[data-test="message-identity-toggle"]').trigger('click')
+    const detail = wrapper.get('[data-test="message-identity-detail"]').text()
+    expect(detail).toContain('/project_task_manager')
+    expect(detail).toContain('ryan-ai-linux')
+    // An agent nothing names: no address line, its run ID only.
+    await messageRows(wrapper)[2]!.get('[data-test="team-communication-message-summary"]').trigger('click')
+    await wrapper.get('[data-test="message-identity-toggle"]').trigger('click')
+    const lines = wrapper.get('[data-test="message-identity-detail"]').findAll('p').map((line) => line.text())
+    expect(lines).toHaveLength(1)
+    expect(lines[0]).toContain('m1-agent')
+  })
+
+  it('ends a longer history with Load more, which asks for the next page; while it loads the button waits; a failure says why', async () => {
+    const idle = ownView({ hasMore: true, state: 'idle' })
+    const wrapper = mountPanel(idle.view)
+    const button = wrapper.get('[data-test="collaboration-messages-load-more"]')
+    await button.trigger('click')
+    expect(idle.loadMore).toHaveBeenCalledOnce()
+    const loading = mountPanel(ownView({ hasMore: true, state: 'loading' }).view)
+    expect(loading.get('[data-test="collaboration-messages-load-more"]').attributes('disabled')).toBeDefined()
+    const failed = mountPanel(ownView({ hasMore: true, state: 'error', error: 'log unreadable' }).view)
+    expect(failed.get('[data-test="collaboration-messages-more-error"]').text()).toContain('log unreadable')
+    expect(failed.get('[data-test="collaboration-messages-load-more"]').attributes('disabled')).toBeUndefined()
+  })
+
+  it('says an empty own list has no messages yet, not team messages', () => {
+    const { view } = ownView({ hasMore: false, state: 'idle' })
+    const wrapper = mountPanel({ ...view, listMessages: () => [] }, [])
+    expect(wrapper.text()).toContain('empty_title_own')
+  })
+})

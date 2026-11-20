@@ -1,0 +1,9 @@
+kernel.unprivileged_userns_clone = 1
+user.max_user_namespaces = 123849
+kernel.apparmor_restrict_unprivileged_userns = 1
+kernel.apparmor_restrict_unprivileged_unconfined = 1
+    PID                  STARTED COMMAND
+   9032 Sat Oct 24 12:39:14 2026 autobyteus
+   9037 Sat Oct 24 12:39:14 2026 AutoByteus_pers
+   9275 Sat Oct 24 12:39:17 2026 autobyteus
+Both_probe_roots_removed

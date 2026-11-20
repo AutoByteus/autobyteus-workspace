@@ -44,5 +44,7 @@
   "20261114_preserved_items_after_collaborators_to_delegated_runs_v1",
   "20261114_preserved_items_after_team_run_history_index_v2",
   "20261114_preserved_items_after_remove_skill_improvement_data",
-  "20261118_remove_retired_built_in_agents"
+  "20261118_remove_retired_built_in_agents",
+  "20261119_delegated_run_own_attachment_links",
+  "20261119_delegated_run_own_attachment_links_after_task_agent_own_run"
 ]

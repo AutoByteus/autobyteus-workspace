@@ -1,12 +1,13 @@
 /**
  * afterPack hook for electron-builder.
  *
- * This hook only normalizes packaged native resource file modes before macOS
+ * This hook installs Linux native launch assets and normalizes resource modes before macOS
  * signing. Entitlement selection and codesigning are owned by macSign.ts.
  */
 import * as path from 'path'
 import * as fs from 'fs'
 import { AfterPackContext } from 'electron-builder'
+import { packLinuxInstall } from './linuxInstallPack'
 
 function getAllFiles(dirPath: string, files: string[] = []): string[] {
   if (!fs.existsSync(dirPath)) return files
@@ -41,6 +42,7 @@ function normalizeNodePtySpawnHelpers(resourcesPath: string): void {
 }
 
 export default async function afterPack(context: AfterPackContext): Promise<void> {
+  if (context.electronPlatformName === 'linux') { packLinuxInstall(context); return }
   if (process.platform !== 'darwin') return
 
   const appPath = path.join(context.appOutDir, `${context.packager.appInfo.productFilename}.app`)

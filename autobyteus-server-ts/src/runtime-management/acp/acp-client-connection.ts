@@ -30,6 +30,7 @@ const SESSION_OPEN_TIMEOUT_MS = 120_000;
 const MAX_BUFFERED_FRAMES = 2_000;
 
 const CLIENT_INFO = { name: "autobyteus", version: "1.0.0" } as const;
+const logger = { warn: (...args: unknown[]) => console.warn(...args) };
 const CANCELLED_PERMISSION: RequestPermissionResponse = { outcome: { outcome: "cancelled" } };
 
 /** Receives the agent-to-client frames of one registered session. Must not throw. */
@@ -80,14 +81,18 @@ const sessionIdOf = (params: Record<string, unknown>): string | null =>
 const isForeignResponse = (message: AnyMessage): boolean =>
   !("method" in message) && "id" in message && typeof message.id !== "number";
 
-const filterForeignResponses = (stream: Stream): Stream => ({
-  writable: stream.writable,
-  readable: stream.readable.pipeThrough(new TransformStream<AnyMessage, AnyMessage>({
-    transform(message, controller) {
-      if (!isForeignResponse(message)) controller.enqueue(message);
-    },
-  })),
-});
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  !!value && typeof value === "object" && !Array.isArray(value);
+
+/**
+ * The minimal shape the stage checks before routing a `session/update` (the SDK does not export its schema): a
+ * non-empty string `sessionId` and an `update` object with a string `sessionUpdate`.
+ */
+const isSessionNotification = (params: Record<string, unknown>): boolean =>
+  sessionIdOf(params) !== null && isRecord(params.update) && typeof params.update.sessionUpdate === "string";
+
+/** JSON-RPC protocol notifications (`$/cancel_request`) stay the SDK's to handle. */
+const isProtocolNotification = (method: string): boolean => method.startsWith("$/");
 
 /**
  * One SDK client connection over one agent process. Routes agent-to-client frames to the
@@ -104,13 +109,15 @@ export class AcpClientConnection {
 
   constructor(private readonly process: AcpAgentProcess, readonly agentLabel: string) {
     const client: Client = {
-      sessionUpdate: (params) => { this.routeUpdate(params); },
+      // The inbound stage delivers session updates and extension notifications itself, in wire order
+      // (`inboundFrameStage`); none reaches the SDK. Required by the SDK's Client type.
+      sessionUpdate: async () => undefined,
       requestPermission: (params) => this.routePermission(params),
-      extNotification: async (method, params) => { this.routeExt(method, params); },
+      extNotification: async () => undefined,
       extMethod: async (method) => { throw RequestError.methodNotFound(method); },
     };
     this.sdk = new ClientSideConnection(() => client,
-      filterForeignResponses(ndJsonStream(process.output, process.input)));
+      this.inboundFrameStage(ndJsonStream(process.output, process.input)));
     process.onExit((exit) => this.markClosed({
       code: "ACP_AGENT_PROCESS_EXITED",
       message: `${agentLabel} process exited (${exit.spawnErrorCode ?? exit.code ?? exit.signal ?? "unknown"}).`,
@@ -202,6 +209,46 @@ export class AcpClientConnection {
   /** Stops the agent process; the connection reports closed once it exits. */
   async close(): Promise<void> {
     await this.process.stop();
+  }
+
+  /**
+   * The inbound stage (autobyteus-517, IR-001): every notification is handed to its session here, synchronously and in
+   * wire order, before any later frame, a response included, reaches the SDK. The SDK resolves a response at once but
+   * awaits notification handlers one by one, so on its own path a `session/prompt` response could overtake
+   * notifications that preceded it. A `session/update` that fails the minimal checks is dropped; every other
+   * notification goes to `routeExt` with its method unchanged; protocol (`$/`) notifications, responses and the
+   * agent's requests (permission requests) pass on to the SDK; responses to requests this client never sent are
+   * dropped. A handler's failure is logged and contained: the stage never throws, so the stream and every other
+   * session stay open.
+   */
+  private inboundFrameStage(stream: Stream): Stream {
+    return {
+      writable: stream.writable,
+      readable: stream.readable.pipeThrough(new TransformStream<AnyMessage, AnyMessage>({
+        transform: (message, controller) => {
+          if (isForeignResponse(message)) return;
+          if ("method" in message && !("id" in message) && !isProtocolNotification(message.method)) {
+            this.deliverNotification(message.method, isRecord(message.params) ? message.params : {});
+            return;
+          }
+          controller.enqueue(message);
+        },
+      })),
+    };
+  }
+
+  private deliverNotification(method: string, params: Record<string, unknown>): void {
+    try {
+      if (method !== "session/update") {
+        this.routeExt(method, params);
+      } else if (isSessionNotification(params)) {
+        this.routeUpdate(params as unknown as SessionNotification);
+      } else {
+        logger.warn(`ACP_FRAME_DROPPED: ${this.agentLabel} sent a malformed session/update.`);
+      }
+    } catch (error: unknown) {
+      logger.warn(`ACP_FRAME_HANDLER_FAILED: ${this.agentLabel} method=${method} session=${sessionIdOf(params) ?? "-"}: ${String(error)}`);
+    }
   }
 
   private routeUpdate(notification: SessionNotification): void {

@@ -8,6 +8,41 @@ import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { routeTaskWorkerBoundaries } from './fixtures/task-worker-boundaries.mjs';
+import { parseRunStatusServerMessage, runTreeDtoSchema } from '@autobyteus/collaboration-stream-contracts';
+
+/**
+ * The rich Team's tree as its node builds it (autobyteus-461 SR-084: a team's delegated runs are its tree's rows, never
+ * its own context's): its own /worker and /reviewer, and under /worker a task agent and a review Team it delegated.
+ */
+const RICH_TEAM = 'team-0';
+const member = (teamRunId, agentRunId, address, name, parentKey, depth) => ({
+  key: `team_member:${teamRunId}:${agentRunId}`, parentKey, depth, kind: 'team_member', name, address,
+  openTarget: { runKind: 'agent_team', runId: teamRunId, agentRunId }, statusIds: [agentRunId],
+});
+const richTree = runTreeDtoSchema.parse({ kind: 'agent_team', runId: RICH_TEAM, rows: [
+  { key: `team:${RICH_TEAM}`, parentKey: null, depth: 0, kind: 'team', name: 'Contention Team', address: '/',
+    openTarget: { runKind: 'agent_team', runId: RICH_TEAM, agentRunId: 'rich-worker-run' }, statusIds: [RICH_TEAM] },
+  member(RICH_TEAM, 'rich-worker-run', '/worker', 'Worker', `team:${RICH_TEAM}`, 1),
+  { key: 'agent:rich-delegated-agent-run', parentKey: `team_member:${RICH_TEAM}:rich-worker-run`, depth: 2, kind: 'agent',
+    name: 'Fact Checker', address: '/fact_checker',
+    openTarget: { runKind: 'agent', runId: 'rich-delegated-agent-run', agentRunId: 'rich-delegated-agent-run' }, statusIds: ['rich-delegated-agent-run'] },
+  { key: 'team:rich-review-team', parentKey: `team_member:${RICH_TEAM}:rich-worker-run`, depth: 2, kind: 'team',
+    name: 'Review Team', address: '/ReviewTeam',
+    openTarget: { runKind: 'agent_team', runId: 'rich-review-team', agentRunId: 'rich-review-child-run' }, statusIds: ['rich-review-team'] },
+  member('rich-review-team', 'rich-review-child-run', '/ReviewTeam/reviewer', 'reviewer', 'team:rich-review-team', 3),
+  member(RICH_TEAM, 'rich-task-agent-run', '/reviewer', 'Reviewer', `team:${RICH_TEAM}`, 1),
+] });
+/** Each run's own answer on `/ws/run-status` (SR-082): the rich Team's own agents and the runs it delegated. */
+const RUN_ANSWERS = {
+  [`agent_team:${RICH_TEAM}`]: { status: 'running', agents: { 'rich-worker-run': 'idle', 'rich-task-agent-run': 'running' } },
+  'agent:rich-delegated-agent-run': { status: 'running', agents: { 'rich-delegated-agent-run': 'running' } },
+  'agent_team:rich-review-team': { status: 'running', agents: { 'rich-review-child-run': 'running' } },
+};
+const runStatusAnswer = (ref) => {
+  const known = RUN_ANSWERS[`${ref.kind}:${ref.runId}`];
+  return { kind: ref.kind, runId: ref.runId, answer: 'ok', node: null, status: known?.status ?? 'offline', backgroundTasksRunning: 0,
+    agents: Object.entries(known?.agents ?? {}).map(([agentRunId, status]) => ({ agentRunId, status, backgroundTasksRunning: 0 })) };
+};
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -131,6 +166,11 @@ try {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'en-US', colorScheme: 'light' });
   await context.grantPermissions(['microphone'], { origin: baseUrl });
   await context.route('**/rest/health', async (route) => route.fulfill({ status: 200, contentType: 'application/json', body: '{"status":"ok"}' }));
+  // A paste reads the node's context-file size limits first (generous: nothing is refused), then uploads; the upload is
+  // held open (the delayed upload the paste scenarios measure the placeholder against) until the context closes.
+  await context.route('**/rest/context-files/size-limits', async (route) => route.fulfill({ status: 200, contentType: 'application/json',
+    body: JSON.stringify({ otherFileMaxBytes: 100 * 1024 * 1024, audioVideoMaxBytes: 1024 * 1024 * 1024, audioVideoMimeTypes: [] }) }));
+  await context.route('**/rest/context-files/upload', () => undefined);
   await context.route('**/graphql', async (route) => {
     const request = route.request();
     let payload = {};
@@ -162,6 +202,12 @@ try {
       },
     };
 
+    // The rich Team's tree (the other Teams are never expanded here: their own rows serve).
+    if (query.includes('runTree')) {
+      const runTree = variables.kind === 'agent_team' && variables.runId === RICH_TEAM ? richTree : null;
+      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: { runTree } }) });
+      return;
+    }
     if (query.includes('workspaceRunHistory')) delete data.applicationsCapability;
     if (query.includes('applicationsCapability')) delete data.workspaceRunHistory;
 
@@ -181,6 +227,12 @@ try {
   await context.routeWebSocket(/\/ws\/agent-package-definitions(\?|$)/, (ws) => ws.send(JSON.stringify({ type: 'connected' })));
   // Baseline fix (autobyteus-385 API/E2E): the window also opens the update-notifications stream (autobyteus-210); the fixture has no backend.
   await context.routeWebSocket(/\/ws\/update-notifications(\?|$)/, () => undefined);
+  // Each shown run's statuses, read by run ID from the run itself (autobyteus-461 SR-082): answered per subscription.
+  await context.routeWebSocket(/\/ws\/run-status(\?|$)/, (ws) => ws.onMessage((raw) => {
+    const message = JSON.parse(String(raw));
+    if (message.type !== 'SUBSCRIBE') return;
+    ws.send(JSON.stringify(parseRunStatusServerMessage({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: message.payload.runs.map(runStatusAnswer) } })));
+  }));
   await page.goto(`${baseUrl}${routePath}`, { waitUntil: 'domcontentloaded', timeout: timeoutMs });
   await page.locator('[data-test="background-contention-probe"]').waitFor({ state: 'visible', timeout: timeoutMs });
   await page.waitForFunction(() => Boolean(window.__backgroundContentionProbe), null, { timeout: timeoutMs });
@@ -274,18 +326,27 @@ try {
     await teamRow.waitFor({ state: 'visible' });
     assert(await page.locator('[data-test="workspace-team-transient-execution-row"]').count() === 0, 'Collapsed team leaked transient rows');
     await teamRow.click();
-    // Task-Agent leaves are peers of their regular Agent (no disclosure on /worker; baseline fix).
+    // autobyteus-461: the Team's own members are its own rows; the runs /worker delegated are its tree's rows (the server
+    // builds them), each with its own run's status from /ws/run-status. A delegated Team starts collapsed.
     await page.locator('[data-test="workspace-team-transient-disclosure"][data-member-address="/ReviewTeam"]').click();
-    const hierarchy = await page.evaluate(() => window.__backgroundContentionProbe.inspectHierarchy());
-    assert(hierarchy.rows.length === 4, 'Exact hierarchy row count mismatch', hierarchy);
-    assert(hierarchy.rows.map((row) => `${row.kind}:${row.memberAddress}:${row.agentRunId || 'team'}:${row.depth}`).join('|') === [
-      'stable_member:/worker:rich-worker-run:0', 'delegated_run:/worker:rich-task-agent-run:0',
-      'delegated_run:/ReviewTeam:team:0', 'delegated_run:/ReviewTeam/reviewer:rich-task-team-child-run:1',
-    ].join('|'), 'Exact hierarchy order/depth mismatch', hierarchy);
-    assert(hierarchy.rows.find((row) => row.agentRunId === 'rich-task-agent-run')?.status === 'running', 'Task-agent status mismatch', hierarchy);
-    assert(hierarchy.rows.find((row) => row.agentRunId === 'rich-task-team-child-run')?.status === 'running', 'Task-team child status mismatch', hierarchy);
-    const taskAgent = page.locator('[data-test="workspace-team-transient-execution-row"][data-member-address="/worker"]');
-    await taskAgent.click();
+    await page.locator('[data-test="workspace-team-transient-execution-row"][data-member-address="/ReviewTeam/reviewer"]').waitFor();
+    const readHierarchy = () => page.evaluate(() => [...document.querySelectorAll('[data-test="workspace-team-execution-tree"] [data-member-address]')]
+      .filter((element) => element.matches('[data-test="workspace-team-transient-execution-row"]')
+        || /^workspace-team-member-team-0-/.test(element.getAttribute('data-test') ?? ''))
+      .map((element) => ({
+        kind: element.matches('[data-test="workspace-team-transient-execution-row"]') ? element.getAttribute('data-delegated-run-kind') : 'stable_member',
+        memberAddress: element.getAttribute('data-member-address'), agentRunId: element.getAttribute('data-agent-run-id'),
+        status: element.getAttribute('data-status'),
+      })));
+    await waitFor('the delegated rows show their runs\' statuses', async () =>
+      (await readHierarchy()).filter((row) => row.kind !== 'stable_member').every((row) => row.status === 'running'), timeoutMs);
+    const hierarchy = { rows: await readHierarchy() };
+    assert(hierarchy.rows.map((row) => `${row.kind}:${row.memberAddress}:${row.agentRunId ?? 'team'}`).join('|') === [
+      'stable_member:/worker:team', 'task_agent:/fact_checker:rich-delegated-agent-run', 'task_team:/ReviewTeam:team',
+      'task_team_child:/ReviewTeam/reviewer:rich-review-child-run', 'stable_member:/reviewer:team',
+    ].join('|'), 'Exact hierarchy order mismatch', hierarchy);
+    // The Team's own member keeps the Team's focus under traffic: /reviewer is focused from its own row.
+    await page.locator('[data-test="workspace-team-member-team-0-/reviewer"]').click();
     await page.locator('[data-test="rich-focus"]').filter({ hasText: 'rich-task-agent-run' }).waitFor();
     const beforeDetail = await page.evaluate(() => window.__backgroundContentionProbe.getRevisions());
     await page.locator('[data-test="detail-only-update"]').click();

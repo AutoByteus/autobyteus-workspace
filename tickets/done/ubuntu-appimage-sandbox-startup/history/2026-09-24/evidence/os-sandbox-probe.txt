@@ -1,0 +1,67 @@
+--- user namespace direct test ---
+unshare_exit=1
+--- confinement status ---
+unconfined
+unconfined
+--- mount details ---
+AutoByteus_personal_linux-x64-1.4.78.AppImage on /tmp/.mount_AutoBygX3Cf8 type fuse.AutoByteus_personal_linux-x64-1.4.78.AppImage (ro,nosuid,nodev,relatime,user_id=1000,group_id=1000)
+--- sandbox helper ---
+ls: cannot access '/tmp/.mount_AutoBygX3Cf8/AutoByteus': No such file or directory
+-rwxr-xr-x 1 root root  2351 Sep 24 08:01 /tmp/.mount_AutoBygX3Cf8/AppRun
+-rwxr-xr-x 1 root root 15232 Sep 24 08:01 /tmp/.mount_AutoBygX3Cf8/chrome-sandbox
+755 0:0 /tmp/.mount_AutoBygX3Cf8/chrome-sandbox
+--- apparmor chrome profile ---
+# This profile allows everything and only exists to give the
+# application a name instead of having the label "unconfined"
+
+abi <abi/5.0>,
+include <tunables/global>
+
+profile chrome /opt/google/chrome/chrome flags=(unconfined) {
+  userns,
+  @{exec_path} mr,
+
+  # Site-specific additions and overrides. See local/README for details.
+  include if exists <local/chrome>
+}
+--- kernel logs relevant ---
+Sep 24 11:33:43 ryan-ai-linux kernel: audit: type=1400 audit(1790242423.948:553): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1157699 comm="fusermount" capability=7  capname="setuid"
+Sep 24 11:33:43 ryan-ai-linux kernel: audit: type=1400 audit(1790242423.949:554): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1157700 comm="fusermount" capability=7  capname="setuid"
+Sep 24 11:33:43 ryan-ai-linux kernel: audit: type=1400 audit(1790242423.985:555): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1157701 comm="fusermount" capability=1  capname="dac_override"
+Sep 24 11:36:59 ryan-ai-linux kernel: audit: type=1400 audit(1790242619.226:557): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1157990 comm="fusermount" capability=1  capname="dac_override"
+Sep 24 11:36:59 ryan-ai-linux kernel: audit: type=1400 audit(1790242619.226:558): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1157990 comm="fusermount" capability=7  capname="setuid"
+Sep 24 11:36:59 ryan-ai-linux kernel: audit: type=1400 audit(1790242619.228:559): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1157991 comm="fusermount" capability=7  capname="setuid"
+Sep 24 11:36:59 ryan-ai-linux kernel: audit: type=1400 audit(1790242619.525:560): apparmor="AUDIT" operation="userns_create" class="namespace" info="Userns create - transitioning profile" profile="unconfined" pid=1157988 comm="autobyteus" requested="userns_create" target="unprivileged_userns" execpath="/tmp/.mount_AutoBykw3Jyn/autobyteus"
+Sep 24 11:36:59 ryan-ai-linux kernel: audit: type=1400 audit(1790242619.527:561): apparmor="DENIED" operation="capable" class="cap" profile="unprivileged_userns" pid=1157999 comm="autobyteus" capability=21  capname="sys_admin"
+Sep 24 11:36:59 ryan-ai-linux kernel: traps: autobyteus[1157988] trap int3 ip:5f606c1ac281 sp:7fff49f002a0 error:0 in autobyteus[8b18281,5f6066493000+9a30000]
+Sep 24 11:36:59 ryan-ai-linux kernel: audit: type=1400 audit(1790242619.684:562): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1158002 comm="fusermount" capability=1  capname="dac_override"
+Sep 24 11:36:59 ryan-ai-linux kernel: audit: type=1400 audit(1790242619.684:563): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1158002 comm="fusermount" capability=7  capname="setuid"
+Sep 24 11:36:59 ryan-ai-linux kernel: audit: type=1400 audit(1790242619.684:564): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1158004 comm="fusermount" capability=7  capname="setuid"
+Sep 24 11:37:10 ryan-ai-linux kernel: audit: type=1400 audit(1790242630.471:565): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1158025 comm="fusermount" capability=1  capname="dac_override"
+Sep 24 11:37:10 ryan-ai-linux kernel: audit: type=1400 audit(1790242630.471:566): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1158025 comm="fusermount" capability=7  capname="setuid"
+Sep 24 11:37:10 ryan-ai-linux kernel: audit: type=1400 audit(1790242630.471:567): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1158026 comm="fusermount" capability=7  capname="setuid"
+Sep 24 11:37:10 ryan-ai-linux kernel: audit: type=1400 audit(1790242630.769:568): apparmor="AUDIT" operation="userns_create" class="namespace" info="Userns create - transitioning profile" profile="unconfined" pid=1158023 comm="autobyteus" requested="userns_create" target="unprivileged_userns" execpath="/tmp/.mount_AutoByh7X45B/autobyteus"
+Sep 24 11:37:10 ryan-ai-linux kernel: audit: type=1400 audit(1790242630.771:569): apparmor="DENIED" operation="capable" class="cap" profile="unprivileged_userns" pid=1158031 comm="autobyteus" capability=21  capname="sys_admin"
+Sep 24 11:37:10 ryan-ai-linux kernel: traps: autobyteus[1158023] trap int3 ip:6402c7b67281 sp:7ffdffd280e0 error:0 in autobyteus[8b18281,6402c1e4e000+9a30000]
+Sep 24 11:37:10 ryan-ai-linux kernel: audit: type=1400 audit(1790242630.911:570): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1158034 comm="fusermount" capability=1  capname="dac_override"
+Sep 24 11:37:10 ryan-ai-linux kernel: audit: type=1400 audit(1790242630.911:571): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1158034 comm="fusermount" capability=7  capname="setuid"
+Sep 24 11:37:10 ryan-ai-linux kernel: audit: type=1400 audit(1790242630.911:572): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1158036 comm="fusermount" capability=7  capname="setuid"
+Sep 24 11:37:15 ryan-ai-linux kernel: audit: type=1400 audit(1790242635.533:573): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1158056 comm="fusermount" capability=1  capname="dac_override"
+Sep 24 11:37:15 ryan-ai-linux kernel: audit: type=1400 audit(1790242635.533:574): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1158056 comm="fusermount" capability=7  capname="setuid"
+Sep 24 11:37:15 ryan-ai-linux kernel: audit: type=1400 audit(1790242635.533:575): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1158057 comm="fusermount" capability=7  capname="setuid"
+Sep 24 11:37:17 ryan-ai-linux kernel: NVRM: API mismatch: the client 'autobyteus' (pid 1158093)
+Sep 24 11:37:17 ryan-ai-linux kernel: NVRM: API mismatch: the client 'autobyteus' (pid 1158093)
+Sep 24 11:37:17 ryan-ai-linux kernel: NVRM: API mismatch: the client 'autobyteus' (pid 1158093)
+Sep 24 11:40:31 ryan-ai-linux kernel: audit: type=1400 audit(1790242831.199:576): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1162426 comm="fusermount" capability=1  capname="dac_override"
+Sep 24 11:40:31 ryan-ai-linux kernel: audit: type=1400 audit(1790242831.199:577): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1162426 comm="fusermount" capability=7  capname="setuid"
+Sep 24 11:40:31 ryan-ai-linux kernel: audit: type=1400 audit(1790242831.200:578): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1162427 comm="fusermount" capability=7  capname="setuid"
+Sep 24 11:40:32 ryan-ai-linux kernel: audit: type=1400 audit(1790242832.204:579): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1162442 comm="fusermount" capability=1  capname="dac_override"
+Sep 24 11:40:32 ryan-ai-linux kernel: audit: type=1400 audit(1790242832.204:580): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1162442 comm="fusermount" capability=7  capname="setuid"
+Sep 24 11:40:32 ryan-ai-linux kernel: audit: type=1400 audit(1790242832.204:581): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1162445 comm="fusermount" capability=7  capname="setuid"
+Sep 24 11:40:44 ryan-ai-linux kernel: audit: type=1400 audit(1790242844.246:582): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1162531 comm="fusermount" capability=1  capname="dac_override"
+Sep 24 11:40:44 ryan-ai-linux kernel: audit: type=1400 audit(1790242844.246:583): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1162531 comm="fusermount" capability=7  capname="setuid"
+Sep 24 11:40:44 ryan-ai-linux kernel: audit: type=1400 audit(1790242844.246:584): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1162532 comm="fusermount" capability=7  capname="setuid"
+Sep 24 11:40:45 ryan-ai-linux kernel: audit: type=1400 audit(1790242845.082:585): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1162547 comm="fusermount" capability=1  capname="dac_override"
+Sep 24 11:40:45 ryan-ai-linux kernel: audit: type=1400 audit(1790242845.082:586): apparmor="DENIED" operation="capable" class="cap" profile="fusermount3" pid=1162548 comm="fusermount" capability=7  capname="setuid"
+Sep 24 11:41:13 ryan-ai-linux kernel: audit: type=1400 audit(1790242873.660:587): apparmor="AUDIT" operation="userns_create" class="namespace" info="Userns create - transitioning profile" profile="unconfined" pid=1162829 comm="unshare" requested="userns_create" target="unprivileged_userns" execpath="/usr/bin/unshare"
+Sep 24 11:41:13 ryan-ai-linux kernel: audit: type=1400 audit(1790242873.660:588): apparmor="DENIED" operation="capable" class="cap" profile="unprivileged_userns" pid=1162829 comm="unshare" capability=21  capname="sys_admin"

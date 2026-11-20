@@ -1,0 +1,95 @@
+// Temporary Linux-only QA test: copy into the store package in an isolated copy of the module.
+// The fixture writes only t.TempDir(). Supply errors externally to this test process only.
+package store
+
+import (
+	"autobyteus.local/desktop/linux-install/internal/imagefile"
+	"autobyteus.local/desktop/linux-install/internal/protocol"
+	"bytes"
+	"crypto/ed25519"
+	"errors"
+	"os"
+	"path/filepath"
+	"runtime"
+	"strings"
+	"syscall"
+	"testing"
+)
+
+func TestQAPersistenceFault(t *testing.T) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+	dir := t.TempDir()
+	pub, key, err := ed25519.GenerateKey(nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	old, q, body := signed(t, key, "1.5.13")
+	live := filepath.Join(dir, "AutoByteus.AppImage")
+	f, err := os.Create(live)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err = f.Write(body); err != nil {
+		t.Fatal(err)
+	}
+	if err = imagefile.SetIdentity(f, q.Record, q.Signature); err != nil {
+		t.Fatal(err)
+	}
+	if err = f.Close(); err != nil {
+		t.Fatal(err)
+	}
+	s, err := Open(dir, "x64", pub)
+	if err != nil {
+		t.Fatal(err)
+	}
+	next, q, body := signed(t, key, "1.5.14")
+	q.ExpectedDigest = old.SHA256
+	want := old.SHA256
+	r, err := s.Handle(q, bytes.NewReader(body))
+	switch os.Getenv("QA_FAULT") {
+	case "low-volume":
+		if err == nil || !strings.Contains(err.Error(), "insufficient staging space") {
+			t.Fatalf("expected low-space refusal, got %v", err)
+		}
+	case "attribute":
+		if !errors.Is(err, syscall.ENOTSUP) {
+			t.Fatalf("expected unsupported xattr, got %v", err)
+		}
+	case "file-sync", "stage-dir-sync":
+		if !errors.Is(err, syscall.EIO) {
+			t.Fatalf("expected stage fsync error, got %v", err)
+		}
+	case "commit-dir-sync":
+		if err != nil || r.StageID == "" {
+			t.Fatalf("missing stage: %v", err)
+		}
+		_, err = s.Handle(protocol.Request{Operation: "activate", StageID: r.StageID, ExpectedDigest: q.ExpectedDigest, Channel: q.Channel}, nil)
+		if !errors.Is(err, syscall.EIO) {
+			t.Fatalf("expected ambiguous post-rename failure, got %v", err)
+		}
+		want = next.SHA256
+	default:
+		t.Fatal("choose external QA fault")
+	}
+	if want == old.SHA256 && r.StageID != "" {
+		t.Fatal("false ready receipt")
+	}
+	if err = s.Close(); err != nil {
+		t.Fatal(err)
+	}
+	s, err = Open(dir, "x64", pub)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer s.Close()
+	current, _, err := s.current()
+	if err != nil || current.SHA256 != want {
+		t.Fatalf("wrong recovered identity %s, %v", current.SHA256, err)
+	}
+	pending, err := filepath.Glob(filepath.Join(dir, ".pending-*"))
+	if err != nil || len(pending) != 0 {
+		t.Fatal("orphan stage", pending, err)
+	}
+	t.Logf("fault=%s reopened=%s orphan=0", os.Getenv("QA_FAULT"), current.Version)
+}

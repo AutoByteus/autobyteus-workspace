@@ -1,0 +1,13 @@
+2026-11-19 UTC; IR-005, c90f3ba8f2 (corresponding production tree), x64.
+Commands: pnpm -C autobyteus-web typecheck; pnpm -C autobyteus-server-ts typecheck. Required project config and baseline policy, current production sources. Generated untracked SDK dist outputs removed after execution.
+web-types.log: [typecheck] Nuxt app (tsconfig.json): 60 errors, exit 2, 80.6s
+web-types.log: [typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 4.6s
+web-types.log: [typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 1.9s
+web-types.log: [typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 57.2s
+web-types.log: [typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+web-types.log: [typecheck] PASS
+server-types.log: [typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 18.5s
+server-types.log: [typecheck] server tests (tsconfig.tests.json): 1012 errors, exit 2, 50.3s
+server-types.log: [typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+server-types.log: [typecheck] PASS
+Full local logs: /home/ryan-ai/hdd_drive/autobyteus_org/api-e2e-autobyteus-5/ir005

@@ -1,0 +1,138 @@
+2026-11-19 UTC; IR-005, c90f3ba8f2 (corresponding production tree), x64.
+Check: Settings and host observations on real packaged Noble desktop. Use disposable loopback-tagged full signed images from IMP-33, filesystem marker only in synthetic e2e-profile. No production keys or user data. Clicks exercised actual Settings (Playwright via test debug port on first launch; actual X11 window clicks on menu-origin run). Successors have no inherited debug arguments. No independent menu/CLI launch between either explicit click and its observed successor.
+A. Open renamed .13 directly (redirect). Settings > Updates, Check, opt in then opt out while verifying; Check/Download again after cancellation; click explicit Install & Restart. Old main/server 4614/4661 gone; prior supervisor PID 4593 re-enters a new mount, one main/server 5304/5350, visible usable desktop (IMP-36-successor.png), confirmed .14 bytes, health, sandboxed renderer. No auth prompt or further action. Kernel data:
+[before; bare integer after marker = FUSE mounts]
+Thu Nov 19 12:45:24 UTC 2026
+PRETTY_NAME="Ubuntu 24.04.5 LTS"
+731d3f61cdfb39f3b87400ac026605153702db3c86b85269072e78ba3a84d5ce  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+b1541ee880e639f904b79c274e535f9ceee0b89149c11dcfabb50de70f2d5a25  /home/witness/e2e-profile/server-data/temp_workspace/ir005-marker
+2
+role=supervisor pid=4593 ppid=1 exe=/tmp/.mount_AutoBydXiD9R/AppRun fd4=pipe:[21635]
+Uid:	1000	1000	1000	1000 NSpid:	4593 NoNewPrivs:	0 Seccomp:	0
+flags:	00
+role=main pid=4614 ppid=4593 exe=/tmp/.mount_AutoBydXiD9R/autobyteus fd4=socket:[20325]
+Uid:	1000	1000	1000	1000 NSpid:	4614 NoNewPrivs:	0 Seccomp:	0
+flags:	02004002
+role=node pid=4661 ppid=4614 exe=/tmp/.mount_AutoBydXiD9R/autobyteus fd4=anon_inode:[eventpoll]
+Uid:	1000	1000	1000	1000 NSpid:	4661 NoNewPrivs:	0 Seccomp:	0
+role=renderer pid=4812 ppid=4621 exe=/tmp/.mount_AutoBydXiD9R/autobyteus fd4=socket:[20329]
+Uid:	1000	1000	1000	1000 NSpid:	4812	4	1 NoNewPrivs:	1 Seccomp:	2
+health 29696 {"status":"ok","message":"Server is running"}
+health 29695 absent
+[settings witness]
+observed writer verification downloading Verifying downloaded update... true
+  status: 'downloading',
+  currentVersion: '1.5.13',
+  updateStaged: false,
+  automaticUpdate: false,
+observed cancel complete available Update is available for download. false
+cancel settled {
+  status: 'available',
+  currentVersion: '1.5.13',
+  updateStaged: false,
+  automaticUpdate: false,
+verified before click {
+  status: 'downloaded',
+  currentVersion: '1.5.13',
+  updateStaged: true,
+  automaticUpdate: false,
+clicked Install & Restart 2026-11-19T12:46:20.529Z
+[after]
+Thu Nov 19 12:46:47 UTC 2026
+PRETTY_NAME="Ubuntu 24.04.5 LTS"
+df33d927190eae41a8c2a499cae3d63c3cd9b1a014bbf3002b6d280062d5be03  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+b1541ee880e639f904b79c274e535f9ceee0b89149c11dcfabb50de70f2d5a25  /home/witness/e2e-profile/server-data/temp_workspace/ir005-marker
+1
+role=supervisor pid=4593 ppid=1 exe=/tmp/.mount_AutoByOHXvDX/AppRun fd4=/sys/fs/cgroup/user.slice/user-1000.slice/session-40.scope/cpu.max
+Uid:	1000	1000	1000	1000 NSpid:	4593 NoNewPrivs:	0 Seccomp:	0
+flags:	02100000
+role=main pid=5304 ppid=4593 exe=/tmp/.mount_AutoByOHXvDX/autobyteus fd4=socket:[24214]
+Uid:	1000	1000	1000	1000 NSpid:	5304 NoNewPrivs:	0 Seccomp:	0
+flags:	02004002
+role=node pid=5350 ppid=5304 exe=/tmp/.mount_AutoByOHXvDX/autobyteus fd4=anon_inode:[eventpoll]
+Uid:	1000	1000	1000	1000 NSpid:	5350 NoNewPrivs:	0 Seccomp:	0
+role=renderer pid=5457 ppid=5311 exe=/tmp/.mount_AutoByOHXvDX/autobyteus fd4=socket:[23191]
+Uid:	1000	1000	1000	1000 NSpid:	5457	4	1 NoNewPrivs:	1 Seccomp:	2
+health 29696 {"status":"ok","message":"Server is running"}
+health 29695 absent
+B. Quit .14 normally, independently launch its registered menu (gtk-launch autobyteus-managed). Settings displays .14, auto disabled. Check, Download .15, observe Ready to install. Reset ONLY the test-owned guest writer service to invalidate its receipt. Click Install & Restart on the existing visible menu-origin GUI at 12:47:59Z: confirmed old .14 returns spontaneously, old main/server 5885/5931 gone; supervisor 5868 is unchanged, new GUI/server healthy. No click to reopen, auth prompt, second backend or candidate commit. Matching stage-gone manual failure preserved (not an automatic block).
+[after confirmed-old recovery]
+Thu Nov 19 12:48:12 UTC 2026
+PRETTY_NAME="Ubuntu 24.04.5 LTS"
+df33d927190eae41a8c2a499cae3d63c3cd9b1a014bbf3002b6d280062d5be03  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+b1541ee880e639f904b79c274e535f9ceee0b89149c11dcfabb50de70f2d5a25  /home/witness/e2e-profile/server-data/temp_workspace/ir005-marker
+1
+role=supervisor pid=5868 ppid=1 exe=/tmp/.mount_AutoBytM7wCm/AppRun fd4=/sys/fs/cgroup/user.slice/user-1000.slice/session-53.scope/cpu.max
+Uid:	1000	1000	1000	1000 NSpid:	5868 NoNewPrivs:	0 Seccomp:	0
+flags:	02100000
+role=main pid=6782 ppid=5868 exe=/tmp/.mount_AutoBytM7wCm/autobyteus fd4=socket:[26511]
+Uid:	1000	1000	1000	1000 NSpid:	6782 NoNewPrivs:	0 Seccomp:	0
+flags:	02004002
+role=node pid=6827 ppid=6782 exe=/tmp/.mount_AutoBytM7wCm/autobyteus fd4=anon_inode:[eventpoll]
+Uid:	1000	1000	1000	1000 NSpid:	6827 NoNewPrivs:	0 Seccomp:	0
+role=renderer pid=6916 ppid=6789 exe=/tmp/.mount_AutoBytM7wCm/autobyteus fd4=socket:[26515]
+Uid:	1000	1000	1000	1000 NSpid:	6916	4	1 NoNewPrivs:	1 Seccomp:	2
+health 29696 {"status":"ok","message":"Server is running"}
+health 29695 absent
+[user notification record, test profile]
+Thu Nov 19 12:48:21 UTC 2026
+{
+  "version": "1.5.15",
+  "fromVersion": "1.5.14",
+  "foundAt": "2026-11-19T12:47:28.920Z",
+  "read": false,
+  "handledVersion": null,
+  "handledAt": null,
+  "automatic": null,
+  "automaticFailure": null,
+  "outcome": null,
+  "manualInstall": null,
+  "manualFailure": {
+    "version": "1.5.15",
+    "reason": "stage-gone"
+  }
+}
+autobyteus
+
+C. Same recovery session: turn on Update automatically; .15 re-staged, no immediate exit. GUI still .14 with “Ready for your next quit” (IMP-36-ready-on-quit.png). Independent ordinary last-window close at Thu Nov 19 12:49:09 UTC 2026; signed .15 now installed, zero app/managed mounts, both health ports absent, graphical session remained. App stayed closed until independent direct old download launch. Empty pkcheck --list-temp in test desktop at the opt-in; no new authentication during updates. Later direct original .13 redirected to installed .15; Settings shows .15 Up to date with opt-in preserved (IMP-36-final-settings.png).
+[ordinary quit]
+Thu Nov 19 12:49:21 UTC 2026
+PRETTY_NAME="Ubuntu 24.04.5 LTS"
+4d2cdcec096230953479833e9489387f9d033763b50c782d1b79e8e6991bb0e9  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+b1541ee880e639f904b79c274e535f9ceee0b89149c11dcfabb50de70f2d5a25  /home/witness/e2e-profile/server-data/temp_workspace/ir005-marker
+0
+health 29696 absent
+health 29695 absent
+[final .15 reopened independently]
+Thu Nov 19 12:50:08 UTC 2026
+PRETTY_NAME="Ubuntu 24.04.5 LTS"
+4d2cdcec096230953479833e9489387f9d033763b50c782d1b79e8e6991bb0e9  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+b1541ee880e639f904b79c274e535f9ceee0b89149c11dcfabb50de70f2d5a25  /home/witness/e2e-profile/server-data/temp_workspace/ir005-marker
+2
+role=supervisor pid=7686 ppid=1 exe=/tmp/.mount_AutoByLQMAGa/AppRun fd4=pipe:[32997]
+Uid:	1000	1000	1000	1000 NSpid:	7686 NoNewPrivs:	0 Seccomp:	0
+flags:	00
+role=main pid=7751 ppid=7686 exe=/tmp/.mount_AutoByLQMAGa/autobyteus fd4=socket:[31252]
+Uid:	1000	1000	1000	1000 NSpid:	7751 NoNewPrivs:	0 Seccomp:	0
+flags:	02004002
+role=node pid=7803 ppid=7751 exe=/tmp/.mount_AutoByLQMAGa/autobyteus fd4=anon_inode:[eventpoll]
+Uid:	1000	1000	1000	1000 NSpid:	7803 NoNewPrivs:	0 Seccomp:	0
+role=renderer pid=7892 ppid=7765 exe=/tmp/.mount_AutoByLQMAGa/autobyteus fd4=socket:[31255]
+Uid:	1000	1000	1000	1000 NSpid:	7892	4	1 NoNewPrivs:	1 Seccomp:	2
+health 29696 {"status":"ok","message":"Server is running"}
+health 29695 absent
+[final ordinary close]
+Thu Nov 19 12:50:30 UTC 2026
+PRETTY_NAME="Ubuntu 24.04.5 LTS"
+4d2cdcec096230953479833e9489387f9d033763b50c782d1b79e8e6991bb0e9  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+b1541ee880e639f904b79c274e535f9ceee0b89149c11dcfabb50de70f2d5a25  /home/witness/e2e-profile/server-data/temp_workspace/ir005-marker
+0
+health 29696 absent
+health 29695 absent
+mounts=0
+no-app-window
+{
+  "enabled": true
+}
+Same workspace marker hash at all reads; changed mount and one active .14 mount after explicit reopen. Zero FUSE mounts and no GUI/server after final ordinary close. Isolated guest shut down and private CDP tunnel closed. Local full logs/fixture (not for publication): /home/ryan-ai/hdd_drive/autobyteus_org/api-e2e-autobyteus-5/ir005
+Limits: this is an implementation-scoped witness in one disposable x64 desktop; data witness is a synthetic workspace file and real settings, not proof of every data workflow. Independent API/E2E owns acceptance incl. current-package rerun, notification row/interactive continuity, native hosts and negative matrix.

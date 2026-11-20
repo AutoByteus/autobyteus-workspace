@@ -1,0 +1,28 @@
+# GH-02: no upload, tag or release from this ticket (AC-005); read only; 2026-11-20T12:35:19Z
+== release-ios.yml runs on the branch
+44730865039 workflow_dispatch e3950f9d07 success 2026-11-20T11:50:35Z
+-- run 44730865039 jobs:
+   Resolve iOS Release Metadata: success
+   Build And Test iOS App: success
+   Validate iOS Publish Secrets: skipped
+   Archive And Upload To App Store Connect: skipped
+== all workflow runs on the branch
+44730865039 iOS App Store Connect Release workflow_dispatch success
+== newest releases
+v1.5.14-beta.3	Pre-release	v1.5.14-beta.3	2026-11-20T10:46:31Z
+v1.5.14-beta.2	Pre-release	v1.5.14-beta.2	2026-11-20T06:14:03Z
+v1.5.14-beta.1	Pre-release	v1.5.14-beta.1	2026-11-18T17:35:14Z
+v1.5.13	Latest	v1.5.13	2026-11-18T12:22:58Z
+v1.5.13-beta.10	Pre-release	v1.5.13-beta.10	2026-11-18T04:49:09Z
+== remote tags pointing at the branch's commits (e3950f9d07, b03bb0e609)
+none
+== newest remote v* tags
+fcc215695d refs/tags/voice-runtime-v0.1.1
+2d7c60f25b refs/tags/voice-runtime-v0.1.0
+d7394a0f9c refs/tags/v2026.02.26-personal-desktop-e2e.3^{}
+== the Solution Designer's probe run P-01 (44725773809), also this ticket's
+branch probe/ios-xcode27-571 head 832843f34f workflow_dispatch success
+   Resolve iOS Release Metadata: success
+   Build And Test iOS App: success
+   Validate iOS Publish Secrets: skipped
+   Archive And Upload To App Store Connect: skipped

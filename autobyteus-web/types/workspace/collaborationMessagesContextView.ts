@@ -1,7 +1,7 @@
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { TeamReferenceFile } from '~/types/teamReferenceFile'
 
-export type CollaborationMessageMemberIdentity = Readonly<{
+export type CollaborationMessageMemberIdentity = (Readonly<{
   address: AgentTeamAddress
   label: string
 }> & (Readonly<{ kind: 'configured' }> | Readonly<{
@@ -12,7 +12,21 @@ export type CollaborationMessageMemberIdentity = Readonly<{
 }> | Readonly<{
   /** An agent of a delegated run that left the root's tree when its Task closed, named by the server (autobyteus-469). */
   kind: 'past'
-}>)
+}>)) | Readonly<{
+  /**
+   * An agent of another local run (autobyteus-565): its address when known, else it is named by its run ID (an older
+   * line, or a deleted run).
+   */
+  kind: 'run'
+  address: AgentTeamAddress | null
+  label: string
+}> | Readonly<{
+  /** An agent on another node (autobyteus-565): its address when known, and this node's name for that node (the chip). */
+  kind: 'remote'
+  address: AgentTeamAddress | null
+  label: string
+  nodeName: string | null
+}>
 
 export interface CollaborationMessagePerspectiveRow {
   readonly messageId: string
@@ -33,11 +47,17 @@ export interface CollaborationMessagesContextView {
   readonly focusedAgentRunId: string
   readonly focusedMemberAddress: AgentTeamAddress
   memberIdentityByAgentRunId(): Readonly<Record<string, CollaborationMessageMemberIdentity>>
-  /** The focused participant's loaded messages, newest first; empty until they are loaded (autobyteus-358). */
+  /** The focused participant's loaded messages (its loaded pages and live ones), newest first; empty until loaded (autobyteus-358). */
   listMessages(): readonly CollaborationMessagePerspectiveRow[]
   /** Whether those messages are loading, loaded, or could not be read (with the reason). */
   messagesStatus(): Readonly<{ state: 'idle' | 'loading' | 'loaded' | 'error'; error: string | null }>
   /** Asks for those messages when they are shown; after a failure it tries again. */
   loadMessages(): void
+  /** Older messages follow the loaded ones (autobyteus-565: pages of 50, newest first). */
+  hasMore(): boolean
+  /** Whether the next older page is loading, or could not be read (with the reason); idle otherwise. */
+  moreStatus(): Readonly<{ state: 'idle' | 'loading' | 'error'; error: string | null }>
+  /** Loads the next older page ("Load more"), once at a time; after a failure it tries again. */
+  loadMore(): void
   referenceContentPath(messageId: string, referenceId: string): string
 }

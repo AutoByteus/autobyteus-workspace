@@ -1,3 +1,4 @@
+import { statSync, type Stats } from "node:fs";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -5,10 +6,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   AgentPackageFolderWatcher,
   PACKAGE_CATCH_UP_DELAY_MS,
+  type PackageFolderChangeSink,
   type PackageFolderWatch,
+  type PackageFolderWatchFactory,
+  type ParentFolderWatchFactory,
 } from "../../../src/agent-package-definitions/monitor/agent-package-folder-watcher.js";
 import type { RegisteredPackageRoot } from "../../../src/agent-package-definitions/domain/agent-package-definition-types.js";
-import { FILE_EVENT_TEST_TIMEOUT_MS, IN_PROCESS_SERVER_HOOK_TIMEOUT_MS, OS_FILE_EVENT_WAIT_MS } from "../../helpers/os-latency-under-load.js";
 
 let base: string;
 let monitor: AgentPackageFolderWatcher | null = null;
@@ -39,49 +42,166 @@ const recordingSink = () => {
   };
 };
 
-/** Waits for the monitor to see an OS file event (or arm its watch); the latency is the OS's (os-latency-under-load.ts). */
-const waitFor = async (predicate: () => boolean, timeoutMs = OS_FILE_EVENT_WAIT_MS): Promise<void> => {
+/*
+ * The OS side of the monitor is owned by the test (autobyteus-526 SR-002). Each test makes the real folder change on
+ * disk, then reports the event the OS would through these fakes, injected through the monitor's `createWatcher` and
+ * `createParentFolderWatch` options. No test here waits for OS event delivery, whose latency on a busy Mac is many
+ * seconds; real delivery is covered by tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts.
+ */
+
+/** A package folder watch (chokidar's part): records what it watches and its close; the test emits its events. */
+class FakeWatch implements PackageFolderWatch {
+  private readonly listeners = new Map<string, Array<(...args: any[]) => void>>();
+  closed = false;
+  constructor(
+    readonly paths: string[] = [],
+    readonly ignored: (filePath: string, stats?: Stats) => boolean = () => false,
+  ) {}
+  on(event: string, listener: (...args: any[]) => void): this {
+    this.listeners.set(event, [...(this.listeners.get(event) ?? []), listener]);
+    return this;
+  }
+  /** What the watch holds; tests fill it to say which folders chokidar knows. */
+  watched: Record<string, string[]> = {};
+  getWatched(): Record<string, string[]> { return this.watched; }
+  close = vi.fn(async () => { this.closed = true; });
+  emit(event: string, ...args: unknown[]): void {
+    for (const listener of this.listeners.get(event) ?? []) listener(...args);
+  }
+}
+
+/** A one-level watch of a directory's entries (fs.watch's part). */
+class FakeParentWatch {
+  closed = false;
+  constructor(
+    readonly directory: string,
+    readonly onChange: (entryName: string | null) => void,
+    readonly onError: (error: unknown) => void,
+  ) {}
+  close = vi.fn(() => { this.closed = true; });
+}
+
+const statsOf = (filePath: string): Stats | undefined => {
+  try { return statSync(filePath); } catch { return undefined; }
+};
+
+/**
+ * The fakes of both event sources and the test's way to report what the OS would. `readyOnCreate` makes each new
+ * package folder watch report `ready` after its (empty) initial scan, as chokidar does.
+ */
+const fakeOs = (options: { readyOnCreate?: boolean } = {}) => {
+  const watches: FakeWatch[] = [];
+  const parents: FakeParentWatch[] = [];
+  /** chokidar reports a path under a watched path unless its `ignored` excludes the path or a folder on the way to it. */
+  const covers = (watch: FakeWatch, filePath: string): boolean => watch.paths.some((watchedPath) => {
+    const relative = path.relative(watchedPath, filePath);
+    if (relative.startsWith("..") || path.isAbsolute(relative)) return false;
+    for (let current = filePath; current !== watchedPath; current = path.dirname(current)) {
+      if (watch.ignored(current, statsOf(current))) return false;
+    }
+    return true;
+  });
+  const createWatcher: PackageFolderWatchFactory = (paths, watchOptions) => {
+    const watch = new FakeWatch(paths.map((watchedPath) => path.resolve(watchedPath)), watchOptions.ignored);
+    watches.push(watch);
+    if (options.readyOnCreate) setImmediate(() => { if (!watch.closed) watch.emit("ready"); });
+    return watch;
+  };
+  const createParentFolderWatch: ParentFolderWatchFactory = (directory, onChange, onError) => {
+    const watch = new FakeParentWatch(directory, onChange, onError);
+    parents.push(watch);
+    return watch;
+  };
+  return {
+    watches,
+    parents,
+    createWatcher,
+    createParentFolderWatch,
+    /** The OS reports a file event (add, change, unlink, addDir, unlinkDir) to every open watch that covers the path. */
+    reportFile(event: string, filePath: string): void {
+      for (const watch of [...watches]) if (!watch.closed && covers(watch, filePath)) watch.emit("all", event, filePath);
+    },
+    /** The OS reports a changed entry of a directory to every open one-level watch of that directory. */
+    reportEntry(directory: string, entryName: string | null): void {
+      for (const parent of [...parents]) if (!parent.closed && parent.directory === directory) parent.onChange(entryName);
+    },
+  };
+};
+
+/** A monitor whose OS event sources are the test's fakes. */
+const monitorWithFakeOs = (
+  sink: PackageFolderChangeSink,
+  options: { readyOnCreate?: boolean; createWatcher?: (fakes: ReturnType<typeof fakeOs>) => PackageFolderWatchFactory } = {},
+) => {
+  const fakes = fakeOs({ readyOnCreate: options.readyOnCreate ?? true });
+  monitor = new AgentPackageFolderWatcher({
+    sink,
+    createWatcher: options.createWatcher?.(fakes) ?? fakes.createWatcher,
+    createParentFolderWatch: fakes.createParentFolderWatch,
+  });
+  return fakes;
+};
+
+/** Waits for the monitor's own asynchronous work (folder stats, its serial queue); no OS event is waited for. */
+const waitFor = async (predicate: () => boolean, timeoutMs = 2_000): Promise<void> => {
   const started = Date.now();
   while (!predicate()) {
     if (Date.now() - started > timeoutMs) throw new Error("Timed out waiting for the monitor.");
-    await new Promise((resolve) => setTimeout(resolve, 25));
+    await new Promise((resolve) => setTimeout(resolve, 5));
   }
 };
-const settleQuietly = (ms = 400) => new Promise((resolve) => setTimeout(resolve, ms));
+/** Lets the monitor finish what the reported events started, before checking that something did NOT happen. */
+const settle = async () => {
+  await monitor?.whenReady();
+  for (let turn = 0; turn < 20; turn += 1) await new Promise((resolve) => setImmediate(resolve));
+};
 
 beforeEach(async () => {
   base = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "apar-monitor-")));
 });
 
-// Closing the monitor closes its OS folder watches on the main thread: seconds under an FSEvents backlog.
 afterEach(async () => {
   vi.useRealTimers();
   await monitor?.close();
   monitor = null;
   await fs.rm(base, { recursive: true, force: true });
-}, IN_PROCESS_SERVER_HOOK_TIMEOUT_MS);
+});
 
-describe("AgentPackageFolderWatcher", { timeout: FILE_EVENT_TEST_TIMEOUT_MS }, () => {
+describe("AgentPackageFolderWatcher", () => {
   it("reports definition changes per folder and ignores skills and other files", async () => {
     const rootPath = path.join(base, "pkg");
     await fs.mkdir(path.join(rootPath, "agents", "a", "skills", "s"), { recursive: true });
     await fs.mkdir(path.join(rootPath, "agent-teams", "t", "agents"), { recursive: true });
     const recorded = recordingSink();
-    monitor = new AgentPackageFolderWatcher({ sink: recorded.sink });
-    await monitor.syncPackageFolders([rootAt(rootPath)]);
-    await monitor.whenReady();
-    expect(monitor.getPackageFolderWatchStatus(rootPath)).toEqual({ state: "WATCHING", message: null });
+    const fakes = monitorWithFakeOs(recorded.sink);
+    await monitor!.syncPackageFolders([rootAt(rootPath)]);
+    await monitor!.whenReady();
+    expect(monitor!.getPackageFolderWatchStatus(rootPath)).toEqual({ state: "WATCHING", message: null });
 
-    await fs.writeFile(path.join(rootPath, "agents", "a", "skills", "s", "SKILL.md"), "x");
-    await fs.writeFile(path.join(rootPath, "agents", "a", "notes.md"), "x");
-    await fs.mkdir(path.join(rootPath, "docs"));
-    await fs.writeFile(path.join(rootPath, "docs", "readme.md"), "x");
-    await settleQuietly();
+    const skillFile = path.join(rootPath, "agents", "a", "skills", "s", "SKILL.md");
+    const notesFile = path.join(rootPath, "agents", "a", "notes.md");
+    const docsFolder = path.join(rootPath, "docs");
+    const docsFile = path.join(docsFolder, "readme.md");
+    await fs.writeFile(skillFile, "x");
+    fakes.reportFile("add", skillFile);
+    await fs.writeFile(notesFile, "x");
+    fakes.reportFile("add", notesFile);
+    await fs.mkdir(docsFolder);
+    fakes.reportFile("addDir", docsFolder);
+    await fs.writeFile(docsFile, "x");
+    fakes.reportFile("add", docsFile);
+    await settle();
     expect(recorded.folders).toEqual([]);
 
-    await fs.writeFile(path.join(rootPath, "agents", "a", "agent.md"), "x");
-    await fs.mkdir(path.join(rootPath, "agent-teams", "t", "agents", "lead"));
-    await fs.writeFile(path.join(rootPath, "agent-teams", "t", "agents", "lead", "agent-config.json"), "{}");
+    const agentFile = path.join(rootPath, "agents", "a", "agent.md");
+    const leadFolder = path.join(rootPath, "agent-teams", "t", "agents", "lead");
+    const leadConfig = path.join(leadFolder, "agent-config.json");
+    await fs.writeFile(agentFile, "x");
+    fakes.reportFile("add", agentFile);
+    await fs.mkdir(leadFolder);
+    fakes.reportFile("addDir", leadFolder);
+    await fs.writeFile(leadConfig, "{}");
+    fakes.reportFile("add", leadConfig);
     await waitFor(() => recorded.folders.includes("agent:a") && recorded.folders.includes("agent_team:t"));
     expect(recorded.folders.every((folder) => folder === "agent:a" || folder === "agent_team:t")).toBe(true);
   });
@@ -91,23 +211,27 @@ describe("AgentPackageFolderWatcher", { timeout: FILE_EVENT_TEST_TIMEOUT_MS }, (
     const movedPath = path.join(base, "pkg-moved");
     await fs.mkdir(path.join(rootPath, "agents", "a"), { recursive: true });
     const recorded = recordingSink();
-    monitor = new AgentPackageFolderWatcher({ sink: recorded.sink });
-    await monitor.syncPackageFolders([rootAt(rootPath)]);
-    await monitor.whenReady();
-    await settleQuietly(300);
+    const fakes = monitorWithFakeOs(recorded.sink);
+    await monitor!.syncPackageFolders([rootAt(rootPath)]);
+    await monitor!.whenReady();
 
     await fs.rename(rootPath, movedPath);
+    fakes.reportEntry(base, "pkg");
+    fakes.reportEntry(base, "pkg-moved");
     await waitFor(() => monitor!.getPackageFolderWatchStatus(rootPath)?.state === "FOLDER_MISSING");
     expect(recorded.roots).toContain(rootPath);
 
     recorded.roots.length = 0;
     await fs.rename(movedPath, rootPath);
+    fakes.reportEntry(base, "pkg-moved");
+    fakes.reportEntry(base, "pkg");
     await waitFor(() => monitor!.getPackageFolderWatchStatus(rootPath)?.state === "WATCHING");
     expect(recorded.roots).toContain(rootPath);
-    await monitor.whenReady();
-    await settleQuietly(300);
+    await monitor!.whenReady();
 
-    await fs.writeFile(path.join(rootPath, "agents", "a", "agent.md"), "x");
+    const agentFile = path.join(rootPath, "agents", "a", "agent.md");
+    await fs.writeFile(agentFile, "x");
+    fakes.reportFile("add", agentFile);
     await waitFor(() => recorded.folders.includes("agent:a"));
   });
 
@@ -115,36 +239,40 @@ describe("AgentPackageFolderWatcher", { timeout: FILE_EVENT_TEST_TIMEOUT_MS }, (
     const rootPath = path.join(base, "pkg");
     await fs.mkdir(path.join(rootPath, "agents"), { recursive: true });
     const recorded = recordingSink();
-    monitor = new AgentPackageFolderWatcher({ sink: recorded.sink });
-    await monitor.syncPackageFolders([rootAt(rootPath)]);
-    await monitor.whenReady();
+    const fakes = monitorWithFakeOs(recorded.sink);
+    await monitor!.syncPackageFolders([rootAt(rootPath)]);
+    await monitor!.whenReady();
 
     const staged = path.join(base, "staged");
     await fs.mkdir(path.join(staged, "agents", "b"), { recursive: true });
     await fs.rename(rootPath, path.join(base, "backup"));
     await fs.rename(staged, rootPath);
-    // The update's own full reconcile re-syncs roots; the identity check re-arms the replaced root.
-    await monitor.syncPackageFolders([rootAt(rootPath)]);
+    // The update's own full reconcile re-syncs roots; the identity check re-arms the replaced root. (The parent
+    // watch's events for the swap are not reported: this case proves the sync's identity check on its own.)
+    await monitor!.syncPackageFolders([rootAt(rootPath)]);
     await waitFor(() => monitor!.getPackageFolderWatchStatus(rootPath)?.state === "WATCHING");
-    await monitor.whenReady();
-    // macOS directory watches start slightly after chokidar's ready; the re-arm itself also asks
-    // the sync for a full reconcile of the root, which covers writes made in that short window.
+    await monitor!.whenReady();
+    // The re-arm itself also asks the sync for a full reconcile of the root, which covers writes made while the
+    // new OS watches start.
     expect(recorded.roots).toContain(rootPath);
-    await settleQuietly(300);
     recorded.folders.length = 0;
 
-    await fs.writeFile(path.join(rootPath, "agents", "b", "agent.md"), "x");
+    const agentFile = path.join(rootPath, "agents", "b", "agent.md");
+    await fs.writeFile(agentFile, "x");
+    fakes.reportFile("add", agentFile);
     await waitFor(() => recorded.folders.includes("agent:b"));
   });
 
   it("starts a registered root that is missing as FOLDER_MISSING and arms it when it appears", async () => {
     const rootPath = path.join(base, "later", "pkg");
     const recorded = recordingSink();
-    monitor = new AgentPackageFolderWatcher({ sink: recorded.sink });
-    await monitor.syncPackageFolders([rootAt(rootPath)]);
-    expect(monitor.getPackageFolderWatchStatus(rootPath)?.state).toBe("FOLDER_MISSING");
+    const fakes = monitorWithFakeOs(recorded.sink);
+    await monitor!.syncPackageFolders([rootAt(rootPath)]);
+    expect(monitor!.getPackageFolderWatchStatus(rootPath)?.state).toBe("FOLDER_MISSING");
 
     await fs.mkdir(path.join(rootPath, "agents"), { recursive: true });
+    // The nearest existing ancestor is watched while the root is missing.
+    fakes.reportEntry(base, "later");
     await waitFor(() => monitor!.getPackageFolderWatchStatus(rootPath)?.state === "WATCHING");
     expect(recorded.roots).toContain(rootPath);
   });
@@ -154,22 +282,21 @@ describe("AgentPackageFolderWatcher", { timeout: FILE_EVENT_TEST_TIMEOUT_MS }, (
     await fs.mkdir(rootPath, { recursive: true });
     let fail = true;
     const recorded = recordingSink();
-    monitor = new AgentPackageFolderWatcher({
-      sink: recorded.sink,
-      createWatcher: (paths, options) => {
+    monitorWithFakeOs(recorded.sink, {
+      createWatcher: (fakes) => (paths, options) => {
         if (fail) throw Object.assign(new Error("System limit for number of file watchers reached"), { code: "ENOSPC" });
-        return realWatcher(paths, options);
+        return fakes.createWatcher(paths, options);
       },
     });
-    await monitor.syncPackageFolders([rootAt(rootPath)]);
-    expect(monitor.getPackageFolderWatchStatus(rootPath)).toEqual({
+    await monitor!.syncPackageFolders([rootAt(rootPath)]);
+    expect(monitor!.getPackageFolderWatchStatus(rootPath)).toEqual({
       state: "UNAVAILABLE",
       message: expect.stringContaining("ENOSPC"),
     });
 
     fail = false;
-    await monitor.syncPackageFolders([rootAt(rootPath)]);
-    expect(monitor.getPackageFolderWatchStatus(rootPath)?.state).toBe("WATCHING");
+    await monitor!.syncPackageFolders([rootAt(rootPath)]);
+    expect(monitor!.getPackageFolderWatchStatus(rootPath)?.state).toBe("WATCHING");
   });
 
   it("reports UNAVAILABLE for a root whose definition folder cannot be listed, and re-arms once it can", async () => {
@@ -177,33 +304,24 @@ describe("AgentPackageFolderWatcher", { timeout: FILE_EVENT_TEST_TIMEOUT_MS }, (
     await fs.mkdir(path.join(rootPath, "agents"), { recursive: true });
     await fs.chmod(path.join(rootPath, "agents"), 0o000);
     const recorded = recordingSink();
-    monitor = new AgentPackageFolderWatcher({ sink: recorded.sink });
+    monitorWithFakeOs(recorded.sink);
     try {
-      await monitor.syncPackageFolders([rootAt(rootPath)]);
-      expect(monitor.getPackageFolderWatchStatus(rootPath)).toEqual({ state: "UNAVAILABLE", message: expect.stringContaining("EACCES") });
+      await monitor!.syncPackageFolders([rootAt(rootPath)]);
+      expect(monitor!.getPackageFolderWatchStatus(rootPath)).toEqual({ state: "UNAVAILABLE", message: expect.stringContaining("EACCES") });
     } finally {
       await fs.chmod(path.join(rootPath, "agents"), 0o755);
     }
-    await monitor.syncPackageFolders([rootAt(rootPath)]);
-    expect(monitor.getPackageFolderWatchStatus(rootPath)?.state).toBe("WATCHING");
+    await monitor!.syncPackageFolders([rootAt(rootPath)]);
+    expect(monitor!.getPackageFolderWatchStatus(rootPath)?.state).toBe("WATCHING");
   });
 
   it("reports UNAVAILABLE when a running watcher fails", async () => {
     const rootPath = path.join(base, "pkg");
     await fs.mkdir(rootPath, { recursive: true });
-    const listeners: Record<string, Array<(...args: unknown[]) => void>> = {};
-    const fake: PackageFolderWatch = {
-      on: ((event: string, listener: (...args: unknown[]) => void) => {
-        (listeners[event] ??= []).push(listener);
-        return fake;
-      }) as PackageFolderWatch["on"],
-      getWatched: () => ({}),
-      close: async () => undefined,
-    };
     const recorded = recordingSink();
-    monitor = new AgentPackageFolderWatcher({ sink: recorded.sink, createWatcher: () => fake });
-    await monitor.syncPackageFolders([rootAt(rootPath)]);
-    listeners.error?.forEach((listener) => listener(Object.assign(new Error("too many open files"), { code: "EMFILE" })));
+    const fakes = monitorWithFakeOs(recorded.sink, { readyOnCreate: false });
+    await monitor!.syncPackageFolders([rootAt(rootPath)]);
+    fakes.watches[0]!.emit("error", Object.assign(new Error("too many open files"), { code: "EMFILE" }));
     await waitFor(() => monitor!.getPackageFolderWatchStatus(rootPath)?.state === "UNAVAILABLE");
     expect(recorded.roots).toContain(rootPath);
   });
@@ -212,41 +330,31 @@ describe("AgentPackageFolderWatcher", { timeout: FILE_EVENT_TEST_TIMEOUT_MS }, (
     const rootPath = path.join(base, "pkg");
     await fs.mkdir(path.join(rootPath, "agents", "a"), { recursive: true });
     const recorded = recordingSink();
-    monitor = new AgentPackageFolderWatcher({ sink: recorded.sink });
-    await monitor.syncPackageFolders([rootAt(rootPath)]);
-    await monitor.whenReady();
-    await monitor.syncPackageFolders([]);
-    expect(monitor.getPackageFolderWatchStatus(rootPath)).toBeNull();
+    const fakes = monitorWithFakeOs(recorded.sink);
+    await monitor!.syncPackageFolders([rootAt(rootPath)]);
+    await monitor!.whenReady();
+    await monitor!.syncPackageFolders([]);
+    expect(monitor!.getPackageFolderWatchStatus(rootPath)).toBeNull();
+    expect(fakes.watches[0]!.close).toHaveBeenCalledOnce();
+    expect(fakes.parents[0]!.close).toHaveBeenCalledOnce();
 
-    await fs.writeFile(path.join(rootPath, "agents", "a", "agent.md"), "x");
-    await settleQuietly();
+    const agentFile = path.join(rootPath, "agents", "a", "agent.md");
+    await fs.writeFile(agentFile, "x");
+    fakes.reportFile("add", agentFile);
+    await settle();
     expect(recorded.folders).toEqual([]);
   });
 });
 
 describe("AgentPackageFolderWatcher catch-up request", () => {
-  /** A watch the test drives by hand: the OS gives no event for what it dropped, so none is emitted. */
-  class FakeWatch implements PackageFolderWatch {
-    private readonly listeners = new Map<string, Array<(...args: any[]) => void>>();
-    on(event: string, listener: (...args: any[]) => void): this {
-      this.listeners.set(event, [...(this.listeners.get(event) ?? []), listener]);
-      return this;
-    }
-    /** What the watch holds; tests fill it to say which folders chokidar knows. */
-    watched: Record<string, string[]> = {};
-    getWatched(): Record<string, string[]> { return this.watched; }
-    close = vi.fn(async () => undefined);
-    emit(event: string, ...args: unknown[]): void {
-      for (const listener of this.listeners.get(event) ?? []) listener(...args);
-    }
-  }
-
   const armWith = async (rootPath: string, options: { catchUpDelayMs?: number } = {}) => {
     const recorded = recordingSink();
-    const watches: FakeWatch[] = [];
+    // The test drives each watch by hand: the OS gives no event for what it dropped, so none is emitted.
+    const { watches, createWatcher, createParentFolderWatch } = fakeOs();
     monitor = new AgentPackageFolderWatcher({
       sink: recorded.sink,
-      createWatcher: () => { const watch = new FakeWatch(); watches.push(watch); return watch; },
+      createWatcher,
+      createParentFolderWatch,
       logger: { warn: () => undefined },
       ...options,
     });
@@ -345,12 +453,11 @@ describe("AgentPackageFolderWatcher catch-up request", () => {
   // autobyteus-524 FU-007: at process exit the watches end without their OS close; any other close releases them.
   const armWithPresence = async (rootPath: string) => {
     const recorded = recordingSink();
-    const watches: FakeWatch[] = [];
-    const presence: Array<{ close: ReturnType<typeof vi.fn> }> = [];
+    const { watches, parents: presence, createWatcher, createParentFolderWatch } = fakeOs();
     monitor = new AgentPackageFolderWatcher({
       sink: recorded.sink,
-      createWatcher: () => { const watch = new FakeWatch(); watches.push(watch); return watch; },
-      createParentFolderWatch: () => { const watch = { close: vi.fn() }; presence.push(watch); return watch; },
+      createWatcher,
+      createParentFolderWatch,
       logger: { warn: () => undefined },
     });
     await monitor.syncPackageFolders([rootAt(rootPath)]);
@@ -437,12 +544,8 @@ describe("AgentPackageFolderWatcher catch-up request", () => {
     await agentFolderOnDisk(rootPath, "stubborn");
     const warn = vi.fn();
     const recorded = recordingSink();
-    const watches: FakeWatch[] = [];
-    monitor = new AgentPackageFolderWatcher({
-      sink: recorded.sink,
-      createWatcher: () => { const watch = new FakeWatch(); watches.push(watch); return watch; },
-      logger: { warn },
-    });
+    const { watches, createWatcher, createParentFolderWatch } = fakeOs();
+    monitor = new AgentPackageFolderWatcher({ sink: recorded.sink, createWatcher, createParentFolderWatch, logger: { warn } });
     await monitor.syncPackageFolders([rootAt(rootPath)]);
     watches[0]!.watched = watching(rootPath);
 
@@ -523,7 +626,3 @@ describe("AgentPackageFolderWatcher catch-up request", () => {
     expect(recorded.reconciles).toEqual([rootPath]);
   });
 });
-
-import chokidar from "chokidar";
-const realWatcher = (paths: string[], options: { ignored: (filePath: string) => boolean }): PackageFolderWatch =>
-  chokidar.watch(paths, { ignoreInitial: true, ignored: options.ignored }) as unknown as PackageFolderWatch;

@@ -458,6 +458,13 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   ended). Shown with the task's exit code, when there is one, as one line in the
   Background Tasks panel and the phone's Activity; with neither, the runtime's
   summary is shown.
+- **Provider-started turn:** a turn the agent runtime starts itself, without
+  input from AutoByteus, for example after a background command ended (turn
+  origin `provider`; Claude CLI and Grok Build). The run shows it like any turn,
+  opened by a system notice of what woke the agent (Claude:
+  `system.claude_background_task`; Grok: `system.grok_provider_turn`, Grok's own
+  reminder text), and reads busy while it runs; a message sent meanwhile waits for
+  its end, and Stop cancels it (autobyteus-517).
 - **Restart reminder:** the platform notice a run receives after a restart
   (`system.restart_resume`) when it was mid-turn or had a running background
   task: the restart cause (an update, a restart or an unexpected stop), that its
@@ -540,3 +547,18 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
 - **Decision record:** one line of a node's decision log per agent of a new delegated run resolved on that node
   while Model Routing was on: the Task it serves, the delegation, the launch, its source, task kind, reason, router
   failure and skipped defaults.
+
+### Managed Linux desktop installation
+A per-login-UID personal AppImage at a protected fixed path, with administrator-owned
+support and an exact-path AppArmor permission. Distinct from a portable download;
+normal execution is still the login user, not root.
+
+### Desktop release record
+Canonical Ed25519-signed metadata for the exact final personal AppImage bytes,
+architecture, version and channel. The protected image and its record/signature
+are stored on the same inode; updater feed hashes alone are not this authority.
+
+### Managed update session
+The Electron owner of verified managed staging, settings-generation cancellation
+and quit/activation/relaunch sequencing. Automatic activation waits for an
+independent ordinary quit and does not reopen the application.

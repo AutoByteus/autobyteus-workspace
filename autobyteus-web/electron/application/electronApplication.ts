@@ -1,3 +1,8 @@
+import { claimManagedRestart } from '../launch-profile/managedRestartChannel'
+import { ManagedUpdateSession } from './managedUpdateSession'
+import { detectLinuxManagedInstall } from '../updater/linuxManagedInstall'
+import { loadAppUpdateAutomatic } from '../updater/appUpdateAutomaticStore'
+import { loadAppUpdateChannel } from '../updater/appUpdateChannelStore'
 import { ApplicationShutdown } from './applicationShutdown'
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron'
 import * as fsSync from 'fs'
@@ -61,6 +66,7 @@ export class ElectronApplication {
   private readonly serverManager: BaseServerManager
   private readonly serverStatusManager: ServerStatusManager
   private readonly appUpdateController: AppUpdateController
+  private readonly managedUpdates: ManagedUpdateSession | null
   private readonly shellWindowRegistry = new WorkspaceShellWindowRegistry()
   private managedExtensionService: ManagedExtensionService | null = null
   private browserRuntime: BrowserRuntime | null = null
@@ -80,7 +86,17 @@ export class ElectronApplication {
       developmentRendererOrigin: isDev ? new URL(this.getStartUrl()).origin : null,
     })
     this.serverStatusManager = new ServerStatusManager(this.serverManager)
+    const writer = app.isPackaged ? detectLinuxManagedInstall() : null
+    this.managedUpdates = writer ? new ManagedUpdateSession({ writer, shutdown: this.shutdown,
+      serverGone: () => this.serverManager.isServerProcessGone(),
+      initialSettings: { automaticUpdate: loadAppUpdateAutomatic(app.getPath('userData')), updateChannel: loadAppUpdateChannel(app.getPath('userData')) },
+      notifyQuit: () => this.shellWindowRegistry.broadcast('app-quitting', undefined),
+      quit: () => app.quit(), exit: code => app.exit(code),
+      requestReopen: claimManagedRestart(), report: error => logger.error('Managed update failed', error),
+    }) : null
     const installHooks = {
+      managedSession: this.managedUpdates ?? undefined,
+      showRestartUnavailable: (message: string) => dialog.showErrorBox('AutoByteus update', message),
       prepareForInstall: () => this.prepareForInstall(),
       recoverAfterFailedInstall: () => this.recoverAfterFailedInstall(),
     }
@@ -369,6 +385,7 @@ export class ElectronApplication {
       if (process.platform !== 'darwin') app.quit()
     })
     app.on('will-quit', event => {
+      if (this.managedUpdates) { this.managedUpdates.willQuit(event); return }
       this.shutdown.quit(event,
         () => this.shellWindowRegistry.broadcast('app-quitting', undefined),
         () => app.quit(), () => app.exit(1))

@@ -1,0 +1,30 @@
+# Linux update metadata and sidecars (public files)
+== latest-linux.yml
+version: 1.5.14-beta.3
+files:
+  - url: AutoByteus_personal_linux-x64-1.5.14-beta.3.AppImage
+    sha512: OVb8oolmecvFQPe5yPf7PvpLfgS/fRuvsz+Blqyp5yAYPIcb0+6C5u/jBRcclPtFwbV0EtRaXD6TFNLYPp5y1Q==
+    size: 360384682
+    blockMapSize: 374974
+path: AutoByteus_personal_linux-x64-1.5.14-beta.3.AppImage
+sha512: OVb8oolmecvFQPe5yPf7PvpLfgS/fRuvsz+Blqyp5yAYPIcb0+6C5u/jBRcclPtFwbV0EtRaXD6TFNLYPp5y1Q==
+releaseDate: '2026-11-20T10:47:12.584Z'
+
+== latest-linux-arm64.yml
+version: 1.5.14-beta.3
+files:
+  - url: AutoByteus_personal_linux-arm64-1.5.14-beta.3.AppImage
+    sha512: revP4h525Lm+MYGQKG+jk6pP71hyF+oighvD8o8t4vrxBklZhtDz3EF30aLfuzAY0P0N2m5KA55Un8NKrKU+Cg==
+    size: 350345060
+    blockMapSize: 365232
+path: AutoByteus_personal_linux-arm64-1.5.14-beta.3.AppImage
+sha512: revP4h525Lm+MYGQKG+jk6pP71hyF+oighvD8o8t4vrxBklZhtDz3EF30aLfuzAY0P0N2m5KA55Un8NKrKU+Cg==
+releaseDate: '2026-11-20T10:49:05.930Z'
+
+== AutoByteus_personal_linux-arm64-1.5.14-beta.3.AppImage.release.json
+{"format":1,"product":"autobyteus-personal-desktop","artifact":"AppImage","os":"linux","arch":"arm64","version":"1.5.14-beta.3","channel":"beta","size":350345060,"sha256":"3017cebcdea238763ef27a4b820ea3c0239589b7e07ddbc1b9a8545560600120","minWriter":1}
+
+== AutoByteus_personal_linux-x64-1.5.14-beta.3.AppImage.release.json
+{"format":1,"product":"autobyteus-personal-desktop","artifact":"AppImage","os":"linux","arch":"x64","version":"1.5.14-beta.3","channel":"beta","size":360384682,"sha256":"05c69e4be75a4778bb8b0d3db8080ad9d18866fc9de30245ce9ccc6adfa1fb5c","minWriter":1}
+
+sidecar sha256 and size equal GitHub's digest and size of the published AppImages for x64 and arm64; both .sig files are 88 bytes

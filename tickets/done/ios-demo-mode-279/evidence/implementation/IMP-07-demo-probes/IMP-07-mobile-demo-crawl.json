@@ -1,0 +1,3179 @@
+[
+ {
+  "size": "iphone-440x956",
+  "findings": [],
+  "errors": [],
+  "log": [
+   {
+    "where": "run list",
+    "length": 1071,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run list, unfolded",
+    "length": 1329,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "rows",
+    "count": 26,
+    "rows": [
+     "0:Project Task Manager",
+     "1:software engineering team",
+     "2:solution designer",
+     "2:implementation engineer",
+     "3:code searcher",
+     "2:code reviewer",
+     "1:agent package creator",
+     "1:software engineering team",
+     "2:solution designer",
+     "2:implementation engineer",
+     "2:code reviewer",
+     "1:marketing team",
+     "2:campaign lead",
+     "2:copywriter",
+     "2:designer",
+     "1:market researcher",
+     "1:support team",
+     "2:triage lead",
+     "2:answer writer",
+     "0:Daily Assistant",
+     "0:Product Launch Org",
+     "1:launch lead",
+     "1:content writer",
+     "1:release manager",
+     "0:Personal Assistant",
+     "0:Codex"
+    ]
+   },
+   {
+    "where": "run 0:Project Task Manager",
+    "length": 466,
+    "head": "Project Task Manager Running You You Dispatch the approved desktop app Tasks. PT Project Task Manager Project Task Manager delegate_task delegate_task delegate_"
+   },
+   {
+    "where": "run Project Task Manager › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run Project Task Manager › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run Project Task Manager › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run Project Task Manager › Activity",
+    "length": 604,
+    "head": "Activity BACKGROUND TASKS 1 running Watch the upgrade check Running pnpm run upgrade:check --watch Started 02:24 PM Build the release notes site Completed pnpm "
+   },
+   {
+    "where": "run Project Task Manager › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run Project Task Manager › Settings",
+    "length": 85,
+    "head": "Settings Project Task Manager Running Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 1:software engineering team",
+    "length": 407,
+    "head": "solution_designer Idle · in software engineering team S solution_designer solution_designer From Project Task Manager: Image context files don’t reach the model"
+   },
+   {
+    "where": "run software engineering team › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run software engineering team › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run software engineering team › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run software engineering team › Messages",
+    "length": 238,
+    "head": "Messages To implementation engineer Nov 19, 02:18 PM My part is done; the result is in the folder. From implementation engineer Nov 19, 02:16 PM Image context f"
+   },
+   {
+    "where": "run software engineering team › Activity",
+    "length": 97,
+    "head": "Activity read_file docs/pilot-summary.md success send_message_to /implementation_engineer success"
+   },
+   {
+    "where": "run software engineering team › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run software engineering team › Settings",
+    "length": 110,
+    "head": "Settings solution_designer Idle · in software engineering team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 2:solution designer",
+    "length": 407,
+    "head": "solution_designer Idle · in software engineering team S solution_designer solution_designer From Project Task Manager: Image context files don’t reach the model"
+   },
+   {
+    "where": "run solution designer › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run solution designer › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run solution designer › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run solution designer › Messages",
+    "length": 238,
+    "head": "Messages To implementation engineer Nov 19, 02:18 PM My part is done; the result is in the folder. From implementation engineer Nov 19, 02:16 PM Image context f"
+   },
+   {
+    "where": "run solution designer › Activity",
+    "length": 97,
+    "head": "Activity read_file docs/pilot-summary.md success send_message_to /implementation_engineer success"
+   },
+   {
+    "where": "run solution designer › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run solution designer › Settings",
+    "length": 110,
+    "head": "Settings solution_designer Idle · in software engineering team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 2:implementation engineer",
+    "length": 490,
+    "head": "implementation_engineer Running · in software engineering team I implementation_engineer implementation_engineer From Solution Designer: Requirements are approv"
+   },
+   {
+    "where": "run implementation engineer › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run implementation engineer › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run implementation engineer › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run implementation engineer › Messages",
+    "length": 226,
+    "head": "Messages To solution designer Nov 19, 02:18 PM My part is done; the result is in the folder. From solution designer Nov 19, 02:16 PM Image context files don’t r"
+   },
+   {
+    "where": "run implementation engineer › Activity",
+    "length": 134,
+    "head": "Activity read_file src/export/filters.ts success edit_file src/export/filters.ts success run_terminal_command pnpm test export success"
+   },
+   {
+    "where": "run implementation engineer › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run implementation engineer › Settings",
+    "length": 119,
+    "head": "Settings implementation_engineer Running · in software engineering team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 3:code searcher",
+    "length": 352,
+    "head": "Code Searcher Running · in implementation engineer CS Code Searcher Code Searcher From Implementation Engineer: Find where the export screen keeps its filters. "
+   },
+   {
+    "where": "run code searcher › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run code searcher › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run code searcher › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run code searcher › Activity",
+    "length": 77,
+    "head": "Activity search_files filters success read_file src/export/filters.ts success"
+   },
+   {
+    "where": "run code searcher › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run code searcher › Settings",
+    "length": 107,
+    "head": "Settings Code Searcher Running · in implementation engineer Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 2:code reviewer",
+    "length": 341,
+    "head": "code_reviewer Idle · in software engineering team C code_reviewer code_reviewer From Implementation Engineer: The change is ready for review: src/export/filters"
+   },
+   {
+    "where": "run code reviewer › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run code reviewer › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run code reviewer › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run code reviewer › Messages",
+    "length": 226,
+    "head": "Messages To solution designer Nov 19, 02:18 PM My part is done; the result is in the folder. From solution designer Nov 19, 02:16 PM Image context files don’t r"
+   },
+   {
+    "where": "run code reviewer › Activity",
+    "length": 94,
+    "head": "Activity read_file src/export/filters.ts success run_terminal_command pnpm test export success"
+   },
+   {
+    "where": "run code reviewer › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run code reviewer › Settings",
+    "length": 106,
+    "head": "Settings code_reviewer Idle · in software engineering team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 1:agent package creator",
+    "length": 368,
+    "head": "Agent Package Creator 2 background tasks running · in Project Task Manager You You Package the release-notes agent for the agent store AP Agent Package Creator "
+   },
+   {
+    "where": "run agent package creator › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run agent package creator › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run agent package creator › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run agent package creator › Activity",
+    "length": 255,
+    "head": "Activity BACKGROUND TASKS 2 running Validate the package manifest Running pnpm run package:validate --watch Started 02:22 PM Bundle the release-notes agent Runn"
+   },
+   {
+    "where": "run agent package creator › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run agent package creator › Settings",
+    "length": 131,
+    "head": "Settings Agent Package Creator 2 background tasks running · in Project Task Manager Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 1:software engineering team",
+    "length": 407,
+    "head": "solution_designer Idle · in software engineering team S solution_designer solution_designer From Project Task Manager: Members of a delegated team can’t reach t"
+   },
+   {
+    "where": "run software engineering team › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run software engineering team › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run software engineering team › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run software engineering team › Messages",
+    "length": 238,
+    "head": "Messages To implementation engineer Nov 19, 02:04 PM My part is done; the result is in the folder. From implementation engineer Nov 19, 02:02 PM Members of a de"
+   },
+   {
+    "where": "run software engineering team › Activity",
+    "length": 97,
+    "head": "Activity read_file docs/pilot-summary.md success send_message_to /implementation_engineer success"
+   },
+   {
+    "where": "run software engineering team › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run software engineering team › Settings",
+    "length": 110,
+    "head": "Settings solution_designer Idle · in software engineering team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 2:solution designer",
+    "length": 407,
+    "head": "solution_designer Idle · in software engineering team S solution_designer solution_designer From Project Task Manager: Members of a delegated team can’t reach t"
+   },
+   {
+    "where": "run solution designer › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run solution designer › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run solution designer › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run solution designer › Messages",
+    "length": 238,
+    "head": "Messages To implementation engineer Nov 19, 02:04 PM My part is done; the result is in the folder. From implementation engineer Nov 19, 02:02 PM Members of a de"
+   },
+   {
+    "where": "run solution designer › Activity",
+    "length": 97,
+    "head": "Activity read_file docs/pilot-summary.md success send_message_to /implementation_engineer success"
+   },
+   {
+    "where": "run solution designer › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run solution designer › Settings",
+    "length": 110,
+    "head": "Settings solution_designer Idle · in software engineering team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 2:implementation engineer",
+    "length": 506,
+    "head": "implementation_engineer Background task running · in software engineering team I implementation_engineer implementation_engineer From Solution Designer: Require"
+   },
+   {
+    "where": "run implementation engineer › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run implementation engineer › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run implementation engineer › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run implementation engineer › Messages",
+    "length": 226,
+    "head": "Messages To solution designer Nov 19, 02:04 PM My part is done; the result is in the folder. From solution designer Nov 19, 02:02 PM Members of a delegated team"
+   },
+   {
+    "where": "run implementation engineer › Activity",
+    "length": 226,
+    "head": "Activity BACKGROUND TASKS 1 running Run the package tests Running pnpm test --watch Started 02:12 PM read_file src/export/filters.ts success edit_file src/expor"
+   },
+   {
+    "where": "run implementation engineer › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run implementation engineer › Settings",
+    "length": 135,
+    "head": "Settings implementation_engineer Background task running · in software engineering team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 2:code reviewer",
+    "length": 341,
+    "head": "code_reviewer Idle · in software engineering team C code_reviewer code_reviewer From Implementation Engineer: The change is ready for review: src/export/filters"
+   },
+   {
+    "where": "run code reviewer › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run code reviewer › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run code reviewer › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run code reviewer › Messages",
+    "length": 226,
+    "head": "Messages To solution designer Nov 19, 02:04 PM My part is done; the result is in the folder. From solution designer Nov 19, 02:02 PM Members of a delegated team"
+   },
+   {
+    "where": "run code reviewer › Activity",
+    "length": 94,
+    "head": "Activity read_file src/export/filters.ts success run_terminal_command pnpm test export success"
+   },
+   {
+    "where": "run code reviewer › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run code reviewer › Settings",
+    "length": 106,
+    "head": "Settings code_reviewer Idle · in software engineering team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 1:marketing team",
+    "length": 391,
+    "head": "campaign_lead Running · in marketing team You You Plan the 1.6 launch campaign across email, social and the website. C campaign_lead campaign_lead read_file · l"
+   },
+   {
+    "where": "run marketing team › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run marketing team › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run marketing team › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run marketing team › Messages",
+    "length": 218,
+    "head": "Messages To copywriter Nov 19, 02:16 PM My part is done; the result is in the folder. From copywriter Nov 19, 02:14 PM Plan the 1.6 launch campaign across email"
+   },
+   {
+    "where": "run marketing team › Activity",
+    "length": 119,
+    "head": "Activity read_file launch/announcement.md success send_message_to /copywriter success send_message_to /designer success"
+   },
+   {
+    "where": "run marketing team › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run marketing team › Settings",
+    "length": 98,
+    "head": "Settings campaign_lead Running · in marketing team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 2:campaign lead",
+    "length": 391,
+    "head": "campaign_lead Running · in marketing team You You Plan the 1.6 launch campaign across email, social and the website. C campaign_lead campaign_lead read_file · l"
+   },
+   {
+    "where": "run campaign lead › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run campaign lead › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run campaign lead › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run campaign lead › Messages",
+    "length": 218,
+    "head": "Messages To copywriter Nov 19, 02:16 PM My part is done; the result is in the folder. From copywriter Nov 19, 02:14 PM Plan the 1.6 launch campaign across email"
+   },
+   {
+    "where": "run campaign lead › Activity",
+    "length": 119,
+    "head": "Activity read_file launch/announcement.md success send_message_to /copywriter success send_message_to /designer success"
+   },
+   {
+    "where": "run campaign lead › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run campaign lead › Settings",
+    "length": 98,
+    "head": "Settings campaign_lead Running · in marketing team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 2:copywriter",
+    "length": 331,
+    "head": "copywriter Idle · in marketing team C copywriter copywriter From Campaign Lead: Write three social posts from launch/announcement.md. read_file · launch/announc"
+   },
+   {
+    "where": "run copywriter › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run copywriter › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run copywriter › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run copywriter › Messages",
+    "length": 224,
+    "head": "Messages To campaign lead Nov 19, 02:16 PM My part is done; the result is in the folder. From campaign lead Nov 19, 02:14 PM Plan the 1.6 launch campaign across"
+   },
+   {
+    "where": "run copywriter › Activity",
+    "length": 49,
+    "head": "Activity read_file launch/announcement.md success"
+   },
+   {
+    "where": "run copywriter › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run copywriter › Settings",
+    "length": 92,
+    "head": "Settings copywriter Idle · in marketing team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 2:designer",
+    "length": 282,
+    "head": "designer Idle · in marketing team D designer designer From Campaign Lead: Make the website banner for Thursday, 12 March. read_file · docs/dashboard-after.png T"
+   },
+   {
+    "where": "run designer › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run designer › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run designer › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run designer › Messages",
+    "length": 224,
+    "head": "Messages To campaign lead Nov 19, 02:16 PM My part is done; the result is in the folder. From campaign lead Nov 19, 02:14 PM Plan the 1.6 launch campaign across"
+   },
+   {
+    "where": "run designer › Activity",
+    "length": 51,
+    "head": "Activity read_file docs/dashboard-after.png success"
+   },
+   {
+    "where": "run designer › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run designer › Settings",
+    "length": 90,
+    "head": "Settings designer Idle · in marketing team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 1:market researcher",
+    "length": 353,
+    "head": "Market Researcher Idle · in Project Task Manager You You Compare competitor pricing pages for the desktop app MR Market Researcher Market Researcher search_web "
+   },
+   {
+    "where": "run market researcher › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run market researcher › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run market researcher › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run market researcher › Activity",
+    "length": 80,
+    "head": "Activity search_web Compare competitor pricing pages for the desktop app success"
+   },
+   {
+    "where": "run market researcher › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run market researcher › Settings",
+    "length": 105,
+    "head": "Settings Market Researcher Idle · in Project Task Manager Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 1:support team",
+    "length": 306,
+    "head": "triage_lead Stopped · in support team You You Triage the open desktop support threads. T triage_lead triage_lead read_file · docs/pilot-customers.csv send_messa"
+   },
+   {
+    "where": "run support team › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run support team › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run support team › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run support team › Messages",
+    "length": 198,
+    "head": "Messages To answer writer Nov 19, 01:37 PM My part is done; the result is in the folder. From answer writer Nov 19, 01:35 PM Triage the open desktop support thr"
+   },
+   {
+    "where": "run support team › Activity",
+    "length": 90,
+    "head": "Activity read_file docs/pilot-customers.csv success send_message_to /answer_writer success"
+   },
+   {
+    "where": "run support team › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run support team › Settings",
+    "length": 94,
+    "head": "Settings triage_lead Stopped · in support team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 2:triage lead",
+    "length": 306,
+    "head": "triage_lead Stopped · in support team You You Triage the open desktop support threads. T triage_lead triage_lead read_file · docs/pilot-customers.csv send_messa"
+   },
+   {
+    "where": "run triage lead › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run triage lead › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run triage lead › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run triage lead › Messages",
+    "length": 198,
+    "head": "Messages To answer writer Nov 19, 01:37 PM My part is done; the result is in the folder. From answer writer Nov 19, 01:35 PM Triage the open desktop support thr"
+   },
+   {
+    "where": "run triage lead › Activity",
+    "length": 90,
+    "head": "Activity read_file docs/pilot-customers.csv success send_message_to /answer_writer success"
+   },
+   {
+    "where": "run triage lead › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run triage lead › Settings",
+    "length": 94,
+    "head": "Settings triage_lead Stopped · in support team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 2:answer writer",
+    "length": 298,
+    "head": "answer_writer Stopped · in support team A answer_writer answer_writer From Triage Lead: Answer the two connector questions; both need connector 2.4. read_file ·"
+   },
+   {
+    "where": "run answer writer › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run answer writer › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run answer writer › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run answer writer › Messages",
+    "length": 194,
+    "head": "Messages To triage lead Nov 19, 01:37 PM My part is done; the result is in the folder. From triage lead Nov 19, 01:35 PM Triage the open desktop support threads"
+   },
+   {
+    "where": "run answer writer › Activity",
+    "length": 52,
+    "head": "Activity read_file docs/release-notes-1.6.md success"
+   },
+   {
+    "where": "run answer writer › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run answer writer › Settings",
+    "length": 96,
+    "head": "Settings answer_writer Stopped · in support team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 0:Daily Assistant",
+    "length": 2232,
+    "head": "Daily Assistant Background task running You You Summarize the 1.6 release notes for the pilot customers. Check the changelog, show me the latest commits and fix"
+   },
+   {
+    "where": "run Daily Assistant › Artifacts",
+    "length": 67,
+    "head": "Artifacts dashboard-after.png pilot-summary.md release-notes-1.6.md"
+   },
+   {
+    "where": "run Daily Assistant › Artifacts › first file",
+    "length": 92,
+    "head": "Artifacts docs/dashboard-after.png 100% Scroll to zoom • Drag to pan • Double-click to reset"
+   },
+   {
+    "where": "run Daily Assistant › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run Daily Assistant › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run Daily Assistant › Activity",
+    "length": 616,
+    "head": "Activity BACKGROUND TASKS 1 running Watch the upgrade check Running pnpm run upgrade:check --watch Started 02:24 PM Build the release notes site Completed pnpm "
+   },
+   {
+    "where": "run Daily Assistant › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run Daily Assistant › Settings",
+    "length": 96,
+    "head": "Settings Daily Assistant Background task running Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 0:Product Launch Org",
+    "length": 447,
+    "head": "launch lead Running · in Product Launch Org You You Prepare the 1.6 launch: the announcement, the email to the pilot customers and the release checklist. LL lau"
+   },
+   {
+    "where": "run Product Launch Org › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run Product Launch Org › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run Product Launch Org › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run Product Launch Org › Messages",
+    "length": 447,
+    "head": "Messages From release manager Nov 19, 02:01 PM Checklist done. Two items wait for the connector 2.4 build. checklist.md From content writer Nov 19, 01:59 PM Bot"
+   },
+   {
+    "where": "run Product Launch Org › Activity",
+    "length": 133,
+    "head": "Activity read_file docs/release-notes-1.6.md success send_message_to /content_writer success send_message_to /release_manager success"
+   },
+   {
+    "where": "run Product Launch Org › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run Product Launch Org › Settings",
+    "length": 100,
+    "head": "Settings launch lead Running · in Product Launch Org Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 1:launch lead",
+    "length": 447,
+    "head": "launch lead Running · in Product Launch Org You You Prepare the 1.6 launch: the announcement, the email to the pilot customers and the release checklist. LL lau"
+   },
+   {
+    "where": "run launch lead › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run launch lead › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run launch lead › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run launch lead › Messages",
+    "length": 447,
+    "head": "Messages From release manager Nov 19, 02:01 PM Checklist done. Two items wait for the connector 2.4 build. checklist.md From content writer Nov 19, 01:59 PM Bot"
+   },
+   {
+    "where": "run launch lead › Activity",
+    "length": 133,
+    "head": "Activity read_file docs/release-notes-1.6.md success send_message_to /content_writer success send_message_to /release_manager success"
+   },
+   {
+    "where": "run launch lead › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run launch lead › Settings",
+    "length": 100,
+    "head": "Settings launch lead Running · in Product Launch Org Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 1:content writer",
+    "length": 454,
+    "head": "content writer Idle · in Product Launch Org CW content writer content writer From Launch Lead: Draft the announcement and the pilot email from docs/release-note"
+   },
+   {
+    "where": "run content writer › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run content writer › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run content writer › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run content writer › Messages",
+    "length": 240,
+    "head": "Messages To launch lead Nov 19, 01:42 PM Both drafts are ready for your review. announcement.md pilot-email.md From launch lead Nov 19, 01:40 PM Draft the annou"
+   },
+   {
+    "where": "run content writer › Activity",
+    "length": 135,
+    "head": "Activity read_file docs/release-notes-1.6.md success write_file launch/announcement.md success write_file launch/pilot-email.md success"
+   },
+   {
+    "where": "run content writer › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run content writer › Settings",
+    "length": 100,
+    "head": "Settings content writer Idle · in Product Launch Org Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 1:release manager",
+    "length": 337,
+    "head": "release manager Idle · in Product Launch Org RM release manager release manager From Launch Lead: Prepare the release checklist for Thursday, 12 March. write_fi"
+   },
+   {
+    "where": "run release manager › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run release manager › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run release manager › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run release manager › Messages",
+    "length": 201,
+    "head": "Messages To launch lead Nov 19, 01:30 PM Checklist done. Two items wait for the connector 2.4 build. checklist.md From launch lead Nov 19, 01:28 PM Prepare the "
+   },
+   {
+    "where": "run release manager › Activity",
+    "length": 47,
+    "head": "Activity write_file launch/checklist.md success"
+   },
+   {
+    "where": "run release manager › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run release manager › Settings",
+    "length": 101,
+    "head": "Settings release manager Idle · in Product Launch Org Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 0:Personal Assistant",
+    "length": 315,
+    "head": "Personal Assistant Stopped You You Plan the week: school pickups, dentist, budget review PA Personal Assistant Personal Assistant read_file · docs/pilot-summary"
+   },
+   {
+    "where": "run Personal Assistant › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run Personal Assistant › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run Personal Assistant › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run Personal Assistant › Activity",
+    "length": 48,
+    "head": "Activity read_file docs/pilot-summary.md success"
+   },
+   {
+    "where": "run Personal Assistant › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run Personal Assistant › Settings",
+    "length": 83,
+    "head": "Settings Personal Assistant Stopped Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 0:Codex",
+    "length": 259,
+    "head": "Codex Stopped You You Fix the failing probe test on the base branch C Codex Codex run_terminal_command · pnpm test probe The probe test waited on a timer that n"
+   },
+   {
+    "where": "run Codex › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run Codex › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run Codex › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run Codex › Activity",
+    "length": 53,
+    "head": "Activity run_terminal_command pnpm test probe success"
+   },
+   {
+    "where": "run Codex › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run Codex › Settings",
+    "length": 70,
+    "head": "Settings Codex Stopped Runtime AutoByteus Model demo/sample-model Save"
+   }
+  ]
+ },
+ {
+  "size": "ipad-portrait-820x1180",
+  "findings": [],
+  "errors": [],
+  "log": [
+   {
+    "where": "run list",
+    "length": 1071,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run list, unfolded",
+    "length": 1329,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "rows",
+    "count": 26,
+    "rows": [
+     "0:Project Task Manager",
+     "1:software engineering team",
+     "2:solution designer",
+     "2:implementation engineer",
+     "3:code searcher",
+     "2:code reviewer",
+     "1:agent package creator",
+     "1:software engineering team",
+     "2:solution designer",
+     "2:implementation engineer",
+     "2:code reviewer",
+     "1:marketing team",
+     "2:campaign lead",
+     "2:copywriter",
+     "2:designer",
+     "1:market researcher",
+     "1:support team",
+     "2:triage lead",
+     "2:answer writer",
+     "0:Daily Assistant",
+     "0:Product Launch Org",
+     "1:launch lead",
+     "1:content writer",
+     "1:release manager",
+     "0:Personal Assistant",
+     "0:Codex"
+    ]
+   },
+   {
+    "where": "run 0:Project Task Manager",
+    "length": 466,
+    "head": "Project Task Manager Running You You Dispatch the approved desktop app Tasks. PT Project Task Manager Project Task Manager delegate_task delegate_task delegate_"
+   },
+   {
+    "where": "run Project Task Manager › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run Project Task Manager › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run Project Task Manager › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run Project Task Manager › Activity",
+    "length": 604,
+    "head": "Activity BACKGROUND TASKS 1 running Watch the upgrade check Running pnpm run upgrade:check --watch Started 02:31 PM Build the release notes site Completed pnpm "
+   },
+   {
+    "where": "run Project Task Manager › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run Project Task Manager › Settings",
+    "length": 85,
+    "head": "Settings Project Task Manager Running Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 1:software engineering team",
+    "length": 407,
+    "head": "solution_designer Idle · in software engineering team S solution_designer solution_designer From Project Task Manager: Image context files don’t reach the model"
+   },
+   {
+    "where": "run software engineering team › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run software engineering team › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run software engineering team › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run software engineering team › Messages",
+    "length": 238,
+    "head": "Messages To implementation engineer Nov 19, 02:25 PM My part is done; the result is in the folder. From implementation engineer Nov 19, 02:23 PM Image context f"
+   },
+   {
+    "where": "run software engineering team › Activity",
+    "length": 97,
+    "head": "Activity read_file docs/pilot-summary.md success send_message_to /implementation_engineer success"
+   },
+   {
+    "where": "run software engineering team › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run software engineering team › Settings",
+    "length": 110,
+    "head": "Settings solution_designer Idle · in software engineering team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 2:solution designer",
+    "length": 407,
+    "head": "solution_designer Idle · in software engineering team S solution_designer solution_designer From Project Task Manager: Image context files don’t reach the model"
+   },
+   {
+    "where": "run solution designer › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run solution designer › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run solution designer › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run solution designer › Messages",
+    "length": 238,
+    "head": "Messages To implementation engineer Nov 19, 02:25 PM My part is done; the result is in the folder. From implementation engineer Nov 19, 02:23 PM Image context f"
+   },
+   {
+    "where": "run solution designer › Activity",
+    "length": 97,
+    "head": "Activity read_file docs/pilot-summary.md success send_message_to /implementation_engineer success"
+   },
+   {
+    "where": "run solution designer › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run solution designer › Settings",
+    "length": 110,
+    "head": "Settings solution_designer Idle · in software engineering team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 2:implementation engineer",
+    "length": 490,
+    "head": "implementation_engineer Running · in software engineering team I implementation_engineer implementation_engineer From Solution Designer: Requirements are approv"
+   },
+   {
+    "where": "run implementation engineer › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run implementation engineer › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run implementation engineer › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run implementation engineer › Messages",
+    "length": 226,
+    "head": "Messages To solution designer Nov 19, 02:25 PM My part is done; the result is in the folder. From solution designer Nov 19, 02:23 PM Image context files don’t r"
+   },
+   {
+    "where": "run implementation engineer › Activity",
+    "length": 134,
+    "head": "Activity read_file src/export/filters.ts success edit_file src/export/filters.ts success run_terminal_command pnpm test export success"
+   },
+   {
+    "where": "run implementation engineer › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run implementation engineer › Settings",
+    "length": 119,
+    "head": "Settings implementation_engineer Running · in software engineering team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 3:code searcher",
+    "length": 352,
+    "head": "Code Searcher Running · in implementation engineer CS Code Searcher Code Searcher From Implementation Engineer: Find where the export screen keeps its filters. "
+   },
+   {
+    "where": "run code searcher › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run code searcher › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run code searcher › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run code searcher › Activity",
+    "length": 77,
+    "head": "Activity search_files filters success read_file src/export/filters.ts success"
+   },
+   {
+    "where": "run code searcher › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run code searcher › Settings",
+    "length": 107,
+    "head": "Settings Code Searcher Running · in implementation engineer Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 2:code reviewer",
+    "length": 341,
+    "head": "code_reviewer Idle · in software engineering team C code_reviewer code_reviewer From Implementation Engineer: The change is ready for review: src/export/filters"
+   },
+   {
+    "where": "run code reviewer › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run code reviewer › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run code reviewer › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run code reviewer › Messages",
+    "length": 226,
+    "head": "Messages To solution designer Nov 19, 02:25 PM My part is done; the result is in the folder. From solution designer Nov 19, 02:23 PM Image context files don’t r"
+   },
+   {
+    "where": "run code reviewer › Activity",
+    "length": 94,
+    "head": "Activity read_file src/export/filters.ts success run_terminal_command pnpm test export success"
+   },
+   {
+    "where": "run code reviewer › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run code reviewer › Settings",
+    "length": 106,
+    "head": "Settings code_reviewer Idle · in software engineering team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 1:agent package creator",
+    "length": 368,
+    "head": "Agent Package Creator 2 background tasks running · in Project Task Manager You You Package the release-notes agent for the agent store AP Agent Package Creator "
+   },
+   {
+    "where": "run agent package creator › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run agent package creator › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run agent package creator › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run agent package creator › Activity",
+    "length": 255,
+    "head": "Activity BACKGROUND TASKS 2 running Validate the package manifest Running pnpm run package:validate --watch Started 02:29 PM Bundle the release-notes agent Runn"
+   },
+   {
+    "where": "run agent package creator › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run agent package creator › Settings",
+    "length": 131,
+    "head": "Settings Agent Package Creator 2 background tasks running · in Project Task Manager Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 1:software engineering team",
+    "length": 407,
+    "head": "solution_designer Idle · in software engineering team S solution_designer solution_designer From Project Task Manager: Members of a delegated team can’t reach t"
+   },
+   {
+    "where": "run software engineering team › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run software engineering team › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run software engineering team › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run software engineering team › Messages",
+    "length": 238,
+    "head": "Messages To implementation engineer Nov 19, 02:11 PM My part is done; the result is in the folder. From implementation engineer Nov 19, 02:09 PM Members of a de"
+   },
+   {
+    "where": "run software engineering team › Activity",
+    "length": 97,
+    "head": "Activity read_file docs/pilot-summary.md success send_message_to /implementation_engineer success"
+   },
+   {
+    "where": "run software engineering team › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run software engineering team › Settings",
+    "length": 110,
+    "head": "Settings solution_designer Idle · in software engineering team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 2:solution designer",
+    "length": 407,
+    "head": "solution_designer Idle · in software engineering team S solution_designer solution_designer From Project Task Manager: Members of a delegated team can’t reach t"
+   },
+   {
+    "where": "run solution designer › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run solution designer › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run solution designer › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run solution designer › Messages",
+    "length": 238,
+    "head": "Messages To implementation engineer Nov 19, 02:11 PM My part is done; the result is in the folder. From implementation engineer Nov 19, 02:09 PM Members of a de"
+   },
+   {
+    "where": "run solution designer › Activity",
+    "length": 97,
+    "head": "Activity read_file docs/pilot-summary.md success send_message_to /implementation_engineer success"
+   },
+   {
+    "where": "run solution designer › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run solution designer › Settings",
+    "length": 110,
+    "head": "Settings solution_designer Idle · in software engineering team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 2:implementation engineer",
+    "length": 506,
+    "head": "implementation_engineer Background task running · in software engineering team I implementation_engineer implementation_engineer From Solution Designer: Require"
+   },
+   {
+    "where": "run implementation engineer › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run implementation engineer › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run implementation engineer › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run implementation engineer › Messages",
+    "length": 226,
+    "head": "Messages To solution designer Nov 19, 02:11 PM My part is done; the result is in the folder. From solution designer Nov 19, 02:09 PM Members of a delegated team"
+   },
+   {
+    "where": "run implementation engineer › Activity",
+    "length": 226,
+    "head": "Activity BACKGROUND TASKS 1 running Run the package tests Running pnpm test --watch Started 02:19 PM read_file src/export/filters.ts success edit_file src/expor"
+   },
+   {
+    "where": "run implementation engineer › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run implementation engineer › Settings",
+    "length": 135,
+    "head": "Settings implementation_engineer Background task running · in software engineering team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 2:code reviewer",
+    "length": 341,
+    "head": "code_reviewer Idle · in software engineering team C code_reviewer code_reviewer From Implementation Engineer: The change is ready for review: src/export/filters"
+   },
+   {
+    "where": "run code reviewer › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run code reviewer › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run code reviewer › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run code reviewer › Messages",
+    "length": 226,
+    "head": "Messages To solution designer Nov 19, 02:11 PM My part is done; the result is in the folder. From solution designer Nov 19, 02:09 PM Members of a delegated team"
+   },
+   {
+    "where": "run code reviewer › Activity",
+    "length": 94,
+    "head": "Activity read_file src/export/filters.ts success run_terminal_command pnpm test export success"
+   },
+   {
+    "where": "run code reviewer › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run code reviewer › Settings",
+    "length": 106,
+    "head": "Settings code_reviewer Idle · in software engineering team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 1:marketing team",
+    "length": 391,
+    "head": "campaign_lead Running · in marketing team You You Plan the 1.6 launch campaign across email, social and the website. C campaign_lead campaign_lead read_file · l"
+   },
+   {
+    "where": "run marketing team › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run marketing team › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run marketing team › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run marketing team › Messages",
+    "length": 218,
+    "head": "Messages To copywriter Nov 19, 02:23 PM My part is done; the result is in the folder. From copywriter Nov 19, 02:21 PM Plan the 1.6 launch campaign across email"
+   },
+   {
+    "where": "run marketing team › Activity",
+    "length": 119,
+    "head": "Activity read_file launch/announcement.md success send_message_to /copywriter success send_message_to /designer success"
+   },
+   {
+    "where": "run marketing team › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run marketing team › Settings",
+    "length": 98,
+    "head": "Settings campaign_lead Running · in marketing team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 2:campaign lead",
+    "length": 391,
+    "head": "campaign_lead Running · in marketing team You You Plan the 1.6 launch campaign across email, social and the website. C campaign_lead campaign_lead read_file · l"
+   },
+   {
+    "where": "run campaign lead › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run campaign lead › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run campaign lead › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run campaign lead › Messages",
+    "length": 218,
+    "head": "Messages To copywriter Nov 19, 02:23 PM My part is done; the result is in the folder. From copywriter Nov 19, 02:21 PM Plan the 1.6 launch campaign across email"
+   },
+   {
+    "where": "run campaign lead › Activity",
+    "length": 119,
+    "head": "Activity read_file launch/announcement.md success send_message_to /copywriter success send_message_to /designer success"
+   },
+   {
+    "where": "run campaign lead › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run campaign lead › Settings",
+    "length": 98,
+    "head": "Settings campaign_lead Running · in marketing team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 2:copywriter",
+    "length": 331,
+    "head": "copywriter Idle · in marketing team C copywriter copywriter From Campaign Lead: Write three social posts from launch/announcement.md. read_file · launch/announc"
+   },
+   {
+    "where": "run copywriter › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run copywriter › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run copywriter › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run copywriter › Messages",
+    "length": 224,
+    "head": "Messages To campaign lead Nov 19, 02:23 PM My part is done; the result is in the folder. From campaign lead Nov 19, 02:21 PM Plan the 1.6 launch campaign across"
+   },
+   {
+    "where": "run copywriter › Activity",
+    "length": 49,
+    "head": "Activity read_file launch/announcement.md success"
+   },
+   {
+    "where": "run copywriter › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run copywriter › Settings",
+    "length": 92,
+    "head": "Settings copywriter Idle · in marketing team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 2:designer",
+    "length": 282,
+    "head": "designer Idle · in marketing team D designer designer From Campaign Lead: Make the website banner for Thursday, 12 March. read_file · docs/dashboard-after.png T"
+   },
+   {
+    "where": "run designer › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run designer › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run designer › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run designer › Messages",
+    "length": 224,
+    "head": "Messages To campaign lead Nov 19, 02:23 PM My part is done; the result is in the folder. From campaign lead Nov 19, 02:21 PM Plan the 1.6 launch campaign across"
+   },
+   {
+    "where": "run designer › Activity",
+    "length": 51,
+    "head": "Activity read_file docs/dashboard-after.png success"
+   },
+   {
+    "where": "run designer › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run designer › Settings",
+    "length": 90,
+    "head": "Settings designer Idle · in marketing team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 1:market researcher",
+    "length": 353,
+    "head": "Market Researcher Idle · in Project Task Manager You You Compare competitor pricing pages for the desktop app MR Market Researcher Market Researcher search_web "
+   },
+   {
+    "where": "run market researcher › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run market researcher › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run market researcher › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run market researcher › Activity",
+    "length": 80,
+    "head": "Activity search_web Compare competitor pricing pages for the desktop app success"
+   },
+   {
+    "where": "run market researcher › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run market researcher › Settings",
+    "length": 105,
+    "head": "Settings Market Researcher Idle · in Project Task Manager Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 1:support team",
+    "length": 306,
+    "head": "triage_lead Stopped · in support team You You Triage the open desktop support threads. T triage_lead triage_lead read_file · docs/pilot-customers.csv send_messa"
+   },
+   {
+    "where": "run support team › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run support team › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run support team › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run support team › Messages",
+    "length": 198,
+    "head": "Messages To answer writer Nov 19, 01:44 PM My part is done; the result is in the folder. From answer writer Nov 19, 01:42 PM Triage the open desktop support thr"
+   },
+   {
+    "where": "run support team › Activity",
+    "length": 90,
+    "head": "Activity read_file docs/pilot-customers.csv success send_message_to /answer_writer success"
+   },
+   {
+    "where": "run support team › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run support team › Settings",
+    "length": 94,
+    "head": "Settings triage_lead Stopped · in support team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 2:triage lead",
+    "length": 306,
+    "head": "triage_lead Stopped · in support team You You Triage the open desktop support threads. T triage_lead triage_lead read_file · docs/pilot-customers.csv send_messa"
+   },
+   {
+    "where": "run triage lead › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run triage lead › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run triage lead › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run triage lead › Messages",
+    "length": 198,
+    "head": "Messages To answer writer Nov 19, 01:44 PM My part is done; the result is in the folder. From answer writer Nov 19, 01:42 PM Triage the open desktop support thr"
+   },
+   {
+    "where": "run triage lead › Activity",
+    "length": 90,
+    "head": "Activity read_file docs/pilot-customers.csv success send_message_to /answer_writer success"
+   },
+   {
+    "where": "run triage lead › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run triage lead › Settings",
+    "length": 94,
+    "head": "Settings triage_lead Stopped · in support team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 2:answer writer",
+    "length": 298,
+    "head": "answer_writer Stopped · in support team A answer_writer answer_writer From Triage Lead: Answer the two connector questions; both need connector 2.4. read_file ·"
+   },
+   {
+    "where": "run answer writer › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run answer writer › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run answer writer › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run answer writer › Messages",
+    "length": 194,
+    "head": "Messages To triage lead Nov 19, 01:44 PM My part is done; the result is in the folder. From triage lead Nov 19, 01:42 PM Triage the open desktop support threads"
+   },
+   {
+    "where": "run answer writer › Activity",
+    "length": 52,
+    "head": "Activity read_file docs/release-notes-1.6.md success"
+   },
+   {
+    "where": "run answer writer › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run answer writer › Settings",
+    "length": 96,
+    "head": "Settings answer_writer Stopped · in support team Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 0:Daily Assistant",
+    "length": 2232,
+    "head": "Daily Assistant Background task running You You Summarize the 1.6 release notes for the pilot customers. Check the changelog, show me the latest commits and fix"
+   },
+   {
+    "where": "run Daily Assistant › Artifacts",
+    "length": 67,
+    "head": "Artifacts dashboard-after.png pilot-summary.md release-notes-1.6.md"
+   },
+   {
+    "where": "run Daily Assistant › Artifacts › first file",
+    "length": 92,
+    "head": "Artifacts docs/dashboard-after.png 100% Scroll to zoom • Drag to pan • Double-click to reset"
+   },
+   {
+    "where": "run Daily Assistant › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run Daily Assistant › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run Daily Assistant › Activity",
+    "length": 616,
+    "head": "Activity BACKGROUND TASKS 1 running Watch the upgrade check Running pnpm run upgrade:check --watch Started 02:31 PM Build the release notes site Completed pnpm "
+   },
+   {
+    "where": "run Daily Assistant › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run Daily Assistant › Settings",
+    "length": 96,
+    "head": "Settings Daily Assistant Background task running Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 0:Product Launch Org",
+    "length": 447,
+    "head": "launch lead Running · in Product Launch Org You You Prepare the 1.6 launch: the announcement, the email to the pilot customers and the release checklist. LL lau"
+   },
+   {
+    "where": "run Product Launch Org › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run Product Launch Org › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run Product Launch Org › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run Product Launch Org › Messages",
+    "length": 447,
+    "head": "Messages From release manager Nov 19, 02:08 PM Checklist done. Two items wait for the connector 2.4 build. checklist.md From content writer Nov 19, 02:06 PM Bot"
+   },
+   {
+    "where": "run Product Launch Org › Activity",
+    "length": 133,
+    "head": "Activity read_file docs/release-notes-1.6.md success send_message_to /content_writer success send_message_to /release_manager success"
+   },
+   {
+    "where": "run Product Launch Org › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run Product Launch Org › Settings",
+    "length": 100,
+    "head": "Settings launch lead Running · in Product Launch Org Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 1:launch lead",
+    "length": 447,
+    "head": "launch lead Running · in Product Launch Org You You Prepare the 1.6 launch: the announcement, the email to the pilot customers and the release checklist. LL lau"
+   },
+   {
+    "where": "run launch lead › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run launch lead › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run launch lead › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run launch lead › Messages",
+    "length": 447,
+    "head": "Messages From release manager Nov 19, 02:08 PM Checklist done. Two items wait for the connector 2.4 build. checklist.md From content writer Nov 19, 02:06 PM Bot"
+   },
+   {
+    "where": "run launch lead › Activity",
+    "length": 133,
+    "head": "Activity read_file docs/release-notes-1.6.md success send_message_to /content_writer success send_message_to /release_manager success"
+   },
+   {
+    "where": "run launch lead › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run launch lead › Settings",
+    "length": 100,
+    "head": "Settings launch lead Running · in Product Launch Org Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 1:content writer",
+    "length": 454,
+    "head": "content writer Idle · in Product Launch Org CW content writer content writer From Launch Lead: Draft the announcement and the pilot email from docs/release-note"
+   },
+   {
+    "where": "run content writer › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run content writer › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run content writer › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run content writer › Messages",
+    "length": 240,
+    "head": "Messages To launch lead Nov 19, 01:49 PM Both drafts are ready for your review. announcement.md pilot-email.md From launch lead Nov 19, 01:47 PM Draft the annou"
+   },
+   {
+    "where": "run content writer › Activity",
+    "length": 135,
+    "head": "Activity read_file docs/release-notes-1.6.md success write_file launch/announcement.md success write_file launch/pilot-email.md success"
+   },
+   {
+    "where": "run content writer › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run content writer › Settings",
+    "length": 100,
+    "head": "Settings content writer Idle · in Product Launch Org Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 1:release manager",
+    "length": 337,
+    "head": "release manager Idle · in Product Launch Org RM release manager release manager From Launch Lead: Prepare the release checklist for Thursday, 12 March. write_fi"
+   },
+   {
+    "where": "run release manager › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run release manager › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run release manager › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run release manager › Messages",
+    "length": 201,
+    "head": "Messages To launch lead Nov 19, 01:37 PM Checklist done. Two items wait for the connector 2.4 build. checklist.md From launch lead Nov 19, 01:35 PM Prepare the "
+   },
+   {
+    "where": "run release manager › Activity",
+    "length": 47,
+    "head": "Activity write_file launch/checklist.md success"
+   },
+   {
+    "where": "run release manager › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run release manager › Settings",
+    "length": 101,
+    "head": "Settings release manager Idle · in Product Launch Org Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 0:Personal Assistant",
+    "length": 315,
+    "head": "Personal Assistant Stopped You You Plan the week: school pickups, dentist, budget review PA Personal Assistant Personal Assistant read_file · docs/pilot-summary"
+   },
+   {
+    "where": "run Personal Assistant › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run Personal Assistant › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run Personal Assistant › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run Personal Assistant › Activity",
+    "length": 48,
+    "head": "Activity read_file docs/pilot-summary.md success"
+   },
+   {
+    "where": "run Personal Assistant › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run Personal Assistant › Settings",
+    "length": 83,
+    "head": "Settings Personal Assistant Stopped Runtime AutoByteus Model demo/sample-model Save"
+   },
+   {
+    "where": "run 0:Codex",
+    "length": 259,
+    "head": "Codex Stopped You You Fix the failing probe test on the base branch C Codex Codex run_terminal_command · pnpm test probe The probe test waited on a timer that n"
+   },
+   {
+    "where": "run Codex › Artifacts",
+    "length": 108,
+    "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+   },
+   {
+    "where": "run Codex › Files",
+    "length": 46,
+    "head": "Files demo-workspace docs launch src README.md"
+   },
+   {
+    "where": "run Codex › Files › first file",
+    "length": 347,
+    "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+   },
+   {
+    "where": "run Codex › Activity",
+    "length": 53,
+    "head": "Activity run_terminal_command pnpm test probe success"
+   },
+   {
+    "where": "run Codex › VNC Viewer",
+    "length": 42,
+    "head": "VNC Viewer View only Connected · View only"
+   },
+   {
+    "where": "run Codex › Settings",
+    "length": 70,
+    "head": "Settings Codex Stopped Runtime AutoByteus Model demo/sample-model Save"
+   }
+  ]
+ },
+ {
+  "size": "ipad-landscape-1180x820",
+  "findings": [],
+  "errors": [],
+  "log": [
+   {
+    "where": "run list",
+    "length": 1113,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run list, unfolded",
+    "length": 1371,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "rows",
+    "count": 26,
+    "rows": [
+     "0:Project Task Manager",
+     "1:software engineering team",
+     "2:solution designer",
+     "2:implementation engineer",
+     "3:code searcher",
+     "2:code reviewer",
+     "1:agent package creator",
+     "1:software engineering team",
+     "2:solution designer",
+     "2:implementation engineer",
+     "2:code reviewer",
+     "1:marketing team",
+     "2:campaign lead",
+     "2:copywriter",
+     "2:designer",
+     "1:market researcher",
+     "1:support team",
+     "2:triage lead",
+     "2:answer writer",
+     "0:Daily Assistant",
+     "0:Product Launch Org",
+     "1:launch lead",
+     "1:content writer",
+     "1:release manager",
+     "0:Personal Assistant",
+     "0:Codex"
+    ]
+   },
+   {
+    "where": "run 0:Project Task Manager",
+    "length": 1796,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Project Task Manager › Artifacts",
+    "length": 1438,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Project Task Manager › Files",
+    "length": 1376,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Project Task Manager › Files › first file",
+    "length": 1677,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Project Task Manager › Activity",
+    "length": 1934,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Project Task Manager › VNC Viewer",
+    "length": 1372,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Project Task Manager › Settings",
+    "length": 1415,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run 1:software engineering team",
+    "length": 1737,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run software engineering team › Artifacts",
+    "length": 1438,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run software engineering team › Files",
+    "length": 1376,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run software engineering team › Files › first file",
+    "length": 1677,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run software engineering team › Messages",
+    "length": 1568,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run software engineering team › Activity",
+    "length": 1427,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run software engineering team › VNC Viewer",
+    "length": 1372,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run software engineering team › Settings",
+    "length": 1440,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run 2:solution designer",
+    "length": 1737,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run solution designer › Artifacts",
+    "length": 1438,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run solution designer › Files",
+    "length": 1376,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run solution designer › Files › first file",
+    "length": 1677,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run solution designer › Messages",
+    "length": 1568,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run solution designer › Activity",
+    "length": 1427,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run solution designer › VNC Viewer",
+    "length": 1372,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run solution designer › Settings",
+    "length": 1440,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run 2:implementation engineer",
+    "length": 1820,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run implementation engineer › Artifacts",
+    "length": 1438,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run implementation engineer › Files",
+    "length": 1376,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run implementation engineer › Files › first file",
+    "length": 1677,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run implementation engineer › Messages",
+    "length": 1556,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run implementation engineer › Activity",
+    "length": 1464,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run implementation engineer › VNC Viewer",
+    "length": 1372,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run implementation engineer › Settings",
+    "length": 1449,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run 3:code searcher",
+    "length": 1682,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run code searcher › Artifacts",
+    "length": 1438,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run code searcher › Files",
+    "length": 1376,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run code searcher › Files › first file",
+    "length": 1677,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run code searcher › Activity",
+    "length": 1407,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run code searcher › VNC Viewer",
+    "length": 1372,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run code searcher › Settings",
+    "length": 1437,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run 2:code reviewer",
+    "length": 1671,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run code reviewer › Artifacts",
+    "length": 1438,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run code reviewer › Files",
+    "length": 1376,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run code reviewer › Files › first file",
+    "length": 1677,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run code reviewer › Messages",
+    "length": 1556,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run code reviewer › Activity",
+    "length": 1424,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run code reviewer › VNC Viewer",
+    "length": 1372,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run code reviewer › Settings",
+    "length": 1436,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run 1:agent package creator",
+    "length": 1698,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run agent package creator › Artifacts",
+    "length": 1438,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run agent package creator › Files",
+    "length": 1376,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run agent package creator › Files › first file",
+    "length": 1677,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run agent package creator › Activity",
+    "length": 1585,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run agent package creator › VNC Viewer",
+    "length": 1372,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run agent package creator › Settings",
+    "length": 1461,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run 1:software engineering team",
+    "length": 1737,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run software engineering team › Artifacts",
+    "length": 1438,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run software engineering team › Files",
+    "length": 1376,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run software engineering team › Files › first file",
+    "length": 1677,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run software engineering team › Messages",
+    "length": 1568,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run software engineering team › Activity",
+    "length": 1427,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run software engineering team › VNC Viewer",
+    "length": 1372,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run software engineering team › Settings",
+    "length": 1440,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run 2:solution designer",
+    "length": 1737,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run solution designer › Artifacts",
+    "length": 1438,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run solution designer › Files",
+    "length": 1376,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run solution designer › Files › first file",
+    "length": 1677,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run solution designer › Messages",
+    "length": 1568,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run solution designer › Activity",
+    "length": 1427,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run solution designer › VNC Viewer",
+    "length": 1372,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run solution designer › Settings",
+    "length": 1440,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run 2:implementation engineer",
+    "length": 1836,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run implementation engineer › Artifacts",
+    "length": 1438,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run implementation engineer › Files",
+    "length": 1376,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run implementation engineer › Files › first file",
+    "length": 1677,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run implementation engineer › Messages",
+    "length": 1556,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run implementation engineer › Activity",
+    "length": 1556,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run implementation engineer › VNC Viewer",
+    "length": 1372,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run implementation engineer › Settings",
+    "length": 1465,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run 2:code reviewer",
+    "length": 1671,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run code reviewer › Artifacts",
+    "length": 1438,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run code reviewer › Files",
+    "length": 1376,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run code reviewer › Files › first file",
+    "length": 1677,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run code reviewer › Messages",
+    "length": 1556,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run code reviewer › Activity",
+    "length": 1424,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run code reviewer › VNC Viewer",
+    "length": 1372,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run code reviewer › Settings",
+    "length": 1436,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run 1:marketing team",
+    "length": 1721,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run marketing team › Artifacts",
+    "length": 1438,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run marketing team › Files",
+    "length": 1376,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run marketing team › Files › first file",
+    "length": 1677,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run marketing team › Messages",
+    "length": 1548,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run marketing team › Activity",
+    "length": 1449,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run marketing team › VNC Viewer",
+    "length": 1372,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run marketing team › Settings",
+    "length": 1428,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run 2:campaign lead",
+    "length": 1721,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run campaign lead › Artifacts",
+    "length": 1438,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run campaign lead › Files",
+    "length": 1376,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run campaign lead › Files › first file",
+    "length": 1677,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run campaign lead › Messages",
+    "length": 1548,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run campaign lead › Activity",
+    "length": 1449,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run campaign lead › VNC Viewer",
+    "length": 1372,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run campaign lead › Settings",
+    "length": 1428,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run 2:copywriter",
+    "length": 1661,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run copywriter › Artifacts",
+    "length": 1438,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run copywriter › Files",
+    "length": 1376,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run copywriter › Files › first file",
+    "length": 1677,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run copywriter › Messages",
+    "length": 1554,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run copywriter › Activity",
+    "length": 1379,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run copywriter › VNC Viewer",
+    "length": 1372,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run copywriter › Settings",
+    "length": 1422,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run 2:designer",
+    "length": 1612,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run designer › Artifacts",
+    "length": 1438,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run designer › Files",
+    "length": 1376,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run designer › Files › first file",
+    "length": 1677,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run designer › Messages",
+    "length": 1554,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run designer › Activity",
+    "length": 1381,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run designer › VNC Viewer",
+    "length": 1372,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run designer › Settings",
+    "length": 1421,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run 1:market researcher",
+    "length": 1684,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run market researcher › Artifacts",
+    "length": 1439,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run market researcher › Files",
+    "length": 1377,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run market researcher › Files › first file",
+    "length": 1678,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run market researcher › Activity",
+    "length": 1411,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run market researcher › VNC Viewer",
+    "length": 1373,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run market researcher › Settings",
+    "length": 1436,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run 1:support team",
+    "length": 1637,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run support team › Artifacts",
+    "length": 1439,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run support team › Files",
+    "length": 1377,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run support team › Files › first file",
+    "length": 1678,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run support team › Messages",
+    "length": 1529,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run support team › Activity",
+    "length": 1421,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run support team › VNC Viewer",
+    "length": 1373,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run support team › Settings",
+    "length": 1425,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run 2:triage lead",
+    "length": 1637,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run triage lead › Artifacts",
+    "length": 1439,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run triage lead › Files",
+    "length": 1377,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run triage lead › Files › first file",
+    "length": 1678,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run triage lead › Messages",
+    "length": 1529,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run triage lead › Activity",
+    "length": 1421,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run triage lead › VNC Viewer",
+    "length": 1373,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run triage lead › Settings",
+    "length": 1425,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run 2:answer writer",
+    "length": 1629,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run answer writer › Artifacts",
+    "length": 1439,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run answer writer › Files",
+    "length": 1377,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run answer writer › Files › first file",
+    "length": 1678,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run answer writer › Messages",
+    "length": 1525,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run answer writer › Activity",
+    "length": 1383,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run answer writer › VNC Viewer",
+    "length": 1372,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run answer writer › Settings",
+    "length": 1426,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run 0:Daily Assistant",
+    "length": 3562,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Daily Assistant › Artifacts",
+    "length": 1397,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Daily Assistant › Artifacts › first file",
+    "length": 1422,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Daily Assistant › Files",
+    "length": 1376,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Daily Assistant › Files › first file",
+    "length": 1677,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Daily Assistant › Activity",
+    "length": 1946,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Daily Assistant › VNC Viewer",
+    "length": 1372,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Daily Assistant › Settings",
+    "length": 1426,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run 0:Product Launch Org",
+    "length": 1777,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Product Launch Org › Artifacts",
+    "length": 1438,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Product Launch Org › Files",
+    "length": 1376,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Product Launch Org › Files › first file",
+    "length": 1677,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Product Launch Org › Messages",
+    "length": 1777,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Product Launch Org › Activity",
+    "length": 1463,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Product Launch Org › VNC Viewer",
+    "length": 1372,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Product Launch Org › Settings",
+    "length": 1430,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run 1:launch lead",
+    "length": 1777,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run launch lead › Artifacts",
+    "length": 1438,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run launch lead › Files",
+    "length": 1376,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run launch lead › Files › first file",
+    "length": 1677,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run launch lead › Messages",
+    "length": 1777,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run launch lead › Activity",
+    "length": 1463,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run launch lead › VNC Viewer",
+    "length": 1372,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run launch lead › Settings",
+    "length": 1430,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run 1:content writer",
+    "length": 1784,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run content writer › Artifacts",
+    "length": 1438,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run content writer › Files",
+    "length": 1376,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run content writer › Files › first file",
+    "length": 1677,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run content writer › Messages",
+    "length": 1570,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run content writer › Activity",
+    "length": 1465,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run content writer › VNC Viewer",
+    "length": 1372,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run content writer › Settings",
+    "length": 1430,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run 1:release manager",
+    "length": 1667,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run release manager › Artifacts",
+    "length": 1438,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run release manager › Files",
+    "length": 1376,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run release manager › Files › first file",
+    "length": 1677,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run release manager › Messages",
+    "length": 1531,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run release manager › Activity",
+    "length": 1377,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run release manager › VNC Viewer",
+    "length": 1372,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run release manager › Settings",
+    "length": 1431,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run 0:Personal Assistant",
+    "length": 1645,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Personal Assistant › Artifacts",
+    "length": 1438,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Personal Assistant › Files",
+    "length": 1376,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Personal Assistant › Files › first file",
+    "length": 1677,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Personal Assistant › Activity",
+    "length": 1378,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Personal Assistant › VNC Viewer",
+    "length": 1372,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Personal Assistant › Settings",
+    "length": 1413,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run 0:Codex",
+    "length": 1589,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Codex › Artifacts",
+    "length": 1438,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Codex › Files",
+    "length": 1376,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Codex › Files › first file",
+    "length": 1677,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Codex › Activity",
+    "length": 1383,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Codex › VNC Viewer",
+    "length": 1372,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   },
+   {
+    "where": "run Codex › Settings",
+    "length": 1400,
+    "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+   }
+  ]
+ }
+]
