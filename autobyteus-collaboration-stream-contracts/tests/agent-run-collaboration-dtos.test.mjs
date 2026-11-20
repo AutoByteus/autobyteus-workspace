@@ -114,3 +114,20 @@ test("Org trees have their own parts only: no collaborators list, no delegated r
   assert.throws(() => agentOrgExecutionTreeDtoSchema.parse({ ...tree, rootOrg: { ...tree.rootOrg, collaborators: [] } }));
   assert.throws(() => agentOrgExecutionTreeDtoSchema.parse({ ...tree, rootOrg: { ...tree.rootOrg, taskExecutions: [productTeamRun] } }));
 });
+
+test("an Agent root's message event carries its two parties; each names its run ID, its address and its node when another (autobyteus-565)", () => {
+  const message = { messageId: "m1", senderAgentRunId: "pm-a", receiverAgentRunId: "pm-b", content: "hi", messageType: "agent_message",
+    referenceFiles: [], createdAt: "2026-11-01T00:00:00.000Z" };
+  const parties = { sender: { agentRunId: "pm-a", address: "/project_task_manager", nodeName: null },
+    receiver: { agentRunId: "pm-b", address: null, nodeName: "docker" } };
+  const event = (body) => ({ root_subject_kind: "agent", root_run_id: "pm-a", change_sequence: 1, event: { kind: "communication", message, ...body } });
+  assert.deepEqual(RootExecutionEventDtoSchema.parse(event({ parties })).event.parties, parties);
+  assert.throws(() => RootExecutionEventDtoSchema.parse(event({})));
+  assert.throws(() => RootExecutionEventDtoSchema.parse(event({ parties: { sender: parties.sender } })));
+  assert.throws(() => RootExecutionEventDtoSchema.parse(event({ parties: { ...parties, receiver: { agentRunId: "pm-b", address: "" , nodeName: null } } })));
+  assert.throws(() => RootExecutionEventDtoSchema.parse(event({ parties: { ...parties, receiver: { agentRunId: "pm-b", address: null } } })));
+  // The Org root's message event is unchanged: it carries no parties (REQ-006).
+  assert.throws(() => RootExecutionEventDtoSchema.parse({ root_subject_kind: "agent_org", root_run_id: "org", change_sequence: 1,
+    event: { kind: "communication", message, parties } }));
+});
+

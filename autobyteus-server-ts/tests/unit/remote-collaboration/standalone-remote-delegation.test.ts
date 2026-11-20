@@ -309,7 +309,11 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     const aLog = await logLines(path.join(new AgentMemoryLayout(a.memoryDir).getStandaloneRunDirPath(DELEGATOR), "communication_messages_active.jsonl"));
     const bLog = await logLines(path.join(new AgentMemoryLayout(b.memoryDir).getStandaloneRunDirPath("publisher_r1"), "communication_messages_active.jsonl"));
     expect(aLog.map((line) => line.content)).toEqual(["Published to the channel.", "Thanks, now add captions."]);
-    expect(bLog).toEqual(aLog);
+    // One message, one ID, in both logs; each log records the other agent and its node (autobyteus-565 REQ-007).
+    const withoutRecord = (line: Record<string, unknown>) => { const { counterpart: _record, ...rest } = line; return rest; };
+    expect(bLog.map(withoutRecord)).toEqual(aLog.map(withoutRecord));
+    expect(aLog.map((line) => line.counterpart)).toEqual([{ address: "/publisher", nodeId: B_ID }, { address: "/publisher", nodeId: B_ID }]);
+    expect(bLog.map((line) => line.counterpart)).toEqual([{ address: "/assistant", nodeId: A_ID }, { address: "/assistant", nodeId: A_ID }]);
     expect(new Set(aLog.map((line) => line.messageId)).size).toBe(2);
     // The stored records of each root keep them (the remote endpoint is a loaded endpoint), but the view carries no
     // messages, and a participant's Team tab does not show them (autobyteus-358: both endpoints must be agents of the root).
@@ -376,7 +380,7 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     // A message that claims to be from a run B never linked with A's delegator is refused by A's link check.
     const forged = await (await a.manager.resolveRoot(DELEGATOR))!.acceptRemoteMessage({ fromNodeId: B_ID, fromNodeName: "docker",
       message: { messageId: "collabmsg_forged", senderAgentRunId: "other_run", receiverAgentRunId: DELEGATOR, content: "hi",
-        messageType: "agent_message", referenceFiles: [], createdAt: T0 } });
+        messageType: "agent_message", referenceFiles: [], createdAt: T0 }, senderAddress: null });
     expect(forged).toMatchObject({ accepted: false, code: "REMOTE_TARGET_NOT_PERMITTED" });
     expect(a.runOf(DELEGATOR).received).toEqual([]);
   });
@@ -402,7 +406,7 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     const rootA = (await a.manager.resolveRoot(DELEGATOR))!;
     expect(rootA.getCommunicationSnapshot().messages.map((message) => message.content)).toEqual(["Reply."]);
     const replay = rootA.getCommunicationSnapshot().messages[0]!;
-    await expect(rootA.acceptRemoteMessage({ fromNodeId: B_ID, fromNodeName: "docker", message: replay }))
+    await expect(rootA.acceptRemoteMessage({ fromNodeId: B_ID, fromNodeName: "docker", message: replay, senderAddress: "/publisher" }))
       .resolves.toMatchObject({ accepted: false, code: "AGENT_ROOT_MESSAGE_COMMIT_CONFLICT" });
     expect(a.runOf(DELEGATOR).received.filter((content) => content.includes("Reply."))).toHaveLength(1);
   });

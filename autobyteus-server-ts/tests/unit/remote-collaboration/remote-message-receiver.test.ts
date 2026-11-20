@@ -13,12 +13,12 @@ import type { StoredRemoteLinkCheck } from "../../../src/agent-collaboration/exe
 const PEER = { nodeId: "srv_node_a", name: "desktop", baseUrl: "http://a", addedAt: "2026-10-21T00:00:00.000Z", paired: true };
 const request = (overrides: Partial<DeliverRemoteMessageRequest> = {}): DeliverRemoteMessageRequest => ({
   fromNodeId: PEER.nodeId, toNodeId: "srv_node_b", kind: "message", messageId: "collabmsg_1",
-  sender: { agentRunId: "assistant_a1" }, targetRoot: { kind: "agent_team", runId: "team_b" }, target: { agentRunId: "writer_b" },
+  sender: { agentRunId: "assistant_a1", address: "/assistant" }, targetRoot: { kind: "agent_team", runId: "team_b" }, target: { agentRunId: "writer_b" },
   content: "hello", messageType: "agent_message", createdAt: "2026-10-21T10:00:00.000Z", ...overrides,
 } as DeliverRemoteMessageRequest);
 
 const setup = (stored: StoredRemoteLinkCheck = "proceed") => {
-  const root = () => ({ acceptRemoteMessage: vi.fn(async () => ({ accepted: true })), acceptRemoteWorkPacket: vi.fn(async () => ({ accepted: true })) });
+  const root = () => ({ acceptRemoteMessage: vi.fn(async () => ({ accepted: true, agentAddress: "/writer" })), acceptRemoteWorkPacket: vi.fn(async () => ({ accepted: true })) });
   const roots = { standalone: root(), team: root(), org: root() };
   const directory = {
     storedLinkCheck: vi.fn(async () => stored),
@@ -28,7 +28,7 @@ const setup = (stored: StoredRemoteLinkCheck = "proceed") => {
     runAgents: vi.fn() as never,
     liveRoot: vi.fn(() => liveRoot),
   } satisfies RemoteRootDirectory;
-  const liveRoot = { acceptPeerRunMessage: vi.fn(async () => ({ accepted: true as const })) };
+  const liveRoot = { acceptPeerRunMessage: vi.fn(async () => ({ accepted: true as const, agentAddress: "/project_task_manager" })) };
   const titles = { recordFirstMessage: vi.fn(async () => undefined) }
   // autobyteus-492: "pm_b" runs in the standalone root "pm_b"; the team "team_b" runs here with its coordinator "lead_b".
   const running = {
@@ -42,9 +42,10 @@ const setup = (stored: StoredRemoteLinkCheck = "proceed") => {
 describe("RemoteMessageReceiver resolves targetRoot by kind (G-2)", () => {
   it("a message for a Team member goes to that Team root, with the message as sent", async () => {
     const f = setup();
-    await expect(f.receiver.accept(request(), PEER)).resolves.toEqual({ accepted: true });
+    // autobyteus-565: the answer names the receiving agent's address; the root gets the sender's.
+    await expect(f.receiver.accept(request(), PEER)).resolves.toEqual({ accepted: true, receiverAddress: "/writer" });
     expect(f.directory.team).toHaveBeenCalledExactlyOnceWith("team_b");
-    expect(f.roots.team.acceptRemoteMessage).toHaveBeenCalledExactlyOnceWith({ fromNodeId: PEER.nodeId, fromNodeName: "desktop", message: {
+    expect(f.roots.team.acceptRemoteMessage).toHaveBeenCalledExactlyOnceWith({ fromNodeId: PEER.nodeId, fromNodeName: "desktop", senderAddress: "/assistant", message: {
       messageId: "collabmsg_1", senderAgentRunId: "assistant_a1", receiverAgentRunId: "writer_b", content: "hello",
       messageType: "agent_message", referenceFiles: [], createdAt: "2026-10-21T10:00:00.000Z" } });
   });
@@ -62,7 +63,7 @@ describe("RemoteMessageReceiver resolves targetRoot by kind (G-2)", () => {
   it("a work packet starts the Agent run or the Team's coordinator; an Org is never started for a peer", async () => {
     const f = setup();
     const packet = { kind: "work_packet" as const, messageId: undefined, content: "Draft the episode." };
-    await expect(f.receiver.accept(request({ ...packet, target: { agentRunId: "lead_b" } }), PEER)).resolves.toEqual({ accepted: true });
+    await expect(f.receiver.accept(request({ ...packet, target: { agentRunId: "lead_b" } }), PEER)).resolves.toEqual({ accepted: true, receiverAddress: null });
     expect(f.roots.team.acceptRemoteWorkPacket).toHaveBeenCalledExactlyOnceWith({ fromNodeId: PEER.nodeId, fromNodeName: "desktop",
       senderAgentRunId: "assistant_a1", targetAgentRunId: "lead_b", description: "Draft the episode." });
     await f.receiver.accept(request({ ...packet, targetRoot: { kind: "agent", runId: "host_b" }, target: { agentRunId: "host_b" } }), PEER);
@@ -128,21 +129,21 @@ describe("an accepted work packet's content is the run's title (autobyteus-269)"
     const f = setup();
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     f.titles.recordFirstMessage.mockRejectedValueOnce(new Error("catalog unavailable"));
-    await expect(f.receiver.accept(request({ ...packet, target: { agentRunId: "lead_b" } }), PEER)).resolves.toEqual({ accepted: true });
+    await expect(f.receiver.accept(request({ ...packet, target: { agentRunId: "lead_b" } }), PEER)).resolves.toEqual({ accepted: true, receiverAddress: null });
     await vi.waitFor(() => expect(warn).toHaveBeenCalledWith(expect.stringContaining("Failed to record the title of run 'team_b'")));
     warn.mockRestore();
   });
 });
 
 describe("autobyteus-492 DS-004: a message by run ID only (acceptRunMessage)", () => {
-  const runMessage = (target: string) => ({ fromNodeId: PEER.nodeId, toNodeId: "srv_node_b", messageId: "collabmsg_9", sender: { agentRunId: "pm_a" },
+  const runMessage = (target: string) => ({ fromNodeId: PEER.nodeId, toNodeId: "srv_node_b", messageId: "collabmsg_9", sender: { agentRunId: "pm_a", address: "/project_task_manager" },
     target: { agentRunId: target }, content: "hello B", messageType: "agent_message", createdAt: "2026-11-18T10:00:00.000Z" });
 
   it("a running agent: its active root (never restored) accepts it with the sender's node; no stored-link check, no restore", async () => {
     const f = setup();
-    await expect(f.receiver.acceptRunMessage(runMessage("pm_b"), PEER)).resolves.toEqual({ accepted: true });
+    await expect(f.receiver.acceptRunMessage(runMessage("pm_b"), PEER)).resolves.toEqual({ accepted: true, receiverAddress: "/project_task_manager" });
     expect(f.directory.liveRoot).toHaveBeenCalledExactlyOnceWith({ rootSubjectKind: "agent", rootRunId: "pm_b" });
-    expect(f.liveRoot.acceptPeerRunMessage).toHaveBeenCalledExactlyOnceWith({ fromNodeId: PEER.nodeId, fromNodeName: "desktop", message: {
+    expect(f.liveRoot.acceptPeerRunMessage).toHaveBeenCalledExactlyOnceWith({ fromNodeId: PEER.nodeId, fromNodeName: "desktop", senderAddress: "/project_task_manager", message: {
       messageId: "collabmsg_9", senderAgentRunId: "pm_a", receiverAgentRunId: "pm_b", content: "hello B", messageType: "agent_message",
       referenceFiles: [], createdAt: "2026-11-18T10:00:00.000Z" } });
     expect(f.directory.storedLinkCheck).not.toHaveBeenCalled();

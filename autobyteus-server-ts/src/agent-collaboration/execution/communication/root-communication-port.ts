@@ -6,6 +6,7 @@ import type {
   RootExecutionIdentity,
 } from "../domain/root-execution-identity.js";
 import type { CollaborationCommunicationMessage } from "./collaboration-communication-message.js";
+import type { MessagePublication } from "./message-publication.js";
 import type { RootMessageAppend, RootMessageAppendResult } from "./root-message-append.js";
 import { ROOT_NOT_ACTIVE_MESSAGE } from "../task/task-delegation-command.js";
 
@@ -59,10 +60,11 @@ export interface RootCommunicationPort {
   /** The root persistence coordinator's `commitMessageAppend` (lock, log write, post-durability step). */
   commitMessageAppend(append: RootMessageAppend): Promise<RootMessageAppendResult>;
   /**
-   * The committed message into the views (SR-072): the node's message feed numbers it in the view of this root, of the
-   * sender's run, and of every run above either. Called once per message, at the commit that publishes it.
+   * The committed message into the views (SR-072): the node's message feed numbers it in each view of its local runs'
+   * chains that `MessageViewScope` admits for its relation (autobyteus-565). Called once per message, at the commit that
+   * publishes it.
    */
-  publishMessage(message: CollaborationCommunicationMessage, senderRun: RootExecutionIdentity): void;
+  publishMessage(publication: MessagePublication): void;
   /** Shows the committed input in the recipient's conversation. */
   presentRecipientInput(message: CollaborationCommunicationMessage, input: AgentInputUserMessage): void;
 }

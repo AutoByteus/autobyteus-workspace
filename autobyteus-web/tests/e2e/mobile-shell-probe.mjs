@@ -56,7 +56,8 @@
 //                  new run tops the list.
 //   MSP-08 AC-007  On the Team's coordinator: ⋮ items in order (Settings last, autobyteus-458); Artifacts (one file shown directly), Files (tree, path,
 //                  search over the workspace, no filters, an opened file without Attach), Messages (a reference opens the
-//                  file), Activity (its tool calls); a standalone agent: no Messages, empty states; a remote run: "on that
+//                  file), Activity (its tool calls); a standalone agent: Messages (autobyteus-565: a local run's message without a chip, a
+//                  run on beta with the chip "beta-node", newest first), empty Artifacts and Activity; a remote run: "on that
 //                  node" wording.
 //   MSP-16 autobyteus-427  A file link in a conversation (the Delivery Team lead's own message, Markdown links to absolute
 //                  paths): a tap on a file in the workspace's sub-folder opens the file viewer with its text, the URL is
@@ -1451,12 +1452,36 @@ const runCases = async () => {
     const activity = (await page.locator(sel('mobile-run-activity-row')).allInnerTexts()).map(text => text.replace(/\s+/g, ' ').slice(0, 80));
     await shot(page, 'MSP-08-activity');
     await toList(page);
-    // A standalone agent: no Messages; empty Artifacts and Activity.
+    // A standalone agent (autobyteus-565 DEC-001): Messages like every run that collaborates. Its own messages, whatever
+    // the other side: another run of this node (form 4, no chip) and a run on beta (form 6, the chip "beta-node").
+    await stack.agentCall(stack.plain[1], 'send_message_to', { target_agent_run_id: stack.plain[0], content: 'PLAIN-NOTE-565 from a local run.' });
+    await stack.agentCall(stack.ptm, 'send_message_to', { target_agent_run_id: stack.remoteAgentRun, content: 'Keep going. Marker PTM-WAKE-565.' });
+    const toPeer = await stack.agentCall(stack.plain[0], 'send_message_to', { node: PEER, target_agent_run_id: stack.remoteAgentRun, content: 'PEER-NOTE-565 to beta.' });
+    // More than one page (DEC-004): 55 more from the local run, in one turn (the scripted CLI's `CALL_TOOLS`, 30 ms apart).
+    await stack.agentSay(stack.plain[1], `CALL_TOOLS:${JSON.stringify(Array.from({ length: 55 }, (_, i) => ({ name: 'send_message_to',
+      arguments: { target_agent_run_id: stack.plain[0], content: `PLAIN-BULK-${String(i + 1).padStart(2, '0')}` }, delayMs: i * 30 })))}`);
+    const plainFirstPage = async () => (await alpha.gql('query($k:String!,$r:String!,$a:String!){collaborationParticipantMessages(rootKind:$k,rootRunId:$r,agentRunId:$a)}',
+      { k: 'agent', r: stack.plain[0], a: stack.plain[0] })).collaborationParticipantMessages;
+    await waitFor('the 55 stored', async () => (await plainFirstPage()).messages[0]?.content === 'PLAIN-BULK-55', 120_000);
     await showOlder(page);
     await openRow(page, `agent:${stack.plain[0]}`);
     await page.locator(sel('mobile-run-menu-button')).click();
     const plainItems = await page.locator(`${sel('mobile-run-menu')} [role="menuitem"]`).evaluateAll(list => list.map(item => item.textContent.trim()));
-    await page.locator(sel('mobile-run-menu-artifacts')).click();
+    await page.locator(sel('mobile-run-menu-messages')).click();
+    await page.locator(sel('mobile-messages')).waitFor();
+    await waitFor('the first page on the phone', async () => (await page.locator(sel('mobile-team-message-row')).count()) === 50, 30_000).catch(() => undefined);
+    const plainFirst = await page.locator(sel('mobile-team-message-row')).count();
+    const plainMoreShown = await page.locator(sel('mobile-messages-load-more')).isVisible().catch(() => false);
+    await shot(page, 'MSP-08-standalone-messages-first-page');
+    await page.locator(sel('mobile-messages-load-more')).click();
+    await waitFor('the rest after Load more', async () => (await page.locator(sel('mobile-team-message-row')).count()) === 57, 30_000).catch(() => undefined);
+    const plainMoreAfter = await page.locator(sel('mobile-messages-load-more')).count();
+    const plainRows = await page.locator(sel('mobile-team-message-row')).evaluateAll(rows => rows.map(row => ({
+      text: row.textContent.replace(/\s+/g, ' ').trim().slice(0, 200), chip: row.querySelector('[data-testid="mobile-team-message-node"]')?.textContent.trim() ?? null })));
+    await page.locator(sel('mobile-team-message-row')).filter({ hasText: 'PEER-NOTE-565' }).first().scrollIntoViewIfNeeded().catch(() => undefined);
+    await shot(page, 'MSP-08-standalone-messages');
+    await page.locator(sel('mobile-screen-back')).click();
+    await menuOpen(page, 'artifacts');
     const artifactsEmpty = (await page.locator(sel('mobile-artifacts-empty')).innerText().catch(() => '')).replace(/\s+/g, ' ');
     await page.locator(sel('mobile-screen-back')).click();
     await menuOpen(page, 'activity');
@@ -1480,10 +1505,18 @@ const runCases = async () => {
     assert(searchRows.some(text => text.includes('app.ts')), 'one search over the workspace', searchRows);
     assert(messages.some(text => text.includes('TEAM-NOTE')) && referenceText && stillMessages === 1, 'the Team messages; a reference opens the file and ← closes it', { messages, referenceText, stillMessages });
     assert(activity.length > 0, 'the agent\'s tool calls', activity);
-    assert(JSON.stringify(plainItems) === JSON.stringify(['Artifacts', 'Files', 'Activity', 'Settings']), 'no Messages for a standalone agent (Settings last, autobyteus-458)', plainItems);
+    assert(JSON.stringify(plainItems) === JSON.stringify(['Artifacts', 'Files', 'Messages', 'Activity', 'Settings']), 'a standalone agent has Messages (565 DEC-001; Settings last, autobyteus-458)', plainItems);
+    const peerRow = plainRows.find(row => row.text.includes('PEER-NOTE-565')), localRow = plainRows.find(row => row.text.includes('PLAIN-NOTE-565'));
+    const bulkOrder = plainRows.map(row => /PLAIN-BULK-(\d\d)/.exec(row.text)?.[1]).filter(Boolean);
+    assert(plainFirst === 50 && plainMoreShown && plainRows.length === 57 && plainMoreAfter === 0, 'the phone pages its Messages: 50, Load more, then the rest (565 DEC-004)', { plainFirst, plainMoreShown, rows: plainRows.length, plainMoreAfter });
+    assert(bulkOrder.length === 55 && bulkOrder.join() === Array.from({ length: 55 }, (_, i) => String(55 - i).padStart(2, '0')).join() && plainRows.indexOf(peerRow) > 54,
+      'newest first, every message once', { bulkOrder: bulkOrder.join(' ').slice(0, 300) });
+    assert(toPeer.includes('"accepted":true') || toPeer.includes('\\"accepted\\":true'), 'the message to beta was delivered', toPeer);
+    assert(peerRow && peerRow.chip?.includes(PEER) && localRow && localRow.chip === null && plainRows.indexOf(peerRow) < plainRows.indexOf(localRow),
+      'its own Messages: the run on beta with its node chip, the local run without one, newest first (565 AC-002)', plainRows);
     assert(artifactsEmpty.startsWith('No Artifacts yet') && activityEmpty === 'No activity yet', 'empty states', { artifactsEmpty, activityEmpty });
     assert(remoteArtifacts.includes(PEER) && remoteFiles.includes(PEER), 'a remote run: the files are on that node', { remoteArtifacts, remoteFiles });
-    return { items, artifacts, filesTop, filters, pathLine, attach, searchRows, messages, referenceText, activity, plainItems, artifactsEmpty, activityEmpty, remoteArtifacts, remoteFiles };
+    return { items, artifacts, filesTop, filters, pathLine, attach, searchRows, messages, referenceText, activity, plainItems, plainFirst, plainMoreShown, plainRows: plainRows.filter(row => !row.text.includes('PLAIN-BULK-')), rowCount: plainRows.length, toPeer, artifactsEmpty, activityEmpty, remoteArtifacts, remoteFiles };
   });
 
   await runCase('MSP-33', async () => {

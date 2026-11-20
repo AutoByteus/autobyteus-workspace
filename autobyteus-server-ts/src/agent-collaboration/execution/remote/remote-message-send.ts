@@ -57,10 +57,11 @@ export class RemoteMessageSend {
       senderIdentity: input.sender, endpoint, content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles,
     });
     if (!prepared.ok) return prepared.refusal;
-    const answer = await this.options.links.deliver(endpoint, prepared.message);
+    // The sender's address goes with the message; the receiving node answers its agent's (autobyteus-565).
+    const answer = await this.options.links.deliver(endpoint, prepared.message, prepared.senderAddress);
     if (!answer.accepted) return answer;
-    // The result names the remote run's node (CM-11).
-    const result = await engine.commitSentToRemote(prepared);
+    // The result names the remote run's node (CM-11); the sender's line records the receiver and its node.
+    const result = await engine.commitSentToRemote(prepared, { address: answer.receiverAddress, nodeName: answer.peerName });
     return { ...result, message: remoteDeliveredText(endpoint.reference.agentRunId, answer.peerName) };
   }
 }

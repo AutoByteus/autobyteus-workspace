@@ -1,0 +1,5 @@
+# API-10 tracked imports
+# Command: python3 scripts/check_repository_artifact_hygiene.py --only tracked-imports
+# Commit: bae91e808f; macOS 26; 2026-11-20
+
+Tracked-import check passed. Tracked files scanned: 100135

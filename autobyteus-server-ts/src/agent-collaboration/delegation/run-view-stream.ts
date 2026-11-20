@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../execution/domain/root-execution-identity.js";
 import type { DelegationIndex } from "./delegation-index.js";
+import type { MessageViewScope } from "./message-view-scope.js";
 import { RunMessagesFeed, type RunMessageEvents } from "./run-messages-feed.js";
 import { SnapshotBarrier } from "../../utils/snapshot-barrier.js";
 
@@ -113,7 +114,7 @@ export class RunViewStreams {
 
   constructor(
     private readonly isMessageEvent: Readonly<Record<RootExecutionIdentity["rootSubjectKind"], (event: never) => boolean>>,
-    feed: Readonly<{ tree: Pick<DelegationIndex, "chainOf" | "collaborationTreeOf">; events: RunMessageEvents }>,
+    feed: Readonly<{ tree: Pick<DelegationIndex, "chainOf">; scope: Pick<MessageViewScope, "inView">; events: RunMessageEvents }>,
   ) {
     this.messages = new RunMessagesFeed({ ...feed, openStreamOf: (run) => this.streams.get(rootExecutionIdentityKey(run)) ?? null });
   }

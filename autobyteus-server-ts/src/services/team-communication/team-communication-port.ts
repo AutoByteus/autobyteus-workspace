@@ -62,7 +62,7 @@ export const createTeamCommunicationPort = (input: Readonly<{
     reserveRecipientInput: async (agentRunId, message) => (await input.requireContainingTeamRun(agentRunId)).reserveDirectAgentInput(agentRunId, message),
     logOwnersOf: (message) => messageLogOwners(message, (agentRunId) => input.messageLogOwnerOf(agentRunId)),
     commitMessageAppend: (append) => input.commitMessageAppend(append),
-    publishMessage: (message, senderRun) => input.messageFeed.publish({ message, senderRun, receiverRun: createTeamRootExecutionIdentity(input.rootTeamRunId) }),
+    publishMessage: (publication) => input.messageFeed.publish(publication),
     presentRecipientInput: (message, recipientInput) => input.publish({
       eventSourceType: TeamRunEventSourceType.MEMBER_INPUT,
       agentRunId: message.receiverAgentRunId,

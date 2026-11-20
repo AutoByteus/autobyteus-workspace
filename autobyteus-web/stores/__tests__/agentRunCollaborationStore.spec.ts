@@ -105,11 +105,12 @@ describe('agentRunCollaborationStore', () => {
     expect(stream.instances).toHaveLength(0)
   })
 
-  it('a run with no delegated run in its tree has no Team tab', async () => {
+  it('autobyteus-565 DEC-001: a run with no delegated run in its tree has its Messages tab, its own agent\'s; a run without a view has none', async () => {
     const store = useAgentRunCollaborationStore()
+    expect(store.runMessagesView('host-run')).toBeNull()
     await store.inspect('host-run')
     useRunTreeStore().streamSnapshot(HOST, [rowOf('agent:host-run')])
-    expect(store.runMessagesView('host-run')).toBeNull()
+    expect(store.runMessagesView('host-run')).toMatchObject({ rootKind: 'agent', rootRunId: 'host-run', focusedAgentRunId: 'host-run' })
   })
 
   it('ensureStoredView reads a run with collaboration once, and never one without', async () => {

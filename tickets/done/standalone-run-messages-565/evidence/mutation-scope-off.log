@@ -1,0 +1,444 @@
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/standalone-run-messages-565/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-run-messages-565/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:79347) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[autobyteus-565 measure] first page of a 2,500-message own list: 1.6 ms, 0 rows, 0 named
+stdout | tests/unit/api/graphql/collaboration-participant-messages.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/api/graphql/collaboration-participant-messages.test.ts (14 tests | 5 failed) 116ms
+     × AC-001 (REQ-002, the reproduction): a standalone run's own agent's list holds every message it sent or received, each other agent named 31ms
+       × names each other agent from the newest line's record: a local run by its address, an agent on another node by its address and this node's name for it 2ms
+       × names an older line's other agent from a linked run's Task entry, else from its run file, else by its run ID 24ms
+       × pages 50 newest first; the cursor gives the rows strictly after it; ties at one time are ordered by message ID; hasMore ends 1ms
+       × a 2,500-message log: the first page is 50 rows with hasMore, read within the budget 5ms
+(node:79424) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/remote-collaboration/remote-message-view-sequence.test.ts (3 tests | 1 failed) 19ms
+     × 'Agent root (standalone)': the messages its view shows are published, with consecutive sequences 6ms
+ ❯ tests/unit/agent-collaboration/delegation/run-messages-feed.test.ts (7 tests | 2 failed) 14ms
+       × an unrelated message reaches only the view of an Agent root that is one of its runs, not the runs above, never a Team's 4ms
+       × a message with another node reaches only its local Agent root's own view, with the remote party's node 2ms
+ ❯ tests/unit/agent-collaboration/delegation/message-view-scope.test.ts (4 tests | 3 failed) 9ms
+     × unrelated: only the view of an Agent root that is one of the two runs (each PM's own view); no run above, no Team or Org view 3ms
+     × remote: only the local Agent root's own view, sent or received 1ms
+     × the stored rule: a standalone run's own agent's list keeps every message; any other list keeps base's rule 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 11 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/remote-collaboration/remote-message-view-sequence.test.ts > messages with a remote endpoint keep the root view stream consecutive (CR-001) > 'Agent root (standalone)': the messages its view shows are published, with consecutive sequences
+AssertionError: expected [ 'first local', 'second local' ] to deeply equal [ 'first local', 'to remote', …(2) ]
+
+- Expected
++ Received
+
+  [
+    "first local",
+-   "to remote",
+-   "reply from remote",
+    "second local",
+  ]
+
+ ❯ tests/unit/remote-collaboration/remote-message-view-sequence.test.ts:145:102
+    143|     const projected = events.map((event) => project(event as never));
+    144|     expectConsecutive(projected.map((dto) => dto!.change_sequence));
+    145|     expect(projected.map((dto) => (dto!.event as { message: { content:…
+       |                                                                                                      ^
+    146|   });
+    147| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/11]⎯
+
+ FAIL  tests/unit/agent-collaboration/delegation/message-view-scope.test.ts > MessageViewScope (autobyteus-565) > unrelated: only the view of an Agent root that is one of the two runs (each PM's own view); no run above, no Team or Org view
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/agent-collaboration/delegation/message-view-scope.test.ts:50:58
+     48|   it("unrelated: only the view of an Agent root that is one of the two…
+     49|     const s = await scope();
+     50|     expect(s.inView(P, at("unrelated", run(P), run(M)))).toBe(true);
+       |                                                          ^
+     51|     expect(s.inView(M, at("unrelated", run(P), run(M)))).toBe(true);
+     52|     // A Team root's own message with an unrelated run is not in its v…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/11]⎯
+
+ FAIL  tests/unit/agent-collaboration/delegation/message-view-scope.test.ts > MessageViewScope (autobyteus-565) > remote: only the local Agent root's own view, sent or received
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/agent-collaboration/delegation/message-view-scope.test.ts:63:53
+     61|   it("remote: only the local Agent root's own view, sent or received",…
+     62|     const s = await scope();
+     63|     expect(s.inView(M, at("remote", run(M), peer))).toBe(true);
+       |                                                     ^
+     64|     expect(s.inView(M, at("remote", peer, run(M)))).toBe(true);
+     65|     expect(s.inView(T, at("remote", run(T), peer))).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/11]⎯
+
+ FAIL  tests/unit/agent-collaboration/delegation/message-view-scope.test.ts > MessageViewScope (autobyteus-565) > the stored rule: a standalone run's own agent's list keeps every message; any other list keeps base's rule
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/agent-collaboration/delegation/message-view-scope.test.ts:78:44
+     76|     const filter = (view: typeof M | typeof T, participantAgentRunId: …
+     77|       isAgentOfTree: (id) => tree.has(id), isPastParticipant: (id) => …
+     78|     expect(s.isOwnAgentList(M, "manager")).toBe(true);
+       |                                            ^
+     79|     expect(s.isOwnAgentList(M, "helper")).toBe(false);
+     80|     expect(s.isOwnAgentList(T, "team")).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/11]⎯
+
+ FAIL  tests/unit/agent-collaboration/delegation/run-messages-feed.test.ts > RunMessagesFeed (SR-072) > autobyteus-565: unrelated and remote messages, by MessageViewScope > an unrelated message reaches only the view of an Agent root that is one of its runs, not the runs above, never a Team's
+AssertionError: expected [ +0, +0 ] to deeply equal [ 1, 1 ]
+
+- Expected
++ Received
+
+  [
+-   1,
+-   1,
++   0,
++   0,
+  ]
+
+ ❯ tests/unit/agent-collaboration/delegation/run-messages-feed.test.ts:100:40
+     98|       const [atM, atW, atH, atP] = [w.seen(M), w.seen(W), w.seen(H), w…
+     99|       publish(w, message("u1", "manager", "other-pm"), M, P, "unrelate…
+    100|       expect([atM.length, atP.length]).toEqual([1, 1]);
+       |                                        ^
+    101|       // The helper (an Agent root below W) talks with the other PM: i…
+    102|       publish(w, message("u2", "helper", "other-pm"), H, P, "unrelated…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/11]⎯
+
+ FAIL  tests/unit/agent-collaboration/delegation/run-messages-feed.test.ts > RunMessagesFeed (SR-072) > autobyteus-565: unrelated and remote messages, by MessageViewScope > a message with another node reaches only its local Agent root's own view, with the remote party's node
+AssertionError: expected [] to deeply equal [ { kind: 'communication', …(2) } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "kind": "communication",
+-     "message": {
+-       "content": "Status?",
+-       "createdAt": "2026-11-13T00:00:00.000Z",
+-       "messageId": "r1",
+-       "messageType": "agent_message",
+-       "receiverAgentRunId": "manager",
+-       "referenceFiles": [],
+-       "senderAgentRunId": "linux-pm",
+-     },
+-     "parties": {
+-       "receiver": {
+-         "address": "/project_task_manager",
+-         "agentRunId": "manager",
+-         "nodeName": null,
+-       },
+-       "sender": {
+-         "address": "/project_task_manager",
+-         "agentRunId": "linux-pm",
+-         "nodeName": "ryan-ai-linux",
+-       },
+-     },
+-   },
+- ]
++ []
+
+ ❯ tests/unit/agent-collaboration/delegation/run-messages-feed.test.ts:113:47
+    111|       const [atM, atW, atH] = [w.seen(M), w.seen(W), w.seen(H)];
+    112|       w.streams.messages.publish({ message: message("r1", "linux-pm", …
+    113|       expect(atM.map((event) => event.event)).toEqual([{ kind: "commun…
+       |                                               ^
+    114|       w.streams.messages.publish({ message: message("r2", "helper", "l…
+    115|       w.streams.messages.publish({ message: message("r3", "worker-lead…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/11]⎯
+
+ FAIL  tests/unit/api/graphql/collaboration-participant-messages.test.ts > collaborationParticipantMessages > AC-001 (REQ-002, the reproduction): a standalone run's own agent's list holds every message it sent or received, each other agent named
+AssertionError: expected [ 'm1' ] to deeply equal [ 'm1', 'm2', 'm3' ]
+
+- Expected
++ Received
+
+  [
+    "m1",
+-   "m2",
+-   "m3",
+  ]
+
+ ❯ tests/unit/api/graphql/collaboration-participant-messages.test.ts:92:61
+     90|       () => readCollaborationParticipantMessages({ rootKind: "agent", …
+     91|     // Before autobyteus-565 only m1: the messages with an unrelated r…
+     92|     expect(result.messages.map((entry) => entry.messageId)).toEqual(["…
+       |                                                             ^
+     93|     expect(result.messages[0]).toEqual(messages[0]);
+     94|     // A delegated run's agent that left the tree is past; an older li…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/11]⎯
+
+ FAIL  tests/unit/api/graphql/collaboration-participant-messages.test.ts > collaborationParticipantMessages > autobyteus-565: a standalone run's own list, named and paged (DS-001, REQ-003, REQ-005) > names each other agent from the newest line's record: a local run by its address, an agent on another node by its address and this node's name for it
+AssertionError: expected [] to deeply equal [ 'r2', 'r1', 'u2', 'u1' ]
+
+- Expected
++ Received
+
+- [
+-   "r2",
+-   "r1",
+-   "u2",
+-   "u1",
+- ]
++ []
+
+ ❯ tests/unit/api/graphql/collaboration-participant-messages.test.ts:221:63
+    219|       ];
+    220|       const result = await readHost(log);
+    221|       expect(result.messages.map((entry) => entry.messageId)).toEqual(…
+       |                                                               ^
+    222|       // The views get the message's own fields only, never the log's …
+    223|       expect(result.messages.every((entry) => !("counterpart" in entry…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/11]⎯
+
+ FAIL  tests/unit/api/graphql/collaboration-participant-messages.test.ts > collaborationParticipantMessages > autobyteus-565: a standalone run's own list, named and paged (DS-001, REQ-003, REQ-005) > names an older line's other agent from a linked run's Task entry, else from its run file, else by its run ID
+AssertionError: expected [] to deeply equal [ { kind: 'run', …(2) }, …(2) ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "address": null,
+-     "agentRunId": "deleted-run",
+-     "kind": "run",
+-   },
+-   {
+-     "address": "/project_task_manager",
+-     "agentRunId": "other-pm",
+-     "kind": "run",
+-   },
+-   {
+-     "address": "/publisher",
+-     "agentRunId": "publisher-b",
+-     "kind": "remote",
+-     "nodeName": "docker",
+-   },
+- ]
++ []
+
+ ❯ tests/unit/api/graphql/collaboration-participant-messages.test.ts:243:37
+    241|         const log = [message("l1", "manager", "publisher-b", at(1)), m…
+    242|         const result = await readHost(log, undefined, tree, memory);
+    243|         expect(result.counterparts).toEqual([
+       |                                     ^
+    244|           { kind: "run", agentRunId: "deleted-run", address: null },
+    245|           { kind: "run", agentRunId: "other-pm", address: "/project_ta…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/11]⎯
+
+ FAIL  tests/unit/api/graphql/collaboration-participant-messages.test.ts > collaborationParticipantMessages > autobyteus-565: a standalone run's own list, named and paged (DS-001, REQ-003, REQ-005) > pages 50 newest first; the cursor gives the rows strictly after it; ties at one time are ordered by message ID; hasMore ends
+AssertionError: expected [] to deeply equal [ 'm100', 'm101', 'm102', …(47) ]
+
+- Expected
++ Received
+
+- [
+-   "m100",
+-   "m101",
+-   "m102",
+-   "m103",
+-   "m104",
+-   "m105",
+-   "m106",
+-   "m107",
+-   "m108",
+-   "m109",
+-   "m110",
+-   "m111",
+-   "m112",
+-   "m113",
+-   "m114",
+-   "m115",
+-   "m116",
+-   "m117",
+-   "m118",
+-   "m119",
+-   "m099",
+-   "m098",
+-   "m097",
+-   "m096",
+-   "m095",
+-   "m094",
+-   "m093",
+-   "m092",
+-   "m091",
+-   "m090",
+-   "m089",
+-   "m088",
+-   "m087",
+-   "m086",
+-   "m085",
+-   "m084",
+-   "m083",
+-   "m082",
+-   "m081",
+-   "m080",
+-   "m079",
+-   "m078",
+-   "m077",
+-   "m076",
+-   "m075",
+-   "m074",
+-   "m073",
+-   "m072",
+-   "m071",
+-   "m070",
+- ]
++ []
+
+ ❯ tests/unit/api/graphql/collaboration-participant-messages.test.ts:258:62
+    256|         .map((entry) => entry.messageId);
+    257|       const first = await readHost(log);
+    258|       expect(first.messages.map((entry) => entry.messageId)).toEqual(e…
+       |                                                              ^
+    259|       expect(first.hasMore).toBe(true);
+    260|       const cursorOf = (page: typeof first) => ({ createdAt: page.mess…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/11]⎯
+
+ FAIL  tests/unit/api/graphql/collaboration-participant-messages.test.ts > collaborationParticipantMessages > autobyteus-565: a standalone run's own list, named and paged (DS-001, REQ-003, REQ-005) > a 2,500-message log: the first page is 50 rows with hasMore, read within the budget
+AssertionError: expected [] to have a length of 50 but got +0
+
+- Expected
++ Received
+
+- 50
++ 0
+
+ ❯ tests/unit/api/graphql/collaboration-participant-messages.test.ts:288:31
+    286|       const elapsed = performance.now() - started;
+    287|       process.stdout.write(`[autobyteus-565 measure] first page of a 2…
+    288|       expect(result.messages).toHaveLength(50);
+       |                               ^
+    289|       expect(result.hasMore).toBe(true);
+    290|       expect(elapsed).toBeLessThan(1000);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/11]⎯
+
+
+ Test Files  4 failed | 22 passed (26)
+      Tests  11 failed | 167 passed (178)
+   Start at  16:29:46
+   Duration  12.36s (transform 3.75s, setup 715ms, import 7.92s, tests 653ms, environment 1ms)
+

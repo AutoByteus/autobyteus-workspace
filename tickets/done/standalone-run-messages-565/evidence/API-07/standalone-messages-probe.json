@@ -1,0 +1,99 @@
+{
+  "startedAt": "2026-11-20T16:16:17.092Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 49735,
+      "nodeId": "srv_alpneix5J2XH31CFHu0bXL9jt-N7Rvvz"
+    },
+    "beta": {
+      "port": 49736,
+      "nodeId": "srv_sHUD7Oz8QlJ0asv7D6FLtpeOpJgL5r6j"
+    }
+  },
+  "runs": {
+    "pm": "project_task_manager_560a051420224383b47bfaa18612fa80",
+    "neighbour": "neighbour_9847b991fa1244b3b09717dd806f7b41",
+    "quiet": "quiet_afbc56cfb8df4442b1f017f2a7b29806",
+    "betaPm": "project_task_manager_ae73d2914e7f4e4ead0908d812dc4cab",
+    "storedAtStart": 58
+  },
+  "cases": {
+    "SMP-01": {
+      "result": "Pass",
+      "tabsAtOpen": [
+        {
+          "name": "Projects",
+          "selected": false
+        },
+        {
+          "name": "Files",
+          "selected": false
+        },
+        {
+          "name": "Messages",
+          "selected": false
+        },
+        {
+          "name": "Terminal",
+          "selected": false
+        },
+        {
+          "name": "Activity",
+          "selected": true
+        },
+        {
+          "name": "Token",
+          "selected": false
+        },
+        {
+          "name": "Artifacts",
+          "selected": false
+        },
+        {
+          "name": "VNC Viewer",
+          "selected": false
+        }
+      ],
+      "empty": "Messages 0 Messages No messages yet Messages this agent sends or receives will appear here with their reference files."
+    },
+    "SMP-02": {
+      "result": "Pass",
+      "firstPage": 50,
+      "total": 58,
+      "remoteRow": {
+        "text": "MessageNov 20, 04:16 PMto project task managerbeta-nodePM-A-TO-B-565: how is the Linux side?",
+        "chip": "beta-node"
+      },
+      "detail": "Message project task manager Nov 20, 04:16 PM Address: /project_task_manager Agent run: project_task_manager_ae73d2914e7f4e4ead0908d812dc4cab Node: beta-node PM-A-TO-B-565: how is the Linux side?"
+    },
+    "SMP-03": {
+      "result": "Pass",
+      "before": 58,
+      "after": 60,
+      "reply": {
+        "text": "MessageNov 20, 04:17 PMfrom project task managerbeta-nodePM-B-REPLY-565: the Linux side is fine.",
+        "chip": "beta-node"
+      },
+      "local": {
+        "text": "MessageNov 20, 04:17 PMfrom neighbourLIVE-LOCAL-565 one more note.",
+        "chip": null
+      }
+    },
+    "SMP-04": {
+      "result": "Pass",
+      "reloadFirst": 50,
+      "total": 61,
+      "rows": 61
+    }
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "finishedAt": "2026-11-20T16:17:23.427Z"
+}

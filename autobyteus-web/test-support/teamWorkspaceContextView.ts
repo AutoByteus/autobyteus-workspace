@@ -63,6 +63,9 @@ export const testCollaborationMessagesContextView = (
     }),
     messagesStatus: () => ({ state: 'loaded', error: null }),
     loadMessages: () => undefined,
+    hasMore: () => false,
+    moreStatus: () => ({ state: 'idle', error: null }),
+    loadMore: () => undefined,
     referenceContentPath: (messageId, referenceId) =>
       `team-runs/${view.getRootTeamRunId()}/team-communication/messages/${messageId}/references/${referenceId}/content`,
   }

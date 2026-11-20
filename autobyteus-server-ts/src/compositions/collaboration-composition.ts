@@ -14,6 +14,7 @@ import { isStandaloneRootMessageEvent, standaloneRootMessageEvent } from "../sta
 import { isTeamRunMessageEvent, teamRunMessageEvent } from "../agent-team-execution/domain/team-run-event.js";
 import { agentOrgMessageEvent, isAgentOrgMessageEvent } from "../agent-org-execution/domain/agent-org-run-event.js";
 import { RunViewStreams } from "../agent-collaboration/delegation/run-view-stream.js";
+import { MessageViewScope } from "../agent-collaboration/delegation/message-view-scope.js";
 import path from "node:path";
 import { RunStatusService } from "../agent-collaboration/execution/run-status-service.js";
 import { ChildRowsFeed } from "../agent-collaboration/delegation/child-rows-feed.js";
@@ -58,6 +59,10 @@ import { RunOwnAgentsReader } from "../run-history/store/run-own-agents-reader.j
 import { createChildRowProjection } from "../agent-collaboration/delegation/run-tree-records.js";
 import { AgentOrgAgentStatuses } from "../agent-org-execution/services/agent-org-agent-statuses.js";
 import { peerNodeNames } from "../agent-collaboration/execution/remote/remote-run-observation.js";
+import { ParticipantMessagesReader, setProcessParticipantMessagesReader } from "../run-history/services/participant-messages-reader.js";
+import { CounterpartIdentities } from "../run-history/services/counterpart-identities.js";
+import { runRecordsOfRootOwners } from "../run-history/services/run-records-source.js";
+import { AgentRunMetadataStore } from "../run-history/store/agent-run-metadata-store.js";
 import { peerStatuses } from "../agent-collaboration/execution/remote/peer-run-calls.js";
 import { RunTreeView } from "../agent-collaboration/delegation/run-tree-view.js";
 import { setProcessStandaloneRootMemberViewProjectionService, StandaloneRootMemberViewProjectionService } from "../standalone-agent-run-root/services/standalone-root-member-view-projection-service.js";
@@ -84,6 +89,8 @@ const taskChangeMarks: ProjectChangeMarks = {
 export type TaskSide = Readonly<{
   resources: TaskExecutionResourceService;
   tree: DelegationIndex;
+  /** The one rule of which messages a run's view shows, live (the feed) and stored (the participant read; autobyteus-565). */
+  messageScope: MessageViewScope;
   /** Each run's one view stream, for the life of the process (SR-062, SR-063). */
   viewStreams: RunViewStreams;
   taskRecords: RunTaskRecords;
@@ -115,9 +122,11 @@ export const composeTaskSide = async (input: Readonly<{ appDataDir: string; memo
   await tree.skipUnstored();
   resources.setEntriesListener(tree);
   const taskRecords = createRunTaskRecords(resources, taskChangeMarks);
-  return Object.freeze({ resources, tree, // Each run's view stream; which events are messages is each root kind's rule (SR-062).
+  // The one rule of which messages a run's view shows, live and stored (autobyteus-565).
+  const messageScope = new MessageViewScope({ tree });
+  return Object.freeze({ resources, tree, messageScope, // Each run's view stream; which events are messages is each root kind's rule (SR-062).
     viewStreams: new RunViewStreams({ agent: isStandaloneRootMessageEvent, agent_team: isTeamRunMessageEvent, agent_org: isAgentOrgMessageEvent },
-      { tree, events: { agent: standaloneRootMessageEvent, agent_team: teamRunMessageEvent, agent_org: agentOrgMessageEvent } }), taskRecords,
+      { tree, scope: messageScope, events: { agent: standaloneRootMessageEvent, agent_team: teamRunMessageEvent, agent_org: agentOrgMessageEvent } }), taskRecords,
     closedTasks: new ClosedTaskEntryFence({ fence: new ClosedTaskFence({ tree, tasks: taskRecords }), tasks: taskRecords, files: new RunOwnAgentsReader(input.memoryDir) }),
     projectsLayout, adHocTasksLayout });
 };
@@ -216,7 +225,7 @@ export const composeCollaboration = async (input: Readonly<{
       senderRoot: (run) => {
         const root = input.activeRoots.resolve(run);
         return root?.prepareSendToRun && root.commitSentToRun
-          ? { prepareSendToRun: (send) => root.prepareSendToRun!(send), commitSentToRun: (message) => root.commitSentToRun!(message) } : null;
+          ? { prepareSendToRun: (send) => root.prepareSendToRun!(send), commitSentToRun: (message, counterpart) => root.commitSentToRun!(message, counterpart) } : null;
       },
       receiverRoot: async (run) => (await input.rootResolver.resolveOrRestore(run))?.root ?? null,
       // autobyteus-492 DS-003: a message by run ID alone reaches only a running agent, in its live root, never restored.
@@ -280,8 +289,15 @@ export const composeCollaboration = async (input: Readonly<{
       agentRunHistoryService: agentRunHistory, teamRunHistoryService: runs.teamRunHistoryService })));
     const views = createRunViewSources({ memoryDir, streams: taskSide.viewStreams, rows: { peerRunOf, runTree }, registrations: input.activeRoots,
       closedTasks: taskSide.closedTasks, restorability });
+    const delegatedRunAgents = new DelegatedRunAgentsReader(tree);
+    // autobyteus-565: one participant's messages a page at a time, by the views' one rule, every other agent named.
+    releases.push(setProcessParticipantMessagesReader(new ParticipantMessagesReader({
+      records: runRecordsOfRootOwners, scope: taskSide.messageScope, delegatedRunAgents,
+      identities: new CounterpartIdentities({ delegatedRunAgents, tree, runMetadata: new AgentRunMetadataStore(memoryDir),
+        peerName: async (nodeId) => (await input.remoteChannel()?.peerName(nodeId)) ?? nodeId }),
+    })));
     return Object.freeze({
-      tasks, views, runTree, runStatus, delegatedRunAgents: new DelegatedRunAgentsReader(tree),
+      tasks, views, runTree, runStatus, delegatedRunAgents,
       rowChanged: (run: RootExecutionIdentity) => feed.rowChanged(run),
       release: () => { for (const release of releases.splice(0).reverse()) release(); },
     });

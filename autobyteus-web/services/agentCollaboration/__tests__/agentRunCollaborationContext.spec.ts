@@ -38,9 +38,10 @@ describe('AgentRunCollaborationContext', () => {
     expect(context.holdsAgent('cua-run')).toBe(true)
     expect(context.holdsAgent('pb-run')).toBe(true)
     expect(context.holdsAgent('stranger')).toBe(false)
-    expect(context.hasDelegatedRuns).toBe(true)
+    // Without a delegated run it holds its host only (its Messages tab shows anyway, autobyteus-565 DEC-001).
     useRunTreeStore().streamSnapshot(HOST, [agentRow('host-run', null, 0)])
-    expect(context.hasDelegatedRuns).toBe(false)
+    expect(context.holdsAgent('host-run')).toBe(true)
+    expect(context.holdsAgent('cua-run')).toBe(false)
   })
 
   it('gives the host and each delegated run a Team-tab perspective with counterparts named from the tree, loaded when shown', async () => {
@@ -71,13 +72,13 @@ describe('AgentRunCollaborationContext', () => {
     const context = build()
     context.messagesView('host-run').loadMessages()
     await settle()
-    expect(context.applyEvent(5, { kind: 'communication', message: message('m2', 'host-run', 'pp-run', 'thanks') })).toBe('applied')
+    expect(context.applyEvent(5, { kind: 'communication', message: message('m2', 'host-run', 'pp-run', 'thanks'), parties: { sender: { agentRunId: 'host-run', address: null, nodeName: null }, receiver: { agentRunId: 'pp-run', address: null, nodeName: null } } })).toBe('applied')
     expect(context.messagesView('host-run').listMessages().map((row) => row.messageId)).toEqual(['m1', 'm2'])
     expect(context.view).not.toHaveProperty('communication_messages')
     expect(context.applyEvent(6, { kind: 'run_tree_changed', added: [agentRow('cr-copy-run', 'agent:host-run', 1)], removed: ['agent:cua-run'], updated: [] })).toBe('applied')
     expect(useRunTreeStore().rowsOf(HOST).map((row) => row.key)).toContain('agent:cr-copy-run')
     expect(context.holdsAgent('cua-run')).toBe(false)
-    expect(() => context.applyEvent(8, { kind: 'communication', message: message('m3', 'host-run', 'pp-run', 'gap') })).toThrow('change sequence gap')
+    expect(() => context.applyEvent(8, { kind: 'communication', message: message('m3', 'host-run', 'pp-run', 'gap'), parties: { sender: { agentRunId: 'host-run', address: null, nodeName: null }, receiver: { agentRunId: 'pp-run', address: null, nodeName: null } } })).toThrow('change sequence gap')
     expect(context.phase).toBe('reopen_required')
   })
 
@@ -94,7 +95,7 @@ describe('AgentRunCollaborationContext', () => {
 
   it('refuses a message an agent sent to itself; a stop of its own agent keeps the stream (SR-045)', () => {
     const context = build()
-    expect(() => context.applyEvent(5, { kind: 'communication', message: message('m-self', 'host-run', 'host-run') })).toThrow('identity mismatch')
+    expect(() => context.applyEvent(5, { kind: 'communication', message: message('m-self', 'host-run', 'host-run'), parties: { sender: { agentRunId: 'host-run', address: null, nodeName: null }, receiver: { agentRunId: 'host-run', address: null, nodeName: null } } })).toThrow('identity mismatch')
     expect(useCollaborationParticipantMessagesStore().messagesOf({ rootKind: 'agent', rootRunId: 'host-run', agentRunId: 'host-run' })).toEqual([])
     context.setActive(false)
     expect(context.isActive).toBe(false)
@@ -104,6 +105,6 @@ describe('AgentRunCollaborationContext', () => {
   it('a stored view (no live sequence) takes no events', () => {
     const context = build({ ...agentRootView(), live_sequence_id: null, last_message_change_sequence: null, is_active: false })
     expect(context.phase).toBe('historical')
-    expect(() => context.applyEvent(5, { kind: 'communication', message: message('m2', 'host-run', 'cua-run') })).toThrow('not accepting')
+    expect(() => context.applyEvent(5, { kind: 'communication', message: message('m2', 'host-run', 'cua-run'), parties: { sender: { agentRunId: 'host-run', address: null, nodeName: null }, receiver: { agentRunId: 'cua-run', address: null, nodeName: null } } })).toThrow('not accepting')
   })
 })

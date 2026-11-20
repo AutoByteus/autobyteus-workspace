@@ -66,7 +66,8 @@ it('a tree snapshot not at the view\'s base, or a sequence gap, closes the strea
   f.service.disconnect()
   const g = setup()
   g.socket.frame(event(7, { kind: 'communication', message: { messageId: 'm', senderAgentRunId: 'host-run', receiverAgentRunId: 'cua-run',
-    content: 'x', messageType: 'direct_message', referenceFiles: [], createdAt: created } }))
+    content: 'x', messageType: 'direct_message', referenceFiles: [], createdAt: created },
+    parties: { sender: { agentRunId: 'host-run', address: null, nodeName: null }, receiver: { agentRunId: 'cua-run', address: null, nodeName: null } } }))
   expect(g.socket.close).toHaveBeenCalled()
   g.service.disconnect()
 })

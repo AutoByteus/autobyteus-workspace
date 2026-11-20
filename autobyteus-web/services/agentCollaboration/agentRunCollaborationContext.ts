@@ -21,8 +21,8 @@ export type AgentRunCollaborationPhase = 'live' | 'historical' | 'reopen_require
 export type AgentRunCollaborationEventApplication = 'applied'
 
 /**
- * The client view of one standalone run's collaboration root (autobyteus-461 SR-084): its host, its Team tab's messages
- * and its tree's changes. The host presents on its own Agent stream, and each run it delegated on its own (rule 2; a
+ * The client view of one standalone run's collaboration root (autobyteus-461 SR-084): its host, its Messages tab
+ * (autobyteus-565: every message its agent sent or received) and its tree's changes. The host presents on its own Agent stream, and each run it delegated on its own (rule 2; a
  * peer's run through `/ws/peer-run`). Who is under the run is its tree's rows (`runTreeStore`), and only them.
  */
 export class AgentRunCollaborationContext {
@@ -51,10 +51,7 @@ export class AgentRunCollaborationContext {
     return useRunTreeStore().rowsOf({ kind: 'agent', runId: this.runId })
   }
 
-  /** Whether the run delegated any run that is in its tree (its Team tab shows once it has). */
-  get hasDelegatedRuns(): boolean { return this.treeRows().some((row) => row.parentKey !== null) }
-
-  /** The view holds this agent: the host, or an agent of a run in its tree (the Team tab names it from there). */
+  /** The view holds this agent: the host, or an agent of a run in its tree (the Messages tab names it from there). */
   holdsAgent(agentRunId: string): boolean {
     return agentRunId === this.runId || treeRowOfAgent(this.treeRows(), agentRunId) !== null
   }
@@ -73,9 +70,10 @@ export class AgentRunCollaborationContext {
       // Its Team tab still names an agent that left the tree (its Task closed): from the server's answer.
       if (event.removed.length) useCollaborationParticipantMessagesStore().reloadNamingUnknown('agent', this.runId, (id) => this.holdsAgent(id))
     } else {
-      // The Team tab's lists own the messages (autobyteus-358); the view holds none.
+      // The Messages tab's lists own the messages (autobyteus-358); the view holds none. The parties name an agent the
+      // run's own list does not know yet: another run's, or another node's (autobyteus-565).
       this.assertMessageCorrelated(event.message)
-      useCollaborationParticipantMessagesStore().append('agent', this.runId, event.message)
+      useCollaborationParticipantMessagesStore().append('agent', this.runId, event.message, event.parties)
     }
     this.nextChangeSequence = following
     return 'applied'
@@ -92,7 +90,7 @@ export class AgentRunCollaborationContext {
   }
 
   /**
-   * The Team tab, seen from one participant: the host, or an agent of a run in its tree. A delegated run's messages are in
+   * The Messages tab, seen from one participant: the host, or an agent of a run in its tree. A delegated run's messages are in
    * its own run's log (rule 2); a peer's run keeps its messages on its node (AR-004).
    */
   messagesView(focusedAgentRunId: string): CollaborationMessagesContextView {

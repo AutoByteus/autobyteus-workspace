@@ -72,7 +72,8 @@ export type StartDelegatedRunRequest = RemoteEnvelope & Readonly<{
 export type DeliverRemoteMessageRequest = RemoteEnvelope & Readonly<{
   kind: "work_packet" | "message";
   messageId?: string;
-  sender: Readonly<{ agentRunId: string }>;
+  /** `address`: the sending agent's address in its own run (autobyteus-565); null when it has none. */
+  sender: Readonly<{ agentRunId: string; address: string | null }>;
   targetRoot: DelegatingRunRef;
   target: Readonly<{ agentRunId: string }>;
   content: string;
@@ -83,7 +84,8 @@ export type DeliverRemoteMessageRequest = RemoteEnvelope & Readonly<{
 /** autobyteus-492: one message from an agent of the caller to a running agent of the called node, by run IDs only. */
 export type DeliverRunMessageRequest = RemoteEnvelope & Readonly<{
   messageId: string;
-  sender: Readonly<{ agentRunId: string }>;
+  /** `address`: the sending agent's address in its own run (autobyteus-565); null when it has none. */
+  sender: Readonly<{ agentRunId: string; address: string | null }>;
   target: Readonly<{ agentRunId: string }>;
   content: string;
   messageType: string;
@@ -119,7 +121,8 @@ export type StartDelegatedRunAnswer =
   | Readonly<{ accepted: true; nodeId: string; kind: "agent_team"; teamRunId: string; coordinatorAddress: string;
       members: readonly Readonly<{ address: string; agentRunId: string }>[]; launches: readonly RemoteAgentLaunch[] }>
   | RemoteRefusalAnswer;
-export type DeliverRemoteMessageAnswer = Readonly<{ accepted: true; nodeId: string }> | RemoteRefusalAnswer;
+/** `receiverAddress`: the receiving agent's address in its own run (autobyteus-565); null for a work packet, or none. */
+export type DeliverRemoteMessageAnswer = Readonly<{ accepted: true; nodeId: string; receiverAddress: string | null }> | RemoteRefusalAnswer;
 /** The called node admitted this node's request: it is available to this node now. */
 export type AvailabilityAnswer = Readonly<{ accepted: true; nodeId: string }> | RemoteRefusalAnswer;
 /**

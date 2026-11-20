@@ -16,20 +16,33 @@ export const collaborationParticipantMessageDtoSchema = z.object({
     createdAt: nonEmptyStringSchema,
 }).strict();
 /**
- * An agent of a delegated run that left the root's tree when its Task closed (autobyteus-469 D-5): the other agent of
- * one of the participant's messages, with the address it had in the tree, so the Team tab names it as before.
+ * The other agent of messages on a page, when the root's tree does not name it (autobyteus-565):
+ * - `past`: an agent of a delegated run that left the tree when its Task closed, with the address it had (autobyteus-469 D-5);
+ * - `run`: an agent of another local run (or one that can no longer be named: `address` null, shown by its run ID);
+ * - `remote`: an agent on another node, with its address when known and this node's name for that node (`nodeName`).
  */
-export const collaborationPastParticipantDtoSchema = z.object({
-    agentRunId: nonEmptyStringSchema,
-    address: nonEmptyStringSchema,
+export const collaborationCounterpartDtoSchema = z.discriminatedUnion("kind", [
+    z.object({ kind: z.literal("past"), agentRunId: nonEmptyStringSchema, address: nonEmptyStringSchema }).strict(),
+    z.object({ kind: z.literal("run"), agentRunId: nonEmptyStringSchema, address: nonEmptyStringSchema.nullable() }).strict(),
+    z.object({ kind: z.literal("remote"), agentRunId: nonEmptyStringSchema, address: nonEmptyStringSchema.nullable(),
+        nodeName: nonEmptyStringSchema.nullable() }).strict(),
+]);
+/** Where the next page starts: the last message of the page before it, in the one order (`createdAt` newest first, then ID). */
+export const collaborationParticipantMessagesCursorSchema = z.object({
+    createdAt: nonEmptyStringSchema,
+    messageId: nonEmptyStringSchema,
 }).strict();
+/** The page size of a participant's messages (autobyteus-565 DEC-004: the conversation's earlier pages' size). */
+export const COLLABORATION_PARTICIPANT_MESSAGES_PAGE_SIZE = 50;
 /**
- * `collaborationParticipantMessages(rootKind, rootRunId, agentRunId)` (autobyteus-358): the messages one participant
- * of one root sent or received, as the root's view would show them: the other agent is an agent of the root, or an
- * agent of a delegated run that left its tree, listed in `pastParticipants`.
+ * `collaborationParticipantMessages(rootKind, rootRunId, agentRunId, before?)` (autobyteus-358, autobyteus-565): one page of
+ * the messages one participant of one root sent or received, as the root's view shows them, newest first (`createdAt`
+ * descending, then `messageId`), at most 50, after `before` when given. `counterparts` names each other agent of the page
+ * that the root's tree does not; `hasMore` says older messages follow.
  */
 export const collaborationParticipantMessagesDtoSchema = z.object({
     messages: z.array(collaborationParticipantMessageDtoSchema),
-    pastParticipants: z.array(collaborationPastParticipantDtoSchema),
+    counterparts: z.array(collaborationCounterpartDtoSchema),
+    hasMore: z.boolean(),
 }).strict();
 //# sourceMappingURL=collaboration-participant-messages-dtos.js.map

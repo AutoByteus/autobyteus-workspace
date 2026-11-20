@@ -1087,8 +1087,8 @@ Frontend restore uses that bundle in two sibling hydration paths:
 - middle pane: conversation hydration
 - right pane: activity hydration
 - team pane: the focused member's messages from
-  `collaborationParticipantMessages(rootKind, rootRunId, agentRunId)`, loaded when the Team tab is shown,
-  with their reference files
+  `collaborationParticipantMessages(rootKind, rootRunId, agentRunId, before)`, loaded when the Team (or, for a standalone run, Messages) tab is shown,
+  a page of 50 at a time, newest first (autobyteus-565), with their reference files
 
 Those sibling paths must stay synchronized. Reopen/hydration code should apply
 the projected `conversation` and `activities` from the same replay bundle, or

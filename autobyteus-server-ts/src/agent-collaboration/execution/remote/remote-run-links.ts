@@ -19,6 +19,8 @@ export type RemoteInboundMessage = Readonly<{
   /** This owner's label for the sending node, named in the receiver's header. */
   fromNodeName: string;
   message: CollaborationCommunicationMessage;
+  /** The sending agent's address in its own run, as the request carried it (autobyteus-565). */
+  senderAddress: string | null;
 }>;
 
 /** The work packet that starts a remote run on its own node (N-6); not a message-log entry. */
@@ -68,8 +70,11 @@ export const storedRemoteLinkCheck = (
   : new RemoteRunLinks({ ...("run" in stored ? { peerRuns: () => peerRunLinksOf(stored.run, stored.tree) } : stored), channel: () => null })
     .admitsInbound(query) ? "proceed" : "not_linked";
 
-/** The peer accepted the message; `peerName` is this owner's label for it, named in the sender's result. */
-export type RemoteDeliveryAnswer = Readonly<{ accepted: true; peerName: string }> | RemoteChannelRefusal;
+/**
+ * The peer accepted the message; `peerName` is this owner's label for it, named in the sender's result; `receiverAddress`
+ * the receiving agent's address as that node answered it (autobyteus-565).
+ */
+export type RemoteDeliveryAnswer = Readonly<{ accepted: true; peerName: string; receiverAddress: string | null }> | RemoteChannelRefusal;
 
 export type RemoteRunLinksOptions = Readonly<{
   /** Delegating node: the peer runs this run delegated to, from their Task entries (`peerRunLinksOf`), read at call time. */
@@ -153,11 +158,11 @@ export class RemoteRunLinks {
   }
 
   /** Transmits a prepared message to the endpoint's node, linked or unlinked (the channel only; no state changes here). */
-  async deliver(endpoint: RemoteEndpoint, message: CollaborationCommunicationMessage): Promise<RemoteDeliveryAnswer> {
+  async deliver(endpoint: RemoteEndpoint, message: CollaborationCommunicationMessage, senderAddress: string | null): Promise<RemoteDeliveryAnswer> {
     const channel = this.channel();
     if (!channel) return { accepted: false, code: REMOTE_REFUSAL.OFF, message: REMOTE_ROOT_REFUSAL_TEXT.off };
-    const receipt = await channel.deliverMessage(endpoint.transmission(message));
-    return receipt.accepted ? { accepted: true, peerName: await channel.peerName(endpoint.reference.nodeId) } : receipt;
+    const receipt = await channel.deliverMessage(endpoint.transmission(message, senderAddress));
+    return receipt.accepted ? { accepted: true, peerName: await channel.peerName(endpoint.reference.nodeId), receiverAddress: receipt.receiverAddress } : receipt;
   }
 
   /**

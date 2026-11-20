@@ -1,0 +1,263 @@
+{
+  "more": {
+    "header": "Messages6+ Messages",
+    "rows": [
+      "from project task manager",
+      "to project task manager",
+      "from solution designer",
+      "to project task manager",
+      "from code reviewer",
+      "from pm_8f3c2a91e7"
+    ],
+    "chips": [
+      {
+        "node": "ryan-ai-linux",
+        "label": "Runs on ryan-ai-linux",
+        "box": {
+          "x": 479,
+          "y": 114,
+          "w": 88,
+          "h": 16
+        }
+      },
+      {
+        "node": "ryan-ai-linux",
+        "label": "Runs on ryan-ai-linux",
+        "box": {
+          "x": 479,
+          "y": 216,
+          "w": 88,
+          "h": 16
+        }
+      }
+    ],
+    "loadMore": {
+      "text": "Load more",
+      "disabled": false,
+      "box": {
+        "x": 360,
+        "y": 682,
+        "w": 207,
+        "h": 30
+      }
+    },
+    "moreError": null,
+    "empty": false,
+    "listOverflowX": false,
+    "phoneRows": [
+      "From project task manager",
+      "To project task manager",
+      "From solution designer",
+      "To project task manager",
+      "From code reviewer",
+      "From pm_8f3c2a91e7"
+    ],
+    "phoneChips": [
+      "ryan-ai-linux",
+      "ryan-ai-linux"
+    ],
+    "phoneMore": "Load more",
+    "phoneMoreError": null,
+    "phoneOverflowX": false
+  },
+  "loading": {
+    "header": "Messages6+ Messages",
+    "rows": [
+      "from project task manager",
+      "to project task manager",
+      "from solution designer",
+      "to project task manager",
+      "from code reviewer",
+      "from pm_8f3c2a91e7"
+    ],
+    "chips": [
+      {
+        "node": "ryan-ai-linux",
+        "label": "Runs on ryan-ai-linux",
+        "box": {
+          "x": 479,
+          "y": 114,
+          "w": 88,
+          "h": 16
+        }
+      },
+      {
+        "node": "ryan-ai-linux",
+        "label": "Runs on ryan-ai-linux",
+        "box": {
+          "x": 479,
+          "y": 216,
+          "w": 88,
+          "h": 16
+        }
+      }
+    ],
+    "loadMore": {
+      "text": "Loading…",
+      "disabled": true,
+      "box": {
+        "x": 360,
+        "y": 682,
+        "w": 207,
+        "h": 30
+      }
+    },
+    "moreError": null,
+    "empty": false,
+    "listOverflowX": false,
+    "phoneRows": [
+      "From project task manager",
+      "To project task manager",
+      "From solution designer",
+      "To project task manager",
+      "From code reviewer",
+      "From pm_8f3c2a91e7"
+    ],
+    "phoneChips": [
+      "ryan-ai-linux",
+      "ryan-ai-linux"
+    ],
+    "phoneMore": "Loading…",
+    "phoneMoreError": null,
+    "phoneOverflowX": false
+  },
+  "error": {
+    "header": "Messages6+ Messages",
+    "rows": [
+      "from project task manager",
+      "to project task manager",
+      "from solution designer",
+      "to project task manager",
+      "from code reviewer",
+      "from pm_8f3c2a91e7"
+    ],
+    "chips": [
+      {
+        "node": "ryan-ai-linux",
+        "label": "Runs on ryan-ai-linux",
+        "box": {
+          "x": 479,
+          "y": 114,
+          "w": 88,
+          "h": 16
+        }
+      },
+      {
+        "node": "ryan-ai-linux",
+        "label": "Runs on ryan-ai-linux",
+        "box": {
+          "x": 479,
+          "y": 216,
+          "w": 88,
+          "h": 16
+        }
+      }
+    ],
+    "loadMore": {
+      "text": "Load more",
+      "disabled": false,
+      "box": {
+        "x": 360,
+        "y": 718,
+        "w": 207,
+        "h": 30
+      }
+    },
+    "moreError": "Couldn't load more messages: Message log line 12 is damaged.",
+    "empty": false,
+    "listOverflowX": false,
+    "phoneRows": [
+      "From project task manager",
+      "To project task manager",
+      "From solution designer",
+      "To project task manager",
+      "From code reviewer",
+      "From pm_8f3c2a91e7"
+    ],
+    "phoneChips": [
+      "ryan-ai-linux",
+      "ryan-ai-linux"
+    ],
+    "phoneMore": "Load more",
+    "phoneMoreError": "Couldn't load more messages: Message log line 12 is damaged.",
+    "phoneOverflowX": false
+  },
+  "done": {
+    "header": "Messages6 Messages",
+    "rows": [
+      "from project task manager",
+      "to project task manager",
+      "from solution designer",
+      "to project task manager",
+      "from code reviewer",
+      "from pm_8f3c2a91e7"
+    ],
+    "chips": [
+      {
+        "node": "ryan-ai-linux",
+        "label": "Runs on ryan-ai-linux",
+        "box": {
+          "x": 479,
+          "y": 114,
+          "w": 88,
+          "h": 16
+        }
+      },
+      {
+        "node": "ryan-ai-linux",
+        "label": "Runs on ryan-ai-linux",
+        "box": {
+          "x": 479,
+          "y": 216,
+          "w": 88,
+          "h": 16
+        }
+      }
+    ],
+    "loadMore": null,
+    "moreError": null,
+    "empty": false,
+    "listOverflowX": false,
+    "phoneRows": [
+      "From project task manager",
+      "To project task manager",
+      "From solution designer",
+      "To project task manager",
+      "From code reviewer",
+      "From pm_8f3c2a91e7"
+    ],
+    "phoneChips": [
+      "ryan-ai-linux",
+      "ryan-ai-linux"
+    ],
+    "phoneMore": null,
+    "phoneMoreError": null,
+    "phoneOverflowX": false
+  },
+  "empty": {
+    "header": "Messages0 Messages",
+    "rows": [],
+    "chips": [],
+    "loadMore": null,
+    "moreError": null,
+    "empty": true,
+    "listOverflowX": null,
+    "phoneRows": [],
+    "phoneChips": [],
+    "phoneMore": null,
+    "phoneMoreError": null,
+    "phoneOverflowX": false
+  },
+  "loadMoreClicks": 2,
+  "remoteDetail": [
+    "Address: /project_task_manager",
+    "",
+    "Agent run: m6-agent",
+    "",
+    "Node: ryan-ai-linux"
+  ],
+  "unnamedDetail": [
+    "Agent run: m1-agent"
+  ],
+  "pageErrors": []
+}

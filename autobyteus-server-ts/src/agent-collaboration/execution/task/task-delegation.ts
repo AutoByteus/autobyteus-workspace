@@ -183,7 +183,7 @@ export class TaskDelegation {
       throw error;
     }
     await this.recordCollaborating(input);
-    const delivered = await channel.deliverMessage({ nodeId: placement.peer.nodeId, kind: "work_packet", senderAgentRunId: input.sender.agentRunId,
+    const delivered = await channel.deliverMessage({ nodeId: placement.peer.nodeId, kind: "work_packet", senderAgentRunId: input.sender.agentRunId, senderAddress: input.sender.memberAddress,
       targetRoot: team ? { kind: "agent_team", runId: started.teamRunId } : { kind: "agent", runId: entryAgentRunId }, targetAgentRunId: entryAgentRunId,
       content: placement.description, messageType: "task_work_packet", createdAt: new Date().toISOString() })
       .catch((error: unknown) => ({ accepted: false as const, code: REMOTE_REFUSAL.PEER_UNREACHABLE, message: message(error) }));

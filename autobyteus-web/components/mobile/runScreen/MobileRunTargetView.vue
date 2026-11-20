@@ -73,11 +73,11 @@ const subjectLine = computed(() => mobileRunSubjectLine({
 const dotClass = computed(() => subjectLine.value.dotClass);
 const subtitle = computed(() => subjectLine.value.subtitle);
 
-/** Messages are the messages among a Team's or an Org's members (spec: members of a team or Org only). */
-const MEMBER_KINDS: ReadonlySet<ActiveAgentWorkspaceTarget['kind']> = new Set([
-  'standalone_team_member', 'agent_org_direct_agent', 'agent_org_team_member', 'agent_org_task_team_member', 'agent_run_task_team_member',
-]);
-const showMessages = computed(() => MEMBER_KINDS.has(props.target.kind));
+/**
+ * Messages for every target with a messages view, as the desktop's tab (autobyteus-565 DEC-001): a Team's or an Org's
+ * member, and a standalone run (every message its agent sent or received) or a run it delegated.
+ */
+const showMessages = computed(() => 'collaborationMessages' in props.target);
 
 /** The paired node's desktop, for a run on that node only: a remote run's screen is on another node (DEC-S3-2). */
 const { availability: desktopAvailability } = useNodeDesktopAvailability();

@@ -10,4 +10,6 @@ export type AgentOrgRunEvent =
 /** The Org's message events: the ones the client adds to the Team tab's lists (autobyteus-358, SR-008). */
 export const isAgentOrgMessageEvent = (event: AgentOrgRunEvent): boolean => event.kind === "communication";
 /** A committed message as the Org's message event (SR-072: the node's message feed numbers it in each view). */
-export const agentOrgMessageEvent = (message: CollaborationCommunicationMessage): AgentOrgRunEvent => ({ kind: "communication", message });
+/** An Org view names its messages' agents from its own tree; a message's parties are not part of its event (autobyteus-565). */
+export const agentOrgMessageEvent = (input: Readonly<{ message: CollaborationCommunicationMessage }>): AgentOrgRunEvent =>
+  ({ kind: "communication", message: input.message });

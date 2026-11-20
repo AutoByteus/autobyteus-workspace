@@ -1,4 +1,5 @@
 import { RunViewStreams } from "../../../../src/agent-collaboration/delegation/run-view-stream.js";
+import { MessageViewScope } from "../../../../src/agent-collaboration/delegation/message-view-scope.js";
 import { describe, expect, it } from "vitest";
 
 /**
@@ -7,7 +8,7 @@ import { describe, expect, it } from "vitest";
  * its numbers; a server restart (a new registry) starts another live sequence.
  */
 const isMessageEvent = (event: { kind: string }) => event.kind === "message";
-const streamsOf = () => new RunViewStreams({ agent: isMessageEvent as never, agent_team: isMessageEvent as never, agent_org: isMessageEvent as never }, { tree: { chainOf: (run) => [run], collaborationTreeOf: () => ({ rows: () => [] }) as never }, events: { agent: (message) => message, agent_team: (message) => message, agent_org: (message) => message } });
+const streamsOf = () => new RunViewStreams({ agent: isMessageEvent as never, agent_team: isMessageEvent as never, agent_org: isMessageEvent as never }, { tree: { chainOf: (run) => [run] }, scope: new MessageViewScope({ tree: { collaborationTreeOf: () => ({ rows: () => [] }) as never } }), events: { agent: (message) => message, agent_team: (message) => message, agent_org: (message) => message } });
 const TEAM = { rootSubjectKind: "agent_team" as const, rootRunId: "squad" };
 
 describe("RunViewStreams", () => {
