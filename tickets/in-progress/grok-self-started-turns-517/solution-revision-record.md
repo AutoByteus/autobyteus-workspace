@@ -7,6 +7,8 @@
 | SR-001 | Mixed | Founder's decision on 483-FU-004, 2026-11-20 | N/A | (round 2: REQ-004 Ready for Approval) | Approved; design Ready | REQ-001..REQ-005 | Show Grok's self-started turns |
 | SR-002 | Design | ARCH-REV-001 Fail | AR-001..AR-004 | design Needs Revision | design Ready | design only | Probe 2; prompt_completed ends either origin; renames; one opening step |
 | SR-003 | Design | ARCH-REV-002 Fail | AR-005, AR-006, AR-002/003 | design Needs Revision | design Ready | design; AC-006 added (verifies preserved behavior) | One-batch hand-over at the response |
+| SR-004 | Design | Implementation IR-001 (SDK delivery order) | IR-001 | design Ready (ARCH-REV-003 Pass) | design Ready, re-review | design (connection) | Wire-order delivery in AcpClientConnection |
+| SR-005 | Design | ARCH-REV-004 Fail | AR-007 | design Needs Revision | design Ready, re-review | Intended Change 0 | Containment, validation, SDK handlers, ordering direction |
 
 ## Revision Entries
 
@@ -40,3 +42,21 @@
 - Next action: back to the architecture reviewer.
 
 - 2026-11-20 (informational): ARCH-REV-003 **Pass** on SR-003 (covering SR-001..SR-003); the reviewer handed the package to `/implementation_engineer`. Its note applied: `requirements-doc.md` revision ID updated to SR-003.
+
+### SR-004 — Implementation Design Impact IR-001: frames out of wire order
+
+- Phase and classification: `Design Impact`
+- Trigger: implementation IR-001 (commits `dd79100fbb`, `3076e1d6fb`), `evidence/IMP-01-sdk-delivery-order.log`: the ACP SDK delivers a prompt response before earlier extension notifications, and `session/update` frames overtake extension notifications; 3 of 9 session-rule tests fail as AR-005 predicted.
+- Decision (Solution Designer): option (A) of IR-001 — wire-order delivery in `AcpClientConnection`'s inbound stage (design-spec Intended Change 0); (B) rejected (relies on Grok's frame order and leaves update/notification overtaking), (C) rejected in ARCH-REV-002.
+- Requirements unchanged; classification unchanged `Medium` / `High` (the change now also touches the shared ACP connection).
+- Next action: architecture re-review (the shared connection change is new structure after ARCH-REV-003's pass); implementation waits.
+
+### SR-005 — Architecture review ARCH-REV-004 (Fail, AR-007) resolved
+
+- Phase and classification: `Design Impact` (Intended Change 0 only)
+- Trigger: `design-review-report.md` ARCH-REV-004, AR-007: the inbound stage took over the SDK's notification dispatch without its error containment; the SDK's schema is not exported; two SDK-handler points undecided.
+- Changes: per-frame `try/catch` that logs and continues (the stream never errors); validation = minimal checks (string `sessionId`, `update` object with string `sessionUpdate`), failures dropped and logged; `Client.sessionUpdate` and `extNotification` stay as commented no-ops; every non-`session/update` notification is routed to `routeExt` as today (not only `_` methods); one-direction ordering stated; unit cases added (throwing handler keeps the connection open; malformed update; non-`_` notification).
+- Requirements unchanged; classification unchanged `Medium` / `High`.
+- Next action: back to the architecture reviewer.
+
+- 2026-11-20 (informational): ARCH-REV-005 **Pass** on SR-005 (covering SR-001..SR-005); the reviewer handed the package to `/implementation_engineer`. Its optional suggestion MP-005 (pass `$/` protocol notifications to the SDK) is not adopted: not reachable on current evidence (neither Grok nor DeepSeek was seen sending one); recorded as a residual — if an agent starts sending `$/` notifications, route them to the SDK.

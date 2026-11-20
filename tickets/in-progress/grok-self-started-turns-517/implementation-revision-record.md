@@ -7,6 +7,7 @@ The current code and the latest handoff are the authority. This record locates e
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture reviewer, `design-review-report.md` ARCH-REV-003 (Pass), SR-003 | N/A | `Design Impact` | SR-003; ARCH-REV-003; CRR N/A; API-REV N/A; DR N/A | SR-003 items 1-4 implemented; the one-batch hand-over cannot be detected because the ACP SDK delivers the prompt response before earlier extension notifications → Solution Designer |
+| IR-002 | Architecture reviewer, `design-review-report.md` ARCH-REV-005 (Pass), SR-005 | N/A | `Implementation complete` | SR-004, SR-005; ARCH-REV-004, ARCH-REV-005; CRR N/A; API-REV N/A; DR N/A | SR-005 Intended Change 0-7 implemented on dd79100fbb/3076e1d6fb; unit, scripted E2E and live Grok pass → code reviewer (Medium/High) |
 
 ## Revision Entries
 
@@ -32,3 +33,26 @@ The current code and the latest handoff are the authority. This record locates e
   - `tsc --noEmit -p tsconfig.build.json`: no errors.
 - Next recipient or routing: `get_handoff_rules` → Design Impact → `/solution_designer`.
 - Remaining limitations or risks: as above; the round continues after the design decision.
+
+### IR-002 — SR-005 implemented: wire-order delivery, provider-started turns end to end
+
+- Triggering role, report path, and round: architecture reviewer, `design-review-report.md` (ARCH-REV-005 Pass on SR-001…SR-005), implementation round 2.
+- Triggering finding IDs: N/A (IR-001's Design Impact, resolved by SR-004/SR-005).
+- Classification: implementation complete; routing `Medium` / `High` → code review.
+- Prior authoritative result: IR-001 (work in progress at `dd79100fbb`; 3 of 9 session-rule tests failing by the SDK's reordering).
+- Current authoritative result: commits `0401d75bf3` (Intended Change 0), `eb7dcef228` (items 4, 5, 6 and Grok signal tests), `39686a67ac` (item 7: scripted Grok, E2E, live case), plus the documents commit. `implementation-handoff.md` is the authority.
+- Related solution revision IDs: `SR-004`, `SR-005`; architecture-review `ARCH-REV-004`, `ARCH-REV-005`.
+- Implementation delta:
+  - `acp-client-connection.ts`: `inboundFrameStage` replaces `filterForeignResponses`. Each notification is delivered synchronously, in wire order (`session/update` after the minimal checks → `routeUpdate`, otherwise `ACP_FRAME_DROPPED`; any other method → `routeExt` unchanged), each inside a `try/catch` logging `ACP_FRAME_HANDLER_FAILED`. Responses and agent requests pass on; foreign responses are dropped; `$/` protocol notifications pass on to the SDK (the reviewer's optional MP-005). The SDK client's `sessionUpdate`/`extNotification` are commented no-ops.
+  - Memory: `GROK_PROVIDER_TURN_NOTICE_SENDER_ID` in `RECORDED_SYSTEM_NOTICE_SENDER_IDS`. `GLOSSARY.md` gets "Provider-started turn". The backend comment narrows turn id allocation to input turns.
+  - Tests: the connection's wire-order cases, Grok signal cases, the memory test parameterized over Claude and Grok, the fake agent's pause row, `grokProviderTurnScript` (orders a-c), 3 replay E2E cases, 1 gated live case.
+- Local validation and result:
+  - Units: 39 files / 299 tests pass, `acp-provider-started-turns.test.ts` 9/9 among them (IMP-05).
+  - Typechecks: server and web pass at baseline (IMP-05).
+  - Replay E2E: 9/9 (IMP-02).
+  - Grok compaction replay 3/3; DeepSeek scripted provider (real dsh) 6/6 (IMP-03).
+  - Live Grok (AC-005): pass on attempt 3; attempts 1-2 failed at model discovery from Grok's 4-35 s startup, base alike (IMP-04, IMP-06).
+  - Every in-process E2E file's `afterAll` timed out in `app.close()` under the machine's FSEvents backlog, base cases alone included (IMP-02 run 2).
+- Next recipient or routing: `get_handoff_rules` → `/code_reviewer`.
+- Remaining limitations or risks: RSK-003 (provider content before the input prompt's response) not observed in probes, scripted orders or the live run. Candidate follow-up: discovery bound vs Grok startup (IMP-06).
+

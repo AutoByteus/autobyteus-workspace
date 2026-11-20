@@ -23,3 +23,6 @@ The shared ACP session's turn lifecycle (two origins), the rule that agent turns
 - 2026-11-20: ARCH-REV-001 Fail (AR-001 Unclear; AR-002..AR-004 Design Impact) → resolved in SR-002 (probe 2 `evidence/grok-acp-probe2.jsonl`; design-spec Intended Change 1–6) → back to `/architecture_reviewer`.
 - 2026-11-20: ARCH-REV-002 Fail (AR-005 High; AR-006; AR-002/003 leftovers) → resolved in SR-003 (design-spec rewritten; AC-006) → back to `/architecture_reviewer`.
 - 2026-11-20: ARCH-REV-003 Pass; the reviewer routed to `/implementation_engineer` (no duplicate forwarding).
+- 2026-11-20: implementation Design Impact IR-001 → SR-004 (Intended Change 0, wire-order delivery in AcpClientConnection) → `/architecture_reviewer` for re-review.
+- 2026-11-20: ARCH-REV-004 Fail (AR-007) → SR-005 → back to `/architecture_reviewer`.
+- 2026-11-20: ARCH-REV-005 Pass; the reviewer routed to `/implementation_engineer` (no duplicate forwarding).

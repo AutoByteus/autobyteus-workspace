@@ -32,6 +32,8 @@
 
 | Probe 2 (2026-11-20), `evidence/grok-acp-probe2.mjs` / `.jsonl`, same launch, one session | **A** (AR-001): client turn backgrounds `short.sh` (5 s), then runs `long.sh` (20 s) in the foreground: the job ends at t=41.6 (`task_completed`, `queue/changed` still running the client prompt) and nothing is injected into the client turn; at its end (t=60.0) Grok sends `queue/changed(running none)`, `turn_completed(client, end_turn)`, `queue/changed(running task-completed-<job>, text <system-reminder>…)`, `prompt_complete(client)`, then the `session/prompt` response; the provider turn's content follows at t=61.2 ("NOTICED") and its `turn_completed` at t=61.3. **B** (cancel): a provider prompt running a 30 s foreground command receives `session/cancel` at t=117.1 and Grok sends `turn_completed(task-completed-<job>, cancelled)` at once. A 429 "sending requests too quickly" appeared on stderr at t=24.4 and Grok retried by itself | Reproduced | `evidence/grok-acp-probe2.jsonl` |
 
+| IR-001 (implementation, 2026-11-20), `evidence/IMP-01-sdk-delivery-order.log`, `evidence/imp-diag/sdk-delivery-order.test.ts` | Over `AcpClientConnection` and `@agentclientprotocol/sdk` 1.5.0, wire order `update u1, ext 2, ext 3, update u4, response` reaches the session as `u1, u4, ext 2, RESPONSE, ext 3`; cause in the SDK: responses resolve synchronously (`jsonrpc.js:831`), notifications are awaited handler by handler (`:748`). With SR-003 alone, 3 of 9 session-rule tests over the real connection fail by exactly AR-005's failure mode | Measured | SR-004: wire-order delivery in the connection |
+
 ## Unknowns / Risks
 
 | ID | Type | Description | Resolution |
