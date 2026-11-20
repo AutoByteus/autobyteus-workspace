@@ -71,7 +71,9 @@
       :path="openPath"
       :file-state="openFileMatches ? explorer.getOpenFileState(openPath) : null"
       :open-error="openFileError"
+      :retryable="workspaceFileRetryable"
       @close="navigation.back()"
+      @retry="retryWorkspaceFile"
     />
     <!-- A node file, read-only: a file a conversation named outside the agent's folder, by its absolute path
          (autobyteus-436), or a file attached to a message (autobyteus-450). -->
@@ -80,7 +82,10 @@
       :path="mobileNodeFileName(nodeFileSource)"
       :file-state="nodeFileState"
       :error-message="nodeFileError"
+      :progress="nodeFileProgress"
+      :retryable="nodeFileRefusal === 'failed' || nodeFileRefusal === 'not-found'"
       @close="navigation.back()"
+      @retry="reloadNodeFile"
     />
   </section>
 </template>
@@ -133,6 +138,13 @@ const openFileError = computed(() => {
   return openFileMatches.value ? explorer.getFileOpenError(openPath.value) : 'unavailable';
 });
 watch([openPath, openFileMatches], ([path, matches]) => { if (path && matches) void explorer.openFileReadOnly(path); }, { immediate: true });
+/**
+ * A file of the open agent's folder that failed to open can be read again: an explicit open reads it anew (autobyteus-450,
+ * autobyteus-572 D-7). A file of another folder cannot be read here, so no Retry.
+ */
+const workspaceFileRetryable = computed(() => Boolean(openPath.value && openFileMatches.value
+  && (openFileError.value || explorer.getOpenFileState(openPath.value)?.error)));
+const retryWorkspaceFile = (): void => { if (openPath.value && openFileMatches.value) void explorer.openFileReadOnly(openPath.value); };
 /** The node file the route opens: by its absolute path, or a message's attached file. */
 const nodeFileSource = computed<MobileNodeFileSource | null>(() => {
   const path = navigation.openNodeFilePath.value;
@@ -140,7 +152,8 @@ const nodeFileSource = computed<MobileNodeFileSource | null>(() => {
   const attached = navigation.openContextFileEntry.value;
   return attached ? { kind: 'contextFile', locator: attached.locator, name: attached.name } : null;
 });
-const { fileState: nodeFileState, errorMessage: nodeFileError } = useMobileNodeFile(nodeFileSource);
+// A node file that failed to download or was not there can be read again; a folder never becomes a file (D-7).
+const { fileState: nodeFileState, errorMessage: nodeFileError, progress: nodeFileProgress, refusal: nodeFileRefusal, reload: reloadNodeFile } = useMobileNodeFile(nodeFileSource);
 
 const openNode = async (node: MobileWorkspaceFileNode): Promise<void> => {
   if (node.is_file) {

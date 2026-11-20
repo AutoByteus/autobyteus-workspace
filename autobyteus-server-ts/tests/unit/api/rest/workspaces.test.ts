@@ -205,6 +205,8 @@ it("preserves healthy media bytes, encoded paths, HTML and relative static asset
         expect(response.statusCode).toBe(200);
         expect(response.rawPayload.equals(fixture.bytes)).toBe(true);
         expect(String(response.headers["content-type"])).toContain(fixture.mime);
+        // autobyteus-572 D-5: the file's length, so a client can show the download's progress.
+        expect(response.headers["content-length"]).toBe(String(fixture.bytes.length));
       }
     }
     const missing = await app.inject({ method: "GET", url: "/workspaces/ws1/static/deleted.png" });

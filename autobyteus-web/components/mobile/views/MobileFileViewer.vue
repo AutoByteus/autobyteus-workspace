@@ -17,7 +17,27 @@
       </template>
     </MobileScreenBar>
     <div class="min-h-0 flex-1 overflow-hidden">
-      <p v-if="viewerError" class="px-4 py-10 text-center text-sm text-red-700" role="alert" data-testid="mobile-file-preview-error">{{ errorMessage || 'Couldn’t open this file.' }}</p>
+      <!-- A file that could not be opened: the plain reason and, unless retrying cannot help (a folder), Retry (autobyteus-572 D-7). -->
+      <div v-if="viewerError" class="flex flex-col items-center gap-4 px-4 py-10">
+        <p class="text-center text-sm text-red-700" role="alert" data-testid="mobile-file-preview-error">{{ errorMessage || 'Couldn’t open this file.' }}</p>
+        <button
+          v-if="retryable"
+          type="button"
+          class="retry-button min-h-[2.75rem] min-w-[5.5rem] rounded-lg bg-slate-900 px-4 text-sm font-semibold text-white active:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          data-testid="mobile-file-preview-retry"
+          @click="$emit('retry')"
+        >
+          {{ $t('workspace.components.mobile.views.MobileFileViewer.retry') }}
+        </button>
+      </div>
+      <!-- A media or other non-text file on its way: what is loading and how much has arrived (autobyteus-572 D-4). -->
+      <MediaLoadingState
+        v-else-if="isLoading && loadingKind"
+        :kind="loadingKind"
+        :progress="progress"
+        class="px-4 py-10 text-slate-500"
+        data-testid="mobile-file-preview-loading"
+      />
       <p v-else-if="isLoading" class="px-4 py-10 text-center text-sm text-slate-400" role="status" data-testid="mobile-file-preview-loading">Opening…</p>
       <p v-else-if="isUnsupported" class="px-4 py-10 text-center text-sm text-slate-500" data-testid="mobile-file-preview-unsupported">This file can’t be shown on the phone.</p>
       <FileViewer
@@ -40,6 +60,8 @@
 import { computed, ref } from 'vue';
 import { Icon } from '@iconify/vue';
 import FileViewer from '~/components/fileExplorer/FileViewer.vue';
+import MediaLoadingState, { type MediaLoadingKind } from '~/components/fileExplorer/viewers/MediaLoadingState.vue';
+import type { DownloadProgress } from '~/utils/download/responseBlobProgress';
 import MobileScreenBar from '~/components/mobile/MobileScreenBar.vue';
 import { useViewerZoomMemory } from '~/composables/mobile/useViewerZoomMemory';
 import { downloadMimeTypeOf, useMobileFileDownload } from '~/composables/mobile/useMobileFileDownload';
@@ -51,14 +73,25 @@ const props = withDefaults(defineProps<{
   openError?: string | null;
   /** The text to show when the file could not be opened (a node file's refusal, autobyteus-436); a default otherwise. */
   errorMessage?: string | null;
-}>(), { openError: null, errorMessage: null });
-defineEmits<{ close: [] }>();
+  /** How much of a node file has arrived while it loads (autobyteus-572 D-4). */
+  progress?: DownloadProgress | null;
+  /** Whether reading the file again can help its failure; the owner reads it again on `retry` (autobyteus-572 D-7). */
+  retryable?: boolean;
+}>(), { openError: null, errorMessage: null, progress: null, retryable: false });
+defineEmits<{ close: []; retry: [] }>();
 
 const name = computed(() => props.path.split('/').filter(Boolean).at(-1) || props.path);
 const viewerError = computed(() => props.openError || props.fileState?.error || null);
 const isLoading = computed(() => !props.fileState || Boolean(props.fileState.isLoading));
 const fileType = computed<FileDataType>(() => props.fileState?.type ?? 'Text');
 const isUnsupported = computed(() => fileType.value === 'Unsupported');
+/** A file whose type is known and is not text loads with the loading view; text (or a type not yet known) says "Opening…". */
+const loadingKind = computed<MediaLoadingKind | null>(() => {
+  if (!props.fileState) return null;
+  if (fileType.value === 'Video') return 'video';
+  if (fileType.value === 'Audio') return 'audio';
+  return fileType.value === 'Text' ? null : 'file';
+});
 const viewerMode = computed<FileOpenMode>(() => {
   const lowerPath = props.path.toLowerCase();
   return fileType.value === 'Text' && (lowerPath.endsWith('.md') || lowerPath.endsWith('.markdown')) ? 'preview' : 'edit';

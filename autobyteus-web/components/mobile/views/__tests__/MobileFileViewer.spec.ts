@@ -7,9 +7,9 @@ import type { FileDataType, OpenFileState } from '~/stores/fileExplorerState';
 let pinia: Pinia;
 
 
-function mountSubject(fileState: OpenFileState, path = fileState.path) {
+function mountSubject(fileState: OpenFileState, path = fileState.path, progress: { loaded: number; total: number | null } | null = null) {
   return mount(MobileFileViewer, {
-    props: { path, fileState, openError: null },
+    props: { path, fileState, openError: null, progress },
     global: {
       plugins: [pinia],
       stubs: {
@@ -26,6 +26,55 @@ describe('MobileFileViewer', () => {
   beforeEach(() => {
     pinia = createPinia();
     setActivePinia(pinia);
+  });
+
+  // autobyteus-572 D-4: a node media file loading shows what is loading and how much has arrived; text says "Opening…".
+  it.each([
+    ['Video', '/w/clip.mp4', 'Loading video'],
+    ['Audio', '/w/tone.mp3', 'Loading audio'],
+    ['Image', '/w/pic.png', 'Loading file'],
+  ] satisfies Array<[FileDataType, string, string]>)('a loading %s node file shows the loading view with its progress', (type, path, label) => {
+    const wrapper = mountSubject({ path, type, mode: 'edit', content: null, url: null, contentRevision: 0,
+      relativeResourceContext: null, isLoading: true, error: null }, path, { loaded: 2_000_000, total: 8_000_000 });
+    const loading = wrapper.get('[data-testid="mobile-file-preview-loading"]');
+    expect(loading.attributes('role')).toBe('status');
+    expect(loading.text()).toContain(label);
+    expect(loading.text()).toContain('2.0 of 8.0 MB');
+    expect(loading.text()).not.toContain('Opening…');
+  });
+
+  // autobyteus-572 D-7: the viewer's own failure state offers Retry when reading again can help.
+  const failed = (path: string, type: FileDataType, retryable: boolean, errorMessage: string) => mount(MobileFileViewer, {
+    props: { path, fileState: { path, type, mode: 'edit', content: null, url: null, contentRevision: 0, relativeResourceContext: null, isLoading: false, error: errorMessage },
+      openError: null, errorMessage, retryable },
+    global: { plugins: [pinia], stubs: { FileViewer: true } },
+  });
+
+  it.each([
+    ['Video', '/w/gone.mp4', 'This file was not found on the computer.'],
+    ['Text', '/w/notes.md', 'The file preview could not be opened.'],
+  ] satisfies Array<[FileDataType, string, string]>)('a %s file that failed shows its plain message with Retry, which asks its owner to read it again', async (type, path, message) => {
+    const wrapper = failed(path, type, true, message);
+    expect(wrapper.get('[data-testid="mobile-file-preview-error"]').text()).toBe(message);
+    expect(wrapper.get('[data-testid="mobile-file-preview-error"]').attributes('role')).toBe('alert');
+    const retry = wrapper.get('[data-testid="mobile-file-preview-retry"]');
+    expect(retry.text()).toBe('Retry');
+    expect(retry.classes()).toContain('min-h-[2.75rem]');
+    await retry.trigger('click');
+    expect(wrapper.emitted('retry')).toHaveLength(1);
+    expect(wrapper.find('[data-testid="mobile-file-preview-loading"]').exists()).toBe(false);
+  });
+
+  it('a path that is a folder shows its message without Retry', () => {
+    const wrapper = failed('/w/reports', 'Text', false, 'This path is a folder, not a file.');
+    expect(wrapper.get('[data-testid="mobile-file-preview-error"]').text()).toBe('This path is a folder, not a file.');
+    expect(wrapper.find('[data-testid="mobile-file-preview-retry"]').exists()).toBe(false);
+  });
+
+  it('a loading text file still says "Opening…"', () => {
+    const wrapper = mountSubject({ path: '/w/notes.md', type: 'Text', mode: 'edit', content: null, url: null, contentRevision: 0,
+      relativeResourceContext: null, isLoading: true, error: null });
+    expect(wrapper.get('[data-testid="mobile-file-preview-loading"]').text()).toBe('Opening…');
   });
 
   it.each([

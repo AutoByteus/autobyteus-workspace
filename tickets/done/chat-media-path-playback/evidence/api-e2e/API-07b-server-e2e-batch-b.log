@@ -1,0 +1,1696 @@
+# API-07b the other 70 of the 140 E2E files API-07 did not reach; commit 9505c9039e; 2026-11-20T21:00:31Z; load 48.22 39.55 36.15
+# files: tests/e2e/runtime/available-agent-runtimes-live-agents.e2e.test.ts tests/e2e/runtime/background-task-status-count.e2e.test.ts tests/e2e/runtime/claude-agent-auth-marker-reply.e2e.test.ts tests/e2e/runtime/claude-agent-background-task.e2e.test.ts tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts tests/e2e/runtime/claude-agent-effort-only-live.e2e.test.ts tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts tests/e2e/runtime/codex-agent-tools-empty-list.e2e.test.ts tests/e2e/runtime/codex-compaction-token-reading.e2e.test.ts tests/e2e/runtime/codex-interrupted-compaction.e2e.test.ts tests/e2e/runtime/codex-native-multi-agent-disabled.e2e.test.ts tests/e2e/runtime/codex-runtime-exit-resend.e2e.test.ts tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts tests/e2e/runtime/deepseek-harness-live.e2e.test.ts tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts tests/e2e/runtime/deepseek-harness-standalone-host.e2e.test.ts tests/e2e/runtime/grok-build-compaction-live.e2e.test.ts tests/e2e/runtime/grok-build-live-runtime.e2e.test.ts tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts tests/e2e/runtime/live-tool-list-updates.e2e.test.ts tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts tests/e2e/runtime/mixed-task-delegation.e2e.test.ts tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts tests/e2e/runtime/platform-notice-identity.e2e.test.ts tests/e2e/runtime/runtime-capability-graphql.e2e.test.ts tests/e2e/runtime/runtime-switch-live.e2e.test.ts tests/e2e/runtime/runtime-switch-members-live.e2e.test.ts tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts tests/e2e/runtime/skill-update-notice-live.e2e.test.ts tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts tests/e2e/runtime/team-run-current-graphql-documents.e2e.test.ts tests/e2e/runtime/team-task-event-current-contract.e2e.test.ts tests/e2e/runtime/token-meter-tps-live.e2e.test.ts tests/e2e/runtime/token-meter-tps-transport.e2e.test.ts tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts tests/e2e/secret-management/current-database-import-lifecycle.e2e.test.ts tests/e2e/secret-management/environment-key-source.e2e.test.ts tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts tests/e2e/secret-management/secret-vault-independent-process-initialization.e2e.test.ts tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts tests/e2e/secret-management/test-vault-selection.e2e.test.ts tests/e2e/shutdown/busy-run-stop-now.e2e.test.ts tests/e2e/shutdown/native-standalone-host-shutdown.e2e.test.ts tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts tests/e2e/token-usage/token-usage-model-list.e2e.test.ts tests/e2e/token-usage/token-usage-record-restart-graphql.e2e.test.ts tests/e2e/tool-management/mcp-bulk-import.e2e.test.ts tests/e2e/tool-management/mcp-http-error-status.e2e.test.ts tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts tests/e2e/workspaces/search-files-through-gate.e2e.test.ts tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts 
+# same env as API-07; pnpm -C autobyteus-server-ts exec vitest run <files>
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:24706) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [2m[90m↓[39m[22m tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts [2m([22m[2m5 tests[22m[2m | [22m[33m5 skipped[39m[2m)[22m
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:24775) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [2m[90m↓[39m[22m tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts [2m([22m[2m5 tests[22m[2m | [22m[33m5 skipped[39m[2m)[22m
+[90mstdout[2m | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:24820) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [2m[90m↓[39m[22m tests/e2e/runtime/mixed-task-delegation.e2e.test.ts [2m([22m[2m4 tests[22m[2m | [22m[33m4 skipped[39m[2m)[22m
+(node:24833) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [2m[90m↓[39m[22m tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts [2m([22m[2m12 tests[22m[2m | [22m[33m12 skipped[39m[2m)[22m
+[90mstdout[2m | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:24881) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [2m[90m↓[39m[22m tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+(node:25050) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-live.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [2m[90m↓[39m[22m tests/e2e/runtime/deepseek-harness-live.e2e.test.ts [2m([22m[2m5 tests[22m[2m | [22m[33m5 skipped[39m[2m)[22m
+(node:25060) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/grok-build-live-runtime.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [2m[90m↓[39m[22m tests/e2e/runtime/grok-build-live-runtime.e2e.test.ts [2m([22m[2m3 tests[22m[2m | [22m[33m3 skipped[39m[2m)[22m
+[90mstdout[2m | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:25078) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [2m[90m↓[39m[22m tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts [2m([22m[2m4 tests[22m[2m | [22m[33m4 skipped[39m[2m)[22m
+(node:25080) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/background-task-status-count.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [2m[90m↓[39m[22m tests/e2e/runtime/background-task-status-count.e2e.test.ts [2m([22m[2m6 tests[22m[2m | [22m[33m6 skipped[39m[2m)[22m
+(node:25091) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [2m[90m↓[39m[22m tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts [2m([22m[2m6 tests[22m[2m | [22m[33m6 skipped[39m[2m)[22m
+(node:25105) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/available-agent-runtimes-live-agents.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [2m[90m↓[39m[22m tests/e2e/runtime/available-agent-runtimes-live-agents.e2e.test.ts [2m([22m[2m12 tests[22m[2m | [22m[33m12 skipped[39m[2m)[22m
+(node:25110) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [2m[90m↓[39m[22m tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts [2m([22m[2m3 tests[22m[2m | [22m[33m3 skipped[39m[2m)[22m
+(node:25118) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/token-meter-tps-live.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [2m[90m↓[39m[22m tests/e2e/runtime/token-meter-tps-live.e2e.test.ts [2m([22m[2m9 tests[22m[2m | [22m[33m9 skipped[39m[2m)[22m
+[90mstdout[2m | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:25131) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [2m[90m↓[39m[22m tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m tests/e2e/runtime/runtime-switch-members-live.e2e.test.ts [2m([22m[2m3 tests[22m[2m | [22m[33m3 skipped[39m[2m)[22m
+(node:25138) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [2m[90m↓[39m[22m tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts [2m([22m[2m6 tests[22m[2m | [22m[33m6 skipped[39m[2m)[22m
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:25182) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [2m[90m↓[39m[22m tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts [2m([22m[2m16 tests[22m[2m | [22m[33m16 skipped[39m[2m)[22m
+(node:25367) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [2m[90m↓[39m[22m tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts [2m([22m[2m3 tests[22m[2m | [22m[33m3 skipped[39m[2m)[22m
+(node:25394) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [2m[90m↓[39m[22m tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts [2m([22m[2m0 test[22m[2m)[22m
+(node:25413) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/skill-update-notice-live.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [2m[90m↓[39m[22m tests/e2e/runtime/skill-update-notice-live.e2e.test.ts [2m([22m[2m4 tests[22m[2m | [22m[33m4 skipped[39m[2m)[22m
+[90mstdout[2m | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:25434) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [2m[90m↓[39m[22m tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts [2m([22m[2m3 tests[22m[2m | [22m[33m3 skipped[39m[2m)[22m
+(node:25445) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/platform-notice-identity.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [2m[90m↓[39m[22m tests/e2e/runtime/platform-notice-identity.e2e.test.ts [2m([22m[2m4 tests[22m[2m | [22m[33m4 skipped[39m[2m)[22m
+[90mstdout[2m | tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:25452) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [2m[90m↓[39m[22m tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts [2m([22m[2m7 tests[22m[2m | [22m[33m7 skipped[39m[2m)[22m
+(node:25494) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [2m[90m↓[39m[22m tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts [2m([22m[2m4 tests[22m[2m | [22m[33m4 skipped[39m[2m)[22m
+(node:25499) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/runtime-switch-live.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [2m[90m↓[39m[22m tests/e2e/runtime/runtime-switch-live.e2e.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:25508) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [2m[90m↓[39m[22m tests/e2e/runtime/claude-agent-background-task.e2e.test.ts [2m([22m[2m12 tests[22m[2m | [22m[33m12 skipped[39m[2m)[22m
+[90mstdout[2m | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:25541) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [2m[90m↓[39m[22m tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+[90mstdout[2m | tests/e2e/runtime/codex-interrupted-compaction.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:25547) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [2m[90m↓[39m[22m tests/e2e/runtime/codex-interrupted-compaction.e2e.test.ts [2m([22m[2m3 tests[22m[2m | [22m[33m3 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts [2m([22m[2m6 tests[22m[2m | [22m[33m6 skipped[39m[2m)[22m
+[90mstdout[2m | tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:25561) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [2m[90m↓[39m[22m tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+(node:25600) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/grok-build-compaction-live.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [2m[90m↓[39m[22m tests/e2e/runtime/grok-build-compaction-live.e2e.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:25606) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [2m[90m↓[39m[22m tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts [2m([22m[2m2 tests[22m[2m | [22m[33m2 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m tests/e2e/runtime/claude-agent-effort-only-live.e2e.test.ts [2m([22m[2m2 tests[22m[2m | [22m[33m2 skipped[39m[2m)[22m
+(node:25646) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/.env // tip: ⌘ enable debugging { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mNode access: local control socket not opened. The node's local control socket path is 123 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/node-access/local-control.sock. Use a shorter data folder path.
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mCreating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mSuccessfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstderr[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)[2m > [22m[2mfails the message with the plain message, touches no other run, and retries at the next message
+[22m[39mAgent Definition created successfully with ID: reopen-failure-ade67c
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)[2m > [22m[2mfails the message with the plain message, touches no other run, and retries at the next message
+[22m[39mAgent Definition created successfully with ID: reopen-other-ade67c
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)[2m > [22m[2mfails the message with the plain message, touches no other run, and retries at the next message
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/workspace-a
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/workspace-a.
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)[2m > [22m[2mfails the message with the plain message, touches no other run, and retries at the next message
+[22m[39mCreated and registered workspace ID: agent_ws_1f8e74ee408d5ae78846de370fed73d30f84aba58589bf74e1b721fcff67b33b
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)[2m > [22m[2mfails the message with the plain message, touches no other run, and retries at the next message
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/workspace-a
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/workspace-a.
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)[2m > [22m[2mfails the message with the plain message, touches no other run, and retries at the next message
+[22m[39mReusing registered workspace ID: agent_ws_1f8e74ee408d5ae78846de370fed73d30f84aba58589bf74e1b721fcff67b33b
+
+[90mstderr[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)[2m > [22m[2mfails the message with the plain message, touches no other run, and retries at the next message
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/memory/agents/reopen_failure_ade67c_3d86b51b97f04559b31548345393c27b/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)[2m > [22m[2mfails the message with the plain message, touches no other run, and retries at the next message
+[22m[39mAgent websocket attached for run reopen_failure_ade67c_3d86b51b97f04559b31548345393c27b
+Created agent session 64903fea-0239-467a-8449-7284ab988e09 for run reopen_failure_ade67c_3d86b51b97f04559b31548345393c27b
+Agent WebSocket connected: session=64903fea-0239-467a-8449-7284ab988e09, run=reopen_failure_ade67c_3d86b51b97f04559b31548345393c27b
+
+[90mstderr[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)[2m > [22m[2mfails the message with the plain message, touches no other run, and retries at the next message
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/memory/agents/reopen_failure_ade67c_3d86b51b97f04559b31548345393c27b/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)[2m > [22m[2mfails the message with the plain message, touches no other run, and retries at the next message
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/workspace-b
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/workspace-b.
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)[2m > [22m[2mfails the message with the plain message, touches no other run, and retries at the next message
+[22m[39mCreated and registered workspace ID: agent_ws_825e4cbd2d196f1e0b9d4bfc584ca1939bdc6c662d01715c911e80e76e72ba65
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)[2m > [22m[2mfails the message with the plain message, touches no other run, and retries at the next message
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/workspace-b
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/workspace-b.
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)[2m > [22m[2mfails the message with the plain message, touches no other run, and retries at the next message
+[22m[39mReusing registered workspace ID: agent_ws_825e4cbd2d196f1e0b9d4bfc584ca1939bdc6c662d01715c911e80e76e72ba65
+
+[90mstderr[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)[2m > [22m[2mfails the message with the plain message, touches no other run, and retries at the next message
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/memory/agents/reopen_other_ade67c_5250e774a835452884a9c3f427b2fac7/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)[2m > [22m[2mfails the message with the plain message, touches no other run, and retries at the next message
+[22m[39mAgent websocket attached for run reopen_other_ade67c_5250e774a835452884a9c3f427b2fac7
+Created agent session 14b8563a-5070-4a3c-a3bb-dfe1574e8bc0 for run reopen_other_ade67c_5250e774a835452884a9c3f427b2fac7
+Agent WebSocket connected: session=14b8563a-5070-4a3c-a3bb-dfe1574e8bc0, run=reopen_other_ade67c_5250e774a835452884a9c3f427b2fac7
+
+[90mstderr[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)[2m > [22m[2mfails the message with the plain message, touches no other run, and retries at the next message
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/memory/agents/reopen_other_ade67c_5250e774a835452884a9c3f427b2fac7/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)[2m > [22m[2mfails the message with the plain message, touches no other run, and retries at the next message
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)[2m > [22m[2mfails the message with the plain message, touches no other run, and retries at the next message
+[22m[39mAgent Definition with ID reopen-failure-ade67c updated successfully.
+
+[90mstderr[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)[2m > [22m[2mfails the message with the plain message, touches no other run, and retries at the next message
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/memory/agents/reopen_failure_ade67c_3d86b51b97f04559b31548345393c27b/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)[2m > [22m[2mfails the message with the plain message, touches no other run, and retries at the next message
+[22m[39mACP_REOPEN_FAILED: run=reopen_failure_ade67c_3d86b51b97f04559b31548345393c27b: Error: ACP connection closed
+
+[90mstderr[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)[2m > [22m[2mfails the message with the plain message, touches no other run, and retries at the next message
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/memory/agents/reopen_failure_ade67c_3d86b51b97f04559b31548345393c27b/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)[2m > [22m[2mfails the message with the plain message, touches no other run, and retries at the next message
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/memory/agents/reopen_failure_ade67c_3d86b51b97f04559b31548345393c27b/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)[2m > [22m[2mfails the message with the plain message, touches no other run, and retries at the next message
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tool-list-reopen-failure-e2e-19VqzR/memory/agents/reopen_failure_ade67c_3d86b51b97f04559b31548345393c27b/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mClosed agent session 64903fea-0239-467a-8449-7284ab988e09
+Agent WebSocket disconnected: 64903fea-0239-467a-8449-7284ab988e09
+
+[90mstdout[2m | tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts[2m > [22m[2mGrok tool-list reopen failure (scripted ACP agent, real server)
+[22m[39mClosed agent session 14b8563a-5070-4a3c-a3bb-dfe1574e8bc0
+Agent WebSocket disconnected: 14b8563a-5070-4a3c-a3bb-dfe1574e8bc0
+
+ [32m✓[39m tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 10189[2mms[22m[39m
+     [33m[2m✓[22m[39m fails the message with the plain message, touches no other run, and retries at the next message [33m 8161[2mms[22m[39m
+(node:25702) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-DylQ66
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-DylQ66/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-DylQ66/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-DylQ66/.env // tip: ⌁ auth for agents [www.vestauth.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-DylQ66
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-DylQ66/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-DylQ66/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-DylQ66/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-DylQ66/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mNode access: local control socket not opened. The node's local control socket path is 111 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-DylQ66/node-access/local-control.sock. Use a shorter data folder path.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-DylQ66/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-DylQ66/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-DylQ66/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mAgent Definition created successfully with ID: work-journal-neutral-26374d47-9013-41d8-a41d-7c8e97152d8d
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-DylQ66/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-DylQ66/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mCreated and registered workspace ID: agent_ws_d6ee128efdcc79d432558328d95c94660fb92f447760e9f909806aeff0978448
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-DylQ66/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-DylQ66/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mReusing registered workspace ID: agent_ws_d6ee128efdcc79d432558328d95c94660fb92f447760e9f909806aeff0978448
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mAGY compaction detection off for run work_journal_neutral_26374d47_9013_41d8_a41d_7c8_90c5b0a88de448f8a8b05dbc60e205fb: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-DylQ66/memory/agents/work_journal_neutral_26374d47_9013_41d8_a41d_7c8_90c5b0a88de448f8a8b05dbc60e205fb/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mAgent websocket attached for run work_journal_neutral_26374d47_9013_41d8_a41d_7c8_90c5b0a88de448f8a8b05dbc60e205fb
+Created agent session 1c7d5cd3-7df0-4f04-9371-ef439348b9eb for run work_journal_neutral_26374d47_9013_41d8_a41d_7c8_90c5b0a88de448f8a8b05dbc60e205fb
+Agent WebSocket connected: session=1c7d5cd3-7df0-4f04-9371-ef439348b9eb, run=work_journal_neutral_26374d47_9013_41d8_a41d_7c8_90c5b0a88de448f8a8b05dbc60e205fb
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-DylQ66/memory/agents/work_journal_neutral_26374d47_9013_41d8_a41d_7c8_90c5b0a88de448f8a8b05dbc60e205fb/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-DylQ66/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-DylQ66/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mReusing registered workspace ID: agent_ws_d6ee128efdcc79d432558328d95c94660fb92f447760e9f909806aeff0978448
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-DylQ66/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-DylQ66/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mReusing registered workspace ID: agent_ws_d6ee128efdcc79d432558328d95c94660fb92f447760e9f909806aeff0978448
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mAGY compaction detection off for run work_journal_neutral_26374d47_9013_41d8_a41d_7c8_d6d456c04c85499083c569793e181a6f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-DylQ66/memory/agents/work_journal_neutral_26374d47_9013_41d8_a41d_7c8_d6d456c04c85499083c569793e181a6f/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mAgent websocket attached for run work_journal_neutral_26374d47_9013_41d8_a41d_7c8_d6d456c04c85499083c569793e181a6f
+Created agent session 19e3cd8a-b52e-4d77-8da9-cf0bf5e17555 for run work_journal_neutral_26374d47_9013_41d8_a41d_7c8_d6d456c04c85499083c569793e181a6f
+Agent WebSocket connected: session=19e3cd8a-b52e-4d77-8da9-cf0bf5e17555, run=work_journal_neutral_26374d47_9013_41d8_a41d_7c8_d6d456c04c85499083c569793e181a6f
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-DylQ66/memory/agents/work_journal_neutral_26374d47_9013_41d8_a41d_7c8_d6d456c04c85499083c569793e181a6f/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mClosed agent session 19e3cd8a-b52e-4d77-8da9-cf0bf5e17555
+Agent WebSocket disconnected: 19e3cd8a-b52e-4d77-8da9-cf0bf5e17555
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mClosed agent session 1c7d5cd3-7df0-4f04-9371-ef439348b9eb
+Agent WebSocket disconnected: 1c7d5cd3-7df0-4f04-9371-ef439348b9eb
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mAgent Definition with ID work-journal-neutral-26374d47-9013-41d8-a41d-7c8e97152d8d deleted successfully.
+
+ [32m✓[39m tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 10019[2mms[22m[39m
+     [33m[2m✓[22m[39m JS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered [33m 2358[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:25803) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts[2m > [22m[2mnative Gemini catalog pricing through the server cost path
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts[2m > [22m[2mnative Gemini catalog pricing through the server cost path[2m > [22m[2m'AE-002' prices '3.1 Pro, 150K prompt (<=200K tier)' at the official rates
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
+
+ [32m✓[39m tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 171[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:25813) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [2m[90m↓[39m[22m tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts [2m([22m[2m4 tests[22m[2m | [22m[33m4 skipped[39m[2m)[22m
+[90mstdout[2m | tests/e2e/token-usage/token-usage-record-restart-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/token-usage/token-usage-record-restart-graphql.e2e.test.ts[2m > [22m[2mtoken usage current-record process restart[2m > [22m[2mreopens unchanged standalone and exact team-member records through built-server GraphQL
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/token-usage/token-usage-record-restart-graphql.e2e.test.ts[2m > [22m[2mtoken usage current-record process restart[2m > [22m[2mreopens unchanged standalone and exact team-member records through built-server GraphQL
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+ [32m✓[39m tests/e2e/token-usage/token-usage-record-restart-graphql.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 6522[2mms[22m[39m
+     [33m[2m✓[22m[39m reopens unchanged standalone and exact team-member records through built-server GraphQL [33m 6521[2mms[22m[39m
+(node:26028) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "current-db-import-26028-1795208537440-12a4763542bad.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts/db/current-db-import-26028-1795208537440-12a4763542bad.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+[90mstdout[2m | tests/e2e/secret-management/current-database-import-lifecycle.e2e.test.ts[2m > [22m[2mexplicit target database importer lifecycle[2m > [22m[2mignores every implicit redirect, previews read-only, imports transactionally, and reopens the explicit database
+[22m[39mRunning Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Database migrations completed successfully.
+
+[90mstdout[2m | tests/e2e/secret-management/current-database-import-lifecycle.e2e.test.ts[2m > [22m[2mexplicit target database importer lifecycle[2m > [22m[2mignores every implicit redirect, previews read-only, imports transactionally, and reopens the explicit database
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "current-db-import-26028-1795208537440-12a4763542bad.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts/db/current-db-import-26028-1795208537440-12a4763542bad.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+[90mstdout[2m | tests/e2e/secret-management/current-database-import-lifecycle.e2e.test.ts[2m > [22m[2mexplicit target database importer lifecycle[2m > [22m[2mignores every implicit redirect, previews read-only, imports transactionally, and reopens the explicit database
+[22m[39mRunning Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Database migrations completed successfully.
+
+[90mstdout[2m | tests/e2e/secret-management/current-database-import-lifecycle.e2e.test.ts[2m > [22m[2mexplicit target database importer lifecycle[2m > [22m[2mignores every implicit redirect, previews read-only, imports transactionally, and reopens the explicit database
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/secret-management/current-database-import-lifecycle.e2e.test.ts[2m > [22m[2mexplicit target database importer lifecycle[2m > [22m[2mignores every implicit redirect, previews read-only, imports transactionally, and reopens the explicit database
+[22m[39mprisma:error 
+Invalid `this.create()` invocation in
+/Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts/src/secret-management/persistence/secret-entry-repository.ts:56:16
+
+  53 }
+  54 
+  55 async createEntry(record: EncryptedSecretEntryRecord): Promise<void> {
+→ 56   await this.create(
+Foreign key constraint violated: `foreign key`
+
+[90mstdout[2m | tests/e2e/secret-management/current-database-import-lifecycle.e2e.test.ts[2m > [22m[2mexplicit target database importer lifecycle[2m > [22m[2mignores every implicit redirect, previews read-only, imports transactionally, and reopens the explicit database
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+ [32m✓[39m tests/e2e/secret-management/current-database-import-lifecycle.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 2516[2mms[22m[39m
+     [33m[2m✓[22m[39m ignores every implicit redirect, previews read-only, imports transactionally, and reopens the explicit database [33m 2515[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:26282) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts[2m > [22m[2mAGY run record written before the semantic fix continues after it
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts[2m > [22m[2mAGY run record written before the semantic fix continues after it[2m > [22m[2mAE-005 shape A: a cache-heavy pre-fix record is read unchanged; the next step adds its own call
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
+
+ [32m✓[39m tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 115[2mms[22m[39m
+(node:26284) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/codex-runtime-exit-resend.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [2m[90m↓[39m[22m tests/e2e/runtime/codex-runtime-exit-resend.e2e.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+(node:26293) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts[2m > [22m[2mtoken usage custom-provider model-value backfill startup e2e
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+ [32m✓[39m tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 54[2mms[22m[39m
+[90mstdout[2m | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:26295) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [2m[90m↓[39m[22m tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts [2m([22m[2m0 test[22m[2m)[22m
+(node:26300) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/live-tool-list-updates.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [2m[90m↓[39m[22m tests/e2e/runtime/live-tool-list-updates.e2e.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:26302) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [2m[90m↓[39m[22m tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+[90mstdout[2m | tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:26333) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [2m[90m↓[39m[22m tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [32m✓[39m tests/e2e/tool-management/mcp-http-error-status.e2e.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 5439[2mms[22m[39m
+     [33m[2m✓[22m[39m states the HTTP status in the preview and the discover message for 401, 403, 404 and 500 [33m 2542[2mms[22m[39m
+(node:26384) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/secret-management/test-vault-selection.e2e.test.ts[2m > [22m[2mtest vault selection E2E[2m > [22m[2man in-process live suite opts in through initializeLiveServerVault
+[22m[39m[2026-11-20T21:02:54.750Z] [INFO] [secret-management.vault] Secret vault: test vault /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/test-vault-e2e-Fm4Xie/vault (read-only)
+
+ [32m✓[39m tests/e2e/secret-management/test-vault-selection.e2e.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 18616[2mms[22m[39m
+     [33m[2m✓[22m[39m a built test server started with the live opt-in reads the test vault read-only [33m 3310[2mms[22m[39m
+     [33m[2m✓[22m[39m a selected vault that is missing stops the server with TEST_VAULT_NOT_FOUND; no fallback [33m 1791[2mms[22m[39m
+     [33m[2m✓[22m[39m a built test server without the live opt-in keeps its own vault even with the selector exported [33m 2323[2mms[22m[39m
+     [33m[2m✓[22m[39m the secret-lifecycle suites give the same results with the selector exported (AC-017) [33m 10714[2mms[22m[39m
+(node:26843) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-qACzhw
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-qACzhw/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-qACzhw/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-qACzhw/.env // tip: ⌘ enable debugging { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-qACzhw
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-qACzhw/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-qACzhw/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-qACzhw/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-qACzhw/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mNode access: local control socket not opened. The node's local control socket path is 111 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-qACzhw/node-access/local-control.sock. Use a shorter data folder path.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-qACzhw/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-qACzhw/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-qACzhw/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mAgent Definition created successfully with ID: work-journal-neutral-47cfaf4d-14a7-440d-ac3f-abbd6e7432aa
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime[2m > [22m[2mthe platform and server-qualified tools of AGY call steps are journalled in neutral words
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-qACzhw/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-qACzhw/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime[2m > [22m[2mthe platform and server-qualified tools of AGY call steps are journalled in neutral words
+[22m[39mCreated and registered workspace ID: agent_ws_29acda34eb727f3961fddb01746e7f4c3080788022486844a6a10ec88a3b8d4e
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime[2m > [22m[2mthe platform and server-qualified tools of AGY call steps are journalled in neutral words
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-qACzhw/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-qACzhw/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime[2m > [22m[2mthe platform and server-qualified tools of AGY call steps are journalled in neutral words
+[22m[39mReusing registered workspace ID: agent_ws_29acda34eb727f3961fddb01746e7f4c3080788022486844a6a10ec88a3b8d4e
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime[2m > [22m[2mthe platform and server-qualified tools of AGY call steps are journalled in neutral words
+[22m[39mAGY compaction detection off for run work_journal_neutral_47cfaf4d_14a7_440d_ac3f_abb_4408243841b840f5b0f9514a744eab52: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime[2m > [22m[2mthe platform and server-qualified tools of AGY call steps are journalled in neutral words
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-qACzhw/memory/agents/work_journal_neutral_47cfaf4d_14a7_440d_ac3f_abb_4408243841b840f5b0f9514a744eab52/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime[2m > [22m[2mthe platform and server-qualified tools of AGY call steps are journalled in neutral words
+[22m[39mAgent websocket attached for run work_journal_neutral_47cfaf4d_14a7_440d_ac3f_abb_4408243841b840f5b0f9514a744eab52
+Created agent session 9ac709d5-6813-408c-b60f-161e8c680662 for run work_journal_neutral_47cfaf4d_14a7_440d_ac3f_abb_4408243841b840f5b0f9514a744eab52
+Agent WebSocket connected: session=9ac709d5-6813-408c-b60f-161e8c680662, run=work_journal_neutral_47cfaf4d_14a7_440d_ac3f_abb_4408243841b840f5b0f9514a744eab52
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime[2m > [22m[2mthe platform and server-qualified tools of AGY call steps are journalled in neutral words
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-qACzhw/memory/agents/work_journal_neutral_47cfaf4d_14a7_440d_ac3f_abb_4408243841b840f5b0f9514a744eab52/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mClosed agent session 9ac709d5-6813-408c-b60f-161e8c680662
+Agent WebSocket disconnected: 9ac709d5-6813-408c-b60f-161e8c680662
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mAgent Definition with ID work-journal-neutral-47cfaf4d-14a7-440d-ac3f-abbd6e7432aa deleted successfully.
+
+ [32m✓[39m tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 8850[2mms[22m[39m
+     [33m[2m✓[22m[39m the platform and server-qualified tools of AGY call steps are journalled in neutral words [33m 2008[2mms[22m[39m
+ [2m[90m↓[39m[22m tests/e2e/runtime/codex-agent-tools-empty-list.e2e.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+(node:26929) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/codex-compaction-token-reading.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [2m[90m↓[39m[22m tests/e2e/runtime/codex-compaction-token-reading.e2e.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+ [32m✓[39m tests/e2e/tool-management/mcp-bulk-import.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 3395[2mms[22m[39m
+     [33m[2m✓[22m[39m imports the content of the app's own mcps.json, keeping its own references and marking foreign ones as needing a secret [33m 615[2mms[22m[39m
+ [2m[90m↓[39m[22m tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts [2m([22m[2m4 tests[22m[2m | [22m[33m4 skipped[39m[2m)[22m
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mopens a real PTY in the requested cwd and releases it on websocket close
+[22m[39mCreated terminal session real-pty-cwd using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-e2e-pxt6A5/workspace with spaces
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mopens a real PTY in the requested cwd and releases it on websocket close
+[22m[39mTerminal WebSocket connected: real-pty-cwd
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mopens a real PTY in the requested cwd and releases it on websocket close
+[22m[39mTerminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-e2e-pxt6A5/workspace with spaces
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mopens a real PTY in server home when cwd and rootPath are omitted
+[22m[39mClosed PTY session real-pty-cwd
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mopens a real PTY in server home when cwd and rootPath are omitted
+[22m[39mTerminal WebSocket disconnected: real-pty-cwd
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mopens a real PTY in server home when cwd and rootPath are omitted
+[22m[39mCreated terminal session real-pty-server-home-default using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.1xW8GqBjgo
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mopens a real PTY in server home when cwd and rootPath are omitted
+[22m[39mTerminal WebSocket connected: real-pty-server-home-default
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mopens a real PTY in server home when cwd and rootPath are omitted
+[22m[39mTerminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.1xW8GqBjgo
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mrejects unavailable cwd before creating a PTY session
+[22m[39mClosed PTY session real-pty-server-home-default
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mrejects unavailable cwd before creating a PTY session
+[22m[39mTerminal WebSocket disconnected: real-pty-server-home-default
+
+[90mstderr[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mrejects unavailable cwd before creating a PTY session
+[22m[39mTerminal connection rejected: Error: ENOENT: no such file or directory, stat '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-e2e-DycQvT/missing'
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mrejects unavailable cwd before creating a PTY session
+[22m[39mTerminal WebSocket disconnected: invalid-cwd
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mTerminal WebSocket disconnected: early-close-0
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mTerminal WebSocket disconnected: early-close-1
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mTerminal WebSocket disconnected: early-close-2
+Closed PTY session early-close-2
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mTerminal session startup aborted: early-close-2
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mClosed PTY session early-close-0
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mTerminal session startup aborted: early-close-0
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mTerminal WebSocket disconnected: early-close-3
+Closed PTY session early-close-3
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mTerminal session startup aborted: early-close-3
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mClosed PTY session early-close-1
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mTerminal session startup aborted: early-close-1
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mTerminal WebSocket disconnected: early-close-4
+Closed PTY session early-close-4
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mTerminal session startup aborted: early-close-4
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mTerminal WebSocket disconnected: churn-0
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mTerminal WebSocket disconnected: churn-1
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mClosed PTY session churn-0
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mTerminal session startup aborted: churn-0
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mClosed PTY session churn-1
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mTerminal session startup aborted: churn-1
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mTerminal WebSocket disconnected: churn-2
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mClosed PTY session churn-2
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mTerminal session startup aborted: churn-2
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mTerminal WebSocket disconnected: churn-3
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mTerminal WebSocket disconnected: churn-4
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mClosed PTY session churn-3
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mTerminal session startup aborted: churn-3
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mTerminal WebSocket disconnected: churn-5
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mClosed PTY session churn-4
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mTerminal session startup aborted: churn-4
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mClosed PTY session churn-5
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mTerminal session startup aborted: churn-5
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mTerminal WebSocket disconnected: churn-6
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mClosed PTY session churn-6
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mTerminal session startup aborted: churn-6
+
+[90mstdout[2m | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts[2m > [22m[2mTerminal websocket lifecycle e2e[2m > [22m[2mdoes not retain PTYs across close-before-connect and repeated open/close churn
+[22m[39mTerminal WebSocket disconnected: churn-7
+
+ [32m✓[39m tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 991[2mms[22m[39m
+     [33m[2m✓[22m[39m opens a real PTY in the requested cwd and releases it on websocket close [33m 351[2mms[22m[39m
+     [33m[2m✓[22m[39m does not retain PTYs across close-before-connect and repeated open/close churn [33m 515[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/token-usage-model-list.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:27028) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/token-usage-model-list.e2e.test.ts[2m > [22m[2mtoken usage related model-list GraphQL coverage[2m > [22m[2mkeeps removed MiniMax M2.7 absent from the settings-facing GraphQL model list
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
+
+ [32m✓[39m tests/e2e/token-usage/token-usage-model-list.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 70[2mms[22m[39m
+(node:27034) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [32m✓[39m tests/e2e/secret-management/secret-vault-independent-process-initialization.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 544[2mms[22m[39m
+     [33m[2m✓[22m[39m serializes two package compositions on one SQLite target and publishes one key/domain [33m 543[2mms[22m[39m
+(node:27038) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [32m✓[39m tests/e2e/secret-management/environment-key-source.e2e.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 2749[2mms[22m[39m
+     [33m[2m✓[22m[39m the server turns the default off: a client without a resolver fails, the server resolvers follow its source (AC-018) [33m 2393[2mms[22m[39m
+ [2m[90m↓[39m[22m tests/e2e/runtime/codex-native-multi-agent-disabled.e2e.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+[90mstdout[2m | tests/e2e/runtime/claude-agent-auth-marker-reply.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:27052) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [2m[90m↓[39m[22m tests/e2e/runtime/claude-agent-auth-marker-reply.e2e.test.ts [2m([22m[2m4 tests[22m[2m | [22m[33m4 skipped[39m[2m)[22m
+ [32m✓[39m tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 4897[2mms[22m[39m
+     [33m[2m✓[22m[39m materializes the immutable template, migrates, and reopens value-free [33m 4896[2mms[22m[39m
+(node:27182) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/token-meter-tps-transport.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [2m[90m↓[39m[22m tests/e2e/runtime/token-meter-tps-transport.e2e.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+ [32m✓[39m tests/e2e/runtime/team-task-event-current-contract.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+(node:27186) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-sPaVDK
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-sPaVDK/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-sPaVDK/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-sPaVDK/.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-sPaVDK
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-sPaVDK/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-sPaVDK/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-sPaVDK/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-sPaVDK/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mNode access: local control socket not opened. The node's local control socket path is 104 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-sPaVDK/node-access/local-control.sock. Use a shorter data folder path.
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-sPaVDK/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-sPaVDK/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-sPaVDK/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mSuccessfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mSuccessfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mRegistered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstderr[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate[2m > [22m[2mfinds a workspace file for the owner and for a paired phone
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-workspace-lQjE7p
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-workspace-lQjE7p.
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate[2m > [22m[2mfinds a workspace file for the owner and for a paired phone
+[22m[39mCreated and registered workspace ID: agent_ws_3c4b244efc22cc469caf9b5d2baff8604af1a23767fde7ad3fb7c774cda375cc
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate[2m > [22m[2mfinds a workspace file for the owner and for a paired phone
+[22m[39mCreated WorkspaceFileExplorer for agent_ws_3c4b244efc22cc469caf9b5d2baff8604af1a23767fde7ad3fb7c774cda375cc (graphql-search).
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate[2m > [22m[2mfinds a workspace file for the owner and for a paired phone
+[22m[39mStarting directory traversal for: '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-workspace-lQjE7p' with max_depth=null
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate[2m > [22m[2mfinds a workspace file for the owner and for a paired phone
+[22m[39mDirectory traversal for '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-workspace-lQjE7p' completed in 0.0020 seconds.
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate[2m > [22m[2mfinds a workspace file for the owner and for a paired phone
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate[2m > [22m[2mfinds a workspace file for the owner and for a paired phone
+[22m[39m[Search] Trying strategy: FuzzysortSearchStrategy for query 'app'
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate[2m > [22m[2mfinds a workspace file for the owner and for a paired phone
+[22m[39m[Search] FuzzysortSearchStrategy completed in 0.49ms, found 1 results (total: 0.52ms)
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate[2m > [22m[2mfinds a workspace file for the owner and for a paired phone
+[22m[39mStarting directory traversal for: '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-workspace-lQjE7p' with max_depth=null
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate[2m > [22m[2mfinds a workspace file for the owner and for a paired phone
+[22m[39mDirectory traversal for '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-workspace-lQjE7p' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate[2m > [22m[2mfinds a workspace file for the owner and for a paired phone
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate[2m > [22m[2mfinds a workspace file for the owner and for a paired phone
+[22m[39m[Search] Trying strategy: FuzzysortSearchStrategy for query 'app'
+
+[90mstdout[2m | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22m[2msearchFiles through the node access gate[2m > [22m[2mfinds a workspace file for the owner and for a paired phone
+[22m[39m[Search] FuzzysortSearchStrategy completed in 0.05ms, found 1 results (total: 0.06ms)
+
+ [31m❯[39m tests/e2e/workspaces/search-files-through-gate.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 11402[2mms[22m[39m
+     [32m✓[39m finds a workspace file for the owner and for a paired phone[32m 66[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/runtime-capability-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:27275) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [32m✓[39m tests/e2e/runtime/runtime-capability-graphql.e2e.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 825[2mms[22m[39m
+     [33m[2m✓[22m[39m enables grok_build with no reason when a supported Grok CLI answers the bounded probe (AC-001) [33m 388[2mms[22m[39m
+[90mstdout[2m | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:27439) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts[2m > [22m[2mTool catalog cleanup GraphQL e2e[2m > [22m[2mdoes not expose removed local tools in LOCAL runtime catalog
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts[2m > [22m[2mTool catalog cleanup GraphQL e2e[2m > [22m[2mdoes not expose removed local tools in LOCAL runtime catalog
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts[2m > [22m[2mTool catalog cleanup GraphQL e2e[2m > [22m[2mdoes not expose removed local tools in LOCAL runtime catalog
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+[90mstdout[2m | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts[2m > [22m[2mTool catalog cleanup GraphQL e2e[2m > [22m[2mdoes not expose removed local tools in LOCAL runtime catalog
+[22m[39mRegistered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts[2m > [22m[2mTool catalog cleanup GraphQL e2e[2m > [22m[2mdoes not expose removed local tools in LOCAL runtime catalog
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts[2m > [22m[2mTool catalog cleanup GraphQL e2e[2m > [22m[2mdoes not expose removed local tools in LOCAL runtime catalog
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts[2m > [22m[2mTool catalog cleanup GraphQL e2e[2m > [22m[2mdoes not expose removed local tools in LOCAL runtime catalog
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts[2m > [22m[2mTool catalog cleanup GraphQL e2e[2m > [22m[2mdoes not expose removed local tools in LOCAL runtime catalog
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts[2m > [22m[2mTool catalog cleanup GraphQL e2e[2m > [22m[2mdoes not expose removed local tools in LOCAL runtime catalog
+[22m[39mSuccessfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstdout[2m | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts[2m > [22m[2mTool catalog cleanup GraphQL e2e[2m > [22m[2mdoes not expose removed local tools in LOCAL runtime catalog
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts[2m > [22m[2mTool catalog cleanup GraphQL e2e[2m > [22m[2mdoes not expose removed local tools in LOCAL runtime catalog
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+[90mstdout[2m | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts[2m > [22m[2mTool catalog cleanup GraphQL e2e[2m > [22m[2mdoes not expose removed local tools in LOCAL runtime catalog
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts[2m > [22m[2mTool catalog cleanup GraphQL e2e[2m > [22m[2mdoes not expose removed local tools in LOCAL runtime catalog
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts[2m > [22m[2mTool catalog cleanup GraphQL e2e[2m > [22m[2mdoes not expose removed local tools in LOCAL runtime catalog
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts[2m > [22m[2mTool catalog cleanup GraphQL e2e[2m > [22m[2mdoes not expose removed local tools in LOCAL runtime catalog
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+
+[90mstdout[2m | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts[2m > [22m[2mTool catalog cleanup GraphQL e2e[2m > [22m[2mdoes not expose removed local tools in LOCAL runtime catalog
+[22m[39mRegistered required tool unit: Task Delegation Tools
+
+[90mstdout[2m | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts[2m > [22m[2mTool catalog cleanup GraphQL e2e[2m > [22m[2mdoes not expose removed local tools in LOCAL runtime catalog
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts[2m > [22m[2mTool catalog cleanup GraphQL e2e[2m > [22m[2mdoes not expose removed local tools in LOCAL runtime catalog
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts[2m > [22m[2mTool catalog cleanup GraphQL e2e[2m > [22m[2mdoes not expose removed local tools in LOCAL runtime catalog
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts[2m > [22m[2mTool catalog cleanup GraphQL e2e[2m > [22m[2mdoes not expose removed local tools in LOCAL runtime catalog
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts[2m > [22m[2mTool catalog cleanup GraphQL e2e[2m > [22m[2mdoes not expose removed local tools in LOCAL runtime catalog
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts[2m > [22m[2mTool catalog cleanup GraphQL e2e[2m > [22m[2mdoes not expose removed local tools in LOCAL runtime catalog
+[22m[39mRegistered required tool unit: Search Tools
+
+ [32m✓[39m tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 100[2mms[22m[39m
+(node:27447) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-6mhxz1
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-6mhxz1/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-6mhxz1/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-6mhxz1/.env // tip: ◈ secrets for agents [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-6mhxz1
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-6mhxz1/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-6mhxz1/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-6mhxz1/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-6mhxz1/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mNode access: local control socket not opened. The node's local control socket path is 121 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-6mhxz1/node-access/local-control.sock. Use a shorter data folder path.
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mCreating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-6mhxz1/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-6mhxz1/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-6mhxz1/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mSuccessfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mSuccessfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mRegistered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstderr[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder[2m > [22m[2mrefuses the launch at workspace registration with the folder reason and registers nothing
+[22m[39mAgent Definition created successfully with ID: workspace-path-refusal-fixture
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder[2m > [22m[2mrefuses the launch at workspace registration with the folder reason and registers nothing
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-6mhxz1/deleted-project
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-6mhxz1/deleted-project.
+
+[90mstderr[2m | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts[2m > [22m[2mRun launch in an unregistered missing workspace folder[2m > [22m[2mrefuses the launch at workspace registration with the folder reason and registers nothing
+[22m[39mError in createAgentRun: WorkspacePathRefusedError: No folder exists at the workspace path. (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-6mhxz1/deleted-project)
+
+ [32m✓[39m tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 1037[2mms[22m[39m
+ [2m[90m↓[39m[22m tests/e2e/shutdown/busy-run-stop-now.e2e.test.ts [2m([22m[2m2 tests[22m[2m | [22m[33m2 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m tests/e2e/runtime/deepseek-harness-standalone-host.e2e.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m tests/e2e/shutdown/native-standalone-host-shutdown.e2e.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+[90mstdout[2m | tests/e2e/runtime/team-run-current-graphql-documents.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:27470) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [32m✓[39m tests/e2e/runtime/team-run-current-graphql-documents.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 54[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Suites 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/workspaces/search-files-through-gate.e2e.test.ts[2m > [22msearchFiles through the node access gate
+[31m[1mError[22m: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".[39m
+[36m [2m❯[22m tests/e2e/workspaces/search-files-through-gate.e2e.test.ts:[2m51:3[22m[39m
+    [90m 49|[39m   }[33m,[39m [34m60_000[39m)[33m;[39m
+    [90m 50|[39m
+    [90m 51|[39m   [34mafterAll[39m([35masync[39m () [33m=>[39m {
+    [90m   |[39m   [31m^[39m
+    [90m 52|[39m     [35mawait[39m started[33m?.[39mfastify[33m.[39m[34mclose[39m()[33m;[39m
+    [90m 53|[39m     [35mawait[39m fs[33m.[39m[34mrm[39m(dataDir[33m,[39m { recursive[33m:[39m [35mtrue[39m[33m,[39m force[33m:[39m [35mtrue[39m })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m21 passed[39m[22m[2m | [22m[33m48 skipped[39m[90m (70)[39m
+[2m      Tests [22m [1m[32m46 passed[39m[22m[2m | [22m[33m178 skipped[39m[90m (224)[39m
+[2m   Start at [22m 22:00:33
+[2m   Duration [22m 199.44s[2m (transform 11.55s, setup 1.56s, import 102.54s, tests 88.56s, environment 4ms)[22m
+
+batch exit 1

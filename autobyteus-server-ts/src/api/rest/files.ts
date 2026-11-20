@@ -32,13 +32,15 @@ export async function registerFileRoutes(app: FastifyInstance): Promise<void> {
       return reply.code(400).send({ detail: "Invalid path components." });
     }
 
-    if (!fs.existsSync(resolvedPath) || !fs.statSync(resolvedPath).isFile()) {
+    const stat = fs.existsSync(resolvedPath) ? fs.statSync(resolvedPath) : null;
+    if (!stat?.isFile()) {
       return reply.code(404).send({ detail: "File not found." });
     }
 
     return sendUserFile(reply, {
       mimeType: (lookupMime(resolvedPath) || "application/octet-stream").toString(),
       body: fs.createReadStream(resolvedPath),
+      size: stat.size,
     });
   });
 }

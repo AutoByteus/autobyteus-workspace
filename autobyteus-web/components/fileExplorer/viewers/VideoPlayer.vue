@@ -6,6 +6,7 @@
         {{ $t('tools.components.fileExplorer.viewers.VideoPlayer.retry') }}
       </button>
     </div>
+    <MediaLoadingState v-else-if="loading" kind="video" :progress="progress" class="video-loading" />
     <video
       v-else-if="resolvedUrl"
       :key="mediaAttemptKey"
@@ -25,6 +26,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { useAuthorizedObjectUrl } from '~/composables/useAuthorizedObjectUrl';
+import MediaLoadingState from './MediaLoadingState.vue';
 
 const props = defineProps<{
   url: string | null;
@@ -34,7 +36,7 @@ const props = defineProps<{
 
 const mediaAttemptKey = ref(0);
 const nativeMediaFailed = ref(false);
-const { resolvedUrl, error: resourceError, refresh } = useAuthorizedObjectUrl(() => props.url, { revision: () => props.contentRevision ?? 0 });
+const { resolvedUrl, error: resourceError, loading, progress, refresh } = useAuthorizedObjectUrl(() => props.url, { revision: () => props.contentRevision ?? 0 });
 const hasMediaFailure = computed(() => nativeMediaFailed.value || Boolean(resourceError.value));
 
 watch([() => props.url, () => props.contentRevision], () => {
@@ -80,6 +82,10 @@ const retry = async (): Promise<void> => {
 
 .error-placeholder {
   color: #9ca3af; /* gray-400 */
+}
+
+.video-loading {
+  color: #e5e7eb; /* gray-200 */
 }
 
 .video-error {

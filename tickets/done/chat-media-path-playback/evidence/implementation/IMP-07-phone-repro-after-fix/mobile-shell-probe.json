@@ -1,0 +1,978 @@
+{
+  "startedAt": "2026-11-20T15:07:43.237Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 50810,
+      "nodeId": "srv_dZKLOLXa_weZGfq-ZZnUBoqY8wrpzRd4",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 50809,
+      "nodeId": "srv_mnt74qeCoCp93yZvT0Bx5Yv-0cx3gUIc",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "zeta": {
+      "port": 51150,
+      "nodeId": "srv_JPqKgeUD8Cc4ZVAVy5oXB96S0nV0GxML",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "epsilon": {
+      "port": 51149,
+      "nodeId": "srv_Xp2T4fcWY6QtpjaWf1LJFREmRga6qWzN",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_92f4d6bb8a20450ebe77731aa8a64172",
+    "writerRun": "release_notes_writer_6faf5f43da324c979d1b37420334ebf2",
+    "squadRun": "docs_review_team_d9290144e9d2409da14fe592e1de93a4",
+    "reviewer": "release_notes_writer_8ef48632d1294afe9ba504611cbe3174",
+    "memberDelegated": "fact_checker_b1ec175caaed4bb9b11deb58740b187b",
+    "remoteAgentRun": "publisher_e00e73df63b44ea1931385c16bdc70b9",
+    "remoteTeamRun": "studio_team_308aaabb449b46bfb35134b42624088d",
+    "plain": [
+      "fact_checker_d92feb6de0054bc0aab5ad87e939408e",
+      "fact_checker_4b25a0840e7f42a7ad469da9cd01516e",
+      "fact_checker_8912645770c64d579ff9fcaa58722243"
+    ],
+    "org": "delivery_org_c8db8350d1c344058a45d800a32e172a",
+    "orgPlanner": "release_notes_writer_b6a13bbbccba4a269afaf51a5f086dfd",
+    "reviewOrg": "review_org_7df3374579594848bf4f1ccf871ac173",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_1cce567299b24b648f1c0588fd906a0b",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_498c0de0864f4e87b705b6ad8fe8fda2",
+    "deliveryLead": "fact_checker_38feb9593c1741aea3dd9f8942c7838b",
+    "deliveryMate": "release_notes_writer_4c51ff65e4ff426f9bcd01ec125f14b3",
+    "leadDelegated": "changelog_helper_c09cada8fb804a5284df4d8cca55ddae",
+    "approver": "approver_c5b6a8304e77429d992356cc45656aae",
+    "taskA": "launch-16a179-1",
+    "taskB": "launch-16a179-2"
+  },
+  "cases": {
+    "MSP-572": {
+      "result": "Pass",
+      "seconds": 25.9,
+      "sizes": {
+        "insideVideo": 17280,
+        "outsideVideo": 17280,
+        "insideAudio": 24467,
+        "outsideAudio": 24467,
+        "bigVideo": 9684568
+      },
+      "throttleKbps": 8000,
+      "results": {
+        "insideVideo": {
+          "timeline": [
+            {
+              "at": 93,
+              "viewer": false
+            },
+            {
+              "at": 199,
+              "viewer": true,
+              "text": "clip-572.mp4 Opening…",
+              "media": null
+            },
+            {
+              "at": 302,
+              "viewer": true,
+              "text": "clip-572.mp4 Loading video…",
+              "media": null
+            },
+            {
+              "at": 421,
+              "viewer": true,
+              "text": "clip-572.mp4",
+              "media": {
+                "tag": "VIDEO",
+                "src": "blob:http://192.168.77.40:51149/4a292d35",
+                "readyState": 4,
+                "error": null,
+                "duration": 3
+              }
+            }
+          ],
+          "requests": [
+            {
+              "at": 284,
+              "path": "/rest/workspaces/agent_ws_…/content",
+              "status": 200,
+              "type": "fetch"
+            }
+          ]
+        },
+        "outsideVideo": {
+          "timeline": [
+            {
+              "at": 73,
+              "viewer": false
+            },
+            {
+              "at": 179,
+              "viewer": true,
+              "text": "clip-572-out.mp4 Loading video…",
+              "media": null
+            },
+            {
+              "at": 282,
+              "viewer": true,
+              "text": "clip-572-out.mp4",
+              "media": {
+                "tag": "VIDEO",
+                "src": "blob:http://192.168.77.40:51149/2091fc84",
+                "readyState": 4,
+                "error": null,
+                "duration": 3
+              }
+            }
+          ],
+          "requests": [
+            {
+              "at": 109,
+              "path": "/rest/node-files/content",
+              "status": 200,
+              "type": "fetch"
+            }
+          ]
+        },
+        "insideAudio": {
+          "timeline": [
+            {
+              "at": 81,
+              "viewer": false
+            },
+            {
+              "at": 184,
+              "viewer": true,
+              "text": "tone-572.mp3 Loading audio…",
+              "media": null
+            },
+            {
+              "at": 288,
+              "viewer": true,
+              "text": "tone-572.mp3",
+              "media": {
+                "tag": "AUDIO",
+                "src": "blob:http://192.168.77.40:51149/ac29d01b",
+                "readyState": 4,
+                "error": null,
+                "duration": 3
+              }
+            }
+          ],
+          "requests": [
+            {
+              "at": 118,
+              "path": "/rest/workspaces/agent_ws_…/content",
+              "status": 200,
+              "type": "fetch"
+            }
+          ]
+        },
+        "outsideAudio": {
+          "timeline": [
+            {
+              "at": 90,
+              "viewer": false
+            },
+            {
+              "at": 194,
+              "viewer": true,
+              "text": "tone-572-out.mp3 Loading audio…",
+              "media": null
+            },
+            {
+              "at": 295,
+              "viewer": true,
+              "text": "tone-572-out.mp3",
+              "media": {
+                "tag": "AUDIO",
+                "src": "blob:http://192.168.77.40:51149/6fb26b80",
+                "readyState": 4,
+                "error": null,
+                "duration": 3
+              }
+            }
+          ],
+          "requests": [
+            {
+              "at": 132,
+              "path": "/rest/node-files/content",
+              "status": 200,
+              "type": "fetch"
+            }
+          ]
+        },
+        "bigVideo": {
+          "timeline": [
+            {
+              "at": 87,
+              "viewer": false
+            },
+            {
+              "at": 190,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video…",
+              "media": null
+            },
+            {
+              "at": 290,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 0.1 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 391,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 0.2 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 492,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 0.3 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 593,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 0.4 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 695,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 0.5 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 796,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 0.6 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 896,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 0.7 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 998,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 0.8 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 1099,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 0.9 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 1200,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 1.0 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 1302,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 1.1 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 1403,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 1.2 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 1504,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 1.3 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 1605,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 1.4 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 1706,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 1.5 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 1807,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 1.6 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 1908,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 1.7 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 2111,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 1.8 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 2213,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 1.9 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 2314,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 2.0 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 2415,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 2.1 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 2516,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 2.2 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 2617,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 2.3 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 2719,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 2.4 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 2820,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 2.5 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 2921,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 2.6 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 3021,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 2.7 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 3122,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 2.8 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 3223,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 2.9 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 3324,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 3.0 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 3438,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 3.1 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 3539,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 3.2 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 3640,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 3.3 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 3741,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 3.4 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 3842,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 3.5 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 3943,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 3.6 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 4045,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 3.7 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 4146,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 3.8 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 4248,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 3.9 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 4348,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 4.0 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 4449,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 4.1 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 4551,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 4.2 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 4652,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 4.3 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 4754,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 4.4 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 4854,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 4.5 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 4956,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 4.6 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 5057,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 4.7 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 5158,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 4.8 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 5259,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 4.9 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 5361,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 5.0 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 5462,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 5.1 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 5564,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 5.2 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 5664,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 5.3 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 5765,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 5.4 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 5867,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 5.5 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 5968,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 5.6 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 6069,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 5.7 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 6170,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 5.8 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 6271,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 5.9 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 6372,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 6.0 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 6473,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 6.1 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 6573,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 6.2 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 6676,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 6.3 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 6777,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 6.4 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 6879,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 6.5 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 6979,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 6.6 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 7080,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 6.7 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 7181,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 6.8 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 7283,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 6.9 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 7383,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 7.0 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 7484,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 7.1 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 7586,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 7.2 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 7687,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 7.3 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 7788,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 7.4 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 7890,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 7.5 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 7992,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 7.6 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 8093,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 7.7 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 8195,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 7.8 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 8299,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 7.9 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 8401,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 8.0 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 8502,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 8.1 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 8603,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 8.2 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 8706,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 8.3 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 8806,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 8.4 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 8908,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 8.5 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 9010,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 8.6 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 9111,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 8.7 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 9213,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 8.8 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 9313,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 8.9 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 9414,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 9.0 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 9516,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 9.1 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 9617,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 9.2 of 9.2 MB",
+              "media": null
+            },
+            {
+              "at": 9719,
+              "viewer": true,
+              "text": "big-572.mp4",
+              "media": {
+                "tag": "VIDEO",
+                "src": "blob:http://192.168.77.40:51149/13fd9f17",
+                "readyState": 4,
+                "error": null,
+                "duration": 20
+              }
+            }
+          ],
+          "requests": [
+            {
+              "at": 127,
+              "path": "/rest/workspaces/agent_ws_…/content",
+              "status": 200,
+              "type": "fetch"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "file-open-setup",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "file-open-setup",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "file-open-setup",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "file-open-setup",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-572",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-572",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-572",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-572",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-572",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-572",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-572",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-572",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-572",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-572",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    }
+  ],
+  "failedRequests": [
+    {
+      "case": "MSP-572",
+      "label": "phone",
+      "url": "http://192.168.77.10:50809/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-572",
+      "label": "phone",
+      "url": "http://192.168.77.10:50809/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-572",
+      "label": "phone",
+      "url": "http://192.168.77.10:50809/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-572",
+      "label": "phone",
+      "url": "http://192.168.77.10:50809/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-572",
+      "label": "phone",
+      "url": "http://192.168.77.10:50809/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-572",
+      "label": "phone",
+      "url": "http://192.168.77.10:50809/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-572",
+      "label": "phone",
+      "url": "http://192.168.77.10:50809/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-572",
+      "label": "phone",
+      "url": "http://192.168.77.10:50809/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-572",
+      "label": "phone",
+      "url": "http://192.168.77.10:50809/rest/health",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "fileOpen": {
+    "runs": {
+      "run": "content_creator_638a410924e44ad1be161ea7d314c670",
+      "remoteRun": "publisher_80ab3093aeee4363ac22bc41dff7ffe3"
+    }
+  },
+  "summary": {
+    "cases": {
+      "MSP-572": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-20T15:10:17.345Z"
+}

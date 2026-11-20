@@ -28,13 +28,9 @@ const fileChangeNotFound = (reply: FastifyReply) => reply.code(404).send({ detai
 const sendFileChangeContent = (reply: FastifyReply, resolved: ResolvedRunFileChangeEntry | null) => {
   if (!resolved) return fileChangeNotFound(reply);
   const { entry, absolutePath, isActiveRun } = resolved;
-  const fileExists = Boolean(
-    absolutePath
-    && fs.existsSync(absolutePath)
-    && fs.statSync(absolutePath).isFile(),
-  );
+  const stat = absolutePath && fs.existsSync(absolutePath) ? fs.statSync(absolutePath) : null;
 
-  if (!fileExists) {
+  if (!stat?.isFile()) {
     if (isActiveRun && (entry.status === "pending" || entry.status === "streaming")) {
       return reply.code(409).send({ detail: "File change content is not ready yet" });
     }
@@ -43,7 +39,7 @@ const sendFileChangeContent = (reply: FastifyReply, resolved: ResolvedRunFileCha
 
   const mimeType = (lookupMime(absolutePath!) || (entry.type === "file" ? "text/plain" : "application/octet-stream")).toString();
   reply.header("cache-control", "no-store");
-  return sendUserFile(reply, { mimeType, body: fs.createReadStream(absolutePath!) });
+  return sendUserFile(reply, { mimeType, body: fs.createReadStream(absolutePath!), size: stat.size });
 };
 
 /** A member read whose agent is not in the named owner answers "not found"; other errors propagate. */

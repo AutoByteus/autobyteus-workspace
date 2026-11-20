@@ -5,14 +5,21 @@ import VideoPlayer from '../VideoPlayer.vue';
 
 const resolvedUrl = ref<string | null>(null);
 const resourceError = ref<string | null>(null);
+const loading = ref(false);
+const progress = ref<{ loaded: number; total: number | null } | null>(null);
 const refresh = vi.fn(async () => undefined);
 
 vi.mock('~/composables/useAuthorizedObjectUrl', () => ({
   useAuthorizedObjectUrl: () => ({
     resolvedUrl,
     error: resourceError,
+    loading,
+    progress,
     refresh,
   }),
+}));
+vi.mock('~/composables/useLocalization', () => ({
+  useLocalization: () => ({ t: (_key: string, params?: Record<string, string>) => `${params?.loaded} of ${params?.total}` }),
 }));
 
 const translations: Record<string, string> = {
@@ -43,6 +50,8 @@ const mountSubject = (url: string | null): VueWrapper => {
 beforeEach(() => {
   resolvedUrl.value = null;
   resourceError.value = null;
+  loading.value = false;
+  progress.value = null;
   refresh.mockClear();
 });
 
@@ -50,6 +59,33 @@ afterEach(() => {
   for (const wrapper of wrappers.splice(0)) {
     wrapper.unmount();
   }
+});
+
+describe('VideoPlayer while its file loads (autobyteus-572 AC-001)', () => {
+  it('shows the loading view with progress, never "not available", then the video', async () => {
+    loading.value = true;
+    progress.value = { loaded: 4_100_000, total: 9_684_568 };
+    const wrapper = mountSubject('/rest/workspaces/ws/content?path=big.mp4');
+    expect(wrapper.find('[data-testid="media-loading-state"]').exists()).toBe(true);
+    expect(wrapper.text()).toContain('4.1 of 9.7 MB');
+    expect(wrapper.text()).not.toContain('Video URL is not available.');
+    expect(wrapper.find('video').exists()).toBe(false);
+
+    loading.value = false;
+    progress.value = null;
+    resolvedUrl.value = 'blob:http://phone/1';
+    await nextTick();
+    expect(wrapper.find('[data-testid="media-loading-state"]').exists()).toBe(false);
+    expect(wrapper.get('video').attributes('src')).toBe('blob:http://phone/1');
+  });
+
+  it('a failure while loading shows the plain failure with Retry, not the loading view', async () => {
+    loading.value = true;
+    resourceError.value = 'Failed to fetch protected resource (404 Not Found)';
+    const wrapper = mountSubject('/rest/workspaces/ws/content?path=gone.mp4');
+    expect(wrapper.get('[role="alert"]').text()).toContain('This video could not be played.');
+    expect(wrapper.find('[data-testid="media-loading-state"]').exists()).toBe(false);
+  });
 });
 
 describe('VideoPlayer media attempts', () => {

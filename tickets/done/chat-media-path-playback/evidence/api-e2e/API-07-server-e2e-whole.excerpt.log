@@ -1,0 +1,623 @@
+# API-07 whole server E2E with the scripted AGY gate; commit 9505c9039e (server code 02320583a5); 2026-11-20T18:51:38Z; Node v22.23.1; load 43.06 49.13 55.84
+# env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm test:e2e
+# Excerpt of API-07-server-e2e-whole.log (gzipped beside it): stopped at the 2 h limit after 143 of 283 files; every file's line.
+ ✓ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts (49 tests) 591858ms
+     ✓ RC-02 AC-101: on a fresh node with the switch off, delegate_task naming a peer is refused 'turned off' and nothing is sent  576ms
+     ✓ RC-03 AC-101/102/111, 245 AC-207, 437 NAS-19: switched on, the nodes pair with one invite and each pins the other's identity; bad URLs record nothing; the gateway admits in order; there is no publish API  25649ms
+     ✓ RC-04 245 AC-202/203/204/207: beta refuses each target it can't start, with the reason, before anything starts; nothing is left on alpha  2408ms
+     ✓ RC-05 AC-104/105: a standalone delegator delegates to Publisher on beta and the two runs message each other both ways (view open)  3432ms
+     ✓ RC-06 AC-104/105/107, 492 DS-006: a Team coordinator delegates; messages both ways with the Team view open; a later local message appears; the other member reaches the remote run unlinked while it runs  2351ms
+     ✓ RC-07 AC-104/105: an Org member delegates; messages both ways with the Org view open; a later local message appears  2304ms
+     ✓ RC-08 AC-107, 492 REQ-010: without node, unlinked senders get the not-running refusal on both nodes; forged linked messages are refused; the target receives nothing  2005ms
+     ✓ RC-09 AC-108: files and saved Tasks across nodes are refused before anything is sent  1830ms
+     ✓ RC-10 AC-109: a task agent on a Project Task delegates remotely; the remote run is a run of that Task; after DONE its messages are not delivered  5240ms
+     ✓ RC-11 AC-109: after the delegator sets its Task DONE, its own message to the remote run is refused with the closed-Task reason and nothing is sent  4238ms
+     ✓ RC-47 492 AC-001/002/003/005/007/008, REQ-012, DEC-014: on one node an agent lists the running roots a person started; any agent messages any running agent by run ID and is answered; a stopped root and an unstarted member are refused and not woken; unrelated messages stay out of run views live and after a reload, a Task-related one does not  11708ms
+     ✓ RC-48 492 AC-004/AC-006/AC-007, rows 8/11, QR-003: an agent on alpha lists beta's running roots with node, finds beta's Project Task Manager by name and Project, messages it with node and gets its answer; beta's stopped root, unstarted member and team run ID are refused; unsigned and wrongly signed requests to both new routes are refused at the gate  8533ms
+     ✓ RC-49 492 AC-008 rows 13/14, DEC-011: after alpha's delegator closes its Task, every other sender of alpha is refused CLOSED with and without node and nothing is sent; an agent of beta and an agent of a third node reach the fenced run while it runs  22227ms
+     ✓ RC-21 247 AC-301: a Team member on alpha delegates beta's shared Studio Team; beta starts a Team run whose members use their own or the Team's default, and only its coordinator starts  786ms
+     ✓ RC-22 247 AC-303: the delegator and any member of the remote Team message each other; a never-started member starts; the team run ID gets the coordinator guidance; another root without node is refused not running; another member of the delegating root reaches the coordinator unlinked (492 DS-006)  3082ms
+     ✓ RC-23 247 AC-305: a saved Task to a remote Team is refused; after the delegator's Task is DONE, messages both ways are refused and the Team keeps running on beta  5475ms
+     ✓ RC-25 247 RSK-301/DEC-304: when alpha's work packet to a just-started remote Team fails, beta keeps an unused Team run (no member starts); RC-12 shows its idle schedule stops it  455ms
+     ✓ RC-31 278 AC-801/802/803, DEC-804: a standalone delegator's remote Agent is in its tree with node, title and status; its view is live; the owner messages it, interrupts it and stops it from alpha's window  2338ms
+     ✓ RC-32 278 DS-006 (C-2): when beta's own owner stops the remote run in beta's window, alpha's open view ends offline  906ms
+     ✓ RC-33 278 AC-801/802/803/806: a Team delegator's tree has its remote Agent and its remote Team with members; a member's projection; the owner messages a never-messaged member  749ms
+     ✓ RC-34 278 AC-801/803/806: an Org delegator's tree has its remote Agent with title and status; its projection; the owner messages it from the Org view  628ms
+     ✓ RC-43 461 AC-016 / REQ-013 / SR-066: with each delegator stopped (standalone agent, Team member, Org agent), its peer children are reached by their own identity: live status in its open view, the owner's message, interrupt, the stored conversation and Stop; the delegator stays stopped  5582ms
+     ✓ RC-35 278 security, 461 SR-088: a registered peer that did not start the run is refused on every route (the agent stream snapshot and observation too); naming an agent outside the run is refused; summaries omit runs the caller did not start  10335ms
+     ✓ RC-12 AC-106, 247 AC-304: the remote run and the remote Team on beta are shut down after the idle grace period, and a follow-up restores each with its conversation  151157ms
+     ✓ RC-36 278 AC-805: after the idle grace a quiet remote run reads offline in alpha's view; a message from alpha's window restores it with its conversation  635ms
+     ✓ RC-13 AC-106/REQ-108: after beta restarts, a follow-up restores the remote run; after alpha restarts, replies restore every root kind and wake the delegators  12940ms
+     ✓ RC-24 247 REQ-307: beta's owner stops the peer-started Team during its idle grace; it shows as inactive in history; the delegator's next message restores it  829ms
+     ✓ RC-26 261 AC-402/AC-404/AC-406/QR-402: an agent that selects the discovery tools lists exactly what beta offers, each entry only name, kind, address and description; listing writes nothing; every listed address is accepted by delegate_task; an agent without the tools does not have them (290: nor one that selects only the former name list_available_nodes)  6410ms
+     ✓ RC-38 308 AC-003/AC-005: beta's internal agent is not offered to alpha and delegating it is refused while beta hides it; once beta shows it (no restart) it is offered and accepted; hidden again, refused again  2164ms
+     ✓ RC-42 455 AC-004/REQ-004: once beta's owner gives its Daily Assistant a runtime and model, alpha's agent lists and delegates /daily_assistant on beta; it starts in beta's temp workspace and its report reaches alpha's delegator  1264ms
+     ✓ RC-39 autobyteus-32 AC-005: with Model Routing off on beta, an agent and a Team no default covers are refused with beta's state; with the router not usable, with its reason  3265ms
+     ✓ RC-40 autobyteus-32 AC-005/REQ-009/REQ-012: with Model Routing on, beta's Model Router chooses for the agent and the Team member no default covers; the launches come back to alpha (result notes, the link); beta records the copies from alpha's node  5656ms
+     ✓ RC-41 autobyteus-32 QR-001/AC-005: a slow router answer within the bound starts the copy (past the former 20 s request bound); a router that does not answer is refused MODEL_ROUTER_FAILED within the 50 s start bound, nothing started  87054ms
+     ✓ RC-27 261 AC-401/QR-401: list_peer_nodes gives every registered peer in registration order with its status now — beta available; a stopped peer, a peer with the switch off and a peer that does not know alpha unavailable; list_available_agents gives each one's reason (the same as delegate_task); a peer that does not answer is unavailable within the bound  67565ms
+     ✓ RC-28 261 AC-404/AC-407: with alpha's switch off both discovery calls are refused 'turned off' and nothing is sent; an unknown node gets the node-list hint (the same for delegate_task); a blank node gets the recovery text; without node the list is alpha's own  2398ms
+     ✓ RC-29 261 AC-405: a Team that beta's owner adds between two listings appears in the second (nothing is cached)  484ms
+     ✓ RC-30 269 AC-601/AC-602: a long description with line breaks titles the peer-started Agent and Team runs as one line of at most 100 characters, by the history's rule  1198ms
+     ✓ RC-37 278 AC-804: with beta stopped, the view shows its remote runs unreachable within the bound and the rest works; after beta returns, Retry reads them again  3605ms
+     ✓ RC-44 461 AC-008 / SR-067 (DS-13): archive and delete of a delegator are refused while its peer child works, naming it; with the peer node unreachable they go ahead and the result names the run not asked  3555ms
+     ✓ RC-45 461 CR-461-094 (SR-083): a peer run's status on alpha's /ws/run-status follows again after beta's outage, once beta answers for another run the window shows (no Retry of that run)  4543ms
+     ✓ RC-46 461 G-D1 (SR-088, SR-089, CR-461-099) and SR-090: with the delegator stopped, a peer Agent and a peer Team's member open by their own identity on alpha's /ws/peer-run: the snapshot, live output once each, a message, an interrupt, the files; Retry on /ws/run-status settles while beta is down and once it is back  10246ms
+     ✓ RC-14 AC-106: a follow-up to a remote run whose history was deleted on beta is refused with 'not found'  975ms
+     ✓ RC-15 QR-102: a partitioned or stopped peer is refused within the bound and the tool call never hangs; nothing is left on alpha  73401ms
+     ✓ RC-16 AC-102: when beta's address reaches a different AutoByteus server, delegation and messages are refused with 'identity mismatch'  457ms
+     ✓ RC-17 245 RU-1: after the owner changes Publisher's default to a model beta does not offer, new delegations are refused with that reason and a run already started still exchanges both ways  1138ms
+     ✓ RC-18 AC-101/SCN-107: turning the switch off on beta, then on alpha, refuses new requests with 'turned off'  913ms
+     ✓ RC-19 AC-102: after a peer is removed, new requests in either direction are refused and run history stays  753ms
+ ❯ tests/e2e/projects/project-task-boundaries.e2e.test.ts (18 tests | 1 failed) 32392ms
+     × API-MCP: selected default host executes equivalent compact mutations and detailed native reads 10769ms
+     ✓ API-FILES: multipart bytes, saved ownership, typed deltas and Done survive reader reconstruction  541ms
+     ✓ API-MCP collision: selected protected list_projects adapter wins over a configured MCP name 6ms
+     ✓ API-MCP collision: selected protected create_project adapter wins over a configured MCP name 20ms
+     ✓ API-MCP collision: selected protected update_project adapter wins over a configured MCP name 35ms
+     ✓ API-AGG: public registration is not mkdir; failed aggregate save preserves registry and prior records 125ms
+     ✓ E-005: selected HTTP and native Project create/patch save defaults and reject invalid input atomically 294ms
+     ✓ E-006: path links retain descriptions; lists replace, blanks and [] clear only associations  436ms
+     ✓ CTX-E2E-001: context_files create/patch over MCP and native are saved, readable through GraphQL/REST/list and outlive their sources (AC-001..004, 006, 009, 011) 288ms
+     ✓ CTX-E2E-002: invalid context_files fail with a path-naming error and change nothing, including no DONE closure (AC-004, 005, 008)  789ms
+     ✓ CLS-API-001: CANCELLED patch/ack, DONE<->CANCELLED, reopen, list filter, tool schemas, errors, GraphQL enum, open count and stored shape (task-closed-status AC-004, 006, 007, 010, 012) 263ms
+     ✓ TKD-API-001: keys as Task IDs, depends_on by key / any case / long ID, rejected dependencies write nothing, blocked Tasks start, a deleted Project's keys stay unknown (AC-020, 022, 024, 025, 027)  1360ms
+     ✓ POF-API-001: part_of by key / any case / long ID, "" clears, omitted keeps; partOf / parts in numeric key order; refusals write nothing; a parent's DONE / CANCELLED closes its open parts and lists them; reopen, repeats and a part's close never cascade (task-part-of AC-003, 004, 006, 014, 015, 018)  1796ms
+     ✓ CMT-API-001: update_task add_comment by key / any case / long ID appends numbered comments, never the description; DONE + comment is one write; blank, wrong-shape and unknown are refused with nothing written; list_project_tasks shows the texts (task-comments AC-001, AC-005, AC-008)  838ms
+     ✓ CMT-API-002: a parent's close names the part it could not close (damaged run data) in partsNotClosed, next to closedParts; the field is absent when every part closes (task-comments AC-009, autobyteus-187)  314ms
+     ✓ TTL-API-001: a Task title is required, trimmed and kept whole however long; update_task changes it; refusals write nothing (MCP equals native; GraphQL the same)  984ms
+     ✓ GET-API-001: get_project_task returns one Task in full by key in any case or long ID; another Project's or an unknown Task is TASK_NOT_FOUND; arguments are checked (MCP equals native) 277ms
+     ✓ E-007: current Projects/Tasks/context/assignments/history/registry/folders survive metadata/list patches and reader reconstruction 229ms
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 2 skipped) 232559ms
+     ✓ EXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views  27841ms
+     ✓ EXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner  25747ms
+     ✓ EXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner  26797ms
+     ✓ EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders  133104ms
+     ✓ EXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable  1769ms
+     ✓ EXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change  2267ms
+     ✓ TKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)  5332ms
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts (4 tests) 87561ms
+     ✓ migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch  11576ms
+     ✓ isolates mixed root and token warnings and fails closed on an unreadable history index without changing the released root  35207ms
+     ✓ keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry  38469ms
+     ✓ rejects a legacy/current run-ID overlap before source cleanup while preserving both stores  2308ms
+ ✓ tests/e2e/projects/collaboration-contract-stories.e2e.test.ts (3 tests) 1677682ms
+     ✓ §5.1 S0 … S27: a standalone agent delegates on its node and to a peer node  908395ms
+     ✓ §5.2 U0 … U11: a team the user starts delegates  421798ms
+     ✓ §5.3 O0 … O9: an org the user starts delegates  347409ms
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 1 skipped) 67513ms
+     ✓ CLS-E2E-001 standalone Agent root: CANCELLED closes and stops the worker, retry, refusals naming CANCELLED, DONE<->CANCELLED, reopen and reactivation, Temp task CANCELLED  17194ms
+     ✓ CLS-E2E-002 Agent Team root: the same CANCELLED journey through the Team stream (TASK_EXECUTIONS_CLOSED / _REOPENED)  7494ms
+     ✓ standalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO  5995ms
+     ✓ Agent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate  5910ms
+     ✓ Agent Org root: the same journey through the Org stream; an Org member cannot reactivate  5602ms
+     ✓ QR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry  5809ms
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (11 tests) 60313ms
+     ✓ DCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save  5032ms
+     ✓ DCM-004: the standalone Agent root stops a copy, saves its choice and resumes it on that model  1350ms
+     ✓ DCM-005: the Org root: an agent copy and a Team copy are stopped, changed and resumed; an outside address is not found; the view publishes the choice; a later copy uses normal resolution  2776ms
+     ✓ DCM-006: Stop of a Team copy interrupts a member mid-turn and keeps its nested copy (a run of its own) and the PM and another copy running; a Team choice changes the default and each member keeps its own launch  10210ms
+     ✓ DCM-008: one member of a Team copy gets its own model: it resumes on it in the same conversation while its teammates keep theirs; with a Team choice in the same Save, the member's own choice wins  3760ms
+     ✓ DCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation  1997ms
+     ✓ DCM-009: team root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one segment and starts Grok under one marker  1255ms
+     ✓ DCM-009: org root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one segment and starts Grok under one marker  1327ms
+     ✓ DCM-009: agent root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one segment and starts Grok under one marker  1145ms
+     ✓ DCM-010: team root: a stopped agent copy saved onto the Claude Agent SDK runtime follows the CLI's current model list; each refusal says what to do and saves nothing  1501ms
+     ✓ DCM-010: agent root: a stopped agent copy saved onto the Claude Agent SDK runtime follows the CLI's current model list; each refusal says what to do and saves nothing  1104ms
+ ✓ tests/e2e/projects/projects-graphql.e2e.test.ts (13 tests) 1927ms
+     ✓ API-011: part of: set at create, omitted keeps, null clears, an ID replaces; refusals write nothing; one level under concurrency; a deleted parent's parts stay; a step-1 task.json reads with no parent (task-part-of AC-001..005, 007, 016)  516ms
+ ✓ tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts (9 tests) 61726ms
+     ✓ RS-01: native -> Antigravity -> native on one run: each archived segment holds the previous agent's records only, the native candidate's own instruction opens the new file after the marker, the reopened chat shows everything  2881ms
+     ✓ RS-09 (autobyteus-440): Antigravity -> native -> Antigravity -> native -> Antigravity on one run: every hop completes, each archived segment holds only the previous agent's records, one marker per switch, and the earlier Antigravity capsule is replaced  4797ms
+     ✓ RS-02: settings of a stopped run: running refused, save a switch, undo it, switch again, model-only edit keeps the switch, first message makes it  2204ms
+     ✓ RS-03: a host with a delegated copy saves its own runtime and the copy's model in one Save; the copy, a run of its own, can switch its own runtime  2088ms
+     ✓ RS-04: a pending switch survives a server restart; an activated switch whose notice was not yet delivered still delivers it, once, after a restart  9836ms
+     ✓ RS-05: a failed switch attempt (the archive step fails after the native candidate wrote its instruction) leaves the previous agent's file as it was; the retry completes  2235ms
+     ✓ RS-06: Grok as the switch target: its captured instructions belong to the new file; a failed attempt leaves nothing behind and the retry completes  20660ms
+     ✓ RS-07: a Grok start that fails after the switch became durable (the Grok process ends before the run is published) leaves a completed switch; the retry restores the Grok session and still carries the notice  6984ms
+     ✓ RS-08: a model edit while a switch to the native runtime is pending is a fresh selection (the never-started candidate is not a current model), and the first message runs on it  1509ms
+ ❯ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts (10 tests | 3 failed) 131808ms
+     ✓ DCF-E2E-001 (QR-006, REQ-005): `connected` first, no replay, broadcast; remote-access auth like the sibling sockets  3671ms
+     × DCF-E2E-002 (AC-001…005, AC-007, REQ-009, REQ-014): an imported package's files on disk reach GraphQL and the feed without Reload 32765ms
+     × DCF-E2E-003 (AC-011, AC-012, REQ-015): a package folder moved away keeps its definitions and reports it; restore resumes; removal releases it 35147ms
+     ✓ DCF-E2E-004 (AC-013, REQ-017): every manual Reload notifies another connected client of every list  5562ms
+     ✓ DCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client  4905ms
+     ✓ DCF-E2E-010 (SR-009/DSN-005): the renamed contract is a clean cut; the retired route and GraphQL names are gone 36ms
+     ✓ DCF-E2E-006 (DSN-002): a Team present in two packages is unavailable everywhere with DEFINITION_IDENTITY_DUPLICATED 55ms
+     ✓ DCF-E2E-009 (REQ-007, REQ-009, DSN-003, DSN-004): broken org-owned nodes keep their last good version and are listed on the owning Org 73ms
+     × DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools 865ms
+     ✓ DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found  1838ms
+ ✓ tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts (3 tests | 1 skipped) 102494ms
+     ✓ in every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree  95883ms
+     ✓ Org root: a coordinator that cannot start fails delegate_task and starts no member (AC-004)  2830ms
+ ✓ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts (3 tests) 52667ms
+     ✓ in every root, catalog copies run each agent on its own usable default, fall back with notes, and reuse recorded values  15720ms
+     ✓ Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated (the refusal says what to do, nothing added), and an outside message is not found; a usable own default still starts; a user `@` mention admits nothing (AC-006)  1408ms
+     ✓ Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it (AC-008)  6151ms
+ ✓ tests/e2e/memory/episodic-catalog.e2e.test.ts (7 tests) 274567ms
+     ✓ EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent  26622ms
+     ✓ EC-02: a turn updates its entry within 60 s; a new run's first turn adds an entry; a burst of turns gives at most two rewrites  65499ms
+     ✓ EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s  72961ms
+     ✓ EC-04: a hand-edited catalog is rewritten at the agent's next change; an unwritable episodic/ is logged and the run goes on; writable again, it heals  33521ms
+     ✓ EC-05: a start after a pass that never ran, a removed run folder, an agent's only run removed and a hand edit: exactly those catalogs are brought up to date  38440ms
+     ✓ EC-06: a start with no episodic/ rebuilds every catalog as it was, with a run without a journal and an older manifest; damaged team and org trees, damaged run metadata and a non-JSON manifest are left out with a warning naming each; nothing outside episodic/ changes  7495ms
+     ✓ EC-07: a restart with no change writes no file under episodic/  28609ms
+ ✓ tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts (8 tests) 1402ms
+     ✓ rolls back managed GitHub directory replacement and persists failed status on GraphQL update failure  398ms
+ ✓ tests/e2e/app-data-migrations/append-only-message-logs-startup.e2e.test.ts (2 tests) 75919ms
+     ✓ AOML-1 converts every usable log with nothing lost, keeps the unusable ones with a warning, serves the same history and references, and a second start changes nothing  21586ms
+     ✓ AOML-2 runs that ran on the release are converted, resumed and messaged: one line per owner log in each family (sealed files untouched), a delegated team gets an empty append-only log, references of old and new messages resolve, and a restart serves every message  54331ms
+ ✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts (5 tests) 135812ms
+     ✓ updates only a stopped standalone run config and restores the same current package after restart  14788ms
+     ✓ updates exact stopped Team scopes and preserves the current V2 package across restart  33411ms
+     ✓ MSR-001: a stopped agent and a stopped Team member saved onto the Claude Agent SDK runtime follow the CLI's current model list  15555ms
+     ✓ MSR-002: a new agent run and a new Team run store only the settings the model declares  11296ms
+     ✓ MSR-003: a stopped agent run's and Team run's options say whether the runtime's model list could be read  60760ms
+ ❯ tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts (5 tests | 1 failed) 74518ms
+     ✓ EX-01: Org members: a native target whose start fails after its instruction was written and is retried, and a Grok target; I-7 on both archived segments  6306ms
+     ✓ EX-02: an agent copy AGY -> native: the server restarts after the save, the first message fails after the candidate wrote its instruction, the retry completes with one marker and one segment  14147ms
+     ✓ EX-03: Team copies with a Team-level choice of another runtime, woken in different orders: each member switches at its own first input with its own segment and marker; a member that never ran starts plainly  17233ms
+     ✓ EX-04: a configured Team's default runtime edit with its linked members, in one save: every member switches at its own first input, activated lead-first in one Team and worker-first in another  6605ms
+     × EX-05: a Team member's saves before its first input: a second save keeps the first previous binding and session, and selecting the original runtime again undoes the switch (binding and session back, no pending, no marker or segment on the next message) 13962ms
+ ✓ tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts (4 tests) 452ms
+ ✓ tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts (6 tests) 419ms
+ ✓ tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts (1 test) 180943ms
+     ✓ background copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and the copy's own Stop are unchanged; the copy outlives its delegator's Stop  168726ms
+ ✓ tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts (6 tests) 309ms
+ ✓ tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts (3 tests) 79368ms
+     ✓ agent root: Task closure during and before a teammate message save; the root keeps working and restores its history  22816ms
+     ✓ team root: Task closure during and before a teammate message save; the root keeps working and restores its history  16347ms
+     ✓ org root: Task closure during and before a teammate message save; the root keeps working and restores its history  16280ms
+ ✓ tests/e2e/projects/project-change-feed.e2e.test.ts (7 tests) 31171ms
+     ✓ feed contract: `connected` first on every connection, no replay, remote-access rejection like the sibling sockets  1606ms
+     ✓ Agent root: an agent's Project/Task writes, delegation, worker status, helpers, DONE, reopen and reactivation are live and equal the snapshot  2187ms
+     ✓ Team root: a delegated catalog Agent copy is hosted by the Team root; a task Team root folds its members  1519ms
+     ✓ Org root: an Org-hosted root reports its worker's status and goes Offline at DONE  946ms
+     ✓ Temp tasks: a described delegation arrives in the no-Project scope; DONE, reopen + reactivation follow; deleting the chat removes its Temp tasks  1628ms
+     ✓ QR-001 under load: on a Project with 60 Tasks and a busy worker, a UI write reaches the feed within 2 s; message volume is recorded  2532ms
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts (14 tests) 67127ms
+     ✓ CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs  20217ms
+     ✓ CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team  4761ms
+     ✓ CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team  1973ms
+     ✓ CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)  1648ms
+     ✓ CPW-R2 Agent root: a task agent messaging a running agent of a different Task is delivered (492 AC-008)  1116ms
+     ✓ CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)  971ms
+     ✓ CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate  1391ms
+     ✓ CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots  4706ms
+     ✓ CPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated  4685ms
+     ✓ CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it  793ms
+     ✓ CPW-M3 Org root: a sibling of the organization is reachable and delegable  499ms
+     ✓ CPW-M5 Team root: the user mentions a member of the team in a message to the team's task agent (a child row of the team's view)  1699ms
+     ✓ CPW-M7 C17-02: a run two hops down delegates to an address only the top run's catalog offers, as base answered a copy hosted in the top run  1639ms
+     ✓ CPW-M6 a task agent's in-run set is what it reaches by address (SR-059): delegate_task answers for its assigner's agents as base answered a hosted copy  2634ms
+ ✓ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts (3 tests) 39352ms
+     ✓ standalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete  21692ms
+     ✓ Agent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)  3933ms
+     ✓ Agent Org root: same journey through the Org stream  3830ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts (9 tests) 771ms
+ ✓ tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts (5 tests) 40662ms
+     ✓ takes V1 through secretless staging and exact selector transition to empty V3 across restart  4869ms
+     ✓ orders the real multiversion transition, preserves token identity, and restores selectors through same-name recreation  15641ms
+     ✓ keeps collision selectors unchanged while removing both trusted old secrets after empty V3  3577ms
+     ✓ serves while a fresh recent RUNNING record holds custom providers back, then converges through the ordinary stale retry  4341ms
+     ✓ serves while the custom-provider migrations cannot finish: custom providers refuse with the capability code while built-in runs start; Settings retries after the fix make them available without a restart (needs POSIX mode bits that bind: not root, not Windows)  12233ms
+ ✓ tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts (9 tests | 1 skipped) 848ms
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts (8 tests) 22267ms
+     ✓ USR-1 AC-005: 1,241 zero bytes after the coordinator's last record; 'continue' restores it, the end is cut and logged  400ms
+     ✓ USR-2 AC-005 variant: a torn last record without a newline  343ms
+     ✓ USR-3 AC-005 variant: a torn last record whose newline landed  338ms
+     ✓ USR-7 CR-461-070 (F-50): the delegator's send_message_to to that Team is refused with base's code and text; nothing is delivered  504ms
+     ✓ USR-8 CR-461-072: the assigner's reactivating message to that Team (its DONE Task set back to IN_PROGRESS) is refused before the reopen: the entry stays closed, nothing is delivered  2370ms
+     ✓ USR-5 SCN-003: a new server process reads every repaired log fresh; another message keeps every record and nothing more is cut  4056ms
+ ✓ tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts (10 tests) 41448ms
+     ✓ E01: Chat (Daily Assistant, all installed skills) starts with a skill holding a local environment and reads it through the link (AC-001, AC-002, AC-006)  3263ms
+     ✓ E02: an all-installed run skips a skill the workspace already owns, with a warning, and keeps the others (AC-004)  495ms
+     ✓ E03: a named skill that cannot be used fails the run with the skill and reason, not a generic error (AC-005, REQ-006)  519ms
+     ✓ E04: in a Team with auto-approve stored off, a member's named-skill failure names the skill and reason, and the other member runs with skip-permissions (REQ-006, AC-006)  934ms
+     ✓ E05: an Org member launched with auto-approve stored off runs with skip-permissions (AC-006)  561ms
+     ✓ E06: a child started by an AGY agent's delegate_task call, configured with auto-approve off, runs with skip-permissions (AC-006)  11263ms
+     ✓ E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)  1771ms
+     ✓ E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)  1105ms
+     ✓ E09: a brand-new run of an imported agent with a configured skill starts in a workspace with same-skill links and reaches the skill (release smoke)  501ms
+     ✓ E10: a brand-new team member with a configured skill starts on its first message in a workspace with same-skill links and reaches the skill (release smoke)  600ms
+ ✓ tests/e2e/update-notifications/update-notifications-live.e2e.test.ts (12 tests) 60020ms
+     ✓ API-02, API-12 (AC-001, AC-005, AC-022 node side, REQ-002): a due source is checked with one quota-free head read; nothing is updated; open windows are told  2252ms
+     ✓ API-03 (RUS-001, 209 REQ-010): read state survives a restart, and a restart inside the interval makes no automatic request  19264ms
+     ✓ API-04 (209 AC-008, AC-012): a newer revision replaces the same notification as unread; an offline pass keeps it and the row's Update  1250ms
+     ✓ API-05 (209 AC-005, AC-009, AC-011): a manual Update marks the notification handled with no outcome; Clear removes only handled ones; both survive a restart  4208ms
+     ✓ API-06 (AC-017, AC-005, 209 AC-015): Update checks off stops checks and automatic updates even with the switches on, also after a restart; manual checks still notify  7828ms
+     ✓ API-08 (AC-010, AC-006, REQ-008): switching packages on while an update waits applies it at the next tick through the pipeline, recorded as updated automatically  634ms
+     ✓ API-10 (AC-009, REQ-009): a failing automatic update leaves the package unchanged, is notified once per revision and retried at most once per interval  2443ms
+     ✓ API-11 (AC-002 server side, REQ-001): intervals outside 15 min..24 h are refused; a shorter interval applies to the next pass of its kind only  1224ms
+     ✓ API-07 (AC-004 server side, REQ-004, QR-003): GitHub's throttling of the head read stops the pass and every later request until its time, also after a restart; the card's wait time is reported  12754ms
+     ✓ API-17 (209 CR-001, QR-005): an unreadable skill-source registry at start leaves the server and the package notification working  4362ms
+     ✓ API-18 (209 AC-011): removing a source removes its notification  852ms
+ ✓ tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts (6 tests) 25058ms
+     ✓ AAR-01 lists the four runtimes and AutoByteus' keyed providers, each with models and live limits, read with 0 tokens (AC-001, AC-003…AC-007, AC-009)  2404ms
+     ✓ AAR-02 leaves out signed-out and missing runtimes and providers without a key; marks a sign-in it could not check (REQ-002, REQ-007)  621ms
+     ✓ AAR-03 slow steps end at their own deadlines: the answer arrives within 20 s, the hung processes are stopped and the next read works (AC-008, AC-011)  14427ms
+     ✓ AAR-04 over Agent Tools MCP: a Codex run whose definition lists the tool gets the same report; one whose definition does not, does not; several readers at once share one read and all get Codex (AC-002, AC-012, AC-013)  5217ms
+     ✓ AAR-06 discovered providers are asked on every read: LM Studio answering is listed, not answering is left out; a keyed custom endpoint not answering is listed with its models unknown (AC-007, REQ-002, REQ-007)  900ms
+ ✓ tests/e2e/model-routing/model-routing-delegation.e2e.test.ts (9 tests) 420820ms
+     ✓ MR-01 routing off (the default): a team copy runs as today — default, then the delegating run's launch — with no routing request and no record (AC-002)  6677ms
+     ✓ MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)  18794ms
+     ✓ MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)  80688ms
+     ✓ MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)  84695ms
+     ✓ MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003)  17431ms
+     ✓ MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)  42384ms
+     ✓ MR-09 C-05/CR-005: after the router's CLI dies mid-turn, or its turn fails with an error, the next routings are the router's again  150264ms
+ ✓ tests/e2e/runtime/runtime-switch-members-built-server.e2e.test.ts (5 tests) 23325ms
+     ✓ MS-01: a Team member native -> Antigravity: the save marks that member only, the first message archives exactly the native agent's records and starts the new file with one marker, the reopened chat shows both  7577ms
+     ✓ MS-02: a Team member Antigravity -> native with a failed start leaves the previous agent's file as it was, and the retry completes with one marker and one segment  1400ms
+     ✓ MS-03: after a server restart the member keeps its agent runtime with no pending field, restores and answers, and the earlier segments are unchanged  2969ms
+     ✓ MS-05: a Team member native -> Antigravity -> native -> Antigravity: the fourth hop back to Antigravity completes on a fresh capsule, with one segment and one marker per switch (autobyteus-440)  961ms
+     ✓ MS-04: Org members, a direct Agent and an Agent of a mounted Team, switched in one save: each switches by its own first message with its own segment and marker  3313ms
+ ✓ tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts (6 tests) 2132ms
+ ✓ tests/e2e/projects/get-project-task-worker-scope.e2e.test.ts (6 tests) 39666ms
+     ✓ SCP-E2E-001 AC-015: each saved Task's first message names it and its Project (AGY agent, AGY Team, native agent); described work does not  1694ms
+     ✓ SCP-E2E-002 AC-012, AC-013 MCP route: workers read only their own Task; the manager reads any; unknown and other-Project keys are not found  1695ms
+     ✓ SCP-E2E-003 AC-012, AC-013 native route: the native task agent reads only its Task; the native mate on no Task reads any  537ms
+     ✓ SCP-E2E-004 AC-014: get_project_task is there only for agents whose definition lists it, on MCP and on the native request  563ms
+     ✓ SCP-E2E-006 MP-003: damaged run data found at start fails closed for the copy it belongs to; readable callers keep their scope  8914ms
+ ✓ tests/e2e/runtime/agy-skill-definition-changes-transport.e2e.test.ts (3 tests | 1 skipped) 37091ms
+     ✓ API-05a (AC-012, AC-001, AC-003, AC-008): an added skill is linked into the capsule and announced; a package-file removal is announced; both survive stop, a save while stopped, and resume  19110ms
+     ✓ API-05b (AC-009): a Team member and a delegated copy of the same agent each get their own link and their own notice  5606ms
+ ✓ tests/e2e/projects/projects-startup-migration.e2e.test.ts (6 tests) 38441ms
+     ✓ Studio: moves rows, saved files and drafts, retains the original, skips invalid/residue/duplicate/conflict, then no-ops on restart  8695ms
+     ✓ Studio: an unreadable source or a failed move keeps only Projects gated; a restart retries and completes without duplication  5999ms
+     ✓ Standalone host: never locked out by a broken source, migrates once on a valid one, composes per start and releases on close  6620ms
+     ✓ Studio: released per-folder Projects get Task keys at startup; an unkeyable Project is preserved and hidden without lockout until a restart finishes it  7104ms
+     ✓ Studio: existing per-folder path supersets start/read without rewriting; ordinary Save alone removes extras  4361ms
+     ✓ Standalone: existing per-folder path supersets start/read without rewriting; ordinary Save alone removes extras  5662ms
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts (3 tests) 23589ms
+     ✓ TAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page attributes them, a second start changes nothing  7287ms
+     ✓ TAU-2 a run that cannot be moved leaves the app working; a copy preserved by the unfinished step is not editable yet and its follow-up waits (SR-077, SR-078); the next start converts it and the edit is saved; a later start changes nothing (needs POSIX mode bits that bind: not root, not Windows)  9317ms
+     ✓ TAU-3 deleting a migrated hub removes only its folder; its task agents' folders stay with every file and are listed as runs of their own (461 REQ-007)  6984ms
+ ✓ tests/e2e/node-access/node-access-model.e2e.test.ts (23 tests) 3723ms
+     ✓ NAS-01 the launch owner credential opens GraphQL, REST and a WebSocket route  1615ms
+ ✓ tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts (1 test) 18577ms
+     ✓ a Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself  4194ms
+ ✓ tests/e2e/projects/task-closure-root-visibility.e2e.test.ts (3 tests) 37289ms
+     ✓ standalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen + repeated DONE, Task delete  6952ms
+     ✓ Agent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen + repeated DONE, Task delete  3373ms
+     ✓ Agent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen + repeated DONE, Task delete  2902ms
+ ✓ tests/e2e/server-settings/server-settings-graphql.e2e.test.ts (12 tests) 98ms
+ ✓ tests/e2e/media/server-owned-media-tools.e2e.test.ts (7 tests) 85ms
+ ❯ tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts (8 tests | 2 failed) 24183ms
+     × RPE-001 (AC-001, REQ-001, REQ-003): the Team edit page's save writes the description into the package and the default runtime/model into the personal settings 5005ms
+     ✓ RPE-002 (AC-003): a stale revision conflicts and leaves the package unchanged 16ms
+     ✓ RPE-003 (AC-002): the Org edit page's save writes the description into the package and the Org default into the personal settings 33ms
+     ✓ RPE-004 (AC-004): an Org-owned Team of the package still changes only through its Org 17ms
+     ✓ RPE-005 (AC-006): a package folder the disk refuses gives the read-only filesystem error 9ms
+     ✓ RPE-006 (AC-005, REQ-002): a delegated copy of the package Team runs on its saved default, and on a newly saved one  1531ms
+     × RPE-007 (UC-003): a package Team is deleted from its package folder 8663ms
+     ✓ RPE-008 (AC-001, REQ-001): a save leaves the rest of the package folder as it was; relative links stay relative  4063ms
+ ✓ tests/e2e/runtime/agy-switch-back-built-server.e2e.test.ts (3 tests) 22247ms
+     ✓ SB-01: an Org member Antigravity -> native -> Antigravity: restart before the third era, a start that fails after the capsule was made, then the retry  9073ms
+     ✓ SB-02: a delegated copy Antigravity -> native -> Antigravity  4962ms
+     ✓ SB-03: a Team member Antigravity -> native -> Antigravity with a restart between the save and the message of the third era  4888ms
+ ✓ tests/e2e/workspaces/workspaces-graphql.e2e.test.ts (13 tests) 131ms
+ ✓ tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts (3 tests) 90660ms
+     ✓ SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none  10665ms
+     ✓ SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice  65038ms
+     ✓ SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched  8682ms
+ ✓ tests/e2e/projects/task-agent-several-tasks.e2e.test.ts (4 tests) 82847ms
+     ✓ SEV-E2E-001: a parent and two of its parts given to one Team copy (each message names the other open Tasks); the parent's CANCELLED closes all three and stops the copy once, after the last (AC-002, AC-005)  4519ms
+     ✓ SEV-E2E-002: sub-work started under the newest open Task belongs to it; closing that Task stops the sub-work while the copy runs on (AC-006, AC-003)  4467ms
+     ✓ SEV-E2E-003: a closed Task given back while another is open; the copy is stopped once, after its last open Task closes (AC-007, AC-004)  6068ms
+     ✓ SEV-E2E-004: a copy shut down while idle, holding an open Task, is given a second Task: the delivery wakes it with its conversation  61210ms
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts (8 tests) 57192ms
+     ✓ DCF-01: an Agent copy of a saved Task of P runs in F; the manager stays in G  531ms
+     ✓ DCF-02: a Team copy's default and every member run in F  730ms
+     ✓ DCF-03: a worker of that Task delegates without task_id: the sub-work runs in F, with the manager in G  760ms
+     ✓ DCF-04: a Task of a Project with no link, and a description-only delegation, run in the top-level run's folder  752ms
+     ✓ DCF-05: with links F1 and F2 the copy runs in F1  357ms
+     ✓ DCF-07: a Team root's and an Org root's catalog copies, and an Org's configured placement, run in F; their managers stay in G  2868ms
+     ✓ DCF-08: an existing copy in G given a Task of P stays in G; a copy in F stays in F; after a real restart both keep their folder and wake there  13128ms
+ ✓ tests/e2e/personal-settings/package-personal-settings.e2e.test.ts (7 tests) 50303ms
+     ✓ API-02 (AC-002 by click, REQ-003, REQ-005): personal edits made in the app go to personal-settings.json, never the package files, and survive an update  3157ms
+     ✓ API-03 (AC-003): edits made inside the package files are captured into personal settings and the changed files are backed up  9383ms
+     ✓ API-04 (AC-002/AC-003 automatic): the automatic update pass captures and backs up the same way  5513ms
+     ✓ API-06 (DEC-008): repeated updates with edits keep the latest 5 backups  24981ms
+     ✓ API-08 (AC-007): an unreadable personal-settings.json gives the package's values, is kept, and is copied aside before the next save  1614ms
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts (9 tests) 20581ms
+     ✓ SM-01 (AC-007): a user's own agent is switched on and off in its agent-config.json, other fields kept, and reads create no folder  2481ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts (14 tests) 25720ms
+     ✓ AR-01 lists the five runtimes and checks each on its own: one source failing, one slow, one not installed (AC-001, AC-002, AC-005, AC-006, AC-009, QR-002)  1084ms
+     ✓ AR-03 Update runs the vendor's updater with progress, then 'Updated from X to Y.' that the automatic re-check keeps (AC-003, AR-006)  2308ms
+     ✓ AR-04 Update that exits 0 without a newer version is a failure with the vendor's text, version unchanged (AC-003)  706ms
+     ✓ AR-05 Update failure shows the vendor's message without terminal codes; Try again runs it again; busy is refused (AC-003)  3260ms
+     ✓ AR-07 Sign in starts the runtime's own login, passes nothing of it to the client, and ends Signed in (AC-007, AC-011)  327ms
+     ✓ AR-09 a runtime installed later appears on the next check; a login that never finishes times out, even ignoring SIGTERM (AC-005, AC-007 time-out, QR-003)  9218ms
+     ✓ AR-14 shows a prerelease as it is and orders it by SemVer precedence: update available, updated to the release, newer than the latest (autobyteus-393 AC-001, AC-002, AC-005)  2387ms
+     ✓ AR-12 closing the server stops a running vendor process (QR-003, SCN-A4)  5529ms
+ ✓ tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts (9 tests) 273ms
+ ✓ tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts (4 tests) 1343ms
+     ✓ keeps ordinary native tools and configured skill reads explicit in the same active run  1050ms
+ ✓ tests/e2e/remote-collaboration/list-running-agents-native-and-mcp.e2e.test.ts (2 tests) 23908ms
+     ✓ LRN-1 Studio: both routes list this node's running roots, a peer's with node, and are refused 'turned off' with node when the switch is off  16945ms
+     ✓ LRN-2 application host: on each route an application's agent gets the same outcome from list_running_agents as from list_available_agents  4930ms
+ ✓ tests/e2e/app-data-migrations/delegated-run-own-attachment-links-startup.e2e.test.ts (2 tests) 38198ms
+     ✓ ALM-1 / MO-1 from a release before beta.1: one first start runs 491's removal, then both attachment-link migrations; links convert with backups and open; a second start changes nothing  25510ms
+     ✓ ALM-1 / MO-2 from beta.1 (491's removal already ran): the first start runs only the two 20261119 migrations, main then follow-up; links convert with backups and open; a second start changes nothing  12686ms
+ ✓ tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts (4 tests) 20428ms
+     ✓ claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key  11252ms
+     ✓ claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key  365ms
+     ✓ team run: restore succeeds and every member's request after restore carries no stored stale key  656ms
+     ✓ Org run: restore succeeds and the member requests after restore carry no stored stale key  2267ms
+ ✓ tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts (6 tests) 295ms
+ ✓ tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts (3 tests) 39574ms
+     ✓ OT-1 a closure removes the run from the tree (never stored in the tree file); token total and Memory page keep it  29872ms
+     ✓ OT-2 an upgraded data root: admitted at start; trees hold open runs only; a read writes nothing; a load reads no closed run; the first save keeps only what it must  5860ms
+     ✓ OT-3 a Task record that cannot be read hides its run with a warning naming the Task; restored, the run is back  3814ms
+ ✓ tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts (1 test) 11667ms
+     ✓ converts collaborators of an Agent, Team and Org root, keeps run IDs and memory, opens the roots, and a second start changes nothing  11666ms
+ ✓ tests/e2e/projects/project-task-parts-live.e2e.test.ts (3 tests) 9852ms
+     ✓ POF-LIVE-001: a parent's CANCELLED, then another parent's DONE, close their open parts (stopping a really running task agent), list them in closedParts and update the feed; closed parts, reopen and a part's own close change nothing; re-parent and delete cleanup are live (AC-018, AC-008, AC-007, AC-006)  3254ms
+     ✓ POF-LIVE-002: a Temp task has no parent and is no parent: both refused with TASK_PARENT_INVALID, nothing written (AC-003, AC-014)  656ms
+ ✓ tests/e2e/projects/project-run-history.e2e.test.ts (9 tests) 24289ms
+     ✓ PRH-01: an Agent prepared under P is recorded in P's file, told its Project at first activation, listed under P and its folder; run records keep the released keys  410ms
+     ✓ PRH-03: a Team created under P lists in P's team group; its coordinator and member are told the Project  3521ms
+     ✓ PRH-04: a root started under P delegates Tasks of P and Q and Temp-task work: listed once, under P only  1845ms
+     ✓ PRH-05: the user's case: a Workspaces-started root that handed out Tasks of P, Q and R is listed under none and recorded nowhere  1864ms
+     ✓ PRH-07: P lists the 6 newest runs of an agent; an older run hosting P's open work is not pinned; it opens by run id  397ms
+     ✓ PRH-10: an Org root hosting Tasks of P and Q is listed under neither  1151ms
+ ✓ tests/e2e/app-data-migrations/node-vocabulary-stored-names-startup.e2e.test.ts (3 tests) 37593ms
+     ✓ NV-01 upgrade: same node IDs, renamed files with their values and backups, peers recognize each other, Memory Sync continues into the same import, a third start changes nothing  6450ms
+     ✓ NV-02 a damaged identity file: 503 NODE_IDENTITY_NOT_MIGRATED, no new node ID, the file kept and named, peers refuse with that reason, the rest works; restored, the next start migrates it  4543ms
+     ✓ NV-03 damaged hub credentials: ingestion 503 MEMORY_SYNC_NOT_MIGRATED, reads refuse with the text, only local memory is listed, the files kept; restored, the next start migrates them and alpha syncs again  3965ms
+ ✓ tests/e2e/runtime/autobyteus-anthropic-stored-config-edit-launch.e2e.test.ts (5 tests) 19930ms
+     ✓ AC-012 (a): a stopped agent run's settings save resending the stale key is UPDATED and saved without it  2410ms
+     ✓ AC-012 (a): a stopped team run's settings save resending the stale key is UPDATED and saved without it  2135ms
+     ✓ AC-013 (b): a delegated catalog Agent whose default launch config holds the stale key runs on that default, without the key  7407ms
+ ✓ tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts (4 tests) 33879ms
+     ✓ E-001 Studio upgrade: removes the installed copy once, lists one Project Task Manager and does not rerun on restart  4558ms
+     ✓ E-002 Studio: a failed removal never blocks work and retries on restart; the old conversation stays readable and cannot be continued  19885ms
+     ✓ E-003 Studio fresh install: creates no installed copy and records nothing to remove  4056ms
+     ✓ E-004 standalone host first: a failed removal never blocks the host, the next host start removes it, and Studio shares the record  5379ms
+ ✓ tests/e2e/app-data-migrations/delegated-runs-own-runs-startup.e2e.test.ts (3 tests) 21607ms
+     ✓ DRO-3 DS-15: restart resume skips a delegated run whose Task entry is closed (the same busy run with its entry open is resumed, DRO-1)  9300ms
+     ✓ DRO-1 converts every stored shape at startup, the converted runs open as runs of their own; DRO-2 a second start changes nothing  5931ms
+     ✓ DRO-4 (autobyteus-508): a Settings edit that names another agent runtime keeps that runtime, model and settings as the run's own Settings edit  6343ms
+ ✓ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts (8 tests) 498ms
+ ✓ tests/e2e/runtime/stopped-run-edit-root-built-server.e2e.test.ts (1 test) 67589ms
+     ✓ SRE-01..03: copies delegated from the registered root after a saved edit of the crashed host carry the saved launch; a runtime change is pending on the host and inherited; a live host refuses the edit  64822ms
+ ✓ tests/e2e/projects/collaboration-model-contract.e2e.test.ts (3 tests) 23629ms
+     ✓ CM-E2E-1 Agent root: delegate an outside Agent then message its run ID; an outside address is not found and creates nothing, also for a Task-owned copy  11764ms
+     ✓ CM-E2E-2 Team root: delegating a teammate or the own Team is refused and starts nothing; an outside Agent is delegated and messaged by run ID  2012ms
+     ✓ CM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team  2007ms
+ ✓ tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts (3 tests) 217ms
+ ✓ tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts (2 tests) 137ms
+ ✓ tests/e2e/memory-sync/memory-sync-api.e2e.test.ts (1 test) 322ms
+ ❯ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts (11 tests | 2 failed) 11927ms
+     ✓ NAS-15 NAS-17 refuses a foreign or null (opaque HTML preview) Origin on every WebSocket route family before the route runs (AC-001) 15ms
+     × accepts each allowed-origin class and refuses near misses (AC-002) 7427ms
+     ✓ refuses foreign-origin HTTP and preflights and grants CORS only to allowed origins (AC-003) 7ms
+     ✓ NAS-09 refuses a phone credential on WebSocket routes the phone does not offer (AC-004) 16ms
+     ✓ NAS-05 accepts a phone credential on every phone WebSocket route (AC-005)  1245ms
+     ✓ NAS-29 logs every refusal once with its code, redacted URL and client address, and never a credential (AC-006) 4ms
+     ✓ NAS-10 keeps today's refusal of a phone credential when Phone Access is disabled 14ms
+     × refuses a request addressed to a name that is not the node's on every entry form, before any route (416 AC-001) 1250ms
+     ✓ accepts every allowed-host class, configured name and paired-phone host, and refuses other public names (416 AC-002, AC-003)  833ms
+     ✓ warns once at start about invalid entries of the two settings (416 AC-003) 0ms
+     ✓ refuses unlisted localhost pages on HTTP, WebSockets and /mcp/gateway, and accepts the listed one (416 AC-005) 4ms
+ ✓ tests/e2e/agent-definitions/internal-agents.e2e.test.ts (5 tests) 7070ms
+     ✓ IA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)  1429ms
+     ✓ IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)  949ms
+ ✓ tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts (3 tests) 483ms
+     ✓ keeps active and revoked device routes separate while proving HTTPS and trusted LAN HTTP QR policy  380ms
+ ✓ tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts (1 test) 21438ms
+     ✓ commits one probed pair durably, compensates failures, restarts, and routes every exact Qwen model  21437ms
+ ✓ tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts (7 tests) 19316ms
+     ✓ API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed  6274ms
+     ✓ API-10c (AC-006): a delegated copy of the package agent has its effective tools  919ms
+     ✓ API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools  802ms
+     ✓ API-10f (AC-006): a Team run started directly gives its members their effective tools  864ms
+     ✓ API-10g (AC-006): an Org run gives its package members (an agent, and a Team's coordinator) their effective tools  987ms
+ ✓ tests/e2e/runtime/agy-context-files-transport.e2e.test.ts (4 tests) 7027ms
+     ✓ E2E-CF-001/004: uploaded image, .txt and .pdf reach AGY as one text with absolute paths; a later plain message is unchanged  3443ms
+     ✓ E2E-CF-002: sending requires text; an attachments-only send is rejected before AGY and the same image then goes with text  618ms
+     ✓ E2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket  370ms
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts (6 tests) 17331ms
+     ✓ lists the Grok Build catalog from the agent handshake with the reasoning-effort schema (AC-002)  505ms
+     ✓ streams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009)  558ms
+ ✓ tests/e2e/agent/agent-command-correlated-status.e2e.test.ts (1 test) 174ms
+ ✓ tests/e2e/memory/memory-view-graphql.e2e.test.ts (6 tests) 137ms
+ ✓ tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts (7 tests) 195ms
+ ✓ tests/e2e/runtime/autobyteus-native-tool-search.e2e.test.ts (1 test) 75069ms
+     ✓ NTS-E2E-001…005: search and call a found tool with approval, restore, add and remove a tool; history names the real tools  7615ms
+ ✓ tests/e2e/projects/daily-assistant-collaborator.e2e.test.ts (6 tests) 19089ms
+     ✓ DAC-01: the PM lists the Daily Assistant at /daily_assistant; the Model Router is never listed or delegable, internal agents hidden or shown  383ms
+     ✓ DAC-02: a saved Task to /daily_assistant starts a Daily Assistant copy in the Project's folder; it has send_message_to and reports back to the PM  617ms
+     ✓ DAC-03: a description-only delegation to /daily_assistant runs the copy in the delegating run's folder and it reports back  674ms
+     ✓ DAC-04: a Team with a Daily Assistant member gets no second one; the PM gives its Daily Assistant copy a second Task by run id  3378ms
+     ✓ DAC-05: a Daily Assistant run does not see or delegate to its own definition  451ms
+ ✓ tests/e2e/projects/project-task-context-files-delegation.e2e.test.ts (1 test) 21382ms
+     ✓ CTX-E2E-003: the Manager attaches files by tool, delegate_task({task_id}) hands the saved copies to a live worker that reads them; DONE with a bad file keeps the run open; ad-hoc Tasks refuse files  3539ms
+ ✓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts (6 tests | 5 skipped) 3478ms
+     ✓ agy (scripted CLI): all three tool kinds through autobyteus_agent_tools  779ms
+ ✓ tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts (2 tests) 48690ms
+     ✓ Team root: configured member, team task agent and a pending file, read through the team run; running, then stopped  19234ms
+     ✓ Org root: direct agents, a member-team member, an org-root and a member-team task agent, read through the org run; running, then stopped  2312ms
+ ✓ tests/e2e/projects/project-task-comments-live.e2e.test.ts (4 tests) 5017ms
+     ✓ CMT-LIVE-001: comments added by the Manager's tool are in the feed and in a new task agent's work, after the description; a Task without comments has no block (AC-010, AC-001, REQ-007)  980ms
+     ✓ CMT-LIVE-002: DONE + a comment is one write; the same task agent's next Task carries that Task's comments (AC-001, AC-010 existing task agent)  585ms
+     ✓ CMT-LIVE-003: a Temp task has no comments: add_comment is refused and nothing is written, not even a combined status (AC-001)  456ms
+ ✓ tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts (2 tests) 19304ms
+     ✓ E-001/E-003 standalone: images previewable during the turn, after terminate, and after restore with a new turn  3091ms
+     ✓ E-002/E-004 Team member: images previewable during the turn and after the team run is terminated  604ms
+ ✓ tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts (5 tests) 215ms
+ ✓ tests/e2e/context-files/context-file-size-limits-built-server.e2e.test.ts (8 tests | 1 skipped) 4537ms
+     ✓ BS-02: the owner and a paired phone read the limits and upload; a forged credential is refused  1756ms
+ ✓ tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts (5 tests) 516ms
+ ✓ tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts (1 test) 33236ms
+ ✓ tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts (8 tests | 6 skipped) 32431ms
+     ✓ agy: the agent's tool calls reach both servers with their credentials  4116ms
+     ✓ agy: after the server revokes the token, the agent's tool call fails with the HTTP status  22324ms
+ ✓ tests/e2e/memory-sync/memory-sync-large-files.e2e.test.ts (4 tests) 34610ms
+     ✓ syncs a 40 MiB attachment, two 20 MiB files and many small files in one run, every request within the limits (AC-001, AC-002)  5849ms
+     ✓ imports the same attachment under two runs and uploads its content once (AR-001)  381ms
+     ✓ resumes an interrupted upload from what the hub holds, and shows nothing partial in the imports (AC-005, AC-009)  358ms
+     ✓ keeps syncing the other files when the hub refuses one, lists it with its reason, and retries it on Sync now (AC-004, AC-010)  1428ms
+ ❯ tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts (6 tests | 1 failed) 12286ms
+     ✓ saves and replaces a provider key without value readback 51ms
+     ✓ exposes only the approved ordinary-provider and Gemini configuration commands 5ms
+     × serves five warm credential descriptor reads within the local budget 5005ms
+     ✓ keeps Gemini configuration independent and activation explicit with no priority/fallback  4188ms
+     ✓ keeps vault status and built-in catalogs value-free and available with missing credentials 6ms
+     ✓ probes, creates, discovers, and deletes a custom provider through GraphQL and the vault 65ms
+ ✓ tests/e2e/llm-management/on-demand-stored-models-startup.e2e.test.ts (1 test) 39343ms
+     ✓ ODM-1 LM Studio and Ollama models start after a restart; a host that is down is not a refusal; read and missing is refused; a removed agent gets its own answer  39332ms
+ ❯ tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts (3 tests) 32527ms
+     ✓ answers messages sent while the interrupted process is still stopping, with one restart (AC-001, AC-005)  6433ms
+     ✓ restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)  2943ms
+     ✓ answers a message sent after the interrupted process has fully stopped (AC-002)  2249ms
+ ✓ tests/e2e/projects/delegator-view-follows-child.e2e.test.ts (3 tests) 54562ms
+     ✓ FOLLOW-A / FOLLOW-T, agent delegator: the child's row offline at its own Stop, then the restored run's live status  12162ms
+     ✓ FOLLOW-A / FOLLOW-T, team delegator: the child's row offline at its own Stop, then the restored run's live status  7085ms
+     ✓ FOLLOW-A / FOLLOW-T, org delegator: the child's row offline at its own Stop, then the restored run's live status  5874ms
+ ✓ tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts (7 tests) 42905ms
+     ✓ persists the team and exact-Agent configurations and restores them after process restart  9169ms
+     ✓ rejects a 'missing' 'Team' runtime before workspace or run side effects  3222ms
+     ✓ rejects a 'blank' 'Team' runtime before workspace or run side effects  2230ms
+     ✓ rejects a 'unsupported' 'Team' runtime before workspace or run side effects  2147ms
+     ✓ rejects a 'missing' 'Agent' runtime before workspace or run side effects  15843ms
+     ✓ rejects a 'blank' 'Agent' runtime before workspace or run side effects  2597ms
+     ✓ rejects a 'unsupported' 'Agent' runtime before workspace or run side effects  7695ms
+ ✓ tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts (2 tests) 11339ms
+     ✓ sends the header or token on preview, save, import and tool calls, and rejects token plus Authorization  6350ms
+     ✓ re-registers saved credentials at startup after a restart and keeps sending them  2564ms
+ ✓ tests/e2e/token-usage/astra-fable-token-usage-accounting-graphql.e2e.test.ts (4 tests) 121ms
+ ✓ tests/e2e/app-data-migrations/project-task-titles-startup.e2e.test.ts (1 test) 4706ms
+     ✓ TTL-E2E-001 Studio: every released shape is titled from its first line, nothing else changes, unconvertible files stay, a second start is a no-op  4706ms
+ ❯ tests/e2e/projects/embedding-settings.e2e.test.ts (6 tests | 1 failed) 31324ms
+     ✓ answers models and Project indexes in one read-only document: fresh install is Not downloaded and Not indexed (AC-011) 54ms
+     × downloads the active model (Preparing with bytes, not cancellable), then indexes on request 15217ms
+     ✓ downloads another model ahead, refuses removal while it downloads, cancels it, and refuses removing the active model 37ms
+     ✓ switches the active model through the setting, prepares it at once, keeps the old files, and shows the Projects as Not indexed 42ms
+     ✓ shows an unavailable model with its reason, and Retry prepares it again at once (AC-012) 17ms
+     ✓ indexes a Project a few seconds after Task writes, with no search, once the model is on disk (REQ-011, AC-015)  3240ms
+ ✓ tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts (9 tests) 483ms
+ ✓ tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts (2 tests) 34911ms
+     ✓ OST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once  12563ms
+     ✓ OST-3: an error-ended turn reads the same live, in a reconnect's snapshot and in the stopped run's full stored read  2468ms
+ ✓ tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts (3 tests) 11737ms
+     ✓ SID-1 starts on a fresh data folder: nothing to remove, and the improver is not bootstrapped  3299ms
+     ✓ SID-2 deletes exactly the feature's data once, keeps everything else byte-identical, and other runs list and open  4419ms
+     ✓ SID-3 a helper run that cannot be deleted leaves startup working; the next start finishes (needs POSIX mode bits that bind: not root, not Windows)  4018ms
+ ❯ tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts (1 test) 30142ms
+     ✓ presents each MCP call as the real tool with its own arguments, live and in reopened history  16327ms
+ ✓ tests/e2e/app-data-migrations/raw-trace-manifest-runtime-names-startup.e2e.test.ts (2 tests) 8618ms
+     ✓ converts this node's own manifests once, keeps everything else byte-identical, and does nothing on the next start  4720ms
+     ✓ keeps an unusable manifest as it is and says why, converts the rest, and ends with warnings  3898ms
+ ✓ tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts (6 tests) 66ms
+ ✓ tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts (4 tests) 14989ms
+     ✓ E-001 captures complete typed first STARTED before terminal, then reopens without provider evidence  5983ms
+     ✓ E-002 retains truthful summary and completion for SUMMARY_ONLY detail  870ms
+     ✓ E-002 retains truthful summary and completion for AMBIGUOUS detail  888ms
+     ✓ E-003 actually restores the bound conversation, captures future calls, and leaves old summary bytes unchanged  2335ms
+ ✓ tests/e2e/secret-management/removed-remote-provider-leftover-startup.e2e.test.ts (1 test) 6330ms
+     ✓ starts normally, keeps other providers working, lists the host key as deletable custom data, and leaves the vault row inert  6329ms
+ ✓ tests/e2e/runtime/application-reload-repair.e2e.test.ts (5 tests) 13577ms
+     ✓ RE-01 an ACTIVE application stays usable after a package reload (AC-001)  3482ms
+     ✓ RE-02 a repair of an ACTIVE application answers ACTIVE and keeps it usable (AC-002)  675ms
+     ✓ RE-03 imported while Codex is signed out, it is quarantined with the reason; after sign-in a repair returns it to ACTIVE (AC-003, AC-004)  978ms
+     ✓ RE-04 after the worker process crashes, a repair resets it to stopped and the application is usable again (MP-001)  1070ms
+     ✓ RE-05 a run event recorded while the application is quarantined is dispatched after a repair makes it ACTIVE (BEH-002)  1410ms
+ ❯ tests/e2e/projects/project-task-search.e2e.test.ts (4 tests | 1 failed) 14119ms
+     × answers exact matches at once, reports preparation, then adds meaning matches without a new query text 6818ms
+     ✓ POF-SEARCH-001: search_project_tasks shows partOf and parts by key, parts in numeric key order, no long Task ID  317ms
+     ✓ CMT-SEARCH-001: a word only in a comment finds its Task as an exact match, on the board's query and the tool; commentCount only when > 0 122ms
+     ✓ validates the active-model setting and offers Retry only for an unavailable model 11ms
+ ✓ tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts (3 tests) 130ms
+ ✓ tests/e2e/app-data-migrations/remove-retired-built-in-agents-startup.e2e.test.ts (3 tests) 10612ms
+     ✓ RRB-1 deletes exactly the two installed copies once; other agents and every run, old item files included, stay byte-identical  5706ms
+     ✓ RRB-3 after the upgrade start, an agent's list_available_agents answer names neither retired agent  2874ms
+     ✓ RRB-2 starts on a data folder that never had them: both are skipped  2031ms
+ ✓ tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts (4 tests) 12806ms
+     ✓ RA-01 Application launch readiness for Codex keeps its rule and reason text through the sign-in reader (SCN-A3)  1049ms
+     ✓ RA-02 Application launch readiness for Claude: signed out (JSON + exit 1) keeps today's reason, signed in is runnable  1893ms
+     ✓ RA-03 Update is refused while a standalone Codex agent runs and allowed once it has ended (AC-004)  2530ms
+     ✓ RA-04 a live Application team member counts too: Brief Studio's drafting run blocks Codex's Update, alone and with a standalone agent (AC-004, SR-011/AR-008)  2488ms
+ ✓ tests/e2e/update-notifications/agent-runtime-update-notifications.e2e.test.ts (3 tests) 14744ms
+     ✓ API-20 (AC-018, AC-005 runtimes, AR-007): the first tick checks the installed runtimes in the background; newer versions are notified, nothing is updated  2352ms
+     ✓ API-21 (AC-019, REQ-021): the panel's runtime Update is refused while that runtime's agents run; a success is handled, a failure keeps the notification  2788ms
+     ✓ API-22 (AC-020, REQ-022, REQ-009): with runtime updates on, Codex waits while its agent runs, then updates by itself; Claude's failure is recorded once  6430ms
+ ✓ tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts (29 tests) 3212ms
+     ✓ prepares later run after real API update: 'grok'/'CONFIGURED' retain=false reverse=false  459ms
+ ✓ tests/e2e/projects/closed-run-attachments.e2e.test.ts (1 test) 16318ms
+     ✓ CRA-1 a reference of a message with the closed run opens through the top run (also after a restart); the run's context file opens again once its Task is reopened  16303ms
+ ✓ tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts (2 tests) 201ms
+ ✓ tests/e2e/tool-management/mcp-http-redirect-and-transport.e2e.test.ts (2 tests) 8773ms
+     ✓ refuses a cross-origin redirect, follows a same-origin one, and rejects a websocket import  6282ms
+     ✓ starts with WebSocket-era entries in mcps.json and registers the valid entry next to them  2474ms
+ ✓ tests/e2e/token-usage/claude-sdk-selected-model-graphql.e2e.test.ts (3 tests) 164ms
+ ✓ tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts (3 tests) 4764ms
+     ✓ pairs three automatic compactions and archives one segment per completion (REQ-G1, REQ-G2)  1474ms
+     ✓ closes an automatic compaction stopped by the user as failed, then pairs the next one (REQ-G3)  1001ms
+     ✓ records a manual /compact as one completed compaction with no start (REQ-G1, REQ-G2, REQ-G4)  622ms
+ ✓ tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts (2 tests) 5104ms
+     ✓ leaves the embedding layer untouched through startup and Task and Project writes (AC-012, QR-006)  583ms
+ ✓ tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts (6 tests) 114ms
+ ✓ tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts (5 tests) 91029ms
+     ✓ ends the run's stdio server process when the run is terminated  4562ms
+     ✓ leaves no stdio server process once a terminated run is deleted  827ms
+     ✓ gives a run woken right after termination a new, working stdio server process  1500ms
+     ✓ leaves another run's stdio server process and the gateway working when one run ends  1924ms
+     ✓ ends a delegated copy's stdio server process when the copy is shut down after the idle grace period  65133ms
+ ✓ tests/e2e/projects/closed-task-input-fence.e2e.test.ts (3 tests) 30644ms
+     ✓ FENCE-1 an agent run: refused with base's text while its Task is closed, not restored, no status in the delegator's view; delivered after the assigner continues it  18854ms
+     ✓ FENCE-2 a member of a team run: refused with base's text while its Task is closed, not restored; delivered after the assigner continues it  4319ms
+     ✓ FENCE-3 a run whose Task was deleted is not fenced: it takes the user's message  1020ms
+ ✓ tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts (1 test) 3283ms
+     ✓ updates the open file per turn, writes the closed file once, and regenerates both after restore  1005ms
+ ✓ tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts (2 tests) 8905ms
+     ✓ UC-2 a new server process starts with the unreadable run file present and the same holds  5672ms
+ ✓ tests/e2e/tool-management/mcp-secrets-in-vault.e2e.test.ts (3 tests) 19565ms
+     ✓ loads the plain file, offers its secrets for the move, and moves them with a backup  13786ms
+     ✓ stores a value saved locked through GraphQL in the vault, and returns only its state  335ms
+     ✓ resolves the stored secrets from the vault after a restart, and no value leaks  3396ms
+ ✓ tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts (3 tests) 2339ms
+ ✓ tests/e2e/runtime/agy-skill-update-notice-transport.e2e.test.ts (2 tests) 75294ms
+     ✓ a busy run gets the notice as its next turn; a stopped turn keeps it pending; an idle run gets it with its next message  25833ms
+     ✓ AC-003: a stopped run is not woken by a change; continued later, its first turn carries one notice  6158ms
+ ✓ tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts (1 test) 23397ms
+     ✓ keeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore  13974ms
+ ✓ tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts (1 test) 230ms
+ ✓ tests/e2e/runtime/agy-failure-transport.e2e.test.ts (25 tests | 1 skipped) 14765ms
+     ✓ retains native-image denial privacy without fabricating tool success  699ms
+     ✓ retains the existing credential-only terminal-error negative without fabricated completion  314ms
+     ✓ agent: supplied quota error survives actual public transport and normal next user turn  359ms
+     ✓ agent: supplied unfamiliar error survives actual public transport and normal next user turn  510ms
+     ✓ agent: supplied structured error survives actual public transport and normal next user turn  369ms
+     ✓ agent: supplied missing error survives actual public transport and normal next user turn  371ms
+     ✓ agent: supplied empty error survives actual public transport and normal next user turn  354ms
+     ✓ agent: supplied malformed error survives actual public transport and normal next user turn  345ms
+     ✓ agent: supplied credential error survives actual public transport and normal next user turn  351ms
+     ✓ team: supplied quota error survives actual public transport and normal next user turn  496ms
+     ✓ team: supplied unfamiliar error survives actual public transport and normal next user turn  483ms
+     ✓ team: supplied structured error survives actual public transport and normal next user turn  510ms
+     ✓ team: supplied missing error survives actual public transport and normal next user turn  493ms
+     ✓ team: supplied empty error survives actual public transport and normal next user turn  488ms
+     ✓ team: supplied malformed error survives actual public transport and normal next user turn  502ms
+     ✓ team: supplied credential error survives actual public transport and normal next user turn  495ms
+     ✓ org: supplied quota error survives actual public transport and normal next user turn  580ms
+     ✓ org: supplied unfamiliar error survives actual public transport and normal next user turn  607ms
+     ✓ org: supplied structured error survives actual public transport and normal next user turn  590ms
+     ✓ org: supplied missing error survives actual public transport and normal next user turn  573ms
+     ✓ org: supplied empty error survives actual public transport and normal next user turn  576ms
+     ✓ org: supplied malformed error survives actual public transport and normal next user turn  576ms
+     ✓ org: supplied credential error survives actual public transport and normal next user turn  579ms
+     ✓ restores a normally stopped failed Agent with the exact provider conversation and unchanged completed work  666ms
+ ✓ tests/e2e/skills/skills-graphql.e2e.test.ts (5 tests) 94ms
+ ✓ tests/e2e/memory-sync/raw-trace-manifest-runtime-names-sync.e2e.test.ts (1 test) 12808ms
+ ✓ tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts (3 tests) 6449ms
+     ✓ keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers  5292ms
+     ✓ does not leak watcher leases when sockets close before CONNECTED is observed  313ms
+     ✓ survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy  795ms
+ ✓ tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts (13 tests) 40ms
+ ✓ tests/e2e/run-history/removed-remote-provider-saved-selection-graphql.e2e.test.ts (2 tests) 15218ms
+     ✓ refuses a native runtime launch with a remote identifier and still launches with a current model  7399ms
+     ✓ keeps a stopped run that saved a remote model visible with its value and blocks its restore  7818ms
+ ✓ tests/e2e/app-data-migrations/remove-work-trace-exports-startup.e2e.test.ts (1 test) 4081ms
+     ✓ removes recognized exports at every released location once, keeps everything else, and is idempotent  4080ms
