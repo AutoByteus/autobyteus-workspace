@@ -182,3 +182,19 @@ test('scope conflict appearing during read-only history inspection still refuses
   assert.throws(()=>provision(options),/claim conflict/);
   assert.deepEqual(writes,[]);assert.deepEqual(readdirSync(home),[]);
 });
+
+test('custody reserved during history inspection is preserved before any provisioning write',t=>{
+  const {options,history,writes,home}=fixture(t);
+  const dir=join(home,'.autobyteus-desktop-signing-backup'),note=join(dir,'reservation');
+  options.historyRequest=(...args)=>{
+    if(!existsSync(dir)){
+      mkdirSync(dir,{mode:0o700});
+      writeFileSync(note,'held by custodian',{mode:0o600});
+    }
+    return history.request(...args);
+  };
+  assert.throws(()=>provision(options),/Backup directory already exists/);
+  assert.deepEqual(writes,[]);
+  assert.deepEqual(readdirSync(dir),['reservation']);
+  assert.equal(readFileSync(note,'utf8'),'held by custodian');
+});
