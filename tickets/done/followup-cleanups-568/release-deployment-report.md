@@ -40,6 +40,14 @@
 
 - Archive, hygiene, Secret Gate, `finalize/followup-cleanups-568` from `origin/personal`, `--no-ff` merge, push; results in § Finalization Result after the merge.
 
+## Finalization Result
+
+- Ticket branch `codex/followup-cleanups-568` @ `6ec94bec07` pushed; hygiene exit 0; Secret Gate PASS over the branch and over the merge.
+- Merge commit **`10b18a67eb`** (`--no-ff`, from `finalize/followup-cleanups-568` on `origin/personal` @ `32ab4e0f6a`) pushed to `origin/personal` (2026-11-20); this record commit follows it.
+- The user's checkout: fast-forwarded with `git merge --ff-only origin/personal` only (result in the Delivery Completed message).
+- Record copy: `autobyteus-delivery-records/followup-cleanups-568-autobyteus-568-20261120/` (made from the record commit, verified with `archive.sha256`).
+- Cleanup: the worktree, local and remote `codex/followup-cleanups-568`, local `finalize/followup-cleanups-568`, `/tmp/dlv-568-*`.
+
 ## Release / Deployment
 
 - Release: `None`. Deployment: `None`.
