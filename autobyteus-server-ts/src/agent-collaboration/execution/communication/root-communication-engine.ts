@@ -19,7 +19,8 @@ import {
   validateCollaborationCommunicationMessage,
   validateCollaborationCommunicationMessageArray,
 } from "./collaboration-communication-message-schema.js";
-import type { CollaborationCommunicationMessage } from "./collaboration-communication-message.js";
+import { messageFields, type CollaborationCommunicationMessage, type MessageCounterpart } from "./collaboration-communication-message.js";
+import { localParty, type MessagePublication } from "./message-publication.js";
 import { buildRemoteCommunicationInputMessage } from "./root-communication-runtime-builder.js";
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "../remote/remote-refusal-codes.js";
 import type { RemoteEndpoint } from "../remote/remote-endpoint.js";
@@ -50,7 +51,8 @@ export type RemoteSendInput = Readonly<{
 
 /** A message checked and given its ID, not yet sent: nothing changed in the root (`prepareRemoteSend`). */
 export type PreparedRemoteSend =
-  | Readonly<{ ok: true; message: CollaborationCommunicationMessage; endpoint: RemoteEndpoint }>
+  /** `senderAddress`: the sending agent's address in this run, sent with the message (autobyteus-565). */
+  | Readonly<{ ok: true; message: CollaborationCommunicationMessage; endpoint: RemoteEndpoint; senderAddress: string }>
   | Readonly<{ ok: false; refusal: Refusal }>;
 
 /** A message from a local agent of this root to an agent of another run on this node (DS-2, contract §2.2). */
@@ -76,8 +78,11 @@ export type RunAcceptInput = Readonly<{
   receiverDisplayName: string;
   /** The gate-head re-check of the Task rule, read from the Task side (AR-017); throws a Task refusal. */
   assertAllowed(): void;
-  /** Whether the message enters run views: related runs `true`; unrelated runs `false` (autobyteus-492 G-1, DEC-014). */
-  publishToViews: boolean;
+  /**
+   * How the two runs relate, as `CrossRunMessageDelivery` admitted the message: a Task relates them, or not (autobyteus-492
+   * CM-13). `MessageViewScope` decides from it which views show the message; an unrelated line records its sender.
+   */
+  relation: "related" | "unrelated";
 }>;
 
 /** A message a peer node accepted from its run, for a local agent of this root: linked (CM-11), or by run ID (CM-13). */
@@ -88,6 +93,8 @@ export type RemoteAcceptInput = Readonly<{
   receiverDisplayName: string;
   /** This owner's label for the sender's node, named in the receiver's header. */
   senderNodeName: string;
+  /** The sending agent's address in its own run, as the request carried it (autobyteus-565); null when not sent. */
+  senderAddress: string | null;
 }>;
 
 /**
@@ -144,7 +151,10 @@ export class RootCommunicationEngine {
     });
     const inputMessage = this.port.buildRecipientInput({ delivery: input, message });
     // A message between the run's own agents: this one commit publishes it (SR-072).
-    return (await this.commitReserved(message, inputMessage, input.receiverIdentity.agentRunId, input.receiverDisplayName, assertAllowed, this.port.root)).result;
+    return (await this.commitReserved(message, inputMessage, input.receiverIdentity, input.receiverDisplayName, assertAllowed, {
+      relation: "same_run", sender: { run: this.port.root }, receiver: { run: this.port.root },
+      parties: { sender: localParty(input.senderIdentity.agentRunId, input.senderIdentity.memberAddress), receiver: localParty(input.receiverIdentity.agentRunId, input.receiverIdentity.memberAddress) },
+    })).result;
   }
 
   /**
@@ -179,21 +189,28 @@ export class RootCommunicationEngine {
       referenceFiles: [],
       createdAt,
     });
-    return Object.freeze({ ok: true as const, message, endpoint: input.endpoint });
+    return Object.freeze({ ok: true as const, message, endpoint: input.endpoint, senderAddress: input.senderIdentity.memberAddress });
   }
 
   /**
    * Outbound, step 3: the peer accepted the prepared message, so it is delivered. Only the sender's log gets
    * it, without a second Task check (the truthful record is "delivered"). If this root can no longer write
    * (closed or failed after the peer accepted), the result stays accepted and a warning names the message
-   * (the RSK-106 class, FU-002).
+   * (the RSK-106 class, FU-002). This, the sender's, commit records the receiver (its address as its node answered, and its
+   * node) and publishes the message into this run's views (autobyteus-565; the receiving node publishes into its own).
    */
-  async commitSentToRemote(prepared: Extract<PreparedRemoteSend, { ok: true }>): Promise<AgentOperationResult> {
-    const { message, endpoint } = prepared;
+  async commitSentToRemote(prepared: Extract<PreparedRemoteSend, { ok: true }>,
+    receiver: Readonly<{ address: string | null; nodeName: string }>): Promise<AgentOperationResult> {
+    const { endpoint } = prepared;
+    const message = withCounterpart(prepared.message, { address: receiver.address, nodeId: endpoint.reference.nodeId });
     const missing = (reason: string) => console.warn(
       `Message '${message.messageId}' to remote run '${endpoint.reference.agentRunId}' was accepted by its node but not recorded here: ${reason}`);
-    // Only the sender's record: no slot, no second Task check, not published to the root's view.
-    const control = this.appendFor(message, null, null);
+    // Only the sender's record: no slot, no second Task check.
+    const control = this.appendFor(message, null, {
+      relation: "remote", sender: { run: this.port.root }, receiver: { nodeId: endpoint.reference.nodeId },
+      parties: { sender: localParty(message.senderAgentRunId, prepared.senderAddress),
+        receiver: Object.freeze({ agentRunId: message.receiverAgentRunId, address: receiver.address, nodeName: receiver.nodeName }) },
+    });
     try {
       const result = await this.port.commitMessageAppend(control.append);
       if (result.outcome === "conflict") missing(this.port.rejections.commitConflict.message);
@@ -208,13 +225,17 @@ export class RootCommunicationEngine {
   /**
    * Inbound (DS-002 on the receiving node, DS-003 on the delegating node). The root's delivery already
    * applied the link check and woke or restored the receiver (N-8). The message keeps the sender's ID; a
-   * second message with the same ID is the existing commit-conflict refusal. Only the receiver's log gets it.
+   * second message with the same ID is the existing commit-conflict refusal. Only the receiver's log gets it, with the
+   * sender recorded (its address as the request carried it, and its node), and this commit publishes it into this run's
+   * views (autobyteus-565).
    */
   async acceptFromRemote(input: RemoteAcceptInput): Promise<AgentOperationResult> {
     const closed = this.refuseUnlessOpen(ROOT_NOT_ACCEPTING_MESSAGES);
     if (closed) return closed;
     if (!this.isCurrent(input.receiverIdentity)) return { accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED", message: NOT_HERE };
-    const message = validateCollaborationCommunicationMessage({ ...input.message, referenceFiles: [] });
+    const nodeId = input.endpoint.reference.nodeId;
+    const message = withCounterpart(validateCollaborationCommunicationMessage({ ...input.message, referenceFiles: [] }),
+      { address: input.senderAddress, nodeId });
     if (message.receiverAgentRunId !== input.receiverIdentity.agentRunId || message.senderAgentRunId !== input.endpoint.reference.agentRunId) {
       return { accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED", message: NOT_HERE };
     }
@@ -225,8 +246,11 @@ export class RootCommunicationEngine {
     const inputMessage = buildRemoteCommunicationInputMessage({
       root: this.port.root, message, receiverIdentity: input.receiverIdentity, senderNodeName: input.senderNodeName,
     });
-    // A message from a remote run is not published to the root's view (it shows its own agents' messages).
-    return (await this.commitReserved(message, inputMessage, input.receiverIdentity.agentRunId, input.receiverDisplayName, assertAllowed, null)).result;
+    return (await this.commitReserved(message, inputMessage, input.receiverIdentity, input.receiverDisplayName, assertAllowed, {
+      relation: "remote", sender: { nodeId }, receiver: { run: this.port.root },
+      parties: { sender: Object.freeze({ agentRunId: message.senderAgentRunId, address: input.senderAddress, nodeName: input.senderNodeName }),
+        receiver: localParty(input.receiverIdentity.agentRunId, input.receiverIdentity.memberAddress) },
+    })).result;
   }
 
   /**
@@ -258,9 +282,11 @@ export class RootCommunicationEngine {
   /**
    * To another run, step 3: the receiver's log has it (delivered, or refused after its durable write, SR-076); only
    * this (the sender's) log gets it, with the same message ID (CM-9). A failed write keeps the receiver's answer and
-   * names the message; the root's persistence takes its own fail-stop (AR-013).
+   * names the message; the root's persistence takes its own fail-stop (AR-013). A line with an unrelated run records the
+   * receiver (`counterpart`, its address as the receiving run answered it; autobyteus-565). It never publishes.
    */
-  async commitSentToRun(message: CollaborationCommunicationMessage): Promise<void> {
+  async commitSentToRun(sent: CollaborationCommunicationMessage, counterpart: MessageCounterpart | null): Promise<void> {
+    const message = counterpart ? withCounterpart(sent, counterpart) : sent;
     const missing = (reason: string) => console.warn(`Message '${message.messageId}' to run agent '${message.receiverAgentRunId}' is in the receiver's log but not recorded here: ${reason}`);
     // The receiver's commit published it (SR-072); the sender's later commit of the same message does not.
     const control = this.appendFor(message, null, null);
@@ -284,15 +310,21 @@ export class RootCommunicationEngine {
     if (!this.isCurrent(input.receiverIdentity) || input.message.receiverAgentRunId !== input.receiverIdentity.agentRunId) {
       return { accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED", message: NOT_HERE };
     }
-    const message = validateCollaborationCommunicationMessage(input.message);
+    const accepted = validateCollaborationCommunicationMessage(input.message);
+    // A line with an unrelated run records its sender (autobyteus-565); a related run is in a Task's tree.
+    const message = input.relation === "unrelated" ? withCounterpart(accepted, { address: input.senderIdentity.memberAddress, nodeId: null }) : accepted;
     const scope = this.refuseOutsideTaskScope(input.assertAllowed);
     if (scope) return scope;
     const inputMessage = this.port.buildRecipientInput({ delivery: { senderIdentity: input.senderIdentity, senderDisplayName: input.senderDisplayName,
       senderAddress: input.senderAddress, receiverIdentity: input.receiverIdentity, receiverDisplayName: input.receiverDisplayName,
       content: message.content, messageType: message.messageType, referenceFiles: message.referenceFiles }, message });
-    // The receiver's commit publishes a message between runs, once, into the views of both runs and those above (SR-072).
-    const { result, recorded } = await this.commitReserved(message, inputMessage, input.receiverIdentity.agentRunId, input.receiverDisplayName,
-      input.assertAllowed, input.publishToViews ? input.senderIdentity.root : null);
+    // The receiver's commit publishes a message between runs, once, for the views of both runs and those above (SR-072);
+    // `MessageViewScope` decides from its relation which of them show it.
+    const { result, recorded } = await this.commitReserved(message, inputMessage, input.receiverIdentity, input.receiverDisplayName, input.assertAllowed, {
+      relation: input.relation, sender: { run: input.senderIdentity.root }, receiver: { run: this.port.root },
+      parties: { sender: localParty(input.senderIdentity.agentRunId, input.senderIdentity.memberAddress),
+        receiver: localParty(input.receiverIdentity.agentRunId, input.receiverIdentity.memberAddress) },
+    });
     return !result.accepted && recorded ? Object.freeze({ accepted: false as const, code: result.code ?? "", message: result.message ?? "", recordedByReceiver: true as const }) : result;
   }
 
@@ -303,12 +335,13 @@ export class RootCommunicationEngine {
   private async commitReserved(
     message: CollaborationCommunicationMessage,
     inputMessage: AgentInputUserMessage,
-    receiverAgentRunId: string,
+    receiverIdentity: CollaborationMemberExecutionIdentity,
     receiverDisplayName: string,
     assertAllowed: () => void,
-    /** The sender's run when this commit publishes the message (SR-072); `null` when it does not. */
-    publishFrom: RootExecutionIdentity | null,
+    /** The message's relation, sides and parties: every commit that reaches here publishes it (SR-072, autobyteus-565). */
+    publication: Omit<MessagePublication, "message">,
   ): Promise<Readonly<{ result: AgentOperationResult; recorded: boolean }>> {
+    const receiverAgentRunId = receiverIdentity.agentRunId;
     const reservationResult = await this.port.reserveRecipientInput(receiverAgentRunId, inputMessage);
     if (!reservationResult.reserved) {
       return { result: { accepted: false, code: reservationResult.code, message: reservationResult.message }, recorded: false };
@@ -318,7 +351,7 @@ export class RootCommunicationEngine {
       input: inputMessage,
       checkTaskScope: assertAllowed,
       present: () => this.port.presentRecipientInput(message, inputMessage),
-    }, publishFrom);
+    }, publication);
     let appended: RootMessageAppendResult;
     try {
       appended = await this.port.commitMessageAppend(control.append);
@@ -334,13 +367,14 @@ export class RootCommunicationEngine {
     const closure = control.closure();
     if (closure?.kind === "task_scope") return answer(closure.refusal);
     if (closure?.kind === "recipient_stopped") return answer(RECIPIENT_STOPPED);
-    return answer({ accepted: true, agentRunId: receiverAgentRunId, displayName: receiverDisplayName });
+    return answer({ accepted: true, agentRunId: receiverAgentRunId, displayName: receiverDisplayName, agentAddress: receiverIdentity.memberAddress });
   }
 
   private appendFor(
     message: CollaborationCommunicationMessage,
     receiver: Parameters<typeof createRootMessageAppend>[0]["receiver"],
-    publishFrom: RootExecutionIdentity | null,
+    /** The commit's publication; `null` for the sender's commit of a message between two runs of this node. */
+    publication: Omit<MessagePublication, "message"> | null,
   ) {
     return createRootMessageAppend({
       message,
@@ -349,7 +383,8 @@ export class RootCommunicationEngine {
       getMessages: () => this.current,
       setMessages: (messages) => { this.current = messages; },
       logOwnersOf: (entry) => this.port.logOwnersOf(entry),
-      publishToRootView: publishFrom ? () => this.port.publishMessage(message, publishFrom) : null,
+      // Views and events carry the message's own fields; the `counterpart` record is this log's.
+      publishToRootView: publication ? () => this.port.publishMessage({ ...publication, message: messageFields(message) }) : null,
       scopeRefusalOf: (error) => taskScopeRefusalOf(error),
     });
   }
@@ -392,3 +427,7 @@ const taskScopeRefusalOf = (error: unknown): TaskScopeRefusal | null =>
   error instanceof TaskDelegationError && error.code === "TASK_AGENT_RESOURCE_CLOSED"
     ? Object.freeze({ accepted: false as const, code: error.code, message: error.message })
     : null;
+
+/** The message as this log records it, with the other agent of a line outside the run's tree (autobyteus-565). */
+const withCounterpart = (message: CollaborationCommunicationMessage, counterpart: MessageCounterpart): CollaborationCommunicationMessage =>
+  Object.freeze({ ...messageFields(message), counterpart: Object.freeze({ address: counterpart.address, nodeId: counterpart.nodeId }) });

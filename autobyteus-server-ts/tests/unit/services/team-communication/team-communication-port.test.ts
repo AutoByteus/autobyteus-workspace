@@ -56,7 +56,7 @@ const buildHarness = (input: {
     commitMessageAppend: commit,
     publish,
     // The node's message feed into the same view (a root with no delegations): its COMMUNICATION events reach `publish`.
-    messageFeed: messageFeedInto({ publish }, teamRunMessageEvent),
+    messageFeed: messageFeedInto({ publish }, teamRunMessageEvent, root),
   }));
   /** The Team root's delivery hands the engine one intent at a time (TeamRunMessageDelivery). */
   const service = {
@@ -104,7 +104,7 @@ describe("RootCommunicationEngine with the Team port", () => {
       intent: intent(),
       receiverIdentity,
       receiverDisplayName: "receiver",
-    })).resolves.toEqual({ accepted: true, agentRunId: "receiver-run", displayName: "receiver" });
+    })).resolves.toEqual({ accepted: true, agentRunId: "receiver-run", displayName: "receiver", agentAddress: receiverIdentity.memberAddress });
 
     expect(harness.reserveDirectAgentInput).toHaveBeenCalledWith(
       "receiver-run",

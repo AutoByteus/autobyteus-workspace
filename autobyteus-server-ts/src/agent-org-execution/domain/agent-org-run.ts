@@ -193,7 +193,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   /** DS-2: a message from, and to, another run of this node (CrossRunMessageDelivery: receiver in the gate, sender's own log). */
   acceptFromRun(input: import("../../agent-collaboration/communication/cross-run-accept-input.js").CrossRunAcceptInput): Promise<AgentOperationResult> { return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.acceptFromRun(input); }); }
   prepareSendToRun(input: import("../../agent-collaboration/execution/communication/root-communication-engine.js").RunSendInput) { return this.communication.prepareSendToRun(input); }
-  commitSentToRun(message: Parameters<RootCommunicationEngine["commitSentToRun"]>[0]) { return this.communication.commitSentToRun(message); }
+  commitSentToRun(...sent: Parameters<RootCommunicationEngine["commitSentToRun"]>) { return this.communication.commitSentToRun(...sent); }
   acceptRemoteMessage(input: RemoteInboundMessage): Promise<AgentOperationResult> {
     return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.acceptRemoteMessage(input); });
   }

@@ -55,8 +55,9 @@ export type RemoteRunTitles = Readonly<{ recordFirstMessage(root: RemoteTargetRo
 const refusal = (code: string, message: string): PeerHandlerRefusal => Object.freeze({ accepted: false, code, message });
 const notFound = () => refusal(REMOTE_REFUSAL.TARGET_NOT_FOUND, "That run does not exist on this node.");
 const notLinked = () => refusal(REMOTE_REFUSAL.TARGET_NOT_PERMITTED, "That run is not linked with the sender.");
+/** The root's answer on the wire: accepted with the receiving agent's address (autobyteus-565), or the refusal. */
 const answerOf = (result: AgentOperationResult) => result.accepted
-  ? Object.freeze({ accepted: true as const })
+  ? Object.freeze({ accepted: true as const, receiverAddress: result.agentAddress ?? null })
   : Object.freeze({ accepted: false as const, code: result.code ?? "REMOTE_MESSAGE_NOT_ACCEPTED", message: result.message ?? "The message was not accepted." });
 
 /**
@@ -92,6 +93,7 @@ export class RemoteMessageReceiver implements RemoteMessageHandler {
     return answerOf(await root.acceptPeerRunMessage({
       fromNodeId: from.nodeId,
       fromNodeName: from.name,
+      senderAddress: request.sender.address,
       message: {
         messageId: request.messageId, senderAgentRunId: request.sender.agentRunId, receiverAgentRunId: target,
         content: request.content, messageType: request.messageType, referenceFiles: [], createdAt: request.createdAt,
@@ -128,6 +130,7 @@ export class RemoteMessageReceiver implements RemoteMessageHandler {
     return answerOf(await root.acceptRemoteMessage({
       fromNodeId: from.nodeId,
       fromNodeName: from.name,
+      senderAddress: request.sender.address,
       message: {
         messageId: request.messageId!,
         senderAgentRunId: request.sender.agentRunId,

@@ -309,7 +309,7 @@ export class RootTeamRun {
   /** DS-2: a message from, and to, another run of this node (CrossRunMessageDelivery: receiver in the gate, sender's own log). */
   acceptFromRun(input: import("../../agent-collaboration/communication/cross-run-accept-input.js").CrossRunAcceptInput): Promise<AgentOperationResult> { return this.materializationGate.run(() => this.delivery.acceptFromRun(input)); }
   prepareSendToRun(input: import("../../agent-collaboration/execution/communication/root-communication-engine.js").RunSendInput) { return this.communication.prepareSendToRun(input); }
-  commitSentToRun(message: Parameters<RootCommunicationEngine["commitSentToRun"]>[0]) { return this.communication.commitSentToRun(message); }
+  commitSentToRun(...sent: Parameters<RootCommunicationEngine["commitSentToRun"]>) { return this.communication.commitSentToRun(...sent); }
   acceptWorkPacket(packet: import("../../agent-collaboration/execution/task/task-delegation.js").WorkPacket): Promise<AgentOperationResult> {
     return this.materializationGate.run(() => acceptWorkPacketIfAllowed(packet, // CR-461-003: the Task side first, in the gate
       () => this.delivery.acceptWorkPacket(packet, this.getCoordinatorAgentRunId(), (message, agentRunId) => this.postMessage(message, agentRunId))));

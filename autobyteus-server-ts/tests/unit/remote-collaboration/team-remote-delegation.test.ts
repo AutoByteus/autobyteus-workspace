@@ -323,7 +323,7 @@ describe("remote delegation to a shared Agent Team, in process (autobyteus-247)"
     // A run on A that is not the delegator is refused by A's pair rule; a forged sender by B's link check.
     const bRoot = (await b.teamRuns.resolveManagedTeamRun("studio_team_b"))!;
     await expect(bRoot.acceptRemoteMessage({ fromNodeId: A_ID, fromNodeName: "desktop", message: { messageId: "collabmsg_forged",
-      senderAgentRunId: "someone_else", receiverAgentRunId: LEAD.agentRunId, content: "hi", messageType: "agent_message", referenceFiles: [], createdAt: T0 } }))
+      senderAgentRunId: "someone_else", receiverAgentRunId: LEAD.agentRunId, content: "hi", messageType: "agent_message", referenceFiles: [], createdAt: T0 }, senderAddress: null }))
       .resolves.toMatchObject({ accepted: false, code: "REMOTE_TARGET_NOT_PERMITTED" });
     // A second work packet, or one for a member that is not the coordinator, is not linked.
     await expect(bRoot.acceptRemoteWorkPacket({ fromNodeId: A_ID, fromNodeName: "desktop", senderAgentRunId: DELEGATOR, targetAgentRunId: WRITER.agentRunId, description: "x" }))
@@ -381,7 +381,7 @@ describe("remote delegation to a shared Agent Team, in process (autobyteus-247)"
     await expect(b.teamRuns.storedRemoteLinkCheck("studio_team_b", { ...query, senderAgentRunId: DELEGATOR, fromNodeId: "srv_other" })).resolves.toBe("not_linked");
     await expect(b.teamRuns.storedRemoteLinkCheck("no_such_team", query)).resolves.toBe("not_found");
     // Through the gateway: the unlinked sender is refused, and the Team run stays unloaded.
-    const forged = await a.client.deliverMessage({ nodeId: B_ID, kind: "message", messageId: "collabmsg_x", senderAgentRunId: "someone_else",
+    const forged = await a.client.deliverMessage({ nodeId: B_ID, kind: "message", messageId: "collabmsg_x", senderAgentRunId: "someone_else", senderAddress: null,
       targetRoot: { kind: "agent_team", runId: "studio_team_b" }, targetAgentRunId: LEAD.agentRunId, content: "hi", messageType: "agent_message", createdAt: T0 });
     expect(forged).toMatchObject({ accepted: false, code: "REMOTE_TARGET_NOT_PERMITTED" });
     expect(b.teamRuns.getManagedTeamRun("studio_team_b")).toBeNull();

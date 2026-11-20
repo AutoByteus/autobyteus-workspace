@@ -1,7 +1,7 @@
 import type { RunOwnAgentsReader } from "../../run-history/store/run-own-agents-reader.js";
 import { MESSAGE_DELIVERED_TEXT, type AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { DelegationIndex } from "../delegation/delegation-index.js";
-import type { CollaborationCommunicationMessage } from "../execution/communication/collaboration-communication-message.js";
+import type { CollaborationCommunicationMessage, MessageCounterpart } from "../execution/communication/collaboration-communication-message.js";
 import { isRecordedRunRefusal, type PreparedRunSend, type RecordedRunRefusal } from "../execution/communication/root-communication-engine.js";
 import {
   rootExecutionIdentityKey,
@@ -23,7 +23,8 @@ import type { CrossRunAcceptInput } from "./cross-run-accept-input.js";
 export type CrossRunSenderRoot = Readonly<{
   prepareSendToRun(input: Readonly<{ senderIdentity: CollaborationMemberExecutionIdentity; receiverAgentRunId: string; content: string;
     messageType?: string | null; referenceFiles?: readonly string[] | null }>): PreparedRunSend;
-  commitSentToRun(message: CollaborationCommunicationMessage): Promise<void>;
+  /** `counterpart`: the receiver, recorded on the sender's line when no Task relates the two runs (autobyteus-565). */
+  commitSentToRun(message: CollaborationCommunicationMessage, counterpart: MessageCounterpart | null): Promise<void>;
 }>;
 /** The receiver's root: in its gate it re-checks, writes its own log, and wakes and delivers (restored when stopped). */
 export type CrossRunReceiverRoot = Readonly<{
@@ -164,27 +165,32 @@ export class CrossRunMessageDelivery {
   }
 
   /**
-   * Step 3: the receiver's root accepts in its gate (its log first), then the sender's root records it (CM-9). Only a
-   * related message enters run views; an unrelated one stays in the two agents' conversations and logs (G-1, DEC-014).
+   * Step 3: the receiver's root accepts in its gate (its log first), then the sender's root records it (CM-9). The message's
+   * relation (related or unrelated) goes with it: `MessageViewScope` decides from it which views show it (autobyteus-565).
+   * An unrelated message records the other agent on each side's line: the sender's address on the receiver's (from its
+   * identity), the receiver's on the sender's (from the receiving run's answer).
    */
   private async exchange(input: CrossRunMessageInput, sender: CrossRunSenderRoot, message: CollaborationCommunicationMessage,
     receiverRun: RootExecutionIdentity, receiver: CrossRunReceiverRoot, kind: Readonly<{ reactivated: boolean; related: boolean }>): Promise<AgentOperationResult> {
     const { reactivated } = kind;
     const senderAddress = await this.dependencies.senderAddress({ sender: input.sender, receiverRun, receiverAgentRunId: input.targetAgentRunId });
     const accepted = await receiver.acceptFromRun({ message, senderIdentity: input.sender, senderDisplayName: input.senderDisplayName,
-      senderAddress, assertAllowed: () => this.assertStillOpen(receiverRun), publishToViews: kind.related });
+      senderAddress, assertAllowed: () => this.assertStillOpen(receiverRun), relation: kind.related ? "related" : "unrelated" });
+    const receiverAddress = accepted.accepted ? accepted.agentAddress ?? null : null;
+    const counterpart: MessageCounterpart | null = kind.related ? null : { address: receiverAddress, nodeId: null };
     if (!accepted.accepted) {
       let refused: AgentOperationResult = accepted;
       if (isRecordedRunRefusal(accepted)) {
-        await sender.commitSentToRun(message);
+        await sender.commitSentToRun(message, counterpart);
         refused = { accepted: false, code: accepted.code, message: accepted.message };
       }
       return reactivated ? notDeliveredAfterReopen(refused, input.targetAgentRunId) : refused;
     }
-    await sender.commitSentToRun(message);
+    await sender.commitSentToRun(message, counterpart);
     // Today's text (REQ-009, contract §2): by address it names the address; by run ID, "Message delivered." (CR-461-017).
-    const delivered = accepted.message ?? (input.shownAs ? `Delivered message to ${input.shownAs}.` : MESSAGE_DELIVERED_TEXT);
-    return { ...accepted, agentRunId: input.targetAgentRunId, message: reactivated ? `${delivered} ${input.targetAgentRunId} continues with its conversation.` : delivered };
+    const { agentAddress: _receiverAddress, ...answer } = accepted;
+    const delivered = answer.message ?? (input.shownAs ? `Delivered message to ${input.shownAs}.` : MESSAGE_DELIVERED_TEXT);
+    return { ...answer, agentRunId: input.targetAgentRunId, message: reactivated ? `${delivered} ${input.targetAgentRunId} continues with its conversation.` : delivered };
   }
 
   /** An agent of a delegated run no Task names, messaged by the run's own delegator: its Task was deleted (base's refusal). */

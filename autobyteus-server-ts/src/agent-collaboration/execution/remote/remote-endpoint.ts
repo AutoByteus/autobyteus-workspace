@@ -24,7 +24,7 @@ type RemoteEndpointCore = Readonly<{
   /** The pair rule, inbound: may the endpoint send to this local agent? */
   allowsTarget(agentRunId: string): boolean;
   /** The request that carries a prepared message from a paired agent to the endpoint. */
-  transmission(message: CollaborationCommunicationMessage): RemoteMessageTransmission;
+  transmission(message: CollaborationCommunicationMessage, senderAddress: string | null): RemoteMessageTransmission;
 }>;
 
 /**
@@ -77,11 +77,13 @@ const pairRule = (paired: readonly string[]) => {
   return { pairedAgentRunIds, allowsSender: isPaired, allowsTarget: isPaired };
 };
 
-const messageRequest = (nodeId: string, targetRoot: RemoteTargetRoot, message: CollaborationCommunicationMessage): RemoteMessageTransmission => Object.freeze({
+const messageRequest = (nodeId: string, targetRoot: RemoteTargetRoot, message: CollaborationCommunicationMessage,
+  senderAddress: string | null): RemoteMessageTransmission => Object.freeze({
   nodeId,
   kind: "message",
   messageId: message.messageId,
   senderAgentRunId: message.senderAgentRunId,
+  senderAddress,
   targetRoot,
   targetAgentRunId: message.receiverAgentRunId,
   content: message.content,
@@ -98,7 +100,7 @@ export const delegatedRunEndpoint = (link: PeerAgentRunLink): DelegatedRunEndpoi
     reference: Object.freeze({ nodeId: link.nodeId, agentRunId: link.agentRunId }),
     ...pairRule([link.delegatorAgentRunId]),
     displayName: getAgentTeamAddressBasename(link.address) ?? link.agentRunId,
-    transmission: (message: CollaborationCommunicationMessage) => messageRequest(link.nodeId, targetRoot, message),
+    transmission: (message: CollaborationCommunicationMessage, senderAddress: string | null) => messageRequest(link.nodeId, targetRoot, message, senderAddress),
   });
 };
 
@@ -112,7 +114,7 @@ export const delegatedTeamEndpoints = (link: PeerTeamRunLink): readonly Delegate
     reference: Object.freeze({ nodeId: link.nodeId, agentRunId: member.agentRunId }),
     ...rule,
     displayName: getAgentTeamAddressBasename(member.address) ?? member.agentRunId,
-    transmission: (message: CollaborationCommunicationMessage) => messageRequest(link.nodeId, targetRoot, message),
+    transmission: (message: CollaborationCommunicationMessage, senderAddress: string | null) => messageRequest(link.nodeId, targetRoot, message, senderAddress),
   })));
 };
 
@@ -125,7 +127,7 @@ export const delegatorEndpoint = (pairedAgentRunIds: readonly string[], delegate
     ...rule,
     displayName: delegatedFrom.delegatorAgentRunId,
     // The delegating node receives it in the delegating run it named at start.
-    transmission: (message: CollaborationCommunicationMessage) => messageRequest(delegatedFrom.nodeId, delegatedFrom.delegatingRun, message),
+    transmission: (message: CollaborationCommunicationMessage, senderAddress: string | null) => messageRequest(delegatedFrom.nodeId, delegatedFrom.delegatingRun, message, senderAddress),
     admitsWorkPacket: (fromNodeId: string, senderAgentRunId: string, targetAgentRunId: string) =>
       fromNodeId === delegatedFrom.nodeId && senderAgentRunId === delegatedFrom.delegatorAgentRunId && rule.allowsTarget(targetAgentRunId),
   });
@@ -141,11 +143,12 @@ export const unlinkedRunEndpoint = (input: Readonly<{ nodeId: string; agentRunId
     reference: Object.freeze({ nodeId: input.nodeId, agentRunId: input.agentRunId }),
     ...pairRule([input.pairedAgentRunId]),
     displayName: input.agentRunId,
-    transmission: (message: CollaborationCommunicationMessage): RemoteMessageTransmission => Object.freeze({
+    transmission: (message: CollaborationCommunicationMessage, senderAddress: string | null): RemoteMessageTransmission => Object.freeze({
       nodeId: input.nodeId,
       kind: "run_message",
       messageId: message.messageId,
       senderAgentRunId: message.senderAgentRunId,
+      senderAddress,
       targetAgentRunId: message.receiverAgentRunId,
       content: message.content,
       messageType: message.messageType,

@@ -24,8 +24,8 @@
 
     <div v-else-if="rows.length === 0" class="flex flex-1 flex-col items-center justify-center p-6 text-center text-gray-400">
       <Icon icon="heroicons:chat-bubble-left-right" class="mb-2 h-9 w-9 text-gray-300" />
-      <p class="text-sm font-medium text-gray-500">{{ $t('workspace.components.workspace.team.TeamCommunicationPanel.empty_title') }}</p>
-      <p class="mt-1 text-sm">{{ $t('workspace.components.workspace.team.TeamCommunicationPanel.empty_detail') }}</p>
+      <p class="text-sm font-medium text-gray-500">{{ ownList ? $t('workspace.components.workspace.team.TeamCommunicationPanel.empty_title_own') : $t('workspace.components.workspace.team.TeamCommunicationPanel.empty_title') }}</p>
+      <p class="mt-1 text-sm">{{ ownList ? $t('workspace.components.workspace.team.TeamCommunicationPanel.empty_detail_own') : $t('workspace.components.workspace.team.TeamCommunicationPanel.empty_detail') }}</p>
     </div>
 
     <div v-else class="collaboration-message-split flex min-h-0 flex-1 overflow-hidden" data-test="team-communication-split">
@@ -63,9 +63,12 @@
                     <span class="shrink-0 text-xs text-gray-400">{{ formatTimestamp(message.createdAt) }}</span>
                   </div>
                   <div class="mt-0.5 flex items-center justify-between gap-2">
-                    <p class="min-w-0 truncate text-xs text-gray-500">
-                      {{ counterpartMetadata(message) }}
-                    </p>
+                    <div class="flex min-w-0 items-center gap-1.5">
+                      <p class="min-w-0 truncate text-xs text-gray-500">
+                        {{ counterpartMetadata(message) }}
+                      </p>
+                      <RemoteNodeChip v-if="nodeNameOf(message)" :node-name="nodeNameOf(message)!" data-test="team-communication-node-chip" />
+                    </div>
                     <span
                       v-if="message.referenceFiles.length"
                       class="flex shrink-0 items-center gap-0.5 text-xs text-gray-400"
@@ -115,6 +118,24 @@
               </button>
             </div>
           </div>
+          <!-- Older messages, a page at a time (autobyteus-565 DEC-004). -->
+          <div v-if="hasMore || moreStatus.state === 'error'" class="px-3 pb-1 pt-2" data-test="collaboration-messages-more">
+            <p v-if="moreStatus.state === 'error'" class="mb-1 break-words text-xs text-amber-700" data-test="collaboration-messages-more-error">
+              {{ t('workspace.components.workspace.team.TeamCommunicationPanel.load_more_failed') }}: {{ moreStatus.error }}
+            </p>
+            <button
+              v-if="hasMore"
+              type="button"
+              class="w-full rounded border border-gray-200 px-2 py-1.5 text-xs font-medium text-blue-600 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:cursor-default disabled:text-gray-400"
+              :disabled="moreStatus.state === 'loading'"
+              data-test="collaboration-messages-load-more"
+              @click="messages.loadMore()"
+            >
+              {{ moreStatus.state === 'loading'
+                ? t('workspace.components.workspace.team.TeamCommunicationPanel.loading_more')
+                : t('workspace.components.workspace.team.TeamCommunicationPanel.load_more') }}
+            </button>
+          </div>
         </section>
       </aside>
 
@@ -161,8 +182,9 @@
               <span class="shrink-0 text-xs text-gray-400">{{ formatTimestamp(selectedMessage.createdAt) }}</span>
             </div>
             <div v-if="identityOpen" :id="identityId" class="mt-2 space-y-1 break-all rounded bg-gray-50 p-2 text-xs text-gray-600" data-test="message-identity-detail">
-              <p>{{ t('workspace.collaboration.identity.address') }}: {{ selectedMessage.counterpart.address }}</p>
+              <p v-if="selectedMessage.counterpart.address">{{ t('workspace.collaboration.identity.address') }}: {{ selectedMessage.counterpart.address }}</p>
               <p>{{ t('workspace.collaboration.identity.agentRun') }}: {{ selectedMessage.counterpartAgentRunId }}</p>
+              <p v-if="nodeNameOf(selectedMessage)">{{ t('workspace.collaboration.identity.node') }}: {{ nodeNameOf(selectedMessage) }}</p>
               <template v-if="selectedMessage.counterpart.kind === 'delegated'">
                 <p>{{ t('workspace.collaboration.identity.hostRun') }}: {{ selectedMessage.counterpart.runId }}</p>
                 <p>{{ t('workspace.collaboration.identity.executionRun') }}: {{ selectedMessage.counterpart.executionRunId }}</p>
@@ -200,6 +222,7 @@ import {
   referenceFileName,
 } from '~/utils/teamCommunication/referenceFilePresentation';
 import CollaborationMessageReferenceViewer from './CollaborationMessageReferenceViewer.vue';
+import RemoteNodeChip from '~/components/workspace/remote/RemoteNodeChip.vue';
 
 const props = defineProps<{
   messages: CollaborationMessagesContextView;
@@ -231,6 +254,13 @@ const hasFocusedMemberIdentity = computed(() => Boolean(
     && props.messages.memberIdentityByAgentRunId()[props.messages.focusedAgentRunId],
 ));
 const teamRunId = computed(() => props.messages.rootRunId);
+/** A standalone run's own agent's list: every message it sent or received (autobyteus-565). */
+const ownList = computed(() => props.messages.rootKind === 'agent' && props.messages.focusedAgentRunId === props.messages.rootRunId);
+const hasMore = computed(() => props.messages.hasMore());
+const moreStatus = computed(() => props.messages.moreStatus());
+/** The node of an agent on another node, as this node names it (the chip; autobyteus-565 DEC-002). */
+const nodeNameOf = (message: CollaborationMessagePerspectiveRow): string | null =>
+  message.counterpart.kind === 'remote' ? message.counterpart.nodeName : null;
 const selectedMessage = computed(() =>
   props.rows.find((message) => message.messageId === selectedMessageId.value) || null,
 );

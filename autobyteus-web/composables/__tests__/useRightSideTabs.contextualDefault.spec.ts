@@ -106,4 +106,26 @@ describe('useRightSideTabs contextual default (D-17)', () => {
     await nextTick()
     expect(api().activeTab.value).toBe('projects')
   })
+
+  // autobyteus-565 (design: the default stays Activity): a standalone run's Messages tab does not make it a collaboration
+  // scope; a run it delegated, selected under it, is the same scope, so the tab the user chose stays.
+  it('opens a standalone run with Messages on Activity; selecting a run it delegated keeps the chosen tab', async () => {
+    const { Host, api } = await loadSubject()
+    const standalone = (runId: string, focused = runId) => ({ kind: focused === runId ? 'standalone_agent' : 'agent_run_task_agent',
+      collaborationMessages: { rootKind: 'agent', rootRunId: runId, focusedAgentRunId: focused }, context: { state: { runId: focused } } })
+    target.value = standalone('pm')
+    mount(Host)
+    expect(api().activeTab.value).toBe('progress')
+    api().selectTabExplicitly('teamMembers')
+    target.value = standalone('pm', 'task-agent')
+    await nextTick()
+    expect(api().activeTab.value).toBe('teamMembers')
+    target.value = standalone('pm')
+    await nextTick()
+    expect(api().activeTab.value).toBe('teamMembers')
+    target.value = standalone('other-pm')
+    await nextTick()
+    expect(api().activeTab.value).toBe('progress')
+  })
 })
+

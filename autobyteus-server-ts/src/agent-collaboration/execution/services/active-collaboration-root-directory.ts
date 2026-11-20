@@ -20,7 +20,8 @@ export interface ActiveRootMessageBoundary {
   hasAgentExecution(agentRunId: string): boolean;
   /** DS-2: this root as the sender of a message to another run (its own log only). */
   prepareSendToRun?(input: import("../communication/root-communication-engine.js").RunSendInput): import("../communication/root-communication-engine.js").PreparedRunSend;
-  commitSentToRun?(message: import("../communication/collaboration-communication-message.js").CollaborationCommunicationMessage): Promise<void>;
+  commitSentToRun?(message: import("../communication/collaboration-communication-message.js").CollaborationCommunicationMessage,
+    counterpart: import("../communication/collaboration-communication-message.js").MessageCounterpart | null): Promise<void>;
   deliverExactAgentMessage(input: ExactAgentMessageInput): Promise<AgentOperationResult>;
   /**
    * autobyteus-492 DS-004: `send_message_to(node, run ID)` from an agent of this root to an agent of a peer node, named by

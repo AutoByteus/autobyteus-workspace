@@ -231,7 +231,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.acceptFromRun(input); });
   }
   prepareSendToRun(input: RunSendInput) { return this.communication.prepareSendToRun(input); }
-  commitSentToRun(message: Parameters<RootCommunicationEngine["commitSentToRun"]>[0]) { return this.communication.commitSentToRun(message); }
+  commitSentToRun(...sent: Parameters<RootCommunicationEngine["commitSentToRun"]>) { return this.communication.commitSentToRun(...sent); }
   /** The work packet of the peer's delegation that started this run (N-6). */
   acceptRemoteWorkPacket(input: RemoteInboundWorkPacket): Promise<AgentOperationResult> {
     return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.acceptRemoteWorkPacket(input); });

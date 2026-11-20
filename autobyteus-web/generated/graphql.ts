@@ -3105,6 +3105,7 @@ export type QueryApplicationPackageDetailsArgs = {
 
 export type QueryCollaborationParticipantMessagesArgs = {
   agentRunId: Scalars['String']['input'];
+  before?: InputMaybe<Scalars['JSON']['input']>;
   rootKind: Scalars['String']['input'];
   rootRunId: Scalars['String']['input'];
 };

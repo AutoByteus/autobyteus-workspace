@@ -29,8 +29,18 @@ export declare const agentRunCollaborationViewDtoSchema: z.ZodObject<{
     }, z.core.$strict>;
 }, z.core.$strict>;
 /**
+ * One agent of a live message as its commit knew it (autobyteus-565): its run ID, its address in its own run when known,
+ * and, for an agent on another node, the name the receiving node gives that node.
+ */
+export declare const messagePartyDtoSchema: z.ZodObject<{
+    agentRunId: z.ZodString;
+    address: z.ZodNullable<z.ZodString>;
+    nodeName: z.ZodNullable<z.ZodString>;
+}, z.core.$strict>;
+/**
  * The Agent root view's events: its messages and its tree's changes. Its agent presents on its own Agent stream, and each
- * run it delegated on its own (rule 2; a peer's run through `/ws/peer-run`, SR-086 G-D1).
+ * run it delegated on its own (rule 2; a peer's run through `/ws/peer-run`, SR-086 G-D1). A message comes with its two
+ * parties, so the view names a counterpart it does not know yet (another run, another node; autobyteus-565).
  */
 export declare const agentRunCollaborationEventDtoSchema: z.ZodDiscriminatedUnion<[z.ZodObject<{
     kind: z.ZodLiteral<"communication">;
@@ -42,6 +52,18 @@ export declare const agentRunCollaborationEventDtoSchema: z.ZodDiscriminatedUnio
         messageType: z.ZodString;
         referenceFiles: z.ZodArray<z.ZodString>;
         createdAt: z.ZodString;
+    }, z.core.$strict>;
+    parties: z.ZodObject<{
+        sender: z.ZodObject<{
+            agentRunId: z.ZodString;
+            address: z.ZodNullable<z.ZodString>;
+            nodeName: z.ZodNullable<z.ZodString>;
+        }, z.core.$strict>;
+        receiver: z.ZodObject<{
+            agentRunId: z.ZodString;
+            address: z.ZodNullable<z.ZodString>;
+            nodeName: z.ZodNullable<z.ZodString>;
+        }, z.core.$strict>;
     }, z.core.$strict>;
 }, z.core.$strict>, z.ZodObject<{
     added: z.ZodArray<z.ZodObject<{
@@ -240,4 +262,5 @@ export declare const agentRunCollaborationEventDtoSchema: z.ZodDiscriminatedUnio
 export type AgentRunCollaborationTreeDto = Readonly<z.infer<typeof agentRunCollaborationTreeDtoSchema>>;
 export type AgentRunCollaborationViewDto = Readonly<z.infer<typeof agentRunCollaborationViewDtoSchema>>;
 export type AgentRunCollaborationEventDto = Readonly<z.infer<typeof agentRunCollaborationEventDtoSchema>>;
+export type MessagePartyDto = Readonly<z.infer<typeof messagePartyDtoSchema>>;
 //# sourceMappingURL=agent-run-collaboration-dtos.d.ts.map

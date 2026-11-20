@@ -32,14 +32,16 @@ const harness = async () => {
   for (const execution of [{ teamRunId: "eng" }, { teamRunId: "product" }, { agentRunId: "image" }, { agentRunId: "research" }]) await tasks.markStarted(execution);
   const log: string[] = [];
   /** Whether each accepted message entered run views (G-1, DEC-014), by message ID. */
-  const publishedToViews = new Map<string, boolean>();
+  /** Each accepted message's relation (autobyteus-565), and the receiver recorded on the sender's line. */
+  const publishedToViews = new Map<string, string>();
+  const senderRecords = new Map<string, unknown>();
   /** The agents that run now, in their run (`RunningAgents.rootOf`); every agent of the tree runs unless a test stops it. */
   const running = new Map<string, RootExecutionIdentity>([["manager", M], ["designer", E], ["coder", E], ["pd", P], ["pm", P], ["image", I], ["research", R], ["legacy", LEGACY]]);
   const senderRoot = (r: RootExecutionIdentity) => ({
     prepareSendToRun: (input: { senderIdentity: { agentRunId: string }; receiverAgentRunId: string; content: string }) => ({ ok: true as const,
       message: { messageId: `m-${input.senderIdentity.agentRunId}-${input.receiverAgentRunId}`, senderAgentRunId: input.senderIdentity.agentRunId,
         receiverAgentRunId: input.receiverAgentRunId, content: input.content, messageType: "agent_message", referenceFiles: [], createdAt: "t" } }),
-    commitSentToRun: async (message: { messageId: string }) => { log.push(`sender-log:${r.rootRunId}:${message.messageId}`); },
+    commitSentToRun: async (message: { messageId: string }, counterpart: unknown) => { log.push(`sender-log:${r.rootRunId}:${message.messageId}`); senderRecords.set(message.messageId, counterpart); },
   });
   /** The receiver's root runs the gate-head re-check, then writes its own log (or refuses, writing nothing). */
   const receiverRoot = (r: RootExecutionIdentity): CrossRunReceiverRoot => ({
@@ -49,8 +51,8 @@ const harness = async () => {
         throw error;
       }
       log.push(`receiver-log:${r.rootRunId}:${input.message.messageId}`);
-      publishedToViews.set(input.message.messageId, input.publishToViews);
-      return { accepted: true };
+      publishedToViews.set(input.message.messageId, input.relation);
+      return { accepted: true, agentAddress: `/${input.message.receiverAgentRunId}` };
     },
   });
   const beforeReceive = { hook: async () => undefined as void };
@@ -70,7 +72,7 @@ const harness = async () => {
     targetAgentRunId: target, content: "hello", messageType: "agent_message", referenceFiles: [] });
   const sendAs = (from: RootExecutionIdentity, sender: string, target: string, shownAs: string) => delivery.route({ sender: agent(from, sender),
     senderDisplayName: sender, targetAgentRunId: target, shownAs, content: "hello", messageType: "agent_message", referenceFiles: [] });
-  return { tasks, tree, log, send, sendAs, beforeReceive, runFiles, restorability, running, restored, publishedToViews, delivery };
+  return { tasks, tree, log, send, sendAs, beforeReceive, runFiles, restorability, running, restored, publishedToViews, senderRecords, delivery };
 };
 
 describe("CrossRunMessageDelivery (DS-2)", () => {
@@ -90,7 +92,8 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
     const receiverRun = rootExecutionIdentityKey((await h.tree.runOfAgent(target))!);
     expect(h.log).toEqual([`receiver-log:${receiverRun.split("\0")[1]}:m-${sender}-${target}`, `sender-log:${from.rootRunId}:m-${sender}-${target}`]);
     // A related message enters run views as today (G-1).
-    expect(h.publishedToViews.get(`m-${sender}-${target}`)).toBe(true);
+    expect(h.publishedToViews.get(`m-${sender}-${target}`)).toBe("related");
+    expect(h.senderRecords.get(`m-${sender}-${target}`)).toBeNull();
   });
 
   it("by address, the result names the address the sender used (CR-461-017)", async () => {
@@ -117,7 +120,9 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
     await expect(h.send(P, "pd", "research")).resolves.toMatchObject({ accepted: true, agentRunId: "research", message: "Message delivered." });
     expect(h.log).toEqual(["receiver-log:research:m-pd-research", "sender-log:product:m-pd-research"]);
     expect(h.restored).not.toHaveBeenCalled();
-    expect(h.publishedToViews.get("m-pd-research")).toBe(false);
+    expect(h.publishedToViews.get("m-pd-research")).toBe("unrelated");
+    // autobyteus-565: the sender's line records the receiver as the receiving run answered it.
+    expect(h.senderRecords.get("m-pd-research")).toEqual({ address: "/research", nodeId: null });
   });
 
   it("autobyteus-492 REQ-010 (DEC-003): an unrelated receiver that does not run is not this route's (the router answers not running); nothing is restored or written", async () => {
@@ -294,6 +299,6 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
       runningAgents: { rootOf: () => null }, activeReceiverRoot: () => null });
     await expect(delivery.route({ sender: agent(M, "manager"), senderDisplayName: "manager", targetAgentRunId: "designer", content: "x", messageType: "agent_message", referenceFiles: [] }))
       .resolves.toEqual({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: ASSIGNER_ONLY_REACTIVATION_MESSAGE });
-    expect(commitSentToRun).toHaveBeenCalledWith(expect.objectContaining({ messageId: "m" }));
+    expect(commitSentToRun).toHaveBeenCalledWith(expect.objectContaining({ messageId: "m" }), null);
   });
 });
