@@ -6,6 +6,13 @@
 export const CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID = "system.claude_background_task";
 
 /**
+ * `sender_id` of the conversation notice an ACP session emits when Grok Build starts a turn itself (a provider-started
+ * turn, for example after a background command ended); the content is Grok's own reminder text (autobyteus-517).
+ * Shared by the Grok session profile, which produces it, and agent memory, which records it.
+ */
+export const GROK_PROVIDER_TURN_NOTICE_SENDER_ID = "system.grok_provider_turn";
+
+/**
  * `sender_id` of the platform notice that tells a run a skill it uses changed on disk. Shared by
  * the skill update notice service, which produces it, and agent memory, which records it.
  */

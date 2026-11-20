@@ -1,0 +1,11 @@
+2026-11-19T21:56:04.514Z # ios-demo-mode-279 node; repo /Users/normy/.cache/abtest279/fs-docker at 4ad317c20d; big-279.pdf 41943398 bytes
+2026-11-19T21:56:25.789Z node up on http://192.168.2.158:49768; /mobile 200
+2026-11-19T21:56:28.543Z run fact_checker_b9df272f44a84f58905f5f13211eb9e3; Phone Access on. Control: /tmp/abtest279/node/pair-<name>, /tmp/abtest279/node/stop
+2026-11-19T21:57:03.767Z pairing session for base-1795125423: 201 (link in /tmp/abtest279/node, not evidence)
+2026-11-19T22:04:45.351Z pairing session for base-1795125885: 201 (link in /tmp/abtest279/node, not evidence)
+2026-11-19T22:07:38.641Z pairing session for base-1795126058: 201 (link in /tmp/abtest279/node, not evidence)
+2026-11-19T22:09:26.155Z pairing session for base-1795126165: 201 (link in /tmp/abtest279/node, not evidence)
+2026-11-19T22:13:23.249Z pairing session for base-1795126402: 201 (link in /tmp/abtest279/node, not evidence)
+2026-11-19T22:15:09.785Z pairing session for paste-1795126509: 201 (link in /tmp/abtest279/node, not evidence)
+2026-11-19T22:18:38.382Z pairing session for scan-1795126718: 201 (link in /tmp/abtest279/node, not evidence)
+2026-11-19T22:22:42.365Z node done; temp root removed: true

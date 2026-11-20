@@ -27,12 +27,19 @@ export type RemoteStartedRun =
     }>
   | RemoteChannelRefusal;
 export type RemoteDeliveryReceipt = Readonly<{ accepted: true }> | RemoteChannelRefusal;
+/**
+ * A message the peer accepted (autobyteus-565): `receiverAddress` is the receiving agent's address in its own run, as that
+ * node answers it (null for a work packet, or when it has none).
+ */
+export type RemoteMessageReceipt = Readonly<{ accepted: true; receiverAddress: string | null }> | RemoteChannelRefusal;
 
 export type RemoteMessageTransmission = Readonly<{
   nodeId: string;
   kind: "work_packet" | "message";
   messageId?: string;
   senderAgentRunId: string;
+  /** The sending agent's address in its own run (autobyteus-565), so the receiving node records and shows who sent it. */
+  senderAddress: string | null;
   /** The root that receives it on that node (autobyteus-247 G-2): the remote run's, or the coordinating run. */
   targetRoot: RemoteTargetRoot;
   targetAgentRunId: string;
@@ -48,6 +55,7 @@ export type RemoteMessageTransmission = Readonly<{
   kind: "run_message";
   messageId: string;
   senderAgentRunId: string;
+  senderAddress: string | null;
   targetAgentRunId: string;
   content: string;
   messageType: string;
@@ -127,7 +135,7 @@ export interface RemoteRunChannel {
     /** The work and its Task: the peer's Model Router is told it (DS-002). */
     work: DelegationWork;
   }>): Promise<RemoteStartedRun>;
-  deliverMessage(input: RemoteMessageTransmission): Promise<RemoteDeliveryReceipt>;
+  deliverMessage(input: RemoteMessageTransmission): Promise<RemoteMessageReceipt>;
   /** autobyteus-278: the titles and statuses of these runs on that node (one request per node). */
   runSummaries(nodeId: string, runs: readonly RemoteStartedRunRef[]): Promise<RemoteRunSummaries>;
   /** autobyteus-278: one agent's stored conversation in a run this node's delegation started. */

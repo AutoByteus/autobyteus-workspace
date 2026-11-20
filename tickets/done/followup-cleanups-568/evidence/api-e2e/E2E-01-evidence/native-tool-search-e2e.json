@@ -1,0 +1,418 @@
+{
+  "requests": [
+    {
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "search_tools",
+        "call_tool"
+      ],
+      "toolsBytes": 9471,
+      "systemBytes": 4970,
+      "lastMessage": "{\"role\":\"user\",\"content\":\"List the projects.\"}"
+    },
+    {
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "search_tools",
+        "call_tool"
+      ],
+      "toolsBytes": 9471,
+      "systemBytes": 4970,
+      "lastMessage": "{\"role\":\"user\",\"content\":[{\"type\":\"tool_result\",\"tool_use_id\":\"toolu_4e5c703054e643dc8e4f4ef2484471dd\",\"content\":\"Found 1 tool. Call one with call_tool: {\\\"name\\\": \\\"<tool name>\\\", \\\"arguments\\\": {<its arguments>}}.\\n{\\\"name\\\":\\\"list_projects\\\",\\\"description\\\":\\\"List every Project on the current node with its stable projectId, name, description and workspaces: the folders the Project is linked to (workspaceRootPath, and the link's description when it has one). Check them before creating a Project for a folder: a folder that is a Project's folder, or inside or around one, belongs to that Project. A field with no value is left out. Does not select or change a Project.\\\",\\\"parameters\\\":{\\\"type\\\":\\\"object\\\",\\\"properties\\\":{},\\\"required\\\":[],\\\"additionalProperties\\\":false}}\"}]}"
+    },
+    {
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "search_tools",
+        "call_tool"
+      ],
+      "toolsBytes": 9471,
+      "systemBytes": 4970,
+      "lastMessage": "{\"role\":\"user\",\"content\":[{\"type\":\"tool_result\",\"tool_use_id\":\"toolu_1b5379f2f1cc4bf79e5b0f6b48078a52\",\"content\":\"{\\\"projects\\\":[{\\\"projectId\\\":\\\"project_d8af3465-fe69-4eba-8d1b-731ebf6b7c50\\\",\\\"name\\\":\\\"Tool Search E2E e19a4c\\\"}]}\"}]}"
+    },
+    {
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "search_tools",
+        "call_tool"
+      ],
+      "toolsBytes": 9471,
+      "systemBytes": 4970,
+      "lastMessage": "{\"role\":\"user\",\"content\":\"List the projects again.\"}"
+    },
+    {
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "search_tools",
+        "call_tool"
+      ],
+      "toolsBytes": 9471,
+      "systemBytes": 4970,
+      "lastMessage": "{\"role\":\"user\",\"content\":[{\"type\":\"tool_result\",\"tool_use_id\":\"toolu_d40f40784adb494c8587409ff130c87d\",\"content\":\"{\\\"projects\\\":[{\\\"projectId\\\":\\\"project_d8af3465-fe69-4eba-8d1b-731ebf6b7c50\\\",\\\"name\\\":\\\"Tool Search E2E e19a4c\\\"}]}\"}]}"
+    },
+    {
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "search_tools",
+        "call_tool"
+      ],
+      "toolsBytes": 9471,
+      "systemBytes": 4970,
+      "lastMessage": "{\"role\":\"user\",\"content\":\"[Platform notice — tools updated]\\n\\nYour tools changed. Now available: list_project_tasks.\\n\\nList the tasks of project project_d8af3465-fe69-4eba-8d1b-731ebf6b7c50.\"}"
+    },
+    {
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "search_tools",
+        "call_tool"
+      ],
+      "toolsBytes": 9471,
+      "systemBytes": 4970,
+      "lastMessage": "{\"role\":\"user\",\"content\":[{\"type\":\"tool_result\",\"tool_use_id\":\"toolu_c3c8dda7ea004659b56f159eabc47eaa\",\"content\":\"{\\\"projectId\\\":\\\"project_d8af3465-fe69-4eba-8d1b-731ebf6b7c50\\\"}\"}]}"
+    },
+    {
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "search_tools",
+        "call_tool"
+      ],
+      "toolsBytes": 9471,
+      "systemBytes": 4970,
+      "lastMessage": "{\"role\":\"user\",\"content\":\"[Platform notice — tools updated]\\n\\nYour tools changed. No longer available: list_projects.\\n\\nList the projects once more.\"}"
+    },
+    {
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "search_tools",
+        "call_tool"
+      ],
+      "toolsBytes": 9471,
+      "systemBytes": 4970,
+      "lastMessage": "{\"role\":\"user\",\"content\":[{\"type\":\"tool_result\",\"tool_use_id\":\"toolu_4b0a7e3dc5f8462fb4947175e43bdb76\",\"content\":\"Error: Tool 'list_projects' not found or configured for agent 'native_tool_search_d87b17dd_fff48c259b0c43428cf9d0b9b3818353'.\",\"is_error\":true}]}"
+    }
+  ],
+  "approvals": [
+    {
+      "toolName": "search_tools",
+      "arguments": {
+        "query": "list_projects"
+      }
+    },
+    {
+      "toolName": "list_projects",
+      "arguments": {}
+    },
+    {
+      "toolName": "list_projects",
+      "arguments": {}
+    },
+    {
+      "toolName": "list_project_tasks",
+      "arguments": {
+        "project_id": "project_d8af3465-fe69-4eba-8d1b-731ebf6b7c50"
+      }
+    },
+    {
+      "toolName": "list_projects",
+      "arguments": {}
+    }
+  ],
+  "unscripted": [],
+  "segmentEnds": [
+    {
+      "tool_name": "search_tools",
+      "arguments": {
+        "query": "list_projects"
+      },
+      "native_tool_call_context": {
+        "provider": "anthropic",
+        "toolUseBlock": {
+          "type": "tool_use",
+          "id": "toolu_4e5c703054e643dc8e4f4ef2484471dd",
+          "name": "search_tools",
+          "input": {}
+        }
+      }
+    },
+    {
+      "tool_name": "list_projects",
+      "arguments": {},
+      "native_tool_call_context": {
+        "provider": "anthropic",
+        "toolUseBlock": {
+          "type": "tool_use",
+          "id": "toolu_1b5379f2f1cc4bf79e5b0f6b48078a52",
+          "name": "call_tool",
+          "input": {}
+        }
+      }
+    },
+    null,
+    {
+      "tool_name": "list_projects",
+      "arguments": {},
+      "native_tool_call_context": {
+        "provider": "anthropic",
+        "toolUseBlock": {
+          "type": "tool_use",
+          "id": "toolu_d40f40784adb494c8587409ff130c87d",
+          "name": "call_tool",
+          "input": {}
+        }
+      }
+    },
+    null,
+    {
+      "tool_name": "list_project_tasks",
+      "arguments": {
+        "project_id": "project_d8af3465-fe69-4eba-8d1b-731ebf6b7c50"
+      },
+      "native_tool_call_context": {
+        "provider": "anthropic",
+        "toolUseBlock": {
+          "type": "tool_use",
+          "id": "toolu_c3c8dda7ea004659b56f159eabc47eaa",
+          "name": "call_tool",
+          "input": {}
+        }
+      }
+    },
+    null,
+    {
+      "tool_name": "list_projects",
+      "arguments": {},
+      "native_tool_call_context": {
+        "provider": "anthropic",
+        "toolUseBlock": {
+          "type": "tool_use",
+          "id": "toolu_4b0a7e3dc5f8462fb4947175e43bdb76",
+          "name": "call_tool",
+          "input": {}
+        }
+      }
+    },
+    null
+  ],
+  "history": [
+    {
+      "kind": "message",
+      "role": "user",
+      "messageId": "e2e-72bc5b29-5f07-44cb-b988-8a0984a8612d",
+      "dedupeKey": "agent_run_input:e2e:e2e-72bc5b29-5f07-44cb-b988-8a0984a8612d",
+      "content": "List the projects.",
+      "media": null,
+      "ts": 1795185701.072
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "turnId": "turn_0001",
+      "content": "",
+      "media": null,
+      "ts": 1795185701.147
+    },
+    {
+      "kind": "tool_call",
+      "invocationId": "toolu_4e5c703054e643dc8e4f4ef2484471dd",
+      "role": null,
+      "turnId": "turn_0001",
+      "content": "",
+      "toolName": "search_tools",
+      "toolArgs": {
+        "query": "list_projects"
+      },
+      "toolResult": "Found 1 tool. Call one with call_tool: {\"name\": \"<tool name>\", \"arguments\": {<its arguments>}}.\n{\"name\":\"list_projects\",\"description\":\"List every Project on the current node with its stable projectId, name, description and workspaces: the folders the Project is linked to (workspaceRootPath, and the link's description when it has one). Check them before creating a Project for a folder: a folder that is a Project's folder, or inside or around one, belongs to that Project. A field with no value is left out. Does not select or change a Project.\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}",
+      "toolError": null,
+      "media": null,
+      "ts": 1795185701.779
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "turnId": "turn_0001",
+      "content": "",
+      "media": null,
+      "ts": 1795185701.797
+    },
+    {
+      "kind": "tool_call",
+      "invocationId": "toolu_1b5379f2f1cc4bf79e5b0f6b48078a52",
+      "role": null,
+      "turnId": "turn_0001",
+      "content": "",
+      "toolName": "list_projects",
+      "toolArgs": {},
+      "toolResult": "{\"projects\":[{\"projectId\":\"project_d8af3465-fe69-4eba-8d1b-731ebf6b7c50\",\"name\":\"Tool Search E2E e19a4c\"}]}",
+      "toolError": null,
+      "media": null,
+      "ts": 1795185701.833
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "turnId": "turn_0001",
+      "content": "DONE-1",
+      "media": null,
+      "ts": 1795185701.847
+    },
+    {
+      "kind": "message",
+      "role": "user",
+      "messageId": "e2e-63fd8fcd-cfdd-4c0a-826b-bf0b7c406406",
+      "dedupeKey": "agent_run_input:e2e:e2e-63fd8fcd-cfdd-4c0a-826b-bf0b7c406406",
+      "content": "List the projects again.",
+      "media": null,
+      "ts": 1795185702.113
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "turnId": "turn_0002",
+      "content": "",
+      "media": null,
+      "ts": 1795185702.128
+    },
+    {
+      "kind": "tool_call",
+      "invocationId": "toolu_d40f40784adb494c8587409ff130c87d",
+      "role": null,
+      "turnId": "turn_0002",
+      "content": "",
+      "toolName": "list_projects",
+      "toolArgs": {},
+      "toolResult": "{\"projects\":[{\"projectId\":\"project_d8af3465-fe69-4eba-8d1b-731ebf6b7c50\",\"name\":\"Tool Search E2E e19a4c\"}]}",
+      "toolError": null,
+      "media": null,
+      "ts": 1795185702.161
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "turnId": "turn_0002",
+      "content": "DONE-2",
+      "media": null,
+      "ts": 1795185702.176
+    },
+    {
+      "kind": "system_task_notification",
+      "role": null,
+      "senderId": "system.tool_list_update_notifier",
+      "content": "[Platform notice — tools updated]\n\nYour tools changed. Now available: list_project_tasks.",
+      "messageId": "b99d7433-78fe-4561-9ce4-6d3edd05fb55",
+      "ts": 1795185705.426
+    },
+    {
+      "kind": "message",
+      "role": "user",
+      "messageId": "e2e-e00ad53e-ea70-47b2-bcd7-eefe56ea98bd",
+      "dedupeKey": "agent_run_input:e2e:e2e-e00ad53e-ea70-47b2-bcd7-eefe56ea98bd",
+      "content": "List the tasks of project project_d8af3465-fe69-4eba-8d1b-731ebf6b7c50.",
+      "media": null,
+      "ts": 1795185705.426
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "turnId": "turn_0003",
+      "content": "",
+      "media": null,
+      "ts": 1795185705.445
+    },
+    {
+      "kind": "tool_call",
+      "invocationId": "toolu_c3c8dda7ea004659b56f159eabc47eaa",
+      "role": null,
+      "turnId": "turn_0003",
+      "content": "",
+      "toolName": "list_project_tasks",
+      "toolArgs": {
+        "project_id": "project_d8af3465-fe69-4eba-8d1b-731ebf6b7c50"
+      },
+      "toolResult": "{\"projectId\":\"project_d8af3465-fe69-4eba-8d1b-731ebf6b7c50\"}",
+      "toolError": null,
+      "media": null,
+      "ts": 1795185705.48
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "turnId": "turn_0003",
+      "content": "DONE-3",
+      "media": null,
+      "ts": 1795185705.496
+    },
+    {
+      "kind": "system_task_notification",
+      "role": null,
+      "senderId": "system.tool_list_update_notifier",
+      "content": "[Platform notice — tools updated]\n\nYour tools changed. No longer available: list_projects.",
+      "messageId": "56966443-6d28-4a3d-b177-5c662a4562c3",
+      "ts": 1795185708.718
+    },
+    {
+      "kind": "message",
+      "role": "user",
+      "messageId": "e2e-718c9641-34a6-40ea-b4a0-f691688647b9",
+      "dedupeKey": "agent_run_input:e2e:e2e-718c9641-34a6-40ea-b4a0-f691688647b9",
+      "content": "List the projects once more.",
+      "media": null,
+      "ts": 1795185708.718
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "turnId": "turn_0004",
+      "content": "",
+      "media": null,
+      "ts": 1795185708.739
+    },
+    {
+      "kind": "tool_call",
+      "invocationId": "toolu_4b0a7e3dc5f8462fb4947175e43bdb76",
+      "role": null,
+      "turnId": "turn_0004",
+      "content": "",
+      "toolName": "list_projects",
+      "toolArgs": {},
+      "toolResult": null,
+      "toolError": "Tool 'list_projects' not found or configured for agent 'native_tool_search_d87b17dd_fff48c259b0c43428cf9d0b9b3818353'.",
+      "media": null,
+      "ts": 1795185708.771
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "turnId": "turn_0004",
+      "content": "DONE-4",
+      "media": null,
+      "ts": 1795185708.787
+    }
+  ]
+}

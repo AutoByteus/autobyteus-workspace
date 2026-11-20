@@ -1,0 +1,30 @@
+# IMP-03 build-only release run on GitHub (AC-001, AC-005; DESIGN.md rule 12)
+# command: gh workflow run release-ios.yml --ref codex/ios-xcode27-sdk-571 -f publish_app_store_connect=false; then gh run view 44730865039 --log (excerpts) and --json jobs
+# run: 44730865039, head e3950f9d07261725f0ce8c7abcba5e1703ae2d37, workflow_dispatch, created 2026-11-20T11:50:35Z
+# env: GitHub-hosted runners (ubuntu for metadata; xcode-27-arm64 for the iOS job)
+# date: 2026-11-20T12:27:07Z
+
+  Resolve iOS Release Metadata	Set up job	2026-11-20T11:50:39.3163467Z Image: ubuntu-26.04
+  Build And Test iOS App	Set up job	2026-11-20T11:52:01.2543960Z Image: xcode-27-arm64
+  Build And Test iOS App	Select Xcode 27 or newer	2026-11-20T11:54:52.1806880Z Selected Xcode app: /Applications/Xcode_27.2.app
+  Build And Test iOS App	Select Xcode 27 or newer	2026-11-20T11:54:52.1912480Z Xcode 27.2
+  Build And Test iOS App	Select Xcode 27 or newer	2026-11-20T11:54:52.2014980Z Build version 27B52
+  Build And Test iOS App	Select Xcode 27 or newer	2026-11-20T11:54:52.2056530Z Selected iPhoneOS SDK: 27.2
+  Build And Test iOS App	Select available iOS simulator	2026-11-20T11:55:16.2747950Z [36;1mecho "Selected simulator UDID: $UDID"[0m
+  Build And Test iOS App	Select available iOS simulator	2026-11-20T11:55:16.7982550Z Selected simulator UDID: 0AC25E88-57C5-486B-A20F-84D7A683A99D
+  Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T11:58:30.4608590Z ** BUILD SUCCEEDED **
+  Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T12:03:53.7187640Z 	 Executed 56 tests, with 0 failures (0 unexpected) in 30.498 (66.777) seconds
+  Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T12:03:54.2954120Z 	 Executed 56 tests, with 0 failures (0 unexpected) in 30.498 (66.780) seconds
+  Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T12:05:09.9954590Z ** TEST SUCCEEDED **
+  Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T12:18:16.2257480Z 	 Executed 8 tests, with 0 failures (0 unexpected) in 479.058 (479.133) seconds
+  Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T12:18:16.2261170Z 	 Executed 8 tests, with 0 failures (0 unexpected) in 479.058 (479.136) seconds
+  Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T12:18:18.0818080Z ** TEST SUCCEEDED **
+  Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T12:18:26.4684830Z Xcode version: Xcode 27.2 Build version 27B52
+  Build And Test iOS App	Generate, build, and run implementation checks	2026-11-20T12:18:26.5273750Z Smoke UI tests: executed and passed without skips
+
+# Job conclusions
+run: success
+Resolve iOS Release Metadata: success
+Build And Test iOS App: success
+Validate iOS Publish Secrets: skipped
+Archive And Upload To App Store Connect: skipped

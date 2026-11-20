@@ -38,7 +38,7 @@ export const createAgentOrgCommunicationPort = (input: Readonly<{
     reserveRecipientInput: (agentRunId, message) => input.reserveRecipientInput(agentRunId, message),
     logOwnersOf: (message) => messageLogOwners(message, (agentRunId) => input.messageLogOwnerOf(agentRunId)),
     commitMessageAppend: (append) => input.persistence.commitMessageAppend(append),
-    publishMessage: (message, senderRun) => input.messageFeed.publish({ message, senderRun, receiverRun: input.root }),
+    publishMessage: (publication) => input.messageFeed.publish(publication),
     presentRecipientInput: (message, recipientInput) => input.presentCommittedMessage(message, recipientInput),
   };
   return Object.freeze(port);

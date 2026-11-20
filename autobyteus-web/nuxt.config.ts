@@ -10,6 +10,10 @@ const isDevelopment = process.env.NODE_ENV !== 'production' && process.env.NODE_
 const isElectronBuild = process.env.BUILD_TARGET === 'electron'
 const isTest = process.env.NODE_ENV === 'test' || process.env.NUXT_TEST === 'true' || process.env.VITEST === 'true'
 const isMobileWebBuild = process.env.AUTOBYTEUS_MOBILE_WEB_BUILD === 'true'
+// The iOS app's built-in demo (autobyteus-279): the phone build with the demo node (`demo/`), built only by
+// `build:mobile-web --demo`. Nuxt registers every top-level file in plugins/, so the demo's plugin lives in demo/plugins/
+// and is named here only for this build; no other build contains demo/.
+const isDemoBuild = process.env.AUTOBYTEUS_DEMO_BUILD === '1'
 
 const ensureClientPrecomputedFile = (serverDir: string): void => {
   const precomputedPath = join(serverDir, 'client.precomputed.mjs')
@@ -118,6 +122,7 @@ const baseConfig: NuxtConfig = {
   ],
 
   plugins: [
+    ...(isDemoBuild ? ['~/demo/plugins/00.demoBoot.client.ts'] : []),
     '~/plugins/fontawesome.ts'
   ],
   

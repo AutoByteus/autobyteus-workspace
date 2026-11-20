@@ -1,4 +1,5 @@
 import { RunViewStreams } from "../../../../../src/agent-collaboration/delegation/run-view-stream.js";
+import { MessageViewScope } from "../../../../../src/agent-collaboration/delegation/message-view-scope.js";
 import { createTeamRootExecutionIdentity } from "../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import "reflect-metadata";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -106,7 +107,7 @@ describe("TeamRunHistoryResolver execution checkpoint", () => {
 
   it("a stopped run's checkpoint is its view's sequence, with no open work of its own (autobyteus-461 SR-045, SR-062)", async () => {
     mocks.getActiveTeamRun.mockReturnValue(null);
-    const streams = new RunViewStreams({ agent: () => false, agent_team: () => false, agent_org: () => false }, { tree: { chainOf: (run) => [run], collaborationTreeOf: () => ({ rows: () => [] }) as never }, events: { agent: (message) => message, agent_team: (message) => message, agent_org: (message) => message } });
+    const streams = new RunViewStreams({ agent: () => false, agent_team: () => false, agent_org: () => false }, { tree: { chainOf: (run) => [run] }, scope: new MessageViewScope({ tree: { collaborationTreeOf: () => ({ rows: () => [] }) as never } }), events: { agent: (message) => message, agent_team: (message) => message, agent_org: (message) => message } });
     streams.streamOf(createTeamRootExecutionIdentity("team-run-1")).publish({ kind: "a row event" });
     mocks.viewStreams = streams;
     expect(new TeamRunHistoryResolver().getTeamRunExecutionCheckpoint("team-run-1"))

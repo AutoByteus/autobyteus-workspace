@@ -1,0 +1,2066 @@
+{
+ "label": "iphone",
+ "w": 440,
+ "h": 956,
+ "findings": [],
+ "errors": [],
+ "log": [
+  {
+   "where": "other ways buttons",
+   "buttons": [
+    "Demo, sample data. About the demo",
+    "On this phone",
+    "Close",
+    "Project Task Manager, Dispatch the approved desktop app Tasks, Running",
+    "Hide delegated work of Project Task Manager",
+    "software engineering team, Image context files don’t reach the model on the first turn, Running",
+    "Show members of software engineering team",
+    "agent package creator, Package the release-notes agent for the agent store, 2 background tasks running",
+    "software engineering team, Members of a delegated team can’t reach the package creator, Background task running",
+    "Show members of software engineering team",
+    "marketing team, Plan the 1.6 launch campaign across email, social and the website, Running",
+    "Show members of marketing team",
+    "market researcher, Compare competitor pricing pages for the desktop app, Idle",
+    "support team, Triage the open desktop support threads, Stopped",
+    "Show members of support team",
+    "Daily Assistant, Summarize the 1.6 release notes for the pilot customers, Background task running",
+    "Product Launch Org, Prepare the 1.6 launch, Running",
+    "Hide members of Product Launch Org",
+    "launch lead, Running",
+    "content writer, Idle",
+    "release manager, Idle",
+    "Personal Assistant, Plan the week: school pickups, dentist, budget review, Stopped",
+    "Codex, Fix the failing probe test on the base branch, Stopped",
+    "Show older (8)",
+    "New run"
+   ]
+  },
+  {
+   "where": "run list",
+   "len": 1071,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "rows",
+   "count": 40,
+   "rows": [
+    "0:Project Task Manager",
+    "1:software engineering team",
+    "2:solution designer",
+    "2:implementation engineer",
+    "3:code searcher",
+    "2:code reviewer",
+    "1:agent package creator",
+    "1:software engineering team",
+    "2:solution designer",
+    "2:implementation engineer",
+    "2:code reviewer",
+    "1:marketing team",
+    "2:campaign lead",
+    "2:copywriter",
+    "2:designer",
+    "1:market researcher",
+    "1:support team",
+    "2:triage lead",
+    "2:answer writer",
+    "0:Daily Assistant",
+    "0:Product Launch Org",
+    "1:launch lead",
+    "1:content writer",
+    "1:release manager",
+    "0:Personal Assistant",
+    "0:Codex",
+    "0:Writing Coach",
+    "0:Billing Team",
+    "1:solution designer",
+    "1:implementation engineer",
+    "1:code reviewer",
+    "0:Weekly Planner",
+    "0:Agent Package Creator",
+    "0:Travel Planner",
+    "0:Refactoring Assistant",
+    "0:Documentation Team",
+    "1:solution designer",
+    "1:implementation engineer",
+    "1:code reviewer",
+    "0:Contract Reader"
+   ]
+  },
+  {
+   "where": "run 0:Project Task Manager",
+   "len": 466,
+   "head": "Project Task Manager Running You You Dispatch the approved desktop app Tasks. PT Project Task Manager Project Task Manager delegate_task delegate_task delegate_"
+  },
+  {
+   "where": "run Project Task Manager ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Project Task Manager › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run Project Task Manager › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run Project Task Manager › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run Project Task Manager › Activity",
+   "len": 604,
+   "head": "Activity BACKGROUND TASKS 1 running Watch the upgrade check Running pnpm run upgrade:check --watch Started 07:04 AM Build the release notes site Completed pnpm "
+  },
+  {
+   "where": "run Project Task Manager › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run Project Task Manager › Settings",
+   "len": 85,
+   "head": "Settings Project Task Manager Running Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 1:software engineering team",
+   "len": 407,
+   "head": "solution_designer Idle · in software engineering team S solution_designer solution_designer From Project Task Manager: Image context files don’t reach the model"
+  },
+  {
+   "where": "run software engineering team ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run software engineering team › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run software engineering team › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run software engineering team › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run software engineering team › Messages",
+   "len": 238,
+   "head": "Messages To implementation engineer Nov 20, 06:58 AM My part is done; the result is in the folder. From implementation engineer Nov 20, 06:57 AM Image context f"
+  },
+  {
+   "where": "run software engineering team › Activity",
+   "len": 97,
+   "head": "Activity read_file docs/pilot-summary.md success send_message_to /implementation_engineer success"
+  },
+  {
+   "where": "run software engineering team › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run software engineering team › Settings",
+   "len": 110,
+   "head": "Settings solution_designer Idle · in software engineering team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 2:solution designer",
+   "len": 407,
+   "head": "solution_designer Idle · in software engineering team S solution_designer solution_designer From Project Task Manager: Image context files don’t reach the model"
+  },
+  {
+   "where": "run solution designer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run solution designer › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run solution designer › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run solution designer › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run solution designer › Messages",
+   "len": 238,
+   "head": "Messages To implementation engineer Nov 20, 06:58 AM My part is done; the result is in the folder. From implementation engineer Nov 20, 06:57 AM Image context f"
+  },
+  {
+   "where": "run solution designer › Activity",
+   "len": 97,
+   "head": "Activity read_file docs/pilot-summary.md success send_message_to /implementation_engineer success"
+  },
+  {
+   "where": "run solution designer › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run solution designer › Settings",
+   "len": 110,
+   "head": "Settings solution_designer Idle · in software engineering team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 2:implementation engineer",
+   "len": 490,
+   "head": "implementation_engineer Running · in software engineering team I implementation_engineer implementation_engineer From Solution Designer: Requirements are approv"
+  },
+  {
+   "where": "run implementation engineer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run implementation engineer › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run implementation engineer › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run implementation engineer › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run implementation engineer › Messages",
+   "len": 226,
+   "head": "Messages To solution designer Nov 20, 06:58 AM My part is done; the result is in the folder. From solution designer Nov 20, 06:57 AM Image context files don’t r"
+  },
+  {
+   "where": "run implementation engineer › Activity",
+   "len": 134,
+   "head": "Activity read_file src/export/filters.ts success edit_file src/export/filters.ts success run_terminal_command pnpm test export success"
+  },
+  {
+   "where": "run implementation engineer › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run implementation engineer › Settings",
+   "len": 119,
+   "head": "Settings implementation_engineer Running · in software engineering team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 3:code searcher",
+   "len": 352,
+   "head": "Code Searcher Running · in implementation engineer CS Code Searcher Code Searcher From Implementation Engineer: Find where the export screen keeps its filters. "
+  },
+  {
+   "where": "run code searcher ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run code searcher › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run code searcher › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run code searcher › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run code searcher › Activity",
+   "len": 77,
+   "head": "Activity search_files filters success read_file src/export/filters.ts success"
+  },
+  {
+   "where": "run code searcher › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run code searcher › Settings",
+   "len": 107,
+   "head": "Settings Code Searcher Running · in implementation engineer Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 2:code reviewer",
+   "len": 341,
+   "head": "code_reviewer Idle · in software engineering team C code_reviewer code_reviewer From Implementation Engineer: The change is ready for review: src/export/filters"
+  },
+  {
+   "where": "run code reviewer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run code reviewer › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run code reviewer › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run code reviewer › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run code reviewer › Messages",
+   "len": 226,
+   "head": "Messages To solution designer Nov 20, 06:58 AM My part is done; the result is in the folder. From solution designer Nov 20, 06:57 AM Image context files don’t r"
+  },
+  {
+   "where": "run code reviewer › Activity",
+   "len": 94,
+   "head": "Activity read_file src/export/filters.ts success run_terminal_command pnpm test export success"
+  },
+  {
+   "where": "run code reviewer › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run code reviewer › Settings",
+   "len": 106,
+   "head": "Settings code_reviewer Idle · in software engineering team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 1:agent package creator",
+   "len": 368,
+   "head": "Agent Package Creator 2 background tasks running · in Project Task Manager You You Package the release-notes agent for the agent store AP Agent Package Creator "
+  },
+  {
+   "where": "run agent package creator ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run agent package creator › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run agent package creator › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run agent package creator › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run agent package creator › Activity",
+   "len": 255,
+   "head": "Activity BACKGROUND TASKS 2 running Validate the package manifest Running pnpm run package:validate --watch Started 07:02 AM Bundle the release-notes agent Runn"
+  },
+  {
+   "where": "run agent package creator › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run agent package creator › Settings",
+   "len": 131,
+   "head": "Settings Agent Package Creator 2 background tasks running · in Project Task Manager Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 1:software engineering team",
+   "len": 407,
+   "head": "solution_designer Idle · in software engineering team S solution_designer solution_designer From Project Task Manager: Members of a delegated team can’t reach t"
+  },
+  {
+   "where": "run software engineering team ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run software engineering team › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run software engineering team › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run software engineering team › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run software engineering team › Messages",
+   "len": 238,
+   "head": "Messages To implementation engineer Nov 20, 06:44 AM My part is done; the result is in the folder. From implementation engineer Nov 20, 06:43 AM Members of a de"
+  },
+  {
+   "where": "run software engineering team › Activity",
+   "len": 97,
+   "head": "Activity read_file docs/pilot-summary.md success send_message_to /implementation_engineer success"
+  },
+  {
+   "where": "run software engineering team › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run software engineering team › Settings",
+   "len": 110,
+   "head": "Settings solution_designer Idle · in software engineering team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 2:solution designer",
+   "len": 407,
+   "head": "solution_designer Idle · in software engineering team S solution_designer solution_designer From Project Task Manager: Members of a delegated team can’t reach t"
+  },
+  {
+   "where": "run solution designer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run solution designer › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run solution designer › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run solution designer › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run solution designer › Messages",
+   "len": 238,
+   "head": "Messages To implementation engineer Nov 20, 06:44 AM My part is done; the result is in the folder. From implementation engineer Nov 20, 06:43 AM Members of a de"
+  },
+  {
+   "where": "run solution designer › Activity",
+   "len": 97,
+   "head": "Activity read_file docs/pilot-summary.md success send_message_to /implementation_engineer success"
+  },
+  {
+   "where": "run solution designer › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run solution designer › Settings",
+   "len": 110,
+   "head": "Settings solution_designer Idle · in software engineering team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 2:implementation engineer",
+   "len": 506,
+   "head": "implementation_engineer Background task running · in software engineering team I implementation_engineer implementation_engineer From Solution Designer: Require"
+  },
+  {
+   "where": "run implementation engineer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run implementation engineer › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run implementation engineer › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run implementation engineer › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run implementation engineer › Messages",
+   "len": 226,
+   "head": "Messages To solution designer Nov 20, 06:44 AM My part is done; the result is in the folder. From solution designer Nov 20, 06:43 AM Members of a delegated team"
+  },
+  {
+   "where": "run implementation engineer › Activity",
+   "len": 226,
+   "head": "Activity BACKGROUND TASKS 1 running Run the package tests Running pnpm test --watch Started 06:52 AM read_file src/export/filters.ts success edit_file src/expor"
+  },
+  {
+   "where": "run implementation engineer › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run implementation engineer › Settings",
+   "len": 135,
+   "head": "Settings implementation_engineer Background task running · in software engineering team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 2:code reviewer",
+   "len": 341,
+   "head": "code_reviewer Idle · in software engineering team C code_reviewer code_reviewer From Implementation Engineer: The change is ready for review: src/export/filters"
+  },
+  {
+   "where": "run code reviewer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run code reviewer › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run code reviewer › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run code reviewer › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run code reviewer › Messages",
+   "len": 226,
+   "head": "Messages To solution designer Nov 20, 06:44 AM My part is done; the result is in the folder. From solution designer Nov 20, 06:43 AM Members of a delegated team"
+  },
+  {
+   "where": "run code reviewer › Activity",
+   "len": 94,
+   "head": "Activity read_file src/export/filters.ts success run_terminal_command pnpm test export success"
+  },
+  {
+   "where": "run code reviewer › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run code reviewer › Settings",
+   "len": 106,
+   "head": "Settings code_reviewer Idle · in software engineering team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 1:marketing team",
+   "len": 391,
+   "head": "campaign_lead Running · in marketing team You You Plan the 1.6 launch campaign across email, social and the website. C campaign_lead campaign_lead read_file · l"
+  },
+  {
+   "where": "run marketing team ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run marketing team › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run marketing team › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run marketing team › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run marketing team › Messages",
+   "len": 218,
+   "head": "Messages To copywriter Nov 20, 06:56 AM My part is done; the result is in the folder. From copywriter Nov 20, 06:55 AM Plan the 1.6 launch campaign across email"
+  },
+  {
+   "where": "run marketing team › Activity",
+   "len": 119,
+   "head": "Activity read_file launch/announcement.md success send_message_to /copywriter success send_message_to /designer success"
+  },
+  {
+   "where": "run marketing team › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run marketing team › Settings",
+   "len": 98,
+   "head": "Settings campaign_lead Running · in marketing team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 2:campaign lead",
+   "len": 391,
+   "head": "campaign_lead Running · in marketing team You You Plan the 1.6 launch campaign across email, social and the website. C campaign_lead campaign_lead read_file · l"
+  },
+  {
+   "where": "run campaign lead ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run campaign lead › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run campaign lead › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run campaign lead › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run campaign lead › Messages",
+   "len": 218,
+   "head": "Messages To copywriter Nov 20, 06:56 AM My part is done; the result is in the folder. From copywriter Nov 20, 06:55 AM Plan the 1.6 launch campaign across email"
+  },
+  {
+   "where": "run campaign lead › Activity",
+   "len": 119,
+   "head": "Activity read_file launch/announcement.md success send_message_to /copywriter success send_message_to /designer success"
+  },
+  {
+   "where": "run campaign lead › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run campaign lead › Settings",
+   "len": 98,
+   "head": "Settings campaign_lead Running · in marketing team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 2:copywriter",
+   "len": 331,
+   "head": "copywriter Idle · in marketing team C copywriter copywriter From Campaign Lead: Write three social posts from launch/announcement.md. read_file · launch/announc"
+  },
+  {
+   "where": "run copywriter ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run copywriter › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run copywriter › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run copywriter › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run copywriter › Messages",
+   "len": 224,
+   "head": "Messages To campaign lead Nov 20, 06:56 AM My part is done; the result is in the folder. From campaign lead Nov 20, 06:55 AM Plan the 1.6 launch campaign across"
+  },
+  {
+   "where": "run copywriter › Activity",
+   "len": 49,
+   "head": "Activity read_file launch/announcement.md success"
+  },
+  {
+   "where": "run copywriter › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run copywriter › Settings",
+   "len": 92,
+   "head": "Settings copywriter Idle · in marketing team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 2:designer",
+   "len": 282,
+   "head": "designer Idle · in marketing team D designer designer From Campaign Lead: Make the website banner for Thursday, 12 March. read_file · docs/dashboard-after.png T"
+  },
+  {
+   "where": "run designer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run designer › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run designer › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run designer › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run designer › Messages",
+   "len": 224,
+   "head": "Messages To campaign lead Nov 20, 06:56 AM My part is done; the result is in the folder. From campaign lead Nov 20, 06:55 AM Plan the 1.6 launch campaign across"
+  },
+  {
+   "where": "run designer › Activity",
+   "len": 51,
+   "head": "Activity read_file docs/dashboard-after.png success"
+  },
+  {
+   "where": "run designer › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run designer › Settings",
+   "len": 90,
+   "head": "Settings designer Idle · in marketing team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 1:market researcher",
+   "len": 353,
+   "head": "Market Researcher Idle · in Project Task Manager You You Compare competitor pricing pages for the desktop app MR Market Researcher Market Researcher search_web "
+  },
+  {
+   "where": "run market researcher ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run market researcher › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run market researcher › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run market researcher › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run market researcher › Activity",
+   "len": 80,
+   "head": "Activity search_web Compare competitor pricing pages for the desktop app success"
+  },
+  {
+   "where": "run market researcher › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run market researcher › Settings",
+   "len": 105,
+   "head": "Settings Market Researcher Idle · in Project Task Manager Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 1:support team",
+   "len": 306,
+   "head": "triage_lead Stopped · in support team You You Triage the open desktop support threads. T triage_lead triage_lead read_file · docs/pilot-customers.csv send_messa"
+  },
+  {
+   "where": "run support team ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run support team › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run support team › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run support team › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run support team › Messages",
+   "len": 198,
+   "head": "Messages To answer writer Nov 20, 06:17 AM My part is done; the result is in the folder. From answer writer Nov 20, 06:16 AM Triage the open desktop support thr"
+  },
+  {
+   "where": "run support team › Activity",
+   "len": 90,
+   "head": "Activity read_file docs/pilot-customers.csv success send_message_to /answer_writer success"
+  },
+  {
+   "where": "run support team › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run support team › Settings",
+   "len": 94,
+   "head": "Settings triage_lead Stopped · in support team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 2:triage lead",
+   "len": 306,
+   "head": "triage_lead Stopped · in support team You You Triage the open desktop support threads. T triage_lead triage_lead read_file · docs/pilot-customers.csv send_messa"
+  },
+  {
+   "where": "run triage lead ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run triage lead › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run triage lead › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run triage lead › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run triage lead › Messages",
+   "len": 198,
+   "head": "Messages To answer writer Nov 20, 06:17 AM My part is done; the result is in the folder. From answer writer Nov 20, 06:16 AM Triage the open desktop support thr"
+  },
+  {
+   "where": "run triage lead › Activity",
+   "len": 90,
+   "head": "Activity read_file docs/pilot-customers.csv success send_message_to /answer_writer success"
+  },
+  {
+   "where": "run triage lead › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run triage lead › Settings",
+   "len": 94,
+   "head": "Settings triage_lead Stopped · in support team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 2:answer writer",
+   "len": 298,
+   "head": "answer_writer Stopped · in support team A answer_writer answer_writer From Triage Lead: Answer the two connector questions; both need connector 2.4. read_file ·"
+  },
+  {
+   "where": "run answer writer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run answer writer › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run answer writer › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run answer writer › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run answer writer › Messages",
+   "len": 194,
+   "head": "Messages To triage lead Nov 20, 06:17 AM My part is done; the result is in the folder. From triage lead Nov 20, 06:16 AM Triage the open desktop support threads"
+  },
+  {
+   "where": "run answer writer › Activity",
+   "len": 52,
+   "head": "Activity read_file docs/release-notes-1.6.md success"
+  },
+  {
+   "where": "run answer writer › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run answer writer › Settings",
+   "len": 96,
+   "head": "Settings answer_writer Stopped · in support team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 0:Daily Assistant",
+   "len": 2232,
+   "head": "Daily Assistant Background task running You You Summarize the 1.6 release notes for the pilot customers. Check the changelog, show me the latest commits and fix"
+  },
+  {
+   "where": "run Daily Assistant ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts",
+   "len": 67,
+   "head": "Artifacts dashboard-after.png pilot-summary.md release-notes-1.6.md"
+  },
+  {
+   "where": "run Daily Assistant › Artifacts › first file",
+   "len": 92,
+   "head": "Artifacts docs/dashboard-after.png 100% Scroll to zoom • Drag to pan • Double-click to reset"
+  },
+  {
+   "where": "run Daily Assistant › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run Daily Assistant › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run Daily Assistant › Activity",
+   "len": 616,
+   "head": "Activity BACKGROUND TASKS 1 running Watch the upgrade check Running pnpm run upgrade:check --watch Started 07:04 AM Build the release notes site Completed pnpm "
+  },
+  {
+   "where": "run Daily Assistant › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run Daily Assistant › Settings",
+   "len": 96,
+   "head": "Settings Daily Assistant Background task running Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 0:Product Launch Org",
+   "len": 447,
+   "head": "launch lead Running · in Product Launch Org You You Prepare the 1.6 launch: the announcement, the email to the pilot customers and the release checklist. LL lau"
+  },
+  {
+   "where": "run Product Launch Org ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Product Launch Org › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run Product Launch Org › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run Product Launch Org › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run Product Launch Org › Messages",
+   "len": 447,
+   "head": "Messages From release manager Nov 20, 06:41 AM Checklist done. Two items wait for the connector 2.4 build. checklist.md From content writer Nov 20, 06:40 AM Bot"
+  },
+  {
+   "where": "run Product Launch Org › Activity",
+   "len": 133,
+   "head": "Activity read_file docs/release-notes-1.6.md success send_message_to /content_writer success send_message_to /release_manager success"
+  },
+  {
+   "where": "run Product Launch Org › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run Product Launch Org › Settings",
+   "len": 100,
+   "head": "Settings launch lead Running · in Product Launch Org Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 1:launch lead",
+   "len": 447,
+   "head": "launch lead Running · in Product Launch Org You You Prepare the 1.6 launch: the announcement, the email to the pilot customers and the release checklist. LL lau"
+  },
+  {
+   "where": "run launch lead ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run launch lead › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run launch lead › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run launch lead › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run launch lead › Messages",
+   "len": 447,
+   "head": "Messages From release manager Nov 20, 06:41 AM Checklist done. Two items wait for the connector 2.4 build. checklist.md From content writer Nov 20, 06:40 AM Bot"
+  },
+  {
+   "where": "run launch lead › Activity",
+   "len": 133,
+   "head": "Activity read_file docs/release-notes-1.6.md success send_message_to /content_writer success send_message_to /release_manager success"
+  },
+  {
+   "where": "run launch lead › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run launch lead › Settings",
+   "len": 100,
+   "head": "Settings launch lead Running · in Product Launch Org Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 1:content writer",
+   "len": 454,
+   "head": "content writer Idle · in Product Launch Org CW content writer content writer From Launch Lead: Draft the announcement and the pilot email from docs/release-note"
+  },
+  {
+   "where": "run content writer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run content writer › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run content writer › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run content writer › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run content writer › Messages",
+   "len": 240,
+   "head": "Messages To launch lead Nov 20, 06:22 AM Both drafts are ready for your review. announcement.md pilot-email.md From launch lead Nov 20, 06:21 AM Draft the annou"
+  },
+  {
+   "where": "run content writer › Activity",
+   "len": 135,
+   "head": "Activity read_file docs/release-notes-1.6.md success write_file launch/announcement.md success write_file launch/pilot-email.md success"
+  },
+  {
+   "where": "run content writer › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run content writer › Settings",
+   "len": 100,
+   "head": "Settings content writer Idle · in Product Launch Org Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 1:release manager",
+   "len": 337,
+   "head": "release manager Idle · in Product Launch Org RM release manager release manager From Launch Lead: Prepare the release checklist for Thursday, 12 March. write_fi"
+  },
+  {
+   "where": "run release manager ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run release manager › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run release manager › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run release manager › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run release manager › Messages",
+   "len": 201,
+   "head": "Messages To launch lead Nov 20, 06:10 AM Checklist done. Two items wait for the connector 2.4 build. checklist.md From launch lead Nov 20, 06:09 AM Prepare the "
+  },
+  {
+   "where": "run release manager › Activity",
+   "len": 47,
+   "head": "Activity write_file launch/checklist.md success"
+  },
+  {
+   "where": "run release manager › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run release manager › Settings",
+   "len": 101,
+   "head": "Settings release manager Idle · in Product Launch Org Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 0:Personal Assistant",
+   "len": 315,
+   "head": "Personal Assistant Stopped You You Plan the week: school pickups, dentist, budget review PA Personal Assistant Personal Assistant read_file · docs/pilot-summary"
+  },
+  {
+   "where": "run Personal Assistant ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Personal Assistant › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run Personal Assistant › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run Personal Assistant › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run Personal Assistant › Activity",
+   "len": 48,
+   "head": "Activity read_file docs/pilot-summary.md success"
+  },
+  {
+   "where": "run Personal Assistant › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run Personal Assistant › Settings",
+   "len": 83,
+   "head": "Settings Personal Assistant Stopped Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 0:Codex",
+   "len": 259,
+   "head": "Codex Stopped You You Fix the failing probe test on the base branch C Codex Codex run_terminal_command · pnpm test probe The probe test waited on a timer that n"
+  },
+  {
+   "where": "run Codex ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Codex › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run Codex › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run Codex › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run Codex › Activity",
+   "len": 53,
+   "head": "Activity run_terminal_command pnpm test probe success"
+  },
+  {
+   "where": "run Codex › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run Codex › Settings",
+   "len": 70,
+   "head": "Settings Codex Stopped Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 0:Writing Coach",
+   "len": 276,
+   "head": "Writing Coach Stopped You You Tighten the opening of the pilot email WC Writing Coach Writing Coach read_file · launch/pilot-email.md A tighter opening: “Releas"
+  },
+  {
+   "where": "run Writing Coach ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Writing Coach › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run Writing Coach › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run Writing Coach › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run Writing Coach › Activity",
+   "len": 48,
+   "head": "Activity read_file launch/pilot-email.md success"
+  },
+  {
+   "where": "run Writing Coach › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run Writing Coach › Settings",
+   "len": 78,
+   "head": "Settings Writing Coach Stopped Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 0:Billing Team",
+   "len": 373,
+   "head": "solution_designer Stopped · in Billing Team S solution_designer solution_designer From Project Task Manager: Review the invoice export migration. Please design "
+  },
+  {
+   "where": "run Billing Team ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Billing Team › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run Billing Team › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run Billing Team › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run Billing Team › Messages",
+   "len": 214,
+   "head": "Messages To implementation engineer Nov 19, 05:02 AM My part is done; the result is in the folder. From implementation engineer Nov 19, 05:01 AM Review the invo"
+  },
+  {
+   "where": "run Billing Team › Activity",
+   "len": 97,
+   "head": "Activity read_file docs/pilot-summary.md success send_message_to /implementation_engineer success"
+  },
+  {
+   "where": "run Billing Team › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run Billing Team › Settings",
+   "len": 100,
+   "head": "Settings solution_designer Stopped · in Billing Team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 1:solution designer",
+   "len": 373,
+   "head": "solution_designer Stopped · in Billing Team S solution_designer solution_designer From Project Task Manager: Review the invoice export migration. Please design "
+  },
+  {
+   "where": "run solution designer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run solution designer › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run solution designer › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run solution designer › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run solution designer › Messages",
+   "len": 214,
+   "head": "Messages To implementation engineer Nov 19, 05:02 AM My part is done; the result is in the folder. From implementation engineer Nov 19, 05:01 AM Review the invo"
+  },
+  {
+   "where": "run solution designer › Activity",
+   "len": 97,
+   "head": "Activity read_file docs/pilot-summary.md success send_message_to /implementation_engineer success"
+  },
+  {
+   "where": "run solution designer › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run solution designer › Settings",
+   "len": 100,
+   "head": "Settings solution_designer Stopped · in Billing Team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 1:implementation engineer",
+   "len": 477,
+   "head": "implementation_engineer Stopped · in Billing Team I implementation_engineer implementation_engineer From Solution Designer: Requirements are approved: keep the "
+  },
+  {
+   "where": "run implementation engineer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run implementation engineer › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run implementation engineer › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run implementation engineer › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run implementation engineer › Messages",
+   "len": 202,
+   "head": "Messages To solution designer Nov 19, 05:02 AM My part is done; the result is in the folder. From solution designer Nov 19, 05:01 AM Review the invoice export m"
+  },
+  {
+   "where": "run implementation engineer › Activity",
+   "len": 134,
+   "head": "Activity read_file src/export/filters.ts success edit_file src/export/filters.ts success run_terminal_command pnpm test export success"
+  },
+  {
+   "where": "run implementation engineer › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run implementation engineer › Settings",
+   "len": 106,
+   "head": "Settings implementation_engineer Stopped · in Billing Team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 1:code reviewer",
+   "len": 331,
+   "head": "code_reviewer Stopped · in Billing Team C code_reviewer code_reviewer From Implementation Engineer: The change is ready for review: src/export/filters.ts. read_"
+  },
+  {
+   "where": "run code reviewer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run code reviewer › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run code reviewer › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run code reviewer › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run code reviewer › Messages",
+   "len": 202,
+   "head": "Messages To solution designer Nov 19, 05:02 AM My part is done; the result is in the folder. From solution designer Nov 19, 05:01 AM Review the invoice export m"
+  },
+  {
+   "where": "run code reviewer › Activity",
+   "len": 94,
+   "head": "Activity read_file src/export/filters.ts success run_terminal_command pnpm test export success"
+  },
+  {
+   "where": "run code reviewer › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run code reviewer › Settings",
+   "len": 96,
+   "head": "Settings code_reviewer Stopped · in Billing Team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 0:Weekly Planner",
+   "len": 245,
+   "head": "Weekly Planner Stopped You You Which Tasks are blocked this week? WP Weekly Planner Weekly Planner read_file · launch/checklist.md Two items are blocked this we"
+  },
+  {
+   "where": "run Weekly Planner ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Weekly Planner › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run Weekly Planner › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run Weekly Planner › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run Weekly Planner › Activity",
+   "len": 46,
+   "head": "Activity read_file launch/checklist.md success"
+  },
+  {
+   "where": "run Weekly Planner › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run Weekly Planner › Settings",
+   "len": 79,
+   "head": "Settings Weekly Planner Stopped Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 0:Agent Package Creator",
+   "len": 332,
+   "head": "Agent Package Creator Stopped You You Make a Product Video Producer package for the marketing team AP Agent Package Creator Agent Package Creator read_file · do"
+  },
+  {
+   "where": "run Agent Package Creator ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Agent Package Creator › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run Agent Package Creator › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run Agent Package Creator › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run Agent Package Creator › Activity",
+   "len": 52,
+   "head": "Activity read_file docs/release-notes-1.6.md success"
+  },
+  {
+   "where": "run Agent Package Creator › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run Agent Package Creator › Settings",
+   "len": 86,
+   "head": "Settings Agent Package Creator Stopped Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 0:Travel Planner",
+   "len": 338,
+   "head": "Travel Planner Stopped You You Compare two flights to Berlin for the March trip TP Travel Planner Travel Planner search_web · Compare two flights to Berlin for "
+  },
+  {
+   "where": "run Travel Planner ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Travel Planner › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run Travel Planner › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run Travel Planner › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run Travel Planner › Activity",
+   "len": 76,
+   "head": "Activity search_web Compare two flights to Berlin for the March trip success"
+  },
+  {
+   "where": "run Travel Planner › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run Travel Planner › Settings",
+   "len": 79,
+   "head": "Settings Travel Planner Stopped Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 0:Refactoring Assistant",
+   "len": 275,
+   "head": "Refactoring Assistant Stopped You You Rename the export helpers and update the imports RA Refactoring Assistant Refactoring Assistant edit_file · export/filters"
+  },
+  {
+   "where": "run Refactoring Assistant ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Refactoring Assistant › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run Refactoring Assistant › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run Refactoring Assistant › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run Refactoring Assistant › Activity",
+   "len": 48,
+   "head": "Activity edit_file src/export/filters.ts success"
+  },
+  {
+   "where": "run Refactoring Assistant › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run Refactoring Assistant › Settings",
+   "len": 86,
+   "head": "Settings Refactoring Assistant Stopped Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 0:Documentation Team",
+   "len": 393,
+   "head": "solution_designer Stopped · in Documentation Team S solution_designer solution_designer From Project Task Manager: Simplify the NFS Guide and remove redundant s"
+  },
+  {
+   "where": "run Documentation Team ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Documentation Team › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run Documentation Team › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run Documentation Team › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run Documentation Team › Messages",
+   "len": 228,
+   "head": "Messages To implementation engineer Nov 14, 07:02 AM My part is done; the result is in the folder. From implementation engineer Nov 14, 07:01 AM Simplify the NF"
+  },
+  {
+   "where": "run Documentation Team › Activity",
+   "len": 97,
+   "head": "Activity read_file docs/pilot-summary.md success send_message_to /implementation_engineer success"
+  },
+  {
+   "where": "run Documentation Team › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run Documentation Team › Settings",
+   "len": 106,
+   "head": "Settings solution_designer Stopped · in Documentation Team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 1:solution designer",
+   "len": 393,
+   "head": "solution_designer Stopped · in Documentation Team S solution_designer solution_designer From Project Task Manager: Simplify the NFS Guide and remove redundant s"
+  },
+  {
+   "where": "run solution designer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run solution designer › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run solution designer › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run solution designer › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run solution designer › Messages",
+   "len": 228,
+   "head": "Messages To implementation engineer Nov 14, 07:02 AM My part is done; the result is in the folder. From implementation engineer Nov 14, 07:01 AM Simplify the NF"
+  },
+  {
+   "where": "run solution designer › Activity",
+   "len": 97,
+   "head": "Activity read_file docs/pilot-summary.md success send_message_to /implementation_engineer success"
+  },
+  {
+   "where": "run solution designer › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run solution designer › Settings",
+   "len": 106,
+   "head": "Settings solution_designer Stopped · in Documentation Team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 1:implementation engineer",
+   "len": 483,
+   "head": "implementation_engineer Stopped · in Documentation Team I implementation_engineer implementation_engineer From Solution Designer: Requirements are approved: kee"
+  },
+  {
+   "where": "run implementation engineer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run implementation engineer › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run implementation engineer › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run implementation engineer › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run implementation engineer › Messages",
+   "len": 216,
+   "head": "Messages To solution designer Nov 14, 07:02 AM My part is done; the result is in the folder. From solution designer Nov 14, 07:01 AM Simplify the NFS Guide and "
+  },
+  {
+   "where": "run implementation engineer › Activity",
+   "len": 134,
+   "head": "Activity read_file src/export/filters.ts success edit_file src/export/filters.ts success run_terminal_command pnpm test export success"
+  },
+  {
+   "where": "run implementation engineer › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run implementation engineer › Settings",
+   "len": 112,
+   "head": "Settings implementation_engineer Stopped · in Documentation Team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 1:code reviewer",
+   "len": 337,
+   "head": "code_reviewer Stopped · in Documentation Team C code_reviewer code_reviewer From Implementation Engineer: The change is ready for review: src/export/filters.ts."
+  },
+  {
+   "where": "run code reviewer ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run code reviewer › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run code reviewer › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run code reviewer › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run code reviewer › Messages",
+   "len": 216,
+   "head": "Messages To solution designer Nov 14, 07:02 AM My part is done; the result is in the folder. From solution designer Nov 14, 07:01 AM Simplify the NFS Guide and "
+  },
+  {
+   "where": "run code reviewer › Activity",
+   "len": 94,
+   "head": "Activity read_file src/export/filters.ts success run_terminal_command pnpm test export success"
+  },
+  {
+   "where": "run code reviewer › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run code reviewer › Settings",
+   "len": 102,
+   "head": "Settings code_reviewer Stopped · in Documentation Team Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "run 0:Contract Reader",
+   "len": 322,
+   "head": "Contract Reader Stopped You You Summarize the lease renewal and list what to ask the landlord CR Contract Reader Contract Reader read_file · docs/lease-renewal."
+  },
+  {
+   "where": "run Contract Reader ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Contract Reader › Artifacts",
+   "len": 108,
+   "head": "Artifacts No Artifacts yet Generated or edited files for this run will appear here as they become available."
+  },
+  {
+   "where": "run Contract Reader › Files",
+   "len": 46,
+   "head": "Files demo-workspace docs launch src README.md"
+  },
+  {
+   "where": "run Contract Reader › Files › first file",
+   "len": 347,
+   "head": "Files demo-workspace docs launch src README.md README.md Pilot launch The folder the sample agents work in: the 1.6 release notes, the pilot customers’ summary,"
+  },
+  {
+   "where": "run Contract Reader › Activity",
+   "len": 48,
+   "head": "Activity read_file docs/lease-renewal.md success"
+  },
+  {
+   "where": "run Contract Reader › VNC Viewer",
+   "len": 42,
+   "head": "VNC Viewer View only Connected · View only"
+  },
+  {
+   "where": "run Contract Reader › Settings",
+   "len": 80,
+   "head": "Settings Contract Reader Stopped Runtime AutoByteus Model demo/sample-model Save"
+  },
+  {
+   "where": "composer Upload files",
+   "fileChooser": true
+  },
+  {
+   "where": "composer › Upload files",
+   "len": 466,
+   "head": "Project Task Manager Running You You Dispatch the approved desktop app Tasks. PT Project Task Manager Project Task Manager delegate_task delegate_task delegate_"
+  }
+ ]
+}

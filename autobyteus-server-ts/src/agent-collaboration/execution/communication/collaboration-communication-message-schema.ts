@@ -1,5 +1,5 @@
 import path from "node:path";
-import type { CollaborationCommunicationMessage } from "./collaboration-communication-message.js";
+import type { CollaborationCommunicationMessage, MessageCounterpart } from "./collaboration-communication-message.js";
 
 const record = (value: unknown, label: string): Record<string, unknown> => {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error(`${label} must be an object.`);
@@ -27,9 +27,18 @@ const references = (value: unknown, label: string): readonly string[] => {
   }));
 };
 
+const optionalText = (value: unknown, label: string): string | null => value === null ? null : required(value, label);
+
+/** The optional `counterpart` record (autobyteus-565): `{address, nodeId}`, each a non-empty string or null. */
+const counterpartOf = (value: unknown, label: string): MessageCounterpart => {
+  const entry = record(value, label);
+  return Object.freeze({ address: optionalText(entry.address, `${label}.address`), nodeId: optionalText(entry.nodeId, `${label}.nodeId`) });
+};
+
 /**
  * Reads one message tolerantly (Data Migration Guideline §3): the seven message fields are required and
- * validated; any other field is ignored and never reaches the result.
+ * validated; the optional `counterpart` record is read when present (autobyteus-565); any other field is ignored and
+ * never reaches the result.
  */
 export const validateCollaborationCommunicationMessage = (
   value: unknown,
@@ -44,6 +53,7 @@ export const validateCollaborationCommunicationMessage = (
     messageType: required(message.messageType, `${label}.messageType`),
     referenceFiles: references(message.referenceFiles, `${label}.referenceFiles`),
     createdAt: timestamp(message.createdAt, `${label}.createdAt`),
+    ...(message.counterpart === undefined ? {} : { counterpart: counterpartOf(message.counterpart, `${label}.counterpart`) }),
   });
 };
 

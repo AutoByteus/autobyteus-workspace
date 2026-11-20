@@ -1,0 +1,1380 @@
+# FS-iOS simulator-smoke step alone (run 1 collided with my own API-04a run on the same simulator); clone at 4ad317c20d; 2026-11-19T22:00:43Z; load 450.14 302.48 162.38
+⚙️  Generating plists...
+⚙️  Generating project...
+⚙️  Writing project...
+Created project at /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobile.xcodeproj
+Monitoring boot status for apie2e279-iphone (C56265A1-C55D-4693-8507-C262E9991100).
+[2026-11-19 22:00:48 +0000] Status=1, isTerminal=NO, Elapsed=00:02.
+	Waiting on BackBoard
+
+[2026-11-19 22:00:49 +0000] Status=2, isTerminal=NO, Elapsed=00:03.
+	Waiting on Data Migration
+		Reason:(null)
+		Migration Elapsed:00:00 seconds
+
+[2026-11-19 22:00:56 +0000] Status=4, isTerminal=NO, Elapsed=00:10.
+	Waiting on System App
+
+[2026-11-19 22:01:00 +0000] Status=4294967295, isTerminal=YES, Elapsed=00:15.
+	Finished
+
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobile.xcodeproj -scheme AutoByteusMobile -destination "platform=iOS Simulator,id=C56265A1-C55D-4693-8507-C262E9991100" -resultBundlePath /Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-mode-279/tickets/in-progress/ios-demo-mode-279/evidence/api-e2e/r2/FS-iOS-smoke/AutoByteusMobile.xcresult "-only-testing:AutoByteusMobileUITests" "-skip-testing:AutoByteusMobileUITests/DemoIPadUITests" IOS_BUNDLE_ID=org.autobyteus.mobile IOS_SHARE_EXTENSION_BUNDLE_ID=org.autobyteus.mobile.share MARKETING_VERSION=1.3.83 CURRENT_PROJECT_VERSION=1 "AUTOBYTEUS_TEST_NODE_URL=http://127.0.0.1:29876/mobile" AUTOBYTEUS_SMOKE_TESTS_REQUIRED=1 test
+
+Build settings from command line:
+    AUTOBYTEUS_SMOKE_TESTS_REQUIRED = 1
+    AUTOBYTEUS_TEST_NODE_URL = http://127.0.0.1:29876/mobile
+    CURRENT_PROJECT_VERSION = 1
+    IOS_BUNDLE_ID = org.autobyteus.mobile
+    IOS_SHARE_EXTENSION_BUNDLE_ID = org.autobyteus.mobile.share
+    MARKETING_VERSION = 1.3.83
+
+Writing result bundle at path:
+	/Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-mode-279/tickets/in-progress/ios-demo-mode-279/evidence/api-e2e/r2/FS-iOS-smoke/AutoByteusMobile.xcresult
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (5 targets)
+    Target 'AutoByteusMobileUITests' in project 'AutoByteusMobile'
+        ➜ Explicit dependency on target 'AutoByteusMobile' in project 'AutoByteusMobile'
+    Target 'AutoByteusMobileCoreTests' in project 'AutoByteusMobile'
+        ➜ Explicit dependency on target 'AutoByteusMobileCore' in project 'AutoByteusMobile'
+    Target 'AutoByteusMobile' in project 'AutoByteusMobile'
+        ➜ Explicit dependency on target 'AutoByteusMobileCore' in project 'AutoByteusMobile'
+        ➜ Explicit dependency on target 'AutoByteusMobileShareExtension' in project 'AutoByteusMobile'
+    Target 'AutoByteusMobileShareExtension' in project 'AutoByteusMobile'
+        ➜ Explicit dependency on target 'AutoByteusMobileCore' in project 'AutoByteusMobile'
+    Target 'AutoByteusMobileCore' in project 'AutoByteusMobile' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.1.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.1.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --print-asset-tag-combinations --output-format xml1 /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobile/Assets.xcassets
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+Build description signature: a9fd203ad23e25bd0a7427c2b0c2995e
+Build description path: /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/XCBuildData/a9fd203ad23e25bd0a7427c2b0c2995e.xcbuilddata
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.1.sdk /Users/normy/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.1-23B77-90cf18a4295e390e64c810bc6bd7acbc.sdkstatcache
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobile.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.1.sdk -o /Users/normy/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.1-23B77-90cf18a4295e390e64c810bc6bd7acbc.sdkstatcache
+
+ProcessInfoPlistFile /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileCore.framework/Info.plist /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileCore.build/empty-AutoByteusMobileCore.plist (in target 'AutoByteusMobileCore' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    builtin-infoPlistUtility /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileCore.build/empty-AutoByteusMobileCore.plist -producttype com.apple.product-type.framework -expandbuildsettings -format binary -platform iphonesimulator -o /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileCore.framework/Info.plist
+
+ProcessProductPackaging /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobileShareExtension/AutoByteusMobileShareExtension.entitlements /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex-Simulated.xcent (in target 'AutoByteusMobileShareExtension' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    
+    Entitlements:
+    
+    {
+    "application-identifier" = "7Y86YBQ7B4.org.autobyteus.mobile.share";
+    "com.apple.security.application-groups" =     (
+        "group.org.autobyteus.mobile"
+    );
+}
+    
+    builtin-productPackagingUtility /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobileShareExtension/AutoByteusMobileShareExtension.entitlements -entitlements -format xml -o /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex-Simulated.xcent
+
+ProcessProductPackagingDER /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex-Simulated.xcent /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex-Simulated.xcent.der (in target 'AutoByteusMobileShareExtension' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    /usr/bin/derq query -f xml -i /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex-Simulated.xcent -o /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex-Simulated.xcent.der --raw
+
+ProcessProductPackaging /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobileShareExtension/AutoByteusMobileShareExtension.entitlements /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex.xcent (in target 'AutoByteusMobileShareExtension' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    
+    Entitlements:
+    
+    {
+}
+    
+    builtin-productPackagingUtility /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobileShareExtension/AutoByteusMobileShareExtension.entitlements -entitlements -format xml -o /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex.xcent
+
+ProcessProductPackagingDER /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex.xcent /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex.xcent.der (in target 'AutoByteusMobileShareExtension' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    /usr/bin/derq query -f xml -i /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex.xcent -o /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex.xcent.der --raw
+
+note: Run script build phase 'Require the demo web content' will be run during every build because the option to run the script phase "Based on dependency analysis" is unchecked. (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+ProcessProductPackaging /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobile/AutoByteusMobile.entitlements /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app-Simulated.xcent (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    
+    Entitlements:
+    
+    {
+    "application-identifier" = "7Y86YBQ7B4.org.autobyteus.mobile";
+    "com.apple.security.application-groups" =     (
+        "group.org.autobyteus.mobile"
+    );
+}
+    
+    builtin-productPackagingUtility /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobile/AutoByteusMobile.entitlements -entitlements -format xml -o /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app-Simulated.xcent
+
+ProcessProductPackagingDER /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app-Simulated.xcent /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app-Simulated.xcent.der (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    /usr/bin/derq query -f xml -i /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app-Simulated.xcent -o /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app-Simulated.xcent.der --raw
+
+ProcessProductPackaging /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobile/AutoByteusMobile.entitlements /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app.xcent (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    
+    Entitlements:
+    
+    {
+}
+    
+    builtin-productPackagingUtility /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobile/AutoByteusMobile.entitlements -entitlements -format xml -o /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app.xcent
+
+ProcessProductPackagingDER /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app.xcent /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app.xcent.der (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    /usr/bin/derq query -f xml -i /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app.xcent -o /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app.xcent.der --raw
+
+ProcessInfoPlistFile /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex/Info.plist /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobileShareExtension/Info.plist (in target 'AutoByteusMobileShareExtension' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    builtin-infoPlistUtility /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobileShareExtension/Info.plist -producttype com.apple.product-type.app-extension -expandbuildsettings -format binary -platform iphonesimulator -additionalcontentfile /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/assetcatalog_generated_info.plist -o /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex/Info.plist
+
+Ld /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex/AutoByteus\ Share.debug.dylib normal (in target 'AutoByteusMobileShareExtension' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios17.0-simulator -dynamiclib -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.1.sdk -O0 -L/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -L/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator -F/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -F/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator -filelist /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/Objects-normal/arm64/AutoByteus\ Share.LinkFileList -install_name @rpath/AutoByteus\ Share.debug.dylib -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -rpath -Xlinker @executable_path/../../Frameworks -dead_strip -Xlinker -object_path_lto -Xlinker /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/Objects-normal/arm64/AutoByteus\ Share_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -dependency_info -Xlinker /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/Objects-normal/arm64/AutoByteus\ Share_dependency_info.dat -fapplication-extension -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/Objects-normal/arm64/AutoByteus_Share.swiftmodule @/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/Objects-normal/arm64/AutoByteus_Share-linker-args.resp -Xlinker -alias -Xlinker _NSExtensionMain -Xlinker ___debug_main_executable_dylib_entry_point -framework AutoByteusMobileCore -Xlinker -no_adhoc_codesign -o /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex/AutoByteus\ Share.debug.dylib
+
+ConstructStubExecutorLinkFileList /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share-ExecutorLinkFileList-normal-arm64.txt (in target 'AutoByteusMobileShareExtension' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    construct-stub-executor-link-file-list /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex/AutoByteus\ Share.debug.dylib /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libPreviewsJITStubExecutor_no_swift_entry_point.a /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libPreviewsJITStubExecutor.a --output /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share-ExecutorLinkFileList-normal-arm64.txt
+note: Using stub executor library without Swift entry point. (in target 'AutoByteusMobileShareExtension' from project 'AutoByteusMobile')
+
+Ld /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex/AutoByteus\ Share normal (in target 'AutoByteusMobileShareExtension' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios17.0-simulator -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.1.sdk -O0 -L/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator -F/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator -Xlinker -rpath -Xlinker @executable_path -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -rpath -Xlinker @executable_path/../../Frameworks -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -e ___debug_blank_executor_main -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_dylib -Xlinker /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share-DebugDylibPath-normal-arm64.txt -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_entry -Xlinker /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share-DebugEntryPoint-normal-arm64.txt -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_instlnm -Xlinker /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share-DebugDylibInstallName-normal-arm64.txt -Xlinker -filelist -Xlinker /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share-ExecutorLinkFileList-normal-arm64.txt -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __entitlements -Xlinker /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex-Simulated.xcent -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __ents_der -Xlinker /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex-Simulated.xcent.der /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex/AutoByteus\ Share.debug.dylib -Xlinker -no_adhoc_codesign -o /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex/AutoByteus\ Share
+
+ExtractAppIntentsMetadata (in target 'AutoByteusMobileShareExtension' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name AutoByteus_Share --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.1.sdk --xcode-version 17B100 --platform-family iOS --deployment-target 17.0 --bundle-identifier org.autobyteus.mobile.share --output /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex --target-triple arm64-apple-ios17.0-simulator --binary-file /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex/AutoByteus\ Share --dependency-file /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/Objects-normal/arm64/AutoByteus\ Share_dependency_info.dat --stringsdata-file /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/Objects-normal/arm64/AutoByteus\ Share.SwiftFileList --metadata-file-list /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.DependencyMetadataFileList --static-metadata-file-list /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.DependencyStaticMetadataFileList --swift-const-vals-list /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/Objects-normal/arm64/AutoByteus\ Share.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2026-11-19 23:01:16.687 appintentsmetadataprocessor[62973:521516314] Starting appintentsmetadataprocessor export
+2026-11-19 23:01:16.688 appintentsmetadataprocessor[62973:521516314] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+
+CodeSign /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex/AutoByteus\ Share.debug.dylib (in target 'AutoByteusMobileShareExtension' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex/AutoByteus\ Share.debug.dylib
+
+CodeSign /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex (in target 'AutoByteusMobileShareExtension' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --entitlements /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex.xcent --timestamp\=none --generate-entitlement-der /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex
+
+PhaseScriptExecution Require\ the\ demo\ web\ content /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Script-8F05237F362C36039F159534.sh (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    export ACTION\=build
+    export AD_HOC_CODE_SIGNING_ALLOWED\=YES
+    export AGGREGATE_TRACKED_DOMAINS\=YES
+    export ALLOW_BUILD_REQUEST_OVERRIDES\=NO
+    export ALLOW_TARGET_PLATFORM_SPECIALIZATION\=NO
+    export ALTERNATE_GROUP\=staff
+    export ALTERNATE_MODE\=u+w,go-w,a+rX
+    export ALTERNATE_OWNER\=normy
+    export ALTERNATIVE_DISTRIBUTION_WEB\=NO
+    export ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES\=NO
+    export ALWAYS_SEARCH_USER_PATHS\=NO
+    export ALWAYS_USE_SEPARATE_HEADERMAPS\=NO
+    export APPLICATION_EXTENSION_API_ONLY\=NO
+    export APPLY_RULES_IN_COPY_FILES\=NO
+    export APPLY_RULES_IN_COPY_HEADERS\=NO
+    export APP_SHORTCUTS_ENABLE_FLEXIBLE_MATCHING\=YES
+    export ARCHS\=arm64
+    export ARCHS_STANDARD\=arm64\ x86_64
+    export ARCHS_STANDARD_32_64_BIT\=arm64\ x86_64
+    export ARCHS_STANDARD_64_BIT\=arm64\ x86_64
+    export ARCHS_STANDARD_INCLUDING_64_BIT\=arm64\ x86_64
+    export ARCHS_UNIVERSAL_IPHONE_OS\=arm64\ x86_64
+    export ASSETCATALOG_COMPILER_APPICON_NAME\=AppIcon
+    export ASSETCATALOG_FILTER_FOR_DEVICE_MODEL\=iPhone18,2
+    export ASSETCATALOG_FILTER_FOR_DEVICE_OS_VERSION\=26.1
+    export ASSETCATALOG_FILTER_FOR_THINNING_DEVICE_CONFIGURATION\=iPhone18,2
+    export AUTOBYTEUS_SMOKE_TESTS_REQUIRED\=1
+    export AUTOBYTEUS_TEST_NODE_URL\=http://127.0.0.1:29876/mobile
+    export AUTOMATICALLY_MERGE_DEPENDENCIES\=NO
+    export AUTOMATION_APPLE_EVENTS\=NO
+    export AVAILABLE_PLATFORMS\=android\ appletvos\ appletvsimulator\ driverkit\ iphoneos\ iphonesimulator\ macosx\ qnx\ watchos\ watchsimulator\ webassembly\ xros\ xrsimulator
+    export AppIdentifierPrefix\=7Y86YBQ7B4.
+    export BUILD_ACTIVE_RESOURCES_ONLY\=YES
+    export BUILD_COMPONENTS\=headers\ build
+    export BUILD_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products
+    export BUILD_LIBRARY_FOR_DISTRIBUTION\=NO
+    export BUILD_ROOT\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products
+    export BUILD_STYLE\=
+    export BUILD_VARIANTS\=normal
+    export BUILT_PRODUCTS_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator
+    export BUNDLE_CONTENTS_FOLDER_PATH_deep\=Contents/
+    export BUNDLE_EXECUTABLE_FOLDER_NAME_deep\=MacOS
+    export BUNDLE_EXTENSIONS_FOLDER_PATH\=Extensions
+    export BUNDLE_FORMAT\=shallow
+    export BUNDLE_FRAMEWORKS_FOLDER_PATH\=Frameworks
+    export BUNDLE_PLUGINS_FOLDER_PATH\=PlugIns
+    export BUNDLE_PRIVATE_HEADERS_FOLDER_PATH\=PrivateHeaders
+    export BUNDLE_PUBLIC_HEADERS_FOLDER_PATH\=Headers
+    export CACHE_ROOT\=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/C/com.apple.DeveloperTools/26.1.1-17B100/Xcode
+    export CCHROOT\=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/C/com.apple.DeveloperTools/26.1.1-17B100/Xcode
+    export CHMOD\=/bin/chmod
+    export CHOWN\=/usr/sbin/chown
+    export CLANG_ANALYZER_NONNULL\=YES
+    export CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION\=YES_AGGRESSIVE
+    export CLANG_CACHE_FINE_GRAINED_OUTPUTS\=YES
+    export CLANG_CXX_LANGUAGE_STANDARD\=gnu++14
+    export CLANG_CXX_LIBRARY\=libc++
+    export CLANG_ENABLE_EXPLICIT_MODULES\=YES
+    export CLANG_ENABLE_MODULES\=YES
+    export CLANG_ENABLE_OBJC_ARC\=YES
+    export CLANG_ENABLE_OBJC_WEAK\=YES
+    export CLANG_MODULES_BUILD_SESSION_FILE\=/Users/normy/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation
+    export CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING\=YES
+    export CLANG_WARN_BOOL_CONVERSION\=YES
+    export CLANG_WARN_COMMA\=YES
+    export CLANG_WARN_CONSTANT_CONVERSION\=YES
+    export CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS\=YES
+    export CLANG_WARN_DIRECT_OBJC_ISA_USAGE\=YES_ERROR
+    export CLANG_WARN_DOCUMENTATION_COMMENTS\=YES
+    export CLANG_WARN_EMPTY_BODY\=YES
+    export CLANG_WARN_ENUM_CONVERSION\=YES
+    export CLANG_WARN_INFINITE_RECURSION\=YES
+    export CLANG_WARN_INT_CONVERSION\=YES
+    export CLANG_WARN_NON_LITERAL_NULL_CONVERSION\=YES
+    export CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF\=YES
+    export CLANG_WARN_OBJC_LITERAL_CONVERSION\=YES
+    export CLANG_WARN_OBJC_ROOT_CLASS\=YES_ERROR
+    export CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER\=YES
+    export CLANG_WARN_RANGE_LOOP_ANALYSIS\=YES
+    export CLANG_WARN_STRICT_PROTOTYPES\=YES
+    export CLANG_WARN_SUSPICIOUS_MOVE\=YES
+    export CLANG_WARN_UNGUARDED_AVAILABILITY\=YES_AGGRESSIVE
+    export CLANG_WARN_UNREACHABLE_CODE\=YES
+    export CLANG_WARN__DUPLICATE_METHOD_MATCH\=YES
+    export CLASS_FILE_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/JavaClasses
+    export CLEAN_PRECOMPS\=YES
+    export CLONE_HEADERS\=NO
+    export CODESIGNING_FOLDER_PATH\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app
+    export CODE_SIGNING_ALLOWED\=YES
+    export CODE_SIGNING_REQUIRED\=YES
+    export CODE_SIGN_CONTEXT_CLASS\=XCiPhoneSimulatorCodeSignContext
+    export CODE_SIGN_ENTITLEMENTS\=AutoByteusMobile/AutoByteusMobile.entitlements
+    export CODE_SIGN_IDENTITY\=iPhone\ Developer
+    export CODE_SIGN_INJECT_BASE_ENTITLEMENTS\=YES
+    export CODE_SIGN_STYLE\=Automatic
+    export COLOR_DIAGNOSTICS\=NO
+    export COMBINE_HIDPI_IMAGES\=NO
+    export COMPILATION_CACHE_CAS_PATH\=/Users/normy/Library/Developer/Xcode/DerivedData/CompilationCache.noindex
+    export COMPILATION_CACHE_KEEP_CAS_DIRECTORY\=YES
+    export COMPILER_INDEX_STORE_ENABLE\=Default
+    export COMPOSITE_SDK_DIRS\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/CompositeSDKs
+    export COMPRESS_PNG_FILES\=YES
+    export CONFIGURATION\=Debug
+    export CONFIGURATION_BUILD_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator
+    export CONFIGURATION_TEMP_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator
+    export CONTENTS_FOLDER_PATH\=AutoByteus.app
+    export CONTENTS_FOLDER_PATH_SHALLOW_BUNDLE_NO\=AutoByteus.app/Contents
+    export CONTENTS_FOLDER_PATH_SHALLOW_BUNDLE_YES\=AutoByteus.app
+    export COPYING_PRESERVES_HFS_DATA\=NO
+    export COPY_HEADERS_RUN_UNIFDEF\=NO
+    export COPY_PHASE_STRIP\=NO
+    export CORRESPONDING_DEVICE_PLATFORM_DIR\=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform
+    export CORRESPONDING_DEVICE_PLATFORM_NAME\=iphoneos
+    export CORRESPONDING_DEVICE_SDK_DIR\=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk
+    export CORRESPONDING_DEVICE_SDK_NAME\=iphoneos26.1
+    export CP\=/bin/cp
+    export CREATE_INFOPLIST_SECTION_IN_BINARY\=NO
+    export CURRENT_ARCH\=undefined_arch
+    export CURRENT_PROJECT_VERSION\=1
+    export CURRENT_VARIANT\=normal
+    export DEAD_CODE_STRIPPING\=YES
+    export DEBUGGING_SYMBOLS\=YES
+    export DEBUG_INFORMATION_FORMAT\=dwarf
+    export DEBUG_INFORMATION_VERSION\=compiler-default
+    export DEFAULT_COMPILER\=com.apple.compilers.llvm.clang.1_0
+    export DEFAULT_DEXT_INSTALL_PATH\=/System/Library/DriverExtensions
+    export DEFAULT_KEXT_INSTALL_PATH\=/System/Library/Extensions
+    export DEFINES_MODULE\=NO
+    export DEPLOYMENT_LOCATION\=NO
+    export DEPLOYMENT_POSTPROCESSING\=NO
+    export DEPLOYMENT_TARGET_SETTING_NAME\=IPHONEOS_DEPLOYMENT_TARGET
+    export DEPLOYMENT_TARGET_SUGGESTED_VALUES\=12.0\ 12.1\ 12.2\ 12.3\ 12.4\ 13.0\ 13.1\ 13.2\ 13.3\ 13.4\ 13.5\ 13.6\ 14.0\ 14.1\ 14.2\ 14.3\ 14.4\ 14.5\ 14.6\ 14.7\ 15.0\ 15.1\ 15.2\ 15.3\ 15.4\ 15.5\ 15.6\ 16.0\ 16.1\ 16.2\ 16.3\ 16.4\ 16.5\ 16.6\ 17.0\ 17.1\ 17.2\ 17.3\ 17.4\ 17.5\ 17.6\ 18.0\ 18.1\ 18.2\ 18.3\ 18.4\ 18.5\ 18.6\ 26.0\ 26.1
+    export DERIVED_FILES_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/DerivedSources
+    export DERIVED_FILE_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/DerivedSources
+    export DERIVED_SOURCES_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/DerivedSources
+    export DEVELOPER_APPLICATIONS_DIR\=/Applications/Xcode.app/Contents/Developer/Applications
+    export DEVELOPER_BIN_DIR\=/Applications/Xcode.app/Contents/Developer/usr/bin
+    export DEVELOPER_DIR\=/Applications/Xcode.app/Contents/Developer
+    export DEVELOPER_FRAMEWORKS_DIR\=/Applications/Xcode.app/Contents/Developer/Library/Frameworks
+    export DEVELOPER_FRAMEWORKS_DIR_QUOTED\=/Applications/Xcode.app/Contents/Developer/Library/Frameworks
+    export DEVELOPER_LIBRARY_DIR\=/Applications/Xcode.app/Contents/Developer/Library
+    export DEVELOPER_SDK_DIR\=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs
+    export DEVELOPER_TOOLS_DIR\=/Applications/Xcode.app/Contents/Developer/Tools
+    export DEVELOPER_USR_DIR\=/Applications/Xcode.app/Contents/Developer/usr
+    export DEVELOPMENT_LANGUAGE\=en
+    export DIAGNOSE_MISSING_TARGET_DEPENDENCIES\=YES
+    export DIFF\=/usr/bin/diff
+    export DOCUMENTATION_FOLDER_PATH\=AutoByteus.app/en.lproj/Documentation
+    export DONT_GENERATE_INFOPLIST_FILE\=NO
+    export DSTROOT\=/tmp/AutoByteusMobile.dst
+    export DT_TOOLCHAIN_DIR\=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain
+    export DWARF_DSYM_FILE_NAME\=AutoByteus.app.dSYM
+    export DWARF_DSYM_FILE_SHOULD_ACCOMPANY_PRODUCT\=NO
+    export DWARF_DSYM_FOLDER_PATH\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator
+    export DYNAMIC_LIBRARY_EXTENSION\=dylib
+    export EAGER_COMPILATION_ALLOW_SCRIPTS\=NO
+    export EAGER_LINKING\=NO
+    export EFFECTIVE_PLATFORM_NAME\=-iphonesimulator
+    export EMBEDDED_CONTENT_CONTAINS_SWIFT\=NO
+    export EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE\=NO
+    export ENABLE_APP_SANDBOX\=NO
+    export ENABLE_CODE_COVERAGE\=YES
+    export ENABLE_CPLUSPLUS_BOUNDS_SAFE_BUFFERS\=NO
+    export ENABLE_C_BOUNDS_SAFETY\=NO
+    export ENABLE_DEBUG_DYLIB\=YES
+    export ENABLE_DEFAULT_HEADER_SEARCH_PATHS\=YES
+    export ENABLE_DEFAULT_SEARCH_PATHS\=YES
+    export ENABLE_ENHANCED_SECURITY\=NO
+    export ENABLE_HARDENED_RUNTIME\=NO
+    export ENABLE_HEADER_DEPENDENCIES\=YES
+    export ENABLE_INCOMING_NETWORK_CONNECTIONS\=NO
+    export ENABLE_ON_DEMAND_RESOURCES\=YES
+    export ENABLE_OUTGOING_NETWORK_CONNECTIONS\=NO
+    export ENABLE_POINTER_AUTHENTICATION\=NO
+    export ENABLE_PREVIEWS\=NO
+    export ENABLE_RESOURCE_ACCESS_AUDIO_INPUT\=NO
+    export ENABLE_RESOURCE_ACCESS_BLUETOOTH\=NO
+    export ENABLE_RESOURCE_ACCESS_CALENDARS\=NO
+    export ENABLE_RESOURCE_ACCESS_CAMERA\=NO
+    export ENABLE_RESOURCE_ACCESS_CONTACTS\=NO
+    export ENABLE_RESOURCE_ACCESS_LOCATION\=NO
+    export ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY\=NO
+    export ENABLE_RESOURCE_ACCESS_PRINTING\=NO
+    export ENABLE_RESOURCE_ACCESS_USB\=NO
+    export ENABLE_SDK_IMPORTS\=NO
+    export ENABLE_SECURITY_COMPILER_WARNINGS\=NO
+    export ENABLE_STRICT_OBJC_MSGSEND\=YES
+    export ENABLE_TESTABILITY\=YES
+    export ENABLE_TESTING_SEARCH_PATHS\=NO
+    export ENABLE_USER_SCRIPT_SANDBOXING\=NO
+    export ENABLE_XOJIT_PREVIEWS\=YES
+    export ENFORCE_VALID_ARCHS\=YES
+    export ENTITLEMENTS_ALLOWED\=NO
+    export ENTITLEMENTS_DESTINATION\=__entitlements
+    export ENTITLEMENTS_REQUIRED\=NO
+    export EXCLUDED_INSTALLSRC_SUBDIRECTORY_PATTERNS\=.DS_Store\ .svn\ .git\ .hg\ CVS
+    export EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES\=\*.nib\ \*.lproj\ \*.framework\ \*.gch\ \*.xcode\*\ \*.xcassets\ \*.icon\ \(\*\)\ .DS_Store\ CVS\ .svn\ .git\ .hg\ \*.pbproj\ \*.pbxproj
+    export EXECUTABLES_FOLDER_PATH\=AutoByteus.app/Executables
+    export EXECUTABLE_BLANK_INJECTION_DYLIB_PATH\=AutoByteus.app/__preview.dylib
+    export EXECUTABLE_DEBUG_DYLIB_INSTALL_NAME\=@rpath/AutoByteus.debug.dylib
+    export EXECUTABLE_DEBUG_DYLIB_PATH\=AutoByteus.app/AutoByteus.debug.dylib
+    export EXECUTABLE_FOLDER_PATH\=AutoByteus.app
+    export EXECUTABLE_FOLDER_PATH_SHALLOW_BUNDLE_NO\=AutoByteus.app/MacOS
+    export EXECUTABLE_FOLDER_PATH_SHALLOW_BUNDLE_YES\=AutoByteus.app
+    export EXECUTABLE_NAME\=AutoByteus
+    export EXECUTABLE_PATH\=AutoByteus.app/AutoByteus
+    export EXPANDED_CODE_SIGN_IDENTITY\=-
+    export EXPANDED_CODE_SIGN_IDENTITY_NAME\=Sign\ to\ Run\ Locally
+    export EXTENSIONS_FOLDER_PATH\=AutoByteus.app/Extensions
+    export FILE_LIST\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects/LinkFileList
+    export FIXED_FILES_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/FixedFiles
+    export FRAMEWORKS_FOLDER_PATH\=AutoByteus.app/Frameworks
+    export FRAMEWORK_FLAG_PREFIX\=-framework
+    export FRAMEWORK_SEARCH_PATHS\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator\ 
+    export FRAMEWORK_VERSION\=A
+    export FULL_PRODUCT_NAME\=AutoByteus.app
+    export FUSE_BUILD_PHASES\=YES
+    export FUSE_BUILD_SCRIPT_PHASES\=NO
+    export GCC3_VERSION\=3.3
+    export GCC_C_LANGUAGE_STANDARD\=gnu11
+    export GCC_DYNAMIC_NO_PIC\=NO
+    export GCC_INLINES_ARE_PRIVATE_EXTERN\=YES
+    export GCC_NO_COMMON_BLOCKS\=YES
+    export GCC_OBJC_LEGACY_DISPATCH\=YES
+    export GCC_OPTIMIZATION_LEVEL\=0
+    export GCC_PFE_FILE_C_DIALECTS\=c\ objective-c\ c++\ objective-c++
+    export GCC_PREPROCESSOR_DEFINITIONS\=\ DEBUG\=1
+    export GCC_SYMBOLS_PRIVATE_EXTERN\=NO
+    export GCC_TREAT_WARNINGS_AS_ERRORS\=NO
+    export GCC_VERSION\=com.apple.compilers.llvm.clang.1_0
+    export GCC_VERSION_IDENTIFIER\=com_apple_compilers_llvm_clang_1_0
+    export GCC_WARN_64_TO_32_BIT_CONVERSION\=YES
+    export GCC_WARN_ABOUT_RETURN_TYPE\=YES_ERROR
+    export GCC_WARN_UNDECLARED_SELECTOR\=YES
+    export GCC_WARN_UNINITIALIZED_AUTOS\=YES_AGGRESSIVE
+    export GCC_WARN_UNUSED_FUNCTION\=YES
+    export GCC_WARN_UNUSED_VARIABLE\=YES
+    export GENERATED_MODULEMAP_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator
+    export GENERATE_INFOPLIST_FILE\=NO
+    export GENERATE_INTERMEDIATE_TEXT_BASED_STUBS\=YES
+    export GENERATE_PKGINFO_FILE\=YES
+    export GENERATE_PRELINK_OBJECT_FILE\=NO
+    export GENERATE_PROFILING_CODE\=NO
+    export GENERATE_TEXT_BASED_STUBS\=NO
+    export GID\=20
+    export GROUP\=staff
+    export HEADERMAP_INCLUDES_FLAT_ENTRIES_FOR_TARGET_BEING_BUILT\=YES
+    export HEADERMAP_INCLUDES_FRAMEWORK_ENTRIES_FOR_ALL_PRODUCT_TYPES\=YES
+    export HEADERMAP_INCLUDES_FRAMEWORK_ENTRIES_FOR_TARGETS_NOT_BEING_BUILT\=YES
+    export HEADERMAP_INCLUDES_NONPUBLIC_NONPRIVATE_HEADERS\=YES
+    export HEADERMAP_INCLUDES_PROJECT_HEADERS\=YES
+    export HEADERMAP_USES_FRAMEWORK_PREFIX_ENTRIES\=YES
+    export HEADERMAP_USES_VFS\=NO
+    export HEADER_SEARCH_PATHS\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/include\ 
+    export HOME\=/Users/normy
+    export HOST_ARCH\=arm64
+    export HOST_PLATFORM\=macosx
+    export ICONV\=/usr/bin/iconv
+    export IMPLICIT_DEPENDENCY_DOMAIN\=default
+    export INFOPLIST_ENABLE_CFBUNDLEICONS_MERGE\=YES
+    export INFOPLIST_EXPAND_BUILD_SETTINGS\=YES
+    export INFOPLIST_FILE\=AutoByteusMobile/Info.plist
+    export INFOPLIST_OUTPUT_FORMAT\=binary
+    export INFOPLIST_PATH\=AutoByteus.app/Info.plist
+    export INFOPLIST_PREPROCESS\=NO
+    export INFOSTRINGS_PATH\=AutoByteus.app/en.lproj/InfoPlist.strings
+    export INLINE_PRIVATE_FRAMEWORKS\=NO
+    export INSTALLAPI_IGNORE_SKIP_INSTALL\=YES
+    export INSTALLHDRS_COPY_PHASE\=NO
+    export INSTALLHDRS_SCRIPT_PHASE\=NO
+    export INSTALL_DIR\=/tmp/AutoByteusMobile.dst/Applications
+    export INSTALL_GROUP\=staff
+    export INSTALL_MODE_FLAG\=u+w,go-w,a+rX
+    export INSTALL_OWNER\=normy
+    export INSTALL_PATH\=/Applications
+    export INSTALL_ROOT\=/tmp/AutoByteusMobile.dst
+    export IOS_BUNDLE_ID\=org.autobyteus.mobile
+    export IOS_SHARE_EXTENSION_BUNDLE_ID\=org.autobyteus.mobile.share
+    export IPHONEOS_DEPLOYMENT_TARGET\=17.0
+    export IS_UNOPTIMIZED_BUILD\=YES
+    export JAVAC_DEFAULT_FLAGS\=-J-Xms64m\ -J-XX:NewSize\=4M\ -J-Dfile.encoding\=UTF8
+    export JAVA_APP_STUB\=/System/Library/Frameworks/JavaVM.framework/Resources/MacOS/JavaApplicationStub
+    export JAVA_ARCHIVE_CLASSES\=YES
+    export JAVA_ARCHIVE_TYPE\=JAR
+    export JAVA_COMPILER\=/usr/bin/javac
+    export JAVA_FOLDER_PATH\=AutoByteus.app/Java
+    export JAVA_FRAMEWORK_RESOURCES_DIRS\=Resources
+    export JAVA_JAR_FLAGS\=cv
+    export JAVA_SOURCE_SUBDIR\=.
+    export JAVA_USE_DEPENDENCIES\=YES
+    export JAVA_ZIP_FLAGS\=-urg
+    export JIKES_DEFAULT_FLAGS\=+E\ +OLDCSO
+    export KEEP_PRIVATE_EXTERNS\=NO
+    export LD_DEPENDENCY_INFO_FILE\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal/undefined_arch/AutoByteus_dependency_info.dat
+    export LD_ENTITLEMENTS_SECTION\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app-Simulated.xcent
+    export LD_ENTITLEMENTS_SECTION_DER\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app-Simulated.xcent.der
+    export LD_EXPORT_SYMBOLS\=YES
+    export LD_GENERATE_MAP_FILE\=NO
+    export LD_MAP_FILE_PATH\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus-LinkMap-normal-undefined_arch.txt
+    export LD_NO_PIE\=NO
+    export LD_QUOTE_LINKER_ARGUMENTS_FOR_COMPILER_DRIVER\=YES
+    export LD_RUNPATH_SEARCH_PATHS\=\ @executable_path/Frameworks
+    export LD_RUNPATH_SEARCH_PATHS_YES\=@loader_path/../Frameworks
+    export LD_SHARED_CACHE_ELIGIBLE\=Automatic
+    export LD_WARN_DUPLICATE_LIBRARIES\=NO
+    export LD_WARN_UNUSED_DYLIBS\=NO
+    export LEGACY_DEVELOPER_DIR\=/Applications/Xcode.app/Contents/PlugIns/Xcode3Core.ideplugin/Contents/SharedSupport/Developer
+    export LEX\=lex
+    export LIBRARY_DEXT_INSTALL_PATH\=/Library/DriverExtensions
+    export LIBRARY_FLAG_NOSPACE\=YES
+    export LIBRARY_FLAG_PREFIX\=-l
+    export LIBRARY_KEXT_INSTALL_PATH\=/Library/Extensions
+    export LIBRARY_SEARCH_PATHS\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator\ 
+    export LINKER_DISPLAYS_MANGLED_NAMES\=NO
+    export LINK_FILE_LIST_normal_arm64\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal/arm64/AutoByteus.LinkFileList
+    export LINK_OBJC_RUNTIME\=YES
+    export LINK_WITH_STANDARD_LIBRARIES\=YES
+    export LLVM_TARGET_TRIPLE_OS_VERSION\=ios17.0
+    export LLVM_TARGET_TRIPLE_SUFFIX\=-simulator
+    export LLVM_TARGET_TRIPLE_VENDOR\=apple
+    export LM_AUX_CONST_METADATA_LIST_PATH_normal_arm64\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal/arm64/AutoByteus.SwiftConstValuesFileList
+    export LOCALIZATION_EXPORT_SUPPORTED\=YES
+    export LOCALIZATION_PREFERS_STRING_CATALOGS\=NO
+    export LOCALIZED_RESOURCES_FOLDER_PATH\=AutoByteus.app/en.lproj
+    export LOCALIZED_STRING_MACRO_NAMES\=NSLocalizedString\ CFCopyLocalizedString
+    export LOCALIZED_STRING_SWIFTUI_SUPPORT\=YES
+    export LOCAL_ADMIN_APPS_DIR\=/Applications/Utilities
+    export LOCAL_APPS_DIR\=/Applications
+    export LOCAL_DEVELOPER_DIR\=/Library/Developer
+    export LOCAL_LIBRARY_DIR\=/Library
+    export LOCROOT\=/Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    export LOCSYMROOT\=/Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    export MACH_O_TYPE\=mh_execute
+    export MAC_OS_X_PRODUCT_BUILD_VERSION\=25F84
+    export MAC_OS_X_VERSION_ACTUAL\=260502
+    export MAC_OS_X_VERSION_MAJOR\=260000
+    export MAC_OS_X_VERSION_MINOR\=260500
+    export MAKE_MERGEABLE\=NO
+    export MARKETING_VERSION\=1.3.83
+    export MERGEABLE_LIBRARY\=NO
+    export MERGED_BINARY_TYPE\=none
+    export MERGE_LINKED_LIBRARIES\=NO
+    export METAL_LIBRARY_FILE_BASE\=default
+    export METAL_LIBRARY_OUTPUT_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app
+    export MODULES_FOLDER_PATH\=AutoByteus.app/Modules
+    export MODULE_CACHE_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/ModuleCache.noindex
+    export MTL_ENABLE_DEBUG_INFO\=INCLUDE_SOURCE
+    export MTL_FAST_MATH\=YES
+    export NATIVE_ARCH\=arm64
+    export NATIVE_ARCH_32_BIT\=arm
+    export NATIVE_ARCH_64_BIT\=arm64
+    export NATIVE_ARCH_ACTUAL\=arm64
+    export NO_COMMON\=YES
+    export OBJC_ABI_VERSION\=2
+    export OBJECT_FILE_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects
+    export OBJECT_FILE_DIR_normal\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal
+    export OBJROOT\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex
+    export ONLY_ACTIVE_ARCH\=YES
+    export OS\=MACOS
+    export OSAC\=/usr/bin/osacompile
+    export PACKAGE_TYPE\=com.apple.package-type.wrapper.application
+    export PASCAL_STRINGS\=YES
+    export PATH\=/Applications/Xcode.app/Contents/SharedFrameworks/SwiftBuild.framework/Versions/A/PlugIns/SWBBuildService.bundle/Contents/PlugIns/SWBUniversalPlatformPlugin.bundle/Contents/Frameworks/SWBUniversalPlatform.framework/Resources:/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin:/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/local/bin:/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/libexec:/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/usr/bin:/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/usr/local/bin:/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/local/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/local/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/.lmstudio/bin
+    export PATH_PREFIXES_EXCLUDED_FROM_HEADER_DEPENDENCIES\=/usr/include\ /usr/local/include\ /System/Library/Frameworks\ /System/Library/PrivateFrameworks\ /Applications/Xcode.app/Contents/Developer/Headers\ /Applications/Xcode.app/Contents/Developer/SDKs\ /Applications/Xcode.app/Contents/Developer/Platforms
+    export PBDEVELOPMENTPLIST_PATH\=AutoByteus.app/pbdevelopment.plist
+    export PER_ARCH_MODULE_FILE_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal/undefined_arch
+    export PER_ARCH_OBJECT_FILE_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal/undefined_arch
+    export PER_VARIANT_OBJECT_FILE_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal
+    export PKGINFO_FILE_PATH\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/PkgInfo
+    export PKGINFO_PATH\=AutoByteus.app/PkgInfo
+    export PLATFORM_DEVELOPER_APPLICATIONS_DIR\=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Applications
+    export PLATFORM_DEVELOPER_BIN_DIR\=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin
+    export PLATFORM_DEVELOPER_LIBRARY_DIR\=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library
+    export PLATFORM_DEVELOPER_SDK_DIR\=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs
+    export PLATFORM_DEVELOPER_TOOLS_DIR\=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Tools
+    export PLATFORM_DEVELOPER_USR_DIR\=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr
+    export PLATFORM_DIR\=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform
+    export PLATFORM_DISPLAY_NAME\=iOS\ Simulator
+    export PLATFORM_FAMILY_NAME\=iOS
+    export PLATFORM_NAME\=iphonesimulator
+    export PLATFORM_PREFERRED_ARCH\=x86_64
+    export PLATFORM_PRODUCT_BUILD_VERSION\=23B77
+    export PLATFORM_REQUIRES_SWIFT_AUTOLINK_EXTRACT\=NO
+    export PLATFORM_REQUIRES_SWIFT_MODULEWRAP\=NO
+    export PLIST_FILE_OUTPUT_FORMAT\=binary
+    export PLUGINS_FOLDER_PATH\=AutoByteus.app/PlugIns
+    export PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR\=YES
+    export PRECOMP_DESTINATION_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/PrefixHeaders
+    export PRIVATE_HEADERS_FOLDER_PATH\=AutoByteus.app/PrivateHeaders
+    export PROCESSED_INFOPLIST_PATH\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal/undefined_arch/Processed-Info.plist
+    export PRODUCT_BUNDLE_IDENTIFIER\=org.autobyteus.mobile
+    export PRODUCT_BUNDLE_PACKAGE_TYPE\=APPL
+    export PRODUCT_MODULE_NAME\=AutoByteus
+    export PRODUCT_NAME\=AutoByteus
+    export PRODUCT_SETTINGS_PATH\=/Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobile/Info.plist
+    export PRODUCT_TYPE\=com.apple.product-type.application
+    export PROFILING_CODE\=NO
+    export PROJECT\=AutoByteusMobile
+    export PROJECT_DERIVED_FILE_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/DerivedSources
+    export PROJECT_DIR\=/Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    export PROJECT_FILE_PATH\=/Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobile.xcodeproj
+    export PROJECT_GUID\=d09bd929cb8c8855c839362787f87620
+    export PROJECT_NAME\=AutoByteusMobile
+    export PROJECT_TEMP_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build
+    export PROJECT_TEMP_ROOT\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex
+    export PROVISIONING_PROFILE_REQUIRED\=NO
+    export PROVISIONING_PROFILE_REQUIRED_YES_YES\=YES
+    export PROVISIONING_PROFILE_SUPPORTED\=YES
+    export PUBLIC_HEADERS_FOLDER_PATH\=AutoByteus.app/Headers
+    export RECOMMENDED_IPHONEOS_DEPLOYMENT_TARGET\=15.0
+    export RECURSIVE_SEARCH_PATHS_FOLLOW_SYMLINKS\=YES
+    export REMOVE_CVS_FROM_RESOURCES\=YES
+    export REMOVE_GIT_FROM_RESOURCES\=YES
+    export REMOVE_HEADERS_FROM_EMBEDDED_BUNDLES\=YES
+    export REMOVE_HG_FROM_RESOURCES\=YES
+    export REMOVE_STATIC_EXECUTABLES_FROM_EMBEDDED_BUNDLES\=YES
+    export REMOVE_SVN_FROM_RESOURCES\=YES
+    export RESCHEDULE_INDEPENDENT_HEADERS_PHASES\=YES
+    export REZ_COLLECTOR_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/ResourceManagerResources
+    export REZ_OBJECTS_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/ResourceManagerResources/Objects
+    export REZ_SEARCH_PATHS\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator\ 
+    export RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES\=NO
+    export RUNTIME_EXCEPTION_ALLOW_JIT\=NO
+    export RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY\=NO
+    export RUNTIME_EXCEPTION_DEBUGGING_TOOL\=NO
+    export RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION\=NO
+    export RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION\=NO
+    export SCAN_ALL_SOURCE_FILES_FOR_INCLUDES\=NO
+    export SCRIPTS_FOLDER_PATH\=AutoByteus.app/Scripts
+    export SCRIPT_INPUT_FILE_COUNT\=0
+    export SCRIPT_INPUT_FILE_LIST_COUNT\=0
+    export SCRIPT_OUTPUT_FILE_COUNT\=0
+    export SCRIPT_OUTPUT_FILE_LIST_COUNT\=0
+    export SDKROOT\=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.1.sdk
+    export SDK_DIR\=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.1.sdk
+    export SDK_DIR_iphonesimulator\=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.1.sdk
+    export SDK_DIR_iphonesimulator26_1\=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.1.sdk
+    export SDK_NAME\=iphonesimulator26.1
+    export SDK_NAMES\=iphonesimulator26.1
+    export SDK_PRODUCT_BUILD_VERSION\=23B77
+    export SDK_STAT_CACHE_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData
+    export SDK_STAT_CACHE_ENABLE\=YES
+    export SDK_STAT_CACHE_PATH\=/Users/normy/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.1-23B77-90cf18a4295e390e64c810bc6bd7acbc.sdkstatcache
+    export SDK_VERSION\=26.1
+    export SDK_VERSION_ACTUAL\=260100
+    export SDK_VERSION_MAJOR\=260000
+    export SDK_VERSION_MINOR\=260100
+    export SED\=/usr/bin/sed
+    export SEPARATE_STRIP\=NO
+    export SEPARATE_SYMBOL_EDIT\=NO
+    export SET_DIR_MODE_OWNER_GROUP\=YES
+    export SET_FILE_MODE_OWNER_GROUP\=NO
+    export SHALLOW_BUNDLE\=YES
+    export SHALLOW_BUNDLE_TRIPLE\=ios-simulator
+    export SHALLOW_BUNDLE_ios_macabi\=NO
+    export SHALLOW_BUNDLE_macos\=NO
+    export SHARED_DERIVED_FILE_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/DerivedSources
+    export SHARED_FRAMEWORKS_FOLDER_PATH\=AutoByteus.app/SharedFrameworks
+    export SHARED_PRECOMPS_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/PrecompiledHeaders
+    export SHARED_SUPPORT_FOLDER_PATH\=AutoByteus.app/SharedSupport
+    export SKIP_INSTALL\=NO
+    export SOURCE_ROOT\=/Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    export SRCROOT\=/Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    export STRINGSDATA_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal/undefined_arch
+    export STRINGSDATA_ROOT\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build
+    export STRINGS_FILE_INFOPLIST_RENAME\=YES
+    export STRINGS_FILE_OUTPUT_ENCODING\=binary
+    export STRING_CATALOG_GENERATE_SYMBOLS\=NO
+    export STRIP_BITCODE_FROM_COPIED_FILES\=NO
+    export STRIP_INSTALLED_PRODUCT\=NO
+    export STRIP_STYLE\=all
+    export STRIP_SWIFT_SYMBOLS\=YES
+    export SUPPORTED_DEVICE_FAMILIES\=1,2
+    export SUPPORTED_PLATFORMS\=iphoneos\ iphonesimulator
+    export SUPPORTS_MACCATALYST\=NO
+    export SUPPORTS_ON_DEMAND_RESOURCES\=YES
+    export SUPPORTS_TEXT_BASED_API\=NO
+    export SUPPRESS_WARNINGS\=NO
+    export SWIFT_ACTIVE_COMPILATION_CONDITIONS\=DEBUG
+    export SWIFT_EMIT_CONST_VALUE_PROTOCOLS\=AppIntent\ EntityQuery\ AppEntity\ TransientEntity\ AppEnum\ AppShortcutProviding\ AppShortcutsProvider\ AnyResolverProviding\ AppIntentsPackage\ DynamicOptionsProvider\ _IntentValueRepresentable\ _AssistantIntentsProvider\ _GenerativeFunctionExtractable\ IntentValueQuery\ Resolver\ AppExtension\ ExtensionPointDefining
+    export SWIFT_EMIT_LOC_STRINGS\=NO
+    export SWIFT_ENABLE_EXPLICIT_MODULES\=YES
+    export SWIFT_OPTIMIZATION_LEVEL\=-Onone
+    export SWIFT_PLATFORM_TARGET_PREFIX\=ios
+    export SWIFT_RESPONSE_FILE_PATH_normal_arm64\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal/arm64/AutoByteus.SwiftFileList
+    export SWIFT_VERSION\=5.10
+    export SYMROOT\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products
+    export SYSTEM_ADMIN_APPS_DIR\=/Applications/Utilities
+    export SYSTEM_APPS_DIR\=/Applications
+    export SYSTEM_CORE_SERVICES_DIR\=/System/Library/CoreServices
+    export SYSTEM_DEMOS_DIR\=/Applications/Extras
+    export SYSTEM_DEVELOPER_APPS_DIR\=/Applications/Xcode.app/Contents/Developer/Applications
+    export SYSTEM_DEVELOPER_BIN_DIR\=/Applications/Xcode.app/Contents/Developer/usr/bin
+    export SYSTEM_DEVELOPER_DEMOS_DIR\=/Applications/Xcode.app/Contents/Developer/Applications/Utilities/Built\ Examples
+    export SYSTEM_DEVELOPER_DIR\=/Applications/Xcode.app/Contents/Developer
+    export SYSTEM_DEVELOPER_DOC_DIR\=/Applications/Xcode.app/Contents/Developer/ADC\ Reference\ Library
+    export SYSTEM_DEVELOPER_GRAPHICS_TOOLS_DIR\=/Applications/Xcode.app/Contents/Developer/Applications/Graphics\ Tools
+    export SYSTEM_DEVELOPER_JAVA_TOOLS_DIR\=/Applications/Xcode.app/Contents/Developer/Applications/Java\ Tools
+    export SYSTEM_DEVELOPER_PERFORMANCE_TOOLS_DIR\=/Applications/Xcode.app/Contents/Developer/Applications/Performance\ Tools
+    export SYSTEM_DEVELOPER_RELEASENOTES_DIR\=/Applications/Xcode.app/Contents/Developer/ADC\ Reference\ Library/releasenotes
+    export SYSTEM_DEVELOPER_TOOLS\=/Applications/Xcode.app/Contents/Developer/Tools
+    export SYSTEM_DEVELOPER_TOOLS_DOC_DIR\=/Applications/Xcode.app/Contents/Developer/ADC\ Reference\ Library/documentation/DeveloperTools
+    export SYSTEM_DEVELOPER_TOOLS_RELEASENOTES_DIR\=/Applications/Xcode.app/Contents/Developer/ADC\ Reference\ Library/releasenotes/DeveloperTools
+    export SYSTEM_DEVELOPER_USR_DIR\=/Applications/Xcode.app/Contents/Developer/usr
+    export SYSTEM_DEVELOPER_UTILITIES_DIR\=/Applications/Xcode.app/Contents/Developer/Applications/Utilities
+    export SYSTEM_DEXT_INSTALL_PATH\=/System/Library/DriverExtensions
+    export SYSTEM_DOCUMENTATION_DIR\=/Library/Documentation
+    export SYSTEM_EXTENSIONS_FOLDER_PATH\=AutoByteus.app/SystemExtensions
+    export SYSTEM_EXTENSIONS_FOLDER_PATH_SHALLOW_BUNDLE_NO\=AutoByteus.app/Library/SystemExtensions
+    export SYSTEM_EXTENSIONS_FOLDER_PATH_SHALLOW_BUNDLE_YES\=AutoByteus.app/SystemExtensions
+    export SYSTEM_KEXT_INSTALL_PATH\=/System/Library/Extensions
+    export SYSTEM_LIBRARY_DIR\=/System/Library
+    export TAPI_DEMANGLE\=YES
+    export TAPI_ENABLE_PROJECT_HEADERS\=NO
+    export TAPI_LANGUAGE\=objective-c
+    export TAPI_LANGUAGE_STANDARD\=compiler-default
+    export TAPI_USE_SRCROOT\=YES
+    export TAPI_VERIFY_MODE\=Pedantic
+    export TARGETED_DEVICE_FAMILY\=1,2
+    export TARGETNAME\=AutoByteusMobile
+    export TARGET_BUILD_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator
+    export TARGET_DEVICE_IDENTIFIER\=C56265A1-C55D-4693-8507-C262E9991100
+    export TARGET_DEVICE_MODEL\=iPhone18,2
+    export TARGET_DEVICE_OS_VERSION\=26.1
+    export TARGET_DEVICE_PLATFORM_NAME\=iphonesimulator
+    export TARGET_NAME\=AutoByteusMobile
+    export TARGET_TEMP_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build
+    export TEMP_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build
+    export TEMP_FILES_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build
+    export TEMP_FILE_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build
+    export TEMP_ROOT\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex
+    export TEMP_SANDBOX_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/TemporaryTaskSandboxes
+    export TEST_FRAMEWORK_SEARCH_PATHS\=\ /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks\ /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.1.sdk/Developer/Library/Frameworks
+    export TEST_LIBRARY_SEARCH_PATHS\=\ /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib
+    export TOOLCHAINS\=com.apple.dt.toolchain.XcodeDefault
+    export TOOLCHAIN_DIR\=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain
+    export TREAT_MISSING_BASELINES_AS_TEST_FAILURES\=NO
+    export TREAT_MISSING_SCRIPT_PHASE_OUTPUTS_AS_ERRORS\=NO
+    export TeamIdentifierPrefix\=7Y86YBQ7B4.
+    export UID\=501
+    export UNINSTALLED_PRODUCTS_DIR\=/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/UninstalledProducts
+    export UNLOCALIZED_RESOURCES_FOLDER_PATH\=AutoByteus.app
+    export UNLOCALIZED_RESOURCES_FOLDER_PATH_SHALLOW_BUNDLE_NO\=AutoByteus.app/Resources
+    export UNLOCALIZED_RESOURCES_FOLDER_PATH_SHALLOW_BUNDLE_YES\=AutoByteus.app
+    export UNSTRIPPED_PRODUCT\=NO
+    export USER\=normy
+    export USER_APPS_DIR\=/Users/normy/Applications
+    export USER_LIBRARY_DIR\=/Users/normy/Library
+    export USE_DYNAMIC_NO_PIC\=YES
+    export USE_HEADERMAP\=YES
+    export USE_HEADER_SYMLINKS\=NO
+    export VALIDATE_DEVELOPMENT_ASSET_PATHS\=YES_ERROR
+    export VALIDATE_PRODUCT\=NO
+    export VALID_ARCHS\=arm64\ x86_64
+    export VERBOSE_PBXCP\=NO
+    export VERSIONPLIST_PATH\=AutoByteus.app/version.plist
+    export VERSION_INFO_BUILDER\=normy
+    export VERSION_INFO_FILE\=AutoByteus_vers.c
+    export VERSION_INFO_STRING\=\"@\(\#\)PROGRAM:AutoByteus\ \ PROJECT:AutoByteusMobile-1\"
+    export WORKSPACE_DIR\=/Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobile.xcodeproj
+    export WRAPPER_EXTENSION\=app
+    export WRAPPER_NAME\=AutoByteus.app
+    export WRAPPER_SUFFIX\=.app
+    export WRAP_ASSET_PACKS_IN_SEPARATE_DIRECTORIES\=NO
+    export XCODE_APP_SUPPORT_DIR\=/Applications/Xcode.app/Contents/Developer/Library/Xcode
+    export XCODE_PRODUCT_BUILD_VERSION\=17B100
+    export XCODE_VERSION_ACTUAL\=2611
+    export XCODE_VERSION_MAJOR\=2600
+    export XCODE_VERSION_MINOR\=2610
+    export XPCSERVICES_FOLDER_PATH\=AutoByteus.app/XPCServices
+    export YACC\=yacc
+    export _DISCOVER_COMMAND_LINE_LINKER_INPUTS\=YES
+    export _DISCOVER_COMMAND_LINE_LINKER_INPUTS_INCLUDE_WL\=YES
+    export _LD_MULTIARCH\=YES
+    export _WRAPPER_CONTENTS_DIR_SHALLOW_BUNDLE_NO\=/Contents
+    export _WRAPPER_PARENT_PATH_SHALLOW_BUNDLE_NO\=/..
+    export _WRAPPER_RESOURCES_DIR_SHALLOW_BUNDLE_NO\=/Resources
+    export __DIAGNOSE_DEPRECATED_ARCHS\=YES
+    export __IS_NOT_MACOS\=YES
+    export __IS_NOT_MACOS_macosx\=NO
+    export __IS_NOT_SIMULATOR\=NO
+    export __IS_NOT_SIMULATOR_simulator\=NO
+    export arch\=undefined_arch
+    export variant\=normal
+    /bin/sh -c /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Script-8F05237F362C36039F159534.sh
+
+ProcessProductPackaging "" /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/AutoByteusMobileUITests.xctest-Simulated.xcent (in target 'AutoByteusMobileUITests' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    
+    Entitlements:
+    
+    {
+    "application-identifier" = "7Y86YBQ7B4.org.autobyteus.mobile.ui-tests.xctrunner";
+    "keychain-access-groups" =     (
+        "7Y86YBQ7B4.org.autobyteus.mobile.ui-tests.xctrunner"
+    );
+}
+    
+    builtin-productPackagingUtility -entitlements -format xml -o /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/AutoByteusMobileUITests.xctest-Simulated.xcent
+
+ProcessProductPackagingDER /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/AutoByteusMobileUITests.xctest-Simulated.xcent /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/AutoByteusMobileUITests.xctest-Simulated.xcent.der (in target 'AutoByteusMobileUITests' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    /usr/bin/derq query -f xml -i /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/AutoByteusMobileUITests.xctest-Simulated.xcent -o /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/AutoByteusMobileUITests.xctest-Simulated.xcent.der --raw
+
+Ld /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/AutoByteus.debug.dylib normal (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios17.0-simulator -dynamiclib -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.1.sdk -O0 -L/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -L/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator -F/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -F/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator -filelist /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal/arm64/AutoByteus.LinkFileList -install_name @rpath/AutoByteus.debug.dylib -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @executable_path/Frameworks -dead_strip -Xlinker -object_path_lto -Xlinker /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal/arm64/AutoByteus_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -dependency_info -Xlinker /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal/arm64/AutoByteus_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal/arm64/AutoByteus.swiftmodule @/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal/arm64/AutoByteus-linker-args.resp -Xlinker -alias -Xlinker _main -Xlinker ___debug_main_executable_dylib_entry_point -framework AutoByteusMobileCore -Xlinker -no_adhoc_codesign -o /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/AutoByteus.debug.dylib
+
+ConstructStubExecutorLinkFileList /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus-ExecutorLinkFileList-normal-arm64.txt (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    construct-stub-executor-link-file-list /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/AutoByteus.debug.dylib /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libPreviewsJITStubExecutor_no_swift_entry_point.a /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libPreviewsJITStubExecutor.a --output /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus-ExecutorLinkFileList-normal-arm64.txt
+note: Using stub executor library with Swift entry point. (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+
+Ld /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/AutoByteus normal (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios17.0-simulator -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.1.sdk -O0 -L/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator -F/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator -Xlinker -rpath -Xlinker @executable_path -Xlinker -rpath -Xlinker @executable_path/Frameworks -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -e ___debug_blank_executor_main -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_dylib -Xlinker /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus-DebugDylibPath-normal-arm64.txt -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_instlnm -Xlinker /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus-DebugDylibInstallName-normal-arm64.txt -Xlinker -filelist -Xlinker /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus-ExecutorLinkFileList-normal-arm64.txt -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __entitlements -Xlinker /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app-Simulated.xcent -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __ents_der -Xlinker /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app-Simulated.xcent.der /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/AutoByteus.debug.dylib -Xlinker -no_adhoc_codesign -o /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/AutoByteus
+
+Copy /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/PlugIns/AutoByteus\ Share.appex /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks -remove-static-executable /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/PlugIns
+
+ProcessInfoPlistFile /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/Info.plist /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobile/Info.plist (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    builtin-infoPlistUtility /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobile/Info.plist -producttype com.apple.product-type.application -genpkginfo /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/PkgInfo -expandbuildsettings -format binary -platform iphonesimulator -additionalcontentfile /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/assetcatalog_generated_info.plist -scanforprivacyfile /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/Frameworks/AutoByteusMobileCore.framework -scanforprivacyfile /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/PlugIns/AutoByteus\ Share.appex -o /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/Info.plist
+
+ExtractAppIntentsMetadata (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name AutoByteus --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.1.sdk --xcode-version 17B100 --platform-family iOS --deployment-target 17.0 --bundle-identifier org.autobyteus.mobile --output /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app --target-triple arm64-apple-ios17.0-simulator --binary-file /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/AutoByteus --dependency-file /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal/arm64/AutoByteus_dependency_info.dat --stringsdata-file /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal/arm64/AutoByteus.SwiftFileList --metadata-file-list /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.DependencyMetadataFileList --static-metadata-file-list /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.DependencyStaticMetadataFileList --swift-const-vals-list /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal/arm64/AutoByteus.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2026-11-19 23:01:17.177 appintentsmetadataprocessor[62982:521516366] Starting appintentsmetadataprocessor export
+2026-11-19 23:01:17.178 appintentsmetadataprocessor[62982:521516366] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+
+CopySwiftLibs /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    builtin-swiftStdLibTool --copy --verbose --sign - --scan-executable /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/AutoByteus.debug.dylib --scan-folder /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/Frameworks --scan-folder /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/PlugIns --scan-folder /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/SystemExtensions --scan-folder /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/Extensions --scan-folder /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileCore.framework --platform iphonesimulator --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/Frameworks --strip-bitcode --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+
+CodeSign /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/AutoByteus.debug.dylib (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/AutoByteus.debug.dylib
+
+CodeSign /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/__preview.dylib (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/__preview.dylib
+/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/__preview.dylib: replacing existing signature
+
+CodeSign /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --entitlements /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app.xcent --timestamp\=none --generate-entitlement-der /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app
+
+ValidateEmbeddedBinary /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/PlugIns/AutoByteus\ Share.appex (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    /Applications/Xcode.app/Contents/Developer/usr/bin/embeddedBinaryValidationUtility /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/PlugIns/AutoByteus\ Share.appex -signing-cert - -info-plist-path /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app/Info.plist
+
+Validate /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    builtin-validationUtility /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteus.app -shallow-bundle -infoplist-subpath Info.plist
+
+Ld /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest/AutoByteusMobileUITests normal (in target 'AutoByteusMobileUITests' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios17.0-simulator -bundle -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.1.sdk -O0 -L/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -L/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator -L/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -F/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator -iframework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -iframework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.1.sdk/Developer/Library/Frameworks -filelist /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/Objects-normal/arm64/AutoByteusMobileUITests.LinkFileList -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @loader_path/Frameworks -Xlinker -rpath -Xlinker @executable_path/Frameworks -dead_strip -Xlinker -object_path_lto -Xlinker /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/Objects-normal/arm64/AutoByteusMobileUITests_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -dependency_info -Xlinker /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/Objects-normal/arm64/AutoByteusMobileUITests_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/Objects-normal/arm64/AutoByteusMobileUITests.swiftmodule @/Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/Objects-normal/arm64/AutoByteusMobileUITests-linker-args.resp -Xlinker -needed_framework -Xlinker XCTest -framework XCTest -Xlinker -needed-lXCTestSwiftSupport -lXCTestSwiftSupport -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __entitlements -Xlinker /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/AutoByteusMobileUITests.xctest-Simulated.xcent -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __ents_der -Xlinker /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/AutoByteusMobileUITests.xctest-Simulated.xcent.der -Xlinker -no_adhoc_codesign -o /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest/AutoByteusMobileUITests
+
+ExtractAppIntentsMetadata (in target 'AutoByteusMobileUITests' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name AutoByteusMobileUITests --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.1.sdk --xcode-version 17B100 --platform-family iOS --deployment-target 17.0 --bundle-identifier org.autobyteus.mobile.ui-tests --output /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest --target-triple arm64-apple-ios17.0-simulator --binary-file /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest/AutoByteusMobileUITests --dependency-file /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/Objects-normal/arm64/AutoByteusMobileUITests_dependency_info.dat --stringsdata-file /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/Objects-normal/arm64/AutoByteusMobileUITests.SwiftFileList --metadata-file-list /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/AutoByteusMobileUITests.DependencyMetadataFileList --static-metadata-file-list /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/AutoByteusMobileUITests.DependencyStaticMetadataFileList --swift-const-vals-list /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/Objects-normal/arm64/AutoByteusMobileUITests.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2026-11-19 23:01:18.396 appintentsmetadataprocessor[62989:521516438] Starting appintentsmetadataprocessor export
+2026-11-19 23:01:18.400 appintentsmetadataprocessor[62989:521516438] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+
+ProcessInfoPlistFile /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileCoreTests.xctest/Info.plist /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileCoreTests.build/empty-AutoByteusMobileCoreTests.plist (in target 'AutoByteusMobileCoreTests' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    builtin-infoPlistUtility /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileCoreTests.build/empty-AutoByteusMobileCoreTests.plist -producttype com.apple.product-type.bundle.unit-test -expandbuildsettings -format binary -platform iphonesimulator -o /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileCoreTests.xctest/Info.plist
+
+ProcessInfoPlistFile /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest/Info.plist /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobileUITests/Info.plist (in target 'AutoByteusMobileUITests' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    builtin-infoPlistUtility /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobileUITests/Info.plist -producttype com.apple.product-type.bundle.ui-testing -expandbuildsettings -format binary -platform iphonesimulator -additionalcontentfile /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/ProductTypeInfoPlistAdditions.plist -o /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest/Info.plist
+
+CopySwiftLibs /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest (in target 'AutoByteusMobileUITests' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    builtin-swiftStdLibTool --copy --verbose --sign - --scan-executable /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest/AutoByteusMobileUITests --scan-folder /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest/Frameworks --scan-folder /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest/PlugIns --scan-folder /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest/SystemExtensions --scan-folder /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest/Extensions --platform iphonesimulator --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest/Frameworks --strip-bitcode --scan-executable /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+
+CopySwiftLibs /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileCoreTests.xctest (in target 'AutoByteusMobileCoreTests' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    builtin-swiftStdLibTool --copy --verbose --sign - --scan-executable /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileCoreTests.xctest/AutoByteusMobileCoreTests --scan-folder /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileCoreTests.xctest/Frameworks --scan-folder /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileCoreTests.xctest/PlugIns --scan-folder /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileCoreTests.xctest/SystemExtensions --scan-folder /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileCoreTests.xctest/Extensions --scan-folder /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileCore.framework --platform iphonesimulator --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileCoreTests.xctest/Frameworks --strip-bitcode --scan-executable /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileCoreTests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+
+CodeSign /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest (in target 'AutoByteusMobileUITests' from project 'AutoByteusMobile')
+    cd /Users/normy/.cache/abtest279/fs-ios/autobyteus-ios
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-dosakkfzzyesyxffxypcvwtfbrjz/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest
+
+2026-11-19 23:02:09.542794+0100 AutoByteusMobileUITests-Runner[66831:521523133] [Default] Running tests...
+2026-11-19 23:02:09.579630+0100 AutoByteusMobileUITests-Runner[66831:521523370] [General] Failed to send CA Event for app launch measurements for ca_event_type: 0 event_name: com.apple.app_launch_measurement.FirstFramePresentationMetric
+2026-11-19 23:02:09.621785+0100 AutoByteusMobileUITests-Runner[66831:521523375] [General] Failed to send CA Event for app launch measurements for ca_event_type: 1 event_name: com.apple.app_launch_measurement.ExtendedLaunchMetrics
+    t =      nans Interface orientation changed to Portrait
+Test Suite 'Selected tests' started at 2026-11-19 23:02:18.284.
+Test Suite 'AutoByteusMobileUITests.xctest' started at 2026-11-19 23:02:18.285.
+Test Suite 'AutoByteusMobileUITests' started at 2026-11-19 23:02:18.286.
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker]' started.
+    t =     0.00s Start Test at 2026-11-19 23:02:18.288
+    t =     0.26s Set Up
+    t =     0.27s Open org.autobyteus.mobile
+    t =     0.27s     Launch org.autobyteus.mobile
+    t =    12.25s         Setting up automation session
+    t =    13.17s         Wait for org.autobyteus.mobile to idle
+    t =    15.41s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "start.otherWays" Button`
+    t =    15.41s     Checking existence of `"start.otherWays" Button`
+    t =    15.47s     Find the "start.otherWays" Button
+    t =    15.50s Tap "start.otherWays" Button
+    t =    15.50s     Wait for org.autobyteus.mobile to idle
+    t =    15.50s     Find the "start.otherWays" Button
+    t =    15.55s     Check for interrupting elements affecting "start.otherWays" Button
+    t =    15.57s     Synthesize event
+    t =    15.98s     Wait for org.autobyteus.mobile to idle
+    t =    17.07s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "start.typeAddress" Button`
+    t =    17.07s     Checking existence of `"start.typeAddress" Button`
+    t =    17.09s     Find the "start.typeAddress" Button
+    t =    17.11s Tap "start.typeAddress" Button
+    t =    17.11s     Wait for org.autobyteus.mobile to idle
+    t =    17.11s     Find the "start.typeAddress" Button
+    t =    17.13s     Check for interrupting elements affecting "start.typeAddress" Button
+    t =    17.15s     Synthesize event
+    t =    17.45s     Wait for org.autobyteus.mobile to idle
+    t =    19.14s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "typeAddress.field" TextField`
+    t =    19.15s     Checking existence of `"typeAddress.field" TextField`
+    t =    19.20s     Find the "typeAddress.field" TextField
+    t =    20.34s Checking `Expect predicate `hasKeyboardFocus == 1` for object "typeAddress.field" TextField`
+    t =    20.34s     Find the "typeAddress.field" TextField
+    t =    21.45s Checking `Expect predicate `hasKeyboardFocus == 1` for object "typeAddress.field" TextField`
+    t =    21.45s     Find the "typeAddress.field" TextField
+    t =    21.48s Type 'http://127.0.0.1:2...' into "typeAddress.field" TextField
+    t =    21.48s     Wait for org.autobyteus.mobile to idle
+    t =    21.49s     Find the "typeAddress.field" TextField
+    t =    21.52s     Check for interrupting elements affecting "typeAddress.field" TextField
+    t =    21.55s     Synthesize event
+    t =    22.25s     Wait for org.autobyteus.mobile to idle
+    t =    23.32s Checking `Expect predicate `value CONTAINS "http://127.0.0.1:29876/mobile"` for object "typeAddress.field" TextField`
+    t =    23.32s     Find the "typeAddress.field" TextField
+    t =    24.44s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "typeAddress.httpAcknowledgement" Switch`
+    t =    24.44s     Checking existence of `"typeAddress.httpAcknowledgement" Switch`
+    t =    24.50s     Find the "typeAddress.httpAcknowledgement" Switch
+    t =    24.55s Find the "typeAddress.httpAcknowledgement" Switch
+    t =    24.59s Tap "typeAddress.httpAcknowledgement" Switch
+    t =    24.59s     Wait for org.autobyteus.mobile to idle
+    t =    24.59s     Find the "typeAddress.httpAcknowledgement" Switch
+    t =    24.63s     Check for interrupting elements affecting "typeAddress.httpAcknowledgement" Switch
+    t =    24.66s     Synthesize event
+    t =    24.96s     Wait for org.autobyteus.mobile to idle
+    t =    27.28s Checking `Expect predicate `value == "1"` for object "typeAddress.httpAcknowledgement" Switch`
+    t =    27.28s     Find the "typeAddress.httpAcknowledgement" Switch
+    t =    27.32s Find the "typeAddress.httpAcknowledgement" Switch
+    t =    28.44s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "typeAddress.connect" Button`
+    t =    28.44s     Checking existence of `"typeAddress.connect" Button`
+    t =    28.47s     Find the "typeAddress.connect" Button
+    t =    28.52s Tap "typeAddress.connect" Button
+    t =    28.52s     Wait for org.autobyteus.mobile to idle
+    t =    28.52s     Find the "typeAddress.connect" Button
+    t =    28.56s     Check for interrupting elements affecting "typeAddress.connect" Button
+    t =    28.60s     Synthesize event
+    t =    28.89s     Wait for org.autobyteus.mobile to idle
+    t =    29.27s Waiting 60.0s for WebView (First Match) to exist
+    t =    30.31s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    30.31s         Checking existence of `WebView (First Match)`
+    t =    30.32s Waiting 60.0s for "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText to exist
+    t =    31.39s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    31.39s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    31.40s         Capturing element debug description
+    t =    32.37s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    32.37s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    32.38s         Capturing element debug description
+    t =    33.35s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    33.35s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    33.42s Find the Target Application 'org.autobyteus.mobile'
+    t =    33.56s Added attachment named 'fake-mobile-opened'
+    t =    33.57s Terminate org.autobyteus.mobile:66881
+    t =    34.58s Open org.autobyteus.mobile
+    t =    34.58s     Launch org.autobyteus.mobile
+    t =    34.81s         Setting up automation session
+    t =    35.77s         Wait for org.autobyteus.mobile to idle
+    t =    36.95s Waiting 60.0s for WebView (First Match) to exist
+    t =    38.03s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    38.03s         Checking existence of `WebView (First Match)`
+    t =    38.06s Waiting 60.0s for "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText to exist
+    t =    39.14s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    39.14s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    39.17s Find the Target Application 'org.autobyteus.mobile'
+    t =    39.30s Added attachment named 'fake-mobile-restored'
+    t =    39.31s Tear Down
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker]' passed (39.639 seconds).
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testUnreachableNodeShowsNativeDiagnosticWhenSmokeEnvironmentIsPresent]' started.
+    t =     0.00s Start Test at 2026-11-19 23:02:57.928
+    t =     0.03s Set Up
+    t =     0.03s Open org.autobyteus.mobile
+    t =     0.03s     Launch org.autobyteus.mobile
+    t =     0.03s         Terminate org.autobyteus.mobile:67007
+    t =     1.28s         Setting up automation session
+    t =     2.21s         Wait for org.autobyteus.mobile to idle
+    t =     4.52s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "start.otherWays" Button`
+    t =     4.52s     Checking existence of `"start.otherWays" Button`
+    t =     4.56s     Find the "start.otherWays" Button
+    t =     4.59s Tap "start.otherWays" Button
+    t =     4.59s     Wait for org.autobyteus.mobile to idle
+    t =     4.59s     Find the "start.otherWays" Button
+    t =     4.60s     Check for interrupting elements affecting "start.otherWays" Button
+    t =     4.62s     Synthesize event
+    t =     4.92s     Wait for org.autobyteus.mobile to idle
+    t =     6.00s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "start.typeAddress" Button`
+    t =     6.00s     Checking existence of `"start.typeAddress" Button`
+    t =     6.02s     Find the "start.typeAddress" Button
+    t =     6.04s Tap "start.typeAddress" Button
+    t =     6.04s     Wait for org.autobyteus.mobile to idle
+    t =     6.04s     Find the "start.typeAddress" Button
+    t =     6.06s     Check for interrupting elements affecting "start.typeAddress" Button
+    t =     6.08s     Synthesize event
+    t =     6.37s     Wait for org.autobyteus.mobile to idle
+    t =     7.96s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "typeAddress.field" TextField`
+    t =     7.96s     Checking existence of `"typeAddress.field" TextField`
+    t =     8.01s     Find the "typeAddress.field" TextField
+    t =     9.13s Checking `Expect predicate `hasKeyboardFocus == 1` for object "typeAddress.field" TextField`
+    t =     9.13s     Find the "typeAddress.field" TextField
+    t =    10.24s Checking `Expect predicate `hasKeyboardFocus == 1` for object "typeAddress.field" TextField`
+    t =    10.24s     Find the "typeAddress.field" TextField
+    t =    10.28s Type 'http://127.0.0.1:9...' into "typeAddress.field" TextField
+    t =    10.28s     Wait for org.autobyteus.mobile to idle
+    t =    10.29s     Find the "typeAddress.field" TextField
+    t =    10.31s     Check for interrupting elements affecting "typeAddress.field" TextField
+    t =    10.34s     Synthesize event
+    t =    10.97s     Wait for org.autobyteus.mobile to idle
+    t =    12.05s Checking `Expect predicate `value CONTAINS "http://127.0.0.1:9/mobile"` for object "typeAddress.field" TextField`
+    t =    12.05s     Find the "typeAddress.field" TextField
+    t =    13.15s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "typeAddress.httpAcknowledgement" Switch`
+    t =    13.15s     Checking existence of `"typeAddress.httpAcknowledgement" Switch`
+    t =    13.18s     Find the "typeAddress.httpAcknowledgement" Switch
+    t =    13.22s Find the "typeAddress.httpAcknowledgement" Switch
+    t =    13.26s Tap "typeAddress.httpAcknowledgement" Switch
+    t =    13.26s     Wait for org.autobyteus.mobile to idle
+    t =    13.26s     Find the "typeAddress.httpAcknowledgement" Switch
+    t =    13.29s     Check for interrupting elements affecting "typeAddress.httpAcknowledgement" Switch
+    t =    13.32s     Synthesize event
+    t =    13.61s     Wait for org.autobyteus.mobile to idle
+    t =    15.89s Checking `Expect predicate `value == "1"` for object "typeAddress.httpAcknowledgement" Switch`
+    t =    15.89s     Find the "typeAddress.httpAcknowledgement" Switch
+    t =    15.93s Find the "typeAddress.httpAcknowledgement" Switch
+    t =    17.03s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "typeAddress.connect" Button`
+    t =    17.04s     Checking existence of `"typeAddress.connect" Button`
+    t =    17.07s     Find the "typeAddress.connect" Button
+    t =    17.12s Tap "typeAddress.connect" Button
+    t =    17.12s     Wait for org.autobyteus.mobile to idle
+    t =    17.13s     Find the "typeAddress.connect" Button
+    t =    17.16s     Check for interrupting elements affecting "typeAddress.connect" Button
+    t =    17.20s     Synthesize event
+    t =    17.49s     Wait for org.autobyteus.mobile to idle
+    t =    17.85s Waiting 90.0s for "cantReach.title" StaticText to exist
+    t =    18.92s     Checking `Expect predicate `existsNoRetry == 1` for object "cantReach.title" StaticText`
+    t =    18.93s         Checking existence of `"cantReach.title" StaticText`
+    t =    18.94s Find the "cantReach.title" StaticText
+    t =    18.96s Checking existence of `"cantReach.retry" Button`
+    t =    18.97s Find the Target Application 'org.autobyteus.mobile'
+    t =    19.12s Added attachment named 'native-unreachable-diagnostic'
+    t =    19.13s Tear Down
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testUnreachableNodeShowsNativeDiagnosticWhenSmokeEnvironmentIsPresent]' passed (19.515 seconds).
+Test Suite 'AutoByteusMobileUITests' passed at 2026-11-19 23:03:17.443.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 59.154 (59.157) seconds
+Test Suite 'DemoUITests' started at 2026-11-19 23:03:17.443.
+Test Case '-[AutoByteusMobileUITests.DemoUITests testAKeptShareIsUsedOnce]' started.
+    t =     0.00s Start Test at 2026-11-19 23:03:17.444
+    t =     0.02s Set Up
+    t =     0.02s Open org.autobyteus.mobile
+    t =     0.02s     Launch org.autobyteus.mobile
+    t =     0.03s         Terminate org.autobyteus.mobile:67043
+    t =     1.29s         Setting up automation session
+    t =     2.28s         Wait for org.autobyteus.mobile to idle
+    t =     3.64s Waiting 90.0s for "Welcome to the demo" StaticText to exist
+    t =     4.68s     Checking `Expect predicate `existsNoRetry == 1` for object "Welcome to the demo" StaticText`
+    t =     4.68s         Checking existence of `"Welcome to the demo" StaticText`
+    t =     4.81s Checking existence of `"Demo, sample data. About the demo" Other`
+    t =     4.85s Find the Target Application 'org.autobyteus.mobile'
+    t =     5.01s Added attachment named 'share-demo-link'
+    t =     5.01s Terminate org.autobyteus.mobile:67137
+    t =     6.10s Open org.autobyteus.mobile
+    t =     6.10s     Launch org.autobyteus.mobile
+    t =     6.35s         Setting up automation session
+    t =     7.28s         Wait for org.autobyteus.mobile to idle
+    t =     8.59s Waiting 30.0s for "typeAddress.field" TextField to exist
+    t =     9.64s     Checking `Expect predicate `existsNoRetry == 1` for object "typeAddress.field" TextField`
+    t =     9.64s         Checking existence of `"typeAddress.field" TextField`
+    t =     9.72s Find the "typeAddress.field" TextField
+    t =     9.76s Find the Target Application 'org.autobyteus.mobile'
+    t =     9.93s Added attachment named 'share-other-text'
+    t =     9.93s Tear Down
+Test Case '-[AutoByteusMobileUITests.DemoUITests testAKeptShareIsUsedOnce]' passed (10.220 seconds).
+Test Case '-[AutoByteusMobileUITests.DemoUITests testFirstScreen]' started.
+    t =     0.00s Start Test at 2026-11-19 23:03:27.665
+    t =     0.03s Set Up
+    t =     0.03s Open org.autobyteus.mobile
+    t =     0.03s     Launch org.autobyteus.mobile
+    t =     0.03s         Terminate org.autobyteus.mobile:67151
+    t =     1.26s         Setting up automation session
+    t =     2.29s         Wait for org.autobyteus.mobile to idle
+    t =     3.51s Waiting 30.0s for "start.scan" Button to exist
+    t =     4.60s     Checking `Expect predicate `existsNoRetry == 1` for object "start.scan" Button`
+    t =     4.60s         Checking existence of `"start.scan" Button`
+    t =     4.66s Checking existence of `"start.tryDemo" Button`
+    t =     4.67s Checking existence of `"Scan the QR code on your computer" StaticText`
+    t =     4.69s Tap "start.otherWays" Button
+    t =     4.69s     Wait for org.autobyteus.mobile to idle
+    t =     4.69s     Find the "start.otherWays" Button
+    t =     4.71s     Check for interrupting elements affecting "start.otherWays" Button
+    t =     4.73s     Synthesize event
+    t =     5.04s     Wait for org.autobyteus.mobile to idle
+    t =     5.04s Waiting 30.0s for "start.typeAddress" Button to exist
+    t =     6.11s     Checking `Expect predicate `existsNoRetry == 1` for object "start.typeAddress" Button`
+    t =     6.11s         Checking existence of `"start.typeAddress" Button`
+    t =     6.14s Checking existence of `"start.pasteLink" Button`
+    t =     6.17s Find the Target Application 'org.autobyteus.mobile'
+    t =     6.33s Added attachment named 'first-screen'
+    t =     6.33s Tear Down
+Test Case '-[AutoByteusMobileUITests.DemoUITests testFirstScreen]' passed (6.557 seconds).
+Test Case '-[AutoByteusMobileUITests.DemoUITests testScanningTheDemoCodeOpensTheDemo]' started.
+    t =     0.00s Start Test at 2026-11-19 23:03:34.224
+    t =     0.03s Set Up
+    t =     0.03s Open org.autobyteus.mobile
+    t =     0.03s     Launch org.autobyteus.mobile
+    t =     0.03s         Terminate org.autobyteus.mobile:67215
+    t =     1.33s         Setting up automation session
+    t =     2.28s         Wait for org.autobyteus.mobile to idle
+    t =     3.51s Waiting 30.0s for "start.scan" Button to exist
+    t =     4.57s     Checking `Expect predicate `existsNoRetry == 1` for object "start.scan" Button`
+    t =     4.57s         Checking existence of `"start.scan" Button`
+    t =     4.61s Tap "start.scan" Button
+    t =     4.61s     Wait for org.autobyteus.mobile to idle
+    t =     4.62s     Find the "start.scan" Button
+    t =     4.64s     Check for interrupting elements affecting "start.scan" Button
+    t =     4.66s     Synthesize event
+    t =     4.95s     Wait for org.autobyteus.mobile to idle
+    t =     5.27s Waiting 30.0s for "Demo code found" StaticText to exist
+    t =     6.33s     Checking `Expect predicate `existsNoRetry == 1` for object "Demo code found" StaticText`
+    t =     6.33s         Checking existence of `"Demo code found" StaticText`
+    t =     6.35s Find the Target Application 'org.autobyteus.mobile'
+    t =     6.48s Added attachment named 'demo-code-found'
+    t =     6.48s Waiting 90.0s for "Welcome to the demo" StaticText to exist
+    t =     7.52s     Checking `Expect predicate `existsNoRetry == 1` for object "Welcome to the demo" StaticText`
+    t =     7.52s         Checking existence of `"Welcome to the demo" StaticText`
+    t =     8.22s Checking existence of `"Demo, sample data. About the demo" Other`
+    t =     8.28s Find the Target Application 'org.autobyteus.mobile'
+    t =     8.50s Added attachment named 'demo-from-scan'
+    t =     8.51s Tear Down
+Test Case '-[AutoByteusMobileUITests.DemoUITests testScanningTheDemoCodeOpensTheDemo]' passed (8.946 seconds).
+Test Case '-[AutoByteusMobileUITests.DemoUITests testTheDemoLinkOpensTheDemo]' started.
+    t =     0.00s Start Test at 2026-11-19 23:03:43.169
+    t =     0.03s Set Up
+    t =     0.03s Open org.autobyteus.mobile
+    t =     0.03s     Launch org.autobyteus.mobile
+    t =     0.03s         Terminate org.autobyteus.mobile:67333
+    t =     1.35s         Setting up automation session
+    t =     2.25s         Wait for org.autobyteus.mobile to idle
+    t =     3.46s Waiting 30.0s for "start.scan" Button to exist
+    t =     4.51s     Checking `Expect predicate `existsNoRetry == 1` for object "start.scan" Button`
+    t =     4.51s         Checking existence of `"start.scan" Button`
+    t =     4.56s Open org.autobyteus.mobile with URL autobyteus://demo
+    t =     4.56s     Launch org.autobyteus.mobile
+    t =     4.98s         Setting up automation session
+    t =     5.86s         Wait for org.autobyteus.mobile to idle
+    t =     7.19s Waiting 5.0s for Alert (First Match) to exist
+    t =     8.20s     Checking `Expect predicate `existsNoRetry == 1` for object Alert (First Match)`
+    t =     8.20s         Checking existence of `Alert (First Match)`
+    t =     8.32s         Capturing element debug description
+    t =     9.27s     Checking `Expect predicate `existsNoRetry == 1` for object Alert (First Match)`
+    t =     9.27s         Checking existence of `Alert (First Match)`
+    t =     9.36s         Capturing element debug description
+    t =    10.20s     Checking `Expect predicate `existsNoRetry == 1` for object Alert (First Match)`
+    t =    10.20s         Checking existence of `Alert (First Match)`
+    t =    10.24s         Capturing element debug description
+    t =    11.24s     Checking `Expect predicate `existsNoRetry == 1` for object Alert (First Match)`
+    t =    11.25s         Checking existence of `Alert (First Match)`
+    t =    11.29s         Capturing element debug description
+    t =    12.20s     Checking `Expect predicate `existsNoRetry == 1` for object Alert (First Match)`
+    t =    12.20s         Checking existence of `Alert (First Match)`
+    t =    12.24s         Capturing element debug description
+    t =    12.24s     Checking existence of `Alert (First Match)`
+    t =    12.28s Collecting debug information to assist test failure triage
+    t =    12.28s     Requesting snapshot of accessibility hierarchy for app with pid 61704
+    t =    12.35s Waiting 90.0s for "Welcome to the demo" StaticText to exist
+    t =    13.43s     Checking `Expect predicate `existsNoRetry == 1` for object "Welcome to the demo" StaticText`
+    t =    13.44s         Checking existence of `"Welcome to the demo" StaticText`
+    t =    13.51s Checking existence of `"Demo, sample data. About the demo" Other`
+    t =    13.55s Find the Target Application 'org.autobyteus.mobile'
+    t =    13.69s Added attachment named 'demo-from-link'
+    t =    13.69s Tear Down
+Test Case '-[AutoByteusMobileUITests.DemoUITests testTheDemoLinkOpensTheDemo]' passed (14.085 seconds).
+Test Case '-[AutoByteusMobileUITests.DemoUITests testTheDemoWebViewBlocksTheNetwork]' started.
+    t =     0.00s Start Test at 2026-11-19 23:03:57.255
+    t =     0.02s Set Up
+    t =     0.02s Open org.autobyteus.mobile
+    t =     0.03s     Launch org.autobyteus.mobile
+    t =     0.03s         Terminate org.autobyteus.mobile:67603
+    t =     1.31s         Setting up automation session
+    t =     2.29s         Wait for org.autobyteus.mobile to idle
+    t =     3.54s Waiting 30.0s for "start.tryDemo" Button to exist
+    t =     4.61s     Checking `Expect predicate `existsNoRetry == 1` for object "start.tryDemo" Button`
+    t =     4.61s         Checking existence of `"start.tryDemo" Button`
+    t =     4.65s Tap "start.tryDemo" Button
+    t =     4.65s     Wait for org.autobyteus.mobile to idle
+    t =     4.65s     Find the "start.tryDemo" Button
+    t =     4.67s     Check for interrupting elements affecting "start.tryDemo" Button
+    t =     4.69s     Synthesize event
+    t =     4.99s     Wait for org.autobyteus.mobile to idle
+    t =     4.99s Waiting 90.0s for "demo.networkProbe" StaticText to exist
+    t =     6.02s     Checking `Expect predicate `existsNoRetry == 1` for object "demo.networkProbe" StaticText`
+    t =     6.02s         Checking existence of `"demo.networkProbe" StaticText`
+    t =     6.36s Find the "demo.networkProbe" StaticText
+    t =     6.41s Tear Down
+Test Case '-[AutoByteusMobileUITests.DemoUITests testTheDemoWebViewBlocksTheNetwork]' passed (6.811 seconds).
+Test Case '-[AutoByteusMobileUITests.DemoUITests testTryDemoThenLeaveDemoThenColdLaunch]' started.
+    t =     0.00s Start Test at 2026-11-19 23:04:04.067
+    t =     0.02s Set Up
+    t =     0.02s Open org.autobyteus.mobile
+    t =     0.02s     Launch org.autobyteus.mobile
+    t =     0.02s         Terminate org.autobyteus.mobile:67851
+    t =     1.34s         Setting up automation session
+    t =     2.25s         Wait for org.autobyteus.mobile to idle
+    t =     3.48s Waiting 30.0s for "start.tryDemo" Button to exist
+    t =     4.53s     Checking `Expect predicate `existsNoRetry == 1` for object "start.tryDemo" Button`
+    t =     4.53s         Checking existence of `"start.tryDemo" Button`
+    t =     4.57s Tap "start.tryDemo" Button
+    t =     4.57s     Wait for org.autobyteus.mobile to idle
+    t =     4.58s     Find the "start.tryDemo" Button
+    t =     4.59s     Check for interrupting elements affecting "start.tryDemo" Button
+    t =     4.61s     Synthesize event
+    t =     4.91s     Wait for org.autobyteus.mobile to idle
+    t =     4.91s Waiting 90.0s for "Welcome to the demo" StaticText to exist
+    t =     5.97s     Checking `Expect predicate `existsNoRetry == 1` for object "Welcome to the demo" StaticText`
+    t =     5.97s         Checking existence of `"Welcome to the demo" StaticText`
+    t =     6.29s Checking existence of `"Demo, sample data. About the demo" Other`
+    t =     6.33s Find the Target Application 'org.autobyteus.mobile'
+    t =     6.53s Added attachment named 'demo-run-list'
+    t =     6.53s Waiting 30.0s for "Demo, sample data. About the demo" Other to exist
+    t =     7.60s     Checking `Expect predicate `existsNoRetry == 1` for object "Demo, sample data. About the demo" Other`
+    t =     7.60s         Checking existence of `"Demo, sample data. About the demo" Other`
+    t =     7.64s Tap "Demo, sample data. About the demo" Other
+    t =     7.64s     Wait for org.autobyteus.mobile to idle
+    t =     7.64s     Find the "Demo, sample data. About the demo" Other
+    t =     7.67s     Check for interrupting elements affecting "Demo, sample data. About the demo" Other
+    t =     7.72s     Synthesize event
+    t =     8.02s     Wait for org.autobyteus.mobile to idle
+    t =     8.06s Waiting 30.0s for Button (First Match) to exist
+    t =     9.11s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =     9.11s         Checking existence of `Button (First Match)`
+    t =     9.13s Find the Target Application 'org.autobyteus.mobile'
+    t =     9.27s Added attachment named 'demo-sheet'
+    t =     9.27s Tap Button (First Match)
+    t =     9.27s     Wait for org.autobyteus.mobile to idle
+    t =     9.28s     Find the Button (First Match)
+    t =     9.30s     Check for interrupting elements affecting "Leave demo Back to connecting your own computer" Button
+    t =     9.32s     Synthesize event
+    t =     9.61s     Wait for org.autobyteus.mobile to idle
+    t =     9.62s Waiting 30.0s for "start.scan" Button to exist
+    t =    10.70s     Checking `Expect predicate `existsNoRetry == 1` for object "start.scan" Button`
+    t =    10.70s         Checking existence of `"start.scan" Button`
+    t =    10.72s Waiting 30.0s for "start.tryDemo" Button to exist
+    t =    11.78s     Checking `Expect predicate `existsNoRetry == 1` for object "start.tryDemo" Button`
+    t =    11.78s         Checking existence of `"start.tryDemo" Button`
+    t =    11.79s Tap "start.tryDemo" Button
+    t =    11.79s     Wait for org.autobyteus.mobile to idle
+    t =    11.80s     Find the "start.tryDemo" Button
+    t =    11.81s     Check for interrupting elements affecting "start.tryDemo" Button
+    t =    11.83s     Synthesize event
+    t =    12.13s     Wait for org.autobyteus.mobile to idle
+    t =    12.13s Waiting 90.0s for "Welcome to the demo" StaticText to exist
+    t =    13.14s     Checking `Expect predicate `existsNoRetry == 1` for object "Welcome to the demo" StaticText`
+    t =    13.14s         Checking existence of `"Welcome to the demo" StaticText`
+    t =    13.43s Checking existence of `"Demo, sample data. About the demo" Other`
+    t =    13.53s Find the Target Application 'org.autobyteus.mobile'
+    t =    13.69s Added attachment named 'demo-again'
+    t =    13.69s Terminate org.autobyteus.mobile:67864
+    t =    14.71s Open org.autobyteus.mobile
+    t =    14.71s     Launch org.autobyteus.mobile
+    t =    23.08s         Setting up automation session
+    t =    24.04s         Wait for org.autobyteus.mobile to idle
+    t =    25.26s Waiting 30.0s for "start.scan" Button to exist
+    t =    26.35s     Checking `Expect predicate `existsNoRetry == 1` for object "start.scan" Button`
+    t =    26.35s         Checking existence of `"start.scan" Button`
+    t =    26.40s Checking existence of `"start.row.open" Button`
+    t =    26.42s Tear Down
+Test Case '-[AutoByteusMobileUITests.DemoUITests testTryDemoThenLeaveDemoThenColdLaunch]' passed (26.780 seconds).
+Test Suite 'DemoUITests' passed at 2026-11-19 23:04:30.847.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 73.400 (73.404) seconds
+Test Suite 'AutoByteusMobileUITests.xctest' passed at 2026-11-19 23:04:30.847.
+	 Executed 8 tests, with 0 failures (0 unexpected) in 132.554 (132.562) seconds
+Test Suite 'Selected tests' passed at 2026-11-19 23:04:30.848.
+	 Executed 8 tests, with 0 failures (0 unexpected) in 132.554 (132.564) seconds
+2026-11-19 23:04:31.200 xcodebuild[62719:521514809] [MT] IDETestOperationsObserverDebug: 192.713 elapsed -- Testing started completed.
+2026-11-19 23:04:31.200 xcodebuild[62719:521514809] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-11-19 23:04:31.200 xcodebuild[62719:521514809] [MT] IDETestOperationsObserverDebug: 192.713 sec, +192.713 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-mode-279/tickets/in-progress/ios-demo-mode-279/evidence/api-e2e/r2/FS-iOS-smoke/AutoByteusMobile.xcresult
+
+** TEST SUCCEEDED **
+
+Testing started
+# iOS Signing Readiness
+
+Date: 2026-11-19T22:04:32Z
+App bundle ID: org.autobyteus.mobile
+Share extension bundle ID: org.autobyteus.mobile.share
+Requested App Group: group.org.autobyteus.mobile
+Development team input: not provided
+Detected provisioning teams: 7Y86YBQ7B4
+Xcode path: /Applications/Xcode.app/Contents/Developer
+Xcode version: Xcode 26.1.1 Build version 17B100
+Development signing identities detected: 1
+Distribution signing identities detected: 0
+Provisioning profile search directories:
+ - legacyMobileDevice: /Users/normy/Library/MobileDevice/Provisioning Profiles (missing, files: 0)
+ - xcodeUserData: /Users/normy/Library/Developer/Xcode/UserData/Provisioning Profiles (found, files: 4)
+Provisioning profiles discovered: 4
+iOS provisioning profiles detected: 1
+Team-filtered iOS profiles considered: 1
+iOS development profiles detected: 1
+iOS development wildcard profiles detected: 1
+App development profiles matching bundle exact-or-wildcard: 1
+App development profiles with requested App Group: 0
+Share extension development profiles matching bundle exact-or-wildcard: 1
+Share extension development profiles with requested App Group: 0
+App Store/TestFlight app profiles matching exact bundle: 0
+App Store/TestFlight app profiles with requested App Group: 0
+App Store/TestFlight share-extension profiles matching exact bundle: 0
+App Store/TestFlight share-extension profiles with requested App Group: 0
+Development-device profile prerequisites complete: true
+Development-device App Group prerequisites complete: false
+Profile/App Group entitlement prerequisites complete: false
+App Store/TestFlight archive prerequisites complete without dry run: false
+Archive dry run: skipped
+Archive note: Set IOS_DEVELOPMENT_TEAM and IOS_SIGNING_READINESS_ARCHIVE=1 to attempt a local archive dry run.
+Final readiness classification: development-device-profile-ready-app-group-incomplete
+Readiness reasons:
+ - No app development profile with App Group group.org.autobyteus.mobile detected
+ - No share-extension development profile with App Group group.org.autobyteus.mobile detected
+ - No Apple/iOS Distribution signing identity detected
+ - No exact App Store/TestFlight distribution profile detected for app bundle org.autobyteus.mobile
+ - No exact App Store/TestFlight distribution profile detected for share extension bundle org.autobyteus.mobile.share
+ - No app App Store/TestFlight profile with App Group group.org.autobyteus.mobile detected
+ - No share-extension App Store/TestFlight profile with App Group group.org.autobyteus.mobile detected
+
+Provisioning profile summaries (public metadata only):
+ - Mac Team Provisioning Profile: org.autobyteus.phoneavbridge.camera | uuid 07bad751-f26c-4986-ba49-3af9d2dae29c | source xcodeUserData | team 7Y86YBQ7B4 YU ZHENG | platforms OSX | app-id 7Y86YBQ7B4.org.autobyteus.phoneavbridge.camera | get-task-allow None | devices 1 | app-groups none | expires 2027-02-18T08:41:15Z
+ - Mac Team Provisioning Profile: org.autobyteus.prc.camera | uuid 29d1eca3-c9f7-445f-9485-a6f07089574c | source xcodeUserData | team 7Y86YBQ7B4 YU ZHENG | platforms OSX | app-id 7Y86YBQ7B4.org.autobyteus.prc.camera | get-task-allow None | devices 1 | app-groups none | expires 2027-02-17T09:41:36Z
+ - Mac Team Provisioning Profile: * | uuid 3e72238f-ec91-42f0-bbd4-bac6013c848b | source xcodeUserData | team 7Y86YBQ7B4 YU ZHENG | platforms OSX | app-id 7Y86YBQ7B4.* | get-task-allow None | devices 1 | app-groups none | expires 2027-02-18T09:24:29Z
+ - iOS Team Provisioning Profile: * | uuid a7aba7f4-f485-4ee0-83da-71214dacba88 | source xcodeUserData | team 7Y86YBQ7B4 YU ZHENG | platforms iOS,xrOS,visionOS | app-id 7Y86YBQ7B4.* | get-task-allow True | devices 1 | app-groups none | expires 2027-01-30T20:57:21Z
+
+Simulator inventory excerpt:
+== Devices ==
+-- iOS 26.1 --
+    iPhone 17 Pro (8E8844A9-04F1-4729-A417-52DE909E0A92) (Shutdown) 
+    apie2e279-iphone (C56265A1-C55D-4693-8507-C262E9991100) (Booted) 
+    iPhone 17 Pro Max (AB6627C9-9DAD-4375-812D-D68BDBD17E00) (Shutdown) 
+    iPhone Air (BA08FFFA-1A99-41F8-A5EB-FCE625200E18) (Shutdown) 
+    iPhone 17 (AED15013-49CB-4DEE-9FCA-5A94B0E5650B) (Shutdown) 
+    iPhone 16e (2E763428-ABEB-4B68-B56E-A64A4CBFD78B) (Shutdown) 
+    iPad Pro 13-inch (M5) (A2078C80-5BA6-4F73-81F1-73AF29766DBC) (Shutdown) 
+    iPad Pro 11-inch (M5) (7BAFC0FE-172E-44A6-A354-D2ECB622D618) (Shutdown) 
+    iPad mini (A17 Pro) (97C90071-F426-4819-8126-C20DA4F92799) (Shutdown) 
+    iPad (A16) (C8E8B884-39BC-448E-A4F9-862674AF2654) (Shutdown) 
+    iPad Air 13-inch (M3) (49C6A85B-D0F5-4A3D-8C45-4706C1035BE9) (Shutdown) 
+    apie2e279-ipad (551E4696-0FD8-4B60-A4DC-9CE53D9162EC) (Shutdown) 
+    iPad Air 11-inch (M3) (9CEA043D-E7DF-4E44-BFFE-97CCE691B633) (Shutdown)
+
+Codesigning identities (public certificate names/hashes only; no private keys):
+1) 37C9698B12C2CE90D9B9E9F882B67C65C9F5B4FA "Developer ID Application: YU ZHENG (7Y86YBQ7B4)"
+  2) EE6B4315694B7B689AA4E93CA01329156B1DB9DD "Apple Development: YU ZHENG (WB8QCBB75J)"
+     2 valid identities found
+JSON report: /Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-mode-279/tickets/in-progress/ios-demo-mode-279/evidence/api-e2e/r2/FS-iOS-smoke/signing-readiness/ios-signing-readiness.json
+Simulator UDID: C56265A1-C55D-4693-8507-C262E9991100
+Fake node URL: http://127.0.0.1:29876/mobile
+App bundle ID: org.autobyteus.mobile
+Share extension bundle ID: org.autobyteus.mobile.share
+iOS marketing version: 1.3.83
+iOS build number: 1
+Smoke UI tests: executed and passed without skips
+Expected fake marker: AUTOBYTEUS_FAKE_MOBILE_READY
+Xcode result bundle: /Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-mode-279/tickets/in-progress/ios-demo-mode-279/evidence/api-e2e/r2/FS-iOS-smoke/AutoByteusMobile.xcresult
+Test log: /Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-mode-279/tickets/in-progress/ios-demo-mode-279/evidence/api-e2e/r2/FS-iOS-smoke/xcodebuild-test.log
+Signing readiness: /Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-mode-279/tickets/in-progress/ios-demo-mode-279/evidence/api-e2e/r2/FS-iOS-smoke/signing-readiness/ios-signing-readiness.txt
+## simulator-smoke exit=0 (229 s)

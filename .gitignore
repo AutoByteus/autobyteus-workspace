@@ -42,6 +42,7 @@ autobyteus-server-ts/agent-teams/
 autobyteus-server-ts/extensions/
 autobyteus-server-ts/prisma/dev.db
 autobyteus-web/dist-mobile/
+autobyteus-web/dist-mobile-demo/
 autobyteus-android/.gradle/
 autobyteus-android/local.properties
 autobyteus-android/**/build/
@@ -49,6 +50,8 @@ autobyteus-android/**/build/
 autobyteus-ios/AutoByteusMobile.xcodeproj/
 autobyteus-ios/build/
 autobyteus-ios/DerivedData/
+# autobyteus-279: the demo build copied into the app by autobyteus-ios/scripts/prepare-demo-web.sh.
+autobyteus-ios/DemoWeb/
 autobyteus-ios/**/*.xcuserstate
 autobyteus-ios/**/*.xcuserdata/
 autobyteus-ios/**/*.xcresult/

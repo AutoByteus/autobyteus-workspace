@@ -582,7 +582,7 @@ What the release workflows build, validate and need.
   - iOS automation uses `.github/workflows/release-ios.yml`
   - release tags and publish-enabled manual runs build/test first, then require complete iOS/App Store Connect secrets before signed archive/export/upload
   - manual workflow-dispatch build-only runs use `publish_app_store_connect=false` and upload private simulator build/test artifacts without requiring Apple distribution secrets
-  - simulator build/test and App Store archive/upload jobs select Xcode 26 or newer through `IOS_XCODE_APP_PATH` (default `/Applications/Xcode_26.3.app`) and log the selected Xcode plus iPhoneOS SDK before invoking `xcodebuild`
+  - simulator build/test and App Store archive/upload jobs run on GitHub's `xcode-27` runner image and select Xcode through `IOS_XCODE_APP_PATH` (default `/Applications/Xcode_27.2.app`) with `autobyteus-ios/scripts/select-release-xcode.sh`, which fails the job unless the Xcode and its iPhoneOS SDK are major version 27 or newer (App Store Connect refuses apps built with an older SDK, ITMS-90725) and logs the selected Xcode plus iPhoneOS SDK before invoking `xcodebuild`
   - publish requests with missing iOS secrets fail fast with exact missing `IOS_*` / `APP_STORE_CONNECT_*` names before keychain/profile/archive/upload
   - prerelease tags split metadata for App Store compatibility: `v1.2.7-rc1` builds with `MARKETING_VERSION=1.2.7`, uses numeric GitHub run number for `CURRENT_PROJECT_VERSION`, and keeps `1.2.7-rc1` only in artifact names/summaries
   - `IOS_BUNDLE_ID` and `IOS_SHARE_EXTENSION_BUNDLE_ID` drive generated Xcode target bundle IDs, simulator build/test/smoke, profile verification, archive/export mapping, and summaries

@@ -162,9 +162,19 @@ Entry forms, all through the engine:
 
 | Entry form | Used by | Root-view publish | Recipient |
 | --- | --- | --- | --- |
-| `deliver` | `send_message_to` by address or by run ID within the run, and handoffs | Yes | Its slot is held, then committed, presented and released |
-| `acceptFromRemote` | A message from a linked run on a peer node | No (the view shows the root's own agents) | As for `deliver` |
-| `commitSentToRemote` | The sender's record after the peer accepted a message | No | None (the peer stores its side) |
+| `deliver` | `send_message_to` by address or by run ID within the run, and handoffs | Yes, `same_run` | Its slot is held, then committed, presented and released |
+| `acceptFromRun` | The receiver's root, for a message from another run of this node | Yes, `related` or `unrelated` (both runs' views; the sender's `commitSentToRun` never publishes) | As for `deliver` |
+| `acceptFromRemote` | A message from a run on a peer node, linked or by run ID | Yes, `remote` (this run's views) | As for `deliver` |
+| `commitSentToRemote` | The sender's record after the peer accepted a message | Yes, `remote` (this run's views) | None (the peer stores its side) |
+
+Since autobyteus-565 every publishing commit hands the node's message feed one publication: the message, its
+`relation`, its two sides (a run of this node, or another node) and its two parties (`{agentRunId, address, nodeName}`,
+`nodeName` set for an agent on another node). Which open views show it is one rule, `MessageViewScope`, the same the
+stored read uses: a `same_run` or `related` message as before (a view that is one of its runs, or whose tree holds
+both); an `unrelated` or `remote` one only in the view of an Agent run that is one of its runs, whose Messages lists
+every message its agent sent or received. An Agent root's message event carries the parties, so its view names an
+agent it does not know yet; a Team's or Org's event carries none. A line of an `unrelated` or `remote` message also
+records the other agent (`counterpart: {address, nodeId}`) for the stored read.
 
 1. The root's message delivery resolves the recipient and takes the live lease.
    Address resolution stays root-specific. A message to another run, and a saved
@@ -247,9 +257,11 @@ run of this node goes from root to root:
 4. an unrelated message goes the same way only while the receiver runs
    (`RunningAgents.rootOf`, from each root's own live statuses), in its active
    root (`CollaborationRootResolver.resolveActive`, never restored): a stopped run
-   is not woken, and the router answers "not running". It stays out of run views
-   (`publishToViews: false`, DEC-014), like a message with another node; both
-   agents' conversations and both logs hold it.
+   is not woken, and the router answers "not running". The receiver's accept publishes
+   it as `unrelated`: since autobyteus-565 it is in the view of each of the two runs that
+   is an Agent run (its Messages) and in no Team, Org or ancestor view (492's DEC-014
+   kept there), like a message with another node; both agents' conversations and both
+   logs hold it, each line recording the other agent.
 5. a run on a peer that this node's tree holds is the peer path's; when all its
    Task entries on that node are closed, `closedPeerRunRefusal` answers
    `TASK_AGENT_RESOURCE_CLOSED` for every sender here, with or without `node`.

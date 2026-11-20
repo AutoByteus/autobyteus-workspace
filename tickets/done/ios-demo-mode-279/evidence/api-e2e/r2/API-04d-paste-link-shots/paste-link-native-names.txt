@@ -1,0 +1,4 @@
+native rows: ["Test Node 279, Online, current node"]
+native More buttons: ["More for Test Node 279"]
+remove sheet texts: ["Test Node 279", "Remove from this phone"]
+remove confirmation texts: ["Test Node 279", "Remove Test Node 279 from this phone? Scan its QR code again to add it back.", "Cancel", "Remove"]

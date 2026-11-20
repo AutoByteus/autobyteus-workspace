@@ -21,7 +21,7 @@ const closingAt = (check: number) => {
   return () => { calls += 1; if (calls >= check) throw CLOSED; };
 };
 const accept = (engine: RootCommunicationEngine, assertAllowed: () => void) => engine.acceptFromRun({ message, senderIdentity: member(manager, "manager"),
-  senderDisplayName: "manager", senderAddress: null, receiverIdentity: member(team, "lead"), receiverDisplayName: "lead", assertAllowed, publishToViews: true });
+  senderDisplayName: "manager", senderAddress: null, receiverIdentity: member(team, "lead"), receiverDisplayName: "lead", assertAllowed, relation: "related" });
 
 describe("RootCommunicationEngine: a refusal after the receiver's durable write (SR-076)", () => {
   it("the Task closing after the write: the record is kept and shown, and the refusal says the receiver recorded it", async () => {
@@ -29,7 +29,7 @@ describe("RootCommunicationEngine: a refusal after the receiver's durable write 
     const result = await accept(new RootCommunicationEngine(port), closingAt(3));
     expect(result).toEqual({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: "The Task is DONE.", recordedByReceiver: true });
     expect(isRecordedRunRefusal(result)).toBe(true);
-    expect(port.publishMessage).toHaveBeenCalledWith(message, manager);
+    expect(port.publishMessage).toHaveBeenCalledWith(expect.objectContaining({ message, relation: "related", sender: { run: manager } }));
   });
 
   it("the recipient stopping after the write: the same", async () => {

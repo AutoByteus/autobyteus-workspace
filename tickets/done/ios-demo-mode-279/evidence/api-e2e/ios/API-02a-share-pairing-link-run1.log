@@ -1,0 +1,10 @@
+# API-02a-share-pairing-link: ApiE2E279UITests/testShareFromSafariPairingLink on apie2e279-iphone (87FD7BD4-527F-4396-8F0F-15E34D1FA345); fresh-start clone build (429af9bd66 + the temporary test file); 2026-11-19T20:32:47Z; load 42.44 129.88 159.05
+# links made just before: share
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testShareFromSafariPairingLink]' started.
+/Users/normy/.cache/abtest279/fs-ios/autobyteus-ios/AutoByteusMobileUITests/ApiE2E279UITests.swift:240: error: -[AutoByteusMobileUITests.ApiE2E279UITests testShareFromSafariPairingLink] : XCTAssertTrue failed - Safari's Share
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testShareFromSafariPairingLink]' failed (57.255 seconds).
+	 Executed 1 test, with 1 failure (0 unexpected) in 57.255 (57.257) seconds
+	 Executed 1 test, with 1 failure (0 unexpected) in 57.255 (57.258) seconds
+	 Executed 1 test, with 1 failure (0 unexpected) in 57.255 (57.259) seconds
+** TEST EXECUTE FAILED **
+# exit: 65

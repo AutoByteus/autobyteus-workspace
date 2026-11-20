@@ -58,7 +58,8 @@ export type AcpAgentRunBackendInput = Readonly<{
 }>;
 
 /**
- * The public ACP run boundary: turn id allocation, ordered event publication, lifecycle
+ * The public ACP run boundary: turn id allocation for input turns (the session allocates the ids of the turns the
+ * agent starts itself, provider-started turns), ordered event publication, lifecycle
  * snapshot, and fail/terminate semantics. Session, bridge and converter stay internal.
  *
  * The agent reads its tool list only when a session is opened: after a definition change the

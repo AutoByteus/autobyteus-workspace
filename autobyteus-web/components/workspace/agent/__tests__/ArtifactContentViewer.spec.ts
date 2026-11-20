@@ -353,6 +353,22 @@ describe('ArtifactContentViewer', () => {
     expect(document.body.querySelector('button[title*="Preview"]')).not.toBeNull();
   });
 
+  // DC-011 (autobyteus-279, REQ-010): the phone shows an artifact read only: no Edit Mode / Preview switch.
+  it('offers no Edit Mode or Preview switch when shown preview only, and offers both otherwise', async () => {
+    const artifact = { ...defaultArtifact, status: 'available', sourceTool: 'edit_file' };
+    const desktop = mountComponent(artifact);
+    await flushPromises();
+    expect(desktop.find('button[title*="Edit"]').exists()).toBe(true);
+    const phone = mount(ArtifactContentViewer, {
+      props: { artifact: toViewerItem(artifact), readSubject: runSubject, refreshSignal: 0, previewOnly: true },
+      global: { stubs: { Icon: true } },
+    });
+    mountedWrappers[mountedWrappers.length] = phone;
+    await flushPromises();
+    expect(phone.find('button[title*="Edit"]').exists()).toBe(false);
+    expect(phone.find('button[title*="Preview"]').exists()).toBe(false);
+  });
+
   it('does not inherit maximize state from the file explorer viewer', async () => {
     const fileContentDisplayModeStore = useFileContentDisplayModeStore();
     fileContentDisplayModeStore.toggleZenMode();

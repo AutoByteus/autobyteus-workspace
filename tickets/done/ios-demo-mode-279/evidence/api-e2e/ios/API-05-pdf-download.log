@@ -1,0 +1,10 @@
+# API-05-pdf-download: ApiE2E279UITests/testLargePdfDownload on apie2e279-iphone (87FD7BD4-527F-4396-8F0F-15E34D1FA345); fresh-start clone build (429af9bd66 + the temporary test file); 2026-11-19T20:53:35Z; load 55.44 110.88 135.09
+# links made just before: pdf
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testLargePdfDownload]' started.
+API279 pdf-download-timing pdf-download-timing
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testLargePdfDownload]' passed (113.095 seconds).
+	 Executed 1 test, with 0 failures (0 unexpected) in 113.095 (113.096) seconds
+	 Executed 1 test, with 0 failures (0 unexpected) in 113.095 (113.101) seconds
+	 Executed 1 test, with 0 failures (0 unexpected) in 113.095 (113.102) seconds
+** TEST EXECUTE SUCCEEDED **
+# exit: 0

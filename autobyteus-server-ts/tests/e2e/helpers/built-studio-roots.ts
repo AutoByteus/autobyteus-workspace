@@ -165,7 +165,10 @@ export const terminateRoot = async (s: BuiltStudio, root: Root) => {
   expect(result.success, result.message).toBe(true);
 };
 
-/** The Manager's Team tab (its participant messages and the past participants they name, autobyteus-469 D-5). */
+/**
+ * The Manager's Messages list, first page (its participant messages and the counterparts the tree does not name, among them
+ * past participants as `kind: "past"`, autobyteus-469 D-5; autobyteus-565 pages of 50 with `hasMore`).
+ */
 export const managerTab = async (s: BuiltStudio, r: Root) => (await s.gql(PARTICIPANT_MESSAGES_QUERY,
   { rootKind: r.kind === "agent" ? "agent" : r.kind === "team" ? "agent_team" : "agent_org", rootRunId: r.rootId, agentRunId: r.managerRunId }))
-  .collaborationParticipantMessages as { messages: Rec[]; pastParticipants: Rec[] };
+  .collaborationParticipantMessages as { messages: Rec[]; counterparts: Rec[]; hasMore: boolean };

@@ -1,0 +1,79 @@
+# IMP-13 (IR-002) iOS core tests
+# command: (autobyteus-ios) xcodebuild -project AutoByteusMobile.xcodeproj -scheme AutoByteusMobile -destination id=<my iPhone 17 Pro Max simulator> -only-testing:AutoByteusMobileCoreTests CODE_SIGNING_ALLOWED=NO test
+# commit: 930477c533
+# env: macOS 26.5.2, Xcode 26.1.1; my iPhone 17 Pro Max simulator, iOS 26.1
+# date: 2026-11-19T21:44:32Z
+
+Test Case '-[AutoByteusMobileCoreTests.CantReachReasonTests testReasonsFromDiagnostics]' passed (0.007 seconds).
+Test Case '-[AutoByteusMobileCoreTests.CantReachReasonTests testRetryTailscaleAndText]' passed (0.001 seconds).
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.008 (0.009) seconds
+Test Case '-[AutoByteusMobileCoreTests.ConnectionInputResolverTests testAPairingLinkIsAcknowledgedByTheDesktop]' passed (0.003 seconds).
+Test Case '-[AutoByteusMobileCoreTests.ConnectionInputResolverTests testAPlainAddressIsNotAPairingLink]' passed (0.002 seconds).
+Test Case '-[AutoByteusMobileCoreTests.ConnectionInputResolverTests testTypedHTTPNeedsTheTick]' passed (0.001 seconds).
+Test Case '-[AutoByteusMobileCoreTests.ConnectionInputResolverTests testTypedHTTPSNeedsNoTick]' passed (0.001 seconds).
+Test Case '-[AutoByteusMobileCoreTests.ConnectionInputResolverTests testTypedHTTPWithTheTickConnects]' passed (0.002 seconds).
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.008 (0.010) seconds
+Test Case '-[AutoByteusMobileCoreTests.ConnectionValidatorTests testDoesNotRefuseAServerForAVersionNumber]' passed (0.001 seconds).
+Test Case '-[AutoByteusMobileCoreTests.ConnectionValidatorTests testMapsDisabledStatusToRecoveryDiagnostic]' passed (0.001 seconds).
+Test Case '-[AutoByteusMobileCoreTests.ConnectionValidatorTests testMapsHTTPStatuses]' passed (0.001 seconds).
+Test Case '-[AutoByteusMobileCoreTests.ConnectionValidatorTests testParsesStatusWithAdditionalFields]' passed (0.001 seconds).
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.007) seconds
+Test Case '-[AutoByteusMobileCoreTests.NativeNodeNameReadsTests testNoNativeViewReadsDisplayName]' passed (0.010 seconds).
+Test Case '-[AutoByteusMobileCoreTests.NativeNodeNameReadsTests testTheFlowOnlyWritesDisplayName]' passed (0.001 seconds).
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.012 (0.012) seconds
+Test Case '-[AutoByteusMobileCoreTests.NodeConnectionFlowTests testAnAddressThatDoesNotAnswerSaysWhyAndSavesNothing]' passed (0.002 seconds).
+Test Case '-[AutoByteusMobileCoreTests.NodeConnectionFlowTests testANamedSavedNodeKeepsItsNameWhenItPairs]' passed (0.001 seconds).
+Test Case '-[AutoByteusMobileCoreTests.NodeConnectionFlowTests testAnUnnamedSavedNodeTakesThePagesNameWhenItPairs]' passed (0.001 seconds).
+Test Case '-[AutoByteusMobileCoreTests.NodeConnectionFlowTests testAPairingLinkConnectsAndIsSavedOnlyWhenThePagePairs]' passed (0.001 seconds).
+Test Case '-[AutoByteusMobileCoreTests.NodeConnectionFlowTests testASavedNodeOpensAndIsSelected]' passed (0.001 seconds).
+Test Case '-[AutoByteusMobileCoreTests.NodeConnectionFlowTests testAScanOfAnythingElseIsNotAnAutoByteusCode]' passed (0.001 seconds).
+Test Case '-[AutoByteusMobileCoreTests.NodeConnectionFlowTests testATypedAddressIsSavedWhenItAnswers]' passed (0.001 seconds).
+Test Case '-[AutoByteusMobileCoreTests.NodeConnectionFlowTests testCancelDropsALateAnswer]' passed (0.314 seconds).
+Test Case '-[AutoByteusMobileCoreTests.NodeConnectionFlowTests testPastedOrSharedTextOpensTypeAnAddress]' passed (0.003 seconds).
+	 Executed 9 tests, with 0 failures (0 unexpected) in 0.326 (0.335) seconds
+Test Case '-[AutoByteusMobileCoreTests.NodeURLNormalizerTests testDefaultsBareHostToHTTPS]' passed (0.001 seconds).
+Test Case '-[AutoByteusMobileCoreTests.NodeURLNormalizerTests testNormalizesTailscaleMobileURLToCleanStableURLs]' passed (0.001 seconds).
+Test Case '-[AutoByteusMobileCoreTests.NodeURLNormalizerTests testPreservesPrivateHTTPPort]' passed (0.001 seconds).
+Test Case '-[AutoByteusMobileCoreTests.NodeURLNormalizerTests testRejectsUnknownSchemesAndDesktopPaths]' passed (0.001 seconds).
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+Test Case '-[AutoByteusMobileCoreTests.PairingLinkParserTests testParsesDockerNodePairingPayloadUsingAdvertisedHTTPSOrigin]' passed (0.002 seconds).
+Test Case '-[AutoByteusMobileCoreTests.PairingLinkParserTests testParsesPairingURLAndSavesCleanStableMobileURL]' passed (0.001 seconds).
+Test Case '-[AutoByteusMobileCoreTests.PairingLinkParserTests testParsesRawJSONPairingPayload]' passed (0.001 seconds).
+Test Case '-[AutoByteusMobileCoreTests.PairingLinkParserTests testTreatsPlainNodeURLAsNonPairingInput]' passed (0.001 seconds).
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.004 (0.005) seconds
+Test Case '-[AutoByteusMobileCoreTests.PendingSharedInputStoreTests testConsumesPendingSharedInputOnce]' passed (0.008 seconds).
+Test Case '-[AutoByteusMobileCoreTests.SavedNodeDisplayNamePlaceholderMigrationTests testAnInterruptionAfterTheBackupIsRestoredAndRunAgain]' passed (0.008 seconds).
+Test Case '-[AutoByteusMobileCoreTests.SavedNodeDisplayNamePlaceholderMigrationTests testAnInterruptionAfterTheRewriteIsRestoredAndRunAgain]' passed (0.011 seconds).
+Test Case '-[AutoByteusMobileCoreTests.SavedNodeDisplayNamePlaceholderMigrationTests testASecondStartChangesNothingAndRemovesTheBackup]' passed (0.007 seconds).
+Test Case '-[AutoByteusMobileCoreTests.SavedNodeDisplayNamePlaceholderMigrationTests testEveryOtherFieldIsKept]' passed (0.004 seconds).
+Test Case '-[AutoByteusMobileCoreTests.SavedNodeDisplayNamePlaceholderMigrationTests testNoSavedNodesOnlyMarksItDone]' passed (0.003 seconds).
+Test Case '-[AutoByteusMobileCoreTests.SavedNodeDisplayNamePlaceholderMigrationTests testRunsOnEntriesTheKeyMigrationMoved]' passed (0.007 seconds).
+Test Case '-[AutoByteusMobileCoreTests.SavedNodeDisplayNamePlaceholderMigrationTests testThePlaceholderBecomesTheHostAndAPairingLinkNameIsKept]' passed (0.005 seconds).
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.044 (0.047) seconds
+Test Case '-[AutoByteusMobileCoreTests.SavedNodeEntryKeysMigrationTests testAFreshInstallHasNothingToConvert]' passed (0.002 seconds).
+Test Case '-[AutoByteusMobileCoreTests.SavedNodeEntryKeysMigrationTests testFinishesAStepInterruptedAfterTheNewKeyWasWritten]' passed (0.005 seconds).
+Test Case '-[AutoByteusMobileCoreTests.SavedNodeEntryKeysMigrationTests testKeepsTheOldKeyWhenTheNewOneWasNotConvertedFromIt]' passed (0.003 seconds).
+Test Case '-[AutoByteusMobileCoreTests.SavedNodeEntryKeysMigrationTests testOnlyTheStartUpCallSiteReferencesTheMigrationFolder]' passed (0.020 seconds).
+Test Case '-[AutoByteusMobileCoreTests.SavedNodeEntryKeysMigrationTests testRenamesTheReleasedKeysAndTheStoreReadsTheSameEntry]' passed (0.008 seconds).
+Test Case '-[AutoByteusMobileCoreTests.SavedNodeEntryKeysMigrationTests testReRunChangesNothingAndThenRemovesTheBackups]' passed (0.007 seconds).
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.045 (0.048) seconds
+Test Case '-[AutoByteusMobileCoreTests.SavedNodeEntryNamesTests testAnAddressIsNeverShown]' passed (0.001 seconds).
+Test Case '-[AutoByteusMobileCoreTests.SavedNodeEntryNamesTests testANamedNodeIsShownByItsName]' passed (0.000 seconds).
+Test Case '-[AutoByteusMobileCoreTests.SavedNodeEntryNamesTests testANameThatIsTheHostIsNoName]' passed (0.000 seconds).
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+Test Case '-[AutoByteusMobileCoreTests.SavedNodeStoreTests testPersistsOnlySavedNodeMetadataAndSelection]' passed (0.006 seconds).
+Test Case '-[AutoByteusMobileCoreTests.SavedNodeStoreTests testRemoveSelectsNextEntry]' passed (0.011 seconds).
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.017 (0.017) seconds
+Test Case '-[AutoByteusMobileCoreTests.SharedTextActionTests testAPairingLink]' passed (0.001 seconds).
+Test Case '-[AutoByteusMobileCoreTests.SharedTextActionTests testNothingUsable]' passed (0.000 seconds).
+Test Case '-[AutoByteusMobileCoreTests.SharedTextActionTests testOtherText]' passed (0.001 seconds).
+Test Case '-[AutoByteusMobileCoreTests.SharedTextActionTests testTheDemoLink]' passed (0.001 seconds).
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.002 (0.004) seconds
+Test Case '-[AutoByteusMobileCoreTests.TrustedNavigationPolicyTests testAllowsExpectedSameOriginAutoByteusPaths]' passed (0.001 seconds).
+Test Case '-[AutoByteusMobileCoreTests.TrustedNavigationPolicyTests testBlocksUnsafeSchemesAndSameOriginDesktopPaths]' passed (0.001 seconds).
+Test Case '-[AutoByteusMobileCoreTests.TrustedNavigationPolicyTests testExternalizesDifferentOriginsAndSafeNonWebSchemes]' passed (0.000 seconds).
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+	 Executed 56 tests, with 0 failures (0 unexpected) in 0.483 (0.516) seconds
+	 Executed 56 tests, with 0 failures (0 unexpected) in 0.483 (0.517) seconds
+** TEST SUCCEEDED **
+exit=0

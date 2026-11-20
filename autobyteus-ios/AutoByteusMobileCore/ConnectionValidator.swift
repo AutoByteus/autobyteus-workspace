@@ -1,47 +1,31 @@
 import Foundation
 
+/// The node's Phone Access status (`GET /rest/remote-access/status`), as far as the phone reads it: whether it can be
+/// used. The node's name comes from its QR or its page's pairing (`SavedNodeEntry.knownName`), never from here.
 public struct RemoteAccessStatus: Codable, Equatable {
     public let phoneAccessEnabled: Bool
     public let pairingAvailable: Bool
-    public let serverName: String
     public let nodeID: String?
 
-    public init(
-        phoneAccessEnabled: Bool,
-        pairingAvailable: Bool,
-        serverName: String,
-        nodeID: String? = nil
-    ) {
+    public init(phoneAccessEnabled: Bool, pairingAvailable: Bool, nodeID: String? = nil) {
         self.phoneAccessEnabled = phoneAccessEnabled
         self.pairingAvailable = pairingAvailable
-        self.serverName = serverName
         self.nodeID = nodeID
     }
 
     private enum CodingKeys: String, CodingKey {
         case phoneAccessEnabled
         case pairingAvailable
-        case serverName
         case nodeID = "nodeId"
     }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let decodedName = try container.decodeIfPresent(String.self, forKey: .serverName) ?? "AutoByteus Desktop"
         self.init(
             phoneAccessEnabled: try container.decodeIfPresent(Bool.self, forKey: .phoneAccessEnabled) ?? false,
             pairingAvailable: try container.decodeIfPresent(Bool.self, forKey: .pairingAvailable) ?? false,
-            serverName: decodedName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "AutoByteus Desktop" : decodedName,
             nodeID: try container.decodeIfPresent(String.self, forKey: .nodeID)
         )
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(phoneAccessEnabled, forKey: .phoneAccessEnabled)
-        try container.encode(pairingAvailable, forKey: .pairingAvailable)
-        try container.encode(serverName, forKey: .serverName)
-        try container.encodeIfPresent(nodeID, forKey: .nodeID)
     }
 
     public static func fromJSONData(_ data: Data) throws -> RemoteAccessStatus {
@@ -119,7 +103,7 @@ public final class ConnectionValidator {
         do {
             let status = try RemoteAccessStatus.fromJSONData(data)
             guard status.phoneAccessEnabled else {
-                return .failed(ConnectionDiagnosticMapper.phoneAccessDisabled(serverName: status.serverName))
+                return .failed(ConnectionDiagnosticMapper.phoneAccessDisabled())
             }
             return .reachable(entry: entry, status: status)
         } catch {

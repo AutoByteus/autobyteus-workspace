@@ -1,0 +1,10 @@
+# API-02 repeat: the gap case alone, 3 runs: vitest run tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts -t "hand-over's gap"; 2026-11-20T18:02:42Z
+## run 1 (load 53.73 59.45 63.40)
+Error: Hook timed out in 60000ms.
+      Tests  1 passed | 9 skipped (10)
+## run 2 (load 51.17 54.77 60.18)
+Error: Hook timed out in 60000ms.
+      Tests  1 passed | 9 skipped (10)
+## run 3 (load 70.90 62.28 61.57)
+Error: Hook timed out in 60000ms.
+      Tests  1 passed | 9 skipped (10)

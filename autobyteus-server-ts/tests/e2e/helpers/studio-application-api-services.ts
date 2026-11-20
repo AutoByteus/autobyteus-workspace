@@ -1,4 +1,5 @@
 import { RunViewStreams } from "../../../src/agent-collaboration/delegation/run-view-stream.js";
+import { MessageViewScope } from "../../../src/agent-collaboration/delegation/message-view-scope.js";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
 import { configureStudioApplicationApiServices } from "../../../src/api/graphql/studio-application-api-services.js";
@@ -53,7 +54,7 @@ export const configureE2eStudioApplicationApiServices = (
   return configureStudioApplicationApiServices({
     delegatedRunAgents: overrides.delegatedRunAgents ?? NO_DELEGATIONS_RUN_AGENTS,
     runTree: overrides.runTree ?? NO_DELEGATIONS_RUN_TREE,
-    runViewStreams: overrides.runViewStreams ?? new RunViewStreams({ agent: () => false, agent_team: () => false, agent_org: () => false }, { tree: { chainOf: (run) => [run], collaborationTreeOf: () => ({ rows: () => [] }) as never }, events: { agent: (message) => message, agent_team: (message) => message, agent_org: (message) => message } }),
+    runViewStreams: overrides.runViewStreams ?? new RunViewStreams({ agent: () => false, agent_team: () => false, agent_org: () => false }, { tree: { chainOf: (run) => [run] }, scope: new MessageViewScope({ tree: { collaborationTreeOf: () => ({ rows: () => [] }) as never } }), events: { agent: (message) => message, agent_team: (message) => message, agent_org: (message) => message } }),
     agentDefinitionService,
     agentTeamDefinitionService,
     agentOrgDefinitionService: overrides.agentOrgDefinitionService

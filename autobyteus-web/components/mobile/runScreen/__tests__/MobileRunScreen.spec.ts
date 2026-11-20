@@ -30,8 +30,11 @@ const contextOf = (runId: string, name: string) => reactive({
   config: { agentDefinitionId: 'def', agentDefinitionName: name, agentAvatarUrl: null, runtimeKind: 'autobyteus' },
   state: { runId, currentStatus: 'idle', conversation: { messages: [] }, eventMonitorPresentationRevision: 0, hasEarlierActiveTraceEvents: false },
 });
-const targetOf = (kind: string, runId: string, name: string) => ({ kind, access: 'live', context: contextOf(runId, name), browse: { kind: 'run', runId }, workspaceRootPath: null,
-  ...(kind === 'standalone_agent' ? {} : { team: { focusedMemberAddress: '/team/m', teamDefinitionName: 'Team' }, collaborationMessages: { memberIdentityByAgentRunId: () => ({}) } }) });
+/** A standalone run without a messages view is an application-owned run (no collaboration root, autobyteus-565 AR-005). */
+const targetOf = (kind: string, runId: string, name: string, standaloneMessages = false) => ({ kind, access: 'live', context: contextOf(runId, name), browse: { kind: 'run', runId }, workspaceRootPath: null,
+  ...(kind === 'standalone_agent'
+    ? (standaloneMessages ? { collaborationMessages: { rootKind: 'agent', memberIdentityByAgentRunId: () => ({}) } } : {})
+    : { team: { focusedMemberAddress: '/team/m', teamDefinitionName: 'Team' }, collaborationMessages: { memberIdentityByAgentRunId: () => ({}) } }) });
 const tree = (parentName: string | null) => ({ openRowParent: computed(() => (parentName ? { name: parentName } : null)) });
 
 let pinia: Pinia;
@@ -108,13 +111,14 @@ describe('MobileRunScreen', () => {
   });
 
   // autobyteus-522: Settings for every run, whatever its kind, a run on another node too (its screen says it can be
-  // changed only on that node); the last entry (autobyteus-534).
+  // changed only on that node); the last entry (autobyteus-534). autobyteus-565 (AC-001, DEC-001): Messages for every
+  // target with a messages view: a standalone run (with or without delegated runs) and a run it delegated, as a member.
   it.each([
-    ['standalone_agent', false, false], ['agent_run_task_agent', false, false], ['standalone_team_member', true, false],
-    ['agent_run_task_team_member', true, false], ['agent_run_task_agent', false, true],
-  ])('the ⋮ menu of a %s offers Messages=%s and Settings (remote=%s)', async (kind, messages, onOtherNode) => {
+    ['standalone_agent', false, false, false], ['standalone_agent', true, false, true], ['agent_run_task_agent', true, false, false],
+    ['standalone_team_member', true, false, false], ['agent_run_task_team_member', true, false, false], ['agent_run_task_agent', true, true, false],
+  ])('the ⋮ menu of a %s offers Messages=%s and Settings (remote=%s)', async (kind, messages, onOtherNode, standaloneMessages) => {
     remote.onOtherNode = onOtherNode;
-    active.state!.target = targetOf(kind, 'r', 'Agent');
+    active.state!.target = targetOf(kind, 'r', 'Agent', standaloneMessages);
     const { wrapper } = await mountScreen();
     await wrapper.get('[data-testid="mobile-run-menu-button"]').trigger('click');
     const items = wrapper.findAll('[role="menuitem"]').map((item) => item.text());
@@ -163,5 +167,18 @@ describe('MobileRunScreen', () => {
     expect(wrapper.find('[data-testid="mobile-run-unreachable"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="mobile-run-conversation"]').exists()).toBe(false);
     expect(wrapper.get('[data-testid="mobile-run-subtitle"]').text()).toBe('Not reachable');
+  });
+
+  // autobyteus-279 REQ-008 (VIS-034): an iPad in landscape shows the list beside the run, so the run has no ←.
+  it('has no Back to runs at 1024 px and wider, and has it below', async () => {
+    const original = window.matchMedia;
+    for (const [wide, back] of [[true, false], [false, true]] as const) {
+      window.matchMedia = ((query: string) => ({ matches: wide && query === '(min-width: 1024px)', media: query, addEventListener: vi.fn(), removeEventListener: vi.fn() })) as never;
+      active.state!.target = targetOf('standalone_agent', 'run-1', 'Daily Assistant');
+      const { wrapper } = await mountScreen();
+      expect(wrapper.find('[data-testid="mobile-run-back"]').exists()).toBe(back);
+      wrapper.unmount();
+    }
+    window.matchMedia = original;
   });
 });

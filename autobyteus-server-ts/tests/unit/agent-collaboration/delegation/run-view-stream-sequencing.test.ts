@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { RunViewStreams } from "../../../../src/agent-collaboration/delegation/run-view-stream.js";
+import { MessageViewScope } from "../../../../src/agent-collaboration/delegation/message-view-scope.js";
 
 /**
  * autobyteus-461 SR-062, SR-063 (the design's "Sequencing tests"): one view sequence per run, owned by the view. Every
@@ -9,7 +10,7 @@ import { RunViewStreams } from "../../../../src/agent-collaboration/delegation/r
 type Frame = Readonly<{ kind: "message" | "row" | "status" }>;
 const streams = () => new RunViewStreams({ agent: ((event: Frame) => event.kind === "message") as never,
   agent_team: ((event: Frame) => event.kind === "message") as never, agent_org: ((event: Frame) => event.kind === "message") as never },
-  { tree: { chainOf: (run) => [run], collaborationTreeOf: () => ({ rows: () => [] }) as never }, events: { agent: (message) => message, agent_team: (message) => message, agent_org: (message) => message } });
+  { tree: { chainOf: (run) => [run] }, scope: new MessageViewScope({ tree: { collaborationTreeOf: () => ({ rows: () => [] }) as never } }), events: { agent: (message) => message, agent_team: (message) => message, agent_org: (message) => message } });
 const TEAM = { rootSubjectKind: "agent_team" as const, rootRunId: "squad" };
 
 describe("a run's view sequence", () => {

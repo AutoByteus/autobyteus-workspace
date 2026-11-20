@@ -1,0 +1,32 @@
+# published assets of v1.5.14-beta.2 (createdAt, size, name, sha256 digest), sorted by createdAt
+2026-11-20T06:14:08Z	120	AutoByteus_personal_android-1.5.14-beta.2-release.apk.sha256	sha256:ffe6393c00ec269249cf9b083d75d5858df285ed0e78a09a1da9dbb948702508
+2026-11-20T06:14:08Z	1935096	AutoByteus_personal_android-1.5.14-beta.2-release.apk	sha256:3ceb129a4555909419f99137a791255b73cba326739a234235bb5ea37302dcb7
+2026-11-20T06:16:02Z	150311053	autobyteus-server-1.5.14-beta.2-linux-x64.tar.gz	sha256:a4979ba95dc36029298c9ca94208f7c69434c0423cd15b9d5f67177ca75cec4f
+2026-11-20T06:16:03Z	149500293	autobyteus-server-1.5.14-beta.2-linux-arm64.tar.gz	sha256:43495ae372514af5d478e7d61813e0e2156d6dbae33d3023d66f56fca8327044
+2026-11-20T06:16:10Z	3718	autobyteus-server-1.5.14-beta.2-linux-x64.json	sha256:2a3a8912cc1de28b57ae874daef54484b3e8125bd5de69b25a49b4b7ca72ad2f
+2026-11-20T06:16:10Z	3722	autobyteus-server-1.5.14-beta.2-linux-arm64.json	sha256:4d3f6ca57b83ffb2e3689016b4fff40c76986f8ca1e30b41f341af7b62471b30
+2026-11-20T06:16:11Z	88	autobyteus-server-1.5.14-beta.2-linux-arm64.json.sig	sha256:8aa1294e93497a61acb58978b02af5d23b027f6f5e58a9889b921cfcf794f8f7
+2026-11-20T06:16:11Z	88	autobyteus-server-1.5.14-beta.2-linux-x64.json.sig	sha256:271c25a943744d4bc96022deaf732fc473f1fc42ebf58219c2a6882217c3f361
+2026-11-20T07:32:59Z	251	AutoByteus_personal_linux-x64-1.5.14-beta.2.AppImage.release.json	sha256:8b09f92ced347c83bca645998a3ffaea4798ea270d4cbd181d992dcf37088556
+2026-11-20T07:32:59Z	253	AutoByteus_personal_linux-arm64-1.5.14-beta.2.AppImage.release.json	sha256:0277af23e458c22c2278ab1bc44854dc7cff31c690262c1d1e017b69e5c8b2fb
+2026-11-20T07:32:59Z	274009164	AutoByteus_personal_windows-1.5.14-beta.2.exe	sha256:c30ac66627dcdb431fe37cbcda0c7ec616392cc4c5e435e3602e1969bb7eff31
+2026-11-20T07:32:59Z	350291736	AutoByteus_personal_linux-arm64-1.5.14-beta.2.AppImage	sha256:70736600f50d7a81930d3bd01a891264ee9fbf057fd3a26b20aa4afc80b9fc3f
+2026-11-20T07:32:59Z	360335650	AutoByteus_personal_linux-x64-1.5.14-beta.2.AppImage	sha256:a5cf04ffb8f0ab1d17e0fc63634add581f1a7b90728bdd8737a4c7a3a03a9a13
+2026-11-20T07:32:59Z	398275061	AutoByteus_personal_macos-arm64-1.5.14-beta.2.zip	sha256:70d9aff818c66c86c4f91fc03590bce766f9b01a2a284e8bfc3001823ddaa877
+2026-11-20T07:32:59Z	401957048	AutoByteus_personal_macos-arm64-1.5.14-beta.2.dmg	sha256:f6f9fa0f7b4e405971484b5ea704a424fae5ab27be073b69fdd7d6ab085b6f3c
+2026-11-20T07:32:59Z	406729	AutoByteus_personal_macos-arm64-1.5.14-beta.2.zip.blockmap	sha256:9e42127a7d068d2c89dc87ef79296d9a58cb79254514405083085cdc49115a05
+2026-11-20T07:32:59Z	420610	AutoByteus_personal_macos-arm64-1.5.14-beta.2.dmg.blockmap	sha256:88ff86a957cfddae9f08b92e515ddbc14d5c5a3f7b1aa8d5cf326670d741f26c
+2026-11-20T07:32:59Z	422040844	AutoByteus_personal_macos-x64-1.5.14-beta.2.zip	sha256:0e13eaa3398293d5f286a9220a89aab59b203fe493239e65bdcda3cd9f9644b4
+2026-11-20T07:32:59Z	426125757	AutoByteus_personal_macos-x64-1.5.14-beta.2.dmg	sha256:6caa4ce8d9d28b0326d0bdb6de2f17345dd1bc5402f9b8d31478126e591c686c
+2026-11-20T07:32:59Z	430097	AutoByteus_personal_macos-x64-1.5.14-beta.2.zip.blockmap	sha256:93061e71af8f67e04667ddd9efd5aff90dd49b0e2fe4ea23ded9db1e5b9e729f
+2026-11-20T07:32:59Z	442579	AutoByteus_personal_macos-x64-1.5.14-beta.2.dmg.blockmap	sha256:47dadf579c5695964417fde201870b952f92ada91fd3bb247e897e9a122e2498
+2026-11-20T07:32:59Z	88	AutoByteus_personal_linux-arm64-1.5.14-beta.2.AppImage.release.json.sig	sha256:af657aa1b83645f6b08d713d67c2e7cc11c8d2dec601d8b8834a5a1be51fc6e4
+2026-11-20T07:32:59Z	88	AutoByteus_personal_linux-x64-1.5.14-beta.2.AppImage.release.json.sig	sha256:73440e9408e469521486a561772d0903193e5d6a53b1ca6aa0743a1e3fceca36
+2026-11-20T07:33:20Z	375	latest.yml	sha256:06ebd93f0930db2ac9de77c0c73c6ed896c0726df8cde0ab810d9bbeebb6e726
+2026-11-20T07:33:20Z	434	latest-linux.yml	sha256:334cef91899b002aee1cab140c5345c05c5699649080c5fc96ea6826824d4870
+2026-11-20T07:33:20Z	438	latest-linux-arm64.yml	sha256:9ba2400f31bd08621e94105587eaae6722bf8e9ab54dd1d12c32164817c7bc54
+2026-11-20T07:33:20Z	939	latest-mac.yml	sha256:68f7f52948772d00836cbbf87c5a7bdec812c84f495b6a256d7700e51bfed101
+
+count: 27
+isPrerelease true isDraft false
+GitHub Latest: v1.5.13

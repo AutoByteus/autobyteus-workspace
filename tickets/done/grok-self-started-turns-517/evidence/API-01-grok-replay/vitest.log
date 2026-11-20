@@ -1,0 +1,568 @@
+# API-01/API-02: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts --no-watch --reporter=verbose; HEAD cc2701af8a + the new AC-006 gap case (uncommitted at run time); node v22.23.1; 2026-11-20T17:55:19Z; load 45.85 65.50 67.05; fseventsd 146.4%
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/grok-self-started-turns-517/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/grok-self-started-turns-517/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:54509) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/grok-self-started-turns-517/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/grok-self-started-turns-517/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/.env
+◇ injected env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/.env // tip: ◈ secrets for agents [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/grok-self-started-turns-517/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/grok-self-started-turns-517/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Agent Definition created successfully with ID: grok-replay-3ccb92ee-f500-4a31-b42e-1814c279c46d
+
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > lists the Grok Build catalog from the agent handshake with the reasoning-effort schema (AC-002) 441ms
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > streams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-4UWwdS
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-4UWwdS.
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > streams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009)
+Created and registered workspace ID: agent_ws_728500a6b555cab10644d17fa697a49ccce14fc8bf40f3f32533ecc86d45c4d9
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > streams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-4UWwdS
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-4UWwdS.
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > streams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009)
+Reusing registered workspace ID: agent_ws_728500a6b555cab10644d17fa697a49ccce14fc8bf40f3f32533ecc86d45c4d9
+
+stderr | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > streams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/memory/agents/grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_633f61d463e643b08776aeb42bf66695/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > streams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009)
+Agent websocket attached for run grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_633f61d463e643b08776aeb42bf66695
+Created agent session 6ebbd4d6-063d-43ae-b851-36c89701b911 for run grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_633f61d463e643b08776aeb42bf66695
+Agent WebSocket connected: session=6ebbd4d6-063d-43ae-b851-36c89701b911, run=grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_633f61d463e643b08776aeb42bf66695
+
+stderr | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > streams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/memory/agents/grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_633f61d463e643b08776aeb42bf66695/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > streams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009)
+prisma:info Starting a sqlite pool with 21 connections.
+
+stderr | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > streams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/memory/agents/grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_633f61d463e643b08776aeb42bf66695/raw_traces_manifest.json
+
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > streams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009) 1265ms
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns a recorded Grok permission request into a run_bash approval answered over the WebSocket (AC-004)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-V2gMvZ
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-V2gMvZ.
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns a recorded Grok permission request into a run_bash approval answered over the WebSocket (AC-004)
+Created and registered workspace ID: agent_ws_70e1128cdcfb58dcbf5114deab26e42f24624bad67067e6527582d57e21086b0
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns a recorded Grok permission request into a run_bash approval answered over the WebSocket (AC-004)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-V2gMvZ
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-V2gMvZ.
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns a recorded Grok permission request into a run_bash approval answered over the WebSocket (AC-004)
+Reusing registered workspace ID: agent_ws_70e1128cdcfb58dcbf5114deab26e42f24624bad67067e6527582d57e21086b0
+
+stderr | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns a recorded Grok permission request into a run_bash approval answered over the WebSocket (AC-004)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/memory/agents/grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_7ed52e5e2b474decb866fe9d70b11b42/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns a recorded Grok permission request into a run_bash approval answered over the WebSocket (AC-004)
+Agent websocket attached for run grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_7ed52e5e2b474decb866fe9d70b11b42
+Created agent session 35c24b9f-5c03-4631-abf7-5735a53eabc0 for run grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_7ed52e5e2b474decb866fe9d70b11b42
+Agent WebSocket connected: session=35c24b9f-5c03-4631-abf7-5735a53eabc0, run=grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_7ed52e5e2b474decb866fe9d70b11b42
+
+stderr | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns a recorded Grok permission request into a run_bash approval answered over the WebSocket (AC-004)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/memory/agents/grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_7ed52e5e2b474decb866fe9d70b11b42/raw_traces_manifest.json
+
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns a recorded Grok permission request into a run_bash approval answered over the WebSocket (AC-004) 390ms
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > completes the turn when Grok ends it after a denied run_bash, and the run takes the next message (AC-004)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-179tTB
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-179tTB.
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > completes the turn when Grok ends it after a denied run_bash, and the run takes the next message (AC-004)
+Created and registered workspace ID: agent_ws_e3ac314b11b502ece429d4e2ed7472f3fc19dfd2ea214c1be39c36268394df4a
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > completes the turn when Grok ends it after a denied run_bash, and the run takes the next message (AC-004)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-179tTB
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-179tTB.
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > completes the turn when Grok ends it after a denied run_bash, and the run takes the next message (AC-004)
+Reusing registered workspace ID: agent_ws_e3ac314b11b502ece429d4e2ed7472f3fc19dfd2ea214c1be39c36268394df4a
+
+stderr | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > completes the turn when Grok ends it after a denied run_bash, and the run takes the next message (AC-004)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/memory/agents/grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_2dd00dc662494898bcc9cfdfd997bf1b/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > completes the turn when Grok ends it after a denied run_bash, and the run takes the next message (AC-004)
+Agent websocket attached for run grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_2dd00dc662494898bcc9cfdfd997bf1b
+Created agent session dd99a2d9-2f62-4c6a-a7b9-8e931448391b for run grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_2dd00dc662494898bcc9cfdfd997bf1b
+Agent WebSocket connected: session=dd99a2d9-2f62-4c6a-a7b9-8e931448391b, run=grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_2dd00dc662494898bcc9cfdfd997bf1b
+
+stderr | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > completes the turn when Grok ends it after a denied run_bash, and the run takes the next message (AC-004)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/memory/agents/grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_2dd00dc662494898bcc9cfdfd997bf1b/raw_traces_manifest.json
+
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > completes the turn when Grok ends it after a denied run_bash, and the run takes the next message (AC-004) 823ms
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > fails run creation with Grok's own authentication error text when Grok is not logged in (AC-012)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-Pta4X7
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-Pta4X7.
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > fails run creation with Grok's own authentication error text when Grok is not logged in (AC-012)
+Created and registered workspace ID: agent_ws_73e9c3499a6578ed6218aade6c330c330117b09fb77db67a843f25e64eb08b8d
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > fails run creation with Grok's own authentication error text when Grok is not logged in (AC-012)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-Pta4X7
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-Pta4X7.
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > fails run creation with Grok's own authentication error text when Grok is not logged in (AC-012)
+Reusing registered workspace ID: agent_ws_73e9c3499a6578ed6218aade6c330c330117b09fb77db67a843f25e64eb08b8d
+
+stderr | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > fails run creation with Grok's own authentication error text when Grok is not logged in (AC-012)
+Error in createAgentRun: AgentCreationError: Grok Build: Authentication required: no auth method id provided
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-mCJuUs
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-mCJuUs.
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+Created and registered workspace ID: agent_ws_123ba8b0a0ccacc4253f8d933f4bf46f9050768f4f91d92e968f07f798f6d300
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-mCJuUs
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-mCJuUs.
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+Reusing registered workspace ID: agent_ws_123ba8b0a0ccacc4253f8d933f4bf46f9050768f4f91d92e968f07f798f6d300
+
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > fails run creation with Grok's own authentication error text when Grok is not logged in (AC-012) 220ms
+stderr | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/memory/agents/grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_a059424d9bcd4db8ac17ae91da950147/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+Agent websocket attached for run grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_a059424d9bcd4db8ac17ae91da950147
+Created agent session 7bdcf473-13a0-462c-9b72-2d51d75fdb3a for run grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_a059424d9bcd4db8ac17ae91da950147
+Agent WebSocket connected: session=7bdcf473-13a0-462c-9b72-2d51d75fdb3a, run=grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_a059424d9bcd4db8ac17ae91da950147
+
+stderr | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/memory/agents/grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_a059424d9bcd4db8ac17ae91da950147/raw_traces_manifest.json
+
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006) 330ms
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > shows Grok's own turn after a background job ended: notice, content, tool card, usage, end; keeps the notice in history (AC-001, AC-003)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-4iaJwC
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-4iaJwC.
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > shows Grok's own turn after a background job ended: notice, content, tool card, usage, end; keeps the notice in history (AC-001, AC-003)
+Created and registered workspace ID: agent_ws_ca89a04bbac6c9d47f3835c9192160697ed2f13ed5d07372513470af20114b03
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > shows Grok's own turn after a background job ended: notice, content, tool card, usage, end; keeps the notice in history (AC-001, AC-003)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-4iaJwC
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-4iaJwC.
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > shows Grok's own turn after a background job ended: notice, content, tool card, usage, end; keeps the notice in history (AC-001, AC-003)
+Reusing registered workspace ID: agent_ws_ca89a04bbac6c9d47f3835c9192160697ed2f13ed5d07372513470af20114b03
+
+stderr | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > shows Grok's own turn after a background job ended: notice, content, tool card, usage, end; keeps the notice in history (AC-001, AC-003)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/memory/agents/grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_b2a3cd6eee2b4a2f96ec048b8bd159ea/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > shows Grok's own turn after a background job ended: notice, content, tool card, usage, end; keeps the notice in history (AC-001, AC-003)
+Agent websocket attached for run grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_b2a3cd6eee2b4a2f96ec048b8bd159ea
+Created agent session 7e0f5ccd-bc0e-49a3-a3ce-8667d2bc772c for run grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_b2a3cd6eee2b4a2f96ec048b8bd159ea
+Agent WebSocket connected: session=7e0f5ccd-bc0e-49a3-a3ce-8667d2bc772c, run=grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_b2a3cd6eee2b4a2f96ec048b8bd159ea
+
+stderr | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > shows Grok's own turn after a background job ended: notice, content, tool card, usage, end; keeps the notice in history (AC-001, AC-003)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/memory/agents/grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_b2a3cd6eee2b4a2f96ec048b8bd159ea/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > shows Grok's own turn after a background job ended: notice, content, tool card, usage, end; keeps the notice in history (AC-001, AC-003)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/memory/agents/grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_b2a3cd6eee2b4a2f96ec048b8bd159ea/raw_traces_manifest.json
+
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > shows Grok's own turn after a background job ended: notice, content, tool card, usage, end; keeps the notice in history (AC-001, AC-003) 1846ms
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > holds a message sent during Grok's own turn until it ends, and Stop cancels Grok's own turn (AC-002)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-WqHbx5
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-WqHbx5.
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > holds a message sent during Grok's own turn until it ends, and Stop cancels Grok's own turn (AC-002)
+Created and registered workspace ID: agent_ws_d7ba4b17b22d5722705590494dd0ec1034d7f1025cc614f92006bce788770481
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > holds a message sent during Grok's own turn until it ends, and Stop cancels Grok's own turn (AC-002)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-WqHbx5
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-WqHbx5.
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > holds a message sent during Grok's own turn until it ends, and Stop cancels Grok's own turn (AC-002)
+Reusing registered workspace ID: agent_ws_d7ba4b17b22d5722705590494dd0ec1034d7f1025cc614f92006bce788770481
+
+stderr | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > holds a message sent during Grok's own turn until it ends, and Stop cancels Grok's own turn (AC-002)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/memory/agents/grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_3d2e918744204ea987bf5a8dc6026c68/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > holds a message sent during Grok's own turn until it ends, and Stop cancels Grok's own turn (AC-002)
+Agent websocket attached for run grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_3d2e918744204ea987bf5a8dc6026c68
+Created agent session 0758fd48-0961-46a1-9992-e576b03ddd31 for run grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_3d2e918744204ea987bf5a8dc6026c68
+Agent WebSocket connected: session=0758fd48-0961-46a1-9992-e576b03ddd31, run=grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_3d2e918744204ea987bf5a8dc6026c68
+
+stderr | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > holds a message sent during Grok's own turn until it ends, and Stop cancels Grok's own turn (AC-002)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/memory/agents/grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_3d2e918744204ea987bf5a8dc6026c68/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > holds a message sent during Grok's own turn until it ends, and Stop cancels Grok's own turn (AC-002)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-uo92gg
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-uo92gg.
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > holds a message sent during Grok's own turn until it ends, and Stop cancels Grok's own turn (AC-002)
+Created and registered workspace ID: agent_ws_90553456773a0399278a0195cd0a9656578659bc3db852c809b29f15943de8bc
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > holds a message sent during Grok's own turn until it ends, and Stop cancels Grok's own turn (AC-002)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-uo92gg
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-uo92gg.
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > holds a message sent during Grok's own turn until it ends, and Stop cancels Grok's own turn (AC-002)
+Reusing registered workspace ID: agent_ws_90553456773a0399278a0195cd0a9656578659bc3db852c809b29f15943de8bc
+
+stderr | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > holds a message sent during Grok's own turn until it ends, and Stop cancels Grok's own turn (AC-002)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/memory/agents/grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_87eed9774f4f40659d36216a3c31631d/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > holds a message sent during Grok's own turn until it ends, and Stop cancels Grok's own turn (AC-002)
+Agent websocket attached for run grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_87eed9774f4f40659d36216a3c31631d
+Created agent session 4a478705-68bf-405f-a300-716e7e5fe8ea for run grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_87eed9774f4f40659d36216a3c31631d
+Agent WebSocket connected: session=4a478705-68bf-405f-a300-716e7e5fe8ea, run=grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_87eed9774f4f40659d36216a3c31631d
+
+stderr | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > holds a message sent during Grok's own turn until it ends, and Stop cancels Grok's own turn (AC-002)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/memory/agents/grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_87eed9774f4f40659d36216a3c31631d/raw_traces_manifest.json
+
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > holds a message sent during Grok's own turn until it ends, and Stop cancels Grok's own turn (AC-002) 3623ms
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > keeps a message held through the hand-over when a job ends during an input turn, and sends it after Grok's own turn (AC-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-omuJFW
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-omuJFW.
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > keeps a message held through the hand-over when a job ends during an input turn, and sends it after Grok's own turn (AC-006)
+Created and registered workspace ID: agent_ws_4dfc5aa6a4a6847a6472acb3763c8c4cda676966924e86e9ce638ed44512a6ad
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > keeps a message held through the hand-over when a job ends during an input turn, and sends it after Grok's own turn (AC-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-omuJFW
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-omuJFW.
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > keeps a message held through the hand-over when a job ends during an input turn, and sends it after Grok's own turn (AC-006)
+Reusing registered workspace ID: agent_ws_4dfc5aa6a4a6847a6472acb3763c8c4cda676966924e86e9ce638ed44512a6ad
+
+stderr | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > keeps a message held through the hand-over when a job ends during an input turn, and sends it after Grok's own turn (AC-006)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/memory/agents/grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_8363d416dc8c414b8dfdf36a22ef5878/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > keeps a message held through the hand-over when a job ends during an input turn, and sends it after Grok's own turn (AC-006)
+Agent websocket attached for run grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_8363d416dc8c414b8dfdf36a22ef5878
+Created agent session 968dbf6e-f347-47a3-83cb-833b5cd7786d for run grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_8363d416dc8c414b8dfdf36a22ef5878
+Agent WebSocket connected: session=968dbf6e-f347-47a3-83cb-833b5cd7786d, run=grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_8363d416dc8c414b8dfdf36a22ef5878
+
+stderr | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > keeps a message held through the hand-over when a job ends during an input turn, and sends it after Grok's own turn (AC-006)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/memory/agents/grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_8363d416dc8c414b8dfdf36a22ef5878/raw_traces_manifest.json
+
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > keeps a message held through the hand-over when a job ends during an input turn, and sends it after Grok's own turn (AC-006) 3002ms
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > keeps a message sent in the hand-over's gap (after Grok ended the input prompt, before its response) held through Grok's own turn (AC-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-HJovPK
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-HJovPK.
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > keeps a message sent in the hand-over's gap (after Grok ended the input prompt, before its response) held through Grok's own turn (AC-006)
+Created and registered workspace ID: agent_ws_f8ec29cc0b772aec8f54ff20a864082150030f4f87645be3c1dc10a500e0b7e6
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > keeps a message sent in the hand-over's gap (after Grok ended the input prompt, before its response) held through Grok's own turn (AC-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-HJovPK
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/workspace-HJovPK.
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > keeps a message sent in the hand-over's gap (after Grok ended the input prompt, before its response) held through Grok's own turn (AC-006)
+Reusing registered workspace ID: agent_ws_f8ec29cc0b772aec8f54ff20a864082150030f4f87645be3c1dc10a500e0b7e6
+
+stderr | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > keeps a message sent in the hand-over's gap (after Grok ended the input prompt, before its response) held through Grok's own turn (AC-006)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/memory/agents/grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_96edab89cafe4a10bf24633c9a97d618/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > keeps a message sent in the hand-over's gap (after Grok ended the input prompt, before its response) held through Grok's own turn (AC-006)
+Agent websocket attached for run grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_96edab89cafe4a10bf24633c9a97d618
+Created agent session fe712c9e-7f82-4b7f-af0e-97b5fff50d8f for run grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_96edab89cafe4a10bf24633c9a97d618
+Agent WebSocket connected: session=fe712c9e-7f82-4b7f-af0e-97b5fff50d8f, run=grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_96edab89cafe4a10bf24633c9a97d618
+
+stderr | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > keeps a message sent in the hand-over's gap (after Grok ended the input prompt, before its response) held through Grok's own turn (AC-006)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-replay-e2e-e0XEPP/memory/agents/grok_replay_3ccb92ee_f500_4a31_b42e_1814c279c46d_96edab89cafe4a10bf24633c9a97d618/raw_traces_manifest.json
+
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > turns Grok starts itself > keeps a message sent in the hand-over's gap (after Grok ended the input prompt, before its response) held through Grok's own turn (AC-006) 4527ms
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Closed agent session 35c24b9f-5c03-4631-abf7-5735a53eabc0
+Agent WebSocket disconnected: 35c24b9f-5c03-4631-abf7-5735a53eabc0
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Closed agent session 6ebbd4d6-063d-43ae-b851-36c89701b911
+Agent WebSocket disconnected: 6ebbd4d6-063d-43ae-b851-36c89701b911
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Closed agent session fe712c9e-7f82-4b7f-af0e-97b5fff50d8f
+Agent WebSocket disconnected: fe712c9e-7f82-4b7f-af0e-97b5fff50d8f
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Closed agent session 968dbf6e-f347-47a3-83cb-833b5cd7786d
+Agent WebSocket disconnected: 968dbf6e-f347-47a3-83cb-833b5cd7786d
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Closed agent session 4a478705-68bf-405f-a300-716e7e5fe8ea
+Agent WebSocket disconnected: 4a478705-68bf-405f-a300-716e7e5fe8ea
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Closed agent session 0758fd48-0961-46a1-9992-e576b03ddd31
+Agent WebSocket disconnected: 0758fd48-0961-46a1-9992-e576b03ddd31
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Closed agent session 7e0f5ccd-bc0e-49a3-a3ce-8667d2bc772c
+Agent WebSocket disconnected: 7e0f5ccd-bc0e-49a3-a3ce-8667d2bc772c
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Closed agent session 7bdcf473-13a0-462c-9b72-2d51d75fdb3a
+Agent WebSocket disconnected: 7bdcf473-13a0-462c-9b72-2d51d75fdb3a
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Closed agent session dd99a2d9-2f62-4c6a-a7b9-8e931448391b
+Agent WebSocket disconnected: dd99a2d9-2f62-4c6a-a7b9-8e931448391b
+
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Agent Definition with ID grok-replay-3ccb92ee-f500-4a31-b42e-1814c279c46d deleted successfully.
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Error: Hook timed out in 60000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts:83:3
+     81|   }, 60_000);
+     82|
+     83|   afterAll(async () => {
+       |   ^
+     84|     for (const socket of sockets) if (socket.readyState === WebSocket.…
+     85|     if (app) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  10 passed (10)
+   Start at  18:55:19
+   Duration  431.73s (transform 7.87s, setup 74ms, import 10.71s, tests 420.24s, environment 0ms)
+
+# exit: 1

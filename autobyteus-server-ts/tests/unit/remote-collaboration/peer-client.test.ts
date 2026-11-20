@@ -28,7 +28,7 @@ const client = (fetchImpl: (url: string, init: RequestInit) => Promise<ReturnTyp
 const WORK = { text: "Publish the video draft.", task: { taskId: null, taskKey: null, projectId: null, title: "Publish the video draft." } };
 const start = { nodeId: PEER.nodeId, address: "/publisher", delegatorAgentRunId: "agent_a1", delegatingRun: { kind: "agent" as const, runId: "agent_a1" }, work: WORK };
 const message = {
-  nodeId: PEER.nodeId, kind: "message" as const, messageId: "collabmsg_1", senderAgentRunId: "agent_a1",
+  nodeId: PEER.nodeId, kind: "message" as const, messageId: "collabmsg_1", senderAgentRunId: "agent_a1", senderAddress: "/assistant",
   targetRoot: { kind: "agent" as const, runId: "publisher_7f3" }, targetAgentRunId: "publisher_7f3",
   content: "hi", messageType: "agent_message", createdAt: "2026-10-20T10:00:00.000Z",
 };
@@ -103,10 +103,12 @@ describe("PeerClient", () => {
   });
 
   it("G-2: a message names the root that receives it on the peer", async () => {
-    const f = client(async () => answer({ accepted: true, nodeId: PEER.nodeId }));
-    await expect(f.client.deliverMessage({ ...message, targetRoot: { kind: "agent_team", runId: "team_1" }, targetAgentRunId: "lead_1" })).resolves.toEqual({ accepted: true });
+    const f = client(async () => answer({ accepted: true, nodeId: PEER.nodeId, receiverAddress: "/studio/lead" }));
+    await expect(f.client.deliverMessage({ ...message, targetRoot: { kind: "agent_team", runId: "team_1" }, targetAgentRunId: "lead_1" }))
+      .resolves.toEqual({ accepted: true, receiverAddress: "/studio/lead" });
     const body = JSON.parse(String(f.fetch.mock.calls[0]![1].body));
-    expect(body).toMatchObject({ kind: "message", targetRoot: { kind: "agent_team", runId: "team_1" }, target: { agentRunId: "lead_1" } });
+    expect(body).toMatchObject({ kind: "message", targetRoot: { kind: "agent_team", runId: "team_1" }, target: { agentRunId: "lead_1" },
+      sender: { agentRunId: message.senderAgentRunId, address: "/assistant" } });
     expect("delegatingRun" in body).toBe(false);
   });
 

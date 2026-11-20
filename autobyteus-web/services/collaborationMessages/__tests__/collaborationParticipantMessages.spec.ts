@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
-import type { CollaborationParticipantMessageDto } from '@autobyteus/collaboration-stream-contracts'
+import type { CollaborationCounterpartDto, CollaborationParticipantMessageDto } from '@autobyteus/collaboration-stream-contracts'
 import { useCollaborationParticipantMessagesStore } from '../collaborationParticipantMessages'
 import { fetchParticipantMessages } from '../participantMessagesQuery'
 import { participantMessagesView } from '../participantMessageRows'
@@ -17,8 +17,13 @@ const message = (messageId: string, senderAgentRunId: string, receiverAgentRunId
   messageId, senderAgentRunId, receiverAgentRunId, content: messageId, messageType: 'agent_message', referenceFiles: [],
   createdAt: `2026-11-01T00:00:0${messageId.at(-1)}.000Z`,
 })
-/** The query's answer: the participant's messages and the agents of runs that left the tree they name (autobyteus-469). */
-const stored = (messages: readonly Message[], pastParticipants: { agentRunId: string; address: string }[] = []) => ({ messages: [...messages], pastParticipants })
+/**
+ * The query's answer, one page: the participant's messages and the agents of runs that left the tree they name
+ * (autobyteus-469; counterparts of kind `past` since autobyteus-565), with nothing older.
+ */
+const stored = (messages: readonly Message[], pastParticipants: { agentRunId: string; address: string }[] = []) =>
+  ({ messages: [...messages], counterparts: pastParticipants.map((participant) => ({ kind: 'past' as const, ...participant })), hasMore: false })
+const past = (agentRunId: string, address: string) => ({ kind: 'past' as const, agentRunId, address })
 const deferred = () => {
   let resolve!: (messages: readonly Message[]) => void
   let reject!: (error: Error) => void
@@ -48,7 +53,7 @@ describe('CollaborationParticipantMessages', () => {
     owner.load(key)
     owner.load(key)
     expect(fetchParticipantMessages).toHaveBeenCalledOnce()
-    expect(fetchParticipantMessages).toHaveBeenCalledWith(key)
+    expect(fetchParticipantMessages).toHaveBeenCalledWith(key, null)
     expect(owner.statusOf(key).state).toBe('loading')
     // During the load: one live message the stored list already holds, one it does not, and one for others only.
     owner.append('agent', 'hub', message('m2', 'copy', 'host'))
@@ -261,7 +266,7 @@ describe('CollaborationParticipantMessages', () => {
     const owner = useCollaborationParticipantMessagesStore()
     owner.load(key)
     await settle()
-    expect(owner.pastParticipantsOf(key)).toEqual([{ agentRunId: 'closed-run', address: '/solution_designer' }])
+    expect(owner.counterpartsOf(key)).toEqual([past('closed-run', '/solution_designer')])
     const rows = participantMessagesView({ key, isRemote: false,
       identityOf: (agentRunId) => agentRunId === 'copy' ? { kind: 'configured', address: '/copy', label: 'copy' } : null }).listMessages()
     expect(rows.map((row) => [row.messageId, row.counterpart])).toEqual([
@@ -270,7 +275,7 @@ describe('CollaborationParticipantMessages', () => {
     ])
     // A root that drops its lists drops them too.
     owner.releaseRoot('agent', 'hub')
-    expect(owner.pastParticipantsOf(key)).toEqual([])
+    expect(owner.counterpartsOf(key)).toEqual([])
   })
 
   it('autobyteus-461 SR-084: a tree change that removes an agent re-fetches a list naming it, so it stays named (AC-011); others are not asked', async () => {
@@ -315,10 +320,110 @@ describe('CollaborationParticipantMessages', () => {
     await settle()
     expect(fetchParticipantMessages).toHaveBeenCalledTimes(2)
     expect(ids(owner.messagesOf(key))).toEqual(['m1'])
-    expect(owner.pastParticipantsOf(key)).toEqual([{ agentRunId: 'worker', address: '/worker' }])
+    expect(owner.counterpartsOf(key)).toEqual([past('worker', '/worker')])
     // Named now by its past participant: a later such rebuild keeps the list.
     owner.reloadRoot('agent', 'hub', live('X', 7, 4), (agentRunId) => agentRunId === 'host')
     await settle()
     expect(fetchParticipantMessages).toHaveBeenCalledTimes(2)
+  })
+
+  describe('autobyteus-565: a page at a time, and a standalone run\'s own list (DS-001, REQ-002, REQ-005)', () => {
+    const own = { rootKind: 'agent', rootRunId: 'pm', agentRunId: 'pm' } as const
+    const at = (messageId: string, second: number, sender = 'pm', receiver = 'other-pm'): Message => ({ ...message(messageId, sender, receiver),
+      createdAt: new Date(Date.UTC(2026, 10, 1, 0, 0, second)).toISOString() })
+    const page = (messages: readonly Message[], hasMore: boolean, counterparts: readonly CollaborationCounterpartDto[] = []) => ({ messages: [...messages], counterparts: [...counterparts], hasMore })
+    const party = (agentRunId: string, address: string | null, nodeName: string | null = null) => ({ agentRunId, address, nodeName })
+
+    it('loads the next older page after the last loaded message, adds it by ID, and stops when nothing older follows', async () => {
+      vi.mocked(fetchParticipantMessages)
+        .mockResolvedValueOnce(page([at('m4', 4), at('m3', 3)], true, [{ kind: 'run', agentRunId: 'other-pm', address: '/project_task_manager' }]))
+        .mockResolvedValueOnce(page([at('m2', 2), at('m1', 1, 'linux-pm', 'pm')], false,
+          [{ kind: 'run', agentRunId: 'other-pm', address: '/stale' }, { kind: 'remote', agentRunId: 'linux-pm', address: null, nodeName: 'ryan-ai-linux' }]))
+      const owner = useCollaborationParticipantMessagesStore()
+      owner.load(own)
+      await settle()
+      expect(owner.hasMoreOf(own)).toBe(true)
+      owner.loadMore(own)
+      owner.loadMore(own)
+      expect(owner.moreStatusOf(own)).toEqual({ state: 'loading', error: null })
+      // A live message while the older page loads is kept.
+      owner.append('agent', 'pm', at('m5', 5))
+      await settle()
+      expect(fetchParticipantMessages).toHaveBeenCalledTimes(2)
+      expect(fetchParticipantMessages).toHaveBeenLastCalledWith(own, { createdAt: at('m3', 3).createdAt, messageId: 'm3' })
+      expect(ids(owner.messagesOf(own)).sort()).toEqual(['m1', 'm2', 'm3', 'm4', 'm5'])
+      expect(owner.hasMoreOf(own)).toBe(false)
+      expect(owner.moreStatusOf(own)).toEqual({ state: 'idle', error: null })
+      // The first page's name of an agent stays; the older page adds the ones it names.
+      expect(owner.counterpartsOf(own)).toEqual([{ kind: 'run', agentRunId: 'other-pm', address: '/project_task_manager' },
+        { kind: 'remote', agentRunId: 'linux-pm', address: null, nodeName: 'ryan-ai-linux' }])
+      owner.loadMore(own)
+      expect(fetchParticipantMessages).toHaveBeenCalledTimes(2)
+    })
+
+    it('keeps the loaded messages and the reason when an older page fails, and tries again when asked; a reload drops an answer in flight', async () => {
+      vi.mocked(fetchParticipantMessages)
+        .mockResolvedValueOnce(page([at('m4', 4)], true))
+        .mockRejectedValueOnce(new Error('log unreadable'))
+      const owner = useCollaborationParticipantMessagesStore()
+      owner.reloadRoot('agent', 'pm', live('X', 1), () => true)
+      owner.load(own)
+      await settle()
+      owner.loadMore(own)
+      await settle()
+      expect(owner.moreStatusOf(own)).toEqual({ state: 'error', error: 'log unreadable' })
+      expect(ids(owner.messagesOf(own))).toEqual(['m4'])
+      const older = deferred()
+      vi.mocked(fetchParticipantMessages).mockReturnValueOnce(older.promise).mockResolvedValueOnce(page([at('m6', 6), at('m4', 4)], true))
+      owner.loadMore(own)
+      // The root reloads (another live sequence) meanwhile: its newest page only; the older answer is dropped.
+      owner.reloadRoot('agent', 'pm', live('Y', 1), () => true)
+      older.resolve([at('m3', 3)])
+      await settle()
+      expect(ids(owner.messagesOf(own))).toEqual(['m6', 'm4'])
+      expect(owner.hasMoreOf(own)).toBe(true)
+      expect(owner.moreStatusOf(own)).toEqual({ state: 'idle', error: null })
+    })
+
+    it('names the other agent of a live message to the own list from its parties: another run\'s by its address, another node\'s with its node', async () => {
+      const load = deferred()
+      vi.mocked(fetchParticipantMessages).mockReturnValueOnce(load.promise)
+      const owner = useCollaborationParticipantMessagesStore()
+      owner.load(own)
+      // During the load: kept with its parties.
+      owner.append('agent', 'pm', at('m1', 1, 'linux-pm', 'pm'), { sender: party('linux-pm', '/project_task_manager', 'ryan-ai-linux'), receiver: party('pm', '/pm') })
+      load.resolve([])
+      await settle()
+      owner.append('agent', 'pm', at('m2', 2, 'pm', 'other-pm'), { sender: party('pm', '/pm'), receiver: party('other-pm', '/project_task_manager') })
+      const rows = participantMessagesView({ key: own, isRemote: false,
+        identityOf: (agentRunId) => agentRunId === 'pm' ? { kind: 'configured', address: '/pm', label: 'PM' } : null }).listMessages()
+      expect(rows.map((row) => [row.messageId, row.direction, row.counterpart])).toEqual([
+        ['m2', 'sent', { kind: 'run', address: '/project_task_manager', label: 'project task manager' }],
+        ['m1', 'received', { kind: 'remote', address: '/project_task_manager', label: 'project task manager', nodeName: 'ryan-ai-linux' }],
+      ])
+      // Named from parties, not from the server: a list that names an agent the view does not hold still loads again.
+      vi.mocked(fetchParticipantMessages).mockResolvedValueOnce(page([at('m2', 2), at('m1', 1, 'linux-pm', 'pm')], false,
+        [{ kind: 'run', agentRunId: 'other-pm', address: '/project_task_manager' }, { kind: 'remote', agentRunId: 'linux-pm', address: '/project_task_manager', nodeName: 'ryan-ai-linux' }]))
+      owner.reloadNamingUnknown('agent', 'pm', (agentRunId) => agentRunId === 'pm')
+      await settle()
+      expect(fetchParticipantMessages).toHaveBeenCalledTimes(2)
+      expect(owner.counterpartsOf(own).map((counterpart) => counterpart.kind)).toEqual(['run', 'remote'])
+    })
+
+    it('an own list shows an agent nothing names by its run ID; any other list leaves its row out and ignores parties, as before (REQ-006)', async () => {
+      vi.mocked(fetchParticipantMessages).mockResolvedValueOnce(page([at('m1', 1, 'pm', 'deleted-run')], false)).mockResolvedValueOnce(page([], false))
+      const owner = useCollaborationParticipantMessagesStore()
+      const noTree = () => null
+      owner.load(own)
+      owner.load(key)
+      await settle()
+      expect(participantMessagesView({ key: own, isRemote: false, identityOf: noTree }).listMessages().map((row) => row.counterpart))
+        .toEqual([{ kind: 'run', address: null, label: 'deleted-run' }])
+      // The hub's list of its host (not the run's own agent): a live message's parties name nobody, and an unnamed row stays out.
+      owner.append('agent', 'hub', message('m7', 'host', 'stranger'), { sender: party('host', '/host'), receiver: party('stranger', '/stranger', 'docker') })
+      expect(ids(owner.messagesOf(key))).toEqual(['m7'])
+      expect(owner.counterpartsOf(key)).toEqual([])
+      expect(participantMessagesView({ key, isRemote: false, identityOf: noTree }).listMessages()).toEqual([])
+    })
   })
 })

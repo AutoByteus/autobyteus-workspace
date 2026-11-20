@@ -1,0 +1,1 @@
+  Test Case '-[AutoByteusMobileUITests.DemoUITests testAKeptShareIsUsedOnce]' passed (9.658 seconds).

@@ -80,11 +80,11 @@ public enum ConnectionDiagnosticMapper {
         )
     }
 
-    public static func phoneAccessDisabled(serverName: String? = nil) -> ConnectionDiagnostic {
+    public static func phoneAccessDisabled() -> ConnectionDiagnostic {
         ConnectionDiagnostic(
             kind: .phoneAccessDisabled,
             title: "Phone Access is disabled",
-            message: "\(serverName?.nonEmpty ?? "This AutoByteus node") is reachable, but Phone Access is off.",
+            message: "This AutoByteus node is reachable, but Phone Access is off.",
             recoveryAction: "Open AutoByteus on the desktop, go to Nodes -> Phone Setup, enable Phone Access, then retry."
         )
     }

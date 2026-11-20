@@ -1,0 +1,13 @@
+# IMP-07 CR-001 (CRR-001) recheck: AcpTurnOrigin removed, its doc moved onto ActivePrompt, the class doc points at ActivePrompt
+# commands: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/acp/acp-provider-started-turns.test.ts --no-watch
+#           pnpm -C autobyteus-server-ts typecheck
+#           grep -rn AcpTurnOrigin autobyteus-server-ts/src autobyteus-server-ts/tests GLOSSARY.md  -> no matches
+# commit: 5ab411af71 + the CR-001 change (committed as the IR-003 commit); 2026-11-20
+## unit
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+## server typecheck
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 10.6s
+[typecheck] server tests (tsconfig.tests.json): 1006 errors, exit 2, 32.3s
+[typecheck] production errors: 0; test-file errors: 1006 in 315 files (baseline 1006 in 315 files)
+[typecheck] PASS

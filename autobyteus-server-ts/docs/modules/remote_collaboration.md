@@ -154,7 +154,7 @@ build) answers 404, which the caller reads as unreachable (DESIGN.md rule 9).
 
 autobyteus-492 (CM-13): the run ID is the address across nodes too.
 
-- **`run-messages`**: `{fromNodeId, toNodeId, messageId, sender: {agentRunId}, target: {agentRunId}, content,
+- **`run-messages`**: `{fromNodeId, toNodeId, messageId, sender: {agentRunId, address}, target: {agentRunId}, content,
   messageType, createdAt}`, with no `targetRoot`: a message to a running agent of the called node by its run ID
   only. Unlike `messages` (a linked run, its root named, which may wake it), it never restores or wakes anything.
   `RemoteMessageReceiver.acceptRunMessage` asks `RunningAgents.rootOf` (from each live root's own statuses), and
@@ -254,6 +254,16 @@ each offers, then delegates with `delegate_task` without being told an address.
   runs the shared link check (`inboundEndpoint`), its own wake, then `engine.acceptFromRemote` (the
   receiver's log). The sender's node assigns the message ID; each node writes only its own run's log line
   (CM-9). Headers and results name the other run's node.
+- **Who the other agent is (autobyteus-565).** Both message requests (`messages`, `run-messages`) carry the sending
+  agent's address in its own run (`sender: {agentRunId, address}`, `address` null when it has none), and their accepted
+  answers the receiving agent's (`{accepted: true, nodeId, receiverAddress}`; `PeerClient` reads it strictly: a string or
+  null, anything else is a malformed answer, "it answered without the receiving agent"). Each side's line records the
+  other agent (`counterpart: {address, nodeId}`): the sender's at `commitSentToRemote` (the answer's `receiverAddress`,
+  the endpoint's node), the receiver's at `acceptFromRemote` (the request's `sender.address`, the calling node). Each
+  of these two commits publishes the message as `remote`, to its own run's views only; `MessageViewScope` admits it
+  into the view of an Agent run that is one of its runs (its Messages; a Team or Org view never shows it), named with
+  the address and this node's name for the peer (`RemoteRunChannel.peerName`). Older lines carry no record: a linked
+  run's other agent is named from its Task entry, an unlinked one by its run ID.
 - **Saved Task.** `delegate_task` with `task_id` naming a remote run or a remote Team (its team run ID) is
   refused once, by `TaskDelegation` before any Task change (the Task entry has `nodeId`). A message to a remote team run ID gets the
   usual guidance to use the coordinator's run ID (`teamCoordinatorOf`, answered from `teamLinkFor`).

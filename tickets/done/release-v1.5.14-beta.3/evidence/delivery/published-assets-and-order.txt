@@ -1,0 +1,35 @@
+# published assets of v1.5.14-beta.3 (createdAt, size, name, sha256 digest), sorted
+2026-11-20T10:46:36Z	120	AutoByteus_personal_android-1.5.14-beta.3-release.apk.sha256	sha256:9e402132c75353959cc827e7c2e116860e9c049e2f7f471425446c12661a4a4e
+2026-11-20T10:46:36Z	1935100	AutoByteus_personal_android-1.5.14-beta.3-release.apk	sha256:f2c6db159d0ee599b187c921ee495e90eb32aee567408ac918c2460f3c572ddc
+2026-11-20T10:48:35Z	149515816	autobyteus-server-1.5.14-beta.3-linux-arm64.tar.gz	sha256:d0e389e4d809f5ad9d3c99f9e21211eb3b18e7f01ee435996cc610990ffd613b
+2026-11-20T10:48:37Z	150341155	autobyteus-server-1.5.14-beta.3-linux-x64.tar.gz	sha256:97a15f253565ae6b0abbb59772627a4a894a5af97bb89e1719faa71cfa5c9324
+2026-11-20T10:48:39Z	3722	autobyteus-server-1.5.14-beta.3-linux-arm64.json	sha256:93b8ade3c66921acedbe82e64a1909df8a44eea432eea3b9fa3f38a993095b0d
+2026-11-20T10:48:40Z	88	autobyteus-server-1.5.14-beta.3-linux-arm64.json.sig	sha256:668a13c8226e27eddf726c4be282fb602dc0ad659dd4ff9edaa9e0a18242d78d
+2026-11-20T10:48:47Z	3718	autobyteus-server-1.5.14-beta.3-linux-x64.json	sha256:40a81ffd875d2ed69e6e36c096801778c29ffb802d54bb6b3608e8b998d17d69
+2026-11-20T10:48:48Z	88	autobyteus-server-1.5.14-beta.3-linux-x64.json.sig	sha256:4464376d10d971a565decb23e4e5462ae369518c2ae937c035f858538b2f7114
+2026-11-20T11:09:45Z	251	AutoByteus_personal_linux-x64-1.5.14-beta.3.AppImage.release.json	sha256:30cce07f686092abdcd261d1f295de43f3f34c605734d189cd00fc53e03ba228
+2026-11-20T11:09:45Z	253	AutoByteus_personal_linux-arm64-1.5.14-beta.3.AppImage.release.json	sha256:462d32967d3fde440293706e48fcc655cda4eaff41cc663720dcfe5b4f55aa1b
+2026-11-20T11:09:45Z	269147395	AutoByteus_personal_windows-1.5.14-beta.3.exe	sha256:f76482f77de62da0ec7761963a09c2d4d6cd61dd09e156e6953ca903015eed17
+2026-11-20T11:09:45Z	350345060	AutoByteus_personal_linux-arm64-1.5.14-beta.3.AppImage	sha256:3017cebcdea238763ef27a4b820ea3c0239589b7e07ddbc1b9a8545560600120
+2026-11-20T11:09:45Z	360384682	AutoByteus_personal_linux-x64-1.5.14-beta.3.AppImage	sha256:05c69e4be75a4778bb8b0d3db8080ad9d18866fc9de30245ce9ccc6adfa1fb5c
+2026-11-20T11:09:45Z	398321430	AutoByteus_personal_macos-arm64-1.5.14-beta.3.zip	sha256:e8b83722fb8512a1abd2f404b4844a5b2a57a4cb828502058ae73a517d240201
+2026-11-20T11:09:45Z	401734875	AutoByteus_personal_macos-arm64-1.5.14-beta.3.dmg	sha256:e7597b97e8edd733fa19f7fe8312e3c62c19ae9f6036236b2dd565ad88525cb1
+2026-11-20T11:09:45Z	406264	AutoByteus_personal_macos-arm64-1.5.14-beta.3.zip.blockmap	sha256:0ea186f35f75953e6069b73d04ecf4e4e4bd888ac71da91323d439da0629185a
+2026-11-20T11:09:45Z	417283	AutoByteus_personal_macos-arm64-1.5.14-beta.3.dmg.blockmap	sha256:9017cbb2ee6e45bdbe06060f4a344de3a7f34ed251e99596caf69d7f8564454d
+2026-11-20T11:09:45Z	422087076	AutoByteus_personal_macos-x64-1.5.14-beta.3.zip	sha256:f060f8981918d0429f66b8c7231c6356ba1205838b932a66ba9c2b78562ab67d
+2026-11-20T11:09:45Z	426522745	AutoByteus_personal_macos-x64-1.5.14-beta.3.dmg	sha256:385c61e97ef66a5dea828f47fed207d2105571f1a893b08aef519096920010f2
+2026-11-20T11:09:45Z	429793	AutoByteus_personal_macos-x64-1.5.14-beta.3.zip.blockmap	sha256:8291061b5318550ba09badba01029de998f5e595030d6b7350fcf37496999443
+2026-11-20T11:09:45Z	444655	AutoByteus_personal_macos-x64-1.5.14-beta.3.dmg.blockmap	sha256:0d528ee9e405e0324d3dee1115bea5e94d0ce84660ae6d31bf16ccdecf1cc02d
+2026-11-20T11:09:45Z	88	AutoByteus_personal_linux-arm64-1.5.14-beta.3.AppImage.release.json.sig	sha256:6e1e2c65c25c1290d799e89d5eda80b2d97553587fdb68f6d0b27093e924ffa1
+2026-11-20T11:09:45Z	88	AutoByteus_personal_linux-x64-1.5.14-beta.3.AppImage.release.json.sig	sha256:a4370bf9868dbf221a6933059cfee2eb0ab1599fa1a9d21269cc5b9063cc3465
+2026-11-20T11:10:07Z	375	latest.yml	sha256:41c671361414ac7d951c3de323991426d52f74731eb92fad6fcb1c5e14678cbb
+2026-11-20T11:10:07Z	434	latest-linux.yml	sha256:0dedfc51327718f14766cdc3e317ce3a3ad106ca5d5495b394ed261888312336
+2026-11-20T11:10:07Z	438	latest-linux-arm64.yml	sha256:0e07ff428f0ead38668ef00f7e6398bd29b381c7da6e7ad81720e7a522dd46ba
+2026-11-20T11:10:07Z	939	latest-mac.yml	sha256:66fdfd51fbf118b2b5d26b4303d334a55a55dc0c5efc23b7e3d3dd4826fcbe3b
+
+count: 27
+isPrerelease true isDraft false
+GitHub Latest: v1.5.13
+
+oldest latest*.yml: 2026-11-20T11:10:07Z
+newest autobyteus-server-* file: 2026-11-20T10:48:48Z

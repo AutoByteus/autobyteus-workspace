@@ -1,14 +1,30 @@
 <template>
   <!-- The node sheet (UIS-005), opened from the node name: the node's name (never its address, autobyteus-433), its state
        with a refresh icon (or "Retry" when it is not reachable), Switch node in the Android app, and Unpair from <node>
-       (REQ-013, REQ-019). -->
+       (REQ-013, REQ-019). In the iOS demo it is the demo sheet (autobyteus-279, UIS-004): what the demo is, and Leave demo. -->
   <MobileBottomSheet test-id="mobile-connection-sheet" @close="$emit('close')">
     <template #header="{ titleId }">
       <div class="min-w-0 py-1">
         <h2 :id="titleId" class="truncate text-lg font-semibold text-slate-900" data-testid="mobile-connection-name">{{ nodeName }}</h2>
       </div>
     </template>
-    <div class="px-4">
+    <!-- autobyteus-279: the demo's sheet says what the demo is and leaves it; there is no connection to check. -->
+    <div v-if="demo" class="px-4" data-testid="mobile-demo-sheet">
+      <p class="text-[0.9375rem] leading-6 text-slate-600" data-testid="mobile-demo-explainer">The agents, Teams and runs here are samples stored on this device. Nothing is real, nothing is sent anywhere, and what you change is forgotten when you leave.</p>
+      <ul class="mt-3 border-y border-slate-100">
+        <li>
+          <button type="button" class="flex min-h-[3.5rem] w-full items-center gap-3 text-left active:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500" data-testid="mobile-leave-demo" @click="$emit('leave-demo')">
+            <Icon icon="heroicons:arrow-left-start-on-rectangle-20-solid" class="h-5 w-5 flex-shrink-0 text-slate-500" aria-hidden="true" />
+            <span class="min-w-0 flex-1">
+              <span class="block text-base font-medium leading-5 text-slate-900">Leave demo</span>
+              <span class="block text-[0.8125rem] leading-5 text-slate-500">Back to connecting your own computer</span>
+            </span>
+            <Icon icon="heroicons:chevron-right-20-solid" class="h-5 w-5 flex-shrink-0 text-slate-400" aria-hidden="true" />
+          </button>
+        </li>
+      </ul>
+    </div>
+    <div v-else class="px-4">
       <div class="flex min-h-[3.5rem] items-center justify-between gap-3">
         <span class="inline-flex items-center gap-2 text-sm font-semibold" :class="connected ? 'text-green-700' : 'text-amber-700'" data-testid="mobile-connection-status">
           <span class="h-2.5 w-2.5 rounded-full" :class="connected ? 'bg-green-500' : 'bg-amber-500'" aria-hidden="true" />
@@ -58,20 +74,22 @@ import MobileBottomSheet from '~/components/mobile/MobileBottomSheet.vue';
 import type { MobileConnectionDiagnostic } from '~/types/remoteAccess';
 import { getShellBridge, type ShellBridge } from '~/utils/remoteAccess/shellBridge';
 
-defineProps<{
+const props = defineProps<{
   nodeName: string;
   connected: boolean;
   isChecking: boolean;
   diagnostic: MobileConnectionDiagnostic | null;
+  /** autobyteus-279: the iOS app's demo: the demo sheet instead of the connection's state and actions. */
+  demo?: boolean;
 }>();
-defineEmits<{ (event: 'close'): void; (event: 'check'): void; (event: 'unpair'): void }>();
+defineEmits<{ (event: 'close'): void; (event: 'check'): void; (event: 'unpair'): void; (event: 'leave-demo'): void }>();
 
 /** The Android app's bridge and its node count, when the page runs in the app. */
 const shell = ref<{ bridge: ShellBridge; nodeCount: number } | null>(null);
 
 onMounted(async () => {
   const bridge = getShellBridge();
-  if (!bridge) return;
+  if (!bridge || props.demo) return;
   const hello = await bridge.hello();
   shell.value = { bridge, nodeCount: hello?.nodeCount ?? 1 };
 });

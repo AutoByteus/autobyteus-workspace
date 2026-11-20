@@ -1,0 +1,10 @@
+# V-03 web unit suite (pnpm -C autobyteus-web test:nuxt run) at 03d3ff8e04, load 62-74
+      Tests  1 failed | 5877 passed | 2 skipped (5880)
+ FAIL  components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts > ServerSettingsBasicsPanel > composes only current endpoint and focused Basics cards
+ Test Files  1 failed | 780 passed (781)
+AssertionError: expected 'Endpoint CardsApplicationsMedia Model…' not to contain 'GitHub'
+# the same spec on base 8f2d209b2c (temporary worktree, removed)
+      Tests  1 failed | 1 passed (2)
+ FAIL  components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts > ServerSettingsBasicsPanel > composes only current endpoint and focused Basics cards
+AssertionError: expected 'Endpoint CardsApplicationsMedia Model…' not to contain 'GitHub'
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯

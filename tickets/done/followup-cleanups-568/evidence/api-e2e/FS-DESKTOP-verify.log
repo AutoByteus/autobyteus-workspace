@@ -1,0 +1,18 @@
+# FS-DESKTOP verify steps (release-desktop.yml build-macos-arm64), from the clone root; 2026-11-20T15:05:20Z
+## step: Verify bundled Prisma ARM64 engine target
+Prisma engines dir: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+Prisma client dir: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client
+## step exit=0: Verify bundled Prisma ARM64 engine target
+## step: Verify packaged terminal runtime ARM64
+[terminal-runtime] node-pty root: /Users/normy/.cache/abtest568/fs-desktop/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/.cache/abtest568/fs-desktop/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/.cache/abtest568/fs-desktop/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] node-pty root: /Users/normy/.cache/abtest568/fs-desktop/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/.cache/abtest568/fs-desktop/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/.cache/abtest568/fs-desktop/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] node-pty root: /Users/normy/.cache/abtest568/fs-desktop/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/.cache/abtest568/fs-desktop/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/.cache/abtest568/fs-desktop/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+## step exit=0: Verify packaged terminal runtime ARM64
+# exit: 0

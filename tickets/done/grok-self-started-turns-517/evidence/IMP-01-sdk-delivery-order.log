@@ -1,0 +1,20 @@
+# IMP-01 delivery order of ACP frames to a session (AcpClientConnection over @agentclientprotocol/sdk 1.5.0)
+# command: copy evidence/imp-diag/sdk-delivery-order.test.ts to autobyteus-server-ts/tests/unit/tmp-diag/, then
+#          pnpm -C autobyteus-server-ts exec vitest run tests/unit/tmp-diag/sdk-delivery-order.test.ts --no-watch (removed after)
+# commit: ca4317a386 + working tree; node v22.23.1; macOS 26.5.2; 2026-11-20
+# wire order (fake ACP agent, one row per write): update u1, ext 2 (_x.ai/session_notification), ext 3 (_x.ai/queue/changed), update u4, session/prompt response
+ORDER: update undefined | update undefined | update u1 | update u4 | ext 2 | RESPONSE handled | ext 3
+# ("update undefined" are the handshake's own session/update frames.)
+# Reading: session/update frames overtake extension notifications (u4 before ext 2/3), and the prompt response is
+# handled before ext 3, which came before it on the wire. Cause in the SDK (node_modules/@agentclientprotocol/sdk/dist/jsonrpc.js):
+# receiveMessage() resolves a response synchronously (handleResponse, :831), while a notification goes through
+# processIncomingMessage() (:748), which awaits each registered handler in turn before the client's extNotification runs.
+#
+# Unit tests of the design's rules over this connection (acp-provider-started-turns.test.ts, same working tree):
+#   Tests  3 failed | 6 passed (9)
+#   - hand-over (probe 2 A order): the hand-over batch is [SEGMENT_END, TURN_COMPLETED] only: Grok's queue/changed
+#     (frame 212) reached the session after the response, so no prompt was pending; the provider turn then opened in a
+#     later batch (the run reads idle between the two turns: ARCH-REV-002 AR-005's failure mode).
+#   - "ignores another prompt before the input prompt completed" and "drops a pending prompt that ended before the
+#     response": both see a second TURN_STARTED: the queue/changed of the other prompt reached the session after the
+#     response, in `ready`, and opened a provider turn.

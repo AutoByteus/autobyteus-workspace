@@ -1,0 +1,17 @@
+# FS-LOCAL: the build-ios job's steps up to its Xcode gate, from a fresh clone (TESTING.md Fresh-start build)
+# clone: git clone --no-local /Users/normy/autobyteus_org/autobyteus-worktrees/ios-xcode27-sdk-571 /Users/normy/.cache/abtest571/fs; checkout b03bb0e609; 2026-11-20T12:30:07Z; macOS 26.5.2; Xcode 26.1.1 Build version 17B100 ; python3 Python 3.9.6
+== fresh: 0 prior build folders
+== the script's mode in the clone: -rwxr-xr-x; git: 100755
+== step 'Select Xcode 27 or newer', the workflow's default (IOS_XCODE_APP_PATH=/Applications/Xcode_27.2.app)
+Installed Xcode apps:
+/Applications/Xcode.app
+::error::Configured Xcode 27+ app path is unavailable: /Applications/Xcode_27.2.app
+exit=1; GITHUB_ENV: 0 bytes
+== the same step with this Mac's real Xcode (IOS_XCODE_APP_PATH=/Applications/Xcode.app, Xcode 26.1.1, iPhoneOS SDK 26.1)
+Xcode 26.1.1
+Build version 17B100
+::error::Selected Xcode must be 27 or newer; found '26.1.1' at /Applications/Xcode.app.
+exit=1; GITHUB_ENV: 0 bytes
+== the job's contract check (from 'Generate, build, and run implementation checks')
+iOS release contract checks passed.
+exit=0

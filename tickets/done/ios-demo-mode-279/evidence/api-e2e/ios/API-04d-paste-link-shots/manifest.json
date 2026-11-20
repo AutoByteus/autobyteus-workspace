@@ -1,0 +1,26 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "87FD7BD4-527F-4396-8F0F-15E34D1FA345",
+        "deviceName" : "apie2e279-iphone",
+        "exportedFileName" : "1D543757-1BA8-4B47-BC52-1F4FB88633D6.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "paste-link-relaunch_0_9D83F5FD-E7E9-4035-A446-0999BBF58B99.png",
+        "timestamp" : 1795120344.199
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "87FD7BD4-527F-4396-8F0F-15E34D1FA345",
+        "deviceName" : "apie2e279-iphone",
+        "exportedFileName" : "C810B5B1-BF0D-4710-ACB7-B760A1DB843F.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "paste-link-paired_0_B19888A9-E601-445D-9BC2-9BC75F236629.png",
+        "timestamp" : 1795120340.462
+      }
+    ],
+    "testIdentifier" : "ApiE2E279UITests/testPasteALink()",
+    "testIdentifierURL" : "test://com.apple.xcode/AutoByteusMobile/AutoByteusMobileUITests/ApiE2E279UITests/testPasteALink"
+  }
+]

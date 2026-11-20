@@ -10,7 +10,7 @@
   />
   <section v-else class="fixed inset-0 z-10 flex h-[100dvh] flex-col bg-white text-slate-900" data-testid="mobile-run-screen" :data-state="state">
     <header class="flex h-14 flex-shrink-0 items-center border-b border-slate-200 bg-white pl-1 pr-1">
-      <button type="button" class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full text-slate-600 active:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" aria-label="Back to runs" data-testid="mobile-run-back" @click="navigation.back()">
+      <button type="button" class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full text-slate-600 active:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" v-if="!split" aria-label="Back to runs" data-testid="mobile-run-back" @click="navigation.back()">
         <Icon icon="heroicons:arrow-left-20-solid" class="h-6 w-6" aria-hidden="true" />
       </button>
     </header>
@@ -23,6 +23,7 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue';
 import { Icon } from '@iconify/vue';
+import { useMobileSplitLayout } from '~/composables/mobile/useMobileSplitLayout';
 import MobileRunTargetView from '~/components/mobile/runScreen/MobileRunTargetView.vue';
 import { useMobileNavigation } from '~/composables/mobile/useMobileNavigation';
 import type { useMobileRunTree } from '~/composables/mobile/useMobileRunTree';
@@ -32,6 +33,8 @@ import { useMobileRunOpeningStore } from '~/stores/mobileRunOpeningStore';
 defineProps<{ tree: ReturnType<typeof useMobileRunTree> }>();
 
 const navigation = useMobileNavigation();
+/** iPad landscape (autobyteus-279): the list is beside the run, so the run has no ←. */
+const split = useMobileSplitLayout();
 const opening = useMobileRunOpeningStore();
 const activeContext = useActiveContextStore();
 const target = computed(() => activeContext.activeWorkspaceTarget);

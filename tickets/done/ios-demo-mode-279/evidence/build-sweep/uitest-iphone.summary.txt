@@ -1,0 +1,10 @@
+  /Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-mode-279/autobyteus-ios/AutoByteusMobileUITests/DemoUITests.swift:133: error: -[AutoByteusMobileUITests.DemoUITests testAKeptShareIsUsedOnce] : XCTAssertTrue failed - The demo's run list with its welcome card
+  Test Case '-[AutoByteusMobileUITests.DemoUITests testAKeptShareIsUsedOnce]' failed (97.730 seconds).
+  Test Case '-[AutoByteusMobileUITests.DemoUITests testFirstScreen]' passed (9.090 seconds).
+  Test Case '-[AutoByteusMobileUITests.DemoUITests testScanningTheDemoCodeOpensTheDemo]' passed (10.974 seconds).
+  Test Case '-[AutoByteusMobileUITests.DemoUITests testTheDemoLinkOpensTheDemo]' passed (13.777 seconds).
+  Test Case '-[AutoByteusMobileUITests.DemoUITests testTheDemoWebViewBlocksTheNetwork]' passed (6.463 seconds).
+  Test Case '-[AutoByteusMobileUITests.DemoUITests testTryDemoThenLeaveDemoThenColdLaunch]' passed (17.935 seconds).
+  	 Executed 6 tests, with 1 failure (0 unexpected) in 155.967 (155.974) seconds
+  	 Executed 6 tests, with 1 failure (0 unexpected) in 155.967 (155.974) seconds
+  	 Executed 6 tests, with 1 failure (0 unexpected) in 155.967 (155.976) seconds

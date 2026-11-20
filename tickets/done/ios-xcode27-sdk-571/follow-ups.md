@@ -1,0 +1,5 @@
+# Follow-ups — ios-xcode27-sdk-571 (autobyteus-571)
+
+| ID | Found by (role, document) | What is wrong, where | Evidence | Why it is outside this ticket | Urgent (`Yes`/`No`) | Suggested Task description | Sent (to, date) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FU-001 | Solution Designer, `investigation-notes.md` (P-01) | The iOS simulator choice in `.github/workflows/release-ios.yml:171-178` and `autobyteus-ios/scripts/ios-simulator-smoke.sh:32-34` uses an awk substring match for "iPhone 17". It takes the first match in the oldest runtime, so on the `xcode-27` image it picked **iPhone 17e on iOS 27.0**, not iPhone 17 on the newest runtime. | `evidence/probe/P-01-xcode27-build-only.txt` ("Selected simulator UDID: 0AC25E88…", the "iPhone 17e (0AC25E88…)" line) | Pre-existing logic. The build SDK (27.2), which Apple checks, is unaffected, and all tests passed. | No | Make the iOS workflow and the smoke script choose the simulator by exact name on the newest available iOS runtime (for example, parse `xcrun simctl list devices available -j`), in one shared place. | |

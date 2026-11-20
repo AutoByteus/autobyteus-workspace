@@ -1,27 +1,30 @@
 import { gql } from 'graphql-tag'
 import {
   collaborationParticipantMessagesDtoSchema,
+  type CollaborationParticipantMessagesCursor,
   type CollaborationParticipantMessagesDto,
   type CollaborationRootKind,
 } from '@autobyteus/collaboration-stream-contracts'
 import { getApolloClient } from '~/utils/apolloClient'
 
 export const CollaborationParticipantMessagesQuery = gql`
-  query CollaborationParticipantMessages($rootKind: String!, $rootRunId: String!, $agentRunId: String!) {
-    collaborationParticipantMessages(rootKind: $rootKind, rootRunId: $rootRunId, agentRunId: $agentRunId)
+  query CollaborationParticipantMessages($rootKind: String!, $rootRunId: String!, $agentRunId: String!, $before: JSON) {
+    collaborationParticipantMessages(rootKind: $rootKind, rootRunId: $rootRunId, agentRunId: $agentRunId, before: $before)
   }
 `
 
 /**
- * One participant's stored messages of one root (autobyteus-358), with the agents of delegated runs that left the tree
- * that those messages name (autobyteus-469); a damaged log fails with the server's reason.
+ * One page of one participant's stored messages of one root (autobyteus-358, autobyteus-565): the newest 50, or the 50
+ * after `before` (the last message of the page before); with the other agents of the page its root's tree does not name
+ * (autobyteus-469 past participants, other runs, other nodes) and whether older ones follow. A damaged log fails with
+ * the server's reason.
  */
 export const fetchParticipantMessages = async (key: Readonly<{
   rootKind: CollaborationRootKind; rootRunId: string; agentRunId: string
-}>): Promise<CollaborationParticipantMessagesDto> => {
+}>, before: CollaborationParticipantMessagesCursor | null): Promise<CollaborationParticipantMessagesDto> => {
   const response = await getApolloClient().query<{ collaborationParticipantMessages: unknown }>({
     query: CollaborationParticipantMessagesQuery,
-    variables: key,
+    variables: { rootKind: key.rootKind, rootRunId: key.rootRunId, agentRunId: key.agentRunId, before },
     fetchPolicy: 'network-only',
     context: { queryDeduplication: false },
   })

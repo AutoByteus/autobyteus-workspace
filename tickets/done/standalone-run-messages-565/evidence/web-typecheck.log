@@ -1,0 +1,7 @@
+[typecheck] Nuxt app (tsconfig.json): 60 errors, exit 2, 48.3s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.4s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.9s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 27.4s
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS
+exit 0

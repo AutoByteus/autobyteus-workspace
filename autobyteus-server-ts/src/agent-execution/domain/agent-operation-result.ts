@@ -15,4 +15,6 @@ export interface AgentOperationResult {
   platformAgentRunId?: string | null;
   agentRunId?: string | null;
   displayName?: string | null;
+  /** The receiving agent's address in its own run, when a run accepts a message from another run or node (autobyteus-565). */
+  agentAddress?: string | null;
 }

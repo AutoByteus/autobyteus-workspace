@@ -179,7 +179,7 @@ describe("Node access model (NA-1…NA-15): every request needs a key", () => {
 
   const peerMessage = (fromNodeId: string, messageId: string) => JSON.stringify({
     fromNodeId, toNodeId: ownNodeId, kind: "message", messageId,
-    targetRoot: { kind: "agent", runId: "agent_nas_target" }, sender: { agentRunId: "agent_nas_sender" },
+    targetRoot: { kind: "agent", runId: "agent_nas_target" }, sender: { agentRunId: "agent_nas_sender", address: "/nas_sender" }, // 565: sender.address
     target: { agentRunId: "agent_nas_target" }, content: "x", messageType: "agent_message", createdAt: new Date().toISOString(),
   });
 

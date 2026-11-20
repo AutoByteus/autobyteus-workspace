@@ -1,0 +1,10 @@
+# API-04b-update: ApiE2E279UITests/testUpdateOpensTheSavedComputer on apie2e279-iphone (87FD7BD4-527F-4396-8F0F-15E34D1FA345); fresh-start clone build (429af9bd66 + the temporary test file); 2026-11-19T20:17:05Z; load 169.09 160.99 188.49
+# links made just before: 
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testUpdateOpensTheSavedComputer]' started.
+API279 update first texts: []
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testUpdateOpensTheSavedComputer]' passed (6.635 seconds).
+	 Executed 1 test, with 0 failures (0 unexpected) in 6.635 (6.636) seconds
+	 Executed 1 test, with 0 failures (0 unexpected) in 6.635 (6.636) seconds
+	 Executed 1 test, with 0 failures (0 unexpected) in 6.635 (6.637) seconds
+** TEST EXECUTE SUCCEEDED **
+# exit: 0

@@ -1,0 +1,9 @@
+# API-03-ipad-rotation: ApiE2E279UITests/testRotationKeepsTheOpenRun on apie2e279-ipad (E52DCB67-867F-47DB-871A-ABE652C40055); fresh-start clone build (429af9bd66 + the temporary test file); 2026-11-19T21:19:28Z; load 69.38 131.69 159.15
+# links made just before: 
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testRotationKeepsTheOpenRun]' started.
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testRotationKeepsTheOpenRun]' passed (27.810 seconds).
+	 Executed 1 test, with 0 failures (0 unexpected) in 27.810 (27.811) seconds
+	 Executed 1 test, with 0 failures (0 unexpected) in 27.810 (27.811) seconds
+	 Executed 1 test, with 0 failures (0 unexpected) in 27.810 (27.812) seconds
+** TEST EXECUTE SUCCEEDED **
+# exit: 0

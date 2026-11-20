@@ -1,0 +1,9 @@
+# API-04e-scan: ApiE2E279UITests/testScannedPairingCode on apie2e279-iphone (87FD7BD4-527F-4396-8F0F-15E34D1FA345); fresh-start clone build (429af9bd66 + the temporary test file); 2026-11-19T20:23:53Z; load 126.65 137.42 167.38
+# links made just before: scan
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testScannedPairingCode]' started.
+Test Case '-[AutoByteusMobileUITests.ApiE2E279UITests testScannedPairingCode]' passed (98.147 seconds).
+	 Executed 1 test, with 0 failures (0 unexpected) in 98.147 (98.152) seconds
+	 Executed 1 test, with 0 failures (0 unexpected) in 98.147 (98.153) seconds
+	 Executed 1 test, with 0 failures (0 unexpected) in 98.147 (98.154) seconds
+** TEST EXECUTE SUCCEEDED **
+# exit: 0

@@ -290,6 +290,55 @@ describeLiveGrok("Grok Build live runtime e2e (real grok CLI)", () => {
       stepAUsageCalls: usageA.length, interruptLatencyMs }));
   }, 900_000);
 
+  it("shows the turn Grok starts itself when its background command ends: notice, reply, end, kept in history (autobyteus-517 AC-005)", async () => {
+    const marker = `BGDONE-${randomUUID().slice(0, 8)}`;
+    const workspace = await fs.mkdtemp(path.join(dataDir, "provider-turn-ws-"));
+    await fs.writeFile(path.join(workspace, "job.sh"), `sleep 8\necho ${marker}\n`);
+    const definitionId = await createDefinition("grok-live-provider-turn",
+      "You are a concise test agent. Follow the user's instructions exactly and keep replies short.", []);
+    const created = await graphql<{ createAgentRun: { success: boolean; message: string; runId: string | null } }>(
+      "mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
+      { input: { agentDefinitionId: definitionId, workspaceRootPath: workspace, llmModelIdentifier: modelIdentifier,
+        llmConfig: { reasoning_effort: REASONING_EFFORT }, autoExecuteTools: true, runtimeKind: "grok_build" } });
+    expect(created.createAgentRun.success, created.createAgentRun.message).toBe(true);
+    const runId = created.createAgentRun.runId!;
+    cleanup.push(() => graphql("mutation($agentRunId: String!) { terminateAgentRun(agentRunId: $agentRunId) { success } }",
+      { agentRunId: runId }));
+    const { socket, messages } = await openSocket(`/ws/agent/${runId}`);
+
+    // The probe's wording (autobyteus-517 evidence/grok-acp-probe.mjs): the input turn ends at once; Grok wakes itself
+    // when the job ends, and that turn must show in the run.
+    sendE2eSendMessageCommand(socket, { agent_run_id: runId, content: "Run the shell command `bash job.sh` in the "
+      + "background (block_until_ms 0) and then end your turn immediately with the single word STARTED. When the job "
+      + "finishes later, reply with the job's output line." });
+    const inputStart = await waitFor(messages, 0, (m) => m.type === "TURN_STARTED", "input TURN_STARTED");
+    const inputTurnId = inputStart.payload.turn_id;
+    await waitFor(messages, 0, (m) => m.type === "TURN_COMPLETED" && m.payload.turn_id === inputTurnId, "input TURN_COMPLETED");
+    const providerStart = await waitFor(messages, 0, (m) => m.type === "TURN_STARTED" && m.payload.turn_id !== inputTurnId,
+      "Grok's own TURN_STARTED");
+    const turnId = providerStart.payload.turn_id;
+    const end = await waitFor(messages, 0, (m) => (m.type === "TURN_COMPLETED" || m.type === "TURN_INTERRUPTED")
+      && m.payload.turn_id === turnId, "Grok's own turn end");
+    const notice = messages.find((m) => m.type === "SYSTEM_TASK_NOTIFICATION" && m.payload.turn_id === turnId);
+    console.info("GROK_LIVE_PROVIDER_TURN", JSON.stringify({ runId, notice: notice?.payload, end: end.type,
+      text: messages.filter((m) => m.type === "SEGMENT_CONTENT" && m.payload.turn_id === turnId)
+        .map((m) => String(m.payload.delta ?? "")).join("").slice(0, 300) }));
+    expect(notice?.payload).toMatchObject({ sender_id: "system.grok_provider_turn" });
+    expect(String(notice?.payload.content)).toMatch(/Background task .* completed/);
+    expect(String(notice?.payload.content)).not.toContain("<system-reminder>");
+    expect(end.type).toBe("TURN_COMPLETED");
+    expect(messages.filter((m) => m.type === "SEGMENT_CONTENT" && m.payload.turn_id === turnId)
+      .map((m) => String(m.payload.delta ?? "")).join("")).toContain(marker);
+    expect(messages.some((m) => m.type === "TOKEN_USAGE_UPDATED" && m.payload.turn_id === turnId)).toBe(true);
+    expect(messages.some((m) => m.type === "ERROR")).toBe(false);
+    await waitFor(messages, messages.indexOf(end), (m) => m.type === "AGENT_STATUS" && m.payload.status === "idle", "idle after");
+
+    const projection = await graphql<{ getRunProjection: { conversation: unknown[] } }>(
+      "query($runId: String!) { getRunProjection(runId: $runId) { conversation } }", { runId });
+    expect(projection.getRunProjection.conversation).toEqual(expect.arrayContaining([expect.objectContaining({
+      kind: "system_task_notification", senderId: "system.grok_provider_turn" })]));
+  }, 600_000);
+
   it("delivers a Grok member's canonical get_handoff_rules/send_message_to to a Claude member and restores the mixed team (AC-005)", async () => {
     const claudeCatalog = await graphql<{ providerModelCatalogSnapshots: Array<{ llmModels: Array<{ modelIdentifier: string }> }> }>(
       "query($r: String) { providerModelCatalogSnapshots(runtimeKind: $r) { llmModels { modelIdentifier } } }",

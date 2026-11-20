@@ -1,0 +1,1131 @@
+{
+ "label": "ipad",
+ "w": 1180,
+ "h": 820,
+ "findings": [
+  {
+   "where": "run Project Task Manager › Artifacts",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    " ask the landlord 1w Show fewer Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Project Task Manager › Artifacts › first file",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    " ask the landlord 1w Show fewer Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Agent Package Creator › Artifacts",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    " ask the landlord 1w Show fewer Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Agent Package Creator › Artifacts › first file",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    " ask the landlord 1w Show fewer Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Market Researcher › Artifacts",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    " ask the landlord 1w Show fewer Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Market Researcher › Artifacts › first file",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    " ask the landlord 1w Show fewer Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run 0:Daily Assistant",
+   "words": [
+    "failed",
+    "error"
+   ],
+   "context": [
+    " language, with the currency formatted for their country. A failed import now says which row failed, not only that somet",
+    " Invoice language Account language Customer language Import errors Count only Row and reason The new date is Thursday, 1"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    " ask the landlord 1w Show fewer Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts › first file",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    " ask the landlord 1w Show fewer Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Codex › Artifacts",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    " ask the landlord 1w Show fewer Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Codex › Artifacts › first file",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    " ask the landlord 1w Show fewer Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    " ask the landlord 1w Show fewer Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts › first file",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    " ask the landlord 1w Show fewer Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Project Task Manager › Artifacts",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    " ask the landlord 1w Show fewer Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Project Task Manager › Artifacts › first file",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    " ask the landlord 1w Show fewer Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Agent Package Creator › Artifacts",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    " ask the landlord 1w Show fewer Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Agent Package Creator › Artifacts › first file",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    " ask the landlord 1w Show fewer Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    " ask the landlord 1w Show fewer Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts › first file",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    " ask the landlord 1w Show fewer Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Codex › Artifacts",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    " ask the landlord 1w Show fewer Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Codex › Artifacts › first file",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    " ask the landlord 1w Show fewer Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    " ask the landlord 1w Show fewer Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts › first file",
+   "words": [
+    "not available"
+   ],
+   "context": [
+    " ask the landlord 1w Show fewer Artifacts README.md Content not available yet This file change will become viewable afte"
+   ]
+  }
+ ],
+ "errors": [
+  "warning [Vue warn] Set operation on key \"initialized\" failed: target is readonly. Proxy(RefImpl)",
+  "warning [Vue warn] Set operation on key \"currentPresetId\" failed: target is readonly. Proxy(RefImpl)",
+  "external-request https://api.iconify.design/heroicons.json?icons=chat-bubble-left-right-20-solid",
+  "external-request https://api.iconify.design/heroicons.json?icons=cog-6-tooth-20-solid%2Cdocument-text-20-solid",
+  "external-request https://api.iconify.design/heroicons.json?icons=document-20-solid",
+  "error Disconnection timed out.",
+  "external-request https://api.iconify.design/heroicons.json?icons=chat-bubble-left-20-solid",
+  "warning [mobile] Failed to open run: Error: Team context 'mx-set-0001' is already mounted.\n    at openTeamRun (http://127.0.0.1:3279/_nuxt/services/runOpen/teamRunOpenCoordinator.ts:21:11)\n    at openTeamMemb",
+  "warning [mobile] Failed to open run: Error: Team context 'mx-set-0002' is already mounted.\n    at openTeamRun (http://127.0.0.1:3279/_nuxt/services/runOpen/teamRunOpenCoordinator.ts:21:11)\n    at openTeamMemb",
+  "warning [mobile] Failed to open run: Error: Team context 'mx-mkt-0001' is already mounted.\n    at openTeamRun (http://127.0.0.1:3279/_nuxt/services/runOpen/teamRunOpenCoordinator.ts:21:11)\n    at openTeamMemb",
+  "warning [mobile] Failed to open run: Error: Team context 'mx-sup-0001' is already mounted.\n    at openTeamRun (http://127.0.0.1:3279/_nuxt/services/runOpen/teamRunOpenCoordinator.ts:21:11)\n    at openTeamMemb",
+  "warning [mobile] Failed to open run: Error: Team context 'mx-org-0001' is already mounted.\n    at openTeamRun (http://127.0.0.1:3279/_nuxt/services/runOpen/teamRunOpenCoordinator.ts:21:11)\n    at openTeamMemb",
+  "warning [mobile] Failed to open run: Error: Team context 'mx-set-0003' is already mounted.\n    at openTeamRun (http://127.0.0.1:3279/_nuxt/services/runOpen/teamRunOpenCoordinator.ts:21:11)\n    at openTeamMemb",
+  "warning [mobile] Failed to open run: Error: Team context 'mx-set-0004' is already mounted.\n    at openTeamRun (http://127.0.0.1:3279/_nuxt/services/runOpen/teamRunOpenCoordinator.ts:21:11)\n    at openTeamMemb"
+ ],
+ "log": [
+  {
+   "where": "first screen",
+   "len": 151,
+   "head": "AutoByteus Scan the QR code on your computer On your computer, open Nodes › Phone Setup and choose Connect a phone. Other ways to connect Scan Try demo"
+  },
+  {
+   "where": "first screen › Other ways to connect",
+   "len": 180,
+   "head": "AutoByteus Scan the QR code on your computer On your computer, open Nodes › Phone Setup and choose Connect a phone. Other ways to connect Type an address Paste "
+  },
+  {
+   "where": "other ways buttons",
+   "buttons": [
+    "Other ways to connect",
+    "Type an address",
+    "Paste a link",
+    "Scan",
+    "Try demo"
+   ]
+  },
+  {
+   "where": "scanner",
+   "len": 54,
+   "head": "Scan Point the camera at the QR code on your computer."
+  },
+  {
+   "where": "run list",
+   "len": 779,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "rows",
+   "count": 40,
+   "rows": [
+    "0:Project Task Manager",
+    "1:Software Engineering Team",
+    "2:solution_designer",
+    "2:implementation_engineer",
+    "2:code_reviewer",
+    "2:Code Searcher",
+    "1:Agent Package Creator",
+    "1:Software Engineering Team",
+    "2:solution_designer",
+    "2:implementation_engineer",
+    "2:code_reviewer",
+    "1:Marketing Team",
+    "2:campaign_lead",
+    "2:copywriter",
+    "2:designer",
+    "1:Market Researcher",
+    "1:Support Team",
+    "2:triage_lead",
+    "2:answer_writer",
+    "0:Daily Assistant",
+    "0:Product Launch Org",
+    "1:launch_lead",
+    "1:content_writer",
+    "1:release_manager",
+    "0:Daily Assistant",
+    "0:Codex",
+    "0:Daily Assistant",
+    "0:Software Engineering Team",
+    "1:solution_designer",
+    "1:implementation_engineer",
+    "1:code_reviewer",
+    "0:Project Task Manager",
+    "0:Agent Package Creator",
+    "0:Daily Assistant",
+    "0:Codex",
+    "0:Software Engineering Team",
+    "1:solution_designer",
+    "1:implementation_engineer",
+    "1:code_reviewer",
+    "0:Daily Assistant"
+   ]
+  },
+  {
+   "where": "run 0:Project Task Manager",
+   "len": 2032,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Project Task Manager ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Project Task Manager › Artifacts",
+   "len": 1773,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Project Task Manager › Artifacts › first file",
+   "len": 1773,
+   "head": "Demo Sample data Welcome to the demo These agents, Teams and runs are samples. Nothing here is real, and nothing leaves this device. Open a run to read its work"
+  },
+  {
+   "where": "run Project Task Manager › Files",
+   "len": 1465,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 2m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Project Task Manager › Files › first file",
+   "len": 1766,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 2m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Project Task Manager › Activity",
+   "len": 1888,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 2m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Project Task Manager › VNC Viewer",
+   "len": 1461,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 2m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Project Task Manager › Settings",
+   "len": 1504,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 2m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run 1:Software Engineering Team",
+   "len": 1771,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 3m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Software Engineering Team ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Software Engineering Team › Artifacts",
+   "len": 1527,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 3m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Software Engineering Team › Files",
+   "len": 1465,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 3m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Software Engineering Team › Files › first file",
+   "len": 1766,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 3m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Software Engineering Team › Messages",
+   "len": 1852,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 3m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Software Engineering Team › Activity",
+   "len": 1553,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 3m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Software Engineering Team › VNC Viewer",
+   "len": 1461,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 3m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Software Engineering Team › Settings",
+   "len": 1529,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 3m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run 2:solution_designer",
+   "len": 1460,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 3m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run 2:implementation_engineer",
+   "len": 1460,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 4m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run 2:code_reviewer",
+   "len": 1460,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 5m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run 2:Code Searcher",
+   "len": 1460,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 5m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run 1:Agent Package Creator",
+   "len": 1743,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 6m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Agent Package Creator ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Agent Package Creator › Artifacts",
+   "len": 1571,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 6m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Agent Package Creator › Artifacts › first file",
+   "len": 1571,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 6m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run 1:Software Engineering Team",
+   "len": 1772,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 6m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Software Engineering Team ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Software Engineering Team › Artifacts",
+   "len": 1528,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 6m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Software Engineering Team › Files",
+   "len": 1466,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 6m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Software Engineering Team › Files › first file",
+   "len": 1767,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 6m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Software Engineering Team › Messages",
+   "len": 1853,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 6m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Software Engineering Team › Activity",
+   "len": 1553,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 7m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Software Engineering Team › VNC Viewer",
+   "len": 1461,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 7m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Software Engineering Team › Settings",
+   "len": 1529,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 7m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run 2:solution_designer",
+   "len": 1460,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 7m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run 2:implementation_engineer",
+   "len": 1460,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 8m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run 2:code_reviewer",
+   "len": 1460,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 8m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run 1:Marketing Team",
+   "len": 1763,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 9m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Marketing Team ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Marketing Team › Artifacts",
+   "len": 1527,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 9m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Marketing Team › Files",
+   "len": 1465,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 9m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Marketing Team › Files › first file",
+   "len": 1766,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 9m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Marketing Team › Messages",
+   "len": 1821,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 9m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Marketing Team › Activity",
+   "len": 1555,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 9m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Marketing Team › VNC Viewer",
+   "len": 1461,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 9m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run Marketing Team › Settings",
+   "len": 1517,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 9m Software Engineering Team SD solution_designer IE implementation_engineer CR"
+  },
+  {
+   "where": "run 2:campaign_lead",
+   "len": 1461,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 10m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 2:copywriter",
+   "len": 1461,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 10m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 2:designer",
+   "len": 1461,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 11m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 1:Market Researcher",
+   "len": 1722,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 11m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Market Researcher ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Market Researcher › Artifacts",
+   "len": 1571,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 11m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Market Researcher › Artifacts › first file",
+   "len": 1571,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 11m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 1:Support Team",
+   "len": 1704,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 12m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Support Team ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Support Team › Artifacts",
+   "len": 1528,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 12m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Support Team › Files",
+   "len": 1466,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 12m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Support Team › Files › first file",
+   "len": 1767,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 12m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Support Team › Messages",
+   "len": 1833,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 12m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Support Team › Activity",
+   "len": 1444,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 12m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Support Team › VNC Viewer",
+   "len": 1462,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 12m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Support Team › Settings",
+   "len": 1514,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 12m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 2:triage_lead",
+   "len": 1461,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 13m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 2:answer_writer",
+   "len": 1461,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 13m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 0:Daily Assistant",
+   "len": 3665,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 14m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Daily Assistant ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts",
+   "len": 1487,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 14m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Daily Assistant › Artifacts › first file",
+   "len": 1512,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 14m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Daily Assistant › Files",
+   "len": 1466,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 14m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Daily Assistant › Files › first file",
+   "len": 1767,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 14m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Daily Assistant › Activity",
+   "len": 2036,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 14m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Daily Assistant › VNC Viewer",
+   "len": 1462,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 14m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Daily Assistant › Settings",
+   "len": 1516,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 14m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 0:Product Launch Org",
+   "len": 1866,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 15m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Product Launch Org ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Product Launch Org › Artifacts",
+   "len": 1528,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 15m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Product Launch Org › Files",
+   "len": 1466,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 15m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Product Launch Org › Files › first file",
+   "len": 1767,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 15m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Product Launch Org › Messages",
+   "len": 1867,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 15m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Product Launch Org › Activity",
+   "len": 1553,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 15m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Product Launch Org › VNC Viewer",
+   "len": 1462,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 15m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Product Launch Org › Settings",
+   "len": 1520,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 15m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 1:launch_lead",
+   "len": 1461,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 16m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 1:content_writer",
+   "len": 1461,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 16m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 1:release_manager",
+   "len": 1461,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 17m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 0:Daily Assistant",
+   "len": 1691,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 18m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Daily Assistant ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts",
+   "len": 1571,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 18m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Daily Assistant › Artifacts › first file",
+   "len": 1571,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 18m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 0:Codex",
+   "len": 1692,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 18m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Codex ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Codex › Artifacts",
+   "len": 1571,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 18m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Codex › Artifacts › first file",
+   "len": 1571,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 18m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 0:Daily Assistant",
+   "len": 1643,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 19m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Daily Assistant ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts",
+   "len": 1571,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 19m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Daily Assistant › Artifacts › first file",
+   "len": 1571,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 19m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 0:Software Engineering Team",
+   "len": 1727,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 19m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Software Engineering Team ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Software Engineering Team › Artifacts",
+   "len": 1528,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 20m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Software Engineering Team › Files",
+   "len": 1466,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 20m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Software Engineering Team › Files › first file",
+   "len": 1767,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 20m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Software Engineering Team › Messages",
+   "len": 1853,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 20m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Software Engineering Team › Activity",
+   "len": 1444,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 20m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Software Engineering Team › VNC Viewer",
+   "len": 1462,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 20m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Software Engineering Team › Settings",
+   "len": 1533,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 20m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 1:solution_designer",
+   "len": 1461,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 20m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 1:implementation_engineer",
+   "len": 1461,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 21m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 1:code_reviewer",
+   "len": 1461,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 21m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 0:Project Task Manager",
+   "len": 1690,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 22m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Project Task Manager ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Project Task Manager › Artifacts",
+   "len": 1571,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 22m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Project Task Manager › Artifacts › first file",
+   "len": 1571,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 22m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 0:Agent Package Creator",
+   "len": 1707,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 23m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Agent Package Creator ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Agent Package Creator › Artifacts",
+   "len": 1571,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 23m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Agent Package Creator › Artifacts › first file",
+   "len": 1571,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 23m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 0:Daily Assistant",
+   "len": 1686,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 23m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Daily Assistant ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts",
+   "len": 1571,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 23m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Daily Assistant › Artifacts › first file",
+   "len": 1571,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 23m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 0:Codex",
+   "len": 1695,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 24m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Codex ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Codex › Artifacts",
+   "len": 1571,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 24m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Codex › Artifacts › first file",
+   "len": 1571,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 24m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 0:Software Engineering Team",
+   "len": 1755,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 25m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Software Engineering Team ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Software Engineering Team › Artifacts",
+   "len": 1528,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 25m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Software Engineering Team › Files",
+   "len": 1466,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 25m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Software Engineering Team › Files › first file",
+   "len": 1767,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 25m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Software Engineering Team › Messages",
+   "len": 1853,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 25m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Software Engineering Team › Activity",
+   "len": 1444,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 25m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Software Engineering Team › VNC Viewer",
+   "len": 1462,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 25m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Software Engineering Team › Settings",
+   "len": 1533,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 25m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 1:solution_designer",
+   "len": 1461,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 26m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 1:implementation_engineer",
+   "len": 1461,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 26m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 1:code_reviewer",
+   "len": 1461,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 27m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run 0:Daily Assistant",
+   "len": 1699,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 27m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Daily Assistant ⋮",
+   "items": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ]
+  },
+  {
+   "where": "run Daily Assistant › Artifacts",
+   "len": 1571,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 27m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "run Daily Assistant › Artifacts › first file",
+   "len": 1571,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 27m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  },
+  {
+   "where": "composer Upload files",
+   "fileChooser": true
+  },
+  {
+   "where": "composer › Upload files",
+   "len": 1830,
+   "head": "Demo Sample data PT Project Task Manager Dispatch the approved desktop app Tasks 28m Software Engineering Team SD solution_designer IE implementation_engineer C"
+  }
+ ]
+}

@@ -198,11 +198,11 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     if (hasCollaboration && !contextFor(runId)) void inspect(runId)
   }
 
-  /** The run's Team tab: messages with the runs it delegated, once it has any. */
-  const runMessagesView = (runId: string): CollaborationMessagesContextView | null => {
-    const context = contextFor(runId)
-    return context?.hasDelegatedRuns ? context.messagesView(runId) : null
-  }
+  /**
+   * The run's Messages tab (autobyteus-565 DEC-001): every message its agent sent or received, whenever the run has a
+   * collaboration view (an application-owned run has none).
+   */
+  const runMessagesView = (runId: string): CollaborationMessagesContextView | null => contextFor(runId)?.messagesView(runId) ?? null
 
   /**
    * A run this run delegated is selected under it, and its own run is still opening (rule 2): the view has no target

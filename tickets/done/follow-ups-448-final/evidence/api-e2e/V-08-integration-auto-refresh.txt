@@ -1,0 +1,8 @@
+# V-08 package-auto-refresh.integration.test.ts (unchanged since base; watcher source unchanged), dist from test:integration:prepare at 03d3ff8e04
+     × AC-012: a root renamed away keeps its definitions and reports FOLDER_MISSING; restoring it resumes watching 38722ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+Error: Condition not met within 30000 ms; last value: "FOLDER_MISSING"
+      Tests  1 failed | 14 passed (15)
+   Duration  236.54s (transform 2.06s, setup 63ms, import 2.90s, tests 232.97s, environment 0ms)
+# fs.watch latency right after (no AutoByteus code; the implementer's evidence/fu-001/fswatch-latency.mjs)
+{"fsWatchLatencyMs":[1712,"timeout>20000",3027,"timeout>20000",2687,2855,4345,"timeout>20000"],"load":["42.5","54.1","77.9"]}

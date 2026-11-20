@@ -1,6 +1,7 @@
 <template>
-  <!-- Messages (UIS-006, VIS-010, 027): the messages between the open member and its Team's or Org's other members,
-       with their file references; a reference opens full screen (a history entry, so Back closes it first). -->
+  <!-- Messages (UIS-006, VIS-010, 027): the messages between the open member and its Team's or Org's other members, or
+       every message a standalone run's agent sent or received (autobyteus-565), with their file references, newest first, a
+       page at a time; a reference opens full screen (a history entry, so Back closes it first). -->
   <section class="fixed inset-0 z-20 flex h-[100dvh] flex-col bg-white text-slate-900" data-testid="mobile-messages">
     <MobileScreenBar title="Messages" @back="$emit('back')" />
     <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain pb-[env(safe-area-inset-bottom)]">
@@ -15,7 +16,10 @@
       <ul v-else>
         <li v-for="message in messages" :key="message.messageId" class="border-b border-slate-100 p-4" data-testid="mobile-team-message-row">
           <div class="flex items-baseline justify-between gap-3">
-            <p class="min-w-0 truncate text-[0.9375rem] font-semibold text-slate-900">{{ counterpart(message) }}</p>
+            <p class="flex min-w-0 flex-1 items-center gap-1.5">
+              <span class="min-w-0 truncate text-[0.9375rem] font-semibold text-slate-900">{{ counterpart(message) }}</span>
+              <RemoteNodeChip v-if="message.counterpart.kind === 'remote' && message.counterpart.nodeName" :node-name="message.counterpart.nodeName" data-testid="mobile-team-message-node" />
+            </p>
             <span class="flex-shrink-0 text-xs text-slate-400">{{ formatTime(message.createdAt) }}</span>
           </div>
           <p class="mt-1 whitespace-pre-wrap break-words text-[0.9375rem] leading-6 text-slate-700">{{ message.content }}</p>
@@ -32,6 +36,18 @@
           </button>
         </li>
       </ul>
+      <!-- Older messages, a page at a time (autobyteus-565 DEC-004). -->
+      <div v-if="messages.length && (hasMore || moreStatus?.state === 'error')" class="p-4" data-testid="mobile-messages-more">
+        <p v-if="moreStatus?.state === 'error'" class="mb-2 break-words text-sm text-amber-800" data-testid="mobile-messages-more-error">{{ statusText.loadMoreFailed() }}: {{ moreStatus.error }}</p>
+        <button
+          v-if="hasMore"
+          type="button"
+          class="min-h-[2.75rem] w-full rounded-xl border border-slate-200 text-[0.9375rem] font-medium text-blue-600 active:bg-slate-50 disabled:text-slate-400"
+          :disabled="moreStatus?.state === 'loading'"
+          data-testid="mobile-messages-load-more"
+          @click="messagesView?.loadMore()"
+        >{{ moreStatus?.state === 'loading' ? statusText.loadingMore() : statusText.loadMore() }}</button>
+      </div>
     </div>
 
     <MobileTeamReferenceViewer
@@ -49,6 +65,7 @@ import { computed, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import MobileScreenBar from '~/components/mobile/MobileScreenBar.vue';
 import MobileTeamReferenceViewer from '~/components/mobile/views/MobileTeamReferenceViewer.vue';
+import RemoteNodeChip from '~/components/workspace/remote/RemoteNodeChip.vue';
 import { useMobileNavigation } from '~/composables/mobile/useMobileNavigation';
 import { participantMessagesStatusText } from '~/services/collaborationMessages/participantMessagesStatusText';
 import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget';
@@ -66,6 +83,8 @@ const messagesView = computed(() => ('collaborationMessages' in props.target ? p
 watch(messagesView, (view) => view?.loadMessages(), { immediate: true });
 const messages = computed(() => messagesView.value?.listMessages() ?? []);
 const messagesStatus = computed(() => messagesView.value?.messagesStatus() ?? null);
+const hasMore = computed(() => messagesView.value?.hasMore() ?? false);
+const moreStatus = computed(() => messagesView.value?.moreStatus() ?? null);
 const statusText = participantMessagesStatusText();
 
 /** The reference the route opens, while its message is listed. */
