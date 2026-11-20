@@ -1,0 +1,8 @@
+# API-REV-001 investigation • autobyteus-12
+Reviewed d2cb84cde6 / IR-001 960fb46ad0; Medium/High. Root TESTING and web AGENTS. IMP-01–05 cover race/native, Electron wiring, isolated Shell with inert Exec, redirect and clean packaging. Missing: protected live installed window identity, updates and removal in an actual graphical OS.
+- API-01 verify current byte fixture/previous released source, run direct native tests; prepare test-only packages with documented compile-time isolated sidecar transport (no runtime bypass).
+- API-02 actual previous managed GUI and generic item in isolated Ubuntu guest with GNOME/Ubuntu Dock; pin existing desktop ID. Record visual and WindowTracker, not file inference.
+- API-03 signed upgrade, first corrected launch, prior download redirect and favorite; actual Wayland/XWayland, menu/terminal, secondary windows, persistence, no duplicate/reenrollment.
+- API-04 fresh install, repeated launch, quit/unmount, collision/custom data and approved uninstall (cancel then approve). Synthetic data only. No production keys, publishing or host desktop/install changes.
+
+Source package: SR-001 requirements, DS-001.1 design, ARCH-REV-001, implementation-handoff IR-001, code-review-report CRR-001. Preserve protected-install/authorization/sandbox boundary. Reuse same-production-byte web/server typechecks, Electron contract checks and complete frozen-install x64 build evidence, not the preview as installed-window proof. Add a read-only in-Shell assertion module once the real observation contract is established. A previously unused login without the favorite is a separate fresh-enrollment control; success on the upgraded login could otherwise be explained by a cached desktop registration.

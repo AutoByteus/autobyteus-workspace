@@ -55,15 +55,18 @@ func run() (int, error) {
 		if err = launch.Authorize(filepath.Join(p.Support, "provision"), protocol.Request{Operation: "uninstall"}, bytes.NewReader(nil)); err != nil {
 			return 1, err
 		}
-		return 0, launch.Menu(p, true)
+		if err := launch.RemoveMenu(p, directory); err != nil {
+			return 1, err
+		}
+		return 0, nil
 	}
 	outer := os.Getenv("APPIMAGE")
 	if managed {
-		if err = launch.Menu(p, false); err != nil {
-			return 1, err
-		}
 		if outer != canonical {
 			return 1, syscall.Exec(canonical, append([]string{canonical}, args...), os.Environ())
+		}
+		if err := launch.EnsureMenu(p, directory); err != nil {
+			fmt.Fprintln(os.Stderr, "AutoByteus menu not updated:", err)
 		}
 	}
 	code, restricted, err := launch.Supervise(real, args, managed)
@@ -99,9 +102,6 @@ func run() (int, error) {
 		return code, err
 	}
 	if err = launch.Authorize(sealed.Path(snapshot), protocol.Request{Operation: "provision", Record: record, Signature: signature}, image); err != nil {
-		return code, err
-	}
-	if err = launch.Menu(p, false); err != nil {
 		return code, err
 	}
 	canonical, managed, err = launch.Managed(p)

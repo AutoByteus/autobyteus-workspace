@@ -1,0 +1,17 @@
+IMP-01 | 960fb46ad0 | 2026-11-20 | Ubuntu 26.04 x64 / Go 1.27.4 | autobyteus-web/linux-install
+CGO_ENABLED=1 go test -race -count=1 ./...
+?   	autobyteus.local/desktop/linux-install/cmd/client	[no test files]
+?   	autobyteus.local/desktop/linux-install/cmd/launcher	[no test files]
+ok  	autobyteus.local/desktop/linux-install/cmd/provision	1.011s
+ok  	autobyteus.local/desktop/linux-install/cmd/writer	1.075s
+ok  	autobyteus.local/desktop/linux-install/internal/acquire	1.035s
+?   	autobyteus.local/desktop/linux-install/internal/buildinfo	[no test files]
+?   	autobyteus.local/desktop/linux-install/internal/imagefile	[no test files]
+?   	autobyteus.local/desktop/linux-install/internal/install	[no test files]
+ok  	autobyteus.local/desktop/linux-install/internal/launch	1.571s
+?   	autobyteus.local/desktop/linux-install/internal/protocol	[no test files]
+ok  	autobyteus.local/desktop/linux-install/internal/release	1.029s
+ok  	autobyteus.local/desktop/linux-install/internal/sealed	1.014s
+ok  	autobyteus.local/desktop/linux-install/internal/store	1.064s
+New coverage: fresh/escaping and persistent bytes; exact old flat entry, repeat + old recreation; partial owned states; idempotent removal; unrelated sibling, directory symlinks, foreign file/dir/symlink/FIFO; missing artwork; 8 concurrent publications. Includes existing supervisor, bootstrap/restart, auth and writer test packages. Tests create only temporary HOME/AppDir and synthetic resources. These do not launch packaged GNOME.
+Prerequisite: hash-checked pinned Go in tempdir. Initial race command on host without a C compiler did not start; final run used user-local Ubuntu compiler packages.

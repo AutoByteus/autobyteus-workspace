@@ -1,0 +1,12 @@
+API-04-custom-removal | 2026-11-20 UTC | actual isolated Ubuntu 24.04.5 GNOME Shell 46 / Ubuntu Dock 90ubuntu3 | IR-001 960fb46ad0; exact step/build mapping in API-REV-001 Cases
+Ubuntu will request one-shot authorization for /opt/autobyteus-desktop/1000/support/provision (program path, not a publisher verification).
+Removed "/etc/systemd/system/sockets.target.wants/autobyteus-desktop-1000.socket".
+modified or unrecognized managed.desktop; left intact
+modified or unrecognized desktop-icon.png; left intact
+/home/qa/.local/share/applications/autobyteus/managed.desktop: OK
+/home/qa/.local/share/autobyteus-managed/desktop-icon.png: OK
+/home/qa/.autobyteus/server-data/temp_workspace/icon-work.txt: OK
+Protected-image-removed
+['org.gnome.Nautilus.desktop', 'autobyteus-managed.desktop']
+keep-custom
+keep-other-art

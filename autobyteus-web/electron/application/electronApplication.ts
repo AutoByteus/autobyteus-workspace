@@ -87,6 +87,7 @@ export class ElectronApplication {
     })
     this.serverStatusManager = new ServerStatusManager(this.serverManager)
     const writer = app.isPackaged ? detectLinuxManagedInstall() : null
+    if (writer) app.setDesktopName('autobyteus-managed.desktop')
     this.managedUpdates = writer ? new ManagedUpdateSession({ writer, shutdown: this.shutdown,
       serverGone: () => this.serverManager.isServerProcessGone(),
       initialSettings: { automaticUpdate: loadAppUpdateAutomatic(app.getPath('userData')), updateChannel: loadAppUpdateChannel(app.getPath('userData')) },

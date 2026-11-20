@@ -1,0 +1,23 @@
+{
+  "session": "wayland",
+  "dock": 1,
+  "favorites": [
+    "org.gnome.Nautilus.desktop",
+    "autobyteus-managed.desktop"
+  ],
+  "registry": "/home/qa/.local/share/applications/autobyteus-managed.desktop",
+  "icon": "applications-development",
+  "running": [
+    "window:4"
+  ],
+  "windows": [
+    {
+      "title": "autobyteus",
+      "pid": 13794,
+      "type": "Wayland",
+      "wmclass": "autobyteus",
+      "gtk": null,
+      "tracked": "window:4"
+    }
+  ]
+}

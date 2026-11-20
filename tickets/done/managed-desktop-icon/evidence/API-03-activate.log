@@ -1,0 +1,12 @@
+API-03-activate | 2026-11-20 UTC | actual isolated Ubuntu 24.04.5 GNOME Shell 46 / Ubuntu Dock 90ubuntu3 | IR-001 960fb46ad0; exact step/build mapping in API-REV-001 Cases
+{"record":"eyJmb3JtYXQiOjEsInByb2R1Y3QiOiJhdXRvYnl0ZXVzLXBlcnNvbmFsLWRlc2t0b3AiLCJhcnRpZmFjdCI6IkFwcEltYWdlIiwib3MiOiJsaW51eCIsImFyY2giOiJ4NjQiLCJ2ZXJzaW9uIjoiMS41LjE0LWJldGEuMyIsImNoYW5uZWwiOiJiZXRhIiwic2l6ZSI6MzYwNDM4MTk2LCJzaGEyNTYiOiIwODZhZjk1OWY0ZjQzMDVjNDVhNzc2NTViZDllMmIwYTg4YTA0ZDk4MTZjN2RkNzM0OTI5YjRhNTk3N2EyMzdhIiwibWluV3JpdGVyIjoxfQo=","signature":"p+WAtTOJNSWYnaKMe07mW1iQvP7WdXt61yMxkT70QUBghamgRDpD9eoRbZdkkwHqaoWFyFuHsocKU6j63ks0BA=="}
+086af959f4f4305c45a77655bd9e2b0a88a04d9816c7dd734929b4a5977a237a  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+[Desktop Entry]
+Type=Application
+Name=AutoByteus
+Exec=/opt/autobyteus-desktop/1000/app/AutoByteus.AppImage %U
+Icon=applications-development
+Terminal=false
+Categories=Development;
+X-AutoByteus-Managed-UID=1000
+{"session": "wayland", "dock": 1, "favorites": ["org.gnome.Nautilus.desktop", "autobyteus-managed.desktop"], "registry": "/home/qa/.local/share/applications/autobyteus-managed.desktop", "icon": "applications-development", "running": ["autobyteus-managed.desktop"], "windows": [{"title": "autobyteus", "pid": 14972, "type": "Wayland", "wmclass": "autobyteus-managed", "gtk": null, "tracked": "autobyteus-managed.desktop"}]}

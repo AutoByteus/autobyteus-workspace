@@ -1,0 +1,7 @@
+API-04-custom-start | 2026-11-20 UTC | actual isolated Ubuntu 24.04.5 GNOME Shell 46 / Ubuntu Dock 90ubuntu3 | IR-001 960fb46ad0; exact step/build mapping in API-REV-001 Cases
+No AutoByteus window or AppImage mount
+{"session": "wayland", "dock": 1, "favorites": ["org.gnome.Nautilus.desktop", "autobyteus-managed.desktop"], "registry": "/home/qa/.local/share/applications/autobyteus/managed.desktop", "icon": "/home/qa/.local/share/autobyteus-managed/desktop-icon.png", "running": ["autobyteus-managed.desktop", "org.gnome.Terminal.desktop"], "windows": [{"title": "autobyteus", "pid": 19400, "type": "Wayland", "wmclass": "autobyteus-managed", "gtk": null, "tracked": "autobyteus-managed.desktop"}, {"title": "Terminal", "pid": 19378, "type": "Wayland", "wmclass": "gnome-terminal-server", "gtk": "org.gnome.Terminal", "tracked": "org.gnome.Terminal.desktop"}]}
+/home/qa/.local/share/applications/autobyteus/managed.desktop: OK
+/home/qa/.local/share/autobyteus-managed/desktop-icon.png: OK
+/home/qa/.autobyteus/server-data/temp_workspace/icon-work.txt: OK
+AutoByteus menu not updated: modified or unrecognized managed.desktop; left intact

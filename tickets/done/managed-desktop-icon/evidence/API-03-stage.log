@@ -1,0 +1,6 @@
+API-03-stage | 2026-11-20 UTC | actual isolated Ubuntu 24.04.5 GNOME Shell 46 / Ubuntu Dock 90ubuntu3 | IR-001 960fb46ad0; exact step/build mapping in API-REV-001 Cases
+{"expectedDigest":"5f89530293a0964f3e6eba4be33988e4a1287c311b9051d4eab97fa581088d98","stageID":"08ff2570e06b79d9ae1b1c0f263ff9398c3fb5416dc6be2b0d1d94c679ccc439","record":"eyJmb3JtYXQiOjEsInByb2R1Y3QiOiJhdXRvYnl0ZXVzLXBlcnNvbmFsLWRlc2t0b3AiLCJhcnRpZmFjdCI6IkFwcEltYWdlIiwib3MiOiJsaW51eCIsImFyY2giOiJ4NjQiLCJ2ZXJzaW9uIjoiMS41LjE0LWJldGEuMyIsImNoYW5uZWwiOiJiZXRhIiwic2l6ZSI6MzYwNDM4MTk2LCJzaGEyNTYiOiIwODZhZjk1OWY0ZjQzMDVjNDVhNzc2NTViZDllMmIwYTg4YTA0ZDk4MTZjN2RkNzM0OTI5YjRhNTk3N2EyMzdhIiwibWluV3JpdGVyIjoxfQo=","signature":"p+WAtTOJNSWYnaKMe07mW1iQvP7WdXt61yMxkT70QUBghamgRDpD9eoRbZdkkwHqaoWFyFuHsocKU6j63ks0BA=="}
+086af959f4f4305c45a77655bd9e2b0a88a04d9816c7dd734929b4a5977a237a  /home/qa/Downloads/Corrected.AppImage
+807422 1795209390
+[2026-11-20T21:18:03.156Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-20T21:18:03.181Z] [INFO] [electron] ServerStatusManager: Checking server health

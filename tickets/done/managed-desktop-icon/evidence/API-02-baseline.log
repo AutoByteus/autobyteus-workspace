@@ -1,0 +1,11 @@
+API-02-baseline | 2026-11-20 UTC | actual isolated Ubuntu 24.04.5 GNOME Shell 46 / Ubuntu Dock 90ubuntu3 | IR-001 960fb46ad0; exact step/build mapping in API-REV-001 Cases
+GNOME Shell 46.0
+gnome-shell-extension-ubuntu-dock	90ubuntu3
+Y
+1
+5f89530293a0964f3e6eba4be33988e4a1287c311b9051d4eab97fa581088d98  /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+c564b691b1d0452d8a95daffcd0f71ecc0b28903d5f348d02191d5e5c9193c82  /home/qa/Work/example
+[2026-11-20T21:16:31.717Z] [INFO] [electron] Application started
+[2026-11-20T21:16:32.250Z] [INFO] [electron] Browser bridge started on http://127.0.0.1:35011
+[2026-11-20T21:18:43.263Z] [INFO] [electron] ServerStatusManager: Server is ready
+c564b691b1d0452d8a95daffcd0f71ecc0b28903d5f348d02191d5e5c9193c82  /home/qa/.autobyteus/server-data/temp_workspace/icon-work.txt

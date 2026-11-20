@@ -1,0 +1,4 @@
+API-04-new-user-unmounted | 2026-11-20 UTC | actual isolated Ubuntu 24.04.5 GNOME Shell 46 / Ubuntu Dock 90ubuntu3 | IR-001 960fb46ad0; exact step/build mapping in API-REV-001 Cases
+No AutoByteus window or AppImage mount
+a62a83956f5fafc8ba766c853b788bc725fb2cd262f0dd98f447e838fb9d4630  /home/qa2/.local/share/autobyteus-managed/desktop-icon.png
+second-user-work

@@ -1,0 +1,3 @@
+API-04-new-user-relaunch | 2026-11-20 UTC | actual isolated Ubuntu 24.04.5 GNOME Shell 46 / Ubuntu Dock 90ubuntu3 | IR-001 960fb46ad0; exact step/build mapping in API-REV-001 Cases
+{"pass": true, "obs": {"pid": 22881, "windows": [{"backend": "Wayland", "id": "autobyteus-managed.desktop", "wmClass": "autobyteus-managed"}], "desktopFile": "/home/qa2/.local/share/applications/autobyteus/managed.desktop", "icon": "/home/qa2/.local/share/autobyteus-managed/desktop-icon.png", "dockState": 1}}
+7ff2aceaae884284e081d7aa9fcf1eff0772d0eeb525a7afd32a99167d7c877b  /home/qa2/.autobyteus/server-data/temp_workspace/icon-work.txt
