@@ -176,6 +176,45 @@ def check_metadata(script: Path) -> None:
     run_invalid_metadata_case(script)
 
 
+RELEASE_XCODE_MAJOR = 27
+RELEASE_XCODE_APP = "/Applications/Xcode_27.2.app"
+RELEASE_RUNNER = "xcode-27"
+SELECT_XCODE_STEP = "      - name: Select Xcode 27 or newer"
+SELECT_XCODE_SCRIPT = "autobyteus-ios/scripts/select-release-xcode.sh"
+
+
+def check_release_toolchain(workflow_path: Path, workflow: str, script_path: Path, script: str) -> None:
+    """autobyteus-571: both macOS jobs build with Xcode 27+ and its iPhoneOS 27+ SDK (App Store Connect, ITMS-90725),
+    through the one script that owns the rule; the workflow env holds the only default path."""
+    require_contains(
+        workflow_path,
+        workflow,
+        f"IOS_XCODE_APP_PATH: ${{{{ vars.IOS_XCODE_APP_PATH || '{RELEASE_XCODE_APP}' }}}}",
+    )
+    for stale in ("Xcode_26", "Xcode 26"):
+        if stale in workflow:
+            fail(f"{workflow_path} still names {stale!r}; release builds use Xcode {RELEASE_XCODE_MAJOR} or newer.")
+    for job_key in ("build-ios", "upload-testflight"):
+        job = workflow_job_block(workflow_path, workflow, job_key)
+        require_contains(workflow_path, job, f"    runs-on: {RELEASE_RUNNER}\n")
+        require_contains(workflow_path, job, f"{SELECT_XCODE_STEP}\n        shell: bash\n        run: {SELECT_XCODE_SCRIPT}\n")
+        require_order(workflow_path, job, SELECT_XCODE_STEP, "      - name: Install XcodeGen", f"{job_key} Xcode setup")
+        if "IOS_XCODE_APP_PATH:-" in job:
+            fail(f"{workflow_path} {job_key} gives a second default Xcode path; the workflow env owns it.")
+    require_contains(script_path, script, f"MINIMUM_MAJOR={RELEASE_XCODE_MAJOR}\n")
+    require_contains(script_path, script, "(( xcode_major < MINIMUM_MAJOR ))")
+    require_contains(script_path, script, "(( sdk_major < MINIMUM_MAJOR ))")
+    require_contains(script_path, script, 'xcode_version_output="$(xcodebuild -version)"')
+    require_contains(script_path, script, 'sdk_version="$(xcrun --sdk iphoneos --show-sdk-version)"')
+    require_contains(script_path, script, 'echo "DEVELOPER_DIR=$DEVELOPER_DIR" >> "$GITHUB_ENV"')
+    require_contains(script_path, script, 'echo "Selected Xcode app: $selected_xcode"')
+    require_contains(script_path, script, 'echo "Selected iPhoneOS SDK: $sdk_version"')
+    if "xcodebuild -version |" in script:
+        fail(f"{script_path} must not pipe xcodebuild -version; capture the full output before parsing.")
+    if not os.access(script_path, os.X_OK):
+        fail(f"{script_path} must be executable; the workflow runs it directly.")
+
+
 def check_static_files(repo_root: Path) -> None:
     workflow_path = repo_root / ".github/workflows/release-ios.yml"
     project_path = repo_root / "autobyteus-ios/project.yml"
@@ -183,6 +222,8 @@ def check_static_files(repo_root: Path) -> None:
     workflow = read_required(workflow_path)
     project = read_required(project_path)
     smoke = read_required(smoke_path)
+    select_xcode_path = repo_root / "autobyteus-ios/scripts/select-release-xcode.sh"
+    select_xcode = read_required(select_xcode_path)
 
     stale_version_key = "version" + "_name"
     if stale_version_key in workflow:
@@ -196,28 +237,10 @@ def check_static_files(repo_root: Path) -> None:
         "artifact_version",
         "build_number",
         "IOS_XCODE_APP_PATH",
-        "/Applications/Xcode_26.3.app",
     ):
         require_contains(workflow_path, workflow, key)
 
-    for job_key in ("build-ios", "upload-testflight"):
-        job = workflow_job_block(workflow_path, workflow, job_key)
-        require_contains(workflow_path, job, "Select Xcode 26 or newer")
-        require_contains(workflow_path, job, 'echo "DEVELOPER_DIR=$DEVELOPER_DIR" >> "$GITHUB_ENV"')
-        require_contains(workflow_path, job, 'xcode_version_output="$(xcodebuild -version)"')
-        require_contains(workflow_path, job, 'while IFS= read -r line; do')
-        require_contains(workflow_path, job, 'printf \'%s\\n\' "$xcode_version_output"')
-        require_contains(workflow_path, job, "xcode_major < 26")
-        require_contains(workflow_path, job, "xcrun --sdk iphoneos --show-sdk-version")
-        if "xcodebuild -version |" in job:
-            fail(f"{workflow_path} must not pipe xcodebuild -version in {job_key}; capture full output before parsing.")
-        require_order(
-            workflow_path,
-            job,
-            "      - name: Select Xcode 26 or newer",
-            "      - name: Install XcodeGen",
-            f"{job_key} Xcode setup",
-        )
+    check_release_toolchain(workflow_path, workflow, select_xcode_path, select_xcode)
 
     require_count_at_least(workflow_path, workflow, 'IOS_BUNDLE_ID="$IOS_BUNDLE_ID"', 3)
     require_count_at_least(workflow_path, workflow, 'IOS_SHARE_EXTENSION_BUNDLE_ID="$IOS_SHARE_EXTENSION_BUNDLE_ID"', 3)
