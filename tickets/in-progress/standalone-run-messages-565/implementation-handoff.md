@@ -19,7 +19,8 @@
 - Current implementation revision ID: `IR-001`
 - Related solution revision IDs: `SR-002`, `SR-003`, `SR-004`
 - Related architecture-review revision IDs: `ARCH-REV-001` (Fail, AR-001 … AR-005), `ARCH-REV-002` (Pass)
-- Related code-review / API/E2E / delivery revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001` (Pass on IR-001, no findings; `code-review-report.md`; next: API/E2E)
+- Related API/E2E / delivery revision IDs: `N/A`
 - Triggering finding IDs: N/A
 - Code commits on `codex/standalone-run-messages-565` (base `origin/personal` `a728fbcad3`):
   - `56e39312b0`: step 1 pins (Team/Org and non-host stored outcomes, written and passing before any change);
