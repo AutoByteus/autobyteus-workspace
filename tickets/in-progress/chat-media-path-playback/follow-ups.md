@@ -1,0 +1,5 @@
+# Follow-ups
+
+| ID | Found by (role, document) | What is wrong, where | Evidence | Why it is outside this ticket | Urgent (`Yes`/`No`) | Suggested Task description | Sent (to, date) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FU-001 | Solution Designer, requirements-doc.md DEC-001 | On the phone a video or audio file is downloaded whole before it plays (the player cannot send the phone's key; the node's file routes serve no parts), so large videos take long, cannot be skipped through, and sit in the phone's memory | `investigation-notes.md`: 9.6 s for 9.7 MB at 8 Mbit/s; `user-file-reply.ts` has no Range; NA-8 keeps keys out of URLs | The user chose to keep the security rules unchanged in this ticket (DEC-001 = A, 2026-11-20: "Security is really important here") | No | Find whether the phone can stream node media without any key in a link: a service worker that adds the phone's existing key to media requests, plus Range (206) support on the node's file routes; prove it in the Android and iOS apps first; no change to the node access model | |
