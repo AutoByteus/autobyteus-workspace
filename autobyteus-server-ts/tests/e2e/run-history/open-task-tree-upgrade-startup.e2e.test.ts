@@ -210,8 +210,13 @@ suite("A top run's tree is built from its open Tasks: upgrade, start, load, save
     expect(await standaloneTokens(s, agentRoot.rootId), "token total after the closure").toBeGreaterThan(tokensBeforeClosure);
     expect(await standaloneTokens(s, agentRoot.rootId) - await perRun([agentRoot.managerRunId, agentRuns.ro, agentRuns.rg]), "the closed run's usage is counted")
       .toBe(await runTokens(s, agentRuns.rc));
-    // AC-012: the Memory page keeps listing the closed runs.
-    const workerRuns = await memoryRunsOf(s, defs.worker);
+    // AC-012: the Memory page keeps listing the closed runs. An agent's episodes come from the episodic catalog, which takes a
+    // run in 5 s after its journal's last change (autobyteus-554), so wait for the three runs (up to 60 s, as IA-03 does).
+    const closedRuns = KINDS.map((kind) => runs.get(kind)!.rc);
+    const workerRuns = await until(async () => {
+      const listed = await memoryRunsOf(s, defs.worker);
+      return closedRuns.every((runId) => listed.includes(runId)) ? listed : null;
+    }, "the closed runs among the worker's episodes", 60_000).catch(async () => memoryRunsOf(s, defs.worker));
     for (const kind of KINDS) expect(workerRuns, `${kind}: closed run on the Memory page`).toContain(runs.get(kind)!.rc);
     for (const r of roots) await terminate(s, r);
     await server.stop();

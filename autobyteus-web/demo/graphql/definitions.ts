@@ -16,6 +16,8 @@ import { DEMO_DEFAULT_LAUNCH, DEMO_WORKSPACE_NAME, DEMO_WORKSPACE_ROOT, type Dem
 import type { DemoGraphqlHandlers } from './operations';
 
 export const DEMO_WORKSPACE_ID = 'demo-workspace';
+/** The demo node's memory folder; only the agent detail's semantic memory path shows it. */
+const DEMO_MEMORY_ROOT = '/demo/memory';
 
 const defaultLaunchConfig = { __typename: 'DefaultLaunchConfig' as const, llmModelIdentifier: DEMO_DEFAULT_LAUNCH.llmModelIdentifier, runtimeKind: DEMO_DEFAULT_LAUNCH.runtimeKind, llmConfig: null };
 
@@ -26,7 +28,8 @@ const agentDefinition = (definition: DemoDefinition): GetAgentDefinitionsQuery['
   llmResponseProcessorNames: [], toolExecutionResultProcessorNames: [], toolInvocationPreprocessorNames: [], lifecycleProcessorNames: [],
   skillNames: [], skillScope: AgentSkillScope.Configured, ownershipScope: AgentDefinitionOwnershipScope.Shared, ownerTeamId: null,
   ownerTeamName: null, ownerApplicationId: null, ownerApplicationName: null, ownerPackageId: null, ownerLocalApplicationId: null,
-  internal: false, semanticMemoryEnabled: false, semanticMemoryPath: null, personalSettings: [], personalSettingsBase: null,
+  // Every agent has semantic memory (autobyteus-554): its folder on the demo node, named as the node names it.
+  internal: false, semanticMemoryPath: `${DEMO_MEMORY_ROOT}/semantic/${encodeURIComponent(definition.id)}`, personalSettings: [], personalSettingsBase: null,
   defaultLaunchConfig, loadIssue: null,
 });
 

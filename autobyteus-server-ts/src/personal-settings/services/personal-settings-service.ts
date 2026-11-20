@@ -85,7 +85,7 @@ const copyDefinition = <T extends object>(definition: T): T =>
 
 /**
  * The node's personal settings (personal-settings-file-contract.md): the user's own tools, skills,
- * avatar, runtime/model and semantic memory switch for definitions from agent packages and for built-in agents, kept outside
+ * avatar and runtime/model for definitions from agent packages and for built-in agents, kept outside
  * their files and applied on top of the base value when a definition is read. The only reader and
  * writer of the personal settings file; a change is announced through the publisher set on it.
  */
