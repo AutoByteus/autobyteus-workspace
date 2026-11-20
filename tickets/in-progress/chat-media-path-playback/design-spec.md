@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-003` (DI-001: relative paths are not file links; REQ-002 corrected; no design change for absolute paths)
 - Approved requirements: `requirements-doc.md` at SR-002, approved by the **user** (2026-11-20; DEC-001 = A: keep today's security rules, show the download honestly).
 - User approval of the design: `Not required`.
 - Design status: `Ready`
@@ -13,7 +13,7 @@
 ## Current-State Read
 
 - The phone downloads every protected media file whole before showing it; there are two download owners:
-  - **Workspace route** (a path inside the open agent's folder; relative paths): `mobileFileOpening.ts:39` → `openFile` → `fileExplorerContentActions.ts:261-266` sets `url` to `/rest/workspaces/<id>/content?path=…` at once → the player's `useAuthorizedObjectUrl` (`useAuthorizedObjectUrl.ts:41-75`) downloads it (`fetchAuthorizedResourceBlob`, `authorizedResourceUrl.ts:63-77`) while `resolvedUrl` is null → `VideoPlayer.vue:19-21` / `AudioPlayer.vue:3-6` show "… URL is not available." for the whole download (reproduced: 9.6 s for 9.7 MB at 8 Mbit/s).
+  - **Workspace route** (an absolute path inside the open agent's folder; a relative path in chat is not a file link at all, DEC-003): `mobileFileOpening.ts:39` → `openFile` → `fileExplorerContentActions.ts:261-266` sets `url` to `/rest/workspaces/<id>/content?path=…` at once → the player's `useAuthorizedObjectUrl` (`useAuthorizedObjectUrl.ts:41-75`) downloads it (`fetchAuthorizedResourceBlob`, `authorizedResourceUrl.ts:63-77`) while `resolvedUrl` is null → `VideoPlayer.vue:19-21` / `AudioPlayer.vue:3-6` show "… URL is not available." for the whole download (reproduced: 9.6 s for 9.7 MB at 8 Mbit/s).
   - **Node-file route** (outside the folder): `mobileFileOpening.ts:42` → `useMobileNodeFile.ts:40-60` → `loadNodeFileFromUrl` (`nodeFileContent.ts:38-50`, `response.blob()`) while `MobileFileViewer.vue:20` shows "Opening…".
 - Neither download reports progress, and the node's file replies have no length: `sendUserFile` (`autobyteus-server-ts/src/api/rest/user-file-reply.ts:16-21`) sends a stream without `Content-Length` (13 callers).
 - `AudioPlayer` shows the raw download error text (`AudioPlayer.vue:5`) and has no Retry; `VideoPlayer` has a plain failure + Retry (`VideoPlayer.vue:3-8`).
@@ -85,7 +85,7 @@
 
 1. Failing tests: unit for the players' states (loading never shows "not available"), progress helper, `useAuthorizedObjectUrl` loading/progress, `useMobileNodeFile` progress; server unit: `Content-Length` on workspace content and node files.
 2. D-5 server; D-1 helper and its two callers; D-2/D-3/D-6 viewers; D-4 phone node-file view; localization.
-3. Probes: phone (production bundle): video and audio inside and outside the folder, a relative path, a delegated run's conversation, a ~10 MB video on a throttled link (progress text rises; plays), a missing file (plain text + Retry); network record shows no key in any `/rest` URL; desktop window: the same links play. Remove the scratch case.
+3. Probes: phone (production bundle): video and audio inside and outside the folder, a delegated run's conversation (a relative link is recorded as a plain link, FU-003), a ~10 MB video on a throttled link (progress text rises; plays), a missing file (plain text + Retry); network record shows no key in any `/rest` URL; desktop window: the same links play. Remove the scratch case.
 
 ## Risks
 

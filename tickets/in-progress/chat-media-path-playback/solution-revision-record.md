@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Requirements | Task autobyteus-572 (founder report 2026-11-20); investigation and phone reproduction | N/A | N/A | Ready for Approval (DEC-001 needs the user) | BEH-001…007; REQ-001…006; AC-001…006 | Root cause reproduced; streaming vs download is the user's decision |
 | SR-002 | Mixed | The user's decision on DEC-001 (2026-11-20) | N/A | Ready for Approval | Approved (by the user); design Ready | DEC-001, REQ-002…004, AC-002/004/005 | A: honest download with progress; streaming → FU-001; Medium / Low |
+| SR-003 | Requirements | Implementation DI-001 | DI-001 | Approved (SR-002); design Ready | Approved (corrected); design Ready | REQ-002, UC-001, DEC-003 | Relative paths are not file links: REQ-002 means absolute paths; FU-003 |
 
 ## Revision Entries
 
@@ -22,3 +23,11 @@
 - Changed: requirements DEC-001 = A, REQ-002/003/004, AC-002/004/005, status Approved (by the user); design-spec.md created (D-1…D-6); follow-ups.md FU-001 (streaming without keys in links).
 - Classification: task_size Medium, architectural_risk Low (no security, credential, permission or path-rule change; a standard `Content-Length` header).
 - Handoff: `handoff-architecture-design-complete.md` → per the rules (Medium / Low: `/implementation_engineer`).
+
+### SR-003 — Relative paths are not file links (implementation DI-001)
+
+- Classification: `Requirement Gap` resolved within the direction. Trigger: the implementation engineer's DI-001: SR-002 assumed a relative path in chat opens on the workspace route; it is never a file link (`absoluteFilePathAction.ts`, `mobileFileOpening.ts`), for any file type, before and after this change.
+- Changed: requirements REQ-002, UC-001, out of scope, DEC-003; design current-state and probe wording; follow-ups.md FU-003.
+- Intended behavior changed: narrowed to what chat makes tappable (the Task asked to check relative paths; they were checked). Approval: Solution Designer within the direction; user informed in the Solution Designer's conversation, 2026-11-20. DEC-001 (the user's) unchanged.
+- Design/implementation impact: none for absolute paths; IR-001 goes on to API/E2E as it is.
+- Project design case: `docs/design-cases.md` Case 5 gains this ticket.
