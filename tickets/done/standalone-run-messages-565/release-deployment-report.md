@@ -88,7 +88,18 @@
 
 - Bootstrap context source: `RELEASE.md` Finalization Target (`origin/personal`) and the ticket's recorded bootstrap
 - Ticket branch: `codex/standalone-run-messages-565`
-- Finalization is recorded in the Finalization Record appended below after the merge.
+- Secret Gate before the first push: `scripts/check_secrets.sh origin/personal..codex/standalone-run-messages-565` PASS (18 commits). Artifact hygiene PASS (101365 tracked files, after the archive move); licensing PASS; no Windows-hostile character in this ticket's file names (`find` over the archived folder empty).
+- Ticket branch commit result: `940d41c2cc` (docs sync, delivery records, evidence, archive), on top of base merge `09e8c7270c` and checkpoint `ea1126dd1c`
+- Ticket branch push result: pushed `origin/codex/standalone-run-messages-565` (new branch)
+- Finalization target remote / branch: `origin` / `personal`
+- Target advanced after verification / acceptance: `No` (`ca4317a386` at every fetch before the push)
+- Delivery-owned edits protected before re-integration: `Completed` (checkpoint `ea1126dd1c`)
+- Re-integration before final merge result: `Not needed` (the target did not advance after `09e8c7270c`)
+- Target branch update result: `finalize/standalone-run-messages-565` created from `origin/personal` @ `ca4317a386` in the ticket worktree (RELEASE.md Finalization Target)
+- Merge into target result: `--no-ff` merge `ca676f27d7`; its tree equals the ticket branch's `940d41c2cc` (`git diff --stat codex/standalone-run-messages-565 HEAD` empty). Secret Gate on the merged state: PASS (19 commits)
+- Push target branch result: `ca4317a386..ca676f27d7  HEAD -> personal`
+- User's checkout of the target branch (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`): fast-forwarded with `git merge --ff-only origin/personal` after this record commit's push when it is on `personal` with no local commits; the result is in the terminal message.
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
@@ -109,7 +120,7 @@
 
 ## Verification Checks
 
-- Secret Gate on the ticket commits and the merged state, artifact hygiene, licensing: see the Finalization Record.
+- Secret Gate on the ticket commits (18) and on the merged state (19): PASS. `python3 scripts/check_repository_artifact_hygiene.py` and `python3 scripts/check_licensing.py`: PASS.
 
 ## Rollback Criteria
 
@@ -118,9 +129,9 @@
 ## Final Status
 
 - Verification complete (from the evidence): `Yes`
-- Repository finalization complete: see the Finalization Record
+- Repository finalization complete: `Yes` (`ca676f27d7` on `personal`; this record commit follows it)
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: see the Finalization Record
+- Applicable safe cleanup complete or not required: run after this record's push (Post-Finalization Cleanup); the result is in the terminal message
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: after the record commit's push and cleanup
+- Successful terminal package eligible for return: `Yes`
 - Terminal package sent to the Solution Designer: by `send_message_to` after the record commit's push
