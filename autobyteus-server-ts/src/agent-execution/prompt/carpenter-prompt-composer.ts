@@ -20,10 +20,18 @@ type CarpenterPromptComposerInput = {
   memberExecutionContext?: MemberExecutionContext | null;
   /** The Project the run was started under; its section is omitted when there is none. */
   project?: RunProjectContext | null;
-  /** The agent's semantic memory folder (absolute); its section follows the Project's. Every agent has one. */
-  semanticMemoryPath: string;
-  /** The node's global semantic memory folder (absolute); its section follows the agent's own. */
-  globalSemanticMemoryPath: string;
+  /**
+   * The agent's semantic memory folder (absolute); its section follows the Project's. Every agent has one; null only
+   * when it could not be prepared for this run (logged, DEC-015), and then this run has no section for it.
+   */
+  semanticMemoryPath: string | null;
+  /** The node's global semantic memory folder (absolute); its section follows the agent's own. Null as above. */
+  globalSemanticMemoryPath: string | null;
+};
+
+const absoluteFolderOrNull = (folder: string | null): string | null => {
+  if (folder !== null && !path.isAbsolute(folder)) throw new Error("Semantic memory folder must be an absolute path.");
+  return folder;
 };
 
 export type SharedCarpenterPromptComposerInput = CarpenterPromptComposerInput & {
@@ -57,10 +65,10 @@ const buildSharedCarpenterPromptSections = (
     sections.push(renderCollaborationSections(member));
   }
   if (input.project) sections.push(renderProjectSection(input.project));
-  if (!path.isAbsolute(input.semanticMemoryPath) || !path.isAbsolute(input.globalSemanticMemoryPath)) {
-    throw new Error("Semantic memory folder must be an absolute path.");
-  }
-  sections.push(renderSemanticMemorySection(input.semanticMemoryPath), renderGlobalSemanticMemorySection(input.globalSemanticMemoryPath));
+  const agentFolder = absoluteFolderOrNull(input.semanticMemoryPath);
+  const globalFolder = absoluteFolderOrNull(input.globalSemanticMemoryPath);
+  if (agentFolder !== null) sections.push(renderSemanticMemorySection(agentFolder));
+  if (globalFolder !== null) sections.push(renderGlobalSemanticMemorySection(globalFolder));
   return sections;
 };
 

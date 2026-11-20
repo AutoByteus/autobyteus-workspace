@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentSemanticMemory } from "../../../src/agent-memory/services/agent-semantic-memory.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 
@@ -67,13 +67,13 @@ describe("AgentSemanticMemory (every agent has one, autobyteus-554 REQ-001, REQ-
   it("gives every run of the definition the same folders and keeps what is in them (REQ-004, REQ-007, DEC-014)", async () => {
     const semanticMemory = new AgentSemanticMemory({ memoryDir });
     const folders = await semanticMemory.prepareForRun("computer-use-operator");
-    await fs.writeFile(path.join(folders.agentFolder, "linkedin.md"), "# LinkedIn\n");
-    await fs.writeFile(path.join(folders.globalFolder, "product.md"), "# Product\n");
+    await fs.writeFile(path.join(folders.agentFolder!, "linkedin.md"), "# LinkedIn\n");
+    await fs.writeFile(path.join(folders.globalFolder!, "product.md"), "# Product\n");
 
     expect(await semanticMemory.prepareForRun("computer-use-operator")).toEqual(folders);
     expect((await new AgentSemanticMemory({ memoryDir }).prepareForRun("another-agent")).globalFolder).toBe(folders.globalFolder);
-    expect(await fs.readFile(path.join(folders.agentFolder, "linkedin.md"), "utf8")).toBe("# LinkedIn\n");
-    expect(await fs.readFile(path.join(folders.globalFolder, "product.md"), "utf8")).toBe("# Product\n");
+    expect(await fs.readFile(path.join(folders.agentFolder!, "linkedin.md"), "utf8")).toBe("# LinkedIn\n");
+    expect(await fs.readFile(path.join(folders.globalFolder!, "product.md"), "utf8")).toBe("# Product\n");
   });
 
   it("gives a team-local agent and a shared agent with the same local name different folders (AC-006)", async () => {
@@ -87,12 +87,56 @@ describe("AgentSemanticMemory (every agent has one, autobyteus-554 REQ-001, REQ-
     ]);
   });
 
-  it("refuses a blank ID or one that would leave semantic/, before touching any file (AC-006)", async () => {
-    const semanticMemory = new AgentSemanticMemory({ memoryDir });
-    expect(() => semanticMemory.folderOf("  ")).toThrow("agentDefinitionId is required.");
-    await expect(semanticMemory.prepareForRun("..")).rejects.toThrow("agentDefinitionId is invalid.");
-    await expect(semanticMemory.folderState("..")).rejects.toThrow("agentDefinitionId is invalid.");
-    await expect(fs.stat(memoryDir)).rejects.toMatchObject({ code: "ENOENT" });
+  it("refuses a blank ID or one that would leave semantic/, touching no file for it (AC-006, DEC-015)", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    try {
+      const semanticMemory = new AgentSemanticMemory({ memoryDir });
+      expect(() => semanticMemory.folderOf("  ")).toThrow("agentDefinitionId is required.");
+      await expect(semanticMemory.folderState("..")).rejects.toThrow("agentDefinitionId is invalid.");
+      await expect(fs.stat(memoryDir)).rejects.toMatchObject({ code: "ENOENT" });
+      // A run is never failed by its memory folders: the agent's folder is refused and logged, the global one prepared.
+      expect(await semanticMemory.prepareForRun("..")).toEqual({ agentFolder: null, globalFolder: globalFolder() });
+      expect(warn).toHaveBeenCalledWith("SEMANTIC_MEMORY_PREPARE_FAILED", { definitionId: "..", folder: "agent", reason: "agentDefinitionId is invalid." });
+      expect(await fs.readdir(memoryDir)).toEqual(["semantic-global"]);
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
+  // AC-014 (DEC-015): a folder that cannot be created is logged with the agent and the reason; the other is prepared.
+  it.skipIf(process.getuid?.() === 0)("prepares the global folder and logs the agent's when semantic/ is unwritable (AC-014)", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const semanticRoot = path.join(memoryDir, "semantic");
+    await fs.mkdir(semanticRoot, { recursive: true });
+    await fs.chmod(semanticRoot, 0o555);
+    try {
+      const folders = await new AgentSemanticMemory({ memoryDir }).prepareForRun("computer-use-operator");
+      expect(folders).toEqual({ agentFolder: null, globalFolder: globalFolder() });
+      expect((await fs.stat(globalFolder())).isDirectory()).toBe(true);
+      expect(warn).toHaveBeenCalledTimes(1);
+      expect(warn).toHaveBeenCalledWith("SEMANTIC_MEMORY_PREPARE_FAILED", {
+        definitionId: "computer-use-operator", folder: "agent", reason: expect.stringContaining("EACCES"),
+      });
+    } finally {
+      await fs.chmod(semanticRoot, 0o755);
+      warn.mockRestore();
+    }
+  });
+
+  it("prepares the agent's folder and logs the global one when it cannot be created (AC-014)", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    await fs.mkdir(memoryDir, { recursive: true });
+    await fs.writeFile(globalFolder(), "a file where the global folder belongs\n");
+    try {
+      const folders = await new AgentSemanticMemory({ memoryDir }).prepareForRun("computer-use-operator");
+      expect(folders).toEqual({ agentFolder: agentFolder(), globalFolder: null });
+      expect((await fs.stat(agentFolder())).isDirectory()).toBe(true);
+      expect(warn).toHaveBeenCalledWith("SEMANTIC_MEMORY_PREPARE_FAILED", {
+        definitionId: "computer-use-operator", folder: "global", reason: expect.stringContaining("EEXIST"),
+      });
+    } finally {
+      warn.mockRestore();
+    }
   });
 
   it("reports a folder's state for the Memory page without creating it: missing, empty, holding files (AC-005, AC-010)", async () => {

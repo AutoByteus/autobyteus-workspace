@@ -191,8 +191,9 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   ([Collaboration Model § 3](autobyteus-server-ts/docs/design/collaboration_model.md)).
   It is not a global knowledge base.
 - **Semantic memory** (of an agent): an agent's own folder of documents with
-  the reusable knowledge it learns, `<memory>/semantic/<encoded agent
-  definition ID>/` on the node. Every run of that agent definition (standalone,
+  the reusable knowledge it learns, `<memory>/semantic/<definition folder
+  name>/` on the node (the URI-encoded agent definition ID, or, for an ID too
+  long for one file name, a shortened `<prefix>#<hash>`). Every run of that agent definition (standalone,
   team member, delegated run, in any Project) is told its path and shares it;
   the agent and its skills write and organize it, and the system never deletes
   it. Every agent has one (autobyteus-554; there is no switch). It is not the
@@ -218,7 +219,7 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   (`work_journal/`).
 - **Episodic catalog** (of an agent): the system-maintained list of an agent
   definition's runs on this node, oldest first, pointing to their Work
-  Journals: `<memory>/episodic/<encoded agent definition ID>/catalog.md`, the
+  Journals: `<memory>/episodic/<definition folder name>/catalog.md`, the
   sibling of the agent's semantic folder with the same name, plus the node
   overview `<memory>/episodic/index.md`. Each entry (a **catalog entry**) gives
   the run's start and last activity, run ID, its Project Task's title, its

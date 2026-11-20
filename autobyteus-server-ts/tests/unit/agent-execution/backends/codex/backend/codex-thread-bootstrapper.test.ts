@@ -408,6 +408,23 @@ describe("CodexThreadBootstrapper", () => {
       });
     });
 
+    it("starts a run whose own folder cannot be created: no section, only the global folder as a writable root, logged (AC-014)", async () => {
+      process.env.CODEX_APP_SERVER_SANDBOX = "workspace-write";
+      fs.writeFileSync(path.join(memoryDir, "semantic"), "a file where semantic/ belongs\n");
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+      try {
+        const { bootstrapper } = createBootstrapper({ skills: [], requestImplementation: async () => ({ data: [] }), semanticMemory: { memoryDir } });
+        const runContext = await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }), guard);
+        const instructions = runContext.runtimeContext.codexThreadConfig.baseInstructions ?? "";
+        expect(instructions).not.toContain("## Semantic Memory\n");
+        expect(instructions).toContain(`## Global Semantic Memory\n\nThe global semantic memory of this node is the folder \`${globalFolder()}\`.`);
+        expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toMatchObject({ sandbox_workspace_write: { writable_roots: [globalFolder()] } });
+        expect(warn).toHaveBeenCalledWith("SEMANTIC_MEMORY_PREPARE_FAILED", expect.objectContaining({ definitionId: "agent-def", folder: "agent" }));
+      } finally {
+        warn.mockRestore();
+      }
+    });
+
     it("leaves read-only read-only and full access as it is", async () => {
       process.env.CODEX_APP_SERVER_SANDBOX = "read-only";
       const { bootstrapper } = createBootstrapper({ skills: [], requestImplementation: async () => ({ data: [] }),

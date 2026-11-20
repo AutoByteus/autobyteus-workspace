@@ -55,7 +55,7 @@ const createRunContext = (input: {
   });
 
 const createBootstrapper = (bindings: ConfiguredAgentSkillBinding[] = [], skillScope: "CONFIGURED" | "ALL_INSTALLED" = "CONFIGURED",
-  workingDirectory = WORKING_DIRECTORY, storedSemanticMemoryKey?: boolean) => {
+  workingDirectory = WORKING_DIRECTORY, storedSemanticMemoryKey?: boolean, semanticMemory = new AgentSemanticMemory({ memoryDir: MEMORY_DIR })) => {
   const workspaceSkillMaterializer = { materializeConfiguredWorkspaceSkills: vi.fn(async (input: { requests?: unknown[] }) => ({ materializedSkills: [], effectiveRequests: input.requests ?? [] })) };
   const bootstrapper = new ClaudeSessionBootstrapper(
     { resolveWorkingDirectory: vi.fn(async () => workingDirectory) } as any,
@@ -71,7 +71,7 @@ const createBootstrapper = (bindings: ConfiguredAgentSkillBinding[] = [], skillS
       })),
     } as any,
     { resolveSkillScope: () => skillScope, resolveConfiguredSkillBindingsForAgent: vi.fn(() => bindings) } as any,
-    new AgentSemanticMemory({ memoryDir: MEMORY_DIR }),
+    semanticMemory,
   );
   return { bootstrapper, workspaceSkillMaterializer };
 };
@@ -118,6 +118,24 @@ describe("ClaudeSessionBootstrapper", () => {
     expect(runContext.runtimeContext.sessionConfig.additionalDirectories).toEqual([agentFolder, globalFolder]);
     expect(fs.statSync(agentFolder).isDirectory()).toBe(true);
     expect(fs.statSync(globalFolder).isDirectory()).toBe(true);
+  });
+
+  it("starts a run whose own folder cannot be created: no section, only the global folder as an additional directory, logged (autobyteus-554 AC-014)", async () => {
+    const memoryDir = fs.mkdtempSync(path.join(os.tmpdir(), "claude-unpreparable-memory-"));
+    fs.writeFileSync(path.join(memoryDir, "semantic"), "a file where semantic/ belongs\n");
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    try {
+      const { bootstrapper } = createBootstrapper([], "CONFIGURED", WORKING_DIRECTORY, undefined, new AgentSemanticMemory({ memoryDir }));
+      const runContext = await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }), testPreparationGuard(bootstrapper));
+      const globalFolder = path.join(memoryDir, "semantic-global");
+      expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## Semantic Memory\n");
+      expect(runContext.runtimeContext.carpenterSystemPrompt).toContain(`## Global Semantic Memory\n\nThe global semantic memory of this node is the folder \`${globalFolder}\`.`);
+      expect(runContext.runtimeContext.sessionConfig.additionalDirectories).toEqual([globalFolder]);
+      expect(warn).toHaveBeenCalledWith("SEMANTIC_MEMORY_PREPARE_FAILED", expect.objectContaining({ definitionId: "agent-def-claude", folder: "agent" }));
+    } finally {
+      warn.mockRestore();
+      fs.rmSync(memoryDir, { recursive: true, force: true });
+    }
   });
 
   it("tells a run started under a Project its Project (REQ-006, DS-005)", async () => {

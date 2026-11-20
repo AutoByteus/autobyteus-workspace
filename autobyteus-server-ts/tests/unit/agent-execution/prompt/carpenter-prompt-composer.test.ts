@@ -289,3 +289,28 @@ describe("containAuthoredMarkdownHeadings", () => {
     );
   });
 });
+
+describe("semantic memory folders a run could not prepare (autobyteus-554 DEC-015, AC-014)", () => {
+  const compose = (semanticMemoryPath: string | null, globalSemanticMemoryPath: string | null) => composeSharedCarpenterPrompt({
+    semanticMemoryPath, globalSemanticMemoryPath, agentDefinition: definition(), longRunningCommandSection: CODEX_LONG_RUNNING_COMMAND_SECTION,
+  });
+
+  it("leaves out only the section of a folder that is null, and keeps the rest of the prompt", () => {
+    const both = compose("/memory/semantic/agent", "/memory/semantic-global");
+    const withoutAgent = compose(null, "/memory/semantic-global");
+    const withoutGlobal = compose("/memory/semantic/agent", null);
+    const neither = compose(null, null);
+    expect(withoutAgent).not.toContain("## Semantic Memory\n");
+    expect(withoutAgent).toContain("## Global Semantic Memory\n\nThe global semantic memory of this node is the folder `/memory/semantic-global`.");
+    expect(withoutGlobal).toContain("## Semantic Memory\n\nYour semantic memory is the folder `/memory/semantic/agent`.");
+    expect(withoutGlobal).not.toContain("## Global Semantic Memory");
+    expect(neither).not.toMatch(/Semantic Memory/);
+    expect(neither.endsWith(`\n\n${CODEX_LONG_RUNNING_COMMAND_SECTION}`)).toBe(true);
+    expect(both.replace(/\n\n## Semantic Memory\n\n[^\n]+/, "").replace(/\n\n## Global Semantic Memory\n\n[^\n]+/, "")).toBe(neither);
+  });
+
+  it("still refuses a relative folder", () => {
+    expect(() => compose("memory/semantic/agent", null)).toThrow("Semantic memory folder must be an absolute path.");
+    expect(() => compose(null, "memory/semantic-global")).toThrow("Semantic memory folder must be an absolute path.");
+  });
+});

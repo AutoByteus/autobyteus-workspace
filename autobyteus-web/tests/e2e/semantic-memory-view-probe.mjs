@@ -81,6 +81,9 @@ const fetchOk = async (url) => { try { return (await fetch(url, { signal: AbortS
 const AGENT_ID = 'probe-researcher';
 const AGENT_NAME = 'Research Assistant';
 const TEAM_ID = 'probe-product-team';
+// SR-009 (AC-013): a team whose folder name makes its team-local member's ID too long for one file name when encoded.
+const LONG_TEAM_ID = `probe-${'long-archive-team-'.repeat(10)}folder`;
+const LONG_TEAM_NAME = 'Long Archive Team';
 const writeAgent = async (dir, name, description) => {
   await fs.mkdir(dir, { recursive: true });
   await fs.writeFile(path.join(dir, 'agent.md'), `---\nname: ${name}\ndescription: ${description}\nrole: assistant\n---\n\nHelp the user.\n`);
@@ -111,6 +114,20 @@ const writeDataRoot = async (dataRoot, outsideDir) => {
     { memberName: 'writer', ref: AGENT_ID, refScope: 'shared' },
   ], handoffs: [], avatarUrl: null }, null, 2));
   await writeAgent(path.join(team, 'agents', 'reviewer'), 'Reviewer', 'Reviews notes');
+  const longTeam = path.join(dataRoot, 'agent-teams', LONG_TEAM_ID);
+  await fs.mkdir(longTeam, { recursive: true });
+  await fs.writeFile(path.join(longTeam, 'team.md'), `---\nname: ${LONG_TEAM_NAME}\ndescription: Keeps the archive\n---\n\nArchive.\n`);
+  await fs.writeFile(path.join(longTeam, 'team-config.json'), JSON.stringify({ coordinatorMemberName: 'scribe', members: [
+    { memberName: 'scribe', ref: 'scribe', refScope: 'team_local' },
+  ], handoffs: [], avatarUrl: null }, null, 2));
+  await writeAgent(path.join(longTeam, 'agents', 'scribe'), 'Scribe', 'Keeps the archive notes');
+  // Its semantic folder, named by the server's own rule (the built layout), never computed here.
+  const { AgentMemoryLayout } = await import(pathToFileURL(path.join(serverDir, 'dist/agent-memory/store/agent-memory-layout.js')).href);
+  const { buildTeamLocalAgentDefinitionId } = await import(pathToFileURL(path.join(serverDir, 'dist/agent-team-definition/utils/team-local-definition-id.js')).href);
+  const longId = buildTeamLocalAgentDefinitionId(LONG_TEAM_ID, 'scribe');
+  const longFolder = new AgentMemoryLayout(memoryDir).getAgentSemanticMemoryDirPath(longId);
+  await fs.mkdir(longFolder, { recursive: true });
+  await fs.writeFile(path.join(longFolder, 'notes.md'), '# Archive notes\n\nThe long team keeps its notes here.\n');
   const { AgentRunMetadataStore } = await import(pathToFileURL(path.join(serverDir, 'dist/run-history/store/agent-run-metadata-store.js')).href);
   await writeRun(memoryDir, 'probe_researcher_run_1', '2026-11-18T09:00:00Z', AgentRunMetadataStore);
   await writeRun(memoryDir, 'probe_researcher_run_2', '2026-11-19T10:30:00Z', AgentRunMetadataStore);
@@ -126,7 +143,7 @@ const writeDataRoot = async (dataRoot, outsideDir) => {
   // The node's global semantic memory.
   await fs.mkdir(path.join(memoryDir, 'semantic-global'), { recursive: true });
   await fs.writeFile(path.join(memoryDir, 'semantic-global', 'product.md'), '# Product\n\nAutoByteus runs agents on your own nodes.\n');
-  return { memoryDir, folder };
+  return { memoryDir, folder, longId, longFolder };
 };
 
 /* ------------------------------------------------------------------ the probe */
@@ -163,8 +180,8 @@ try {
   ownedRoot = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'autobyteus-semantic-memory-view-probe-')));
   const dataRoot = path.join(ownedRoot, 'server-data');
   const outsideDir = path.join(ownedRoot, 'outside');
-  const { memoryDir, folder } = await writeDataRoot(dataRoot, outsideDir);
-  const before = { agent: await treeHash(folder), global: await treeHash(path.join(memoryDir, 'semantic-global')), outside: await treeHash(outsideDir) };
+  const { memoryDir, folder, longId, longFolder } = await writeDataRoot(dataRoot, outsideDir);
+  const before = { agent: await treeHash(folder), global: await treeHash(path.join(memoryDir, 'semantic-global')), outside: await treeHash(outsideDir), long: await treeHash(longFolder) };
   const databasePath = path.join(dataRoot, 'db', 'probe.db');
   await fs.mkdir(path.dirname(databasePath), { recursive: true });
   for (const dir of ['logs', 'temp_workspace']) await fs.mkdir(path.join(dataRoot, dir), { recursive: true });
@@ -301,6 +318,22 @@ try {
   check('SMV-064', !existsSync(path.join(memoryDir, 'semantic', encodeURIComponent('team-local-agent:probe-product-team:reviewer'))), 'The view created no folder');
   await shot(page, 'VIS-007-agent-semantic-missing-1440x900');
 
+  // SR-009 (AC-013, N-12): a team-local agent whose encoded ID is over 200 bytes. Its folder has the shortened name
+  // (`#` and a hash); the Semantic tab finds it and opens a file inside it.
+  check('SMV-100', encodeURIComponent(longId).length > 200 && path.basename(longFolder).includes('#') && Buffer.byteLength(path.basename(longFolder)) <= 255,
+    "A long ID's folder has the shortened name", { encodedBytes: encodeURIComponent(longId).length, folderName: path.basename(longFolder) });
+  await goto('?view=home&section=browse&node=teams');
+  await page.locator('[data-test="memory-owner-card"]', { hasText: LONG_TEAM_NAME }).click();
+  await page.locator('[data-test="group-member"]', { hasText: 'Scribe' }).click();
+  await page.locator('[data-test="agent-memory-page"]').waitFor();
+  await page.locator('[data-test="agent-memory-tab-semantic"]').click();
+  await page.locator('[data-test="semantic-memory-explorer"]').waitFor();
+  check('SMV-101', (await text('[data-test="semantic-memory-path"]')) === longFolder, 'The Semantic tab finds the shortened folder', await text('[data-test="semantic-memory-path"]'));
+  await page.locator('[data-test="semantic-memory-explorer"] .file-header', { hasText: 'notes.md' }).click();
+  await page.locator('text=The long team keeps its notes here.').first().waitFor();
+  check('SMV-102', (await page.locator('text=The long team keeps its notes here.').count()) > 0, 'A file inside the shortened folder opens in the preview (the `#` never reaches a URL unencoded)');
+  await shot(page, 'SR-009-long-id-semantic-file-open-1440x900');
+
   // CR-001 (REQ-007): leave the agent's Semantic tab while "Loading the folder…" shows (its first listing held), then
   // let the listing complete: the chat workspace menu (the same menu as Run Settings) offers no workspace of the
   // folder view. The navigation stays in the page, so the web store keeps what it held.
@@ -356,8 +389,8 @@ try {
   await waitFor('the zh-CN title', async () => (await text('[data-test="global-memory-page"] h1')) === '全局记忆');
   await shot(page, 'VIS-016-global-zh-CN-1440x900');
 
-  const after = { agent: await treeHash(folder), global: await treeHash(path.join(memoryDir, 'semantic-global')), outside: await treeHash(outsideDir) };
-  check('SMV-080', JSON.stringify(after) === JSON.stringify(before), 'Both folders and the link target are byte-identical after the session');
+  const after = { agent: await treeHash(folder), global: await treeHash(path.join(memoryDir, 'semantic-global')), outside: await treeHash(outsideDir), long: await treeHash(longFolder) };
+  check('SMV-080', JSON.stringify(after) === JSON.stringify(before), 'The folders shown and the link target are byte-identical after the session');
   check('SMV-081', evidence.pageErrors.length === 0, 'No page errors', evidence.pageErrors);
   result = 'Pass';
 } catch (error) {

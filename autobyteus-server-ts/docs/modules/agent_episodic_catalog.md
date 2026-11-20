@@ -18,15 +18,21 @@ folders (see [agent_memory.md](agent_memory.md)).
 ```text
 <memory>/episodic/
   index.md                                   the node overview: every agent that has a catalog
-  <encodeURIComponent(agentDefinitionId)>/
+  <definition folder name>/
     catalog.md                               that agent's runs, oldest first
 ```
 
 - `<memory>` is the server's memory folder (`appConfig.getMemoryDir()`).
 - The folder name is the agent's semantic memory folder name (`AgentMemoryLayout.getAgentEpisodicDirPath`, the same
-  encoding as `getAgentSemanticMemoryDirPath`): `project-task-manager`,
-  `team-local-agent%3Asoftware-engineering-team%3Asolution-designer`. A reader that knows an agent's semantic folder
-  finds its catalog at `<memory>/episodic/<same name>/catalog.md`.
+  rule as `getAgentSemanticMemoryDirPath`, [Agent Memory § Semantic Memory](agent_memory.md#semantic-memory)):
+  `encodeURIComponent(agentDefinitionId)`, such as `project-task-manager` or
+  `team-local-agent%3Asoftware-engineering-team%3Asolution-designer`, or, for an ID whose encoded form is over 200 bytes
+  (an application-bundled team-local agent), its first 120 bytes, `#` and 16 hex characters of the ID's SHA-256. A
+  reader that knows an agent's semantic folder finds its catalog at `<memory>/episodic/<same name>/catalog.md`.
+- The start pass keeps the catalog folders already on disk by decoding their names (`listCatalogDefinitionIds`); a
+  name counts only when the layout gives it back for the decoded ID. A shortened name cannot be decoded and is
+  skipped; its agent is reached through the runs discovery finds. So a shortened catalog folder whose agent's runs
+  are all gone keeps its last content instead of `0 runs.` (accepted, DEC-016).
 - Files are UTF-8 with `\n` line endings. Nothing else is written there: no JSON, no state file, no lock file.
 
 ## Format

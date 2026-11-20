@@ -2,7 +2,7 @@ import type { JsonObject } from "../codex-app-server-json.js";
 import type { IntegrationRunAccess } from "../../../../credential-proxy/integration-run-access.js";
 import { buildCodexIntegrationThreadConfig } from "./codex-integration-thread-config.js";
 import { buildCodexSandboxWorkspaceWriteConfig } from "./codex-sandbox-workspace-write-config.js";
-import { getAgentSemanticMemory, type AgentSemanticMemory } from "../../../../agent-memory/services/agent-semantic-memory.js";
+import { getAgentSemanticMemory, preparedSemanticMemoryFolders, type AgentSemanticMemory } from "../../../../agent-memory/services/agent-semantic-memory.js";
 import type { ProviderPreparationGuard } from "../../provider-preparation-guard.js";
 import { workspaceCollisionPolicyForScope } from "../../shared/workspace-skill-collision-policy.js";
 import type { AgentRunConfig } from "../../../domain/agent-run-config.js";
@@ -234,7 +234,7 @@ export class CodexThreadBootstrapper {
         ...buildCodexSandboxWorkspaceWriteConfig({
           sandbox: resolveEffectiveCodexSandboxModeForRunConfig(runContext.config),
           networkAccess: Object.keys(integrationVariables).length > 0,
-          writableRoots: [semanticMemory.agentFolder, semanticMemory.globalFolder],
+          writableRoots: preparedSemanticMemoryFolders(semanticMemory),
         }),
       },
       dynamicToolRegistrations,

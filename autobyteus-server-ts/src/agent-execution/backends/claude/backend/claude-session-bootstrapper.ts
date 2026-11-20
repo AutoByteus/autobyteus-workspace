@@ -27,7 +27,7 @@ import { ClaudeAgentRunContext, type ClaudeRunContext } from "./claude-agent-run
 import { resolveRuntimeAgentToolExposure } from "../../../shared/runtime-agent-tool-exposure.js";
 import { composeSharedCarpenterPrompt } from "../../../prompt/carpenter-prompt-composer.js";
 import { CLAUDE_LONG_RUNNING_COMMAND_SECTION } from "../../../prompt/long-running-command-sections.js";
-import { getAgentSemanticMemory, type AgentSemanticMemory } from "../../../../agent-memory/services/agent-semantic-memory.js";
+import { getAgentSemanticMemory, preparedSemanticMemoryFolders, type AgentSemanticMemory } from "../../../../agent-memory/services/agent-semantic-memory.js";
 
 export class ClaudeSessionBootstrapper {
   private readonly workspaceResolver: ClaudeWorkspaceResolver;
@@ -114,7 +114,7 @@ export class ClaudeSessionBootstrapper {
       workingDirectory,
       permissionMode: DEFAULT_CLAUDE_PERMISSION_MODE,
       autoExecuteTools: runContext.config.autoExecuteTools,
-      additionalDirectories: [semanticMemory.agentFolder, semanticMemory.globalFolder],
+      additionalDirectories: preparedSemanticMemoryFolders(semanticMemory),
       llmConfig: runContext.config.llmConfig,
     });
     return new AgentRunContext({

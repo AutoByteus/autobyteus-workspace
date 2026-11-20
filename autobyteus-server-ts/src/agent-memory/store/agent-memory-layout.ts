@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import path from "node:path";
 import type { AgentMemoryScope } from "../domain/agent-memory-location.js";
 import type { AgentRunMemoryPlacement } from "../domain/agent-run-memory-placement.js";
@@ -31,9 +32,41 @@ const resolveSafePath = (rootDir: string, ...segments: string[]): string => {
   return candidate;
 };
 
-/** One agent definition's folder name under `semantic/` and `episodic/`: the URI-encoded definition ID. */
-const definitionFolderName = (agentDefinitionId: string): string =>
-  normalizePathSegment(encodeURIComponent(normalizeRequiredString(agentDefinitionId, "agentDefinitionId")), "agentDefinitionId");
+/** An encoded definition ID up to this length is the folder name itself; file systems allow 255 bytes per name. */
+const MAX_FULL_DEFINITION_FOLDER_NAME_BYTES = 200;
+/** A longer one keeps this many leading bytes, then `#` and a hash of the ID. */
+const SHORTENED_DEFINITION_FOLDER_PREFIX_BYTES = 120;
+const SHORTENED_DEFINITION_FOLDER_HASH_LENGTH = 16;
+
+/**
+ * At most the first `maxBytes` of `encodeURIComponent(id)`, cut between characters: never inside a `%XX` escape nor
+ * between the escapes of one multi-byte character, so the prefix always decodes (N-13).
+ */
+const encodedPrefix = (id: string, maxBytes: number): string => {
+  let prefix = "";
+  for (const character of id) {
+    const encoded = encodeURIComponent(character);
+    if (prefix.length + encoded.length > maxBytes) break;
+    prefix += encoded;
+  }
+  return prefix;
+};
+
+/**
+ * One agent definition's folder name under `semantic/` and `episodic/` (DEC-016), the only rule for it: the
+ * URI-encoded definition ID when it is at most 200 bytes; otherwise its first 120 bytes (cut between characters, never
+ * inside a `%XX`), `#`, and the first 16 hex characters of the ID's SHA-256. `encodeURIComponent` output is ASCII, so
+ * its length is its byte count, and it always escapes `#`, so a shortened name never equals a full one.
+ * Application-bundled team-local IDs hold the bundle's path in hex and need the short form.
+ */
+const definitionFolderName = (agentDefinitionId: string): string => {
+  const id = normalizeRequiredString(agentDefinitionId, "agentDefinitionId");
+  const encoded = encodeURIComponent(id);
+  const name = encoded.length <= MAX_FULL_DEFINITION_FOLDER_NAME_BYTES
+    ? encoded
+    : `${encodedPrefix(id, SHORTENED_DEFINITION_FOLDER_PREFIX_BYTES)}#${createHash("sha256").update(id).digest("hex").slice(0, SHORTENED_DEFINITION_FOLDER_HASH_LENGTH)}`;
+  return normalizePathSegment(name, "agentDefinitionId");
+};
 
 /** The folder of agents' semantic memories, a sibling of the run folders; run tooling never walks it. */
 export const SEMANTIC_MEMORY_DIR_NAME = "semantic";
@@ -74,9 +107,9 @@ export class AgentMemoryLayout {
   }
 
   /**
-   * The semantic memory folder of one agent definition: `<memory>/semantic/<encoded definition ID>`.
-   * The ID is URI-encoded so every ID form (team-local IDs hold `:`) gives one valid, distinct folder
-   * name on every desktop OS.
+   * The semantic memory folder of one agent definition: `<memory>/semantic/<definition folder name>`.
+   * The name (`definitionFolderName`) is URI-encoded so every ID form (team-local IDs hold `:`) gives one valid,
+   * distinct folder name on every desktop OS, and shortened when it would be too long for one.
    */
   getAgentSemanticMemoryDirPath(agentDefinitionId: string): string {
     return resolveSafePath(this.semanticRootDir, definitionFolderName(agentDefinitionId));
@@ -92,7 +125,7 @@ export class AgentMemoryLayout {
     return this.episodicRootDir;
   }
 
-  /** The episodic folder of one agent definition: `<memory>/episodic/<encoded definition ID>`, named as its semantic folder. */
+  /** The episodic folder of one agent definition: `<memory>/episodic/<definition folder name>`, named as its semantic folder. */
   getAgentEpisodicDirPath(agentDefinitionId: string): string {
     return resolveSafePath(this.episodicRootDir, definitionFolderName(agentDefinitionId));
   }

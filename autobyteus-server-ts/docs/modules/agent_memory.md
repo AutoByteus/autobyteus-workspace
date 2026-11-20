@@ -40,9 +40,9 @@ Memory files live under the configured memory root:
   large file being uploaded by a source. Not a run folder and never part of `imports/`: a file moves into
   `imports/` only after its size and SHA-256 are verified, and an abandoned partial is removed after 24 h
   (see [Memory Sync](../features/memory_sync.md#sync-behavior)).
-- Agents' semantic memories: `memory/semantic/<encodeURIComponent(agentDefinitionId)>/`, and the node's global
+- Agents' semantic memories: `memory/semantic/<definition folder name>/` (see [Folders](#semantic-memory)), and the node's global
   semantic memory `memory/semantic-global/` (see [Semantic Memory](#semantic-memory)); not run folders.
-- Agents' episodic catalogs: `memory/episodic/<encodeURIComponent(agentDefinitionId)>/catalog.md` and the node
+- Agents' episodic catalogs: `memory/episodic/<definition folder name>/catalog.md` and the node
   overview `memory/episodic/index.md` (see [Agent Episodic Catalog](agent_episodic_catalog.md)); not a run folder.
   Unrelated to the `episodic.jsonl` rows below.
 
@@ -144,22 +144,36 @@ one **global semantic memory**, a folder shared by every agent on the node, in e
 true for everyone (what the product is, the words it uses, the user's standing rules).
 
 - **Folders:** `AgentMemoryLayout.getAgentSemanticMemoryDirPath(agentDefinitionId)` =
-  `<memory>/semantic/<encodeURIComponent(agentDefinitionId)>` (absolute; a team-local ID's `:` becomes `%3A`, so the
-  name is valid on every desktop OS and distinct per definition; an ID that would leave `semantic/` is refused), and
+  `<memory>/semantic/<definition folder name>` (absolute; an ID that would leave `semantic/` is refused), and
   `getGlobalSemanticMemoryDirPath()` = `<memory>/semantic-global` (a sibling, so no definition ID can collide with it).
+- **Definition folder name** (autobyteus-554 DEC-016; the layout's `definitionFolderName`, the only rule, shared by
+  `semantic/`, `episodic/` and the folder view's lookup): `encodeURIComponent(agentDefinitionId)` when that is at most
+  200 bytes (a team-local ID's `:` becomes `%3A`, so the name is valid on every desktop OS and distinct per
+  definition); otherwise its first 120 bytes, cut between characters (never inside a `%XX` escape or between the
+  escapes of one character, so the prefix decodes), then `#`, then the first 16 hex characters of the ID's SHA-256.
+  File systems allow 255 bytes per name; an application-bundled team-local ID holds its bundle's path in hex and
+  reaches about 440 bytes encoded. `encodeURIComponent` always escapes `#`, so a shortened name never equals a full
+  one. A shortened name cannot be decoded back to its ID: nothing reads IDs from these names except the episodic
+  catalog, which skips them ([Agent Episodic Catalog](agent_episodic_catalog.md#files)). A `#` is a URL fragment
+  character: a path holding one is always URL-encoded where it goes into a URL (the node-file loader's `?path=`), and
+  the folder view's content route takes paths relative to the folder.
   Both sit next to the run roots; the memory explorer, memory search and Memory Sync walk only the run roots, so they
   never list them, and Memory Sync does not carry them.
 - **Owner:** `AgentSemanticMemory` (`src/agent-memory/services/agent-semantic-memory.ts`) holds the rule and is the only
   caller of the layout's semantic paths. `folderOf(id)` and `globalFolder()` return the paths with no file access
   (GraphQL `AgentDefinition.semanticMemoryPath` reads the first); `prepareForRun(id)` creates both folders
-  (`mkdir -p`) and returns `{ agentFolder, globalFolder }`; `folderState(id)` and `globalFolderState()` report
+  (`mkdir -p`), each independently, and returns `{ agentFolder, globalFolder }`. A folder that cannot be prepared (a
+  permission, a full disk, a name the file system refuses) is `null` and logged as `SEMANTIC_MEMORY_PREPARE_FAILED
+  { definitionId, folder: "agent" | "global", reason }`: memory is auxiliary to a run, so the run still starts (DEC-015).
+  `null` means only that; the agent still has semantic memory; `folderState(id)` and `globalFolderState()` report
   `{ folderPath, exists, isEmpty }` from one `readdir` and never create a folder (the Memory page's GraphQL
   `agentSemanticMemoryFolder(agentDefinitionId)` and `globalSemanticMemoryFolder`, `api/graphql/types/semantic-memory-view.ts`).
 - **Runs:** each runtime backend calls `prepareForRun` with the run's definition ID when it composes a run's
   instructions (create, and restore where the runtime composes again; Antigravity at create only) and passes both paths
   to the carpenter composer, which adds the `## Semantic Memory` section and, right after it, the
-  `## Global Semantic Memory` section (exact texts in [prompt_engineering.md](prompt_engineering.md)). Codex adds both
-  folders to the `workspace-write` sandbox's `writable_roots`; Claude gets both as additional directories. Native
+  `## Global Semantic Memory` section (exact texts in [prompt_engineering.md](prompt_engineering.md)); a folder that
+  could not be prepared for that run has no section. Codex adds the prepared folders to the `workspace-write`
+  sandbox's `writable_roots`; Claude gets them as additional directories (`preparedSemanticMemoryFolders`). Native
   AutoByteus, Grok and Antigravity already write outside the workspace; the DeepSeek harness asks a sandbox escalation
   for them while auto-execute is off. A native AutoByteus agent whose definition lists no file tool is told both
   folders but cannot use them until a file tool is added.
@@ -171,7 +185,7 @@ true for everyone (what the product is, the words it uses, the user's standing r
   ([Agent Definition](agent_definition.md#semantic-memory), [Personal Settings](personal_settings.md)).
 - **The Memory page's folder view:** a folder is shown read only through `SemanticMemoryWorkspace`
   (`src/workspaces/semantic-memory-workspace.ts`, kind `semantic_memory`): `semantic_ws_<encodeURIComponent(id)>` for an
-  agent, `semantic_global_ws` for the global folder. `WorkspaceManager` creates it on demand for an existing folder
+  agent (always the full encoded ID, not the folder name: the lookup gives the folder by the rule above), `semantic_global_ws` for the global folder. `WorkspaceManager` creates it on demand for an existing folder
   only (a missing folder, or a folder that is itself a link, is refused; the view never creates one), never lists it
   (`listVisibleWorkspaces`), and refuses it as a run's workspace (`getOrCreateRunWorkspace` → `WORKSPACE_NOT_RUNNABLE`,
   the call every runtime resolves a run's workspace ID through). The workspace is `readOnly` (every file-explorer
