@@ -1,0 +1,2 @@
+# Delivery revisions
+DR-001 — 2026-11-20, first delivery verification, **pending real custody**. Medium / High, reviewed. Base verified current at a728fbcad3, evidence audit and docs sync complete. No production intervention. Founder confirmation and custodian removal/absence receipt outstanding; no archive, target merge, release or M2. See release-deployment-report.md. This is not a terminal result.

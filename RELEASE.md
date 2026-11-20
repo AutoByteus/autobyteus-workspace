@@ -159,6 +159,10 @@ The user decides at verification. There are three options:
 
 ## Checks Before Tagging
 
+For both stable and beta, the release helper also checks [desktop signing
+readiness](#desktop-signing-readiness-before-any-stable-or-beta-tag) before
+it changes a version or creates a tag. This applies even with `--no-push`.
+
 Run these checks on the merged `personal` state. The release workflows run
 the first two too, but by then the tag is already pushed. They do not run the
 release smoke check.
