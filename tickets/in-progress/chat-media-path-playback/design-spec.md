@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-003` (DI-001: relative paths are not file links; REQ-002 corrected; no design change for absolute paths)
+- Current solution revision ID: `SR-004` (CRR-001 Design Impact: Retry on the phone viewer's own failure state, D-7)
 - Approved requirements: `requirements-doc.md` at SR-002, approved by the **user** (2026-11-20; DEC-001 = A: keep today's security rules, show the download honestly).
 - User approval of the design: `Not required`.
 - Design status: `Ready`
@@ -32,6 +32,10 @@
 - **D-3 One loading view.** `MediaLoadingState.vue` (`components/fileExplorer/viewers/`): spinner, "Loading video…" / "Loading audio…" / "Loading file…", and "4.1 of 9.7 MB" when the total is known (else "4.1 MB"), `role="status"`. The size text comes from one formatter in the same file (`formatLoadingProgress`).
 - **D-4 The phone's node-file route shows the same view.** `useMobileNodeFile` exposes `progress`; `MobileFiles` passes it to `MobileFileViewer`, which shows `MediaLoadingState` (with the file's type) instead of the bare "Opening…" while a node file loads. Text files keep "Opening…" when no progress is reported yet.
 - **D-5 The node declares the file's length.** `UserFileContent` gains a required `size: number | null`; `sendUserFile` sets `Content-Length` when it is a number. Callers that stat the file pass its size: workspace content and static (`workspaces.ts`), node files (`node-file-reader.ts` returns the size from the opened handle's `stat`), `files.ts`, `context-files.ts`, `run-file-changes.ts`; callers that receive a stream from another module pass the size where that module has it, else `null` (`agent-org-references.ts`, `team-communication.ts`, `agent-collaboration-references.ts`; each named in the implementation handoff). No compression is installed, so the length is the body's length.
+- **D-7 (SR-004) Retry on the phone viewer's own failure state.** `MobileFileViewer` gets a `retryable: boolean` prop and emits `retry`; its failure branch (`MobileFileViewer.vue:20`) shows the plain message and, when `retryable`, a Retry button (min 44 px, the same label as the players'). `MobileFiles` wires both mounts:
+  - node-file mount (`MobileFiles.vue:78-85`): `useMobileNodeFile` returns `reload()` (reads the current source again: new serial, release the old object URL, reset progress, `load`) and the refusal kind; `retryable` = the refusal is `failed` or `not-found` (not `folder`); `retry` → `reload()`.
+  - workspace mount (`MobileFiles.vue:69-75`): `retryable` = an open error is shown; `retry` → `explorer.openFileReadOnly(openPath)` (an explicit open reads the file again, autobyteus-450).
+  The players keep their own failure + Retry (D-2, D-6); a media file whose download fails inside the player never reaches this branch.
 - **D-6 Audio failure like video.** `AudioPlayer` gets `VideoPlayer`'s failure state: plain "This audio could not be played." with Retry (`refresh`), no raw error text.
 
 ## Change Scope (Mandatory)
@@ -48,7 +52,7 @@
 | BEH-001 phone inside the folder | store url → player `useAuthorizedObjectUrl` (progress) → `MediaLoadingState` → element |
 | BEH-002 phone outside the folder | `useMobileNodeFile` (progress) → `MobileFileViewer` `MediaLoadingState` → player with the object URL (no second download: a `blob:` URL is used as is) |
 | BEH-004/005/006 desktop | unchanged |
-| BEH-007 failure | video and audio: plain text + Retry |
+| BEH-007 failure | inside the player (workspace media): the player's plain text + Retry; before a player exists (node files; workspace open errors): the phone viewer's plain text + Retry (not for a folder), D-7 |
 
 ## Task Design Health Assessment (Mandatory)
 
@@ -85,7 +89,8 @@
 
 1. Failing tests: unit for the players' states (loading never shows "not available"), progress helper, `useAuthorizedObjectUrl` loading/progress, `useMobileNodeFile` progress; server unit: `Content-Length` on workspace content and node files.
 2. D-5 server; D-1 helper and its two callers; D-2/D-3/D-6 viewers; D-4 phone node-file view; localization.
-3. Probes: phone (production bundle): video and audio inside and outside the folder, a delegated run's conversation (a relative link is recorded as a plain link, FU-003), a ~10 MB video on a throttled link (progress text rises; plays), a missing file (plain text + Retry); network record shows no key in any `/rest` URL; desktop window: the same links play. Remove the scratch case.
+3. (SR-004) Unit: `useMobileNodeFile.reload()` reads again and resets progress; `MobileFileViewer` shows Retry when `retryable`, emits `retry`, none for a folder. Probes: MSP-91's outside-folder Retry after a killed node (reloads and plays); an outside-folder path to a missing video: plain message + Retry, the file then created, Retry opens and plays it; an outside-folder folder path: message, no Retry.
+4. Probes: phone (production bundle): video and audio inside and outside the folder, a delegated run's conversation (a relative link is recorded as a plain link, FU-003), a ~10 MB video on a throttled link (progress text rises; plays), a missing file (plain text + Retry); network record shows no key in any `/rest` URL; desktop window: the same links play. Remove the scratch case.
 
 ## Risks
 

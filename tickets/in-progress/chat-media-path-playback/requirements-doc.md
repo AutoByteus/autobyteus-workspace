@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-003`
+- Current solution revision ID: `SR-004`
 - Package identifier: `chat-media-path-playback`
 - Request: Project Task autobyteus-572; requested by `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), the founder's report of 2026-11-20
 - Requirements owner: Solution Designer; date 2026-11-20
@@ -52,7 +52,7 @@
 | AC-003 | REQ-002 | Video and audio: inside and outside the folder, in a delegated run's conversation, all play on the phone | Phone probe |
 | AC-004 | REQ-003 | Desktop windows play the same links as before | Desktop probe |
 | AC-005 | REQ-004 | No URL carries a key; the gate still refuses an unpaired or revoked client on the media routes; the path rules still refuse a path outside what they allow | Probe network record + existing server tests |
-| AC-006 | REQ-005 | A missing/refused file: plain message + Retry | Unit + probe |
+| AC-006 | REQ-005 | A broken download or a missing file, inside or outside the run's folder, on any file the phone viewer opens: plain message + Retry; Retry reads the file again (a file created meanwhile then opens); a path that is a folder: plain message, no Retry | Unit + probe (MSP-91 outside Retry; outside missing file) |
 
 ## Decisions
 
@@ -60,6 +60,7 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | DEC-001 | How should the phone play a video from the node? | Decides whether videos start at once or after a full download, and whether the node's security model changes | **A** — keep today's security rules: the phone downloads the whole file, now with an honest "Loading video… 4.1 of 9.7 MB" and progress, then plays. Small change. A 100 MB video over a slow link takes minutes and sits in the phone's memory; nothing plays before it is all there. **B** — stream it like a normal video site: the phone asks the node for a short-lived link to that one file (read-only, a few minutes, only for that phone, revoked with it, never logged); the node serves the file in parts (Range). Playback starts in about a second and seeking works, on the phone and in desktop windows. It adds a new kind of URL grant to the node access model (NA-8 today allows only the phone's WebSocket token in a URL) | **Recommend B**: it is what "plays properly" means for real videos (the Product Video Producer's files will grow), it is how video sites protect media (signed, expiring per-file URLs), and its risk is bounded to one file, read-only, minutes, one phone. It is a security-model change, so it is your decision. Either way REQ-001's honest loading state is done | User | Decided: **A** (2026-11-20) |
 | DEC-003 | Relative paths (implementation DI-001) | The Task asked to check them; SR-002 assumed they open on the workspace route | Checked: chat makes only absolute paths file links (`resolveEventMonitorMarkdownFileDestination` returns `not-file` for a relative destination; `openMobileFilePath` takes absolute paths); a relative link is a plain `<a href>` for every file type on phone and desktop, before and after this change (MSP-89 `relativeLink`) | Not part of this bug; making them tappable needs its own decision (which run's folder they resolve against, delegated runs included) and a change to the shared link classifier. **REQ-002 means absolute paths; relative links → FU-003** | Solution Designer (within the direction; the Task asked to check, not to add) | Decided |
+| DEC-004 | Retry where the phone viewer fails to open a file (CRR-001) | The node-file route fails before any player exists, in the viewer's own text-only branch, shared by every file type and both routes | Retry for media only / for every file; which refusals | **Every file the phone viewer opens, both routes**: one failure state, consistent across types. Retry on a broken download and on a missing file (an agent can name a video it is still rendering); not on a folder (it never becomes a file). AC-006 keeps its approved outcome, with the folder exception stated | Solution Designer (within the direction: REQ-005 already asks for Retry on failure) | Decided |
 | DEC-002 | Images and PDFs | Same download path | Small files; viewers need the whole file anyway | Leave as they are | Solution Designer | Decided |
 
 ## Readiness Check
