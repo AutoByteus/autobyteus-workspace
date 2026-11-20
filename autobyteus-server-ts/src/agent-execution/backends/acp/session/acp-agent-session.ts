@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import {
   type ContentBlock,
   type LoadSessionRequest,
@@ -20,6 +21,7 @@ import type {
   AcpConfigSelection,
   AcpMcpReadinessRequirement,
   AcpMcpServerStatus,
+  AcpPromptNotice,
   AcpSessionEffect,
 } from "../acp-agent-session-profile.js";
 import { AcpSessionUpdateConverter } from "../events/acp-session-update-converter.js";
@@ -56,10 +58,29 @@ export type AcpAgentSessionOptions = Readonly<{
 type McpWaiter = Readonly<{ serverName: string; resolve: () => void; reject: (error: Error) => void }>;
 
 /**
+ * Who started a turn: `input`, a prompt this client sent (`session/prompt`, ended by its response), or `provider`, a
+ * prompt the agent runtime started itself (e.g. after a background command ended), ended by its `prompt_completed`.
+ */
+export type AcpTurnOrigin = "input" | "provider";
+
+/** The agent's prompt behind the active turn, as its `prompt_running` / `prompt_completed` signals report it. */
+type ActivePrompt =
+  | Readonly<{ origin: "input"; promptId: string | null; completed: boolean }>
+  | Readonly<{ origin: "provider"; promptId: string }>;
+
+type PendingProviderPrompt = Readonly<{ promptId: string; notice: AcpPromptNotice | null }>;
+
+/**
  * One ACP session: `created -> opening(new|load|resume) -> ready -> prompting -> ready`, with
  * `prompting -> cancelling -> ready`, and any state to `failed` or `closed`. Suppresses the
  * history `session/load` replays, runs the turn idle timer, applies the effects of agent
  * extension notifications and provider calls, and answers every permission request.
+ *
+ * It owns the turn lifecycle of both origins (`AcpTurnOrigin`). From the agent's prompt signals: in `ready`, a
+ * `prompt_running` opens a provider turn with its notice; in an input turn, the first `prompt_running` names the
+ * input prompt and a different prompt that runs after the input prompt completed is pending. At the input prompt's
+ * response a pending prompt is handed over in one batch (input end + provider start + notice), so the run never reads
+ * idle between the two turns and held input stays held. A provider turn ends on its own `prompt_completed`.
  */
 export class AcpAgentSession implements AcpSessionFrameHandler {
   private currentState: AcpSessionState = "created";
@@ -68,6 +89,10 @@ export class AcpAgentSession implements AcpSessionFrameHandler {
   /** The user answered reject-once in the current turn (input to `cancelled` classification). */
   private userDeniedInTurn = false;
   private idleTimer: ReturnType<typeof setTimeout> | null = null;
+  /** The prompt behind the active turn; null without a turn. */
+  private activePrompt: ActivePrompt | null = null;
+  /** A prompt the agent started after the input prompt completed, opened at the input prompt's response. */
+  private pendingProviderPrompt: PendingProviderPrompt | null = null;
   private readonly converter: AcpSessionUpdateConverter;
   private readonly bridge = new AcpPermissionBridge();
   private readonly mcpStatuses = new Map<string, Readonly<{ status: AcpMcpServerStatus }>>();
@@ -148,16 +173,10 @@ export class AcpAgentSession implements AcpSessionFrameHandler {
     });
   }
 
-  /** Starts a turn and sends the prompt; the turn ends through the prompt result. */
+  /** Starts an input turn and sends the prompt; the turn ends through the prompt result. */
   startTurn(turnId: string, prompt: ContentBlock[]): AgentRunEvent[] {
     const sessionId = this.requireReady();
-    this.currentState = "prompting";
-    this.callOrdinal = 1;
-    this.userDeniedInTurn = false;
-    const started = this.converter.startTurn(turnId);
-    this.callBoundary.reset();
-    this.callBoundary.markBoundary(this.now());
-    this.refreshIdleTimer();
+    const started = this.openTurn(turnId, { origin: "input", promptId: null, completed: false });
     void this.options.connection.prompt({ sessionId, prompt }).then(
       (response) => this.finishTurn(turnId, () => this.endTurnFor(response.stopReason)),
       (error: unknown) => this.finishTurn(turnId, () => this.converter.failTurn("ACP_PROMPT_FAILED", describeAcpError(error))),
@@ -165,7 +184,7 @@ export class AcpAgentSession implements AcpSessionFrameHandler {
     return started;
   }
 
-  /** Cancels the active turn: pending permissions are answered `cancelled`, then `session/cancel`. */
+  /** Cancels the active turn of either origin: pending permissions are answered `cancelled`, then `session/cancel`. */
   async cancel(turnId: string): Promise<boolean> {
     if (this.currentState !== "prompting" || this.converter.activeTurnId !== turnId || !this.id) return false;
     this.currentState = "cancelling";
@@ -196,6 +215,7 @@ export class AcpAgentSession implements AcpSessionFrameHandler {
     const wasFailed = this.currentState === "failed";
     this.currentState = "closed";
     this.teardown(new Error("ACP_SESSION_CLOSED"));
+    this.clearPrompts();
     return wasFailed ? [] : this.converter.interruptTurn();
   }
 
@@ -256,13 +276,20 @@ export class AcpAgentSession implements AcpSessionFrameHandler {
     return { sessionId, turnId: this.converter.activeTurnId, callOrdinal: this.callOrdinal, model: this.options.model };
   }
 
-  /** MCP readiness applies at any time; usage, compaction and activity only within a turn (`session/load` replays are dropped). */
+  /**
+   * MCP readiness and the agent's prompt signals apply at any time; usage, compaction and activity only within a turn
+   * (`session/load` replays are dropped).
+   */
   private applyEffects(sessionId: string, effects: readonly AcpSessionEffect[]): void {
     let active = false;
     for (const effect of effects) {
       if (effect.kind === "mcp_status") {
         this.mcpStatuses.set(effect.server, { status: effect.status });
         for (const waiter of [...this.mcpWaiters]) this.settleMcpWaiter(waiter);
+      } else if (effect.kind === "prompt_running") {
+        this.onPromptRunning(effect.promptId, effect.notice);
+      } else if (effect.kind === "prompt_completed") {
+        this.onPromptCompleted(effect.promptId, effect.stopReason);
       } else if (!this.isInTurn()) {
         continue;
       } else if (effect.kind === "activity") {
@@ -313,19 +340,95 @@ export class AcpAgentSession implements AcpSessionFrameHandler {
     return this.converter.completeTurn(stopReason);
   }
 
+  /**
+   * The one opening step of both origins: `prompting`, a fresh call ordinal and call boundary, `TURN_STARTED`, the
+   * idle timer. An input turn then sends its prompt; a provider turn adds its notice to the same batch.
+   */
+  private openTurn(turnId: string, prompt: ActivePrompt): AgentRunEvent[] {
+    this.currentState = "prompting";
+    this.activePrompt = prompt;
+    this.callOrdinal = 1;
+    this.userDeniedInTurn = false;
+    const started = this.converter.startTurn(turnId);
+    this.callBoundary.reset();
+    this.callBoundary.markBoundary(this.now());
+    this.refreshIdleTimer();
+    return started;
+  }
+
+  /** A provider turn: TURN_STARTED and the notice of what woke the agent. The session allocates its turn id. */
+  private openProviderTurn(prompt: PendingProviderPrompt): AgentRunEvent[] {
+    const events = this.openTurn(randomUUID(), { origin: "provider", promptId: prompt.promptId });
+    if (prompt.notice) events.push(...this.converter.notice(prompt.notice.content, prompt.notice.senderId));
+    return events;
+  }
+
+  /**
+   * The agent runs a prompt. In `ready` it is one the agent started itself: open a provider turn. In an input turn the
+   * first one is the input prompt; a different one after the input prompt completed is the agent's next prompt,
+   * pending until the input prompt's response (the latest wins). Before that point a different id is ignored: the
+   * agent runs one prompt at a time.
+   */
+  private onPromptRunning(promptId: string, notice: AcpPromptNotice | null): void {
+    if (this.currentState === "ready") {
+      this.options.emit(this.openProviderTurn({ promptId, notice }));
+      return;
+    }
+    const active = this.activePrompt;
+    if (!this.isInTurn() || active?.origin !== "input") return;
+    if (active.promptId === null) {
+      this.activePrompt = { ...active, promptId };
+    } else if (active.completed && promptId !== active.promptId) {
+      this.pendingProviderPrompt = { promptId, notice };
+    }
+  }
+
+  /**
+   * A prompt ended. The input prompt's end is only marked (its turn ends at the `session/prompt` response); a pending
+   * prompt that ended before that response is dropped; a provider turn ends on its own prompt's end.
+   */
+  private onPromptCompleted(promptId: string, stopReason: string): void {
+    const active = this.activePrompt;
+    if (!this.isInTurn() || !active) return;
+    if (active.origin === "provider") {
+      const turnId = this.converter.activeTurnId;
+      if (active.promptId === promptId && turnId) this.finishTurn(turnId, () => this.endTurnFor(stopReason));
+    } else if (active.promptId === promptId) {
+      this.activePrompt = { ...active, completed: true };
+    } else if (this.pendingProviderPrompt?.promptId === promptId) {
+      this.pendingProviderPrompt = null;
+    }
+  }
+
+  /**
+   * Ends the active turn. An input turn with a pending provider prompt hands over in the same batch: the input turn's
+   * end, then the provider turn's start and notice, staying `prompting` (AgentRun never sees the run idle in between).
+   */
   private finishTurn(turnId: string, build: () => AgentRunEvent[]): void {
     if (!this.isInTurn() || this.converter.activeTurnId !== turnId) return;
     const events = build();
-    this.currentState = "ready";
-    this.clearIdleTimer();
+    const handOver = this.activePrompt?.origin === "input" ? this.pendingProviderPrompt : null;
+    this.clearPrompts();
     this.bridge.cancelAll();
+    if (handOver) {
+      events.push(...this.openProviderTurn(handOver));
+    } else {
+      this.currentState = "ready";
+      this.clearIdleTimer();
+    }
     this.options.emit(events);
+  }
+
+  private clearPrompts(): void {
+    this.activePrompt = null;
+    this.pendingProviderPrompt = null;
   }
 
   private fail(failure: AcpSessionFailure): void {
     if (this.currentState === "failed" || this.currentState === "closed") return;
     this.currentState = "failed";
     this.teardown(new Error(`${failure.code}: ${failure.message}`));
+    this.clearPrompts();
     this.options.emit([
       ...this.converter.interruptTurn(),
       {
