@@ -1,27 +1,27 @@
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
-App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data
-Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/.env
-Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/.env
-◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/.env // tip: ◈ secrets for agents [www.dotenvx.com]
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/.env
+◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/.env // tip: ⌘ enable debugging { debug: true }
 Environment variables loaded successfully
-Server public base URL configured to: http://127.0.0.1:64328
+Server public base URL configured to: http://127.0.0.1:51891
 === Starting logging configuration ===
 Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts/logging_config.ini
 ============================================================
-SERVER PUBLIC URL: http://127.0.0.1:64328
+SERVER PUBLIC URL: http://127.0.0.1:51891
 APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
-APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data
-DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/db
-LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/logs
-DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/download
-MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory
 ============================================================
 AgentFactory (Singleton) initialized.
 Prisma schema loaded from prisma/schema.prisma
-Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/db/test.db"
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/db/test.db"
 
-SQLite database test.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/db/test.db
+SQLite database test.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/db/test.db
 
 27 migrations found in prisma/migrations
 
@@ -112,38 +112,38 @@ migrations/
     └─ migration.sql
       
 All migrations have been successfully applied.
-(node:42934) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:28074) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 AgentRunManager initialized.
-Node access: local control socket not opened. The node's local control socket path is 123 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/node-access/local-control.sock. Use a shorter data folder path.
+Node access: local control socket not opened. The node's local control socket path is 123 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/node-access/local-control.sock. Use a shorter data folder path.
 AgentRunManager initialized.
 Overwriting existing tool definition for name: 'search_web'
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_861303c35e994b05a6fa8a132bae29ed/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agent_teams/studio_team_52443820de9249568d857ee3e0314a9d/publisher_c1df8a5a7db3443a8f4b9c9baf426046/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_861303c35e994b05a6fa8a132bae29ed/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_861303c35e994b05a6fa8a132bae29ed/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_7b0ec008fcad43f78af6c77b160bba88/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agent_teams/studio_team_c35c73677ad74260ba8157239b46cc26/publisher_4253dd65fa57407db178479feb5fda83/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_7b0ec008fcad43f78af6c77b160bba88/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_7b0ec008fcad43f78af6c77b160bba88/raw_traces_manifest.json
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
-App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data
-Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/.env
-Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/.env
-◇ injected env (1) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/.env // tip: ⌁ auth for agents [www.vestauth.com]
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/.env
+◇ injected env (1) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/.env // tip: ⌘ override existing { override: true }
 Environment variables loaded successfully
-Server public base URL configured to: http://127.0.0.1:64328
+Server public base URL configured to: http://127.0.0.1:51891
 === Starting logging configuration ===
 Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts/logging_config.ini
 ============================================================
-SERVER PUBLIC URL: http://127.0.0.1:64328
+SERVER PUBLIC URL: http://127.0.0.1:51891
 APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
-APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data
-DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/db
-LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/logs
-DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/download
-MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory
 ============================================================
 AgentFactory (Singleton) initialized.
 Prisma schema loaded from prisma/schema.prisma
-Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/db/test.db"
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/db/test.db"
 
 27 migrations found in prisma/migrations
 
@@ -159,93 +159,93 @@ No pending migrations to apply.
 │    npm i --save-dev prisma@latest                       │
 │    npm i @prisma/client@latest                          │
 └─────────────────────────────────────────────────────────┘
-(node:52289) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:34754) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 AgentRunManager initialized.
-Node access: local control socket not opened. The node's local control socket path is 123 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/node-access/local-control.sock. Use a shorter data folder path.
+Node access: local control socket not opened. The node's local control socket path is 123 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/node-access/local-control.sock. Use a shorter data folder path.
 AgentRunManager initialized.
 Overwriting existing tool definition for name: 'search_web'
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_861303c35e994b05a6fa8a132bae29ed/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_861303c35e994b05a6fa8a132bae29ed/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_861303c35e994b05a6fa8a132bae29ed/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_861303c35e994b05a6fa8a132bae29ed/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_861303c35e994b05a6fa8a132bae29ed/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_861303c35e994b05a6fa8a132bae29ed/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_861303c35e994b05a6fa8a132bae29ed/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_861303c35e994b05a6fa8a132bae29ed/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_861303c35e994b05a6fa8a132bae29ed/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_7b0ec008fcad43f78af6c77b160bba88/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_7b0ec008fcad43f78af6c77b160bba88/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_7b0ec008fcad43f78af6c77b160bba88/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_7b0ec008fcad43f78af6c77b160bba88/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_7b0ec008fcad43f78af6c77b160bba88/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_7b0ec008fcad43f78af6c77b160bba88/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_7b0ec008fcad43f78af6c77b160bba88/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_7b0ec008fcad43f78af6c77b160bba88/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_7b0ec008fcad43f78af6c77b160bba88/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
-App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data
-Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/.env
-Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/.env
-◇ injected env (1) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/.env // tip: ⌘ enable debugging { debug: true }
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/.env
+◇ injected env (1) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
 Environment variables loaded successfully
-Server public base URL configured to: http://127.0.0.1:64328
+Server public base URL configured to: http://127.0.0.1:51891
 === Starting logging configuration ===
 Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts/logging_config.ini
 ============================================================
-SERVER PUBLIC URL: http://127.0.0.1:64328
+SERVER PUBLIC URL: http://127.0.0.1:51891
 APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
-APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data
-DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/db
-LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/logs
-DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/download
-MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory
 ============================================================
 AgentFactory (Singleton) initialized.
 Prisma schema loaded from prisma/schema.prisma
-Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/db/test.db"
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/db/test.db"
 
 27 migrations found in prisma/migrations
 
 
 No pending migrations to apply.
-(node:14860) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:3608) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 AgentRunManager initialized.
-Node access: local control socket not opened. The node's local control socket path is 123 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/node-access/local-control.sock. Use a shorter data folder path.
+Node access: local control socket not opened. The node's local control socket path is 123 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/node-access/local-control.sock. Use a shorter data folder path.
 AgentRunManager initialized.
 Overwriting existing tool definition for name: 'search_web'
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_861303c35e994b05a6fa8a132bae29ed/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_861303c35e994b05a6fa8a132bae29ed/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_861303c35e994b05a6fa8a132bae29ed/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_861303c35e994b05a6fa8a132bae29ed/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_861303c35e994b05a6fa8a132bae29ed/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_861303c35e994b05a6fa8a132bae29ed/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_861303c35e994b05a6fa8a132bae29ed/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_861303c35e994b05a6fa8a132bae29ed/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_861303c35e994b05a6fa8a132bae29ed/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_9148b63002ec472fb9698bed9c1fde32/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_9148b63002ec472fb9698bed9c1fde32/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_861303c35e994b05a6fa8a132bae29ed/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_9148b63002ec472fb9698bed9c1fde32/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_c494a24d69cc4a6c997b3e04d98f17b6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_861303c35e994b05a6fa8a132bae29ed/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/beta/data/memory/agents/publisher_9148b63002ec472fb9698bed9c1fde32/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_7b0ec008fcad43f78af6c77b160bba88/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_7b0ec008fcad43f78af6c77b160bba88/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_7b0ec008fcad43f78af6c77b160bba88/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_7b0ec008fcad43f78af6c77b160bba88/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_7b0ec008fcad43f78af6c77b160bba88/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_7b0ec008fcad43f78af6c77b160bba88/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_7b0ec008fcad43f78af6c77b160bba88/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_7b0ec008fcad43f78af6c77b160bba88/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_7b0ec008fcad43f78af6c77b160bba88/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_4e553857bf024a89b99b54f653872037/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_4e553857bf024a89b99b54f653872037/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_7b0ec008fcad43f78af6c77b160bba88/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_4e553857bf024a89b99b54f653872037/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_86dcacc9741a4c89b425f343c746794b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_7b0ec008fcad43f78af6c77b160bba88/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/beta/data/memory/agents/publisher_4e553857bf024a89b99b54f653872037/raw_traces_manifest.json

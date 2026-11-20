@@ -92,4 +92,4 @@ Found during execution: on the phone's node-file route (a path outside the run's
 
 ## Investigation Decision
 
-- Proceed To Execution: `Yes`. Durable coverage added: `Yes`. Reroute: see the execution report's result.
+- Proceed To Execution: `Yes`. Durable coverage added: `Yes`. Round 1 rerouted (Design Impact, resolved by SR-004 D-7); round 2 executed.

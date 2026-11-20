@@ -1,27 +1,27 @@
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
-App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data
-Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/.env
-Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/.env
-◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/.env
+◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/.env // tip: ⌁ auth for agents [www.vestauth.com]
 Environment variables loaded successfully
-Server public base URL configured to: http://127.0.0.1:58157
+Server public base URL configured to: http://127.0.0.1:63060
 === Starting logging configuration ===
 Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts/logging_config.ini
 ============================================================
-SERVER PUBLIC URL: http://127.0.0.1:58157
+SERVER PUBLIC URL: http://127.0.0.1:63060
 APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
-APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data
-DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/db
-LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/logs
-DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/download
-MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory
 ============================================================
 AgentFactory (Singleton) initialized.
 Prisma schema loaded from prisma/schema.prisma
-Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/db/test.db"
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/db/test.db"
 
-SQLite database test.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/db/test.db
+SQLite database test.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/db/test.db
 
 27 migrations found in prisma/migrations
 
@@ -112,94 +112,96 @@ migrations/
     └─ migration.sql
       
 All migrations have been successfully applied.
-(node:37761) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:43296) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 AgentRunManager initialized.
-Node access: local control socket not opened. The node's local control socket path is 122 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/node-access/local-control.sock. Use a shorter data folder path.
+Node access: local control socket not opened. The node's local control socket path is 122 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/node-access/local-control.sock. Use a shorter data folder path.
 AgentRunManager initialized.
 Overwriting existing tool definition for name: 'search_web'
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/manager_agent_8571_45f08ec25da04515b3f66be8c5ce55de/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/manager_agent_8571_45f08ec25da04515b3f66be8c5ce55de/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/manager_agent_8571_45f08ec25da04515b3f66be8c5ce55de/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/worker_agent_8571_125a80594ddc448a941dcf5b0c66615b/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/manager_agent_8571_45f08ec25da04515b3f66be8c5ce55de/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agent_teams/team_team_fa04_379d4de7f66b43c4995a34e5a28901df/manager_team_fa04_9e214da2982f4b7ab5c75b1930b3da8d/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agent_teams/team_team_fa04_379d4de7f66b43c4995a34e5a28901df/manager_team_fa04_9e214da2982f4b7ab5c75b1930b3da8d/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agent_teams/team_team_fa04_379d4de7f66b43c4995a34e5a28901df/manager_team_fa04_9e214da2982f4b7ab5c75b1930b3da8d/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/worker_team_fa04_52c692b6c39542708b5a2e28dc043814/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agent_teams/team_team_fa04_379d4de7f66b43c4995a34e5a28901df/manager_team_fa04_9e214da2982f4b7ab5c75b1930b3da8d/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agent_orgs/org_org_5d4a_f831af8bd1d643c38e20a6ee501330b4/manager_org_5d4a_555bc1bac0474eedbd5b424766e999cd/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agent_orgs/org_org_5d4a_f831af8bd1d643c38e20a6ee501330b4/manager_org_5d4a_555bc1bac0474eedbd5b424766e999cd/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agent_orgs/org_org_5d4a_f831af8bd1d643c38e20a6ee501330b4/manager_org_5d4a_555bc1bac0474eedbd5b424766e999cd/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/worker_org_5d4a_283b0ec646a946d2b88f47ecd2b41800/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agent_orgs/org_org_5d4a_f831af8bd1d643c38e20a6ee501330b4/manager_org_5d4a_555bc1bac0474eedbd5b424766e999cd/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/manager_agent_ad52_0724546ead454dfba77f7d18b1be3c3a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/manager_agent_ad52_0724546ead454dfba77f7d18b1be3c3a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/manager_agent_ad52_0724546ead454dfba77f7d18b1be3c3a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/worker_agent_ad52_8c735168dedd4c7db258affe55cdff1f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/manager_agent_ad52_0724546ead454dfba77f7d18b1be3c3a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/manager_agent_ad52_0724546ead454dfba77f7d18b1be3c3a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agent_teams/team_team_6de8_b26d2184b48d44c1bee6276dafb5e800/manager_team_6de8_42fb02695bf2479981f446c616a062a1/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agent_teams/team_team_6de8_b26d2184b48d44c1bee6276dafb5e800/manager_team_6de8_42fb02695bf2479981f446c616a062a1/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agent_teams/team_team_6de8_b26d2184b48d44c1bee6276dafb5e800/manager_team_6de8_42fb02695bf2479981f446c616a062a1/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/worker_team_6de8_865453f733ac4635943390a1bbd14fda/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agent_teams/team_team_6de8_b26d2184b48d44c1bee6276dafb5e800/manager_team_6de8_42fb02695bf2479981f446c616a062a1/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agent_teams/team_team_6de8_b26d2184b48d44c1bee6276dafb5e800/manager_team_6de8_42fb02695bf2479981f446c616a062a1/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agent_orgs/org_org_b049_1d23ddece5ba439aa6239737f05c9a63/manager_org_b049_26070a35ac214714acaa3500ec0722de/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agent_orgs/org_org_b049_1d23ddece5ba439aa6239737f05c9a63/manager_org_b049_26070a35ac214714acaa3500ec0722de/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agent_orgs/org_org_b049_1d23ddece5ba439aa6239737f05c9a63/manager_org_b049_26070a35ac214714acaa3500ec0722de/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agent_orgs/org_org_b049_1d23ddece5ba439aa6239737f05c9a63/manager_org_b049_26070a35ac214714acaa3500ec0722de/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/worker_org_b049_6af2075dc06e475bafc8bc797bc9377a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agent_orgs/org_org_b049_1d23ddece5ba439aa6239737f05c9a63/manager_org_b049_26070a35ac214714acaa3500ec0722de/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/worker_agent_ad52_8c735168dedd4c7db258affe55cdff1f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/manager_agent_ad52_0724546ead454dfba77f7d18b1be3c3a/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/worker_agent_ad52_8c735168dedd4c7db258affe55cdff1f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/worker_agent_ad52_8c735168dedd4c7db258affe55cdff1f/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/manager_agent_ad52_0724546ead454dfba77f7d18b1be3c3a/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/manager_agent_ad52_0724546ead454dfba77f7d18b1be3c3a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/manager_agent_ad52_0724546ead454dfba77f7d18b1be3c3a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/manager_agent_ad52_0724546ead454dfba77f7d18b1be3c3a/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/worker_agent_8571_125a80594ddc448a941dcf5b0c66615b/raw_traces_manifest.json
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/manager_agent_8571_45f08ec25da04515b3f66be8c5ce55de/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/worker_agent_8571_125a80594ddc448a941dcf5b0c66615b/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/worker_agent_8571_125a80594ddc448a941dcf5b0c66615b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agent_teams/team_team_6de8_b26d2184b48d44c1bee6276dafb5e800/manager_team_6de8_42fb02695bf2479981f446c616a062a1/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/manager_agent_8571_45f08ec25da04515b3f66be8c5ce55de/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/worker_team_6de8_865453f733ac4635943390a1bbd14fda/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/worker_team_6de8_865453f733ac4635943390a1bbd14fda/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/manager_agent_8571_45f08ec25da04515b3f66be8c5ce55de/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/manager_agent_8571_45f08ec25da04515b3f66be8c5ce55de/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/manager_agent_8571_45f08ec25da04515b3f66be8c5ce55de/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/worker_team_6de8_865453f733ac4635943390a1bbd14fda/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agent_teams/team_team_fa04_379d4de7f66b43c4995a34e5a28901df/manager_team_fa04_9e214da2982f4b7ab5c75b1930b3da8d/raw_traces_manifest.json
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/worker_team_fa04_52c692b6c39542708b5a2e28dc043814/raw_traces_manifest.json
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/worker_team_fa04_52c692b6c39542708b5a2e28dc043814/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/worker_team_fa04_52c692b6c39542708b5a2e28dc043814/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agent_teams/team_team_6de8_b26d2184b48d44c1bee6276dafb5e800/manager_team_6de8_42fb02695bf2479981f446c616a062a1/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agent_teams/team_team_fa04_379d4de7f66b43c4995a34e5a28901df/manager_team_fa04_9e214da2982f4b7ab5c75b1930b3da8d/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agent_orgs/org_org_b049_1d23ddece5ba439aa6239737f05c9a63/manager_org_b049_26070a35ac214714acaa3500ec0722de/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agent_orgs/org_org_b049_1d23ddece5ba439aa6239737f05c9a63/manager_org_b049_26070a35ac214714acaa3500ec0722de/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agent_orgs/org_org_5d4a_f831af8bd1d643c38e20a6ee501330b4/manager_org_5d4a_555bc1bac0474eedbd5b424766e999cd/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/worker_org_b049_6af2075dc06e475bafc8bc797bc9377a/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agent_orgs/org_org_5d4a_f831af8bd1d643c38e20a6ee501330b4/manager_org_5d4a_555bc1bac0474eedbd5b424766e999cd/raw_traces_manifest.json
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/worker_org_5d4a_283b0ec646a946d2b88f47ecd2b41800/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/worker_org_5d4a_283b0ec646a946d2b88f47ecd2b41800/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/worker_org_5d4a_283b0ec646a946d2b88f47ecd2b41800/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/worker_org_b049_6af2075dc06e475bafc8bc797bc9377a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/worker_org_b049_6af2075dc06e475bafc8bc797bc9377a/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agent_orgs/org_org_5d4a_f831af8bd1d643c38e20a6ee501330b4/manager_org_5d4a_555bc1bac0474eedbd5b424766e999cd/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agent_orgs/org_org_5d4a_f831af8bd1d643c38e20a6ee501330b4/manager_org_5d4a_555bc1bac0474eedbd5b424766e999cd/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agent_orgs/org_org_b049_1d23ddece5ba439aa6239737f05c9a63/manager_org_b049_26070a35ac214714acaa3500ec0722de/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agent_orgs/org_org_b049_1d23ddece5ba439aa6239737f05c9a63/manager_org_b049_26070a35ac214714acaa3500ec0722de/raw_traces_manifest.json
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
-App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data
-Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/.env
-Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/.env
-◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/.env // tip: ⌘ enable debugging { debug: true }
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/.env
+◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/.env // tip: ⌘ override existing { override: true }
 Environment variables loaded successfully
-Server public base URL configured to: http://127.0.0.1:59277
+Server public base URL configured to: http://127.0.0.1:64337
 === Starting logging configuration ===
 Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts/logging_config.ini
 ============================================================
-SERVER PUBLIC URL: http://127.0.0.1:59277
+SERVER PUBLIC URL: http://127.0.0.1:64337
 APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
-APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data
-DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/db
-LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/logs
-DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/download
-MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory
 ============================================================
 AgentFactory (Singleton) initialized.
 Prisma schema loaded from prisma/schema.prisma
-Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/db/test.db"
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/db/test.db"
 
 27 migrations found in prisma/migrations
 
@@ -215,27 +217,27 @@ No pending migrations to apply.
 │    npm i --save-dev prisma@latest                       │
 │    npm i @prisma/client@latest                          │
 └─────────────────────────────────────────────────────────┘
-(node:49267) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:49119) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 AgentRunManager initialized.
-Node access: local control socket not opened. The node's local control socket path is 122 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/node-access/local-control.sock. Use a shorter data folder path.
+Node access: local control socket not opened. The node's local control socket path is 122 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/node-access/local-control.sock. Use a shorter data folder path.
 AgentRunManager initialized.
 Overwriting existing tool definition for name: 'search_web'
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/size_checker_09cd4e882ffb4667a87d4077ece55b6a/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/size_checker_09cd4e882ffb4667a87d4077ece55b6a/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/size_checker_09cd4e882ffb4667a87d4077ece55b6a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/size_checker_cd0fe5b1b2b147798e9438fa6203c8dd/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/size_checker_cd0fe5b1b2b147798e9438fa6203c8dd/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/size_checker_cd0fe5b1b2b147798e9438fa6203c8dd/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/size_checker_09cd4e882ffb4667a87d4077ece55b6a/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/size_checker_09cd4e882ffb4667a87d4077ece55b6a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/size_checker_cd0fe5b1b2b147798e9438fa6203c8dd/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/size_checker_cd0fe5b1b2b147798e9438fa6203c8dd/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/size_checker_09cd4e882ffb4667a87d4077ece55b6a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/size_checker_cd0fe5b1b2b147798e9438fa6203c8dd/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/size_checker_09cd4e882ffb4667a87d4077ece55b6a/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/size_checker_09cd4e882ffb4667a87d4077ece55b6a/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/size_checker_09cd4e882ffb4667a87d4077ece55b6a/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/size_checker_09cd4e882ffb4667a87d4077ece55b6a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/size_checker_cd0fe5b1b2b147798e9438fa6203c8dd/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/size_checker_cd0fe5b1b2b147798e9438fa6203c8dd/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/size_checker_cd0fe5b1b2b147798e9438fa6203c8dd/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/size_checker_cd0fe5b1b2b147798e9438fa6203c8dd/raw_traces_manifest.json
 Failed to upload context file: ContextFileTooLargeError: Uploaded file is too large.
 Failed to upload context file: Error [ERR_STREAM_PREMATURE_CLOSE]: Premature close
 Failed to upload context file: Error [ERR_STREAM_PREMATURE_CLOSE]: Premature close
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/eta/data/memory/agents/size_checker_09cd4e882ffb4667a87d4077ece55b6a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/eta/data/memory/agents/size_checker_cd0fe5b1b2b147798e9438fa6203c8dd/raw_traces_manifest.json

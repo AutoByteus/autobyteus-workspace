@@ -1,27 +1,27 @@
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
-App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/zeta/data
-Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/zeta/data/.env
-Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/zeta/data/.env
-◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/zeta/data/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/zeta/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/zeta/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/zeta/data/.env
+◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/zeta/data/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
 Environment variables loaded successfully
-Server public base URL configured to: http://127.0.0.1:56730
+Server public base URL configured to: http://127.0.0.1:61498
 === Starting logging configuration ===
 Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts/logging_config.ini
 ============================================================
-SERVER PUBLIC URL: http://127.0.0.1:56730
+SERVER PUBLIC URL: http://127.0.0.1:61498
 APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
-APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/zeta/data
-DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/zeta/data/db
-LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/zeta/data/logs
-DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/zeta/data/download
-MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/zeta/data/memory
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/zeta/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/zeta/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/zeta/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/zeta/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/zeta/data/memory
 ============================================================
 AgentFactory (Singleton) initialized.
 Prisma schema loaded from prisma/schema.prisma
-Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/zeta/data/db/test.db"
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/zeta/data/db/test.db"
 
-SQLite database test.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/zeta/data/db/test.db
+SQLite database test.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/zeta/data/db/test.db
 
 27 migrations found in prisma/migrations
 
@@ -112,15 +112,15 @@ migrations/
     └─ migration.sql
       
 All migrations have been successfully applied.
-(node:28898) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:18142) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 AgentRunManager initialized.
-Node access: local control socket not opened. The node's local control socket path is 123 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/zeta/data/node-access/local-control.sock. Use a shorter data folder path.
+Node access: local control socket not opened. The node's local control socket path is 123 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/zeta/data/node-access/local-control.sock. Use a shorter data folder path.
 AgentRunManager initialized.
 Overwriting existing tool definition for name: 'search_web'
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/zeta/data/memory/agents/publisher_de14746be6a249a9b171831b4954da3e/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/zeta/data/memory/agents/publisher_de14746be6a249a9b171831b4954da3e/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/zeta/data/memory/agents/publisher_de14746be6a249a9b171831b4954da3e/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/zeta/data/memory/agents/publisher_de14746be6a249a9b171831b4954da3e/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/zeta/data/memory/agents/publisher_de14746be6a249a9b171831b4954da3e/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/zeta/data/memory/agents/publisher_de14746be6a249a9b171831b4954da3e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/zeta/data/memory/agents/publisher_160bedc71a504aeb9f41c416a07ab128/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/zeta/data/memory/agents/publisher_160bedc71a504aeb9f41c416a07ab128/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/zeta/data/memory/agents/publisher_160bedc71a504aeb9f41c416a07ab128/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/zeta/data/memory/agents/publisher_160bedc71a504aeb9f41c416a07ab128/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/zeta/data/memory/agents/publisher_160bedc71a504aeb9f41c416a07ab128/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/zeta/data/memory/agents/publisher_160bedc71a504aeb9f41c416a07ab128/raw_traces_manifest.json

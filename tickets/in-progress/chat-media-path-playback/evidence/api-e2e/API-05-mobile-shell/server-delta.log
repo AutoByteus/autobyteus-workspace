@@ -1,27 +1,27 @@
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
-App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data
-Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/.env
-Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/.env
-◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/.env // tip: ◈ secrets for agents [www.dotenvx.com]
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/.env
+◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
 Environment variables loaded successfully
-Server public base URL configured to: http://127.0.0.1:55948
+Server public base URL configured to: http://127.0.0.1:60655
 === Starting logging configuration ===
 Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts/logging_config.ini
 ============================================================
-SERVER PUBLIC URL: http://127.0.0.1:55948
+SERVER PUBLIC URL: http://127.0.0.1:60655
 APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
-APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data
-DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/db
-LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/logs
-DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/download
-MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory
 ============================================================
 AgentFactory (Singleton) initialized.
 Prisma schema loaded from prisma/schema.prisma
-Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/db/test.db"
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/db/test.db"
 
-SQLite database test.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/db/test.db
+SQLite database test.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/db/test.db
 
 27 migrations found in prisma/migrations
 
@@ -112,115 +112,118 @@ migrations/
     └─ migration.sql
       
 All migrations have been successfully applied.
-(node:23711) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:11822) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 AgentRunManager initialized.
-Node access: local control socket not opened. The node's local control socket path is 124 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/node-access/local-control.sock. Use a shorter data folder path.
+Node access: local control socket not opened. The node's local control socket path is 124 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/node-access/local-control.sock. Use a shorter data folder path.
 AgentRunManager initialized.
 Overwriting existing tool definition for name: 'search_web'
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/fact_checker_00e884c1e3824473b019bee882160a15/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/fact_checker_00e884c1e3824473b019bee882160a15/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/release_notes_writer_bab6b50e6482412ba264402e9785c326/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agent_teams/docs_review_team_f208c46f361c4e23a4fd433527921de2/release_notes_writer_0b1176ae8e984661ae1ebfdc291daf30/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agent_teams/live_team_6716cc9c2ee247d7b0c722e9cda86432/live_lead_93f63162344c4c25ae8287aa4f061c68/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agent_teams/live_team_6716cc9c2ee247d7b0c722e9cda86432/live_lead_93f63162344c4c25ae8287aa4f061c68/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agent_teams/live_team_6716cc9c2ee247d7b0c722e9cda86432/live_lead_93f63162344c4c25ae8287aa4f061c68/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/release_notes_writer_4ff9926e82d8488095c192b66203842f/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agent_teams/live_team_6716cc9c2ee247d7b0c722e9cda86432/live_lead_93f63162344c4c25ae8287aa4f061c68/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/fact_checker_5e9f78be9d8e4315bb08fd21a6bd72e4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/fact_checker_5e9f78be9d8e4315bb08fd21a6bd72e4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/release_notes_writer_c2ce087a59d04ee1b8533f5db154e090/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agent_teams/docs_review_team_372044ad3cfd47b8b7bc778bfc92eaca/release_notes_writer_6fb2f92d373148f9992e2fa1fd6f3eec/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agent_teams/live_team_aaa413b2bd054af4b8547f64f5e20d0f/live_lead_9529d1352bda4e6194e345c5b977c237/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agent_teams/live_team_aaa413b2bd054af4b8547f64f5e20d0f/live_lead_9529d1352bda4e6194e345c5b977c237/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agent_teams/live_team_aaa413b2bd054af4b8547f64f5e20d0f/live_lead_9529d1352bda4e6194e345c5b977c237/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/release_notes_writer_8a7fb0413d844c169bc1fcfb2bce0f32/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agent_teams/live_team_aaa413b2bd054af4b8547f64f5e20d0f/live_lead_9529d1352bda4e6194e345c5b977c237/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agent_teams/live_team_aaa413b2bd054af4b8547f64f5e20d0f/live_lead_9529d1352bda4e6194e345c5b977c237/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-{"level":40,"time":1795192666746,"pid":23711,"hostname":"MacBookPro","reqId":"req-29","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.6741669999973965,"msg":"http request completed"}
+{"level":40,"time":1795198582877,"pid":11822,"hostname":"MacBookPro","reqId":"req-2b","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":1.3340409999946132,"msg":"http request completed"}
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-{"level":40,"time":1795192666981,"pid":23711,"hostname":"MacBookPro","reqId":"req-2i","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.3843750000014552,"msg":"http request completed"}
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/fact_checker_00e884c1e3824473b019bee882160a15/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/fact_checker_00e884c1e3824473b019bee882160a15/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agent_teams/live_team_6716cc9c2ee247d7b0c722e9cda86432/live_lead_93f63162344c4c25ae8287aa4f061c68/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agent_teams/live_team_6716cc9c2ee247d7b0c722e9cda86432/live_lead_93f63162344c4c25ae8287aa4f061c68/raw_traces_manifest.json
+{"level":40,"time":1795198583279,"pid":11822,"hostname":"MacBookPro","reqId":"req-2k","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.9738749999960419,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/fact_checker_5e9f78be9d8e4315bb08fd21a6bd72e4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/fact_checker_5e9f78be9d8e4315bb08fd21a6bd72e4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agent_teams/live_team_aaa413b2bd054af4b8547f64f5e20d0f/live_lead_9529d1352bda4e6194e345c5b977c237/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agent_teams/live_team_aaa413b2bd054af4b8547f64f5e20d0f/live_lead_9529d1352bda4e6194e345c5b977c237/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-{"level":40,"time":1795192667487,"pid":23711,"hostname":"MacBookPro","reqId":"req-4u","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.30666700000074343,"msg":"http request completed"}
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/fact_checker_00e884c1e3824473b019bee882160a15/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/fact_checker_00e884c1e3824473b019bee882160a15/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agent_teams/live_team_6716cc9c2ee247d7b0c722e9cda86432/live_lead_93f63162344c4c25ae8287aa4f061c68/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agent_teams/live_team_6716cc9c2ee247d7b0c722e9cda86432/live_lead_93f63162344c4c25ae8287aa4f061c68/raw_traces_manifest.json
+{"level":40,"time":1795198584032,"pid":11822,"hostname":"MacBookPro","reqId":"req-4w","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.3385000000052969,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/fact_checker_5e9f78be9d8e4315bb08fd21a6bd72e4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/fact_checker_5e9f78be9d8e4315bb08fd21a6bd72e4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agent_teams/live_team_aaa413b2bd054af4b8547f64f5e20d0f/live_lead_9529d1352bda4e6194e345c5b977c237/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agent_teams/live_team_aaa413b2bd054af4b8547f64f5e20d0f/live_lead_9529d1352bda4e6194e345c5b977c237/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-{"level":40,"time":1795192667706,"pid":23711,"hostname":"MacBookPro","reqId":"req-5y","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.5808749999996508,"msg":"http request completed"}
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
+{"level":40,"time":1795198584344,"pid":11822,"hostname":"MacBookPro","reqId":"req-60","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":1.9541659999958938,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-{"level":40,"time":1795192667727,"pid":23711,"hostname":"MacBookPro","reqId":"req-62","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.26674999999886495,"msg":"http request completed"}
+{"level":40,"time":1795198584372,"pid":11822,"hostname":"MacBookPro","reqId":"req-64","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":2.9922910000022966,"msg":"http request completed"}
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-{"level":40,"time":1795192669362,"pid":23711,"hostname":"MacBookPro","reqId":"req-65","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.3431670000027225,"msg":"http request completed"}
+{"level":40,"time":1795198585997,"pid":11822,"hostname":"MacBookPro","reqId":"req-67","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.3332090000039898,"msg":"http request completed"}
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-{"level":40,"time":1795192669412,"pid":23711,"hostname":"MacBookPro","reqId":"req-69","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.3832089999996242,"msg":"http request completed"}
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/fact_checker_00e884c1e3824473b019bee882160a15/raw_traces_manifest.json
+{"level":40,"time":1795198586059,"pid":11822,"hostname":"MacBookPro","reqId":"req-6b","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.44179199999780394,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/fact_checker_5e9f78be9d8e4315bb08fd21a6bd72e4/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-{"level":40,"time":1795192669456,"pid":23711,"hostname":"MacBookPro","reqId":"req-6f","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.3229579999970156,"msg":"http request completed"}
+{"level":40,"time":1795198586097,"pid":11822,"hostname":"MacBookPro","reqId":"req-6h","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.3505829999994603,"msg":"http request completed"}
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-{"level":40,"time":1795192671086,"pid":23711,"hostname":"MacBookPro","reqId":"req-6g","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.4960410000021511,"msg":"http request completed"}
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/release_notes_writer_bab6b50e6482412ba264402e9785c326/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agent_teams/live_team_6716cc9c2ee247d7b0c722e9cda86432/live_lead_93f63162344c4c25ae8287aa4f061c68/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agent_teams/live_team_6716cc9c2ee247d7b0c722e9cda86432/live_lead_93f63162344c4c25ae8287aa4f061c68/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/release_notes_writer_6faf817880d944238c9ddb9536ff8808/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_78d6aa2833b842899d45e1b22770e8d8/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_026194b941c543f992f08f6dbfe0eae7/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_026194b941c543f992f08f6dbfe0eae7/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_026194b941c543f992f08f6dbfe0eae7/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_026194b941c543f992f08f6dbfe0eae7/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_026194b941c543f992f08f6dbfe0eae7/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_026194b941c543f992f08f6dbfe0eae7/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_026194b941c543f992f08f6dbfe0eae7/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_026194b941c543f992f08f6dbfe0eae7/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_026194b941c543f992f08f6dbfe0eae7/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_026194b941c543f992f08f6dbfe0eae7/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/project_task_manager_026194b941c543f992f08f6dbfe0eae7/raw_traces_manifest.json
+{"level":40,"time":1795198587728,"pid":11822,"hostname":"MacBookPro","reqId":"req-6i","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.35791700000118,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/release_notes_writer_c2ce087a59d04ee1b8533f5db154e090/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agent_teams/live_team_aaa413b2bd054af4b8547f64f5e20d0f/live_lead_9529d1352bda4e6194e345c5b977c237/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agent_teams/live_team_aaa413b2bd054af4b8547f64f5e20d0f/live_lead_9529d1352bda4e6194e345c5b977c237/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/release_notes_writer_eb85387987e4429ab37afd7fc044887b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_8f48c6d2223f43d5b7ed77bd978ff328/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_1982560f92a9445fbc880aaf1fb52948/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_1982560f92a9445fbc880aaf1fb52948/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_1982560f92a9445fbc880aaf1fb52948/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_1982560f92a9445fbc880aaf1fb52948/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_1982560f92a9445fbc880aaf1fb52948/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_1982560f92a9445fbc880aaf1fb52948/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_1982560f92a9445fbc880aaf1fb52948/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_1982560f92a9445fbc880aaf1fb52948/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_1982560f92a9445fbc880aaf1fb52948/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_1982560f92a9445fbc880aaf1fb52948/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/project_task_manager_1982560f92a9445fbc880aaf1fb52948/raw_traces_manifest.json
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
-App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data
-Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/.env
-Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/.env
-◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/.env // tip: ⌘ enable debugging { debug: true }
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/.env
+◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/.env // tip: ◈ encrypted .env [www.dotenvx.com]
 Environment variables loaded successfully
-Server public base URL configured to: http://127.0.0.1:59405
+Server public base URL configured to: http://127.0.0.1:64462
 === Starting logging configuration ===
 Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts/logging_config.ini
 ============================================================
-SERVER PUBLIC URL: http://127.0.0.1:59405
+SERVER PUBLIC URL: http://127.0.0.1:64462
 APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
-APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data
-DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/db
-LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/logs
-DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/download
-MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory
 ============================================================
 AgentFactory (Singleton) initialized.
 Prisma schema loaded from prisma/schema.prisma
-Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/db/test.db"
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/db/test.db"
 
 27 migrations found in prisma/migrations
 
@@ -236,124 +239,124 @@ No pending migrations to apply.
 │    npm i --save-dev prisma@latest                       │
 │    npm i @prisma/client@latest                          │
 └─────────────────────────────────────────────────────────┘
-(node:49703) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:49618) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 AgentRunManager initialized.
-Node access: local control socket not opened. The node's local control socket path is 124 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/node-access/local-control.sock. Use a shorter data folder path.
+Node access: local control socket not opened. The node's local control socket path is 124 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/node-access/local-control.sock. Use a shorter data folder path.
 AgentRunManager initialized.
 Overwriting existing tool definition for name: 'search_web'
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/build_runner_1c92073f09e3418f8ae5cb2bab2a92d3/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/build_runner_1c92073f09e3418f8ae5cb2bab2a92d3/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/build_runner_1c92073f09e3418f8ae5cb2bab2a92d3/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/build_runner_212c94081fe14b30ab15604c81803732/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/build_runner_212c94081fe14b30ab15604c81803732/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/build_runner_212c94081fe14b30ab15604c81803732/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/build_runner_1c92073f09e3418f8ae5cb2bab2a92d3/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/build_runner_212c94081fe14b30ab15604c81803732/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
-App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data
-Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/.env
-Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/.env
-◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/.env
+◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/.env // tip: ⌘ suppress logs { quiet: true }
 Environment variables loaded successfully
-Server public base URL configured to: http://127.0.0.1:59405
+Server public base URL configured to: http://127.0.0.1:64462
 === Starting logging configuration ===
 Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts/logging_config.ini
 ============================================================
-SERVER PUBLIC URL: http://127.0.0.1:59405
+SERVER PUBLIC URL: http://127.0.0.1:64462
 APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
-APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data
-DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/db
-LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/logs
-DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/download
-MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory
 ============================================================
 AgentFactory (Singleton) initialized.
 Prisma schema loaded from prisma/schema.prisma
-Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/db/test.db"
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/db/test.db"
 
 27 migrations found in prisma/migrations
 
 
 No pending migrations to apply.
-(node:50664) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:49903) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 AgentRunManager initialized.
-Node access: local control socket not opened. The node's local control socket path is 124 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/node-access/local-control.sock. Use a shorter data folder path.
+Node access: local control socket not opened. The node's local control socket path is 124 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/node-access/local-control.sock. Use a shorter data folder path.
 AgentRunManager initialized.
 Overwriting existing tool definition for name: 'search_web'
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/build_runner_1c92073f09e3418f8ae5cb2bab2a92d3/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/build_runner_1c92073f09e3418f8ae5cb2bab2a92d3/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/build_runner_1c92073f09e3418f8ae5cb2bab2a92d3/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/build_runner_212c94081fe14b30ab15604c81803732/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/build_runner_212c94081fe14b30ab15604c81803732/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/build_runner_212c94081fe14b30ab15604c81803732/raw_traces_manifest.json
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
-App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data
-Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/.env
-Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/.env
-◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/.env // tip: ◈ secrets for agents [www.dotenvx.com]
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/.env
+◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
 Environment variables loaded successfully
-Server public base URL configured to: http://127.0.0.1:59405
+Server public base URL configured to: http://127.0.0.1:64462
 === Starting logging configuration ===
 Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts/logging_config.ini
 ============================================================
-SERVER PUBLIC URL: http://127.0.0.1:59405
+SERVER PUBLIC URL: http://127.0.0.1:64462
 APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
-APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data
-DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/db
-LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/logs
-DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/download
-MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory
 ============================================================
 AgentFactory (Singleton) initialized.
 Prisma schema loaded from prisma/schema.prisma
-Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/db/test.db"
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/db/test.db"
 
 27 migrations found in prisma/migrations
 
 
 No pending migrations to apply.
-(node:51478) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:50117) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 AgentRunManager initialized.
-Node access: local control socket not opened. The node's local control socket path is 124 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/node-access/local-control.sock. Use a shorter data folder path.
+Node access: local control socket not opened. The node's local control socket path is 124 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/node-access/local-control.sock. Use a shorter data folder path.
 AgentRunManager initialized.
 Overwriting existing tool definition for name: 'search_web'
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/build_runner_1c92073f09e3418f8ae5cb2bab2a92d3/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/build_runner_1c92073f09e3418f8ae5cb2bab2a92d3/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/build_runner_1c92073f09e3418f8ae5cb2bab2a92d3/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/build_runner_212c94081fe14b30ab15604c81803732/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/build_runner_212c94081fe14b30ab15604c81803732/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/build_runner_212c94081fe14b30ab15604c81803732/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/build_runner_1c92073f09e3418f8ae5cb2bab2a92d3/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/build_runner_1c92073f09e3418f8ae5cb2bab2a92d3/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/build_runner_1c92073f09e3418f8ae5cb2bab2a92d3/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/build_runner_212c94081fe14b30ab15604c81803732/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/build_runner_212c94081fe14b30ab15604c81803732/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/build_runner_212c94081fe14b30ab15604c81803732/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/build_runner_1c92073f09e3418f8ae5cb2bab2a92d3/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/build_runner_1c92073f09e3418f8ae5cb2bab2a92d3/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agent_teams/build_team_cd3726175a3f43dca5fcee9ea7bca1fb/build_lead_d25fe23212ca4633ac59104b7c8895ab/raw_traces_manifest.json
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agent_teams/build_team_cd3726175a3f43dca5fcee9ea7bca1fb/build_lead_d25fe23212ca4633ac59104b7c8895ab/raw_traces_manifest.json
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/build_runner_1c92073f09e3418f8ae5cb2bab2a92d3/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/build_runner_1c92073f09e3418f8ae5cb2bab2a92d3/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agent_teams/build_team_cd3726175a3f43dca5fcee9ea7bca1fb/build_lead_d25fe23212ca4633ac59104b7c8895ab/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agent_teams/build_team_cd3726175a3f43dca5fcee9ea7bca1fb/build_lead_d25fe23212ca4633ac59104b7c8895ab/raw_traces_manifest.json
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/build_runner_1c92073f09e3418f8ae5cb2bab2a92d3/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/build_runner_1c92073f09e3418f8ae5cb2bab2a92d3/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agent_teams/build_team_cd3726175a3f43dca5fcee9ea7bca1fb/build_lead_d25fe23212ca4633ac59104b7c8895ab/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agent_teams/build_team_cd3726175a3f43dca5fcee9ea7bca1fb/build_lead_d25fe23212ca4633ac59104b7c8895ab/raw_traces_manifest.json
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agent_orgs/build_org_ce7a2b6677e7430e87ebd76498f77d9a/build_worker_c9d23d1b855e495a9a143ba757703cd7/raw_traces_manifest.json
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agent_orgs/build_org_ce7a2b6677e7430e87ebd76498f77d9a/build_worker_c9d23d1b855e495a9a143ba757703cd7/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agent_orgs/build_org_ce7a2b6677e7430e87ebd76498f77d9a/build_worker_c9d23d1b855e495a9a143ba757703cd7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/build_runner_212c94081fe14b30ab15604c81803732/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/build_runner_212c94081fe14b30ab15604c81803732/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agent_teams/build_team_4a892cea0f0b45f491e3722c4b128352/build_lead_d94a49a99aeb4cc98a1e3f1209b5c8df/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/build_runner_1c92073f09e3418f8ae5cb2bab2a92d3/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agents/build_runner_1c92073f09e3418f8ae5cb2bab2a92d3/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agent_teams/build_team_cd3726175a3f43dca5fcee9ea7bca1fb/build_lead_d25fe23212ca4633ac59104b7c8895ab/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agent_teams/build_team_cd3726175a3f43dca5fcee9ea7bca1fb/build_lead_d25fe23212ca4633ac59104b7c8895ab/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agent_teams/build_team_4a892cea0f0b45f491e3722c4b128352/build_lead_d94a49a99aeb4cc98a1e3f1209b5c8df/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agent_orgs/build_org_ce7a2b6677e7430e87ebd76498f77d9a/build_worker_c9d23d1b855e495a9a143ba757703cd7/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/delta/data/memory/agent_orgs/build_org_ce7a2b6677e7430e87ebd76498f77d9a/build_worker_c9d23d1b855e495a9a143ba757703cd7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/build_runner_212c94081fe14b30ab15604c81803732/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agent_teams/build_team_4a892cea0f0b45f491e3722c4b128352/build_lead_d94a49a99aeb4cc98a1e3f1209b5c8df/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/build_runner_212c94081fe14b30ab15604c81803732/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agent_teams/build_team_4a892cea0f0b45f491e3722c4b128352/build_lead_d94a49a99aeb4cc98a1e3f1209b5c8df/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/build_runner_212c94081fe14b30ab15604c81803732/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/build_runner_212c94081fe14b30ab15604c81803732/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agent_teams/build_team_4a892cea0f0b45f491e3722c4b128352/build_lead_d94a49a99aeb4cc98a1e3f1209b5c8df/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agent_teams/build_team_4a892cea0f0b45f491e3722c4b128352/build_lead_d94a49a99aeb4cc98a1e3f1209b5c8df/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agent_orgs/build_org_cb294a6a80474ae5b1312cb0d91c452a/build_worker_4d4a4a29d7324f69ab8ab9d331981ecf/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agent_orgs/build_org_cb294a6a80474ae5b1312cb0d91c452a/build_worker_4d4a4a29d7324f69ab8ab9d331981ecf/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agent_orgs/build_org_cb294a6a80474ae5b1312cb0d91c452a/build_worker_4d4a4a29d7324f69ab8ab9d331981ecf/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/build_runner_212c94081fe14b30ab15604c81803732/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agent_teams/build_team_4a892cea0f0b45f491e3722c4b128352/build_lead_d94a49a99aeb4cc98a1e3f1209b5c8df/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agents/build_runner_212c94081fe14b30ab15604c81803732/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agent_teams/build_team_4a892cea0f0b45f491e3722c4b128352/build_lead_d94a49a99aeb4cc98a1e3f1209b5c8df/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agent_orgs/build_org_cb294a6a80474ae5b1312cb0d91c452a/build_worker_4d4a4a29d7324f69ab8ab9d331981ecf/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/delta/data/memory/agent_orgs/build_org_cb294a6a80474ae5b1312cb0d91c452a/build_worker_4d4a4a29d7324f69ab8ab9d331981ecf/raw_traces_manifest.json

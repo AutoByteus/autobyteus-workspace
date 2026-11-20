@@ -8,8 +8,11 @@ from this worktree (`build-server.log`).
 | --- | --- | --- | --- |
 | `build-server.log` | setup | `pnpm -C autobyteus-server-ts build` | 2026-11-20 |
 | `API-03-msp91-outside-retry/` | API-03 | `pnpm -C autobyteus-web test:e2e:mobile-shell --cases=MSP-91` (Retry required on both routes) | 2026-11-20 |
-| `API-05-mobile-shell/` | API-05 (and API-04: MSP-92) | `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<dir>` | 2026-11-20 16:08 |
 | `API-05b-background-tasks-rerun/` | API-05b | `… --cases=MSP-47,MSP-48,MSP-49,MSP-59` | 2026-11-20 |
+| `API-03r2-msp91-outside-retry/` | API-03 (round 2) | `… --cases=MSP-91` | 2026-11-20 |
+| `API-05-mobile-shell/` (round 2), `API-05-mobile-shell-round1/` | API-05 | the whole phone probe | 2026-11-20 17:46 (round 2), 16:08 (round 1) |
+| `API-06-server-integration.log`, `API-06b-integration-rerun.log` | API-06, API-06b | `test:integration` whole; two files alone | see headers |
+| `API-07-server-e2e-whole.excerpt.log` (+ `.log.gz`), `API-07a-…batch-a.log`, `API-07b-…batch-b.log`, `API-07c-…failed-files-rerun.log` | API-07, 07a/b/c | `pnpm test:e2e` (stopped at 2 h), the rest in two batches, the failures one at a time | see headers |
 
 Each folder holds `mobile-shell-probe.json` (each case's result and details) and this ticket's screenshots (MSP-59 and
 MSP-89…92). Not committed, kept on this machine under `/tmp/api572/uncommitted/` (not needed to judge this ticket): the

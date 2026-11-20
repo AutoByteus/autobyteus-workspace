@@ -1,27 +1,27 @@
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
-App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data
-Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/.env
-Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/.env
-◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/.env
+◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/.env // tip: ◈ encrypted .env [www.dotenvx.com]
 Environment variables loaded successfully
-Server public base URL configured to: http://127.0.0.1:56729
+Server public base URL configured to: http://127.0.0.1:61497
 === Starting logging configuration ===
 Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts/logging_config.ini
 ============================================================
-SERVER PUBLIC URL: http://127.0.0.1:56729
+SERVER PUBLIC URL: http://127.0.0.1:61497
 APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
-APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data
-DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/db
-LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/logs
-DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/download
-MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory
 ============================================================
 AgentFactory (Singleton) initialized.
 Prisma schema loaded from prisma/schema.prisma
-Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/db/test.db"
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/db/test.db"
 
-SQLite database test.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/db/test.db
+SQLite database test.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/db/test.db
 
 27 migrations found in prisma/migrations
 
@@ -112,420 +112,251 @@ migrations/
     └─ migration.sql
       
 All migrations have been successfully applied.
-(node:28897) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:18141) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 AgentRunManager initialized.
-Node access: local control socket not opened. The node's local control socket path is 126 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/node-access/local-control.sock. Use a shorter data folder path.
+Node access: local control socket not opened. The node's local control socket path is 126 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/node-access/local-control.sock. Use a shorter data folder path.
 AgentRunManager initialized.
 Overwriting existing tool definition for name: 'search_web'
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/workspace; killing previous child
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/workspace; killing previous child
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/workspace; killing previous child
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/workspace; killing previous child
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/workspace; killing previous child
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/workspace; killing previous child
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/workspace; killing previous child
+Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/workspace; killing previous child
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/workspace; killing previous child
+Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/workspace; killing previous child
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/workspace; killing previous child
+Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/workspace; killing previous child
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/workspace; killing previous child
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/workspace; killing previous child
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Watcher runtime for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/workspace did not stop within 5000ms; killing child
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/producer_8793c7bc4aac4e4cb07f6160e7f92cf5/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/producer_8793c7bc4aac4e4cb07f6160e7f92cf5/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/producer_8793c7bc4aac4e4cb07f6160e7f92cf5/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
+Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/workspace; killing previous child
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/workspace; killing previous child
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Watcher runtime for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/workspace did not stop within 5000ms; killing child
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/workspace; killing previous child
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/workspace; killing previous child
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/workspace; killing previous child
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/workspace; killing previous child
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-File not found in workspace agent_ws_bb2665bc58f5a9a32cba0f7e51ec173c12604ee058155382c6a55a840b9d34c9: media/gone-572.mp4
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/workspace; killing previous child
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/producer_8793c7bc4aac4e4cb07f6160e7f92cf5/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/producer_8793c7bc4aac4e4cb07f6160e7f92cf5/raw_traces_manifest.json
-Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/workspace; killing previous child
+Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/workspace; killing previous child
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/workspace; killing previous child
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Watcher runtime for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/workspace did not stop within 5000ms; killing child
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
+Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/workspace; killing previous child
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
+Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/workspace; killing previous child
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/workspace; killing previous child
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Watcher runtime for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/workspace did not stop within 5000ms; killing child
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/producer_1b81285982e74cd4b50fa7b0331fe406/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/producer_1b81285982e74cd4b50fa7b0331fe406/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/producer_1b81285982e74cd4b50fa7b0331fe406/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/workspace; killing previous child
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/workspace; killing previous child
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/workspace; killing previous child
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/workspace; killing previous child
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/workspace; killing previous child
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+File not found in workspace agent_ws_8e54e1174ce94c25a0464dae343f76c26ebcde48c2e16db3753c015408115386: media/gone-572.mp4
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/workspace; killing previous child
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/workspace; killing previous child
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/workspace; killing previous child
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/producer_1b81285982e74cd4b50fa7b0331fe406/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/producer_1b81285982e74cd4b50fa7b0331fe406/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/workspace; killing previous child
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/workspace; killing previous child
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Watcher runtime for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/workspace did not stop within 5000ms; killing child
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
-App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data
-Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/.env
-Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/.env
-◇ injected env (1) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/.env // tip: ⌘ enable debugging { debug: true }
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/.env
+◇ injected env (1) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/.env // tip: ◈ secrets for agents [www.dotenvx.com]
 Environment variables loaded successfully
-Server public base URL configured to: http://127.0.0.1:56729
+Server public base URL configured to: http://127.0.0.1:61497
 === Starting logging configuration ===
 Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts/logging_config.ini
 ============================================================
-SERVER PUBLIC URL: http://127.0.0.1:56729
+SERVER PUBLIC URL: http://127.0.0.1:61497
 APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
-APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data
-DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/db
-LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/logs
-DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/download
-MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory
 ============================================================
 AgentFactory (Singleton) initialized.
 Prisma schema loaded from prisma/schema.prisma
-Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/db/test.db"
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/db/test.db"
 
 27 migrations found in prisma/migrations
 
@@ -541,79 +372,78 @@ No pending migrations to apply.
 │    npm i --save-dev prisma@latest                       │
 │    npm i @prisma/client@latest                          │
 └─────────────────────────────────────────────────────────┘
-(node:32086) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:25686) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 AgentRunManager initialized.
-Node access: local control socket not opened. The node's local control socket path is 126 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/node-access/local-control.sock. Use a shorter data folder path.
+Node access: local control socket not opened. The node's local control socket path is 126 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/node-access/local-control.sock. Use a shorter data folder path.
 AgentRunManager initialized.
 Overwriting existing tool definition for name: 'search_web'
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/producer_8793c7bc4aac4e4cb07f6160e7f92cf5/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
+Attempted to access non-existent workspace: agent_ws_8e54e1174ce94c25a0464dae343f76c26ebcde48c2e16db3753c015408115386
+Attempted to access non-existent workspace: agent_ws_8e54e1174ce94c25a0464dae343f76c26ebcde48c2e16db3753c015408115386
+Attempted to access non-existent workspace: agent_ws_8e54e1174ce94c25a0464dae343f76c26ebcde48c2e16db3753c015408115386
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/producer_1b81285982e74cd4b50fa7b0331fe406/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/workspace; killing previous child
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/workspace; killing previous child
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
-App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data
-Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/.env
-Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/.env
-◇ injected env (1) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/.env // tip: ⌘ override existing { override: true }
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/.env
+◇ injected env (1) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/.env // tip: ⌘ override existing { override: true }
 Environment variables loaded successfully
-Server public base URL configured to: http://127.0.0.1:56729
+Server public base URL configured to: http://127.0.0.1:61497
 === Starting logging configuration ===
 Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts/logging_config.ini
 ============================================================
-SERVER PUBLIC URL: http://127.0.0.1:56729
+SERVER PUBLIC URL: http://127.0.0.1:61497
 APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-media-path-playback/autobyteus-server-ts
-APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data
-DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/db
-LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/logs
-DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/download
-MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory
 ============================================================
 AgentFactory (Singleton) initialized.
 Prisma schema loaded from prisma/schema.prisma
-Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/db/test.db"
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/db/test.db"
 
 27 migrations found in prisma/migrations
 
 
 No pending migrations to apply.
-(node:32608) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:28239) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 AgentRunManager initialized.
-Node access: local control socket not opened. The node's local control socket path is 126 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/node-access/local-control.sock. Use a shorter data folder path.
+Node access: local control socket not opened. The node's local control socket path is 126 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/node-access/local-control.sock. Use a shorter data folder path.
 AgentRunManager initialized.
 Overwriting existing tool definition for name: 'search_web'
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/producer_8793c7bc4aac4e4cb07f6160e7f92cf5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/producer_1b81285982e74cd4b50fa7b0331fe406/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/workspace; killing previous child
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Node request refused NODE_CREDENTIAL_REQUIRED /rest/workspaces/agent_ws_bb2665bc58f5a9a32cba0f7e51ec173c12604ee058155382c6a55a840b9d34c9/content?path=media%2Fretry-572.mp4 from 127.0.0.1
-Node request refused NODE_CREDENTIAL_REQUIRED /rest/node-files/content?path=%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fmobile-shell-probe-UxpGfd%2Fepsilon%2Foutside-media-572%2Fretry-572-out.mp4 from 127.0.0.1
-Security error accessing path ../outside-media-572/retry-572-out.mp4 in workspace agent_ws_bb2665bc58f5a9a32cba0f7e51ec173c12604ee058155382c6a55a840b9d34c9: Access denied: Path resolves outside the workspace boundary.
+Node request refused NODE_CREDENTIAL_REQUIRED /rest/workspaces/agent_ws_8e54e1174ce94c25a0464dae343f76c26ebcde48c2e16db3753c015408115386/content?path=media%2Fretry-572.mp4 from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /rest/node-files/content?path=%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fmobile-shell-probe-pcj8L5%2Fepsilon%2Foutside-media-572%2Fretry-572-out.mp4 from 127.0.0.1
+Security error accessing path ../outside-media-572/retry-572-out.mp4 in workspace agent_ws_8e54e1174ce94c25a0464dae343f76c26ebcde48c2e16db3753c015408115386: Access denied: Path resolves outside the workspace boundary.
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agents/content_creator_2ea69b5439034aabadc4e7e6e6fc76d6/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agents/content_creator_8a447a602241403f8044bfaa392570a7/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/workspace; killing previous child
-Watcher runtime for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/workspace did not stop within 5000ms; killing child
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agent_teams/clip_team_2b44a119a4ae45f28c3d45f577702d15/ref_lead_24903841e1d248fb8414c79ea47703a0/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agent_teams/clip_team_2b44a119a4ae45f28c3d45f577702d15/ref_lead_24903841e1d248fb8414c79ea47703a0/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agent_teams/clip_team_2b44a119a4ae45f28c3d45f577702d15/ref_lead_24903841e1d248fb8414c79ea47703a0/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agent_teams/clip_team_2b44a119a4ae45f28c3d45f577702d15/ref_lead_24903841e1d248fb8414c79ea47703a0/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agent_teams/clip_team_2b44a119a4ae45f28c3d45f577702d15/ref_lead_24903841e1d248fb8414c79ea47703a0/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agent_teams/clip_team_2b44a119a4ae45f28c3d45f577702d15/ref_lead_24903841e1d248fb8414c79ea47703a0/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agent_teams/clip_team_2b44a119a4ae45f28c3d45f577702d15/ref_mate_c5d4eb4467ff490aa6e95c7c7c93aced/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agent_teams/clip_team_2b44a119a4ae45f28c3d45f577702d15/ref_lead_24903841e1d248fb8414c79ea47703a0/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agent_teams/clip_team_2b44a119a4ae45f28c3d45f577702d15/ref_lead_24903841e1d248fb8414c79ea47703a0/raw_traces_manifest.json
+Replacing stale watcher runtime client for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/workspace; killing previous child
+Watcher runtime for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/workspace did not stop within 5000ms; killing child
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agent_teams/clip_team_6a7e72d45af54df1a51013b084fc8f5f/ref_lead_432f3eb4433d42fd917c894b1603c278/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agent_teams/clip_team_6a7e72d45af54df1a51013b084fc8f5f/ref_lead_432f3eb4433d42fd917c894b1603c278/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agent_teams/clip_team_6a7e72d45af54df1a51013b084fc8f5f/ref_lead_432f3eb4433d42fd917c894b1603c278/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agent_teams/clip_team_6a7e72d45af54df1a51013b084fc8f5f/ref_lead_432f3eb4433d42fd917c894b1603c278/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agent_teams/clip_team_6a7e72d45af54df1a51013b084fc8f5f/ref_lead_432f3eb4433d42fd917c894b1603c278/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agent_teams/clip_team_6a7e72d45af54df1a51013b084fc8f5f/ref_lead_432f3eb4433d42fd917c894b1603c278/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agent_teams/clip_team_6a7e72d45af54df1a51013b084fc8f5f/ref_mate_4fce416152214df4b4dd6d42d1274531/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agent_teams/clip_team_6a7e72d45af54df1a51013b084fc8f5f/ref_lead_432f3eb4433d42fd917c894b1603c278/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agent_teams/clip_team_2b44a119a4ae45f28c3d45f577702d15/ref_lead_24903841e1d248fb8414c79ea47703a0/raw_traces_manifest.json
-Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-UxpGfd/epsilon/data/memory/agent_teams/clip_team_2b44a119a4ae45f28c3d45f577702d15/ref_lead_24903841e1d248fb8414c79ea47703a0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agent_teams/clip_team_6a7e72d45af54df1a51013b084fc8f5f/ref_lead_432f3eb4433d42fd917c894b1603c278/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-pcj8L5/epsilon/data/memory/agent_teams/clip_team_6a7e72d45af54df1a51013b084fc8f5f/ref_lead_432f3eb4433d42fd917c894b1603c278/raw_traces_manifest.json
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
