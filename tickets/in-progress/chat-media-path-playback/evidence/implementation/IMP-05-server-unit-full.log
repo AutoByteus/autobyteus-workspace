@@ -1,0 +1,37 @@
+# IMP-05 whole server unit suite, and the failures' causes
+# command: pnpm -C autobyteus-server-ts test:unit ; after the commits: the failing files again ; FSEvents latency measured with fs.watch
+# commit: full run on the working tree = 02320583a5 + d165d3143a before the commits; reruns at d165d3143a
+# env: macOS, Node v22.23.1; fseventsd at 157% CPU during both runs
+# date: 2026-11-20
+# result: Pass for the changed code. The full run had 3 failures in 2 files, neither from this ticket:
+#   - tracked-imports: the new web files were not yet in git; passes after the commits (below).
+#   - agent-package-folder-watcher (2, then 1 and 3 in reruns): FSEvents events arrive late. It passed alone once (22/22),
+#     failed alone later (19/22); an fs.watch write took 950 ms, 4680 ms and >10000 ms to arrive (normally <100 ms).
+
+## full run summary
+ FAIL  tests/architecture/tracked-imports.test.ts > tracked imports > finds no tracked code importing an untracked file in this repository
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports definition changes per folder and ignores skills and other files
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > moves a root to FOLDER_MISSING when it is renamed away and resumes watching when it returns
+ Test Files  2 failed | 1028 passed | 5 skipped (1035)
+      Tests  3 failed | 8510 passed | 9 skipped (8522)
+
+## after the commits: tracked-imports, watcher, and the changed areas (api/rest, node-files, user-file-replies, route permissions, context-files integration)
+     × reports definition changes per folder and ignores skills and other files 47030ms
+ Test Files  1 failed | 13 passed (14)
+      Tests  1 failed | 99 passed (100)
+
+## tracked-imports alone, after the commits (verbose)
+ ✓ tests/architecture/tracked-imports.test.ts > tracked imports > finds no tracked code importing an untracked file in this repository
+ ✓ tests/architecture/tracked-imports.test.ts > tracked imports > fails on tracked code importing an untracked or ignored file, and passes once it is tracked
+      Tests  2 passed (2)
+
+## watcher file alone, after the commits
+     × reports definition changes per folder and ignores skills and other files 46845ms
+     × moves a root to FOLDER_MISSING when it is renamed away and resumes watching when it returns 32782ms
+     × starts a registered root that is missing as FOLDER_MISSING and arms it when it appears 30015ms
+ Test Files  1 failed (1)
+      Tests  3 failed | 19 passed (22)
+   Duration  162.88s (transform 87ms, setup 71ms, import 55ms, tests 162.08s, environment 0ms)
+
+## FSEvents latency (fs.watch on a temp folder, one write each)
+fs.watch event latency ms: 4680, timeout>10000, 950
