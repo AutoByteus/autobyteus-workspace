@@ -47,3 +47,16 @@
 | 2026-11-21T15:22:18Z | API-TC | Completed | Pass | r2 baseline equal |
 | 2026-11-21T15:23:12Z | API-FS | Started | | r2 fresh clone of 8789b97a41, every step of build-linux-arm64 (go1.27.4 on PATH; units step root-limited) |
 | 2026-11-21T15:30:29Z | API-FS | Completed | Pass | r2: every step at 8789b97a41 (units root-limited; libz.so provided, FU-004); clone removed |
+| 2026-11-21T15:54:52Z | ROUND 3 | Started | | IR-003 072bdb7217 + IR-004 6c7af4a384 (CRR-006 at 51c10dd2c1); rebuilding server |
+| 2026-11-21T15:56:00Z | TF-01..TF-12 | Started | | r3 suite on 6c7af4a384 build |
+| 2026-11-21T15:58:16Z | TF-01..TF-12 | Completed | Pass | r3: 12/12 (F-3 assertions ok; former member opens; Memory page attribution) |
+| 2026-11-21T15:58:22Z | TFU-01..TFU-06 | Started | | r3 probe |
+| 2026-11-21T16:01:24Z | TFU-01..TFU-06 | Completed | Pass | r3: 6/6; TFU-04 approved in the app (approvalShown true, no stream fallback) |
+| 2026-11-21T16:01:24Z | TFL-01, TFL-02 | Started | | r3 live suite |
+| 2026-11-21T16:02:22Z | TFL-01, TFL-02 | Completed | Pass | r3: 2/2 |
+| 2026-11-21T16:02:22Z | API-REG | Started | | r3 regression suites |
+| 2026-11-21T16:16:22Z | API-REG | Completed | Pass | r3: 14/14, 2+1 skip, 8/8, memory-explorer 3/3, run-history folder 28 pass + 2 skip; memory folder 39 pass, 1 fail EC-04 episodic-catalog (chmod read-only ignored by root; not this ticket, FU-005) |
+| 2026-11-21T16:16:22Z | API-PEER | Started | | r3 two-server suite |
+| 2026-11-21T16:27:09Z | API-PEER | Completed | Pass | r3: 51/51 |
+| 2026-11-21T16:27:09Z | API-TC | Completed | Pass | r3 baseline equal |
+| 2026-11-21T16:29:20Z | ROUND 3 | Completed | Pass | all in-scope cases pass; FU-005 recorded |

@@ -1,0 +1,635 @@
+# API-REG r3 folder tests/e2e/run-history
+# Command: env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<fixture> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/run-history --no-watch --reporter=verbose
+# Commit: 51c10dd2c1 (+ uncommitted API/E2E test files)
+# Environment: Linux 6.12 aarch64 container (root), Node v22.23.3; built server dist from this worktree
+# Date: 2026-11-21T16:16:02Z
+
+
+ RUN  v4.1.12 /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+ ✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts > stopped run model-config GraphQL lifecycle > updates only a stopped standalone run config and restores the same current package after restart 9613ms
+ ✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts > stopped run model-config GraphQL lifecycle > updates exact stopped Team scopes and preserves the current V2 package across restart 9510ms
+ ✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts > stopped run model-config GraphQL lifecycle > MSR-001: a stopped agent and a stopped Team member saved onto the Claude Agent SDK runtime follow the CLI's current model list 5555ms
+ ✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts > stopped run model-config GraphQL lifecycle > MSR-002: a new agent run and a new Team run store only the settings the model declares 5065ms
+ ✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts > stopped run model-config GraphQL lifecycle > MSR-003: a stopped agent run's and Team run's options say whether the runtime's model list could be read 5960ms
+stdout | tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:30449) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts > Run projection tool-call GraphQL e2e
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+Custom app data directory set to: /tmp/run-projection-toolcalls-gql-7By6xq
+Updated config file path to /tmp/run-projection-toolcalls-gql-7By6xq/.env
+AgentRunManager initialized.
+
+stderr | tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts > Run projection tool-call GraphQL e2e > serves local replay dynamic and MCP Codex tool rows through getRunProjection
+Memory file missing: /tmp/run-projection-toolcalls-gql-7By6xq/memory/agents/run-codex-toolcalls-graphql/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts > Run projection tool-call GraphQL e2e > reopens a newly recorded provider-shaped Codex command failure with its enriched diagnostic
+Memory file missing: /tmp/run-projection-toolcalls-gql-7By6xq/memory/agents/run-codex-command-failure-local-replay/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts > Run projection tool-call GraphQL e2e > preserves Codex reasoning across runtime writes and reloads through getRunProjection
+Memory file missing: /tmp/run-projection-toolcalls-gql-7By6xq/memory/agents/run-codex-reasoning-durability-graphql/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts > Run projection tool-call GraphQL e2e > preserves the exact packaged tool-update reasoning sequence through GraphQL reload
+[AgentSegmentLifecycleRejected] {
+  runtimeKind: 'codex_app_server',
+  runId: 'run-codex-ordered-tool-reasoning-graphql',
+  turnId: 'turn-result-first',
+  eventType: 'SEGMENT_END',
+  segmentId: 'tool-result-first',
+  reason: 'SEGMENT_NOT_STARTED'
+}
+[AgentSegmentLifecycleRejected] {
+  runtimeKind: 'codex_app_server',
+  runId: 'run-codex-ordered-tool-reasoning-graphql',
+  turnId: 'turn-unseen-insufficient-terminal',
+  eventType: 'SEGMENT_END',
+  segmentId: 'web-search-insufficient',
+  reason: 'SEGMENT_NOT_STARTED'
+}
+[RuntimeToolTraceSequencer] deferred terminal tool event 'web-search-insufficient' in turn 'turn-unseen-insufficient-terminal' because authoritative call arguments were unavailable.
+[AgentSegmentLifecycleRejectedSummary] {
+  runtimeKind: 'codex_app_server',
+  runId: 'run-codex-ordered-tool-reasoning-graphql',
+  turnId: 'turn-unseen-insufficient-terminal',
+  count: 1
+}
+
+stderr | tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts > Run projection tool-call GraphQL e2e > preserves the exact packaged tool-update reasoning sequence through GraphQL reload
+Memory file missing: /tmp/run-projection-toolcalls-gql-7By6xq/memory/agents/run-codex-ordered-tool-reasoning-graphql/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts > Run projection tool-call GraphQL e2e > returns empty standalone Codex projection instead of native recovery when local replay is absent
+Memory file missing: /tmp/run-projection-toolcalls-gql-7By6xq/memory/agents/run-codex-local-replay-absent/raw_traces_manifest.json
+
+ ✓ tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts > Run projection tool-call GraphQL e2e > serves local replay dynamic and MCP Codex tool rows through getRunProjection 14ms
+ ✓ tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts > Run projection tool-call GraphQL e2e > reopens a newly recorded provider-shaped Codex command failure with its enriched diagnostic 14ms
+ ✓ tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts > Run projection tool-call GraphQL e2e > projects an active name-bearing result without recovering archived call arguments 15ms
+ ✓ tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts > Run projection tool-call GraphQL e2e > preserves Codex reasoning across runtime writes and reloads through getRunProjection 8ms
+ ✓ tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts > Run projection tool-call GraphQL e2e > preserves the exact packaged tool-update reasoning sequence through GraphQL reload 13ms
+ ✓ tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts > Run projection tool-call GraphQL e2e > returns empty standalone Codex projection instead of native recovery when local replay is absent 5ms
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:30477) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+Custom app data directory set to: /tmp/recent-run-projection-gql-mzyf8w
+Updated config file path to /tmp/recent-run-projection-gql-mzyf8w/.env
+AgentRunManager initialized.
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates native reasoning through standalone and team GraphQL projections
+Memory file missing: /tmp/recent-run-projection-gql-mzyf8w/memory/agents/native-reasoning-standalone/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates native reasoning through standalone and team GraphQL projections
+Memory file missing: /tmp/recent-run-projection-gql-mzyf8w/memory/agents/native-reasoning-standalone/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates native reasoning through standalone and team GraphQL projections
+Memory file missing: /tmp/recent-run-projection-gql-mzyf8w/memory/agent_teams/native-reasoning-team/native-reasoning-member/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates native reasoning through standalone and team GraphQL projections
+Memory file missing: /tmp/recent-run-projection-gql-mzyf8w/memory/agent_teams/native-reasoning-team/native-reasoning-member/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals
+Memory file missing: /tmp/recent-run-projection-gql-mzyf8w/memory/agents/system-instruction-baseline/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals
+Memory file missing: /tmp/recent-run-projection-gql-mzyf8w/memory/agents/system-instruction-standalone/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals
+Memory file missing: /tmp/recent-run-projection-gql-mzyf8w/memory/agents/system-instruction-standalone/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals
+Memory file missing: /tmp/recent-run-projection-gql-mzyf8w/memory/agent_teams/system-instruction-team/system-instruction-member/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals
+Memory file missing: /tmp/recent-run-projection-gql-mzyf8w/memory/agent_teams/system-instruction-team/system-instruction-member/raw_traces_manifest.json
+
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates native reasoning through standalone and team GraphQL projections 40ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals 36ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > omits a rotated system instruction from active hydration without reading its archive 17ms
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects the newest 100 events from a >=5 MB active file without reading or changing its standalone archive
+[recent-run-projection-metrics] {"fixtureBytes":5416102,"canonicalActiveEvents":620,"returnedConversationRows":100,"returnedActivityRows":0,"payloadBytes":868832,"totalMs":36.432}
+
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects the newest 100 events from a >=5 MB active file without reading or changing its standalone archive 121ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects a team member from active traces only and preserves its archive bytes 24ms
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > traverses exactly 275 team-member active events and rejects its cursor for another subject
+Memory file missing: /tmp/recent-run-projection-gql-mzyf8w/memory/agents/active-page-275-other-subject/raw_traces_manifest.json
+
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > traverses exactly 275 standalone active events in fixed pages without opening archives 52ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > traverses exactly 275 team-member active events and rejects its cursor for another subject 68ms
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > serializes production media and shallow tool state without multi-megabyte result or log payload
+Memory file missing: /tmp/recent-run-projection-gql-mzyf8w/memory/agents/active-page-closed-payload/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > serializes production media and shallow tool state without multi-megabyte result or log payload
+Memory file missing: /tmp/recent-run-projection-gql-mzyf8w/memory/agents/active-page-closed-payload/raw_traces_manifest.json
+
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > serializes production media and shallow tool state without multi-megabyte result or log payload
+[active-trace-page-closed-payload-metrics] {"fixtureBytes":4861018,"returnedEvents":3,"returnedVisuals":7,"serializedEventBytes":2386,"totalMs":13.431}
+
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > keeps a cursor valid across append and expires it after an atomic active rewrite 29ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > serializes production media and shallow tool state without multi-megabyte result or log payload 47ms
+(node:30490) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts > A top run's tree is built from its open Tasks: upgrade, start, load, save and restarts (built server, scripted AGY) > OT-1 a closure removes the run from the tree (never stored in the tree file); token total and Memory page keep it 16119ms
+ ✓ tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts > A top run's tree is built from its open Tasks: upgrade, start, load, save and restarts (built server, scripted AGY) > OT-2 an upgraded data root: admitted at start; trees hold open runs only; a read writes nothing; a load reads no closed run; the first save keeps only what it must 7058ms
+ ✓ tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts > A top run's tree is built from its open Tasks: upgrade, start, load, save and restarts (built server, scripted AGY) > OT-3 a Task record that cannot be read hides its run with a warning naming the Task; restored, the run is back 8515ms
+(node:31511) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+Custom app data directory set to: /tmp/uc-e2e-ux6T4g
+Updated config file path to /tmp/uc-e2e-ux6T4g/.env
+Loading environment from: /tmp/uc-e2e-ux6T4g/.env
+◇ injected env (2) from ../../../../../../../tmp/uc-e2e-ux6T4g/.env // tip: ⌘ enable debugging { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/uc-e2e-ux6T4g
+DB DIRECTORY: /tmp/uc-e2e-ux6T4g/db
+LOGS DIRECTORY: /tmp/uc-e2e-ux6T4g/logs
+DOWNLOAD DIRECTORY: /tmp/uc-e2e-ux6T4g/download
+MEMORY DIRECTORY: /tmp/uc-e2e-ux6T4g/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+AgentRunManager initialized.
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+AgentRunManager initialized.
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Creating temp workspace at: /tmp/uc-e2e-ux6T4g/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/uc-e2e-ux6T4g/temp_workspace.
+Initialized TempWorkspace at /tmp/uc-e2e-ux6T4g/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Agent Definition created successfully with ID: uc-host-9559cb
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Agent Definition created successfully with ID: uc-helper-9559cb
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Creating new workspace for rootPath: /tmp/uc-e2e-ux6T4g/workspace
+Created metadata-only FileSystemWorkspace at /tmp/uc-e2e-ux6T4g/workspace.
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Created and registered workspace ID: agent_ws_dc2548065df1197151dd25448e0c07eeb6fbb660c87248a85d99991b5c48f57f
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Creating new workspace for rootPath: /tmp/uc-e2e-ux6T4g/workspace
+Created metadata-only FileSystemWorkspace at /tmp/uc-e2e-ux6T4g/workspace.
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Reusing registered workspace ID: agent_ws_dc2548065df1197151dd25448e0c07eeb6fbb660c87248a85d99991b5c48f57f
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+AGY compaction detection off for run uc_host_9559cb_12d568cfb52847d4a03390915d0a9c5b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_12d568cfb52847d4a03390915d0a9c5b/raw_traces_manifest.json
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Agent websocket attached for run uc_host_9559cb_12d568cfb52847d4a03390915d0a9c5b
+Created agent session 92aa4701-e6ce-46dd-903a-3581991ea0a9 for run uc_host_9559cb_12d568cfb52847d4a03390915d0a9c5b
+Agent WebSocket connected: session=92aa4701-e6ce-46dd-903a-3581991ea0a9, run=uc_host_9559cb_12d568cfb52847d4a03390915d0a9c5b
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_12d568cfb52847d4a03390915d0a9c5b/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_12d568cfb52847d4a03390915d0a9c5b/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_12d568cfb52847d4a03390915d0a9c5b/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_12d568cfb52847d4a03390915d0a9c5b/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_12d568cfb52847d4a03390915d0a9c5b/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_12d568cfb52847d4a03390915d0a9c5b/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_12d568cfb52847d4a03390915d0a9c5b/raw_traces_manifest.json
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Creating new workspace for rootPath: /tmp/uc-e2e-ux6T4g/workspace
+Created metadata-only FileSystemWorkspace at /tmp/uc-e2e-ux6T4g/workspace.
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Reusing registered workspace ID: agent_ws_dc2548065df1197151dd25448e0c07eeb6fbb660c87248a85d99991b5c48f57f
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Creating new workspace for rootPath: /tmp/uc-e2e-ux6T4g/workspace
+Created metadata-only FileSystemWorkspace at /tmp/uc-e2e-ux6T4g/workspace.
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Reusing registered workspace ID: agent_ws_dc2548065df1197151dd25448e0c07eeb6fbb660c87248a85d99991b5c48f57f
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_12d568cfb52847d4a03390915d0a9c5b/raw_traces_manifest.json
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+AGY compaction detection off for run uc_helper_9559cb_f667080e8dfa414c8616500c4ea019e8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_helper_9559cb_f667080e8dfa414c8616500c4ea019e8/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_12d568cfb52847d4a03390915d0a9c5b/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_12d568cfb52847d4a03390915d0a9c5b/raw_traces_manifest.json
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Closed agent session 92aa4701-e6ce-46dd-903a-3581991ea0a9
+Agent WebSocket disconnected: 92aa4701-e6ce-46dd-903a-3581991ea0a9
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Creating new workspace for rootPath: /tmp/uc-e2e-ux6T4g/workspace
+Created metadata-only FileSystemWorkspace at /tmp/uc-e2e-ux6T4g/workspace.
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Reusing registered workspace ID: agent_ws_dc2548065df1197151dd25448e0c07eeb6fbb660c87248a85d99991b5c48f57f
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Creating new workspace for rootPath: /tmp/uc-e2e-ux6T4g/workspace
+Created metadata-only FileSystemWorkspace at /tmp/uc-e2e-ux6T4g/workspace.
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Reusing registered workspace ID: agent_ws_dc2548065df1197151dd25448e0c07eeb6fbb660c87248a85d99991b5c48f57f
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+AGY compaction detection off for run uc_host_9559cb_b3dacd6d5db54c869cc9b20c187061f7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_b3dacd6d5db54c869cc9b20c187061f7/raw_traces_manifest.json
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Agent websocket attached for run uc_host_9559cb_b3dacd6d5db54c869cc9b20c187061f7
+Created agent session b9000a55-6979-4c8e-a693-9dc687554322 for run uc_host_9559cb_b3dacd6d5db54c869cc9b20c187061f7
+Agent WebSocket connected: session=b9000a55-6979-4c8e-a693-9dc687554322, run=uc_host_9559cb_b3dacd6d5db54c869cc9b20c187061f7
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_b3dacd6d5db54c869cc9b20c187061f7/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_b3dacd6d5db54c869cc9b20c187061f7/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_b3dacd6d5db54c869cc9b20c187061f7/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_b3dacd6d5db54c869cc9b20c187061f7/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_b3dacd6d5db54c869cc9b20c187061f7/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_b3dacd6d5db54c869cc9b20c187061f7/raw_traces_manifest.json
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Creating new workspace for rootPath: /tmp/uc-e2e-ux6T4g/workspace
+Created metadata-only FileSystemWorkspace at /tmp/uc-e2e-ux6T4g/workspace.
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Reusing registered workspace ID: agent_ws_dc2548065df1197151dd25448e0c07eeb6fbb660c87248a85d99991b5c48f57f
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_b3dacd6d5db54c869cc9b20c187061f7/raw_traces_manifest.json
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Creating new workspace for rootPath: /tmp/uc-e2e-ux6T4g/workspace
+Created metadata-only FileSystemWorkspace at /tmp/uc-e2e-ux6T4g/workspace.
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Reusing registered workspace ID: agent_ws_dc2548065df1197151dd25448e0c07eeb6fbb660c87248a85d99991b5c48f57f
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_b3dacd6d5db54c869cc9b20c187061f7/raw_traces_manifest.json
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+AGY compaction detection off for run uc_helper_9559cb_13ee416ab2f84471b18d9154cfa8fda5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_helper_9559cb_13ee416ab2f84471b18d9154cfa8fda5/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_b3dacd6d5db54c869cc9b20c187061f7/raw_traces_manifest.json
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Closed agent session b9000a55-6979-4c8e-a693-9dc687554322
+Agent WebSocket disconnected: b9000a55-6979-4c8e-a693-9dc687554322
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Creating new workspace for rootPath: /tmp/uc-e2e-ux6T4g/workspace
+Created metadata-only FileSystemWorkspace at /tmp/uc-e2e-ux6T4g/workspace.
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Reusing registered workspace ID: agent_ws_dc2548065df1197151dd25448e0c07eeb6fbb660c87248a85d99991b5c48f57f
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Creating new workspace for rootPath: /tmp/uc-e2e-ux6T4g/workspace
+Created metadata-only FileSystemWorkspace at /tmp/uc-e2e-ux6T4g/workspace.
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Reusing registered workspace ID: agent_ws_dc2548065df1197151dd25448e0c07eeb6fbb660c87248a85d99991b5c48f57f
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+AGY compaction detection off for run uc_host_9559cb_e27a6a3f769c49a7ad327a7dbd2e9c79: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_e27a6a3f769c49a7ad327a7dbd2e9c79/raw_traces_manifest.json
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Agent websocket attached for run uc_host_9559cb_e27a6a3f769c49a7ad327a7dbd2e9c79
+Created agent session d46c5e40-108d-45e3-a8b8-38b0f4dd9d6f for run uc_host_9559cb_e27a6a3f769c49a7ad327a7dbd2e9c79
+Agent WebSocket connected: session=d46c5e40-108d-45e3-a8b8-38b0f4dd9d6f, run=uc_host_9559cb_e27a6a3f769c49a7ad327a7dbd2e9c79
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_e27a6a3f769c49a7ad327a7dbd2e9c79/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_e27a6a3f769c49a7ad327a7dbd2e9c79/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_e27a6a3f769c49a7ad327a7dbd2e9c79/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_e27a6a3f769c49a7ad327a7dbd2e9c79/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_e27a6a3f769c49a7ad327a7dbd2e9c79/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_e27a6a3f769c49a7ad327a7dbd2e9c79/raw_traces_manifest.json
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Creating new workspace for rootPath: /tmp/uc-e2e-ux6T4g/workspace
+Created metadata-only FileSystemWorkspace at /tmp/uc-e2e-ux6T4g/workspace.
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Reusing registered workspace ID: agent_ws_dc2548065df1197151dd25448e0c07eeb6fbb660c87248a85d99991b5c48f57f
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_e27a6a3f769c49a7ad327a7dbd2e9c79/raw_traces_manifest.json
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Creating new workspace for rootPath: /tmp/uc-e2e-ux6T4g/workspace
+Created metadata-only FileSystemWorkspace at /tmp/uc-e2e-ux6T4g/workspace.
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Reusing registered workspace ID: agent_ws_dc2548065df1197151dd25448e0c07eeb6fbb660c87248a85d99991b5c48f57f
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_e27a6a3f769c49a7ad327a7dbd2e9c79/raw_traces_manifest.json
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+AGY compaction detection off for run uc_helper_9559cb_429d11d9fc3243fd870f640497673f89: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_helper_9559cb_429d11d9fc3243fd870f640497673f89/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Memory file missing: /tmp/uc-e2e-ux6T4g/memory/agents/uc_host_9559cb_e27a6a3f769c49a7ad327a7dbd2e9c79/raw_traces_manifest.json
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)
+Closed agent session d46c5e40-108d-45e3-a8b8-38b0f4dd9d6f
+Agent WebSocket disconnected: d46c5e40-108d-45e3-a8b8-38b0f4dd9d6f
+
+stdout | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots) > UC-1 the other runs work, the bad run reports that its data cannot be read, a warning names it, no file changes
+prisma:info Starting a sqlite pool with 21 connections.
+
+ ✓ tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots) > UC-1 the other runs work, the bad run reports that its data cannot be read, a warning names it, no file changes 58ms
+ ✓ tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots) > UC-2 a new server process starts with the unreadable run file present and the same holds 4941ms
+ ✓ tests/e2e/run-history/removed-remote-provider-saved-selection-graphql.e2e.test.ts > saved selections of the removed remote AutoByteus provider > refuses a native runtime launch with a remote identifier and still launches with a current model 5062ms
+ ✓ tests/e2e/run-history/removed-remote-provider-saved-selection-graphql.e2e.test.ts > saved selections of the removed remote AutoByteus provider > keeps a stopped run that saved a remote model visible with its value and blocks its restore 13863ms
+ ✓ tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts > run history stored with the removed skillAccessMode through the running server > opens stored agent, team and agent-org history through a GraphQL contract that no longer has the field 5058ms
+(node:32322) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/run-history/large-run-activation-timing.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+ ↓ tests/e2e/run-history/large-run-activation-timing.e2e.test.ts > C35-04: activating a run with a large stored conversation (measurement; scripted AGY) > records restore, stream-open and first-turn times for a small and a several-MB run
+(node:32339) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/run-history/history-list-read-timing.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+ ↓ tests/e2e/run-history/history-list-read-timing.e2e.test.ts > C14-01: the history list reads' time with many delegated runs under listed Teams and Orgs (real HTTP/GraphQL, scoped MCP, scripted AGY) > times the two list reads before and after many delegations under listed Teams and Orgs
+
+ Test Files  7 passed | 2 skipped (9)
+      Tests  28 passed | 2 skipped (30)
+   Start at  16:13:51
+   Duration  130.80s (transform 11.00s, setup 358ms, import 29.23s, tests 99.30s, environment 1ms)
+

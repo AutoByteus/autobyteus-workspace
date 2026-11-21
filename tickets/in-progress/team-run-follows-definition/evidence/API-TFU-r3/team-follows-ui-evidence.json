@@ -1,0 +1,516 @@
+{
+  "startedAt": "2026-11-21T15:58:23.221Z",
+  "steps": [
+    {
+      "at": "2026-11-21T15:58:44.856Z",
+      "text": "seeded",
+      "details": {
+        "teamRunId": "tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60",
+        "runOf": {
+          "/lead": "tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045",
+          "/writer": "tfu_writer_ed0da6_19677d1b7e074c778cebd5ca712c1971",
+          "/reviewer": "tfu_reviewer_ed0da6_2d379f3b0e514957868d390e35486d08",
+          "/scout": "tfu_reviewer_ed0da6_25b0b09802e24e44a1dfbd267b6e2f41"
+        }
+      }
+    },
+    {
+      "at": "2026-11-21T15:59:02.764Z",
+      "text": "team view open",
+      "details": {
+        "before": [
+          {
+            "address": "/lead",
+            "text": "L lead now",
+            "leaving": false,
+            "current": "true"
+          },
+          {
+            "address": "/writer",
+            "text": "W writer now",
+            "leaving": false,
+            "current": false
+          }
+        ],
+        "dataTests": [
+          "toast-container",
+          "app-left-panel-shell",
+          "app-left-panel-sections",
+          "app-left-panel-primary-nav",
+          "app-left-panel-chat",
+          "app-left-panel-new-chat",
+          "app-left-panel-collapse",
+          "chat-draft-rows",
+          "nodes-network-icon",
+          "app-left-panel-section-resize-handle",
+          "app-left-panel-run-history",
+          "run-section-title",
+          "run-section-view-menu",
+          "workspace-history-tree-scroll",
+          "workspace-row",
+          "workspace-team-definition-row-tfu-team-ed0da6",
+          "team-aggregate-status-dot",
+          "workspace-team-group-archive-tfu-team-ed0da6",
+          "workspace-team-row-tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60",
+          "workspace-team-run-disclosure",
+          "workspace-team-execution-tree",
+          "workspace-team-member-tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60-/lead",
+          "workspace-hierarchy-branches",
+          "workspace-team-member-avatar",
+          "workspace-team-member-tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60-/writer",
+          "workspace-adaptive-layout",
+          "workspace-center-right-flow",
+          "workspace-center-pane",
+          "workspace-center-content-shell",
+          "team-workspace-surface",
+          "workspace-header-edit-config",
+          "workspace-header-new-run",
+          "agent-event-monitor",
+          "agent-conversation-feed",
+          "inter-agent-inline",
+          "inter-agent-toggle",
+          "workspace-right-resize-handle",
+          "workspace-right-panel",
+          "right-side-tab-list",
+          "right-side-panel-toggle",
+          "right-side-tab-content-shell",
+          "collaboration-messages-section",
+          "collaboration-messages-header",
+          "team-communication-split",
+          "team-communication-left-list",
+          "team-communication-message-list",
+          "team-communication-message-row",
+          "team-communication-message-summary",
+          "team-communication-direction-icon",
+          "team-communication-resize-handle",
+          "team-communication-detail-pane",
+          "message-identity-toggle",
+          "team-communication-message-markdown",
+          "right-side-terminal-panel",
+          "terminal-panel",
+          "terminal-panel-entry"
+        ]
+      }
+    },
+    {
+      "at": "2026-11-21T15:59:04.348Z",
+      "text": "rows after the change (no reload)",
+      "details": {
+        "after": [
+          {
+            "address": "/lead",
+            "text": "L lead now",
+            "leaving": false,
+            "current": "true"
+          },
+          {
+            "address": "/reviewer",
+            "text": "R reviewer now",
+            "leaving": false,
+            "current": false
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-11-21T15:59:05.890Z",
+      "text": "reviewer selected",
+      "details": {
+        "header": "R reviewer Offline Context Files (0) (drag, paste, or upload) Projects Files Tea",
+        "reviewerRow": {
+          "address": "/reviewer",
+          "text": "R reviewer now",
+          "leaving": false,
+          "current": false
+        }
+      }
+    },
+    {
+      "at": "2026-11-21T15:59:09.998Z",
+      "text": "Team tab",
+      "details": {
+        "tabFound": true,
+        "writerMessageShown": true,
+        "writerAddressShown": false,
+        "excerpt": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nIntegrations\nWorkspaces\nworkspace\nTEAMS\ntfu-team-ed0da6\n(1)\nCALL_TOOL:{\"name\":\"send_message_to\",\"arguments\":{\"recipient_address\":\"/lead\",\"content\":\"WRITER-NO...\nnow\nL\nlead\nnow\nR\nreviewer\nnow\nSettings\nL\nlead\nIdle\nL\nlead\n\nFrom Tfu Writer:\n\nWRITER-NOTE-ed0da6\n\nOK\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files."
+      }
+    },
+    {
+      "at": "2026-11-21T15:59:18.048Z",
+      "text": "fresh load after the coordinator change",
+      "details": {
+        "rows": [
+          {
+            "address": "/lead",
+            "text": "L lead now",
+            "leaving": false,
+            "current": false
+          },
+          {
+            "address": "/reviewer",
+            "text": "R reviewer now",
+            "leaving": false,
+            "current": "true"
+          }
+        ],
+        "header": "R reviewer Idle You Hello reviewer, please answer. R reviewer OK Context Files"
+      }
+    },
+    {
+      "at": "2026-11-21T15:59:33.604Z",
+      "text": "reviewer leaving",
+      "details": {
+        "rowsWhileLeaving": [
+          {
+            "address": "/lead",
+            "text": "L lead now",
+            "leaving": false,
+            "current": "true"
+          },
+          {
+            "address": "/reviewer",
+            "text": "R reviewer Leaving now",
+            "leaving": true,
+            "current": false
+          }
+        ],
+        "marks": {
+          "tags": [
+            {
+              "text": "Leaving",
+              "title": "Removed from the team; finishing its current turn"
+            }
+          ]
+        },
+        "header": "R reviewer Running You Hello reviewer, please answer. R reviewer OK You Hello",
+        "stopVisible": true,
+        "opened": true,
+        "rowText": "R reviewer Leaving now"
+      }
+    },
+    {
+      "at": "2026-11-21T15:59:46.945Z",
+      "text": "team stopped while the scout was leaving",
+      "details": {
+        "rowsAfterStop": [
+          {
+            "address": "/lead",
+            "text": "L lead 1m",
+            "leaving": false,
+            "current": "true"
+          }
+        ],
+        "markerAfterStop": [
+          "/scout"
+        ]
+      }
+    },
+    {
+      "at": "2026-11-21T16:00:25.793Z",
+      "text": "leaving coder opened",
+      "details": {
+        "approvalShown": true,
+        "rowText": "C coder Leaving now",
+        "header": "C coder Running You Run exactly this shell command once: echo leaving > /root/.a"
+      }
+    }
+  ],
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 19298
+    },
+    {
+      "label": "frontend",
+      "pid": 19390
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 19390,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 19298,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw"
+    }
+  ],
+  "browserErrors": [],
+  "cases": {
+    "TFU-01": {
+      "result": "Pass",
+      "details": {
+        "before": [
+          {
+            "address": "/lead",
+            "text": "L lead now",
+            "leaving": false,
+            "current": "true"
+          },
+          {
+            "address": "/writer",
+            "text": "W writer now",
+            "leaving": false,
+            "current": false
+          }
+        ],
+        "after": [
+          {
+            "address": "/lead",
+            "text": "L lead now",
+            "leaving": false,
+            "current": "true"
+          },
+          {
+            "address": "/reviewer",
+            "text": "R reviewer now",
+            "leaving": false,
+            "current": false
+          }
+        ],
+        "reviewerRow": {
+          "address": "/reviewer",
+          "text": "R reviewer now",
+          "leaving": false,
+          "current": false
+        },
+        "writerMessageShown": true,
+        "reviewerOfflineBeforeMessage": "{\"executionTree\":{\"created_at\":\"2026-11-21T15:58:43.302Z\",\"archived_at\":null,\"application_binding\":null,\"handoffs\":[{\"from\":\"/lead\",\"to\":\"/reviewer\",\"rules\":[\"Review drafts.\"]}],\"root_team\":{\"address\":\"/\",\"team_definition_id\":\"tfu-team-ed0da6\",\"team_definition_name\":\"tfu-team-ed0da6\",\"team_run_id\":\""
+      },
+      "ms": 13854
+    },
+    "TFU-02": {
+      "result": "Pass",
+      "details": {
+        "rows": [
+          {
+            "address": "/lead",
+            "text": "L lead now",
+            "leaving": false,
+            "current": false
+          },
+          {
+            "address": "/reviewer",
+            "text": "R reviewer now",
+            "leaving": false,
+            "current": "true"
+          }
+        ],
+        "header": "R reviewer Idle You Hello reviewer, please answer. R reviewer OK Context Files"
+      },
+      "ms": 10508
+    },
+    "TFU-03-observed": {
+      "rowsWhileLeaving": [
+        {
+          "address": "/lead",
+          "text": "L lead now",
+          "leaving": false,
+          "current": "true"
+        },
+        {
+          "address": "/reviewer",
+          "text": "R reviewer Leaving now",
+          "leaving": true,
+          "current": false
+        }
+      ],
+      "marks": {
+        "tags": [
+          {
+            "text": "Leaving",
+            "title": "Removed from the team; finishing its current turn"
+          }
+        ]
+      },
+      "header": "R reviewer Running You Hello reviewer, please answer. R reviewer OK You Hello",
+      "stopVisible": true,
+      "opened": true,
+      "rowText": "R reviewer Leaving now",
+      "rowsAfter": [
+        {
+          "address": "/lead",
+          "text": "L lead now",
+          "leaving": false,
+          "current": "true"
+        }
+      ]
+    },
+    "TFU-03": {
+      "result": "Pass",
+      "details": {
+        "rowsWhileLeaving": [
+          {
+            "address": "/lead",
+            "text": "L lead now",
+            "leaving": false,
+            "current": "true"
+          },
+          {
+            "address": "/reviewer",
+            "text": "R reviewer Leaving now",
+            "leaving": true,
+            "current": false
+          }
+        ],
+        "marks": {
+          "tags": [
+            {
+              "text": "Leaving",
+              "title": "Removed from the team; finishing its current turn"
+            }
+          ]
+        },
+        "header": "R reviewer Running You Hello reviewer, please answer. R reviewer OK You Hello",
+        "stopVisible": true,
+        "opened": true,
+        "rowText": "R reviewer Leaving now",
+        "rowsAfter": [
+          {
+            "address": "/lead",
+            "text": "L lead now",
+            "leaving": false,
+            "current": "true"
+          }
+        ]
+      },
+      "ms": 13704
+    },
+    "TFU-06": {
+      "result": "Pass",
+      "details": {
+        "rowsAfterStop": [
+          {
+            "address": "/lead",
+            "text": "L lead 1m",
+            "leaving": false,
+            "current": "true"
+          }
+        ],
+        "markerAfterStop": [
+          "/scout"
+        ]
+      },
+      "ms": 13239
+    },
+    "TFU-05": {
+      "result": "Pass",
+      "details": {
+        "copyRunId": "tfu_team_ed0da6_170653c987be45edad7c5c3500c9180a",
+        "copiedFrom": "team_definition",
+        "tagged": {
+          "serverRow": {
+            "key": "team_member:tfu_team_ed0da6_170653c987be45edad7c5c3500c9180a:tfu_reviewer_ed0da6_77faf5c453f849779c23fd86e757f21c",
+            "parentKey": "team:tfu_team_ed0da6_170653c987be45edad7c5c3500c9180a",
+            "kind": "team_member",
+            "name": "scout",
+            "address": "/scout",
+            "openTarget": {
+              "runKind": "agent_team",
+              "runId": "tfu_team_ed0da6_170653c987be45edad7c5c3500c9180a",
+              "agentRunId": "tfu_reviewer_ed0da6_77faf5c453f849779c23fd86e757f21c"
+            },
+            "statusIds": [
+              "tfu_reviewer_ed0da6_77faf5c453f849779c23fd86e757f21c"
+            ],
+            "launch": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace",
+              "source": {
+                "origin": "inherited",
+                "fallbacks": []
+              },
+              "ownSource": false
+            },
+            "leaving": true,
+            "depth": 2
+          },
+          "domTags": [
+            "S scout Leaving"
+          ]
+        }
+      },
+      "ms": 16869
+    },
+    "TFU-04-observed": {
+      "rows": [
+        {
+          "address": "/lead",
+          "text": "L lead Loading activity…",
+          "leaving": false,
+          "current": "true"
+        },
+        {
+          "address": "/coder",
+          "text": "C coder Leaving now",
+          "leaving": true,
+          "current": false
+        }
+      ],
+      "approvalShown": true,
+      "rowText": "C coder Leaving now",
+      "ran": true,
+      "approvals": [
+        "run_bash",
+        "another"
+      ],
+      "approvedByStream": [],
+      "released": [
+        {
+          "address": "/lead",
+          "text": "L lead now",
+          "leaving": false,
+          "current": "true"
+        }
+      ],
+      "outsideFile": "leaving\n"
+    },
+    "TFU-04": {
+      "result": "Pass",
+      "details": {
+        "rows": [
+          {
+            "address": "/lead",
+            "text": "L lead Loading activity…",
+            "leaving": false,
+            "current": "true"
+          },
+          {
+            "address": "/coder",
+            "text": "C coder Leaving now",
+            "leaving": true,
+            "current": false
+          }
+        ],
+        "approvalShown": true,
+        "rowText": "C coder Leaving now",
+        "ran": true,
+        "approvals": [
+          "run_bash",
+          "another"
+        ],
+        "approvedByStream": [],
+        "released": [
+          {
+            "address": "/lead",
+            "text": "L lead now",
+            "leaving": false,
+            "current": "true"
+          }
+        ],
+        "outsideFile": "leaving\n"
+      },
+      "ms": 51580
+    }
+  },
+  "ownedRoot": "/root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw",
+  "backendUrl": "http://127.0.0.1:42503",
+  "frontUrl": "http://127.0.0.1:41359",
+  "completedAt": "2026-11-21T16:00:56.119Z"
+}

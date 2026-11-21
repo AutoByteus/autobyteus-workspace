@@ -1,0 +1,353 @@
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+App data directory: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data
+Config file path: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/.env
+Loading environment from: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/.env
+◇ injected env (0) from ../../../../../../../root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:42503
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:42503
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+APP DATA DIRECTORY: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data
+DB DIRECTORY: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/db
+LOGS DIRECTORY: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/logs
+DOWNLOAD DIRECTORY: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/download
+MEMORY DIRECTORY: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-linux-arm64-openssl-3.0.x.so.node, schema=schema-engine-linux-arm64-openssl-3.0.x)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/db/probe.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.34                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+Database migrations completed successfully.
+(node:19298) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-21T15:58:28.023Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 34 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/temp_workspace.
+Initialized TempWorkspace at /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1795276708758,"pid":19298,"hostname":"8abfa09513cd","msg":"Server listening at http://127.0.0.1:38179"}
+{"level":30,"time":1795276708795,"pid":19298,"hostname":"8abfa09513cd","msg":"Server listening at http://127.0.0.1:42503"}
+[2026-11-21T15:58:28.796Z] [INFO] [server.runtime] Server listening on 127.0.0.1:42503
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Hub Staging Sweep' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Creating new workspace for rootPath: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace.
+Created and registered workspace ID: agent_ws_9b3b9e0e5a1beb65c3709fbcf582f4955fd4ef04ac50da4f714157f17d082e2b
+Created agent session 862e41ca-9d1f-47c5-98cd-864bf16de2f0 for run tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Agent team websocket attached for team run tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Agent Team WebSocket connected: session=862e41ca-9d1f-47c5-98cd-864bf16de2f0, run=tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Creating new workspace for rootPath: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace.
+Reusing registered workspace ID: agent_ws_9b3b9e0e5a1beb65c3709fbcf582f4955fd4ef04ac50da4f714157f17d082e2b
+AGY compaction detection off for run tfu_writer_ed0da6_19677d1b7e074c778cebd5ca712c1971: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_writer_ed0da6_19677d1b7e074c778cebd5ca712c1971/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Creating new workspace for rootPath: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace.
+Reusing registered workspace ID: agent_ws_9b3b9e0e5a1beb65c3709fbcf582f4955fd4ef04ac50da4f714157f17d082e2b
+AGY compaction detection off for run tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Closed agent session 862e41ca-9d1f-47c5-98cd-864bf16de2f0
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Created agent session 2ddc59cd-6fc2-4ede-9daa-49eab8dc171a for run tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Agent team websocket attached for team run tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Agent Team WebSocket connected: session=2ddc59cd-6fc2-4ede-9daa-49eab8dc171a, run=tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Created terminal session bde5a8ec-51e9-424a-8927-7178e0765417 using backend PtySession for target /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/home
+Terminal WebSocket connected: bde5a8ec-51e9-424a-8927-7178e0765417
+Terminal websocket attached for cwd /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/home
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Closed agent session 2ddc59cd-6fc2-4ede-9daa-49eab8dc171a
+Closed PTY session bde5a8ec-51e9-424a-8927-7178e0765417
+Terminal WebSocket disconnected: bde5a8ec-51e9-424a-8927-7178e0765417
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Created agent session 94c5633d-728c-4085-9e35-928d9dfd017a for run tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Agent team websocket attached for team run tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Agent Team WebSocket connected: session=94c5633d-728c-4085-9e35-928d9dfd017a, run=tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Created terminal session 82b5c38d-974e-46ef-856e-3450206e6d54 using backend PtySession for target /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/home
+Terminal WebSocket connected: 82b5c38d-974e-46ef-856e-3450206e6d54
+Terminal websocket attached for cwd /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/home
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_reviewer_ed0da6_2d379f3b0e514957868d390e35486d08/raw_traces_manifest.json
+Creating new workspace for rootPath: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace.
+Reusing registered workspace ID: agent_ws_9b3b9e0e5a1beb65c3709fbcf582f4955fd4ef04ac50da4f714157f17d082e2b
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_reviewer_ed0da6_2d379f3b0e514957868d390e35486d08/raw_traces_manifest.json
+AGY compaction detection off for run tfu_reviewer_ed0da6_2d379f3b0e514957868d390e35486d08: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_reviewer_ed0da6_2d379f3b0e514957868d390e35486d08/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_reviewer_ed0da6_2d379f3b0e514957868d390e35486d08/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Closed agent session 94c5633d-728c-4085-9e35-928d9dfd017a
+Closed PTY session 82b5c38d-974e-46ef-856e-3450206e6d54
+Terminal WebSocket disconnected: 82b5c38d-974e-46ef-856e-3450206e6d54
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_reviewer_ed0da6_2d379f3b0e514957868d390e35486d08/raw_traces_manifest.json
+Created agent session b31e1a52-7fbc-497c-9ea4-d12617195aa0 for run tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Agent team websocket attached for team run tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Agent Team WebSocket connected: session=b31e1a52-7fbc-497c-9ea4-d12617195aa0, run=tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_reviewer_ed0da6_2d379f3b0e514957868d390e35486d08/raw_traces_manifest.json
+Created terminal session 242e0f6c-4581-4998-a410-ea3827ccf8ff using backend PtySession for target /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/home
+Terminal WebSocket connected: 242e0f6c-4581-4998-a410-ea3827ccf8ff
+Terminal websocket attached for cwd /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/home
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_reviewer_ed0da6_2d379f3b0e514957868d390e35486d08/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_reviewer_ed0da6_2d379f3b0e514957868d390e35486d08/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_reviewer_ed0da6_2d379f3b0e514957868d390e35486d08/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_reviewer_ed0da6_2d379f3b0e514957868d390e35486d08/raw_traces_manifest.json
+Closed agent session b31e1a52-7fbc-497c-9ea4-d12617195aa0
+Closed PTY session 242e0f6c-4581-4998-a410-ea3827ccf8ff
+Terminal WebSocket disconnected: 242e0f6c-4581-4998-a410-ea3827ccf8ff
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Created agent session 385c163d-cb3e-49ba-89c5-d18cf7086131 for run tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Agent team websocket attached for team run tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Agent Team WebSocket connected: session=385c163d-cb3e-49ba-89c5-d18cf7086131, run=tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Created terminal session 3d65ce35-ea44-4860-a9e5-8c53e57469b1 using backend PtySession for target /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/home
+Terminal WebSocket connected: 3d65ce35-ea44-4860-a9e5-8c53e57469b1
+Terminal websocket attached for cwd /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/home
+Created agent session ee444e1e-8504-4f68-9d9c-ac784c499db3 for run tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Agent team websocket attached for team run tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Agent Team WebSocket connected: session=ee444e1e-8504-4f68-9d9c-ac784c499db3, run=tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_reviewer_ed0da6_2d379f3b0e514957868d390e35486d08/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_reviewer_ed0da6_2d379f3b0e514957868d390e35486d08/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Closed agent session ee444e1e-8504-4f68-9d9c-ac784c499db3
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Closed agent session 385c163d-cb3e-49ba-89c5-d18cf7086131
+Closed PTY session 3d65ce35-ea44-4860-a9e5-8c53e57469b1
+Terminal WebSocket disconnected: 3d65ce35-ea44-4860-a9e5-8c53e57469b1
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Created agent session ef2c4673-8385-4f17-a524-239e1b81972e for run tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Agent team websocket attached for team run tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Agent Team WebSocket connected: session=ef2c4673-8385-4f17-a524-239e1b81972e, run=tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Created terminal session bfdc4b93-0083-46b3-8eda-2edec94765dd using backend PtySession for target /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/home
+Terminal WebSocket connected: bfdc4b93-0083-46b3-8eda-2edec94765dd
+Terminal websocket attached for cwd /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/home
+Created agent session a90de7c0-7fad-42b0-bea1-109402fcc9bd for run tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Agent team websocket attached for team run tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Agent Team WebSocket connected: session=a90de7c0-7fad-42b0-bea1-109402fcc9bd, run=tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Creating new workspace for rootPath: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace.
+Reusing registered workspace ID: agent_ws_9b3b9e0e5a1beb65c3709fbcf582f4955fd4ef04ac50da4f714157f17d082e2b
+AGY compaction detection off for run tfu_reviewer_ed0da6_25b0b09802e24e44a1dfbd267b6e2f41: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_reviewer_ed0da6_25b0b09802e24e44a1dfbd267b6e2f41/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Creating new workspace for rootPath: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace.
+Reusing registered workspace ID: agent_ws_9b3b9e0e5a1beb65c3709fbcf582f4955fd4ef04ac50da4f714157f17d082e2b
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+AGY compaction detection off for run tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Closed agent session a90de7c0-7fad-42b0-bea1-109402fcc9bd
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Creating new workspace for rootPath: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace.
+Reusing registered workspace ID: agent_ws_9b3b9e0e5a1beb65c3709fbcf582f4955fd4ef04ac50da4f714157f17d082e2b
+Creating new workspace for rootPath: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace.
+Reusing registered workspace ID: agent_ws_9b3b9e0e5a1beb65c3709fbcf582f4955fd4ef04ac50da4f714157f17d082e2b
+AGY compaction detection off for run tfu_host_ed0da6_ea9568e5bdd64a9eb519e17ae5171bf9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agents/tfu_host_ed0da6_ea9568e5bdd64a9eb519e17ae5171bf9/raw_traces_manifest.json
+Agent websocket attached for run tfu_host_ed0da6_ea9568e5bdd64a9eb519e17ae5171bf9
+Created agent session d7134911-a7a0-49fa-b744-59ae0c8a88bb for run tfu_host_ed0da6_ea9568e5bdd64a9eb519e17ae5171bf9
+Agent WebSocket connected: session=d7134911-a7a0-49fa-b744-59ae0c8a88bb, run=tfu_host_ed0da6_ea9568e5bdd64a9eb519e17ae5171bf9
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agents/tfu_host_ed0da6_ea9568e5bdd64a9eb519e17ae5171bf9/raw_traces_manifest.json
+Creating new workspace for rootPath: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace.
+Reusing registered workspace ID: agent_ws_9b3b9e0e5a1beb65c3709fbcf582f4955fd4ef04ac50da4f714157f17d082e2b
+Creating new workspace for rootPath: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace.
+Reusing registered workspace ID: agent_ws_9b3b9e0e5a1beb65c3709fbcf582f4955fd4ef04ac50da4f714157f17d082e2b
+AGY compaction detection off for run tfu_lead_ed0da6_3f01cbd5bdf24a23a9e5fe0873eda284: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_170653c987be45edad7c5c3500c9180a/tfu_lead_ed0da6_3f01cbd5bdf24a23a9e5fe0873eda284/raw_traces_manifest.json
+Created agent session 75954fbf-c67a-4a81-9c1a-82dffdf36af0 for run tfu_team_ed0da6_170653c987be45edad7c5c3500c9180a
+Agent team websocket attached for team run tfu_team_ed0da6_170653c987be45edad7c5c3500c9180a
+Agent Team WebSocket connected: session=75954fbf-c67a-4a81-9c1a-82dffdf36af0, run=tfu_team_ed0da6_170653c987be45edad7c5c3500c9180a
+Creating new workspace for rootPath: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace.
+Reusing registered workspace ID: agent_ws_9b3b9e0e5a1beb65c3709fbcf582f4955fd4ef04ac50da4f714157f17d082e2b
+AGY compaction detection off for run tfu_reviewer_ed0da6_77faf5c453f849779c23fd86e757f21c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_170653c987be45edad7c5c3500c9180a/tfu_reviewer_ed0da6_77faf5c453f849779c23fd86e757f21c/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agents/tfu_host_ed0da6_ea9568e5bdd64a9eb519e17ae5171bf9/raw_traces_manifest.json
+Agent websocket attached for run tfu_host_ed0da6_ea9568e5bdd64a9eb519e17ae5171bf9
+Created agent session 61cbb96f-da4e-453a-ac8b-1532bc46359a for run tfu_host_ed0da6_ea9568e5bdd64a9eb519e17ae5171bf9
+Agent WebSocket connected: session=61cbb96f-da4e-453a-ac8b-1532bc46359a, run=tfu_host_ed0da6_ea9568e5bdd64a9eb519e17ae5171bf9
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agents/tfu_host_ed0da6_ea9568e5bdd64a9eb519e17ae5171bf9/raw_traces_manifest.json
+Closed agent session 61cbb96f-da4e-453a-ac8b-1532bc46359a
+Agent WebSocket disconnected: 61cbb96f-da4e-453a-ac8b-1532bc46359a
+Closed agent session ef2c4673-8385-4f17-a524-239e1b81972e
+Closed PTY session bfdc4b93-0083-46b3-8eda-2edec94765dd
+Terminal WebSocket disconnected: bfdc4b93-0083-46b3-8eda-2edec94765dd
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agents/tfu_host_ed0da6_ea9568e5bdd64a9eb519e17ae5171bf9/raw_traces_manifest.json
+Agent websocket attached for run tfu_host_ed0da6_ea9568e5bdd64a9eb519e17ae5171bf9
+Created agent session 01dfccf7-b652-4eee-accb-620a2a04d167 for run tfu_host_ed0da6_ea9568e5bdd64a9eb519e17ae5171bf9
+Agent WebSocket connected: session=01dfccf7-b652-4eee-accb-620a2a04d167, run=tfu_host_ed0da6_ea9568e5bdd64a9eb519e17ae5171bf9
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agents/tfu_host_ed0da6_ea9568e5bdd64a9eb519e17ae5171bf9/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Created agent session b36b0460-ee54-4059-90c6-5ad0313a9345 for run tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Agent team websocket attached for team run tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Agent Team WebSocket connected: session=b36b0460-ee54-4059-90c6-5ad0313a9345, run=tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Created terminal session 5b00fd9d-8bde-4b85-92a7-c7bdbd88a230 using backend PtySession for target /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/home
+Terminal WebSocket connected: 5b00fd9d-8bde-4b85-92a7-c7bdbd88a230
+Terminal websocket attached for cwd /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/home
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agents/tfu_host_ed0da6_ea9568e5bdd64a9eb519e17ae5171bf9/raw_traces_manifest.json
+Closed PTY session 5b00fd9d-8bde-4b85-92a7-c7bdbd88a230
+Terminal WebSocket disconnected: 5b00fd9d-8bde-4b85-92a7-c7bdbd88a230
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Closed agent session 75954fbf-c67a-4a81-9c1a-82dffdf36af0
+Closed agent session d7134911-a7a0-49fa-b744-59ae0c8a88bb
+Agent WebSocket disconnected: d7134911-a7a0-49fa-b744-59ae0c8a88bb
+Creating new workspace for rootPath: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace.
+Reusing registered workspace ID: agent_ws_9b3b9e0e5a1beb65c3709fbcf582f4955fd4ef04ac50da4f714157f17d082e2b
+Creating new workspace for rootPath: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace-codex
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace-codex.
+Created and registered workspace ID: agent_ws_5cc7c5fcf4fddac3f06973d98891d9d47fe7b359dd5e0ea37b286654fc0f5c1f
+Created agent session 72ce9418-b5f6-40d8-9b6d-838da9e6dd14 for run tfu_codex_team_ed0da6_ef8119e4b8f44e718890bff348216e8a
+Agent team websocket attached for team run tfu_codex_team_ed0da6_ef8119e4b8f44e718890bff348216e8a
+Agent Team WebSocket connected: session=72ce9418-b5f6-40d8-9b6d-838da9e6dd14, run=tfu_codex_team_ed0da6_ef8119e4b8f44e718890bff348216e8a
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace-codex
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace-codex.
+Reusing registered workspace ID: agent_ws_5cc7c5fcf4fddac3f06973d98891d9d47fe7b359dd5e0ea37b286654fc0f5c1f
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_codex_team_ed0da6_ef8119e4b8f44e718890bff348216e8a/tfu_lead_ed0da6_bb1392f43e774872aa31a1c4c9c0842e/raw_traces_manifest.json
+Created agent session a515cc77-0014-4273-a673-3aae861df562 for run tfu_codex_team_ed0da6_ef8119e4b8f44e718890bff348216e8a
+Agent team websocket attached for team run tfu_codex_team_ed0da6_ef8119e4b8f44e718890bff348216e8a
+Agent Team WebSocket connected: session=a515cc77-0014-4273-a673-3aae861df562, run=tfu_codex_team_ed0da6_ef8119e4b8f44e718890bff348216e8a
+Closed agent session b36b0460-ee54-4059-90c6-5ad0313a9345
+Closed agent session 01dfccf7-b652-4eee-accb-620a2a04d167
+Agent WebSocket disconnected: 01dfccf7-b652-4eee-accb-620a2a04d167
+Closed agent session a515cc77-0014-4273-a673-3aae861df562
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agents/tfu_host_ed0da6_ea9568e5bdd64a9eb519e17ae5171bf9/raw_traces_manifest.json
+Agent websocket attached for run tfu_host_ed0da6_ea9568e5bdd64a9eb519e17ae5171bf9
+Created agent session 2d140512-224a-488d-8c56-4fdba10e0e1c for run tfu_host_ed0da6_ea9568e5bdd64a9eb519e17ae5171bf9
+Agent WebSocket connected: session=2d140512-224a-488d-8c56-4fdba10e0e1c, run=tfu_host_ed0da6_ea9568e5bdd64a9eb519e17ae5171bf9
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agents/tfu_host_ed0da6_ea9568e5bdd64a9eb519e17ae5171bf9/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_codex_team_ed0da6_ef8119e4b8f44e718890bff348216e8a/tfu_lead_ed0da6_bb1392f43e774872aa31a1c4c9c0842e/raw_traces_manifest.json
+Created agent session 3e3ad0f4-7253-4b7b-8669-9f91e596fee8 for run tfu_codex_team_ed0da6_ef8119e4b8f44e718890bff348216e8a
+Agent team websocket attached for team run tfu_codex_team_ed0da6_ef8119e4b8f44e718890bff348216e8a
+Agent Team WebSocket connected: session=3e3ad0f4-7253-4b7b-8669-9f91e596fee8, run=tfu_codex_team_ed0da6_ef8119e4b8f44e718890bff348216e8a
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Created agent session a1e42c28-69d4-477d-b49c-9e977382e4a6 for run tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Agent team websocket attached for team run tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Agent Team WebSocket connected: session=a1e42c28-69d4-477d-b49c-9e977382e4a6, run=tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_team_ed0da6_b810174a73d84876abfd5c4e45af3c60/tfu_lead_ed0da6_0b320a36168d4debab3149e45cec0045/raw_traces_manifest.json
+Created terminal session a2630539-9ab6-4fe7-b748-15768610fb75 using backend PtySession for target /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/home
+Terminal WebSocket connected: a2630539-9ab6-4fe7-b748-15768610fb75
+Terminal websocket attached for cwd /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/home
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_codex_team_ed0da6_ef8119e4b8f44e718890bff348216e8a/tfu_coder_ed0da6_3d4f3d19637a4ad89e65cf8e4c108dc8/raw_traces_manifest.json
+Creating new workspace for rootPath: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace-codex
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/workspace-codex.
+Reusing registered workspace ID: agent_ws_5cc7c5fcf4fddac3f06973d98891d9d47fe7b359dd5e0ea37b286654fc0f5c1f
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_codex_team_ed0da6_ef8119e4b8f44e718890bff348216e8a/tfu_coder_ed0da6_3d4f3d19637a4ad89e65cf8e4c108dc8/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_codex_team_ed0da6_ef8119e4b8f44e718890bff348216e8a/tfu_lead_ed0da6_bb1392f43e774872aa31a1c4c9c0842e/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_codex_team_ed0da6_ef8119e4b8f44e718890bff348216e8a/tfu_coder_ed0da6_3d4f3d19637a4ad89e65cf8e4c108dc8/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-ui-probe-ADfSOw/server-data/memory/agent_teams/tfu_codex_team_ed0da6_ef8119e4b8f44e718890bff348216e8a/tfu_lead_ed0da6_bb1392f43e774872aa31a1c4c9c0842e/raw_traces_manifest.json
+Closed agent session 72ce9418-b5f6-40d8-9b6d-838da9e6dd14
+Closed agent session 2d140512-224a-488d-8c56-4fdba10e0e1c
+Agent WebSocket disconnected: 2d140512-224a-488d-8c56-4fdba10e0e1c
+Closed agent session a1e42c28-69d4-477d-b49c-9e977382e4a6
+Closed agent session 3e3ad0f4-7253-4b7b-8669-9f91e596fee8
+Closed PTY session a2630539-9ab6-4fe7-b748-15768610fb75
+Terminal WebSocket disconnected: a2630539-9ab6-4fe7-b748-15768610fb75

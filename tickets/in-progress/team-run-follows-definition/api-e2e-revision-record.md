@@ -8,6 +8,7 @@ The latest coverage investigation (`api-e2e-coverage-investigation.md`) and exec
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code reviewer, `code-review-report.md`, round 1 (CRR-001 pass) | SR-008, ARCH-REV-002, IR-001, CRR-001 | N/A | Fail / 88% |
 | API-REV-002 | Code reviewer, CRR-003 (pass of IR-002), round 2 | SR-009, SR-010, ARCH-REV-004, IR-002, CRR-002, CRR-003 | Fail / 88% | Fail / 91% |
+| API-REV-003 | Code reviewer, CRR-006 (pass of IR-003, IR-004), round 3 | IR-003, IR-004, CRR-004, CRR-005, CRR-006 | Fail / 91% | Pass / 95.4% |
 
 ## Revision Entries
 
@@ -68,3 +69,28 @@ None.
 - New or remaining failure IDs: F-3, a "Leaving" row does not open the member. `getTeamMemberRunProjection` and `getTeamMemberFileChanges` refuse a member stored under `formerMembers` (`team-member-run-view-projection-service.ts:128-141`), so its pending approval cannot be answered in the app (TFU-04). Local Fix.
 - Recommended owner: code reviewer (failure-origin review), then the implementation engineer
 - Remaining risks, blocked evidence, or untested scope: API-NF (configured placement, application run) unit-covered only; FU-004; the release job's signing-record units refuse to run as root.
+
+### API-REV-003 — Round 3: F-3 resolved; Pass on the final source
+
+- Triggering role, report path, and round: code reviewer, CRR-006 (pass of IR-003 `072bdb7217`, IR-004 `6c7af4a384`), round 3
+- Triggering finding or case IDs: F-3 (round 2)
+- Related revision IDs: IR-003, IR-004, CRR-004, CRR-005, CRR-006
+- Why recorded: the rerun after the F-3 fix.
+- Coverage decisions or durable test paths changed: TF-02 now asserts that a stopped former member's conversation opens by run ID and that the Memory page attributes it to its own agent definition (commit `44fd8d073a`).
+- Cases rechecked, by impact of `8789b97a41..6c7af4a384` (location and projection services):
+  - all TF, TFU and TFL cases, API-PEER, API-REG (plus `memory-explorer-graphql` and the `memory` and `run-history` folders), API-TC;
+  - API-FS from round 2 still valid: no build input changed.
+- Commands, environment, fixture, or broader-validation delta: none, except the added folders.
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| F-3: a Leaving row does not open the member (projection and file changes refuse it) | Local Fix | Resolved: the leaving member's reads open it; its approval is answered in the app; a stopped former member opens by run ID | TF-03, TF-02, TFU-03, TFU-04 |
+
+- Canonical artifacts and sections updated: execution report (rewritten for round 3), investigation meta, progress log, follow-ups (FU-005)
+- Prior result and confidence: Fail, 91%
+- Current result and confidence: Pass, 95.4%
+- New or remaining failure IDs: none in scope. Out of scope: FU-005, `episodic-catalog` EC-04 cannot pass as root (chmod).
+- Recommended owner: code reviewer (proportional test-code review of the added suites and RC-51)
+- Remaining risks, blocked evidence, or untested scope: API-NF (configured-placement copy, application run) unit-covered only; the release job's signing units are root-limited; macOS/x64 jobs need the runner; FU-003, FU-004, FU-005.

@@ -1,0 +1,124 @@
+{
+  "stored": {
+    "tree": {
+      "createdAt": "2026-11-21T15:57:54.472Z",
+      "archivedAt": null,
+      "applicationBinding": null,
+      "handoffs": [
+        {
+          "from": "/lead",
+          "to": "/extra",
+          "rules": [
+            "Ask the extra member."
+          ]
+        }
+      ],
+      "rootTeam": {
+        "address": "/",
+        "teamDefinitionId": "tf-own-team-4d9d66",
+        "teamDefinitionName": "TF own team 4d9d66",
+        "teamRunId": "tf_own_team_4d9d66_5a24bd0f571a4881b0b3d8272d3d25a2",
+        "coordinatorAddress": "/lead",
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "antigravity_cli",
+          "llmModelIdentifier": "gemini-3.8-flash-low",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/tmp/tf-e2e-DEReUC/workspace"
+        },
+        "members": [
+          {
+            "address": "/lead",
+            "agentDefinitionId": "tf-own-lead-4d9d66",
+            "role": null,
+            "description": null,
+            "agentRunId": "tf_own_lead_4d9d66_16197f9bd47a4516b114e7ab7d96ebff",
+            "platformAgentRunId": "c0172449-72f8-4e88-8ad7-2a43d8a1613d",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/tmp/tf-e2e-DEReUC/workspace"
+            }
+          },
+          {
+            "address": "/mate",
+            "agentDefinitionId": "tf-own-mate-4d9d66",
+            "role": null,
+            "description": null,
+            "agentRunId": "tf_own_mate_4d9d66_c90df0c44cad4111ad2c44afd5c72f05",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/tmp/tf-e2e-DEReUC/workspace"
+            }
+          },
+          {
+            "address": "/extra",
+            "agentDefinitionId": "tf-own-extra-4d9d66",
+            "role": null,
+            "description": null,
+            "agentRunId": "tf_own_extra_4d9d66_c56dbf2089a54d3f8f4f947a199547a1",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/tmp/tf-e2e-DEReUC/workspace"
+            },
+            "launchSource": {
+              "origin": "team_default",
+              "fallbacks": []
+            }
+          }
+        ]
+      }
+    },
+    "members": [
+      {
+        "address": "/lead",
+        "agentRunId": "tf_own_lead_4d9d66_16197f9bd47a4516b114e7ab7d96ebff",
+        "agentDefinitionId": "tf-own-lead-4d9d66",
+        "leaving": false
+      },
+      {
+        "address": "/mate",
+        "agentRunId": "tf_own_mate_4d9d66_c90df0c44cad4111ad2c44afd5c72f05",
+        "agentDefinitionId": "tf-own-mate-4d9d66",
+        "leaving": false
+      },
+      {
+        "address": "/extra",
+        "agentRunId": "tf_own_extra_4d9d66_c56dbf2089a54d3f8f4f947a199547a1",
+        "agentDefinitionId": "tf-own-extra-4d9d66",
+        "leaving": false
+      }
+    ],
+    "former": [],
+    "coordinator": "/lead",
+    "handoffs": [
+      {
+        "from": "/lead",
+        "to": "/extra",
+        "rules": [
+          "Ask the extra member."
+        ]
+      }
+    ]
+  },
+  "leadInput": "Your team changed: its definition was updated.\nJoined: extra at /extra.\nYour handoff rules changed; call get_handoff_rules to read them.\n\nECHO_INPUT",
+  "rules": {
+    "handoffs": [
+      {
+        "when": "Ask the extra member.",
+        "recipient_address": "/extra"
+      }
+    ],
+    "isError": false
+  }
+}

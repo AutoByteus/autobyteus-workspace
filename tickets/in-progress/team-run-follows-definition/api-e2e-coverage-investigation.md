@@ -17,9 +17,9 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Code Review Revision Record: `code-review-revision-record.md`
 - Delivery Revision Record: N/A
 - API/E2E Revision Record: `api-e2e-revision-record.md` (created with the first result)
-- Current API/E2E Revision ID: `API-REV-002`
-- Current Investigation Round: 2
-- Trigger: round 1 CRR-001 pass; round 2 CRR-003 pass of IR-002 (rework of F-1, F-2; design SR-009/SR-010)
+- Current API/E2E Revision ID: `API-REV-003`
+- Current Investigation Round: 3
+- Trigger: round 1 CRR-001 pass; round 2 CRR-003 pass of IR-002 (rework of F-1, F-2; design SR-009/SR-010); round 3 CRR-006 pass of IR-003/IR-004 (F-3 fix)
 - Prior Investigation Reviewed: N/A
 - Latest Authoritative Investigation: this file
 
