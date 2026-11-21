@@ -10,6 +10,7 @@
 | SR-004 | Requirements | The founder: "always … add the node parameter … similar to delegate task"; "Yes include in this ticket" (2026-11-21) | DEC-006 | Ready for Approval (supplement) | Ready for Approval (supplement) | REQ-009, AC-010, RFC-001 RF-14, row 6, refusals | `node` required for every cross-node message |
 | SR-005 | Requirements | The founder's approval of RFC-001, 2026-11-21 | — | Ready for Approval (supplement) | Approved | RFC-001 (storage layout, RF-7, vocabulary) | Contract approved: folders by sender run ID, same-sender replacement, node-level `<data>/received_files/` |
 | SR-006 | Design | Architecture design | — | Approved | Approved; design Ready | all | `OutgoingFiles`, `ReceivedFiles`, two peer routes, RF-14 routing, runtime timeouts; Large/High |
+| SR-007 | Design | The founder: validate each use case yourself, then send for review (2026-11-21) | G-1, G-2, G-3 | Design Ready | Design Ready (self-validated) | DS-002, DS-003, DS-005 | Remote input builder lists received files; raw-body signing; RF-14 owners named |
 
 ## Revision Entries
 
@@ -48,3 +49,9 @@
 
 - Design spec written (Ready): upload before start/delivery (`OutgoingFiles`, one owner for both tools), `<data>/received_files` with pieces, verify, place as read-only hard links with same-sender replacement, link-count cleanup after history delete and at start (`ReceivedFiles`), receiving roots place in their accept step, RF-14 refusals, Codex/Claude tool timeouts set (AGY/Grok/ACP measured), docs.
 - Classification: `Large` / `High`. Next: architecture review.
+
+### SR-007 — Self-validation (founder's delegation)
+
+- Trigger: the founder, 2026-11-21: "validate each use case based on your data flow spine … then you just send for review by yourself" (the design approval the Task asks for is delegated to this validation plus the architecture review).
+- Findings fixed: G-1 remote input builder omitted the reference block; G-2 raw-body signing and a raw `PeerClient` call; G-3 RF-14 refusal owners (root `deliverExact`, CrossRun peer-run branch, `sendToPeerRun`).
+- Next: architecture review.

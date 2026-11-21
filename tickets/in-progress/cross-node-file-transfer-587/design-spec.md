@@ -2,9 +2,9 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-006`
+- Current solution revision ID: `SR-007` (the Solution Designer's spine walkthrough, G-1 … G-3)
 - Approved requirements: `requirements-doc.md` SR-005 with its behavior-defining supplement `reference-files-contract.md` (RFC-001), approved by the founder 2026-11-21 (DEC-001 … DEC-003, DEC-006 and the contract in his words; DEC-004, DEC-005 by the Solution Designer, confirmed by him).
-- User approval of the design: `Pending` — the Task's "Done when" requires "Investigation & design approved by the founder"; asked in the Solution Designer's conversation on 2026-11-21, before any handoff.
+- User approval of the design: the founder, 2026-11-21, delegated it: "validate each use case based on your data flow spine … which follows the design principles, and then you just send for review by yourself". Validation: § Design Validation Walkthrough; then independent architecture review.
 - Design status: `Ready`
 - Investigation notes: `investigation-notes.md` (§ Architecture Investigation Findings).
 - Authorities read: `references/architecture-design.md`, `references/design-principles.md` (in full, this conversation); `DESIGN.md` (root, unchanged since read); `docs/design-cases.md` (incl. the base's new Case 24 and the 572 addition, read 2026-11-21); `TESTING.md` (base diff read); `collaboration_model.md`, `remote_collaboration.md`, `node_access_model.md` (NA-9). All code read at the committed base `fbe714f8bb` (Case 5).
@@ -98,7 +98,7 @@ As RFC-001 § 1. **File descriptor:** `{sha256, size, name}` naming one transfer
 - DS-002: `send_message_to tool → Router.deliver(node) → root.deliverToPeerRun → RemoteMessageSend.sendToPeerRun → OutgoingFiles.send → engine.prepareRemoteSend (sender's paths kept) → RemoteRunLinks.deliver (+ files) → (B) PeerGateway → RemoteMessageReceiver → root.acceptRemoteMessage | acceptPeerRunMessage → ReceivedFiles.placeFor → engine.acceptFromRemote (received paths in the line and the input block) → answer → (A) engine.commitSentToRemote (sender's paths)`
 - DS-003: `PeerClient.putReceivedFilePiece → [signed; gate hashes the ≤ 8 MiB body] → PeerGateway.receivedFilePiece → ReceivedFiles.appendPiece(peer, sha256, offset, size, bytes) → on the last piece: verify size + SHA-256 → rename <sha256>.partial → <sha256>`
 - DS-004: `history delete (agent / team / org owner) commits → ReceivedFiles.sweep() → for each <data>/received_files/<sha256>: stat nlink === 1 → remove; each .partial older than 24 h → remove` (also at server start)
-- DS-005: `Router.deliver(target, node?)`: no `node`, target is a run this node knows to be on another node (a linked endpoint of the sender's root, or the tree's Task entry with `nodeId`) → `NODE_REQUIRED` naming `peerName(nodeId)`; `node` given and the sender's root links the target on another node → `NODE_MISMATCH`; otherwise as 492.
+- DS-005 (G-3: owners as the code routes): no `node`, target is a linked endpoint of the sender's root → the root's `deliverExact` (router step 1 reaches it because `hasAgentExecution` includes remote endpoints) refuses `NODE_REQUIRED` naming `peerName(endpoint.reference.nodeId)`; no `node`, target is a peer run the tree knows (Task entry with `nodeId`) → `CrossRunMessageDelivery.route`'s peer-run branch, after `closedPeerRunRefusal`, refuses `NODE_REQUIRED` with that node; `node` given and the sender's root links the target on another node → `RemoteMessageSend.sendToPeerRun` refuses `NODE_MISMATCH`; otherwise as 492 (an unknown run ID with no `node`: today's not-running text).
 
 ## Spine Narratives (Mandatory)
 
@@ -116,6 +116,8 @@ As RFC-001 § 1. **File descriptor:** `{sha256, size, name}` naming one transfer
 - **`ReceivedFiles`** (new, `remote-collaboration/inbound/received-files.ts`): `<data>/received_files/`: `status(files)`, `appendPiece` (offset check, per-file limit, `.partial`), verify-and-complete, `placeFor(agentFolder, senderRunId, descriptors)` (safe name; temp link then atomic rename over an existing same-named file; `chmod 0444`; hard link, else copy), `sweep()`. Paths are confined with the existing containment helper pattern (`resolveSafeChildPath`).
 - **Roots' accept steps** (standalone, Team, Org): call `placeFor` with their receiving agent's own folder (`AgentMemoryLayout`), then pass the received paths to the engine and the packet builder. A missing or incomplete file → `REFERENCE_FILE_CHECK_FAILED`, nothing written.
 - **Engine:** `prepareRemoteSend` keeps the sender's `referenceFiles`; `acceptFromRemote` takes the received paths. Order unchanged.
+- **Remote input builder (G-1):** `buildRemoteCommunicationInputMessage` (`root-communication-runtime-builder.ts:50-75`) today has no "Reference files:" block and sets `reference_files: []`; it uses the same block as `buildRootCommunicationInputMessage` (`:23-24`, one helper for both) and passes the received paths in `reference_files`.
+- **Peer signing (G-2):** `signPeerRequest` takes `body: string | Buffer | null` (`peer-request-signature.ts:67-73`; `sha256Hex` already accepts a Buffer); `PeerClient` gets one raw-body call beside its JSON `call` (`peer-client.ts:370-409`).
 - **Router / `RemoteMessageSend`:** RF-14 refusals (DS-005).
 - **`PeerClient` / `PeerGateway` / `remote-requests.ts`:** two routes (status JSON; piece `application/octet-stream`, `bodyLimit` 8 MiB + headroom, per-request time bound 120 s for pieces), `files` on four existing requests, strict readers.
 - **Runtime materializers:** Codex `tool_timeout_sec: 3600` and Claude `timeout: 3_600_000` on the `autobyteus_agent_tools` server (a 4 GiB transfer at 20 Mbit/s ≈ 27 min).
@@ -155,6 +157,29 @@ Entry forms:
 | 6 | form 4 with another node's name | — | `NODE_MISMATCH` |
 | 7 | same-node message or delegation with files | unchanged (RF-1) | unchanged |
 | 8 | any cross-node form with a file outside the workspace / folder / too large / no workspace | nothing sent | § 5 refusal |
+
+## Design Validation Walkthrough (SR-007)
+
+Each use case along its spine, every premise read at the committed base `fbe714f8bb` (`git show HEAD:…`).
+
+| UC / Spine | Step | Evidence | Result |
+| --- | --- | --- | --- |
+| UC-001 / DS-001 | Upload before the peer starts the run | `toPeerRun` order `task-delegation.ts:147-199`; `placement.peer.nodeId` available | Holds |
+| UC-001 / DS-001 | Sender's workspace | active run `config.workspaceId` (`agent-run-config.ts:10`) → `getWorkspaceRootPathForHistory` (`workspace-manager.ts:213`) | Holds |
+| UC-001 / DS-001 | Packet fails on B after files arrived | `markFailed` (`task-delegation.ts:187-191`); the prepared run without a packet is removed at the next start (`remote_collaboration.md`) | Holds; `.partial`s and unlinked bytes swept |
+| UC-001 / DS-001 | B lists received paths in the packet | `acceptRemoteWorkPacket` builds the packet with `referenceFiles: []` (`standalone-root-message-delivery.ts:162`); the packet builder takes `referenceFiles` | Holds (pass received paths) |
+| UC-002 / DS-002 | Sender keeps its paths in its log | `prepareRemoteSend` sets `[]` (`root-communication-engine.ts:189`); schema accepts absolute normalized paths | Holds (keep them) |
+| UC-002 / DS-002 | Recipient sees the paths | Remote builder has no block (`root-communication-runtime-builder.ts:50-75`) | **G-1**: added (Ownership Map) |
+| UC-002 / DS-002 | Receiver's log | `acceptFromRemote` forces `[]` (`:237`) | Holds (received paths) |
+| UC-003 / DS-002 | Reply copy → delegator | B's root `delegator` endpoint; `deliverExact` | Holds with RF-14 (`node`) |
+| DS-003 | Piece body checked by the gate | `preParsing`/`preValidation` (`node-access-plugin.ts:69-92`); buffer parser per scope as Memory Sync (`memory-sync.ts:66-75`) | Holds |
+| DS-003 | Signing a raw piece | `signPeerRequest` body `string \| null` (`peer-request-signature.ts:67-73`); JSON-only `call` (`peer-client.ts:370-409`) | **G-2**: raw body added |
+| UC-004 / DS-004 | Cleanup after delete | delete owners (`agent-run-history-service.ts:250`, `team-run-history-service.ts:122`, `agent-org-run-history-catalog-service.ts:115`); `fs.stat().nlink` | Holds |
+| UC-004 / DS-004 | Received file opens in Messages | content route refuses only on `EACCES` (`agent-org-reference-content-service.ts:37-42`); read-only files are readable | Holds |
+| RF-14 / DS-005 | Where the refusal is made | router step 1 → root (`hasAgentExecution` incl. remote endpoints); CrossRun peer-run branch | **G-3**: owners named |
+| RF-6 | Tool-call limits | Claude `timeout` (`sdk.d.ts:565-568`); Codex `tool_timeout_sec`; AutoByteus none; AGY/Grok/ACP unknown | Holds; risk recorded |
+
+Principles: P1 (entry forms, table above), P2/P13 (one owner per sequence; `OutgoingFiles` for both tools; no callbacks), P4 (Memory Sync pattern, `hashFile` reused), P5 (new data only), P7/P8 (removals listed), P10 (explicit descriptors and results), P11 (derived consumers listed), P15 (vocabulary from RFC-001; `received_files` at two levels, one meaning), P16 (owners built in the composition with their collaborators: `OutgoingFiles` ← workspace manager, run manager, channel; `ReceivedFiles` ← data folder, layout).
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 
