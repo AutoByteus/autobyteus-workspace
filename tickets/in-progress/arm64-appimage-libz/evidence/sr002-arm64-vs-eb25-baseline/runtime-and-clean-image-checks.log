@@ -1,0 +1,22 @@
+## readelf NEEDED (new)
+0
+## readelf NEEDED (v25)
+ 0x0000000000000001 (NEEDED)             Shared library: [libdl.so.2]
+ 0x0000000000000001 (NEEDED)             Shared library: [libpthread.so.0]
+ 0x0000000000000001 (NEEDED)             Shared library: [libz.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [ld-linux-aarch64.so.1]
+## clean-root probe new --appimage-version
+AppImage runtime version: https://github.com/AppImage/type2-runtime/commit/dd6cebe
+exit=0
+## clean-root probe new --appimage-extract AppRun
+exit=0
+## clean-root probe v25 --appimage-extract AppRun
+/image: error while loading shared libraries: libz.so: cannot open shared object file: No such file or directory
+exit=127
+## verifier via docker-chroot-shim: new
+Verified the AppImage runtime loads and extracts AppRun in a clean ubuntu:24.04 image without libz.so
+exit=0
+## verifier via docker-chroot-shim: v25 build
+Error: AppImage does not run in a clean ubuntu:24.04 image (exit 127): /autobyteus.AppImage: error while loading shared libraries: libz.so: cannot open shared object file: No such file or directory
+exit=1

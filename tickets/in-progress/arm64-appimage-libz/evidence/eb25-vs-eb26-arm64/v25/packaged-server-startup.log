@@ -1,0 +1,5 @@
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Packaged server startup validation passed for /tmp/ab28/v25/linux-arm64-unpacked/resources/server

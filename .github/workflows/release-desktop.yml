@@ -449,6 +449,12 @@ jobs:
             --arch-token linux-x64 \
             --image "$APPIMAGE"
 
+      - name: Verify Linux x64 AppImage runs in a clean Ubuntu image
+        run: |
+          APPIMAGE="$(find autobyteus-web/electron-dist -maxdepth 1 -type f -name '*linux-x64*.AppImage' -print -quit)"
+          test -n "$APPIMAGE"
+          node scripts/desktop-package/verify-clean-image-runtime.mjs "$APPIMAGE"
+
       - name: Verify Linux x64 Prisma engines
         run: |
           ENGINES_DIR="$(find autobyteus-web/resources/server/node_modules -maxdepth 6 -type d -path '*/@prisma/engines' | head -n1)"
@@ -561,6 +567,12 @@ jobs:
             --metadata autobyteus-web/electron-dist/latest-linux-arm64.yml \
             --arch-token linux-arm64 \
             --image "$APPIMAGE"
+
+      - name: Verify Linux ARM64 AppImage runs in a clean Ubuntu image
+        run: |
+          APPIMAGE="$(find autobyteus-web/electron-dist -maxdepth 1 -type f -name '*linux-arm64*.AppImage' -print -quit)"
+          test -n "$APPIMAGE"
+          node scripts/desktop-package/verify-clean-image-runtime.mjs "$APPIMAGE"
 
       - name: Verify Linux ARM64 Prisma engines
         run: |

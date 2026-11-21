@@ -1,0 +1,14 @@
+## sign-release + verify-release (build-only key)
+Verified signed desktop release 1.5.14-beta.6 arm64
+exit=0
+## verify-layout
+Verified native AppRun, unchanged Electron ELF, provisioner/client and sandbox-preserving desktop Exec
+exit=0
+## file
+arch-ok
+## updater metadata
+Validated /tmp/ab28/sr002/latest-linux-arm64.yml: linux-arm64 AppImage metadata includes embedded blockMapSize
+exit=0
+## packaged server startup
+Packaged server startup validation passed for /tmp/ab28/sr002/linux-arm64-unpacked/resources/server
+exit=0

@@ -489,6 +489,43 @@ Flavor resolution:
   2. Git context inference (`personal` / `enterprise` branch detection)
   3. Safe fallback: `enterprise`
 
+### Linux AppImage Runtime
+
+The AppImage runtime is the program at the start of the AppImage file: it mounts
+or extracts the embedded image and runs its `AppRun` (the native launcher).
+`build/scripts/linuxAppImageBuild.ts` (`buildLinuxAppImage`, called by both Linux
+branches of `build.ts`) builds the AppImage of each Linux arch:
+
+| Arch  | Runtime | What the user's system needs |
+| ----- | ------- | ---------------------------- |
+| arm64 | Static AppImage type2 runtime (electron-builder's `appimage@1.0.3` release): no shared-library dependency | FUSE 3 (`fusermount3`) to mount; without FUSE, run it with `--appimage-extract-and-run` |
+| x64   | electron-builder 25's legacy `appimage-12.0.1` runtime: needs `libz.so.1` and loads `libfuse.so.2` | `libfuse2` to mount (not installed by default on Ubuntu 22.04+); without it, `--appimage-extract-and-run` |
+
+arm64 uses the static runtime because the legacy arm64 runtime needs `libz.so`,
+which only zlib's development package installs, so no stock arm64 desktop could
+start it (autobyteus-28). electron-builder 25 has no option for the runtime: its
+`app-builder` takes the toolset folder `$ELECTRON_BUILDER_CACHE/appimage/appimage-12.0.1`
+and prepends that folder's `runtime-arm64`. For the arm64 build only,
+`build/scripts/arm64AppImageRuntime.ts` prepares that folder under
+`autobyteus-web/node_modules/.cache/autobyteus-arm64-appimage-toolset`: it
+downloads the official `appimage-12.0.1` toolset and the static runtime from
+electron-builder's GitHub releases, checks their pinned sha256 values, replaces
+`runtime-arm64`, and `buildLinuxAppImage` points `ELECTRON_BUILDER_CACHE` there
+for that build only. The build fails if a download or checksum fails, or if the
+produced AppImage does not start with the pinned static runtime. A later run
+reuses the folder only when its `runtime-arm64` has the pinned digest. x64 builds
+use electron-builder unchanged.
+
+When electron-builder is upgraded to 26 or later, replace this prepared toolset
+with electron-builder's own `toolsets.appimage` option. Before that upgrade, check
+that 26 still packages `resources/server/node_modules`: every 26.x release drops a
+copy source's root `node_modules` (autobyteus-28 IR-001, FU-003).
+
+The Desktop Release runs each Linux AppImage in a clean `ubuntu:24.04` container
+of the runner's architecture, without `libz.so`
+(`scripts/desktop-package/verify-clean-image-runtime.mjs`), because the build
+runner has libraries a stock desktop lacks.
+
 ### Electron Runtime Baseline
 
 The desktop runtime is pinned in `autobyteus-web/package.json` as exact
