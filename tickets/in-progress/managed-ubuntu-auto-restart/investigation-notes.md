@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin/personal`
 - Bootstrap result: worktree created from refreshed `origin/personal`; ticket folder `tickets/in-progress/managed-ubuntu-auto-restart/`
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-003`
 - Authorities read (requirements reading gate; 2026-11-21): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md`; repository `AGENTS.md`
 - Investigation status: requirements-phase investigation complete; architecture investigation to extend these notes
 
@@ -150,6 +150,10 @@ Authorities read for this phase (2026-11-21): `references/architecture-design.md
 | A-F06 | `autobyteus-server-ts/docs/design/node_access_model.md` NA-1, NA-2, NA-6 | New endpoints are credentialed and open to owners and phones unless a permission row restricts them | Read | No permission row needed |
 | A-F07 | Electron 42 typings `node_modules/.pnpm/electron@42.4.1/node_modules/electron/electron.d.ts:17007-17016`, `InputEvent.type` union | `webContents` `input-event` reports mouse, keyboard, wheel, touch and pointer events | Read (contract) | Input activity source; ASM-001 to observe on Wayland in the guest |
 | A-F08 | `GLOSSARY.md:476-477` | "Busy run" defined only for the restart record | Read | Generalize the entry; add "Safe restart moment" |
+| A-F09 | `autobyteus-server-ts/src/agent-execution/domain/agent-run.ts:195-218`; `backends/codex/thread/codex-thread.ts:123-153` | Background inspection returns `unsupported`, `event-stream` (current tasks), `snapshot`, or `unavailable` with `inactive` / `incomplete` / `inspection_failed`; the Codex reader stops itself at 5 s | Read (ARCH-REV-001 E-05, re-read) | Observation keeps `unknown`; safety budget 6 s |
+| A-F10 | `autobyteus-server-ts/tests/unit/restart-resume/busy-run-recorder.test.ts:141-155` | The recorder deliberately omits a run whose inspection misses its budget | Read | Recorder policy kept; the safety count may not reuse that omission |
+| A-F11 | `autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts:2` | Statuses: `offline`, `initializing`, `idle`, `running`, `error` | Read | Busy = `initializing`/`running`, or running background work in any status |
+| A-F12 | `autobyteus-web/electron/application/electronApplication.ts:384-392`; Electron `app` lifecycle (`before-quit` before windows close, `will-quit` after; `app.exit` emits neither), cited in ARCH-REV-001 MP-003 | The session hears a Quit only at `will-quit`, after windows close | Read | Deliver `before-quit` to the session; latch intent |
 
 Unknowns resolved: UNK-001 → read-only `GET /rest/busy-runs` with the launch credential (design DS-002). ASM-001 remains for validation.
 

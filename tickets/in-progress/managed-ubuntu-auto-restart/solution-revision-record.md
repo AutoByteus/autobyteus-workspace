@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Requirements | Initial coherent baseline (Task autobyteus-15 and user comment, 2026-11-21) | N/A | N/A | Approved | BEH-001..005, REQ-001..009, AC-001..011 | Approved by Solution Designer within the direction, user informed |
 | SR-002 | Design | Architecture design on approved SR-001 | N/A | Requirements Approved; no design | Requirements Approved; design Ready | BEH-001..005; REQ-001..009 | design-spec.md DS-001..DS-004; Medium / High; Architecture Design Complete |
+| SR-003 | Design | ARCH-REV-001 Fail / Design Impact | AR-001, AR-002, AR-003 | design Ready (SR-002), review Fail | design Ready (SR-003); requirements unchanged | BEH-001, BEH-002; REQ-002, REQ-004 | Corrections in design-spec.md "SR-003 Response To ARCH-REV-001"; Medium / High unchanged |
 
 ## Revision Entries
 
@@ -52,3 +53,24 @@
 - Downstream impact: independent architecture review per handoff rules
 - Remaining gaps: ASM-001 (validated in the managed Ubuntu guest)
 - Next action: architecture review
+
+### SR-003 — Design corrections for ARCH-REV-001
+
+- Phase and classification: Design, `Design Impact`
+- Trigger: `design-review-report.md` ARCH-REV-001 (Fail), reviewed basis SR-001 / SR-002 at `7841e53020`
+- Triggering finding IDs: AR-001, AR-002, AR-003
+- Prior status: requirements Approved; design Ready (SR-002), review Fail
+- Current status: requirements Approved (unchanged); design Ready (SR-003)
+- IDs affected: BEH-001, BEH-002; REQ-002, REQ-004; AC-002, AC-003, AC-004; QR-001; DS-002, DS-003, DS-004
+- Scenario basis changes: None (MP-001..MP-003 refine SCN-002..SCN-004)
+- Why recorded: review corrections
+- Canonical sections changed: `design-spec.md` (new "SR-003 Response To ARCH-REV-001", DS-002/DS-003 narratives, bounded local spine and new "Admission Boundary", interfaces, examples, tradeoffs, guidance, file map names); `investigation-notes.md` A-F09..A-F12
+- Supplements: None
+- Intended behavior changed: `No`. The five-minute rule, the busy definition and Quit-stays-closed are unchanged; only freshness, unknown handling and Quit observation are corrected
+- Approval: SR-001 approval applies unchanged; no renewed approval needed
+- Design/review basis: SR-002 review result applies only to SR-002; SR-003 needs re-review
+- Classification: Medium / High (unchanged)
+- Handoff outcome: re-review by `/architecture_reviewer` (handoff rule 1); see `handoff-architecture-review.md`
+- Downstream impact: no implementation before a passing review
+- Remaining gaps: ASM-001 (guest validation)
+- Next action: architecture re-review

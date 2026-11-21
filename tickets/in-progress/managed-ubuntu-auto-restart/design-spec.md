@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-003` (revises SR-002 for ARCH-REV-001 AR-001..AR-003; requirements unchanged)
 - Approved requirements baseline: `requirements-doc.md` at SR-001, approved by the Solution Designer within the direction (user informed, 2026-11-21)
 - Behavior-defining supplements: None
 - User approval of the design: `Not required` (the Task does not ask for it)
@@ -10,6 +10,14 @@
 - Canonical investigation-notes path: `/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/managed-ubuntu-auto-restart/tickets/in-progress/managed-ubuntu-auto-restart/investigation-notes.md`
 - Authorities read (2026-11-21): `references/architecture-design.md`, `references/design-principles.md`, `references/design-examples.md` (all examples and cases; Examples 7–11 and Cases 1, 4, 5, 9 used), repository `DESIGN.md`, `autobyteus-web/AGENTS.md`, `autobyteus-server-ts/docs/design/node_access_model.md` (NA-1, NA-2, NA-5, NA-6), `GLOSSARY.md` ("Busy run")
 - Conflicts or discrepancies: None
+
+## SR-003 Response To ARCH-REV-001
+
+| Finding | Correction in this design | Sections |
+| --- | --- | --- |
+| AR-001 stale quiet after the busy query | `SafeRestartMoment` re-validates its watch token **and** the quiet period after the busy answer arrives, then notifies in the same synchronous turn; otherwise re-arms. The session's synchronous re-checks and `intent = 'restart'` follow in that turn: this is the **admission boundary**. The server re-reads every live run's status after its awaited inspections, so a run that turned busy meanwhile is counted. The blanket "resumed after the update" mitigation is removed | DS-002, DS-004, Admission Boundary, Key Tradeoffs, Guidance |
+| AR-002 best-effort inspection is not a safe zero | The shared observation keeps three outcomes per run (`busy`, `idle`, `unknown`); timeouts, `incomplete`, `inspection_failed` and thrown reads are `unknown`; `unsupported` and `inactive` are `idle` (the runtime has no observable background work). The route answers `{ busy, unknown }`; main treats anything but `busy = 0 and unknown = 0` as wait. The safety count's inspection budget (6 s) exceeds the Codex reader's own 5 s deadline. The recorder keeps its best-effort policy and output (its timeout test stays as is) | DS-002, Interfaces, Reusable Structures, Guidance |
+| AR-003 Quit intent captured only at `will-quit` | `before-quit` (emitted by `app.quit()` before any window closes) is delivered to the session as `quitRequested()`; it latches the intent, cancels the watch and blocks any later automatic admission. Every settlement path of a restart in flight honors the latch: success, confirmed-old, stage-gone, cancelled-baseline → quit (stay closed); unknown outcome → exit 1 (the quit-ending failure rule). The session's own terminal `quit()` is passed through (`passQuit` set before it), so it never counts as a user Quit; no second shutdown or activation | DS-003, Examples, Guidance |
 
 ## Current-State Read
 
@@ -51,8 +59,8 @@ On managed Ubuntu with the switch on, a verified stage is installed through the 
 
 ## Change Scope (Mandatory)
 
-- In scope: UC-001..UC-004. Electron main: managed session lifecycle, safe-moment watcher, input activity, busy-run query, composition of the managed updates; `AppUpdater` activation mode and ready message; automatic policy's activation type. Server: busy-run rule extraction, application busy count, `GET /rest/busy-runs`. Renderer: copy selection in three components, two locale catalogs. Docs: `autobyteus-web/docs/linux-managed-desktop.md`, `GLOSSARY.md` ("Busy run", new "Safe restart moment").
-- Derived consumers: `AppUpdateState.activationMode` gains `managed-restart`. Readers and decisions: `AutoUpdateSwitch.vue:91` (explanation key: new keys for `managed-restart`), `NotificationRow.vue:98` (downloaded text), `AboutSettingsManager.vue:257` (downloaded message), `stores/appUpdateStore.ts:28,110,271` (passes through; no logic), `appUpdateAutomaticPolicy.ts` (excludes every managed mode), `appUpdater.ts:86` (sets it). The busy-run rule's readers: `BusyRunRecorder` (tick and final list; unchanged output), new count. `applicationPlatform.hostManagement.activeAgentRuns` gains `countBusy`; its existing reader `agent-runtime-status-composition.ts:46` is unchanged.
+- In scope: UC-001..UC-004. Electron main: managed session lifecycle (including `before-quit` delivery to the session), safe-moment watcher, input activity, busy-run query, composition of the managed updates; `AppUpdater` activation mode and ready message; automatic policy's activation type. Server: busy-run rule extraction, application busy count, `GET /rest/busy-runs`. Renderer: copy selection in three components, two locale catalogs. Docs: `autobyteus-web/docs/linux-managed-desktop.md`, `GLOSSARY.md` ("Busy run", new "Safe restart moment").
+- Derived consumers: `AppUpdateState.activationMode` gains `managed-restart`. Readers and decisions: `AutoUpdateSwitch.vue:91` (explanation key: new keys for `managed-restart`), `NotificationRow.vue:98` (downloaded text), `AboutSettingsManager.vue:257` (downloaded message), `stores/appUpdateStore.ts:28,110,271` (passes through; no logic), `appUpdateAutomaticPolicy.ts` (excludes every managed mode), `appUpdater.ts:86` (sets it). The busy-run rule's readers: `BusyRunRecorder` (tick and final list; unchanged output), new count. `applicationPlatform.hostManagement.activeAgentRuns` gains `observeBusy`; its existing reader `agent-runtime-status-composition.ts:46` is unchanged.
 - Deliberately left alone: writer, signing, release records, AppArmor, systemd socket, launcher and restart channel; `AppUpdateNotificationRecord` (existing outcomes reused); Mac/Windows/portable policy (`AppUpdateAutomaticPolicy` native branches); restart-resume reminders; Docker node and runtime updates; `appUpdater.ts` structure (only two lines change; no growth).
 - Follow-ups: FU-001 (Mac timing question).
 
@@ -61,7 +69,7 @@ On managed Ubuntu with the switch on, a verified stage is installed through the 
 | Behavior ID | Kind | Requirement / AC | Trigger | Existing Behavior And Evidence | Approved Change Or Preserved Outcome | Target Path / Spine |
 | --- | --- | --- | --- | --- | --- | --- |
 | BEH-001 | System | REQ-001/002/003/007/008, AC-001/002/003/007/008/009/011 | Check finds a newer release; switch on; launched by the launcher | Stage then "Ready for your next quit" (F-01, F-02) | Watch for safe moment, then automatic restart | DS-001, DS-002, DS-004 |
-| BEH-002 | User | REQ-004, AC-004 | Quit | Quit installs and stays closed; ignored during restart | Unchanged; Quit during a restart ends closed | DS-003 |
+| BEH-002 | User | REQ-004, AC-004 | Quit (`app.quit()`: menu, keyboard shortcut, last window closed) | Quit installs and stays closed; the session hears it only at `will-quit`, ignored during restart (`electronApplication.ts:388-392`, `managedUpdateSession.ts:85-86`) | Unchanged; Quit latched at `before-quit`; a Quit during a restart ends closed through every settlement | DS-003 |
 | BEH-003 | User | REQ-005, AC-006 | Click Install and restart | Manual restart | Unchanged; also cancels the watch | DS-001 (manual consent) |
 | BEH-004 | User | REQ-006, AC-005 | Switch off / channel change | Stage discarded | Unchanged; cancels the watch | DS-001 |
 | BEH-005 | System | REQ-009, AC-010 | Mac/Windows/portable | Install at once | Unchanged | — |
@@ -76,11 +84,11 @@ None.
 - Current design issue found: `Yes`
 - Structural triggers:
   - **Behavior by absence / overloaded flag (Principle 13):** `finish(..., automatic)` decides ending, failure handling and consent by one boolean that only happens to coincide today (`managedUpdateSession.ts:99,106,127,148`). An automatic restart would break that coincidence. Response: two explicit fields, `consent: 'automatic' | 'manual'` and `ending: 'quit' | 'reopen'`.
-  - **Derived data (Principle 11):** "busy" would be computed in two places (recorder and the new count). Response: one owner, `busy-runs.ts`.
+  - **Derived data (Principle 11):** "busy" would be computed in two places (recorder and the new count). Response: one owner of the observation, `busy-runs.ts`, which reports each run as `busy`/`idle`/`unknown`; each consumer applies its own policy to `unknown` (the recorder omits it, as today; the safety count refuses to certify zero).
   - **Several kinds (Principle 1):** busy runs exist in the process manager and in the application scope's manager. Response: both counted; traced in DS-002.
   - **Responsibility overload / size (Principle 12):** `electronApplication.ts` at 500 lines would grow with new wiring. Response: managed-update composition moves to `managedUpdates.ts`, so the root shrinks.
   - **Hidden dependency (Principle 16):** none added; every new owner receives its collaborators by constructor from `composeManagedUpdates`, called from the composition root. The server count reads `AgentRunManager.getInstance()` in the composition file, as `agent-runtime-status-composition.ts:20-27` already does (an existing process singleton fixed before the routes register).
-  - **Empty indirection (Principle 13):** `fetchBusyRunCount` is a function at a real I/O boundary (HTTP); `SafeRestartMoment` owns timing policy; no port or wrapper is added.
+  - **Empty indirection (Principle 13):** `fetchBusyRuns` is a function at a real I/O boundary (HTTP); `SafeRestartMoment` owns timing policy; no port or wrapper is added.
   - Ruled out: persisted-data transition (no stored shape changes), ambiguous boundary (count route takes no selector), shared folder (none).
 - Deliberate deviations: None.
 - Root cause classification: `Boundary Or Ownership Issue` (the ending/consent conflation) on top of an intentional policy change.
@@ -116,22 +124,23 @@ Followed.
 | Spine ID | Scope | Behavior | Start | End | Governing Owner | Why It Matters |
 | --- | --- | --- | --- | --- | --- | --- |
 | DS-001 | Primary End-to-End | BEH-001, BEH-003, BEH-004 | Writer reports a verified stage | Launcher reopens the new version | `ManagedUpdateSession` | The automatic restart itself |
-| DS-002 | Primary End-to-End | BEH-001 | Safe-moment check | Busy-run count returned | `SafeRestartMoment` (asker), server busy-run owner (answer) | Defines "no agent working" across both run managers |
-| DS-003 | Return-Event | BEH-002 | User Quit during wait or restart | App closed, stage activated | `ManagedUpdateSession` | Quit stays closed |
+| DS-002 | Primary End-to-End | BEH-001 | Safe-moment check | Busy/unknown counts returned | `SafeRestartMoment` (asker), server busy-run owner (answer) | Defines "no agent working" across both run managers |
+| DS-003 | Return-Event | BEH-002 | User Quit (`before-quit`) during wait or restart | App closed; at most one activation | `ManagedUpdateSession` | Quit stays closed |
 | DS-004 | Bounded Local | BEH-001 | Watch armed | Callback or cancel | `SafeRestartMoment` | The waiting loop |
 
 ## Primary Execution Spine(s)
 
 - DS-001: `Writer stage receipt -> ManagedUpdateSession (pending stage) -> SafeRestartMoment.watch -> [safe] -> ManagedUpdateSession.restartAutomatically -> ApplicationShutdown.stop -> Writer.activate -> restart channel 'R' -> app.exit(76) -> Launcher reopens fixed AppImage -> AppUpdater on next launch shows "Updated automatically to <version>"`
-- DS-002: `SafeRestartMoment -> fetchBusyRunCount (HTTP, launch credential) -> GET /rest/busy-runs -> busy-runs count composition -> countBusyRuns(process AgentRunManager) + application scope countBusy -> busy-runs.ts rule`
+- DS-002: `SafeRestartMoment -> fetchBusyRuns (HTTP, launch credential) -> GET /rest/busy-runs -> busy-run count composition -> observeBusyRuns(process AgentRunManager) + application scope observeBusyRuns -> busy-runs.ts (sync status, inspections, status re-read)`
+- DS-003: `app.quit() -> before-quit -> ManagedUpdateSession.quitRequested() (latch, cancel watch) -> [windows close] -> will-quit -> ManagedUpdateSession.willQuit -> finish settles -> quit (passQuit) | exit 1`
 
 ## Spine Narratives (Mandatory)
 
 | Spine ID | Short Narrative | Main Nodes | Governing Owner | Off-Spine Concerns |
 | --- | --- | --- | --- | --- |
 | DS-001 | When a stage is ready and the switch is on and the restart channel exists and the version is not blocked, the session arms the watch. When the watch reports a safe moment, the session re-checks everything (same stage and generation, no intent, switch on, channel, not blocked), sets intent `restart` with `consent: automatic, ending: reopen`, emits `activating` (automatic record), stops the server, activates, and hands back to the launcher. Any invalidation (new download, switch off, channel change, blocked version, click, quit) cancels the watch | Session, writer, launcher | `ManagedUpdateSession` | `SafeRestartMoment`, `ApplicationShutdown`, restart channel |
-| DS-002 | The watch asks the embedded node how many runs are busy; the route sums the process manager's busy runs and the application scope's, using the one busy rule (with the bounded Codex inspection). An unreachable node, a missing credential or any error answers "unknown", which counts as busy | Watch, route, rule | Server busy-run rule owns the fact | Launch credential |
-| DS-003 | A Quit while waiting takes today's quit path (activate if the switch is on, stay closed). A Quit while a restart is in progress sets `quitRequested`; before the reopen indication is written the session quits instead (`passQuit`, `quit()`); the activation already done stands | Session | `ManagedUpdateSession` | — |
+| DS-002 | The watch asks the embedded node for its busy runs. For each manager (process and application scope) the observation reads every live run's status; a run `initializing`/`running`, or with a running background task (synchronous view), is `busy`. Every other run with an inspectable background view is inspected (all at once, 6 s budget): a running task → `busy`, a complete empty view or `unsupported`/`inactive` → `idle`, `incomplete`/`inspection_failed`/timeout/thrown → `unknown`. After the inspections it re-reads every live run's status (new runs included) and marks any now busy run `busy`. The route sums `{ busy, unknown }`. Main waits unless the answer is `200 { busy: 0, unknown: 0 }`; an unreachable node, missing credential, malformed answer or timeout is unknown | Watch, route, observation | Server busy-run observation owns the fact | Launch credential |
+| DS-003 | `app.quit()` emits `before-quit` before closing any window; the composition root forwards it to `session.quitRequested()` unless the session itself is passing its own terminal quit. The session latches `quitRequested`, cancels the watch, and refuses any later automatic admission. Waiting: `will-quit` then takes today's quit path (activate if the switch is on, stay closed). Restart in flight: no new stop or activation; when the in-flight `finish` settles it reads the latch at every ending decision: success, confirmed-old, stage-gone or confirmed cancelled baseline → `passQuit = true; quit()`; unknown outcome → `exit(1)`; the reopen indication is never written once the latch is set. A Quit after the reopen indication was written is not observable (the process exits at once) | Session | `ManagedUpdateSession` | Composition root wiring of `before-quit` |
 | DS-004 | See bounded local spine below | Watch | `SafeRestartMoment` | Timers, input activity, busy query |
 
 ## Spine Actors / Main-Line Nodes
@@ -140,10 +149,10 @@ Followed.
 
 ## Ownership Map
 
-- `ManagedUpdateSession`: managed stage, generation, intent (`quit`/`restart`/`failed-restart`), `quitRequested`, consent and ending of the activation in flight; arms and cancels the watch; all re-checks before activation.
+- `ManagedUpdateSession`: managed stage, generation, intent (`quit`/`restart`/`failed-restart`), the latched `quitRequested`, consent and ending of the activation in flight; arms and cancels the watch; all re-checks before activation (the admission boundary); the final ending decision at settlement.
 - `SafeRestartMoment`: the waiting policy only (quiet period 5 min, recheck interval 30 s, "unknown counts as busy"); one watch at a time; never starts an activation itself, only notifies.
 - `UserInputActivity`: time of the last in-app input.
-- Busy-run rule (`agent-execution/services/busy-runs.ts`): what a busy run is, including the bounded background-task inspection.
+- Busy-run observation (`agent-execution/services/busy-runs.ts`): what a busy run is and when the answer is unknown, including the bounded background-task inspection and the status re-read; no consumer policy.
 - Route `api/rest/busy-runs.ts`: HTTP boundary only.
 - `AppUpdater`: unchanged ownership; sets `activationMode` from `session.canReopen`.
 
@@ -172,7 +181,17 @@ DS-003 above. Session events to `AppUpdater` are unchanged in shape (`ready`, `a
 ## Bounded Local / Internal Spines (If Applicable)
 
 - Parent owner: `SafeRestartMoment`
-- `watch(onSafe) -> check: quiet = now - lastInputAt >= 5 min? no -> timer(lastInputAt + 5 min) -> check | yes -> busy count -> (null or > 0) -> timer(30 s) -> check | 0 -> onSafe()`; `cancel()` clears the timer and drops the callback; a busy query in flight whose watch was cancelled is ignored (watch token).
+- `watch(onSafe) -> token = new -> check:`
+  1. `quietFor = now - lastInputAt`; if `< 5 min` → timer at `lastInputAt + 5 min` → check.
+  2. `answer = await busyRuns()`.
+  3. After the await: token no longer current → stop. `now - lastInputAt < 5 min` (input arrived during the query) → timer at `lastInputAt + 5 min` → check.
+  4. `answer` is null, or `busy > 0`, or `unknown > 0` → timer 30 s → check.
+  5. Otherwise → `onSafe()` in this same synchronous turn (no await between step 3 and the session's admission).
+- `cancel()` invalidates the token and clears the timer; a query in flight for an old token is ignored at step 3.
+
+### Admission Boundary
+
+The automatic restart is admitted in one synchronous turn: `SafeRestartMoment` step 3–5 (fresh token, fresh quiet, `busy = 0 and unknown = 0` from an answer the server computed after re-reading run statuses), then `ManagedUpdateSession`'s re-checks (same stage and generation, `intent === null`, no latched Quit, switch on, channel, not blocked, restart channel present) and `intent = 'restart'`. Before this turn, any input, busy run, unknown observation, Quit, switch or channel change prevents the restart. After it, the stop proceeds: input or a new agent turn that starts during the server stop is after the decision, as with the click. The remaining gap between the server's status re-read and admission is the HTTP return (milliseconds). The design does not rely on restart-resume reminders for this gap; application runs have none.
 - Why: this loop is the "deferral during work" the Task asks to verify.
 
 ## Off-Spine Concerns Around The Spine
@@ -180,7 +199,7 @@ DS-003 above. Session events to `AppUpdater` are unchanged in shape (`ready`, `a
 | Concern | Spine | Serves | Responsibility | Why | Risk If On Main Line |
 | --- | --- | --- | --- | --- | --- |
 | `UserInputActivity` | DS-004 | `SafeRestartMoment` | Last input time from all web contents | Quiet-period signal | Session would hold Electron input wiring |
-| `fetchBusyRunCount` | DS-002 | `SafeRestartMoment` | HTTP call, timeout 5 s, null on failure | I/O boundary | Timing policy would mix with HTTP |
+| `fetchBusyRuns` | DS-002 | `SafeRestartMoment` | HTTP call, timeout 10 s (above the server's 6 s inspection budget), null on failure or malformed answer | I/O boundary | Timing policy would mix with HTTP |
 | Restart channel, writer, `ApplicationShutdown` | DS-001 | Session | Unchanged | — | — |
 
 ## Ownership Boundaries
@@ -197,8 +216,8 @@ DS-003 above. Session events to `AppUpdater` are unchanged in shape (`ready`, `a
 
 ## Dependency Rules
 
-- `composeManagedUpdates` (called in `ElectronApplication` constructor) creates, in order: writer (`detectLinuxManagedInstall`), restart channel (`claimManagedRestart`), `UserInputActivity` (installed immediately, before any window), `SafeRestartMoment({ lastInputAt, busyRunCount, timers, now })`, `ManagedUpdateSession({ ..., restartMoment })`. All constructor-passed.
-- `busyRunCount` is a closure over `ElectronApplication`'s embedded base URL and `serverManager.getLaunchOwnerCredential()`; it is evaluated per call, so a server restart's new credential is used.
+- `composeManagedUpdates` (called in `ElectronApplication` constructor) creates, in order: writer (`detectLinuxManagedInstall`), restart channel (`claimManagedRestart`), `UserInputActivity` (installed immediately, before any window), `SafeRestartMoment({ lastInputAt, busyRuns, timers, now })`, `ManagedUpdateSession({ ..., restartMoment })`. All constructor-passed.
+- `busyRuns` is a closure over `ElectronApplication`'s embedded base URL and `serverManager.getLaunchOwnerCredential()`; it is evaluated per call, so a server restart's new credential is used.
 - Server: `composeBusyRunCount({ application: hostManagement.activeAgentRuns })` in `compositions/`, passed into `registerRestRoutes` dependencies. It reads `AgentRunManager.getInstance()` per call, like `agent-runtime-status-composition.ts:20-27`; the singleton exists before routes register and a missing one throws.
 - `SafeRestartMoment` must not import Electron or the session; the session must not import `fetch` or Electron input APIs.
 - Process-wide bindings added: `None`.
@@ -207,27 +226,28 @@ DS-003 above. Session events to `AppUpdater` are unchanged in shape (`ready`, `a
 
 | Interface | Subject | Responsibility | Identity Shape | Notes |
 | --- | --- | --- | --- | --- |
-| `GET /rest/busy-runs` → `200 { count: number }` | busy runs of this node | Count | none | Owners and phones (NA-2); no secret in the answer |
-| `countBusyRuns(manager, inspectionBudgetMs): Promise<number>` and `busyStatusOf(run)` (`busy-runs.ts`) | busy rule | Rule and count | a run manager | Recorder uses `busyStatusOf` and the inspection; count uses both |
-| `activeAgentRuns.countBusy(): Promise<number>` (application platform host contract) | application runs | Count | none | Implemented by `ApplicationExecutionScope.countBusyAgentRuns` |
-| `SafeRestartMoment.watch(onSafe)`, `.cancel()` | waiting | Notify once at a safe moment | none | One watch at a time |
+| `GET /rest/busy-runs` → `200 { busy: number, unknown: number }` | busy runs of this node | Counts | none | Owners and phones (NA-2); no secret in the answer. `unknown` counts runs whose background work could not be observed |
+| `observeBusyRuns(manager, inspectionBudgetMs): Promise<{ busy: number; unknown: number }>`; `busyStatusOf(run)` (sync); `inspectBackgroundWork(runs, budgetMs): Promise<Map<runId, 'running' \| 'none' \| 'unknown'>>` (`busy-runs.ts`) | busy observation | Facts, no policy | a run manager / runs | Recorder: `busyStatusOf` for its tick and `inspectBackgroundWork` at its final write, omitting `unknown` as today. Count: all three |
+| `activeAgentRuns.observeBusy(): Promise<{ busy: number; unknown: number }>` (application platform host contract) | application runs | Counts | none | Implemented by `ApplicationExecutionScope.observeBusyAgentRuns` with `observeBusyRuns` |
+| `SafeRestartMoment.watch(onSafe)`, `.cancel()` | waiting | Notify once at a safe moment, validated after the busy answer (Admission Boundary) | none | One watch at a time |
+| `ManagedUpdateSession.quitRequested()` | user Quit intent | Latch, cancel watch | none | Called by the composition root on `before-quit` unless the session is passing its own quit (`session.passingQuit`) |
 | `UserInputActivity.lastInputAt(): number` | input time | Read | none | Starts at construction time |
 | `ManagedUpdateSession.canReopen: boolean` | restart channel presence | Read | none | For `activationMode` |
-| `fetchBusyRunCount(baseUrl, credential): Promise<number \| null>` | HTTP boundary | Query | base URL + credential | null = unknown |
+| `fetchBusyRuns(baseUrl, credential): Promise<{ busy: number; unknown: number } \| null>` | HTTP boundary | Query | base URL + credential | null = unknown |
 
 ## Interface Boundary Check
 
 | Interface | Singular? | Explicit Identity? | Ambiguous Selector Risk | Action |
 | --- | --- | --- | --- | --- |
 | `GET /rest/busy-runs` | Yes | Yes (none) | Low | — |
-| `countBusyRuns` | Yes | Yes | Low | — |
+| `observeBusyRuns` | Yes | Yes | Low | — |
 | `watch/cancel` | Yes | Yes | Low | — |
 
 ## Main Domain Subject Naming Check
 
 | Subject | Name | Natural? | Same Meaning Everywhere? | Drift Risk | Action |
 | --- | --- | --- | --- | --- | --- |
-| Busy run | `busy-runs.ts`, `/rest/busy-runs`, `countBusy` | Yes | Yes after glossary update | Low | Update `GLOSSARY.md` "Busy run" to the general meaning; restart record uses it |
+| Busy run | `busy-runs.ts`, `/rest/busy-runs`, `observeBusy` | Yes | Yes after glossary update | Low | Update `GLOSSARY.md` "Busy run" to the general meaning; restart record uses it |
 | Safe restart moment | `SafeRestartMoment` | Yes | New; add to glossary | Low | Add entry |
 | Activation mode | `managed-restart` / `managed-quit` | Yes | `managed-quit` keeps its meaning "installs only at quit" | Low | — |
 | Consent / ending | `consent`, `ending` | Yes | Session-local | Low | — |
@@ -262,13 +282,13 @@ See Final File Responsibility Mapping (no change after the shared-structure chec
 
 | Repeated Logic | Shared File | Owner | Why | Redundant Removed | Overlap Removed | Must Not Become |
 | --- | --- | --- | --- | --- | --- | --- |
-| Busy predicate and Codex background inspection | `autobyteus-server-ts/src/agent-execution/services/busy-runs.ts` | agent execution | Recorder and count must agree | Yes | Yes | A placement or record writer |
+| Busy predicate and background inspection | `autobyteus-server-ts/src/agent-execution/services/busy-runs.ts` | agent execution | Recorder and count share one meaning of busy and of unknown; each keeps its own policy for unknown | Yes | Yes | A placement or record writer, or a policy that drops unknown |
 
 ## Shared Structure / Data Model Tightness Check
 
 | Structure | One Meaning? | Redundant Removed? | Overlap Risk | Action |
 | --- | --- | --- | --- | --- |
-| `{ count: number }` | Yes | Yes | Low | — |
+| `{ busy: number; unknown: number }` | Yes | Yes | Low | `unknown` is never folded into `busy` or dropped |
 | `AppUpdateActivationMode` | Yes | Yes | Low | Export the union from `shared/appUpdateTypes.ts`; policy imports it |
 
 ## Final File Responsibility Mapping
@@ -278,17 +298,17 @@ See Final File Responsibility Mapping (no change after the shared-structure chec
 | `autobyteus-web/electron/application/managedUpdateSession.ts` | application | `ManagedUpdateSession` | Managed lifecycle incl. automatic restart, watch arming, Quit during restart | Modify |
 | `autobyteus-web/electron/application/managedUpdates.ts` | application | composition | `composeManagedUpdates(...)`: writer detection, restart channel, input activity, safe moment, session | Add |
 | `autobyteus-web/electron/application/userInputActivity.ts` | application | `UserInputActivity` | Last in-app input time | Add |
-| `autobyteus-web/electron/application/electronApplication.ts` | application | composition root | Calls `composeManagedUpdates`; provides `busyRunCount` closure | Modify (net shorter) |
+| `autobyteus-web/electron/application/electronApplication.ts` | application | composition root | Calls `composeManagedUpdates`; provides the `busyRuns` closure; forwards `before-quit` to `session.quitRequested()` unless `session.passingQuit` | Modify (net shorter) |
 | `autobyteus-web/electron/updater/safeRestartMoment.ts` | updater | `SafeRestartMoment` | Waiting loop | Add |
-| `autobyteus-web/electron/server/embeddedBusyRuns.ts` | server (main side) | function | `fetchBusyRunCount` | Add |
+| `autobyteus-web/electron/server/embeddedBusyRuns.ts` | server (main side) | function | `fetchBusyRuns` | Add |
 | `autobyteus-web/electron/updater/appUpdater.ts` | updater | `AppUpdater` | `activationMode` from `canReopen`; neutral ready message | Modify (no growth) |
 | `autobyteus-web/electron/updater/appUpdateAutomaticPolicy.ts` | updater | policy | `activation` typed `AppUpdateActivationMode`; managed exclusion `!== 'native'` | Modify |
 | `autobyteus-web/shared/appUpdateTypes.ts` | shared | contract | `AppUpdateActivationMode = 'native' \| 'managed-restart' \| 'managed-quit'` | Modify |
 | `autobyteus-web/components/notifications/AutoUpdateSwitch.vue`, `NotificationRow.vue`, `components/settings/AboutSettingsManager.vue` | renderer | components | Copy key by mode | Modify |
 | `autobyteus-web/localization/messages/{en,zh-CN}/updateNotifications.ts` | localization | catalogs | New keys `app.readyToRestart`, `auto.explain.managedRestartApp`, `auto.explainOn.managedRestartApp` | Modify |
-| `autobyteus-server-ts/src/agent-execution/services/busy-runs.ts` | agent execution | rule | `busyStatusOf`, `inspectIdleBackgroundTasks`, `countBusyRuns` | Add |
+| `autobyteus-server-ts/src/agent-execution/services/busy-runs.ts` | agent execution | observation | `busyStatusOf`, `inspectBackgroundWork`, `observeBusyRuns` | Add |
 | `autobyteus-server-ts/src/restart-resume/busy-run-recorder.ts` | restart resume | recorder | Uses the rule; placement and writing unchanged | Modify |
-| `autobyteus-server-ts/src/application-platform/execution/application-execution-scope.ts`, `runtime/application-platform-runtime-contracts.ts`, `runtime/build-application-platform-runtime.ts` | application platform | scope / contract | `countBusyAgentRuns()` / `activeAgentRuns.countBusy()` | Modify |
+| `autobyteus-server-ts/src/application-platform/execution/application-execution-scope.ts`, `runtime/application-platform-runtime-contracts.ts`, `runtime/build-application-platform-runtime.ts` | application platform | scope / contract | `observeBusyAgentRuns()` / `activeAgentRuns.observeBusy()` | Modify |
 | `autobyteus-server-ts/src/compositions/busy-run-count-composition.ts` | compositions | composition | process + application sum | Add |
 | `autobyteus-server-ts/src/api/rest/busy-runs.ts`, `api/rest/index.ts`, `compositions/build-studio-server.ts` | REST | route | `GET /busy-runs`; dependency wiring | Add / Modify |
 | `autobyteus-web/docs/linux-managed-desktop.md`, `GLOSSARY.md` | docs | — | Behavior and terms | Modify |
@@ -315,8 +335,9 @@ As the Final File Responsibility Mapping; no new folders.
 | --- | --- | --- | --- |
 | Activation parameters | `finish(stage, gen, { consent: 'automatic', ending: 'reopen' })`; quit path `{ consent: 'automatic', ending: 'quit' }`; click `{ consent: 'manual', ending: 'reopen' }` | `finish(stage, gen, automatic)` plus a second boolean `reopen` | Each check reads the one field it means (`ending` for stop-failure tolerance, exit code and reopen; `consent` for the switch/block re-check and the record kind) |
 | Safe callback | `moment.watch(() => this.restartWhenStillValid(stage, generation))` with the session re-checking | moment calling `writer.activate` or `requestRestart()` | Activation stays in one owner; a stale callback cannot act |
-| Quit during restart | `willQuit`: `if (intent === 'restart') { quitRequested = true; return }`; before `requestReopen()`: `if (quitRequested) { passQuit = true; quit(); return }` | Ignoring the Quit, or cancelling the activation already dispatched | Quit stays closed; activation is not interrupted midway |
-| Unknown busy state | `null` → wait 30 s | `null` → treat as idle | Never restart on missing evidence |
+| Quit during restart | composition: `app.on('before-quit', () => { if (!session.passingQuit) session.quitRequested() })`; session: `quitRequested() { this.quitLatched = true; this.moment.cancel() }`; in `finish`, one helper `end(ending)` used by every settlement: `const final = this.quitLatched ? 'quit' : ending; if (final === 'quit') { this.passQuit = true; this.options.quit(); return } /* reopen */`; unknown-outcome failure: `this.quitLatched \|\| ending === 'quit' ? exit(1) : failed-restart` | Latching in `will-quit` (after windows closed); ignoring the Quit; cancelling a dispatched activation; starting a second shutdown | Quit stays closed with one activation |
+| Unknown busy state | server `{ busy: 0, unknown: 1 }` or main `null` → wait 30 s | inspection timeout dropped and `0` returned; `unsupported` counted as busy forever | Never restart on missing evidence; never block forever on a runtime that has no background view |
+| Fresh quiet | after `await busyRuns()`: `if (token !== this.token) return; if (now() - lastInputAt() < QUIET) return this.schedule(lastInputAt() + QUIET)` | checking quiet only before the await | Input during the query defers |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 
@@ -332,8 +353,8 @@ N/A.
 
 ## Change / Refactor Sequence
 
-1. Server: add `busy-runs.ts`; move the recorder onto it (recorder tests stay green); add application `countBusy`; add composition and route; route test.
-2. Electron: split `finish` parameters (existing session tests green with the same outcomes); add `UserInputActivity`, `SafeRestartMoment`, `fetchBusyRunCount`; add watch arming, `restartAutomatically`, `quitRequested`, `canReopen`; add `composeManagedUpdates` and slim the root; `activationMode` and policy type.
+1. Server: add `busy-runs.ts`; move the recorder onto it (recorder tests, including the timeout-omission test, stay green unchanged); add application `observeBusy`; add composition and route; observation and route tests (slow snapshot over budget, `incomplete`, `inspection_failed`, genuine empty snapshot, `unsupported`, application-owned background run, run turning busy during inspection).
+2. Electron: split `finish` parameters (existing session tests green with the same outcomes); add `quitRequested` and the `before-quit` wiring; add `UserInputActivity`, `SafeRestartMoment`, `fetchBusyRuns`; add watch arming, `restartAutomatically`, `quitRequested`, `canReopen`; add `composeManagedUpdates` and slim the root; `activationMode` and policy type.
 3. Renderer copy and locales; docs and glossary.
 4. Rewrite stale managed tests; add new owner tests (AC-001..AC-008).
 5. API/E2E: managed Ubuntu guest (AC-011).
@@ -342,7 +363,8 @@ N/A.
 
 - Polling the busy count every 30 s (only while a stage waits) vs a server push: polling is simple, bounded and only active during the wait.
 - 5-minute quiet period is fixed, not a setting (DEC-001).
-- A run that turns busy in the milliseconds between the last check and the stop is not prevented; the existing restart recorder records it and resumes it after the update (autobyteus-285), so it is not lost.
+- Admission is decided on the server's status re-read plus the HTTP return; work that starts after the admission turn (during the server stop) is after the decision, as with the click. No reliance on restart-resume (Admission Boundary).
+- `unknown` defers: a runtime whose background view keeps failing postpones the restart until it answers, the user quits or clicks. Accepted under DEC-002 (no forced restart).
 
 ## Risks
 
@@ -353,11 +375,14 @@ N/A.
 ## Guidance For Implementation
 
 - Reproduction to start from: `None` (behavior change). Start from `electron/application/__tests__/managedUpdateSession.spec.ts`: add failing cases for "ready + switch on + safe → activates and reopens (exit 76, automatic record)", "quit during automatic restart → quit, no reopen", "switch off before safe → no activation".
-- Re-check in the safe callback: same `stage` object and `generation`, `intent === null`, `requestReopen` present, `lastSettings.automaticUpdate`, `stage.channel === lastSettings.updateChannel`, version not `automaticInstallBlockedVersion`. Any failure: do nothing (the watch is cancelled already by the invalidating event).
-- Arm the watch: after `ready` (when the switch is on), in `settingsChanged` when the switch turns on with a pending stage, never when `requestReopen` is null. Cancel on: `stageDownloaded` start, invalidation, `requestRestart`, `willQuit`, block of the pending version.
+- Re-check in the safe callback (synchronous, no await before `intent = 'restart'`): `!quitLatched`, same `stage` object and `generation`, `intent === null`, `requestReopen` present, `lastSettings.automaticUpdate`, `stage.channel === lastSettings.updateChannel`, version not `automaticInstallBlockedVersion`. Any failure: do nothing (the watch is cancelled already by the invalidating event).
+- Arm the watch: after `ready` (when the switch is on), in `settingsChanged` when the switch turns on with a pending stage, never when `requestReopen` is null. Cancel on: `stageDownloaded` start, invalidation, `requestRestart`, `quitRequested`, `willQuit`, block of the pending version.
+- Quit settlement: every ending decision in `finish` goes through one helper reading `quitLatched` (success, confirmed-old, stage-gone, cancelled-baseline); the unknown-outcome catch exits 1 when latched. A latched Quit never leaves the session parked in `failed-restart`. Expose `passingQuit` (true once `passQuit` is set) so the composition root does not forward the session's own `quit()`.
+- Tests for AR-003 drive Electron's order: `before-quit` delivered while `activate`/`status` is pending, `will-quit` delivered later; assert one activation, no `R` write, no exit 76, then `quit()`. Also: latched Quit with a failed (confirmed-old) activation, latched Quit with an unknown outcome (exit 1), and an ordinary restart without Quit (exit 76).
+- Tests for AR-001: a pending busy query, input arriving before it resolves, reply `{ busy: 0, unknown: 0 }` → no `onSafe`; after 5 quiet minutes → `onSafe` once, no click.
 - `finish` for `ending: 'reopen'`: accept an incomplete stop when the server is gone (as the click today) for both consents; keep `ending: 'quit'` throwing.
 - `SafeRestartMoment` constants: `SAFE_RESTART_QUIET_MS = 5 * 60_000`, `SAFE_RESTART_RECHECK_MS = 30_000`; injectable timers and clock for tests.
-- `fetchBusyRunCount`: `GET ${baseUrl}/rest/busy-runs` with `authorization: Bearer <launch credential>`, `AbortSignal.timeout(5000)`; anything but `200 { count: integer >= 0 }` → `null`; no credential → `null`.
-- Busy count on the server uses the same bounded inspection budget as the recorder's final write (1 s).
+- `fetchBusyRuns`: `GET ${baseUrl}/rest/busy-runs` with `authorization: Bearer <launch credential>`, `AbortSignal.timeout(10_000)`; anything but `200 { busy: integer >= 0, unknown: integer >= 0 }` → `null`; no credential → `null`.
+- Safety observation budget: `BUSY_RUN_OBSERVATION_BUDGET_MS = 6_000` (the Codex reader stops itself at 5 s and answers `incomplete`). The recorder keeps its own 1 s budget and omission policy.
 - Copy (DEC-006), English: switch off `Download and verify new versions on your channel, then install them and reopen AutoByteus by itself when no agent is working and you haven't used the app for 5 minutes.`; switch on `New versions install and AutoByteus reopens by itself when no agent is working and you haven't used the app for 5 minutes, or when you next quit. Switch off to update by hand.`; row/About `Ready. AutoByteus reopens on the new version by itself when no agent is working and you haven't used it for 5 minutes.` Simplified Chinese equivalents. `managed-quit` keeps today's keys.
 - Keep `appUpdater.ts` line count from growing; keep `electronApplication.ts` at or below 500.
