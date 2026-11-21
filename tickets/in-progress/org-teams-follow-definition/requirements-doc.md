@@ -2,8 +2,8 @@
 
 ## Document Status
 
-- Status: `Ready for Approval`
-- Current solution revision ID: `SR-001`
+- Status: `Draft` (SR-002: the user chose to restructure Org runs as containers of independent runs; the requirements below are being rewritten after investigation)
+- Current solution revision ID: `SR-002`
 - Package identifier: `org-teams-follow-definition`
 - Request / ticket: Project Task `autobyteus-29` (FU-002, FU-003 of autobyteus-22)
 - Requested by: `/project_task_manager` (run `project_task_manager_2f41a1df4e464bf2aa8970327d9d7ad0`), on the user's "work on the follow-up immediately" (2026-11-21)
