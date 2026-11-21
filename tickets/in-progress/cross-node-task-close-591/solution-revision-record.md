@@ -87,3 +87,8 @@
   - (b) is rejected: about 1,070 reads on the first list paint.
 - **My miss:** DN-6's premise was left "to verify" (lesson 2, again).
 - **Next:** architecture review. The engineer goes on with the parts that don't depend on it.
+
+### Review of SR-009
+
+- ARCH-REV-004: **Pass** (`design-review-report.md`). The reviewer verified that the index readers are strict, and sent the package to the implementation engineer.
+- Note to the implementation: remove a deleted run's entry from `ClosedDelegations`.
