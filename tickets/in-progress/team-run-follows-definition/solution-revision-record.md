@@ -6,6 +6,8 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Requirements | Initial baseline (Task autobyteus-22) | IF-01..IF-15 | N/A | Ready for Approval | BEH-001..005, REQ-001..007, AC-001..008, DEC-001..009 | Recommendation presented to the user; awaiting DEC-001..DEC-004 |
 | SR-002 | Requirements | The user's Task comment 2026-11-18 (UI; rules believed dynamic) | IF-16 | Ready for Approval | Ready for Approval | UC-005, REQ-008, AC-009, SCN-006; premise correction | UI added; dynamic-rules premise checked and corrected with evidence |
+| SR-007 | Design | Architecture design | AF-01..AF-18 | Approved; design N/A | Approved; design Ready | REQ-001..REQ-009 (realized) | design-spec.md; Large / High |
+| SR-006 | Evidence | Skill update 2026-11-21 (feasibility of the proof) | AF-01..AF-18 | Approved | Approved | AC-001..AC-010 (verification intent) | Verification intent recorded; proof feasible, no evidence decision |
 | SR-005 | Requirements | The user's approval, 2026-11-21 | N/A | Ready for Approval | Approved | DEC-001..DEC-003 | Requirements approved by the user |
 | SR-004 | Mixed | The user 2026-11-18/21: rebase on latest personal and re-analyse; every remaining member is notified | IF-20 | Ready for Approval | Ready for Approval | DEC-004, REQ-006, REQ-009, AC-006, AC-010 | Base `a07767f4d0`; findings hold; DEC-004 decided by the user; refusal safety net added |
 | SR-003 | Evidence | The user, 2026-11-18: base the worktree on the latest origin/personal and re-analyse | IF-17..IF-19 | Ready for Approval | Ready for Approval | REQ-008 (path), none changed | Worktree on `53b72018ad`; findings hold; UI path found |
@@ -49,3 +51,17 @@
 - Status: requirements `Approved`; DEC-001 (a) apply at once to running runs and on reopen to stopped runs; DEC-002 (a) a busy removed member finishes its current turn, then stops; DEC-003 standalone Team runs and delegated Team copies (Org-mounted Teams = FU-002); DEC-004 notice to every remaining member (SR-004).
 - Repair: the SR-004 edit had garbled the REQ-006 row (a match inside it instead of the DEC-004 row); REQ-006 and DEC-004 restored to their intended text before this approval.
 - Approved baseline: requirements at SR-005. Next action: architecture design.
+
+### SR-006 — Verification intent and architecture findings
+
+- Trigger: the solution-designer skill update of 2026-11-21 ("feasibility of the proof"); architecture investigation on `a07767f4d0` (investigation AF-01..AF-18; FU-003 added).
+- Evidence-only: the requirements' Verification Intent names the isolated instance, test package, real runtimes via the test vault, restart, rendered app probe and invalid-definition check. All feasible without credentials beyond the test vault: no evidence decision.
+- Intended behavior changed: No. Approval: unchanged (User, SR-005).
+
+### SR-007 — Architecture design
+
+- Trigger: approved requirements (SR-005/SR-006); architecture investigation AF-01..AF-18 on `a07767f4d0`.
+- Design: `design-spec.md` — one live execution view `TeamRunMembership`; pure planner; committer in `RootTeamRun` (locked write, then swap); restore follows stored tree; listener on the definition announcement; former members in the tree (`formerMembers`, no migration); live `get_handoff_rules`; refusal and notice texts (normative, § Exact Texts); window via `DelegationIndex.runPartsChanged`.
+- Vocabulary: the requirements' "retire/retired" is the action; the stored and documented word for the result is "former member" (GLOSSARY entry in this change).
+- Classification: task_size Large, architectural_risk High.
+- Next action: independent architecture review.

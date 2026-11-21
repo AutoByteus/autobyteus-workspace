@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-005`
+- Current solution revision ID: `SR-006`
 - Package identifier: `team-run-follows-definition`
 - Request / ticket: Project Task `autobyteus-22` (Project `project_f34a9537-07d7-449a-b78f-16368f1aa619`)
 - Requested by: `/project_task_manager` (run `project_task_manager_2f41a1df4e464bf2aa8970327d9d7ad0`), on the user's questions of 2026-11-11
@@ -89,6 +89,16 @@ None found.
 | AC-008 | REQ-003 | Coordinator changed in the definition | User messages to the team reach the new coordinator |
 | AC-010 | REQ-009 | After a member is removed, a remaining member messages its address | Not delivered; the refusal says it left the team and points to get_handoff_rules |
 | AC-009 | REQ-008 | The team's view is open in the app while a member is added and another removed | The new member appears (Offline) and the removed one disappears without reloading; the user messages the new member and it starts and answers; the removed member's earlier messages remain in the Team tab |
+
+### Verification Intent (feasibility of the proof)
+
+All criteria are proven on an isolated server instance built from the ticket worktree with its own data directory, never the user's running app or data:
+- **Team under test:** a test Team definition (and its agents) in a local agent package registered on that instance; members and handoff rules are added and removed by editing its files while a Team run runs (the same reload path as a package update), and by the app's definition editor.
+- **Real runs:** AC-001..AC-006, AC-008, AC-010 with real agent runtimes (AutoByteus and Codex at least) using the test vault (`AUTOBYTEUS_TEST_VAULT`), for a standalone Team run and a delegated Team copy started by an agent's `delegate_task` (AC-005).
+- **Restart:** AC-004 by stopping the run (and restarting the isolated server) between the definition change and the reopen.
+- **App:** AC-009 by the web app connected to that instance (rendered browser probe with screenshots of the team view before and after the change, and a message sent to the new member).
+- **Invalid definition:** AC-007 by writing an invalid team-config.json in the test package.
+No credentials beyond the test vault, no signing keys, no host privilege changes, no production workflow: no evidence decision is needed.
 
 ## Relevant Scenarios
 
