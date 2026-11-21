@@ -140,9 +140,26 @@ IOS_XCODE_APP_PATH=/Applications/Xcode_27.2.app
 
 Release metadata is split for App Store compatibility. For a tag such as `v1.2.7-rc1`, the workflow uses `ios_marketing_version=1.2.7` for `MARKETING_VERSION` / `CFBundleShortVersionString`, keeps `artifact_version=1.2.7-rc1` for artifact names, records `prerelease_label=rc1` for summaries/TestFlight notes, and uses numeric `GITHUB_RUN_NUMBER` for `CURRENT_PROJECT_VERSION` / `CFBundleVersion`.
 
-Run `autobyteus-ios/scripts/ios-release-contract-check.py` after changing release metadata, bundle-ID, smoke, profile-verification, or upload wiring. The check covers prerelease metadata splitting, invalid release-tag rejection, custom bundle-ID propagation, build/test/archive setting propagation, profile/export mapping, and App Store Connect private-key discovery configuration.
+Run `autobyteus-ios/scripts/ios-release-contract-check.py` after changing release metadata, bundle-ID, smoke, profile-verification, or upload wiring. The check covers prerelease metadata splitting, invalid release-tag rejection, custom bundle-ID propagation, build/test/archive setting propagation, profile/export mapping, App Store Connect private-key discovery configuration, the app icon set's structure (every slot at its pixel size, 8-bit RGB without alpha), `ITSAppUsesNonExemptEncryption = false`, and the workflow's icon check step.
 
 Do not reuse the macOS desktop `APPLE_*` signing/notarization secrets for iOS. A `Developer ID Application` certificate is not valid for iOS App Store/TestFlight signing. The workflow verifies App Store profiles for the main app and share extension and rejects development/wildcard profiles with `get-task-allow=true`.
+
+## App icon
+
+The app icon set (`AutoByteusMobile/Assets.xcassets/AppIcon.appiconset/`) is generated from the product logo, `autobyteus-web/public/autobyteus-icon.svg`: the mark on the logo circle's own blue (#1E3A8A) as a full square, as on Android, every slot rendered at its exact pixel size as RGB without alpha (App Store Connect refuses an icon with alpha). Do not edit the PNGs by hand:
+
+```bash
+pnpm --dir autobyteus-web ios-icon:build   # regenerate every slot after a logo change; commit the PNGs
+pnpm --dir autobyteus-web ios-icon:check   # fail when a slot is missing, mis-sized, has alpha, or no longer matches the logo
+```
+
+The release workflow's `build-ios` job runs `ios-icon:check` before building, so a set that drifts from the logo stops the release. The check compares pixels within a small tolerance (`scripts/build-ios-app-icon.mjs`), so a different PNG encoder or image library build on another machine does not fail it.
+
+## Export compliance
+
+`AutoByteusMobile/Info.plist` declares `ITSAppUsesNonExemptEncryption = false`, so App Store Connect does not ask about encryption for each build. It is true of the app as built (autobyteus-594): the native code uses no cryptography API and networks only through `WKWebView` (the system's TLS); the bundled demo web build hashes with SHA-256 only; and the bundled noVNC client's ciphers serve authentication only (the remote-desktop session itself is not encrypted by it). Encryption provided by the operating system and encryption used only for authentication are exempt.
+
+Revisit the key, and set it to `true` with the matching export documentation, before adding encryption of the app's own beyond those: for example a cryptography library or `CryptoKit`/`CommonCrypto` used to encrypt data, or a VPN or proprietary secure channel. The contract check requires `false` and must change with it.
 
 ## Private HTTP and ATS
 

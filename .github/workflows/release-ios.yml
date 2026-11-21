@@ -158,6 +158,10 @@ jobs:
       - name: Install workspace dependencies
         run: pnpm install --frozen-lockfile
 
+      # The app icon set is generated from the product logo (autobyteus-594); a set that no longer matches it fails here.
+      - name: Check the app icon against the logo
+        run: pnpm --dir autobyteus-web ios-icon:check
+
       # The app bundles the demo build of the phone screens as DemoWeb/ (autobyteus-279); the app build fails without it.
       - name: Build the bundled demo
         shell: bash

@@ -1,0 +1,140 @@
+# IMP-02 ios-icon:check, positive and four negative cases (AC-002), plus two logo changes
+# command: pnpm -C autobyteus-web ios-icon:check — on the generated set, then with one fault at a time (the set restored from a copy after each)
+# commit: 9aeaf46aa9 + the uncommitted change under test
+# env: macOS 26.5.2, node v22.23.1, sharp 0.33.5, libvips 8.15.3
+# date: 2026-11-21T10:20:57Z
+
+== the generated set
+[ios-icon] AppIcon-iphone-20x20@2x.png: 40x40 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-20x20@3x.png: 60x60 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-29x29@2x.png: 58x58 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-29x29@3x.png: 87x87 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-40x40@2x.png: 80x80 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-40x40@3x.png: 120x120 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-60x60@2x.png: 120x120 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-60x60@3x.png: 180x180 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-20x20@1x.png: 20x20 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-20x20@2x.png: 40x40 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-29x29@1x.png: 29x29 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-29x29@2x.png: 58x58 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-40x40@1x.png: 40x40 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-40x40@2x.png: 80x80 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-76x76@1x.png: 76x76 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-76x76@2x.png: 152x152 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-83_5x83_5@2x.png: 167x167 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-1024.png: 1024x1024 matches (max 0, mean 0.000)
+[ios-icon] all 18 slots match the logo (on #1E3A8A).
+exit=0
+== (a) a slot missing: AppIcon-iphone-60x60@3x.png deleted
+[ios-icon] AppIcon-iphone-20x20@2x.png: 40x40 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-20x20@3x.png: 60x60 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-29x29@2x.png: 58x58 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-29x29@3x.png: 87x87 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-40x40@2x.png: 80x80 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-40x40@3x.png: 120x120 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-60x60@2x.png: 120x120 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-60x60@3x.png: the file is missing
+[ios-icon] AppIcon-ipad-20x20@1x.png: 20x20 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-20x20@2x.png: 40x40 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-29x29@1x.png: 29x29 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-29x29@2x.png: 58x58 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-40x40@1x.png: 40x40 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-40x40@2x.png: 80x80 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-76x76@1x.png: 76x76 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-76x76@2x.png: 152x152 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-83_5x83_5@2x.png: 167x167 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-1024.png: 1024x1024 matches (max 0, mean 0.000)
+[ios-icon] 1 of 18 slots do not match the logo.
+exit=1
+== (b) a wrong size: AppIcon-1024.png at 1000x1000
+[ios-icon] AppIcon-iphone-20x20@2x.png: 40x40 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-20x20@3x.png: 60x60 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-29x29@2x.png: 58x58 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-29x29@3x.png: 87x87 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-40x40@2x.png: 80x80 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-40x40@3x.png: 120x120 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-60x60@2x.png: 120x120 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-60x60@3x.png: 180x180 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-20x20@1x.png: 20x20 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-20x20@2x.png: 40x40 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-29x29@1x.png: 29x29 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-29x29@2x.png: 58x58 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-40x40@1x.png: 40x40 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-40x40@2x.png: 80x80 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-76x76@1x.png: 76x76 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-76x76@2x.png: 152x152 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-83_5x83_5@2x.png: 167x167 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-1024.png: it is 1000x1000, not 1024x1024
+[ios-icon] 1 of 18 slots do not match the logo.
+exit=1
+== (c) an alpha channel: AppIcon-ipad-76x76@2x.png with an alpha channel
+[ios-icon] AppIcon-iphone-20x20@2x.png: 40x40 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-20x20@3x.png: 60x60 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-29x29@2x.png: 58x58 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-29x29@3x.png: 87x87 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-40x40@2x.png: 80x80 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-40x40@3x.png: 120x120 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-60x60@2x.png: 120x120 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-60x60@3x.png: 180x180 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-20x20@1x.png: 20x20 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-20x20@2x.png: 40x40 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-29x29@1x.png: 29x29 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-29x29@2x.png: 58x58 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-40x40@1x.png: 40x40 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-40x40@2x.png: 80x80 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-76x76@1x.png: 76x76 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-76x76@2x.png: it has an alpha channel (App Store Connect refuses it)
+[ios-icon] AppIcon-ipad-83_5x83_5@2x.png: 167x167 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-1024.png: 1024x1024 matches (max 0, mean 0.000)
+[ios-icon] 1 of 18 slots do not match the logo.
+exit=1
+== (d) drift: a 10x10 red square painted into AppIcon-iphone-40x40@2x.png (RGB, right size)
+[ios-icon] AppIcon-iphone-20x20@2x.png: 40x40 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-20x20@3x.png: 60x60 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-29x29@2x.png: 58x58 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-29x29@3x.png: 87x87 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-40x40@2x.png: its pixels differ from the logo's render (max 211 > 8 or mean 2.953 > 0.5); run ios-icon:build (max 211, mean 2.953)
+[ios-icon] AppIcon-iphone-40x40@3x.png: 120x120 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-60x60@2x.png: 120x120 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-60x60@3x.png: 180x180 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-20x20@1x.png: 20x20 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-20x20@2x.png: 40x40 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-29x29@1x.png: 29x29 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-29x29@2x.png: 58x58 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-40x40@1x.png: 40x40 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-40x40@2x.png: 80x80 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-76x76@1x.png: 76x76 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-76x76@2x.png: 152x152 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-83_5x83_5@2x.png: 167x167 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-1024.png: 1024x1024 matches (max 0, mean 0.000)
+[ios-icon] 1 of 18 slots do not match the logo.
+exit=1
+== (e) the logo changed (the mark recolored #34D399 -> #0000FF), the files not regenerated
+[ios-icon] AppIcon-1024.png: its pixels differ from the logo's render (max 211 > 8 or mean 44.559 > 0.5); run ios-icon:build (max 211, mean 44.559)
+[ios-icon] 18 of 18 slots do not match the logo.
+exit=1
+== (f) within the tolerance by design: the mark's green one step off (#34D399 -> #34D398), an invisible difference
+[ios-icon] AppIcon-1024.png: 1024x1024 matches (max 1, mean 0.122)
+[ios-icon] all 18 slots match the logo (on #1E3A8A).
+exit=0
+== restored
+[ios-icon] AppIcon-iphone-20x20@2x.png: 40x40 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-20x20@3x.png: 60x60 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-29x29@2x.png: 58x58 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-29x29@3x.png: 87x87 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-40x40@2x.png: 80x80 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-40x40@3x.png: 120x120 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-60x60@2x.png: 120x120 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-60x60@3x.png: 180x180 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-20x20@1x.png: 20x20 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-20x20@2x.png: 40x40 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-29x29@1x.png: 29x29 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-29x29@2x.png: 58x58 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-40x40@1x.png: 40x40 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-40x40@2x.png: 80x80 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-76x76@1x.png: 76x76 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-76x76@2x.png: 152x152 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-83_5x83_5@2x.png: 167x167 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-1024.png: 1024x1024 matches (max 0, mean 0.000)
+[ios-icon] all 18 slots match the logo (on #1E3A8A).
+exit=0
