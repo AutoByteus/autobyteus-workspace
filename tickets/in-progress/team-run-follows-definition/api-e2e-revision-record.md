@@ -9,6 +9,7 @@ The latest coverage investigation (`api-e2e-coverage-investigation.md`) and exec
 | API-REV-001 | Code reviewer, `code-review-report.md`, round 1 (CRR-001 pass) | SR-008, ARCH-REV-002, IR-001, CRR-001 | N/A | Fail / 88% |
 | API-REV-002 | Code reviewer, CRR-003 (pass of IR-002), round 2 | SR-009, SR-010, ARCH-REV-004, IR-002, CRR-002, CRR-003 | Fail / 88% | Fail / 91% |
 | API-REV-003 | Code reviewer, CRR-006 (pass of IR-003, IR-004), round 3 | IR-003, IR-004, CRR-004, CRR-005, CRR-006 | Fail / 91% | Pass / 95.4% |
+| API-REV-004 | Code reviewer, CRR-007 test-code review (TR-001, Local Fix to API/E2E) | CRR-007 | Pass / 95.4% | Pass / 95.4% |
 
 ## Revision Entries
 
@@ -94,3 +95,38 @@ None.
 - New or remaining failure IDs: none in scope. Out of scope: FU-005, `episodic-catalog` EC-04 cannot pass as root (chmod).
 - Recommended owner: code reviewer (proportional test-code review of the added suites and RC-51)
 - Remaining risks, blocked evidence, or untested scope: API-NF (configured-placement copy, application run) unit-covered only; the release job's signing units are root-limited; macOS/x64 jobs need the runner; FU-003, FU-004, FU-005.
+
+### API-REV-004 — Test-code correction TR-001: deterministic around package-folder-watcher events
+
+- Triggering role, report path, and round: code reviewer, `api-e2e-test-review-report.md`, CRR-007, finding TR-001 (Local Fix owned by API/E2E)
+- Triggering finding or case IDs: TR-001 (TF-03, TF-05, TF-07; literal wait limits and timeouts in both new suites)
+- Related revision IDs: CRR-007
+- Why recorded: the reviewed test code relied on fixed sleeps around package-folder-watcher events (TESTING.md, "File watching on a busy Mac").
+- Coverage decisions or durable test paths changed (commit `6f76db6332`):
+  - `team-run-follows-definition.e2e.test.ts`:
+    - watcher waits use `OS_FILE_EVENT_WAIT_MS`, and timeouts come from `caseTimeout(n)` built on `FILE_EVENT_TEST_TIMEOUT_MS`;
+    - TF-03 and TF-05 use a gate (`untilFile`) opened after the leaving state is seen;
+    - TF-07 uses settled valid states (a rule marker in the stored tree) and sentinel edits that have landed before counting;
+    - TF-04, TF-08, TF-11 and TF-12 use positive waits instead of sleeps.
+  - `team-run-follows-definition-live.e2e.test.ts`: watcher waits and timeouts from the helper.
+  - `tests/fixtures/agy-failure-cli.mjs`: opt-in `untilFile` for a `CALL_TOOLS` call.
+  - No assertion was weakened. TF-05 gained the check that the swapped-out member is leaving while its turn runs.
+- Cases rechecked:
+  - TF-01..TF-12 once as a whole file, 12/12. TF-03, TF-05 and TF-07 depend on the earlier cases' state, so they cannot run alone. Run 1 failed on my own TF-07 slip (its valid state was built from the broken config), fixed before run 2.
+  - TFL-01/02: 2/2.
+  - `task-existing-copy-assignment.e2e.test.ts` (another `CALL_TOOLS` user): 7 passed, 2 gated skips.
+  - typecheck at baseline.
+- Commands, environment, fixture, or broader-validation delta: the fixture field above. Product source unchanged (`6c7af4a384`).
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| TR-001: timing windows around watcher events | Local Fix (API/E2E) | Resolved: no fixed bound around file events; same outcomes asserted | TF-03, TF-05, TF-07 (and TF-04, TF-08, TF-11, TF-12) |
+
+- Canonical artifacts and sections updated: execution report (Round, Cases, Durable Coverage, Latest Result), progress log
+- Prior result and confidence: Pass, 95.4%
+- Current result and confidence: Pass, 95.4%
+- New or remaining failure IDs: none
+- Recommended owner: code reviewer (re-review of the test-code correction), then delivery
+- Remaining risks, blocked evidence, or untested scope: as in API-REV-003 (API-NF unit-only; follower-step risk; root-container limits; FU-003, FU-004, FU-005).

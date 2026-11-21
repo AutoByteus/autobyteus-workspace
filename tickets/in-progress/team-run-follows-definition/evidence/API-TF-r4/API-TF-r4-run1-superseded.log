@@ -1,0 +1,209 @@
+# TF suite after TR-001 changes, run 1 (superseded: TF-07 built its valid state from a broken teamConfig; fixed)
+# Command: same
+# Commit: fca54b1a4c (+ uncommitted API/E2E test files)
+# Environment: Linux 6.12 aarch64 container (root), Node v22.23.3; built server dist from this worktree
+# Date: 2026-11-21T16:39:59Z
+
+
+ RUN  v4.1.12 /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:42105) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-01 (AC-001, AC-006): an added member and rule reach the running team; the lead is told, the new member starts on its first message 1781ms
+ ✓ tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-02 (AC-002, AC-010, AC-006): a removed idle member is refused by address and run ID, leaves the view, keeps its history 1458ms
+ ✓ tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-03 (AC-003, DEC-002): a member removed mid-turn is leaving, refused at once, its send is delivered, then it is released 1564ms
+ ✓ tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-04 (DEC-007, AC-003): a removed member added back keeps its run and conversation; its interrupt works while leaving 5418ms
+ ✓ tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-05 (DEC-006): another agent at a busy member's address: the old one finishes, the new one is reached at the address 2911ms
+ ✓ tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-06 (AC-008): a new coordinator is the run's coordinator in the stored tree and the open view 2148ms
+ × tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-07 (AC-007): an unusable Team definition leaves the run unchanged; the problem is reported 36496ms
+   → Timed out waiting for the run followed the valid definition V4
+ × tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-08 (AC-004): a change made while the run is stopped is applied when it is reopened, also after a server restart 30126ms
+   → Timed out waiting for the definition lists the editor
+ × tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-09 (AC-005): a Team copy started by an agent's delegate_task follows the same edits 394ms
+   → {"delegated":false,"message":"tf-team-e431d6 can't be delegated to: Its definition could not be resolved: Team 'tf-team-e431d6' member 'ghost' references missing agent 'tf-no-such-agent-e431d6'.","isError":false}: expected { delegated: false, …(2) } to match object { Object (delegated, target_kind) }
+(2 matching properties omitted from actual)
+ ✓ tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-10 (AC-001 by the app's editor): a user's own Team saved through updateAgentTeamDefinition: its run follows 752ms
+ × tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-11 (AC-003, SR-010): a Stop while a member is leaving shows no leaving row; reopening clears the marker 30026ms
+   → Timed out waiting for checker is a member
+ × tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-12 (AC-003, AC-004, SR-010): a server restart while a member is leaving shows no leaving row; reopening clears the marker 9ms
+   → Cannot read properties of undefined (reading 'agentRunId')
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-07 (AC-007): an unusable Team definition leaves the run unchanged; the problem is reported
+Error: Timed out waiting for the run followed the valid definition V4
+ ❯ until tests/e2e/helpers/agy-runtime-error-fixture.ts:21:9
+     19|   const deadline = Date.now() + ms;
+     20|   while (Date.now() < deadline) { if (await predicate()) return; await…
+     21|   throw new Error(`Timed out waiting for ${label}`);
+       |         ^
+     22| };
+     23|
+ ❯ settleValid tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts:502:7
+ ❯ tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts:540:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-08 (AC-004): a change made while the run is stopped is applied when it is reopened, also after a server restart
+Error: Timed out waiting for the definition lists the editor
+ ❯ until tests/e2e/helpers/agy-runtime-error-fixture.ts:21:9
+     19|   const deadline = Date.now() + ms;
+     20|   while (Date.now() < deadline) { if (await predicate()) return; await…
+     21|   throw new Error(`Timed out waiting for ${label}`);
+       |         ^
+     22| };
+     23|
+ ❯ tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts:580:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-09 (AC-005): a Team copy started by an agent's delegate_task follows the same edits
+AssertionError: {"delegated":false,"message":"tf-team-e431d6 can't be delegated to: Its definition could not be resolved: Team 'tf-team-e431d6' member 'ghost' references missing agent 'tf-no-such-agent-e431d6'.","isError":false}: expected { delegated: false, …(2) } to match object { Object (delegated, target_kind) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "delegated": true,
+-   "target_kind": "team",
++   "delegated": false,
+  }
+
+ ❯ tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts:618:50
+    616|     await until(async () => { results = calledResults(await hostConver…
+    617|     const delegated = toolResult(results[before]!);
+    618|     expect(delegated, JSON.stringify(delegated)).toMatchObject({ deleg…
+       |                                                  ^
+    619|     const copyRunId = delegated.target_team_run_id as string;
+    620|     await until(async () => taskAgentsIn(await delegatedRunsTree(serve…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-11 (AC-003, SR-010): a Stop while a member is leaving shows no leaving row; reopening clears the marker
+Error: Timed out waiting for checker is a member
+ ❯ until tests/e2e/helpers/agy-runtime-error-fixture.ts:21:9
+     19|   const deadline = Date.now() + ms;
+     20|   while (Date.now() < deadline) { if (await predicate()) return; await…
+     21|   throw new Error(`Timed out waiting for ${label}`);
+       |         ^
+     22| };
+     23|
+ ❯ removeWhileHeld tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts:684:7
+ ❯ tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts:698:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-12 (AC-003, AC-004, SR-010): a server restart while a member is leaving shows no leaving row; reopening clears the marker
+TypeError: Cannot read properties of undefined (reading 'agentRunId')
+ ❯ removeWhileHeld tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts:686:86
+    684|       await until(() => stored().members.some((entry) => entry.address…
+    685|     }
+    686|     const runId = stored().members.find((entry) => entry.address === `…
+       |                                                                                      ^
+    687|     const busyFrom = view.frames.length;
+    688|     view.send(runId, "HOLD_TURN");
+ ❯ tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts:718:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 7 passed (12)
+   Start at  16:37:28
+   Duration  136.57s (transform 11.59s, setup 118ms, import 16.43s, tests 119.19s, environment 0ms)
+

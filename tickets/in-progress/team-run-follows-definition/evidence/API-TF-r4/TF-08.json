@@ -1,0 +1,115 @@
+{
+  "whileStopped": false,
+  "reopened": {
+    "first": "Your team changed: its definition was updated.\nJoined: editor at /editor.\nYour handoff rules are unchanged.\n\nECHO_INPUT",
+    "second": "ECHO_INPUT"
+  },
+  "afterReopen": {
+    "members": [
+      {
+        "address": "/lead",
+        "agentRunId": "tf_lead_700001_e76a132bd95842708bb41063d1f3560a",
+        "agentDefinitionId": "tf-lead-700001",
+        "leaving": false
+      },
+      {
+        "address": "/scout",
+        "agentRunId": "tf_alt_700001_f50a9cd6a90f46308332533ab69cbfcf",
+        "agentDefinitionId": "tf-alt-700001",
+        "leaving": false
+      },
+      {
+        "address": "/editor",
+        "agentRunId": "tf_writer_700001_f4963bb724a44453882e229af0e3947b",
+        "agentDefinitionId": "tf-writer-700001",
+        "leaving": false
+      }
+    ],
+    "former": [
+      {
+        "address": "/reviewer",
+        "agentRunId": "tf_reviewer_700001_4852eabf56c944e2be5c0f37157aac58",
+        "agentDefinitionId": "tf-reviewer-700001",
+        "leaving": false
+      },
+      {
+        "address": "/writer",
+        "agentRunId": "tf_writer_700001_e59930ce9db34bffa1f9f7fb4ef3c65c",
+        "agentDefinitionId": "tf-writer-700001",
+        "leaving": false
+      },
+      {
+        "address": "/scout",
+        "agentRunId": "tf_reviewer_700001_fd427abae2f341aab1ccb09be7a0cae8",
+        "agentDefinitionId": "tf-reviewer-700001",
+        "leaving": false
+      }
+    ]
+  },
+  "afterRestartBeforeReopen": [
+    {
+      "address": "/lead",
+      "agentRunId": "tf_lead_700001_e76a132bd95842708bb41063d1f3560a",
+      "agentDefinitionId": "tf-lead-700001",
+      "leaving": false
+    },
+    {
+      "address": "/scout",
+      "agentRunId": "tf_alt_700001_f50a9cd6a90f46308332533ab69cbfcf",
+      "agentDefinitionId": "tf-alt-700001",
+      "leaving": false
+    },
+    {
+      "address": "/editor",
+      "agentRunId": "tf_writer_700001_f4963bb724a44453882e229af0e3947b",
+      "agentDefinitionId": "tf-writer-700001",
+      "leaving": false
+    }
+  ],
+  "restarted": {
+    "first": "Your team changed: its definition was updated.\nLeft: editor (/editor); messages to it are no longer delivered.\nYour handoff rules are unchanged.\n\nECHO_INPUT",
+    "second": "ECHO_INPUT"
+  },
+  "afterRestart": {
+    "members": [
+      {
+        "address": "/lead",
+        "agentRunId": "tf_lead_700001_e76a132bd95842708bb41063d1f3560a",
+        "agentDefinitionId": "tf-lead-700001",
+        "leaving": false
+      },
+      {
+        "address": "/scout",
+        "agentRunId": "tf_alt_700001_f50a9cd6a90f46308332533ab69cbfcf",
+        "agentDefinitionId": "tf-alt-700001",
+        "leaving": false
+      }
+    ],
+    "former": [
+      {
+        "address": "/reviewer",
+        "agentRunId": "tf_reviewer_700001_4852eabf56c944e2be5c0f37157aac58",
+        "agentDefinitionId": "tf-reviewer-700001",
+        "leaving": false
+      },
+      {
+        "address": "/writer",
+        "agentRunId": "tf_writer_700001_e59930ce9db34bffa1f9f7fb4ef3c65c",
+        "agentDefinitionId": "tf-writer-700001",
+        "leaving": false
+      },
+      {
+        "address": "/scout",
+        "agentRunId": "tf_reviewer_700001_fd427abae2f341aab1ccb09be7a0cae8",
+        "agentDefinitionId": "tf-reviewer-700001",
+        "leaving": false
+      },
+      {
+        "address": "/editor",
+        "agentRunId": "tf_writer_700001_f4963bb724a44453882e229af0e3947b",
+        "agentDefinitionId": "tf-writer-700001",
+        "leaving": false
+      }
+    ]
+  }
+}

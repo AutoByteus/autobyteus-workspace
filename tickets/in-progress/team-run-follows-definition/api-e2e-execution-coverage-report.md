@@ -5,12 +5,19 @@ The run record and the result of the latest round. The plan is `api-e2e-coverage
 ## Round
 
 - Coverage investigation: `/home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/tickets/in-progress/team-run-follows-definition/api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-003`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-004`
 - Test progress log: `api-e2e-test-progress.md`
 - Round and trigger: round 3. Code review CRR-006 passed the final source `6c7af4a384`:
   - IR-003 `072bdb7217`: the CR-003 fix for my F-3;
   - IR-004 `6c7af4a384`: cleanup only.
   Reviewed at `51c10dd2c1`.
+- Test-code correction (API-REV-004, after CRR-007 TR-001): the durable tests were made deterministic around package-folder-watcher events (TESTING.md "File watching on a busy Mac"). Commit `6f76db6332`:
+  - waits for outcomes of a package-file edit end when the outcome holds, limited by `OS_FILE_EVENT_WAIT_MS`, and test timeouts derive from `FILE_EVENT_TEST_TIMEOUT_MS`;
+  - TF-03 and TF-05 keep the member busy behind a gate the test opens after seeing it leave (new opt-in `untilFile` field of `CALL_TOOLS` in `tests/fixtures/agy-failure-cli.mjs`), not behind a delay;
+  - TF-07 starts each breakage from a settled valid state the run has followed (a rule marker in the stored tree) and counts the warning after a later sentinel edit has visibly landed;
+  - TF-04, TF-08, TF-11 and TF-12 replace fixed sleeps with positive waits. TF-04 keeps one stated quiet window: a held turn keeps the member leaving.
+
+  No assertion was weakened. TF-05 gained one: the swapped-out member is leaving while its turn runs. TF-03, TF-05 and TF-07 depend on the state the earlier cases build, so they ran within the whole file (once, 12/12) rather than alone. The cases below cite the TF and TFL runs after the correction (`API-TF-r4`, `API-TFL-r4`). The other cases are unchanged from round 3.
 - Prior round reviewed: round 2 (API-REV-002, Fail: F-3). Rechecked first: TF-03 (its F-3 assertions), TFU-03 and TFU-04.
 - Rerun plan (by impact): the round's diff `8789b97a41..6c7af4a384` changes `team-run-execution-tree-location-service.ts` and `team-member-run-view-projection-service.ts`. The location service locates every team agent, current and former. Its readers are member projections, file changes, run history, the Memory page and memory search. So I reran:
   - every case that reads them: all TF, TFU and TFL cases, the peer suite, the regression suites;
@@ -43,20 +50,20 @@ The run record and the result of the latest round. The plan is `api-e2e-coverage
 | Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | API-R1 | all (unit/integration) | server units | Reused IR-003/IR-004 checks (implementation handoff IMP-18..IMP-22) | — | Pass | — | — | no source change after `6c7af4a384` |
-| TF-01 | AC-001, AC-006 | built server, package file edit | `env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<wt>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs TEAM_FOLLOWS_E2E_EVIDENCE_DIR=<evidence>/API-TF-r3 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts --no-watch --reporter=verbose` | ENV-1 | Pass | `API-TF-r3/API-TF-r3-run.log`, `API-TF-r3/TF-01.json` | `Tests  12 passed (12)`; `leadInput` has `Your team changed: its definition was updated.\nJoined: reviewer at /reviewer.\nYour handoff rules changed; call get_handoff_rules to read them.` | |
-| TF-02 | AC-002, AC-010, AC-006, REQ-002 | built server | same run | ENV-1 | Pass | `API-TF-r3/TF-02.json`, `API-TF-r3/TF-02-memory-page.json` | `byAddress`, `byRunId`: `COLLABORATION_TARGET_NOT_FOUND` + `writer (/writer) is no longer a member of your team: …`; `projection.ok: true` with the writer's `Reply OK.`; Memory page `writerTarget` `{"memberAddress": "/writer", …, "agentDefinitionId": "tf-writer-…"}` | the former member opens by run ID (new this round) |
-| TF-03 | AC-003, DEC-002, AC-010, SR-010 | built server | same run | ENV-1 | Pass | `API-TF-r3/TF-03.json` | `openedProjection: "ok"`, `openedFileChanges: "ok"`; `refusedByRunId.code: COLLABORATION_TARGET_NOT_FOUND`; `markerWhileLeaving` = the reviewer; tagged row; `markerAfterRelease: []`; the delayed send delivered | **F-3 resolved** |
-| TF-04 | DEC-007, AC-003 | built server | same run | ENV-1 | Pass | `API-TF-r3/TF-04.json` | rejoin keeps run and conversation; the leaving member's interrupt `accepted`, released | |
-| TF-05 | DEC-006 | built server | same run | ENV-1 | Pass | `API-TF-r3/TF-05.json` | new run at `/scout`; the old run's send delivered | |
-| TF-06 | AC-008 | built server | same run | ENV-1 | Pass | `API-TF-r3/TF-06.json` | coordinator `/scout` in the tree and the snapshot | |
-| TF-07 | AC-007, REQ-007 | built server | same run | ENV-1 | Pass | `API-TF-r3/TF-07.json`, `API-TF-r3/server-output.log` | one `TEAM_RUN_DEFINITION_NOT_FOLLOWED: Team run '<id>' keeps its members: <reason>` each for unparsable, unparsable again, unknown agent, definition gone; run unchanged | |
-| TF-08 | AC-004, REQ-005 | reopen and server restart | same run | ENV-1 | Pass | `API-TF-r3/TF-08.json` | `Joined: editor at /editor.` after reopen; `Left: editor (/editor); …` after restart | |
-| TF-09 | AC-005 | delegated copy | same run | ENV-1 | Pass | `API-TF-r3/TF-09.json` | `copiedFrom: "team_definition"`; the copy follows add/remove | |
-| TF-10 | AC-001 (app editor) | GraphQL save | same run | ENV-1 | Pass | `API-TF-r3/TF-10.json` | `/extra` joined, notice, rule | |
-| TF-11 | AC-003, SR-010 | Stop while leaving | same run | ENV-1 | Pass | `API-TF-r3/TF-11.json` | `rowsAfterStop: []`; `markerAfterReopen: []` | |
-| TF-12 | AC-003, AC-004, SR-010 | restart while leaving | same run | ENV-1 | Pass | `API-TF-r3/TF-12.json` | `rowsAfterRestart: []`; `markerAfterReopen: []` | |
-| TFL-01 | AC-001, AC-006, DEC-005 (real) | Codex lead, native AutoByteus new member | `env -i PATH HOME USER LOGNAME TMPDIR RUN_CODEX_E2E=1 RUN_AUTOBYTEUS_TEAM_FOLLOWS_E2E=1 AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault TEAM_FOLLOWS_LIVE_E2E_EVIDENCE_DIR=<evidence>/API-TFL-r3 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/team-run-follows-definition-live.e2e.test.ts --no-watch --reporter=verbose` | ENV-2 | Pass | `API-TFL-r3/API-TFL-r3-run.log`, `API-TFL-r3/TFL-01.json` | `Tests  2 passed (2)`; reviewer launched `autobyteus`/`claude-haiku-5-5`; the lead answered the code | |
-| TFL-02 | AC-003, AC-010 (real) | Codex writer, auto-execute off | same run | ENV-2 | Pass | `API-TFL-r3/TFL-02.json`, `API-TFL-r3/TFL-02-diagnostics.json` | two approvals answered while leaving; `delivered: true`; `released: true`; the real lead read the exact refusal | |
+| TF-01 | AC-001, AC-006 | built server, package file edit | `env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<wt>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs TEAM_FOLLOWS_E2E_EVIDENCE_DIR=<evidence>/API-TF-r4 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts --no-watch --reporter=verbose` | ENV-1 | Pass | `API-TF-r4/API-TF-r3-run.log`, `API-TF-r4/TF-01.json` | `Tests  12 passed (12)`; `leadInput` has `Your team changed: its definition was updated.\nJoined: reviewer at /reviewer.\nYour handoff rules changed; call get_handoff_rules to read them.` | |
+| TF-02 | AC-002, AC-010, AC-006, REQ-002 | built server | same run | ENV-1 | Pass | `API-TF-r4/TF-02.json`, `API-TF-r4/TF-02-memory-page.json` | `byAddress`, `byRunId`: `COLLABORATION_TARGET_NOT_FOUND` + `writer (/writer) is no longer a member of your team: …`; `projection.ok: true` with the writer's `Reply OK.`; Memory page `writerTarget` `{"memberAddress": "/writer", …, "agentDefinitionId": "tf-writer-…"}` | the former member opens by run ID (new this round) |
+| TF-03 | AC-003, DEC-002, AC-010, SR-010 | built server | same run | ENV-1 | Pass | `API-TF-r4/TF-03.json` | `openedProjection: "ok"`, `openedFileChanges: "ok"`; `refusedByRunId.code: COLLABORATION_TARGET_NOT_FOUND`; `markerWhileLeaving` = the reviewer; tagged row; `markerAfterRelease: []`; the delayed send delivered | **F-3 resolved** |
+| TF-04 | DEC-007, AC-003 | built server | same run | ENV-1 | Pass | `API-TF-r4/TF-04.json` | rejoin keeps run and conversation; the leaving member's interrupt `accepted`, released | |
+| TF-05 | DEC-006 | built server | same run | ENV-1 | Pass | `API-TF-r4/TF-05.json` | new run at `/scout`; the old run's send delivered | |
+| TF-06 | AC-008 | built server | same run | ENV-1 | Pass | `API-TF-r4/TF-06.json` | coordinator `/scout` in the tree and the snapshot | |
+| TF-07 | AC-007, REQ-007 | built server | same run | ENV-1 | Pass | `API-TF-r4/TF-07.json`, `API-TF-r4/server-output.log` | one `TEAM_RUN_DEFINITION_NOT_FOLLOWED: Team run '<id>' keeps its members: <reason>` each for unparsable, unparsable again, unknown agent, definition gone; run unchanged | |
+| TF-08 | AC-004, REQ-005 | reopen and server restart | same run | ENV-1 | Pass | `API-TF-r4/TF-08.json` | `Joined: editor at /editor.` after reopen; `Left: editor (/editor); …` after restart | |
+| TF-09 | AC-005 | delegated copy | same run | ENV-1 | Pass | `API-TF-r4/TF-09.json` | `copiedFrom: "team_definition"`; the copy follows add/remove | |
+| TF-10 | AC-001 (app editor) | GraphQL save | same run | ENV-1 | Pass | `API-TF-r4/TF-10.json` | `/extra` joined, notice, rule | |
+| TF-11 | AC-003, SR-010 | Stop while leaving | same run | ENV-1 | Pass | `API-TF-r4/TF-11.json` | `rowsAfterStop: []`; `markerAfterReopen: []` | |
+| TF-12 | AC-003, AC-004, SR-010 | restart while leaving | same run | ENV-1 | Pass | `API-TF-r4/TF-12.json` | `rowsAfterRestart: []`; `markerAfterReopen: []` | |
+| TFL-01 | AC-001, AC-006, DEC-005 (real) | Codex lead, native AutoByteus new member | `env -i PATH HOME USER LOGNAME TMPDIR RUN_CODEX_E2E=1 RUN_AUTOBYTEUS_TEAM_FOLLOWS_E2E=1 AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault TEAM_FOLLOWS_LIVE_E2E_EVIDENCE_DIR=<evidence>/API-TFL-r4 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/team-run-follows-definition-live.e2e.test.ts --no-watch --reporter=verbose` | ENV-2 | Pass | `API-TFL-r4/API-TFL-r3-run.log`, `API-TFL-r4/TFL-01.json` | `Tests  2 passed (2)`; reviewer launched `autobyteus`/`claude-haiku-5-5`; the lead answered the code | |
+| TFL-02 | AC-003, AC-010 (real) | Codex writer, auto-execute off | same run | ENV-2 | Pass | `API-TFL-r4/TFL-02.json`, `API-TFL-r4/TFL-02-diagnostics.json` | two approvals answered while leaving; `delivered: true`; `released: true`; the real lead read the exact refusal | |
 | TFU-01 | AC-009 | rendered app | `node tickets/in-progress/team-run-follows-definition/probes/team-follows-ui-probe.mjs --output-dir <evidence>/API-TFU-r3` | ENV-3 | Pass | `API-TFU-r3/team-follows-ui-evidence.json`, `TFU-01-*.png` | reviewer row appears without a reload, writer row goes, reviewer answers; the Team tab keeps `WRITER-NOTE-…` | |
 | TFU-02 | AC-008 | rendered app | same run | ENV-3 | Pass | `TFU-02-*.png` | the new coordinator is focused after a fresh load and answers | |
 | TFU-03 | AC-003, SR-010 | rendered app: team's own rows | same run | ENV-3 | Pass | `TFU-03-a-leaving-tag.png`, `TFU-03-b-leaving-member-opened.png`, `TFU-03-c-released.png`, `cases["TFU-03-observed"]` | row `R reviewer Leaving now` (tag "Leaving", title "Removed from the team; finishing its current turn"); opening it: header `R reviewer Running`, `opened: true`, `stopVisible: true`; after the Stop the row goes | **F-3 resolved in the app** |
@@ -65,8 +72,9 @@ The run record and the result of the latest round. The plan is `api-e2e-coverage
 | TFU-06 | SR-010 | rendered app: Stop while leaving | same run | ENV-3 | Pass | `TFU-06-a-leaving.png`, `TFU-06-b-stopped.png` | no leaving row after the Stop; the marker is cleared on reopening | |
 | API-PEER | AC-005 (peer copy), regression | two built servers | `env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<fixture> REMOTE_E2E_EVIDENCE_DIR=<temp> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts --no-watch --reporter=verbose` | ENV-4 | Pass | `API-PEER-r3/API-PEER-r3-run.log`, `API-PEER-r3/API-PEER-r3-RC-51.json` | `Tests  51 passed (51)`; RC-51 `copiedFrom: "team_definition"`, former `/reviewer`, exact refusal | |
 | API-REG | preserved behavior; readers of the changed location service | existing E2E suites and folders | `collaboration-prompt-wording`, `delegated-team-lazy-member-activation`, `unclean-shutdown-delegated-team-restore`, `memory-explorer-graphql`; folders `tests/e2e/memory`, `tests/e2e/run-history` (scripted AGY, clean env) | ENV-1 | Pass (one out-of-scope environment failure, see Notes) | `API-REG-r3/*.log` | `14 passed (14)`; `2 passed \| 1 skipped (3)`; `8 passed (8)`; `3 passed (3)`; run-history folder `Tests  28 passed \| 2 skipped (30)`; memory folder `Tests  1 failed \| 39 passed \| 3 skipped (43)` | The one failure is `episodic-catalog.e2e.test.ts` EC-04, "Timed out waiting for write failure logged". It makes `episodic/` read-only with `chmod 0o555`, which root ignores, so no write fails. This container runs as root. Not this ticket, which touches no episodic code. Follow-up FU-005 |
-| API-TC | test code | `pnpm -C autobyteus-server-ts typecheck` | — | ENV-1 | Pass | `API-TC-r3/API-TC-r3-server-typecheck.log` | `1005 in 314 files (baseline 1005 in 314 files)`, `[typecheck] PASS` | |
+| API-TC | test code | `pnpm -C autobyteus-server-ts typecheck` | — | ENV-1 | Pass | `API-TC-r4/API-TC-r4-server-typecheck.log` | `1005 in 314 files (baseline 1005 in 314 files)`, `[typecheck] PASS` | |
 | API-FS | changed build inputs (contracts package and its `dist`) | fresh clone, every step of `build-linux-arm64` | round 2, at `8789b97a41` | ENV-5 | Pass (round 2, still valid) | `API-FS-r2/API-FS-r2-fresh-start-build.log` | `Verified signed desktop release 1.5.14-beta.3 arm64`; `Packaged server startup validation passed` | The units step is root-limited: `node --test` 27 tests refuse uid 0. `libz.so` was provided for the AppImage verify (FU-004). macOS and x64 jobs need the runner: Not Tested |
+| API-FIX | test fixture change (TR-001) | another suite using `CALL_TOOLS` | `env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<fixture> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts --no-watch --reporter=verbose` | ENV-1 | Pass | `API-TF-r4/API-TF-r4-fixture-regression.log` | `Tests  7 passed \| 2 skipped (9)` | the `untilFile` field is opt-in; `delayMs` users unchanged |
 | API-NF | design D-SCOPE (a configured-placement copy and an application run do not follow) | — | — | — | Not Tested | — | — | Not run end to end. Creating these needs an Org in-run placement delegation and an application launch. Covered by the planner unit cases (reused); the check is a run-kind check before any plan |
 
 ## Findings
@@ -141,8 +149,9 @@ The run record and the result of the latest round. The plan is `api-e2e-coverage
 
 | Path | Change | Case IDs |
 | --- | --- | --- |
-| `autobyteus-server-ts/tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts` | Added (round 1, `443f1c2c0f`); updated (round 2, `8789b97a41`; round 3, `44fd8d073a`) | TF-01..TF-12 |
-| `autobyteus-server-ts/tests/e2e/runtime/team-run-follows-definition-live.e2e.test.ts` | Added (round 1, `443f1c2c0f`) | TFL-01, TFL-02 |
+| `autobyteus-server-ts/tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts` | Added (round 1, `443f1c2c0f`); updated (round 2, `8789b97a41`; round 3, `44fd8d073a`; TR-001, `6f76db6332`) | TF-01..TF-12 |
+| `autobyteus-server-ts/tests/e2e/runtime/team-run-follows-definition-live.e2e.test.ts` | Added (round 1, `443f1c2c0f`); updated (TR-001, `6f76db6332`: waits and timeouts from `os-latency-under-load.ts`) | TFL-01, TFL-02 |
+| `autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs` | Updated (TR-001, `6f76db6332`): opt-in `untilFile` for a `CALL_TOOLS` call | TF-03, TF-05, API-FIX |
 | `autobyteus-server-ts/tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts` | Updated: RC-51 (round 1, `443f1c2c0f`) | API-PEER |
 | Ticket probe `tickets/in-progress/team-run-follows-definition/probes/team-follows-ui-probe.mjs` | Ticket-owned (not a package script) | TFU-01..TFU-06 |
 
@@ -169,4 +178,9 @@ The run record and the result of the latest round. The plan is `api-e2e-coverage
 - Criteria not proven, user-only or accepted as unverified risk: `None`
 - Evidence decisions requested: `None`
 - Next recipient from `get_handoff_rules`: the code reviewer (proportional test-code review)
-- Notes: final confidence 95.4%; follow-ups FU-004 (urgent) and FU-005 are outside this ticket.
+- Notes: final confidence 95.4%, unchanged by the test-code correction, which made the proofs deterministic without changing them.
+- Residual risks for delivery:
+  - API-NF: the configured-placement copy and the application run "not followed" are unit-only;
+  - a follower step that throws after a commit skips the rest of that change (declared);
+  - root-container limits: the release job's signing-record unit tests refuse uid 0, and FU-005;
+  - FU-003 and FU-004 (urgent) are outside this ticket.

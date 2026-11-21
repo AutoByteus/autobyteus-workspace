@@ -60,3 +60,7 @@
 | 2026-11-21T16:27:09Z | API-PEER | Completed | Pass | r3: 51/51 |
 | 2026-11-21T16:27:09Z | API-TC | Completed | Pass | r3 baseline equal |
 | 2026-11-21T16:29:20Z | ROUND 3 | Completed | Pass | all in-scope cases pass; FU-005 recorded |
+| 2026-11-21T16:37:26Z | TR-001 | Started | | test-code correction per CRR-007: watcher waits from os-latency-under-load, gate instead of delays, TF-07 settled windows; whole TF file run |
+| 2026-11-21T16:39:59Z | TR-001 | Checkpoint | | run 1: TF-07 test bug (settleValid built from the ghost config) cascaded to TF-08..12; fixed; run 2 |
+| 2026-11-21T16:41:14Z | TR-001 | Checkpoint | | run 2: TF 12/12 |
+| 2026-11-21T16:48:57Z | TR-001 | Completed | Pass | TF 12/12, TFL 2/2, fixture user suite 7+2 skip, typecheck baseline |
