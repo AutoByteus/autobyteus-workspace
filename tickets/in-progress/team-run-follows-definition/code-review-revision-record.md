@@ -11,6 +11,7 @@
 | CRR-005 | `code-review-report.md` | Implementation Review / IR-003 (CR-003 Local Fix) | Fail (CRR-004) | Fail | CR-003 (resolved), CR-004 (new) |
 | CRR-006 | `code-review-report.md` | Implementation Review / IR-004 (CR-004 Local Fix) | Fail (CRR-005) | Pass | CR-004 (resolved) |
 | CRR-007 | `api-e2e-test-review-report.md` | Proportional API/E2E test-code review / API-REV-003 passed | N/A (first test review; CRR-006 source Pass) | Fail | TR-001 |
+| CRR-008 | `api-e2e-test-review-report.md` | Proportional API/E2E test-code review, round 2 / API-REV-004 (TR-001 correction) | Fail (CRR-007) | Pass | TR-001 (resolved) |
 
 ## Revision Entries
 
@@ -207,3 +208,30 @@ None.
 - Material score or classification changes: None to the source review; Large/High preserved
 - Recommended recipient: API/E2E engineer
 - Remaining risks or uncertainty: none beyond the API-REV-003 residual risks.
+
+### CRR-008: Proportional test-code review, round 2 (API-REV-004, TR-001 correction)
+
+- Canonical review report updated: `/home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/tickets/in-progress/team-run-follows-definition/api-e2e-test-review-report.md`
+- Review entry point and round: Successful API/E2E test-code review, round 2
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-004); tests `6f76db6332`; TR-001
+- Relevant solution revision IDs: SR-010
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-004 (source unchanged)
+- Relevant API/E2E revision IDs: API-REV-004
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail (CRR-007)
+- Current authoritative result: Pass
+- What changed in the review result and why: TR-001 is resolved. Watcher-driven waits now end when the outcome holds, with `OS_FILE_EVENT_WAIT_MS`. Busy members are held by an opt-in `untilFile` gate or `HOLD_TURN` after `untilBusy`. TF-07 uses settled valid states and sentinel-confirmed counting. Timeouts derive from `FILE_EVENT_TEST_TIMEOUT_MS`. The shared fixture change is opt-in, and another of its users passed.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| TR-001 | Open (Local Fix, API/E2E) | Resolved | API-REV-004, `6f76db6332` | Diff read case by case; `API-TF-r4-run.log` 12/12; `TF-07.json` exactly one warning per breakage; `API-TF-r4-fixture-regression.log` 7 passed / 2 skipped; `API-TFL-r4-run.log` 2/2 |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: None; Large/High preserved
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: the API-REV-004 residual risks (API-NF unit-only; follower step; root-container limits; FU-003, FU-004, FU-005).
