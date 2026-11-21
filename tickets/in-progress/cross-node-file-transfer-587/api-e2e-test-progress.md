@@ -23,3 +23,8 @@
 | 2026-11-21T15:02:55Z | API-10 | Completed | Pass | tracked imports, 102275 files |
 | 2026-11-21T15:02:55Z | API-02 | Started | — | web typecheck |
 | 2026-11-21T15:04:13Z | API-02 | Completed | Pass (web) | 86 test-file errors = baseline; production 0 |
+| 2026-11-21T16:21:45Z | API-11 | Started | — | round 2, T-001 of CRR-002: the 461 model states RF-14 (send_by_run_id node; NODE_REQUIRED/NODE_MISMATCH); S18/S19 pass node |
+| 2026-11-21T16:21:45Z | API-11 | Checkpoint | Pass (model) | fixture regenerated: only S18/S19 call texts change; --check matches; walkthrough exit 0; probe 18 rows as the server orders them |
+| 2026-11-21T16:21:45Z | API-07 | Started | — | rerun of gated §5.1 against the regenerated fixture |
+| 2026-11-21T16:32:59Z | API-07 | Completed | Fail (FU-002 only) | rerun of §5.1: S18 differs only by the two counterpart lines (565), as in round 1 |
+| 2026-11-21T16:32:59Z | API-11 | Completed | Pass | T-001 resolved |

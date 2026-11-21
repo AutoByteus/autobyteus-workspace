@@ -12148,7 +12148,7 @@
      "cases": [
       "R-10"
      ],
-     "call": "`send_message_to(target_agent_run_id: \"project_task_manager_7c8d\", content: \"Findings …\")`, by `lead_0c11` on node B. (By address, `\"/project_task_manager\"` is not found on node B: across nodes only run IDs work.)",
+     "call": "`send_message_to(target_agent_run_id: \"project_task_manager_7c8d\", node: \"node-a\", content: \"Findings …\")`, by `lead_0c11` on node B. (By address, `\"/project_task_manager\"` is not found on node B: across nodes only run IDs work, and since autobyteus-587 RF-14 always with the node.)",
      "results": [
       {
        "accepted": true,
@@ -12994,7 +12994,7 @@
       "R-8",
       "R-10"
      ],
-     "call": "`update_task(task_id: \"adhoc_task_7c7c\", status: \"DONE\")`, by M. Then `send_message_to(target_agent_run_id: \"project_task_manager_7c8d\", content: \"More findings …\")`, by `lead_0c11` on node B",
+     "call": "`update_task(task_id: \"adhoc_task_7c7c\", status: \"DONE\")`, by M. Then `send_message_to(target_agent_run_id: \"project_task_manager_7c8d\", node: \"node-a\", content: \"More findings …\")`, by `lead_0c11` on node B",
      "results": [
       {
        "taskId": "adhoc_task_7c7c",

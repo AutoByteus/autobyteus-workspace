@@ -22,7 +22,12 @@ NOT_RUNNING = lambda r: (f"No running agent has the run id '{r}', so the message
 TEAM_RUN_ID = lambda r, c: (f"{r} is a task agent team's run id, and send_message_to talks with agents. "
                             f"To talk with the team, use its coordinator's run id: {c}.")
 
-SAVED_TASK_TO_PEER = "A saved Task (task_id) can't be given to an agent on another node yet, so nothing was started. Delegate with a description instead."
+# autobyteus-587 RF-14 replaces CM-11, under which a linked run on another node was reached without node: a message to
+# a run on another node always names that node. Texts from `remote-refusal-codes.ts` (nodeRequired / nodeMismatch).
+NODE_REQUIRED = lambda n: f'This agent runs on node "{n}"; pass node: "{n}" with its run id.'
+NODE_MISMATCH = lambda n, given: f'This agent runs on node "{n}", not "{given}"; pass node: "{n}".'
+
+SAVED_TASK_TO_PEER ="A saved Task (task_id) can't be given to an agent on another node yet, so nothing was started. Delegate with a description instead."
 
 class Refused(Exception):
     """A refusal. `tool` decides its shape: send_message_to answers {accepted, code, message}; delegate_task {delegated, message}."""
@@ -364,13 +369,44 @@ class World:
     def send_by_address(self, sender, address, content, message_id, at, message_type="agent_message"):
         receiver, step = self.resolve(sender, address)
         self._send(sender, receiver, content, message_type, message_id, at, address); return step
-    def send_by_run_id(self, sender, receiver, content, message_id, at, message_type="agent_message"):
+    def _node_rule(self, sender, receiver, node):
+        """autobyteus-587 RF-14, before admission and before anything is sent. `node` is a node name as the sender's node
+        calls it. Across nodes, the sender's node decides first:
+        - `node` names another node: NODE_MISMATCH, with the node the run is on (it names a registered peer; an unknown
+          name is refused before this rule and is not modelled);
+        - no `node`, and the sender's own run links the run: it delegated it (the run's newest Task entry, open or
+          closed, names the sender's run as its delegating run) or it is the run that delegated to the sender's run (its peer `delegatedFrom`):
+          NODE_REQUIRED (the sender's root answers first, `deliverExact`);
+        - no `node`, and only the sender's node holds Task entries for the run: if they are all closed, CLOSED;
+          otherwise NODE_REQUIRED (`CrossRunMessageDelivery.peerRunAdmission`);
+        - no `node` otherwise: the run is not on this node, so "not running".
+        With the right `node`, the admission that follows is unchanged (`_admit`).
+        On one node, `node` is not part of the contract (the model has no such call)."""
+        a, b = self.run_of(sender), self.run_of(receiver)
+        if a[0] == b[0]:
+            if node is not None: raise ValueError("the model has no send with node to a run on the sender's own node")
+            return
+        there = self.node_names[b[0]]
+        if node is not None:
+            if node != there: raise Refused("NODE_MISMATCH", NODE_MISMATCH(there, node))
+            return
+        entries = [e for t, e in self.entries(a[0]) if "nodeId" in e and self.run_key_of_entry(e) == (b[1], b[2])]
+        # the root's link to a peer run is its newest Task entry, open or closed (`DelegationIndex.peerChildrenOf`)
+        links = bool(entries) and entries[-1]["delegatedFrom"]["delegatingRun"]["runId"] == a[2] \
+            or self.file_of(a).get("delegatedFrom", {}).get("delegatorAgentRunId") == receiver
+        if links: raise Refused("NODE_REQUIRED", NODE_REQUIRED(there))
+        if entries and all(e["closedAt"] is not None for e in entries): raise Refused("TASK_AGENT_RESOURCE_CLOSED", CLOSED)
+        if entries: raise Refused("NODE_REQUIRED", NODE_REQUIRED(there))
+        raise Refused("TARGET_AGENT_RUN_NOT_ACTIVE", NOT_RUNNING(receiver))
+    def send_by_run_id(self, sender, receiver, content, message_id, at, message_type="agent_message", node=None):
+        """`send_message_to(target_agent_run_id, node?)`."""
         if receiver not in self.runs:
             # a team run's ID is answered with its coordinator's, whether the team runs or not (R-12; base's text)
             node = self.run_of(sender)[0]
             if self.run_file(node, "agent_team", receiver) in self.disk:
                 raise Refused("TARGET_IS_TEAM_RUN", TEAM_RUN_ID(receiver, self.entry_agent((node, "agent_team", receiver))))
             raise Refused("TARGET_AGENT_RUN_NOT_ACTIVE", NOT_RUNNING(receiver))  # e.g. a deleted run (R-11)
+        self._node_rule(sender, receiver, node)
         self._send(sender, receiver, content, message_type, message_id, at, None)
     def handoff_rules(self, agent_id):
         node, kind, run_id = self.run_of(agent_id); own = self.agent_info(agent_id)[0]; f = self.file_of((node, kind, run_id))

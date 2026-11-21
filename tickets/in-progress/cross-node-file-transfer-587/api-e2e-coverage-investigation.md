@@ -11,7 +11,7 @@
 - Implementation Handoff: `implementation-handoff.md` (IR-001); Implementation Revision Record: `implementation-revision-record.md`
 - Code Review Report / Revision Record: `code-review-report.md`, `code-review-revision-record.md` (CRR-001 Pass, no findings)
 - Delivery Revision Record: N/A
-- API/E2E Revision Record: `api-e2e-revision-record.md`; Current API/E2E Revision ID: `API-REV-001`
+- API/E2E Revision Record: `api-e2e-revision-record.md`; Current API/E2E Revision ID: `API-REV-002`
 - Current Investigation Round: 1; Trigger: CRR-001 Pass (code `e327ba2467`, documents up to `17ee6b7858`)
 - Prior Investigation Reviewed: None
 
@@ -55,6 +55,7 @@ RFC-001: a file attached to a cross-node `delegate_task` or `send_message_to` is
 | `node-access-model.e2e.test.ts` `peerMessage` | a signed `messages` body without `files` answered 200 | wire | Needs Update | `files: []` |
 | web `mobile-shell-probe.mjs` MSP-08 (565) | the PTM wakes its linked remote run without `node` | RF-14 | Needs Update | `node: PEER` |
 | `collaboration-contract-stories.e2e.test.ts` §5.1 (S18/S19: beta's lead messages M on alpha without `node`) | delivered / refused CLOSED as the 461 model says | RF-14 | Unclear until run | run; if the drivers need `node`, update the drivers (the model's outcome with `node` is the same) |
+| 461 contract model `model.py`/`stories.py` (authority of `contract-states.json`) | `send_by_run_id` without node; its cross-node branch admits a linked message without node (CM-11) | RF-14 (found in round 2, CRR-002 T-001) | Needs Update | the model states RF-14; S18/S19 pass node; fixture regenerated; model probe (API-11) |
 | `collaboration-prompt-wording.e2e.test.ts` | prompt and refusal texts | wording (reply instruction names the node) | Unclear until run | run |
 | Unit/integration suites changed by the implementation | — | — | Still Valid | reused (IMP-03, IMP-04) |
 
@@ -71,6 +72,7 @@ RFC-001: a file attached to a cross-node `delegate_task` or `send_message_to` is
 | API-08 | wording | prompt wording suite | Existing Test | gated `collaboration-prompt-wording.e2e.test.ts` | reply instruction changed |
 | API-09 | RF-14 on the phone stack | phone bundle | Durable (updated) | `test:e2e:mobile-shell --cases=MSP-08` | my 565 case uses a linked remote run |
 | API-10 | — | tracked imports | Existing Test | checker | new test code |
+| API-11 | RF-14 in the contract model | 461 model, stories, fixture | Durable (updated, round 2) | export `--check`, walkthrough, model probe | T-001 |
 
 - Test progress log: `Yes`.
 

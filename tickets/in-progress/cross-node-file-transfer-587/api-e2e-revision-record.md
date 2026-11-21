@@ -5,6 +5,7 @@
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code reviewer, `code-review-report.md` CRR-001 Pass, round 1 | SR-008/SR-009, ARCH-REV-002, IR-001, CRR-001 | N/A | Pass / 95% |
+| API-REV-002 | Code reviewer, `api-e2e-test-review-report.md` CRR-002 Fail (T-001), round 2 | CRR-002 | Pass / 95% | Pass / 95% |
 
 ## Revision Entries
 
@@ -37,3 +38,33 @@ None.
   - the narrow race noted at review;
   - no 300 MB run;
   - Memory Hub export proven by unit only.
+
+### API-REV-002 — T-001: the contract stories' authority states RF-14
+
+- Triggering role, report path, and round: code reviewer, `api-e2e-test-review-report.md` (CRR-002 Fail), round 2.
+- Triggering finding or case IDs: T-001 (`Local Fix`, API/E2E). S18/S19's driver sent `node`, but the 461 model still stated CM-11: it admitted a linked cross-node message without `node`.
+- Related revision IDs: CRR-002; the precedent is autobyteus-492 CR-001 / IMP-08.
+- Why recorded: rework after a test-code review finding.
+- Coverage decisions or durable test paths changed:
+  - `tickets/done/delegated-copies-outlive-delegator-461/evidence/collaboration-model/model.py`: `send_by_run_id(…, node=None)` and `_node_rule`, following the server's order:
+    - a wrong node gets `NODE_MISMATCH`;
+    - without node, the sender's own linking root gets `NODE_REQUIRED`;
+    - without node, a run whose entries this node holds gets `CLOSED` if they are all closed, else `NODE_REQUIRED`;
+    - the texts are those of `remote-refusal-codes.ts`.
+  - `stories.py`: S18/S19 pass `node: "node-a"`.
+  - `contract-states.json` is regenerated (call texts only).
+- Cases added, changed, removed, or rechecked: API-11 added (fixture `--check`, walkthrough, model probe); API-07 §5.1 rerun.
+- Commands, environment, fixture, or broader-validation delta: Python model commands; the gated §5.1 on built servers.
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| T-001 (CRR-002) | Local Fix (API/E2E) | The model and stories state RF-14; the fixture matches; the probe shows no node → `NODE_REQUIRED`, wrong node → `NODE_MISMATCH`, right node → delivered (or `CLOSED` after S19) | API-11, API-07 |
+
+- Canonical artifacts and sections updated: the execution report (Round, Cases API-11, Durable Coverage, Result), `api-e2e-test-progress.md`, `evidence/API-11/`.
+- Prior result and confidence: Pass / 95%.
+- Current result and confidence: Pass / 95%.
+- New or remaining failure IDs: none for this ticket. API-07 stays red only because of FU-002.
+- Recommended owner: code reviewer (test-code review again).
+- Remaining risks, blocked evidence, or untested scope: as API-REV-001. OBS-1 and OBS-2 are now FU-003 and FU-004.

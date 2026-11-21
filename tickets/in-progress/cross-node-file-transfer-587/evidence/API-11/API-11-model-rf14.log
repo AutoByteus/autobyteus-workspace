@@ -1,0 +1,37 @@
+# API-11 (T-001): the 461 contract model states RF-14
+# Commands: python3 -I autobyteus-server-ts/tests/fixtures/collaboration-contract/export_contract_states.py tickets/done/delegated-copies-outlive-delegator-461/evidence/collaboration-model autobyteus-server-ts/tests/fixtures/collaboration-contract/contract-states.json (regenerate), then the same with --check; python3 -I tickets/done/delegated-copies-outlive-delegator-461/evidence/collaboration-model/walkthrough.py; python3 -I evidence/API-11/T001-model-node-probe.py tickets/done/delegated-copies-outlive-delegator-461/evidence/collaboration-model S18, then S19
+# Environment: macOS (Darwin 25.5.0), Python 3.9.6; 2026-11-21
+# node-c stands for a third registered peer (the model has two nodes; RC-51 of the two-server suite does this with a real third node).
+
+## Fixture diff after regeneration (only S18's and S19's call texts change; every state is the same)
+ .../tests/fixtures/collaboration-contract/contract-states.json        | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+## --check
+autobyteus-server-ts/tests/fixtures/collaboration-contract/contract-states.json matches the model
+exit 0
+
+## walkthrough
+exit 0
+
+## probe
+after S18: A's entries for B's research_team_77aa: ['open']
+  B's peer-started lead -> its delegator M on A, node=None: REFUSED NODE_REQUIRED: This agent runs on node "node-a"; pass node: "node-a" with its run id.
+  B's peer-started lead -> its delegator M on A, node='node-c': REFUSED NODE_MISMATCH: This agent runs on node "node-a", not "node-c"; pass node: "node-a".
+  B's peer-started lead -> its delegator M on A, node='node-a': DELIVERED Delivered message to project_task_manager_7c8d on node "node-a".
+  M on A -> its task agent lead on B, node=None: REFUSED NODE_REQUIRED: This agent runs on node "node-b"; pass node: "node-b" with its run id.
+  M on A -> its task agent lead on B, node='node-c': REFUSED NODE_MISMATCH: This agent runs on node "node-b", not "node-c"; pass node: "node-b".
+  M on A -> its task agent lead on B, node='node-b': DELIVERED Delivered message to lead_0c11 on node "node-b".
+  another run of A -> lead on B (row 13), node=None: REFUSED NODE_REQUIRED: This agent runs on node "node-b"; pass node: "node-b" with its run id.
+  another run of A -> lead on B (row 13), node='node-c': REFUSED NODE_MISMATCH: This agent runs on node "node-b", not "node-c"; pass node: "node-b".
+  another run of A -> lead on B (row 13), node='node-b': DELIVERED Delivered message to lead_0c11 on node "node-b".
+after S19: A's entries for B's research_team_77aa: ['closed']
+  B's peer-started lead -> its delegator M on A, node=None: REFUSED NODE_REQUIRED: This agent runs on node "node-a"; pass node: "node-a" with its run id.
+  B's peer-started lead -> its delegator M on A, node='node-c': REFUSED NODE_MISMATCH: This agent runs on node "node-a", not "node-c"; pass node: "node-a".
+  B's peer-started lead -> its delegator M on A, node='node-a': REFUSED TASK_AGENT_RESOURCE_CLOSED: This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id).
+  M on A -> its task agent lead on B, node=None: REFUSED NODE_REQUIRED: This agent runs on node "node-b"; pass node: "node-b" with its run id.
+  M on A -> its task agent lead on B, node='node-c': REFUSED NODE_MISMATCH: This agent runs on node "node-b", not "node-c"; pass node: "node-b".
+  M on A -> its task agent lead on B, node='node-b': REFUSED TASK_AGENT_RESOURCE_CLOSED: This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id).
+  another run of A -> lead on B (row 13), node=None: REFUSED TASK_AGENT_RESOURCE_CLOSED: This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id).
+  another run of A -> lead on B (row 13), node='node-c': REFUSED NODE_MISMATCH: This agent runs on node "node-b", not "node-c"; pass node: "node-b".
+  another run of A -> lead on B (row 13), node='node-b': REFUSED TASK_AGENT_RESOURCE_CLOSED: This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id).
