@@ -1,6 +1,5 @@
 import { composeManagedUpdates } from './composeManagedUpdates'
 import type { ManagedUpdateSession } from './managedUpdateSession'
-import { fetchBusyRuns } from '../server/embeddedBusyRuns'
 import { ApplicationShutdown } from './applicationShutdown'
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron'
 import * as fsSync from 'fs'
@@ -85,7 +84,6 @@ export class ElectronApplication {
     })
     this.serverStatusManager = new ServerStatusManager(this.serverManager)
     this.managedUpdates = composeManagedUpdates({ shutdown: this.shutdown, serverGone: () => this.serverManager.isServerProcessGone(),
-      busyRuns: () => fetchBusyRuns(this.activeEmbeddedBaseUrl, this.serverManager.getLaunchOwnerCredential()),
       notifyQuit: () => this.shellWindowRegistry.broadcast('app-quitting', undefined), report: error => logger.error('Managed update failed', error) })
     const installHooks = {
       managedSession: this.managedUpdates ?? undefined,

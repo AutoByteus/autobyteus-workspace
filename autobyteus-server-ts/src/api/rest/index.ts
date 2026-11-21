@@ -1,4 +1,3 @@
-import { registerBusyRunRoutes } from "./busy-runs.js";
 import type { RemoteCollaborationServices } from "../../remote-collaboration/remote-collaboration-services.js";
 import type { FastifyInstance } from "fastify";
 import { registerHealthRoutes } from "./health.js";
@@ -24,14 +23,13 @@ import { registerNodeDesktopRoutes } from "./node-desktop.js";
 import { registerNodeAccessRoutes } from "./node-access.js";
 import { registerMcpGatewayTokenRoutes } from "./mcp-gateway-token.js";
 import type { NodeAccess } from "../../compositions/node-access-composition.js";
-import type { ApplicationPlatformLifecycleReadiness, BusyRunCount, ApplicationPlatformRestContracts } from "../../application-platform/runtime/application-platform-runtime-contracts.js";
+import type { ApplicationPlatformLifecycleReadiness, ApplicationPlatformRestContracts } from "../../application-platform/runtime/application-platform-runtime-contracts.js";
 
 import { registerProjectTaskContextRoutes } from "./project-task-context-files.js";
 
 export async function registerRestRoutes(
   app: FastifyInstance,
   dependencies: {
-    busyRuns: () => Promise<BusyRunCount>;
     lifecycleReadiness: ApplicationPlatformLifecycleReadiness;
     application: ApplicationPlatformRestContracts;
     nodeAccess: Pick<NodeAccess, "setupCodes" | "ownerCredentials" | "mcpGatewayTokens">;
@@ -39,7 +37,6 @@ export async function registerRestRoutes(
     remoteCollaboration: RemoteCollaborationServices;
   },
 ): Promise<void> {
-  registerBusyRunRoutes(app, dependencies.busyRuns);
   await registerHealthRoutes(app);
   await registerRemoteAccessRoutes(app);
   await registerNodeAccessRoutes(app, dependencies.nodeAccess);

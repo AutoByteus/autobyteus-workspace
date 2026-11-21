@@ -150,18 +150,3 @@ it('wires early Quit to the verified managed session, not its own passing quit',
     passing.mockRestore(); notify.mockRestore();mocks.app.isPackaged=false;mocks.detectManaged.mockReset()
   }
 })
-
-it('tracks input across newly created web contents, not just the first window', async () => {
-  const { UserInputActivity } = await import('../userInputActivity')
-  const clock=vi.spyOn(performance,'now').mockReturnValue(1)
-  try {
-    const activity=new UserInputActivity()
-    const created=mocks.app.on.mock.calls.find(([name])=>name==='web-contents-created')?.[1]
-    expect(typeof created).toBe('function')
-    for (const time of [100,200]) {
-      const contents={on:vi.fn()};created({},contents);clock.mockReturnValue(time)
-      contents.on.mock.calls.find(([name])=>name==='input-event')![1]()
-      expect(activity.lastInputAt()).toBe(time)
-    }
-  }finally{clock.mockRestore()}
-})

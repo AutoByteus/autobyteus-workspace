@@ -35,7 +35,7 @@ const countProcessAgentRuns = (runtimeKind: AgentRuntimeKind): number => {
  */
 export const composeAgentRuntimeStatus = (input: Readonly<{
   codexClientManager: CodexAppServerClientManager;
-  applicationActiveAgentRuns: Pick<ApplicationPlatformHostManagementContracts["activeAgentRuns"], "countByRuntimeKind">;
+  applicationActiveAgentRuns: ApplicationPlatformHostManagementContracts["activeAgentRuns"];
 }>): AgentRuntimeStatusHandle => {
   const strategies = createAgentRuntimeStrategies({ codexClientManager: input.codexClientManager });
   const signInReader = new AgentRuntimeSignInReader(strategies);

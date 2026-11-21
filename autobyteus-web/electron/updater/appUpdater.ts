@@ -406,6 +406,7 @@ export class AppUpdater implements AppUpdateController {
     });
 
     autoUpdater.on('update-available', (updateInfo: UpdateInfo) => {
+      if (this.options.managedSession && this.state.status === 'installing') return;
       const retainedManagedStage = this.options.managedSession && this.state.updateStaged && this.state.availableVersion === updateInfo.version;
       if (updateInfo.version) this.notificationRecord?.recordFound(updateInfo.version);
       this.applyState({
@@ -423,9 +424,7 @@ export class AppUpdater implements AppUpdateController {
         downloadTransferredBytes: null,
         downloadTotalBytes: null,
       });
-      if (retainedManagedStage) {
-        this.applyState({ status: 'downloaded', message: 'Update ready.' });
-      }
+      if (retainedManagedStage) this.applyState({ status: 'downloaded', message: 'Update ready.' });
       if (updateInfo.version) this.automatic?.found(updateInfo.version);
     });
 
@@ -460,6 +459,7 @@ export class AppUpdater implements AppUpdateController {
 
     autoUpdater.on('update-downloaded', (updateInfo: UpdateInfo & { downloadedFile?: string }) => {
       if (this.options.managedSession) {
+        if (this.state.status === 'installing') return;
         if (!updateInfo.downloadedFile || !updateInfo.version) { this.errors.report(new Error('Downloaded artifact identity missing'), 'Cannot verify update.', 'download'); return; }
         this.applyState({ updateStaged: false, status: 'downloading', message: 'Verifying downloaded update...' });
         void this.options.managedSession.stageDownloaded(updateInfo.downloadedFile, updateInfo.version);
@@ -490,6 +490,7 @@ export class AppUpdater implements AppUpdateController {
   }
 
   private managedEvent(event: ManagedUpdateEvent): void {
+    if (event.type === 'restarting') return this.applyState({ status: 'installing', message: 'Installing update and restarting...' });
     if (event.type === 'restart-unavailable' || event.type === 'restart-write-failed') {
       const message = 'Manual restart is unavailable. Quit AutoByteus and reopen it from the installed application menu.';
       if (event.type === 'restart-write-failed') this.applyState({ status: 'error', updateStaged: false, errorKind: 'install', errorOperation: 'install', message });
@@ -497,7 +498,7 @@ export class AppUpdater implements AppUpdateController {
     } else if (event.type === 'invalidated') {
       this.applyState({ updateStaged: false, ...(this.state.status === 'downloaded' ? { status: 'available' } : {}) });
     } else if (event.type === 'verification-cancelled') {
-      this.automatic?.downloaded(event.version); // end automatic download bookkeeping; no managed install on readiness
+      this.automatic?.downloaded(event.version); // end automatic download bookkeeping; no activation on a stale receipt
       this.applyState({ status: 'available', updateStaged: false, message: 'Update is available for download.',
         downloadPercent: null, downloadTransferredBytes: null, downloadTotalBytes: null });
     } else if (event.type === 'stage-gone') {
@@ -526,10 +527,7 @@ export class AppUpdater implements AppUpdateController {
   }
 
   private applyState(partial: Partial<typeof this.state>): void {
-    const nextState = {
-      ...this.state,
-      ...partial,
-    };
+    const nextState = { ...this.state, ...partial };
 
     if (partial.status && partial.status !== 'error') {
       nextState.errorKind = null;

@@ -100,7 +100,7 @@ const readJson = async (file: string): Promise<Json | null> => JSON.parse(await 
 
 type ModelRequest = { caseId: string; at: number; lastUser: string; lastRole: string; toolResults: string[] };
 type Reply = { toolCalls?: Array<{ name: string; args: Json }>; text?: string };
-type Step = (request: ModelRequest) => Reply | Promise<Reply>;
+type Step = (request: ModelRequest) => Reply;
 const textOf = (content: unknown): string => typeof content === "string" ? content
   : Array.isArray(content) ? content.map((part) => typeof part?.text === "string" ? part.text : "").join("\n") : JSON.stringify(content ?? "");
 
@@ -140,7 +140,7 @@ class ScriptedModel {
     const hasTools = Array.isArray(body.tools) && body.tools.length > 0;
     if (hasTools) this.requests.push(request);
     const step = hasTools ? this.scripts.get(request.caseId)?.shift() : undefined;
-    const reply: Reply = step ? await step(request) : { text: "OK." };
+    const reply: Reply = step ? step(request) : { text: "OK." };
     const toolCalls = reply.toolCalls?.map((call, index) => ({ index, id: `call-${randomUUID().slice(0, 12)}`, type: "function",
       function: { name: call.name, arguments: JSON.stringify(call.args) } }));
     const delta = toolCalls?.length ? { role: "assistant", tool_calls: toolCalls } : { role: "assistant", content: reply.text ?? "OK." };
@@ -308,33 +308,6 @@ describe.skipIf(!ENABLED)("Restart reminder across real restarts of the built se
   /** The run's live entry once it shows the run idle with its background task (the check runs every 2 s). */
   const recordEntry = (node: TestNode, runId: string) => until(async () => (await readJson(node.busyRuns))?.entries?.find((entry: Json) =>
     entry.agentRunId === runId && entry.status === "idle" && entry.backgroundTasks === true) ?? null, `${runId} idle with a task in the busy-run record`, 15_000);
-
-  it("reports a native turn waiting on inference as busy, then idle after completion", async () => {
-    const node = await newNode();
-    const session = await node.start();
-    const readCounts = async () => {
-      const response = await fetch(`${session.url}/rest/busy-runs`);
-      expect(response.status).toBe(200);
-      return response.json();
-    };
-    let release!: () => void;
-    const gate = new Promise<void>((resolve) => { release = resolve; });
-    const channel = await channelOf(session, await nativeRun(session, node));
-    try {
-      expect(await readCounts()).toEqual({ busy: 0, unknown: 0 });
-      model.script("BUSY-GATE", [async () => { await gate; return { text: "Done." }; }]);
-      channel.send("CASE:BUSY-GATE Answer when ready.");
-      await until(() => model.of("BUSY-GATE").length > 0, "inference has started");
-      expect(await readCounts()).toEqual({ busy: 1, unknown: 0 });
-      release();
-      await idleAfter(channel, 0);
-      expect(await readCounts()).toEqual({ busy: 0, unknown: 0 });
-    } finally {
-      release();
-      channel.close();
-      await node.stop(session, "SIGTERM");
-    }
-  }, 120_000);
 
   it("RR-01: graceful restart: recorded live, reminded once with the next input as 'a restart', nothing woken; an idle run without a task gets nothing", async () => {
     const tag = `RR01_${randomUUID().slice(0, 8)}`;

@@ -1,4 +1,3 @@
-import { inspectBusyAgentRuns, finalizeBusyRuns, type BackgroundWorkInspection } from "../../agent-execution/services/busy-runs.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { ConfiguredExecutionNode } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import { isConfiguredAgentExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
@@ -123,9 +122,6 @@ export class ApplicationExecutionScope {
   }
 
   /** Live Application agents (standalone and Team members) running on `runtimeKind`. */
-  inspectBusyAgentRuns() { return inspectBusyAgentRuns(this.kernel.activeAgentRuns); }
-  finalizeBusyAgentRuns(inspection: BackgroundWorkInspection) { return finalizeBusyRuns(this.kernel.activeAgentRuns, inspection); }
-
   countActiveAgentRuns(runtimeKind: RuntimeKind): number {
     let count = 0;
     for (const runId of this.kernel.activeAgentRuns.listActiveRuns()) {

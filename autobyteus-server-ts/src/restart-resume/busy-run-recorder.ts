@@ -107,7 +107,7 @@ export class BusyRunRecorder {
       const placed = this.dependencies.roots.placeOf(agentRunId);
       return placed ? [{ agentRunId, run, placed }] : [];
     });
-    const observed = await inspectBackgroundWork(candidates.map(c => c.run), this.dependencies.inspectionBudgetMs ?? BACKGROUND_TASK_INSPECTION_BUDGET_MS, "snapshot");
+    const observed = await inspectBackgroundWork(candidates.map(c => c.run), this.dependencies.inspectionBudgetMs ?? BACKGROUND_TASK_INSPECTION_BUDGET_MS);
     return [...entries, ...candidates.flatMap(({ agentRunId, placed, run }) => observed.get(run) === "running"
       ? [Object.freeze({ root: placed.root, agentRunId, place: placed.place, status: "idle" as const, backgroundTasks: true, recordedAt, version })] : [])];
   }

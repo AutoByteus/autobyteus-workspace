@@ -9,6 +9,5 @@ export function managedReadyMessageKey(state: Readiness) {
   if (state.automaticInstallBlockedVersion === availableVersion) {
     return activationMode === 'managed-restart' ? 'settings.notifications.app.readyManual' : 'settings.notifications.app.readyManualFromMenu';
   }
-  if (!state.automaticUpdate) return null;
-  return activationMode === 'managed-restart' ? 'settings.notifications.app.readyToRestart' : 'settings.notifications.app.readyOnQuit';
+  return activationMode === 'managed-quit' && state.automaticUpdate ? 'settings.notifications.app.readyOnQuit' : null;
 }

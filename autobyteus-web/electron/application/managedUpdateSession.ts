@@ -1,11 +1,9 @@
-import type { SafeRestartMoment } from '../updater/safeRestartMoment'
 import type { ApplicationShutdown } from './applicationShutdown'
 import { ManagedStageGone, type ManagedStage, type LinuxManagedInstall } from '../updater/linuxManagedInstall'
 
 type Settings = Readonly<{ automaticUpdate: boolean; updateChannel: 'stable' | 'beta' }>
 type Activation = Readonly<{ consent: 'automatic' | 'manual'; ending: 'quit' | 'reopen' }>
 type SessionOptions = Readonly<{
-  restartMoment: Pick<SafeRestartMoment, 'watch' | 'cancel'>
   writer: Pick<LinuxManagedInstall, 'stage' | 'activate' | 'status' | 'discard'>
   shutdown: ApplicationShutdown
   serverGone: () => boolean
@@ -19,6 +17,7 @@ type SessionOptions = Readonly<{
 export type ManagedUpdateEvent =
   | { type: 'restart-unavailable' }
   | { type: 'restart-write-failed' }
+  | { type: 'restarting' }
   | { type: 'ready'; version: string }
   | { type: 'invalidated' }
   | { type: 'verification-cancelled'; version: string }
@@ -27,7 +26,7 @@ export type ManagedUpdateEvent =
   | { type: 'stage-failed'; version: string; error: unknown }
   | { type: 'activation-failed'; version: string; error: unknown; automatic: boolean; confirmedOld: boolean }
 
-/** Sole managed quit owner. A verified stage may be activated by one safe restart, explicit restart or quit. */
+/** Sole managed quit owner. A verified stage may be activated by one automatic restart, explicit restart or quit. */
 export class ManagedUpdateSession {
   private generation = 0
   private pending: ManagedStage | null = null
@@ -46,26 +45,22 @@ export class ManagedUpdateSession {
   automaticInstallBlockChanged(version: string | null): void {
     if (this.automaticInstallBlockedVersion === version) return
     this.automaticInstallBlockedVersion = version
-    this.watchForRestart()
+    this.restartWhenEligible()
   }
   get canReopen(): boolean { return !!this.options.requestReopen }
   get passingQuit(): boolean { return this.passQuit }
-  quitRequested(): void { this.quitLatched = true; this.options.restartMoment.cancel() }
-  private watchForRestart(): void {
-    this.options.restartMoment.cancel()
+  quitRequested(): void { this.quitLatched = true }
+  private restartWhenEligible(): void {
     const stage = this.pending, generation = this.generation
-    const eligible = () => stage !== null && this.pending === stage && this.generation === generation && this.canReopen &&
-      this.intent === null && !this.quitLatched && this.lastSettings.automaticUpdate &&
-      this.lastSettings.updateChannel === stage.channel && this.automaticInstallBlockedVersion !== stage.identity.version
-    if (stage && eligible()) this.options.restartMoment.watch(() => {
-      if (!eligible()) return
-      this.intent = 'restart'
-      void this.finish(stage, generation, { consent: 'automatic', ending: 'reopen' })
-    })
+    if (!stage || !this.canReopen || this.intent !== null || this.quitLatched || !this.lastSettings.automaticUpdate ||
+        this.lastSettings.updateChannel !== stage.channel || this.automaticInstallBlockedVersion === stage.identity.version) return
+    // Stage and generation come from this turn; take ownership before notifying listeners.
+    this.intent = 'restart'
+    this.emit({ type: 'restarting' })
+    void this.finish(stage, generation, { consent: 'automatic', ending: 'reopen' })
   }
   async stageDownloaded(file: string, version: string): Promise<void> {
     if (this.intent !== null || this.quitLatched) return
-    this.options.restartMoment.cancel()
     const generation = ++this.generation
     this.verifying = generation
     const channel = this.lastSettings.updateChannel
@@ -79,7 +74,7 @@ export class ManagedUpdateSession {
       }
       this.pending = stage
       this.emit({ type: 'ready', version })
-      this.watchForRestart()
+      this.restartWhenEligible()
     } catch (error) {
       if (generation === this.generation) this.emit({ type: 'stage-failed', version, error })
     } finally {
@@ -98,12 +93,11 @@ export class ManagedUpdateSession {
       this.emit({ type: 'invalidated' })
     }
     this.lastSettings = current
-    if (changed) this.watchForRestart()
+    if (changed) this.restartWhenEligible()
   }
   requestRestart(): { accepted: boolean } {
     if (!this.pending || this.intent !== null || this.quitLatched) return { accepted: false }
     if (!this.options.requestReopen) { this.emit({ type: 'restart-unavailable' }); return { accepted: false } }
-    this.options.restartMoment.cancel()
     this.intent = 'restart'
     const stage = this.pending, generation = this.generation
     void this.finish(stage, generation, { consent: 'manual', ending: 'reopen' })

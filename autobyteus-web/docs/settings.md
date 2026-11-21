@@ -600,8 +600,8 @@ node has its own switch on the Nodes page).
   announced; Download and Install stay the user's actions, unless **Update
   automatically** (below the channel, `AutoUpdateSwitch` `variant="settings"`)
   is on. On [managed Ubuntu](linux-managed-desktop.md), an eligible verified
-  update reopens the app when no agent is busy and no app window has received
-  input for five minutes. If you quit first, it installs and stays closed.
+  update installs and reopens the app immediately, even during agent work.
+  An intentional quit stays closed.
   Other desktop installs follow their [native update policy](electron_packaging.md#automatic-app-updates). Windows without the
   shell's checks (browser windows, disabled updates) have no such section.
 

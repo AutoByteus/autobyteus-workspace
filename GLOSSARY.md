@@ -479,11 +479,7 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   no longer tracked after an unexpected stop). Woken with it after an update; otherwise it rides
   the run's next input. Delivered exactly once.
 - **Busy run**: a live run that is initializing, running a turn, or has a running
-  background task. For update safety this includes application-owned runs; the
-  restart reminder records only eligible placed collaboration runs.
-- **Safe restart moment** (managed Ubuntu): the embedded node confirms zero busy
-  runs and zero unknown observations, and AutoByteus has received no in-app input
-  for five minutes. An unavailable observation defers automatic restart.
+  background task. The restart reminder records eligible placed collaboration runs.
 - **Background task running** (status shown): what desktop and phone lists and
   headers show for an `idle` agent whose run has running background tasks ("N
   background tasks running" for several; zh-CN "后台任务运行中"), with the active,
