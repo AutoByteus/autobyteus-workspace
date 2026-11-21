@@ -1,0 +1,13 @@
+# IMP-04 web typecheck (compiles server src and fixtures it imports)
+# command: pnpm -C autobyteus-web typecheck
+# commit: 9968ee0c73
+# env: macOS Darwin 25.5.0, pnpm 10.28.2
+# date: 2026-11-21 15:16 CET
+
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 39.8s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.2s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 23.4s
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+exit 0

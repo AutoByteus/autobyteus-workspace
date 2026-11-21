@@ -1,0 +1,8 @@
+# IMP-14 integration: base 22's team-run-follows-definition (its router stub now admitPeerRun) on the merged state (IR-003)
+# command: pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-team-execution/team-run-follows-definition.integration.test.ts --no-watch
+# commit: 037e6bec5c
+# env: macOS Darwin 25.5.0, pnpm 10.28.2
+# date: 2026-11-21 18:58 CET
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)

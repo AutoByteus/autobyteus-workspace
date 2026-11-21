@@ -1,0 +1,38 @@
+{
+  "result": "Pass",
+  "case": {
+    "result": "Pass",
+    "seconds": 22.2,
+    "runId": "night_writer_30cd_e86dcf0721c244aa8cc5e47fbcf6d994",
+    "listAfterCloseMs": 917,
+    "phoneAfterListMs": 27,
+    "desktopAfterListMs": 4059,
+    "afterReopen": {
+      "recorded": true,
+      "listed": false,
+      "phone": false,
+      "desktop": false
+    },
+    "backMs": 2062
+  },
+  "closedDelegation": {
+    "runId": "night_writer_30cd_e86dcf0721c244aa8cc5e47fbcf6d994",
+    "manager": "remote_manager_30cd_ec7eb7dc70f34e658f288c74d5e0bfe8",
+    "listAfterCloseMs": 917,
+    "phoneAfterListMs": 27,
+    "desktopAfterListMs": 4059,
+    "afterReopen": {
+      "recorded": true,
+      "listed": false,
+      "phone": false,
+      "desktop": false
+    },
+    "backMs": 2062
+  },
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "unknownBrowserErrors": []
+}

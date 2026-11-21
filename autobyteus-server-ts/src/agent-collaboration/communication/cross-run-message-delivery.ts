@@ -17,6 +17,7 @@ import {
   type TaskExecutionResourcePort,
 } from "../execution/task/task-execution-resource-port.js";
 import type { RunningAgents } from "../running/running-agents.js";
+import type { PeerRunStateNotices } from "../execution/remote/peer-run-state-notices.js";
 import type { CrossRunAcceptInput } from "./cross-run-accept-input.js";
 
 /** The sender's root: it prepares a message to another run and records it in its own log once delivered. */
@@ -57,6 +58,18 @@ const sameRun = (a: RootExecutionIdentity, b: RootExecutionIdentity): boolean =>
  * receiver runs (CM-13). A run whose Tasks are all closed throws `TASK_AGENT_RESOURCE_CLOSED`, whoever sends.
  */
 type Admission = "related" | "reopened" | "unrelated";
+/**
+ * The admission of a message to a run on a peer node (autobyteus-591 DN-9): `not_peer` when no Task entry here names the
+ * target's run on a peer, `admitted`, or the refusal to answer.
+ */
+export type PeerRunAdmission = "not_peer" | "admitted" | AgentOperationResult;
+const byLinkedAt = <T extends Readonly<{ linkedAt: string }>>(a: T, b: T): number => a.linkedAt.localeCompare(b.linkedAt);
+/** A Task-side refusal (a coded rejection) as the message's answer; any other error is thrown. */
+const taskRefusal = (error: unknown): AgentOperationResult => {
+  const code = error instanceof TaskDelegationError ? error.code : taskReactivationRejectionCode(error);
+  if (!code) throw error;
+  return refusal(code, errorMessage(error));
+};
 
 /**
  * `send_message_to(run ID)` to an agent of another run on this node (design DS-2, `CrossRunMessageDelivery`). It owns
@@ -74,7 +87,8 @@ type Admission = "related" | "reopened" | "unrelated";
  * it runs (`RunningAgents`), in its live root, and is never woken (DEC-003): otherwise `null`, and the router answers
  * "not running". An agent no Task names is unrelated, except an agent of a delegated run whose Task was deleted, messaged
  * by the delegator its run's own file names: base's `TASK_NOT_FOUND` (CR-461-058, CR-461-065, SR-071: base's texts).
- * A run on a peer node is not this route's (`null`), unless this node's Tasks of it are all closed (AR-007).
+ * A run on a peer node is not this route's (`null`): it is reached through the sender root's peer endpoints (CM-11) or
+ * with `node` (DS-004), after the router's peer-run admission (`admitPeerRun`, autobyteus-591 DN-9).
  */
 export class CrossRunMessageDelivery {
   constructor(private readonly dependencies: Readonly<{
@@ -94,6 +108,8 @@ export class CrossRunMessageDelivery {
     runFiles: Pick<RunOwnAgentsReader, "delegationOfAgent">;
     /** Whether a delegated run can be restored (CR-461-070): asked before the receiver's root is resolved or restored. */
     restorability: Pick<DelegatedRunRestorability, "refusal">;
+    /** What a peer run's node is told of its delegation state, in the run's order (autobyteus-591 DN-1b, DN-9). */
+    peerNotices: Pick<PeerRunStateNotices, "changed">;
   }>) {}
 
   async route(input: CrossRunMessageInput): Promise<AgentOperationResult | null> {
@@ -102,18 +118,15 @@ export class CrossRunMessageDelivery {
     const senderRun = input.sender.root;
     if (!receiverRun) return await this.deletedTaskRefusal(input) ?? this.deliverUnrelated(input);
     if (sameRun(receiverRun, senderRun)) return null;
-    // A run on a peer node is reached through the sender root's peer endpoints (CM-11), or with `node` (DS-004); the
-    // node that holds its Tasks refuses it for every sender here once they are all closed (AR-007, DEC-011).
+    // A run on a peer node is reached through the sender root's peer endpoints (CM-11), or with `node` (DS-004), once the
+    // router admitted it (`admitPeerRun`).
     const receiverReference = runReferenceOf(receiverRun);
-    const peerEntry = receiverReference ? tree.tasksOf(receiverReference).find((entry) => entry.nodeId !== undefined) : undefined;
-    if (peerEntry) return this.closedPeerRunRefusal({ nodeId: peerEntry.nodeId!, agentRunId: input.targetAgentRunId });
+    if (receiverReference && tree.tasksOf(receiverReference).some((entry) => entry.nodeId !== undefined)) return null;
     let admission: Admission;
     try {
       admission = await this.admit(tree, senderRun, receiverRun, input.sender.agentRunId);
     } catch (error) {
-      const code = error instanceof TaskDelegationError ? error.code : taskReactivationRejectionCode(error);
-      if (code) return refusal(code, errorMessage(error));
-      throw error;
+      return taskRefusal(error);
     }
     if (admission === "unrelated") return this.deliverUnrelated(input);
     const reactivated = admission === "reopened";
@@ -135,16 +148,37 @@ export class CrossRunMessageDelivery {
   }
 
   /**
-   * The Task admission of a message to a run on a peer node that this node's tree holds (AR-001, AR-007; DEC-011): when
-   * every Task entry of that run on that node is closed, `TASK_AGENT_RESOURCE_CLOSED` for any sender here, with or
-   * without `node`, as the linking root's own check answers; `null` otherwise (no entry, or one is open). Reads only.
+   * autobyteus-591 DN-9: the Task admission of every message to a run on a peer node that this node's Task entries name,
+   * asked once by the router before any path (the sender root's peer endpoint, `node`, or this route). As `admit`'s rule
+   * for a local run:
+   * 1. some entry of the run is open: admitted;
+   * 2. its last entry is `assigned`, closed, and the sender is its delegator: the assigner's continuation. The Task side
+   *    checks and reopens the entry (no local restorability check: the run is its node's, CM-10), then its node is told
+   *    it is open, after any notice in flight (DN-1b); admitted once its node confirmed. Not confirmed: the entry stays
+   *    open, "open" stays owed, and the answer is the notice's refusal (for an unreachable node, `PEER_UNREACHABLE`);
+   * 3. otherwise `TASK_AGENT_RESOURCE_CLOSED`, whoever sends (DEC-011).
+   * Runs outside any root's gate, so waiting for the node never holds one.
    */
-  async closedPeerRunRefusal(target: Readonly<{ nodeId: string; agentRunId: string }>): Promise<AgentOperationResult | null> {
+  async admitPeerRun(input: Readonly<{ agentRunId: string; senderAgentRunId: string | null }>): Promise<PeerRunAdmission> {
     const tree = this.dependencies.tree();
-    const run = await tree.runOfAgent(target.agentRunId);
+    const run = await tree.runOfAgent(input.agentRunId);
     const reference = run ? runReferenceOf(run) : null;
-    const entries = reference ? tree.tasksOf(reference).filter((entry) => entry.nodeId === target.nodeId) : [];
-    return entries.length && entries.every((entry) => !entry.open) ? refusal("TASK_AGENT_RESOURCE_CLOSED", ASSIGNER_ONLY_REACTIVATION_MESSAGE) : null;
+    const entries = reference ? tree.tasksOf(reference).filter((entry) => entry.nodeId !== undefined).sort(byLinkedAt) : [];
+    if (!reference || !entries.length) return "not_peer";
+    if (entries.some((entry) => entry.open)) return "admitted";
+    const last = entries.at(-1)!;
+    if (last.role !== "assigned" || input.senderAgentRunId === null || last.delegatedFrom.delegatorAgentRunId !== input.senderAgentRunId) {
+      return refusal("TASK_AGENT_RESOURCE_CLOSED", ASSIGNER_ONLY_REACTIVATION_MESSAGE);
+    }
+    const reopen = { execution: reference, requestedBy: input.senderAgentRunId };
+    try {
+      await this.dependencies.tasks().assertReopenable(reopen);
+      await this.dependencies.tasks().reopenAssignment(reopen);
+    } catch (error) {
+      return taskRefusal(error);
+    }
+    const noticed = await this.dependencies.peerNotices.changed({ run: reference, nodeId: last.nodeId! });
+    return noticed.confirmed ? "admitted" : notDeliveredAfterReopen(refusal(noticed.code, noticed.message), input.agentRunId);
   }
 
   /**

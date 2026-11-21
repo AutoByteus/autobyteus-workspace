@@ -175,6 +175,11 @@ export type TaskExecutionReopenResult = Readonly<{ taskId: string; reopened: boo
  * not active, so there is nothing to stop.
  */
 export type TaskExecutionReleaseRequest = (run: TaskExecutionReference) => Promise<TaskExecutionReleaseResult> | null;
+/**
+ * Task → runtime (autobyteus-591 DN-1): a run on a peer node whose Task entries changed; its node is told the run's
+ * delegation state (it stops a closed run). Never rejects.
+ */
+export type PeerRunStateNotice = (peerRun: Readonly<{ run: TaskExecutionReference; nodeId: string }>) => Promise<unknown>;
 /** The closure stop of a run: `stopped`, or why not. */
 export type TaskExecutionReleaseResult = Readonly<{
   execution: TaskExecutionReference; stopped: boolean; error?: Readonly<{ code: string; message: string }>;

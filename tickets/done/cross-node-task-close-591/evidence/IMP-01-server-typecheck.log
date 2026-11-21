@@ -1,0 +1,10 @@
+# IMP-01 server typecheck
+# command: pnpm -C autobyteus-server-ts typecheck
+# commit: 77ca417ac3
+# env: macOS Darwin 25.5.0, pnpm 10.28.2
+# date: 2026-11-21 15:13 CET
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 11.1s
+[typecheck] server tests (tsconfig.tests.json): 1002 errors, exit 2, 30.2s
+[typecheck] production errors: 0; test-file errors: 1002 in 314 files (baseline 1002 in 314 files)
+[typecheck] PASS

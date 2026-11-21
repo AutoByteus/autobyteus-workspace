@@ -1,0 +1,14 @@
+# IMP-02 server unit suite (full)
+# command: pnpm -C autobyteus-server-ts test:unit
+# commit: 9968ee0c73
+# env: macOS Darwin 25.5.0, pnpm 10.28.2
+# date: 2026-11-21 15:15 CET
+
+# excerpt: the summary and the one failure; the full log (about      723 lines) stays at /tmp/r591/IMP-02-unit-full.log on this machine
+
+     × names every scenario of the contract's table (NAS-01…) in at least one test 560ms
+ FAIL  tests/architecture/node-access-boundaries.test.ts > node access boundaries > names every scenario of the contract's table (NAS-01…) in at least one test
+AssertionError: expected [ 'NAS-41' ] to deeply equal []
+ Test Files  1 failed | 1046 passed | 5 skipped (1052)
+      Tests  1 failed | 8677 passed | 9 skipped (8687)
+   Duration  839.98s (transform 27.44s, setup 28.08s, import 402.73s, tests 306.13s, environment 953ms)

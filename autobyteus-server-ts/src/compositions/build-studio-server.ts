@@ -39,6 +39,8 @@ import { composeStudioRemoteCollaboration, createLateRemoteCollaborationBinding,
 import { createCollaborationRootResolver } from "./collaboration-root-resolver.js";
 import { composeRunningAgents } from "./running-agents-composition.js";
 import { composeCollaboration, composeTaskSide, type Collaboration, type TaskSide } from "./collaboration-composition.js";
+import { ClosedDelegations } from "../remote-collaboration/inbound/closed-delegations.js";
+import type { RootExecutionIdentity } from "../agent-collaboration/execution/domain/root-execution-identity.js";
 import { createAgentStreamHandler } from "../services/agent-streaming/agent-stream-handler.js";
 import { composeRestartResume, type RestartResume } from "./restart-resume-composition.js";
 import { RestartReminderService } from "../restart-resume/restart-reminder-service.js";
@@ -260,6 +262,11 @@ export const buildStudioServer = async (input: {
       journals: getWorkJournalService(), tasks: taskSide.tree });
     // autobyteus-554: the Memory page's explorer reads it per request (set before the HTTP server serves; released at close).
     setProcessEpisodicCatalog(currentEpisodicCatalog);
+    // autobyteus-591 DN-5: the runs peers started here and then closed, read once (the remote handlers and the run list use it).
+    const closedDelegations = ClosedDelegations.inAppDataDir(input.appConfig.getAppDataDir());
+    await closedDelegations.load();
+    // A committed run delete tells the episodic catalogs, and leaves the closed record (ARCH-REV-004 note 1).
+    const deletedRuns = { runDeleted: (root: RootExecutionIdentity) => { currentEpisodicCatalog.runDeleted(root); closedDelegations.runDeleted(root); } };
     platformNotices = createPlatformNoticeSources({
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
       definitionChanges: hostDefinitionServices.agentDefinitionChanges,
@@ -285,7 +292,7 @@ export const buildStudioServer = async (input: {
       providerRelayAccess: credentialProxyHost.providerRelayAccess,
       runPasses: credentialProxyHost.runPasses,
       modelSelectionValidator,
-      taskRecords: taskSide.taskRecords, delegationIndex: taskSide.tree, viewStreams: taskSide.viewStreams, episodicCatalog: currentEpisodicCatalog,
+      taskRecords: taskSide.taskRecords, delegationIndex: taskSide.tree, viewStreams: taskSide.viewStreams, episodicCatalog: deletedRuns,
       // One notice slot: the agent runtime hand-over first (a pending tool list notice must not delay it by one input),
       // then the restart reminder, tool list updates, skill notices and background task notices (one notice per input).
       platformInputNotices: new AgentRunPlatformNotices([runtimeHandoverNotices, restartReminders, ...platformNotices.sources]),
@@ -308,13 +315,14 @@ export const buildStudioServer = async (input: {
       orgRuns: generalProcessRunSupervisor.agentOrgRunService,
       rootResolver,
       running,
+      closedDelegations,
     });
     releaseRemoteCollaboration = remoteCollaboration.release;
     remote.bind(remoteCollaboration.services);
     // autobyteus-461 SR-047 steps 4–8: the Task service, delegation and messages between runs, the views' owners, their consumers.
     const currentCollaboration = collaboration = await composeCollaboration({ memoryDir: input.appConfig.getMemoryDir(), taskSide,
-      runs: generalProcessRunSupervisor, rootResolver, activeRoots: getActiveCollaborationRootDirectory(), remoteChannel: remote.channel, episodicCatalog: currentEpisodicCatalog,
-      running });
+      runs: generalProcessRunSupervisor, rootResolver, activeRoots: getActiveCollaborationRootDirectory(), remoteChannel: remote.channel, episodicCatalog: deletedRuns,
+      running, closedDelegations });
     currentEpisodicCatalog.start({ taskTitles: currentCollaboration.tasks });
     // autobyteus-437: the node access gate (every request needs a credential) and its credential services.
     const currentNodeAccess = nodeAccess = await startNodeAccess({ appDataDir: input.appConfig.getAppDataDir(), remoteCollaboration: remoteCollaboration.services });

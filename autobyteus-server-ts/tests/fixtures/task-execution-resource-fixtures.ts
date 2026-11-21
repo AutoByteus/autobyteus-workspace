@@ -225,6 +225,15 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
   statusChanged(execution: TaskExecutionReference): void {
     this.statusChanges.push({ references: [execution] });
   }
+  /** autobyteus-591 DN-3: the peer runs whose delegation state is owed to their node (the Task entries' mark). */
+  readonly peerNoticesOwed = new Set<string>();
+  async setPeerNoticeOwed(execution: TaskExecutionReference, owed: boolean): Promise<void> {
+    const key = taskExecutionReferenceKey(execution);
+    if (owed && this.entries.get(key)?.nodeId !== undefined) this.peerNoticesOwed.add(key); else if (!owed) this.peerNoticesOwed.delete(key);
+  }
+  owedPeerNotices(): Array<{ run: TaskExecutionReference; nodeId: string }> {
+    return [...this.peerNoticesOwed].map((key) => this.entries.get(key)!).map((entry) => ({ run: entry.execution, nodeId: entry.nodeId! }));
+  }
   assertResourceDataReadable(): void {
     if (this.damaged.size) throw rejection("TASK_AGENT_RESOURCES_UNAVAILABLE", "Task run data could not be read. Fix or restore the file and restart the app; other features keep working.");
   }

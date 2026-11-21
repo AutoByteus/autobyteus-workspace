@@ -91,7 +91,8 @@ Six requests, `POST /rest/remote/delegated-runs`, `/rest/remote/messages`, `/res
 `/rest/remote/available-agents`, and (autobyteus-492) `/rest/remote/run-messages` and `/rest/remote/running-agents`
 ([below](#messages-by-run-id-and-running-agents)), plus the run-view routes of autobyteus-278 (`/rest/remote/run-summaries`,
 `/agent-projection`, `/owner-commands` and the WebSocket `/rest/remote/run-observations`, described
-[below](#remote-runs-in-the-run-tree)) (route class `REMOTE_PEER`; a mobile credential is refused). Every request
+[below](#remote-runs-in-the-run-tree)), and (autobyteus-591) `/rest/remote/delegated-run-states`
+([below](#a-remote-runs-delegation-state)) (route class `REMOTE_PEER`; a mobile credential is refused). Every request
 carries `{fromNodeId, toNodeId}`; every answer carries the responder's `nodeId`. A domain refusal is `200
 {accepted: false, code, message, target?: {kind: "agent" | "agent_team", name}}` (`message` is the responder's
 detail; `target` the target definition there, for `NO_DEFAULT_RUNTIME` and `AGENT_CANNOT_RUN`, so the delegating
@@ -163,10 +164,9 @@ autobyteus-492 (CM-13): the run ID is the address across nodes too.
   node. An agent that does not run is `REMOTE_TARGET_NOT_RUNNING`; a team run's ID that runs there is
   `TARGET_IS_TEAM_RUN` with its coordinator's run ID (`RunningAgents.teamCoordinatorOf`, from the team's own
   root). The sending node words both with its name for the peer, the second saying to keep `node`.
-- **Who sends it.** `send_message_to(target_agent_run_id, node)` from any agent of this node: the router finds the
-  peer, applies this node's closed-Task admission (`CrossRunMessageDelivery.closedPeerRunRefusal`: a run this
-  node's Tasks hold on that node, all closed, is `TASK_AGENT_RESOURCE_CLOSED` for every sender here, with or
-  without `node`), then the sender's root sends it (`deliverToPeerRun`). `RemoteMessageSend` chooses the endpoint:
+- **Who sends it.** `send_message_to(target_agent_run_id, node)` from any agent of this node: the router first applies
+  this node's peer-run admission (`CrossRunMessageDelivery.admitPeerRun`, autobyteus-591 DN-9; see
+  [below](#a-remote-runs-delegation-state)), then finds the peer, then the sender's root sends it (`deliverToPeerRun`). `RemoteMessageSend` chooses the endpoint:
   the root's link when the sender is paired with that run, else `unlinked_run`. A root's linked run ID messaged
   by an agent the link does not pair (a teammate of the delegator) goes unlinked too, to the same node. The
   sender's log gets the message once the peer accepted it, as for a linked message.
@@ -276,9 +276,52 @@ each offers, then delegates with `delegate_task` without being told an address.
 - **Package admission.** The Team and Org package validators read a run's own parts only: a stored message is
   admitted when one of its endpoints is an agent of the tree (autobyteus-461). A Team or Org whose delegator
   exchanged messages with a remote run therefore still loads, restores and reopens after a restart.
-- **Task closure** fences a remote run or a remote Team: the closed Task refuses its messages both ways and
-  nothing is stopped (`TaskExecutionResourceRelease` logs `TASK_AGENT_RESOURCE_FENCED_REMOTE`). It keeps
-  running on its node until idle; the owner can stop it from the run's view (since autobyteus-278).
+- **Task closure** fences a remote run or a remote Team at once: the closed Task refuses its messages both ways.
+  Its node then stops it ([below](#a-remote-runs-delegation-state), since autobyteus-591).
+
+## A remote run's delegation state
+
+autobyteus-591 (CM-7, CM-10). The delegating node (A) decides a remote run's delegation state: open while an open
+Task entry names the run, closed otherwise. The node that runs it (B) records it and acts on it.
+
+- **A: `PeerRunStateNotices`** (`agent-collaboration/execution/remote/peer-run-state-notices.ts`). The closure's
+  release (`TaskExecutionResourceRelease`) gives it each closed run on a peer, and a follow-up Task
+  (`TaskDelegation.toExistingRun`) gives it the run after the new entry commits. It marks the notice owed on the
+  run's Task entry (`peerNoticeOwed: true`), sends the state read from `isOpen` at send time, and clears the mark
+  when B confirms. Per run, one notice is in flight; the next is sent after the previous answer, and a state that
+  changed in flight is sent again at once. A transport failure, or a Stop B refused, keeps it owed: while a peer has
+  owed notices, one timer per peer (30 s, unref'd) sends them, one run at a time; they are loaded at start from the
+  Task entries; a retry logs only a new reason. `TARGET_NOT_FOUND`, `TARGET_NOT_PERMITTED` and `PEER_NOT_REGISTERED`
+  (a node no longer a peer, on either side) drop it, logged `TASK_PEER_NOTICE_DROPPED`; a peer to pair again keeps
+  it owed. A host without peers sends nothing and runs no timer.
+- **The request.** `POST /rest/remote/delegated-run-states` `{run: {kind: "agent" | "agent_team", runId}, open}`,
+  through `PeerGateway` admission, then the run's stored back-link (`storedRemoteLinkCheck`, an owner query: only
+  the caller's own delegation). Answers `{accepted: true, nodeId, open}` with B's state after the request,
+  `REMOTE_TARGET_NOT_FOUND`, `REMOTE_TARGET_NOT_PERMITTED`, or `DELEGATED_RUN_NOT_STOPPED`.
+- **B: `DelegatedRunStateHandler`** (`remote-collaboration/inbound/`). Closed: records the run in
+  `ClosedDelegations`, then stops it with a closed Task's Stop (`AgentRunService` / `TeamRunService`
+  `.stopForTaskClosure`, which re-checks the record where the run's gate closes; a Team with every member) and
+  answers after the Stop. Open: removes the record and starts nothing. Both are idempotent.
+- **B: `ClosedDelegations`** (`<appDataDir>/remote-collaboration/closed-delegations.json`, a list of `{kind, runId,
+  nodeId, closedAt}`). Loaded once at start; each change written whole and atomically; read tolerantly (an
+  unreadable file is empty, with `CLOSED_DELEGATIONS_UNREADABLE`). Absence means open. The run list leaves out a run
+  it holds (`WorkspaceRunHistoryService`, in memory, desktop and phone alike, on their next list read). An accepted
+  linked message or work packet from the run's delegating node removes it (`RemoteMessageReceiver`), and so does
+  the run's delete on B. The application host takes no delegations, so it holds none.
+- **The assigner's continuation** (DN-9, as locally). Every `send_message_to(run ID)` from this node, with or without
+  `node`, first passes `CrossRunMessageDelivery.admitPeerRun` in `GlobalAgentRunMessageRouter.deliver`, once,
+  before the sender root's endpoint, `node` or the local route, and outside any root's gate. For a run on a peer that
+  this node's Task entries name: an open entry is admitted. A closed run whose last entry is `assigned` and was
+  assigned by the sender is continued: the Task side checks and reopens the entry (`assertReopenable`,
+  `reopenAssignment`; no local restorability check, the run is its node's), `PeerRunStateNotices` tells its node it
+  is open, after any notice in flight, and the message is admitted once the node confirmed. Not confirmed: the entry
+  stays open, "open" stays owed, and the answer is the notice's refusal (`PEER_UNREACHABLE` for an unreachable node)
+  with "send it again". Any other sender is refused `TASK_AGENT_RESOURCE_CLOSED`. `delegate_task` with the same
+  closed Task gets the local refusal, which says to message the run instead.
+- **A follow-up Task** (a different saved Task) for a remote run (`delegate_task` with its run ID and `task_id`) skips the local
+  conversation check (the conversation is on B), refuses a Task with files, waits for B's "open" confirmation, then
+  sends the Task's work over the run's link (`deliverMessageToPeerRun`, the delivery `send_message_to(node)` uses).
+  Not confirmed: the work is not delivered, the entry is `failed`, and the notice stays owed.
 
 ## Remote runs in the run tree
 

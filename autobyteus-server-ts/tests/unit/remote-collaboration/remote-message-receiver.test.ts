@@ -36,7 +36,9 @@ const setup = (stored: StoredRemoteLinkCheck = "proceed") => {
       ? { root: { rootSubjectKind: "agent" as const, rootRunId: "pm_b" }, status: { agentRunId, status: "idle" as const, backgroundTasksRunning: 0 } } : null),
     teamCoordinatorOf: vi.fn((teamRunId: string) => teamRunId === "team_b" ? "lead_b" : null),
   };
-  return { receiver: new RemoteMessageReceiver(directory, titles, new PeerStartedRunDecisions(), running), directory, roots, titles, running, liveRoot };
+  // autobyteus-591 S-5: the record of runs their delegating node closed, cleared by that node's accepted message or work.
+  const closed = { openedBy: vi.fn(async () => undefined) };
+  return { receiver: new RemoteMessageReceiver(directory, titles, new PeerStartedRunDecisions(), running, closed), directory, roots, titles, running, liveRoot, closed };
 };
 
 describe("RemoteMessageReceiver resolves targetRoot by kind (G-2)", () => {
@@ -79,6 +81,30 @@ describe("RemoteMessageReceiver resolves targetRoot by kind (G-2)", () => {
     await expect(f.receiver.accept(request(), PEER)).resolves.toMatchObject({ accepted: false, code: "REMOTE_TARGET_NOT_FOUND" });
     f.directory.team.mockRejectedValueOnce(new Error("TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED"));
     await expect(f.receiver.accept(request(), PEER)).resolves.toMatchObject({ accepted: false, code: "REMOTE_TARGET_NOT_FOUND" });
+  });
+});
+
+describe("autobyteus-591 S-5: the delegating node's accepted message or work clears B's closed record", () => {
+  it("an accepted message or work packet clears it for the sending node; a refused one, or an Org, does not", async () => {
+    const f = setup();
+    await f.receiver.accept(request(), PEER);
+    expect(f.closed.openedBy).toHaveBeenCalledExactlyOnceWith({ kind: "agent_team", runId: "team_b" }, PEER.nodeId);
+    await f.receiver.accept(request({ kind: "work_packet", messageId: undefined, content: "x", targetRoot: { kind: "agent", runId: "host_b" }, target: { agentRunId: "host_b" } } as never), PEER);
+    expect(f.closed.openedBy).toHaveBeenLastCalledWith({ kind: "agent", runId: "host_b" }, PEER.nodeId);
+    f.closed.openedBy.mockClear();
+    f.roots.team.acceptRemoteMessage.mockResolvedValueOnce({ accepted: false, code: "REMOTE_TARGET_NOT_PERMITTED", message: "x" } as never);
+    await f.receiver.accept(request(), PEER);
+    await setup("not_linked").receiver.accept(request(), PEER);
+    await f.receiver.accept(request({ targetRoot: { kind: "agent_org", runId: "org_b" } }), PEER);
+    expect(f.closed.openedBy).not.toHaveBeenCalled();
+  });
+
+  it("a failure to write the record still answers accepted, and is logged", async () => {
+    const f = setup();
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    f.closed.openedBy.mockRejectedValueOnce(new Error("disk full"));
+    await expect(f.receiver.accept(request(), PEER)).resolves.toMatchObject({ accepted: true });
+    expect(warn).toHaveBeenCalledWith("CLOSED_DELEGATIONS_WRITE_FAILED", expect.anything());
   });
 });
 

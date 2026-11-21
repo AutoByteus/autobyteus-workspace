@@ -13,7 +13,7 @@ appConfigProvider.initialize({ appDataDir: root });
 // The process Task service is the composition's (autobyteus-500 FU-011: there is no lazy process instance). This tool-only
 // process composes its Task side as a host does, with no running roots: no stop is asked, a run is its own top.
 const side = await composeTaskSide({ appDataDir: appConfigProvider.config.getAppDataDir(), memoryDir: appConfigProvider.config.getMemoryDir() });
-initializeProjectTaskServiceProcessInstance({ taskExecutionResources: side.resources, requestRelease: () => null, workerStatus: () => null,
+initializeProjectTaskServiceProcessInstance({ taskExecutionResources: side.resources, requestRelease: () => null, noticePeerRun: async () => undefined, workerStatus: () => null,
   topRun: runIdentityOf, displayName: () => null, searchCleanup: { forgetTask: () => undefined, forgetProject: () => undefined } });
 registerProjectTaskTools();
 const result = await defaultToolRegistry.createTool(name).execute(null, JSON.parse(raw));

@@ -1,0 +1,585 @@
+{
+ "source": "remote-delegation-two-server receipt, round 2 r6 (extract of the autobyteus-591 cases; request headers left out)",
+ "cases": {
+  "RC-09": {
+   "withFiles": "Files (reference_files) can't be sent to an agent on another node yet, so nothing was sent.",
+   "savedTask": "A saved Task (task_id) can't be given to an agent on another node yet, so nothing was started. Delegate with a description instead.",
+   "followUpFiles": "Files (reference_files) can't be sent to an agent on another node yet, so nothing was sent.",
+   "existingCopy": "Files (reference_files) can't be sent to an agent on another node yet, so nothing was sent."
+  },
+  "RC-10": {
+   "projectId": "project_2f940783-6635-48ee-8e65-2e5dd50eda5f",
+   "taskId": "project_task_9e232de9-6af0-4972-bd11-2fe6774fd871",
+   "workerRunId": "remote_worker_8ddb89122aaa478db7988450dfa8d480",
+   "r3": "publisher_ba9d02d3f8d345a59544e76e78f48cec",
+   "workerResult": {
+    "delegated": true,
+    "target_kind": "agent",
+    "target_agent_run_id": "publisher_ba9d02d3f8d345a59544e76e78f48cec",
+    "node": "beta-node",
+    "isError": false
+   },
+   "taskResource": {
+    "file": "projects/project_2f940783-6635-48ee-8e65-2e5dd50eda5f/tasks/project_task_9e232de9-6af0-4972-bd11-2fe6774fd871/agent_run_resources.json",
+    "entry": {
+     "role": "subWork",
+     "delegatedFrom": {
+      "delegatingRun": {
+       "kind": "agent",
+       "runId": "remote_worker_8ddb89122aaa478db7988450dfa8d480"
+      },
+      "delegatorAgentRunId": "remote_worker_8ddb89122aaa478db7988450dfa8d480"
+     },
+     "recipientAddress": "/publisher",
+     "agentRun": {
+      "kind": "agent",
+      "agentRunId": "publisher_ba9d02d3f8d345a59544e76e78f48cec"
+     },
+     "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP",
+     "linkedAt": "2026-11-21T17:16:51.915Z",
+     "start": "started",
+     "closedAt": null
+    }
+   },
+   "link": {
+    "role": "subWork",
+    "delegatedFrom": {
+     "delegatingRun": {
+      "kind": "agent",
+      "runId": "remote_worker_8ddb89122aaa478db7988450dfa8d480"
+     },
+     "delegatorAgentRunId": "remote_worker_8ddb89122aaa478db7988450dfa8d480"
+    },
+    "recipientAddress": "/publisher",
+    "agentRun": {
+     "kind": "agent",
+     "agentRunId": "publisher_ba9d02d3f8d345a59544e76e78f48cec"
+    },
+    "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP",
+    "linkedAt": "2026-11-21T17:16:51.915Z",
+    "start": "started",
+    "closedAt": null
+   },
+   "afterDone": "Node \"alpha-node\" refused the request: This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id).",
+   "refusalAnswer": {
+    "accepted": false,
+    "code": "TASK_AGENT_RESOURCE_CLOSED",
+    "message": "This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id).",
+    "nodeId": "srv_rghxtaVWVTNYdWjyt7I-70bnPuzRenGe"
+   },
+   "stoppedMs": 316
+  },
+  "RC-11": {
+   "r4": "publisher_8f1434ae64a140748b412ba3bbf6caf6",
+   "taskId": "ad_hoc_task_5a5697ba-27a6-44f4-be7d-412c51d25386",
+   "stoppedMs": 329,
+   "closedRecord": {
+    "kind": "agent",
+    "runId": "publisher_8f1434ae64a140748b412ba3bbf6caf6",
+    "nodeId": "srv_rghxtaVWVTNYdWjyt7I-70bnPuzRenGe",
+    "closedAt": "2026-11-21T17:16:57.447Z"
+   },
+   "confirmed": "TASK_PEER_NOTICE_CONFIRMED {\n  execution: { agentRunId: 'publisher_8f1434ae64a140748b412ba3bbf6caf6' },\n  nodeId: 'srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP',\n  open: false\n}",
+   "notices": [
+    {
+     "body": {
+      "fromNodeId": "srv_rghxtaVWVTNYdWjyt7I-70bnPuzRenGe",
+      "toNodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP",
+      "run": {
+       "kind": "agent",
+       "runId": "publisher_8f1434ae64a140748b412ba3bbf6caf6"
+      },
+      "open": false
+     },
+     "answer": {
+      "accepted": true,
+      "open": false,
+      "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP"
+     }
+    }
+   ],
+   "peerRow": null,
+   "toRemote": "This Task is DONE. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again.",
+   "fromRemote": "Node \"alpha-node\" refused the request: This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id)."
+  },
+  "RC-20": {
+   "total": 343,
+   "counts": {
+    "status": 6,
+    "/rest/remote/delegated-runs": 71,
+    "work_packet": 40,
+    "receiverAddress": 44,
+    "toAlpha": 17,
+    "toBeta": 30,
+    "/rest/remote/run-messages": 10,
+    "runStatesConfirmed": 17,
+    "/rest/remote/delegated-run-states": 33,
+    "observation": 33,
+    "/rest/remote/run-summaries": 39,
+    "runningAgentsEntries": 6,
+    "/rest/remote/running-agents": 3,
+    "/rest/remote/agent-stream-snapshot": 13,
+    "/rest/remote/agent-projection": 9,
+    "/rest/remote/owner-commands": 24,
+    "/rest/remote/available-agents": 12,
+    "/rest/remote/availability": 3
+   },
+   "headerNames": [
+    "accept",
+    "accept-encoding",
+    "accept-language",
+    "cache-control",
+    "connection",
+    "content-length",
+    "content-type",
+    "host",
+    "pragma",
+    "sec-fetch-mode",
+    "sec-websocket-extensions",
+    "sec-websocket-key",
+    "sec-websocket-version",
+    "upgrade",
+    "user-agent",
+    "x-autobyteus-peer-body-sha256",
+    "x-autobyteus-peer-from",
+    "x-autobyteus-peer-nonce",
+    "x-autobyteus-peer-signature",
+    "x-autobyteus-peer-timestamp",
+    "x-autobyteus-peer-to"
+   ]
+  },
+  "RC-23": {
+   "delegated": {
+    "delegated": true,
+    "target_kind": "team",
+    "target_team_run_id": "studio_team_580c38770647407b858ab5652a269f1f",
+    "target_team_coordinator_agent_run_id": "publisher_961204cc8e6f4459a2d24d71772cfb36",
+    "node": "beta-node",
+    "task_id": "ad_hoc_task_b19fcaeb-f382-4538-8d2b-ada8ae85fba6",
+    "isError": false,
+    "elapsedMs": 640
+   },
+   "savedNew": "A saved Task (task_id) can't be given to an agent on another node yet, so nothing was started. Delegate with a description instead.",
+   "saved": {
+    "delegated": true,
+    "target_kind": "team",
+    "target_team_run_id": "studio_team_580c38770647407b858ab5652a269f1f",
+    "target_team_coordinator_agent_run_id": "publisher_961204cc8e6f4459a2d24d71772cfb36",
+    "isError": false,
+    "elapsedMs": 216
+   },
+   "statusesAtCancel": [
+    "idle",
+    "initializing",
+    "running",
+    "offline",
+    "initializing",
+    "running",
+    "idle"
+   ],
+   "stoppedMs": 322,
+   "confirmed": "TASK_PEER_NOTICE_CONFIRMED {\n  execution: { teamRunId: 'studio_team_580c38770647407b858ab5652a269f1f' },\n  nodeId: 'srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP',\n  open: false\n}",
+   "closedRecord": {
+    "kind": "agent_team",
+    "runId": "studio_team_580c38770647407b858ab5652a269f1f",
+    "nodeId": "srv_rghxtaVWVTNYdWjyt7I-70bnPuzRenGe",
+    "closedAt": "2026-11-21T17:17:54.352Z"
+   },
+   "toRemote": "This Task is CANCELLED. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again.",
+   "fromRemote": "Node \"alpha-node\" refused the request: This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id)."
+  },
+  "RC-35": {
+   "runStates": {
+    "fromGamma": {
+     "accepted": false,
+     "code": "REMOTE_TARGET_NOT_PERMITTED",
+     "message": "That run was not started by the calling node's delegation.",
+     "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP"
+    },
+    "ofBetaRun": {
+     "accepted": false,
+     "code": "REMOTE_TARGET_NOT_PERMITTED",
+     "message": "That run was not started by the calling node's delegation.",
+     "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP"
+    }
+   },
+   "fromGamma": {
+    "summaries": {
+     "accepted": true,
+     "runs": [],
+     "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP"
+    },
+    "projection": {
+     "accepted": false,
+     "code": "REMOTE_TARGET_NOT_PERMITTED",
+     "message": "That run was not started by the calling node's delegation.",
+     "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP"
+    },
+    "command": {
+     "accepted": false,
+     "code": "REMOTE_TARGET_NOT_PERMITTED",
+     "message": "That run was not started by the calling node's delegation.",
+     "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP"
+    },
+    "observation": {
+     "first": {
+      "accepted": false,
+      "code": "REMOTE_TARGET_NOT_PERMITTED",
+      "message": "That run was not started by the calling node's delegation.",
+      "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP"
+     },
+     "closedCode": 1000,
+     "frames": 1
+    },
+    "streamSnapshot": {
+     "accepted": false,
+     "code": "REMOTE_TARGET_NOT_PERMITTED",
+     "message": "That run was not started by the calling node's delegation.",
+     "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP"
+    },
+    "agentStream": {
+     "first": {
+      "accepted": false,
+      "code": "REMOTE_TARGET_NOT_PERMITTED",
+      "message": "That run was not started by the calling node's delegation.",
+      "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP"
+     },
+     "closedCode": 1000,
+     "frames": 1
+    }
+   },
+   "fromAlphaAgentStreams": {
+    "snapshot": {
+     "accepted": false,
+     "code": "REMOTE_TARGET_NOT_PERMITTED",
+     "message": "That run was not started by the calling node's delegation.",
+     "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP"
+    },
+    "unpairedSnapshot": {
+     "accepted": false,
+     "code": "REMOTE_TARGET_NOT_PERMITTED",
+     "message": "That run was not started by the calling node's delegation.",
+     "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP"
+    },
+    "observation": {
+     "first": {
+      "accepted": false,
+      "code": "REMOTE_TARGET_NOT_PERMITTED",
+      "message": "That run was not started by the calling node's delegation.",
+      "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP"
+     },
+     "closedCode": 1000,
+     "frames": 1
+    },
+    "unpaired": {
+     "first": {
+      "accepted": false,
+      "code": "REMOTE_TARGET_NOT_PERMITTED",
+      "message": "That run was not started by the calling node's delegation.",
+      "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP"
+     },
+     "closedCode": 1000,
+     "frames": 1
+    }
+   },
+   "fromAlpha": {
+    "summaries": {
+     "accepted": true,
+     "runs": [
+      {
+       "kind": "agent",
+       "runId": "publisher_3023034097154cf480e3702cb95b65ae",
+       "title": "Tree work. Marker TREE-PACKET.",
+       "statuses": [],
+       "launches": [
+        {
+         "address": "/publisher",
+         "runtimeKind": "antigravity_cli",
+         "llmModelIdentifier": "gemini-3.8-flash-low",
+         "source": {
+          "origin": "agent_default",
+          "fallbacks": []
+         }
+        }
+       ]
+      }
+     ],
+     "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP"
+    },
+    "projection": {
+     "accepted": false,
+     "code": "REMOTE_TARGET_NOT_PERMITTED",
+     "message": "That run was not started by the calling node's delegation.",
+     "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP"
+    },
+    "command": {
+     "accepted": false,
+     "code": "REMOTE_TARGET_NOT_PERMITTED",
+     "message": "That run was not started by the calling node's delegation.",
+     "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP"
+    },
+    "unpairedProjection": {
+     "accepted": false,
+     "code": "REMOTE_TARGET_NOT_PERMITTED",
+     "message": "That run was not started by the calling node's delegation.",
+     "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP"
+    },
+    "unpairedCommand": {
+     "accepted": false,
+     "code": "REMOTE_TARGET_NOT_PERMITTED",
+     "message": "That run was not started by the calling node's delegation.",
+     "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP"
+    },
+    "observation": {
+     "first": {
+      "accepted": false,
+      "code": "REMOTE_TARGET_NOT_PERMITTED",
+      "message": "That run was not started by the calling node's delegation.",
+      "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP"
+     },
+     "closedCode": 1000,
+     "frames": 1
+    }
+   }
+  },
+  "RC-49": {
+   "r6": "publisher_b995ae683f7b44ecbb4fcd19ffd005b3",
+   "taskId": "ad_hoc_task_b87d8018-6365-477d-aba3-f377bca868be",
+   "stoppedMs": 320,
+   "fromBeta": {
+    "accepted": false,
+    "code": "TARGET_AGENT_RUN_NOT_ACTIVE",
+    "message": "No running agent has the run id 'publisher_b995ae683f7b44ecbb4fcd19ffd005b3', so the message was not sent. A stopped agent is not woken. Use an exact run id you were given: a sender run id (from a message or your new task), a run id delegate_task returned to you, or one list_running_agents lists. For an agent on another node, also pass node.",
+    "isError": true,
+    "elapsedMs": 211
+   },
+   "fromZeta": {
+    "accepted": false,
+    "code": "REMOTE_TARGET_NOT_RUNNING",
+    "message": "No running agent has the run id 'publisher_b995ae683f7b44ecbb4fcd19ffd005b3' on node \"beta-node\", so the message was not sent. A stopped agent is not woken. If you have list_running_agents, call it with node \"beta-node\" to see what runs there.",
+    "isError": true,
+    "elapsedMs": 318
+   },
+   "closed": {
+    "delegator with node": "This Task is DONE. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again.",
+    "other root with node": "This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id).",
+    "other root without node": "This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id).",
+    "running scout with node": "This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id).",
+    "Team member without node": "This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id).",
+    "Org agent with node": "This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id)."
+   },
+   "zeta": {
+    "nodeId": "srv_qGZCHby1_jFbCpEDYgEogXzqXquZ6-Tg",
+    "agent": "zeta_agent_425c038fe4b543bd9cc6e6c891ad556a"
+   }
+  },
+  "RC-51": {
+   "r4": "publisher_8f1434ae64a140748b412ba3bbf6caf6",
+   "taskId": "project_task_56ab8b32-1d19-4a25-99f7-a3f3d08abc8e",
+   "first": [
+    {
+     "path": "/rest/remote/delegated-run-states",
+     "body": {
+      "fromNodeId": "srv_rghxtaVWVTNYdWjyt7I-70bnPuzRenGe",
+      "toNodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP",
+      "run": {
+       "kind": "agent",
+       "runId": "publisher_8f1434ae64a140748b412ba3bbf6caf6"
+      },
+      "open": true
+     },
+     "answer": {
+      "accepted": true,
+      "open": true,
+      "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP"
+     }
+    },
+    {
+     "path": "/rest/remote/messages",
+     "body": {
+      "fromNodeId": "srv_rghxtaVWVTNYdWjyt7I-70bnPuzRenGe",
+      "toNodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP",
+      "kind": "message",
+      "messageId": "collabmsg_iZ5bTkRTPR2ZZ3QLN0_Qhe6bw1x6QP2H",
+      "sender": {
+       "agentRunId": "delegator_f24b2e9e17f04013baccae7bc6c03439",
+       "address": "/delegator"
+      },
+      "targetRoot": {
+       "kind": "agent",
+       "runId": "publisher_8f1434ae64a140748b412ba3bbf6caf6"
+      },
+      "target": {
+       "agentRunId": "publisher_8f1434ae64a140748b412ba3bbf6caf6"
+      },
+      "content": "New Task assigned to you: 591-project-1. Your previous Task is closed; this is the work to do now.\n\nTask: 591-project-1 in Project project_fa768d2f-1f65-45dd-9a3c-9148c6aa694f\nIf you have get_project_task, it reads this Task again, including comments added later.\nDescription:\nFollow-up work. Marker FOLLOWUP-PACKET.",
+      "messageType": "task_assignment",
+      "createdAt": "2026-11-21T17:17:01.623Z"
+     },
+     "answer": {
+      "accepted": true,
+      "receiverAddress": "/publisher",
+      "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP"
+     }
+    }
+   ],
+   "stoppedMs": 317,
+   "taskPage": {
+    "taskId": "project_task_56ab8b32-1d19-4a25-99f7-a3f3d08abc8e",
+    "status": "DONE",
+    "root": {
+     "kind": "agent",
+     "ingressAgentRunId": "publisher_8f1434ae64a140748b412ba3bbf6caf6",
+     "teamRunId": null,
+     "closed": true,
+     "status": "offline"
+    }
+   },
+   "byOther": "This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id).",
+   "sameTask": "This task agent already has Task 591-project-1. To continue it, set Task 591-project-1 to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id).",
+   "continued": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to publisher_8f1434ae64a140748b412ba3bbf6caf6 on node \"beta-node\".",
+    "target_agent_run_id": "publisher_8f1434ae64a140748b412ba3bbf6caf6",
+    "isError": false,
+    "elapsedMs": 426
+   },
+   "again": [
+    {
+     "path": "/rest/remote/delegated-run-states",
+     "body": {
+      "fromNodeId": "srv_rghxtaVWVTNYdWjyt7I-70bnPuzRenGe",
+      "toNodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP",
+      "run": {
+       "kind": "agent",
+       "runId": "publisher_8f1434ae64a140748b412ba3bbf6caf6"
+      },
+      "open": true
+     },
+     "answer": {
+      "accepted": true,
+      "open": true,
+      "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP"
+     }
+    },
+    {
+     "path": "/rest/remote/messages",
+     "body": {
+      "fromNodeId": "srv_rghxtaVWVTNYdWjyt7I-70bnPuzRenGe",
+      "toNodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP",
+      "kind": "message",
+      "messageId": "collabmsg_KlgIA4oh1Lxbqtn-bpzQ_fE3LIUVHQtB",
+      "sender": {
+       "agentRunId": "delegator_f24b2e9e17f04013baccae7bc6c03439",
+       "address": "/delegator"
+      },
+      "targetRoot": {
+       "kind": "agent",
+       "runId": "publisher_8f1434ae64a140748b412ba3bbf6caf6"
+      },
+      "target": {
+       "agentRunId": "publisher_8f1434ae64a140748b412ba3bbf6caf6"
+      },
+      "content": "CONTINUE-591-AGENT",
+      "messageType": "agent_message",
+      "createdAt": "2026-11-21T17:17:05.858Z"
+     },
+     "answer": {
+      "accepted": true,
+      "receiverAddress": "/publisher",
+      "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP"
+     }
+    }
+   ]
+  },
+  "RC-52": {
+   "ra": "publisher_68c70a4a69f04700ac5b0bb263b850fd",
+   "rb": "publisher_2182b52127bb4169911a1ddc6e5e420c",
+   "rc": "publisher_272464a2a962400c8112775ee5f304a3",
+   "rd": "publisher_98e8841686894c7fab58b9b0e8e9a0a1",
+   "re": "publisher_4220e65e79c44e72b915032ea6394375",
+   "rf": "publisher_6e6fd606f80344058f8c2c5ae268943d",
+   "rfOutcome": {
+    "recordedClosed": true,
+    "listed": false,
+    "confirmed": "TASK_PEER_NOTICE_CONFIRMED {\n  execution: { agentRunId: 'publisher_6e6fd606f80344058f8c2c5ae268943d' },\n  nodeId: 'srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP',\n  open: false\n}"
+   },
+   "rg": "publisher_70417da770fc4acb8e24f19754367b23",
+   "continuedWhileDown": "Node \"beta-node\" could not be reached (fetch failed). publisher_70417da770fc4acb8e24f19754367b23 continues with its conversation (its Task is open again) but did not receive this message; send it again.",
+   "deliveredMs": 28172,
+   "rdDeliveredMs": 28186,
+   "rbResumed": false,
+   "rdResumed": false,
+   "owedLog": "TASK_PEER_NOTICE_OWED {\n  execution: { agentRunId: 'publisher_68c70a4a69f04700ac5b0bb263b850fd' },\n  nodeId: 'srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP',\n  open: false,\n  code: 'PEER_UNREACHABLE',\n  reason: 'Node \"beta-node\" could not be reached (fetch failed).'\n}",
+   "olderBetaLog": "TASK_PEER_NOTICE_OWED {\n  execution: { agentRunId: 'publisher_4220e65e79c44e72b915032ea6394375' },\n  nodeId: 'srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP',\n  open: false,\n  code: 'PEER_UNREACHABLE',\n  reason: 'Node \"beta-node\" could not be reached (it answered HTTP 404).'\n}",
+   "againWhileDown": "Task 591-project-3 was given to the task agent, but the message with its work was not delivered (Node \"beta-node\" could not be reached (fetch failed).). Message the task agent's run id publisher_272464a2a962400c8112775ee5f304a3, or set Task 591-project-3 to CANCELLED, or delegate it to a new task agent.",
+   "confirmedRc": "TASK_PEER_NOTICE_CONFIRMED {\n  execution: { agentRunId: 'publisher_272464a2a962400c8112775ee5f304a3' },\n  nodeId: 'srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP',\n  open: true\n}"
+  },
+  "RC-53": {
+   "teamRunId": "studio_team_580c38770647407b858ab5652a269f1f",
+   "sameTask": "This task agent already has Task rc-23-project-1. To continue it, set Task rc-23-project-1 to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id).",
+   "continued": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to publisher_961204cc8e6f4459a2d24d71772cfb36 on node \"beta-node\".",
+    "target_agent_run_id": "publisher_961204cc8e6f4459a2d24d71772cfb36",
+    "isError": false,
+    "elapsedMs": 216
+   },
+   "sent": [
+    {
+     "path": "/rest/remote/delegated-run-states",
+     "body": {
+      "fromNodeId": "srv_rghxtaVWVTNYdWjyt7I-70bnPuzRenGe",
+      "toNodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP",
+      "run": {
+       "kind": "agent_team",
+       "runId": "studio_team_580c38770647407b858ab5652a269f1f"
+      },
+      "open": true
+     },
+     "answer": {
+      "accepted": true,
+      "open": true,
+      "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP"
+     }
+    },
+    {
+     "path": "/rest/remote/messages",
+     "body": {
+      "fromNodeId": "srv_rghxtaVWVTNYdWjyt7I-70bnPuzRenGe",
+      "toNodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP",
+      "kind": "message",
+      "messageId": "collabmsg_UfLvXf4uFjCwPVVGSvRPEomfxipLHOqm",
+      "sender": {
+       "agentRunId": "delegator_f24b2e9e17f04013baccae7bc6c03439",
+       "address": "/delegator"
+      },
+      "targetRoot": {
+       "kind": "agent_team",
+       "runId": "studio_team_580c38770647407b858ab5652a269f1f"
+      },
+      "target": {
+       "agentRunId": "publisher_961204cc8e6f4459a2d24d71772cfb36"
+      },
+      "content": "CONTINUE-591-TEAM",
+      "messageType": "agent_message",
+      "createdAt": "2026-11-21T17:18:01.927Z"
+     },
+     "answer": {
+      "accepted": true,
+      "receiverAddress": "/lead",
+      "nodeId": "srv_lSP8I9HkUSE3k18AB7Y0M3mPuasY9mNP"
+     }
+    }
+   ]
+  }
+ },
+ "cleanup": {
+  "rootRemoved": true,
+  "serversStopped": true,
+  "leftoverAgy": [],
+  "errors": []
+ }
+}

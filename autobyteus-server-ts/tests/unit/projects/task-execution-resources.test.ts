@@ -12,7 +12,7 @@ import { TaskExecutionResourceStore } from "../../../src/projects/stores/task-ex
 import { parseTaskExecutionResourceFile } from "../../../src/projects/stores/task-execution-resource-schema.js";
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import type { TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
+import type { PeerRunStateNotice, TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import { taskRunResources } from "../../helpers/task-run-resources.js";
 import { NO_RUN_SIDE_TASK_PORTS } from "../../helpers/explicit-host-collaborators.js";
 
@@ -23,11 +23,12 @@ const latch = () => { let resolve!: () => void; const promise = new Promise<void
 describe("Task agent run resources (SR-023/SR-024)", () => {
   let root: string, layout: ProjectsLayout, store: ProjectStore, projectId: string;
   let release: ReturnType<typeof vi.fn<TaskExecutionReleaseRequest>>;
+  let notice: ReturnType<typeof vi.fn<PeerRunStateNotice>>;
   let tasks: ProjectTaskService;
   let releases: ReleaseTracker;
   const boot = async () => {
     const service = new ProjectTaskService({ ...NO_RUN_SIDE_TASK_PORTS, store, contextStore: new ProjectTaskContextStore(layout), requestRelease: (releases = trackReleases(release)).request,
-      taskExecutionResources: taskRunResources(new TaskExecutionResourceStore(layout)) });
+      noticePeerRun: (peerRun) => notice(peerRun), taskExecutionResources: taskRunResources(new TaskExecutionResourceStore(layout)) });
     await service.load();
     return service;
   };
@@ -41,6 +42,7 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     store = new ProjectStore(layout);
     projectId = (await new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } }).createProject({ name: "P" })).projectId;
     release = vi.fn<TaskExecutionReleaseRequest>(async (execution) => ({ execution, stopped: true }));
+    notice = vi.fn<PeerRunStateNotice>(async () => undefined);
     tasks = await boot();
   });
   afterEach(async () => { await releases.settled(); vi.restoreAllMocks(); await fs.rm(root, { recursive: true, force: true }); });
@@ -139,14 +141,28 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     expect(await fs.readFile(layout.taskExecutionResourcesFile(projectId, a.taskId), "utf8")).toBe(bytes);
   });
 
-  it("a peer's run of a closed Task is fenced, never asked to stop here (CM-10)", async () => {
+  it("a peer's run of a closed Task is not stopped here: its node is told, by its notice (autobyteus-591 DN-1, CM-10)", async () => {
     const a = await tasks.createTask({ projectId, title: "A", description: "A" });
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: a.taskId, delegatedFrom: from(hostRoot, "manager"), recipientAddress: "/remote",
       execution: { agentRunId: "remote-run" }, nodeId: "node-b" });
-    const info = vi.spyOn(console, "info").mockImplementation(() => undefined);
     await tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" }); await releases.settled();
     expect(release).not.toHaveBeenCalled();
-    expect(info).toHaveBeenCalledWith("TASK_AGENT_RESOURCE_FENCED_REMOTE", expect.objectContaining({ execution: { agentRunId: "remote-run" }, nodeId: "node-b" }));
+    expect(notice).toHaveBeenCalledExactlyOnceWith({ run: { agentRunId: "remote-run" }, nodeId: "node-b" });
+  });
+
+  it("a peer's run with another open Task is not told anything at a close (AC-003)", async () => {
+    const a = await tasks.createTask({ projectId, title: "A", description: "A" });
+    const b = await tasks.createTask({ projectId, title: "B", description: "B" });
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: a.taskId, delegatedFrom: from(hostRoot, "manager"), recipientAddress: "/remote",
+      execution: { agentRunId: "remote-run" }, nodeId: "node-b" });
+    await tasks.markStarted({ agentRunId: "remote-run" });
+    await tasks.assignExistingTaskExecution({ delegatedFrom: from(hostRoot, "manager"), execution: { agentRunId: "remote-run" }, taskId: b.taskId });
+    await tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" }); await releases.settled();
+    expect(notice).not.toHaveBeenCalled();
+    // The new entry kept the run's node (DN-8): its last Task's close tells it.
+    expect((await resourcesFile(b.taskId)).agentRunResources[0]).toMatchObject({ nodeId: "node-b" });
+    await tasks.updateTask({ projectId, taskId: b.taskId, status: "CANCELLED" }); await releases.settled();
+    expect(notice).toHaveBeenCalledExactlyOnceWith({ run: { agentRunId: "remote-run" }, nodeId: "node-b" });
   });
 
   it("a failed stop is logged, never persisted; a metadata failure after closure still requests the stop", async () => {

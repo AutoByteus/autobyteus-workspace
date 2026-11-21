@@ -6,7 +6,8 @@ import type { TaskExecutionResource, TaskExecutionResourceFile } from "../domain
  * Physical shape of `agent_run_resources.json` (contract §2.1). This module is the only one that knows the persisted
  * names: `agentRunResources` (in memory `executionResources`), `agentRun` (in memory `execution`),
  * `coordinatorAgentRunId` (in memory `teamCoordinatorAgentRunId`). The fields this release adds (`delegatedFrom`,
- * `nodeId`, `members`) have the same names in memory (DESIGN.md rule 10; the older mappings are FU-007).
+ * `nodeId`, `members`, and autobyteus-591's `peerNoticeOwed`) have the same names in memory (DESIGN.md rule 10; the older
+ * mappings are FU-007). `peerNoticeOwed` is written only when true, on a peer's run only.
  */
 type StoredRun = { kind: RootSubjectKind; runId: string };
 type StoredDelegatedFrom = { delegatingRun: StoredRun; delegatorAgentRunId: string };
@@ -54,6 +55,8 @@ const parseEntry = (value: unknown, index: number): TaskExecutionResource => {
   if ((start === "failed") !== (error !== undefined)) invalid(`${at}.startError must exist only when start is failed`);
   if (error !== undefined && (!text(error.code) || typeof error.message !== "string")) invalid(`${at}.startError is invalid`);
   if (v!.closedAt !== null && !text(v!.closedAt)) invalid(`${at}.closedAt is invalid`);
+  const owed = v!.peerNoticeOwed;
+  if (owed !== undefined && (owed !== true || !peer)) invalid(`${at}.peerNoticeOwed must be true on a peer's run only`);
   return {
     role: role as TaskExecutionResource["role"],
     delegatedFrom: {
@@ -67,7 +70,7 @@ const parseEntry = (value: unknown, index: number): TaskExecutionResource => {
     start: start as TaskExecutionResource["start"],
     ...(error !== undefined ? { startError: { code: error.code as string, message: error.message as string } } : {}),
     closedAt: v!.closedAt as string | null,
-    ...(peer ? { nodeId: v!.nodeId as string, ...(members ? { members } : {}) } : {}),
+    ...(peer ? { nodeId: v!.nodeId as string, ...(members ? { members } : {}), ...(owed ? { peerNoticeOwed: true as const } : {}) } : {}),
   };
 };
 
@@ -107,5 +110,6 @@ export const serializeTaskExecutionResourceFile = (file: TaskExecutionResourceFi
     start: r.start,
     ...(r.startError ? { startError: { code: r.startError.code, message: r.startError.message } } : {}),
     closedAt: r.closedAt,
+    ...(r.nodeId !== undefined && r.peerNoticeOwed ? { peerNoticeOwed: true } : {}),
   })),
 });

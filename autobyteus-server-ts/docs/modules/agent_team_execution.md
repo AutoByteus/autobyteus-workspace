@@ -580,7 +580,8 @@ A delegated run's life is bound to its Task, never to the run that delegated to 
 (CM-7). Which runs belong to a Task is recorded only on the Task side, in that
 Task's `agent_run_resources.json`; the in-memory `DelegationIndex` relates the runs.
 DONE or CANCELLED stops the Task's runs that have no other open Task, each through
-its own ordinary Stop (`TaskRunControl`); a peer's run is fenced, not stopped. While
+its own ordinary Stop (`TaskRunControl`); a peer's run is stopped by its node, told
+by `PeerRunStateNotices` (autobyteus-591). While
 a run's Task is closed it receives no input except its assigner's continuation:
 after the agent reopens the Task, the run that assigned the work messages the run's
 ID and it continues with its conversation (see [Reactivation](projects.md#reactivation)).

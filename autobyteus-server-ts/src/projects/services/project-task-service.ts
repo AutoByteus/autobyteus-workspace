@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type {
-  ExistingTaskExecutionAssignInput, NewTaskExecutionLinkInput, TaskExecutionResourcePort, TaskExecutionReleaseRequest, TaskExecutionReopenInput,
+  ExistingTaskExecutionAssignInput, NewTaskExecutionLinkInput, TaskExecutionResourcePort, TaskExecutionReleaseRequest, TaskExecutionReopenInput, PeerRunStateNotice,
   TaskExecutionReopenResult,
 } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
@@ -49,6 +49,8 @@ type Dependencies = {
   taskExecutionResources?: TaskExecutionResourceService;
   /** The stop request of a closed Task's runs (composition-bound; autobyteus-500 FU-018). */
   requestRelease: TaskExecutionReleaseRequest;
+  /** A closed Task's run on a peer node: its node is told (autobyteus-591, composition-bound; a host without peers has none). */
+  noticePeerRun: PeerRunStateNotice;
   /** Told after each committed Task write (the `/ws/projects` feed); defaults to the process publisher. */
   changes?: ProjectChangeMarks;
   /** A Task worker's live status from its own run (composition-bound). */
@@ -81,7 +83,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     // Agent run resources live beside the Task metadata in the same layouts.
     this.resources = deps.taskExecutionResources
       ?? new TaskExecutionResourceService(new TaskExecutionResourceStore(deps.store?.layout, this.adHocTasks.layout));
-    this.release = new TaskExecutionResourceRelease(deps.requestRelease);
+    this.release = new TaskExecutionResourceRelease(deps.requestRelease, deps.noticePeerRun);
     // Every committed run-resource write may change a Task's root (link, start, fail, DONE or CANCELLED, reopen).
     this.resources.setCommitListener((location) => this.changes.taskChanged(location));
   }
@@ -468,7 +470,7 @@ export const getProjectTaskService = (): ProjectTaskService => {
   return singleton;
 };
 /** Called once by the process composition before any getProjectTaskService(); fails fast otherwise. */
-export const initializeProjectTaskServiceProcessInstance = (deps: Pick<Dependencies, "taskExecutionResources" | "adHocTasks" | "workerStatus" | "topRun" | "displayName" | "searchCleanup" | "changes"> & Required<Pick<Dependencies, "requestRelease">>): ProjectTaskService => {
+export const initializeProjectTaskServiceProcessInstance = (deps: Pick<Dependencies, "taskExecutionResources" | "adHocTasks" | "workerStatus" | "topRun" | "displayName" | "searchCleanup" | "changes"> & Required<Pick<Dependencies, "requestRelease" | "noticePeerRun">>): ProjectTaskService => {
   if (singleton) throw new Error("The process ProjectTaskService is already initialized.");
   return singleton = new ProjectTaskService(deps);
 };
