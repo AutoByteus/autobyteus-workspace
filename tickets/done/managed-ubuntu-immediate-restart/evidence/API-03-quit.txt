@@ -1,0 +1,24 @@
+SR-003 preverification: launch N, hold trusted test feed response for N+1 signature; Alt+F4 while signature in flight, then allow response. After close inspect protected digest, synthetic work and listeners.
+Before-Quit case requested N+1 signature before allowed to return.
+127.0.0.1 - - [21/Nov/2026 16:21:13] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.19/AutoByteus_personal_linux-x64-1.5.19.AppImage.release.json HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 16:21:13] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.19/AutoByteus_personal_linux-x64-1.5.19.AppImage.release.json.sig HTTP/1.1" 200 -
+2026-11-21T16:21:13+00:00
+autobyteus
+2026-11-21T16:21:14+00:00
+2026-11-21T16:21:19+00:00
+2026-11-21T16:21:24+00:00
+2026-11-21T16:21:29+00:00
+2026-11-21T16:21:34+00:00
+{"file": "76ac9cfa2b5521811e6407d2ceec379b6fd100c3bc16c09fd0f07508b621a87c", "work": "4cf425aa7afbe1732ac6a4317305420d62749bcacc3287d1fd819b52bc1c3fde"}
+no GUI/server, workspace hash preserved
+Next manual launch on same data: enabled startup check again. Sent OS Alt+F4 when actual renderer broadcast installing. Kept closed during independent 25s observation. No manual reopen.
+{"at":"2026-11-21T16:22:19.828Z","status":"downloaded","version":"1.5.18","candidate":"1.5.19","message":"Update ready."}
+{"at":"2026-11-21T16:22:19.832Z","status":"installing","version":"1.5.18","candidate":"1.5.19","message":"Installing update and restarting..."}
+{"at":"2026-11-21T16:22:19.891Z","status":"installing","version":"1.5.18","candidate":"1.5.19","message":"Installing update and restarting..."}
+2026-11-21T16:22:21+00:00
+2026-11-21T16:22:26+00:00
+2026-11-21T16:22:31+00:00
+2026-11-21T16:22:36+00:00
+2026-11-21T16:22:42+00:00
+{"file": "972814b1c8d5aa63d8be27e952717d08b7a421e898ecb8832c694dad3d3c33b8", "work": "4cf425aa7afbe1732ac6a4317305420d62749bcacc3287d1fd819b52bc1c3fde"}
+no GUI/server, workspace hash preserved

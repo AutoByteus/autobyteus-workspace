@@ -1,0 +1,71 @@
+IR-001 | 2026-11-21 | Ubuntu 26.04 x64, Node 22.23.2, pnpm 10.28.2 | source 2d26c0fb6a4a or equivalent exercised files before commit
+Fresh worktree, pnpm install --frozen-lockfile; generated SDK outputs cleaned after checks. No production trust, user data, release dispatch or installation.
+
+IMP-01 | reviewed baseline 526db39859 plus new assertion; test:electron --run application/__tests__/managedUpdateSession.spec.ts -t "immediately after verification"
+ FAIL  application/__tests__/managedUpdateSession.spec.ts > managed update session ownership > automatically reopens once immediately after verification, recording automatic consent
+      Tests  1 failed | 30 skipped (31)
+
+IMP-02 | pnpm -C autobyteus-web test:electron --run application/__tests__ updater/__tests__. 5 obsolete appUpdater assertions used quit-only timing / a manual click with the immediate automatic path enabled. Reran changed appUpdater spec after updating the journeys and delayed-stop/duplicate-downloader-event assertions; remaining passing files carried by impact.
+ ✓ updater/__tests__/appUpdateNotificationRecord.spec.ts (19 tests) 40ms
+ ✓ updater/__tests__/appUpdaterAutoCheck.spec.ts (9 tests) 69ms
+ ✓ updater/__tests__/appUpdaterAutomaticMac.spec.ts (17 tests) 96ms
+ ✓ updater/__tests__/appUpdaterAutomatic.spec.ts (23 tests) 93ms
+ ✓ application/__tests__/ElectronAutomaticUpdateWiring.spec.ts (9 tests) 17ms
+ ✓ updater/__tests__/appUpdateCheckSchedule.spec.ts (9 tests) 35ms
+ ✓ application/__tests__/ApplicationShutdown.spec.ts (5 tests) 42ms
+ ✓ updater/__tests__/disabledAppUpdater.spec.ts (3 tests) 10ms
+ ✓ updater/__tests__/appUpdateChannelStore.spec.ts (9 tests) 26ms
+ ✓ application/__tests__/ElectronInstallPreparation.spec.ts (3 tests) 13ms
+ ✓ updater/__tests__/electronUpdaterCachedDownload.spec.ts (1 test) 18ms
+ ✓ updater/__tests__/appUpdateErrorClassifier.spec.ts (4 tests) 16ms
+ ✓ updater/__tests__/appReleasePage.spec.ts (3 tests) 7ms
+ ✓ updater/__tests__/appUpdateAutomaticStore.spec.ts (4 tests) 11ms
+ ✓ application/__tests__/managedUpdateSession.spec.ts (29 tests) 1637ms
+ Test Files  1 failed | 15 passed (16)
+      Tests  5 failed | 188 passed (193)
+> vitest --config ./electron/vitest.config.ts --run updater/__tests__/appUpdater.spec.ts
+ ✓ updater/__tests__/appUpdater.spec.ts (46 tests) 1242ms
+ Test Files  1 passed (1)
+      Tests  46 passed (46)
+> vitest --config ./electron/vitest.config.ts --run application/__tests__/managedUpdateSession.spec.ts -t 'independent automatic block clears|Quit latched at ready'
+ ✓ application/__tests__/managedUpdateSession.spec.ts (31 tests | 29 skipped) 110ms
+ Test Files  1 passed (1)
+      Tests  2 passed | 29 skipped (31)
+
+IMP-03 | pnpm -C autobyteus-server-ts exec vitest run tests/unit/restart-resume tests/architecture/{agent-provider-composition-boundaries,application-agent-addressing-boundaries,application-framework-boundaries}.test.ts
+ Test Files  10 passed (10)
+      Tests  96 passed (96)
+Built server supplemental RR-04: test-owned temporary HOME, data, scripted inference, no live provider. In server package: RUN_RESTART_REMINDER_E2E=1 node_modules/.bin/vitest run tests/e2e/restart-resume/restart-reminder-built-server.e2e.test.ts -t RR-04: --no-watch. See IMP-RR04.json: running + background, shutdownAt, notice naming update to v1.5.14-beta.6. Not a signed package/guest check.
+     ✓ RR-04: update with a run mid-turn that also has a background task: one reminder with the interrupted-turn line  20846ms
+ Test Files  1 passed (1)
+      Tests  1 passed | 11 skipped (12)
+
+IMP-04 | pnpm -C autobyteus-web test:nuxt --run components/{notifications/__tests__/NotificationCenter.appAutomatic,settings/__tests__/AboutSettingsManager}.spec.ts; original mounted tests expected deleted waiting strings, replaced with installing assertions/control.
+ ✓ components/notifications/__tests__/NotificationCenter.appAutomatic.spec.ts (14 tests) 270ms
+ ✓ components/settings/__tests__/AboutSettingsManager.spec.ts (32 tests) 251ms
+ Test Files  2 passed (2)
+      Tests  46 passed (46)
+Browser: sandboxed Chrome 151, localhost Vite + Vue + Tailwind, 420x500, actual row/switch/About components and localization runtime; controlled shell state. Inspected and toggled off in each locale. No horizontal overflow or page errors. This isolates the text and state; it does not install anything.
+en Row Restarting to install… New versions on your channel install as soon as they are downloaded, and the app restarts by itself. Switch off to update by hand. switch OFF confirmed
+en About Restarting to install the downloaded update. New versions on your channel install as soon as they are downloaded, and the app restarts by itself. Switch off to update by hand. switch OFF confirmed
+zh-CN Row 正在重启以安装… 您渠道上的新版本下载完成后立即安装，应用会自动重启。关闭此开关即可改为手动更新。 switch OFF confirmed
+zh-CN About 正在重启并安装已下载的更新。 您渠道上的新版本下载完成后立即安装，应用会自动重启。关闭此开关即可改为手动更新。 switch OFF confirmed
+
+IMP-05 | pnpm -C autobyteus-web {guard:localization-boundary,audit:localization-literals,transpile-electron,typecheck}; pnpm -C autobyteus-server-ts {build,typecheck}
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 20.8s
+[typecheck] server tests (tsconfig.tests.json): 1006 errors, exit 2, 56.8s
+[typecheck] production errors: 0; test-file errors: 1006 in 315 files (baseline 1006 in 315 files)
+[typecheck] PASS
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 71.8s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 4.5s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 1.4s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 39.2s
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+Two final test-only assertions: dedicated 2/2 run above, plus Electron test compiler with 27 known diagnostics and none in changed files. No baseline edits.
+
+IMP-06 | git diff --check clean. Compared with reviewed HEAD: finish (activation, confirmation, ending) byte-for-byte unchanged; native policy, restart channel and writer untouched. No obsolete wait name, route or locale key in active source/tests/docs. appUpdater.ts 500→498 nonempty lines. No dependency/build inputs altered.

@@ -242,10 +242,14 @@ describe('AboutSettingsManager', () => {
       appUpdateStoreMock.availableVersion = '1.5.7';
       // A different release's block must not suppress this release's ready message.
       appUpdateStoreMock.automaticInstallBlockedVersion = '1.5.6';
-      for (const [mode, key] of [['managed-restart', 'readyToRestart'], ['managed-quit', 'readyOnQuit']]) {
+      for (const [mode, status, key] of [
+        ['managed-restart', 'installing', 'settings.components.settings.AboutSettingsManager.message.installing'],
+        ['managed-quit', 'downloaded', 'settings.notifications.app.readyOnQuit'],
+      ]) {
+        appUpdateStoreMock.status = status;
         appUpdateStoreMock.activationMode = mode;
         const wrapper = mountWithCatalog();
-        expect(wrapper.get('[data-testid="settings-updates-message"]').text()).toBe(translate('settings.notifications.app.' + key));
+        expect(wrapper.get('[data-testid="settings-updates-message"]').text()).toBe(translate(key));
         wrapper.unmount();
       }
     });
