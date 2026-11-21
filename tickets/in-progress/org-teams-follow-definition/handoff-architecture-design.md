@@ -24,3 +24,7 @@ The user chose (SR-002) to restructure Org runs as containers: each mounted Team
 
 - Composed Org view ordering; cross-run wake inside a container (new rule); migration cost on large histories (renames, one log pass).
 - The 28 `agent_org` sites get dispositions in implementation by the rule in Change Scope.
+
+## Route Applied
+
+- 2026-11-21: rule "task_size=Large or architectural_risk=High" matched; sent to `/architecture_reviewer` (run `architecture_reviewer_10c7315fd51048c3873b8b6fffa6924c`), delivered.
