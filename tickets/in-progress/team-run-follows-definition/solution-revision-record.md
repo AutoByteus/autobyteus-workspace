@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Requirements | Initial baseline (Task autobyteus-22) | IF-01..IF-15 | N/A | Ready for Approval | BEH-001..005, REQ-001..007, AC-001..008, DEC-001..009 | Recommendation presented to the user; awaiting DEC-001..DEC-004 |
 | SR-002 | Requirements | The user's Task comment 2026-11-18 (UI; rules believed dynamic) | IF-16 | Ready for Approval | Ready for Approval | UC-005, REQ-008, AC-009, SCN-006; premise correction | UI added; dynamic-rules premise checked and corrected with evidence |
+| SR-009 | Design | Failure-origin review CRR-002 (API-REV-001 Fail) | CR-002 (Design Impact), CR-001 (Local Fix routing choice), O-1, O-2 | Approved; design Ready (implemented, validation Fail) | Approved; design Ready (revised) | AC-003, AC-007, AC-009, AC-010; DEC-002 (realization) | Leaving shown on the rendered run-tree rows from a stored marker; routing invariant; planner warning; dead panel removed |
 | SR-008 | Design | Architecture review ARCH-REV-001 Fail (Design Impact) | AR-001..AR-006, N-1..N-5 | Approved; design Ready (reviewed Fail) | Approved; design Ready (revised) | REQ-002, REQ-004, REQ-008, REQ-009, AC-003, AC-009, AC-010; DEC-002/003/006/007 (realization only) | Design revised; resubmitted |
 | SR-007 | Design | Architecture design | AF-01..AF-18 | Approved; design N/A | Approved; design Ready | REQ-001..REQ-009 (realized) | design-spec.md; Large / High |
 | SR-006 | Evidence | Skill update 2026-11-21 (feasibility of the proof) | AF-01..AF-18 | Approved | Approved | AC-001..AC-010 (verification intent) | Verification intent recorded; proof feasible, no evidence decision |
@@ -84,3 +85,14 @@
 
 - 2026-11-21: architecture review `ARCH-REV-002` — Pass on SR-008, AR-001..AR-006 resolved, Large / High confirmed; the reviewer routed the package to implementation. Informational for the Solution Designer.
 - Factual correction recorded from the review's N-7: IF-06's "addresses prefixed `/supervised_research_team/…`" no longer matches current copy trees (461 changed copies to the team's own addresses), so D-SCOPE's mount-path formula yields `/`; the design is unaffected (compilation `delegated_team` at `/`).
+
+### SR-009 — Where a leaving member is shown; routing by run ID
+
+- Trigger: `/code_reviewer` CRR-002 (failure-origin review of API/E2E API-REV-001): CR-002 Design Impact (F-2): the design's "Leaving" tag was placed in `TeamMembersPanel.vue`, which nothing mounts; the rendered member list is the run-tree `team_member` rows from the run's file, which drop a leaving member at once. CR-001 Local Fix (F-1): run-ID refusal never reached because the router routes only current members to the sender's root. Observations O-1 (unparsable definition: loader keeps last good, planner logs nothing) and O-2 (unknown agent: whole run unchanged).
+- Decisions (realization of approved DEC-002/REQ-008/REQ-009/REQ-007; no behavior change):
+  - Leaving is a stored fact: `formerMembers[i].leaving: true`, set by the committing write, cleared by a release write and at restore. The run-tree `team_member` rows show it ("Leaving" tag, still openable to answer approvals); the view snapshot's contexts read the same marker. N-8 superseded.
+  - `TeamMembersPanel.vue` (dead on base, touched) is removed (Principle 7).
+  - Routing: the router uses a new root method `ownsAgentRun` (current, leaving, former); `hasAgentExecution` unchanged so restart-resume `placeOf` is unaffected.
+  - O-1: the planner logs `TEAM_RUN_DEFINITION_NOT_FOLLOWED` naming the load issue and does not plan against the kept last good definition; O-2 agreed (whole-definition invalid → unchanged + warning).
+- Intended behavior changed: No. Classification unchanged: Large / High.
+- Route: revised design → architecture re-review (handoff rule for a revised Large/High package); CR-001 stays an implementation Local Fix for the same round.

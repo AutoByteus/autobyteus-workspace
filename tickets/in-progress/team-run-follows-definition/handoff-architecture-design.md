@@ -35,3 +35,4 @@ A running or reopened Team run (standalone or catalog copy) follows its Team def
 
 - 2026-11-21: rule "task_size=Large or architectural_risk=High" matched; sent to `/architecture_reviewer` (run `architecture_reviewer_10c7315fd51048c3873b8b6fffa6924c`), delivered.
 - 2026-11-21: SR-008 resubmitted to `/architecture_reviewer` for re-review (AR-001..AR-006, N-1..N-5 addressed).
+- 2026-11-21: SR-009 (after CRR-002 CR-002 Design Impact) sent to `/architecture_reviewer` for re-review; CR-001 is an implementation Local Fix for the same implementation round.
