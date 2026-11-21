@@ -288,6 +288,12 @@ describe.runIf(ENABLED)("agent runtime switch of Team and Org members on the bui
     const received = echoed(workerDir())[0]!;
     expect(received.indexOf("[System: runtime hand-over]"), "the notice comes first").toBe(0);
     expect(received.indexOf("ECHO_INPUT")).toBeGreaterThan(received.indexOf("[System: runtime hand-over]"));
+    // autobyteus-583 (AC-006): the notice names the journal file of the archived segment, the native agent's work, and asks
+    // for a complete read; the open file starts with the hand-over.
+    const segmentJournal = `work_journal_${String(archived[0]!.index).padStart(6, "0")}.md`;
+    expect(received, "the notice names the previous agent's journal").toContain(`The previous agent's most recent work is in ${segmentJournal}.`);
+    expect(received).toContain(`/${segmentJournal} completely, from its first line to its last.`);
+    expect(received).toContain("work_journal_active.md starts with this hand-over");
     expect(turn.some((m) => JSON.stringify(m.payload).includes("Agent runtime changed from")),
       `the live chat shows the marker (saw ${[...new Set(turn.map((m) => m.type))].join(", ")})`).toBe(true);
     const doneTree = await treeOf(teamTreeFile(team.teamRunId));

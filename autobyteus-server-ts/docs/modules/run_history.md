@@ -224,7 +224,11 @@ General lifecycle owners:
   notice slot) finds from the run's raw traces once per publication that a hand-over is pending (the active file's first record
   is the hand-over marker and no `user` record follows; a bounded, read-only scan) and hands the notice over with the next input
   before the user's text (journals made current first). It survives a restart; if the first input was forwarded without a turn
-  id and the process restarted, the notice is carried once more.
+  id and the process restarted, the notice is carried once more. Its text (`buildRuntimeHandoverNoticeText`) names the newest
+  closed journal file with work entries (`WorkJournalFileSummary.workEntryCount > 0`), where the previous agent's most recent
+  work is, and asks the agent to read it completely, in parts if long, before replying or continuing; the open file starts with
+  the hand-over and is never named as the recent work. Every file stays listed, oldest first; with no such file there is no read
+  instruction (autobyteus-583).
 - The chat of a switched run is read by `AgentMemoryService.getChatRawTraceSnapshot` (both projection methods): the run's
   `runtime_switch` segments in index order, then the active file; compaction segments stay unread.
 - `AgentTeamRunManager.updateStoppedSelections(...)` shares the root

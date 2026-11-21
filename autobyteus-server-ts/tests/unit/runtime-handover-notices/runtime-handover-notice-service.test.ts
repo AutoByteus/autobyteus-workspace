@@ -10,7 +10,7 @@ const MARKER: PendingRuntimeHandover = {
   markerText: "Agent runtime changed from Claude Agent SDK (sonnet) to Codex App Server (gpt-5).",
 };
 const run = (runId = "run-1") => ({ runId, runtimeKind: RuntimeKind.CODEX_APP_SERVER, config: { memoryDir: "/mem/agents/run-1" } }) as unknown as AgentRun;
-const FILES = [{ journalFile: "work_journal_active.md", state: "open" as const, sizeBytes: 100, lineCount: 3, days: [{ day: "2026-10-30", line: 4 }] }];
+const FILES = [{ journalFile: "work_journal_active.md", state: "open" as const, sizeBytes: 100, lineCount: 3, workEntryCount: 0, days: [{ day: "2026-10-30", line: 4 }] }];
 
 const service = (overrides: {
   ensureCurrent?: ReturnType<typeof vi.fn>;
