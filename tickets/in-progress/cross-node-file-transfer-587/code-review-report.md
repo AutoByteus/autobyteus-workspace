@@ -14,10 +14,10 @@
 - Relevant Architecture Review Revision IDs: ARCH-REV-001, ARCH-REV-002
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001 … IR-004
+- Relevant Implementation Revision IDs: IR-001 … IR-005
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-008`
-- Current Review Round: `4`
+- Current Code Review Revision ID: `CRR-009`
+- Current Review Round: `5`
 - Review Scope: `Targeted Delta Review`
 - Review Scope Evidence (round 2): `ef53fadd52..e295b74b81` changes six test files only. Delivery's merge `3be417f8df` brought six `src` files from `origin/personal`; none is a file this ticket changed (the two change sets do not intersect). No production source of this ticket changed since `e327ba2467`, so round 1's structural checks and scores carry forward
 - Trigger: IR-002 (delivery's DEL-03 Local Fix, items 1–3 in `release-deployment-report.md` § Escalation / Reroute): test fix `e295b74b81`, handoff and evidence `20866c8847`, on delivery's `ef53fadd52`. Round 1: IR-001, code `e327ba2467`, base `fbe714f8bb`
@@ -313,19 +313,69 @@ Kept as follow-ups (only other functionality, and the ticket does not need them)
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | Unchanged |
 | 10 | Cleanup Completeness | 9.3 | The "yet" text replaced; dead paths removed |
 
+## Round 5 (CRR-009): Full Re-Audit at IR-005 (SR-010, SR-011)
+
+Scope: `Full Re-Audit`. IR-005 (`07b4b83cef`, `e2a95cfc39`) changes the router's order, adds the one RF-14 owner (`PeerRunNodes`), removes the roots' remote branches, changes `OutgoingFiles`, `RemoteMessageSend` and `TaskDelegation`'s existing-copy path, and lets saved-Task files travel (DEC-009). Shared boundaries changed, so every check was rerun against SR-010/SR-011 at HEAD `15c476d402`. The scope test from round 4 applies.
+
+### Prior findings
+
+| ID | Status | Verification |
+| --- | --- | --- |
+| CR-587-01 | Resolved | `GlobalAgentRunMessageRouter.deliverToPeer`: peer → `PeerRunNodes.check` → `OutgoingFiles.send` → `admitPeerRun` → delivery with the descriptors. After a `"reopened"` admission, a refusal carries `notDeliveredAfterReopen`. A refused file or failed upload reopens nothing. `RemoteMessageSend` no longer uploads and no longer checks the node |
+| CR-587-02 | Resolved | `OutgoingFiles.transfer`: a piece refused `PEER_NOT_PAIRED` after the same call's status succeeded reads `REFERENCE_FILE_TRANSFER_FAILED` "damaged or refused in transit … Try again". The gate's codes are unchanged |
+| CR-587-03 | Resolved | `PeerRunNodes.check`: a node no longer registered (`registeredPeerName` → null) gets `NODE_NOT_PAIRED`, with no node to pass |
+| CR-587-04 | Resolved | `OutgoingFiles.open`: the given path is opened once (`O_RDONLY|O_NONBLOCK`). `fstat` must be a regular file and equal `realpath` + `stat` on `dev`/`ino`, then containment is checked; the hash and pieces are read from that handle |
+| CR-587-05 | Open, API/E2E's | Scope confirmed in SR-010 R4; the model still lacks `counterpart`/`copiedFrom` until API/E2E's round |
+| RF-14 consolidation (round-4 recommendation) | Done | `PeerRunNodes` is the one owner, called by the router before any path and by `TaskDelegation`'s existing-copy path. `peerRunNodeRefusal`, the roots' `deliverExact` remote branches, `sendToPeerRun`'s mismatch check and CrossRun's RF-14 refusal are removed |
+
+Also checked:
+- **Saved Task to a new copy (`task_id` + `node`).** The refusal is removed. `toPeerRun` passes `taskContextFiles` only for a saved Task's own files. The work packet now carries `work.delegation.text`, which is still the description for described work (`task-delegation.ts:498-501`).
+- **Existing copy.** The order is: `PeerRunNodes.check` (a local copy given `node` gets `NODE_MISMATCH` naming this node), then `assertAssignable`, then the restorability check (local only), then the upload, then `assignExistingTaskExecution`, then the "open" notice and the message.
+- **Parser and texts.** `node` is accepted on the existing-copy form.
+- **Row 13.** A sender without `node` now gets `NODE_REQUIRED` before `CLOSED` (the node is checked first, read-only; with `node` it gets `CLOSED`), as SR-010 R2 orders it. That replaces 492's "with or without `node`", as RF-14 requires.
+- **Sizes.** All under 500. `task-delegation.ts` is at 498: no headroom for the next change there.
+- **Evidence.** IMP-19: typechecks at baseline. IMP-20: the whole unit suite, 8821 tests. IMP-21: integration, 116. IMP-23: two-server, 59/59.
+
+### New findings
+
+| ID | Finding | Evidence | Ticket scope | Classification / owner |
+| --- | --- | --- | --- | --- |
+| CR-587-06 | **`remoteNodeOf` is optional, with a silent fallback.** `ActiveRootMessageBoundary.remoteNodeOf?` is optional, and `PeerRunNodes.nodeOf` reads `resolve(root)?.remoteNodeOf?.(target) ?? null`. All three production roots implement it, so the option serves only test doubles (DESIGN.md rule 11; P16: a required collaborator made optional, then `?? fallback`). It matters because removing the roots' `deliverExact` remote branches relies on `PeerRunNodes` catching a linked run first. A root kind without the method would let a linked remote run ID fall through to `deliverExact`/`deliverToRunId`, with a misleading "not in this run" refusal | `active-collaboration-root-directory.ts:30`; `peer-run-nodes.ts:28`; the three roots' `remoteNodeOf` | This ticket: introduced in IR-005 | `Local Fix` (implementation). Make `remoteNodeOf` required on the boundary (the directory's `reserve` already checks required methods, as for `ownsAgentRun`); drop the `?.`/`??`; give the test doubles the method |
+| CR-587-07 | **Roots receive a dependency they no longer use.** The three roots still take the `RemoteFiles` bundle (`outgoing` + `received`) but use only `received`, since `RemoteMessageSend` lost its upload. Their signatures name a collaborator they do not need (P16: an owner's dependencies show what it needs) | The roots' options; `remoteSend: new RemoteMessageSend({ engine, links })` | This ticket: touched files, the handoff's own "choice to look at" | `Local Fix` (implementation). Pass `ReceivedFilesPlacement` (`remoteFiles.received`) to the roots, materializer and manager instead of the bundle |
+| CR-587-08 | **DEC-009 opens a two-step route around DEC-001.** RF-3's new exception lets a saved Task's context files leave the node from anywhere. An agent with `create_task`/`update_task` can attach as context files "absolute local file paths" from anywhere on the node: the context store checks only that the path is absolute, regular, readable, and an allowed type by extension (`project-task-context-store.ts:24-29`, `context-file-upload-policy.ts:52-55`). It then gives that Task to another node (`delegate_task` with `task_id` + `node`). A misled agent, DEC-001's own threat ("another project's data"), can thus send any allowed-type file (`.pdf`, `.json`, `.csv`, `.txt` …) off the machine in two calls, though `reference_files` refuses the same file. Before DEC-009, context files never left the node | `outgoing-files.ts` (`taskContextFiles` skips containment); `project-task-tool-contract.ts:20-21`; the context store | This ticket: the change exposes an existing permission to a new off-node path (`ticket-scope.md`: an old security risk the change exposes) | `Requirement Gap` (Solution Designer, likely the founder: it is a security decision). Options: (a) an agent's `create_task`/`update_task` may attach only files inside its workspace (the person's app upload stays free); (b) only context files a person attached travel; (c) accept, recorded with the founder |
+
+Not promoted:
+- **Upload before a cheap closed-check.** A sender that is not the assigner, messaging a closed peer run with `node` and files, uploads everything before `admitPeerRun` refuses `CLOSED`. SR-010 R1 chose this order and records that the bytes are swept. A read-only closed pre-check would avoid the futile upload, at the cost of splitting the closed rule again. Recommendation only.
+- **Hard links.** A hard link inside the workspace to a file outside passes RF-3: same inode, resolved path inside. Paths cannot see hard links, and making one is a deliberate act. Residual risk.
+- **A defensive fallback.** `wrongNode.message ?? wrongNode.code ?? "The node does not match."` in `TaskDelegation` is unreachable, because the node refusals always carry a message. Cosmetic.
+
+### Scorecard (full re-audit)
+
+- Overall score: 9.3/10
+
+| Priority | Category | Score | Why / what holds it down |
+| --- | --- | --- | --- |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.5 | One order on the `node` path, one owner each |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.3 | RF-14 has one owner now; its link lookup is an optional method (CR-587-06) |
+| 3 | API / Interface / Query / Command Clarity | 9.3 | `NODE_NOT_PAIRED`; `node` on the existing-copy form |
+| 4 | Separation of Concerns and File Placement | 9.3 | `task-delegation.ts` at 498 lines |
+| 5 | Shared-Structure / Data-Model Tightness | 9.3 | Roots take a bundle they half use (CR-587-07) |
+| 6 | Naming Quality and Local Readability | 9.3 | — |
+| 7 | API/E2E Readiness | 9.1 | CR-587-05 and AC-012 over real HTTP still to do |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.1 | CR-587-01 … 04 resolved; the DEC-009 route around DEC-001 is undecided (CR-587-08) |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | — |
+| 10 | Cleanup Completeness | 9.3 | The remote branches, the duplicate rule and the saved-Task refusals are removed |
+
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (round 4, CRR-008, full re-audit)
+- Review Decision: `Fail` (round 5, CRR-009, full re-audit)
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.2/10. Runtime Correctness 8.8; API/Interface and API/E2E Readiness 9.0.
+- Score Summary: 9.3/10. Runtime Correctness and API/E2E Readiness 9.1.
 - Classification:
-  - `Design Impact`: CR-587-01;
-  - `Local Fix` (implementation): CR-587-02, -03, -04;
-  - scope confirmation, then `Local Fix` (API/E2E): CR-587-05;
-  - `Requirement Gap`: FU-007, AC-002/AC-007 wording.
-- Recommended Recipient: Solution Designer. It decides CR-587-01's order and the requirement questions, then sends one revision through implementation (and API/E2E for the model).
-- Notes:
-  - The merge itself is sound (M-1 … M-4).
-  - The findings are this ticket's own work that my earlier rounds wrongly left as follow-ups or accepted (CR-587-02 … -05), plus the reopen-before-upload order the 591 merge created (CR-587-01).
+  - `Requirement Gap`: CR-587-08, security;
+  - `Local Fix` (implementation): CR-587-06, -07;
+  - `Local Fix` (API/E2E, already scoped): CR-587-05.
+- Recommended Recipient: Solution Designer for CR-587-08. The two Local Fixes ride in the same revision.
+- Notes: IR-005 resolves CR-587-01 … 04 and the RF-14 consolidation cleanly.

@@ -14,6 +14,7 @@ The latest `code-review-report.md` is authoritative for its current result.
 | CRR-006 | `code-review-report.md` | Implementation Review, round 3 (IR-003, merge with autobyteus-22, `575c4ec9ed`) | Pass (CRR-004) | Pass | None |
 | CRR-007 | `api-e2e-test-review-report.md` | Test-code review round 4 (API-REV-004, IR-003 tests, RC renumbering `d112f58c9a`) | Pass (CRR-005) | Pass | None |
 | CRR-008 | `code-review-report.md` | Implementation Review round 4, Full Re-Audit (IR-004, merge with autobyteus-591, `bcd05494cb`) | Pass (CRR-006) | Fail (Design Impact + Local Fixes) | CR-587-01 … CR-587-05 |
+| CRR-009 | `code-review-report.md` | Implementation Review round 5, Full Re-Audit (IR-005, SR-010/SR-011, `07b4b83cef`) | Fail (CRR-008) | Fail (Requirement Gap + Local Fixes) | CR-587-01…04 resolved; CR-587-05 open; CR-587-06 … 08 new |
 
 ## Revision Entries
 
@@ -244,3 +245,37 @@ None.
 - Material score or classification changes: overall 9.4 → 9.2. Runtime Correctness 8.8; API/Interface and API/E2E Readiness 9.0. Classification: `Design Impact` with `Local Fix` items.
 - Recommended recipient: Solution Designer
 - Remaining risks or uncertainty: FU-001, FU-005 (follow-ups); the RF-14 consolidation recommendation; FU-007 and the AC wording questions.
+
+### CRR-009 — Source review round 5: full re-audit at IR-005
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/tickets/in-progress/cross-node-file-transfer-587/code-review-report.md`
+- Review entry point and round: Implementation Review, round 5
+- Review scope: `Full Re-Audit`. The shared boundaries changed: the router order, the new RF-14 owner, the roots' boundary and the saved-Task paths.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, IR-005; CR-587-01 … 04
+- Relevant solution revision IDs: SR-010, SR-011
+- Relevant architecture-review revision IDs: ARCH-REV-003, ARCH-REV-004
+- Relevant implementation revision IDs: IR-005
+- Relevant API/E2E revision IDs: API-REV-004
+- Relevant delivery revision IDs: none recorded yet
+- Prior authoritative result: Fail (CRR-008)
+- Current authoritative result: Fail
+- What changed in the review result and why: CR-587-01 … 04 and the RF-14 consolidation are resolved. New findings:
+  - CR-587-06: an optional `remoteNodeOf` with a silent fallback, on which the removal of the roots' remote branches relies;
+  - CR-587-07: the roots take the whole `RemoteFiles` bundle but use only `received`;
+  - CR-587-08: DEC-009's RF-3 exception plus `create_task`/`update_task` copying any allowed-type file from anywhere lets an agent send off the node in two calls what `reference_files` refuses. That needs a security decision.
+- Supported product scenario / material-premise basis changes: CR-587-08 rests on DEC-001's own threat (a misled agent), a supported explicit edge (SEC-1).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-587-01 | Open (Design Impact) | Resolved | SR-010 R1, IR-005 | Router `deliverToPeer` order; `"reopened"` + `notDeliveredAfterReopen` |
+| CR-587-02 | Open (Local Fix) | Resolved | IR-005 | `OutgoingFiles` `inTransit` after a successful status |
+| CR-587-03 | Open (Local Fix) | Resolved | IR-005 | `PeerRunNodes` `NODE_NOT_PAIRED` via `registeredPeerName` |
+| CR-587-04 | Open (Local Fix) | Resolved | IR-005 | One `open`, `fstat` vs `realpath`+`stat` `dev`/`ino`, then containment |
+| CR-587-05 | Open (scope pending) | Open (API/E2E, scope confirmed SR-010 R4) | SR-010 | Model still lacks `counterpart`/`copiedFrom` |
+
+- New or remaining finding IDs: CR-587-05 … CR-587-08
+- Material score or classification changes: overall 9.2 → 9.3. Runtime Correctness 8.8 → 9.1. Classification: `Requirement Gap` (security) with `Local Fix` items.
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: the hard-link residual; upload before the closed check for non-assigners (recommendation); `task-delegation.ts` at 498 lines.
