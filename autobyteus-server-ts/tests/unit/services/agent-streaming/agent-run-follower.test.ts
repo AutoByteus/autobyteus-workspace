@@ -8,7 +8,7 @@ import { createAgentRootExecutionIdentity } from "../../../../src/agent-collabor
  * Task message restoring a stopped child, a peer, a restart resume, another session).
  */
 const RUN = "child-run";
-const boundary = { hasAgentExecution: () => true, deliverExactAgentMessage: async () => ({ accepted: true as const }), deliverToPeerRun: async () => ({ accepted: true as const }) };
+const boundary = { hasAgentExecution: () => true, ownsAgentRun: () => true, deliverExactAgentMessage: async () => ({ accepted: true as const }), deliverToPeerRun: async () => ({ accepted: true as const }) };
 
 const fakeRoot = () => {
   const listeners = new Set<(run: never) => void>();

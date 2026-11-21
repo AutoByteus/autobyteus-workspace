@@ -20,6 +20,8 @@ const change = (input: {
   tree: { handoffs: input.handoffs ?? [], rootTeam: { members: input.members.map(([id, address]) => member(id, address)) } } as never,
   joined: input.joined ?? [],
   left: input.left ?? [],
+  leaving: [],
+  released: [],
   handoffsBefore: input.handoffsBefore ?? input.handoffs ?? [],
 });
 

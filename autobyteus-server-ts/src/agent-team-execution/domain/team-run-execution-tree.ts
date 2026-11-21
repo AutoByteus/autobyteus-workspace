@@ -31,8 +31,15 @@ export type RootConfiguredTeamExecutionNode = Readonly<{
    * Former members: members removed from the Team definition while the run existed, kept with their run IDs for the
    * run's history; not addressable; a member the definition adds again comes back from here. Absent: none.
    */
-  formerMembers?: readonly ConfiguredAgentExecutionNode[];
+  formerMembers?: readonly FormerMemberExecutionNode[];
 }>;
+
+/**
+ * A former member. `leaving: true` (SR-010): it was removed with a live execution that has not stopped yet; it reads as
+ * leaving only while the team run is live (otherwise, as former). Written by the committing plan, cleared by the release
+ * write when it stops and by any later plan that finds its execution no longer live (a restore always does).
+ */
+export type FormerMemberExecutionNode = ConfiguredAgentExecutionNode & Readonly<{ leaving?: true }>;
 
 /** What a delegated Team run was copied from, recorded once at its creation: only a Team definition's copy follows it. */
 export type TeamRunCopiedFrom = "team_definition" | "configured_placement";

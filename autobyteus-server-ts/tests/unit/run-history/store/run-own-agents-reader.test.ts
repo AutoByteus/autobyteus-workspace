@@ -49,6 +49,20 @@ describe("RunOwnAgentsReader", () => {
       coordinatorAddress: "/lead", mountedTeams: [] });
   });
 
+  it("ownTreeOf (SR-010): a team run's members, then its former members marked leaving (marked so); stopped former members are not listed", async () => {
+    const memory = await fs.mkdtemp(path.join(os.tmpdir(), "run-own-tree-leaving-"));
+    roots.push(memory);
+    const dir = new AgentMemoryLayout(memory).getTeamDirPath({ rootTeamRunId: "team-l", ancestorTeamRunIds: [] });
+    const tree = testExecutionTree({ rootTeamRunId: "team-l", coordinatorAddress: "/lead",
+      children: [testAgentNode("/lead", { agentRunId: "lead-l" }), testAgentNode("/writer", { agentRunId: "writer-l" }), testAgentNode("/old", { agentRunId: "old-l" })] });
+    const [lead, writer, old] = tree.rootTeam.members;
+    await new TeamRunExecutionTreeStore().write(dir, validateTeamRunExecutionTreePayload({ ...tree, handoffs: [],
+      rootTeam: { ...tree.rootTeam, members: [lead!], formerMembers: [old!, { ...writer!, leaving: true }] } }, "team-l"));
+    expect(await new RunOwnAgentsReader(memory).ownTreeOf({ rootSubjectKind: "agent_team", rootRunId: "team-l" } as never)).toEqual({
+      kind: "agent_team", teamRunId: "team-l", coordinatorAddress: "/lead",
+      members: [{ address: "/lead", agentRunId: "lead-l" }, { address: "/writer", agentRunId: "writer-l", leaving: true }] });
+  });
+
   it("partsOf (contract §2.3, model.py standing): an agent run's stored address, or none before it collaborates; an org's agents, mounted members and mounted teams", async () => {
     const memory = await fs.mkdtemp(path.join(os.tmpdir(), "run-standing-"));
     roots.push(memory);

@@ -87,7 +87,7 @@ export class GlobalAgentRunMessageRouter {
     const senderRoot = input.sender.memberExecutionContext
       ? this.activeRootDirectory.resolve(input.sender.memberExecutionContext.identity.root)
       : null;
-    if (senderRoot?.hasAgentExecution(targetAgentRunId)) {
+    if (senderRoot?.ownsAgentRun(targetAgentRunId)) {
       const result = await senderRoot.deliverExactAgentMessage({
         sender: Object.freeze({
           kind: "agent",

@@ -4,6 +4,7 @@ import { resolveMessageRecipient } from "../../../../src/agent-collaboration/col
 import { TeamRunMembership } from "../../../../src/agent-team-execution/domain/team-run-membership.js";
 import type { TeamRunExecutionTreeSnapshot } from "../../../../src/agent-team-execution/domain/team-run-execution-tree.js";
 import {
+  leavingReleaseChange,
   newMemberKey,
   planTeamMembershipChange,
   type TeamDefinitionView,
@@ -24,19 +25,20 @@ const start = (): TeamRunExecutionTreeSnapshot => ({
   handoffs: [{ from: "/lead", to: "/writer", rules: ["Draft."] }],
 });
 
+/** The run's tree after it follows a view; `live` names the executions running when the plan is made. */
 const follow = (tree: TeamRunExecutionTreeSnapshot, members: Array<[string, string]>, newMembers: Array<[string, string, string]> = [],
-  handoffs = tree.handoffs) => {
+  handoffs = tree.handoffs, live: string[] = ["lead_1", "writer_1"]) => {
   const view: TeamDefinitionView = {
     teamDefinitionId: "team-root", coordinatorAddress: a("/lead"),
     members: members.map(([address, agentDefinitionId]) => ({ address: a(address), agentDefinitionId })),
     handoffs,
     newMembers: new Map(newMembers.map(([address, id, agentRunId]) => [newMemberKey(address, id), { agentRunId, launchConfiguration: launch }])),
   };
-  return planTeamMembershipChange(tree, view)!.tree;
+  return planTeamMembershipChange(tree, view, new Set(live))!.tree;
 };
 
 describe("TeamRunMembership (DS-004, DS-005)", () => {
-  it("keeps a retained member's context object; a removed member is leaving until released", () => {
+  it("keeps a retained member's context object; a removed member is leaving while marked so, then former after its release", () => {
     const tree = start();
     const membership = TeamRunMembership.ofTree(tree);
     const leadContext = membership.memberContext("lead_1");
@@ -47,10 +49,16 @@ describe("TeamRunMembership (DS-004, DS-005)", () => {
     expect(membership.agentNode("writer_1")?.address).toBe("/writer");
     expect(membership.memberContexts().map((context) => context.agentRunId)).toEqual(["lead_1", "writer_1"]);
     expect(membership.handoffsOf("lead_1")).toEqual([]);
-    expect(membership.release("writer_1")).toBe(true);
+    membership.replace(leavingReleaseChange(removed, new Set(["lead_1"]))!.tree);
     expect(membership.stateOf("writer_1")).toBeNull();
     expect(membership.memberContexts().map((context) => context.agentRunId)).toEqual(["lead_1"]);
-    expect(membership.release("writer_1")).toBe(false);
+  });
+
+  it("a removed member without a live execution is former at once; a stored leaving marker reads as leaving", () => {
+    const membership = TeamRunMembership.ofTree(start());
+    membership.replace(follow(start(), [["/lead", "agent-lead"]], [], undefined, ["lead_1"]));
+    expect(membership.stateOf("writer_1")).toBeNull();
+    expect(TeamRunMembership.ofTree(follow(start(), [["/lead", "agent-lead"]])).stateOf("writer_1")).toBe("leaving");
   });
 
   it("a rejoin while leaving cancels the leave and keeps the context; a stopped former member's rejoin resumes it", () => {
@@ -65,9 +73,10 @@ describe("TeamRunMembership (DS-004, DS-005)", () => {
     expect(membership.memberContext("writer_1")).toBe(writerContext);
     expect(membership.wasRejoined("writer_1")).toBe(true);
 
-    const stopped = TeamRunMembership.ofTree(removed);
+    const removedStopped = follow(tree, [["/lead", "agent-lead"]], [], undefined, ["lead_1"]);
+    const stopped = TeamRunMembership.ofTree(removedStopped);
     expect(stopped.stateOf("writer_1")).toBeNull();
-    stopped.replace(back);
+    stopped.replace(follow(removedStopped, [["/lead", "agent-lead"], ["/writer", "agent-writer"]]));
     expect(stopped.wasRejoined("writer_1")).toBe(true);
     expect(stopped.wasRejoined("lead_1")).toBe(false);
   });

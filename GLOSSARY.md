@@ -507,9 +507,10 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   addressable: a message to it, by address or run ID, is refused. If the definition adds it again (same address, same
   agent), it comes back as the same member with its conversation. Code, stored field, docs and UI use this one word;
   agent-facing text says it "left the team" or "is no longer a member of your team".
-- **Leaving** (a member's state, `leaving: true` in a Team view): a former member still finishing the turn it was in
-  when it was removed. It can still send and its approvals and interrupt still work, but it receives nothing; it stops
-  when it is quiet. The Team view tags it "Leaving".
+- **Leaving** (a member's state, `leaving: true` on a former member in a Team run's tree and on its run-tree row): a
+  former member removed while its execution was live, still finishing its turn. It can still send and its approvals and
+  interrupt still work, but it receives nothing; it stops when it is quiet, then it is former. It is leaving only while
+  its team run is live; a stopped run has no leaving members. Its run-tree row is tagged "Leaving".
 - **Follows its definition** (a Team run): its members, coordinator and handoff rules change when its Team definition
   changes. A standalone Team run and a copy of a Team definition do; an application's Team run, a copy of a configured
   placement and a Team mounted in an Org run do not (`copiedFrom`,

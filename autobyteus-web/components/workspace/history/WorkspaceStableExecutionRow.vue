@@ -74,6 +74,12 @@
           <span v-else>{{ avatars.getTeamMemberInitials(row.row) }}</span>
         </span>
         <span class="min-w-0 flex-1 truncate">{{ displayName }}</span>
+        <span
+          v-if="row.leaving"
+          class="ml-1.5 flex-shrink-0 rounded bg-amber-50 px-1 text-[0.6875rem] font-medium leading-4 text-amber-700"
+          data-test="workspace-member-leaving"
+          :title="t('workspace.history.hierarchy.leaving_title')"
+        >{{ t('workspace.history.hierarchy.leaving') }}</span>
       </div>
 
       <span

@@ -8,6 +8,7 @@ import { FlatTeamDefinitionResolver } from "../../agent-team-definition/services
 import type { LaunchUsabilityCheck } from "../../launch-preferences/launch-usability-check.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import {
+  leavingReleaseChange,
   newMemberKey,
   planTeamMembershipChange,
   type NewTeamMemberLaunch,
@@ -28,10 +29,15 @@ export const followsTeamDefinition = (tree: TeamRunExecutionTreeSnapshot): boole
  * missing, unreadable or invalid leaves the run as it is, with a warning naming the run and the reason (REQ-007). A
  * member the run would add gets its launch here, outside any lock: its agent's default, else the run's own launch, both
  * checked (DEC-005); a member that cannot be launched is not added, with a warning, and the next change tries again.
+ * A definition the package loader could not read keeps its last good version there; the run does not follow that
+ * either (O-1). Each run's warning is logged once per reason, and again after its definition was valid in between.
  */
 export class TeamMembershipPlanner {
+  /** The reason each run was last warned about, until its definition is valid again. */
+  private readonly warned = new Map<string, string>();
+
   constructor(private readonly dependencies: Readonly<{
-    teamDefinitions: Pick<AgentTeamDefinitionService, "getDefinitionById">;
+    teamDefinitions: Pick<AgentTeamDefinitionService, "getDefinitionById" | "listLoadIssues">;
     agentDefinitions: Pick<AgentDefinitionService, "getAgentDefinitionById">;
     usability: Pick<LaunchUsabilityCheck, "check">;
     agentRunIds: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
@@ -40,14 +46,16 @@ export class TeamMembershipPlanner {
   /** The run's current definition view; null when the run does not follow its definition or it cannot be read. */
   async viewFor(tree: TeamRunExecutionTreeSnapshot): Promise<TeamDefinitionView | null> {
     if (!followsTeamDefinition(tree)) return null;
-    const runLabel = `Team run '${tree.rootTeam.teamRunId}'`;
+    const teamRunId = tree.rootTeam.teamRunId;
+    const runLabel = `Team run '${teamRunId}'`;
     const teamDefinitionId = tree.rootTeam.teamDefinitionId;
     let resolved: Omit<TeamDefinitionView, "newMembers">;
     try {
       const definition = await this.dependencies.teamDefinitions.getDefinitionById(teamDefinitionId);
-      if (!definition) {
-        console.warn(`TEAM_RUN_DEFINITION_NOT_FOLLOWED: ${runLabel} keeps its members: Team definition '${teamDefinitionId}' was not found.`);
-        return null;
+      if (!definition) return this.notFollowed(teamRunId, `Team definition '${teamDefinitionId}' was not found.`);
+      const loadIssue = (await this.dependencies.teamDefinitions.listLoadIssues()).find((entry) => entry.definitionId === teamDefinitionId);
+      if (loadIssue) {
+        return this.notFollowed(teamRunId, `Team definition '${teamDefinitionId}' could not be read (${loadIssue.issue.reason}); its last good version is not followed.`);
       }
       const graph = await new FlatTeamDefinitionResolver().resolve({ rootDefinition: definition, rootDefinitionId: teamDefinitionId, lookup: {} });
       resolved = {
@@ -57,8 +65,7 @@ export class TeamMembershipPlanner {
         handoffs: new CollaborationHandoffCompiler().compileTeam(graph, tree.delegatedFrom ? { kind: "delegated_team" } : { kind: "own_team" }),
       };
     } catch (error) {
-      console.warn(`TEAM_RUN_DEFINITION_NOT_FOLLOWED: ${runLabel} keeps its members: Team definition '${teamDefinitionId}' cannot be used (${message(error)}).`);
-      return null;
+      return this.notFollowed(teamRunId, `Team definition '${teamDefinitionId}' cannot be used (${message(error)}).`);
     }
     const newMembers = new Map<string, NewTeamMemberLaunch>();
     const known = [...tree.rootTeam.members, ...tree.rootTeam.formerMembers ?? []];
@@ -73,13 +80,32 @@ export class TeamMembershipPlanner {
         ...launch, agentRunId: await this.dependencies.agentRunIds.allocateForAgentDefinition(member.agentDefinitionId),
       }));
     }
+    const coordinator = resolved.members.find((member) => member.address === resolved.coordinatorAddress);
+    if (coordinator && !known.some((node) => node.address === coordinator.address && node.agentDefinitionId === coordinator.agentDefinitionId)
+      && !newMembers.has(newMemberKey(coordinator.address, coordinator.agentDefinitionId))) {
+      return this.notFollowed(teamRunId, `its coordinator '${resolved.coordinatorAddress}' could not be added.`);
+    }
+    this.warned.delete(teamRunId);
     return Object.freeze({ ...resolved, newMembers });
   }
 
-  /** DS-002: a stopped run's change before it is restored; null when it does not follow or nothing changed. */
+  /**
+   * DS-002: a stopped run's change before it is restored; null when nothing changed. Nothing of a stopped run is
+   * executing, so every `leaving` marker is cleared, even when the run does not follow its definition now.
+   */
   async followStored(tree: TeamRunExecutionTreeSnapshot): Promise<TeamMembershipChange | null> {
     const view = await this.viewFor(tree);
-    return view ? planOrWarn(tree, view) : null;
+    const change = view ? planOrWarn(tree, view, NOTHING_LIVE) : null;
+    return change ?? leavingReleaseChange(tree, NOTHING_LIVE);
+  }
+
+  /** The run keeps its members; warned once per reason (REQ-007, D-INVALID). */
+  private notFollowed(teamRunId: string, reason: string): null {
+    if (this.warned.get(teamRunId) !== reason) {
+      this.warned.set(teamRunId, reason);
+      console.warn(`TEAM_RUN_DEFINITION_NOT_FOLLOWED: Team run '${teamRunId}' keeps its members: ${reason}`);
+    }
+    return null;
   }
 
   /** DEC-005: the agent's own default, else the run's own launch; workspace and auto-approve are the run's. */
@@ -109,10 +135,15 @@ export const NO_TEAM_DEFINITION_FOLLOWING: Pick<TeamMembershipPlanner, "viewFor"
   followStored: async () => null,
 });
 
-/** The change, or none with a warning when the definition cannot be taken (the run stays as it is). */
-export const planOrWarn = (tree: TeamRunExecutionTreeSnapshot, view: TeamDefinitionView): TeamMembershipChange | null => {
+const NOTHING_LIVE: ReadonlySet<string> = new Set();
+
+/**
+ * The change, or none with a warning when the definition cannot be taken (the run stays as it is; its stale `leaving`
+ * markers are still cleared by the caller's next plan or release).
+ */
+export const planOrWarn = (tree: TeamRunExecutionTreeSnapshot, view: TeamDefinitionView, liveExecutionIds: ReadonlySet<string>): TeamMembershipChange | null => {
   try {
-    return planTeamMembershipChange(tree, view);
+    return planTeamMembershipChange(tree, view, liveExecutionIds);
   } catch (error) {
     console.warn(`TEAM_RUN_DEFINITION_NOT_FOLLOWED: Team run '${tree.rootTeam.teamRunId}' keeps its members: ${message(error)}.`);
     return null;

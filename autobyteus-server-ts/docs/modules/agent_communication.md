@@ -235,9 +235,11 @@ address (CM-13, autobyteus-492): any running agent is reached by its run ID, on 
 paired peer (below).
 
 **Same-root path.** When the sender has a member collaboration context and the
-target AgentRun is one of the sender's own run's agents (`hasAgentExecution`),
-delivery goes through that root's `deliverExactAgentMessage` as ordinary root
-communication. A delegated run is never an agent of the run that delegated to it
+target AgentRun is one the sender's own run names (`ownsAgentRun`: its own agents,
+and in a Team run also a member that left the team, which the root then refuses
+with the former-member text), delivery goes through that root's
+`deliverExactAgentMessage` as ordinary root communication. `hasAgentExecution`
+(its own agents only) is what restart-resume placement reads. A delegated run is never an agent of the run that delegated to it
 (autobyteus-461): it is reached by the next path.
 
 **Cross-run path** (`CrossRunMessageDelivery`, design DS-2, DS-003). A target in another

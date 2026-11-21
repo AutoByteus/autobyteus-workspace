@@ -162,7 +162,7 @@ describe('TeamExecutionViewState', () => {
       .toEqual(['invalidate_team_member_projections', 'reload_collaboration_messages', 'reconcile_team_navigation', 'reconcile_focused_team_member_projection']);
   });
 
-  it('a membership snapshot adds a new member\'s row and context, shows a leaving member as Leaving, then drops it', () => {
+  it('a membership snapshot adds a new member\'s row and context, keeps a leaving member\'s context, then drops it', () => {
     const { state } = createStateFixture();
     const studentContext = state.getAgentContext('root-student-run');
     const reviewer = { kind: 'configured_agent' as const, address: '/Reviewer', agent_definition_id: 'reviewer-definition', role: null, description: null,
@@ -173,8 +173,8 @@ describe('TeamExecutionViewState', () => {
       ...snapshot({ base }), payload: { ...snapshot({ base }).payload, execution_tree: executionTree, agent_statuses: statuses } });
     expect(state.applySnapshot(at(5, changed, [status('teacher-run', '/Teacher', AgentStatus.Idle), status('reviewer-run', '/Reviewer', AgentStatus.Offline),
       status('root-student-run', '/Student', AgentStatus.Running)]))).toMatchObject({ disposition: 'applied' });
-    expect(state.listNavigationRows().map((row) => [row.key, row.leaving])).toEqual([
-      ['team:root-team-1', false], ['agent:teacher-run', false], ['agent:reviewer-run', false], ['agent:root-student-run', true]]);
+    expect(state.listNavigationRows().map((row) => row.key)).toEqual([
+      'team:root-team-1', 'agent:teacher-run', 'agent:reviewer-run', 'agent:root-student-run']);
     expect(state.getAgentContext('reviewer-run')).not.toBeNull();
     expect(state.getAgentContext('root-student-run')).toBe(studentContext);
 

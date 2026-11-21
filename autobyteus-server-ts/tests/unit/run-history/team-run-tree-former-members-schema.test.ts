@@ -27,6 +27,14 @@ describe("team run tree: formerMembers and copiedFrom", () => {
     expect(JSON.parse(JSON.stringify(tree))).toMatchObject({ copiedFrom: "team_definition", rootTeam: { formerMembers: [{ agentRunId: "writer_1" }] } });
   });
 
+  it("reads and keeps a former member's leaving marker; refuses any value but true", () => {
+    const payload = stored();
+    payload.rootTeam.formerMembers = [{ ...payload.rootTeam.members[1], agentRunId: "old_1", address: "/old", leaving: true }];
+    expect(validateTeamRunExecutionTreePayload(payload, "team_1").rootTeam.formerMembers![0]).toMatchObject({ agentRunId: "old_1", leaving: true });
+    payload.rootTeam.formerMembers[0].leaving = false;
+    expect(() => validateTeamRunExecutionTreePayload(payload, "team_1")).toThrow("rootTeam.formerMembers[0].leaving must be true when present.");
+  });
+
   it("drops an empty formerMembers list on read (written exactly as absent)", () => {
     const payload = stored();
     payload.rootTeam.formerMembers = [];

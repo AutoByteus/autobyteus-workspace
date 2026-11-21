@@ -16,8 +16,13 @@ export type ExactAgentMessageInput = Readonly<{
 }>;
 
 export interface ActiveRootMessageBoundary {
-  /** Whether the agent is one of this run's own agents. */
+  /** Whether the agent is one of this run's own agents (restart-resume placement reads it too). */
   hasAgentExecution(agentRunId: string): boolean;
+  /**
+   * Whether a message by run ID to this agent goes through this root (CR-001): its own agents, and in a Team run also a
+   * member that left the team, which the root refuses by name. Org and standalone roots answer `hasAgentExecution`.
+   */
+  ownsAgentRun(agentRunId: string): boolean;
   /** DS-2: this root as the sender of a message to another run (its own log only). */
   prepareSendToRun?(input: import("../communication/root-communication-engine.js").RunSendInput): import("../communication/root-communication-engine.js").PreparedRunSend;
   commitSentToRun?(message: import("../communication/collaboration-communication-message.js").CollaborationCommunicationMessage,
@@ -90,7 +95,8 @@ export class ActiveCollaborationRootDirectory {
     if (this.active.has(key) || this.reserved.has(key)) {
       throw new Error(`Collaboration root '${root.rootSubjectKind}:${root.rootRunId}' is already active or reserved.`);
     }
-    if (!boundary || typeof boundary.deliverExactAgentMessage !== "function" || typeof boundary.hasAgentExecution !== "function") {
+    if (!boundary || typeof boundary.deliverExactAgentMessage !== "function" || typeof boundary.hasAgentExecution !== "function"
+      || typeof boundary.ownsAgentRun !== "function") {
       throw new Error("Active root message boundary is required.");
     }
     this.reserved.add(key);

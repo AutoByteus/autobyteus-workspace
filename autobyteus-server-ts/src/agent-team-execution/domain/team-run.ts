@@ -29,8 +29,10 @@ export class TeamRun {
   executeDirectAgentCommand(agentRunId: string, command: TeamMemberExecutionCommand) {
     return this.backend.executeDirectAgentCommand(agentRunId, command);
   }
-  /** The members removed from the team leave (each stops when quiet); `released` is told for each stopped one. */
-  followMembership(removedAgentRunIds: readonly string[], released: () => void): void { this.backend.followMembership(removedAgentRunIds, released); }
+  /** The leaving members stop (each when quiet); `stopped` is told for each one (DS-004). */
+  followMembership(leavingAgentRunIds: readonly string[], stopped: (agentRunId: string) => void): void { this.backend.followMembership(leavingAgentRunIds, stopped); }
+  liveExecutionIds(): ReadonlySet<string> { return this.backend.liveExecutionIds(); }
+  removeStoppedHandle(agentRunId: string): void { this.backend.removeStoppedHandle(agentRunId); }
   cancelRuntimeActivation(): void { this.backend.cancelRuntimeActivation(); }
   releaseOwnedRuntime() { return this.backend.releaseOwnedRuntime(); }
   prepareTermination() { return this.backend.prepareTermination(); }

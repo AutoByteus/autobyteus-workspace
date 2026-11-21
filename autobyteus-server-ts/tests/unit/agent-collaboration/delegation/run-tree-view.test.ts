@@ -43,7 +43,7 @@ const peerTeamRecord = (teamRunId: string): ChildRowRecord => ({ kind: "peer", s
     members: [{ address: "/lead", agentRunId: `${teamRunId}-lead` }, { address: "/checker", agentRunId: `${teamRunId}-checker` }],
     delegatorAgentRunId: "x", startedAt: "t", open: true } as never });
 
-const view = (input: Readonly<{ own: RunOwnTree; rows: SubtreeRow[]; records: Record<string, ChildRowRecord | Error> }>) => {
+const view = (input: Readonly<{ own: RunOwnTree; rows: SubtreeRow[]; records: Record<string, ChildRowRecord | Error>; notLive?: string[] }>) => {
   const state = { rows: input.rows };
   const runTree = new RunTreeView({
     tree: { collaborationTreeOf: () => ({ rows: () => state.rows }) } as never,
@@ -54,6 +54,7 @@ const view = (input: Readonly<{ own: RunOwnTree; rows: SubtreeRow[]; records: Re
       if (record instanceof Error) throw record;
       return record ?? null;
     } },
+    isLiveTeamRun: (teamRunId) => !input.notLive?.includes(teamRunId),
   });
   return { runTree, state };
 };
@@ -115,7 +116,8 @@ describe("RunTreeView (SR-082, SR-084)", () => {
     const records = { late: agentRecord("late", "/late") };
     const refreshed = await new RunTreeView({ tree: { collaborationTreeOf: () => ({ rows: () => tree.state.rows }) } as never,
       ownTreeOf: async () => ({ kind: "agent", agentRunId: "manager", address: "/manager" }),
-      projection: { rowOf: async (r) => (records as Record<string, ChildRowRecord>)[("agentRunId" in r.run ? r.run.agentRunId : r.run.teamRunId)] ?? (await agentTreeRecord(r)) } }).rowsOf(manager);
+      projection: { rowOf: async (r) => (records as Record<string, ChildRowRecord>)[("agentRunId" in r.run ? r.run.agentRunId : r.run.teamRunId)] ?? (await agentTreeRecord(r)) },
+      isLiveTeamRun: () => true }).rowsOf(manager);
     const kept = (rows: typeof before) => new Map(rows.filter((r) => r.key !== "agent:late" && r.key !== "peer_agent:publisher").map((r) => [r.key, r.parentKey]));
     expect(kept(refreshed)).toEqual(kept(before));
     expect(refreshed.some((r) => r.key === "agent:late")).toBe(true);
@@ -139,6 +141,30 @@ describe("RunTreeView (SR-082, SR-084)", () => {
     expect(rows.find((r) => r.key === "team:orphan")!.openTarget).toBeNull();
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("Row error: team run 'eng'"));
     warn.mockRestore();
+  });
+
+  it("SR-010: a member marked leaving is a row tagged leaving while its team run is live; when the run is not live it has no row", async () => {
+    const team = teamRun("eng");
+    const own: RunOwnTree = { kind: "agent_team", teamRunId: "eng", coordinatorAddress: "/lead",
+      members: [{ address: "/lead", agentRunId: "eng-lead" }, { address: "/writer", agentRunId: "eng-writer", leaving: true }] };
+    const live = await view({ own, rows: [], records: {} }).runTree.rowsOf(team);
+    expect(live.map((r) => [r.key, r.leaving ?? false])).toEqual([["team:eng", false], ["team_member:eng:eng-lead", false], ["team_member:eng:eng-writer", true]]);
+    expect(live.at(-1)!.openTarget).toEqual({ runKind: "agent_team", runId: "eng", agentRunId: "eng-writer" });
+    const stopped = await view({ own, rows: [], records: {}, notLive: ["eng"] }).runTree.rowsOf(team);
+    expect(stopped.map((r) => r.key)).toEqual(["team:eng", "team_member:eng:eng-lead"]);
+  });
+
+  it("SR-010 (AR-009): a delegated Team copy's leaving member is tagged under its delegating run while the copy is live, and absent when it is not", async () => {
+    const manager = createAgentRootExecutionIdentity("manager");
+    const copy: ChildRowRecord = { ...teamRecord("study", "/study", "study-lead") as Extract<ChildRowRecord, { kind: "agent_team" }>,
+      members: [...(teamRecord("study", "/study", "study-lead") as Extract<ChildRowRecord, { kind: "agent_team" }>).members,
+        { address: "/reviewer", agentRunId: "study-reviewer", leaving: true as const, launch: null }] };
+    const input = { own: { kind: "agent" as const, agentRunId: "manager", address: "/manager" }, rows: [row(manager, { teamRunId: "study" }, "manager")], records: { study: copy } };
+    const live = await view(input).runTree.rowsOf(manager);
+    expect(live.find((r) => r.key === "team_member:study:study-reviewer")).toMatchObject({ parentKey: "team:study", leaving: true });
+    const stopped = await view({ ...input, notLive: ["study"] }).runTree.rowsOf(manager);
+    expect(stopped.find((r) => r.key === "team_member:study:study-reviewer")).toBeUndefined();
+    expect(stopped.filter((r) => r.parentKey === "team:study").map((r) => r.key)).toEqual(["team_member:study:study-lead", "team_member:study:study-dev"]);
   });
 
   it("an org run: its agents and mounted teams with their members, opening in the org; a delegation under a mounted member; an unreadable row is left out, its own rows stay under the run", async () => {

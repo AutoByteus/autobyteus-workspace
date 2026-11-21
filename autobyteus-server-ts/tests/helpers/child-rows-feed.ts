@@ -45,7 +45,7 @@ export const followTestChildRows = () => {
   feed.follow({ subscribeChildRows: (next: (change: ChildRowsChange) => void) => { listener = next; return () => { listener = null; }; } });
   const projection = { rowOf: async (child: SubtreeRow) => "agentRunId" in child.run
     ? agentChildRow(child.run.agentRunId, child.recipientAddress) : null };
-  const runTree = new RunTreeView({ tree: tree as never, ownTreeOf: async (run) => testOwnTree(run), projection });
+  const runTree = new RunTreeView({ tree: tree as never, ownTreeOf: async (run) => testOwnTree(run), projection, isLiveTeamRun: () => true });
   return {
     streams,
     feed,

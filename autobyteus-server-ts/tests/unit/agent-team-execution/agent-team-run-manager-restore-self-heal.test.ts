@@ -32,7 +32,7 @@ vi.mock("../../../src/agent-team-execution/services/team-run-execution-tree-buil
 vi.mock("../../../src/agent-team-execution/services/team-root-materializer.js", () => ({
   materializeTeamRoot: vi.fn(async () => {
     const root = {
-      teamRunId: "team-stuck", isActive: () => true, hasAgentExecution: vi.fn(() => false), deliverExactAgentMessage: vi.fn(),
+      teamRunId: "team-stuck", isActive: () => true, hasAgentExecution: vi.fn(() => false), ownsAgentRun: vi.fn(() => false), getExecutionTreeSnapshot: () => ({ rootTeam: {} }), deliverExactAgentMessage: vi.fn(),
       terminate: vi.fn(async () => ({ accepted: true })),
     };
     materialized.push(root);
@@ -57,7 +57,7 @@ const stuckRoot = (terminate: () => Promise<{ accepted: boolean; code?: string; 
   const root = {
     teamRunId: "team-stuck",
     isActive: () => active,
-    hasAgentExecution: vi.fn(() => false), deliverExactAgentMessage: vi.fn(),
+    hasAgentExecution: vi.fn(() => false), ownsAgentRun: vi.fn(() => false), getExecutionTreeSnapshot: () => ({ rootTeam: {} }), deliverExactAgentMessage: vi.fn(),
     terminate: vi.fn(terminate),
   };
   return { root: root as unknown as RootTeamRun, raw: root, stick: () => { active = false; } };

@@ -6,6 +6,7 @@ import {
 import { normalizeCollaborationHandoffs } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type {
   ConfiguredAgentExecutionNode,
+  FormerMemberExecutionNode,
   RootConfiguredTeamExecutionNode,
   TeamRunCopiedFrom,
   TeamRunExecutionTreeFile,
@@ -25,6 +26,13 @@ import {
 import { parseDelegatedFrom } from "./delegated-from-schema.js";
 import { parseOptionalLaunchFields } from "./launch-configuration-source-schema.js";
 
+/** A former member, with its optional `leaving` marker (only `true` is written; absent means stopped). */
+const parseFormerMember = (value: unknown, field: string): FormerMemberExecutionNode => {
+  const { leaving, ...member } = objectRecord(value, field);
+  if (leaving !== undefined && leaving !== true) throw new Error(`${field}.leaving must be true when present.`);
+  return { ...parseConfiguredAgent(member, field), ...(leaving === true ? { leaving: true as const } : {}) };
+};
+
 const parseRootTeam = (value: unknown): RootConfiguredTeamExecutionNode => {
   const root = objectRecord(value, "rootTeam");
   requireKeys(root, [
@@ -41,7 +49,7 @@ const parseRootTeam = (value: unknown): RootConfiguredTeamExecutionNode => {
   const members = requiredArray(root.members, "rootTeam.members").map((member, index) =>
     parseConfiguredAgent(member, `rootTeam.members[${index}]`));
   const formerMembers = root.formerMembers === undefined ? [] : requiredArray(root.formerMembers, "rootTeam.formerMembers")
-    .map((member, index) => parseConfiguredAgent(member, `rootTeam.formerMembers[${index}]`));
+    .map((member, index) => parseFormerMember(member, `rootTeam.formerMembers[${index}]`));
   for (const member of [...members, ...formerMembers]) {
     if (getParentAgentTeamAddress(member.address) !== "/") {
       throw new Error(`Configured placement '${member.address}' is not a direct Agent child of '/'.`);

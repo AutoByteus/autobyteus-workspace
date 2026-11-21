@@ -463,6 +463,8 @@ export class AgentTeamRunManager {
     if (this.managedRoots.get(rootTeamRunId) !== expected) return false;
     this.managedRoots.delete(rootTeamRunId);
     this.activeRootDirectory.unregister(createTeamRootExecutionIdentity(rootTeamRunId), expected);
+    // SR-010 (N-13): its leaving members read as former now that it is not live; its rows drop the tag, with no write.
+    if (expected.getExecutionTreeSnapshot().rootTeam.formerMembers?.some((member) => member.leaving)) this.delegationIndex.runPartsChanged(createTeamRootExecutionIdentity(rootTeamRunId));
     this.notify({ teamRunId: rootTeamRunId, isActive: false, ending });
     return true;
   }

@@ -64,7 +64,7 @@ export type RootTeamRunPackageSnapshot = Readonly<{
   /** Nothing is hosted (autobyteus-461): always empty; a view's children are the runs it delegated to. */
   statuses: readonly TeamAgentStatusSnapshot[];
   inputStates: readonly import("../../agent-collaboration/execution/domain/live-agent-input-snapshot.js").LiveAgentInputSnapshot[];
-  /** Members removed from the team that are still finishing their turn (former members on disk): shown as leaving. */
+  /** Former members marked `leaving` (removed with a live execution, still finishing their turn): shown as leaving. */
   leavingMembers: readonly ConfiguredAgentExecutionNode[];
 }>;
 
@@ -180,7 +180,7 @@ export class RootTeamRun {
     });
     this.membershipChanges = new TeamMembershipCommitter({
       rootIdentity: this.rootIdentity, persistence: options.persistence, getTree: () => this.tree,
-      assertAdmitting: () => this.assertAdmitting(), replaceTree: (tree) => this.replaceTree(tree),
+      assertAdmitting: () => this.assertAdmitting(), isAdmitting: () => this.isAdmitting(), replaceTree: (tree) => this.replaceTree(tree),
       enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
       followers: { teamRun: options.rootRun, notices: options.changeNotices, runParts: options.delegationIndex,
         publish: (event) => options.publisher.publish(event) },
@@ -226,6 +226,8 @@ export class RootTeamRun {
   hasAgentExecution(agentRunId: string): boolean {
     return this.index.getAgent(agentRunId.trim()) !== null || this.remoteLinks.has(agentRunId.trim());
   }
+  /** Run-ID routing (CR-001): also a member that left (leaving or former), so this root answers it by name. */
+  ownsAgentRun(agentRunId: string): boolean { return this.hasAgentExecution(agentRunId) || this.index.formerMemberByRunId(agentRunId.trim()) !== null; }
   getCommunicationSnapshot(): TeamCommunicationMessagesSnapshot {
     return Object.freeze({ schemaVersion: 1, rootTeamRunId: this.teamRunId, messages: this.communication.getMessages() });
   }
@@ -349,11 +351,8 @@ export class RootTeamRun {
       // DS-15: a delegated team run whose Task is closed takes no input (a message or an approval), as base fenced a copy.
       const refusal = command.kind === "interrupt" ? null : this.options.closedTasks.refusal(createTeamRootExecutionIdentity(this.teamRunId), Boolean(this.tree.delegatedFrom));
       if (refusal) return refusal;
-      if (command.kind !== "post_message") {
-        if (!this.members.isLiveAgent(agentRunId)) {
-          return { accepted: false, code: RUN_NOT_ACTIVE, message: `AgentRun '${agentRunId}' is shut down in root '${this.teamRunId}'.` };
-        }
-        return (await this.requireContainingTeamRun(agentRunId)).executeDirectAgentCommand(agentRunId, command);
+      if (command.kind !== "post_message" && !this.members.isLiveAgent(agentRunId)) {
+        return { accepted: false, code: RUN_NOT_ACTIVE, message: `AgentRun '${agentRunId}' is shut down in root '${this.teamRunId}'.` };
       }
       return (await this.requireContainingTeamRun(agentRunId)).executeDirectAgentCommand(agentRunId, command);
     });
@@ -379,7 +378,7 @@ export class RootTeamRun {
         tree: this.tree,
         statuses: this.getLeafAgentStatusSnapshots(),
         inputStates: this.options.rootRun.getInputStateSnapshots(),
-        leavingMembers: (this.tree.rootTeam.formerMembers ?? []).filter((member) => this.options.membership.isLeaving(member.agentRunId)),
+        leavingMembers: (this.tree.rootTeam.formerMembers ?? []).filter((member) => member.leaving),
       }));
       return read(own, rows);
     });

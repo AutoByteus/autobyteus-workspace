@@ -741,33 +741,51 @@ members. A Team mounted in an Org run keeps its Org's stored members.
   new, launched with its agent's default, else the run's own launch, both
   checked (a member that cannot be launched is not added; the next change tries
   again, `TEAM_MEMBER_NOT_ADDED`). A rule from or to an address that is not a
-  member is left out. A definition without a usable coordinator leaves the run
-  as it is.
+  member is left out. A definition that is missing or invalid, that the package
+  loader could not read (it keeps the last good version; the run does not follow
+  that either), or without a coordinator that can be added leaves the run as it
+  is, warned once per run and reason (again after the definition was valid).
 - **Commit.** `TeamMembershipCommitter` (inside `RootTeamRun`) plans again
-  under the run's persistence lock, writes the tree once, then swaps tree, index
-  and `TeamRunMembership` together (`replaceTree`). Then, in order: the removed
-  members leave (`TeamRun.followMembership`), each remaining member's notice is
-  recorded, the run-tree rows are read again (`DelegationIndex.runPartsChanged`)
-  and the run's view stream gets `TEAM_MEMBERSHIP_CHANGED_EVENT`. A durable write
-  that cannot be applied live stops the run (fail-stop). An unchanged
-  definition writes nothing and publishes nothing.
+  under the run's persistence lock, with the members whose execution is live
+  (`FlatTeamExecutionManager.liveExecutionIds`, a synchronous read of handle
+  state), writes the tree once, then swaps tree, index and `TeamRunMembership`
+  together (`replaceTree`). Then, in order: the leaving members are asked to stop
+  (`TeamRun.followMembership`), a removed member's stopped handle goes, each
+  remaining member's notice is recorded, the run-tree rows are read again
+  (`DelegationIndex.runPartsChanged`) and the run's view stream gets
+  `TEAM_MEMBERSHIP_CHANGED_EVENT`. A durable write that cannot be applied live
+  stops the run (fail-stop). An unchanged definition writes nothing and
+  publishes nothing.
 - **Membership.** `TeamRunMembership` is the one in-memory view: current
-  members (launch nodes), coordinator, handoff rules, leaving members and each
-  member's runtime context. A retained member keeps its context object; a new
+  members (launch nodes), coordinator, handoff rules, leaving members (the
+  tree's `leaving` markers) and each member's runtime context. It changes only by
+  `replace(committedTree)`. A retained member keeps its context object; a new
   member gets one; a member that comes back resumes its conversation.
-- **Leaving.** A removed member that is mid-turn finishes it: its own
-  approvals, denials and interrupt still work (`getAgentForOwnCommand`) and the
-  messages it sends are delivered (`maySend`), but it receives nothing
-  (`isCurrentAgent`). `FlatTeamExecutionManager` stops it once it is quiet and
-  releases it, then the view is told again. A swap at the same address starts
-  the new member while the old one finishes.
+- **Leaving.** A member removed while its execution is live is written to
+  `formerMembers` with `leaving: true` ("removed with a live execution, not yet
+  stopped"); one without a live execution is written former. A leaving member
+  finishes its turn: its own approvals, denials and interrupt still work
+  (`getAgentForOwnCommand`) and the messages it sends are delivered (`maySend`),
+  but it receives nothing (`isCurrentAgent`). `FlatTeamExecutionManager` only
+  stops it when it is quiet (an idle one at once) and reports the stop. The
+  committer owns the release step: a locked write that clears the marker, then
+  the swap (its context goes), its stopped handle's removal, the run-tree rows
+  and the view event. A definite failure of that write keeps the marker, with a
+  warning (`TEAM_MEMBER_RELEASE_NOT_SAVED`); every later plan clears a marker
+  whose execution is no longer live. A run that stops while a member is leaving
+  writes nothing: the marker reads as former outside a live run, and the restore
+  clears it. A swap at the same address starts the new member while the old one
+  finishes.
 - **Former members.** A removed member is kept in the tree's
   `rootTeam.formerMembers` with its run ID and history (it stays in the run's
-  history and run-tree rows); it is not addressable. A message to it, by
-  address (both resolution steps) or by run ID, is refused with
+  history); it is not addressable. A message to it, by address (both resolution
+  steps) or by run ID, is refused with
   `COLLABORATION_TARGET_NOT_FOUND` and the text `<name> (<address>) is no longer
   a member of your team: it was removed from the team definition. Call
-  get_handoff_rules for your current handoff rules.`
+  get_handoff_rules for your current handoff rules.` A run-ID message reaches
+  that refusal because the router asks the sender's root `ownsAgentRun`
+  (current, leaving and former members); `hasAgentExecution` keeps its meaning
+  for restart-resume placement, which never places a former member.
 - **Notices.** `TeamChangeNoticeSource` (a platform notice source) gives each
   remaining member one notice at its next input, stating the net change since
   its last delivered notice: `Your team changed: its definition was updated.`,
@@ -775,13 +793,23 @@ members. A Team mounted in an Org run keeps its Org's stored members.
   are no longer delivered.` line per member, and whether its own rules changed
   (`Your handoff rules changed; call get_handoff_rules to read them.` or `Your
   handoff rules are unchanged.`). A member that joined hears nothing.
+- **Rows.** The rendered member list is the run-tree `team_member` rows. One
+  function, `teamMemberRowsOf(members, isLive)` in `run-tree-view.ts`, decides
+  them for the run's own rows and for a Team copy's rows under its delegating run
+  (both read `RunOwnAgentsReader.ownTreeOf`: the members, then the former members
+  marked `leaving`): a leaving member is a row tagged `leaving` while the team
+  run is live (`RunTreeSources.isLiveTeamRun`, the active root directory), and
+  has no row otherwise. The web shows the tag "Leaving"; the row still opens the
+  member, so its pending approval can be answered. When a team run with
+  markers ends, the manager re-reads its rows after it left the active root
+  directory, with no write.
 - **Views.** An open Team view (`TeamViewSession`) re-enters its live mode on
   the membership event, which sends an in-band `TEAM_EXECUTION_VIEW_SNAPSHOT`;
-  its members are the current then the leaving ones (`leaving: true`), and the
-  web adds, keeps and drops member rows and contexts from it and tags a leaving
-  member "Leaving".
+  its members are the current then the leaving ones (`leaving: true`), from which
+  the web keeps, adds and drops its agent contexts.
 - **Restore.** `AgentTeamRunManager` restores a following run by planning its
-  stored tree against the definition (`followStored`), writing the change, then
+  stored tree against the definition (`followStored`, which also clears every
+  `leaving` marker: nothing of a stopped run executes), writing the change, then
   materializing; once registered, the change's effects run and the run follows
   the definition again live.
 

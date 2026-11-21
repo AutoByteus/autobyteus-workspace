@@ -6,6 +6,8 @@
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / Architecture Design Complete (SR-007) | SR-005, SR-006, SR-007 | N/A | Fail (Design Impact) | AR-001..AR-006 |
 | ARCH-REV-002 | Round 2 / SR-008 resubmission | SR-008 | Fail (Design Impact) | Pass | AR-001..AR-006 (resolved) |
+| ARCH-REV-003 | Round 3 / SR-009 after CRR-002 | SR-009 | Pass | Fail (Design Impact) | AR-007, AR-008, AR-009 (new) |
+| ARCH-REV-004 | Round 4 / SR-010 resubmission | SR-010 | Fail (Design Impact) | Pass | AR-007, AR-008, AR-009 (resolved) |
 
 ## Revision Entries
 
@@ -60,3 +62,55 @@ None.
 - Material classification changes: None (Large / High)
 - Recommended recipient: implementation, per the handoff rules
 - Remaining risks or uncertainty: N-5..N-10 and the `TeamViewSession` re-enter note in the report; real-runtime E2E per the Verification Intent
+
+### ARCH-REV-003 — Re-review of SR-009 (after the failure-origin review CRR-002)
+
+- Canonical design review report: `/home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/tickets/in-progress/team-run-follows-definition/design-review-report.md`
+- Review round and trigger: round 3; Solution Designer resubmission at SR-009 (commit `889acfc318`) after `/code_reviewer` CRR-002 (CR-002 Design Impact, CR-001 Local Fix, O-1, O-2)
+- Triggering role, report path, and finding IDs: code reviewer, `code-review-report.md`, CR-001, CR-002; Solution Designer, SR-009
+- Relevant solution revision IDs: SR-009
+- Prior authoritative decision: Pass (ARCH-REV-002)
+- Current authoritative decision: Fail (Design Impact)
+- What changed:
+  - Read against the implementation (`6b46ec5bdd`).
+  - Accepted: SR-009's rendered surface, the stored marker, `ownsAgentRun`, O-1/O-2 and the panel removal.
+  - New findings AR-007 (the marker on a stopped run), AR-008 (the release sequence's owner and order), AR-009 (delegated Team rows built from a second source).
+- Review gap acknowledged: ARCH-REV-001/002 accepted `TeamMembersPanel.vue` as the rendered member list without checking that anything mounts it, and judged N-8 "brief and expected". CR-002 found it. From now on, a UI surface the design names is checked for a mounting importer.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001..AR-006 | Resolved (ARCH-REV-002) | Resolved; AR-004's surface superseded by SR-009 DS-007 | SR-009 | AR-004's intent (the open view learns about member changes) holds; its rendered-surface mapping was wrong (CR-002), now the run-tree rows |
+| N-8 (note) | Open note | Superseded by SR-009; follow-on gaps AR-007, AR-009 | SR-009 DS-007 | `run-tree-view.ts:150-205`, `run-tree-records.ts:79-93` |
+
+- New or remaining finding IDs: AR-007 (Medium), AR-008 (Medium), AR-009 (Medium)
+- Material classification changes: None (Large / High)
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: CR-001 as an implementation Local Fix; O-1 warn-once reset; N-5..N-10
+
+### ARCH-REV-004 — Re-review of SR-010
+
+- Canonical design review report: `/home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/tickets/in-progress/team-run-follows-definition/design-review-report.md`
+- Review round and trigger: round 4; Solution Designer resubmission at SR-010 (commit `30ebc16223`) after ARCH-REV-003 Fail
+- Triggering role, report path, and finding IDs: Solution Designer, `handoff-architecture-design.md`; AR-007, AR-008, AR-009
+- Relevant solution revision IDs: SR-010
+- Prior authoritative decision: Fail (Design Impact)
+- Current authoritative decision: Pass
+- What changed:
+  - The three findings were verified against the code.
+  - Confirmed that a stopped run's view snapshot already shows no leaving members (`stored-team-package-snapshot.ts:11`), matching the new reading rule.
+  - New premise MP-07 (rejoin during a stop's finish) rejected as Not Reachable (artificial timing); a guard is suggested in N-12.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-007 | Open (Medium) | Resolved | SR-010 DS-007, visibility line | `teamMemberRowsOf(ownTeam, isLive)`: leaving reads as former outside a live run; `isLiveTeamRun` from the active root directory (`active-collaboration-root-directory.ts:55-170`); unregister calls `runPartsChanged` (manager `:172,216,376`); restore follow clears stale markers |
+| AR-008 | Open (Medium) | Resolved | SR-010 DS-004, ownership map, AR-006 bullets, interface table | Marker = removed with a live execution, written from `liveExecutionIds` under the lock; manager only stops and notifies (`released` → `memberStopped`); committer owns write → replace → `removeStoppedHandle` → `runPartsChanged` → event; `release` removed; indeterminate write fail-stops, definite failure healed by the next plan |
+| AR-009 | Open (Medium) | Resolved | SR-010 DS-007, file mapping | `run-tree-records.ts:79-93` reads the child's `ownTreeOf` through the same `teamMemberRowsOf`; `agentsOf` keeps its meaning for messages and history |
+
+- New or remaining finding IDs: None
+- Material classification changes: None (Large / High)
+- Recommended recipient: implementation, per the handoff rules (with CR-001 as a Local Fix in the same round)
+- Remaining risks or uncertainty: N-12, N-13, N-14; N-5, N-6, N-7, N-9, N-10

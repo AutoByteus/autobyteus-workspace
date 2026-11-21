@@ -23,9 +23,9 @@ describe('teamExecutionTreeSelectors with a leaving member', () => {
     expect(findConfiguredAgentByAddress(tree(), '/writer' as AgentTeamAddress)?.agent_run_id).toBe('new-writer');
   });
 
-  it('marks the leaving member\'s row Leaving and never as the coordinator', () => {
+  it('never marks the leaving member\'s row as the coordinator', () => {
     const rows = projectNavigationRows({ tree: tree(), contexts: new Map() });
-    expect(rows.map((row) => [row.agentRunId, row.leaving, row.coordinator])).toEqual([
-      [null, false, false], ['old-writer', true, false], ['new-writer', false, true]]);
+    expect(rows.map((row) => [row.agentRunId, row.coordinator])).toEqual([
+      [null, false], ['old-writer', false], ['new-writer', true]]);
   });
 });

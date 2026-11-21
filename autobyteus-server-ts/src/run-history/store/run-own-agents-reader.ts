@@ -91,7 +91,8 @@ export class RunOwnAgentsReader implements RunFilesReader {
 
   /**
    * The run's own parts as its tree shows them (autobyteus-461 SR-084, `RunTreeView`): an agent run's own agent; a team
-   * run's members and coordinator; an org run's direct agents and mounted teams with their members. `null` when absent.
+   * run's members, then its former members marked `leaving` (SR-010: `teamMemberRowsOf` decides their rows), and its
+   * coordinator; an org run's direct agents and mounted teams with their members. `null` when absent.
    */
   async ownTreeOf(run: RootExecutionIdentity): Promise<RunOwnTree | null> {
     switch (run.rootSubjectKind) {
@@ -102,7 +103,9 @@ export class RunOwnAgentsReader implements RunFilesReader {
       case "agent_team": {
         const tree = await this.stores.team.read(this.layout.getTeamDirPath({ rootTeamRunId: run.rootRunId, ancestorTeamRunIds: [] }), run.rootRunId);
         return tree ? { kind: "agent_team", teamRunId: run.rootRunId, coordinatorAddress: tree.rootTeam.coordinatorAddress,
-          members: membersOf(tree.rootTeam.members as readonly MemberNode[]) } : null;
+          members: [...membersOf(tree.rootTeam.members as readonly MemberNode[]),
+            ...membersOf((tree.rootTeam.formerMembers ?? []).filter((member) => member.leaving) as readonly MemberNode[])
+              .map((member) => Object.freeze({ ...member, leaving: true as const }))] } : null;
       }
       case "agent_org": {
         const tree = await this.stores.org.read(this.layout.getOrgDirPath(run.rootRunId), run.rootRunId);

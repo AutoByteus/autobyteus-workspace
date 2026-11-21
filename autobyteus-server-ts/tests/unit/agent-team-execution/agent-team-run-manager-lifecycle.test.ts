@@ -37,7 +37,7 @@ const createRoot = (input: {
 } = {}) => ({
   teamRunId: input.teamRunId ?? "team-run-1",
   isActive: input.active ?? (() => true),
-  hasAgentExecution: vi.fn(() => false),
+  hasAgentExecution: vi.fn(() => false), ownsAgentRun: vi.fn(() => false), getExecutionTreeSnapshot: () => ({ rootTeam: {} }),
   deliverExactAgentMessage: vi.fn(async () => ({ accepted: true })),
   terminate: vi.fn(input.terminate ?? (async () => ({ accepted: true }))),
 }) as unknown as RootTeamRun;

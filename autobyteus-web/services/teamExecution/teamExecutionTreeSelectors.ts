@@ -65,7 +65,6 @@ export const projectNavigationRows = (input: {
       displayName: root.team_definition_name, accessibleName: root.team_definition_name,
       depth: 0, parentKey: null, agentRunId: null, teamRunId: root.team_run_id,
       currentStatus: null, backgroundTasksRunning: 0, focusable: false, expandable: root.members.length > 0, coordinator: false,
-      leaving: false,
     }),
     ...root.members.map((member) => {
       const label = teamMemberName(input.tree, member.address);
@@ -74,8 +73,8 @@ export const projectNavigationRows = (input: {
         displayName: label, accessibleName: label, depth: 1, parentKey: rootKey, agentRunId: member.agent_run_id,
         teamRunId: null, currentStatus: status(member.agent_run_id),
         backgroundTasksRunning: input.contexts.get(member.agent_run_id)?.state.backgroundTasksRunning ?? 0, focusable: true, expandable: false,
+        // A member leaving the team is never its coordinator, even at the coordinator's address (DEC-006).
         coordinator: member.address === root.coordinator_address && member.leaving !== true,
-        leaving: member.leaving === true,
       });
     }),
   ]);

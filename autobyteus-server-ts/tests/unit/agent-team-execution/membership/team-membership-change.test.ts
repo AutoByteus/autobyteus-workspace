@@ -3,6 +3,9 @@ import type { AgentTeamAddress } from "../../../../src/agent-collaboration/domai
 import type { CollaborationHandoff } from "../../../../src/agent-collaboration/domain/collaboration-handoff.js";
 import type { TeamRunExecutionTreeSnapshot } from "../../../../src/agent-team-execution/domain/team-run-execution-tree.js";
 import {
+  changesTheTeam,
+  clearStoppedLeavingMarkers,
+  leavingReleaseChange,
   newMemberKey,
   planTeamMembershipChange,
   TeamMembershipPlanError,
@@ -110,6 +113,47 @@ describe("planTeamMembershipChange (DS-003)", () => {
   it("refuses a definition whose coordinator cannot be added: the run stays as it is", () => {
     expect(() => planTeamMembershipChange(baseTree(), view({ members: [...same, ["/boss", "agent-boss"]], coordinator: "/boss" })))
       .toThrow(TeamMembershipPlanError);
+  });
+});
+
+describe("leaving markers (DS-004, SR-010)", () => {
+  const removeWriter = view({ members: [["/lead", "agent-lead"]] });
+
+  it("a removed member with a live execution is written leaving; one without is written former", () => {
+    const live = planTeamMembershipChange(baseTree(), removeWriter, new Set(["writer_1"]))!;
+    expect(live.leaving).toEqual(["writer_1"]);
+    expect(live.tree.rootTeam.formerMembers).toEqual([expect.objectContaining({ agentRunId: "writer_1", leaving: true })]);
+    const idle = planTeamMembershipChange(baseTree(), removeWriter, new Set(["lead_1"]))!;
+    expect(idle.leaving).toEqual([]);
+    expect(idle.tree.rootTeam.formerMembers![0]).not.toHaveProperty("leaving");
+  });
+
+  it("every plan clears a marker whose execution is no longer live (a failed release write is healed)", () => {
+    const leaving = planTeamMembershipChange(baseTree(), removeWriter, new Set(["writer_1"]))!.tree;
+    const healed = planTeamMembershipChange(leaving, removeWriter, new Set())!;
+    expect(healed.released).toEqual(["writer_1"]);
+    expect(healed.joined).toEqual([]);
+    expect(healed.left).toEqual([]);
+    expect(healed.tree.rootTeam.formerMembers![0]).not.toHaveProperty("leaving");
+    expect(changesTheTeam(healed)).toBe(false);
+    expect(planTeamMembershipChange(leaving, removeWriter, new Set(["writer_1"]))).toBeNull();
+  });
+
+  it("the release change clears only stale markers; null when there is none", () => {
+    const leaving = planTeamMembershipChange(baseTree(), removeWriter, new Set(["writer_1"]))!.tree;
+    expect(leavingReleaseChange(leaving, new Set(["writer_1"]))).toBeNull();
+    const released = leavingReleaseChange(leaving, new Set())!;
+    expect(released).toMatchObject({ joined: [], left: [], leaving: [], released: ["writer_1"] });
+    expect(clearStoppedLeavingMarkers(released.tree, new Set())).toBeNull();
+  });
+
+  it("a leaving member that rejoins is current again without its marker (its leave is cancelled)", () => {
+    const leaving = planTeamMembershipChange(baseTree(), removeWriter, new Set(["writer_1"]))!.tree;
+    const back = planTeamMembershipChange(leaving, view({ members: same }), new Set(["writer_1"]))!;
+    expect(back.joined).toEqual([{ agentRunId: "writer_1", address: "/writer" }]);
+    expect(back.released).toEqual([]);
+    expect(back.tree.rootTeam.members[1]).not.toHaveProperty("leaving");
+    expect(back.tree.rootTeam.formerMembers).toBeUndefined();
   });
 });
 

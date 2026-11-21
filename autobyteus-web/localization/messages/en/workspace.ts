@@ -239,14 +239,6 @@ const messages = {
     "Show all {{count}} files",
   "workspace.components.workspace.team.AgentTeamEventMonitor.no_activity_yet":
     "No activity yet.",
-  "workspace.components.workspace.team.TeamMembersPanel.team_members":
-    "Team roster",
-  "workspace.components.workspace.team.TeamMembersPanel.leaving":
-    "Leaving: removed from the team, finishing its turn",
-  "workspace.components.workspace.team.TeamMembersPanel.no_active_team_members":
-    "No team roster members.",
-  "workspace.components.workspace.team.TeamMembersPanel.roster_non_execution_note":
-    "Logical roster, not active task execution.",
   "workspace.components.workspace.team.TeamTaskAgentActivityBar.active_task_agents":
     "Active task agents",
   "workspace.components.workspace.team.TeamTaskAgentActivityBar.task_agent_badge":
@@ -265,6 +257,8 @@ const messages = {
     "Team status: Offline",
   "workspace.history.hierarchy.tree_label": "{{name}} organization tree",
   "workspace.history.hierarchy.role.agent": "Agent",
+  "workspace.history.hierarchy.leaving": "Leaving",
+  "workspace.history.hierarchy.leaving_title": "Removed from the team; finishing its current turn",
   "workspace.history.delegatedRunTask.locate": "Show Task in Projects: {{title}}",
   "workspace.history.delegatedRunTask.accessible": "Task: {{title}}",
   "workspace.history.hierarchy.role.temporary_task_team": "Temporary task team",

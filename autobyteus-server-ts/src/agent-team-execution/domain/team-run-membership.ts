@@ -11,13 +11,14 @@ export type TeamMemberState = "current" | "leaving" | "former";
  * The one in-memory execution view of a team run's membership: its current members (the launch nodes), coordinator and
  * handoff rules, the members still finishing their turn after a removal (leaving), and each member's runtime context
  * (runtime kind, provider binding), which it alone creates. A retained member keeps its context object across a change.
- * It changes only by `replace(committedTree)` (a team run that follows its definition) and `release(agentRunId)` (a
- * leaving member stopped). A team mounted in an Org run is built from its fixed node and never changes.
+ * It changes only by `replace(committedTree)` (SR-010): a member is leaving while the tree marks it so, and its context
+ * goes when the release write makes it former. A team mounted in an Org run is built from its fixed node and never
+ * changes.
  */
 export class TeamRunMembership {
   private current: TeamRunAgentTeamNode;
   private currentHandoffs: readonly CollaborationHandoff[];
-  /** Leaving members by agent run ID: their launch nodes (already former members on disk). */
+  /** Leaving members by agent run ID (the tree's `leaving` markers): their launch nodes. */
   private readonly leaving = new Map<string, TeamRunAgentNode>();
   /** Members that came back from former members: their next start resumes their conversation. */
   private readonly rejoined = new Set<string>();
@@ -35,7 +36,7 @@ export class TeamRunMembership {
   static ofTree(tree: TeamRunExecutionTreeSnapshot): TeamRunMembership {
     const config = buildTeamRunConfigFromExecutionTree(tree);
     const membership = new TeamRunMembership({ teamNode: config.rootTeam, handoffs: config.handoffs });
-    membership.formerIds = new Set((tree.rootTeam.formerMembers ?? []).map((node) => node.agentRunId));
+    membership.replace(tree);
     return membership;
   }
 
@@ -43,36 +44,29 @@ export class TeamRunMembership {
   get handoffs(): readonly CollaborationHandoff[] { return this.currentHandoffs; }
 
   /**
-   * The tree a change committed (or a provider binding change). A member no longer current that had a context and is a
-   * former member now is leaving until `release`; a former member back in `members` is current again (a rejoin cancels a
-   * leave); a new member gets a new context.
+   * The tree a change, a release or a provider binding change committed. Members keep their context objects; a new
+   * member gets one; a former member marked `leaving` keeps its context (or gets one); any other agent run's context
+   * goes. A former member back in `members` is current again: it continues its conversation (a rejoin while leaving
+   * cancels the leave).
    */
   replace(tree: TeamRunExecutionTreeSnapshot): void {
     const config = buildTeamRunConfigFromExecutionTree(tree);
-    const formerById = new Map((tree.rootTeam.formerMembers ?? []).map((node) => [node.agentRunId, node]));
-    const currentIds = new Set(config.rootTeam.children.map((node) => node.agentRunId));
-    for (const [agentRunId] of this.contexts) {
-      if (currentIds.has(agentRunId)) continue;
-      const former = formerById.get(agentRunId);
-      if (former) this.leaving.set(agentRunId, fromConfiguredAgent(former));
-      else this.drop(agentRunId);
-    }
+    const former = tree.rootTeam.formerMembers ?? [];
+    const leaving = new Map(former.filter((node) => node.leaving).map((node) => [node.agentRunId, fromConfiguredAgent(node)]));
+    const kept = new Set([...config.rootTeam.children.map((node) => node.agentRunId), ...leaving.keys()]);
+    for (const [agentRunId] of this.contexts) if (!kept.has(agentRunId)) this.drop(agentRunId);
     for (const node of config.rootTeam.children) {
-      // A leaving member back in the definition keeps its live handle; a stopped former member resumes its conversation.
-      if (this.leaving.delete(node.agentRunId) || this.formerIds.has(node.agentRunId)) this.rejoined.add(node.agentRunId);
+      if (this.formerIds.has(node.agentRunId)) this.rejoined.add(node.agentRunId);
       if (!this.contexts.has(node.agentRunId)) this.contexts.set(node.agentRunId, contextOf(node));
     }
-    for (const [agentRunId] of this.leaving) if (!formerById.has(agentRunId)) this.drop(agentRunId);
-    this.formerIds = new Set(formerById.keys());
+    this.leaving.clear();
+    for (const [agentRunId, node] of leaving) {
+      this.leaving.set(agentRunId, node);
+      if (!this.contexts.has(agentRunId)) this.contexts.set(agentRunId, contextOf(node));
+    }
+    this.formerIds = new Set(former.map((node) => node.agentRunId));
     this.current = config.rootTeam;
     this.currentHandoffs = Object.freeze([...config.handoffs]);
-  }
-
-  /** A leaving member was stopped: its context goes. False when it is not leaving. */
-  release(agentRunId: string): boolean {
-    if (!this.leaving.has(agentRunId)) return false;
-    this.drop(agentRunId);
-    return true;
   }
 
   stateOf(agentRunId: string): TeamMemberState | null {

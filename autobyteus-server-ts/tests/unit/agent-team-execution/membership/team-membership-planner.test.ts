@@ -19,10 +19,15 @@ const ownDefault = { runtimeKind: "codex_app_server", llmModelIdentifier: "gpt",
 
 const planner = (input: {
   team?: AgentTeamDefinition | null | Error;
+  loadIssue?: () => string | null;
   ownLaunch?: unknown;
   check?: (request: any) => unknown;
 }) => new TeamMembershipPlanner({
-  teamDefinitions: { getDefinitionById: async () => { if (input.team instanceof Error) throw input.team; return input.team ?? null; } },
+  teamDefinitions: {
+    getDefinitionById: async () => { if (input.team instanceof Error) throw input.team; return input.team ?? null; },
+    listLoadIssues: async () => { const reason = input.loadIssue?.() ?? null;
+      return reason ? [{ definitionId: "team-root", usingLastGood: true, issue: { code: "DEFINITION_CONTRACT_INVALID", reason, definitionPath: "/p", packageRoot: "/" } }] : []; },
+  } as never,
   agentDefinitions: { getAgentDefinitionById: async () => (input.ownLaunch ? { defaultLaunchConfig: input.ownLaunch } : null) as never },
   usability: { check: vi.fn(async (request: any) => (input.check ?? ((r: any) => ({ verdicts: [], inherited: { usable: true, launch: r.inherited } })))(request)) } as never,
   agentRunIds: { allocateForAgentDefinition: async (id: string) => `${id}-run` },
@@ -80,6 +85,39 @@ describe("TeamMembershipPlanner.viewFor (DS-003, DEC-005, N-7)", () => {
     expect(warn).toHaveBeenLastCalledWith("TEAM_RUN_DEFINITION_NOT_FOLLOWED: Team run 'team_1' keeps its members: Team definition 'team-root' was not found.");
     expect(await planner({ team: new Error("bad json") }).viewFor(tree())).toBeNull();
     expect(warn).toHaveBeenLastCalledWith("TEAM_RUN_DEFINITION_NOT_FOLLOWED: Team run 'team_1' keeps its members: Team definition 'team-root' cannot be used (bad json).");
+  });
+
+  it("O-1: a definition the loader could not read is not followed (its last good version neither); warned once per reason, again after it was valid", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    let issue: string | null = "Unexpected token } in team-config.json";
+    const p = planner({ team: definition(["lead", "writer"], []), loadIssue: () => issue });
+    expect(await p.viewFor(tree())).toBeNull();
+    expect(await p.viewFor(tree())).toBeNull();
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn).toHaveBeenCalledWith("TEAM_RUN_DEFINITION_NOT_FOLLOWED: Team run 'team_1' keeps its members: Team definition 'team-root' could not be read (Unexpected token } in team-config.json); its last good version is not followed.");
+    issue = null;
+    expect(await p.viewFor(tree())).not.toBeNull();
+    issue = "Unexpected token } in team-config.json";
+    expect(await p.viewFor(tree())).toBeNull();
+    expect(warn).toHaveBeenCalledTimes(2);
+  });
+
+  it("a definition whose coordinator cannot be added is not followed, warned once", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const coordinatorWriter = new AgentTeamDefinition({ ...definition(["lead", "writer"], []), coordinatorMemberName: "writer" } as never);
+    const q = planner({ team: coordinatorWriter, check: () => ({ verdicts: [], inherited: { usable: false, modelNoLongerOffered: false, detail: "No model." } }) });
+    expect(await q.viewFor(tree())).toBeNull();
+    expect(await q.viewFor(tree())).toBeNull();
+    expect(warn.mock.calls.filter(([line]) => String(line).includes("its coordinator '/writer' could not be added"))).toHaveLength(1);
+  });
+
+  it("followStored clears every leaving marker of the stopped run, even when its definition is not read", async () => {
+    vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const base = tree();
+    const marked = { ...base, rootTeam: { ...base.rootTeam, formerMembers: [{ ...base.rootTeam.members[0]!, agentRunId: "old_1", address: "/old" as never, leaving: true as const }] } };
+    const change = await planner({ team: null }).followStored(marked);
+    expect(change).toMatchObject({ joined: [], left: [], released: ["old_1"] });
+    expect(change!.tree.rootTeam.formerMembers![0]).not.toHaveProperty("leaving");
   });
 
   it("followStored: a stopped run's change against its current definition", async () => {
