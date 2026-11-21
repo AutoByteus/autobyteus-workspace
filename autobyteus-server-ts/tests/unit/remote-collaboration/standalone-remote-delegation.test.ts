@@ -577,7 +577,7 @@ describe("autobyteus-591: a closed Task's remote agent run stops on its node; a 
       { delegatedRun: { agentRunId: RUN.runId }, taskId: "task-X" })).resolves.toEqual({ delegated: false, message: expect.stringContaining("is not one of your task agents") });
   });
 
-  it("AC-005: a third node's notice for B's run is refused by B's link check; nothing is recorded or stopped", async () => {
+  it("AC-005, NAS-41: a third node's notice for B's run is refused by B's link check; nothing is recorded or stopped", async () => {
     const network = new Map<string, PeerGateway>();
     const C_ID = "srv_node_c_000000000000000000000000000";
     const a = await buildNode({ nodeId: A_ID, network, taskSide: new InMemoryTaskExecutionResources(),

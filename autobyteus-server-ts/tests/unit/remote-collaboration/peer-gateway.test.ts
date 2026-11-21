@@ -42,7 +42,7 @@ const gateway = (input: { enabled?: boolean; registered?: boolean } = {}) => {
 };
 
 describe("PeerGateway", () => {
-  it("autobyteus-591 DN-2: a delegated run's state goes to its handler with the calling peer; a malformed one is refused before it", async () => {
+  it("autobyteus-591 DN-2, NAS-41: a delegated run's state goes to its handler with the calling peer; a malformed one is refused before it", async () => {
     const f = gateway();
     const body = { fromNodeId: PEER.nodeId, toNodeId: SELF, run: { kind: "agent_team", runId: "studio_team_b" }, open: false };
     await expect(f.gate.deliveredRunState(body, PEER_CALLER)).resolves.toEqual({ status: 200, answer: { accepted: true, open: false, nodeId: SELF } });
