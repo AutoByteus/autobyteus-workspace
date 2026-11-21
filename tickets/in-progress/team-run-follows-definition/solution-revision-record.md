@@ -79,3 +79,8 @@
 - N-1 follow right after restore registration; N-2 net-merge of notices; N-3 rules to an unlaunchable member left out; N-4 per-root containment; N-5 size limits kept.
 - Intended behavior changed: No (realization of approved DEC/REQ; the "Leaving" tag is a presentation detail within REQ-008). Classification unchanged: Large / High.
 - Next action: architecture re-review.
+
+#### Review note on SR-008 (no new revision)
+
+- 2026-11-21: architecture review `ARCH-REV-002` — Pass on SR-008, AR-001..AR-006 resolved, Large / High confirmed; the reviewer routed the package to implementation. Informational for the Solution Designer.
+- Factual correction recorded from the review's N-7: IF-06's "addresses prefixed `/supervised_research_team/…`" no longer matches current copy trees (461 changed copies to the team's own addresses), so D-SCOPE's mount-path formula yields `/`; the design is unaffected (compilation `delegated_team` at `/`).
