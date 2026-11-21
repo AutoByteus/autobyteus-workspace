@@ -6,6 +6,8 @@
 | CRR-002 | `code-review-report.md` | API/E2E failure-origin review / API-REV-001 (F-1, F-2) | Pass (CRR-001) | Requirement Gap ×3 → Solution Designer | CR-591-001 … -003 new |
 | CRR-003 | `code-review-report.md` | Implementation Review, round 2 (Targeted Delta) / IR-002 (SR-010, SR-011 DN-9) | Requirement Gap (CRR-002) | Pass | CR-591-001 … -003 resolved (-002's last line at `f39a92d5d3`) |
 | CRR-004 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-002 (52a1507b80, 00851c5c8d) | Pass (CRR-003) | Pass | None |
+| CRR-005 | `code-review-report.md` | Merge review, round 3 (Targeted Delta) / IR-003, base `6533d7be04` | Pass (CRR-004) | Pass | None |
+| CRR-006 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-003 (merged state; 3e6f16e922) | Pass (CRR-005) | Pass | None |
 
 ### CRR-001: Implementation review of IR-001: Pass
 
@@ -122,3 +124,52 @@
   - a real runtime as the mid-turn member was not tested;
   - FU-591-01 (base);
   - MSP-93's catalogue line in `mobile-shell-probe.mjs` is stale (for delivery's sync).
+
+### CRR-005: Merge review of IR-003 (the base `6533d7be04`): Pass
+
+- Review entry point and round: implementation review, round 3 (the delivery base refresh)
+- Review scope: Targeted Delta, the merge `037e6bec5c` (3 conflicts plus 1 merge-induced test fix)
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer, `implementation-handoff.md` (IR-003); Delivery (`0d13d37f86`)
+- Relevant solution revision IDs: SR-010, SR-011 (unchanged)
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: the base-integration block (`0d13d37f86`)
+- Prior authoritative result: Pass (CRR-004)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - The conflicts keep both sides; the design-case numbers follow the base's cited Case 25.
+  - In the merged router, DN-9's gate runs first, and 22's `ownsAgentRun` only adds a Team's former members (local runs), so the continuation and 22's refusal are both unchanged.
+  - The stubs follow the removed and added methods.
+- Supported product scenario / material-premise basis changes: none
+- Prior finding resolution: N/A
+- New or remaining finding IDs: none
+- Material score or classification changes: none
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: the duplicate RC-51 name in the two-server suite (API/E2E's to renumber)
+
+### CRR-006: Proportional test-code review after API-REV-003 (merged state): Pass
+
+- Review entry point and round: successful API/E2E test-code review (round 3)
+- Review scope: `3e6f16e922`; `52a1507b80` and `00851c5c8d` stand from CRR-004
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-003)
+- Relevant solution revision IDs: SR-010, SR-011
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: the base integration (`0d13d37f86`)
+- Prior authoritative result: Pass (CRR-005)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - This ticket's AC-007 case is renamed RC-54 (22's keeps RC-51).
+  - RC-55 proves REQ-001 for a departed Team member's peer run through a real definition edit: the run keeps running and stays listed after the leave, and the lead's DONE stops it on beta, confirmed, nothing owed.
+  - The re-parented tree row is recorded as 22's behavior, not asserted.
+- Supported product scenario / material-premise basis changes: none
+- Prior finding resolution: N/A
+- New or remaining finding IDs: none
+- Material score or classification changes: N/A
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty:
+  - a real runtime as the mid-turn member was not tested;
+  - FU-591-01 (base);
+  - the MSP-93 catalogue line (for delivery's sync).

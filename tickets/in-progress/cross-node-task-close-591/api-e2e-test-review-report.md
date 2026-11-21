@@ -1,6 +1,26 @@
 # API/E2E Test Review Report: cross-node-task-close-591 (autobyteus-591)
 
-The latest result is **CRR-004: Pass**.
+The latest result is **CRR-006: Pass** (API-REV-003, the merged state). CRR-004 follows as history.
+
+## API-REV-003 (CRR-006)
+
+- **Scope:**
+  - `52a1507b80` and `00851c5c8d` were reviewed in CRR-004, and that result stands.
+  - New: `3e6f16e922` (`remote-delegation-two-server.e2e.test.ts`, +56 / −5). Docs are in `43c6c1aa1c`.
+- **The renaming:** this ticket's AC-007 continuation case is now **RC-54**: its title, its `record()`, the header and RC-11's comment. 22's case keeps RC-51. No duplicate ID remains, so `-t` filters and receipts are each one case's again.
+- **RC-55** (591 with 22's DEC-008, added):
+  - **Real triggers:** a Team on alpha whose mate delegates to beta; the owner edits the Team definition twice (a member joins, then the mate leaves), and the running Team follows it, waited on `formerMembers`; the lead's `update_task` DONE.
+  - **Assertions, all positive:** after the mate leaves, the peer run is still running on beta, still listed, and not recorded closed. After DONE: stopped on beta (`stoppedOnBeta`), recorded closed, off the list, alpha's `open: false` confirmed, nothing owed.
+  - That proves this ticket's REQ-001 holds for a departed member's run, the merge's one real touch point.
+  - **The tree row** after the leave (re-parented to the Team) is recorded, not asserted. That's acceptable: it's 22's behavior (DEC-008), not one of this ticket's acceptance criteria, and the receipt holds it as evidence.
+  - Clean-up terminates the Team, and errors are ignored at clean-up only.
+- **Checks:** names and intent clear (titles name 591 and 22's DEC-008); assertions prove the requirement; shared helpers (`stoppedOnBeta`, `closedOnBeta`, `betaListed`, `owedMarks`, `noticeRecords`); condition waits only; no skips beyond the env gate. Result 55/55 on the merged state; MSP-93 passes on the merged web.
+- **Notes (non-blocking):**
+  - API/E2E's residual "AC-004's alternate wording still differs from REQ-002" is stale; it was aligned at `f39a92d5d3`.
+  - The MSP-93 catalogue line in `mobile-shell-probe.mjs:192-194` (round 1's wording) is still with delivery's sync.
+- **Result: Pass.** No findings. Recipient: `/delivery_engineer`.
+
+---
 
 ## API-REV-002 (CRR-004)
 

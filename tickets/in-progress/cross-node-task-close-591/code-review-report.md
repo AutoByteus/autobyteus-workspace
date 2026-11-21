@@ -1,6 +1,28 @@
 # Code Review Report: cross-node-task-close-591 (autobyteus-591)
 
-The latest result is round 2, **CRR-003: Pass** (IR-002, DN-9). It comes first, then CRR-002 (the failure-origin review) and round 1 (CRR-001), with their finding IDs reused.
+The latest result is round 3, **CRR-005: Pass** (IR-003, the merge of base `6533d7be04`). It comes first, then round 2 (CRR-003), CRR-002 (the failure-origin review) and round 1 (CRR-001), with their finding IDs reused. The test review CRR-004 is in `api-e2e-test-review-report.md`.
+
+## Round 3: Merge Review Of IR-003, The Base `6533d7be04` (CRR-005)
+
+- **Scope:** `Targeted Delta Review` of the merge `037e6bec5c` (parents `0d13d37f86` and `6533d7be04`, which is `origin/personal`, v1.5.14-beta.6 with 583, 594, 15, 16 and 22; no rebase).
+- **Remerge diff:** only the three conflict files plus `team-run-follows-definition.integration.test.ts`.
+- **Conflicts: correct.**
+  - `docs/design-cases.md`: the base's Case 25 (583) keeps its number, because done tickets cite it. This ticket's case becomes Case 26, and nothing outside it cites the old number.
+  - `global-agent-run-message-router.test.ts`: 22's `ownsAgentRun` beside DN-9's `admitPeerRun` stub.
+  - `remote-delegation-two-server.e2e.test.ts`: 22's new case kept before RC-23, with this ticket's RC-23 title.
+- **Merge-induced fixes: correct.**
+  - 22's integration test stubbed the removed `closedPeerRunRefusal`; it now stubs `admitPeerRun` returning `not_peer`.
+  - DN-9's router test root implements `ownsAgentRun`.
+- **Router semantics (read in the merged `deliver`): correct.**
+  - `admitPeerRun` still runs first and once, before `node`, the sender-root branch and `route`.
+  - 22 changed the sender-root branch from `hasAgentExecution` to `ownsAgentRun`. That is `hasAgentExecution` on standalone and Org roots, and adds only a Team root's former members (`root-team-run.ts:230`). So a root's peer endpoints still take that branch after admission, and DN-9's continuation through the endpoint is unchanged.
+  - Former members are local runs, so `admitPeerRun` answers `not_peer`, and 22's "no longer a member" refusal is unchanged.
+- **For API/E2E:** two cases in the two-server suite are now both named RC-51 (22's, and this ticket's AC-007 case). `record()` merges their receipts and `-t "RC-51 "` selects both, so one needs renumbering. That's API/E2E's call.
+- **Checks:** I didn't rerun them; they ran on `037e6bec5c`. Server and web type gates pass; the full unit suite passes (8761); 22's integration test passes (3).
+- **Findings:** none.
+- **Routing:** `Pass`, to `/api_e2e_engineer`: the merged state, the two-server suite at least (with the RC-51 renaming). Then the test review, then delivery.
+
+---
 
 ## Round 2: Review Of IR-002, The Assigner's Continuation Of A Closed Remote Run (CRR-003)
 
