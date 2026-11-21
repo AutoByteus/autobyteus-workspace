@@ -22,7 +22,7 @@ Two agents on two nodes work like two colleagues on two machines (the founder, 2
 | Agent's own folder | Where the node keeps the agent's memory: `memory/agents/<runId>/` (standalone), `memory/agent_teams/<teamRunId>/<agentRunId>/` (Team member), `memory/agent_orgs/<orgRunId>/…/<agentRunId>/` (Org agent). Deleting the run's history deletes it. |
 | Received file | A file another node sent to an agent: it lives in that agent's own folder under `received_files/`. |
 | The node's received files | `memory/received_files/` on the receiving node: the bytes of every file it received, one entry per file content (named by its SHA-256), linked into every agent folder that received it. Never walked as runs. (Named by the founder, 2026-11-21.) |
-| Transfer | Moving one file from the sending node to the receiving node's store, in signed pieces, before the message or work packet is delivered. |
+| Transfer | Moving one file from the sending node into the receiving node's `<memory>/received_files/`, in signed pieces, before the message or work packet is delivered. |
 
 ## 2. Rules
 
