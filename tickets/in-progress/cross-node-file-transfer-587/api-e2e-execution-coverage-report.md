@@ -3,9 +3,25 @@
 ## Round
 
 - Coverage investigation: `tickets/in-progress/cross-node-file-transfer-587/api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-002`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-003`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 2; the code reviewer's test-code review CRR-002 Fail, T-001 (`api-e2e-test-review-report.md`). Round 1: the code reviewer's CRR-001 Pass (code `e327ba2467`)
+- Round and trigger: round 3; the code reviewer's CRR-004 Pass of IR-002. Delivery's DEL-03 found ten stale unit tests after its merge of `origin/personal` (`3be417f8df`); IR-002 (`e295b74b81`) fixed them. Round 2: the code reviewer's test-code review CRR-002 Fail, T-001 (`api-e2e-test-review-report.md`). Round 1: the code reviewer's CRR-001 Pass (code `e327ba2467`).
+- Round 3 rerun plan, following TESTING.md § Rerun by impact. The validated commits are `71be9e9e8e` (rounds 1–2) and HEAD `008981c6bd`. `git diff --name-only 71be9e9e8e 008981c6bd` covers:
+  - the merged base: server `src` in the work journal, busy runs and runtime handover notices, none of it in this ticket's files; an additive `journal_reads` case in `agy-failure-cli.mjs`; web app-update and notification files; iOS icons; documents;
+  - IR-002: three server unit test files and two `AgentTeamRunManager` constructions.
+
+  | Case | Decision | Reason / evidence |
+  | --- | --- | --- |
+  | Whole server unit suite | Reused (IMP-06 on `e295b74b81`, `8698 passed`) | Only documents changed after it. Round 1 relied on IMP-03's affected set instead of this suite, which is how the stale constructions reached delivery. The check is now in TESTING.md (below) |
+  | API-02 typechecks | Reused (DEL-01 on the merged base; IMP-08/09 on `e295b74b81`) | both at baseline |
+  | API-06 two-server suite | Reused (DEL-02 on the rebuilt merged server, `Tests 54 passed (54)`) | no ticket source or two-server test changed after it |
+  | API-04 whole `test:integration` | **Rerun** on `008981c6bd` (after `pnpm -C autobyteus-server-ts build`) | the merged server `src` | 
+  | API-05 whole `pnpm test:e2e` | **Rerun** | the merged server `src` and web |
+  | API-08 CPW | **Rerun** | the merged runtime-handover notice builder and the AGY fixture |
+  | API-10 tracked imports | **Rerun** | new tracked files |
+  | API-07 contract stories | Not rerun | still red only for FU-002 (the base holds no fix); its 587 steps are unchanged since the round-2 rerun |
+  | API-09 MSP-08 | Still valid | the merged web files (app update, notifications, About settings) are not on the Messages view's path; the server side is in API-05 |
+  | API-11 model check | Still valid | the model, stories and fixture are unchanged |
 - Prior round reviewed: round 1 (API-REV-001). Round 2 changes only the contract stories' authority (the 461 model and its stories) and the regenerated fixture: case API-11, and API-07 rerun for §5.1. The other cases of round 1 stand, since no test or source they run changed.
 - Deviations from the plan, and why:
   - Found while running: the two-server RC-19 (a peer removed; under RF-14 the reply names its node, so the refusal is the unknown-node text); the contract stories' S18/S19 drivers (beta's lead messaged M without `node`); `node-access-model`'s signed peer message (no `files`, so 400). Each was rewritten to the approved behaviour.
@@ -135,7 +151,13 @@
 - Result: `Pass`.
 - Criteria not proven, user-only, or accepted risk: AC-009 for AGY/Grok/ACP, `Accepted Unverified Risk (DEC-008)`.
 - Evidence decisions requested: `None`.
-- Next recipient from `get_handoff_rules`: `/code_reviewer` (test-code review again, after T-001).
+- Next recipient from `get_handoff_rules`: `/code_reviewer` (test-code review of IR-002's test files, round 3).
+- Round 3 results on HEAD `008981c6bd` (`evidence/API-R3/`):
+  - API-04: `Tests  514 passed | 69 skipped (583)`, 0 failed;
+  - API-05: `Test Files  128 passed | 156 skipped (284)`, `Tests  574 passed`, 0 failed;
+  - API-08: `Tests  14 passed (14)`;
+  - API-10: `Tracked-import check passed. Tracked files scanned: 102566`.
+- Guide change (round 3): TESTING.md § Choosing the path gains a row. When a change adds a required input to a server owner that tests construct directly, run the whole server unit suite and the whole `test:integration`, and search for the owner's constructions; the typecheck baseline hides stale ones. This is the check delivery proposed (DEL-03).
 - Notes:
   - Round 2 resolves T-001 (API-11): the 461 model now states RF-14, and S18/S19 pass the node in the model as in the driver.
   - API-07 is still red, but not because of this ticket. The cause is 565's `counterpart`, which the contract model lacks; it is tracked as FU-002 (urgent). Every 587 step of that suite behaves as the contract says.

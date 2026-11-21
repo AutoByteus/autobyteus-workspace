@@ -28,3 +28,8 @@
 | 2026-11-21T16:21:45Z | API-07 | Started | — | rerun of gated §5.1 against the regenerated fixture |
 | 2026-11-21T16:32:59Z | API-07 | Completed | Fail (FU-002 only) | rerun of §5.1: S18 differs only by the two counterpart lines (565), as in round 1 |
 | 2026-11-21T16:32:59Z | API-11 | Completed | Pass | T-001 resolved |
+| 2026-11-21T17:52:41Z | R3 plan | — | — | round 3 (IR-002 + merged base): rerun API-04, API-05, API-08, API-10 on 008981c6bd; reuse IMP-06 (whole unit), DEL-01 (typechecks), DEL-02 (two-server 54/54) |
+| 2026-11-21T17:52:41Z | API-04 | Completed (R3) | Pass | 514 passed, 0 failed |
+| 2026-11-21T17:52:41Z | API-05 | Completed (R3) | Pass | 128 files, 574 passed, 0 failed |
+| 2026-11-21T17:52:41Z | API-08 | Completed (R3) | Pass | 14/14 |
+| 2026-11-21T17:52:41Z | API-10 | Completed (R3) | Pass | 102566 files |
