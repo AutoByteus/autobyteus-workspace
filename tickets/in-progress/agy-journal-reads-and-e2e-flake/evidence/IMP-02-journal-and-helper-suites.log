@@ -1,0 +1,7 @@
+Check: IMP-02
+Command: vitest run tests/agent-work-journal tests/unit/e2e-helpers tests/unit/runtime-management/probe-time-bound.test.ts
+Commit: 806cb45831
+Date: 2026-11-21
+
+ Test Files  23 passed | 1 skipped (24)
+      Tests  256 passed | 2 skipped (258)

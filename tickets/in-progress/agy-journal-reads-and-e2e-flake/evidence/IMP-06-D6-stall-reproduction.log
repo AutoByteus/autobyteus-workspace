@@ -1,0 +1,14 @@
+Check: IMP-06 (D-6 step 1, AC-009)
+Command: scratch e2e file evidence/D6-stall-reproduction.scratch.e2e.test.ts.txt (not committed as a test): the test process hosts the in-process server and the scripted CLI; a 1 ms interval watches `pgrep -fl agy-failure-cli`; when the --help (10 s bound) or models (30 s bound) probe child is seen running, the main thread is blocked with Atomics.wait for N seconds; the run start (createAgentRun) is then awaited
+Commit: 806cb45831
+Environment: load average 73-88, swap full, fseventsd busy
+Date: 2026-11-21
+
+stall  5s from the start of the --help probe (stall began 2566 ms after the request): run start {'success': True, 'message': 'Agent run created successfully.'} after 7811 ms; RUNTIME_PROBE_TIMED_OUT lines: 0
+stall  5s from the start of the models probe (stall began 1937 ms after the request): run start {'success': True, 'message': 'Agent run created successfully.'} after 7113 ms; RUNTIME_PROBE_TIMED_OUT lines: 0
+stall  9s from the start of the --help probe (stall began 1510 ms after the request): run start {'success': True, 'message': 'Agent run created successfully.'} after 10734 ms; RUNTIME_PROBE_TIMED_OUT lines: 0
+stall  9s from the start of the models probe (stall began 1609 ms after the request): run start {'success': True, 'message': 'Agent run created successfully.'} after 10857 ms; RUNTIME_PROBE_TIMED_OUT lines: 0
+stall 12s from the start of the --help probe (stall began 1905 ms after the request): run start {'success': True, 'message': 'Agent run created successfully.'} after 14090 ms; RUNTIME_PROBE_TIMED_OUT lines: 0
+stall 12s from the start of the models probe (stall began 1552 ms after the request): run start {'success': True, 'message': 'Agent run created successfully.'} after 13748 ms; RUNTIME_PROBE_TIMED_OUT lines: 0
+
+Result: BRANCH B. No false timeout in any of the 6 cases, including 12 s over the 10 s --help bound: armProbeTimeBound already lets a child that exited win after a stall (autobyteus-576). No retry or bound change; the scripted-Antigravity suites now add the logged RUNTIME_PROBE_TIMED_OUT line to a discovery failure.
