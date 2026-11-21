@@ -35,3 +35,12 @@ My working log. The report's Cases table is the result.
 | 2026-11-21 18:30 | MSP-93 (round 2) | Completed | Pass | back 2.1 s after the assigner's message |
 | 2026-11-21 18:32 | CPW (round 2) | Completed | Pass | 14/14 |
 | 2026-11-21 18:40 | ROUND 2 | Completed | Pass | 95%; F-1, F-2 resolved |
+| 2026-11-21 19:02 | ROUND 3 | Started | | CRR-005 merged state (head db60cd5625, merge 037e6bec5c); RC-51 renamed RC-54; RC-55 added |
+| 2026-11-21 19:04 | BUILD + TYPECHECK (r3) | Completed | Pass | 1001 in 313 (baseline) |
+| 2026-11-21 19:04 | RC-ALL (r3) | Started | | /tmp/api591/r3/rc.log |
+| 2026-11-21 19:16 | RC-ALL (r3) | Completed | Pass | 55/55 (22 RC-51, 591 RC-54, RC-55 included) |
+| 2026-11-21 19:16 | MERGE-TOUCHED (22 e2e+integ, run-history e2e) | Started | | /tmp/api591/r3/touched.log |
+| 2026-11-21 19:20 | MERGE-TOUCHED | Completed | Pass | 22 e2e 12/12, integ 3/3; run-history 4 files 23/23 |
+| 2026-11-21 19:17 | MSP-93 (r3) | Started | | /tmp/api591/r3/msp |
+| 2026-11-21 19:24 | MSP-93 (r3) | Completed | Pass | merged web |
+| 2026-11-21 19:27 | ROUND 3 | Completed | Pass | 95% |

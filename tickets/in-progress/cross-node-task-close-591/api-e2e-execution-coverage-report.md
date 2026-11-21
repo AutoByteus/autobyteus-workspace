@@ -5,9 +5,9 @@ The run record and the result. The plan is `api-e2e-coverage-investigation.md`; 
 ## Round
 
 - Coverage investigation: `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-002`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-003`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: **round 2**, on CRR-003 Pass (head `81a504de13`; code `a811f94348`, IR-002 DN-9), against the corrected requirements (SR-010, SR-011). Round 1: CRR-001 (head `dd5b230e7e`).
+- Round and trigger: **round 3**, the merged state (CRR-005; head `db60cd5625`, merge `037e6bec5c` of `origin/personal` `6533d7be04`: v1.5.14-beta.6, 583, 594, 15, 16, 22). Round 2: on CRR-003 Pass (head `81a504de13`; code `a811f94348`, IR-002 DN-9), against the corrected requirements (SR-010, SR-011). Round 1: CRR-001 (head `dd5b230e7e`).
 - Prior round reviewed: round 1 (`Fail`, F-1 and F-2); both are rechecked first below.
 - Deviations from the investigation's plan, and why:
   - RC-49 (492 rows 13/14) was also made untrue by this ticket (the handoff did not list it): its row 14 expected agents of beta and of a third node to reach the closed Task's run "while it runs"; the run now stops. Updated to the not-running refusal (492 REQ-010), the run not woken.
@@ -22,7 +22,7 @@ The run record and the result. The plan is `api-e2e-coverage-investigation.md`; 
 - Architectural risk: `High`
 - Input route: `Reviewed`
 - Successful-output route: `Code Review`
-- Proportional test-code review decision: `Required` (`52a1507b80` and round 2's test commit).
+- Proportional test-code review decision: `Required` (`52a1507b80`, `00851c5c8d` and round 3's test commit).
 
 ## Tested Builds And Environments
 
@@ -31,6 +31,7 @@ The run record and the result. The plan is `api-e2e-coverage-investigation.md`; 
 | ENV-1 | `dd5b230e7e` (code `9abe7086fd`) + this round's test changes | macOS 26 (Darwin 25.5.0) arm64, load 24–31 | Node 22; `autobyteus-ts` and server `dist` built from the worktree; Brief Studio package (`test:integration:prepare`); scripted AGY CLI | `env -i PATH HOME=<fresh temp> TMPDIR`, `RUN_AGY_FAILURE_E2E=1`; test-owned roots, ports, HOMEs; alpha at LOG_LEVEL INFO; idle grace 60 s on both nodes |
 | ENV-2 | as ENV-1 | as ENV-1 | the phone probe: built alpha and beta, the production phone bundle (`build:mobile-web`), `nuxt dev` desktop window against alpha, headless Chrome | phone paired with alpha through Phone Access on a private host (192.168.77.40 → 127.0.0.1) |
 | ENV-1b (r2) | `81a504de13` (code `a811f94348`) + round 2's test changes | as ENV-1 | as ENV-1, rebuilt | as ENV-1 |
+| ENV-1c (r3) | `db60cd5625` (merged) + round 3's test changes | as ENV-1 | frozen install, `autobyteus-ts`, server `dist`, `test:integration:prepare`, `build:mobile-web` from the head | as ENV-1 |
 | ENV-B | base `7591aa307f` (merge base) | as ENV-1 | its own worktree `591-base-7591aa30`, install and build; removed after | comparisons only (contract stories) |
 
 ## Cases
@@ -42,6 +43,10 @@ The run record and the result. The plan is `api-e2e-coverage-investigation.md`; 
 | F-1/F-2 RECHECK (r2) | AC-001, AC-004, AC-006, AC-007; REQ-002, REQ-004, REQ-006 (SR-010) | the whole two-server file, round 2 | as RC-ALL, on ENV-1b | ENV-1b | Pass | `API-r2-runs.txt` §2; `API-r2-rc-receipt.json` | r6 `Tests  53 passed (53)`; RC-11 tree row absent; RC-51 `taskPage.root.status` `"offline"`; RC-51/RC-53 `continued` `{accepted:true, code:"DELIVERED"}` after `{open:true}` confirmed, `sameTask` the local refusal; RC-52 `rfOutcome.recordedClosed` true, `continuedWhileDown` "… continues with its conversation (its Task is open again) but did not receive this message; send it again." | r5 failed on my round-1 wording for the delegator (now the local "This Task is DONE. The agent that assigned it can …"); fixed |
 | MSP-93 (r2) | AC-006 (the continuation) | phone bundle and desktop window | as MSP-93 | ENV-2 on ENV-1b | Pass | `API-r2-runs.txt` §3; `API-r2-msp93.json`; `API-r2-MSP-93-*.png` | `listAfterCloseMs` 917, `phoneAfterListMs` 27, `desktopAfterListMs` 4059; `afterReopen` all away; `backMs` 2062 (the assigner's message) | |
 | CPW (r2) | regression (the router changed) | prompt wording | as CPW | ENV-1b | Pass | `API-r2-runs.txt` §4 | `Tests  14 passed (14)` | |
+| MERGED-RC (r3) | all (merged state); 22 AC-005 next to this ticket | the whole two-server file | as RC-ALL | ENV-1c | Pass | `API-r3-runs.txt` §3; `API-r3-rc-receipt.json` | `Tests  55 passed (55)` | this ticket's AC-007 case renamed RC-54 (22's keeps RC-51) |
+| RC-55 (r3) | REQ-001 with 22 DEC-008 | a Team member's peer run while the Team follows its definition | RC suite | ENV-1c | Pass | §3; receipt `RC-55` | the mate in `formerMembers`; the peer run live and listed on beta; `treeRowAfterLeave.parentKey` `team:<teamRunId>`; after the lead's DONE: stopped, recorded, off the list, CONFIRMED | new |
+| MERGE-TOUCHED (r3) | regression | 22's suites, run history | `vitest run` team-run-follows-definition (e2e, integration), the four run-history files | ENV-1c | Pass | §4 | 12 + 3; 6 + 9 + 6 + 2 passed | |
+| MSP-93 (r3) | AC-006 on the merged web | phone and desktop | as MSP-93 | ENV-2 on ENV-1c | Pass | §5; `API-r3-msp93.json` | `listAfterCloseMs` 917, `phoneAfterListMs` 186, `desktopAfterListMs` 4188; `backMs` 2386 | |
 | TYPECHECK | — | server `src` + tests (my edits) | `pnpm -C autobyteus-server-ts typecheck` | ENV-1 | Pass | `API-r1-runs.txt` §1 | `production errors: 0; test-file errors: 1002 in 314 files (baseline 1002 in 314 files)` | |
 | RC-09 | REQ-006 (files) | link, Task side | RC suite (whole file) | ENV-1 | Pass | §2; `API-r1-rc-receipt.json` `cases["RC-09"]` | `existingCopy`: "Files (reference_files) can't be sent to an agent on another node yet, so nothing was sent." | A saved Task to a *new* remote run keeps its refusal |
 | RC-10 | REQ-001 (sub-work run) | close → beta Stop | RC suite | ENV-1 | Pass | §2; receipt `RC-10.stoppedMs` | `stoppedMs` 329 | then the owner's message on beta wakes it; its message refused CLOSED |
@@ -81,7 +86,7 @@ The run record and the result. The plan is `api-e2e-coverage-investigation.md`; 
 | AC-004 | Yes | RC-52 (beta down, alpha restarted, beta restarted alone, 30 s retry, an older beta 404; an entry reopened before delivery (another Task; the assigner's message) goes as open; a Task's reopen alone still stops, REQ-002) | Proven (r2, against REQ-002) | AC-004's alternate column awaits the Solution Designer's alignment with REQ-002 |
 | AC-005 | Yes | RC-35; REUSE-IMP | Proven | — |
 | AC-006 | Yes | RC-11 (beta's list), RC-51 (Task page offline), MSP-93 r1 and r2 (desktop and phone: leaves; a reopen alone: away; the assigner's message: back) | Proven (r2) | — |
-| AC-007 | Yes | RC-51 (agent), RC-53 (Team), RC-52 rg (B unreachable), RC-09 (files); REUSE-IMP-R2 (a message while the closed notice is in flight) | Proven (r2) | — |
+| AC-007 | Yes | RC-54 (renamed from RC-51 in r3; agent), RC-53 (Team), RC-52 rg (B unreachable), RC-09 (files); REUSE-IMP-R2 (a message while the closed notice is in flight) | Proven (r2) | — |
 
 ## Validation Confidence Scorecard (Mandatory)
 
@@ -129,6 +134,7 @@ The run record and the result. The plan is `api-e2e-coverage-investigation.md`; 
 | same file: RC-51, RC-52, RC-53 | Added | RC-51, RC-52, RC-53 | — |
 | `autobyteus-web/tests/e2e/mobile-closed-delegation-cases.mjs`; `mobile-shell-probe.mjs` (header, import, call) | Added / Updated | MSP-93 | — |
 
+| same file (r3): this ticket's AC-007 case renamed RC-51 → RC-54; RC-55 added; header | Updated / Added | MERGED-RC, RC-55 | — |
 | same file (r2): RC-11 (tree row absent), RC-51, RC-53 (the continuation), RC-52 (rf asserted; rg the continuation while beta is down), RC-11/RC-23/RC-49 (the delegator's local text), header | Updated | F-1/F-2 RECHECK | RC-51/RC-53's "`delegate_task` with the reopened Task is accepted" (round 1, from the superseded AC-007) replaced by SR-010: the local refusal for the same Task, the assigner's message continuing it |
 | `autobyteus-web/tests/e2e/mobile-closed-delegation-cases.mjs` (r2) | Updated | MSP-93 (r2) | the row returns through the assigner's message (SR-010) instead of a new saved Task |
 
@@ -157,13 +163,13 @@ The run record and the result. The plan is `api-e2e-coverage-investigation.md`; 
 
 ## Latest Authoritative Result
 
-- Result: `Pass` (round 2), 95%.
+- Result: `Pass` (round 3, the merged state), 95%.
 - Criteria not proven, parts only the user can check, or accepted as unverified risk: `None`.
 - Evidence decisions requested: `None`.
-- Next recipient from `get_handoff_rules`: `/code_reviewer`, for the proportional test-code review of `52a1507b80` and round 2's test commit, then delivery.
+- Next recipient from `get_handoff_rules`: `/code_reviewer`, for the proportional test-code review of `52a1507b80`, `00851c5c8d` and round 3's test commit, then delivery.
 - Notes:
   - Not Tested: a real (non-scripted) runtime as the mid-turn member (AC-002 "if possible"): the Stop is the existing closure Stop for every runtime; the scripted process held mid-turn shows the working member is interrupted and its process ends.
   - AC-004's alternate column in the requirements still contradicts REQ-002 (the code reviewer asked the Solution Designer to align it); RC-52 tests REQ-002.
   - Out of scope: FU-591-01 (the contract stories' fixture lacks 565's `counterpart`; the same on base).
   - The unit test title `team-remote-delegation.test.ts` "closing the Task on A fences the remote Team (fenced_remote)" still says "fences".
-  - Round 1: `Fail`, 89% (F-1, F-2).
+  - Round 2: `Pass`, 95%. Round 1: `Fail`, 89% (F-1, F-2).

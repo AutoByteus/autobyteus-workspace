@@ -1,0 +1,24 @@
+API/E2E round 3 — autobyteus-591 on the merged state (CRR-005; head db60cd5625, merge 037e6bec5c of origin/personal 6533d7be04:
+v1.5.14-beta.6, 583, 594, 15, 16, 22). Environment as before; pnpm install --frozen-lockfile, autobyteus-ts, server dist,
+test:integration:prepare and build:mobile-web from the head. Raw logs: /tmp/api591/r3/.
+
+§1 Typecheck: "[typecheck] production errors: 0; test-file errors: 1001 in 313 files (baseline 1001 in 313 files)", PASS.
+
+§2 Case IDs: the merge brought 22's "RC-51 team-run-follows-definition AC-005" next to this ticket's AC-007 case, also named
+   RC-51 (record() merged their receipts; -t "RC-51 " selected both). This ticket's case is renamed RC-54 (its title, record,
+   the header and RC-11's comment); 22's keeps RC-51.
+
+§3 remote-delegation-two-server.e2e.test.ts (whole file, merged state): "Tests  55 passed (55)". Extract: API-r3-rc-receipt.json.
+   New RC-55 (591 with 22 DEC-008): a Team of its own on alpha; its mate delegates to beta; the definition gains "helper",
+   then loses "mate" (the run follows: "/mate" in formerMembers); the peer run keeps running and listed on beta, recorded
+   nowhere; its row stays on the Team's tree (treeRowAfterLeave: parentKey "team:<teamRunId>"); the lead's update_task DONE
+   stops it on beta (stoppedMs in the receipt), records it closed, drops it from beta's list, CONFIRMED open: false, nothing
+   owed. 22's RC-51 (beta's peer-started copy follows its definition) passes next to this ticket's cases.
+
+§4 Merge-touched suites: team-run-follows-definition.e2e (12 passed), team-run-follows-definition.integration (3 passed);
+   run-history E2E (IMP-05's four files: archive-run-history-graphql 6, recent-run-projection-graphql 9,
+   run-projection-toolcalls-graphql 6, standalone-error-termination-lifecycle 2): all passed.
+
+§5 MSP-93 on the merged web (the run list components changed in the merge): "[mobile-shell] MSP-93 Pass": listAfterCloseMs
+   917, phoneAfterListMs 186, desktopAfterListMs 4188; afterReopen {recorded:true, listed:false, phone:false, desktop:false};
+   backMs 2386; no unknown browser errors; cleanup complete. MSP-93 is still the only case with that ID. API-r3-msp93.json.

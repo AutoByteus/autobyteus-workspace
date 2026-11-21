@@ -49,3 +49,22 @@ None (the first round).
   - a real runtime as the mid-turn member (Not Tested);
   - AC-004's alternate column still awaits alignment with REQ-002 (wording; RC-52 tests REQ-002);
   - FU-591-01 (the contract stories stop early, base-side).
+
+### API-REV-003: round 3, the merged state (CRR-005): 55/55; Pass
+
+- Triggering role, report path, and round: `/code_reviewer`, `code-review-report.md` round 3 (CRR-005 Pass on IR-003; head `db60cd5625`, merge `037e6bec5c` of `6533d7be04`), API/E2E round 3.
+- Triggering finding or case IDs: the merge (22's router `ownsAgentRun`, 22's two-server case); the duplicated case ID RC-51.
+- Why this revision was recorded: validation of the merged state.
+- Coverage decisions or durable test paths changed:
+  - `remote-delegation-two-server.e2e.test.ts`: this ticket's AC-007 case renamed RC-51 → RC-54 (22's keeps RC-51); new RC-55 (a Team member's peer run while the Team follows its definition, 22 DEC-008, then its Task's close).
+
+#### Prior Failure Resolution
+
+None open (round 2: Pass).
+
+- Canonical artifacts and sections updated: the execution report (Round, Routing, Environments, Cases, AC proof, Durable Coverage, Result); the progress log; `evidence/api-e2e/API-r3-*`.
+- Prior result and confidence: `Pass` / 95% (round 2)
+- Current result and confidence: `Pass` / 95%
+- New or remaining failure IDs: none
+- Recommended owner: the Code Reviewer, for the proportional test-code review of `52a1507b80`, `00851c5c8d` and round 3's test commit, then delivery.
+- Remaining risks, blocked evidence, or untested scope: as API-REV-002 (a real runtime mid-turn; AC-004's alternate wording; FU-591-01).
