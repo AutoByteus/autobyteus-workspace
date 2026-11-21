@@ -1,0 +1,276 @@
+# IMP-04 in-process two-node file transfer and new owners (verbose)
+# Command (in autobyteus-server-ts): pnpm exec vitest run tests/unit/remote-collaboration/standalone-remote-delegation.test.ts tests/unit/remote-collaboration/team-remote-delegation.test.ts tests/unit/remote-collaboration/running-agents-messaging.test.ts tests/unit/remote-collaboration/received-files.test.ts tests/unit/agent-collaboration/execution/remote/outgoing-files.test.ts tests/unit/agent-collaboration/execution/communication/root-communication-engine-received-files.test.ts --reporter=verbose
+# Commit: e327ba2467
+# Environment: macOS 26.5.2, Node v22.23.1
+# Date: 2026-11-21T13:27:52Z
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:58257) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-301: B creates the Team run with the back-link; A records the Team link; the work packet starts only the coordinator
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/autobyteus-server-ts
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-301: B creates the Team run with the back-link; A records the Team link; the work packet starts only the coordinator
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-ASdX0f/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-ASdX0f/temp_workspace.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-301: B creates the Team run with the back-link; A records the Team link; the work packet starts only the coordinator
+Created and registered workspace ID: agent_ws_fd6f7e021688260d620fcecb198513d6c76076b59245e1155a7f6b98cfe68ebe
+
+ ✓ tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-301: B creates the Team run with the back-link; A records the Team link; the work packet starts only the coordinator 81ms
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > autobyteus-587 AC-001, AC-002: a Team's coordinator gets the delegation's files and a never-started member a message's file, each in its own member folder; a member's file reaches the delegator
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-JBmYTf/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-JBmYTf/temp_workspace.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > autobyteus-587 AC-001, AC-002: a Team's coordinator gets the delegation's files and a never-started member a message's file, each in its own member folder; a member's file reaches the delegator
+Created and registered workspace ID: agent_ws_3d64d5cb1d2d35c753faa7ae2af1a4683cb68c85e6aa4979b947d8bfa64a5706
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > autobyteus-587 AC-001, AC-002: a Team's coordinator gets the delegation's files and a never-started member a message's file, each in its own member folder; a member's file reaches the delegator
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-JBmYTf/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-JBmYTf/temp_workspace.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > autobyteus-587 AC-001, AC-002: a Team's coordinator gets the delegation's files and a never-started member a message's file, each in its own member folder; a member's file reaches the delegator
+Reusing registered workspace ID: agent_ws_3d64d5cb1d2d35c753faa7ae2af1a4683cb68c85e6aa4979b947d8bfa64a5706
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-303: the delegator and any member message each other by run ID; a never-started member starts; others are refused
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-pI9FGh/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-pI9FGh/temp_workspace.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-303: the delegator and any member message each other by run ID; a never-started member starts; others are refused
+Created and registered workspace ID: agent_ws_6baa79a5d0579b488cc01c437f4e7eb89f0424ef6e3baa4bfd38d81a15c04b77
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-303: the delegator and any member message each other by run ID; a never-started member starts; others are refused
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-pI9FGh/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-pI9FGh/temp_workspace.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-303: the delegator and any member message each other by run ID; a never-started member starts; others are refused
+Reusing registered workspace ID: agent_ws_6baa79a5d0579b488cc01c437f4e7eb89f0424ef6e3baa4bfd38d81a15c04b77
+
+ ✓ tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > autobyteus-587 AC-001, AC-002: a Team's coordinator gets the delegation's files and a never-started member a message's file, each in its own member folder; a member's file reaches the delegator 152ms
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-305: closing the Task on A fences the remote Team both ways (fenced_remote); a saved Task for it is refused
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-esnGbP/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-esnGbP/temp_workspace.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-305: closing the Task on A fences the remote Team both ways (fenced_remote); a saved Task for it is refused
+Created and registered workspace ID: agent_ws_38554c858510a724f1021e9e6a195f52070cb5b369eac2b9607c01f0f4319c68
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-304: the idle Team shuts down quietly; after B and A restart, a follow-up restores it and the reply wakes the delegator
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-V5CLjn/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-V5CLjn/temp_workspace.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-304: the idle Team shuts down quietly; after B and A restart, a follow-up restores it and the reply wakes the delegator
+Created and registered workspace ID: agent_ws_bfbe19cfba25c32c0c20d859a64c3dc8a9b7fc8bcba656ce59ada34c7e9346e9
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-304: the idle Team shuts down quietly; after B and A restart, a follow-up restores it and the reply wakes the delegator
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-V5CLjn/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-V5CLjn/temp_workspace.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-304: the idle Team shuts down quietly; after B and A restart, a follow-up restores it and the reply wakes the delegator
+Reusing registered workspace ID: agent_ws_bfbe19cfba25c32c0c20d859a64c3dc8a9b7fc8bcba656ce59ada34c7e9346e9
+
+ ✓ tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-303: the delegator and any member message each other by run ID; a never-started member starts; others are refused 115ms
+ ✓ tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-305: closing the Task on A fences the remote Team both ways (fenced_remote); a saved Task for it is refused 40ms
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > N-303: an inactive Team root is checked against its stored links before a restore; an unlinked sender restores nothing
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-BhRToL/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-BhRToL/temp_workspace.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > N-303: an inactive Team root is checked against its stored links before a restore; an unlinked sender restores nothing
+Created and registered workspace ID: agent_ws_cdaa0fad972e315fa64fbb0fd73017fbc51d421e56cfa1e732c77b2a4dadc4a4
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > discovery, then delegation, in process (autobyteus-261 AC-402, AC-408) > A lists its peers, lists B's offer and delegates to the listed Team without being told its address
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-LdqeJO/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-LdqeJO/temp_workspace.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > discovery, then delegation, in process (autobyteus-261 AC-402, AC-408) > A lists its peers, lists B's offer and delegates to the listed Team without being told its address
+Created and registered workspace ID: agent_ws_faba539cc95263b07a8c719c0461bf815d8792159b1ec90295816819846b7c7f
+
+ ✓ tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-304: the idle Team shuts down quietly; after B and A restart, a follow-up restores it and the reply wakes the delegator 82ms
+ ✓ tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > N-303: an inactive Team root is checked against its stored links before a restore; an unlinked sender restores nothing 45ms
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > all members quiet for the grace period: the root ends, keeping its package (no member interrupted)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-ME8UMx/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-ME8UMx/temp_workspace.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > all members quiet for the grace period: the root ends, keeping its package (no member interrupted)
+Created and registered workspace ID: agent_ws_1b0c1a16f97ac1e016a17dfea9acb192e892c22c83c3fdf5cf2b816c651733bc
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > a member that is not quiet (waiting for tool approval, or a running background task) keeps the whole Team; its end re-arms
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-LniDKs/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-LniDKs/temp_workspace.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > a member that is not quiet (waiting for tool approval, or a running background task) keeps the whole Team; its end re-arms
+Created and registered workspace ID: agent_ws_12f13849d6d855c298ddff3e4543606f05beead265cbf9bf289d6e4e8994afbf
+
+ ✓ tests/unit/remote-collaboration/team-remote-delegation.test.ts > discovery, then delegation, in process (autobyteus-261 AC-402, AC-408) > A lists its peers, lists B's offer and delegates to the listed Team without being told its address 45ms
+ ✓ tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > all members quiet for the grace period: the root ends, keeping its package (no member interrupted) 44ms
+ ✓ tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > a member that is not quiet (waiting for tool approval, or a running background task) keeps the whole Team; its end re-arms 47ms
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > a message during the grace period cancels it: the member runs, and the grace starts again when it is idle
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-4SBTvm/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-4SBTvm/temp_workspace.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > a message during the grace period cancels it: the member runs, and the grace starts again when it is idle
+Created and registered workspace ID: agent_ws_93c8ca3e3615a7808b1267fe7d6a13e2452dbba51d8a5e1db22f54780574c5e0
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > CR-461-061 (F-43, DTL-005): a member in error (the run's open work) does not keep the Team, as base's task Team; a local Team run (no back-link) has no idle shutdown at all
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-QY5u3H/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-QY5u3H/temp_workspace.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > CR-461-061 (F-43, DTL-005): a member in error (the run's open work) does not keep the Team, as base's task Team; a local Team run (no back-link) has no idle shutdown at all
+Created and registered workspace ID: agent_ws_922fa2f4c2a3b7966969800d1b3abd8e55aac205c6b76a36760bc611fec25c2c
+
+ ✓ tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > a message during the grace period cancels it: the member runs, and the grace starts again when it is idle 43ms
+ ✓ tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > CR-461-061 (F-43, DTL-005): a member in error (the run's open work) does not keep the Team, as base's task Team; a local Team run (no back-link) has no idle shutdown at all 70ms
+ ✓ tests/unit/agent-collaboration/execution/remote/outgoing-files.test.ts > OutgoingFiles > uploads each file in pieces of at most 8 MiB and names it by content, size and the name the agent used 98ms
+ ✓ tests/unit/agent-collaboration/execution/remote/outgoing-files.test.ts > OutgoingFiles > RF-11: a file the node holds complete is not uploaded again; one it holds in part resumes there 23ms
+ ✓ tests/unit/agent-collaboration/execution/remote/outgoing-files.test.ts > OutgoingFiles > RF-3: only files inside the workspace, links resolved; folders, missing files and paths that leave it are refused before anything is sent 5ms
+ ✓ tests/unit/agent-collaboration/execution/remote/outgoing-files.test.ts > OutgoingFiles > refuses without a workspace, two files of one name, and a file over the receiving node's limit, before any piece 5ms
+ ✓ tests/unit/agent-collaboration/execution/remote/outgoing-files.test.ts > OutgoingFiles > RF-4: more than 4 GiB in one call is refused before any file is read or sent 2ms
+ ✓ tests/unit/agent-collaboration/execution/remote/outgoing-files.test.ts > OutgoingFiles > names the file and the reason when a piece fails or arrives damaged (RF-5) 2ms
+ ✓ tests/unit/remote-collaboration/received-files.test.ts > ReceivedFiles: pieces and status (DS-003, RF-11) > appends pieces at the bytes held, completes the file on the last one, and answers what it holds 29ms
+ ✓ tests/unit/remote-collaboration/received-files.test.ts > ReceivedFiles: pieces and status (DS-003, RF-11) > a piece at another offset writes nothing and answers the bytes held (two uploads of one content resume from there) 26ms
+ ✓ tests/unit/remote-collaboration/received-files.test.ts > ReceivedFiles: pieces and status (DS-003, RF-11) > two senders of the same content at once: every piece lands once, both see it complete 126ms
+ ✓ tests/unit/remote-collaboration/received-files.test.ts > ReceivedFiles: pieces and status (DS-003, RF-11) > enforces the per-file limit on every piece, refuses a piece past the size, and removes a file whose content does not match 11ms
+ ✓ tests/unit/remote-collaboration/received-files.test.ts > ReceivedFiles: pieces and status (DS-003, RF-11) > an empty file is one empty piece 7ms
+ ✓ tests/unit/remote-collaboration/received-files.test.ts > ReceivedFiles: verify and placement (RF-5, RF-7, RF-12) > verify: every file complete with its size, else the first that is not 8ms
+ ✓ tests/unit/remote-collaboration/received-files.test.ts > ReceivedFiles: verify and placement (RF-5, RF-7, RF-12) > names the files first, then places read-only hard links by sender; the same sender's same name is replaced, another sender's is not 39ms
+ ✓ tests/unit/remote-collaboration/received-files.test.ts > ReceivedFiles: verify and placement (RF-5, RF-7, RF-12) > a file the store no longer holds fails the placement by name; a delivery without files names and places nothing 7ms
+ ✓ tests/unit/remote-collaboration/received-files.test.ts > ReceivedFiles: verify and placement (RF-5, RF-7, RF-12) > only into an agent folder inside the node's memory, with safe names (RF-12) 1ms
+ ✓ tests/unit/remote-collaboration/received-files.test.ts > ReceivedFiles: sweep (DS-004, RF-10) > removes an entry no agent folder links to only after 24 h untouched; a linked one stays; old .partials go, recent ones stay 108ms
+ ✓ tests/unit/remote-collaboration/received-files.test.ts > ReceivedFiles: sweep (DS-004, RF-10) > a status touches a complete entry, so a file a call in flight deduplicated is not swept 13ms
+ ✓ tests/unit/remote-collaboration/received-files.test.ts > ReceivedFiles: sweep (DS-004, RF-10) > a multi-file call while a history delete sweeps: the file it deduplicated and the one still arriving stay, and both are placed 83ms
+stdout | tests/unit/remote-collaboration/standalone-remote-delegation.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:60379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/remote-collaboration/standalone-remote-delegation.test.ts > remote delegation between two standalone runs, in process (slice 1 step 5) > A delegates to B's shared Agent by its catalog address; B prepares a standalone run with the back-link, A links it, then sends the work packet 17ms
+ ✓ tests/unit/remote-collaboration/standalone-remote-delegation.test.ts > remote delegation between two standalone runs, in process (slice 1 step 5) > the two runs message each other both ways by run ID; each message is in both logs once, with one ID, and the headers name the node 60ms
+ ✓ tests/unit/remote-collaboration/standalone-remote-delegation.test.ts > remote delegation between two standalone runs, in process (slice 1 step 5) > autobyteus-587 AC-001, AC-002, AC-010: files go with the delegation and both ways with messages, read-only in the receiver's own folder; a newer file of one name replaces the older 115ms
+ ✓ tests/unit/remote-collaboration/standalone-remote-delegation.test.ts > remote delegation between two standalone runs, in process (slice 1 step 5) > autobyteus-587 AC-010 (RF-14): a message to the delegated run without node, or with another node, is refused with the node to pass; with it, delivered 40ms
+ ✓ tests/unit/remote-collaboration/standalone-remote-delegation.test.ts > remote delegation between two standalone runs, in process (slice 1 step 5) > keeps working after both nodes restart: A restores the link from its tree and B the back-link from run_metadata.json (REQ-108) 71ms
+ ✓ tests/unit/remote-collaboration/standalone-remote-delegation.test.ts > remote delegation between two standalone runs, in process (slice 1 step 5) > refuses before anything is sent: files, a saved Task, an unknown node; and B's refusals leave nothing on A (AC-104, AC-108) 4ms
+ ✓ tests/unit/remote-collaboration/standalone-remote-delegation.test.ts > remote delegation between two standalone runs, in process (slice 1 step 5) > refuses a file outside the workspace on a follow-up, a saved Task for the remote run, and messages from a run that is not linked (AC-107, AC-108, AR-003) 4ms
+ ✓ tests/unit/remote-collaboration/standalone-remote-delegation.test.ts > remote delegation between two standalone runs, in process (slice 1 step 5) > closing the Task on A fences the remote run: messages to and from it are refused with the closed-Task reason (AC-109, DEC-107) 4ms
+ ✓ tests/unit/remote-collaboration/standalone-remote-delegation.test.ts > remote delegation between two standalone runs, in process (slice 1 step 5) > writes nothing when the peer refuses a message, and admits a message ID once (N-5) 42ms
+ ✓ tests/unit/remote-collaboration/standalone-remote-delegation.test.ts > remote delegation between two standalone runs, in process (slice 1 step 5) > SR-066: A follows its peer child by its own identity (status and its node's answer), and the user reaches it: message and Stop, through B's link check 16ms
+stdout | tests/unit/remote-collaboration/running-agents-messaging.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:61127) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/remote-collaboration/running-agents-messaging.test.ts > the run ID is the address (autobyteus-492), in process > PRB-002 / AC-005 (DS-003): two PMs a person started on one node message each other by run ID; both logs hold both messages; each is published once, as unrelated (autobyteus-565: each PM's own view shows it) 62ms
+ ✓ tests/unit/remote-collaboration/running-agents-messaging.test.ts > the run ID is the address (autobyteus-492), in process > AC-007 (REQ-010, DEC-003): a stopped run is refused not running and is not woken 3ms
+ ✓ tests/unit/remote-collaboration/running-agents-messaging.test.ts > the run ID is the address (autobyteus-492), in process > AC-001, AC-004 (DS-001, DS-002): A's PM lists A's other PM (not itself), and B's running PM with node 6ms
+ ✓ tests/unit/remote-collaboration/running-agents-messaging.test.ts > the run ID is the address (autobyteus-492), in process > AC-006 (DS-004, DS-005): A's PM messages B's PM with node; B's PM answers with node from the header; each node's logs hold both 51ms
+ ✓ tests/unit/remote-collaboration/running-agents-messaging.test.ts > the run ID is the address (autobyteus-492), in process > autobyteus-587 AC-001 (RF-1, RF-7): two PMs no Task links send each other files with node; each lands in the receiver's own folder under the sender's run ID 85ms
+ ✓ tests/unit/remote-collaboration/running-agents-messaging.test.ts > the run ID is the address (autobyteus-492), in process > entry-form row 8: a run ID that does not run on the peer is refused with this node's name for it; the peer wakes nothing; nothing is logged 3ms
+ ✓ tests/unit/remote-collaboration/running-agents-messaging.test.ts > the run ID is the address (autobyteus-492), in process > a run ID of a peer without node is not running here, and the refusal says to pass node 2ms
+ ✓ tests/unit/agent-collaboration/execution/communication/root-communication-engine-received-files.test.ts > RootCommunicationEngine.acceptFromRemote with files (autobyteus-587) > plans the paths, holds the slot, places the files, then writes the line; the line and the input name the received paths 4ms
+ ✓ tests/unit/agent-collaboration/execution/communication/root-communication-engine-received-files.test.ts > RootCommunicationEngine.acceptFromRemote with files (autobyteus-587) > MP-002: a reply after the Task closed is refused before anything is placed, so no file of that sender is replaced 1ms
+ ✓ tests/unit/agent-collaboration/execution/communication/root-communication-engine-received-files.test.ts > RootCommunicationEngine.acceptFromRemote with files (autobyteus-587) > an invalid message or a closed root places nothing 1ms
+ ✓ tests/unit/agent-collaboration/execution/communication/root-communication-engine-received-files.test.ts > RootCommunicationEngine.acceptFromRemote with files (autobyteus-587) > a file no longer held releases the slot and refuses the message, naming the file; nothing is written 1ms
+ ✓ tests/unit/agent-collaboration/execution/communication/root-communication-engine-received-files.test.ts > RootCommunicationEngine.acceptFromRemote with files (autobyteus-587) > a placement that throws releases the slot and lets the error through 0ms
+
+ Test Files  6 passed (6)
+      Tests  51 passed (51)
+   Start at  14:27:53
+   Duration  9.93s (transform 3.41s, setup 176ms, import 6.82s, tests 1.96s, environment 0ms)
+
+exit=0
