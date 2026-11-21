@@ -47,6 +47,17 @@ Founder (2026-11-21, via the PM): cross-node `delegate_task` and `send_message_t
 | UNK-002 | Unknown | autobyteus-566 (Cloud & Multi-Node Security Architecture): its decisions are not in this repository yet | Align when it lands; this ticket stays within NA-* rules |
 | RSK-001 | Risk | Exfiltration by a prompt-injected agent | DEC-001 |
 
+## Supplemental Artifact Inventory
+
+| Artifact | Owner | Purpose | Status |
+| --- | --- | --- | --- |
+| `reference-files-contract.md` (RFC-001) | Solution Designer | Contract of reference files on both tools, all routes | Ready for Approval |
+
+## Contract Investigation (2026-11-21)
+
+- Existing contracts: the living canonical contract is `autobyteus-server-ts/docs/design/collaboration_model.md` (CM rules; § 3 run storage; § 4 remote runs: "Later steps add attachment transfer (today `reference_files` are local paths)"); mechanics in `docs/modules/agent_communication.md` (local references: team route persists them as Team Communication references; direct route passes them in input metadata) and `remote_collaboration.md` (wire). Historical ticket contracts (ATC-001) are not living. No file contract exists.
+- Agent folders: `AgentMemoryLayout` (`agent-memory/store/agent-memory-layout.ts:90-175`): standalone `agents/<runId>`, Team member `agent_teams/<teamRunId>/<agentRunId>`, Org via `getRootedAgentRunDirPath`; run discovery walks only `agents`, `agent_teams`, `agent_orgs` (`agent-memory/services/run-folder-discovery.ts:73-75`).
+
 ## Architecture Investigation Findings
 
 Added after approval.
