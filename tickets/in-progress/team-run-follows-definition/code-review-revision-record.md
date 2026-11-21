@@ -10,6 +10,7 @@
 | CRR-004 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-002 Fail (F-3) | Pass (CRR-003) | Fail | CR-003 |
 | CRR-005 | `code-review-report.md` | Implementation Review / IR-003 (CR-003 Local Fix) | Fail (CRR-004) | Fail | CR-003 (resolved), CR-004 (new) |
 | CRR-006 | `code-review-report.md` | Implementation Review / IR-004 (CR-004 Local Fix) | Fail (CRR-005) | Pass | CR-004 (resolved) |
+| CRR-007 | `api-e2e-test-review-report.md` | Proportional API/E2E test-code review / API-REV-003 passed | N/A (first test review; CRR-006 source Pass) | Fail | TR-001 |
 
 ## Revision Entries
 
@@ -181,3 +182,28 @@ None (CRR-001 had no findings).
 - Material score or classification changes: Shared-Structure Tightness 9.0 → 9.4; Cleanup Completeness 8.8 → 9.4. Large/High preserved.
 - Recommended recipient: API/E2E engineer
 - Remaining risks or uncertainty: API/E2E's own TF-03/TFU-03/TFU-04 rerun on the final commit is pending.
+
+### CRR-007: Proportional review of the API/E2E test code (API-REV-003)
+
+- Canonical review report updated: `/home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/tickets/in-progress/team-run-follows-definition/api-e2e-test-review-report.md`
+- Review entry point and round: Successful API/E2E test-code review, round 1
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-003); durable tests `team-run-follows-definition.e2e.test.ts` (TF-01..TF-12), `team-run-follows-definition-live.e2e.test.ts` (TFL-01/02), RC-51 (commits `443f1c2c0f`, `8789b97a41`, `44fd8d073a`)
+- Relevant solution revision IDs: SR-010
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-004 (source unchanged since CRR-006)
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: N/A for test review (CRR-006 source review Pass)
+- Current authoritative result: Fail
+- What changed in the review result and why: the suites are well structured, requirement-aligned and enter through real triggers. TR-001 (`Local Fix`, API/E2E): TF-07 asserts positive watcher-driven outcomes after fixed sleeps, and TF-03/TF-05 depend on a watcher event landing inside an 8-second scripted window. Both break the root `TESTING.md` rule "File watching on a busy Mac" (wait until the condition holds, with limits from `os-latency-under-load.ts`; never a fixed bound). Wait limits are literals.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: TR-001
+- Material score or classification changes: None to the source review; Large/High preserved
+- Recommended recipient: API/E2E engineer
+- Remaining risks or uncertainty: none beyond the API-REV-003 residual risks.
