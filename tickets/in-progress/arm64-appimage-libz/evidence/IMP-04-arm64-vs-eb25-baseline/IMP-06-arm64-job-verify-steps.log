@@ -1,3 +1,9 @@
+# IMP-06
+# Command: the build-linux-arm64 verify steps run locally on the new image: sign-release + verify-release (build-only key), verify-layout.mjs, file, validate_linux_updater_metadata.py, verify-packaged-server-startup.mjs
+# Commit: 7ad305aeb0 (run on the identical uncommitted worktree content before the commit)
+# Environment: Linux aarch64 container (Ubuntu 24.04, root, no libz.so, no Docker), Node v22.23.3
+# Date: 2026-11-21
+
 ## sign-release + verify-release (build-only key)
 Verified signed desktop release 1.5.14-beta.6 arm64
 exit=0

@@ -14,7 +14,7 @@ import {
   PRODUCT_LICENSE_EXTRA_RESOURCES,
   PRODUCT_LICENSE_REQUIRED_FILES,
 } from './productLicensePackaging'
-import { buildLinuxAppImage, LinuxTargetArch } from './linuxAppImageBuild'
+import { buildLinuxAppImage, type LinuxTargetArch } from './linuxAppImageBuild'
 
 // Load environment variables from .env.local (for Apple credentials)
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') })

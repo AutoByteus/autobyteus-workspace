@@ -1,4 +1,5 @@
-# SR-002 arm64 build vs the electron-builder 25 baseline (IR-001 `evidence/eb25-vs-eb26-arm64/v25`)
+# IMP-04 — SR-002 arm64 build vs the electron-builder 25 baseline (IR-001 `evidence/eb25-vs-eb26-arm64/v25`)
+# Commit: 7ad305aeb0 (built from the identical uncommitted worktree content)
 
 Same prepared inputs, electron-builder 25.1.8, `node build/dist/build.js --linux --arm64` with
 `AUTOBYTEUS_BUILD_FLAVOR=personal`, `GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace`, build-only trust key, Go 1.27.4.

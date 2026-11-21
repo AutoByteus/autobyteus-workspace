@@ -1,4 +1,4 @@
-import { build, Arch, Configuration, Platform } from 'electron-builder'
+import { build, Arch, Platform, type Configuration } from 'electron-builder'
 import { assertArm64AppImageRuntime, prepareArm64AppImageToolset } from './arm64AppImageRuntime'
 
 export type LinuxTargetArch = 'x64' | 'arm64'

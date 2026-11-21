@@ -1,0 +1,20 @@
+# IMP-10
+# Command: node --test scripts/desktop-package/<file>.test.mjs (each); python3 -m unittest scripts/tests/<workflow tests>
+# Commit: 7ad305aeb0
+# Environment: Linux aarch64 container (Ubuntu 24.04, root), Node v22.23.3
+# Date: 2026-11-21T20:49:12Z
+
+scripts/desktop-package/desktop-signing-witness.test.mjs     # pass 26 # fail 0 
+scripts/desktop-package/desktop-trust-provision.test.mjs     # pass 6 # fail 27 
+scripts/desktop-package/release-pipeline.test.mjs            # pass 3 # fail 0 
+scripts/desktop-package/release-record.test.mjs              # pass 12 # fail 0 
+scripts/desktop-package/verify-clean-image-runtime.test.mjs  # pass 3 # fail 0 
+
+desktop-trust-provision.test.mjs: unchanged by this ticket; fails as root: generate-desktop-signing-key.mjs:20 requires uid!==0 ('Trusted login home required')
+
+test_release_channel_workflow_steps           OK
+test_desktop_release_server_package_wait      OK
+test_desktop_release_trust_boundary           OK
+test_install_from_lockfile                    OK
+test_desktop_release_beta                     OK
+test_check_repository_artifact_hygiene        OK
