@@ -39,7 +39,7 @@
 
 ## Follow-ups
 
-- FU-001…FU-003 are in `follow-ups.md` (the Solution Designer sends them): Claude Agent SDK reads only part of the named journal (FU-001); `claude-provider-turn-race` waits a fixed settle budget (FU-002); server E2E files at default limits on a busy Mac (FU-003). Delivery adds none.
+- FU-001…FU-004 are in `follow-ups.md` (the Solution Designer sends them): Claude Agent SDK reads only part of the named journal (FU-001); `claude-provider-turn-race` waits a fixed settle budget (FU-002); server E2E files at default limits on a busy Mac (FU-003); and, delivery's, FU-004. Delivery adds FU-004: the failed watcher unit test (`chokidar-watcher-runtime-links.test.ts`) names no cause when the OS delivers no file event; the same class as autobyteus-576's FU-003.
 
 ## Release
 

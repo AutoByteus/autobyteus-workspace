@@ -56,4 +56,4 @@ Not used: `agent_work_journal.md` changed in this delivery, and three more docs 
 
 - Result: `Pass`
 - Next delivery action: handoff summary, release notes, verification record, archive, finalization (`release-deployment-report.md`)
-- Notes: follow-ups FU-001 (Claude Agent SDK reads part of the named journal), FU-002 (a unit test's fixed settle budget) and FU-003 (E2E files at default limits on a busy Mac) are in `follow-ups.md`, API/E2E's, unsent. Delivery adds none.
+- Notes: follow-ups FU-001 (Claude Agent SDK reads part of the named journal), FU-002 (a unit test's fixed settle budget) and FU-003 (E2E files at default limits on a busy Mac) are in `follow-ups.md`, API/E2E's, unsent. Delivery adds FU-004 (the watcher unit test that failed once in the whole unit run names no cause when the OS delivers no file event; the same class as autobyteus-576's FU-003).
