@@ -1,0 +1,42 @@
+# Implementation handoff — autobyteus-15
+
+**IR-001 · ready for independent source review.** Source `5328f4ce8bce`, branch `feature/managed-ubuntu-auto-restart` → `personal`. Reviewed baseline `f36286782f`; no merge, tag, publication or user installation. Initial cycle; no CRR, API-REV, DR or implementation rework trigger.
+
+## Approved basis and routing
+
+[SR-001 requirements](requirements-doc.md), [investigation](investigation-notes.md), [SR-004 design](design-spec.md), [solution history](solution-revision-record.md). [Architecture report](design-review-report.md) / [ARCH-REV-002](architecture-review-revision-record.md) passed after AR-001–003 corrections. [Implementation history](implementation-revision-record.md).
+
+**Medium / High, confirmed → Code Review** (direct-route review not applicable). Scope is bounded to an existing update session, the embedded node's read-only observation, and their consumers. Unattended restart, missed input/background work and concurrent Quit make the risk high. No requirement or design escalation. [FU-001](follow-ups.md) remains a separate product question about non-managed platforms.
+
+## Changes and behavior trace
+
+| Behavior / criteria | Production path and resulting behavior |
+|---|---|
+| BEH-001, AC-001–003 | A verified stage plus opted-in switch, matching generation/channel, unblocked version and a claimed reopen channel arm `SafeRestartMoment`. `UserInputActivity` tracks input on every managed web contents. After five quiet minutes main queries its own embedded launch endpoint with the current launch owner credential. Unavailable, malformed, nonzero busy or unknown results defer; retry is 30 s. After the await, the watch rechecks token and last input, then the session synchronously rechecks eligibility and claims the intent. No renderer activation authority. |
+| BEH-001, AC-002 | `agent-execution/services/busy-runs.ts` inspects background work keyed by run object. Process and application scopes inspect concurrently with a 6 s bound, **then both finalize synchronously** over their current membership/status. New/replaced runs, timeout, thrown or unavailable (including inactive) views are not idle; unsupported or complete empty views can be idle. A read-only `GET /rest/busy-runs` under the existing access gate returns only aggregate counts. Recorder still uses a 1 s best-effort supplement and writes only placed collaboration entries. |
+| BEH-002, AC-004 | Real app wiring forwards `before-quit` before window closure, except for the session's own terminal quit. Quit cancels waiting admission; `willQuit` takes the existing quit path or leaves the one in-flight owner to finish. A confirmed settlement stays closed; unknown outcome with Quit exits 1. No second stop, activate or reopen. |
+| BEH-003/004, AC-005–007 | Manual Install and restart uses manual consent; opt-out or channel replacement invalidates the stage. Consent determines switch/block eligibility and notification kind, independently of ending. Only a confirmed baseline/commit plus stopped server can reopen through the existing launcher. Refusals, stage loss, unknown status and unavailable channel retain their existing handling. No-channel remains managed-quit. |
+| BEH-001/005, AC-008–010 | `AppUpdater` reports `managed-restart` only for managed + claimed channel; both managed modes bypass native activation. Switch, row and About choose capability-appropriate English/Chinese copy; a user Quit is not promised a reopen. Native Mac/Windows/portable automatic policy and copy preserved. Signing, launch protocol, sandbox, permissions and release feed unchanged. Docs: `autobyteus-web/docs/linux-managed-desktop.md`, `GLOSSARY.md`. |
+| AC-011 | Current-source real managed Ubuntu N→N+1 evidence **still required**; implementation fixtures do not establish spontaneous graphical reopen, a running successor or window input in a guest. |
+
+Scope guardrail respected. Design health: behavior change with an ownership issue (ending vs consent); refactor needed now and implemented. One activation owner, one shared busy observation rule, separate recorder/safety policies, no compatibility shim or retained old default in the capable managed path. Removed superseded wiring and overloaded decision flag. No new framework, persisted settings or migration: **Not Affected** (design “Persisted Data”). Existing notification/attempt/block meanings reused. New effective main-source maximum 500: `appUpdater.ts` 500→500, `electronApplication.ts` 480→472, `build-studio-server.ts` 439→441. No changed source file grew past 500 or crossed the 220-line change signal. No new out-of-scope dead code or deviations identified.
+
+## Implementation checks
+
+[Command excerpts, environment, output and failure origins](evidence/IR-001-checks.txt). Source `5328f4ce8bce` or source-equivalent files for each check; earlier working-tree results retained only when their exercised behavior did not change. Ubuntu 26.04 x64, Node 22.23.2, pnpm 10.28.2, frozen lockfile.
+
+| ID | Coverage / result |
+|---|---|
+| IMP-01 | New safe automatic and Quit-during-activation tests failed before implementation (2 failed, 18 passed). See IMP-02 for green. |
+| IMP-02 | Electron application/updater suites 195/195 (17 files); affected final timers/wiring/session rerun 45/45 (including five additional cases). Covers refreshed quiet/token, cross-window input listener, early Quit, stage eligibility and invalidation, one activation, confirmed/refused/unknown endings, managed/no-channel and native policy. |
+| IMP-03 | Server count/recorder and three architecture suites: 54/55 initially; two REST imports of a private type violated AFB-001. Routed the count through the public application-platform contract; targeted current-tree check passed (1/1). No test exceptions or baseline edits. Slow process and slow app permutations, identity replacement, unavailable→idle, background tasks and timeout/late result are covered. |
+| IMP-04/05 | Current Vue NotificationCenter 11/11, About 31/31. Localization boundary and literal audit passed. Rendered real switch/row in sandboxed Chrome with narrow 420×500 English and Chinese catalogs; toggled on→off and inspected copy, wrapping, spacing, contrast and action visibility. [English](evidence/IR-001-switch-row-en.png), [Chinese](evidence/IR-001-switch-row-zh.png). Controlled update store; About tested as component, not a full desktop screenshot. |
+| IMP-06 | Server and web typechecks passed project baselines (zero production errors); Electron transpile and production server build incl. sanitized built-module bootstrap passed. No dependency/build-config/contract-package changes or new cross-workspace imports that trigger a fresh release build. |
+| IMP-07 | [Built server probe](evidence/IR-001-busy-probe.py): disposable loopback node, no agent work, authenticated request 200 with {busy:0,unknown:0}; unauthenticated 401. Server exited 0; home/data/temp removed. No provider or production key. |
+| IMP-08 | Entire native Linux installation/writer tree unchanged from `960fb46ad0` (diff empty); existing native [race-test evidence](../../done/managed-desktop-icon/evidence/IMP-01-native.log) applies to those files only. No native suite/release workflow rerun. |
+
+The admission decision cannot cover work beginning *after* it, during shutdown; it is not a work lock or a promise of task resumption. Unknown evidence intentionally defers rather than interrupting the user. A positive callback/exit-code assertion is not a packaged restart.
+
+## Downstream gates
+
+After source review, API/E2E should use only isolated managed Ubuntu 24.04 and disposable signing/feed/data: two builds of this branch, signed N→N+1. Show a genuinely busy run defers installation, actual mouse/keyboard input (including another window) resets the wait, and a fresh quiet + idle result reopens N+1 **without a click**, with the running server, preserved synthetic data and automatic notification. Separately Quit while waiting: installed update, stays closed, next manual launch confirms version/outcome. Check opted-out/no-channel behavior, real tampered release refusal and rendered managed copy (including About); inspect dependent acceptance criteria as specified in requirements. No production signing, release or changes to the user's app/profile.
