@@ -5,6 +5,7 @@
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review / IR-001 complete | N/A | Pass | None |
+| CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-001 Fail (F-1, F-2) | Pass (CRR-001) | Fail | CR-001, CR-002 |
 
 ## Revision Entries
 
@@ -32,3 +33,31 @@ None.
 - Material score or classification changes: N/A (initial); Large/High preserved
 - Recommended recipient: API/E2E engineer
 - Remaining risks or uncertainty: real-runtime behavior and the rendered AC-009 view (N-8) are pending in API/E2E. Declared retry and follower-step risks remain. C-07 is cosmetic.
+
+### CRR-002: Failure-origin review of API-REV-001 (F-1, F-2)
+
+- Canonical review report updated: `/home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/tickets/in-progress/team-run-follows-definition/code-review-report.md`
+- Review entry point and round: API/E2E Failure-Origin Review, round 2
+- Review scope: `N/A` (failure-origin round)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-001); F-1 (TF-02, TF-03; AC-010), F-2 (TFU-03; AC-003)
+- Relevant solution revision IDs: SR-008
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-001
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-001)
+- Current authoritative result: Fail
+- What changed in the review result and why:
+  - F-1: `GlobalAgentRunMessageRouter.deliver` routes a run-ID message through the sender's root only when `RootTeamRun.hasAgentExecution` (current members only) is true. Leaving and former run IDs fall through to cross-run delivery and never reach the refusal in `deliverToRunId`. Classified `Local Fix`.
+  - F-2: the "Leaving" tag was designed onto `TeamMembersPanel.vue`, which no page mounts (on base or HEAD). The rendered member list is the run-tree rows, which drop a leaving member. Classified `Design Impact`.
+  - Both are source-review gaps of CRR-001, recorded in CR-001 and CR-002.
+- Supported product scenario / material-premise basis changes: none. N-8's "brief and expected" premise is reclassified within CR-002: the run-tree rows are the only rendered list, and the difference lasts the whole leaving period.
+
+#### Prior Finding Resolution
+
+None (CRR-001 had no findings).
+
+- New or remaining finding IDs: CR-001 (Local Fix, implementation), CR-002 (Design Impact, Solution Designer)
+- Material score or classification changes: Runtime Correctness 9.3 → 8.6; API/E2E Readiness 9.3 → 9.0; dead-code row Fail (`TeamMembersPanel.vue`). Large/High preserved.
+- Recommended recipient: Solution Designer (CR-001 included for the next implementation round)
+- Remaining risks or uncertainty: O-1 (AC-007 "warning logged" reading) is left to the Solution Designer.

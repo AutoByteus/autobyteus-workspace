@@ -2,6 +2,26 @@
 
 ## Review Round Meta
 
+Latest round (round 2, `CRR-002`): **API/E2E Failure-Origin Review** of API-REV-001 (Fail: F-1, F-2). The round-1 implementation review below (`CRR-001`) stays as the structural baseline. This round updates only the affected findings, score rationale, classification and latest result; it does not repeat the full audit.
+
+- Review Entry Point (round 2): `API/E2E Failure-Origin Review`
+- Current Code Review Revision ID: `CRR-002`
+- Review Scope (round 2): `N/A` (failure-origin round)
+- Trigger: API/E2E engineer, API-REV-001 Fail
+- Source under test: `4773d95936` (implementation `6b46ec5bdd`); tests `443f1c2c0f`; reports and evidence `1967262a0d`
+- Coverage Investigation Reviewed: `api-e2e-coverage-investigation.md`
+- Execution Coverage Report Reviewed: `api-e2e-execution-coverage-report.md` (Findings, AC proof, Cases)
+- API/E2E Revision Record Reviewed: `api-e2e-revision-record.md`
+- Relevant API/E2E Revision IDs: API-REV-001
+- Failing Scenario IDs: F-1 (TF-02, TF-03; AC-010), F-2 (TFU-03; AC-003, DS-007 a, N-8)
+- Exact Failing Commands / Execution Mode:
+  - F-1: `env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<wt>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts --no-watch`
+  - F-2: `node tickets/in-progress/team-run-follows-definition/probes/team-follows-ui-probe.mjs --output-dir <dir>` (built backend, nuxt dev, Chromium, scripted AGY)
+- Failure Evidence Paths: `evidence/API-TF/TF-02.json` (`byRunId`), `evidence/API-TF/TF-03.json` (`refusedByRunId`), `evidence/API-TF/API-TF-run.log`, `evidence/API-TFU/TFU-03-b-while-leaving.png`, `evidence/API-TFU/team-follows-ui-evidence.json` (`cases["TFU-03-observed"]`), `evidence/API-TFL/TFL-02.json`
+- Project testing guideline applied: root `TESTING.md` (as the coverage investigation records); no conflict
+
+Round 1 meta follows.
+
 - Review Entry Point: `Implementation Review`
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (Approved; SR-005/SR-006; REQ-001..REQ-009, AC-001..AC-010, DEC-001..DEC-009)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (IF-01..IF-20, AF-01..AF-18), through the design's and the design review's citations
@@ -187,21 +207,74 @@ No new premise drives a finding. C-01..C-08 are recorded in the gate above.
 | `9` | `No Backward-Compatibility / No Legacy Retention` | 9.6 | Clean replacement of the frozen copies; no dual paths | — | — |
 | `10` | `Cleanup Completeness` | 9.4 | Dead fields removed; docs and glossary updated | C-07 | — |
 
+## Failure-Origin Review (Round 2, CRR-002)
+
+### Scenario basis
+
+Both failing scenarios are approved behavior, triggered through the normal product path:
+- F-1 (AC-010, REQ-009): a remaining member messages a removed member with `send_message_to(target_agent_run_id)`. Run IDs reach agents through the received message's sender run ID, which is a supported entry form of the tool. The design's call-site table lists this form ("`send_message_to` by run ID … refused with the former-member text") for both leaving and former members.
+- F-2 (AC-003, DEC-002, design § Member States "Visibility" / AR-004): the user watches a running team while a busy member is removed. The design keeps the leaving member visible, tagged "Leaving", so its pending approval stays answerable.
+
+The tests drive both through real triggers (built server, package file edit, the agent's own tool call, the rendered app), not synthetic calls.
+
+### CR-001 — F-1: a run-ID message to a removed member never reaches the former-member refusal
+
+- Established: `Read`, confirming API/E2E's `Reproduced` (TF-02, TF-03). Paths read: `global-agent-run-message-router.ts:77-140`, `root-team-run.ts:225-228`, `team-run-message-delivery.ts:164-172`, `active-collaboration-root-directory.ts:139-157`.
+- Cause: the tool's run-ID path enters `GlobalAgentRunMessageRouter.deliver`. That routes through the sender's root only when `senderRoot.hasAgentExecution(target)` is true. `RootTeamRun.hasAgentExecution` checks `index.getAgent` (current members only) plus remote links. So a leaving or former member's run ID falls through to the cross-run path:
+  - a former (stopped) member gets `TARGET_AGENT_RUN_NOT_ACTIVE`;
+  - a leaving member, whose run is still active in the same root, gets `COLLABORATION_ROOT_NOT_ACTIVE`.
+
+  The refusal added in `TeamRunMessageDelivery.deliverToRunId` sits behind that gate and is never reached on this path. Nothing is delivered in either case, so DEC-002's "receives nothing" holds, but REQ-009's refusal text and code do not.
+- Invariant that should hold: every run ID the team root refuses by name (leaving and former) must route to the team root. The router's root gate and the root's refusal need the same view of "this run's agent".
+- Origin: `Implementation defect`, together with a source-review gap. The design named the effect at `team-run-message-delivery.ts:163-168`. The implementation placed the refusal there but did not trace the tool's entry path; its reproduction (IMP-04) called `deliverToRunId` directly. My CRR-001 trace also started at `deliverToRunId` and not at the tool's router entry, so this was reasonably detectable in source review and I missed it.
+- Watch-out for the fix (implementation decides the shape): `hasAgentExecution` has a second reader, `ActiveCollaborationRootDirectory.placeOf` (restart-resume placement). Widening `hasAgentExecution` to former members changes `placeOf` for them too. A narrower router question, or an explicit decision for `placeOf` (leaving: still this root's member; former: none), keeps the two readers deliberate.
+- Required action: route leaving and former run IDs of a team run to that root, so `deliverToRunId` answers with the exact former-member text and `COLLABORATION_TARGET_NOT_FOUND`. Add a test that enters through the router or the tool, not `deliverToRunId`. The reproduction is TF-02/TF-03 in `tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts`.
+- Scope: this ticket (REQ-009 / AC-010 fails without it).
+
+### CR-002 — F-2: the "Leaving" visibility rule sits on a component no page renders
+
+- Established: `Read` (`git grep` on base `a07767f4d0` and on HEAD), confirming API/E2E's `Reproduced` (TFU-03).
+- Cause:
+  - `components/workspace/team/TeamMembersPanel.vue` is imported by no page, layout or component, on the base branch and on HEAD; only its locale keys reference it. The rendered team member list is the run-tree rows (`WorkspaceStableExecutionRow.vue`, `workspace-team-member-<teamRunId>-<address>`). Those come from the run's file through `DelegationIndex`/`ownTreeOf` and drop a leaving member at the swap (N-8).
+  - The server's view snapshot does list the member with `leaving: true` (correct). The web view state keeps its context and row model (correct). But no rendered surface shows that row model's members.
+  - Design DS-007 (a) and AR-004 mapped the visibility rule onto `TeamMembersPanel.vue` and `teamExecutionTreeSelectors.ts`. N-8 treated the run-tree difference as "brief and expected". It is the only rendered list, and it lasts the whole leaving period: in TFL-02 a real Codex writer needed two approvals while leaving.
+- Consequence: under DEC-002 a removed member whose tool waits for approval finishes only when the user approves. A user who is not already focused on it has no row to reach it, so it stays leaving until the team is stopped (TFU-03; TFL-02). This contradicts the design's visibility decision, which REQ-008/AC-003 rely on.
+- Origin: `Design Impact`. The design chose a surface that does not exist in the rendered app, and the in-scope fix needs a design decision: which rendered surface shows a leaving member (for example the run-tree `team_member` rows, which would need the live leaving state, or another surface). It also needs a decision on whether N-8's "two pictures" still holds. This is not a bounded local fix.
+- Review gap: also missed in source review. I accepted DS-007 (a)'s web mapping without checking that `TeamMembersPanel.vue` is mounted. Principle 7's dead-code check in touched files would have shown it: the component is unreferenced code in a file this change touched.
+- Follow-on for the designer: `TeamMembersPanel.vue` is dead on base (no importer). This change added a tag to it. Whatever the redesign chooses, the touched dead component should be removed, or mounted if the design chooses it (Principle 7, touched file).
+
+### Observations from the API/E2E report (not failures; for the Solution Designer)
+
+- O-1: an unparsable `team-config.json` is handled by the package loader, which keeps the last good definition (load issue `usingLastGood`), so the run correctly stays as it is, but the planner logs nothing. AC-007 says "warning logged". Whether the loader's recorded load issue counts as that log is a requirement reading for the Solution Designer. No code change is required by this review.
+- O-2: a definition naming an unknown agent leaves the whole run unchanged (`TEAM_RUN_DEFINITION_NOT_FOLLOWED`) instead of skipping that member. This is consistent with REQ-007 ("invalid → the run keeps its current members"). N-3's per-member skip is about an unlaunchable member of a valid definition. No defect.
+
+### Affected round-1 checks and scores
+
+- Runtime Correctness And Behavioral Fidelity: 9.3 → **8.6**. The by-run-ID path from the tool entry (CR-001) and the leaving visibility (CR-002) were not realized.
+- API/E2E Readiness: 9.3 → **9.0**. The reproduction exercised `deliverToRunId` directly, not the router.
+- Dead-code row (Principle 7): **Fail** for `TeamMembersPanel.vue`, an unmounted component in a touched file (part of CR-002).
+- Other rows and scores: unchanged from CRR-001.
+
 ## Findings
 
-None.
+| ID | Finding | Classification | Owner |
+| --- | --- | --- | --- |
+| CR-001 | Run-ID messages to leaving or former members do not reach the former-member refusal (F-1) | `Local Fix` | Implementation engineer |
+| CR-002 | The "Leaving" visibility rule is designed onto an unmounted component; the rendered member list drops leaving members (F-2) | `Design Impact` | Solution Designer |
 
 ## Follow-ups
 
-- Follow-ups this review added: None. FU-001 is fixed in this change (docs); FU-002 and FU-003 remain.
+- Follow-ups this review added: None. FU-004 was added by API/E2E. FU-001 is fixed in this change; FU-002 and FU-003 remain.
 
 ## Classification
 
-N/A: Pass.
+- CR-001: `Local Fix` (implementation-owned, bounded).
+- CR-002: `Design Impact` (Solution Designer).
+- Combined route: the ticket returns to the Solution Designer, because a Design Impact needs a revised design before implementation resumes. CR-001 does not depend on the redesign: it can be fixed in the same implementation round, or dispatched at once if the Solution Designer prefers.
 
 ## Recommended Recipient
 
-API/E2E (primary pass rule), then an informational notice to implementation.
+The Solution Designer (`get_handoff_rules`: Design Impact), with CR-001 included for the next implementation round. After the fixes: source review again, then API/E2E reruns TF-02, TF-03 and TFU-03, plus the cases the fixes touch.
 
 ## Residual Risks
 
@@ -214,11 +287,11 @@ API/E2E (primary pass rule), then an informational notice to implementation.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
-- Review Entry Point: `Implementation Review`
-- Supported Product Scenario Gate: `Pass`
+- Review Decision: `Fail` (failure-origin round; supersedes the CRR-001 Pass)
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Supported Product Scenario Gate: `Pass` (both failing scenarios are approved behavior on the normal product path)
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.4/10 average; every category ≥ 9.3
-- Failure Origin: N/A
-- Recommended Recipient: API/E2E engineer
-- Notes: Classification Large/High is preserved. No findings.
+- Score Summary: CRR-001 scores carried, except Runtime Correctness 8.6 and API/E2E Readiness 9.0
+- Failure Origin: CR-001 implementation defect plus a source-review gap (`Local Fix`); CR-002 design gap plus a source-review gap (`Design Impact`)
+- Recommended Recipient: Solution Designer
+- Notes: Classification Large/High is preserved. Everything else API/E2E ran passed at real boundaries.
