@@ -26,10 +26,10 @@ This round (IR-002) does three things:
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `tickets/in-progress/team-run-follows-definition/implementation-revision-record.md`
-- Current implementation revision ID: `IR-003` (IR-001 baseline, IR-002 rework)
+- Current implementation revision ID: `IR-004` (IR-001 baseline, IR-002 rework, IR-003 CR-003, IR-004 CR-004)
 - Related solution revision IDs: `SR-009`, `SR-010`
 - Related architecture-review revision IDs: `ARCH-REV-003`, `ARCH-REV-004`
-- Related code-review revision IDs: `CRR-001` … `CRR-004`
+- Related code-review revision IDs: `CRR-001` … `CRR-005`
 - Related API/E2E revision IDs: `API-REV-001`, `API-REV-002`
 - Related delivery revision IDs: `N/A`
 - Triggering finding IDs: `CR-003` (IR-003); earlier `CR-001`, `CR-002` (via SR-009/SR-010), `O-1`, `O-2`, `C-07`; review notes `N-12`, `N-13`, `N-14`
@@ -37,7 +37,8 @@ This round (IR-002) does three things:
   - `19b31ad365`, `6b46ec5bdd`: IR-001.
   - `d005fa2a5b`: IR-002 code, tests, docs and web.
   - `64a4b6100c`: IR-002's handoff, evidence, and the O-2 warn-once follow-up in the planner, with its test.
-  - The IR-003 commit: the CR-003 fix, its tests, evidence IMP-18 … IMP-21 and this update.
+  - `072bdb7217`: IR-003, the CR-003 fix, its tests and evidence IMP-18 … IMP-21.
+  - The IR-004 commit: CR-004 (no behavior change). A team location's `configuredPlacement` is non-null; the unreachable refusal and `!` in `team-member-run-view-projection-service.ts` and the second node lookup (`ownNodeOf`) are removed, along with the stale test of that refusal. Evidence IMP-22.
 
 IR-003 (CR-003): a leaving or stopped former member is located with its own stored node. So its member projection, active trace, file changes and file-change entry open by run ID. In the app, its Leaving row now opens it with its pending Approve control (rendered TFU-04 with a real Codex member, IMP-21). This was a server-only change; the web needed nothing.
 
@@ -166,6 +167,7 @@ Evidence is in `tickets/in-progress/team-run-follows-definition/evidence/`. IMP-
 | IMP-16 | web specs: `WorkspaceMemberLeavingTag.spec.ts`, `services/teamExecution`, `WorkspaceDelegatedRunRow.spec.ts` (verbose) | same | Linux, Node 22 | tag on both row components, row model from the DTO, view state contexts, selectors | AC-009, DS-007 | Pass | `IMP-16-web-specs.log` | `Tests  33 passed (33)` |
 | IMP-17 | `pnpm -C autobyteus-server-ts build`, then the API/E2E TF suite (built server, scripted AGY CLI) run as a self-check | same | Linux, Node 22, temp HOME, `env -i` | the whole feature through the built server, the real `send_message_to` tool path and the package watcher | AC-001 … AC-010 (scripted runtime), CR-001/F-1 | Pass | `IMP-17-tf-e2e.log`, `IMP-17-tf/TF-*.json` | `Tests  10 passed (10)`; `TF-02.json` `byRunId` and `TF-03.json` `refusedByRunId`: `"code": "COLLABORATION_TARGET_NOT_FOUND"` with the exact text; three planner warnings, each once |
 
+| IMP-22 | `pnpm -C autobyteus-server-ts typecheck`; the same tests as IMP-19 | IR-004 | Linux, Node 22 | location and projection services after CR-004 | CR-003, CR-004 | Pass | `IMP-22-cr004-typecheck-tests.log` | `[typecheck] PASS`; `Test Files  96 passed (96)` |
 | IMP-18 | `pnpm -C autobyteus-server-ts typecheck` | IR-003 | Linux, Node 22 | all server src and tests | — | Pass | `IMP-18-server-typecheck.log` | `[typecheck] PASS` |
 | IMP-19 | `vitest run tests/unit/run-history tests/unit/agent-memory tests/unit/context-files`, the integration reproduction, `team-run-history.test.ts` | IR-003 | Linux, Node 22 | location and projection services, memory locations, history readers | CR-003, REQ-002 | Pass | `IMP-19-server-tests-cr003.log` | `Test Files  96 passed (96)`; the new `CR-003: …` cases in `team-run-former-member-location.test.ts` |
 | IMP-20 | The TF suite again (12 cases, including API/E2E's round-2 TF-11, TF-12 and TF-03's projection assertions) | IR-003 | built server, scripted AGY | the whole feature | AC-001 … AC-010, F-3 | Pass | `IMP-20-tf-e2e.log`, `IMP-20-tf/TF-*.json` | `Tests  12 passed (12)`; `TF-03.json`: `"openedProjection": "ok"`, `"openedFileChanges": "ok"` |

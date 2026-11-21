@@ -17,7 +17,8 @@ export type LocatedTeamAgentExecution = Readonly<{
   ancestorTeamRunIds: readonly string[];
   agentRunId: string;
   memberAddress: AgentTeamAddress;
-  configuredPlacement: ConfiguredAgentExecutionNode | null;
+  /** Its own stored node, found by its run ID: a member's, or a former member's (leaving or stopped). Every team agent has one. */
+  configuredPlacement: ConfiguredAgentExecutionNode;
   executionKind: AgentExecutionKind;
   /** Task agents only. */
   startedAt: string | null;

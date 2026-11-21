@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | IR-001 | Architecture Reviewer, `design-review-report.md` round 2 (ARCH-REV-002 pass) | N/A | `Initial Baseline` | SR-008, ARCH-REV-002 | Implemented; handed to Code Review |
 | IR-002 | Architecture Reviewer, `design-review-report.md` round 4 (ARCH-REV-004 pass on SR-010), after CRR-002 (API-REV-001 Fail) | CR-001 (Local Fix), CR-002 (Design Impact, resolved by SR-009/SR-010), O-1, C-07 | `Local Fix` + `Design Impact` realization | SR-009, SR-010, ARCH-REV-003, ARCH-REV-004, CRR-002, API-REV-001 | Implemented; handed to Code Review |
 | IR-003 | Code Reviewer, `code-review-report.md` CRR-004 (failure-origin review of API-REV-002) | CR-003 (F-3) | `Local Fix` | SR-010, CRR-004, API-REV-002 | Implemented; handed to Code Review |
+| IR-004 | Code Reviewer, `code-review-report.md` CRR-005 (delta review of IR-003) | CR-004 | `Local Fix` | CRR-005 | Implemented; handed to Code Review |
 
 ## Revision Entries
 
@@ -90,4 +91,24 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 - Local validation and result: `implementation-handoff.md` § Checks Run, IMP-18 … IMP-21. That includes the rendered TFU-04 with a real Codex member: the Leaving row opens it with its Approve control, the approval runs the command, then its row goes.
 - Next recipient or routing: Code Review (`/code_reviewer`).
 - Remaining limitations or risks: none new. The web needed no change.
+
+### IR-004 — One derivation of a team member's node (CR-004)
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md`, CRR-005 (targeted delta review of IR-003).
+- Triggering finding IDs: CR-004 (Principle 7, dead code in touched files; Principle 11, one derivation per fact).
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-003 (`072bdb7217`).
+- Current authoritative result: the IR-004 commit after `9b0705a8ef`.
+- Related solution, architecture-review, API/E2E and delivery revision IDs: N/A. Related code-review revision IDs: CRR-005.
+- Why this revision is recorded: IR-003 left an unreachable refusal and a second lookup of the member's node.
+- Approved behavior or requirement IDs affected: none (no behavior change).
+- Implementation delta:
+  - **Non-null placement.** `LocatedTeamAgentExecution.configuredPlacement` is non-null (`toLocation` always sets it); the Org location keeps its nullable field.
+  - **Dead code removed.** In `team-member-run-view-projection-service.ts`, `requireLocation` drops the unreachable "has no configured launch placement or recorded source" refusal, and `metadataFor` drops the `!` and reads `location.configuredPlacement`.
+  - **One lookup.** `platformAgentRunId` comes from that same node; `ownNodeOf` and its second `TeamExecutionIndex` are removed.
+  - **Stale test removed.** The projection-service test for the removed refusal is gone; a team location without a placement can no longer be built.
+- Changed files or areas: `run-history/services/team-run-execution-tree-location-service.ts` (type), `run-history/services/team-member-run-view-projection-service.ts`, `tests/unit/run-history/team-member-run-view-projection-service.test.ts`.
+- Local validation and result: IMP-22. The typecheck passes at the baseline; 96 test files pass, including the CR-003 cases.
+- Next recipient or routing: Code Review (`/code_reviewer`), then API/E2E reruns TF-03, TFU-03 and TFU-04.
+- Remaining limitations or risks: none. Two team-only optional chains outside the touched files are left as they are, harmless on a non-null value: `run-folder-discovery.ts` `teamMembers`, and the shared `TeamMemberAgentMemoryLocation.configuredPlacement` type.
 

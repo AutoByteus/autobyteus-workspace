@@ -16,7 +16,6 @@ import {
 } from "./run-file-change-projection-service.js";
 import type { RunFileChangeEntry } from "../../services/run-file-changes/run-file-change-types.js";
 import {
-  locatedExecutionSource,
   tagTeamAgentExecution,
   type LocatedTeamCollaborationAgentExecution,
 } from "../../agent-collaboration/execution/services/collaboration-execution-location-service.js";
@@ -133,23 +132,13 @@ export class TeamMemberRunViewProjectionService {
     if (!found || found.rootTeamRunId !== root) {
       throw new CollaborationMemberNotFoundError(`AgentRun '${run}' was not found in root TeamRun '${root}'.`);
     }
-    const location = tagTeamAgentExecution(found);
-    if (!locatedExecutionSource(location)) {
-      throw new CollaborationMemberNotFoundError(`AgentRun '${run}' has no configured launch placement or recorded source.`);
-    }
-    return location;
+    return tagTeamAgentExecution(found);
   }
 }
 
-/** The member's own stored node: a member's, or a former member's (leaving or stopped; CR-003). */
-const ownNodeOf = (location: LocatedTeamCollaborationAgentExecution) => {
-  const index = new TeamExecutionIndex(location.tree);
-  return (index.getAgent(location.agentRunId) ?? index.formerMemberByRunId(location.agentRunId))?.source ?? null;
-};
-
 const metadataFor = (location: LocatedTeamCollaborationAgentExecution): AgentRunMetadata => {
-  // A configured member's placement, or a delegated copy's own recorded source (by execution kind).
-  const source = locatedExecutionSource(location)!;
+  // The member's own stored node (a former member's too): its launch and its own runtime session.
+  const source = location.configuredPlacement;
   const launch = source.launchConfiguration;
   return {
     runId: location.agentRunId,
@@ -160,8 +149,7 @@ const metadataFor = (location: LocatedTeamCollaborationAgentExecution): AgentRun
     llmConfig: launch.llmConfig as Record<string, unknown> | null,
     autoExecuteTools: launch.autoExecuteTools,
     runtimeKind: launch.runtimeKind as AgentRunMetadata["runtimeKind"],
-    // The execution's own runtime session: a copy never shows its placement's.
-    platformAgentRunId: ownNodeOf(location)?.platformAgentRunId ?? null,
+    platformAgentRunId: source.platformAgentRunId ?? null,
   };
 };
 
