@@ -113,6 +113,27 @@ describe("AgentTeamStreamHandler current root stream", () => {
     expect(sent(harness.connection).map((message) => message.type).slice(0, 2)).toEqual(["CONNECTED", "TEAM_EXECUTION_VIEW_SNAPSHOT"]);
   });
 
+  it("DS-007 a: a membership change while live sends an in-band snapshot (its leaving member marked) in the session's order, and no frame of its own", async () => {
+    const harness = createHarness();
+    const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
+    sessions.push({ handler: harness.handler, id: sessionId! });
+    const leaving = { ...tree.rootTeam.members[0]!, address: assertAgentTeamAddress("/old_writer"), agentRunId: "old-writer-run" };
+    harness.root.openViewSnapshotConnection.mockImplementationOnce(async (atBase: () => unknown, read: (own: unknown, rows: unknown) => unknown) => ({
+      snapshot: await read({ tree, messages, inputStates: [], statuses: [], leavingMembers: [leaving] }, atBase()),
+      baseChangeSequence: 32, liveSequenceId: "live-team-1", lastMessageChangeSequence: 0,
+      subscribe: vi.fn((listener: (event: unknown) => void) => harness.stream.subscribe(listener as never)), close: vi.fn(),
+    }));
+    const before = sent(harness.connection).length;
+    harness.stream.publish({ eventSourceType: TeamRunEventSourceType.MEMBERSHIP } as never);
+    await vi.waitFor(() => expect(harness.root.openViewSnapshotConnection).toHaveBeenCalledTimes(2));
+    await vi.waitFor(() => expect(sent(harness.connection).length).toBeGreaterThanOrEqual(before + 3));
+    const after = sent(harness.connection).slice(before);
+    expect(after.map((message) => message.type)).toEqual(["TEAM_EXECUTION_VIEW_SNAPSHOT", "RUN_TREE_SNAPSHOT", "TEAM_RUN_LIFECYCLE"]);
+    expect(after[0]).toMatchObject({ payload: { base_change_sequence: 32, execution_tree: { root_team: { members: [
+      { agent_run_id: "agent-run-product-manager" }, { agent_run_id: "old-writer-run", address: "/old_writer", leaving: true }] } } } });
+    expect((after[0]!.payload.execution_tree as { root_team: { members: Array<Record<string, unknown>> } }).root_team.members[0]).not.toHaveProperty("leaving");
+  });
+
   it("connects with one atomic snapshot (tree, statuses) before lifecycle changes", async () => {
     const harness = createHarness();
     const sessionId = await harness.handler.connect(harness.connection, "team-run-root");

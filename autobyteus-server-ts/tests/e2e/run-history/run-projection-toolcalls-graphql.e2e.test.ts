@@ -1,4 +1,5 @@
 import { testViewStreams } from "../../helpers/view-streams.js";
+import { teamMembershipTestCollaborators } from "../../helpers/team-membership-test-collaborators.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import "reflect-metadata";
 import { RootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
@@ -198,7 +199,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
     try {
       AgentTeamRunManager.getInstance();
     } catch {
-      ownedAgentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+      ownedAgentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
         memoryDir,
         flatTeamExecutionFactory: {} as never,
         memberExecutionContextBuilder: {} as never,

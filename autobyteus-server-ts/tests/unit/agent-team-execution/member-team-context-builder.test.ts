@@ -1,4 +1,5 @@
 import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
+import { TeamRunMembership } from "../../../src/agent-team-execution/domain/team-run-membership.js";
 import { describe, expect, it, vi } from "vitest";
 import {
   createRootExecutionPhysicalScope,
@@ -30,17 +31,8 @@ const buildContext = (config: TeamRunConfig, agents: readonly TeamRunAgentNode[]
   }),
   teamRunId: config.rootTeam.teamRunId,
   teamBackendKind: TeamBackendKind.MIXED,
-  teamNode: config.rootTeam,
-  handoffs: config.handoffs,
-  runtimeContext: new FlatTeamExecutionContext({
-    configuredMemberActivationMode: "fresh",
-    memberContexts: agents.map((agent) => new FlatAgentExecutionContext({
-      address: agent.address,
-      agentRunId: agent.agentRunId,
-      runtimeKind: agent.runtimeKind,
-      platformAgentRunId: agent.platformAgentRunId,
-    })),
-  }),
+  membership: new TeamRunMembership({ teamNode: config.rootTeam, handoffs: config.handoffs }),
+  runtimeContext: new FlatTeamExecutionContext({ configuredMemberActivationMode: "fresh" }),
 });
 
 const acceptedDelivery = vi.fn(async () => ({ accepted: true }));
@@ -76,11 +68,11 @@ describe("MemberExecutionContextBuilder", () => {
       memberAddress: "/coordinator",
       agentRunId: "run-coordinator",
     });
-    expect(result.collaboration.outgoingHandoffs).toEqual([handoffs[0]]);
+    expect(result.collaboration.outgoingHandoffs()).toEqual([handoffs[0]]);
     expect(result.tasks.root).toEqual({ rootSubjectKind: "agent_team", rootRunId: "team-1" });
     expect(Object.keys(result.identity).sort()).toEqual(["agentRunId", "memberAddress", "root"]);
     expect(Object.isFrozen(result.identity)).toBe(true);
-    expect(Object.isFrozen(result.collaboration.outgoingHandoffs)).toBe(true);
+    expect(Object.isFrozen(result.collaboration.outgoingHandoffs())).toBe(true);
   });
 
   it("delivers through the Team-private adapter with the exact sender identity", async () => {
@@ -135,7 +127,7 @@ describe("MemberExecutionContextBuilder", () => {
       taskCapability: testMemberTaskCapability("team-solo"),
     });
 
-    expect(result.collaboration.outgoingHandoffs).toEqual([]);
+    expect(result.collaboration.outgoingHandoffs()).toEqual([]);
     await result.collaboration.deliverLogicalMessage({ recipientAddress: "/solo", content: "Continue." });
     expect(deliver).toHaveBeenCalledOnce();
   });

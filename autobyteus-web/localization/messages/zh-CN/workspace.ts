@@ -238,6 +238,8 @@ const messages = {
     "显示全部 {{count}} 个文件",
   "workspace.components.workspace.team.AgentTeamEventMonitor.no_activity_yet":
     "还没有活动。",
+  "workspace.components.workspace.team.TeamMembersPanel.leaving":
+    "正在离开：已从团队移除，正在完成当前回合",
   "workspace.components.workspace.team.TeamMembersPanel.team_members":
     "团队名册",
   "workspace.components.workspace.team.TeamMembersPanel.no_active_team_members":

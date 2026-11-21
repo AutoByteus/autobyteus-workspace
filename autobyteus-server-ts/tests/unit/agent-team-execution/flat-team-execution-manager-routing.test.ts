@@ -1,4 +1,5 @@
 import { testActivationManager } from "../../fixtures/agent-run-preparation-fixtures.js";
+import { TeamRunMembership } from "../../../src/agent-team-execution/domain/team-run-membership.js";
 import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { FlatTeamExecutionManager } from "../../../src/agent-team-execution/local/flat-team-execution-manager.js";
@@ -14,6 +15,8 @@ import {
   testTeamRunConfig,
 } from "../../fixtures/current-team-run-fixtures.js";
 import { OFFERED_MODEL_EXECUTION_FACTORY } from "../../helpers/explicit-host-collaborators.js";
+import { buildInitialTeamRunExecutionTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
+import { planTeamMembershipChange } from "../../../src/agent-team-execution/membership/team-membership-change.js";
 
 const teamRunId = "team-focused-command-1";
 const solutionDesignerAddress = address("/solution_designer");
@@ -49,6 +52,11 @@ const createFakeAgentRun = (runId: string, statusOf: (runId: string) => string =
       cancel: vi.fn(),
       commit: vi.fn(() => ({ finish: vi.fn(async () => ({ accepted: true as const })) })),
     })),
+    /** Quiet unless its status is running. */
+    tryPrepareTerminationIfQuiescent: vi.fn(async () => statusOf(runId) === "running" ? null : {
+      cancel: vi.fn(),
+      commit: vi.fn(() => ({ finish: vi.fn(async () => ({ accepted: true as const })) })),
+    }),
   };
 };
 
@@ -73,17 +81,8 @@ const createMixedManager = () => {
     }),
     teamRunId,
     teamBackendKind: TeamBackendKind.MIXED,
-    teamNode: config.rootTeam,
-    handoffs: config.handoffs,
-    runtimeContext: new FlatTeamExecutionContext({
-      memberContexts: [solutionNode, reviewerNode].map((node) => new FlatAgentExecutionContext({
-        address: node.address,
-        agentRunId: node.agentRunId,
-        runtimeKind: node.runtimeKind,
-        platformAgentRunId: null,
-      })),
-      configuredMemberActivationMode: "fresh",
-    }),
+    membership: new TeamRunMembership({ teamNode: config.rootTeam, handoffs: config.handoffs }),
+    runtimeContext: new FlatTeamExecutionContext({ configuredMemberActivationMode: "fresh" }),
   });
   const runs = new Map<string, ReturnType<typeof createFakeAgentRun>>();
   const statuses = new Map<string, string>();
@@ -99,7 +98,8 @@ const createMixedManager = () => {
     };
   });
   const manager = new FlatTeamExecutionManager(context, { executionFactory: OFFERED_MODEL_EXECUTION_FACTORY,
-    agentRunManager: testActivationManager({ newPreparation: prepareNewAgentRun }) as never,
+    agentRunManager: testActivationManager({ newPreparation: prepareNewAgentRun,
+      tryPrepareAgentRunTerminationIfQuiescent: (run: ReturnType<typeof createFakeAgentRun>) => run.tryPrepareTerminationIfQuiescent() }) as never,
     memoryLocator: {
       getMemoryDir: (_placement: unknown, agentRunId: string) => `/tmp/team-manager-member-interrupt/${agentRunId}`,
     } as never,
@@ -116,7 +116,7 @@ const createMixedManager = () => {
     },
     workspaceManager: { ensureWorkspaceByRootPath: vi.fn() },
   });
-  return { manager, runs, statuses, reviewerNode };
+  return { manager, runs, statuses, reviewerNode, context, config };
 };
 
 describe("FlatTeamExecutionManager exact direct AgentRun routing", () => {
@@ -143,6 +143,46 @@ describe("FlatTeamExecutionManager exact direct AgentRun routing", () => {
     expect(runs.get(codeReviewerRunId)?.approveToolInvocation).toHaveBeenCalledWith("inv-1", true, "approved");
     expect(runs.get(codeReviewerRunId)?.interrupt).toHaveBeenCalledOnce();
     expect(runs.has(solutionDesignerRunId)).toBe(false);
+  });
+
+  it("DS-004: a removed member mid-turn keeps its own approvals and interrupt, takes no new input, and is stopped and released once quiet", async () => {
+    const { manager, runs, statuses, context, config } = createMixedManager();
+    await manager.executeDirectAgentCommand(codeReviewerRunId, { kind: "post_message", message: new AgentInputUserMessage("review") });
+    statuses.set(codeReviewerRunId, "running");
+    const tree = buildInitialTeamRunExecutionTree({ config, teamDefinitionName: "Team", createdAt: "2026-11-21T00:00:00.000Z" });
+    const removed = planTeamMembershipChange(tree, { teamDefinitionId: tree.rootTeam.teamDefinitionId, coordinatorAddress: solutionDesignerAddress,
+      members: [{ address: solutionDesignerAddress, agentDefinitionId: tree.rootTeam.members[0]!.agentDefinitionId }], handoffs: [], newMembers: new Map() })!;
+    context.membership.replace(removed.tree);
+    const released = vi.fn();
+    manager.applyMembership([codeReviewerRunId], released);
+    await vi.waitFor(() => expect(context.membership.stateOf(codeReviewerRunId)).toBe("leaving"));
+    expect(released).not.toHaveBeenCalled();
+    await expect(manager.executeDirectAgentCommand(codeReviewerRunId, { kind: "approve_tool", invocationId: "inv-2", approved: false, reason: "no" }))
+      .resolves.toEqual({ accepted: true });
+    await expect(manager.executeDirectAgentCommand(codeReviewerRunId, { kind: "interrupt" })).resolves.toEqual({ accepted: true });
+    expect(runs.get(codeReviewerRunId)?.approveToolInvocation).toHaveBeenCalledWith("inv-2", false, "no");
+    expect(manager.getLeafAgentStatusSnapshots().map((snapshot) => snapshot.execution.agentRunId)).toContain(codeReviewerRunId);
+
+    // Its turn ends: its next event retires it.
+    statuses.set(codeReviewerRunId, "idle");
+    runs.get(codeReviewerRunId)!.emitStatus();
+    await vi.waitFor(() => expect(released).toHaveBeenCalledOnce());
+    expect(context.membership.stateOf(codeReviewerRunId)).toBeNull();
+    expect(runs.get(codeReviewerRunId)!.tryPrepareTerminationIfQuiescent).toHaveBeenCalled();
+    await expect(manager.executeDirectAgentCommand(codeReviewerRunId, { kind: "interrupt" })).resolves.toMatchObject({ accepted: false });
+    expect(manager.getLeafAgentStatusSnapshots().map((snapshot) => snapshot.execution.agentRunId)).not.toContain(codeReviewerRunId);
+  });
+
+  it("DS-004: a removed member that never started is released at once", async () => {
+    const { manager, context, config } = createMixedManager();
+    const tree = buildInitialTeamRunExecutionTree({ config, teamDefinitionName: "Team", createdAt: "2026-11-21T00:00:00.000Z" });
+    const removed = planTeamMembershipChange(tree, { teamDefinitionId: tree.rootTeam.teamDefinitionId, coordinatorAddress: solutionDesignerAddress,
+      members: [{ address: solutionDesignerAddress, agentDefinitionId: tree.rootTeam.members[0]!.agentDefinitionId }], handoffs: [], newMembers: new Map() })!;
+    context.membership.replace(removed.tree);
+    const released = vi.fn();
+    manager.applyMembership([codeReviewerRunId], released);
+    await vi.waitFor(() => expect(released).toHaveBeenCalledOnce());
+    expect(context.membership.stateOf(codeReviewerRunId)).toBeNull();
   });
 
   it("rejects an unknown AgentRun ID without falling back to a configured peer", async () => {

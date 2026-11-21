@@ -60,7 +60,7 @@ export type AgentTeamRunManagerOptions = Readonly<{
   activeRootDirectory?: ActiveCollaborationRootDirectory;
   modelSelectionValidator: RunModelSelectionValidator;
   /** Which runs follow their Team definition, and how (a stopped run is followed before it is restored, DS-002). */
-  membershipPlanner: TeamMembershipPlanner;
+  membershipPlanner: Pick<TeamMembershipPlanner, "viewFor" | "followStored">;
   /** Where the members' notices of a membership change wait (DS-006). */
   changeNotices: TeamChangeNoticeSource;
 }>;
@@ -80,7 +80,7 @@ export class AgentTeamRunManager {
   private readonly viewStreams: RunViewStreams;
   private readonly modelSelectionValidator: RunModelSelectionValidator;
   private readonly activeRootDirectory: ActiveCollaborationRootDirectory;
-  private readonly membershipPlanner: TeamMembershipPlanner;
+  private readonly membershipPlanner: Pick<TeamMembershipPlanner, "viewFor" | "followStored">;
   private readonly changeNotices: TeamChangeNoticeSource;
   private readonly managedRoots = new Map<string, RootTeamRun>();
   private readonly rootTransitionLanes = new Map<string, Promise<void>>();

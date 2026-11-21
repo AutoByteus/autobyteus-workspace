@@ -38,7 +38,7 @@ describe("DelegatedRunStarter (local delegation)", () => {
       children: [testAgentNode("/lead", { agentRunId: "lead_1" }), testAgentNode("/writer", { agentRunId: "writer_1" })] });
     const createTeamRun = vi.fn(async () => ({ teamRunId: "product_team_e03d", getExecutionTreeSnapshot: () => tree }));
     const starter = new DelegatedRunStarter({ agentRuns: {} as never, teamRuns: { createTeamRun, terminateTeamRun: vi.fn() } as never });
-    await expect(starter.startTeam({ source: team as never, address: "/product_team" as never, delegatedFrom }))
+    await expect(starter.startTeam({ source: team as never, address: "/product_team" as never, delegatedFrom, copiedFrom: "team_definition" }))
       .resolves.toMatchObject({ teamRunId: "product_team_e03d", coordinatorAgentRunId: "lead_1" });
     const request = (createTeamRun.mock.calls[0] as unknown[])[0] as { teamConfigs: unknown[]; memberConfigs: Record<string, unknown>[] };
     expect(request).toMatchObject({ teamConfigs: [{ teamAddress: "/", launchSource: { origin: "team_default", fallbacks: [] } }],
@@ -58,7 +58,7 @@ describe("DelegatedRunStarter (local delegation)", () => {
       children: [testAgentNode("/lead", { agentRunId: "lead_1" }), testAgentNode("/dev", { agentRunId: "dev_1" })] });
     const createTeamRun = vi.fn(async () => ({ teamRunId: "dev_team_1", getExecutionTreeSnapshot: () => tree }));
     const starter = new DelegatedRunStarter({ agentRuns: {} as never, teamRuns: { createTeamRun, terminateTeamRun: vi.fn() } as never });
-    await starter.startTeam({ source: team as never, address: "/dev_team" as never, delegatedFrom });
+    await starter.startTeam({ source: team as never, address: "/dev_team" as never, delegatedFrom, copiedFrom: "team_definition" });
     expect((createTeamRun.mock.calls[0] as unknown[])[0]).toMatchObject({ delegatedFrom, handoffs: [
       { from: "/lead", to: "/dev", rules: ["When the design is ready."] },
       { from: "/lead", to: "/ceo_agent", rules: ["When the release is ready for sign-off."] },

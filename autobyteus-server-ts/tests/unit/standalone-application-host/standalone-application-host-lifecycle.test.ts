@@ -342,6 +342,9 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
       platformInputNotices: expect.objectContaining({
         takePreface: expect.any(Function), runPublished: expect.any(Function), runReleased: expect.any(Function),
       }),
+      // A live Team run follows its definition: the definition changes it listens to and the notices it records.
+      definitionChanges: mocks.hostDefinitionServices.agentDefinitionChanges,
+      teamChangeNotices: expect.objectContaining({ recordChange: expect.any(Function), takePreface: expect.any(Function) }),
     });
     // SR-052: the application host composes the same steps 4–8 with its run services; it has no peer nodes.
     expect(composeCollaboration).toHaveBeenCalledWith(expect.objectContaining({ memoryDir: "/tmp/standalone-lifecycle/memory",

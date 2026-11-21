@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { TeamRunMembership } from "../../../src/agent-team-execution/domain/team-run-membership.js";
 import {
   createChildTeamRunPhysicalScope,
   createRootTeamRunPhysicalScope,
@@ -57,7 +58,7 @@ describe("TeamRunPhysicalScope", () => {
       }),
       teamRunId: childNode.teamRunId,
       teamBackendKind: TeamBackendKind.MIXED,
-      teamNode: childNode,
+      membership: new TeamRunMembership({ teamNode: childNode, handoffs: [] }),
       runtimeContext: null,
     })).toThrow("Physical scope contains TeamRun 'root-run', not 'child-run'");
     expect(() => new TeamRunContext({
@@ -67,7 +68,7 @@ describe("TeamRunPhysicalScope", () => {
       }),
       teamRunId: childNode.teamRunId,
       teamBackendKind: TeamBackendKind.MIXED,
-      teamNode: config.rootTeam,
+      membership: new TeamRunMembership({ teamNode: config.rootTeam, handoffs: [] }),
       runtimeContext: null,
     })).toThrow("does not own TeamRun");
   });

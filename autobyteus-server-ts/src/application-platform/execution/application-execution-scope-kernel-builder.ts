@@ -1,8 +1,6 @@
 import { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
-import { TeamMembershipPlanner } from "../../agent-team-execution/membership/team-membership-planner.js";
+import { NO_TEAM_DEFINITION_FOLLOWING } from "../../agent-team-execution/membership/team-membership-planner.js";
 import { TeamChangeNoticeSource } from "../../agent-team-execution/membership/team-change-notice-source.js";
-import { LaunchUsabilityCheck } from "../../launch-preferences/launch-usability-check.js";
-import { getRuntimeAvailabilityService } from "../../runtime-management/runtime-availability-service.js";
 import { ConfiguredAgentExecutionFactory } from "../../agent-collaboration/execution/backends/configured-agent-execution-factory.js";
 import { APPLICATION_HOST_STANDALONE_RUNS } from "../../agent-execution/services/standalone-run-ports.js";
 import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
@@ -192,9 +190,7 @@ export const buildApplicationExecutionScopeKernel = (
       executionTreeStore: new TeamRunExecutionTreeStore(),
       communicationStore: new TeamCommunicationStore(),
       // An application's team runs are bound to it (`applicationBinding`): they do not follow their Team definition.
-      membershipPlanner: new TeamMembershipPlanner({ teamDefinitions: input.agentTeamDefinitionService, agentDefinitions: input.agentDefinitionService,
-        agentRunIds: agentRunIdentityAllocator,
-        usability: new LaunchUsabilityCheck({ availability: getRuntimeAvailabilityService(), validator: input.modelSelectionValidator }) }),
+      membershipPlanner: NO_TEAM_DEFINITION_FOLLOWING,
       changeNotices: new TeamChangeNoticeSource(),
     });
     const { agentRunService, teamRunService } = buildRunServices(input, {

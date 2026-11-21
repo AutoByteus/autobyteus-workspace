@@ -34,7 +34,7 @@ const STANDING: Record<string, RunStanding> = {
 const partsOf = (standing: RunStanding): RunParts => {
   const entries = [...standing.agents];
   const mounted = entries.filter(([address, id]) => entries.some(([other, otherId]) => otherId === id && other.startsWith(`${address}/`)));
-  return { agents: entries.filter((entry) => !mounted.includes(entry)).map(([address, agentRunId]) => ({ agentRunId, address, agentDefinitionId: null })),
+  return { agents: entries.filter((entry) => !mounted.includes(entry)).map(([address, agentRunId]) => ({ agentRunId, address, agentDefinitionId: null })), formerAgents: [],
     coordinatorAddress: standing.coordinatorAddress, mountedTeams: mounted.map(([address, coordinatorAgentRunId]) => ({ address, coordinatorAgentRunId })) };
 };
 const sender = (root: RootExecutionIdentity, memberAddress: string, agentRunId: string) =>

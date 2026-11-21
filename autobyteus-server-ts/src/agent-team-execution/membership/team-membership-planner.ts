@@ -103,6 +103,12 @@ export class TeamMembershipPlanner {
   }
 }
 
+/** The planner of a scope whose Team runs never follow their definition (an application's runs are bound to it). */
+export const NO_TEAM_DEFINITION_FOLLOWING: Pick<TeamMembershipPlanner, "viewFor" | "followStored"> = Object.freeze({
+  viewFor: async () => null,
+  followStored: async () => null,
+});
+
 /** The change, or none with a warning when the definition cannot be taken (the run stays as it is). */
 export const planOrWarn = (tree: TeamRunExecutionTreeSnapshot, view: TeamDefinitionView): TeamMembershipChange | null => {
   try {

@@ -22,6 +22,7 @@ export const noDelegations = (): DelegationIndex => {
   peerChildrenOf: () => [],
   peerRunNamed: () => null,
   runDeleted: () => undefined,
+  runPartsChanged: () => undefined,
   skipUnstored: async () => undefined,
   childrenOf: () => [],
   subtreeOf: () => [],

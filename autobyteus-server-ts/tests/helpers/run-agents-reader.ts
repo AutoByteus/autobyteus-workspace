@@ -9,7 +9,7 @@ export const readerOfAgents = (agentsOf: (run: RootExecutionIdentity) => Promise
   isStored: async () => true,
   partsOf: async (run) => {
     const agents = await agentsOf(run);
-    return agents ? { agents, coordinatorAddress: null, mountedTeams: [] } : null;
+    return agents ? { agents, formerAgents: [], coordinatorAddress: null, mountedTeams: [] } : null;
   },
 });
 

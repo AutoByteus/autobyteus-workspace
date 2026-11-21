@@ -45,10 +45,11 @@ export class FlatTeamExecutionManager {
       activityInspector: options.activityInspector,
       workspaceManager: options.workspaceManager,
       executionFactory: options.executionFactory,
-      // A leaving member is stopped at its next quiet moment: each of its events is a chance.
+      // A leaving member is stopped at its next quiet moment: each of its events is a chance, checked once the event is
+      // fully applied (its handle settles its status after publishing it).
       callbacks: Object.freeze({ ...options.callbacks, publishAgentEvent: (identity, event) => {
         options.callbacks.publishAgentEvent(identity, event);
-        if (this.leavingWatch.has(identity.agentRunId)) void this.tryRetire(identity.agentRunId);
+        if (this.leavingWatch.has(identity.agentRunId)) queueMicrotask(() => { void this.tryRetire(identity.agentRunId); });
       } }) as FlatTeamExecutionManagerOptions["callbacks"],
     };
     this.configured = new ConfiguredAgentExecutionRegistry({

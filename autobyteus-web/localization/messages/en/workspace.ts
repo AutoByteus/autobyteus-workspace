@@ -241,6 +241,8 @@ const messages = {
     "No activity yet.",
   "workspace.components.workspace.team.TeamMembersPanel.team_members":
     "Team roster",
+  "workspace.components.workspace.team.TeamMembersPanel.leaving":
+    "Leaving: removed from the team, finishing its turn",
   "workspace.components.workspace.team.TeamMembersPanel.no_active_team_members":
     "No team roster members.",
   "workspace.components.workspace.team.TeamMembersPanel.roster_non_execution_note":

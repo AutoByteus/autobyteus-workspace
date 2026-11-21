@@ -39,7 +39,7 @@ describe("story 5.2: a Team run's view in base's shapes (rule 3)", () => {
   const tree = testExecutionTree({ rootTeamRunId: "team", coordinatorAddress: "/coordinator", children: [testAgentNode("/coordinator", { agentRunId: "coordinator" })] });
 
   it("the snapshot: its own parts", () => {
-    const snapshot = projectTeamExecutionViewSnapshot("team", { snapshot: { tree, statuses: [], inputStates: [] }, baseChangeSequence: 0,
+    const snapshot = projectTeamExecutionViewSnapshot("team", { snapshot: { tree, statuses: [], inputStates: [], leavingMembers: [] }, baseChangeSequence: 0,
       liveSequenceId: "live", lastMessageChangeSequence: 0 });
     same(snapshot, team.snapshot);
   });

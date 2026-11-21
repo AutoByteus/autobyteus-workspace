@@ -2,8 +2,8 @@
 
 ## Scope
 
-Manages standalone flat Team runs, immutable direct-Agent topology,
-runtime-specific Agent members, exact execution addressing, task delegation,
+Manages standalone flat Team runs, their direct-Agent membership (which follows
+the Team definition while the run exists), runtime-specific Agent members, exact execution addressing, task delegation,
 restore, and Team event projection through one server-owned boundary. Persistent
 multi-Team composition belongs to [Agent Organization](./agent_orgs.md), not to
 the Team runtime.
@@ -152,7 +152,7 @@ to the next restore; restore-first returns `RUN_ACTIVE` without writing.
 
 Each patch targets the root Team address `/` or one exact direct configured
 Agent address. `team-run-selection-mutator.ts` resolves that address in the
-immutable stored topology and replaces only the scope's agent runtime
+stored tree and replaces only the scope's agent runtime
 (`runtimeKind`), `llmModelIdentifier` and `llmConfig` in `defaultLaunchConfiguration` or
 `launchConfiguration`. The three fields are required; `llmConfig` may explicitly be
 null. It cannot change workspace, automatic-tool policy, concrete run IDs, task
@@ -607,7 +607,9 @@ Each Agent receives one `MemberTeamContext` containing:
 
 - exact `TeamMemberExecutionIdentity {rootTeamRunId,memberAddress,agentRunId}`
   for rooted execution identity and logical collaboration placement;
-- only that Agent's immutable outgoing compiled handoff snapshot;
+- that Agent's outgoing handoff rules, read live from the run's membership
+  (`MemberCollaborationContext.outgoingHandoffs()`; see
+  [Membership Follows The Definition](#membership-follows-the-definition));
 - optional Team instruction; and
 - active delivery/tool service bindings.
 
@@ -649,8 +651,9 @@ observation does not publish a duplicate Team Communication or member-input reco
 
 Successful logical messaging returns that existing Agent or AgentTeam
 coordinator run as flat `target_agent_run_id`; rejection returns null identity.
-A run ID never creates an execution; a first message to an available catalog
-address brings that one instance in (see
+A run ID never creates an execution, and a message never starts an agent: an
+address that is not a placement is refused with guidance to use `delegate_task`
+(see
 [Agent Communication](./agent_communication.md#address-resolution-order-messagerecipientresolution)).
 A successful `delegate_task` already
 starts the child and delivers the complete assignment to its fresh ingress.
@@ -712,13 +715,85 @@ pipeline passes, or projection writes.
 A reconnect snapshot remains the recovery authority; the run's children (the runs
 it delegated to, from their Task entries) are rows of that snapshot.
 
+## Membership Follows The Definition
+
+A Team run follows its Team definition while it exists: when the definition's
+members, coordinator or handoff rules change, the run changes with it, live or
+at its next restore. Which runs follow (D-SCOPE,
+`membership/team-membership-planner.ts` `followsTeamDefinition`): a standalone
+Team run, and a Team run copied from a Team definition (`copiedFrom:
+"team_definition"`, local or started by a peer; a copy recorded before this field
+existed follows too). An application-bound run (`applicationBinding`) and a copy
+of a configured placement (`copiedFrom: "configured_placement"`) keep their
+members. A Team mounted in an Org run keeps its Org's stored members.
+
+- **Trigger.** `TeamDefinitionChangeListener` subscribes to the host's
+  `AgentDefinitionChangeSignal` (package reload, app save, personal setting) and
+  follows every live run, one after another, each contained: a run that fails is
+  logged (`TEAM_RUN_DEFINITION_NOT_FOLLOWED`) and the others continue. Changes
+  during a pass ask for one more pass.
+- **Plan.** `TeamMembershipPlanner.viewFor` reads the definition at the run's
+  own root and compiles its rules (`own_team`, or `delegated_team` for a
+  copy). The pure `planTeamMembershipChange` compares members by address and
+  agent definition: a member the definition no longer has, or with another
+  agent at its address (a swap), leaves; a former member at the same address
+  with the same agent comes back with its run ID; any other definition member is
+  new, launched with its agent's default, else the run's own launch, both
+  checked (a member that cannot be launched is not added; the next change tries
+  again, `TEAM_MEMBER_NOT_ADDED`). A rule from or to an address that is not a
+  member is left out. A definition without a usable coordinator leaves the run
+  as it is.
+- **Commit.** `TeamMembershipCommitter` (inside `RootTeamRun`) plans again
+  under the run's persistence lock, writes the tree once, then swaps tree, index
+  and `TeamRunMembership` together (`replaceTree`). Then, in order: the removed
+  members leave (`TeamRun.followMembership`), each remaining member's notice is
+  recorded, the run-tree rows are read again (`DelegationIndex.runPartsChanged`)
+  and the run's view stream gets `TEAM_MEMBERSHIP_CHANGED_EVENT`. A durable write
+  that cannot be applied live stops the run (fail-stop). An unchanged
+  definition writes nothing and publishes nothing.
+- **Membership.** `TeamRunMembership` is the one in-memory view: current
+  members (launch nodes), coordinator, handoff rules, leaving members and each
+  member's runtime context. A retained member keeps its context object; a new
+  member gets one; a member that comes back resumes its conversation.
+- **Leaving.** A removed member that is mid-turn finishes it: its own
+  approvals, denials and interrupt still work (`getAgentForOwnCommand`) and the
+  messages it sends are delivered (`maySend`), but it receives nothing
+  (`isCurrentAgent`). `FlatTeamExecutionManager` stops it once it is quiet and
+  releases it, then the view is told again. A swap at the same address starts
+  the new member while the old one finishes.
+- **Former members.** A removed member is kept in the tree's
+  `rootTeam.formerMembers` with its run ID and history (it stays in the run's
+  history and run-tree rows); it is not addressable. A message to it, by
+  address (both resolution steps) or by run ID, is refused with
+  `COLLABORATION_TARGET_NOT_FOUND` and the text `<name> (<address>) is no longer
+  a member of your team: it was removed from the team definition. Call
+  get_handoff_rules for your current handoff rules.`
+- **Notices.** `TeamChangeNoticeSource` (a platform notice source) gives each
+  remaining member one notice at its next input, stating the net change since
+  its last delivered notice: `Your team changed: its definition was updated.`,
+  one `Joined: <name> at <address>.` or `Left: <name> (<address>); messages to it
+  are no longer delivered.` line per member, and whether its own rules changed
+  (`Your handoff rules changed; call get_handoff_rules to read them.` or `Your
+  handoff rules are unchanged.`). A member that joined hears nothing.
+- **Views.** An open Team view (`TeamViewSession`) re-enters its live mode on
+  the membership event, which sends an in-band `TEAM_EXECUTION_VIEW_SNAPSHOT`;
+  its members are the current then the leaving ones (`leaving: true`), and the
+  web adds, keeps and drops member rows and contexts from it and tags a leaving
+  member "Leaving".
+- **Restore.** `AgentTeamRunManager` restores a following run by planning its
+  stored tree against the definition (`followStored`), writing the change, then
+  materializing; once registered, the change's effects run and the run follows
+  the definition again live.
+
 ## Restore And Persistence
 
-- `team_run_execution_tree.json` is the canonical immutable runtime tree.
+- `team_run_execution_tree.json` is the canonical runtime tree.
   Its single root Team stores a complete `defaultLaunchConfiguration`; every
   direct configured Agent stores a complete `launchConfiguration`.
-- Stored handoffs are the immutable launch-time compiled snapshot. Restore does
-  not recompile current definition files.
+- Stored handoffs are the rules compiled from the Team definition, as the run
+  last followed it. A run that follows its definition (see
+  [Membership Follows The Definition](#membership-follows-the-definition)) is
+  brought up to date before it is restored; any other run keeps its stored rules.
 - Stored concrete AgentRun/TeamRun IDs and provider resume IDs are data; public
   new-launch input cannot supply them.
 - There are no persistent configured child TeamRuns. Delegated children are
@@ -757,7 +832,11 @@ On disk a team run's tree holds its own parts only (autobyteus-461, CM-8): no li
 the runs it delegated to, local or on a peer (those are their Task entries), and an
 older file's `taskExecutions` list is read as an unknown field and never written. A
 delegated team run's tree is an ordinary team tree rooted at `/` with its
-`delegatedFrom` and `rootTeam.defaultLaunchSource`. `TeamRunExecutionTreeStore` has
+`delegatedFrom`, `copiedFrom` (what it was copied from, written once) and
+`rootTeam.defaultLaunchSource`. Any team tree may hold `rootTeam.formerMembers`
+(members removed from its definition; absent means none; their run IDs are unique
+with the members', an address may repeat). Both fields are optional: a tree
+without them is read as before, with no migration. `TeamRunExecutionTreeStore` has
 `read`, `readSync` and `write` only. A message between the team run's parts is stored
 once in its own log; a message with another run in both runs' logs; the package
 validator requires one agent of each message to be an agent of the team run.

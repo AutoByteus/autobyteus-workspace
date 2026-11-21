@@ -21,10 +21,10 @@ describe("StandaloneRunAgentContextBuilder: get_handoff_rules (CR-461-114)", () 
   it("a copy in a tree that starts at a Team or Org run has the tool, with its own rules (none for a catalog copy)", async () => {
     const catalog = await builder({ role: "task_agent", placement: null, teamScoped: true }).build(metadata);
     expect(resolveRuntimeAgentToolExposure(null, catalog).getHandoffRulesEnabled).toBe(true);
-    expect(catalog.collaboration.outgoingHandoffs).toEqual([]);
+    expect(catalog.collaboration.outgoingHandoffs()).toEqual([]);
     const placed = await builder({ role: "task_agent", placement: { handoffs: [handoff], orgDefinitionId: "org-def" }, teamScoped: true }).build(metadata);
     expect(resolveRuntimeAgentToolExposure(null, placed).getHandoffRulesEnabled).toBe(true);
-    expect(placed.collaboration.outgoingHandoffs).toEqual([handoff]);
+    expect(placed.collaboration.outgoingHandoffs()).toEqual([handoff]);
   });
 
   it("a copy whose tree starts at an Agent run, and a run the user started, do not", async () => {

@@ -1,4 +1,5 @@
 import { testViewStreams } from "../../helpers/view-streams.js";
+import { teamMembershipTestCollaborators } from "../../helpers/team-membership-test-collaborators.js";
 import { DelegatedRunStarter } from "../../../src/agent-collaboration/execution/delegation/delegated-run-starter.js";
 import { peerCallerOf } from "../../helpers/peer-caller.js";
 import fs from "node:fs/promises";
@@ -205,7 +206,7 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
   });
   // A Team root on B sends through B's channel, as its composition passes it (autobyteus-500 FU-011).
   let channelB: RemoteRunChannel | null = null;
-  const teamManager = new AgentTeamRunManager({ remoteChannel: () => channelB,
+  const teamManager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: () => channelB,
     memoryDir: dir,
     flatTeamExecutionFactory: new FlatTeamExecutionFactory({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY, agentRunManager: runtimes as never,
       activityInspector: { inspect: ({ agentRunId }: { agentRunId: string }) => ({ kind: conversations.has(agentRunId) ? "present" : "none" }) } as never,

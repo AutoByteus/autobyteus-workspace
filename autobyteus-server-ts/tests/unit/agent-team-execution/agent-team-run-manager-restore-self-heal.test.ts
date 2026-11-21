@@ -1,4 +1,5 @@
 import { testViewStreams } from "../../helpers/view-streams.js";
+import { teamMembershipTestCollaborators } from "../../helpers/team-membership-test-collaborators.js";
 import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { describe, expect, it, vi } from "vitest";
@@ -39,7 +40,7 @@ vi.mock("../../../src/agent-team-execution/services/team-root-materializer.js", 
   }),
 }));
 
-const createManager = () => new AgentTeamRunManager({ remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+const createManager = () => new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
   memoryDir: "/tmp/agent-team-run-manager-self-heal",
   flatTeamExecutionFactory: new FlatTeamExecutionFactory({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY }),
   memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never, NOT_DELEGATED),

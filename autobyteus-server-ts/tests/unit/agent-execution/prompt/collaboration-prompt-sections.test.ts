@@ -42,7 +42,7 @@ const context = (input: {
     inOrganization: input.inOrganization ?? input.rootKind === "agent_org",
     authoredEnclosingScopeInstruction: input.teamInstruction ?? null,
     collaboration: new MemberCollaborationContext({
-      outgoingHandoffs: input.handoffs ? [handoff] : [],
+      outgoingHandoffs: () => input.handoffs ? [handoff] : [],
       deliverLogicalMessage: async () => ({ accepted: true }),
     }),
     tasks: { root: identityRoot, delegationSource: async () => ({ delegated: false, message: "none" }), ownedTaskOf: () => null },

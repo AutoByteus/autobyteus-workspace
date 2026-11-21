@@ -27,6 +27,8 @@ export interface TeamExecutionNavigationRow {
   readonly focusable: boolean;
   readonly expandable: boolean;
   readonly coordinator: boolean;
+  /** A member removed from the team that is still finishing its turn: shown as leaving until it stops. */
+  readonly leaving: boolean;
 }
 
 export interface TeamAgentContextEntry {

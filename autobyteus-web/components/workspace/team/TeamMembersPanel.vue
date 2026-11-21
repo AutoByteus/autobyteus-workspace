@@ -64,6 +64,11 @@
           <span class="block truncate text-sm font-medium" :title="row.displayName">{{ row.displayName }}</span>
           <span v-if="row.teamRunId" class="mt-0.5 block text-xs text-slate-500">Team</span>
           <span
+            v-if="row.leaving"
+            class="mt-0.5 block text-xs font-medium text-amber-700"
+            data-testid="team-member-leaving"
+          >{{ $t('workspace.components.workspace.team.TeamMembersPanel.leaving') }}</span>
+          <span
             v-if="inspectionAttempt(row)?.state === 'loading'"
             class="mt-0.5 block text-xs font-medium text-indigo-700"
             role="status"
