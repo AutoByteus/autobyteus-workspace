@@ -27,6 +27,11 @@ export type TaskExecutionResource = Readonly<{
   nodeId?: string;
   /** Only for a team run on a peer node: its members. */
   members?: readonly PeerRunMember[];
+  /**
+   * autobyteus-591 DN-3: only on a run on a peer node, only when true: its delegation state is owed to its node (sent,
+   * not yet confirmed). Set on the run's current entry, cleared from all its entries on the node's confirmation.
+   */
+  peerNoticeOwed?: true;
 }>;
 /** The delegator of an entry: who may continue it after a reopen and give it a follow-up Task (on `assigned`). */
 export const assignerOf = (entry: TaskExecutionResource): string => entry.delegatedFrom.delegatorAgentRunId;
@@ -106,11 +111,31 @@ export const linkNewTaskExecution = (file: TaskExecutionResourceFile, link: NewT
  */
 export const linkExistingTaskExecution = (file: TaskExecutionResourceFile, link: Readonly<{
   delegatedFrom: RunDelegatedFrom; recipientAddress: string; execution: TaskExecutionReference; teamCoordinatorAgentRunId?: string;
+  /** A run on a peer node keeps its node, and a team run its members (autobyteus-591 DN-8). */
+  nodeId?: string; members?: readonly PeerRunMember[];
 }>, now: string): TaskExecutionResourceFile => {
   if (latestEntryOf(file, link.execution)?.closedAt === null) {
     throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "This task agent already works on this Task.");
   }
   return { taskId: file.taskId, executionResources: [...file.executionResources, entryOf({ ...link, role: "assigned" }, now)] };
+};
+
+/**
+ * autobyteus-591 DN-3: the run's delegation state is owed to its peer node (`owed`: on its last entry in this file), or
+ * no longer (cleared from every entry of the run in this file). The same file back when nothing changes.
+ */
+export const setPeerNoticeOwed = (file: TaskExecutionResourceFile, execution: TaskExecutionReference, owed: boolean): TaskExecutionResourceFile => {
+  if (owed) {
+    const latest = latestEntryOf(file, execution);
+    return !latest || latest.nodeId === undefined || latest.peerNoticeOwed ? file : updateLatestEntry(file, execution, (r) => ({ ...r, peerNoticeOwed: true }));
+  }
+  const key = taskExecutionReferenceKey(execution);
+  if (!file.executionResources.some((r) => r.peerNoticeOwed && taskExecutionReferenceKey(r.execution) === key)) return file;
+  return { taskId: file.taskId, executionResources: file.executionResources.map((r) => {
+    if (!r.peerNoticeOwed || taskExecutionReferenceKey(r.execution) !== key) return r;
+    const { peerNoticeOwed: _owed, ...rest } = r;
+    return rest;
+  }) };
 };
 
 /** `start` is set once on the copy's last entry; an entry that already started or failed is left unchanged. */

@@ -25,6 +25,7 @@ import { createAgentRunManagerInfrastructureFixture } from "../../fixtures/agent
 import { testBackendFactory } from "../../fixtures/agent-run-preparation-fixtures.js";
 import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
 import { NO_ELIGIBLE_STANDALONE_RUNS } from "../../helpers/explicit-host-collaborators.js";
+import { NO_CLOSED_DELEGATIONS } from "../../../src/remote-collaboration/inbound/closed-delegations.js";
 
 const workspaceHistoryHolder = vi.hoisted(() => ({ service: null as any }));
 
@@ -213,7 +214,7 @@ const startHarness = async (terminationAccepted: boolean): Promise<Harness & Run
   });
   // autobyteus-461: the composition root registers the process history service (SR-047 step 8); this suite builds its own.
   cleanups.push(setProcessAgentRunHistoryService(historyService));
-  workspaceHistoryHolder.service = new WorkspaceRunHistoryService({ tree: noDelegations(),
+  workspaceHistoryHolder.service = new WorkspaceRunHistoryService({ tree: noDelegations(), closedDelegations: NO_CLOSED_DELEGATIONS,
     agentRunHistoryService: historyService,
     teamRunHistoryService: { listTeamRunHistory: vi.fn(async () => []) } as never,
   });

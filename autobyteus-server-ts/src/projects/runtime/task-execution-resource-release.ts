@@ -1,14 +1,15 @@
-import type { TaskExecutionReleaseRequest } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
+import type { PeerRunStateNotice, TaskExecutionReleaseRequest } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { ReleasableRun } from "../services/task-execution-resource-service.js";
 
 /**
  * The runtime side effect of DONE or CANCELLED (DS-5): asks each closed run, by its own identity, to stop in its own
- * root. A run on a peer node is fenced by its closed Task, not stopped (its node owns it, CM-10). Nothing is
- * persisted: failures are logged and repeating DONE or CANCELLED requests the stop again.
+ * root. A run on a peer node is stopped by its node, which its notice tells (autobyteus-591 DN-1; the notice is owed
+ * until its node confirms). A local stop persists nothing: failures are logged and repeating DONE or CANCELLED requests
+ * the stop again.
  */
 export class TaskExecutionResourceRelease {
   /** The composition's stop request (autobyteus-500 FU-018: required in every host). */
-  constructor(private readonly request: TaskExecutionReleaseRequest) {}
+  constructor(private readonly request: TaskExecutionReleaseRequest, private readonly notice: PeerRunStateNotice) {}
 
   release(taskId: string, runs: readonly ReleasableRun[]): void {
     for (const run of runs) void this.stop(taskId, run);
@@ -16,7 +17,7 @@ export class TaskExecutionResourceRelease {
 
   private async stop(taskId: string, { run, nodeId }: ReleasableRun): Promise<void> {
     if (nodeId !== undefined) {
-      console.info("TASK_AGENT_RESOURCE_FENCED_REMOTE", { taskId, execution: run, nodeId });
+      await this.notice({ run, nodeId });
       return;
     }
     try {

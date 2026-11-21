@@ -20,6 +20,7 @@ import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-ru
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
 import { setE2eRunHistoryServices } from "../helpers/e2e-run-history-services.js";
+import { NO_CLOSED_DELEGATIONS } from "../../../src/remote-collaboration/inbound/closed-delegations.js";
 
 const harness = vi.hoisted(() => ({
   agentRunManager: {
@@ -322,7 +323,7 @@ describe("Archive run history GraphQL e2e", () => {
       catalogService: teamCatalogService,
       teamRunManager: harness.teamRunManager as any,
     });
-    harness.services.workspaceRunHistoryService = new WorkspaceRunHistoryService({ tree: noDelegations(),
+    harness.services.workspaceRunHistoryService = new WorkspaceRunHistoryService({ tree: noDelegations(), closedDelegations: NO_CLOSED_DELEGATIONS,
       agentRunHistoryService: harness.services.agentRunHistoryService as any,
       teamRunHistoryService: harness.services.teamRunHistoryService as any,
     });

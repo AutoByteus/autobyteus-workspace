@@ -147,12 +147,12 @@ const buildNode = async (input: Readonly<{ nodeId: string; peers: PeerNode[]; ne
     agentRunManager: { getActiveRun: () => null } });
   input.network.set(input.nodeId, new PeerGateway({
     ownNodeId: async () => input.nodeId, capability: { isEnabled: () => true }, peers: peerDirectory,
-    delegatedRuns: {} as never, availableAgents: {} as never, runViews: {} as never,
+    delegatedRuns: {} as never, availableAgents: {} as never, runViews: {} as never, delegatedRunStates: {} as never,
     messages: new RemoteMessageReceiver({
       storedLinkCheck: async (root, query) => root.kind === "agent" ? manager.storedRemoteLinkCheck(root.runId, query) : "not_found",
       standalone: (runId) => manager.resolveRoot(runId), team: async () => null, org: async () => null, runAgents: () => manager.runAgents,
       liveRoot: (run) => activeRoot(run),
-    }, { recordFirstMessage: async () => undefined }, new PeerStartedRunDecisions(), runningAgents),
+    }, { recordFirstMessage: async () => undefined }, new PeerStartedRunDecisions(), runningAgents, { openedBy: async () => undefined }),
     runningAgents: { list: async () => ({ accepted: true as const, agents: await listing.list({ caller: null }) }) },
   }));
   const discovery = new PeerNodeDiscovery({ capability: { isEnabled: () => true }, peers: { list: async () => input.peers }, client });

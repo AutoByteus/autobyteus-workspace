@@ -518,7 +518,8 @@ startup into ordinary, unowned delegated runs of the same root (migration
   `[Mentioned collaborators]` notes), so stored history displays unchanged.
 - **Task closure (DONE or CANCELLED).** Closing a Task stops its runs that have no
   other open Task, each through its own ordinary Stop (`TaskRunControl`); a peer's
-  run is fenced, not stopped. A delegated run is a row of its delegator's tree while
+  run is fenced at once and stopped by its node, which its delegating node tells
+  (`PeerRunStateNotices`, autobyteus-591). A delegated run is a row of its delegator's tree while
   it has an open Task entry, so a closed run's row leaves the tree and comes back when
   its assigner continues it; an open view learns it from the tree's next change
   (`RUN_TREE_CHANGED`, see

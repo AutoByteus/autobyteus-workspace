@@ -14,6 +14,7 @@ vi.mock("../../../../src/run-history/services/team-run-history-service.js", () =
 }));
 
 import { WorkspaceRunHistoryService } from "../../../../src/run-history/services/workspace-run-history-service.js";
+import { NO_CLOSED_DELEGATIONS } from "../../../../src/remote-collaboration/inbound/closed-delegations.js";
 
 describe("WorkspaceRunHistoryService", () => {
   it("returns one workspace-grouped payload containing grouped agent and team definitions", async () => {
@@ -65,7 +66,7 @@ describe("WorkspaceRunHistoryService", () => {
       ]),
     } as any;
 
-    const service = new WorkspaceRunHistoryService({ tree: noDelegations(),
+    const service = new WorkspaceRunHistoryService({ tree: noDelegations(), closedDelegations: NO_CLOSED_DELEGATIONS,
       agentRunHistoryService,
       teamRunHistoryService,
     });
@@ -114,8 +115,31 @@ describe("WorkspaceRunHistoryService", () => {
     ]);
   });
 
+  it("autobyteus-591 DN-6: leaves out a peer-started run its delegating node closed, agent or team, by the record in memory", async () => {
+    const agentRun = (runId: string) => ({ runId, summary: runId, createdAt: "2026-03-26T10:00:00.000Z", archivedAt: null, terminatedAt: null,
+      status: "offline", isActive: false, shouldConnectStream: false, statusSource: "INACTIVE" });
+    const listRunHistory = vi.fn(async (_limit: number | null, listed: (row: { runId: string }) => boolean) => [{ workspaceRootPath: "/ws/a", workspaceName: "a",
+      agents: [{ agentDefinitionId: "publisher", agentName: "Publisher", runs: ["publisher_r1", "publisher_r2"].filter((runId) => listed({ runId })).map(agentRun) }] }]);
+    const listTeamRunHistory = vi.fn(async (listed: (row: { teamRunId: string }) => boolean) => ["studio_team_b", "studio_team_c"].filter((teamRunId) => listed({ teamRunId }))
+      .map((teamRunId) => ({ teamRunId, teamDefinitionId: "studio", teamDefinitionName: "Studio", coordinatorMemberRouteKey: "lead", workspaceRootPath: "/ws/a",
+        summary: "", createdAt: "2026-03-26T11:00:00.000Z", archivedAt: null, terminatedAt: null, status: "offline", isActive: false, memberTree: [], members: [] })));
+    const closed = new Set(["agent:publisher_r1", "agent_team:studio_team_b"]);
+    const service = new WorkspaceRunHistoryService({ tree: noDelegations(), closedDelegations: { has: (run) => closed.has(`${run.kind}:${run.runId}`) },
+      agentRunHistoryService: { listRunHistory } as any, teamRunHistoryService: { listTeamRunHistory } as any });
+    const [group] = await service.listWorkspaceRunHistory(6);
+    expect(group!.agentDefinitions[0]!.runs.map((run) => run.runId)).toEqual(["publisher_r2"]);
+    expect(group!.teamDefinitions[0]!.runs.map((run) => run.teamRunId)).toEqual(["studio_team_c"]);
+    // The phone's folder read is the same rule.
+    const folder = await service.getWorkspaceRunHistory("/ws/a", 6);
+    expect(folder.agentDefinitions[0]!.runs.map((run) => run.runId)).toEqual(["publisher_r2"]);
+    // Opened again (a follow-up Task): listed again on the next read.
+    closed.clear();
+    const [again] = await service.listWorkspaceRunHistory(6);
+    expect(again!.agentDefinitions[0]!.runs).toHaveLength(2);
+  });
+
   it("creates an unassigned workspace bucket for team runs without workspace root path", async () => {
-    const service = new WorkspaceRunHistoryService({ tree: noDelegations(),
+    const service = new WorkspaceRunHistoryService({ tree: noDelegations(), closedDelegations: NO_CLOSED_DELEGATIONS,
       agentRunHistoryService: {
         listRunHistory: vi.fn(async () => []),
       } as any,
@@ -241,7 +265,7 @@ describe("WorkspaceRunHistoryService", () => {
         },
       ]),
     } as any;
-    const service = new WorkspaceRunHistoryService({ tree: noDelegations(),
+    const service = new WorkspaceRunHistoryService({ tree: noDelegations(), closedDelegations: NO_CLOSED_DELEGATIONS,
       agentRunHistoryService,
       teamRunHistoryService,
     });
@@ -270,7 +294,7 @@ describe("WorkspaceRunHistoryService", () => {
   });
 
   it("returns an empty scoped history group for a registered workspace with no history", async () => {
-    const service = new WorkspaceRunHistoryService({ tree: noDelegations(),
+    const service = new WorkspaceRunHistoryService({ tree: noDelegations(), closedDelegations: NO_CLOSED_DELEGATIONS,
       agentRunHistoryService: {
         listRunHistory: vi.fn(async () => []),
       } as any,

@@ -14,6 +14,7 @@ import {
 } from "../../../src/standalone-agent-run-root/services/standalone-root-member-view-projection-service.js";
 import { noDelegations, noWorkGuard, noEpisodicCatalog } from "../../helpers/no-delegations.js";
 import { NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
+import { NO_CLOSED_DELEGATIONS } from "../../../src/remote-collaboration/inbound/closed-delegations.js";
 
 /**
  * The run-history readers an in-process GraphQL suite needs, created the way the composition root creates them
@@ -35,7 +36,7 @@ export const setE2eRunHistoryServices = (input: Readonly<{
   const releases = [
     setProcessAgentRunHistoryService(agentRunHistoryService),
     setProcessTeamRunHistoryService(teamRunHistoryService),
-    setProcessWorkspaceRunHistoryService(new WorkspaceRunHistoryService({ tree, agentRunHistoryService, teamRunHistoryService })),
+    setProcessWorkspaceRunHistoryService(new WorkspaceRunHistoryService({ tree, closedDelegations: NO_CLOSED_DELEGATIONS, agentRunHistoryService, teamRunHistoryService })),
     setProcessTeamMemberRunViewProjectionService(new TeamMemberRunViewProjectionService({ memoryDir: input.memoryDir, tree, peerRunOf: createPeerRunOf(tree, NO_PEER_CHANNEL) })),
     ...(input.orgMembers ? [setProcessAgentOrgMemberRunViewProjectionService(new AgentOrgMemberRunViewProjectionService({ memoryDir: input.memoryDir, tree, peerRunOf: createPeerRunOf(tree, NO_PEER_CHANNEL) }))] : []),
     setProcessStandaloneRootMemberViewProjectionService(new StandaloneRootMemberViewProjectionService({ peerRunOf: createPeerRunOf(tree, NO_PEER_CHANNEL) })),

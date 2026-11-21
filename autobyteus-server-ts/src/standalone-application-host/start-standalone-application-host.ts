@@ -66,6 +66,7 @@ import { getCodexAppServerClientManager } from "../runtime-management/codex/clie
 import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import { createProcessAgentProviderFactoryBuilder } from "../compositions/create-process-agent-provider-factory-builder.js";
 import { composeCollaboration, composeTaskSide, type Collaboration } from "../compositions/collaboration-composition.js";
+import { NO_CLOSED_DELEGATIONS } from "../remote-collaboration/inbound/closed-delegations.js";
 import {
   createEpisodicCatalog, releaseProcessEpisodicCatalog, setProcessEpisodicCatalog, type EpisodicCatalog,
 } from "../agent-episodic-catalog/services/episodic-catalog.js";
@@ -292,8 +293,8 @@ export const startStandaloneApplicationHost = async (
       rootResolver: createCollaborationRootResolver({ standaloneRoots: generalProcessRunSupervisor.standaloneRootManager,
         teamRuns: generalProcessRunSupervisor.teamRunService, orgRuns: generalProcessRunSupervisor.agentOrgRunService }),
       activeRoots: getActiveCollaborationRootDirectory(),
-      // This host has no peer nodes (ARCH-REV-027: its real equivalent, as at base).
-      remoteChannel: () => null,
+      // This host has no peer nodes (ARCH-REV-027: its real equivalent, as at base), so no peer closed a run of it.
+      remoteChannel: () => null, closedDelegations: NO_CLOSED_DELEGATIONS,
       episodicCatalog: currentEpisodicCatalog,
       // autobyteus-492: this node's running agents (messages by run ID and list_running_agents).
       running: composeRunningAgents({ memoryDir: processResources.appConfig.getMemoryDir(), tempWorkspaceDir: processResources.appConfig.getTempWorkspaceDir(),

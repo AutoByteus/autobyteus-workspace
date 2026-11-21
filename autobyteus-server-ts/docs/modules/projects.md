@@ -907,7 +907,9 @@ both. DONE → CANCELLED and CANCELLED → DONE behave as a repeated DONE.
    design DS-5): an agent run's `AgentRunService.stopForTaskClosure`, a team run's
    `TeamRunService.stopForTaskClosure`. A run that has since been given another
    Task is never stopped by this Task's DONE, a repeated one included. A run on a
-   peer node is fenced, not stopped (`TASK_AGENT_RESOURCE_FENCED_REMOTE`). The runs
+   peer node is stopped by its node: `PeerRunStateNotices` tells it the run is
+   closed, owed on the run's entry (`peerNoticeOwed`) until confirmed (autobyteus-591;
+   [Remote Collaboration](remote_collaboration.md#a-remote-runs-delegation-state)). The runs
    it delegated to are not stopped by its Stop: each has its own Task. Where the run's
    gate closes, the stop asks the Task side again (`isOpen`): a reopen or a new
    assignment committed while the stop waited keeps the run running and records
@@ -1017,8 +1019,9 @@ by its team run ID, an agent run by its agent run ID.
 **Path** (`TaskDelegation.toExistingRun`, the same for every root; design DS-6):
 1. A sender that works on a Task is refused (`TASK_AGENT_RESOURCE_OWNED_SENDER`).
    Task B is resolved first, so its refusals come before the run's.
-2. The run is found from its Task entries (a peer's run takes no saved Task); its
-   entry agent is its latest entry's.
+2. The run is found from its Task entries; its entry agent is its latest entry's.
+   A run on a peer node (autobyteus-591) takes no Task with files, and its
+   conversation is checked on its node, not here.
 3. The Task side checks eligibility (`ProjectTaskService.assertAssignable`), in
    this order of concern: all Task resource data readable; Task B exists, is
    unique and is not DONE or CANCELLED; the run's current entry is an `assigned`
@@ -1033,7 +1036,10 @@ by its team run ID, an agent run by its agent run ID.
 5. B's description and context files go to the run's entry agent as a message
    from the delegator (`messageType: "task_assignment"`) through
    `CrossRunMessageDelivery`, which wakes or restores the run with its
-   conversation and writes both runs' logs. The message starts "New Task assigned
+   conversation and writes both runs' logs. A run on a peer node is first told it
+   is open (`PeerRunStateNotices`, after any notice in flight), then gets the
+   message over its link (`deliverMessageToPeerRun`); its new entry keeps its node
+   and members. The message starts "New Task assigned
    to you: B." and then, when the run holds other open Tasks, "Your Task A is
    still open; name the Task key in each report." (otherwise "Your previous Task is
    closed; this is the work to do now."). The entry becomes `started`, or `failed`

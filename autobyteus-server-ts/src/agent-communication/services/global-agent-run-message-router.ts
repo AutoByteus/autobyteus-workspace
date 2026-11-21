@@ -15,6 +15,7 @@ import { sameRootExecutionIdentity } from "../../agent-collaboration/execution/d
 import type { CrossRunMessageDelivery } from "../../agent-collaboration/communication/cross-run-message-delivery.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { RemoteRunChannel } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
+import { deliverMessageToPeerRun } from "./peer-run-message-delivery.js";
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
 import {
   SEND_MESSAGE_TO_NODE_NEEDS_COLLABORATION_RUN,
@@ -193,15 +194,9 @@ export class GlobalAgentRunMessageRouter {
     if (!channel) return { accepted: false, code: REMOTE_REFUSAL.OFF, message: REMOTE_ROOT_REFUSAL_TEXT.off };
     const peer = await channel.findPeer(node.trim());
     if ("accepted" in peer) return peer;
-    const closed = await this.deps.crossRun.closedPeerRunRefusal({ nodeId: peer.nodeId, agentRunId: targetAgentRunId });
-    if (closed) return closed;
-    const senderRoot = this.activeRootDirectory.resolve(context.identity.root);
-    if (!senderRoot) return { accepted: false, code: "COLLABORATION_ROOT_NOT_ACTIVE", message: ROOT_NOT_ACTIVE_MESSAGE };
-    const result = await senderRoot.deliverToPeerRun({
-      sender: Object.freeze({ kind: "agent", identity: context.identity, displayName: input.sender.senderName }),
-      nodeId: peer.nodeId, targetAgentRunId, content, messageType, referenceFiles,
+    return deliverMessageToPeerRun({ crossRun: this.deps.crossRun, activeRoots: this.activeRootDirectory }, {
+      sender: context.identity, senderDisplayName: input.sender.senderName, nodeId: peer.nodeId, targetAgentRunId, content, messageType, referenceFiles,
     });
-    return result.accepted ? { ...result, agentRunId: targetAgentRunId } : result;
   }
 
   private get agentRunManager(): ActiveRunLookup {

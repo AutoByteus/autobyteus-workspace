@@ -34,6 +34,10 @@ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-u
 import { peerStatuses } from "../../../src/agent-collaboration/execution/remote/peer-run-calls.js";
 import { RunStatusService } from "../../../src/agent-collaboration/execution/run-status-service.js";
 import type { RunStatusServerMessage } from "@autobyteus/collaboration-stream-contracts";
+import { ClosedDelegations } from "../../../src/remote-collaboration/inbound/closed-delegations.js";
+import { DelegatedRunStateHandler } from "../../../src/remote-collaboration/inbound/delegated-run-state-handler.js";
+import { PeerRunStateNotices } from "../../../src/agent-collaboration/execution/remote/peer-run-state-notices.js";
+import { deliverMessageToPeerRun } from "../../../src/agent-communication/services/peer-run-message-delivery.js";
 import { projectAgentCollaborationView } from "../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
 
 /**
@@ -128,7 +132,8 @@ const buildNode = async (input: Readonly<{
     const response = route === "delegated-runs" ? await gateway.startDelegatedRun(body, peerCallerOf(init.headers)) : route === "messages" ? await gateway.deliverMessage(body, peerCallerOf(init.headers))
       : route === "availability" ? await gateway.checkAvailability(body, peerCallerOf(init.headers)) : route === "run-summaries" ? await gateway.runSummaries(body, peerCallerOf(init.headers))
         : route === "agent-projection" ? await gateway.agentProjection(body, peerCallerOf(init.headers)) : route === "owner-commands" ? await gateway.ownerCommand(body, peerCallerOf(init.headers))
-          : await gateway.listAvailableAgents(body, peerCallerOf(init.headers));
+          : route === "delegated-run-states" ? await gateway.deliveredRunState(body, peerCallerOf(init.headers))
+            : await gateway.listAvailableAgents(body, peerCallerOf(init.headers));
       return { ok: response.status === 200, status: response.status, json: async () => structuredClone(response.answer) };
     }) as never,
     // autobyteus-278: an observation socket bridged in process to the peer's gateway (the route's own logic).
@@ -160,10 +165,19 @@ const buildNode = async (input: Readonly<{
       return socket;
     },
   });
-  const taskSide = testTaskSide(resources, () => client);
+  // autobyteus-591: what this node tells a peer of its runs' delegation state (DN-1), and a peer run's follow-up Task (DN-8).
+  // The closed-Task admission passes: a follow-up Task's entry is open when its work is sent.
+  const activeRoots = new ActiveCollaborationRootDirectory();
+  const notices = new PeerRunStateNotices({ channel: () => client, tasks: resources, retryMs: 3_600_000 });
+  releases.push(() => notices.close());
+  const taskSide = testTaskSide(resources, () => client, { peerNotices: notices,
+    deliverToPeerRun: (message) => deliverMessageToPeerRun({ crossRun: { closedPeerRunRefusal: async () => null }, activeRoots }, message) });
+  // autobyteus-591: the runs a peer started here and then closed (DN-5), in this node's folder.
+  const closed = ClosedDelegations.inAppDataDir(memoryDir);
+  await closed.load();
   const manager = new StandaloneAgentRunRootManager({
     memoryDir,
-    activeRootDirectory: new ActiveCollaborationRootDirectory(),
+    activeRootDirectory: activeRoots,
     definitions: { getAgentDefinitionById: async (id) => definitions.find((definition) => definition.id === id) ?? null },
     orgInstruction: async () => null,
     agentServices: {
@@ -216,7 +230,15 @@ const buildNode = async (input: Readonly<{
       runAgents: () => manager.runAgents,
       liveRoot: () => null,
     }, { recordFirstMessage: async (root, content) => { if (!titles.has(root.runId)) titles.set(root.runId, content); } }, new PeerStartedRunDecisions(),
-    { rootOf: () => null, teamCoordinatorOf: () => null }),
+    { rootOf: () => null, teamCoordinatorOf: () => null }, closed),
+    // autobyteus-591 DN-2: the delegating node's state of a run it started here; the Stop as the agent run service's.
+    delegatedRunStates: new DelegatedRunStateHandler({ closed,
+      roots: { storedLinkCheck: async (root, query) => root.kind === "agent" ? manager.storedRemoteLinkCheck(root.runId, query) : "not_found" },
+      agentRuns: { stopForTaskClosure: async (runId, stillClosed) => {
+        const stopped = await manager.stopRootForTaskClosure(runId, stillClosed);
+        return stopped === "kept_open" ? "kept_open" : stopped?.agent.outcome === "rejected" ? "not_stopped" : "stopped";
+      } },
+      teamRuns: { stopForTaskClosure: async () => "not_stopped" as const } }),
     availableAgents: new RemoteCatalogLister({ policy: () => admission.policy, catalogPort: new NodeCatalogPort(path.join(memoryDir, "temp_workspace")) }),
     runningAgents: { list: async () => ({ accepted: true as const, agents: [] }) },
     runViews: new RemoteRunViewProvider({
@@ -232,7 +254,7 @@ const buildNode = async (input: Readonly<{
     }),
   });
   input.network.set(input.nodeId, gateway);
-  return { nodeId: input.nodeId, memoryDir, metadata, runs, runOf, resources, manager, models, titles, taskSide, channel: () => client };
+  return { nodeId: input.nodeId, memoryDir, metadata, runs, runOf, resources, manager, models, titles, taskSide, channel: () => client, notices, closed };
 };
 
 const agentIdentity = (runId: string, address: string) => createCollaborationMemberExecutionIdentity({
@@ -257,6 +279,9 @@ const twoNodes = async (options: { bEnabled?: () => boolean } = {}) => {
   return { network, a, b };
 };
 const delegator = { runId: DELEGATOR, address: "/assistant" };
+// delegate_task with a run ID and a saved Task (DN-8), on the tool path.
+const assign = async (a: Node, taskId: string, runId = "publisher_r1") => a.taskSide.assign((await a.manager.resolveRoot(DELEGATOR))!,
+  { identity: agentIdentity(DELEGATOR, "/assistant") }, { delegatedRun: { agentRunId: runId }, taskId });
 // delegate_task on the tool path (SR-049): the delegator's root answers for its own run, the delegation goes on outside it.
 const delegate = async (a: Node, input: Record<string, unknown> = {}) => a.taskSide.delegate((await a.manager.resolveRoot(DELEGATOR))!,
   { identity: agentIdentity(DELEGATOR, "/assistant") }, { recipient_address: "/publisher", description: "Publish the video draft.", node: "docker", ...input } as never);
@@ -367,15 +392,18 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     await expect(fs.access(path.join(a.memoryDir, "agents", DELEGATOR, "collaboration"))).rejects.toThrow();
   });
 
-  it("refuses files on a follow-up, a saved Task for the remote run, and messages from a run that is not linked (AC-107, AC-108, AR-003)", async () => {
+  it("refuses files on a follow-up, a saved Task with files for the remote run, and messages from a run that is not linked (AC-107, AC-108, AR-003)", async () => {
     const { a, b } = await twoNodes();
     await delegate(a);
     await expect(send(a, delegator, "publisher_r1", "see file", ["/tmp/x.mp4"])).resolves.toMatchObject({ accepted: false, code: "REMOTE_ATTACHMENTS_NOT_SUPPORTED" });
     expect(b.runOf("publisher_r1").received).toEqual([]);
-    const rootA = (await a.manager.resolveRoot(DELEGATOR))!;
+    // autobyteus-591 DN-8: a saved Task may go to the remote run, but its files can't, so it is refused before anything changes.
+    const file = path.join(a.memoryDir, "brief.txt");
+    await fs.writeFile(file, "brief");
     a.resources.addTask("task-B");
-    await expect(a.taskSide.assign(rootA, { identity: agentIdentity(DELEGATOR, "/assistant") }, { delegatedRun: { agentRunId: "publisher_r1" }, taskId: "task-B" }))
-      .resolves.toEqual({ delegated: false, message: expect.stringContaining("can't be given to an agent on another node") });
+    a.resources.tasks.get("task-B")!.referenceFiles = [file];
+    await expect(assign(a, "task-B")).resolves.toEqual({ delegated: false,
+      message: "Files (reference_files) can't be sent to an agent on another node yet, so nothing was sent." });
     expect(a.resources.assignments).toEqual([]);
     // A message that claims to be from a run B never linked with A's delegator is refused by A's link check.
     const forged = await (await a.manager.resolveRoot(DELEGATOR))!.acceptRemoteMessage({ fromNodeId: B_ID, fromNodeName: "docker",
@@ -456,5 +484,96 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     expect(runStatus.peerSummaryOf("publisher_r1")).toEqual({ nodeId: B_ID, runId: "publisher_r1", reachable: true,
       title: "Publish the video draft.", statuses: [], launches: [expect.objectContaining({ address: "/publisher" })] });
     statusConnection.close();
+  });
+});
+
+describe("autobyteus-591: a closed Task's remote agent run stops on its node; a follow-up Task brings it back, in process", () => {
+  const RUN = { kind: "agent" as const, runId: "publisher_r1" };
+  const closeOnA = async (a: Node, taskId = "ad_hoc_task_1") => {
+    a.resources.close(taskId);
+    // What the Task side's release does for a closed peer run (task-execution-resource-release.ts).
+    return a.notices.changed({ run: { agentRunId: RUN.runId }, nodeId: B_ID });
+  };
+
+  it("AC-001: closing the Task on A stops the run on B and records it there; the closed Task still fences it on A", async () => {
+    const { a, b } = await twoNodes();
+    await delegate(a);
+    expect(b.runOf(RUN.runId).active).toBe(true);
+    await expect(closeOnA(a)).resolves.toEqual({ confirmed: true });
+    expect(b.runOf(RUN.runId).active).toBe(false);
+    expect(b.closed.has(RUN)).toBe(true);
+    expect(a.resources.peerNoticesOwed.size).toBe(0);
+    await expect(send(a, delegator, RUN.runId, "more?")).resolves.toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
+  });
+
+  it("AC-004: B unreachable at the close: the notice stays owed; once B is back, the next send stops the run", async () => {
+    const { network, a, b } = await twoNodes();
+    await delegate(a);
+    const gatewayB = network.get(B_ID)!;
+    network.delete(B_ID);
+    await expect(closeOnA(a)).resolves.toMatchObject({ confirmed: false, code: "PEER_UNREACHABLE" });
+    expect([...a.resources.peerNoticesOwed]).toEqual([`agent:${RUN.runId}`]);
+    expect(a.resources.owedPeerNotices()).toEqual([{ run: { agentRunId: RUN.runId }, nodeId: B_ID }]);
+    expect(b.runOf(RUN.runId).active).toBe(true);
+    network.set(B_ID, gatewayB);
+    await expect(a.notices.changed({ run: { agentRunId: RUN.runId }, nodeId: B_ID })).resolves.toEqual({ confirmed: true });
+    expect(b.runOf(RUN.runId).active).toBe(false);
+    expect(a.resources.peerNoticesOwed.size).toBe(0);
+  });
+
+  it("AC-007: a follow-up Task for the stopped run: B lists it again, and it wakes with the work over the link", async () => {
+    const { a, b } = await twoNodes();
+    await delegate(a);
+    await closeOnA(a);
+    a.resources.addTask("task-B", "Edit the video.");
+    await expect(assign(a, "task-B")).resolves.toEqual({ delegated: true, delegatedRun: { kind: "agent", agentRunId: RUN.runId } });
+    expect(b.closed.has(RUN)).toBe(false);
+    expect(b.runOf(RUN.runId).active).toBe(true);
+    expect(b.runOf(RUN.runId).received.at(-1)).toContain("Edit the video.");
+    expect(a.resources.entry({ agentRunId: RUN.runId })).toMatchObject({ taskId: "task-B", open: true, start: "started", nodeId: B_ID });
+  });
+
+  it("a reopen alone changes nothing on B; a message to the run is refused on A, as locally (AC-007)", async () => {
+    const { a, b } = await twoNodes();
+    await delegate(a);
+    await closeOnA(a);
+    a.resources.setTaskOpen("ad_hoc_task_1");
+    await expect(send(a, delegator, RUN.runId, "more?")).resolves.toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
+    expect(b.closed.has(RUN)).toBe(true);
+    expect(b.runOf(RUN.runId).active).toBe(false);
+  });
+
+  it("S-5: an accepted linked message from the delegating node clears B's record; a run of B no Task of B names takes no Task there (U-1)", async () => {
+    const { a, b } = await twoNodes();
+    await delegate(a);
+    await b.closed.close(RUN, A_ID);
+    // A message from A's delegator over the run's link (the open entry admits it on A).
+    await expect(send(a, delegator, RUN.runId, "one more thing")).resolves.toMatchObject({ accepted: true });
+    expect(b.closed.has(RUN)).toBe(false);
+    // U-1: an agent of B can't give the peer-started run a Task: only A's Task records name it.
+    b.metadata.set("local_b", { runId: "local_b", agentDefinitionId: "assistant", workspaceRootPath: "/work", memoryDir: path.join(b.memoryDir, "agents", "local_b"),
+      llmModelIdentifier: "gpt", llmConfig: null, autoExecuteTools: false, runtimeKind: RuntimeKind.CODEX_APP_SERVER, platformAgentRunId: null, startedAt: T0 });
+    b.runOf("local_b").active = true;
+    b.resources.addTask("task-X");
+    await expect(b.taskSide.assign((await b.manager.resolveRoot("local_b"))!, { identity: agentIdentity("local_b", "/assistant") },
+      { delegatedRun: { agentRunId: RUN.runId }, taskId: "task-X" })).resolves.toEqual({ delegated: false, message: expect.stringContaining("is not one of your task agents") });
+  });
+
+  it("AC-005: a third node's notice for B's run is refused by B's link check; nothing is recorded or stopped", async () => {
+    const network = new Map<string, PeerGateway>();
+    const C_ID = "srv_node_c_000000000000000000000000000";
+    const a = await buildNode({ nodeId: A_ID, network, taskSide: new InMemoryTaskExecutionResources(),
+      peers: [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true }] });
+    const b = await buildNode({ nodeId: B_ID, network, peers: [{ nodeId: A_ID, name: "desktop", baseUrl: "http://a:29695", addedAt: T0, paired: true },
+      { nodeId: C_ID, name: "laptop", baseUrl: "http://c:29695", addedAt: T0, paired: true }] });
+    const c = await buildNode({ nodeId: C_ID, network, peers: [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true }] });
+    a.metadata.set(DELEGATOR, { runId: DELEGATOR, agentDefinitionId: "assistant", workspaceRootPath: "/work", memoryDir: path.join(a.memoryDir, "agents", DELEGATOR),
+      llmModelIdentifier: "gpt", llmConfig: null, autoExecuteTools: false, runtimeKind: RuntimeKind.CODEX_APP_SERVER, platformAgentRunId: null, startedAt: T0 });
+    a.runOf(DELEGATOR).active = true;
+    await delegate(a);
+    await expect(c.channel().deliveredRunState(B_ID, RUN, false)).resolves.toMatchObject({ accepted: false, code: "REMOTE_TARGET_NOT_PERMITTED" });
+    await expect(c.channel().deliveredRunState(B_ID, { kind: "agent", runId: "no_such_run" }, false)).resolves.toMatchObject({ accepted: false, code: "REMOTE_TARGET_NOT_FOUND" });
+    expect(b.closed.has(RUN)).toBe(false);
+    expect(b.runOf(RUN.runId).active).toBe(true);
   });
 });

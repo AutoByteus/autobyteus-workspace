@@ -7,6 +7,7 @@ import {
   PeerGateway,
   type AvailableAgentsHandler,
   type DelegatedRunHandler,
+  type DelegatedRunStatesHandler,
   type RemoteMessageHandler,
   type RemoteRunViewHandler,
   type RunningAgentsHandler,
@@ -58,7 +59,7 @@ export const composeRemoteCollaboration = (input: Readonly<{
   runsInContainer?(): boolean;
   handlers(services: Omit<RemoteCollaborationServices, "gateway" | "discovery" | "addresses" | "pairing" | "peerRequestVerifier">): Readonly<{
     delegatedRuns: DelegatedRunHandler; messages: RemoteMessageHandler; availableAgents: AvailableAgentsHandler;
-    runningAgents: RunningAgentsHandler; runViews: RemoteRunViewHandler;
+    runningAgents: RunningAgentsHandler; runViews: RemoteRunViewHandler; delegatedRunStates: DelegatedRunStatesHandler;
   }>;
 }>): RemoteCollaborationServices => {
   const capability = new RemoteCollaborationCapability(input.settings);

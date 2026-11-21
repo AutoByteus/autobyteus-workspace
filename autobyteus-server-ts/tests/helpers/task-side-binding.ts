@@ -6,10 +6,12 @@ import type { AssignToExistingDelegatedRunInput, SpawnTaskInput, TaskDelegationC
 import { RemoteDelegation } from "../../src/agent-collaboration/execution/remote/remote-delegation.js";
 import type { InMemoryTaskExecutionResources } from "../fixtures/task-execution-resource-fixtures.js";
 import type { RemoteRunChannel } from "../../src/agent-collaboration/execution/remote/remote-run-channel.js";
-import { NO_PEER_CHANNEL } from "./explicit-host-collaborators.js";
+import { NO_PEER_CHANNEL, NO_PEER_RUN_PORTS } from "./explicit-host-collaborators.js";
+import type { PeerRunStateNotices } from "../../src/agent-collaboration/execution/remote/peer-run-state-notices.js";
 
 const notInThisTest = async (): Promise<never> => { throw new Error("A local run is not started in this test."); };
 
+type TaskDelegationPeerPorts = ConstructorParameters<typeof TaskDelegation>[0];
 type DelegatingRoot = Readonly<{ delegationSource(context: TaskDelegationContext): Promise<DelegationSource | DelegationRefusal> }>;
 
 /**
@@ -18,7 +20,9 @@ type DelegatingRoot = Readonly<{ delegationSource(context: TaskDelegationContext
  * `assign` take the tool path: the sender's root answers for its own run, the delegation goes on outside it. Only peer
  * delegation runs a delegation to the end: starting a local run refuses.
  */
-export const testTaskSide = (tasks: InMemoryTaskExecutionResources, channel?: () => RemoteRunChannel | null) => {
+export const testTaskSide = (tasks: InMemoryTaskExecutionResources, channel?: () => RemoteRunChannel | null,
+  /** autobyteus-591 DN-8: a peer run's follow-up Task; none by default (a test without peers). */
+  peerRuns: Readonly<{ deliverToPeerRun: TaskDelegationPeerPorts["deliverToPeerRun"]; peerNotices: Pick<PeerRunStateNotices, "changed"> }> = NO_PEER_RUN_PORTS) => {
   const tree = new DelegationIndex(() => tasks, NO_RUN_PARTS);
   tree.build();
   tasks.setEntriesListener(tree);
@@ -29,6 +33,7 @@ export const testTaskSide = (tasks: InMemoryTaskExecutionResources, channel?: ()
     reachingAddress: async () => null,
     ownDelegations: { of: async () => null }, delegatorCatalog: { placementAt: async () => null }, conversationOf: async () => ({ entryAddress: "/entry", activity: { kind: "present" as const } }),
     deliverToRun: notInThisTest,
+    ...peerRuns,
     // A test that gives no channel has no peer nodes (autobyteus-500 FU-011).
     channel: channel ?? NO_PEER_CHANNEL,
   });

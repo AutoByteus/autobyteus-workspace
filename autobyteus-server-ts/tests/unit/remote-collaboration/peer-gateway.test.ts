@@ -26,6 +26,7 @@ const gateway = (input: { enabled?: boolean; registered?: boolean } = {}) => {
   const messages = { accept: vi.fn(async () => ({ accepted: true as const, receiverAddress: "/publisher" })), acceptRunMessage: vi.fn(async () => ({ accepted: true as const, receiverAddress: null })) };
   const runningAgents = { list: vi.fn(async () => ({ accepted: true as const, agents: [{ kind: "agent" as const, name: "PM", agent_run_id: "pm_b", state: "idle" as const }] })) };
   const availableAgents = { list: vi.fn(async () => ({ accepted: true as const, agents: [{ name: "Publisher", kind: "agent" as const, address: "/publisher" }] })) };
+  const delegatedRunStates = { apply: vi.fn(async (request: { open: boolean }) => ({ accepted: true as const, open: request.open })) };
   const gate = new PeerGateway({
     ownNodeId: async () => SELF,
     capability: { isEnabled: () => input.enabled ?? true },
@@ -35,11 +36,27 @@ const gateway = (input: { enabled?: boolean; registered?: boolean } = {}) => {
     availableAgents,
     runningAgents,
     runViews: {} as never,
+    delegatedRunStates,
   });
-  return { gate, delegatedRuns, messages, availableAgents, runningAgents };
+  return { gate, delegatedRuns, messages, availableAgents, runningAgents, delegatedRunStates };
 };
 
 describe("PeerGateway", () => {
+  it("autobyteus-591 DN-2: a delegated run's state goes to its handler with the calling peer; a malformed one is refused before it", async () => {
+    const f = gateway();
+    const body = { fromNodeId: PEER.nodeId, toNodeId: SELF, run: { kind: "agent_team", runId: "studio_team_b" }, open: false };
+    await expect(f.gate.deliveredRunState(body, PEER_CALLER)).resolves.toEqual({ status: 200, answer: { accepted: true, open: false, nodeId: SELF } });
+    expect(f.delegatedRunStates.apply).toHaveBeenCalledWith(expect.objectContaining({ run: { kind: "agent_team", runId: "studio_team_b" }, open: false }), PEER);
+    for (const bad of [{ ...body, open: "no" }, { ...body, run: { kind: "agent_org", runId: "org_1" } }, { ...body, run: undefined }]) {
+      await expect(f.gate.deliveredRunState(bad, PEER_CALLER)).resolves.toMatchObject({ answer: { accepted: false, nodeId: SELF } });
+    }
+    expect(f.delegatedRunStates.apply).toHaveBeenCalledOnce();
+    // Not registered: refused before the handler, as every request.
+    const unregistered = gateway({ registered: false });
+    await expect(unregistered.gate.deliveredRunState(body, PEER_CALLER)).resolves.toMatchObject({ answer: { accepted: false, code: "PEER_NOT_REGISTERED" } });
+    expect(unregistered.delegatedRunStates.apply).not.toHaveBeenCalled();
+  });
+
   it("dispatches an admitted request to the one handler of its kind, with the calling peer; every answer names this node", async () => {
     const f = gateway();
     await expect(f.gate.startDelegatedRun(startBody(), PEER_CALLER)).resolves.toEqual({ status: 200, answer: { accepted: true, kind: "agent", agentRunId: "publisher_7f3", nodeId: SELF } });

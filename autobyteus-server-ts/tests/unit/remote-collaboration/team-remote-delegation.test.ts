@@ -43,6 +43,10 @@ import { testTaskSide } from "../../helpers/task-side-binding.js";
 import { noDelegations } from "../../helpers/no-delegations.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
 import { OFFERED_MODEL_EXECUTION_FACTORY } from "../../helpers/explicit-host-collaborators.js";
+import { ClosedDelegations } from "../../../src/remote-collaboration/inbound/closed-delegations.js";
+import { DelegatedRunStateHandler } from "../../../src/remote-collaboration/inbound/delegated-run-state-handler.js";
+import { PeerRunStateNotices } from "../../../src/agent-collaboration/execution/remote/peer-run-state-notices.js";
+import { deliverMessageToPeerRun } from "../../../src/agent-communication/services/peer-run-message-delivery.js";
 
 /**
  * autobyteus-247 in one process (change sequence steps 2 … 5): a standalone run on node A delegates to a shared
@@ -80,7 +84,8 @@ const peerClient = (nodeId: string, peers: PeerNode[], network: Network) => new 
     const body = JSON.parse(String(init.body));
     const route = url.slice(url.indexOf("/rest/remote/") + "/rest/remote/".length);
     const response = route === "delegated-runs" ? await gateway.startDelegatedRun(body, peerCallerOf(init.headers)) : route === "messages" ? await gateway.deliverMessage(body, peerCallerOf(init.headers))
-      : route === "availability" ? await gateway.checkAvailability(body, peerCallerOf(init.headers)) : await gateway.listAvailableAgents(body, peerCallerOf(init.headers));
+      : route === "availability" ? await gateway.checkAvailability(body, peerCallerOf(init.headers))
+        : route === "delegated-run-states" ? await gateway.deliveredRunState(body, peerCallerOf(init.headers)) : await gateway.listAvailableAgents(body, peerCallerOf(init.headers));
     return { ok: response.status === 200, status: response.status, json: async () => structuredClone(response.answer) };
   }) as never,
 });
@@ -105,9 +110,14 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
     llmModelIdentifier: "gpt", llmConfig: null, autoExecuteTools: false, runtimeKind: RuntimeKind.CODEX_APP_SERVER, platformAgentRunId: null, startedAt: T0 });
   const client = peerClient(A_ID, A_PEERS, network);
   releases.splice(0).forEach((release) => release());
-  const taskSide = testTaskSide(resources, () => client);
+  // autobyteus-591: what A tells B of its runs' delegation state (DN-1), and a peer run's follow-up Task (DN-8).
+  const activeRoots = new ActiveCollaborationRootDirectory();
+  const notices = new PeerRunStateNotices({ channel: () => client, tasks: resources, retryMs: 3_600_000 });
+  releases.push(() => notices.close());
+  const taskSide = testTaskSide(resources, () => client, { peerNotices: notices,
+    deliverToPeerRun: (message) => deliverMessageToPeerRun({ crossRun: { closedPeerRunRefusal: async () => null }, activeRoots }, message) });
   const manager = new StandaloneAgentRunRootManager({
-    memoryDir: dir, activeRootDirectory: new ActiveCollaborationRootDirectory(),
+    memoryDir: dir, activeRootDirectory: activeRoots,
     definitions: { getAgentDefinitionById: async (id) => new AgentDefinition({ id, name: "Assistant", description: "x", instructions: "x" }) },
     orgInstruction: async () => null,
     agentServices: {
@@ -129,7 +139,10 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
     messages: new RemoteMessageReceiver({
       storedLinkCheck: async (root, query) => root.kind === "agent" ? manager.storedRemoteLinkCheck(root.runId, query) : "not_found",
       standalone: (runId) => manager.resolveRoot(runId), team: async () => null, org: async () => null,
-    }, { recordFirstMessage: async () => undefined }, new PeerStartedRunDecisions()),
+      runAgents: () => manager.runAgents, liveRoot: () => null,
+    }, { recordFirstMessage: async () => undefined }, new PeerStartedRunDecisions(), { rootOf: () => null, teamCoordinatorOf: () => null },
+    { openedBy: async () => undefined }),
+    runningAgents: {} as never, runViews: {} as never, delegatedRunStates: {} as never,
   }));
   hostActive = true;
   const identity = createCollaborationMemberExecutionIdentity({ root: createAgentRootExecutionIdentity(DELEGATOR), memberAddress: "/assistant" as never, agentRunId: DELEGATOR });
@@ -141,7 +154,10 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
     sender: { kind: "agent", identity, displayName: "assistant" } as never, targetAgentRunId: target, content, referenceFiles: [] });
   // autobyteus-261: this node's discovery of its peers, over the same client.
   const discovery = new PeerNodeDiscovery({ capability: { isEnabled: () => true }, peers: { list: async () => A_PEERS }, client });
-  return { dir, metadata, manager, resources, received, host, client, discovery, root, delegate, send, taskSide, setHostActive: (value: boolean) => { hostActive = value; } };
+  // A follow-up Task by run ID (DN-8), on the tool path.
+  const assign = async (taskId: string) => taskSide.assign(await root(), { identity }, { delegatedRun: { teamRunId: "studio_team_b" }, taskId });
+  return { dir, metadata, manager, resources, received, host, client, discovery, root, delegate, send, assign, taskSide, notices,
+    setHostActive: (value: boolean) => { hostActive = value; } };
 };
 
 /** Node B: a shared Agent Team behind the real Team stack; the agent runtimes are fakes whose status the test drives. */
@@ -185,6 +201,8 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
       return () => { if (listeners.get(runId) === listener) listeners.delete(runId); };
     },
     getStatusSnapshot: () => ({ status: statuses.get(runId) ?? "idle" }), getInputStateSnapshot: () => null,
+    // A closure Stop fences the member's input and interrupts its turn first (autobyteus-591 AC-002 stops a working member).
+    fenceInputAndInterruptForRootShutdown: vi.fn(async () => ({ accepted: true as const })),
     postUserMessage: async (message: { content: string }) => { conversations.add(runId); inbox.set(runId, [...(inbox.get(runId) ?? []), message.content]); return { accepted: true }; },
     reserveUserMessage: async (message: { content: string }) => ({ reserved: true, reservation: { agentRunId: runId, cancel: vi.fn(),
       commit: () => { conversations.add(runId); inbox.set(runId, [...(inbox.get(runId) ?? []), message.content]); return { release: () => undefined }; } } }) });
@@ -227,7 +245,7 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
       recordTeamRunSummary: vi.fn(async (input: { teamRunId: string; summary?: string | null }) => {
         if (!titles.has(input.teamRunId) && input.summary?.trim()) titles.set(input.teamRunId, input.summary);
       }),
-      recordTeamRunTerminated: vi.fn(async () => undefined) } as never,
+      recordTeamRunTerminated: vi.fn(async () => undefined), getCatalogRow: vi.fn(async () => null) } as never,
     workspaceManager: { ensureWorkspaceByRootPath: vi.fn(async (rootPath: string) => ({ getBasePath: () => rootPath })) } as never,
     memoryDir: dir,
     agentRunIdentityAllocator: { allocateForAgentDefinition: async (id: string) => `${id}_b${++allocation}` },
@@ -239,6 +257,9 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
   channelB = client;
   channels.push(client);
   const catalogPort = new NodeCatalogPort(path.join(dir, "temp_workspace"));
+  // autobyteus-591: the runs A started here and then closed (DN-5), in B's folder (kept across B's restart).
+  const closed = ClosedDelegations.inAppDataDir(dir);
+  await closed.load();
   network.set(B_ID, new PeerGateway({
     ownNodeId: async () => B_ID, capability: { isEnabled: () => true }, peers: peerDirectory(B_PEERS),
     delegatedRuns: new RemoteDelegationReceiver({ admission: () => admission, catalogPort,
@@ -248,7 +269,13 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
     messages: new RemoteMessageReceiver({
       storedLinkCheck: async (root, query) => root.kind === "agent_team" ? teamRuns.storedRemoteLinkCheck(root.runId, query) : "not_found",
       standalone: async () => null, team: (teamRunId) => teamRuns.resolveManagedTeamRun(teamRunId), org: async () => null,
-    }, { recordFirstMessage: (root, content) => root.kind === "agent_team" ? teamRuns.recordRunTitle(root.runId, content) : Promise.resolve() }, new PeerStartedRunDecisions()),
+      runAgents: () => teamRuns.runAgents, liveRoot: () => null,
+    }, { recordFirstMessage: (root, content) => root.kind === "agent_team" ? teamRuns.recordRunTitle(root.runId, content) : Promise.resolve() }, new PeerStartedRunDecisions(),
+    { rootOf: () => null, teamCoordinatorOf: () => null }, closed),
+    runningAgents: {} as never, runViews: {} as never,
+    // autobyteus-591 DN-2: A's state of the Team it started here: recorded, then the Team's closure Stop.
+    delegatedRunStates: new DelegatedRunStateHandler({ closed, teamRuns, agentRuns: { stopForTaskClosure: async () => "not_stopped" as const },
+      roots: { storedLinkCheck: async (root, query) => root.kind === "agent_team" ? teamRuns.storedRemoteLinkCheck(root.runId, query) : "not_found" } }),
   }));
   const member = (address: string, agentRunId: string) => createCollaborationMemberExecutionIdentity({
     root: createTeamRootExecutionIdentity("studio_team_b"), memberAddress: address as never, agentRunId });
@@ -256,7 +283,7 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
     (await teamRuns.resolveManagedTeamRun("studio_team_b"))!.deliverExactAgentMessage({
       sender: { kind: "agent", identity: member(from.address, from.agentRunId), displayName: from.address.slice(1) } as never,
       targetAgentRunId: target, content, referenceFiles: [] });
-  return { dir, team, teamRuns, teamManager, started, inbox, busy, live, emit, send, client, state, titles };
+  return { dir, team, teamRuns, teamManager, started, inbox, busy, live, emit, send, client, state, titles, closed };
 };
 
 const LEAD = { address: "/lead", agentRunId: "lead_b1" };
@@ -330,15 +357,10 @@ describe("remote delegation to a shared Agent Team, in process (autobyteus-247)"
       .resolves.toMatchObject({ accepted: false, code: "REMOTE_TARGET_NOT_PERMITTED" });
   });
 
-  it("AC-305: closing the Task on A fences the remote Team both ways (fenced_remote); a saved Task for it is refused", async () => {
+  it("AC-305: closing the Task on A fences the remote Team both ways (fenced_remote)", async () => {
     const { a, b } = await twoNodes();
     await a.delegate();
-    const root = await a.root();
-    a.resources.addTask("task-B");
-    await expect(a.taskSide.assign(root, { identity: createCollaborationMemberExecutionIdentity({ root: createAgentRootExecutionIdentity(DELEGATOR),
-      memberAddress: "/assistant" as never, agentRunId: DELEGATOR }) }, { delegatedRun: { teamRunId: "studio_team_b" }, taskId: "task-B" }))
-      .resolves.toEqual({ delegated: false, message: expect.stringContaining("can't be given to an agent on another node") });
-    // The closed Task fences it: nothing on A stops a run on B (the Task side logs the fence, task-execution-resource-release.ts).
+    // The closed Task fences it at once, before its node is told (autobyteus-591's notice stops it there).
     a.resources.close("ad_hoc_task_1");
     await expect(a.send(WRITER.agentRunId, "more?")).resolves.toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
     await expect(b.send(LEAD, DELEGATOR, "done")).resolves.toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
@@ -387,6 +409,70 @@ describe("remote delegation to a shared Agent Team, in process (autobyteus-247)"
     expect(b.teamRuns.getManagedTeamRun("studio_team_b")).toBeNull();
     await expect(a.manager.storedRemoteLinkCheck(DELEGATOR, { kind: "message", fromNodeId: B_ID, senderAgentRunId: WRITER.agentRunId, targetAgentRunId: DELEGATOR }))
       .resolves.toBe("proceed");
+  });
+});
+
+describe("autobyteus-591: a closed Task's remote Team stops on its node; a follow-up Task brings it back, in process", () => {
+  const TEAM = { kind: "agent_team" as const, runId: "studio_team_b" };
+  const closeOnA = async (a: Awaited<ReturnType<typeof buildNodeA>>) => {
+    a.resources.close("ad_hoc_task_1");
+    // What the Task side's release does for a closed peer run (task-execution-resource-release.ts).
+    return a.notices.changed({ run: { teamRunId: TEAM.runId }, nodeId: B_ID });
+  };
+
+  it("AC-001, AC-002: closing the Task on A stops the whole Team on B, a working member included; B records it and A's notice is no longer owed", async () => {
+    const { a, b } = await twoNodes();
+    await a.delegate();
+    await expect(a.send(WRITER.agentRunId, "Write the intro.")).resolves.toMatchObject({ accepted: true });
+    b.busy.add(WRITER.agentRunId);
+    b.emit(WRITER.agentRunId, AgentRunEventType.AGENT_STATUS, { status: "running" });
+    expect([...b.live.keys()].sort()).toEqual([LEAD.agentRunId, WRITER.agentRunId]);
+
+    await expect(closeOnA(a)).resolves.toEqual({ confirmed: true });
+    // B answered after the Stop completed (DN-1b): no member runs, and the Team root is ended.
+    expect(b.live.size).toBe(0);
+    expect(b.teamRuns.getManagedTeamRun(TEAM.runId)?.isActive() ?? false).toBe(false);
+    expect(b.closed.has(TEAM)).toBe(true);
+    expect(JSON.parse(await fs.readFile(path.join(b.dir, "remote-collaboration", "closed-delegations.json"), "utf8")))
+      .toEqual([{ kind: "agent_team", runId: TEAM.runId, nodeId: A_ID, closedAt: expect.any(String) }]);
+    expect(a.resources.peerNoticesOwed.size).toBe(0);
+    // Sent again (a retry, or a repeated DONE): idempotent on B.
+    await expect(a.notices.changed({ run: { teamRunId: TEAM.runId }, nodeId: B_ID })).resolves.toEqual({ confirmed: true });
+    expect(b.closed.has(TEAM)).toBe(true);
+  });
+
+  it("AC-007: a follow-up Task for the stopped Team: A tells B it is open, then its coordinator gets the work over the link; B lists it again", async () => {
+    const { a, b } = await twoNodes();
+    await a.delegate();
+    await closeOnA(a);
+    expect(b.live.size).toBe(0);
+    a.resources.addTask("task-B", "Edit the episode.");
+    await expect(a.assign("task-B")).resolves.toEqual({ delegated: true,
+      delegatedRun: { kind: "team", teamRunId: TEAM.runId, teamCoordinatorAgentRunId: LEAD.agentRunId } });
+    expect(b.closed.has(TEAM)).toBe(false);
+    expect(b.inbox.get(LEAD.agentRunId)?.at(-1)).toContain("Edit the episode.");
+    expect(b.live.has(LEAD.agentRunId)).toBe(true);
+    // A: the run's new entry keeps its node and members; its work started.
+    expect(a.resources.entry({ teamRunId: TEAM.runId })).toMatchObject({ taskId: "task-B", open: true, start: "started", nodeId: B_ID });
+    expect(a.resources.peerNoticesOwed.size).toBe(0);
+  });
+
+  it("a follow-up Task while B is unreachable: the open notice stays owed and the work is not delivered", async () => {
+    const { network, a, b } = await twoNodes();
+    await a.delegate();
+    await closeOnA(a);
+    const gatewayB = network.get(B_ID)!;
+    network.delete(B_ID);
+    a.resources.addTask("task-B", "Edit the episode.");
+    const outcome = await a.assign("task-B");
+    expect(outcome).toMatchObject({ delegated: false, message: expect.stringContaining("the message with its work was not delivered") });
+    expect(a.resources.peerNoticesOwed.has(`team:${TEAM.runId}`) || a.resources.peerNoticesOwed.size === 1).toBe(true);
+    expect(b.closed.has(TEAM)).toBe(true);
+    // B is back: the owed notice is sent (the peer's retry), and B lists the Team again.
+    network.set(B_ID, gatewayB);
+    await expect(a.notices.changed({ run: { teamRunId: TEAM.runId }, nodeId: B_ID })).resolves.toEqual({ confirmed: true });
+    expect(b.closed.has(TEAM)).toBe(false);
+    expect(a.resources.peerNoticesOwed.size).toBe(0);
   });
 });
 

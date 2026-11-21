@@ -58,7 +58,7 @@ describe("this node's identity held back", () => {
     const delegatedRuns = { start: vi.fn() };
     const gate = new PeerGateway({
       ownNodeId: pending, capability: { isEnabled: () => true }, peers,
-      delegatedRuns: delegatedRuns as never, messages: { accept: vi.fn() } as never, availableAgents: { list: vi.fn() } as never, runningAgents: { list: vi.fn() } as never, runViews: {} as never,
+      delegatedRuns: delegatedRuns as never, messages: { accept: vi.fn() } as never, availableAgents: { list: vi.fn() } as never, runningAgents: { list: vi.fn() } as never, runViews: {} as never, delegatedRunStates: {} as never,
     });
     const response = await gate.startDelegatedRun({ fromNodeId: PEER.nodeId, toNodeId: SELF, address: "/publisher",
       delegator: { agentRunId: "agent_a1" }, delegatingRun: { kind: "agent", runId: "agent_a1" }, task: { text: "Publish the video draft.", title: "Publish the video draft.", taskKey: null, projectId: null, taskId: null } },
@@ -84,7 +84,7 @@ describe("this node's identity held back", () => {
       ownNodeId: pending,
       tempWorkspaceDir: dir,
       runsInContainer: () => false,
-      handlers: () => ({ delegatedRuns: {} as never, messages: {} as never, availableAgents: {} as never, runningAgents: {} as never, runViews: {} as never }),
+      handlers: () => ({ delegatedRuns: {} as never, messages: {} as never, availableAgents: {} as never, runningAgents: {} as never, runViews: {} as never, delegatedRunStates: {} as never }),
     });
     vi.spyOn(services.client, "fetchNodeId").mockResolvedValue(PEER.nodeId);
     await expect(services.pairing.createInvite()).rejects.toMatchObject({ code: "NODE_IDENTITY_NOT_MIGRATED" });

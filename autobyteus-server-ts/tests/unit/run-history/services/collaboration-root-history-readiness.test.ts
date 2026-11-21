@@ -26,6 +26,7 @@ import { TeamRunHistoryService } from "../../../../src/run-history/services/team
 import { WorkspaceRunHistoryService } from "../../../../src/run-history/services/workspace-run-history-service.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
 import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
+import { NO_CLOSED_DELEGATIONS } from "../../../../src/remote-collaboration/inbound/closed-delegations.js";
 
 const roots: string[] = [];
 afterEach(async () => {
@@ -152,7 +153,7 @@ describe("first mixed collaboration history after restart", () => {
     ]));
     expect(readinessRebuild).toHaveBeenCalledTimes(1);
 
-    const workspaceHistory = new WorkspaceRunHistoryService({ tree: noDelegations(),
+    const workspaceHistory = new WorkspaceRunHistoryService({ tree: noDelegations(), closedDelegations: NO_CLOSED_DELEGATIONS,
       agentRunHistoryService: { listRunHistory: vi.fn(async () => []) } as never,
       teamRunHistoryService: teamHistory,
     });

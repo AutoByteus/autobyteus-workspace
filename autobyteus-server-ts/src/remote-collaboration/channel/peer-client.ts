@@ -31,6 +31,7 @@ import {
   REMOTE_AGENT_STREAM_SNAPSHOT_PATH,
   REMOTE_AVAILABILITY_PATH,
   REMOTE_AVAILABLE_AGENTS_PATH,
+  REMOTE_DELEGATED_RUN_STATES_PATH,
   REMOTE_DELEGATED_RUNS_PATH,
   REMOTE_MESSAGES_PATH,
   REMOTE_OWNER_COMMANDS_PATH,
@@ -41,6 +42,7 @@ import {
   type AgentProjectionRequest,
   type DeliverRemoteMessageRequest,
   type DeliverRunMessageRequest,
+  type DelegatedRunStateRequest,
   type OwnerCommandRequest,
   type RemoteRefusalTarget,
   type RunSummariesRequest,
@@ -248,6 +250,13 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe, PeerPair
       return projection ? Object.freeze({ accepted: true as const, projection })
         : refusal(REMOTE_REFUSAL.PEER_UNREACHABLE, peerRefusalText(peer.name, REMOTE_REFUSAL.PEER_UNREACHABLE, "it answered without the conversation"));
     });
+  }
+
+  /** autobyteus-591 DN-2: the run's Task state on this node; the peer answers once it applied it (closed: stopped). */
+  deliveredRunState(nodeId: string, run: RemoteStartedRunRef, open: boolean): Promise<RemoteDeliveryReceipt> {
+    return this.call(nodeId, REMOTE_DELEGATED_RUN_STATES_PATH, (envelope): DelegatedRunStateRequest => ({
+      ...envelope, run: { kind: run.kind, runId: run.runId }, open,
+    }), "did not answer in time; the state may have been applied", () => Object.freeze({ accepted: true as const }));
   }
 
   /** autobyteus-278: a command of this node's owner for one agent of such a run. */

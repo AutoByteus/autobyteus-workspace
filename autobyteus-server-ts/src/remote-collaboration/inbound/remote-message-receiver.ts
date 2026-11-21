@@ -16,6 +16,7 @@ import type { PeerHandlerRefusal, RemoteMessageHandler } from "../channel/peer-g
 import type { PeerNode } from "../domain/peer-node.js";
 import { REMOTE_REFUSAL } from "../domain/remote-refusals.js";
 import type { DeliverRemoteMessageRequest, DeliverRunMessageRequest } from "../domain/remote-requests.js";
+import type { ClosedDelegations } from "./closed-delegations.js";
 
 /** A collaboration root that admits messages from its linked runs on peer nodes (all three root kinds). */
 export type RemoteMessageRoot = Readonly<{ acceptRemoteMessage(input: RemoteInboundMessage): Promise<AgentOperationResult> }>;
@@ -74,6 +75,11 @@ export class RemoteMessageReceiver implements RemoteMessageHandler {
     private readonly decisions: Pick<PeerStartedRunDecisions, "workArrived">,
     /** autobyteus-492: which live root runs an agent now, and a live team's coordinator. */
     private readonly running: Pick<RunningAgents, "rootOf" | "teamCoordinatorOf">,
+    /**
+     * autobyteus-591 S-5: a peer-started run its delegating node's linked message or work reached is open again, so its
+     * closed-delegation record goes (this covers an "open" notice still in flight).
+     */
+    private readonly closedDelegations: Pick<ClosedDelegations, "openedBy">,
   ) {}
 
   /**
@@ -118,6 +124,7 @@ export class RemoteMessageReceiver implements RemoteMessageHandler {
       // The packet is the run's first message: its description (not the task notification built here) is the title.
       // Not awaited on the answer path; a failure is logged, as on the window's path.
       if (accepted.accepted) {
+        await this.reopened(request.targetRoot, from);
         void this.titles.recordFirstMessage(request.targetRoot, request.content).catch((error: unknown) => {
           console.warn(`Failed to record the title of run '${request.targetRoot.runId}': ${String(error)}`);
         });
@@ -127,7 +134,7 @@ export class RemoteMessageReceiver implements RemoteMessageHandler {
     }
     const root = await this.resolve(() => this.messageRoot(request.targetRoot));
     if (!root) return notFound();
-    return answerOf(await root.acceptRemoteMessage({
+    const accepted = await root.acceptRemoteMessage({
       fromNodeId: from.nodeId,
       fromNodeName: from.name,
       senderAddress: request.sender.address,
@@ -140,7 +147,16 @@ export class RemoteMessageReceiver implements RemoteMessageHandler {
         referenceFiles: [],
         createdAt: request.createdAt,
       },
-    }));
+    });
+    if (accepted.accepted) await this.reopened(request.targetRoot, from);
+    return answerOf(accepted);
+  }
+
+  /** S-5: the run took its delegating node's message or work, so it is open (an Org root is never a peer-started run). */
+  private async reopened(root: RemoteTargetRoot, from: PeerNode): Promise<void> {
+    if (root.kind === "agent_org") return;
+    await this.closedDelegations.openedBy({ kind: root.kind, runId: root.runId }, from.nodeId)
+      .catch((error: unknown) => console.warn("CLOSED_DELEGATIONS_WRITE_FAILED", { run: root, error: String(error) }));
   }
 
   /** The root a peer started: only Agents and Agent Teams are started for a peer. */
