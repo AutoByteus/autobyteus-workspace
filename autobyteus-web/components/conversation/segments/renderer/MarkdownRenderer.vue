@@ -41,6 +41,8 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (event: 'file-path-action', action: AbsoluteFilePathAction): void;
+  /** A scheme-less link was clicked (its raw href); a parent that knows the document's place may open it (FU-002). */
+  (event: 'relative-link', href: string): void;
 }>();
 
 const { t } = useLocalization();
@@ -155,6 +157,7 @@ const handleLinkClick = (event: MouseEvent) => {
   }
   if (href && !URL_SCHEME.test(href) && !href.startsWith('//')) {
     event.preventDefault();
+    emit('relative-link', href);
     return;
   }
 

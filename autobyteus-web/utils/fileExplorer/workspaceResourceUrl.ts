@@ -54,17 +54,19 @@ export const buildWorkspaceContentUrl = (
   return `${normalizedRestBase}/workspaces/${encodeURIComponent(workspaceId)}/content?path=${encodeURIComponent(workspaceRelativePath)}`
 }
 
-export const resolveWorkspaceMarkdownImageResource = ({
-  source,
-  documentPath,
-  context,
-  restBaseUrl,
-}: WorkspaceMarkdownImageInput): MarkdownImageResourceResolution => {
-  const trimmedSource = source.trim()
-  if (!trimmedSource || isDirectImageSource(trimmedSource)) {
-    return { kind: 'direct', url: trimmedSource }
-  }
-  if (trimmedSource.includes('\\')) {
+/** A relative reference in a workspace document, resolved to a path in the same workspace, or why it cannot be. */
+export type WorkspaceRelativeReference =
+  | { kind: 'resolved'; workspaceRelativePath: string; fragment: string | null }
+  | { kind: 'blocked'; reason: 'invalid-path' | 'outside-workspace' }
+
+/**
+ * The one rule for a relative reference in a workspace document, an image source or a link (autobyteus-576 FU-002):
+ * the `#fragment` and `?query` are not part of the file, each segment is URL-decoded, and the result is resolved against
+ * the document's folder with POSIX rules; a reference that leaves the workspace root, or names no file, is refused.
+ */
+export const resolveWorkspaceRelativeReference = (reference: string, documentPath: string): WorkspaceRelativeReference => {
+  const trimmedSource = reference.trim()
+  if (!trimmedSource || trimmedSource.includes('\\')) {
     return { kind: 'blocked', reason: 'invalid-path' }
   }
 
@@ -105,14 +107,30 @@ export const resolveWorkspaceMarkdownImageResource = ({
     return { kind: 'blocked', reason: 'invalid-path' }
   }
 
-  const workspaceRelativePath = resolvedSegments.join('/')
+  return {
+    kind: 'resolved',
+    workspaceRelativePath: resolvedSegments.join('/'),
+    fragment: fragment && fragment.length > 1 ? fragment : null,
+  }
+}
+
+export const resolveWorkspaceMarkdownImageResource = ({
+  source,
+  documentPath,
+  context,
+  restBaseUrl,
+}: WorkspaceMarkdownImageInput): MarkdownImageResourceResolution => {
+  const trimmedSource = source.trim()
+  if (!trimmedSource || isDirectImageSource(trimmedSource)) {
+    return { kind: 'direct', url: trimmedSource }
+  }
+  const reference = resolveWorkspaceRelativeReference(trimmedSource, documentPath)
+  if (reference.kind === 'blocked') {
+    return reference
+  }
   return {
     kind: 'managed',
-    fetchUrl: buildWorkspaceContentUrl(
-      restBaseUrl,
-      context.workspaceId,
-      workspaceRelativePath,
-    ),
-    fragment: fragment && fragment.length > 1 ? fragment : null,
+    fetchUrl: buildWorkspaceContentUrl(restBaseUrl, context.workspaceId, reference.workspaceRelativePath),
+    fragment: reference.fragment,
   }
 }

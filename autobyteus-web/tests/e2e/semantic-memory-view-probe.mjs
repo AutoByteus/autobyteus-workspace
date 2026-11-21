@@ -128,7 +128,11 @@ const writeDataRoot = async (dataRoot, outsideDir) => {
   const longId = buildTeamLocalAgentDefinitionId(LONG_TEAM_ID, 'scribe');
   const longFolder = new AgentMemoryLayout(memoryDir).getAgentSemanticMemoryDirPath(longId);
   await fs.mkdir(longFolder, { recursive: true });
-  await fs.writeFile(path.join(longFolder, 'notes.md'), '# Archive notes\n\nThe long team keeps its notes here.\n');
+  // autobyteus-576 FU-002: relative links, to a file of the folder (with a fragment), to a missing one and out of it.
+  await fs.writeFile(path.join(longFolder, 'notes.md'), '# Archive notes\n\nThe long team keeps its notes here.\n\n'
+    + '- [The 2026 archive](archive/2026.md#q1)\n- [An old page](old-page.md)\n- [Outside the folder](../../outside.md)\n');
+  await fs.mkdir(path.join(longFolder, 'archive'), { recursive: true });
+  await fs.writeFile(path.join(longFolder, 'archive', '2026.md'), '# 2026 archive\n\nQ1 closed the launch.\n');
   const { AgentRunMetadataStore } = await import(pathToFileURL(path.join(serverDir, 'dist/run-history/store/agent-run-metadata-store.js')).href);
   await writeRun(memoryDir, 'probe_researcher_run_1', '2026-11-18T09:00:00Z', AgentRunMetadataStore);
   await writeRun(memoryDir, 'probe_researcher_run_2', '2026-11-19T10:30:00Z', AgentRunMetadataStore);
@@ -334,6 +338,30 @@ try {
   await page.locator('text=The long team keeps its notes here.').first().waitFor();
   check('SMV-102', (await page.locator('text=The long team keeps its notes here.').count()) > 0, 'A file inside the shortened folder opens in the preview (the `#` never reaches a URL unencoded)');
   await shot(page, 'SR-009-long-id-semantic-file-open-1440x900');
+
+  // autobyteus-576 FU-002 (AC-002): a relative link opens the linked file of the same folder as a preview tab (the
+  // fragment is not part of the file), nothing becomes editable; a missing file shows the viewer's message; a link out
+  // of the folder opens nothing.
+  const explorer = page.locator('[data-test="semantic-memory-explorer"]');
+  await explorer.locator('a', { hasText: 'The 2026 archive' }).click();
+  await explorer.locator('text=Q1 closed the launch.').first().waitFor();
+  check('SMV-103', (await explorer.locator('text=2026.md').count()) > 0 && !(await page.locator('[title="Edit Mode"]').count()),
+    'A relative link opens the linked file as a preview tab of the same folder, nothing editable');
+  await shot(page, 'FU-002-relative-link-opened-1440x900');
+  await explorer.locator('.file-header', { hasText: 'notes.md' }).click();
+  await explorer.locator('a', { hasText: 'An old page' }).click();
+  // The viewer's message for a missing workspace file is the node's answer, shown in the file's tab (as for any file).
+  await explorer.locator('text=File not found').first().waitFor();
+  check('SMV-104', (await explorer.locator('text=old-page.md').count()) > 0 && (await explorer.locator('text=File not found').count()) > 0,
+    "A link to a missing file opens its tab with the viewer's message", (await explorer.innerText()).slice(0, 400));
+  await shot(page, 'FU-002-relative-link-missing-file-1440x900');
+  await explorer.locator('.file-header', { hasText: 'notes.md' }).click();
+  await explorer.locator('text=The long team keeps its notes here.').first().waitFor();
+  const tabsBefore = await explorer.innerText();
+  await explorer.locator('a', { hasText: 'Outside the folder' }).click();
+  await sleep(1500);
+  check('SMV-105', !(await explorer.locator('text=outside.md').count()) && (await explorer.locator('text=The long team keeps its notes here.').count()) > 0,
+    'A link out of the folder opens nothing', { before: tabsBefore.length, after: (await explorer.innerText()).length });
 
   // CR-001 (REQ-007): leave the agent's Semantic tab while "Loading the folder…" shows (its first listing held), then
   // let the listing complete: the chat workspace menu (the same menu as Run Settings) offers no workspace of the
