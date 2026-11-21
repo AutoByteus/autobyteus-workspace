@@ -4,6 +4,7 @@
 
 | Revision ID | Phase | Trigger | Finding IDs | Prior Status | Current Status | Affected IDs | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| SR-003 | Requirements | Container restructuring investigation | IF-09..IF-14 | Draft | Ready for Approval | REQ-001..REQ-009, AC-001..AC-008, DEC-001..DEC-005 | Requirements for the Org container; awaiting DEC-001..DEC-003 |
 | SR-002 | Requirements | The user's direction 2026-11-21: Org as a container of independent runs | N/A | Ready for Approval | Draft | FU-002 approach (all REQ) | Direction set; investigation of the container restructuring before new requirements |
 | SR-001 | Requirements | Initial baseline (Task autobyteus-29: FU-002, FU-003 of autobyteus-22) | IF-01..IF-08 | N/A | Ready for Approval | REQ-001..REQ-004, AC-001..AC-007, DEC-001..DEC-004 | Presented to the user; awaiting DEC-001 |
 
@@ -23,3 +24,10 @@
 - Decision (user): FU-002 is solved by restructuring Org runs so each mounted Team is its own Team run and each direct agent its own agent run, with the Org run as their container (option B), not by adding following logic to the Org's own saved copy (option A, rejected).
 - Status: requirements back to `Draft`; SR-001's REQ-001/REQ-002/DEC-001 are superseded by the restructuring requirements to come; REQ-003 (FU-003) stands.
 - Next action: investigate the container restructuring (creation, execution, messaging, restore, history and UI, conversion of existing Org runs, size and risk), then present requirements and decisions to the user.
+
+### SR-003 — Requirements for the Org container
+
+- Trigger: investigation after the user's direction (SR-002): IF-09..IF-14 (Org run = one root today; CM-3 calls it a container; precedents for "parts become own runs" with sealed migrations; one user Org run).
+- Requirements rewritten: REQ-001..REQ-009, AC-001..AC-008; SR-001's REQ-001/REQ-002/DEC-001 superseded; FU-003 kept as REQ-008 pending DEC-003.
+- Needs user: DEC-001 (convert existing Org runs, recommended), DEC-002 (also follow the Org definition, recommended include), DEC-003 (split FU-003 into its own Task, recommended).
+- Next action: the user's decisions and approval.

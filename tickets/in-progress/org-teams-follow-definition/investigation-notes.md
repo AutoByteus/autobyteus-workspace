@@ -31,3 +31,16 @@
 
 - Reuse autobyteus-22's planner/committer for an Org's mounted Team (different tree, same rules); the listener must also walk live Org roots; restore of Org runs must follow stored trees.
 - FU-003 needs a peer → delegating-node notice (or a pull on contact) carrying the new member list, accepted against the stored link; check the existing peer channels (`cross-node-task-close-591` was just merged).
+
+## Container Restructuring Investigation (SR-003, after the user's direction SR-002)
+
+| ID | Source (`9f6add773b`) | Finding | Established |
+| --- | --- | --- | --- |
+| IF-09 | `docs/modules/agent_orgs.md` § Scope, § Runtime And Focus | An Org run is one root (`AgentOrgRun`, `AgentOrgRunManager`, `AgentOrgRunService`); direct agents use configured-agent handles; each mounted Team uses the flat Team execution machinery inside the Org root; one Org communication log is the single message authority; members are Offline until first work; one launch surface for the whole Org | Read |
+| IF-10 | `collaboration_model.md` CM-3, §3 | Design: an Org is a container whose units are independent; storage: an Org's units are parts inside the Org run's folder (`agent_orgs/<orgRunId>/`) | Read |
+| IF-11 | `collaboration_model.md` §5 (CM-7, CM-8, CM-9 rows) | Precedents for "parts become runs of their own": `20261017_task_agent_own_run_v1` and `20261111_delegated_runs_own_runs_v1` (≈500 lines) converted stored data; since autobyteus-461 a delegating run's view shows children as rows whose commands, Stop and Settings go to the child's own run; messages between two runs are stored in both logs (CM-9); a delegated run's member reaches its coordinating run's standing agents by address (agent_orgs.md § Addresses, contract §2.3 step 2) | Read |
+| IF-12 | `agent-org-execution/` (3,247 lines; 51 files outside it import it) | Size of the Org execution area the restructuring replaces or reshapes | Measured |
+| IF-13 | Data (read-only): `/home/autobyteus/data/memory/agent_orgs/` | One user Org run (`software_development_department_…`, 2026-09-21) with two mounted Teams' member folders inside it; e2e Org runs on the dev data dir | Measured |
+| IF-14 | `autobyteus-server-ts/src/app-data-migrations/migrations/` | Sealed startup migrations are the repository's way to convert stored shapes (Data Migration Guideline) | Read |
+
+Implications: the container restructuring is feasible on existing machinery (own runs, cross-run messages in both logs, parent views of child runs, cross-run address step 2, sealed migrations), and makes FU-002 follow from autobyteus-22 directly. It replaces how Org runs are created, executed, stored, restored and shown, and needs a migration of existing Org runs: Large / High.
