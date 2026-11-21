@@ -4,7 +4,7 @@
 
 - Current solution revision ID: `SR-006`
 - Approved requirements: `requirements-doc.md` SR-005 with its behavior-defining supplement `reference-files-contract.md` (RFC-001), approved by the founder 2026-11-21 (DEC-001 … DEC-003, DEC-006 and the contract in his words; DEC-004, DEC-005 by the Solution Designer, confirmed by him).
-- User approval of the design: `Not required` (the Task asks for the founder's approval of the investigation and design; the requirements and contract carry it; the design realizes them).
+- User approval of the design: `Pending` — the Task's "Done when" requires "Investigation & design approved by the founder"; asked in the Solution Designer's conversation on 2026-11-21, before any handoff.
 - Design status: `Ready`
 - Investigation notes: `investigation-notes.md` (§ Architecture Investigation Findings).
 - Authorities read: `references/architecture-design.md`, `references/design-principles.md` (in full, this conversation); `DESIGN.md` (root, unchanged since read); `docs/design-cases.md` (incl. the base's new Case 24 and the 572 addition, read 2026-11-21); `TESTING.md` (base diff read); `collaboration_model.md`, `remote_collaboration.md`, `node_access_model.md` (NA-9). All code read at the committed base `fbe714f8bb` (Case 5).
