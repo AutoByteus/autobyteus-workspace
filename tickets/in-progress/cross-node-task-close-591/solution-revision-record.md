@@ -68,3 +68,8 @@
 - **My miss:** I left two premises as "to verify" instead of reading them before handing off (lesson 2).
 - **Change:** DN-8, S-4 and the scope.
 - **Next:** architecture review.
+
+### Review of SR-006 … SR-008
+
+- ARCH-REV-001 failed with AR-001, resolved by SR-007. ARCH-REV-002 failed with AR-002, resolved by SR-008.
+- ARCH-REV-003: **Pass** (`design-review-report.md`). The reviewer sent the package to the implementation engineer.
