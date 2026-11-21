@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import type { FastifyInstance } from "fastify";
 import { buildStudioServer } from "../../../src/compositions/build-studio-server.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
@@ -7,6 +8,18 @@ import type { CredentialProxyHost } from "../../../src/credential-proxy/credenti
 import type { ApplicationPlatformRuntime } from "../../../src/application-platform/runtime/application-platform-runtime.js";
 import { attachOwnerCredential } from "../../../../test-support/node-access/owner-credential-attachment.mjs";
 import { testLaunchCredential } from "../../setup/test-launch-credential.js";
+import { IN_PROCESS_SERVER_HOOK_TIMEOUT_MS } from "../../helpers/os-latency-under-load.js";
+
+/**
+ * The one owner of the hook timeout of in-process-server suites (autobyteus-561). A hook that starts or closes the server takes
+ * milliseconds on a quiet machine and many seconds on a busy one: the main thread stalls while the machine swaps and `fseventsd` is
+ * busy (the teardown of the scripted-Antigravity suites reached 16.6 s against vitest's 10 s default; TESTING.md, "File watching on
+ * a busy Mac"). Every file that imports this helper registers its hooks with the longer limit; `vi.setConfig` here applies to the
+ * hooks the importing file registers afterwards, and a file that does not import it keeps vitest's default. A wait that proves
+ * something does NOT happen keeps its own short window; per-test timeouts and file-event waits still come from
+ * `tests/helpers/os-latency-under-load.ts`.
+ */
+vi.setConfig({ hookTimeout: IN_PROCESS_SERVER_HOOK_TIMEOUT_MS });
 
 const TEST_LOGGING_CONFIG: LoggingConfig = Object.freeze({
   pinoLogLevel: "silent",

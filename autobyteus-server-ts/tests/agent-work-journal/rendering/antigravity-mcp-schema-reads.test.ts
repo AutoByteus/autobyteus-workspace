@@ -61,7 +61,7 @@ describe("a read that failed, or has no result, is shown as today (REQ-002)", ()
     const b = new RecordBuilder();
     const call = b.call("read_file", { Path: SCHEMA });
     const r = render(agy, [b.user("go"), call, b.result(call, { provider_state: "ERROR", output: null }, `open ${SCHEMA}: no such file`)]);
-    expect(r.markdown).toContain("Tool: read_file");
+    expect(r.markdown).toContain(`Command: cat ${SCHEMA}`);
     expect(r.markdown).toContain("failed");
     expect(r.omittedRecordCount).toBe(0);
   });
@@ -77,7 +77,7 @@ describe("a read that failed, or has no result, is shown as today (REQ-002)", ()
   it("AC-003: a read with no result in the file (still running, or its result is in the next file)", () => {
     const b = new RecordBuilder();
     const r = render(agy, [b.user("go"), b.call("read_file", { Path: SCHEMA })]);
-    expect(r.markdown).toContain("Tool: read_file");
+    expect(r.markdown).toContain(`Command: cat ${SCHEMA}`);
     expect(r.renderedRecordCount).toBe(2);
     expect(r.omittedRecordCount).toBe(0);
   });
