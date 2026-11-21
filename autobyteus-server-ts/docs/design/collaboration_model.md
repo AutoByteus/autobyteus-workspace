@@ -227,16 +227,20 @@ delegated runs through their Task entries. Collaboration with remote nodes adds:
 - **the run's delegation state across the link** (CM-7, CM-10, since
   autobyteus-591): when a remote run's last open Task closes, the delegating
   node tells the run's node it is closed; that node records it, stops the run
-  (a Team with every member) and leaves it out of its run list. When the run is
-  given a Task again (`delegate_task` with its run ID and `task_id`), the
-  delegating node tells it it is open, then sends the Task's work over the link;
-  the run's node lists it again and the work wakes it. Per run, one notice is in
+  (a Team with every member) and leaves it out of its run list. As locally,
+  after the Task's reopen its assigner's message continues the run: the
+  delegating node reopens the run's entry, tells the run's node it is open, then
+  sends the message over the link, and the run's node lists it again and the
+  message wakes it with its conversation; any other sender is refused. Given a
+  different saved Task (`delegate_task` with its run ID and `task_id`), it is
+  told "open" the same way, then gets the Task's work. Per run, one notice is in
   flight at a time, with the state read when it is sent, and the work waits for
   the "open" answer. A notice the node did not confirm stays owed on the Task
   entry and is sent again every 30 s while the node has owed notices, also after
   a restart. A notice for a run the node no longer has, or from a node that did
   not start it, is refused there. A reopened Task alone changes nothing on
-  either node, as locally.
+  either node, as locally: an owed "closed" is still sent, unless the run's
+  entry is opened again first.
 
 Later steps add attachment transfer (today `reference_files` are local paths)
 and a remote run's files in the delegating node's window. Messages
@@ -260,7 +264,7 @@ Status as of the change that published this document (Task 259ddae7,
 | CM-9 Per-run message logs | Holds | Since `delegated-copy-own-run-memory`: a message between parts of one run is stored once in that run's log; a message between two runs in both logs (receiver's first) with one message ID. A former host's log keeps its older copies (nothing is deleted); the migration gave each task agent its own log. Since autobyteus-461 a user-started Agent run's log is in its run folder too (`agents/<id>/`, no `collaboration/` folder). Since `append-only-message-logs`, each log is append-only JSON Lines that rotates at 4 MiB (`<base>_active.jsonl` plus sealed `<base>_<6 digits>.jsonl`; startup migration `20261018_append_only_message_logs_v1`). Since autobyteus-565 a line of a message with an unrelated run or another node also records the other agent (`counterpart: {address, nodeId}`; `nodeId` null for a local run), so a run's Messages names it after a reload; older lines are unchanged and are named from what is known (a linked run's Task entry, the run's own file, else its run ID). |
 | CM-8 tree built from the Task records | Holds | Since autobyteus-469 no run stores a list of its local delegated runs. Since autobyteus-461 (`delegated-copies-outlive-delegator-461`) none stores its remote ones either: every delegation is a Task entry with `delegatedFrom` and `recipientAddress`, the run's own file holds its origin, and the `DelegationIndex` is built in memory from the Task entries. Startup migration `20261111_delegated_runs_own_runs_v1` converted existing data (`taskAgent`, `hostRoot`, `assignedBy`, `collaboration_tree.json`, tree `taskExecutions` and `remoteTaskExecutions`, delegated Teams rebased to `/`, busy-run entries). |
 | CM-7 a run's life bound to its Task, not its delegator | Holds | Since autobyteus-461: every delegated run, local or remote, is a root of its own; no run hosts, idles, wakes or stops another. A delegating run's view shows its children by their Task entries, and a child row's commands, Stop and Settings go to the child's own run. After a restart, runs resume bottom-up along `delegatedFrom`, each with its own notice. |
-| CM-10 … CM-12 Remote delegated runs | Holds for Agents (since autobyteus-191 and 245) and Agent Teams (since autobyteus-247), text only | Discovery of peers and their offers holds since autobyteus-261. Since autobyteus-278, remote runs are children in the delegator's root tree (standalone, Team and Org roots) with their node's title, statuses, stored conversation and live output, and the owner messages, interrupts and stops them through the link. Peers pair and sign their requests since autobyteus-437. Messages to unlinked running agents on a peer hold since autobyteus-492 (CM-13). Since autobyteus-591, a remote run stops on its node when its last Task closes on the delegating node, and takes a saved Task again (reactivation). Attachments and a remote run's files come in later slices. |
+| CM-10 … CM-12 Remote delegated runs | Holds for Agents (since autobyteus-191 and 245) and Agent Teams (since autobyteus-247), text only | Discovery of peers and their offers holds since autobyteus-261. Since autobyteus-278, remote runs are children in the delegator's root tree (standalone, Team and Org roots) with their node's title, statuses, stored conversation and live output, and the owner messages, interrupts and stops them through the link. Peers pair and sign their requests since autobyteus-437. Messages to unlinked running agents on a peer hold since autobyteus-492 (CM-13). Since autobyteus-591, a remote run stops on its node when its last Task closes on the delegating node, and is continued by its assigner's message after the Task's reopen, or given another saved Task, as locally (reactivation). Attachments and a remote run's files come in later slices. |
 | CM-13 The run ID is the address | Holds | Since autobyteus-492: `send_message_to` reaches any running agent by run ID, with `node` on a paired peer (`/rest/remote/run-messages`); unrelated runs are never woken; since autobyteus-565 their messages, like those with another node, are in the view of an Agent run that is one of the two runs (its Messages lists every message its agent sent or received) and in no Team, Org or ancestor view; `list_running_agents` lists running runs a person started, here or on a peer (`/rest/remote/running-agents`). |
 
 ## 6. Where The Mechanics Live

@@ -229,6 +229,8 @@ export const composeCollaboration = async (input: Readonly<{
     const crossRun = new CrossRunMessageDelivery({
       runFiles,
       restorability,
+      // autobyteus-591 DN-9: the assigner's message continues a closed peer run once its node confirmed "open".
+      peerNotices,
       senderAddress: (message) => tree.collaborationTreeOf(message.receiverRun).reachingAddressOf(message.sender),
       tree: () => tree,
       tasks: () => tasks,
@@ -248,7 +250,7 @@ export const composeCollaboration = async (input: Readonly<{
       tree: () => tree,
       channel: input.remoteChannel,
       // autobyteus-591 DN-8: a peer run's follow-up Task, after its node confirmed it open, over the run's link.
-      deliverToPeerRun: (message) => deliverMessageToPeerRun({ crossRun, activeRoots: input.activeRoots }, message),
+      deliverToPeerRun: (message) => deliverMessageToPeerRun({ activeRoots: input.activeRoots }, message),
       peerNotices,
       starter: new DelegatedRunStarter({ agentRuns: runs.agentRunService, teamRuns: runs.teamRunService }),
       deliverWorkPacket: async (run, packet) => {

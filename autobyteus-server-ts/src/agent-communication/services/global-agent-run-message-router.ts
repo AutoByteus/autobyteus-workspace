@@ -60,15 +60,16 @@ const notRunning = (targetAgentRunId: string): AgentOperationResult =>
  * `send_message_to(target_agent_run_id)`: the order of target resolution for a run-ID message (autobyteus-492: the run ID
  * is the address, CM-13). Without `node`: the sender's own root; another run of this node (`CrossRunMessageDelivery`:
  * Task-related, or any running agent); a team run's ID (refused with its coordinator's); a live run without a
- * collaboration root (a direct post); else "not running". With `node`: the peer, the closed-Task admission of this node
- * (`closedPeerRunRefusal`), then the sender's root, which sends it to that node.
+ * collaboration root (a direct post); else "not running". With `node`: the peer, then the sender's root, which sends it
+ * to that node. Before any of these, a target on a peer node that this node's Task entries name passes its Task admission
+ * once (`admitPeerRun`, autobyteus-591 DN-9): the assigner's message continues a closed one; others are refused.
  */
 export class GlobalAgentRunMessageRouter {
   constructor(private readonly deps: {
     agentRunManager?: ActiveRunLookup;
     activeRootDirectory?: ActiveCollaborationRootDirectory;
     /** Messages between two runs of this node (DS-2, DS-003) and the closed-Task admission of a peer run; the composition root's. */
-    crossRun: Pick<CrossRunMessageDelivery, "route" | "closedPeerRunRefusal">;
+    crossRun: Pick<CrossRunMessageDelivery, "route" | "admitPeerRun">;
     /** A team run's coordinator when the team does not run (R-12, SR-071): the tree, its one owner. */
     coordinators: Pick<DelegationIndex, "teamCoordinatorOf">;
     /** This node's channel to its peers (`null` where it has none): `findPeer` for `node` (DS-004). */
@@ -80,6 +81,10 @@ export class GlobalAgentRunMessageRouter {
     const content = normalizeRequired(input.content, "content");
     const messageType = normalizeMessageType(input.messageType);
     const referenceFiles = normalizeReferenceFiles(input.referenceFiles);
+    // DN-9: one Task admission for a run on a peer node, whichever path below reaches it, outside any root's gate.
+    const peerRun = await this.deps.crossRun.admitPeerRun({ agentRunId: targetAgentRunId,
+      senderAgentRunId: input.sender.memberExecutionContext?.identity.agentRunId ?? null });
+    if (peerRun !== "not_peer" && peerRun !== "admitted") return peerRun;
     if (input.node !== undefined) return this.deliverToPeer(input, input.node, targetAgentRunId, content, messageType, referenceFiles);
 
     // A sender inside a collaboration root reaches every AgentRun of that root
@@ -184,7 +189,7 @@ export class GlobalAgentRunMessageRouter {
 
   /**
    * DS-004: `send_message_to(node, run ID)`. The peer by this node's name for it (the same refusals as `delegate_task`
-   * with `node`), this node's closed-Task admission of that run (AR-001), then the sender's root sends it to that node.
+   * with `node`), then the sender's root sends it to that node (the Task admission was `deliver`'s first step).
    */
   private async deliverToPeer(input: GlobalAgentRunMessageDeliveryInput, node: string, targetAgentRunId: string, content: string,
     messageType: string, referenceFiles: string[]): Promise<AgentOperationResult> {
@@ -194,7 +199,7 @@ export class GlobalAgentRunMessageRouter {
     if (!channel) return { accepted: false, code: REMOTE_REFUSAL.OFF, message: REMOTE_ROOT_REFUSAL_TEXT.off };
     const peer = await channel.findPeer(node.trim());
     if ("accepted" in peer) return peer;
-    return deliverMessageToPeerRun({ crossRun: this.deps.crossRun, activeRoots: this.activeRootDirectory }, {
+    return deliverMessageToPeerRun({ activeRoots: this.activeRootDirectory }, {
       sender: context.identity, senderDisplayName: input.sender.senderName, nodeId: peer.nodeId, targetAgentRunId, content, messageType, referenceFiles,
     });
   }

@@ -38,6 +38,9 @@ import { ClosedDelegations } from "../../../src/remote-collaboration/inbound/clo
 import { DelegatedRunStateHandler } from "../../../src/remote-collaboration/inbound/delegated-run-state-handler.js";
 import { PeerRunStateNotices } from "../../../src/agent-collaboration/execution/remote/peer-run-state-notices.js";
 import { deliverMessageToPeerRun } from "../../../src/agent-communication/services/peer-run-message-delivery.js";
+import { GlobalAgentRunMessageRouter } from "../../../src/agent-communication/services/global-agent-run-message-router.js";
+import { CrossRunMessageDelivery } from "../../../src/agent-collaboration/communication/cross-run-message-delivery.js";
+import { buildAgentRunMessageSenderContext } from "../../../src/agent-communication/domain/agent-run-message-sender.js";
 import { projectAgentCollaborationView } from "../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
 
 /**
@@ -171,7 +174,7 @@ const buildNode = async (input: Readonly<{
   const notices = new PeerRunStateNotices({ channel: () => client, tasks: resources, retryMs: 3_600_000 });
   releases.push(() => notices.close());
   const taskSide = testTaskSide(resources, () => client, { peerNotices: notices,
-    deliverToPeerRun: (message) => deliverMessageToPeerRun({ crossRun: { closedPeerRunRefusal: async () => null }, activeRoots }, message) });
+    deliverToPeerRun: (message) => deliverMessageToPeerRun({ activeRoots }, message) });
   // autobyteus-591: the runs a peer started here and then closed (DN-5), in this node's folder.
   const closed = ClosedDelegations.inAppDataDir(memoryDir);
   await closed.load();
@@ -254,7 +257,14 @@ const buildNode = async (input: Readonly<{
     }),
   });
   input.network.set(input.nodeId, gateway);
-  return { nodeId: input.nodeId, memoryDir, metadata, runs, runOf, resources, manager, models, titles, taskSide, channel: () => client, notices, closed };
+  // autobyteus-591 DN-9: this node's send_message_to(run ID) router, whose first step is the peer-run admission. Only that
+  // admission's collaborators are real here: a peer run never takes the local route.
+  const router = new GlobalAgentRunMessageRouter({ activeRootDirectory: activeRoots, channel: () => client, coordinators: taskSide.tree,
+    agentRunManager: { getActiveRun: () => null },
+    crossRun: new CrossRunMessageDelivery({ tree: () => taskSide.tree, tasks: () => resources, peerNotices: notices,
+      senderRoot: () => null, receiverRoot: async () => null, activeReceiverRoot: () => null, runningAgents: { rootOf: () => null },
+      senderAddress: async () => null, runFiles: { delegationOfAgent: async () => null }, restorability: { refusal: async () => null } }) });
+  return { nodeId: input.nodeId, memoryDir, metadata, runs, runOf, resources, manager, models, titles, taskSide, channel: () => client, notices, closed, router };
 };
 
 const agentIdentity = (runId: string, address: string) => createCollaborationMemberExecutionIdentity({
@@ -279,6 +289,13 @@ const twoNodes = async (options: { bEnabled?: () => boolean } = {}) => {
   return { network, a, b };
 };
 const delegator = { runId: DELEGATOR, address: "/assistant" };
+/** send_message_to(run ID) through node A's router (autobyteus-591 DN-9), from an agent of the given run; `node` optional. */
+const message = async (node: Node, from: { runId: string; address: string }, target: string, content: string, peer?: string) => {
+  await node.manager.resolveRoot(from.runId);
+  return node.router.deliver({ targetAgentRunId: target, content, ...(peer ? { node: peer } : {}),
+    sender: buildAgentRunMessageSenderContext({ senderRunId: from.runId, senderName: from.address.slice(1),
+      memberExecutionContext: { identity: agentIdentity(from.runId, from.address) } as never }) });
+};
 // delegate_task with a run ID and a saved Task (DN-8), on the tool path.
 const assign = async (a: Node, taskId: string, runId = "publisher_r1") => a.taskSide.assign((await a.manager.resolveRoot(DELEGATOR))!,
   { identity: agentIdentity(DELEGATOR, "/assistant") }, { delegatedRun: { agentRunId: runId }, taskId });
@@ -593,5 +610,76 @@ describe("autobyteus-591: a closed Task's remote agent run stops on its node; a 
     await expect(c.channel().deliveredRunState(B_ID, { kind: "agent", runId: "no_such_run" }, false)).resolves.toMatchObject({ accepted: false, code: "REMOTE_TARGET_NOT_FOUND" });
     expect(b.closed.has(RUN)).toBe(false);
     expect(b.runOf(RUN.runId).active).toBe(true);
+  });
+});
+
+describe("autobyteus-591 DN-9: the assigner's message continues a closed remote run, as locally, in process", () => {
+  const RUN = { kind: "agent" as const, runId: "publisher_r1" };
+  const closeOnA = async (a: Node) => {
+    a.resources.close("ad_hoc_task_1");
+    return a.notices.changed({ run: { agentRunId: RUN.runId }, nodeId: B_ID });
+  };
+
+  it("AC-007: after the reopen, the assigner's run-ID message (its root's endpoint) reopens A's entry, tells B open, then is delivered; the run wakes", async () => {
+    const { a, b } = await twoNodes();
+    await delegate(a);
+    await expect(closeOnA(a)).resolves.toEqual({ confirmed: true });
+    expect(b.runOf(RUN.runId).active).toBe(false);
+    a.resources.setTaskOpen("ad_hoc_task_1");
+    const sent = vi.spyOn(a.channel(), "deliveredRunState");
+    await expect(message(a, delegator, RUN.runId, "Please continue with the thumbnail.")).resolves.toMatchObject({ accepted: true });
+    expect(sent).toHaveBeenCalledExactlyOnceWith(B_ID, RUN, true);
+    expect(a.resources.entry({ agentRunId: RUN.runId })).toMatchObject({ taskId: "ad_hoc_task_1", open: true });
+    expect(b.closed.has(RUN)).toBe(false);
+    expect(b.runOf(RUN.runId).active).toBe(true);
+    expect(b.runOf(RUN.runId).received.at(-1)).toContain("Please continue with the thumbnail.");
+  });
+
+  it("another sender's message is refused CLOSED before anything is sent; the Task still DONE refuses the assigner too", async () => {
+    const { a, b } = await twoNodes();
+    await delegate(a);
+    await closeOnA(a);
+    const sent = vi.spyOn(a.channel(), "deliveredRunState");
+    await expect(message(a, delegator, RUN.runId, "Continue?")).resolves.toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
+    a.resources.setTaskOpen("ad_hoc_task_1");
+    a.metadata.set("other_a", { ...a.metadata.get(DELEGATOR)!, runId: "other_a", memoryDir: path.join(a.memoryDir, "agents", "other_a") });
+    a.runOf("other_a").active = true;
+    await expect(message(a, { runId: "other_a", address: "/other" }, RUN.runId, "Hi")).resolves.toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
+    expect(sent).not.toHaveBeenCalled();
+    expect(a.resources.entry({ agentRunId: RUN.runId })).toMatchObject({ open: false });
+    expect(b.runOf(RUN.runId).received).not.toContain("Hi");
+  });
+
+  it("an owed \"closed\" (B unreachable at the close) never stops the run once the assigner continued it: open is sent instead", async () => {
+    const { network, a, b } = await twoNodes();
+    await delegate(a);
+    const gatewayB = network.get(B_ID)!;
+    network.delete(B_ID);
+    await expect(closeOnA(a)).resolves.toMatchObject({ confirmed: false, code: "PEER_UNREACHABLE" });
+    a.resources.setTaskOpen("ad_hoc_task_1");
+    // Still unreachable: the entry is reopened, "open" stays owed, the message is not delivered.
+    await expect(message(a, delegator, RUN.runId, "Still there?")).resolves.toMatchObject({ accepted: false, code: "PEER_UNREACHABLE",
+      message: expect.stringContaining("send it again") });
+    expect(a.resources.entry({ agentRunId: RUN.runId })).toMatchObject({ open: true });
+    network.set(B_ID, gatewayB);
+    const sent = vi.spyOn(a.channel(), "deliveredRunState");
+    await expect(message(a, delegator, RUN.runId, "Still there?")).resolves.toMatchObject({ accepted: true });
+    // The owed notice is sent by its turn (the retry here), as "open": B never recorded or stopped the run.
+    await expect(a.notices.changed({ run: { agentRunId: RUN.runId }, nodeId: B_ID })).resolves.toEqual({ confirmed: true });
+    expect(sent.mock.calls.map((call) => call[2])).toEqual([true]);
+    expect(b.closed.has(RUN)).toBe(false);
+    expect(b.runOf(RUN.runId).active).toBe(true);
+    expect(b.runOf(RUN.runId).received.at(-1)).toContain("Still there?");
+  });
+
+  it("the same continuation with node: reopened, open confirmed, then sent to that node", async () => {
+    const { a, b } = await twoNodes();
+    await delegate(a);
+    await closeOnA(a);
+    a.resources.setTaskOpen("ad_hoc_task_1");
+    await expect(message(a, delegator, RUN.runId, "Continue via node.", "docker")).resolves.toMatchObject({ accepted: true, agentRunId: RUN.runId });
+    expect(a.resources.entry({ agentRunId: RUN.runId })).toMatchObject({ open: true });
+    expect(b.closed.has(RUN)).toBe(false);
+    expect(b.runOf(RUN.runId).received.at(-1)).toContain("Continue via node.");
   });
 });

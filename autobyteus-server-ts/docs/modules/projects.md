@@ -971,6 +971,14 @@ Task (its latest assignment). To give the run a different Task, use
 - The message then follows the cross-run path: the receiver's root re-checks the
   Task side in its gate, restores the run with its conversation and delivers. The
   accepted result's `message` ends with "<run ID> continues with its conversation."
+- **A run on a peer node** (autobyteus-591 DN-9) is reactivated the same way, by the
+  router's peer-run admission (`CrossRunMessageDelivery.admitPeerRun`), before the
+  message takes its path: the same eligibility and commit, no local restorability
+  check (its node restores it), then its node is told the run is open
+  (`PeerRunStateNotices`, after any notice in flight) before the message goes over
+  the link. If its node isn't reached, the entry stays open, "open" stays owed, and
+  the answer says to send the message again
+  ([Remote Collaboration](remote_collaboration.md#a-remote-runs-delegation-state)).
 
 Helper entries (`subWork`, legacy `broughtIn`) and the Task's other assignments stay
 closed; the reactivated worker may start new helpers. Refusals change nothing:

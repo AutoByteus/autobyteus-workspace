@@ -47,6 +47,9 @@ import { ClosedDelegations } from "../../../src/remote-collaboration/inbound/clo
 import { DelegatedRunStateHandler } from "../../../src/remote-collaboration/inbound/delegated-run-state-handler.js";
 import { PeerRunStateNotices } from "../../../src/agent-collaboration/execution/remote/peer-run-state-notices.js";
 import { deliverMessageToPeerRun } from "../../../src/agent-communication/services/peer-run-message-delivery.js";
+import { GlobalAgentRunMessageRouter } from "../../../src/agent-communication/services/global-agent-run-message-router.js";
+import { CrossRunMessageDelivery } from "../../../src/agent-collaboration/communication/cross-run-message-delivery.js";
+import { buildAgentRunMessageSenderContext } from "../../../src/agent-communication/domain/agent-run-message-sender.js";
 
 /**
  * autobyteus-247 in one process (change sequence steps 2 … 5): a standalone run on node A delegates to a shared
@@ -115,7 +118,7 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
   const notices = new PeerRunStateNotices({ channel: () => client, tasks: resources, retryMs: 3_600_000 });
   releases.push(() => notices.close());
   const taskSide = testTaskSide(resources, () => client, { peerNotices: notices,
-    deliverToPeerRun: (message) => deliverMessageToPeerRun({ crossRun: { closedPeerRunRefusal: async () => null }, activeRoots }, message) });
+    deliverToPeerRun: (message) => deliverMessageToPeerRun({ activeRoots }, message) });
   const manager = new StandaloneAgentRunRootManager({
     memoryDir: dir, activeRootDirectory: activeRoots,
     definitions: { getAgentDefinitionById: async (id) => new AgentDefinition({ id, name: "Assistant", description: "x", instructions: "x" }) },
@@ -156,7 +159,16 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
   const discovery = new PeerNodeDiscovery({ capability: { isEnabled: () => true }, peers: { list: async () => A_PEERS }, client });
   // A follow-up Task by run ID (DN-8), on the tool path.
   const assign = async (taskId: string) => taskSide.assign(await root(), { identity }, { delegatedRun: { teamRunId: "studio_team_b" }, taskId });
-  return { dir, metadata, manager, resources, received, host, client, discovery, root, delegate, send, assign, taskSide, notices,
+  // autobyteus-591 DN-9: send_message_to(run ID) through A's router, whose first step is the peer-run admission.
+  const router = new GlobalAgentRunMessageRouter({ activeRootDirectory: activeRoots, channel: () => client, coordinators: taskSide.tree,
+    agentRunManager: { getActiveRun: () => null },
+    crossRun: new CrossRunMessageDelivery({ tree: () => taskSide.tree, tasks: () => resources, peerNotices: notices,
+      senderRoot: () => null, receiverRoot: async () => null, activeReceiverRoot: () => null, runningAgents: { rootOf: () => null },
+      senderAddress: async () => null, runFiles: { delegationOfAgent: async () => null }, restorability: { refusal: async () => null } }) });
+  const message = async (target: string, content: string) => { await root();
+    return router.deliver({ targetAgentRunId: target, content, sender: buildAgentRunMessageSenderContext({ senderRunId: DELEGATOR, senderName: "assistant",
+      memberExecutionContext: { identity } as never }) }); };
+  return { dir, metadata, manager, resources, received, host, client, discovery, root, delegate, send, assign, message, taskSide, notices,
     setHostActive: (value: boolean) => { hostActive = value; } };
 };
 
@@ -357,7 +369,7 @@ describe("remote delegation to a shared Agent Team, in process (autobyteus-247)"
       .resolves.toMatchObject({ accepted: false, code: "REMOTE_TARGET_NOT_PERMITTED" });
   });
 
-  it("AC-305: closing the Task on A fences the remote Team both ways (fenced_remote)", async () => {
+  it("AC-305: closing the Task on A refuses messages to and from the remote Team at once, both ways", async () => {
     const { a, b } = await twoNodes();
     await a.delegate();
     // The closed Task fences it at once, before its node is told (autobyteus-591's notice stops it there).
@@ -455,6 +467,19 @@ describe("autobyteus-591: a closed Task's remote Team stops on its node; a follo
     // A: the run's new entry keeps its node and members; its work started.
     expect(a.resources.entry({ teamRunId: TEAM.runId })).toMatchObject({ taskId: "task-B", open: true, start: "started", nodeId: B_ID });
     expect(a.resources.peerNoticesOwed.size).toBe(0);
+  });
+
+  it("AC-007 (DN-9): after the reopen, the assigner's message to the stopped Team's coordinator reopens A's entry, tells B open, then wakes the Team", async () => {
+    const { a, b } = await twoNodes();
+    await a.delegate();
+    await closeOnA(a);
+    expect(b.live.size).toBe(0);
+    a.resources.setTaskOpen("ad_hoc_task_1");
+    await expect(a.message(LEAD.agentRunId, "Carry on with the outline.")).resolves.toMatchObject({ accepted: true });
+    expect(a.resources.entry({ teamRunId: TEAM.runId })).toMatchObject({ taskId: "ad_hoc_task_1", open: true });
+    expect(b.closed.has(TEAM)).toBe(false);
+    expect(b.live.has(LEAD.agentRunId)).toBe(true);
+    expect(b.inbox.get(LEAD.agentRunId)?.at(-1)).toContain("Carry on with the outline.");
   });
 
   it("a follow-up Task while B is unreachable: the open notice stays owed and the work is not delivered", async () => {

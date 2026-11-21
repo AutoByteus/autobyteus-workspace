@@ -138,7 +138,7 @@ const buildNode = async (input: Readonly<{ nodeId: string; peers: PeerNode[]; ne
   const activeRoot = (run: RootExecutionIdentity) => run.rootSubjectKind === "agent" ? manager.getActive(run.rootRunId) : null;
   const crossRun = new CrossRunMessageDelivery({
     tree: () => taskSide.tree, tasks: () => resources, senderAddress: async () => null,
-    runFiles: { delegationOfAgent: async () => null }, restorability: { refusal: async () => null },
+    runFiles: { delegationOfAgent: async () => null }, restorability: { refusal: async () => null }, peerNotices: { changed: async () => ({ confirmed: true as const }) },
     senderRoot: (run) => activeRoot(run),
     receiverRoot: async (run) => manager.resolveRoot(run.rootRunId),
     runningAgents, activeReceiverRoot: (run) => activeRoot(run),
