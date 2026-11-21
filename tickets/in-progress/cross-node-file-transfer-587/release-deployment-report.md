@@ -1,6 +1,6 @@
 # Delivery / Release / Deployment Report — cross-node-file-transfer-587 (autobyteus-587)
 
-Status of this document: **delivery is blocked** (round 1). It records the integration refresh and the reroute; the verification, finalization and cleanup sections are completed when delivery resumes.
+Status of this document: **delivery is blocked** (round 2). It records the integration refreshes and the reroutes; the verification, finalization and cleanup sections are completed when delivery resumes.
 
 ## Release / Publication / Deployment Scope
 
@@ -58,12 +58,27 @@ Status of this document: **delivery is blocked** (round 1). It records the integ
 - Proposed guide fix (for the testing guideline's owner, API/E2E; delivery does not edit it): a change that adds a required input to an owner that tests construct directly (a manager, a supervisor, a root run) runs the whole server unit suite, because the typecheck baseline hides stale constructions and an affected set cannot name every test that builds the owner. The check belongs in `TESTING.md` "Choosing the path", not in the release guide.
 - Not part of this reroute: FU-002 (the gated contract-stories suite is red because of autobyteus-565's `counterpart`; per API/E2E's API-07 its whole difference is autobyteus-565's `counterpart` field, which the base already holds, so it is not caused by this ticket; the Solution Designer routes it).
 
+## Delivery Round 2 — Second Base Refresh (Blocked On Conflicts)
+
+- Trigger: the code reviewer returned the package after the round-1 reroute (IR-002 `e295b74b81`, CRR-004 Pass, API-REV-003 Pass 95%, CRR-005 Pass; the round-1 blocker is resolved: the whole server unit suite passes 8698 tests, IMP-06). HEAD `a5ae791726`.
+- Base check: `origin/personal` had moved from `ecd6d4556c` to `6533d7be04`, 40 commits, all of autobyteus-22 (`team-run-follows-definition`: Teams follow their Team definition; a Team root rework with `TeamRunMemberAuthority` and `TeamRunResolver`).
+- Integration: `git merge origin/personal` produced conflicts in 22 files. Three are production code, one hunk each:
+  - `autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts`: this ticket's `memberFolderOf` (where a file from another node lands, by the team's placement) sits where the base deleted `isCurrentAgent` and `isLiveAgent`, now `this.members.isCurrentAgent` and `this.members.isLiveAgent` of the new `TeamRunMemberAuthority`.
+  - `autobyteus-server-ts/src/compositions/collaboration-composition.ts`: the import lines (this ticket's `RemoteFiles`, the base's `createTeamRootExecutionIdentity`).
+  - `autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts`: the base adds `definitionChanges` and `teamChangeNotices` to the host's inputs where this ticket's comment about the file transfer sits.
+  - Nineteen test files: `tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts` (11 hunks), `tests/unit/agent-team-execution/` (six files and `helpers/team-root-collaborator-harness.ts`), `tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts`, `tests/unit/compositions/required-host-owners.test.ts`, `tests/unit/standalone-application-host/standalone-application-host-delegation.test.ts`, `tests/unit/remote-collaboration/team-remote-delegation.test.ts`, `tests/unit/agent-communication/global-agent-run-message-router.test.ts`, four more integration tests, two run-history E2E tests, `tests/fixtures/configured-root-first-work-fixture.ts`.
+  - Twenty production source files were changed by both sides, so 17 more merged without a textual conflict but sit on the same Team-root rework (for example `agent-team-run-manager.ts`, `team-root-materializer.ts`, `team-run-message-delivery.ts`, `root-communication-engine.ts`, `root-communication-port.ts`, `agent-org-execution-scope-builder.ts`).
+- Action: `git merge --abort`. The ticket branch is unchanged at `a5ae791726` and clean; nothing was pushed.
+- Classification: `Local Fix` (integrating two Large changes in production code). The merged production code has not been seen by the code reviewer or API/E2E, and delivery does not resolve production conflicts on a reviewed package (the skill: a refresh that creates conflicts blocks delivery and is routed).
+- Recommended recipient: `/implementation_engineer`.
+- Why final handoff could not complete: the branch cannot be finalized onto `personal` without this integration, and a stale branch would merge the same conflicts into `personal`.
+
 ## Final Status
 
 - Verification complete: `No` (blocked, see above)
 - Repository finalization complete: `No`
 - Applicable release/deployment/rollout complete or not required: `Yes` (none requested)
 - Applicable safe cleanup complete or not required: `No` (the worktree stays for the fix)
-- Unresolved blocker: ten stale unit tests in three files (`Local Fix`, implementation)
+- Unresolved blocker: round 1 resolved (the ten stale unit tests); round 2: conflicts with autobyteus-22 in 22 files, three of them production code (`Local Fix`, implementation)
 - Successful terminal package eligible for return: `No`
 - Terminal package sent to the Solution Designer: `No`
