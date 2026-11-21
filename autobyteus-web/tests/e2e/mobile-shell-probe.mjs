@@ -189,6 +189,9 @@
 //                  the lead's), an Org's task agent and task team member (each stop stops that delegated run, not the Org),
 //                  an Org Team member's Save, and a run on beta (one sentence, no rows): `mobile-every-run-settings-cases.mjs`
 //                  (after 458's cases, before MSP-13).
+//   MSP-93 autobyteus-591 AC-006  A run alpha runs for beta leaves the phone's and the desktop's run lists within one list
+//                  re-read of beta closing its Task, stays away after a reopen alone, and returns when beta gives it the Task
+//                  again: `mobile-closed-delegation-cases.mjs` (on alpha and beta, after 526's cases; about 2 minutes).
 //
 // Prerequisites: `pnpm -C autobyteus-server-ts build` and `pnpm -C autobyteus-web build:mobile-web` (alpha serves
 // `autobyteus-web/dist/public` at /mobile); Chrome. Run: `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<fresh>`
@@ -218,6 +221,8 @@ import { runStoppedDelegatorCases } from './mobile-stopped-delegator-cases.mjs';
 import { runContextFileSizeCases } from './mobile-context-file-size-cases.mjs';
 // MSP-75..77 (autobyteus-526): platform notices of native runs on the phone (its own node, Europe/Berlin).
 import { runRestoredRunCases } from './mobile-restored-run-cases.mjs';
+// MSP-93 (autobyteus-591 AC-006): a closed Task's run on this node, for a peer, leaves the phone's and the desktop's lists.
+import { runClosedDelegationCases } from './mobile-closed-delegation-cases.mjs';
 import { runFileZoomCases } from './mobile-file-zoom-cases.mjs';
 import { runLiveFileRefreshCases } from './mobile-live-file-refresh-cases.mjs';
 import { runBackgroundTaskCases } from './mobile-background-tasks-cases.mjs';
@@ -2675,6 +2680,7 @@ const runCases = async () => {
   await runCodeWrapCases({ runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
   await runContextFileSizeCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact });
   await runRestoredRunCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact });
+  await runClosedDelegationCases({ runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, beta, stack, desktopRunsView });
 
   await runCase('MSP-32', async () => {
     // autobyteus-435 REQ-010 (c): MSP-13 revoked the open phone (label `phone`), whose Check took it to pairing; the page
