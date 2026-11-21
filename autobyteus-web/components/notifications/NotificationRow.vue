@@ -95,7 +95,7 @@
         <div class="h-1.5 rounded-full bg-sky-700 transition-all" :style="{ width: `${downloadPercent}%` }" />
       </div>
     </div>
-    <p v-if="row.state === 'downloaded'" class="mt-1 text-xs leading-5 text-emerald-700" data-testid="notification-row-downloaded">{{ $t(appUpdate.automaticInstallPreparing ? 'settings.notifications.app.preparing' : appUpdate.activationMode === 'managed-quit' && appUpdate.automaticUpdate ? 'settings.notifications.app.readyOnQuit' : 'settings.notifications.app.downloaded') }}</p>
+    <p v-if="row.state === 'downloaded'" class="mt-1 text-xs leading-5 text-emerald-700" data-testid="notification-row-downloaded">{{ $t(downloadedKey) }}</p>
     <p v-if="row.state === 'installing'" class="mt-1 inline-flex items-center gap-1.5 text-xs leading-5 text-emerald-700" role="status" data-testid="notification-row-installing">
       <Icon icon="heroicons:arrow-path-20-solid" class="h-3.5 w-3.5 animate-spin motion-reduce:animate-none" aria-hidden="true" />{{ $t('settings.notifications.app.installing') }}
     </p>
@@ -148,6 +148,12 @@ const repositoryLine = computed(() => {
   if (props.row.kind === 'app') return ''
   const repository = (props.row.repositoryUrl ?? '').replace(/^https:\/\/github\.com\//i, '')
   return props.row.branch ? `${repository} · ${props.row.branch}` : repository
+})
+const downloadedKey = computed(() => {
+  if (appUpdate.automaticInstallPreparing) return 'settings.notifications.app.preparing'
+  if (appUpdate.automaticUpdate && appUpdate.activationMode === 'managed-restart') return 'settings.notifications.app.readyToRestart'
+  if (appUpdate.automaticUpdate && appUpdate.activationMode === 'managed-quit') return 'settings.notifications.app.readyOnQuit'
+  return 'settings.notifications.app.downloaded'
 })
 const downloadPercent = computed(() => Math.max(0, Math.min(100, Math.round(appUpdate.downloadPercent ?? 0))))
 

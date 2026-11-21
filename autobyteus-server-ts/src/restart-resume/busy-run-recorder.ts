@@ -1,5 +1,5 @@
 import type { AgentRunManager } from "../agent-execution/services/agent-run-manager.js";
-import type { AgentRun } from "../agent-execution/domain/agent-run.js";
+import { busyStatusOf, inspectBackgroundWork } from "../agent-execution/services/busy-runs.js";
 import type { ActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { removeBusyRunRecord, writeBusyRunRecord, type BusyRunEntry } from "./busy-run-record.js";
 
@@ -8,7 +8,6 @@ const BUSY_RUN_RECORD_INTERVAL_MS = 2_000;
 /** The longest the graceful final write waits for the runs that answer only through their background-task view (Codex). */
 const BACKGROUND_TASK_INSPECTION_BUDGET_MS = 1_000;
 
-type LiveRun = Pick<AgentRun, "getStatusSnapshot" | "hasRunningBackgroundTasks" | "inspectBackgroundTasks">;
 
 /**
  * Keeps the node's live list of runs to tell after a restart (autobyteus-448 DS-001): the runs held by a collaboration
@@ -84,11 +83,10 @@ export class BusyRunRecorder {
     const recordedAt = this.now().toISOString();
     const version = this.dependencies.version();
     return [...this.dependencies.liveRuns.listActiveRuns()].sort().flatMap((agentRunId) => {
-      const run = this.dependencies.liveRuns.getActiveRun(agentRunId) as LiveRun | null;
-      const status = run?.getStatusSnapshot().status;
-      if (!run || (status !== "initializing" && status !== "running" && status !== "idle")) return [];
-      const backgroundTasks = run.hasRunningBackgroundTasks();
-      if (status === "idle" && !backgroundTasks) return [];
+      const run = this.dependencies.liveRuns.getActiveRun(agentRunId);
+      if (!run) return [];
+      const { status, backgroundTasks, busy } = busyStatusOf(run);
+      if (!busy || (status !== "initializing" && status !== "running" && status !== "idle")) return [];
       const placed = this.dependencies.roots.placeOf(agentRunId);
       if (!placed) return [];
       return [Object.freeze({ root: placed.root, agentRunId, place: placed.place, status, backgroundTasks, recordedAt, version })];
@@ -104,28 +102,14 @@ export class BusyRunRecorder {
     const recordedAt = this.now().toISOString();
     const version = this.dependencies.version();
     const candidates = [...this.dependencies.liveRuns.listActiveRuns()].sort().flatMap((agentRunId) => {
-      const run = this.dependencies.liveRuns.getActiveRun(agentRunId) as LiveRun | null;
+      const run = this.dependencies.liveRuns.getActiveRun(agentRunId);
       if (listed.has(agentRunId) || !run || run.getStatusSnapshot().status !== "idle") return [];
       const placed = this.dependencies.roots.placeOf(agentRunId);
       return placed ? [{ agentRunId, run, placed }] : [];
     });
-    if (!candidates.length) return entries;
-    const found: BusyRunEntry[] = [];
-    const inspections = Promise.all(candidates.map(async ({ agentRunId, run, placed }) => {
-      try {
-        const view = await run.inspectBackgroundTasks();
-        if (view.kind !== "snapshot" || !view.tasks.some((task) => task.status === "running")) return;
-        found.push(Object.freeze({ root: placed.root, agentRunId, place: placed.place, status: "idle", backgroundTasks: true, recordedAt, version }));
-      } catch (error) {
-        console.warn(`Background tasks of run '${agentRunId}' could not be read for the restart reminder: ${String(error)}`);
-      }
-    }));
-    let timer: NodeJS.Timeout | undefined;
-    await Promise.race([inspections, new Promise<void>((resolve) => {
-      timer = setTimeout(resolve, this.dependencies.inspectionBudgetMs ?? BACKGROUND_TASK_INSPECTION_BUDGET_MS);
-    })]);
-    clearTimeout(timer);
-    return [...entries, ...[...found].sort((a, b) => a.agentRunId.localeCompare(b.agentRunId))];
+    const observed = await inspectBackgroundWork(candidates.map(c => c.run), this.dependencies.inspectionBudgetMs ?? BACKGROUND_TASK_INSPECTION_BUDGET_MS, "snapshot");
+    return [...entries, ...candidates.flatMap(({ agentRunId, placed, run }) => observed.get(run) === "running"
+      ? [Object.freeze({ root: placed.root, agentRunId, place: placed.place, status: "idle" as const, backgroundTasks: true, recordedAt, version })] : [])];
   }
 
   private now(): Date {

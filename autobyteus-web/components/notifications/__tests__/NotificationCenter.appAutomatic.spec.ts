@@ -87,6 +87,16 @@ describe('Notification Center: the app automatic update', () => {
     expect($('[data-testid="auto-update-app-explanation"]')!.textContent).toContain('restarts by itself. Switch off to update by hand.')
   })
 
+  it('managed safe restart names both conditions and distinguishes an intentional quit', async () => {
+    await mountWith({ activationMode: 'managed-restart', status: 'downloaded', automaticUpdate: true, notification: record() })
+    await openPanel()
+    const copy = $('[data-testid="auto-update-app-explanation"]')!.textContent
+    expect(copy).toContain('no agent is working'); expect(copy).toContain('5 minutes')
+    expect(copy).toContain('stays closed')
+    expect($('[data-testid="notification-row-downloaded"]')!.textContent).toContain('reopens on the new version')
+    expect($('[data-testid="notification-row-install"]')).not.toBeNull()
+  })
+
   it('managed readiness explains independent quit, without promising a self-restart', async () => {
     await mountWith({ activationMode: 'managed-quit', status: 'downloaded', automaticUpdate: true, notification: record() })
     await openPanel()

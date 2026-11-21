@@ -88,7 +88,12 @@ const explainId = `auto-update-explain-${useId()}`
 const noEffectId = `auto-update-note-${useId()}`
 
 const isApp = computed(() => props.kind === 'app')
-const explanation = computed(() => t(`settings.notifications.auto.${enabled.value ? 'explainOn' : 'explain'}.${isApp.value && appUpdate.activationMode === 'managed-quit' ? 'managedApp' : props.kind}`))
+const explanation = computed(() => {
+  const mode = appUpdate.activationMode
+  const subject = isApp.value && mode === 'managed-restart' ? 'managedRestartApp'
+    : isApp.value && mode === 'managed-quit' ? 'managedApp' : props.kind
+  return t(`settings.notifications.auto.${enabled.value ? 'explainOn' : 'explain'}.${subject}`)
+})
 const enabled = computed(() => props.kind === 'app'
   ? appUpdate.automaticUpdate
   : settings.resolved?.automaticUpdates[SETTINGS_FIELD_OF[props.kind]] === true)

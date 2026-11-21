@@ -83,9 +83,9 @@ export interface AppUpdateNotification {
 
 export type AppUpdateOutcome = 'AUTO_UPDATED' | 'AUTO_FAILED' | 'MANUAL_INSTALL_FAILED';
 
+export type AppUpdateActivationMode = 'native' | 'managed-restart' | 'managed-quit';
 export interface AppUpdateState {
-  /** Managed Linux activates only on an independent quit; native updater policy is unchanged elsewhere. */
-  activationMode: 'native' | 'managed-quit';
+  activationMode: AppUpdateActivationMode;
   status: AppUpdateStatus;
   currentVersion: string;
   /** True when the running build is a pre-release (for example 1.4.90-beta.3). */

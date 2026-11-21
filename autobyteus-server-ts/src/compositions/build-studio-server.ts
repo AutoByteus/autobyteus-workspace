@@ -1,3 +1,4 @@
+import { composeBusyRunCount } from "./busy-run-count-composition.js";
 import { createCredentialProxyHost, type CredentialProxyHost } from "../credential-proxy/credential-proxy-host.js";
 import type { StoredModelOfferCheck } from "../llm-management/services/run-model-selection-service.js";
 import type { ProviderRelayAccess } from "../credential-proxy/provider-relays/provider-relay-access.js";
@@ -402,6 +403,7 @@ export const buildStudioServer = async (input: {
       await registerMobileWebStaticRoutes(app);
       await app.register(
         async (restApp) => registerRestRoutes(restApp, {
+          busyRuns: composeBusyRunCount(currentApplicationRuntime.hostManagement.activeAgentRuns),
           lifecycleReadiness: currentApplicationRuntime.lifecycle,
           application: currentApplicationRuntime.rest,
           nodeAccess: currentNodeAccess, remoteCollaboration: remoteCollaboration.services,

@@ -310,6 +310,8 @@ export const buildApplicationPlatformRuntime = (
         catalogTransition,
         runOwnership: services.runOwnershipService,
         activeAgentRuns: Object.freeze({
+          inspectBusy: () => executionScope.inspectBusyAgentRuns(),
+          finalizeBusy: (inspection: Parameters<typeof executionScope.finalizeBusyAgentRuns>[0]) => executionScope.finalizeBusyAgentRuns(inspection),
           countByRuntimeKind: (runtimeKind: RuntimeKind) => executionScope.countActiveAgentRuns(runtimeKind),
         }),
       }),

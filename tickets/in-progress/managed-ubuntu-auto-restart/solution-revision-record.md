@@ -86,3 +86,7 @@
 - Intended behavior changed: `No`; no renewed approval
 - Classification: Medium / High (unchanged)
 - Next action: architecture re-review
+
+## Review record
+
+- 2026-11-21: ARCH-REV-002 **Pass** on SR-001 requirements / SR-004 design at `f36286782f` (Medium / High); AR-001..AR-003 resolved. Report `design-review-report.md`, `architecture-review-revision-record.md`. The reviewer delivered the primary handoff to `/implementation_engineer`; no duplicate forwarding by the Solution Designer.

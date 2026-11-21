@@ -1,8 +1,6 @@
-import { claimManagedRestart } from '../launch-profile/managedRestartChannel'
-import { ManagedUpdateSession } from './managedUpdateSession'
-import { detectLinuxManagedInstall } from '../updater/linuxManagedInstall'
-import { loadAppUpdateAutomatic } from '../updater/appUpdateAutomaticStore'
-import { loadAppUpdateChannel } from '../updater/appUpdateChannelStore'
+import { composeManagedUpdates } from './composeManagedUpdates'
+import type { ManagedUpdateSession } from './managedUpdateSession'
+import { fetchBusyRuns } from '../server/embeddedBusyRuns'
 import { ApplicationShutdown } from './applicationShutdown'
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron'
 import * as fsSync from 'fs'
@@ -86,15 +84,9 @@ export class ElectronApplication {
       developmentRendererOrigin: isDev ? new URL(this.getStartUrl()).origin : null,
     })
     this.serverStatusManager = new ServerStatusManager(this.serverManager)
-    const writer = app.isPackaged ? detectLinuxManagedInstall() : null
-    if (writer) app.setDesktopName('autobyteus-managed.desktop')
-    this.managedUpdates = writer ? new ManagedUpdateSession({ writer, shutdown: this.shutdown,
-      serverGone: () => this.serverManager.isServerProcessGone(),
-      initialSettings: { automaticUpdate: loadAppUpdateAutomatic(app.getPath('userData')), updateChannel: loadAppUpdateChannel(app.getPath('userData')) },
-      notifyQuit: () => this.shellWindowRegistry.broadcast('app-quitting', undefined),
-      quit: () => app.quit(), exit: code => app.exit(code),
-      requestReopen: claimManagedRestart(), report: error => logger.error('Managed update failed', error),
-    }) : null
+    this.managedUpdates = composeManagedUpdates({ shutdown: this.shutdown, serverGone: () => this.serverManager.isServerProcessGone(),
+      busyRuns: () => fetchBusyRuns(this.activeEmbeddedBaseUrl, this.serverManager.getLaunchOwnerCredential()),
+      notifyQuit: () => this.shellWindowRegistry.broadcast('app-quitting', undefined), report: error => logger.error('Managed update failed', error) })
     const installHooks = {
       managedSession: this.managedUpdates ?? undefined,
       showRestartUnavailable: (message: string) => dialog.showErrorBox('AutoByteus update', message),

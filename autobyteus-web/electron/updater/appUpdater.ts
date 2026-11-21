@@ -83,7 +83,7 @@ export class AppUpdater implements AppUpdateController {
       : process.resourcesPath ? path.join(process.resourcesPath, 'app-update.yml') : null;
     const currentVersion = app.getVersion();
     this.state = {
-      activationMode: options.managedSession ? 'managed-quit' : 'native',
+      activationMode: options.managedSession ? (options.managedSession.canReopen ? 'managed-restart' : 'managed-quit') : 'native',
       status: 'idle',
       currentVersion,
       currentVersionIsPrerelease: isPrereleaseVersion(currentVersion),
@@ -134,7 +134,7 @@ export class AppUpdater implements AppUpdateController {
       downloadInFlight: () => this.downloadInFlight,
     }, {
       platform: this.options.platform ?? process.platform,
-      activation: this.options.managedSession ? 'managed-quit' : 'native',
+      activation: this.state.activationMode,
       record: () => this.notificationRecord,
       settleInstall: async () => (await this.installAttempt?.abort()) ?? false,
       recoverAfterFailedInstall: () => this.options.recoverAfterFailedInstall?.(),
@@ -424,7 +424,7 @@ export class AppUpdater implements AppUpdateController {
         downloadTotalBytes: null,
       });
       if (retainedManagedStage) {
-        this.applyState({ status: 'downloaded', message: 'Ready for your next quit.' });
+        this.applyState({ status: 'downloaded', message: 'Update ready.' });
       }
       if (updateInfo.version) this.automatic?.found(updateInfo.version);
     });
@@ -507,7 +507,7 @@ export class AppUpdater implements AppUpdateController {
         message: 'The pending update must be verified again. Download it again or wait for the next automatic check.' });
     } else if (event.type === 'ready') {
       this.applyState({ status: 'downloaded', updateStaged: true, availableVersion: event.version,
-        downloadPercent: 100, message: 'Ready for your next quit.' });
+        downloadPercent: 100, message: 'Update ready.' });
       this.automatic?.downloaded(event.version);
     } else if (event.type === 'activating') {
       if (event.automatic) this.notificationRecord?.recordAutomaticInstall(event.version);

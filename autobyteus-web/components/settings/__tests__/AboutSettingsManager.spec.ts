@@ -21,6 +21,8 @@ const { appUpdateStoreMock } = vi.hoisted(() => {
     availableVersion: null as string | null,
     errorKind: null as string | null,
     automaticInstallPreparing: false,
+    activationMode: 'native',
+    automaticUpdate: false,
     initialize: vi.fn().mockResolvedValue(undefined),
     checkForUpdates: vi.fn().mockResolvedValue(undefined),
     downloadUpdate: vi.fn().mockResolvedValue(undefined),
@@ -50,6 +52,8 @@ describe('AboutSettingsManager', () => {
     appUpdateStoreMock.checkedAt = null;
     appUpdateStoreMock.availableVersion = null;
     appUpdateStoreMock.automaticInstallPreparing = false;
+    appUpdateStoreMock.activationMode = 'native';
+    appUpdateStoreMock.automaticUpdate = false;
     appUpdateStoreMock.errorKind = null;
     appUpdateStoreMock.initialize.mockClear();
     appUpdateStoreMock.checkForUpdates.mockClear();
@@ -227,6 +231,18 @@ describe('AboutSettingsManager', () => {
     });
 
     const mountWithCatalog = () => mount(AboutSettingsManager, { global: { mocks: { $t: translate } } });
+
+    it.each(['en', 'zh-CN'] as const)('matches verified restart capability in %s', async locale => {
+      await localizationRuntime.setPreference(locale);
+      appUpdateStoreMock.status = 'downloaded';
+      appUpdateStoreMock.automaticUpdate = true;
+      for (const [mode, key] of [['managed-restart', 'readyToRestart'], ['managed-quit', 'readyOnQuit']]) {
+        appUpdateStoreMock.activationMode = mode;
+        const wrapper = mountWithCatalog();
+        expect(wrapper.get('[data-testid="settings-updates-message"]').text()).toBe(translate('settings.notifications.app.' + key));
+        wrapper.unmount();
+      }
+    });
 
     it('renders the English switch, explanation, hint and badge', async () => {
       await localizationRuntime.setPreference('en');
