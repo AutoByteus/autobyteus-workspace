@@ -1,0 +1,42 @@
+== run 1 load 60.73 36.36 22.29
+TEARDOWN terminate 68 ms
+TEARDOWN terminate 71 ms
+TEARDOWN deleteDefinition 245 ms
+TEARDOWN app.close 333 ms
+TEARDOWN rm dataDir 7 ms
+      Tests  1 passed (1)
+== run 2 load 56.34 37.37 23.07
+TEARDOWN terminate 83 ms
+TEARDOWN terminate 76 ms
+TEARDOWN deleteDefinition 6996 ms
+TEARDOWN app.close 9622 ms
+TEARDOWN rm dataDir 15 ms
+      Tests  1 passed (1)
+== run 3 load 54.59 38.74 24.06
+TEARDOWN terminate 87 ms
+TEARDOWN terminate 84 ms
+TEARDOWN deleteDefinition 408 ms
+TEARDOWN app.close 4599 ms
+TEARDOWN rm dataDir 12 ms
+      Tests  1 passed (1)
+== run 4 load 49.67 38.85 24.52
+TEARDOWN terminate 74 ms
+TEARDOWN terminate 68 ms
+TEARDOWN deleteDefinition 998 ms
+TEARDOWN app.close 6761 ms
+TEARDOWN rm dataDir 9 ms
+      Tests  1 passed (1)
+== run 5 load 47.02 38.99 24.98
+TEARDOWN terminate 67 ms
+TEARDOWN terminate 63 ms
+TEARDOWN deleteDefinition 7639 ms
+TEARDOWN app.close 4388 ms
+TEARDOWN rm dataDir 17 ms
+      Tests  1 passed (1)
+== run 6 load 45.15 39.23 25.55
+TEARDOWN terminate 73 ms
+TEARDOWN terminate 69 ms
+TEARDOWN deleteDefinition 908 ms
+TEARDOWN app.close 2041 ms
+TEARDOWN rm dataDir 9 ms
+      Tests  1 passed (1)

@@ -482,6 +482,19 @@ if (arg === "--version") {
       call(14, "call_mcp_tool", open, "DONE", { output: null });
       reply(15, "MCP_DONE");
       emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: "MCP_DONE" } });
+    } else if (process.env.AGY_FAKE_CASE === "journal_reads") {
+      // Antigravity's current read tool `read_file` (size-only results) and a long `run_command` result recorded as the runtime's spill
+      // sentence naming the file that holds the full output (autobyteus-561); then the agent reads that file.
+      const spillPath = process.env.AGY_FAKE_SPILL_PATH ?? "/home/user/.gemini/antigravity-cli/brain/abc/.system_generated/steps/2/output.txt";
+      const step = (step_index, state, tool_name, parameters, extra = {}) => emit({ event: "step_update",
+        step_update: { conversation_id, step_index, state, step_type: "tool", tool_name, tool_info: { name: tool_name, parameters, ...extra } } });
+      const call = (step_index, tool_name, parameters, output) => { step(step_index, "ACTIVE", tool_name, parameters); step(step_index, "DONE", tool_name, parameters, { output }); };
+      call(1, "read_file", { Path: "/home/user/project/src/index.ts", StartLine: 1, EndLine: 40 }, "40 lines, 1234 bytes");
+      call(2, "run_command", { CommandLine: "ls -R /home/user/project" },
+        `The tool's output was truncated due to being too long. You can find the full output in a file at file://${spillPath}\n\nHere is a preview with the middle of the output truncated:\nsrc/index.ts\nsrc/util.ts\n<truncated 120 lines>\ntests/util.test.ts\n`);
+      call(3, "read_file", { Path: spillPath }, "163 lines, 9000 bytes");
+      reply(4, "READS_DONE");
+      emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: "READS_DONE" } });
     } else if (imageDone && process.env.AGY_FAKE_IMAGE_STEPS) {
       // Several native images in one turn (comma-separated step indices). Before each image after the first,
       // the turn waits until the test creates AGY_FAKE_IMAGE_GATE_<n> (n = 2, 3, …), so the test can open the

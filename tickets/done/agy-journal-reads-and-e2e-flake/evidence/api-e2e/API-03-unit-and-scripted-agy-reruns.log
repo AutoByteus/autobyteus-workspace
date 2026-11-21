@@ -1,0 +1,9 @@
+# Case: API-03
+# Command: vitest run tests/agent-work-journal tests/unit/e2e-helpers tests/unit/memory-search --no-watch; then the two earlier scripted-Antigravity e2e files, two runs each
+# Commit: 209e029e5a (code = 806cb45831; the new e2e file and the fixture case are committed with this round)
+# Environment: macOS arm64, Node v22.23.1, in-process real server, owned temp data dir, private HOME, scripted Antigravity CLI; host load average 64-78
+# Date: 2026-11-21
+
+unit folders: Test Files  26 passed | 1 skipped (27); Tests  288 passed | 2 skipped (290)
+work-journal-agy-schema-reads-scripted-agy: Tests  1 passed (1) x2
+work-journal-neutral-vocabulary-scripted-agy: Tests  1 passed (1) x2

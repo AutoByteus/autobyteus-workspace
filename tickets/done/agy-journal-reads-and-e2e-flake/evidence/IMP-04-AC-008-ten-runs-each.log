@@ -1,0 +1,29 @@
+Check: IMP-04 (AC-008)
+Command: 10 solo runs of each scripted-Antigravity file, one at a time: env -i ... RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/runtime/<file>.e2e.test.ts --no-watch (script /tmp/ac8/run.sh)
+Commit: 806cb45831
+Environment: macOS arm64, Node 22; load average 62-127 (10 cores), fseventsd 120-165% CPU, swap used 20.3-22.6 GB of 21.5 GB
+Date: 2026-11-21
+
+work-journal-agy-schema-reads-scripted-agy run 1 exit=0 seconds=22 hookTimeouts=0 |       Tests  1 passed (1) | load(before)=62.60 71.57 68.93 fseventsd%cpu=124.6 swap(used)=20294.44M
+work-journal-agy-schema-reads-scripted-agy run 2 exit=0 seconds=27 hookTimeouts=0 |       Tests  1 passed (1) | load(before)=63.12 71.20 68.86 fseventsd%cpu=156.3 swap(used)=20294.44M
+work-journal-agy-schema-reads-scripted-agy run 3 exit=0 seconds=31 hookTimeouts=0 |       Tests  1 passed (1) | load(before)=65.67 70.95 68.84 fseventsd%cpu=162.8 swap(used)=20294.44M
+work-journal-agy-schema-reads-scripted-agy run 4 exit=0 seconds=25 hookTimeouts=0 |       Tests  1 passed (1) | load(before)=67.31 70.76 68.84 fseventsd%cpu=120.6 swap(used)=20294.44M
+work-journal-agy-schema-reads-scripted-agy run 5 exit=0 seconds=25 hookTimeouts=0 |       Tests  1 passed (1) | load(before)=68.08 70.73 68.89 fseventsd%cpu=163.3 swap(used)=20294.44M
+work-journal-agy-schema-reads-scripted-agy run 6 exit=0 seconds=21 hookTimeouts=0 |       Tests  1 passed (1) | load(before)=69.21 70.77 68.96 fseventsd%cpu=162.3 swap(used)=20294.44M
+work-journal-agy-schema-reads-scripted-agy run 7 exit=0 seconds=41 hookTimeouts=0 |       Tests  1 passed (1) | load(before)=73.80 71.75 69.35 fseventsd%cpu=153.2 swap(used)=20294.44M
+work-journal-agy-schema-reads-scripted-agy run 8 exit=0 seconds=38 hookTimeouts=0 |       Tests  1 passed (1) | load(before)=100.86 78.63 71.96 fseventsd%cpu=133.0 swap(used)=20294.44M
+work-journal-agy-schema-reads-scripted-agy run 9 exit=0 seconds=25 hookTimeouts=0 |       Tests  1 passed (1) | load(before)=104.18 82.45 73.68 fseventsd%cpu=138.2 swap(used)=20294.44M
+work-journal-agy-schema-reads-scripted-agy run 10 exit=0 seconds=31 hookTimeouts=0 |       Tests  1 passed (1) | load(before)=114.98 86.82 75.51 fseventsd%cpu=160.1 swap(used)=20294.44M
+work-journal-neutral-vocabulary-scripted-agy run 1 exit=0 seconds=49 hookTimeouts=0 |       Tests  1 passed (1) | load(before)=113.09 89.06 76.72 fseventsd%cpu=156.7 swap(used)=20294.44M
+work-journal-neutral-vocabulary-scripted-agy run 2 exit=0 seconds=31 hookTimeouts=0 |       Tests  1 passed (1) | load(before)=111.40 91.68 78.35 fseventsd%cpu=151.1 swap(used)=21454.69M
+work-journal-neutral-vocabulary-scripted-agy run 3 exit=0 seconds=36 hookTimeouts=0 |       Tests  1 passed (1) | load(before)=97.65 90.29 78.31 fseventsd%cpu=151.6 swap(used)=21134.62M
+work-journal-neutral-vocabulary-scripted-agy run 4 exit=0 seconds=24 hookTimeouts=0 |       Tests  1 passed (1) | load(before)=104.74 92.73 79.67 fseventsd%cpu=160.3 swap(used)=21030.62M
+work-journal-neutral-vocabulary-scripted-agy run 5 exit=0 seconds=106 hookTimeouts=0 |       Tests  1 passed (1) | load(before)=106.61 94.36 80.65 fseventsd%cpu=158.3 swap(used)=20990.62M
+work-journal-neutral-vocabulary-scripted-agy run 6 exit=0 seconds=34 hookTimeouts=0 |       Tests  1 passed (1) | load(before)=117.75 103.55 85.93 fseventsd%cpu=161.9 swap(used)=20934.62M
+work-journal-neutral-vocabulary-scripted-agy run 7 exit=0 seconds=32 hookTimeouts=0 |       Tests  1 passed (1) | load(before)=99.81 100.77 85.63 fseventsd%cpu=146.5 swap(used)=22635.69M
+work-journal-neutral-vocabulary-scripted-agy run 8 exit=0 seconds=55 hookTimeouts=0 |       Tests  1 passed (1) | load(before)=106.72 102.44 86.77 fseventsd%cpu=155.1 swap(used)=22387.69M
+work-journal-neutral-vocabulary-scripted-agy run 9 exit=0 seconds=129 hookTimeouts=0 |       Tests  1 passed (1) | load(before)=115.07 105.84 89.03 fseventsd%cpu=164.8 swap(used)=22251.69M
+work-journal-neutral-vocabulary-scripted-agy run 10 exit=0 seconds=104 hookTimeouts=0 |       Tests  1 passed (1) | load(before)=126.74 113.76 94.56 fseventsd%cpu=151.6 swap(used)=22155.69M
+DONE
+
+Result: 20 of 20 runs passed, 0 hook timeouts. Several runs spent far more than 10 s in the in-process server hooks (vitest 'tests' time up to 85.9 s in a single-test file, durations up to 129 s): before this change the same kind of run failed 2 of 6 with 'Hook timed out in 10000ms' (INV-01).
