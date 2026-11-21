@@ -9,6 +9,7 @@
 | SR-003 | Requirements | The founder: "design the contract file first … make the contract complete" (2026-11-21) | — | Approved | Ready for Approval (supplement) | all; RFC-001 | Contract RFC-001 written: rules, routes, refusals, wire, storage, examples |
 | SR-004 | Requirements | The founder: "always … add the node parameter … similar to delegate task"; "Yes include in this ticket" (2026-11-21) | DEC-006 | Ready for Approval (supplement) | Ready for Approval (supplement) | REQ-009, AC-010, RFC-001 RF-14, row 6, refusals | `node` required for every cross-node message |
 | SR-005 | Requirements | The founder's approval of RFC-001, 2026-11-21 | — | Ready for Approval (supplement) | Approved | RFC-001 (storage layout, RF-7, vocabulary) | Contract approved: folders by sender run ID, same-sender replacement, node-level `<data>/received_files/` |
+| SR-006 | Design | Architecture design | — | Approved | Approved; design Ready | all | `OutgoingFiles`, `ReceivedFiles`, two peer routes, RF-14 routing, runtime timeouts; Large/High |
 
 ## Revision Entries
 
@@ -42,3 +43,8 @@
 - Trigger: the founder, 2026-11-21: "Great I think it's clear now you can work now", then: the node-level received files "not in memory folder … in the roots like a server data folder".
 - Changes: RFC-001 § 3 Storage Layout and vocabulary: `<data>/received_files/<sha256>` (beside `memory/`; one disk, `app-config.ts:333-335`); folder named `received_files` (founder); per-agent `received_files/<sender's run ID>/<file name>`; same sender's same-named file replaces.
 - Approval: `User`; requirements SR-005 with RFC-001 as its approved supplement. Next: architecture design.
+
+### SR-006 — Design
+
+- Design spec written (Ready): upload before start/delivery (`OutgoingFiles`, one owner for both tools), `<data>/received_files` with pieces, verify, place as read-only hard links with same-sender replacement, link-count cleanup after history delete and at start (`ReceivedFiles`), receiving roots place in their accept step, RF-14 refusals, Codex/Claude tool timeouts set (AGY/Grok/ACP measured), docs.
+- Classification: `Large` / `High`. Next: architecture review.
