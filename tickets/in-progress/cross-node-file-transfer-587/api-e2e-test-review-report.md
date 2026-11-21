@@ -13,7 +13,7 @@
 - Implementation Revision Record Reviewed As Context: IR-001
 - Original Code Review Report: `code-review-report.md` (CRR-001 Pass)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-005`
+- Current Code Review Revision ID: `CRR-007`
 - Coverage Investigation: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001)
@@ -96,13 +96,30 @@ Observation kept, not a finding: RC-52's in-transit case accepts either of two c
 - `TESTING.md` (not test code; noted only): the new row in § Choosing the path covers this failure class. One wording nit for its owner: "the no-op collaborator the source provides (for example `NO_PEER_CHANNEL`)". Those no-ops live in `tests/helpers/explicit-host-collaborators.ts`, not in the source.
 - Findings: None.
 
+## Round 4 (CRR-007): IR-003's conflict-resolved tests and the RC renumbering
+
+- **Merge test resolutions (`575c4ec9ed`, read from `git show --cc`).** Each is a union. Every construction of `AgentTeamRunManager` and `materializeTeamRoot` gets the base's `teamMembershipTestCollaborators()`/`changeNotices` plus this ticket's `remoteChannel`, `remoteFiles` and (materializer) `memoryLocator`. The base's assertions are untouched.
+- **autobyteus-22's `team-run-follows-definition.integration.test.ts`.** It only gains `remoteFiles: NO_REMOTE_FILES` on its three managers, and the router stub's `closedPeerRunRefusal` becomes `peerRunAdmission` (the renamed method). Nothing is loosened.
+- **Renumbering (`d112f58c9a`).** autobyteus-22's own `RC-51` keeps its number (its archived records name it). This ticket's cases are now `RC-55 … RC-58`; only titles, `record` keys and comments changed. The receipt now holds each case under its own key, which fixes a real collision: two `record("RC-51", …)` calls, where only one survived. Rounds 1–3's records keep the old IDs, and the execution report maps them.
+- **Evidence.** On `575c4ec9ed` after a rebuild:
+  - a fresh clone and both typechecks;
+  - the whole `test:integration` (517);
+  - the whole `pnpm test:e2e` (574);
+  - the two-server suite (55/55, with RC-51 and RC-55 … RC-58 recorded separately);
+  - CPW 14/14;
+  - MSP-08 on the rebuilt phone bundle;
+  - tracked imports.
+- **Red on the base, not caused by this ticket** (follow-ups, routed by the Solution Designer):
+  - FU-005 (urgent): autobyteus-22's TF-04 interrupt ack fails identically on `6533d7be04` without any 587 code.
+  - FU-006 (urgent, with FU-002): the contract stories also differ by autobyteus-22's `copiedFrom`, which the 461 model lacks. §5.1 therefore stops at S1 here. RF-14 on the merged code is proven by the two-server suite.
+- **Findings:** None.
+
 ## Latest Authoritative Result
 
-- Result: `Pass` (round 3, CRR-005)
-- Changed durable test paths reviewed: round 1's seven, round 2's model, stories and fixture, round 3's six IR-002 files
+- Result: `Pass` (round 4, CRR-007)
+- Changed durable test paths reviewed: rounds 1–3 as above; round 4's conflict-resolved tests (IR-003) and `remote-delegation-two-server.e2e.test.ts`'s renumbering
 - Unresolved finding IDs: None
 - Recommended Recipient: `delivery_engineer` (it asked for the package back)
 - Notes:
-  - The gated contract stories stay red only for FU-002 (autobyteus-565, urgent).
-  - FU-001, FU-003 and FU-004 are open follow-ups.
-  - Round 1's notes stand.
+  - The gated contract stories are red only for base issues (FU-002, FU-006), as is autobyteus-22's TF-04 (FU-005). All three are urgent and outside this ticket.
+  - FU-001, FU-003 and FU-004 are open.
