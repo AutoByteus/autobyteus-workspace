@@ -264,14 +264,17 @@ if (arg === "--version") {
         state: "ACTIVE", tool_name: "run_command", tool_info: { parameters: { CommandLine: "sleep 600 # HOLD_TURN" } } } });
       return;
     }
-    // `CALL_TOOLS:[{"name","arguments","delayMs"?}, …]` issues every call at once (parallel tool calls in one
-    // turn, as a model batches them), each after its own optional delay, and replies `CALLED_ALL:[results]`.
+    // `CALL_TOOLS:[{"name","arguments","delayMs"?,"untilFile"?}, …]` issues every call at once (parallel tool calls in
+    // one turn, as a model batches them), each after its own optional delay, and replies `CALLED_ALL:[results]`. With
+    // `untilFile` (an absolute path) a call waits until the test creates that file, so the turn stays busy for exactly as
+    // long as the test needs (no timing bound).
     const parallelTools = /CALL_TOOLS:(\[.*\])/s.exec(content);
     const requestedTool = /CALL_TOOL:(\{.*\})/s.exec(content);
     const delegation = /DELEGATE:(\{.*\})/s.exec(content);
     const call = requestedTool ? JSON.parse(requestedTool[1]) : null;
     const text = parallelTools ? `CALLED_ALL:${JSON.stringify(await Promise.all(JSON.parse(parallelTools[1]).map(async (each) => {
       if (each.delayMs) await new Promise((resolve) => setTimeout(resolve, each.delayMs));
+      while (each.untilFile && !existsSync(each.untilFile)) await new Promise((resolve) => setTimeout(resolve, 100));
       return callAgentTool(each.name, each.arguments);
     })))}`
       : call ? `CALLED:${JSON.stringify(await callAgentTool(call.name, call.arguments))}`

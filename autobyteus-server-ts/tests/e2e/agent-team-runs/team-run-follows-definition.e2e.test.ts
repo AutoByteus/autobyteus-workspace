@@ -12,6 +12,7 @@ import { callTool, calledResults, objectsIn, segment, stringsOf, taskAgentsIn, t
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
 import { delegatedRunsTree, readRunTree } from "../helpers/run-tree-delegated.js";
+import { FILE_EVENT_TEST_TIMEOUT_MS, OS_FILE_EVENT_WAIT_MS } from "../../helpers/os-latency-under-load.js";
 
 /**
  * team-run-follows-definition (Task autobyteus-22) through the built server (`dist/app.js`) in its own process on a
@@ -20,7 +21,11 @@ import { delegatedRunsTree, readRunTree } from "../helpers/run-tree-delegated.js
  * Creator's file tools), and a user's own Team saved through the app's GraphQL definition editor. Agents run on the
  * scripted AGY CLI (tests/fixtures/agy-failure-cli.mjs, `linked_skills`): `CALL_TOOL:{…}` / `CALL_TOOLS:[…]` make the agent
  * call the real agent tool, `ECHO_INPUT` replies with the exact input the agent got (so the change notice is visible),
- * `HOLD_TURN` keeps a turn running. No provider inference. Real runtimes: team-run-follows-definition-live.e2e.test.ts.
+ * `HOLD_TURN` keeps a turn running, a `CALL_TOOLS` call with `untilFile` waits until the test creates that file. No provider
+ * inference. Real runtimes: team-run-follows-definition-live.e2e.test.ts.
+ * Timing (TESTING.md, "File watching on a busy Mac"): every wait for an outcome of a package-file edit ends when the outcome
+ * holds, limited by OS_FILE_EVENT_WAIT_MS; a member is kept busy by a gate the test releases, never by a delay; "exactly one
+ * warning" is counted after a later sentinel edit has visibly landed. Test timeouts derive from FILE_EVENT_TEST_TIMEOUT_MS.
  *
  * Cases (API/E2E IDs of the ticket), in order on one Team run unless named:
  *  - TF-01 (AC-001, AC-006): a member and a rule are added; the open view gets an in-band snapshot with it; the lead's next
@@ -56,6 +61,8 @@ const suite = enabled ? describe : describe.skip;
 const evidenceDir = process.env.TEAM_FOLLOWS_E2E_EVIDENCE_DIR?.trim() || null;
 const serverDir = path.resolve(__dirname, "../../..");
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+/** A case's vitest timeout: its package-file events at the OS limit, plus its scripted turns and server starts. */
+const caseTimeout = (fileEvents: number, otherMs = 180_000) => fileEvents * FILE_EVENT_TEST_TIMEOUT_MS + otherMs;
 
 type Frame = { type: string; payload: Rec };
 type Member = { address: string; agentRunId: string; agentDefinitionId: string; leaving: boolean };
@@ -180,6 +187,12 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
     return JSON.parse(found[before]!.slice("ECHO:".length)) as string;
   };
   const okCount = (conversation: unknown) => stringsOf(conversation).filter((text) => text.trim() === "OK").length;
+  /** Waits until a member's turn runs (its AGENT_STATUS `running` on the stream since `from`). */
+  const untilBusy = (stream: TeamStream, agentRunId: string, from: number) => until(() => stream.frames.slice(from)
+    .some((frame) => frame.type === "AGENT_STATUS" && frame.payload.agent_run_id === agentRunId && frame.payload.status === "running"), `${agentRunId} is busy`, 60_000);
+  /** A gate file: a `CALL_TOOLS` call with `untilFile` waits until the test opens it. */
+  const gatePath = (name: string) => path.join(root, "gates", `${name}-${u}`);
+  const openGate = (name: string) => fsp.writeFile(gatePath(name), "open\n");
   /** The Memory page's read of one member run of a Team run (raw traces included): works for current and former members. */
   const memoryViewOf = async (id: string, agentRunId: string) => (await server.graphql(
     `query($t:String!,$a:String!){getTeamMemberRunMemoryView(teamRunId:$t,agentRunId:$a,includeRawTraces:true){runId rawTraces{ traceType content }}}`,
@@ -233,7 +246,7 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
     root = fs.realpathSync(await fsp.mkdtemp(path.join(os.tmpdir(), "tf-e2e-")));
     workspace = path.join(root, "workspace");
     packageRoot = path.join(root, "package");
-    for (const dir of [workspace, path.join(root, "home"), path.join(root, "db")]) await fsp.mkdir(dir, { recursive: true });
+    for (const dir of [workspace, path.join(root, "home"), path.join(root, "db"), path.join(root, "gates")]) await fsp.mkdir(dir, { recursive: true });
     await fsp.writeFile(path.join(root, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n");
     await fsp.access(path.join(serverDir, "dist", "app.js"));
     for (const id of Object.values(ids)) await writeAgent(id);
@@ -273,7 +286,7 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
     const snapshotsBefore = view.snapshots().length;
     await writeConfig({ ...teamConfig, members: [...teamConfig.members, member("reviewer", ids.reviewer)],
       handoffs: [...teamConfig.handoffs, { from: "/lead", to: "/reviewer", rules: ["Review every draft."] }] });
-    await until(() => stored().members.some((entry) => entry.address === "/reviewer"), "reviewer joined the stored tree", 60_000);
+    await until(() => stored().members.some((entry) => entry.address === "/reviewer"), "reviewer joined the stored tree", OS_FILE_EVENT_WAIT_MS);
     memberRun["/reviewer"] = stored().members.find((entry) => entry.address === "/reviewer")!.agentRunId;
     await until(() => view.snapshots().slice(snapshotsBefore).some((snap) => snap.members.some((entry) => entry.address === "/reviewer")),
       "the open view got an in-band snapshot with the reviewer", 30_000);
@@ -296,14 +309,14 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
     expect(secondLeadInput).not.toContain(NOTICE_HEAD);
     await keep("TF-01.json", { stored: stored(), snapshots: view.snapshots().slice(snapshotsBefore), resumeTree: reviewerStatus, leadInput, writerInput,
       rules, sent, reviewerInput, secondLeadInput });
-  }, 300_000);
+  }, caseTimeout(1));
 
   it("TF-02 (AC-002, AC-010, AC-006): a removed idle member is refused by address and run ID, leaves the view, keeps its history", async () => {
     const writerRunId = memberRun["/writer"]!;
     const snapshotsBefore = view.snapshots().length;
     await writeConfig({ ...teamConfig, members: teamConfig.members.filter((entry) => entry.memberName !== "writer"),
       handoffs: teamConfig.handoffs.filter((rule) => rule.to !== "/writer") });
-    await until(() => stored().former.some((entry) => entry.agentRunId === writerRunId), "writer became a former member", 60_000);
+    await until(() => stored().former.some((entry) => entry.agentRunId === writerRunId), "writer became a former member", OS_FILE_EVENT_WAIT_MS);
     expect(addresses(stored().members)).toEqual(["/lead", "/reviewer"]);
     await until(() => { const last = view.snapshots().at(-1)!; return view.snapshots().length > snapshotsBefore && !last.members.some((entry) => entry.agentRunId === writerRunId); },
       "the open view dropped the writer", 30_000);
@@ -343,17 +356,19 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
     const writerTarget = memoryPage.find((entry) => entry.teamRunId === teamRunId)?.memberTargets?.find((target: Rec) => target.agentRunId === writerRunId) ?? null;
     await keep("TF-02-memory-page.json", { writerTarget, entries: memoryPage });
     expect(writerTarget, "the Memory page lists the former member").toMatchObject({ agentDefinitionId: ids.writer });
-  }, 300_000);
+  }, caseTimeout(1));
 
   it("TF-03 (AC-003, DEC-002): a member removed mid-turn is leaving, refused at once, its send is delivered, then it is released", async () => {
     const reviewerRunId = memberRun["/reviewer"]!;
     const late = `LATE-REVIEW-${u}`;
     const snapshotsBefore = view.snapshots().length;
-    view.send(reviewerRunId, `CALL_TOOLS:${JSON.stringify([{ name: "send_message_to", arguments: { recipient_address: "/lead", content: late }, delayMs: 8_000 }])}`);
-    await wait(1_000);
+    // Busy until the test opens the gate (after it has seen the member leaving): its send then goes out.
+    const busyFrom = view.frames.length;
+    view.send(reviewerRunId, `CALL_TOOLS:${JSON.stringify([{ name: "send_message_to", arguments: { recipient_address: "/lead", content: late }, untilFile: gatePath("tf03") }])}`);
+    await untilBusy(view, reviewerRunId, busyFrom);
     await writeConfig({ ...teamConfig, members: teamConfig.members.filter((entry) => entry.memberName !== "reviewer"),
       handoffs: teamConfig.handoffs.filter((rule) => rule.to !== "/reviewer") });
-    await until(() => stored().former.some((entry) => entry.agentRunId === reviewerRunId), "reviewer became a former member", 60_000);
+    await until(() => stored().former.some((entry) => entry.agentRunId === reviewerRunId), "reviewer became a former member", OS_FILE_EVENT_WAIT_MS);
     await until(() => view.snapshots().slice(snapshotsBefore).some((snap) => snap.members.some((entry) => entry.agentRunId === reviewerRunId && entry.leaving)),
       "the open view shows the reviewer leaving", 30_000);
     const refused = await calls(view, memberRun["/lead"]!, callTool("send_message_to", { recipient_address: "/reviewer", content: "Stop." }));
@@ -370,6 +385,7 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
     const openedProjection = await attempt(() => view.conversationOf(reviewerRunId));
     const openedFileChanges = await attempt(() => server.graphql(`query($id:String!,$a:String!){getTeamMemberFileChanges(teamRunId:$id,agentRunId:$a){__typename}}`,
       { id: teamRunId, a: reviewerRunId }));
+    await openGate("tf03");
     await until(async () => stringsOf(await view.conversationOf(memberRun["/lead"]!)).some((text) => text.includes(late)), "the leaving member's send reached the lead", 60_000);
     await until(() => !view.snapshots().at(-1)!.members.some((entry) => entry.agentRunId === reviewerRunId), "the reviewer was released from the view", 60_000);
     await until(() => storedLeaving().length === 0, "the release write cleared the marker", 30_000);
@@ -386,14 +402,14 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
     expect(reviewerMemory.includes("Stop.")).toBe(false);
     expect(reviewerMemory.includes(`BYRUNID-${u}`), "a leaving member receives nothing").toBe(false);
     expect(stillLeaving, "the refusal came while the member was still leaving").toBe(true);
-  }, 300_000);
+  }, caseTimeout(1));
 
   it("TF-04 (DEC-007, AC-003): a removed member added back keeps its run and conversation; its interrupt works while leaving", async () => {
     const writerRunId = stored().former.find((entry) => entry.address === "/writer")!.agentRunId;
     const okBefore = (JSON.stringify(await memoryViewOf(teamRunId, writerRunId)).match(/"OK"/g) ?? []).length;
     await writeConfig({ ...teamConfig, members: [...teamConfig.members, member("writer", ids.writer)],
       handoffs: [...teamConfig.handoffs, { from: "/lead", to: "/writer", rules: ["Draft the text."] }] });
-    await until(() => stored().members.some((entry) => entry.address === "/writer"), "writer rejoined", 60_000);
+    await until(() => stored().members.some((entry) => entry.address === "/writer"), "writer rejoined", OS_FILE_EVENT_WAIT_MS);
     expect(stored().members.find((entry) => entry.address === "/writer")!.agentRunId).toBe(writerRunId);
     expect(stored().former.some((entry) => entry.agentRunId === writerRunId)).toBe(false);
     view.send(writerRunId, "Reply OK.");
@@ -402,13 +418,15 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
     const conversation = stringsOf(await view.conversationOf(writerRunId));
     expect(conversation.filter((text) => text === "Reply OK.").length).toBeGreaterThanOrEqual(2);
     // Held turn, then removed: the user's interrupt of the leaving member is accepted, then it is released.
+    const busyFrom = view.frames.length;
     view.send(writerRunId, "HOLD_TURN");
-    await wait(1_500);
+    await untilBusy(view, writerRunId, busyFrom);
     const snapshotsBefore = view.snapshots().length;
     await writeConfig({ ...teamConfig, members: teamConfig.members.filter((entry) => entry.memberName !== "writer"),
       handoffs: teamConfig.handoffs.filter((rule) => rule.to !== "/writer") });
     await until(() => view.snapshots().slice(snapshotsBefore).some((snap) => snap.members.some((entry) => entry.agentRunId === writerRunId && entry.leaving)),
-      "the held writer is leaving", 60_000);
+      "the held writer is leaving", OS_FILE_EVENT_WAIT_MS);
+    // A short quiet window (TESTING.md: proving something does not happen keeps its own window): a held turn keeps it leaving.
     await wait(3_000);
     const stillLeavingWhileHeld = view.snapshots().at(-1)!.members.some((entry) => entry.agentRunId === writerRunId && entry.leaving);
     const errorsFrom = view.frames.length;
@@ -425,19 +443,22 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
     expect(released, "the interrupted leaving writer was released").toBe(true);
     expect(stillLeavingWhileHeld, "a held turn keeps the member leaving").toBe(true);
     expect(interruptErrors).toEqual([]);
-  }, 300_000);
+  }, caseTimeout(2));
 
   it("TF-05 (DEC-006): another agent at a busy member's address: the old one finishes, the new one is reached at the address", async () => {
     // A member at /scout, busy, swapped for another agent.
     await writeConfig({ ...teamConfig, members: [...teamConfig.members, member("scout", ids.reviewer)],
       handoffs: [...teamConfig.handoffs, { from: "/lead", to: "/scout", rules: ["Scout the sources."] }] });
-    await until(() => stored().members.some((entry) => entry.address === "/scout"), "scout joined", 60_000);
+    await until(() => stored().members.some((entry) => entry.address === "/scout"), "scout joined", OS_FILE_EVENT_WAIT_MS);
     const oldScout = stored().members.find((entry) => entry.address === "/scout")!.agentRunId;
     const late = `LATE-SCOUT-${u}`;
-    view.send(oldScout, `CALL_TOOLS:${JSON.stringify([{ name: "send_message_to", arguments: { recipient_address: "/lead", content: late }, delayMs: 8_000 }])}`);
-    await wait(1_500);
+    // Busy until the test opens the gate (after the swap is committed and the new run answered): its send then goes out.
+    const busyFrom = view.frames.length;
+    view.send(oldScout, `CALL_TOOLS:${JSON.stringify([{ name: "send_message_to", arguments: { recipient_address: "/lead", content: late }, untilFile: gatePath("tf05") }])}`);
+    await untilBusy(view, oldScout, busyFrom);
     await writeConfig({ ...teamConfig, members: teamConfig.members.map((entry) => entry.memberName === "scout" ? member("scout", ids.alt) : entry) });
-    await until(() => { const now = stored().members.find((entry) => entry.address === "/scout"); return Boolean(now && now.agentRunId !== oldScout); }, "a new run at /scout", 60_000);
+    await until(() => { const now = stored().members.find((entry) => entry.address === "/scout"); return Boolean(now && now.agentRunId !== oldScout); }, "a new run at /scout", OS_FILE_EVENT_WAIT_MS);
+    expect(storedLeaving(), "the swapped-out member is leaving while its turn runs").toContain(oldScout);
     const newScout = stored().members.find((entry) => entry.address === "/scout")!;
     expect(newScout.agentDefinitionId).toBe(ids.alt);
     expect(stored().former.some((entry) => entry.agentRunId === oldScout)).toBe(true);
@@ -445,26 +466,28 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
     expect(sent.isError, JSON.stringify(sent)).toBe(false);
     await until(async () => okCount(await view.conversationOf(newScout.agentRunId)) >= 1, "the new scout started and answered", 90_000);
     const oldConversation = stringsOf(JSON.parse(JSON.stringify(await memoryViewOf(teamRunId, oldScout))));
+    await openGate("tf05");
     await until(async () => stringsOf(await view.conversationOf(memberRun["/lead"]!)).some((text) => text.includes(late)), "the old scout's send reached the lead", 60_000);
     await until(() => !view.snapshots().at(-1)!.members.some((entry) => entry.agentRunId === oldScout), "the old scout was released", 60_000);
     await keep("TF-05.json", { stored: stored(), oldScout, newScout, sent, oldConversationTail: oldConversation.slice(-4), lastSnapshot: view.snapshots().at(-1) });
     expect(oldConversation.some((text) => text.includes("Reply OK."))).toBe(false);
-  }, 300_000);
+  }, caseTimeout(2));
 
   it("TF-06 (AC-008): a new coordinator is the run's coordinator in the stored tree and the open view", async () => {
     const snapshotsBefore = view.snapshots().length;
     await writeConfig({ ...teamConfig, coordinatorMemberName: "scout" });
-    await until(() => stored().coordinator === "/scout", "the stored tree names the new coordinator", 60_000);
+    await until(() => stored().coordinator === "/scout", "the stored tree names the new coordinator", OS_FILE_EVENT_WAIT_MS);
     await until(() => view.snapshots().slice(snapshotsBefore).some((snap) => snap.coordinator === "/scout"), "the open view names the new coordinator", 30_000);
     const resume = (await server.graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: teamRunId })).getTeamRunResumeConfig;
     expect(JSON.stringify(resume)).toContain("/scout");
     await keep("TF-06.json", { coordinator: stored().coordinator, snapshot: view.snapshots().at(-1) });
     await writeConfig({ ...teamConfig, coordinatorMemberName: "lead" });
-    await until(() => stored().coordinator === "/lead", "coordinator back to the lead", 60_000);
-  }, 180_000);
+    await until(() => stored().coordinator === "/lead", "coordinator back to the lead", OS_FILE_EVENT_WAIT_MS);
+  }, caseTimeout(2));
 
   it("TF-07 (AC-007): an unusable Team definition leaves the run unchanged; the problem is reported", async () => {
     const before = stored();
+    /** The valid configuration every settled state starts from (writeConfig also records broken ones in teamConfig). */
     const valid = teamConfig;
     const teamIssues = async () => ((await server.graphql(`{ agentTeamDefinitions { id name loadIssues { code reason usingLastGood } } }`))
       .agentTeamDefinitions as Rec[]).find((team) => team.id === teamDefinitionId) ?? null;
@@ -472,39 +495,59 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
       .filter((line) => /TEAM_RUN_DEFINITION_NOT_FOLLOWED|TEAM_MEMBER_NOT_ADDED|team-config|load ?issue|invalid|last.good/i.test(line));
     /** The planner's warning for this run (IR-002: once per run and reason). */
     const runWarnings = (lines: string[]) => lines.filter((line) => line.includes(`TEAM_RUN_DEFINITION_NOT_FOLLOWED: Team run '${teamRunId}' keeps its members: `));
-    // (a) An unparsable file; then another definition announcement while it is still broken (another agent's file changes):
-    // still one warning; a valid edit and a new breakage: one more.
-    let from = server.output().length;
+    /**
+     * A settled valid state the run has visibly followed: a valid config whose lead → scout rule carries `marker`, waited for
+     * in the stored tree. The run's planner has then read a valid definition (which resets warn-once) before the next breakage.
+     */
+    const settleValid = async (marker: string) => {
+      await writeConfig({ ...valid, handoffs: valid.handoffs.map((rule) => rule.to === "/scout" ? { ...rule, rules: [`Scout the sources. ${marker}`] } : rule) });
+      await until(() => JSON.stringify(stored().handoffs).includes(marker), `the run followed the valid definition ${marker}`, OS_FILE_EVENT_WAIT_MS);
+      return server.output().length;
+    };
+    /**
+     * After the breakage's warning: another definition announcement (an unrelated agent's file changes) that has visibly
+     * landed (GraphQL shows it), then the warnings are counted: warn-once means still exactly one.
+     */
+    let sentinels = 0;
+    const sentinelLanded = async () => {
+      const text = `Sentinel ${u}-${++sentinels}.`;
+      await fsp.writeFile(path.join(packageRoot, "agents", ids.alt, "agent.md"),
+        `---\nname: ${ids.alt}\ndescription: Team follows definition E2E agent\nrole: assistant\n---\n\nInstructions of ${ids.alt}. ${text}\n`);
+      await until(async () => JSON.stringify(((await server.graphql("{ agentDefinitions { id instructions } }")).agentDefinitions as Rec[])
+        .find((agent) => agent.id === ids.alt)).includes(text), `sentinel ${sentinels} landed`, OS_FILE_EVENT_WAIT_MS);
+    };
+    const untilWarned = (from: number, label: string) => until(() => runWarnings(linesSince(from)).length >= 1, `${label}: the warning`, OS_FILE_EVENT_WAIT_MS);
+    // (a) An unparsable file: one warning and a load issue; another announcement while it is still broken: still one.
+    let from = await settleValid("V1");
     await fsp.writeFile(configFile, "{ \"coordinatorMemberName\": \"lead\", \"members\": [ oops");
-    await wait(6_000);
-    await fsp.appendFile(path.join(packageRoot, "agents", ids.alt, "agent.md"), "\nMore instructions.\n");
-    await wait(6_000);
+    await untilWarned(from, "unparsable");
+    await until(async () => ((await teamIssues())?.loadIssues ?? []).length > 0, "the unparsable file is a load issue", OS_FILE_EVENT_WAIT_MS);
+    await sentinelLanded();
     const broken = { stored: stored(), definition: await teamIssues(), serverLines: linesSince(from) };
-    await writeConfig(valid);
-    await wait(5_000);
-    from = server.output().length;
+    // (a2) A valid edit the run follows, then a new breakage: one more warning.
+    from = await settleValid("V2");
     await fsp.writeFile(configFile, "not json at all");
-    await wait(6_000);
+    await untilWarned(from, "unparsable again");
+    await sentinelLanded();
     const brokenAgain = { stored: stored(), serverLines: linesSince(from) };
     // (b) A member whose agent does not exist, with a rule to it.
-    await writeConfig(valid);
-    await wait(4_000);
-    from = server.output().length;
+    from = await settleValid("V3");
     await writeConfig({ ...valid, members: [...valid.members, member("ghost", `tf-no-such-agent-${u}`)],
       handoffs: [...valid.handoffs, { from: "/lead", to: "/ghost", rules: ["Ask the ghost."] }] });
-    await wait(6_000);
+    await untilWarned(from, "unknown agent");
+    await sentinelLanded();
     const ghost = { stored: stored(), definition: await teamIssues(), serverLines: linesSince(from),
       rules: await calls(view, memberRun["/lead"]!, callTool("get_handoff_rules", {})) };
     // (c) The Team definition is gone (its folder moved away, as when an author renames or deletes it).
-    await writeConfig(valid);
-    await wait(4_000);
-    from = server.output().length;
+    from = await settleValid("V4");
     const teamDir = path.dirname(configFile);
     await fsp.rename(teamDir, path.join(root, "moved-team"));
-    await wait(6_000);
+    await untilWarned(from, "definition gone");
+    await sentinelLanded();
     const gone = { stored: stored(), definition: await teamIssues(), serverLines: linesSince(from) };
     await fsp.rename(path.join(root, "moved-team"), teamDir);
-    await wait(6_000);
+    await until(async () => Boolean(await teamIssues()), "the definition is back", OS_FILE_EVENT_WAIT_MS);
+    await settleValid("V5");
     const back = { stored: stored(), definition: await teamIssues() };
     await keep("TF-07.json", { before: { members: before.members, coordinator: before.coordinator }, broken, brokenAgain, ghost, gone, back });
     for (const [label, after] of [["unparsable", broken.stored], ["unparsable again", brokenAgain.stored], ["unknown agent", ghost.stored], ["definition gone", gone.stored], ["back", back.stored]] as const) {
@@ -513,7 +556,8 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
     }
     expect(JSON.stringify(ghost.rules)).not.toContain("/ghost");
     expect(JSON.stringify(broken.definition?.loadIssues ?? []), "the unparsable file is reported on the definition").not.toBe("[]");
-    // Each unusable definition: exactly one warning naming the run and the reason (IR-002 O-1/O-2).
+    // Each unusable definition: exactly one warning naming the run and the reason (IR-002 O-1/O-2), counted after a later
+    // announcement had landed.
     for (const [label, lines] of [["unparsable (and a later announcement)", broken.serverLines], ["unparsable again after a valid edit", brokenAgain.serverLines],
       ["unknown agent", ghost.serverLines], ["definition gone", gone.serverLines]] as const) {
       expect(runWarnings(lines), `${label}: ${lines.join(" | ").slice(0, 1200)}`).toHaveLength(1);
@@ -521,7 +565,7 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
     // The run keeps working.
     const rules = await calls(view, memberRun["/lead"]!, callTool("get_handoff_rules", {}));
     expect(JSON.stringify(rules)).toContain("/scout");
-  }, 240_000);
+  }, caseTimeout(14));
 
   it("TF-08 (AC-004): a change made while the run is stopped is applied when it is reopened, also after a server restart", async () => {
     /** The user's message reopens a stopped Team run (the app's path); the notice comes with that input or the next. */
@@ -534,7 +578,9 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
     view.close();
     expect((await server.graphql(`mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}`, { id: teamRunId })).terminateAgentTeamRun.success).toBe(true);
     await writeConfig({ ...teamConfig, members: [...teamConfig.members, member("editor", ids.writer)] });
-    await wait(5_000);
+    // The server has read the change (the definition lists the editor) while the run is stopped: the run is not changed.
+    await until(async () => JSON.stringify(((await server.graphql("{ agentTeamDefinitions { id nodes { memberName } } }")).agentTeamDefinitions as Rec[])
+      .find((team) => team.id === teamDefinitionId)?.nodes ?? []).includes("\"editor\""), "the definition lists the editor", OS_FILE_EVENT_WAIT_MS);
     const whileStopped = stored().members.some((entry) => entry.address === "/editor");
     const reopened = await reopenAndEcho();
     const afterReopen = stored();
@@ -557,7 +603,7 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
     expect(afterRestart.former.some((entry) => entry.address === "/editor")).toBe(true);
     const leftNotice = `${NOTICE_HEAD}\n${left("editor", "/editor")}`;
     expect([restarted.first, restarted.second].filter((input) => input.includes(leftNotice)), "told once after the restart").toHaveLength(1);
-  }, 300_000);
+  }, caseTimeout(2));
 
   it("TF-09 (AC-005): a Team copy started by an agent's delegate_task follows the same edits", async () => {
     const host = (await server.graphql(`mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}`,
@@ -583,7 +629,7 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
     // Add a member and remove the scout.
     await writeConfig({ ...teamConfig, members: [...teamConfig.members.filter((entry) => entry.memberName !== "scout"), member("checker", ids.reviewer)],
       handoffs: [...teamConfig.handoffs.filter((rule) => rule.to !== "/scout"), { from: "/lead", to: "/checker", rules: ["Check facts."] }] });
-    await until(() => stored(copyRunId).members.some((entry) => entry.address.endsWith("/checker")), "the copy gained the checker", 60_000);
+    await until(() => stored(copyRunId).members.some((entry) => entry.address.endsWith("/checker")), "the copy gained the checker", OS_FILE_EVENT_WAIT_MS);
     const copyAfter = stored(copyRunId);
     const checkerAddress = copyAfter.members.find((entry) => entry.address.endsWith("/checker"))!.address;
     expect(copyAfter.former.some((entry) => entry.address === scoutAddress)).toBe(true);
@@ -596,12 +642,12 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
     const checkerRunId = copyAfter.members.find((entry) => entry.address === checkerAddress)!.agentRunId;
     await until(async () => okCount(await copy.conversationOf(checkerRunId)) >= 1, "the copy's checker started and answered", 90_000);
     // The standalone run followed the same edit.
-    await until(() => stored().members.some((entry) => entry.address === "/checker"), "the standalone run gained the checker too", 60_000);
+    await until(() => stored().members.some((entry) => entry.address === "/checker"), "the standalone run gained the checker too", OS_FILE_EVENT_WAIT_MS);
     await keep("TF-09.json", { copiedFrom: copyAfter.tree.copiedFrom, copyBefore: copyBefore.members, copyAfter: { members: copyAfter.members, former: copyAfter.former },
       rules, refused, sent });
     copy.close();
     hostSocket.terminate();
-  }, 300_000);
+  }, caseTimeout(1));
 
   it("TF-10 (AC-001 by the app's editor): a user's own Team saved through updateAgentTeamDefinition: its run follows", async () => {
     const agent = async (name: string) => (await server.graphql(`mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}`,
@@ -624,28 +670,29 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
     await server.graphql(`mutation($input:UpdateAgentTeamDefinitionInput!){updateAgentTeamDefinition(input:$input){id}}`,
       { input: { id: team, expectedRevision: revision, coordinatorMemberName: "lead", nodes: [...nodes, { memberName: "extra", ref: own.extra, refScope: "SHARED" }],
         handoffs: [{ from: "/lead", to: "/extra", rules: ["Ask the extra member."] }] } });
-    await until(() => stored(ownRun).members.some((entry) => entry.address === "/extra"), "own run gained the extra member", 60_000);
+    await until(() => stored(ownRun).members.some((entry) => entry.address === "/extra"), "own run gained the extra member", OS_FILE_EVENT_WAIT_MS);
     const leadInput = await echo(ownView, leadRunId);
     expect(leadInput).toContain(`${NOTICE_HEAD}\n${joined("extra", "/extra")}\n${RULES_CHANGED}`);
     const rules = await calls(ownView, leadRunId, callTool("get_handoff_rules", {}));
     expect(JSON.stringify(rules)).toContain("Ask the extra member.");
     await keep("TF-10.json", { stored: stored(ownRun), leadInput, rules });
     ownView.close();
-  }, 300_000);
+  }, caseTimeout(1));
 
   /** A member at `address` holds a turn and is then removed: it is leaving (stored marker and tagged run-tree row). */
   const removeWhileHeld = async (memberName: string, ref: string) => {
     if (!teamConfig.members.some((entry) => entry.memberName === memberName)) {
       await writeConfig({ ...teamConfig, members: [...teamConfig.members, member(memberName, ref)] });
-      await until(() => stored().members.some((entry) => entry.address === `/${memberName}`), `${memberName} is a member`, 60_000);
+      await until(() => stored().members.some((entry) => entry.address === `/${memberName}`), `${memberName} is a member`, OS_FILE_EVENT_WAIT_MS);
     }
     const runId = stored().members.find((entry) => entry.address === `/${memberName}`)!.agentRunId;
+    const busyFrom = view.frames.length;
     view.send(runId, "HOLD_TURN");
-    await wait(2_000);
+    await untilBusy(view, runId, busyFrom);
     await writeConfig({ ...teamConfig, members: teamConfig.members.filter((entry) => entry.memberName !== memberName),
       handoffs: teamConfig.handoffs.filter((rule) => rule.to !== `/${memberName}` && rule.from !== `/${memberName}`) });
-    await until(() => storedLeaving().includes(runId), `${memberName} is leaving (stored marker)`, 60_000);
-    await until(async () => (await leavingRows("team", teamRunId)).some((row) => row.agentRunId === runId), `${memberName}'s row is tagged leaving`, 30_000);
+    await until(() => storedLeaving().includes(runId), `${memberName} is leaving (stored marker)`, OS_FILE_EVENT_WAIT_MS);
+    await until(async () => (await leavingRows("team", teamRunId)).some((row) => row.agentRunId === runId), `${memberName}'s row is tagged leaving`, OS_FILE_EVENT_WAIT_MS);
     return runId;
   };
 
@@ -654,7 +701,7 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
     const rowsLeaving = await leavingRows("team", teamRunId);
     view.close();
     expect((await server.graphql(`mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}`, { id: teamRunId })).terminateAgentTeamRun.success).toBe(true);
-    await wait(2_000);
+    await until(async () => (await leavingRows("team", teamRunId)).length === 0, "no leaving row once the team is stopped", 30_000).catch(() => undefined);
     const rowsAfterStop = await leavingRows("team", teamRunId);
     const markerAfterStop = storedLeaving();
     view = await openTeam();
@@ -667,7 +714,7 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
     expect(markerAfterReopen, "reopening clears the marker").toEqual([]);
     expect(rowsAfterReopen.some((row) => row.openTarget?.agentRunId === runId)).toBe(false);
     expect(stored().former.some((entry) => entry.agentRunId === runId)).toBe(true);
-  }, 300_000);
+  }, caseTimeout(2));
 
   it("TF-12 (AC-003, AC-004, SR-010): a server restart while a member is leaving shows no leaving row; reopening clears the marker", async () => {
     const runId = await removeWhileHeld("checker", ids.reviewer);
@@ -685,5 +732,5 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
     expect(rowsAfterRestart, "no leaving row after a restart").toEqual([]);
     expect(markerAfterReopen, "reopening clears the marker").toEqual([]);
     expect(rowsAfterReopen.some((row) => row.openTarget?.agentRunId === runId)).toBe(false);
-  }, 300_000);
+  }, caseTimeout(2));
 });

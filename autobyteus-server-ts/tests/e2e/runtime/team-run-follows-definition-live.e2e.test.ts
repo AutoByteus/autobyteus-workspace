@@ -12,6 +12,7 @@ import { objectsIn, stringsOf, type Rec } from "../helpers/collaboration-root-ha
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
 import { capturedTestVaultSetting } from "../../../../test-support/test-vault/test-vault-selection.js";
+import { FILE_EVENT_TEST_TIMEOUT_MS, OS_FILE_EVENT_WAIT_MS } from "../../helpers/os-latency-under-load.js";
 
 /**
  * team-run-follows-definition (Task autobyteus-22) with real runtimes: a running Team of real Codex members (the lead with
@@ -30,6 +31,8 @@ import { capturedTestVaultSetting } from "../../../../test-support/test-vault/te
  * Gate: RUN_CODEX_E2E=1 RUN_AUTOBYTEUS_TEAM_FOLLOWS_E2E=1 AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault
  * Command: env -i PATH="$PATH" HOME="$HOME" USER="$USER" LOGNAME="$LOGNAME" TMPDIR="$TMPDIR" <gates> \
  *   pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/team-run-follows-definition-live.e2e.test.ts --no-watch
+ * Waits for outcomes of a package-file edit end when the outcome holds, limited by OS_FILE_EVENT_WAIT_MS (TESTING.md, "File
+ * watching on a busy Mac"); test timeouts add FILE_EVENT_TEST_TIMEOUT_MS to the model-step budget.
  * TEAM_FOLLOWS_LIVE_E2E_EVIDENCE_DIR keeps one JSON receipt per case and the server's output.
  */
 const enabled = process.env.RUN_CODEX_E2E === "1" && process.env.RUN_AUTOBYTEUS_TEAM_FOLLOWS_E2E === "1"
@@ -164,7 +167,7 @@ suite("A running Team of real Codex and AutoByteus members follows its definitio
   it("TFL-01 (AC-001, AC-006, DEC-005): the lead hands off to a member added while the team runs; it starts on AutoByteus, does the work and answers", async () => {
     await writeConfig({ ...teamConfig, members: [...teamConfig.members, member("reviewer", ids.reviewer)],
       handoffs: [...teamConfig.handoffs, { from: "/lead", to: "/reviewer", rules: ["When the user asks for the review code, ask the reviewer for it."] }] });
-    await until(() => members().some((entry) => entry.address === "/reviewer"), "the reviewer joined", 60_000);
+    await until(() => members().some((entry) => entry.address === "/reviewer"), "the reviewer joined", OS_FILE_EVENT_WAIT_MS);
     const reviewer = members().find((entry) => entry.address === "/reviewer")!;
     runOf["/reviewer"] = reviewer.agentRunId;
     send(runOf["/lead"]!, "What is the team's review code? Get it from your team, then tell me the code.");
@@ -180,7 +183,7 @@ suite("A running Team of real Codex and AutoByteus members follows its definitio
     expect(reviewerMemory).toContain(reviewCode);
     expect(leadMemory).toContain("Your team changed: its definition was updated.");
     expect(leadMemory).toContain("Joined: reviewer at /reviewer.");
-  }, 600_000);
+  }, STEP_MS + FILE_EVENT_TEST_TIMEOUT_MS + 120_000);
 
   it("TFL-02 (AC-003, AC-010): a writer removed while its command waits for approval is still approved, finishes, is delivered and released; the lead reads the refusal", async () => {
     const writerRunId = runOf["/writer"]!;
@@ -194,9 +197,9 @@ suite("A running Team of real Codex and AutoByteus members follows its definitio
     const snapshotsBefore = snapshots().length;
     await writeConfig({ ...teamConfig, members: (teamConfig.members as Rec[]).filter((entry) => entry.memberName !== "writer"),
       handoffs: (teamConfig.handoffs as Rec[]).filter((rule) => rule.to !== "/writer") });
-    await until(() => former().some((entry) => entry.agentRunId === writerRunId), "the writer became a former member", 60_000);
+    await until(() => former().some((entry) => entry.agentRunId === writerRunId), "the writer became a former member", OS_FILE_EVENT_WAIT_MS);
     await until(() => snapshots().slice(snapshotsBefore).some((members) => members.some((entry) => entry.agentRunId === writerRunId && entry.leaving)),
-      "the open view shows the writer leaving", 60_000);
+      "the open view shows the writer leaving", OS_FILE_EVENT_WAIT_MS);
     // The user answers each of the leaving writer's approval requests (auto-execute off: its shell command, then its
     // send_message_to), as in the app: the leaving member's own approvals keep working until its turn ends.
     const approveFrom = frames.length;
@@ -236,5 +239,5 @@ suite("A running Team of real Codex and AutoByteus members follows its definitio
     await keep("TFL-02.json", { request: { tool: request.payload.tool_name, invocation: request.payload.invocation_id }, approvalFrames, outsideFile: fs.readFileSync(outside, "utf8"),
       snapshots: snapshots().slice(snapshotsBefore), leadAfterRefusal: after.slice(-6) });
     expect(fs.readFileSync(outside, "utf8")).toContain("leaving");
-  }, 900_000);
+  }, 3 * STEP_MS + FILE_EVENT_TEST_TIMEOUT_MS + 120_000);
 });
