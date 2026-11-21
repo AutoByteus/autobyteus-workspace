@@ -7,6 +7,7 @@
 | SR-001 | Requirements | Task autobyteus-587; investigation 2026-11-21 | — | N/A | Ready for Approval | BEH-001…003, REQ-001…008, AC-001…008, DEC-001…005 | DEC-001…003 put to the founder |
 | SR-002 | Requirements | The founder's answers, 2026-11-21 | DEC-001…003 | Ready for Approval | Approved | REQ-004, DEC-001…003 | Workspace files only; 2 GiB per file, 4 GiB per call; the call waits |
 | SR-003 | Requirements | The founder: "design the contract file first … make the contract complete" (2026-11-21) | — | Approved | Ready for Approval (supplement) | all; RFC-001 | Contract RFC-001 written: rules, routes, refusals, wire, storage, examples |
+| SR-004 | Requirements | The founder: "always … add the node parameter … similar to delegate task"; "Yes include in this ticket" (2026-11-21) | DEC-006 | Ready for Approval (supplement) | Ready for Approval (supplement) | REQ-009, AC-010, RFC-001 RF-14, row 6, refusals | `node` required for every cross-node message |
 
 ## Revision Entries
 
@@ -26,3 +27,9 @@
 - Trigger: the founder, 2026-11-21: design the contract file first, check existing contract files, make clear where storage is when cross-node is used, make the contract complete.
 - Found: the canonical collaboration contract (`collaboration_model.md`) has no file rules; no file contract exists. RFC-001 written as a behavior-defining supplement; after delivery its rules become CM-14.
 - Approval: pending the founder (supplement). Requirements SR-002 unchanged.
+
+### SR-004 — `node` always names another node
+
+- Trigger: the founder asked why a reply to a linked run needs no `node`, preferred symmetry with `delegate_task`, and approved including it here (2026-11-21).
+- Changes: REQ-009, AC-010, DEC-006; RFC-001 RF-14, route row 6, refusals `NODE_REQUIRED`, `NODE_MISMATCH`, example. Replaces autobyteus-191's "follow-ups never name the node" (CM-11 to be updated).
+- Approval: DEC-006 by the founder; RFC-001 as a whole still awaits his approval.

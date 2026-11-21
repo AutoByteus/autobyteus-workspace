@@ -40,6 +40,7 @@ Two agents on two nodes work like two colleagues on two machines (the founder, 2
 | RF-10 Ownership and deletion | A received file belongs to the agent that received it. Deleting that run's history (as in the app) deletes its received files. The node file store keeps one copy per content: it is removed when no agent folder links to it any more; another agent that received the same file keeps it. A transfer that broke off leaves pieces that are removed after 24 hours. Nothing else expires. (DEC-004, confirmed by the founder.) |
 | RF-11 One upload per content | Before sending a file, the sender asks whether the receiving node already holds it (by SHA-256); a stored or fully received file is not uploaded again; a partly received one resumes from where it stopped. |
 | RF-12 Security | Every transfer request is a signed peer request (NA-9) from a paired peer; a node accepts pieces only into its own store and places files only into the agent folder of the run the delivered message or work packet targets; no route lets a peer read or list another node's files. Size and SHA-256 are checked before a file is placed. |
+| RF-14 Another node is always named | Every call whose recipient is on another node names it with `node`, for both tools, linked or not (founder, 2026-11-21: "always if you're sending into another node then you add the node parameter … similar to delegate task"). A message to a run on another node without `node` is refused with the node to pass; a `node` that is not where the run is gets refused with the right node. The node comes from the delegation result (`node`), the received message's header, or `list_running_agents`. This replaces autobyteus-191's "follow-ups never name the node" (CM-11 is updated with it). |
 | RF-13 Shared storage is separate | `reference_files` across nodes always copy (RF-2). An agent that has a shared folder (NFS and its skill) and wants to use it writes the shared path in its message text and attaches nothing. |
 
 ## 3. Route Table
@@ -51,7 +52,7 @@ Two agents on two nodes work like two colleagues on two machines (the founder, 2
 | 3 | `delegate_task` without `node` | nowhere (RF-1) | original paths in the work packet | — |
 | 4 | `delegate_task` with `node` | copied to that node, into the new run's entry agent's folder (a Team: its coordinator) | received paths in the work packet | — (the delegation result says "N files sent") |
 | 5 | `send_message_to` with `node` | copied to that node, into the receiving agent's folder | received paths | original paths |
-| 6 | `send_message_to` to a run linked to another node (a remote task agent, or the delegator on the other node), without `node` | copied as in 5 | received paths | original paths |
+| 6 | `send_message_to` to a run linked to another node (a remote task agent, or the delegator on the other node) | with `node` (RF-14): copied as in 5; without `node`: refused, naming the node to pass | received paths | original paths |
 
 Rows 4–6 follow RF-2 … RF-12. Rows 1–3 are today's behavior.
 
@@ -67,6 +68,8 @@ Every refusal comes before anything is delivered; texts are the agent-facing wor
 | `NO_WORKSPACE` | The sending agent has no workspace folder | "You have no workspace folder, so no file can go to another node." |
 | `REFERENCE_FILE_TRANSFER_FAILED` | A piece or the whole file failed (peer unreachable, timeout, refused) | "`report.pdf` could not be sent to node \"studio\" (it did not answer in time), so nothing was delivered. Try again." |
 | `REFERENCE_FILE_CHECK_FAILED` | Size or SHA-256 did not match on arrival | "`render.mp4` arrived damaged on node \"studio\", so nothing was delivered. Try again." |
+| `NODE_REQUIRED` | A message to a run on another node without `node` | "This agent runs on node \"mac-studio\"; pass node: \"mac-studio\" with its run id." |
+| `NODE_MISMATCH` | `node` names a node the run is not on | "This agent runs on node \"studio\", not \"mac-studio\"; pass node: \"studio\"." |
 | existing peer refusals | Switch off, unknown peer, unreachable, older peer (404) | as today |
 
 ## 5. Between Nodes (wire)
@@ -98,10 +101,10 @@ B's work packet (what the task agent reads):
   - /data/memory/agents/video_editor_…/received_files/a81c44d29e05/brief.pdf
 ```
 
-B's agent returns the result (row 6, linked, no `node` needed):
+B's agent returns the result (row 6; `node` names A, as the work packet's header did, RF-14):
 
 ```text
-B's agent:  send_message_to({ target_agent_run_id: "<A's delegator run id>", content: "Teaser attached.",
+B's agent:  send_message_to({ node: "mac-studio", target_agent_run_id: "<A's delegator run id>", content: "Teaser attached.",
               reference_files: ["/tmp/autobyteus/temp_workspace/teaser.mp4"] })
 A's agent receives: "You received a message from … on node \"studio\". Teaser attached.
   Reference files:
@@ -110,4 +113,4 @@ A's agent receives: "You received a message from … on node \"studio\". Teaser 
 
 ## 7. What This Contract Does Not Change
 
-Same-node `reference_files` (RF-1); who may message or delegate to whom (CM-1 … CM-13); the Messages views (autobyteus-565), except that a received file opens at its received path; NFS and its skill.
+Same-node `reference_files` (RF-1); who may message or delegate to whom (CM-1 … CM-13; only CM-11's "follow-ups never name the node" changes, RF-14); the Messages views (autobyteus-565), except that a received file opens at its received path; NFS and its skill.

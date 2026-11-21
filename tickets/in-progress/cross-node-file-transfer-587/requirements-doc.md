@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Ready for Approval` (requirements approved at SR-002; the behavior-defining supplement `reference-files-contract.md` RFC-001, written at the founder's request, awaits his approval)
-- Current solution revision ID: `SR-003`
+- Current solution revision ID: `SR-004`
 - Request: Project Task `autobyteus-587`; requested by `/project_task_manager` for the founder
 - Owner: Solution Designer; date 2026-11-21
 - Approved by and reference: `User` (the founder), 2026-11-21, in the Solution Designer's conversation: "Yes I strongly agree the agent can only send files in its own workspace; size limits I agree with you; I guess the tool call will need to wait" (DEC-001 as he worded it, DEC-002, DEC-003 (a)); DEC-004 and DEC-005 by the Solution Designer within the direction, explained to him the same day. Baseline SR-002.
@@ -60,6 +60,7 @@ None.
 | REQ-005 | Size limits per DEC-002, checked by the sender before sending and enforced by the receiver. | Must | DEC-002 |
 | REQ-006 | The tool call behaves per DEC-003; on any failure the agent gets a clear reason (which file, why), and nothing is delivered to the recipient (the message or delegation is all or nothing). | Must | Task; DEC-003 |
 | REQ-007 | The receiving node keeps one stored copy per content (SHA-256) and links it into each run that received it; a re-sent file is not uploaded again; stored copies no run uses any more, and abandoned partial uploads, are removed (DEC-004). | Must | Task |
+| REQ-009 | Every `send_message_to` to an agent on another node names the node (`node`), as `delegate_task` does, linked or not; without it, or with the wrong node, the call is refused with the node to pass (RFC-001 RF-14). | Must | Founder, 2026-11-21 (DEC-006) |
 | REQ-008 | Both nodes need this release; an older peer's refusal is reported as today (DESIGN.md rule 9). | Must | DESIGN.md |
 
 ## Acceptance Criteria
@@ -74,6 +75,7 @@ None.
 | AC-006 | 006 | The peer stops mid-transfer | The call fails with the file and reason; the recipient gets nothing | E2E with a stopped peer |
 | AC-007 | 007 | The same file sent to two runs; then each run's history deleted in the app | Uploaded once (the second send skips it); both runs show it; deleting the first run's history removes it from that run only; deleting the second frees the space; partial uploads older than 24 h are removed | Server tests; E2E (history delete) |
 | AC-008 | — | Local `reference_files` | Unchanged | Existing suites |
+| AC-010 | 009 | A delegator messages its remote copy, and the copy replies, without `node`; then with the wrong node; then with the right one | First two refused with the node to pass; the third delivered | Server tests; two-server E2E |
 | AC-009 | 006 | A transfer that takes longer than a runtime's default tool-call limit (DEC-003 (a)) | The call still completes on each runtime we configure (Codex, Claude, AutoByteus); the limit we set is stated | Feasibility of the proof (updated requirements standard): needs signed-in Codex and Claude runtimes; the founder's machine has them, but tests may not use his accounts (TESTING.md). Measure each runtime's limit in design with a slow stub tool; if a signed-in run is not safely available, decide the evidence before approval as an evidence decision |
 
 ## Decisions
@@ -84,6 +86,7 @@ None.
 | DEC-002 | How large may files be? | Context-file limits: 2 GiB audio/video, 25 MiB others; Memory Sync stages multi-GiB files in 8 MiB pieces | One limit per file, set on each node for what it accepts (new setting, default 2 GiB), and a total per message or delegation of 4 GiB; any file type. **Recommend this.** Founder, 2026-11-21: "size limits I agree with you" → **Decided.** | Founder | Decided (User) |
 | DEC-003 | Does the tool call wait for the transfer? | A 300 MB file over a 20 Mbit/s upload takes ~2 min; runtime tool timeouts are unknown (UNK-001) | (a) wait: the call returns when every file arrived and the message or delegation is delivered ("delivered, 2 files"); timeouts of our tools raised where we configure them; (b) return at once and deliver in the background, with a later notice. (a) has no hidden state: "sent" means delivered, as between colleagues. **Recommend (a)**, with the timeout measured and set in design. Founder, 2026-11-21: "the tool call will need to wait" → **Decided (a).** | Founder | Decided (User) |
 | DEC-004 | Deduplication and retention | Task asks to consider SHA-256 dedup and retention | A content-addressed store per receiving node; each run gets a link (same file, no extra space) under `received_files/`; a stored copy no run links any more is removed by a sweep; partial uploads are removed after 24 h. No time-based expiry of delivered files: they live as long as their run. Founder, 2026-11-21, confirming: a received file belongs to the receiving run and is stored with it; deleting that run's history completely (as in the app) removes its received files too. Another run that received the same file keeps its own. | Solution Designer; confirmed by the founder | Decided |
+| DEC-006 | Must `send_message_to` name the node for every cross-node message? | Today a linked run's ID routes without `node` (autobyteus-191); an unlinked one needs it (492) | Symmetric with `delegate_task`: no hidden cross-machine route, one rule; the node is always at hand (delegation result, header, list). Founder, 2026-11-21: "always if you're sending into another node then you add the node parameter … similar to delegate task"; "Yes include in this ticket". **Decided: required, in this ticket.** | Founder | Decided (User) |
 | DEC-005 | Where files land and how they are named | — | `<receiving run folder>/received_files/<first 12 hex of SHA-256>/<original file name>` (name sanitized): readable names, no collisions; the recipient's message lists these paths under "Reference files", as local messages do. | Solution Designer | Decided |
 
 ## Data Continuity
