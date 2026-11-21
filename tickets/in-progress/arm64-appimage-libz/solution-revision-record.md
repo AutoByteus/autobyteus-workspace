@@ -5,6 +5,7 @@
 | Revision ID | Phase | Trigger / Report / Round | Finding IDs | Prior Status | Current Status | Affected Behavior / Requirement IDs | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Mixed (Requirements + Design) | Initial coherent baseline from Task autobyteus-28 (FU-004 of autobyteus-22) | N/A | N/A | Requirements Approved; Design Ready | BEH-001..004, REQ-001..006, AC-001..006, DEC-001..005 | Architecture Design Complete; Medium / High |
+| SR-002 | Design (+ decision-text clarification) | Implementation Design Impact IR-001 on SR-001 / ARCH-REV-001 | IR-001 | Design Ready (SR-001, ARCH-REV-001 Pass) | Requirements Approved (SR-001 approval applies); Design Ready (SR-002) | DEC-001, DEC-004, QR-002 (text); BEH-001..004 paths | Architecture Design Complete; Medium / High; re-review |
 
 ## Revision Entries
 
@@ -29,4 +30,27 @@
 - Applied handoff-rule outcome / result-file reference: see `handoff-sr001.md`.
 - Downstream and architecture-review impact: first review basis.
 - Remaining gaps, assumptions or blocked decisions: ASM-001, RSK-001, RSK-002, DEC-005 (FUSE-3 mount on a real arm64 desktop not runnable here); FU-001, FU-002.
+- Next action: route per handoff rules.
+
+### SR-002 — Static arm64 runtime on electron-builder 25 through a prepared toolset folder
+
+- Phase and classification: `Design Impact`
+- Triggering user feedback, Product package, investigation evidence, or role/report/round: implementation engineer, `implementation-design-impact-ir001.md` (IR-001), 2026-11-21: the design's escalation trigger fired at step 1.
+- Triggering finding IDs: IR-001.
+- Prior authoritative requirements/design status: requirements Approved (SR-001); design Ready (SR-001), ARCH-REV-001 Pass.
+- Current authoritative requirements/design status: requirements Approved (unchanged intent); design Ready (SR-002); ARCH-REV-001 does not cover SR-002.
+- Requirement, behavior, acceptance-criteria, scenario or decision IDs affected: DEC-001 (mechanism), DEC-004 (wording: tag, not digest, per ARCH-REV-001 R-4), QR-002 (pins held by our build), External Contracts (electron-builder rows). No REQ/AC/BEH/SCN change.
+- Scenario-basis or scenario-validity changes: None.
+- Why this revision was recorded: electron-builder 26 drops `resources/server/node_modules` on all targets (`app-builder-lib@26.x` `out/util/filter.js:42-45`, confirmed by the Solution Designer) and re-hoists `app.asar` (OBS-008), so the SR-001 upgrade route breaks REQ-005. Measured an alternative (OBS-009, `probes/seeded-toolset-probe.sh`): electron-builder 25's `app-builder` builds from a prepared toolset folder (official `appimage-12.0.1`, its `runtime-arm64` replaced by the official static runtime; all sha256-pinned), and the result runs in the clean root.
+- Canonical requirements, investigation and design sections changed: requirements DEC-001, DEC-004, QR-002, External Contracts, Architecture Phase Input, status line; investigation OBS-008, OBS-009, RSK-002 (closed), RSK-003 (new), supplement inventory; design spec rewritten for SR-002.
+- Supplemental artifacts added, changed or removed: added `probes/seeded-toolset-probe.sh`, `evidence/seeded-toolset-probe.log`; inventoried IR-001's `implementation-design-impact-ir001.md`, `evidence/eb25-vs-eb26-arm64/`, `evidence/docker-chroot-shim/`.
+- Product design evidence or product decisions incorporated: N/A.
+- Intended behavior changed: `No`.
+- Approval impact: none; the SR-001 approval (Solution Designer within the direction, user informed) applies. The user is informed of the revised mechanism in the Solution Designer's conversation.
+- Behavior-defining supplement versions and approval references: None.
+- Affected design/review basis invalidated or rebuilt: SR-001 design and ARCH-REV-001 superseded for the mechanism; re-review required. IR-001's verifier, unit test, workflow steps and docs are kept (docs to be adjusted).
+- Post-design task-size/risk classification and rationale changes: `Medium` / `High` (unchanged values; the risk is now the arm64 release artifact, two pinned downloads in the release build and a pinned tool's folder layout, instead of an all-target toolchain upgrade).
+- Applied handoff-rule outcome / result-file reference: `handoff-sr002.md`.
+- Downstream and architecture-review impact: architecture re-review of SR-002, then implementation from the IR-001 worktree state (revert the electron-builder 26 change).
+- Remaining gaps, assumptions or blocked decisions: ASM-001, RSK-001, RSK-003, DEC-005; FU-001, FU-002, FU-003. Design case 27 added to `docs/design-cases.md`.
 - Next action: route per handoff rules.

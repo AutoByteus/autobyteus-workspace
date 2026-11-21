@@ -43,3 +43,4 @@ Architecture review of SR-001 (`design-review-report.md`), then the configured r
 ## Routing record
 
 - 2026-11-21: `get_handoff_rules` → rule "Architecture Design Complete with task_size=Large or architectural_risk=High" → `/architecture_reviewer`.
+- 2026-11-21: architecture review Pass, ARCH-REV-001 on SR-001 (`design-review-report.md`, `architecture-review-revision-record.md`); the reviewer routed to `/implementation_engineer` with non-blocking notes N-1, R-1..R-4. Informational; no Solution Designer action.

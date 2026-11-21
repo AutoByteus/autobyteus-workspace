@@ -349,3 +349,13 @@ Principle 1 (compare "the same as" rule by rule against the code; trace each ent
 - **The fix (SR-010):** `admitPeerRun` applies the local continuation's test to a peer run. The assigner's message reopens the entry, waits until the peer confirmed "open", then is delivered.
 - **Why it mattered:** the reopened Task couldn't continue at all. The user's own description ("you send a message again") was right, and the design overrode it with a wrong reading.
 - **Notice it by:** "as locally" or "the same as" backed by one caller of the mechanism. List every caller of the state change (here `reopenAssignment`: the message admission and `delegate_task`), and match the remote rule to each.
+
+### Case 27: A Dependency's Major Upgrade As The Vehicle For A Narrow Fix (autobyteus-28, IR-001)
+
+Principle 1 (confirm the premise the design rests on); DESIGN.md rule 5 (bounded change before broader machinery).
+
+- **The design said:** to give the Linux arm64 AppImage a runtime without `libz.so`, upgrade electron-builder 25 → 26 and set its `toolsets.appimage`. "Every other output stays the same" was a stated requirement, guarded only by a risk row and an escalation trigger for implementation; the architecture review passed it.
+- **What the real dependency does:** electron-builder 26 drops every copy source's root `node_modules` (`app-builder-lib` `out/util/filter.js:42-45`), so the packaged server lost its 20,455 dependency files on all five desktop targets, and its new collector re-hoisted `app.asar` (193 paths removed, 399 added). Implementation found it at the design's first step, comparing a 25 and a 26 build.
+- **The fix:** stay on electron-builder 25 and hand its AppImage tool a prepared toolset folder whose `runtime-arm64` is the official static runtime (pinned checksums), with a build assertion that the produced image uses it. Only the arm64 AppImage changes; the upgrade became its own follow-up.
+- **Why it mattered:** a one-architecture runtime fix had become a change to how every desktop target is packaged, with effects nobody had measured.
+- **Notice it by:** a fix whose mechanism is "upgrade X to the next major version" when the defect is narrow. Before choosing it, measure the upgrade alone against the current output (one build, diff the package), or find the narrowest lever on the current version first; a risk row is not a measurement.

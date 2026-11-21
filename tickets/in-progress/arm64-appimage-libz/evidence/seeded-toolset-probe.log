@@ -1,0 +1,10 @@
+/tmp/fu004-seed2/dl/appimage-12.0.1.7z: OK
+/tmp/fu004-seed2/dl/static.tar.gz: OK
+/tmp/fu004-seed2/cache/appimage/appimage-12.0.1/runtime-arm64: OK
+{"size":962242,"sha512":"T+rgySqHH0PJ0RYIaKMUibvDO2y46+ZdM1tmHjzHDcPbhzGvpGT1oZNbZGYizb1oRky7D8hPImEckowqRKzQTg==","blockMapSize":1206}
+AppImage prefix == pinned static runtime
+NEEDED entries: 0
+exit=0
+/bin/bash: warning: setlocale: LC_ALL: cannot change locale (en_US.UTF-8)
+fake-app-ran
+exit=0

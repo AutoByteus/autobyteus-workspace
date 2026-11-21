@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin` / `personal`
 - Bootstrap result: worktree created from refreshed `origin/personal`
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-002`
 - Authorities read (requirements reading gate; file and date): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md` (2026-11-21). Architecture gate: see `design-spec.md`.
 - Investigation status: Complete for SR-001 (requirements and architecture).
 
@@ -102,6 +102,9 @@
 | OBS-006: published releases passed the arm64 verify step | REQ-003 | The `ubuntu-24.04-arm` runner provides `libz.so` (otherwise `--appimage-extract` in verify-layout would have exited 127); FU-004 evidence shows verify-layout failing on this host until `libz.so` was provided | Read (inference from releases + FU-004 evidence) | Gate must not use the runner's libraries | FU-004 row |
 | OBS-007: electron-builder 26 AppImage code read | DEC-001 | `toolsets.appimage` read from `packager.config.toolsets` per build; legacy path identical runtime `appimage-12.0.1`; static path: `writeAppLauncherAndRelatedFiles` → copy `lib/<arch>` to `usr/lib` → `copyDir(appDir, stageDir)` (our `AppRun` overwrites the generated one) → mksquashfs `-comp zstd` → runtime written at offset 0 → `appendBlockmap`. Desktop `Exec` uses `executableArgs` (ours: `--autobyteus-appimage-desktop-entry`) | Read | REQ-005 | `/tmp/fu004-dl/abl/package/out/targets/appimage/*` (scratch) |
 
+| OBS-008 (IR-001, implementation engineer; root cause confirmed by the Solution Designer): arm64 built twice from the same prepared inputs, electron-builder 25.1.8 vs 26.18.0 (default toolset) | REQ-005 | 26 ships no `resources/server/node_modules` (20,455 files in 25, 0 in 26) and the release job's packaged-server-startup check fails (`ERR_MODULE_NOT_FOUND: reflect-metadata`); `app.asar` differs by 193 removed / 399 added paths (collector re-hoisting, new `@types/*`). Cause: `app-builder-lib@26.x` `out/util/filter.js:42-45` drops every copy source's root `node_modules` (`relative === "node_modules"`), which hits `extraResources {from: "resources/server"}` on all targets; present in 26.0.0 through 26.18.1 | Measured (IR-001); filter line Read by SD | The electron-builder 26 upgrade is not a narrow change: rejected for this ticket (DEC-001 revised), FU-003 | `implementation-design-impact-ir001.md`, `evidence/eb25-vs-eb26-arm64/` |
+| OBS-009: `probes/seeded-toolset-probe.sh` (fresh downloads: official `appimage-12.0.1.7z` sha256 `d12ff7eb…c4` = the pin in `app-builder-lib@26.18.0` `toolsets/linux.js`, extracted with `7zip-bin@5.2.0`, identical to app-builder's own cached toolset by `diff -r`; `runtime-arm64` replaced by `./runtimes/runtime-arm64` from `appimage@1.0.3` tarball, sha256 `00cbdfcf917cc6c0ff6d3347d59e0ca1f7f45a6df1a428a0d6d8a78664d87444`; `ELECTRON_BUILDER_CACHE=<prepared> app-builder appimage …` from `app-builder-bin@5.0.0-alpha.10`, the binary electron-builder 25.1.8 uses) | REQ-001, REQ-005 | app-builder reuses the existing toolset folder ("found existing"), prepends the static runtime unchanged (prefix byte-equal), computes size/sha512/blockMapSize as usual; the AppImage has 0 `NEEDED`; in the clean Ubuntu 24.04 root `--appimage-extract AppRun` and `--appimage-extract-and-run` (fake app) exit 0. app-builder needs at least one icon in its configuration (a probe detail, not a product concern) | Measured | Static runtime is reachable on electron-builder 25 with unmodified, pinned binaries; nothing else in the build changes | `evidence/seeded-toolset-probe.log` |
+
 - Temporary diagnostics: None in the worktree. Scratch downloads in `/tmp/fu004-dl`, `/tmp/fu004-probe` (outside the repo).
 - Reproduction for implementation to start from: `probes/clean-root-runtime-probe.sh` (as root on an arm64 Linux host): `probes/clean-root-runtime-probe.sh ubuntu-base-24.04.5-base-arm64.tar.gz <AppImage> --appimage-extract AppRun` fails (127) on the current build and must pass on the new one.
 
@@ -142,14 +145,19 @@
 | `evidence/published-linux-appimage-assets.tsv` | Solution Designer | Input list (tag, prerelease, name, URL) | — | REQ-006 | Current | Evidence |
 | `evidence/published-appimage-runtime-needed.tsv` | Solution Designer | Probe result per asset (tag, prerelease, name, zlib NEEDED, runtime BuildID) | — | REQ-006, AC-006 | Current | Evidence |
 | `evidence/clean-root-*.log` | Solution Designer | OBS-004/005 logs | arm64 | AC-001, AC-003 | Current | Evidence |
-| `follow-ups.md` | Solution Designer | FU-001 | — | — | Current | — |
+| `follow-ups.md` | Solution Designer | FU-001..FU-003 | — | — | Current | — |
+| `probes/seeded-toolset-probe.sh` | Solution Designer | SR-002 premise: app-builder 25 + prepared toolset folder → static-runtime AppImage that runs in the clean root | arm64 | REQ-001, REQ-005 | Current | Evidence tool |
+| `evidence/seeded-toolset-probe.log` | Solution Designer | OBS-009 log | arm64 | REQ-001 | Current | Evidence |
+| `implementation-design-impact-ir001.md`, `evidence/eb25-vs-eb26-arm64/` | Implementation engineer | IR-001 evidence (OBS-008) | all targets | REQ-005 | Current | Evidence |
+| `evidence/docker-chroot-shim/` | Implementation engineer | Test-owned `docker` stand-in (chroot of ubuntu-base) for local runs of the clean-image check | arm64 | AC-003 | Current | Evidence tool |
 
 ## Assumptions, Unknowns, And Risks
 
 | ID | Type | Description | Why It Matters | Resolution / Owner | Status |
 | --- | --- | --- | --- | --- | --- |
 | RSK-001 | Risk | The static runtime mounts only with FUSE 3 (`fusermount3`); an arm64 host with only FUSE 2 cannot mount (extract-and-run still works). | A few arm64 users who run today (with `zlib1g-dev` + `libfuse2`) might need `fuse3` after updating | ASM-001: the arm64 build already requires OpenSSL 3 hosts (Prisma `linux-arm64-openssl-3.0.x` only) — Ubuntu 22.04+, Debian 12+, which ship FUSE 3. Accepted | Accepted |
-| RSK-002 | Risk | electron-builder 25 → 26 touches all targets (node_modules collection into `app.asar`, mac/win options, NSIS) | A regression in another target's package | Fresh-start build + build-only release run on all five targets (AC-005); design keeps config changes minimal | Open → validation |
+| RSK-002 | Risk | electron-builder 25 → 26 touches all targets (node_modules collection into `app.asar`, mac/win options, NSIS) | A regression in another target's package | Realized (OBS-008); SR-002 stays on electron-builder 25, so the risk no longer applies to this ticket; FU-003 | Closed (avoided) |
+| RSK-003 | Risk | SR-002 relies on app-builder 25 reusing a prepared `appimage/appimage-12.0.1` folder under `ELECTRON_BUILDER_CACHE`, an internal of a pinned tool | An electron-builder change could silently ignore the folder and ship the legacy runtime again | The build asserts that every produced arm64 AppImage starts with the pinned static runtime (loud failure); the release clean-image check catches it too (design SR-002) | Mitigated |
 | UNK-001 | Unknown | Whether GitHub `ubuntu-24.04-arm` provides `/dev/fuse` + `fusermount3` | Would allow a mount check in CI | Not needed for the gate (extract-based); DEC-005 | Closed (not needed) |
 
 ## Architecture Investigation Findings
