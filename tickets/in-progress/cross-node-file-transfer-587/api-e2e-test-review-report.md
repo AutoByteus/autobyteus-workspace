@@ -2,8 +2,8 @@
 
 ## Review Meta
 
-- Review Round: 1
-- Trigger: API/E2E round 1 (API-REV-001) Pass. Tests in `eaf53c5c7b`; documents and evidence in `839c8937e5`. Code under test: `e327ba2467`.
+- Review Round: 2
+- Trigger: API-REV-002 (T-001 fixed in `71be9e9e8e`, no product source change); round 1 reviewed API-REV-001 (tests `eaf53c5c7b`, documents `839c8937e5`). Code under test: `e327ba2467`.
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (REQ-001 … REQ-009, AC-001 … AC-011)
 - Investigation Notes Reviewed As Context: not reopened
 - Solution Revision Record Reviewed As Context: not reopened (SR-009)
@@ -13,13 +13,13 @@
 - Implementation Revision Record Reviewed As Context: IR-001
 - Original Code Review Report: `code-review-report.md` (CRR-001 Pass)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002`
+- Current Code Review Revision ID: `CRR-003`
 - Coverage Investigation: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001)
 - Delivery Revision Record Reviewed As Context: N/A
 - API/E2E Result: Pass, final confidence 95%. API-07 (gated contract stories) is red, attributed to FU-002.
-- Prior unresolved test-review findings rechecked: None (first test review)
+- Prior unresolved test-review findings rechecked: T-001 (resolved, below)
 - Project testing guideline(s) applied: `TESTING.md` (Server E2E on built servers, clean `env -i`, test-owned data roots, gated runtime suites). Conflicts: none.
 - Supported Product Scenario Basis Confirmed: `Yes` (UC-001 … UC-004, SEC-1, SEC-2, RF-14 as in CRR-001)
 
@@ -46,16 +46,32 @@
 | Fixtures, setup, helpers reuse repetition | Pass | `writeBinary`, `putPiece`, `storeEntry`, file facts; the proxy's `tamper`/`drop` hooks |
 | Isolation and determinism | Pass | Test-owned servers and data. The 24 h rule is reached by setting the clocks of test-owned store files back 25 h, the only way to show elapsed time. The setting is restored in `finally`. Theta is torn down |
 | Large files coherent and navigable | Pass | One surface |
-| No stale, duplicated, disabled or compatibility-only tests | **Fail** | T-001: the contract stories' driver now sends S18/S19 with `node`, but the stories' authority (the 461 model) still describes and admits those calls without `node`. RF-14 replaced that rule. Every other old-rule assertion (RC-06, 08, 19, 22; the 37 sends) was rewritten to RF-14, not loosened |
+| No stale, duplicated, disabled or compatibility-only tests | Pass | Round 2: T-001 resolved; the 461 model and its S18/S19 stories state RF-14. Every other old-rule assertion (RC-06, 08, 19, 22; the 37 sends) was rewritten to RF-14, not loosened |
 | Coverage agrees with the investigation and evidence | Pass | API-06 54/54; API-04 after the fixes; API-05 574/574 |
 | Callers exercise an independently established scenario | Pass | Every case maps to an AC/RF. The forged and tampered requests stand for the security contract (RF-12, NA-9) |
 | Real triggers and steps | Pass | Agents call the real tools on built servers; history deletes go through the app's mutation; the link failure and damage are made in a forwarding proxy on the real path |
 
 ## Findings
 
-| Finding ID | Test Path / Scenario | Evidence | Required Action | Classification / Owner |
-| --- | --- | --- | --- | --- |
-| T-001 | `collaboration-contract-stories.e2e.test.ts` S18/S19 and their authority, `tickets/done/delegated-copies-outlive-delegator-461/evidence/collaboration-model/{model.py,stories.py}` and `tests/fixtures/collaboration-contract/contract-states.json` | Three facts disagree. `model.py:367` `send_by_run_id(sender, receiver, …)` takes no node, and its cross-node branch admits a linked message without one. `stories.py:143, :148`: S18/S19's call is `send_message_to(target_agent_run_id: "project_task_manager_7c8d", …)` by `lead_0c11` on node B, with no `node`. The driver now sends `node: "node-a"`. So the suite drives a different call than the contract's executable model describes and expects. The model, which `export_contract_states.py` names as the contract's authority, still states the CM-11 rule RF-14 replaced (REQ-009, DEC-006, AC-010). This is the same class as autobyteus-492 CR-001: a contract rule changed by the ticket must be stated by its executable model (that ruling holds). | Update the model to RF-14: a message to a run on another node without `node` is refused `NODE_REQUIRED` naming that node, and with another node's name `NODE_MISMATCH` (the code's texts, `remote-refusal-codes.ts`). Give `send_by_run_id` a `node` argument; pass `node` in S18/S19's operations and call texts. Regenerate the fixture and run `export_contract_states.py … --check`. Record a probe of the model (no node, wrong node, right node), as 492's IMP-08 did. No new story step is required. The gated suite stays red for FU-002 until that is fixed, so record the check and probe as this fix's evidence | `Local Fix` — API/E2E engineer (the fixture's authority and its stories) |
+None open.
+
+### T-001 — Resolved (round 2, `71be9e9e8e`)
+
+- `model.py`: `send_by_run_id(…, node=None)` runs `_node_rule` before admission, in the order I traced in the code at CRR-001:
+  - a wrong `node`: `NODE_MISMATCH`;
+  - no `node`, and the sender's own root links the run (its newest Task entry, open or closed, or the sender's peer `delegatedFrom`): `NODE_REQUIRED` (`deliverExact`);
+  - no `node`, and only this node's Task entries name the run: `CLOSED` when they are all closed, else `NODE_REQUIRED` (`peerRunAdmission`);
+  - otherwise not running.
+
+  With the right `node`, the existing `_admit` follows. The texts match `remote-refusal-codes.ts` (`nodeRequired`, `nodeMismatch`) word for word.
+- `stories.py`: S18 and S19 pass `node: "node-a"` in their operations and call texts. The fixture changes only those two call texts; every state is unchanged.
+- Verified:
+  - my own rerun of `export_contract_states.py … --check`: "matches the model";
+  - the probe log `evidence/API-11/API-11-model-rf14.log`. Its rows after S18 and S19 agree with the server's paths as traced in CRR-001, e.g. a fenced run messaged with another node's name by a run of A is `NODE_MISMATCH` before `CLOSED`, as `peerRunAdmission` orders them;
+  - §5.1 rerun: S18's whole difference is FU-002's `counterpart` lines.
+- Cosmetic only, not a finding: `SAVED_TASK_TO_PEER ="…"` lost its space in `model.py`.
+
+Observation kept, not a finding: RC-52's in-transit case accepts either of two codes where the path is deterministic. It proves AC-003; tightening it needs no further run unless the wording of FU-003 changes.
 
 ## Follow-ups
 
@@ -65,8 +81,11 @@
 
 ## Latest Authoritative Result
 
-- Result: `Fail`
-- Changed durable test paths reviewed: the seven paths above
-- Unresolved finding IDs: T-001
-- Recommended Recipient: API/E2E engineer (`Local Fix`). After the fix: API/E2E reruns the affected checks (fixture `--check`, the model probe; the gated suite once FU-002 allows), then this review again.
-- Notes: the file-transfer cases themselves are strong. They prove the security boundary on real servers: the gate's hash on raw pieces, the 8 MiB limit, tampering, oversize, workspace containment, read-only hard links, resume, dedup and the 24 h cleanup.
+- Result: `Pass` (round 2, CRR-003)
+- Changed durable test paths reviewed: the seven paths above, plus round 2's `model.py`, `stories.py` and `contract-states.json`
+- Unresolved finding IDs: None
+- Recommended Recipient: `delivery_engineer`
+- Notes:
+  - The file-transfer cases prove the security boundary on real servers: the gate's hash on raw pieces, the 8 MiB limit, tampering, oversize, workspace containment, read-only hard links, resume, dedup and the 24 h cleanup.
+  - The gated contract-stories suite remains red only for FU-002 (autobyteus-565's `counterpart`, urgent), outside this ticket.
+  - FU-003 and FU-004 are recorded follow-ups.

@@ -8,6 +8,7 @@ The latest `code-review-report.md` is authoritative for its current result.
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001, `e327ba2467`) | N/A | Pass | None |
 | CRR-002 | `api-e2e-test-review-report.md` | Proportional test-code review after API/E2E Pass (API-REV-001, `eaf53c5c7b`) | N/A (first test review) | Fail (Local Fix, API/E2E) | T-001 |
+| CRR-003 | `api-e2e-test-review-report.md` | Test-code review round 2 (API-REV-002, `71be9e9e8e`) | Fail (Local Fix, API/E2E) | Pass | T-001 (resolved) |
 
 ## Revision Entries
 
@@ -70,3 +71,30 @@ None.
 - Material score or classification changes: N/A
 - Recommended recipient: API/E2E engineer
 - Remaining risks or uncertainty: the gated suite stays red for FU-002 (565) until that is fixed; the AGY/Grok/ACP limits (FU-001); the narrow placement race.
+
+### CRR-003 — Test-code review round 2: T-001 resolved
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/tickets/in-progress/cross-node-file-transfer-587/api-e2e-test-review-report.md`
+- Review entry point and round: successful API/E2E test-code review, round 2
+- Review scope: `N/A` (test review); the delta is `ed6c8b4c01..71be9e9e8e` (the model, the stories, the fixture, evidence)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, API-REV-002; T-001
+- Relevant solution revision IDs: SR-009
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-001
+- Relevant API/E2E revision IDs: API-REV-001, API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail (Local Fix, API/E2E), CRR-002
+- Current authoritative result: Pass
+- What changed in the review result and why: the contract model states RF-14 in the server's order, with the server's texts, and S18/S19 pass `node`. The fixture changes only those call texts.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| T-001 | Open (Local Fix, API/E2E) | Resolved | API-REV-002, `71be9e9e8e` | `model.py` `_node_rule`; `stories.py` S18/S19 with `node`. My `--check` rerun reports "matches the model". The probe (`evidence/API-11/API-11-model-rf14.log`) rows match the server paths traced in CRR-001. The §5.1 rerun differs only by FU-002 |
+
+- New or remaining finding IDs: None; follow-ups FU-001 … FU-004
+- Material score or classification changes: N/A
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: the gated contract stories stay red for FU-002 (565, urgent); FU-001 (AGY/Grok/ACP limits); FU-003, FU-004 wording; the narrow placement race; the AC-007 timing under the 24 h rule; AC-002's wording.
