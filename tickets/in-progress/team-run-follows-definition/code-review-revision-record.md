@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review / IR-001 complete | N/A | Pass | None |
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-001 Fail (F-1, F-2) | Pass (CRR-001) | Fail | CR-001, CR-002 |
+| CRR-003 | `code-review-report.md` | Implementation Review / IR-002 (SR-010, CR-001) | Fail (CRR-002) | Pass | CR-001, CR-002 (resolved) |
 
 ## Revision Entries
 
@@ -61,3 +62,31 @@ None (CRR-001 had no findings).
 - Material score or classification changes: Runtime Correctness 9.3 → 8.6; API/E2E Readiness 9.3 → 9.0; dead-code row Fail (`TeamMembersPanel.vue`). Large/High preserved.
 - Recommended recipient: Solution Designer (CR-001 included for the next implementation round)
 - Remaining risks or uncertainty: O-1 (AC-007 "warning logged" reading) is left to the Solution Designer.
+
+### CRR-003: Implementation review of IR-002 (Full Re-Audit)
+
+- Canonical review report updated: `/home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/tickets/in-progress/team-run-follows-definition/code-review-report.md`
+- Review entry point and round: Implementation Review, round 3
+- Review scope: `Full Re-Audit`. IR-002 changes the spine (a persisted leaving marker under the lock; a release step owned by the committer), shared interfaces and shapes (`ownsAgentRun`, `FormerMemberExecutionNode`, `RunTreeRowDto.leaving`, `isLiveTeamRun`, `TeamRunBackend`), and files beyond the prior findings.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-002); commits `d005fa2a5b`, `64a4b6100c`; CR-001, CR-002, O-1, O-2, C-07
+- Relevant solution revision IDs: SR-009, SR-010
+- Relevant architecture-review revision IDs: ARCH-REV-003, ARCH-REV-004
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail (CRR-002)
+- Current authoritative result: Pass
+- What changed in the review result and why: both findings are resolved as designed in SR-010. N-12, N-13 and N-14 are implemented. The new warning-format deviation has a reason that holds (C-14). Candidates C-09..C-14 were rejected.
+- Supported product scenario / material-premise basis changes: SCN-003a, SCN-003b and SCN-010 were added from SR-010. N-8 is no longer relevant (superseded).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Open (Local Fix) | Resolved | IR-002, SR-009 | `global-agent-run-message-router.ts:90` asks `ownsAgentRun`. `RootTeamRun.ownsAgentRun` includes `formerMemberByRunId`. Required on the boundary and checked at registration. `hasAgentExecution` unchanged (`active-root-place-of.test.ts`). Integration test through the router; IMP-17 TF-02/TF-03 return the exact refusal through the tool. |
+| CR-002 | Open (Design Impact) | Resolved (rendered confirmation pending in API/E2E) | SR-009, SR-010, ARCH-REV-004, IR-002 | Stored `leaving` marker → `ownTreeOf` → `teamMemberRowsOf` (both paths) → `RunTreeRowDto.leaving` → tag on `WorkspaceStableExecutionRow` and `WorkspaceDelegatedRunRow` (`WorkspaceMemberLeavingTag.spec.ts`). `TeamMembersPanel.vue` and its keys removed. |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: Runtime Correctness 8.6 → 9.3; API/E2E Readiness 9.0 → 9.3; dead-code row Pass. Large/High preserved.
+- Recommended recipient: API/E2E engineer
+- Remaining risks or uncertainty: the TFU-03 rendered rerun and the TFL-02 real-runtime rerun are pending.
