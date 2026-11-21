@@ -2,6 +2,7 @@
 
 | SR | Date | Kind | Summary | Status after |
 | --- | --- | --- | --- | --- |
+| SR-004 | 2026-11-21 | Design | Delegation-state notices from the delegating node (closed / open), owed and retried; the peer records, stops and lists by them; Medium / High | Design `Ready` |
 | SR-003 | 2026-11-21 | Requirements (the user) | Reopen behaves as locally: the run is listed on the peer again, stopped, on the Task's reopen, not only on a later message; REQ-005, BEH-004, AC-006, SCN-004 | Approved |
 | SR-002 | 2026-11-21 | Requirements | DEC-004 decided by the user: like a local closed delegated run, the remote run stops and leaves the peer's run list; REQ-005 and AC-006 rewritten; requirements approved | Approved |
 | SR-001 | 2026-11-21 | Requirements | Baseline. Root cause: the delegating node skips remote runs at a Task's close (F-1, the founder's log F-2). REQ-001 … REQ-005; DEC-001 … DEC-003, DEC-005 and DEC-006 decided; DEC-004 (how the stopped run shows on the peer) put to the user | Ready for Approval |
@@ -24,3 +25,11 @@
 - **Trigger:** the user: "on the local node side when you close the ticket of course it's gone and then when you reopen the ticket you delegate again or you send a message again … I feel like the behavior on the UI should be similar".
 - **Change:** a reopen on the delegating node lists the remote run on the peer again (stopped), as a local delegated run returns to the list on reopen. So the delegating node now tells the peer about both the close and the reopen, both retried when the peer is unreachable (REQ-002).
 - **Approval:** the user's words. `Approved`.
+
+### SR-004 (design)
+
+- **Design:** `design-spec.md`, DN-1 … DN-7.
+  - A sends each remote run's delegation state (closed / open), computed at send time by `isOpen`, owed and retried every 30 s.
+  - B records `delegationClosedAt`, stops the run through its ordinary Stop, and drops it from its list. On open, it lists the run again.
+- **Classification:** `Medium` / `High`.
+- **Next:** architecture review.
