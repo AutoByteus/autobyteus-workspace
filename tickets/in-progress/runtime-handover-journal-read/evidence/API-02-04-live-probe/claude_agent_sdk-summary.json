@@ -1,0 +1,45 @@
+{
+  "target": "claude_agent_sdk",
+  "model": "claude-haiku-4-5-20251001",
+  "code": "dcd742a1",
+  "namedFile": {
+    "lines": 2405,
+    "bytes": 178309,
+    "lastLine": "[08:28:37] Agent: Ran echo step 599. END-dcd742a1 [↗](../raw_traces_000001.jsonl#rt_syn_dcd742a1_2402)"
+  },
+  "noticeNamesFile": null,
+  "noticeHasReadInstruction": null,
+  "markers": [
+    "MARK-dcd742a1-0",
+    "MARK-dcd742a1-1",
+    "MARK-dcd742a1-2",
+    "MARK-dcd742a1-3",
+    "MARK-dcd742a1-4",
+    "MARK-dcd742a1-5",
+    "END-dcd742a1"
+  ],
+  "seenBeforeFirstText": [],
+  "seenBeforeLastText": [
+    "MARK-dcd742a1-0",
+    "MARK-dcd742a1-1",
+    "END-dcd742a1"
+  ],
+  "seenInAllResults": [
+    "MARK-dcd742a1-0",
+    "MARK-dcd742a1-1",
+    "END-dcd742a1"
+  ],
+  "toolCalls": [
+    "Read {\"file_path\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/handover-read-probe-WZBUEf/memory/agents/handover_read_9f22072b_6be7_4f5b_bbe1_92c83fd4d3_7274dd650c0e4a7cb857cc48d1ccfbe2/work_journal/work_journal_000001.md\",\"limit\":500}",
+    "Read {\"file_path\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/handover-read-probe-WZBUEf/memory/agents/handover_read_9f22072b_6be7_4f5b_bbe1_92c83fd4d3_7274dd650c0e4a7cb857cc48d1ccfbe2/work_journal/work_journal_000001.md\",\"offset\":2300,\"limit\":200}"
+  ],
+  "texts": [
+    "I'll read the work journal from the previous agent to understand what has been done.",
+    "Let me continue reading to find the end of the work journal:",
+    "Perfect. I've read the work journal. The previous agent completed a comprehensive hand-over test, running 600 sequential echo commands from step 0 to step 599, with markers at the start (MARK-dcd742a1-0), at step 100 (MARK-dcd742a1-1), and ending with END-dcd742a1. \n\nThe test run completed successfu"
+  ],
+  "resultSizes": [
+    37439,
+    8295
+  ]
+}

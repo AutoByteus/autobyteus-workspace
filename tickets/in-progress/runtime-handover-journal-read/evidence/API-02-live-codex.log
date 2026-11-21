@@ -1,0 +1,6 @@
+# API-02 AC-005 live hand-over read, Codex (throwaway CODEX_HOME linking auth.json; scripted AGY era 1; synthetic era of 600 turns) | commit 5617257773 | 2026-11-21T07:46:08Z | codex codex-cli 0.171.0
+HANDOVER_READ_PROBE {
+ ✓ tests/e2e/runtime/zz-handover-read-live.probe.e2e.test.ts (1 test) 46189ms
+     ✓ the new agent reads the named journal file to its last line before replying  44082ms
+      Tests  1 passed (1)
+exit 0

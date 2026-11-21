@@ -1,0 +1,14 @@
+[System: runtime hand-over]
+Another agent worked on this run before you and kept a work journal as it went. You are taking over.
+
+The journals are in <DATA>/memory/agents/handover_read_1f89cd33_bb95_4344_854f_a033c9c718_36ae4468c1ef46469fcac258625038de/work_journal/. The previous agent's most recent work is in work_journal_000001.md.
+Before you reply or continue the work, read <DATA>/memory/agents/handover_read_1f89cd33_bb95_4344_854f_a033c9c718_36ae4468c1ef46469fcac258625038de/work_journal/work_journal_000001.md completely, from its first line to its last.
+If it is long, read it in parts until you reach the end.
+work_journal_active.md starts with this hand-over; your own work is recorded there from now on.
+
+All journal files, oldest first (the earlier ones are there if you need to look further back):
+  work_journal_000001.md | 2026-11-21 | 174.1 KB, 2406 lines
+  work_journal_active.md | 2026-11-21 | 533 B, 5 lines
+
+Each entry is one line, such as "[HH:MM:SS] User: …", "Agent: …" or "Command: … → ok", and ends with a
+link to the full record. Long output is shortened.
