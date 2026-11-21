@@ -334,6 +334,15 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
       leadNoticeSeen: leadConversation.some((text) => text.includes(left("writer", "/writer"))) });
     expect(memory.ok, JSON.stringify(memory)).toBe(true);
     expect(JSON.stringify(memory)).toContain("Reply OK.");
+    // A stopped former member's conversation opens by run ID (REQ-002; IR-003), and the Memory page lists it under its own
+    // agent definition.
+    expect(projection.ok, `the former member's conversation opens: ${projection.ok ? "" : projection.error}`).toBe(true);
+    expect(JSON.stringify(projection)).toContain("Reply OK.");
+    const memoryPage = (await server.graphql(`query($t:String!){listAgentTeamRunsWithMemory(teamDefinitionId:$t, page:1, pageSize:50){
+      entries { teamRunId memberTargets { memberAddress agentRunId agentDefinitionId } } } }`, { t: teamDefinitionId })).listAgentTeamRunsWithMemory.entries as Rec[];
+    const writerTarget = memoryPage.find((entry) => entry.teamRunId === teamRunId)?.memberTargets?.find((target: Rec) => target.agentRunId === writerRunId) ?? null;
+    await keep("TF-02-memory-page.json", { writerTarget, entries: memoryPage });
+    expect(writerTarget, "the Memory page lists the former member").toMatchObject({ agentDefinitionId: ids.writer });
   }, 300_000);
 
   it("TF-03 (AC-003, DEC-002): a member removed mid-turn is leaving, refused at once, its send is delivered, then it is released", async () => {
