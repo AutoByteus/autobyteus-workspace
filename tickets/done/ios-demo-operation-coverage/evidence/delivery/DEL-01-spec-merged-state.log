@@ -1,0 +1,20 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-operation-coverage/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-operation-coverage/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-operation-coverage/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-operation-coverage/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-operation-coverage/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-operation-coverage/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-operation-coverage/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-operation-coverage/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-operation-coverage/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-operation-coverage/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-operation-coverage/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-operation-coverage/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-operation-coverage/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+ ✓ scripts/__tests__/mobileBuildChecks.spec.ts (8 tests) 353ms
+   ✓ the demo coverage of the web source, without a build (autobyteus-584) > every operation the web source defines is answered by the demo or listed with its reason, and the list holds nothing else  324ms
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  09:01:46
+   Duration  1.42s (transform 147ms, setup 237ms, collect 45ms, tests 353ms, environment 0ms, prepare 176ms)
+
+exit 0

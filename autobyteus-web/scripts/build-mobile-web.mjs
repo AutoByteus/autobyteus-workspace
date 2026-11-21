@@ -3,7 +3,7 @@ import { spawn } from 'node:child_process'
 import { cp, mkdir, rm, stat } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { demoOperationCoverage, findDemoCode } from './mobile-build-checks.mjs'
+import { compiledOperations, demoOperationCoverage, findDemoCode } from './mobile-build-checks.mjs'
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url))
 const webRoot = path.resolve(scriptDir, '..')
@@ -73,7 +73,7 @@ await cp(generatedPublicDir, mobileOutputDir, { recursive: true })
 // Each build checks its own output (`mobile-build-checks.mjs`): the node's build has no demo code; the demo build answers
 // every operation compiled into it.
 if (demo) {
-  const coverage = demoOperationCoverage(mobileOutputDir, webRoot)
+  const coverage = demoOperationCoverage(compiledOperations(mobileOutputDir), webRoot)
   const problems = [
     ...coverage.unanswered.map((name) => `compiled but neither answered nor listed as unreachable: ${name}`),
     ...coverage.stale.map((name) => `listed as unreachable but handled or no longer compiled: ${name}`),
