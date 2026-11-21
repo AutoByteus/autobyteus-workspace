@@ -1,6 +1,6 @@
 # IMP-03 iOS release contract check: the icon structure, the export-compliance key and the workflow step (AC-004), positive and negative
 # command: autobyteus-ios/scripts/ios-release-contract-check.py — on the change, then with one fault at a time (files restored from copies after each)
-# commit: 9aeaf46aa9 + the uncommitted change under test
+# commit: f0e6d1eb33 (its tree; run just before that commit was made)
 # env: macOS 26.5.2, Python 3.9.6
 # date: 2026-11-21T10:21:53Z
 

@@ -1,6 +1,6 @@
 # IMP-02 ios-icon:check, positive and four negative cases (AC-002), plus two logo changes
 # command: pnpm -C autobyteus-web ios-icon:check — on the generated set, then with one fault at a time (the set restored from a copy after each)
-# commit: 9aeaf46aa9 + the uncommitted change under test
+# commit: f0e6d1eb33 (its tree; run just before that commit was made)
 # env: macOS 26.5.2, node v22.23.1, sharp 0.33.5, libvips 8.15.3
 # date: 2026-11-21T10:20:57Z
 
