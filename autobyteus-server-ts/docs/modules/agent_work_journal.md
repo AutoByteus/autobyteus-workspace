@@ -41,7 +41,10 @@ caller.
 - Reading (no generation; a run without a journal answers empty or `null`):
   - `journalFileVersions(memoryDir)`: each file's name, state and `content_sha256` from the
     manifest, without reading the files;
-  - `listJournalFiles(memoryDir)`: each file's size, line count and days (`[YYYY-MM-DD]` lines);
+  - `listJournalFiles(memoryDir)`: each file's state, size, line count, work entry count (entries that are not
+    notices: a request, reply, action or note; a file a runtime switch left with only its hand-over notice has none) and
+    days (`[YYYY-MM-DD]` lines). The runtime hand-over notice uses the work entry count to name the newest closed file
+    with work (see [Run History](run_history.md));
   - `readJournalSpans(memoryDir)`: `{ kind: "spans", spans }` with each manifest file's path, size
     and the time range its header states (`YYYY-MM-DD HH:MM` on both sides, UTC; `null` for "no
     records"), reading at most the first 1 KB of each file; `{ kind: "none" }` without a manifest;
@@ -111,7 +114,7 @@ Manifest (exact shape, no generation time, no paths):
 ```json
 {
   "run_id": "run_…",
-  "renderer_revision": 3,
+  "renderer_revision": 4,
   "files": [
     { "journal_file": "work_journal_000001.md", "source_file": "raw_traces_000001.jsonl",
       "source_record_count": 141, "state": "closed", "content_sha256": "…", "runtime_kind": "claude_agent_sdk" },
@@ -162,6 +165,12 @@ Markdown. No clock and no filesystem; times come from the records.
   `…[N lines omitted; full output: [raw#<id>](…)]`; diffs keep 40 lines, written content 20,
   long arguments 40; a line longer than 400 characters is cut with `…[+n chars]`. Limits are
   `WorkJournalLimits`.
+- **Output saved outside the raw trace:** a tool result that a runtime spilled to a file shows its preview and then
+  `…[full output was saved outside the raw trace: <path>]`, in the runtime's words removed. Claude's `<persisted-output>` form adds the
+  size; Antigravity's text (`The tool's output was truncated due to being too long. You can find the full output in a file at
+  file://<path>` and `Here is a preview with the middle of the output truncated:`, matched only at the start of the result or error
+  text) has none. Any other wording stays as recorded. The later read of that file is an ordinary read: nothing is hidden or linked
+  (autobyteus-561).
 
 ## Vocabulary
 
@@ -192,6 +201,7 @@ Outcomes: `ok` (`ok (note)`), `delivered` (a message the platform accepted), `ex
 | Codex | `js`, `js_reset`, `js_add_node_module_dir` | `Run JavaScript: <title>`, `Reset JavaScript environment`, `Add JavaScript module folder: <path>` |
 | Codex | `speak` | `Speak: "<text>"` (`(not played)`) |
 | Antigravity | `Bash` | `Command: <command>` |
+| Antigravity | `view_file {AbsolutePath}` and `read_file {Path}` (the current name), with `StartLine`/`EndLine` and `ContentOffset` | `Command: cat <path>` or `Command: sed -n 'a,bp' <path>`; a size-only result reads `(content not recorded: N lines, M bytes)` |
 | AutoByteus | `run_bash` with `run_in_background` | `Command: <command> (background) → started pid <pid>` |
 | AutoByteus | `start_background_process`, `get_process_output`, `stop_background_process` (retired in autobyteus-338; recorded calls in existing journals) | `Command: <command> (background)`, `Read output of background task <pid>`, `Stop background task <pid>` |
 | AutoByteus | `replace_in_file` | `Edit file: <path> (+a −r)` |

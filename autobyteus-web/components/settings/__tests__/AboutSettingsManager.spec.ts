@@ -21,6 +21,9 @@ const { appUpdateStoreMock } = vi.hoisted(() => {
     availableVersion: null as string | null,
     errorKind: null as string | null,
     automaticInstallPreparing: false,
+    activationMode: 'native',
+    automaticInstallBlockedVersion: null as string | null,
+    automaticUpdate: false,
     initialize: vi.fn().mockResolvedValue(undefined),
     checkForUpdates: vi.fn().mockResolvedValue(undefined),
     downloadUpdate: vi.fn().mockResolvedValue(undefined),
@@ -50,6 +53,9 @@ describe('AboutSettingsManager', () => {
     appUpdateStoreMock.checkedAt = null;
     appUpdateStoreMock.availableVersion = null;
     appUpdateStoreMock.automaticInstallPreparing = false;
+    appUpdateStoreMock.activationMode = 'native';
+    appUpdateStoreMock.automaticInstallBlockedVersion = null;
+    appUpdateStoreMock.automaticUpdate = false;
     appUpdateStoreMock.errorKind = null;
     appUpdateStoreMock.initialize.mockClear();
     appUpdateStoreMock.checkForUpdates.mockClear();
@@ -227,6 +233,42 @@ describe('AboutSettingsManager', () => {
     });
 
     const mountWithCatalog = () => mount(AboutSettingsManager, { global: { mocks: { $t: translate } } });
+
+    it.each(['en', 'zh-CN'] as const)('matches verified restart capability in %s', async locale => {
+      await localizationRuntime.setPreference(locale);
+      appUpdateStoreMock.status = 'downloaded';
+      appUpdateStoreMock.automaticUpdate = true;
+      appUpdateStoreMock.updateStaged = true;
+      appUpdateStoreMock.availableVersion = '1.5.7';
+      // A different release's block must not suppress this release's ready message.
+      appUpdateStoreMock.automaticInstallBlockedVersion = '1.5.6';
+      for (const [mode, status, key] of [
+        ['managed-restart', 'installing', 'settings.components.settings.AboutSettingsManager.message.installing'],
+        ['managed-quit', 'downloaded', 'settings.notifications.app.readyOnQuit'],
+      ]) {
+        appUpdateStoreMock.status = status;
+        appUpdateStoreMock.activationMode = mode;
+        const wrapper = mountWithCatalog();
+        expect(wrapper.get('[data-testid="settings-updates-message"]').text()).toBe(translate(key));
+        wrapper.unmount();
+      }
+    });
+
+    it('a blocked verified release offers manual installation rather than promising an automatic ending', () => {
+      appUpdateStoreMock.status = 'downloaded';
+      appUpdateStoreMock.updateStaged = appUpdateStoreMock.automaticUpdate = true;
+      appUpdateStoreMock.availableVersion = appUpdateStoreMock.automaticInstallBlockedVersion = '1.5.7';
+      for (const [mode, expected] of [
+        ['managed-restart', 'Choose Install and restart to install this version.'],
+        ['managed-quit', 'Quit AutoByteus, reopen it from the installed application menu, and update manually.'],
+      ]) {
+        appUpdateStoreMock.activationMode = mode;
+        const wrapper = mountWithCatalog();
+        expect(wrapper.get('[data-testid="settings-updates-message"]').text()).toBe(expected);
+        expect(wrapper.find('[data-testid="settings-updates-install-update"]').exists()).toBe(true);
+        wrapper.unmount();
+      }
+    });
 
     it('renders the English switch, explanation, hint and badge', async () => {
       await localizationRuntime.setPreference('en');

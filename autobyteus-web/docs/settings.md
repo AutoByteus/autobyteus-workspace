@@ -607,8 +607,10 @@ node has its own switch on the Nodes page).
   failed. The next one runs at the interval." A found app update is only
   announced; Download and Install stay the user's actions, unless **Update
   automatically** (below the channel, `AutoUpdateSwitch` `variant="settings"`)
-  is on: then any check's find downloads and, once downloaded, installs and
-  restarts at once (`electron_packaging.md`, Automatic App Updates). Windows without the
+  is on. On [managed Ubuntu](linux-managed-desktop.md), an eligible verified
+  update installs and reopens the app immediately, even during agent work.
+  An intentional quit stays closed.
+  Other desktop installs follow their [native update policy](electron_packaging.md#automatic-app-updates). Windows without the
   shell's checks (browser windows, disabled updates) have no such section.
 
 ## Server Settings: Embedding

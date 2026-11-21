@@ -1,0 +1,71 @@
+# v1.5.14-beta.6 published state, 2026-11-21T12:34Z
+Desktop Release success a1
+  Resolve Release Metadata: success
+  Build macOS ARM64: success
+  Build Linux x64: success
+  Build Linux ARM64: success
+  Build Windows x64: success
+  Build macOS Intel x64: success
+  Sign authenticated Linux desktop releases: success
+  Publish GitHub Release: success
+Server Docker Release success a1
+  Resolve Release Metadata: success
+  Build Server Image (linux/arm64): success
+  Build Server Image (linux/amd64): success
+  Publish Server Image: success
+  Publish Server Package (linux/arm64): success
+  Publish Server Package (linux/amd64): success
+Android APK Release success a1
+  Resolve Android Release Metadata: success
+  Build Android APK: success
+  Publish Android APK To GitHub Release: success
+iOS App Store Connect Release success a1
+  Resolve iOS Release Metadata: success
+  Build And Test iOS App: success
+  Validate iOS Publish Secrets: success
+  Archive And Upload To App Store Connect: success
+## iOS (run 44901756955)
+Archive And Upload To App Store Connect	Build the bundled demo	2026-11-21T12:30:34.4907950Z The demo answers all 252 compiled operations (handled or listed as unreachable).
+Archive And Upload To App Store Connect	Select Xcode 27 or newer	2026-11-21T12:28:45.9386810Z Selected Xcode app: /Applications/Xcode_27.2.app
+Archive And Upload To App Store Connect	Select Xcode 27 or newer	2026-11-21T12:28:45.9479480Z Selected iPhoneOS SDK: 27.2
+Archive And Upload To App Store Connect	Upload IPA to App Store Connect/TestFlight	2026-11-21T12:32:24.9375500Z UPLOAD SUCCEEDED with no errors
+Archive And Upload To App Store Connect	Upload IPA to App Store Connect/TestFlight	2026-11-21T12:32:24.9377340Z Delivery UUID: d7a91c02-0900-47a4-9690-0f11d98a4300
+Build And Test iOS App	Build the bundled demo	2026-11-21T12:06:27.1307970Z The demo answers all 252 compiled operations (handled or listed as unreachable).
+Build And Test iOS App	Check the app icon against the logo	2026-11-21T12:05:45.3063050Z [ios-icon] all 18 slots match the logo (on #1E3A8A).
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-21T12:24:41.8442910Z iOS build number: 352
+Build And Test iOS App	Select Xcode 27 or newer	2026-11-21T12:04:53.7842040Z Selected Xcode app: /Applications/Xcode_27.2.app
+Build And Test iOS App	Select Xcode 27 or newer	2026-11-21T12:04:53.7925650Z Selected iPhoneOS SDK: 27.2
+ITMS lines in the iOS log: 0
+## release
+prerelease true draft false
+GitHub Latest: v1.5.13
+2026-11-21T12:07:26Z	AutoByteus_personal_android-1.5.14-beta.6-release.apk
+2026-11-21T12:07:26Z	AutoByteus_personal_android-1.5.14-beta.6-release.apk.sha256
+2026-11-21T12:09:15Z	autobyteus-server-1.5.14-beta.6-linux-arm64.tar.gz
+2026-11-21T12:09:20Z	autobyteus-server-1.5.14-beta.6-linux-arm64.json
+2026-11-21T12:09:21Z	autobyteus-server-1.5.14-beta.6-linux-arm64.json.sig
+2026-11-21T12:10:05Z	autobyteus-server-1.5.14-beta.6-linux-x64.tar.gz
+2026-11-21T12:10:10Z	autobyteus-server-1.5.14-beta.6-linux-x64.json
+2026-11-21T12:10:10Z	autobyteus-server-1.5.14-beta.6-linux-x64.json.sig
+2026-11-21T12:28:47Z	AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage
+2026-11-21T12:28:47Z	AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage.release.json
+2026-11-21T12:28:47Z	AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage.release.json.sig
+2026-11-21T12:28:47Z	AutoByteus_personal_linux-x64-1.5.14-beta.6.AppImage
+2026-11-21T12:28:47Z	AutoByteus_personal_linux-x64-1.5.14-beta.6.AppImage.release.json
+2026-11-21T12:28:47Z	AutoByteus_personal_linux-x64-1.5.14-beta.6.AppImage.release.json.sig
+2026-11-21T12:28:47Z	AutoByteus_personal_macos-arm64-1.5.14-beta.6.dmg
+2026-11-21T12:28:47Z	AutoByteus_personal_macos-arm64-1.5.14-beta.6.dmg.blockmap
+2026-11-21T12:28:47Z	AutoByteus_personal_macos-arm64-1.5.14-beta.6.zip
+2026-11-21T12:28:47Z	AutoByteus_personal_macos-arm64-1.5.14-beta.6.zip.blockmap
+2026-11-21T12:28:47Z	AutoByteus_personal_macos-x64-1.5.14-beta.6.dmg
+2026-11-21T12:28:47Z	AutoByteus_personal_macos-x64-1.5.14-beta.6.dmg.blockmap
+2026-11-21T12:28:47Z	AutoByteus_personal_macos-x64-1.5.14-beta.6.zip
+2026-11-21T12:28:47Z	AutoByteus_personal_macos-x64-1.5.14-beta.6.zip.blockmap
+2026-11-21T12:28:47Z	AutoByteus_personal_windows-1.5.14-beta.6.exe
+2026-11-21T12:29:07Z	latest-linux-arm64.yml
+2026-11-21T12:29:07Z	latest-linux.yml
+2026-11-21T12:29:07Z	latest-mac.yml
+2026-11-21T12:29:07Z	latest.yml
+## Docker (registry API)
+1.5.14-beta.6 = beta = sha256:47b89110730d785d501f93f0292573fd075c1dd6dc9872ebaad2a5337dd7fd58 (linux/amd64 sha256:7628f94b47dbf0b6548097bf09f71bd017c2cbbb57dfd5ebdbd0b64854edf1df, linux/arm64 sha256:1b58307d103938ffdae01ab7457318e518c58fb8c51cbc25f48561a839ee2cfc = the two Publish Server Package jobs' digests)
+latest = 1.5.13 = sha256:13df73db926a646237143db070bec31cc2a9742a94069cb71814cd6a730a20de (unchanged)

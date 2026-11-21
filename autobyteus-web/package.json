@@ -1,6 +1,6 @@
 {
   "name": "autobyteus",
-  "version": "1.5.14-beta.4",
+  "version": "1.5.14-beta.6",
   "packageManager": "pnpm@10.28.1",
   "description": "AutoByteus Desktop Application",
   "license": "AGPL-3.0-only",
@@ -32,6 +32,8 @@
     "generate:electron": "cross-env NODE_ENV=production BUILD_TARGET=electron nuxt generate",
     "icons:build": "node scripts/build-icon-bundle.mjs",
     "icons:check": "node scripts/build-icon-bundle.mjs --check",
+    "ios-icon:build": "node scripts/build-ios-app-icon.mjs",
+    "ios-icon:check": "node scripts/build-ios-app-icon.mjs --check",
     "build:mobile-web": "node ./scripts/build-mobile-web.mjs",
     "generate:icons": "tsc -p build/tsconfig.json && node build/scripts/generateIcons.js",
     "preview": "nuxt preview",

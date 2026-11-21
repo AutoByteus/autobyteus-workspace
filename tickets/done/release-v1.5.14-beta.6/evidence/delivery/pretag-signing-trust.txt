@@ -1,0 +1,8 @@
+# check-release-trust.mjs with the process-only HTTPS rewrite of the github.com-ryan alias, 2026-11-21: exit 0
+Desktop signing witness: {
+  fingerprint: 'e26a2e7404817c8277f6d64d2bd77e40852c172f576f18ebd673a4070ad9debe',
+  tag: 'v1.5.14-beta.5',
+  sha: 'b4723d0bb75c740c57bceaaa8fef4885f434d129',
+  runId: 44885874501,
+  attempt: 1
+}

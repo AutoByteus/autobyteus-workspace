@@ -1,0 +1,11 @@
+# Case: API-04
+# Command: five other in-process-server e2e files solo: task-copy-idle-lifetime, delegated-team-lazy-member-activation, project-change-feed, node-files, project-task-search (each: env -i ... RUN_AGY_FAILURE_E2E=1 ... vitest run <file>)
+# Commit: 209e029e5a (code = 806cb45831; the new e2e file and the fixture case are committed with this round)
+# Environment: macOS arm64, Node v22.23.1, in-process real server, owned temp data dir, private HOME, scripted Antigravity CLI; host load average 64-78
+# Date: 2026-11-21
+
+task-copy-idle-lifetime: Tests  1 passed (1)
+delegated-team-lazy-member-activation: Tests  2 passed | 1 skipped (3)
+project-change-feed: Tests  7 passed (7)
+node-files: Tests  5 passed (5)
+project-task-search: Tests  4 passed (4)

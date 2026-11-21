@@ -1,0 +1,5 @@
+# API-03 AC-005 live hand-over read, claude_agent_sdk model haiku (tag haiku-2) | commit 5617257773 | 2026-11-21T07:51:35Z
+ ✓ tests/e2e/runtime/zz-handover-read-live.probe.e2e.test.ts (1 test) 52964ms
+     ✓ the new agent reads the named journal file to its last line before replying  39999ms
+      Tests  1 passed (1)
+exit 0

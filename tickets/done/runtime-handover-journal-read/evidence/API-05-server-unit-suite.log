@@ -1,0 +1,60 @@
+# API-05 server test:unit | commit 5617257773 | Node v22.23.1 | 2026-11-21T07:56:40Z | load { 95.35 138.28 136.04 }
+Claude input for run 'run-1' failed before send: Error: persist failed
+Claude input for run 'run-1' failed before send: Error: Claude Code process exited with code 1
+Claude process for run 'run-1' exited: Error: Claude Code process terminated by signal SIGKILL
+Claude process for run 'run-1' exited: Error: CLAUDE_PROVIDER_SESSION_ID_CONFLICT: Claude returned a different provider session identity.
+Claude process for run 'run-1' exited: Error: killed
+Claude process for run 'run-1' exited: Error: Claude Code process terminated by signal SIGKILL
+Claude process for run 'run-1' exited: Error: Claude Code process terminated by signal SIGKILL
+AGENT_PACKAGE_FOLDER_WATCH_UNAVAILABLE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/apar-monitor-YnXlo2/pkg Error: too many open files
+test-owned exact retry receipt {"first":{"accepted":false,"code":"RUNTIME_COMMAND_FAILED","message":"Failed to terminate run for runtime 'codex_app_server': AggregateError: Codex exact thread cleanup failed."},"retry":{"accepted":true},"sameThread":"owned-thre
+Agent root of run 'run-1' could not be ended before a history change: Error: a child did not stop
+Agent root of run 'run-1' could not be ended before a history change: Error: a child did not stop
+Failed to create skill workspace skill_ws_writer: Error: SkillWorkspace creation failed for 'writer': Error: Skill 'writer' not found
+[AgentRunViewProjectionService] local replay projection failed for run 'run-local-provider-fails' (autobyteus): Error: local replay failed
+Error during bulk import of MCP servers: SyntaxError: Expected double-quoted property name in JSON at position 31 (line 1 column 32)
+Error during bulk import of MCP servers: Error: JSON must contain a top-level 'mcpServers' object.
+ ❯ tests/unit/agent-execution/backends/claude/claude-provider-turn-race.test.ts (2 tests | 1 failed) 451ms
+Backend shutdown incomplete Error: group absence unconfirmed
+Backend shutdown result unconfirmed Error: Shutdown IPC flush timed out
+Required agent tool readiness failed. AggregateError: Required server-owned tool registration failed.
+    Error: Required tool unit 'Task Delegation Tools' registration failed: Error: delegation registry unavailable
+      [cause]: Error: delegation registry unavailable
+Required agent tool readiness failed. AggregateError: Required server-owned tool registration failed.
+    Error: Required tool unit 'Media Tools' is missing export 'registerMediaTools'.
+Required agent tool readiness failed. Error: Required tool unit 'Core Tools' could not load 'autobyteus-ts/tools/register-tools.js': Error: core module unavailable
+  [cause]: Error: core module unavailable
+Strategy Object failed: Error: Search failed, trying next
+Native event listener failed for 'agent-1'. Error: projection failed
+Failed to preflight discoverable Codex skills for '/tmp/codex-workspace'; falling back to workspace materialization: Error: skills/list failed
+Restart reminders could not be saved after a delivery: Error: ENOENT: no such file or directory, rename '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-resumer-1KrJ9R/restart-resume/restart-reminders.json.31351.1795248363813.63a0fa4465cb6.tmp' -> '/v
+Restart reminders could not be saved after a delivery: Error: ENOENT: no such file or directory, rename '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-resumer-ePeQaw/restart-resume/restart-reminders.json.31351.1795248363943.06bf1c1c74298.tmp' -> '/v
+ERROR: Failed to initialize SQLite path: AppConfigError: DATABASE_URL must be a non-empty SQLite file URL.
+Could not update config file /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-oQ6VG7/.env: Error: EACCES: permission denied, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-oQ6VG7/.env'. Changes will only be valid for
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-empty-ZAhtaS/.env
+Failed to load environment: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-empty-ZAhtaS/.env
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+Agent stream sequence for 'run-1' could not read the run's stored turns: Error: unreadable
+Projects data committed; lock finalization failed. Error: release failure
+Task context cleanup failed. Error: cleanup unavailable
+File explorer WebSocket connection rejected: workspace missing not found (Error: workspace missing)
+Failed to start file watcher: Error: watcher failed
+Failed to set up file explorer session: Error: send failed
+Error sending file change event: Error: file change send failed
+Invalid JSON from client: not-json (SyntaxError: Unexpected token 'o', "not-json" is not valid JSON)
+RootTeamRun lifecycle listener failed: Error: listener failure
+Failed to decode JSON file /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-4bEW8e/bad.json: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+Skipping malformed JSONL line in /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-oFPHfN/agents/agent/raw_traces_active.jsonl: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+Error reloading agent package definitions: Error: EIO
+Stopped Agent model-config update failed unexpectedly. Error: runtimeKind must be an agent runtime kind.
+Failed to parse disabled_skills.json: SyntaxError: Unexpected token 'o', "not valid json {{{" is not valid JSON. Starting with empty list.
+Failed during download process for https://mock.test.com/media/images/test.jpg: Error: HTTP 404 Not Found
+Memory Sync staging sweep failed: Error: ENOENT: no such file or directory, scandir '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-ingestion-sweep-Qn7zcF/memory-sync-staging/source-b'
+Strategy FuzzysortSearchStrategy failed: Error: fuzzy unavailable for test, trying next
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/unit/agent-execution/backends/claude/claude-provider-turn-race.test.ts > Claude provider-initiated turns back to back > delivers and records the second turn's text and reports running while it works (AC-001, AC-003)
+AssertionError: expected [ Array(1) ] to deeply equal [ …(3) ]
+ ❯ tests/unit/agent-execution/backends/claude/claude-provider-turn-race.test.ts:134:45
+ Test Files  1 failed | 1039 passed | 5 skipped (1045)
+      Tests  1 failed | 8633 passed | 9 skipped (8643)
+exit 1

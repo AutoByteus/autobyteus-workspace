@@ -15,7 +15,7 @@ const setElectronApiMock = (mock: Partial<Window['electronAPI']> | null): void =
 const shellState = (overrides: Partial<AppUpdateState> = {}): AppUpdateState => ({
   status: 'idle', currentVersion: '1.5.6', currentVersionIsPrerelease: false, updateChannel: 'stable', updateStaged: false,
   availableVersion: null, downloadPercent: null, downloadTransferredBytes: null, downloadTotalBytes: null, releaseNotes: null,
-  activationMode: 'native', message: '', errorKind: null, errorOperation: null, checkedAt: null, notification: null, autoCheck: null, automaticUpdate: false, automaticInstallPreparing: false,
+  automaticInstallBlockedVersion: null, activationMode: 'native', message: '', errorKind: null, errorOperation: null, checkedAt: null, notification: null, autoCheck: null, automaticUpdate: false, automaticInstallPreparing: false,
   ...overrides,
 });
 
@@ -33,6 +33,15 @@ describe('appUpdateStore automatic update', () => {
     expect(store.automaticUpdate).toBe(true);
     store.applyRemoteState({ status: 'checking' });
     expect(store.automaticUpdate).toBe(true);
+  });
+
+  it('keeps a per-version install block through partial broadcasts until the shell clears it', () => {
+    const store = useAppUpdateStore();
+    store.applyRemoteState(shellState({ automaticInstallBlockedVersion: '1.5.7' }));
+    store.applyRemoteState({ status: 'downloaded' });
+    expect(store.automaticInstallBlockedVersion).toBe('1.5.7');
+    store.applyRemoteState(shellState());
+    expect(store.automaticInstallBlockedVersion).toBeNull();
   });
 
   it('saves through the shell and applies its state', async () => {

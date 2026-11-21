@@ -1,0 +1,19 @@
+Independent restored N baseline, genuine startup stage, single window. GNOME Alt+F4 = close last window (ordinary Quit), not Install and restart.
+{"at":"2026-11-21T11:03:22.931Z","code":200,"counts":{"busy":0,"unknown":0},"state":{"activationMode":"managed-restart","status":"downloaded","currentVersion":"1.5.16","currentVersionIsPrerelease":false,"updateChannel":"stable","updateStaged":true,"availableVersion":"1.5.17","downloadPercent":100,"downloadTransferredBytes":360475212,"downloadTotalBytes":360475212,"releaseNotes":null,"message":"Update ready.","errorKind":null,"errorOperation":null,"checkedAt":"2026-11-21T11:03:13.485Z","notification":{"version":"1.5.17","fromVersion":"1.5.16","foundAt":"2026-11-21T11:03:13.485Z","read":false,"state":"waiting","handledVersion":null,"releasePageUrl":null,"outcome":null,"outcomeReason":null,"outcomeStep":null},"autoCheck":{"enabled":true,"intervalMinutes":60},"automaticUpdate":true,"automaticInstallPreparing":false,"automaticInstallBlockedVersion":null},"windows":[{"windowId":1,"entryId":"embedded-local"}]}
+2026-11-21T11:03:26+00:00
+autobyteus
+2026-11-21T11:03:29+00:00
+{"file": "17d945c6fc5c5841580287b0dbfdefc77fa6a64eb0c868bd7a2fc9916946376f", "work": "b8036326d85284af41eedcb47327f9509175e8aaced96477ef7c7db61e62a9df"}
+2026-11-21T11:03:44+00:00
+2026-11-21T11:03:54+00:00
+2026-11-21T11:04:04+00:00
+2026-11-21T11:04:14+00:00
+2026-11-21T11:04:24+00:00
+2026-11-21T11:04:34+00:00
+2026-11-21T11:04:44+00:00
+2026-11-21T11:04:54+00:00
+{"file": "17d945c6fc5c5841580287b0dbfdefc77fa6a64eb0c868bd7a2fc9916946376f", "work": "b8036326d85284af41eedcb47327f9509175e8aaced96477ef7c7db61e62a9df"}
+no GUI, server or supervisor reopened
+Manual launch after observation:
+{"at":"2026-11-21T11:05:02.926Z","code":200,"counts":{"busy":0,"unknown":0},"state":{"activationMode":"managed-restart","status":"idle","currentVersion":"1.5.17","currentVersionIsPrerelease":false,"updateChannel":"stable","updateStaged":false,"availableVersion":null,"downloadPercent":null,"downloadTransferredBytes":null,"downloadTotalBytes":null,"releaseNotes":null,"message":"Update status is idle.","errorKind":null,"errorOperation":null,"checkedAt":null,"notification":{"version":"1.5.17","fromVersion":"1.5.16","foundAt":"2026-11-21T11:03:13.485Z","read":false,"state":"handled","handledVersion":"1.5.17","releasePageUrl":null,"outcome":"AUTO_UPDATED","outcomeReason":null,"outcomeStep":null},"autoCheck":{"enabled":true,"intervalMinutes":60},"automaticUpdate":true,"automaticInstallPreparing":false,"automaticInstallBlockedVersion":null},"windows":[{"windowId":1,"entryId":"embedded-local"}]}
+Opened notification center: Updated automatically to 1.5.17

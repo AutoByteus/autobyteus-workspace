@@ -24,6 +24,8 @@ const updateNotificationsMessages = {
   'settings.notifications.app.name': 'AutoByteus',
   'settings.notifications.app.download': 'Download',
   'settings.notifications.app.downloading': 'Downloading {{percent}}%',
+  'settings.notifications.app.readyManual': 'Choose Install and restart to install this version.',
+  'settings.notifications.app.readyManualFromMenu': 'Quit AutoByteus, reopen it from the installed application menu, and update manually.',
   'settings.notifications.app.readyOnQuit': 'Ready for your next quit. AutoByteus will not reopen automatically.',
   'settings.notifications.app.downloaded': 'Downloaded. Restart AutoByteus to install it.',
   'settings.notifications.app.preparing': 'Preparing to install. The app restarts by itself when this is done.',

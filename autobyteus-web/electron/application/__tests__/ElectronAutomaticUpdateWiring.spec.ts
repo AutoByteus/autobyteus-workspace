@@ -135,3 +135,18 @@ describe('the node switch registry change (set-auto-update)', () => {
       .toThrow('Node does not exist')
   })
 })
+
+it('wires early Quit to the verified managed session, not its own passing quit', async () => {
+  const { ManagedUpdateSession } = await import('../managedUpdateSession')
+  const notify = vi.spyOn(ManagedUpdateSession.prototype,'quitRequested')
+  const passing = vi.spyOn(ManagedUpdateSession.prototype,'passingQuit','get')
+  try {
+    mocks.app.isPackaged=true; mocks.detectManaged.mockReturnValue({})
+    createApplication()
+    const before = mocks.app.on.mock.calls.find(([name]) => name==='before-quit')?.[1]
+    expect(typeof before).toBe('function'); before(); expect(notify).toHaveBeenCalledOnce()
+    passing.mockReturnValue(true); before(); expect(notify).toHaveBeenCalledOnce()
+  } finally {
+    passing.mockRestore(); notify.mockRestore();mocks.app.isPackaged=false;mocks.detectManaged.mockReset()
+  }
+})

@@ -4,7 +4,7 @@ import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js"
  * Identifies the rendering rules. A closed journal file is reused only when it was written by
  * this revision (a cache key for derived output, not a schema version of the manifest).
  */
-export const WORK_JOURNAL_RENDERER_REVISION = 3;
+export const WORK_JOURNAL_RENDERER_REVISION = 4;
 
 /**
  * One run's journal: the run, its own memory folder, and its runtime as recorded. `null` means no
@@ -51,12 +51,14 @@ export type WorkJournalFileVersion = Readonly<{
 /** A day a journal file covers, with the first line of that day. */
 export type WorkJournalDay = Readonly<{ day: string; line: number }>;
 
-/** A journal file for a reader: its size, lines and days. */
+/** A journal file for a reader: its size, lines, work entries and days. */
 export type WorkJournalFileSummary = Readonly<{
   journalFile: string;
   state: WorkJournalFileState;
   sizeBytes: number;
   lineCount: number;
+  /** Its work entries: entries that are not a notice (a request, reply, action or note; autobyteus-583). */
+  workEntryCount: number;
   days: readonly WorkJournalDay[];
 }>;
 

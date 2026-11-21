@@ -1,0 +1,8 @@
+# Case: API-06
+# Command: pnpm -C autobyteus-server-ts typecheck
+# Commit: 209e029e5a (code = 806cb45831; the new e2e file and the fixture case are committed with this round)
+# Environment: macOS arm64, Node v22.23.1, in-process real server, owned temp data dir, private HOME, scripted Antigravity CLI; host load average 64
+# Date: 2026-11-21
+
+[typecheck] production errors: 0; test-file errors: 1006 in 315 files (baseline 1006 in 315 files)
+[typecheck] PASS

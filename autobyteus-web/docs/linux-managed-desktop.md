@@ -48,10 +48,13 @@ ID, profile/data location, selected channel and automatic-update preference stay
 the same. No app data is owned or migrated by the privileged installer.
 
 With **Update automatically** on, the app downloads and verifies a newer release
-while work continues. **Ready for your next quit** means exactly that: an
-independently requested ordinary quit stops the app/server once, activates the
-verified file and leaves the app closed. An update never initiates this quit or
-reopens the app. **Install and Restart** explicitly requests activation now and
+while work continues. As soon as an eligible update is verified, AutoByteus stops the
+server, installs the update and reopens through its original launcher. Typing or an
+active agent does not postpone installation. Recorded busy runs receive the existing
+update restart notice after reopening. If you quit before verification finishes,
+the old version stays installed and closed. If you quit after the verified update
+starts installing, installation finishes but the app stays closed. Without a launcher restart
+channel, automatic installation waits for your next quit. **Install and Restart** explicitly requests activation now and
 asks the original desktop launcher to reopen the fixed outer AppImage after the
 old app and server stop. Electron does not launch a successor from a transient
 mount. If the app cannot confirm restart support, it leaves the staged update
@@ -65,7 +68,9 @@ signature; atomic replacement cannot separate code from its identity. Routine
 compatible updates require no administrator prompt. Invalid bytes, wrong keys,
 replays, stale stages and unsupported writer contracts are refused. A definite
 manual refusal is shown as **Update failed**, independently of automatic retry
-blocking. A lost activation reply is reconciled against the actual installed
+blocking. If automatic installation failed for a version, downloading that
+version manually does not re-enable automatic installation. Use the manual
+action shown in Settings or the update notification. A lost activation reply is reconciled against the actual installed
 file, not guessed from the download event.
 
 ## Removal and repair

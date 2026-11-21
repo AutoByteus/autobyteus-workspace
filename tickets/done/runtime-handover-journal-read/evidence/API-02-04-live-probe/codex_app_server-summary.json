@@ -1,0 +1,65 @@
+{
+  "target": "codex_app_server",
+  "model": "gpt-5.6-luna",
+  "code": "c77977d6",
+  "namedFile": {
+    "lines": 2405,
+    "bytes": 178309,
+    "lastLine": "[08:26:29] Agent: Ran echo step 599. END-c77977d6 [↗](../raw_traces_000001.jsonl#rt_syn_c77977d6_2402)"
+  },
+  "noticeNamesFile": null,
+  "noticeHasReadInstruction": null,
+  "markers": [
+    "MARK-c77977d6-0",
+    "MARK-c77977d6-1",
+    "MARK-c77977d6-2",
+    "MARK-c77977d6-3",
+    "MARK-c77977d6-4",
+    "MARK-c77977d6-5",
+    "END-c77977d6"
+  ],
+  "seenBeforeFirstText": [
+    "MARK-c77977d6-0",
+    "MARK-c77977d6-1",
+    "MARK-c77977d6-2",
+    "MARK-c77977d6-3",
+    "MARK-c77977d6-4",
+    "MARK-c77977d6-5",
+    "END-c77977d6"
+  ],
+  "seenBeforeLastText": [
+    "MARK-c77977d6-0",
+    "MARK-c77977d6-1",
+    "MARK-c77977d6-2",
+    "MARK-c77977d6-3",
+    "MARK-c77977d6-4",
+    "MARK-c77977d6-5",
+    "END-c77977d6"
+  ],
+  "seenInAllResults": [
+    "MARK-c77977d6-0",
+    "MARK-c77977d6-1",
+    "MARK-c77977d6-2",
+    "MARK-c77977d6-3",
+    "MARK-c77977d6-4",
+    "MARK-c77977d6-5",
+    "END-c77977d6"
+  ],
+  "toolCalls": [
+    "run_bash {\"command\":\"/bin/bash -lc 'cat /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/handover-read-probe-fFppfe/memory/agents/handover_read_359ff797_32aa_41bf_b889_1309b69c57_225abc33ea044712b573515458542b37/work_journal/work_journal_000001.md'\",\"cwd\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r000",
+    "run_bash {\"command\":\"/bin/bash -lc \\\"sed -n '1,300p' /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/handover-read-probe-fFppfe/memory/agents/handover_read_359ff797_32aa_41bf_b889_1309b69c57_225abc33ea044712b573515458542b37/work_journal/work_journal_000001.md\\\"\",\"cwd\":\"/var/folders/7w/9r4_s1_s42z3f",
+    "run_bash {\"command\":\"/bin/bash -lc \\\"sed -n '301,600p' /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/handover-read-probe-fFppfe/memory/agents/handover_read_359ff797_32aa_41bf_b889_1309b69c57_225abc33ea044712b573515458542b37/work_journal/work_journal_000001.md\\\"\",\"cwd\":\"/var/folders/7w/9r4_s1_s42z",
+    "run_bash {\"command\":\"/bin/bash -lc \\\"cat /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/handover-read-probe-fFppfe/memory/agents/handover_read_359ff797_32aa_41bf_b889_1309b69c57_225abc33ea044712b573515458542b37/work_journal/work_journal_active.md && printf '\\\\\\\\n--- anomalies ---\\\\\\\\n' && grep -vE",
+    "run_bash {\"command\":\"/bin/bash -lc \\\"python3 - <<'PY'\\nfrom pathlib import Path\\np=Path('/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/handover-read-probe-fFppfe/memory/agents/handover_read_359ff797_32aa_41bf_b889_1309b69c57_225abc33ea044712b573515458542b37/work_journal/work_journal_000001.md')\\n"
+  ],
+  "texts": [
+    "Reviewed the handover journal. The previous run completed all echo steps through 599 and ended with `END-c77977d6`."
+  ],
+  "resultSizes": [
+    173498,
+    21276,
+    21447,
+    582,
+    753
+  ]
+}

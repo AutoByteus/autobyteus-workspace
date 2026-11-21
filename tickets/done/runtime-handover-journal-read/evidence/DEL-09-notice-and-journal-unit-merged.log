@@ -1,0 +1,263 @@
+# DEL-09: the notice and journal tests on the merged state (b950c44a84 + delivery's doc edit), verbose
+b950c44a84
+ ✓ tests/unit/runtime-handover-notices/runtime-handover-notice-transition.test.ts > the hand-over notice on a real switch rotation (autobyteus-583) > names the closed file with the previous agent's work, not the open file that holds only the hand-over (AC-001) 73ms
+ ✓ tests/unit/runtime-handover-notices/runtime-handover-notice-transition.test.ts > the hand-over notice on a real switch rotation (autobyteus-583) > skips the notice-only file a second switch before any input leaves behind (AC-002) 100ms
+ ✓ tests/unit/runtime-handover-notices/runtime-handover-notice-transition.test.ts > the hand-over notice on a real switch rotation (autobyteus-583) > has no read instruction after a switch before any work (AC-004) 17ms
+ ✓ tests/agent-work-journal/services/work-journal-service.test.ts > WorkJournalService.ensureCurrent (DS-004) > a run that never compacted has one open journal file and an exact manifest (AC-W5) 13ms
+ ✓ tests/agent-work-journal/services/work-journal-service.test.ts > WorkJournalService.ensureCurrent (DS-004) > after a turn ends the open file includes it; after a compaction the closed file is written once (AC-W5, AC-W6) 25ms
+ ✓ tests/agent-work-journal/services/work-journal-service.test.ts > WorkJournalService.ensureCurrent (DS-004) > a closed file regenerated from the same raw traces is byte-identical; nothing is rewritten when nothing changed 21ms
+ ✓ tests/agent-work-journal/services/work-journal-service.test.ts > WorkJournalService.ensureCurrent (DS-004) > a closed file is rendered again when the renderer revision, its own recorded runtime or raw record count changes, or it is missing; the run's runtime is not its rule (N4) 36ms
+ ✓ tests/agent-work-journal/services/work-journal-service.test.ts > WorkJournalService.ensureCurrent (DS-004) > each journal file is rendered with the agent runtime that wrote its raw file (AC-006, I-9) > a Claude Agent SDK file and a Codex App Server open file both read as commands, each with its own translation 6ms
+ ✓ tests/agent-work-journal/services/work-journal-service.test.ts > WorkJournalService.ensureCurrent (DS-004) > each journal file is rendered with the agent runtime that wrote its raw file (AC-006, I-9) > a run that never switched renders the same text as before: the run's runtime and its segments' runtime agree 10ms
+ ✓ tests/agent-work-journal/services/work-journal-service.test.ts > WorkJournalService.ensureCurrent (DS-004) > each journal file is rendered with the agent runtime that wrote its raw file (AC-006, I-9) > an old manifest entry without its own runtime is rendered again, not trusted 11ms
+ ✓ tests/agent-work-journal/services/work-journal-service.test.ts > WorkJournalService.ensureCurrent (DS-004) > neutral vocabulary: no migration, the journal is rendered again (AC-008, AC-009) > exposes the revision it renders with, one owner for the value 1ms
+ ✓ tests/agent-work-journal/services/work-journal-service.test.ts > WorkJournalService.ensureCurrent (DS-004) > neutral vocabulary: no migration, the journal is rendered again (AC-008, AC-009) > a journal written by revision 1 in the old wording is replaced in place by the next ensureCurrent 11ms
+ ✓ tests/agent-work-journal/services/work-journal-service.test.ts > WorkJournalService.ensureCurrent (DS-004) > neutral vocabulary: no migration, the journal is rendered again (AC-008, AC-009) > regenerate renders every file again although revision and runtime match; without it the file is reused 8ms
+ ✓ tests/agent-work-journal/services/work-journal-service.test.ts > WorkJournalService.ensureCurrent (DS-004) > an unreadable manifest is treated as absent; old runs get their journal the first time it is needed 5ms
+ ✓ tests/agent-work-journal/services/work-journal-service.test.ts > WorkJournalService.ensureCurrent (DS-004) > a stale open file is removed when the raw folder has no active file; a run without raw traces has an empty package 6ms
+ ✓ tests/agent-work-journal/services/work-journal-service.test.ts > WorkJournalService.ensureCurrent (DS-004) > concurrent callers for one run are serialized; the evidence hash does not read closed files again (N3) 9ms
+ ✓ tests/agent-work-journal/services/work-journal-service.test.ts > WorkJournalService.ensureCurrent (DS-004) > a failed write reaches the caller and leaves the raw traces untouched; the next call recovers (AC-W6) 5ms
+ ✓ tests/agent-work-journal/services/work-journal-service.test.ts > WorkJournalService.ensureCurrent (DS-004) > works with no model configured and no runtime available (AC-W7): getWorkJournalService is one instance 4ms
+ ✓ tests/agent-work-journal/services/work-journal-run-updater.test.ts > WorkJournalRunUpdater (DS-001) > N1: attached after the recorder, the journal includes the assistant text the recorder flushes on TURN_COMPLETED 72ms
+ ✓ tests/agent-work-journal/services/work-journal-run-updater.test.ts > WorkJournalRunUpdater (DS-001) > the resource manager attaches the journal updater after the memory recorder 1ms
+ ✓ tests/agent-work-journal/services/work-journal-run-updater.test.ts > WorkJournalRunUpdater (DS-001) > a compaction writes the closed journal file; AutoByteus runs (no recorder queue) are updated too 14ms
+ ✓ tests/agent-work-journal/services/work-journal-run-updater.test.ts > WorkJournalRunUpdater (DS-001) > a burst of events is merged into at most one more update; other events do not update 4ms
+ ✓ tests/agent-work-journal/services/work-journal-run-updater.test.ts > WorkJournalRunUpdater (DS-001) > a journal failure is logged and never reaches the run; the raw traces are untouched (AC-W6) 2ms
+ ✓ tests/agent-work-journal/services/work-journal-run-updater.test.ts > WorkJournalRunUpdater (DS-001) > a run without a memory folder is not followed; after detach no update runs 12ms
+ ✓ tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > a journal manifest written by the previous release (one runtime for the run, none per file) is read once and rewritten without changing any journal text 50ms
+ ✓ tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > claude: archived segments and the open file render exactly as the run's one runtime renders them 14ms
+ ✓ tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > codex: archived segments and the open file render exactly as the run's one runtime renders them 10ms
+ ✓ tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > antigravity: archived segments and the open file render exactly as the run's one runtime renders them 13ms
+ ✓ tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > grok: archived segments and the open file render exactly as the run's one runtime renders them 12ms
+ ✓ tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > autobyteus: archived segments and the open file render exactly as the run's one runtime renders them 11ms
+ ✓ tests/agent-work-journal/services/work-journal-reading.test.ts > readJournalEntries > reads entries with kinds, line ranges and days; days list the first line of each day 2ms
+ ✓ tests/agent-work-journal/services/work-journal-reading.test.ts > readJournalEntries > has no days for a file that records no time 0ms
+ ✓ tests/agent-work-journal/services/work-journal-reading.test.ts > readJournalHeaderTimeRange > reads the header's range with the date on both sides, also for a range within one day 0ms
+ ✓ tests/agent-work-journal/services/work-journal-reading.test.ts > readJournalHeaderTimeRange > has no range for a file whose records have no time, or a text that is not a journal header 0ms
+ ✓ tests/agent-work-journal/services/work-journal-reading.test.ts > WorkJournalService reads, notification and unrecorded runtime > renders a file whose runtime is not recorded with the generic rule, stores null for it, and reuses its closed files 60ms
+ ✓ tests/agent-work-journal/services/work-journal-reading.test.ts > WorkJournalService reads, notification and unrecorded runtime > tells listeners only when a journal file was written or removed; a failing listener never fails the call 23ms
+ ✓ tests/agent-work-journal/services/work-journal-reading.test.ts > WorkJournalService reads, notification and unrecorded runtime > reads each manifest file's path, size and header time range without rendering; null without a journal 22ms
+ ✓ tests/agent-work-journal/services/work-journal-reading.test.ts > WorkJournalService reads, notification and unrecorded runtime > reads the spans of files an older manifest lists, whose entries record no runtime of their own, without rendering them 6ms
+ ✓ tests/agent-work-journal/services/work-journal-reading.test.ts > WorkJournalService reads, notification and unrecorded runtime > tells a manifest that cannot be read from no journal at all (API-15) 9ms
+ ✓ tests/agent-work-journal/services/work-journal-reading.test.ts > WorkJournalService reads, notification and unrecorded runtime > lists journal files with versions, sizes, lines, work entries and days, and reads lines of manifest files only 33ms
+ ✓ tests/agent-work-journal/services/work-journal-agy-schema-reads.test.ts > Antigravity MCP schema reads in the journal service (autobyteus-560) > AC-005: the journal omits the read; the raw file still holds both records and the manifest counts the raw records 14ms
+ ✓ tests/agent-work-journal/services/work-journal-agy-schema-reads.test.ts > Antigravity MCP schema reads in the journal service (autobyteus-560) > AC-006: a closed journal of the previous renderer revision is rendered again and loses the schema lines; a file the rule does not touch is identical 17ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > built-in tables match work-journal-builtin-tools.json (contract §4 oracle) > autobyteus built-in and runtime-only names equal the oracle 1ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > built-in tables match work-journal-builtin-tools.json (contract §4 oracle) > claude_agent_sdk built-in and runtime-only names equal the oracle 0ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > built-in tables match work-journal-builtin-tools.json (contract §4 oracle) > codex_app_server built-in and runtime-only names equal the oracle 0ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > built-in tables match work-journal-builtin-tools.json (contract §4 oracle) > antigravity_cli built-in and runtime-only names equal the oracle 0ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > built-in tables match work-journal-builtin-tools.json (contract §4 oracle) > grok_build built-in and runtime-only names equal the oracle 0ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > built-in tables match work-journal-builtin-tools.json (contract §4 oracle) > deepseek_harness built-in and runtime-only names equal the oracle 0ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > built-in tables match work-journal-builtin-tools.json (contract §4 oracle) > an unknown runtime has no built-ins (every tool uses the generic rule) 0ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > Claude (contract §4, §6) > Bash: command, background, and an `Exit code <n>` error as the exit with the rest as output 7ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > Claude (contract §4, §6) > Read: cat -n with offset/limit ranges in the common number layout; images as a media marker 1ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > Claude (contract §4, §6) > Grep: files mode by default, content with -n, count, options and pipes 1ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > Claude (contract §4, §6) > Glob, WebFetch (summarized), WebSearch 0ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > Claude (contract §4, §6) > Write and Edit: confirmations are not shown; diffs are built; replace_all; MultiEdit; NotebookEdit 3ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > Claude (contract §4, §6) > §6: tool_use_error tags, the user's rejection, and the persisted-output wrapper 0ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > Claude (contract §4, §6) > Skill is a skill load; its own text is not repeated 0ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > Claude (contract §4, §6) > a Claude tool that has no converter (a user's own) uses the generic rule 0ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > Codex (contract §4) > run_bash: shell wrapper removed, cwd, no exit code; a failure's output is the error text 1ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > Codex (contract §4) > edit_file: hunks are an edit, no hunks a new file, path only is not recorded 0ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > Codex (contract §4) > search_web: query from the call or the result; openPage and findInPage; no results recorded 0ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > Codex (contract §4) > Codex-qualified MCP names show the tool and its server; MCP envelopes use the generic rule 0ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > Antigravity (contract §4, §6) > run_command: Cwd, background, AGY notes not shown, truncation and CRLF 1ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > Antigravity (contract §4, §6) > view_file: usually records only the size; ranges and byte offsets 0ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > Antigravity (contract §4, §6) > grep_search, find_by_name and list_dir 1ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > Antigravity (contract §4, §6) > write_to_file and replace_file_content, including older records without content 0ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > Antigravity (contract §4, §6) > older call_mcp_tool records are unwrapped, then use the platform line; denied envelopes 0ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > Antigravity (contract §4, §6) > a server-qualified name shows the tool and its server, also inside call_mcp_tool 0ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > Antigravity (contract §4, §6) > a shell tool recorded as Bash is a command 0ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > Grok Build (contract §4) > run_bash with an `Exit code: <n>` error 4ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > Grok Build (contract §4) > read_file: cat, or cat -n when the output is numbered 0ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > Grok Build (contract §4) > grep defaults to content mode; list_dir, web_fetch, write, edit and web_search 1ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > DeepSeek Harness (REQ-014) > run_bash with an `Exit code: <n>` error, and dsh's read result as cat -n 0ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > DeepSeek Harness (REQ-014) > grep, glob, web_fetch, web_search, write, edit and skill 0ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > AutoByteus (contract §4, §6) > run_bash: exitCode, timedOut, stdout then stderr 0ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > AutoByteus (contract §4, §6) > run_bash with run_in_background: the background command line with its started pid (autobyteus-338) 0ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > AutoByteus (contract §4, §6) > start_background_process, read_file (numbered and not, and media), read_url 2ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > AutoByteus (contract §4, §6) > write_file and edit_file join base_dir; search_web; the error prefix is removed 1ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts > AutoByteus (contract §4, §6) > runtime-only tools: process output and stop, replace_in_file, downloads, conversion, task result 1ms
+ ✓ tests/agent-work-journal/rendering/work-journal-file-renderer.test.ts > header and entry layout (contract §10) > open and closed headers name the runtime, file, UTC range and source, without a generation time 3ms
+ ✓ tests/agent-work-journal/rendering/work-journal-file-renderer.test.ts > header and entry layout (contract §10) > entries are `[HH:MM:SS] head → outcome`, details indented, the link on the last line; a day change is marked 1ms
+ ✓ tests/agent-work-journal/rendering/work-journal-file-renderer.test.ts > header and entry layout (contract §10) > a multi-line message shows its label, then its lines; timestamps in milliseconds are read too 0ms
+ ✓ tests/agent-work-journal/rendering/work-journal-file-renderer.test.ts > pairing within one file (contract §3.4–§3.5) > a call pairs with its result by turn and call id, wherever the result is 1ms
+ ✓ tests/agent-work-journal/rendering/work-journal-file-renderer.test.ts > pairing within one file (contract §3.4–§3.5) > the same call id in another turn does not pair 0ms
+ ✓ tests/agent-work-journal/rendering/work-journal-file-renderer.test.ts > pairing within one file (contract §3.4–§3.5) > a result whose call is in the previous file is shown with its tool name 0ms
+ ✓ tests/agent-work-journal/rendering/work-journal-file-renderer.test.ts > REQ-W2 nothing lost silently (AC-W2) > rendered + intentionally omitted records = source records 1ms
+ ✓ tests/agent-work-journal/rendering/work-journal-file-renderer.test.ts > REQ-W2 nothing lost silently (AC-W2) > a teammate's message names its sender (address, else run id, else name) and lists reference files 0ms
+ ✓ tests/agent-work-journal/rendering/work-journal-file-renderer.test.ts > REQ-W2 nothing lost silently (AC-W2) > attachments appear as references, Claude background-task notices and interruptions appear; runtime machinery does not (D5) 1ms
+ ✓ tests/agent-work-journal/rendering/work-journal-file-renderer.test.ts > REQ-W2 nothing lost silently (AC-W2) > AutoByteus agent text keeps its prose without tool markup; the requirement banner is removed 0ms
+ ✓ tests/agent-work-journal/rendering/work-journal-file-renderer.test.ts > REQ-W3 visible shortening (AC-W3) > a >1,000-line output keeps its first and last 20 lines around a marker that links to the result record 1ms
+ ✓ tests/agent-work-journal/rendering/work-journal-file-renderer.test.ts > REQ-W3 visible shortening (AC-W3) > output up to 40 lines is shown in full; diffs, written content and arguments keep their first lines 1ms
+ ✓ tests/agent-work-journal/rendering/work-journal-file-renderer.test.ts > REQ-W3 visible shortening (AC-W3) > a long line is cut with its character count; limits are configurable 0ms
+ ✓ tests/agent-work-journal/rendering/work-journal-file-renderer.test.ts > REQ-W4 links (AC-W4) and REQ-W5 determinism (AC-W5) > every link and marker resolves to a record of the source file 1ms
+ ✓ tests/agent-work-journal/rendering/work-journal-file-renderer.test.ts > REQ-W4 links (AC-W4) and REQ-W5 determinism (AC-W5) > every entry carries a link, including messages 0ms
+ ✓ tests/agent-work-journal/rendering/work-journal-file-renderer.test.ts > REQ-W4 links (AC-W4) and REQ-W5 determinism (AC-W5) > two renderings of the same records are byte-identical 1ms
+ ✓ tests/agent-work-journal/rendering/work-journal-file-renderer.test.ts > AC-W1 equivalent built-in calls render the same line in every runtime > command 1ms
+ ✓ tests/agent-work-journal/rendering/work-journal-file-renderer.test.ts > AC-W1 equivalent built-in calls render the same line in every runtime > file search: Claude Grep and Grok grep are the same `grep` Command as a Codex grep command 0ms
+ ✓ tests/agent-work-journal/rendering/work-journal-file-renderer.test.ts > AC-W1 equivalent built-in calls render the same line in every runtime > read: Claude Read and AGY view_file are `cat` Commands 1ms
+ ✓ tests/agent-work-journal/rendering/work-journal-file-renderer.test.ts > AC-W1 equivalent built-in calls render the same line in every runtime > write 2ms
+ ✓ tests/agent-work-journal/rendering/work-journal-file-renderer.test.ts > AC-W1 equivalent built-in calls render the same line in every runtime > edit 0ms
+ ✓ tests/agent-work-journal/rendering/work-journal-file-renderer.test.ts > AC-W1 equivalent built-in calls render the same line in every runtime > web search and web page 0ms
+ ✓ tests/agent-work-journal/rendering/work-journal-file-renderer.test.ts > AC-W1 equivalent built-in calls render the same line in every runtime > a tool never seen before is `Tool: <name>` with arguments and result; envelopes and image data are removed 0ms
+ ✓ tests/agent-work-journal/services/work-journal-agy-read-file-and-spills.test.ts > a closed journal of renderer revision 3 is rendered again (autobyteus-561) > loses the runtime sentence and the generic read_file line; the raw file is byte-identical 20ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > an Antigravity read of an MCP schema file is left out of the journal > AC-001: a read_file of <home>/.gemini/antigravity-cli/mcp/<server>/<tool>.json and its result leave no line; the MCP call stays 4ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > an Antigravity read of an MCP schema file is left out of the journal > AC-002: read_file with a line range 1ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > an Antigravity read of an MCP schema file is left out of the journal > AC-002: view_file {AbsolutePath} 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > an Antigravity read of an MCP schema file is left out of the journal > AC-002: view_file with a range and a byte offset 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > an Antigravity read of an MCP schema file is left out of the journal > AC-002: run_command cat 1ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > an Antigravity read of an MCP schema file is left out of the journal > AC-002: run_command cat -n 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > an Antigravity read of an MCP schema file is left out of the journal > AC-002: run_command sed -n 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > an Antigravity read of an MCP schema file is left out of the journal > AC-002: run_command head 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > an Antigravity read of an MCP schema file is left out of the journal > AC-002: run_command with a quoted path 1ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > an Antigravity read of an MCP schema file is left out of the journal > AC-002: Bash cat 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > an Antigravity read of an MCP schema file is left out of the journal > AC-002: the server's instructions.md 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > an Antigravity read of an MCP schema file is left out of the journal > AC-002: the data folder .gemini/antigravity 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > an Antigravity read of an MCP schema file is left out of the journal > AC-002: a Windows path 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > an Antigravity read of an MCP schema file is left out of the journal > AC-002: a path without a leading folder 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > a read that failed, or has no result, is shown as today (REQ-002) > AC-003: an error result 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > a read that failed, or has no result, is shown as today (REQ-002) > AC-003: a result that is not DONE 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > a read that failed, or has no result, is shown as today (REQ-002) > AC-003: a read with no result in the file (still running, or its result is in the next file) 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > a read that failed, or has no result, is shown as today (REQ-002) > AC-003: a failed shell read keeps its command line 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > everything else renders exactly as before (REQ-003) > AC-004: an ordinary file 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > everything else renders exactly as before (REQ-003) > AC-004: a repository's own mcp/<x>/<y>.json outside .gemini/antigravity* 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > everything else renders exactly as before (REQ-003) > AC-004: a path under another .gemini folder 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > everything else renders exactly as before (REQ-003) > AC-004: a shell read of a repository's own mcp folder 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > everything else renders exactly as before (REQ-003) > AC-004: a .system_generated spill read (real content of an earlier tool) 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > everything else renders exactly as before (REQ-003) > AC-004: a skill file 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > everything else renders exactly as before (REQ-003) > AC-004: a cat of two files 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > everything else renders exactly as before (REQ-003) > AC-004: a cat piped to another command 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > everything else renders exactly as before (REQ-003) > AC-004: a grep over the schema folder 2ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > everything else renders exactly as before (REQ-003) > AC-004: a write to a schema path 1ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > everything else renders exactly as before (REQ-003) > AC-004: a path with the schema folder as a prefix of another name 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > everything else renders exactly as before (REQ-003) > AC-004: a nested file below the server folder 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > everything else renders exactly as before (REQ-003) > AC-004: a non-json, non-instructions file in the server folder 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > everything else renders exactly as before (REQ-003) > AC-004: the same schema read on Claude Agent SDK is rendered as before 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > everything else renders exactly as before (REQ-003) > AC-004: the same schema read on Codex App Server is rendered as before 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > everything else renders exactly as before (REQ-003) > AC-004: the same schema read on Grok Build is rendered as before 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > everything else renders exactly as before (REQ-003) > AC-004: the same schema read on AutoByteus is rendered as before 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts > everything else renders exactly as before (REQ-003) > AC-004: the same schema read on no runtime recorded is rendered as before 0ms
+ ✓ tests/agent-work-journal/rendering/platform-tool-converters.test.ts > messages (AC-001, AC-004) > names the recipient as the call gave it: address, name, run, team run 4ms
+ ✓ tests/agent-work-journal/rendering/platform-tool-converters.test.ts > messages (AC-001, AC-004) > a refused message is a failure with the platform's own words, not ok 0ms
+ ✓ tests/agent-work-journal/rendering/platform-tool-converters.test.ts > messages (AC-001, AC-004) > a refusal that arrives as the call's error (Antigravity) gives the same words; other errors keep their text 0ms
+ ✓ tests/agent-work-journal/rendering/platform-tool-converters.test.ts > messages (AC-001, AC-004) > a result that says nothing about acceptance is ok; no result is said so 1ms
+ ✓ tests/agent-work-journal/rendering/platform-tool-converters.test.ts > messages (AC-001, AC-004) > shows a long message as far as the argument limit and links to the call 1ms
+ ✓ tests/agent-work-journal/rendering/platform-tool-converters.test.ts > messages (AC-001, AC-004) > a description-only delegation shows the description; handoff rules show the rules 0ms
+ ✓ tests/agent-work-journal/rendering/platform-tool-converters.test.ts > project board (AC-001, AC-005) > current tools 1ms
+ ✓ tests/agent-work-journal/rendering/platform-tool-converters.test.ts > project board (AC-001, AC-005) > recorded-history names keep their lines 0ms
+ ✓ tests/agent-work-journal/rendering/platform-tool-converters.test.ts > project board (AC-001, AC-005) > a failure keeps its text 0ms
+ ✓ tests/agent-work-journal/rendering/platform-tool-converters.test.ts > browser, media, discovery (AC-001) > browser 0ms
+ ✓ tests/agent-work-journal/rendering/platform-tool-converters.test.ts > browser, media, discovery (AC-001) > media 0ms
+ ✓ tests/agent-work-journal/rendering/platform-tool-converters.test.ts > browser, media, discovery (AC-001) > discovery, memory search, artifacts, routing answer 0ms
+ ✓ tests/agent-work-journal/rendering/platform-tool-converters.test.ts > the same line on every runtime and a user's own tool of the same name (AC-001, AC-006) > every runtime and no runtime give one line for one platform call 1ms
+ ✓ tests/agent-work-journal/rendering/platform-tool-converters.test.ts > the same line on every runtime and a user's own tool of the same name (AC-001, AC-006) > a server-qualified tool with a platform tool's name is the user's tool 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-read-file-and-spills.test.ts > read_file reads like view_file (REQ-001) > AC-001: a size-only read gives the same lines as view_file, with a range and with a byte offset 5ms
+ ✓ tests/agent-work-journal/rendering/antigravity-read-file-and-spills.test.ts > read_file reads like view_file (REQ-001) > view_file is unchanged, and AbsolutePath wins when both are recorded 1ms
+ ✓ tests/agent-work-journal/rendering/antigravity-read-file-and-spills.test.ts > read_file reads like view_file (REQ-001) > AC-002: a read_file of a skill file is a skill load; a failed read keeps its error 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-read-file-and-spills.test.ts > a spilled output shows its preview and the marker (REQ-002) > AC-003: the preview, then the marker; neither runtime sentence nor the file:// form appears; the outcome stays ok 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-read-file-and-spills.test.ts > a spilled output shows its preview and the marker (REQ-002) > AC-003: the same on a tool of another server (an MCP result) and with CRLF line endings 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-read-file-and-spills.test.ts > a spilled output shows its preview and the marker (REQ-002) > AC-003: a preview with trailing blank lines does not leave them before the marker 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-read-file-and-spills.test.ts > a spilled output shows its preview and the marker (REQ-002) > AC-004: the same sentence in a failing result's error text is normalized the same way 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-read-file-and-spills.test.ts > a spilled output shows its preview and the marker (REQ-002) > AC-004: another wording that mentions a path, and a sentence that is not at the start, stay unchanged 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-read-file-and-spills.test.ts > a spilled output shows its preview and the marker (REQ-002) > AC-004: a preview that itself holds a line starting 'Here is a preview' keeps it 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-read-file-and-spills.test.ts > a spilled output shows its preview and the marker (REQ-002) > AC-004: a nested JSON-escaped form is not rewritten 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-read-file-and-spills.test.ts > a spilled output shows its preview and the marker (REQ-002) > a long result of another runtime with the same words is not rewritten 0ms
+ ✓ tests/agent-work-journal/rendering/antigravity-read-file-and-spills.test.ts > the later read of a spill file is an ordinary read (REQ-003) > AC-005: the spilled call, then a read_file and a shell cat of the same path: both render as read lines; the shell read keeps its content 0ms
+ ✓ tests/agent-work-journal/rendering/unchanged-lines.test.ts > lines this revision does not change > claude: conversation records and built-in tools render byte-identically 5ms
+ ✓ tests/agent-work-journal/rendering/unchanged-lines.test.ts > lines this revision does not change > codex: conversation records and built-in tools render byte-identically 1ms
+ ✓ tests/agent-work-journal/rendering/unchanged-lines.test.ts > lines this revision does not change > antigravity: conversation records and built-in tools render byte-identically 1ms
+ ✓ tests/agent-work-journal/rendering/unchanged-lines.test.ts > lines this revision does not change > grok: conversation records and built-in tools render byte-identically 1ms
+ ✓ tests/agent-work-journal/rendering/unchanged-lines.test.ts > lines this revision does not change > autobyteus: conversation records and built-in tools render byte-identically 3ms
+ ✓ tests/agent-work-journal/rendering/neutral-vocabulary.test.ts > neutral vocabulary: claude > has converted cases to check 1ms
+ ✓ tests/agent-work-journal/rendering/neutral-vocabulary.test.ts > neutral vocabulary: claude > gives every converted case the expected neutral line (AC-001…006) 2ms
+ ✓ tests/agent-work-journal/rendering/neutral-vocabulary.test.ts > neutral vocabulary: claude > names no converted tool by its recorded name in a converted line (AC-012) 1ms
+ ✓ tests/agent-work-journal/rendering/neutral-vocabulary.test.ts > neutral vocabulary: codex > has converted cases to check 0ms
+ ✓ tests/agent-work-journal/rendering/neutral-vocabulary.test.ts > neutral vocabulary: codex > gives every converted case the expected neutral line (AC-001…006) 1ms
+ ✓ tests/agent-work-journal/rendering/neutral-vocabulary.test.ts > neutral vocabulary: codex > names no converted tool by its recorded name in a converted line (AC-012) 1ms
+ ✓ tests/agent-work-journal/rendering/neutral-vocabulary.test.ts > neutral vocabulary: antigravity > has converted cases to check 0ms
+ ✓ tests/agent-work-journal/rendering/neutral-vocabulary.test.ts > neutral vocabulary: antigravity > gives every converted case the expected neutral line (AC-001…006) 1ms
+ ✓ tests/agent-work-journal/rendering/neutral-vocabulary.test.ts > neutral vocabulary: antigravity > names no converted tool by its recorded name in a converted line (AC-012) 1ms
+ ✓ tests/agent-work-journal/rendering/neutral-vocabulary.test.ts > neutral vocabulary: grok > has converted cases to check 0ms
+ ✓ tests/agent-work-journal/rendering/neutral-vocabulary.test.ts > neutral vocabulary: grok > gives every converted case the expected neutral line (AC-001…006) 0ms
+ ✓ tests/agent-work-journal/rendering/neutral-vocabulary.test.ts > neutral vocabulary: grok > names no converted tool by its recorded name in a converted line (AC-012) 0ms
+ ✓ tests/agent-work-journal/rendering/neutral-vocabulary.test.ts > neutral vocabulary: autobyteus > has converted cases to check 0ms
+ ✓ tests/agent-work-journal/rendering/neutral-vocabulary.test.ts > neutral vocabulary: autobyteus > gives every converted case the expected neutral line (AC-001…006) 0ms
+ ✓ tests/agent-work-journal/rendering/neutral-vocabulary.test.ts > neutral vocabulary: autobyteus > names no converted tool by its recorded name in a converted line (AC-012) 0ms
+ ✓ tests/unit/runtime-handover-notices/runtime-handover-notice-service.test.ts > RuntimeHandoverNoticeService (REQ-002, REQ-003) > has nothing for a run whose raw traces hold no pending hand-over, and asks only once per publication 2ms
+ ✓ tests/unit/runtime-handover-notices/runtime-handover-notice-service.test.ts > RuntimeHandoverNoticeService (REQ-002, REQ-003) > makes the journal current from the raw traces before it builds the text, and shows the user the marker sentence 1ms
+ ✓ tests/unit/runtime-handover-notices/runtime-handover-notice-service.test.ts > RuntimeHandoverNoticeService (REQ-002, REQ-003) > is sent once per switch: while it is in flight there is no second one, and delivery settles it for good 0ms
+ ✓ tests/unit/runtime-handover-notices/runtime-handover-notice-service.test.ts > RuntimeHandoverNoticeService (REQ-002, REQ-003) > a delivery of another notice does not settle it 0ms
+ ✓ tests/unit/runtime-handover-notices/runtime-handover-notice-service.test.ts > RuntimeHandoverNoticeService (REQ-002, REQ-003) > a notice that was not forwarded is pending again for the next input 0ms
+ ✓ tests/unit/runtime-handover-notices/runtime-handover-notice-service.test.ts > RuntimeHandoverNoticeService (REQ-002, REQ-003) > a publication or a release forgets what was derived, so a restored run is asked again (a restart delivers it once more) 0ms
+ ✓ tests/unit/runtime-handover-notices/runtime-handover-notice-service.test.ts > RuntimeHandoverNoticeService (REQ-002, REQ-003) > a journal that cannot be made current leaves the input without the notice and the notice pending 0ms
+ ✓ tests/unit/runtime-handover-notices/runtime-handover-notice-service.test.ts > RuntimeHandoverNoticeService (REQ-002, REQ-003) > a raw-trace read that fails leaves this input without the notice and is read again for the next one 0ms
+ ✓ tests/unit/runtime-handover-notices/runtime-handover-notice-service.test.ts > RuntimeHandoverNoticeService (REQ-002, REQ-003) > a run without a memory folder has no notice 0ms
+ ✓ tests/unit/runtime-handover-notices/runtime-handover-notice-service.test.ts > the notice slot order (a pending tool list notice must not delay the hand-over) > hands over the hand-over first and the tool list notice with the next input 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > cat /home/me/.claude/skills/python-style/SKILL.md → python-style 1ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > cat -n /work/.agents/skills/code-review/SKILL.md → code-review 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > sed -n '1,220p' /home/me/.codex/skills/x/SKILL.md → x 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > sed -n '10,$p' /home/me/.codex/skills/x/SKILL.md → x 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > head -n 50 /home/me/.codex/skills/x/SKILL.md → x 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > head -20 /home/me/skills/x/SKILL.md → x 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > nl /home/me/skills/x/SKILL.md → x 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > cat -n /work/.claude/skills/code-review/SKILL.md | sed -n '5,40p' → code-review 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > cat '/Users/me/My Skills/skills/spaced/SKILL.md' → spaced 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > cat /srv/autobyteus-skills/deploy/SKILL.md → deploy 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > cat /srv/autobyteus-private-skills/deploy/SKILL.md → deploy 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > cat /home/me/.codex/skills/.system/imagegen/SKILL.md → imagegen 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > cat skills/relative/SKILL.md → relative 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > cd /w/skills/x && cat SKILL.md stays a command 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > cat /w/skills/x/SKILL.md /w/skills/y/SKILL.md stays a command 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > cat /w/skills/x/SKILL.md | head -5 stays a command 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > cat /w/skills/x/SKILL.md > /tmp/copy stays a command 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > cat /w/skills/x/SKILL.md; rm -rf /w stays a command 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > cat $HOME/skills/x/SKILL.md stays a command 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > ls /w/skills/x/SKILL.md stays a command 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > grep -n use /w/skills/x/SKILL.md stays a command 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > cat /w/skills/x/README.md stays a command 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > cat /w/agents/x/SKILL.md stays a command 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > cat /w/autobyteus-mcps/x/SKILL.md stays a command 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > cat /w/origin/x/SKILL.md stays a command 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > cat /w/SKILL.md stays a command 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > cat /w/skills/SKILL.md stays a command 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > cat /w/.system/x/SKILL.md stays a command 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > sed -n '1,5p;9p' /w/skills/x/SKILL.md stays a command 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > sed -i s/a/b/ /w/skills/x/SKILL.md stays a command 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > cat "/w/skills/x/SKILL.md stays a command 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead > cat stays a command 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > skillNameOfPlainRead >  stays a command 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > commandLine and the skill rule > prints Load skill without the skill's text, and ignores the working-folder note 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > commandLine and the skill rule > keeps a failure's text 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > commandLine and the skill rule > a background command is a command 0ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts > commandLine and the skill rule > a command with no text is a command 0ms
+ ✓ tests/agent-work-journal/rendering/tool-call-line.test.ts > toolCallLine > a runtime's own table wins over the platform table 1ms
+ ✓ tests/agent-work-journal/rendering/tool-call-line.test.ts > toolCallLine > a platform name that no table of the runtime holds gets the platform line, on every runtime and without a runtime 1ms
+ ✓ tests/agent-work-journal/rendering/tool-call-line.test.ts > toolCallLine > an unknown name uses the generic rule 0ms
+ ✓ tests/agent-work-journal/rendering/tool-call-line.test.ts > toolCallLine > a qualified name never reaches a table: it is the generic line with its server, even when the tool is a platform tool's name 0ms
+ ✓ tests/agent-work-journal/rendering/tool-call-line.test.ts > toolCallLine > unwraps the runtime's wrapper first, then looks the inner name up 1ms
+ ✓ tests/agent-work-journal/rendering/tool-call-line.test.ts > toolCallLine > Codex and Antigravity split their qualified names; the others do not qualify 0ms
+ ✓ tests/agent-work-journal/rendering/tool-call-line.test.ts > toolCallLine > a call without a result still has its line 1ms
+ ✓ tests/agent-work-journal/rendering/platform-completeness.test.ts > platform tool converters > cover every platform tool the registry offers 4ms
+ ✓ tests/agent-work-journal/rendering/platform-completeness.test.ts > platform tool converters > hold no name that is neither a current tool nor recorded history 1ms
+ ✓ tests/agent-work-journal/rendering/platform-completeness.test.ts > platform tool converters > the explicit list of tools left generic on purpose is empty 0ms
+ ✓ tests/agent-work-journal/rendering/rendering-building-blocks.test.ts > command text > quotes words and patterns as they would be typed 1ms
+ ✓ tests/agent-work-journal/rendering/rendering-building-blocks.test.ts > command text > numbered lines are recognised only when every non-empty line is numbered 1ms
+ ✓ tests/agent-work-journal/rendering/rendering-building-blocks.test.ts > diffs > keeps the snippet's shared lines as context and counts changes 0ms
+ ✓ tests/agent-work-journal/rendering/rendering-building-blocks.test.ts > diffs > a recorded patch drops file headers and the first hunk header 0ms
+ ✓ tests/agent-work-journal/rendering/rendering-building-blocks.test.ts > diffs > inside a hunk, `--- x` and `+++ x` are a removed `-- x` and an added `++ x` (CRR-001 F-001) 0ms
+ ✓ tests/agent-work-journal/rendering/rendering-building-blocks.test.ts > lines, outcomes and envelopes > splits lines without a trailing empty line and cuts long lines by character 0ms
+ ✓ tests/agent-work-journal/rendering/rendering-building-blocks.test.ts > lines, outcomes and envelopes > an accepted message is delivered, which is not the same as ok (AC-004) 0ms
+ ✓ tests/agent-work-journal/rendering/rendering-building-blocks.test.ts > lines, outcomes and envelopes > a long or multi-line error is shown as output, a short one inline 0ms
+ ✓ tests/agent-work-journal/rendering/rendering-building-blocks.test.ts > lines, outcomes and envelopes > result envelopes: AGY failed and denied, MCP isError and structuredContent 1ms
+ ✓ tests/agent-work-journal/rendering/rendering-building-blocks.test.ts > lines, outcomes and envelopes > an ordinary user message is not a teammate envelope 0ms
+ ✓ tests/unit/runtime-handover-notices/runtime-handover-notice-builder.test.ts > the hand-over notice text (autobyteus-583; contract 3.6) > names the previous agent's most recent work and asks for a complete read before replying (AC-001) 1ms
+ ✓ tests/unit/runtime-handover-notices/runtime-handover-notice-builder.test.ts > the hand-over notice text (autobyteus-583; contract 3.6) > does not present the open file as the recent work: it starts with this hand-over (AC-001, REQ-003) 0ms
+ ✓ tests/unit/runtime-handover-notices/runtime-handover-notice-builder.test.ts > the hand-over notice text (autobyteus-583; contract 3.6) > skips a newer closed file that holds only a hand-over notice (AC-002, two switches with no input between them) 0ms
+ ✓ tests/unit/runtime-handover-notices/runtime-handover-notice-builder.test.ts > the hand-over notice text (autobyteus-583; contract 3.6) > lists every file oldest first with period, size and lines, after the instruction (AC-003, REQ-004) 0ms
+ ✓ tests/unit/runtime-handover-notices/runtime-handover-notice-builder.test.ts > the hand-over notice text (autobyteus-583; contract 3.6) > has no read instruction when no closed file holds work: a switch before any work (AC-004, REQ-005) 1ms
+ ✓ tests/unit/runtime-handover-notices/runtime-handover-notice-builder.test.ts > the hand-over notice text (autobyteus-583; contract 3.6) > leaves out the open-file sentence when there is no open file 0ms
+ ✓ tests/unit/runtime-handover-notices/runtime-handover-notice-builder.test.ts > the hand-over notice text (autobyteus-583; contract 3.6) > names no agent runtime or model and repeats no request (AC-003, REQ-006) 0ms
+ Test Files  20 passed | 1 skipped (21)
+      Tests  258 passed | 2 skipped (260)
+   Duration  24.85s (transform 7.24s, setup 738ms, import 20.21s, tests 931ms, environment 2ms)

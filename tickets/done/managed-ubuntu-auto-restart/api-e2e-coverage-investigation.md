@@ -1,0 +1,14 @@
+# API-REV-001 • managed Ubuntu automatic restart
+Basis SR-001 / SR-004 / ARCH-REV-002 / IR-002 / CRR-002 Medium/High at 23ce81353b (product f369d87e013b). TESTING.md: use isolated real desktop, no real user state or public release. Evidence decision: request from Designer only if safe verification cannot run.
+- API-01 repository, actual server and package inputs: busy/unknown/idle status and auth, managed readiness/copy/consent vs native, failure/stale stage, opt out/channel/masked automatic blocks; controls AC-001–010.
+- API-02 real input and real busy run in isolated Ubuntu 24.04 signed current package N. Check main + secondary and whether updater sees input, no restart while busy, full five-minute quiet gate; no user or production credentials.
+- API-03 N→N+1 automatic reopen, independent server health and notification, work retained, no click; independent ordinary Quit, manual opt-out/retry, no channel, tampered candidate and visible localized copy. Never sandbox-disable or use host install; prior tickets inform setup but not this branch's result.
+
+## Basis, existing coverage and gaps
+
+[Requirements](requirements-doc.md), [design](design-spec.md), [architecture review](design-review-report.md), [implementation handoff](implementation-handoff.md), [independent source review](code-review-report.md). Project validation surface: [TESTING.md](../../../TESTING.md); server package also documents its built and gated tests. Target personal. No development environment is evidence for the packaging gate.
+
+- The existing safeRestartMoment/managedUpdateSession/updater suites exercise scheduling, invalidation, consent, pending intent, confirmed-old/unknown and no-channel controls. The Nuxt notification, About and store tests check capabilities and localized render states; IR-002 also covers the masked automatic block. They cannot establish real input delivery, privilege-separated writer activation, predecessor exit or spontaneous successor health.
+- The existing restart-reminder server harness already owns real transient runs, test launch credentials, scripted inference and WebSocket control. Extend it minimally for the missing observable predicate: authenticated busy count 0→1→0. Reuse integration support rather than add another server launcher.
+- Package resources/writer source are unchanged since earlier ticketed Linux writer coverage. Re-run the Go suites; use two signed new builds rather than prior artifacts for acceptance. A pre-warmed disposable snapshot permits **independent** spontaneous, intentional Quit, refusal and explicit action branches. Never overwrite protected image or trust to simulate success.
+- Confidence gap after repository work: actual time, input across windows, service state, protected bytes, GUI/process transitions, persisted work and user-visible copy. The execution report maps the split case IDs and scores to evidence. No new intended behavior or environment waiver.
