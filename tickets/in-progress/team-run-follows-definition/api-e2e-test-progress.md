@@ -28,3 +28,22 @@
 | 2026-11-21T12:56:38Z | API-FS | Checkpoint | | attempt 2 (all job steps parsed from the workflow) stopped: units step fails as root ('Trusted login home required', uid 0 refused by design); continuation interrupted by the app crash at 12:48; attempt 3: fresh clone, every step, units step recorded not fatal |
 | 2026-11-21T13:03:39Z | API-FS | Checkpoint | | attempt 3: packaging stopped at go build (GOTOOLCHAIN=local, host go 1.22.2); attempt 4 puts go1.27.4 on PATH as setup-go does |
 | 2026-11-21T13:12:01Z | API-FS | Completed | Pass | attempt 4: build, sign, packaged startup pass; units step root-limited (27 node tests); verify needed libz.so provided (FU-004); clone removed |
+| 2026-11-21T14:38:22Z | ROUND 2 | Started | | IR-002 (d005fa2a5b, 64a4b6100c), CRR-003; building server dist |
+| 2026-11-21T14:40:19Z | TF-01..TF-12 | Started | | round 2 built-server suite (dist from 2bd8a470bf) |
+| 2026-11-21T14:43:35Z | TF-01..TF-12 | Checkpoint | | r2 run 1: 9 pass; TF-03/11/12 failed on the test's row field (openTarget.agentRunId), fixed; run 2 next |
+| 2026-11-21T14:46:08Z | TF-01..TF-12 | Completed | Pass | r2 run 2: 12/12 |
+| 2026-11-21T14:47:55Z | TFU-01..TFU-06 | Started | | round 2 probe (built backend from 2bd8a470bf + nuxt dev + chromium; Codex for TFU-04) |
+| 2026-11-21T14:52:24Z | TFU-01..TFU-06 | Checkpoint | | r2 attempt 1: TFU-01/02/06 pass; Leaving tag renders; opening a Leaving row fails 'Couldn't load activity' (getTeamMemberRunProjection/getTeamMemberFileChanges refuse leaving members) -> F-3; TFU-05 host row not expanded (probe), fixed; attempt 2 next |
+| 2026-11-21T15:00:27Z | TFU-01..TFU-06 | Checkpoint | | r2 attempt 2: TFU-05 pass; TFU-03 fail (F-3); TFU-04 fallback socket opened too late (probe), fixed; attempt 3 next |
+| 2026-11-21T15:03:42Z | TFU-01..TFU-06 | Completed | Fail | r2 attempt 3: TFU-01/02/05/06 Pass; TFU-03, TFU-04 Fail (F-3: a Leaving row does not open: getTeamMemberRunProjection/getTeamMemberFileChanges refuse leaving members) |
+| 2026-11-21T15:03:49Z | TF-01..TF-12 | Started | | r2 run 3 with the F-3 server check in TF-03 |
+| 2026-11-21T15:06:12Z | TF-01..TF-12 | Completed | Fail | r2 run 3: 11 pass; TF-03 fails only the new F-3 check (leaving member's projection refused) |
+| 2026-11-21T15:06:28Z | TFL-01, TFL-02 | Started | | round 2 live suite (Codex + native) |
+| 2026-11-21T15:07:25Z | TFL-01, TFL-02 | Completed | Pass | r2: 2/2 |
+| 2026-11-21T15:07:25Z | API-PEER | Started | | r2 two-server suite (RC-51) |
+| 2026-11-21T15:16:56Z | API-PEER | Completed | Pass | r2: 51/51 incl. RC-51 |
+| 2026-11-21T15:16:56Z | API-REG | Started | | r2 regression suites |
+| 2026-11-21T15:20:49Z | API-REG | Completed | Pass | r2: 14/14, 2+1 gated skip, 8/8 |
+| 2026-11-21T15:22:18Z | API-TC | Completed | Pass | r2 baseline equal |
+| 2026-11-21T15:23:12Z | API-FS | Started | | r2 fresh clone of 8789b97a41, every step of build-linux-arm64 (go1.27.4 on PATH; units step root-limited) |
+| 2026-11-21T15:30:29Z | API-FS | Completed | Pass | r2: every step at 8789b97a41 (units root-limited; libz.so provided, FU-004); clone removed |

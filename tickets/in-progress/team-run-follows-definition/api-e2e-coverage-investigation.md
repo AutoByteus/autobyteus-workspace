@@ -17,9 +17,9 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Code Review Revision Record: `code-review-revision-record.md`
 - Delivery Revision Record: N/A
 - API/E2E Revision Record: `api-e2e-revision-record.md` (created with the first result)
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
-- Trigger: code review pass CRR-001 (`/code_reviewer`)
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: 2
+- Trigger: round 1 CRR-001 pass; round 2 CRR-003 pass of IR-002 (rework of F-1, F-2; design SR-009/SR-010)
 - Prior Investigation Reviewed: N/A
 - Latest Authoritative Investigation: this file
 
@@ -99,6 +99,8 @@ A Team run (standalone, or a delegated copy made from a Team definition) follows
 | API-R2 | AC-009 (component) | web specs | Reused | IMP-08, IMP-09 | unchanged since |
 | API-R3 | AC-001/002/004/010 (faked backend) | integration | Reused | IMP-04 | unchanged since |
 | TF-01..TF-10 | AC-001..AC-008, AC-010, DEC-006/007 | built server, scripted AGY, package edited on disk, app editor | Durable | new `autobyteus-server-ts/tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts` | every real server path without inference |
+| TF-11, TF-12 (round 2) | AC-003, AC-004, SR-010 | built server | Durable | Stop and server restart while a member is leaving; reopen clears the marker | SR-010 leaving marker lifecycle |
+| TFU-04..TFU-06 (round 2) | AC-003, AC-005, SR-010 | rendered app (real Codex for TFU-04) | Temporary Probe | approval from a Leaving row; delegated copy rows; Stop while leaving | SR-010 visibility |
 | TFL-* | AC-001, AC-003 (pending approval), AC-006, AC-008, AC-010 on real AutoByteus and Codex | in-process studio server, real runtimes | Durable (gated) | new `autobyteus-server-ts/tests/e2e/runtime/team-run-follows-definition-live.e2e.test.ts` | Verification Intent: real runtimes |
 | API-PROBE | AC-009, AC-008 (default composer target), N-8 | Nuxt dev + probe backend + Chromium | Temporary Probe (ticket-owned) | `probes/team-follows-ui-probe.mjs` | rendered view; a durable `test:e2e:*` probe for this journey is not justified beyond the ticket |
 | API-REG | regression | existing E2E suites above | Existing Test | as listed | preserved behavior |

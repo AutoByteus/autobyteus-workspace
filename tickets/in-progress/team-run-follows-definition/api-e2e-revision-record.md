@@ -7,6 +7,7 @@ The latest coverage investigation (`api-e2e-coverage-investigation.md`) and exec
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code reviewer, `code-review-report.md`, round 1 (CRR-001 pass) | SR-008, ARCH-REV-002, IR-001, CRR-001 | N/A | Fail / 88% |
+| API-REV-002 | Code reviewer, CRR-003 (pass of IR-002), round 2 | SR-009, SR-010, ARCH-REV-004, IR-002, CRR-002, CRR-003 | Fail / 88% | Fail / 91% |
 
 ## Revision Entries
 
@@ -37,3 +38,33 @@ None.
 - Recommended owner: code reviewer (failure-origin review), then the implementation engineer (F-1) and the Solution Designer (F-2)
 - Remaining risks, blocked evidence, or untested scope: configured-placement copies and application-bound runs not run end to end (unit-covered); observations O-1..O-5; the release job's signing-record unit tests refuse to run as root (27 node tests, environment); macOS/x64 release jobs need the runner.
 - Follow-ups added: FU-004 (urgent): the Linux arm64 AppImage runtime needs the unversioned `libz.so` (outside this ticket).
+
+### API-REV-002 — Round 2: F-1 and the warnings resolved; the Leaving tag shows, but a leaving member cannot be opened (F-3)
+
+- Triggering role, report path, and round: code reviewer, CRR-003 (pass of IR-002 `d005fa2a5b`, `64a4b6100c`), round 2
+- Triggering finding or case IDs: F-1, F-2 (round 1); O-1, O-2
+- Related revision IDs: SR-009, SR-010, ARCH-REV-004, IR-002, CRR-002, CRR-003
+- Why recorded: the rerun after rework.
+- Coverage decisions or durable test paths changed: `team-run-follows-definition.e2e.test.ts` updated (commit `8789b97a41`):
+  - TF-02/TF-03 run-ID refusals are now hard assertions;
+  - TF-03 checks the stored leaving marker and the tagged run-tree row, both cleared on release, plus the leaving member's own reads (the F-3 check);
+  - TF-07 checks one warning per run and reason;
+  - new TF-11 (Stop while leaving) and TF-12 (restart while leaving).
+  Ticket probe: TFU-03 rewritten for the tag; TFU-04 (real Codex approval while leaving), TFU-05 (delegated copy rows) and TFU-06 (Stop while leaving) added.
+- Cases rechecked: all TF, TFL, TFU and API-PEER cases, API-REG, API-TC, API-FS (by impact: the round's diff touches the planner, committer, membership, execution manager, router, run-tree, a contracts package and the web rows).
+- Commands, environment, fixture, or broader-validation delta: the probe root moved outside `/tmp` and uses real Codex for TFU-04; the server was rebuilt from `2bd8a470bf`.
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| F-1: run-ID message to a removed member gets the wrong refusal | Local Fix | Resolved: `COLLABORATION_TARGET_NOT_FOUND` with the exact text, for former and leaving members | TF-02, TF-03, TFL-02 |
+| F-2: the app shows no leaving member | Design Impact (SR-010) | Partly resolved. The tag shows on the team's own rows and a copy's rows; Stop and restart leave no leaving row; reopening clears the marker. Opening the row fails: F-3 | TFU-03 (tag), TFU-05, TFU-06, TF-11, TF-12 |
+| O-1 / O-2: unusable definitions not logged / not once | Observation | Resolved: one warning per run and reason, again after a new breakage | TF-07 |
+
+- Canonical artifacts and sections updated: execution report (rewritten for round 2), investigation meta, progress log
+- Prior result and confidence: Fail, 88%
+- Current result and confidence: Fail, 91%
+- New or remaining failure IDs: F-3, a "Leaving" row does not open the member. `getTeamMemberRunProjection` and `getTeamMemberFileChanges` refuse a member stored under `formerMembers` (`team-member-run-view-projection-service.ts:128-141`), so its pending approval cannot be answered in the app (TFU-04). Local Fix.
+- Recommended owner: code reviewer (failure-origin review), then the implementation engineer
+- Remaining risks, blocked evidence, or untested scope: API-NF (configured placement, application run) unit-covered only; FU-004; the release job's signing-record units refuse to run as root.

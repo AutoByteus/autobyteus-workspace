@@ -1,0 +1,20 @@
+{
+  "runId": "tf_reviewer_7d156a_569f18298e4048b68eb44c891ef2af9a",
+  "markerAfterRestart": [
+    "tf_reviewer_7d156a_569f18298e4048b68eb44c891ef2af9a"
+  ],
+  "rowsAfterRestart": [],
+  "markerAfterReopen": [],
+  "rowsAfterReopen": [
+    {
+      "kind": "team",
+      "address": null,
+      "leaving": null
+    },
+    {
+      "kind": "team_member",
+      "address": "/lead",
+      "leaving": null
+    }
+  ]
+}
