@@ -1,0 +1,12 @@
+# API-05b Grok catalog test repeated with a TEMPORARY diagnostic in probe-time-bound.ts (when the bound fires: how late, the child's exitCode, when its exit event came), restored afterwards | 2026-11-21T03:37:34Z
+## run 1 | load { 11.23 10.64 20.21 } | fseventsd 163.3%
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts (10 tests | 9 skipped) 5761ms
+     ✓ lists the Grok Build catalog from the agent handshake with the reasoning-effort schema (AC-002)  1402ms
+exit 0
+## run 2 | load { 10.65 10.56 20.01 } | fseventsd 158.7%
+PTBDIAG {"command":"fake-grok-cli-onkXtn/grok --version","boundMs":3000,"firedAfterMs":7720,"exitCode":null,"exitSeenAt":null}
+PTBDIAG-LATER {"command":"fake-grok-cli-onkXtn/grok --version","exitSeenAt":7730,"exitCode":0,"atMs":13165}
+     × lists the Grok Build catalog from the agent handshake with the reasoning-effort schema (AC-002) 7733ms
+Error: [{"message":"Grok Build model discovery timed out; check the CLI and retry.","locations":[{"line":2,"column":7}],"path":["providerModelCatalogSnapshots"]}]
+exit 1
+restored: 0 changed source lines listed

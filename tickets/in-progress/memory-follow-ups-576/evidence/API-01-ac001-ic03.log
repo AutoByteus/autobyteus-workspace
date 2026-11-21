@@ -1,0 +1,23 @@
+# API-01 AC-001 (S-1): application-import-codex-launch (IC-03 at 255) | commit 56c61c3ecb
+## application-import-codex-launch | 2026-11-21T03:31:53Z | load { 7.54 11.86 25.36 } | fseventsd 164.4% | FSEvents write->event: no event in 30000ms close 0ms
+ ❯ tests/e2e/runtime/application-import-codex-launch.e2e.test.ts (3 tests | 3 skipped) 512ms
+     ↓ IC-01 imports Brief Studio, reads it as runnable and launches its Codex drafting team without a restart (AC-001)
+     ↓ IC-02 a signed-out Codex blocks the imported application with today's reason, not a spawn failure (AC-002)
+     ↓ IC-03 the launched bundled agent has its semantic memory, its episodic catalog and its Memory page folder under one shortened name, and its run is told both folders (autobyteus-554 AC-013)
+ FAIL  tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Error: Brief Studio importable package missing (/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/applications/brief-studio/dist/importable-package); build it with: pnpm -C autobyteus-server-ts test:integration:prepare
+ ❯ Module.assertBriefStudioPackageBuilt tests/e2e/helpers/brief-studio-package.ts:13:11
+ ❯ tests/e2e/runtime/application-import-codex-launch.e2e.test.ts:85:5
+ Test Files  1 failed (1)
+      Tests  3 skipped (3)
+exit 1
+## after test:integration:prepare | 2026-11-21T03:39:28Z | load { 8.66 9.91 18.76 }
+Generated application root at /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/applications/brief-studio/dist/importable-package/applications/brief-studio
+Integration test prerequisites are present.
+ ✓ tests/e2e/runtime/application-import-codex-launch.e2e.test.ts (3 tests) 26564ms
+     ✓ IC-01 imports Brief Studio, reads it as runnable and launches its Codex drafting team without a restart (AC-001)  6815ms
+     ✓ IC-02 a signed-out Codex blocks the imported application with today's reason, not a spawn failure (AC-002)  455ms
+     ✓ IC-03 the launched bundled agent has its semantic memory, its episodic catalog and its Memory page folder under one shortened name, and its run is told both folders (autobyteus-554 AC-013)  4597ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+exit 0

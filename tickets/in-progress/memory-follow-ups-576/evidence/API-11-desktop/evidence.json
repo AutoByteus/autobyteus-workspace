@@ -1,0 +1,34 @@
+{
+  "checks": [
+    {
+      "id": "EL-001",
+      "pass": true,
+      "message": "Attached to the desktop window (packaged renderer)",
+      "details": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat"
+    },
+    {
+      "id": "EL-002",
+      "pass": true,
+      "message": "The Global folder is read only (no Edit mode)"
+    },
+    {
+      "id": "EL-003",
+      "pass": true,
+      "message": "In Electron a relative link (b/c.md#x) opens the linked file as a preview tab; the window does not navigate; nothing editable",
+      "details": {
+        "navigations": [],
+        "url": "#/memory?view=home&section=browse&node=global"
+      }
+    },
+    {
+      "id": "EL-004",
+      "pass": true,
+      "message": "A link to a missing file opens its tab with the viewer's message"
+    },
+    {
+      "id": "EL-005",
+      "pass": true,
+      "message": "A link out of the folder opens nothing and the window stays"
+    }
+  ]
+}

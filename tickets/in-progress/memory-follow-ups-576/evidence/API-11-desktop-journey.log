@@ -1,0 +1,57 @@
+# API-11 FU-002 in the desktop app: isolated instance of this worktree's build (--build), own data root /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/u576-isolated-root.LKkfxt seeded with semantic-global/index.md, b/c.md and memory/outside.md | commit 56c61c3ecb | 2026-11-21T03:49:28Z | load { 55.35 78.65 56.39 }
+## isolated-app start --build --data-root
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-60023-8603",
+    "pid": 12204,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:60024",
+    "graphqlUrl": "http://127.0.0.1:60024/graphql",
+    "controlEndpoint": "http://127.0.0.1:60023",
+    "controlPort": 60023,
+    "serverPort": 60024,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/u576-isolated-root.LKkfxt",
+    "ownsDataRoot": false,
+    "keepDataRoot": false,
+    "testUpdateFeedUrl": null,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/u576-isolated-root.LKkfxt/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-60023-8603.log"
+  }
+}
+start exit 0
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.5.14-beta.3.dmg.blockmap',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.5.14-beta.3.dmg',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.5.14-beta.3.zip.blockmap',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.5.14-beta.3.zip'
+]
+## journey (CDP control port 60023, instance iso-60023-8603)
+PASS EL-001 Attached to the desktop window (packaged renderer) "file:///Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat"
+PASS EL-002 The Global folder is read only (no Edit mode)
+PASS EL-003 In Electron a relative link (b/c.md#x) opens the linked file as a preview tab; the window does not navigate; nothing editable {"navigations":[],"url":"#/memory?view=home&section=browse&node=global"}
+PASS EL-004 A link to a missing file opens its tab with the viewer's message
+PASS EL-005 A link out of the folder opens nothing and the window stays
+desktop journey: Pass (5/5 checks)
+journey exit 0
+## isolated-app stop iso-60023-8603
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "stop",
+  "result": {
+    "instanceId": "iso-60023-8603",
+    "wasRunning": true,
+    "forced": true,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/u576-isolated-root.LKkfxt",
+    "dataRootRemoved": false,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-60023-8603.log"
+  }
+}
+stop exit 0
+data root removed: yes
+instance still listed: 0
+exit 0

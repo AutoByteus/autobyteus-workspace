@@ -1,0 +1,35 @@
+# API-03 AC-006: agent-semantic-memory (SM-12) as normal user normy uid 501, scripted AGY | commit 56c61c3ecb
+## agent-semantic-memory | 2026-11-21T03:17:12Z | load { 46.96 47.05 48.98 } | fseventsd 180.7% | FSEvents write->event: no event in 30000ms close 2ms
+ ❯ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts (10 tests | 1 failed) 135242ms
+     ✓ SM-01 (AC-003, AC-004): every agent has its path; a stored key is read without it and dropped at the next save; reads create no folder 110ms
+     ✓ SM-02 (AC-002, AC-003): a package agent's file holding the key reads like any agent's; no personal setting holds it 31ms
+     ✓ SM-11 (AC-005, AC-006, AC-010, AC-011): the folder view's workspace through the API: read only, links never opened, never listed 82ms
+       × SM-04 (AC-001, AC-009): a run under Project A is told both folders after the Project section; both exist outside the workspace and the package 20682ms
+       ✓ SM-05: a run under Project B, the agent as a shared team member and as a delegated copy are told the same folders; every other agent its own and the same global one  1849ms
+       ✓ SM-06: a team-local agent with the same local name has its own folder  416ms
+       ✓ SM-07 (AC-001): an agent whose package file says false gets both sections; the folders' files are kept across runs  305ms
+       ✓ SM-10: the Memory page, memory search and memory sync list neither semantic folder 33ms
+       ✓ SM-08 (REQ-010): deleting the agent leaves its semantic memory folder and the global folder  28153ms
+       ✓ SM-12 (AC-014, DEC-015): when an agent's folder cannot be made, its run still starts, told only the global folder, and the log names the agent and the reason  13761ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > run start paths (scripted AGY CLI) > SM-04 (AC-001, AC-009): a run under Project A is told both folders after the Project secti
+Error: Timed out waiting for agent-collaboration stream ready
+ ❯ until tests/e2e/helpers/agy-runtime-error-fixture.ts:21:9
+ ❯ connect tests/e2e/helpers/collaboration-root-harness.ts:100:5
+ ❯ attachRoot tests/e2e/helpers/collaboration-root-harness.ts:205:18
+ ❯ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts:313:20
+ Test Files  1 failed (1)
+      Tests  1 failed | 9 passed (10)
+exit 1
+## rerun | 2026-11-21T03:39:28Z | load { 8.66 9.91 18.76 } | fseventsd 159.5%
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts (10 tests) 30410ms
+     ✓ SM-01 (AC-003, AC-004): every agent has its path; a stored key is read without it and dropped at the next save; reads create no folder  13346ms
+       ✓ SM-04 (AC-001, AC-009): a run under Project A is told both folders after the Project section; both exist outside the workspace and the package  2611ms
+       ✓ SM-05: a run under Project B, the agent as a shared team member and as a delegated copy are told the same folders; every other agent its own and the same global one  1714ms
+       ✓ SM-06: a team-local agent with the same local name has its own folder  395ms
+       ✓ SM-07 (AC-001): an agent whose package file says false gets both sections; the folders' files are kept across runs  317ms
+       ✓ SM-08 (REQ-010): deleting the agent leaves its semantic memory folder and the global folder  575ms
+       ✓ SM-12 (AC-014, DEC-015): when an agent's folder cannot be made, its run still starts, told only the global folder, and the log names the agent and the reason  324ms
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+note: run 1 kept only SM-04's test line, not its error (the log filter dropped it); its cause is not recorded
