@@ -1,0 +1,10 @@
+# IMP-11 server typecheck on the merged state (IR-003)
+# command: pnpm -C autobyteus-server-ts typecheck
+# commit: 037e6bec5c (merge of 0d13d37f86 and origin/personal 6533d7be04)
+# env: macOS Darwin 25.5.0, pnpm 10.28.2
+# date: 2026-11-21 18:43 CET
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 10.1s
+[typecheck] server tests (tsconfig.tests.json): 1001 errors, exit 2, 28.3s
+[typecheck] production errors: 0; test-file errors: 1001 in 313 files (baseline 1001 in 313 files)
+[typecheck] PASS

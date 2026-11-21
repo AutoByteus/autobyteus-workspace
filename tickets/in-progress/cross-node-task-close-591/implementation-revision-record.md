@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` are the authority. This record 
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture reviewer, ARCH-REV-003 Pass (SR-008), then ARCH-REV-004 Pass (SR-009) | N/A | `Initial Baseline` | SR-008, SR-009; ARCH-REV-003, ARCH-REV-004 | Implemented; to code review |
 | IR-002 | Architecture reviewer, ARCH-REV-006 Pass (SR-010, SR-011), after CRR-002 and API-REV-001 | CR-591-001, CR-591-002, CR-591-003 (F-2, F-2 b, F-1); AR-003; the stale test title | `Requirement Gap` (resolved upstream), implemented | SR-010, SR-011; ARCH-REV-005, ARCH-REV-006; CRR-001, CRR-002; API-REV-001 | Implemented; to code review |
+| IR-003 | Delivery engineer, latest-base integration blocked (`release-deployment-report.md`) | 3 merge conflicts; the router semantics check | `Local Fix` (integrate the latest base) | CRR-003; API-REV-002; DR (delivery report) | Merged and checked; to code review (merge review), then API/E2E |
 
 ## Revision Entries
 
@@ -67,3 +68,39 @@ The current code and `implementation-handoff.md` are the authority. This record 
 - Local validation and result: server typecheck pass (IMP-07); the DN-9 focused and remote suites, 283 tests, pass (IMP-08); the full server unit suite passes, 8688 tests (IMP-09); the web typecheck passes (IMP-10).
 - Next recipient or routing: `/code_reviewer` (Medium / High), then API/E2E to rerun F-1 and F-2.
 - Remaining limitations or risks: see the handoff's Known Risks (the ordering note for a second message while "open" is in flight).
+
+### IR-003 — Latest base integrated (origin/personal 6533d7be04)
+
+- Triggering role, report path, and round: the delivery engineer, `release-deployment-report.md`. Delivery was blocked at the latest-base integration. Round 3.
+- Triggering finding IDs: three conflicts (`remote-delegation-two-server.e2e.test.ts`, `global-agent-run-message-router.test.ts`, `docs/design-cases.md`), and the request to check that 22's router change and DN-9 hold together.
+- Classification: `Local Fix` (integrate the latest base).
+- Prior authoritative result: IR-002, passed by CRR-003, then API/E2E round 2 (API-REV-002) Pass.
+- Current authoritative result: merged as `037e6bec5c` (`git merge --no-ff origin/personal`, parents `0d13d37f86` and `6533d7be04`), with IMP-11 … IMP-14 passing.
+- Related solution revision IDs: N/A (no requirement or design change)
+- Related architecture-review revision IDs: N/A
+- Related code-review revision IDs: CRR-003
+- Related API/E2E revision IDs: API-REV-002
+- Related delivery revision IDs: the delivery engineer's integration report (`release-deployment-report.md`)
+- Why this implementation revision is recorded: the base moved past the merge base `7591aa307f` with v1.5.14-beta.6 and tickets 583, 594, 15, 16 and 22.
+- Approved behavior or requirement IDs affected: none changed.
+- Implementation delta:
+  - **Conflicts:**
+    - `docs/design-cases.md`: both cases kept. Base's 583 case stays Case 25, because done tickets cite that number. This ticket's CRR-002 case becomes Case 26 (nothing in this ticket cites its number).
+    - Router unit test: 22's `ownsAgentRun` together with DN-9's `admitPeerRun` stub.
+    - Two-server E2E: 22's new team-follows-definition case is kept before RC-23, with this ticket's RC-23 title. No other lines differed.
+  - **Merge-induced fixes:**
+    - 22's `team-run-follows-definition.integration.test.ts` stubbed the removed `closedPeerRunRefusal`; it now stubs `admitPeerRun: "not_peer"`.
+    - DN-9's router test root now implements 22's `ownsAgentRun`.
+  - **Router semantics:** 22 changed the sender-root branch from `hasAgentExecution` to `ownsAgentRun`.
+    - `ownsAgentRun` is `hasAgentExecution` on standalone and Org roots, and on a Team root it adds its former members. So a root's peer endpoints still take that branch, and DN-9's endpoint continuation is unchanged.
+    - Former members are local runs, which `admitPeerRun` answers `not_peer`, so 22's "no longer a member" refusal is unchanged.
+    - `admitPeerRun` still runs first, once, before every path.
+    - The other files both sides changed (`task-delegation.ts`, `collaboration-composition.ts`, `build-studio-server.ts`, `start-standalone-application-host.ts`, docs, `typecheck-baseline.json`) changed independently.
+- Changed files or areas: the merge commit `037e6bec5c`.
+- Local validation and result, all on `037e6bec5c`:
+  - server typecheck (IMP-11);
+  - the full server unit suite, 8761 tests (IMP-12);
+  - the web typecheck (IMP-13);
+  - 22's integration test (IMP-14).
+- Next recipient or routing: `/code_reviewer` (merge review), then API/E2E on the merged state (the two-server suite at least).
+- Remaining limitations or risks: **two cases are now both named `RC-51`** in `remote-delegation-two-server.e2e.test.ts`: base's team-follows-definition case and this ticket's `RC-51 591 AC-007…` case. Both run, but `record()` merges their receipts into one `evidence.cases["RC-51"]` object, and a `-t "RC-51 "` filter selects both. Renumbering is API/E2E's to decide: base's number is cited by done tickets, and this ticket's RC-51 … 53 by its requirements, design and API/E2E evidence.

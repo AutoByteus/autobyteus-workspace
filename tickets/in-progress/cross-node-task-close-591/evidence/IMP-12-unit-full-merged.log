@@ -1,0 +1,12 @@
+# IMP-12 server unit suite (full) on the merged state (IR-003)
+# command: pnpm -C autobyteus-server-ts test:unit
+# commit: 037e6bec5c (merge of 0d13d37f86 and origin/personal 6533d7be04)
+# env: macOS Darwin 25.5.0, pnpm 10.28.2
+# date: 2026-11-21 18:44 CET
+
+# excerpt: the summary; the full log stays at /tmp/r591/IMP-12-unit-full.log on this machine
+
+ Test Files  1055 passed | 5 skipped (1060)
+      Tests  8761 passed | 9 skipped (8770)
+   Duration  759.04s (transform 20.78s, setup 24.88s, import 333.06s, tests 305.22s, environment 992ms)
+exit 0

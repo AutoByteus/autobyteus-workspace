@@ -20,14 +20,14 @@ unless absolute; server paths are under `autobyteus-server-ts/`.
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (round 2)
+- Implementation cycle: `Rework` (round 3: latest-base integration, IR-003; round 2 was IR-002)
 - Implementation revision record: `tickets/in-progress/cross-node-task-close-591/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002` (IR-001 was the initial round)
+- Current implementation revision ID: `IR-003`. IR-003 only integrates the latest base, as merge `037e6bec5c`; IR-002 is the last code round, and IR-001 was the initial round.
 - Related solution revision IDs: SR-001 … SR-011
 - Related architecture-review revision IDs: ARCH-REV-001 … ARCH-REV-006
-- Related code-review revision IDs: CRR-001 (Pass), CRR-002
-- Related API/E2E revision IDs: API-REV-001
-- Related delivery revision IDs: N/A
+- Related code-review revision IDs: CRR-001 (Pass), CRR-002, CRR-003 (Pass)
+- Related API/E2E revision IDs: API-REV-001, API-REV-002 (Pass)
+- Related delivery revision IDs: the delivery engineer's integration report (`release-deployment-report.md`)
 - Triggering finding IDs: CR-591-001 (F-2), CR-591-002 (F-2 b), CR-591-003 (F-1), AR-003; the stale "fences" test title from CRR-002
 
 What it does, by node:
@@ -210,6 +210,10 @@ Environment: macOS (Darwin 25.5.0), Node 22, pnpm 10.28.2. Evidence is in `ticke
 | IMP-08 | `pnpm -C autobyteus-server-ts exec vitest run` on `cross-run-message-delivery.test.ts`, `tests/unit/agent-communication`, `send-message-to.test.ts`, `tests/unit/remote-collaboration`, `agent-org-communication-presentation.test.ts`, `autobyteus-agent-run-backend-factory.test.ts` and `peer-run-state-notices.test.ts` (`--reporter=verbose`) | `a811f94348` | same | `admitPeerRun`, the router gate on every path, `deliverMessageToPeerRun`, the two-node continuations (agent through the endpoint and `node`, Team coordinator), and every IR-001 remote suite again | BEH-006 continuation; AC-007; REQ-002 (an owed "closed" replaced); AR-003 | Pass | `evidence/IMP-08-dn9-focused-tests.log` | `Test Files  36 passed (36)` / `Tests  283 passed (283)`; the test names start `autobyteus-591 DN-9` and `AC-007 (DN-9)` |
 | IMP-09 | `pnpm -C autobyteus-server-ts test:unit` | `a811f94348` | same | the whole server unit, migration, architecture and journal suites | all | Pass | `evidence/IMP-09-unit-full.log` (excerpt; the full log is at `/tmp/r591/IMP-09-unit-full.log`) | `Test Files  1047 passed \| 5 skipped (1052)` / `Tests  8688 passed \| 9 skipped (8697)` |
 | IMP-10 | `pnpm -C autobyteus-web typecheck` | `a811f94348` | same | the web app and the cross-package tests that compile server `src` | — | Pass | `evidence/IMP-10-web-typecheck.log` | `[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)`, `[typecheck] PASS` |
+| IMP-11 | `pnpm -C autobyteus-server-ts typecheck` | `037e6bec5c` (merge, IR-003) | same | server `src` and `tests/` after the merge | all | Pass | `evidence/IMP-11-server-typecheck-merged.log` | `[typecheck] production errors: 0; test-file errors: 1001 in 313 files (baseline 1001 in 313 files)`, `[typecheck] PASS` |
+| IMP-12 | `pnpm -C autobyteus-server-ts test:unit` | `037e6bec5c` | same | the whole server unit, migration, architecture and journal suites, both tickets' code | all | Pass | `evidence/IMP-12-unit-full-merged.log` (excerpt) | `Test Files  1055 passed \| 5 skipped (1060)` / `Tests  8761 passed \| 9 skipped (8770)` |
+| IMP-13 | `pnpm -C autobyteus-web typecheck` | `037e6bec5c` | same | the web app and the cross-package tests | — | Pass | `evidence/IMP-13-web-typecheck-merged.log` | `[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)`, `[typecheck] PASS` |
+| IMP-14 | `pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-team-execution/team-run-follows-definition.integration.test.ts` | `037e6bec5c` | same | 22's leaving marker through the merged router (its stub now `admitPeerRun`) | — | Pass | `evidence/IMP-14-integration-team-follows-definition.log` | `Test Files  1 passed (1)` / `Tests  3 passed (3)` |
 
 - Not run, and why:
   - The two-server end-to-end (two real nodes, paired, over HTTP) for AC-001 … AC-007 is API/E2E's. The in-process two-node suites run the real peer client, gateway, handlers, roots, Team stack and stores; only HTTP and the agent runtimes are replaced.
@@ -247,4 +251,7 @@ Environment: macOS (Darwin 25.5.0), Node 22, pnpm 10.28.2. Evidence is in `ticke
   - The header comment (`:52`) and `:756` mention the fenced log, and RC-10 and RC-11 may assume the remote run keeps running after DONE.
   
   These are API/E2E's tests: I did not change or run them. The unit and in-process suites that pinned the old behaviour were updated in this change. (API/E2E updated that file in round 1, `52a1507b80`.)
+- **IR-003 (merged state):**
+  - Run the two-server suite on `037e6bec5c`; both tickets' cases share it.
+  - Two cases are now named `RC-51`: base 22's team-follows-definition case and this ticket's `RC-51 591 AC-007…`. `record()` merges their receipts into one `RC-51` entry, and `-t "RC-51 "` selects both. Renumbering is yours to decide (see IR-003).
 - **IR-002:** rerun F-1 and F-2. The round 1 RC-51 and RC-53 steps that expect the assigner's message after a reopen to be refused, or `delegate_task` with the same Task to wake the run, now meet SR-010's AC-007 instead: the message continues the run, and that `delegate_task` gets the local refusal. RC-52's `rfOutcome` (a reopen alone while B is down) stays "stopped", as REQ-002 now says.
