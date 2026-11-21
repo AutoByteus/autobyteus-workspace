@@ -4,6 +4,7 @@
 
 | Revision ID | Phase | Trigger | Finding IDs | Prior Status | Current Status | Affected IDs | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| SR-006 | Mixed | Architecture review ARCH-REV-001 Fail | AR-001..AR-006 (AR-004 Requirement Gap) | Approved; design Ready (reviewed Fail) | Ready for Approval (DEC-006); design revised | REQ-003, REQ-005, REQ-006, REQ-007; DEC-006 new | Address rule, delivery reuse, Org view spine, migration input map, Org inventory; DEC-006 to the user |
 | SR-005 | Design | Architecture design | AF-01..AF-09 | Approved; design N/A | Approved; design Ready | REQ-001..REQ-009 (realized) | design-spec.md; Large / High |
 | SR-004 | Requirements | The user's decisions 2026-11-21 | N/A | Ready for Approval | Approved | DEC-001..DEC-003, REQ-008, REQ-009 | Approved: convert existing Org runs, follow the Org definition, keep FU-003 in this ticket |
 | SR-003 | Requirements | Container restructuring investigation | IF-09..IF-14 | Draft | Ready for Approval | REQ-001..REQ-009, AC-001..AC-008, DEC-001..DEC-005 | Requirements for the Org container; awaiting DEC-001..DEC-003 |
@@ -50,3 +51,11 @@
 - Design: Org container (`AgentOrgContainer`), units as Team/agent runs with fixed `containedIn`, cross-run address resolution and delivery inside a container, Org rules merged into unit rules, Org view composed server-side (web contract unchanged), Org follow, sealed migration `20261122_agent_org_units_own_runs_v1` with follow-ups, FU-003 signed peer notice + reconcile; eight ordered slices.
 - Requirements wording: AC-006 and Verification Intent corrected to the guideline's rule (hand-built fixtures of released shapes; never real data or a copy) — evidence-only.
 - Classification: Large / High. Next action: architecture review.
+
+### SR-006 — Design revision after ARCH-REV-001; Requirement Gap to the user
+
+- Trigger: `/architecture_reviewer` ARCH-REV-001 (Fail): AR-001, AR-002, AR-003, AR-005, AR-006 Design Impact; AR-004 Requirement Gap; notes on net notices, peer version skew, port wiring for a single restored Team unit.
+- Design (§ SR-006 Revision): R-1 Team units keep Org-space addresses (no rebasing; instance address = `containedIn.address`); R-2 cross-unit messages through `CrossRunMessageDelivery` with a `same_container` admission, port answers placement/relation/Org rules only; R-3 `OrgViewComposition` bounded spine (relay, receiver-only de-dup, gated snapshot, in-band snapshot triggers, whileRestoring, commands, reconnect, example); R-4 migration moves context files and rewrites saved owner references (frozen visitor), whole-line mapping of counterpart lines, reader rule with `waiting_for_<id>` and follow-ups; R-5 inventory of ~75 Org-specific files with dispositions, walkers decided (contained runs excluded from top-level lists and from memory sync; attributed to their Org in memory views); R-6 notes.
+- Requirement Gap: DEC-006 (a unit the user stopped: wake on another unit's message or refuse) needs the user; recommendation: refuse while user-stopped, wake when merely not restored.
+- FU-001 recorded (memory sync of Org units).
+- Next action: the user's DEC-006, then architecture re-review.

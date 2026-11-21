@@ -2,8 +2,8 @@
 
 ## Document Status
 
-- Status: `Approved`
-- Current solution revision ID: `SR-004`
+- Status: `Ready for Approval` (SR-006: Requirement Gap AR-004 from ARCH-REV-001 — DEC-006 needs the user; everything else stays as approved at SR-004)
+- Current solution revision ID: `SR-006`
 - Package identifier: `org-teams-follow-definition`
 - Request / ticket: Project Task `autobyteus-29` (FU-002, FU-003 of autobyteus-22)
 - Requested by: `/project_task_manager` (run `project_task_manager_2f41a1df4e464bf2aa8970327d9d7ad0`), on the user's "work on the follow-up immediately" (2026-11-21)
@@ -99,6 +99,7 @@ Isolated server instances from the ticket worktree with their own data directori
 | DEC-003 | FU-003 (peer Team copy members) in this ticket or its own | FU-003 is small and independent of the restructuring; in this ticket it waits for the large change to finish. **Recommend: split FU-003 into its own Task** (I ask the Project Task Manager) so it ships soon; this ticket becomes the Org container. **Decided by the user (2026-11-21): keep both in this ticket** ("I think you should contain both"). | User (2026-11-21) | Decided |
 | DEC-004 | How an Org looks after the change | Unchanged for the user (REQ-006); the container is an internal shape. **Decided.** | Solution Designer | Decided |
 | DEC-005 | Org-level rules | Kept by the container; merged into a unit's rules; left out while a named member is gone (REQ-004). **Decided.** | Solution Designer | Decided |
+| DEC-006 | A unit the user stopped (Stop on its row, REQ-006): should a message from another unit of the same Org wake it? | Today a stopped run is woken only by its assigner, and messages from others are refused (cross-run admission); inside an Org every member starts on its first message, but the user cannot stop one member alone. Waking it would undo the user's explicit Stop with any handoff (for example a costly team). Refusing keeps the user in control; the sending agent gets a clear refusal and can tell the user, and the user resumes the unit by messaging it or opening it. A unit that is only not yet restored (after the Org is reopened, or idle) is always woken by a message. **Recommend: refuse while stopped by the user; wake when merely not restored.** | User | Needs user |
 
 ## Readiness Check
 
