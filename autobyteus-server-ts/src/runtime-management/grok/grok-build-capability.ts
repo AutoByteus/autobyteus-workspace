@@ -2,6 +2,7 @@ import { spawn } from "node:child_process";
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
 import { AcpDiscoveryError, runAcpDiscoveryHandshake } from "../acp/acp-discovery-handshake.js";
 import { commandBound, deadlineCause, type CommandBound, type ReadDeadline } from "../read-deadline.js";
+import { armProbeTimeBound } from "../probe-time-bound.js";
 import { compareRuntimeVersions, extractRuntimeVersion } from "../agent-runtimes/runtime-version.js";
 import { grokBuildCommand, grokBuildLaunchProfile, normalizeGrokBuildModels } from "./grok-build-launch-profile.js";
 
@@ -50,24 +51,26 @@ export const toGrokBuildDiagnostic = (error: unknown): GrokBuildDiagnostic =>
 
 /** Bounded, non-blocking command probe; provider output never leaves this function. */
 const runProbe = (args: readonly string[], bound: CommandBound): Promise<string> => new Promise((resolve, reject) => {
-  // A probe ended by its own bound reads as an unsupported CLI (as before); one ended by the step's deadline, as a time-out.
-  const timedOut = () => bound.byDeadline
-    ? new GrokBuildDiscoveryError("GROK_MODEL_DISCOVERY_TIMEOUT", deadlineCause(bound))
-    : new GrokBuildDiscoveryError("GROK_CLI_UNSUPPORTED");
+  // A probe that runs past its bound, its own or the step's deadline, is a time-out, never an unsupported CLI (FU-008).
+  const timedOut = () => new GrokBuildDiscoveryError("GROK_MODEL_DISCOVERY_TIMEOUT", deadlineCause(bound));
   // The step's deadline has passed: nothing starts.
   if (bound.timeoutMs <= 0) { reject(timedOut()); return; }
   let child: ReturnType<typeof spawn>;
-  try { child = spawn(grokBuildCommand(), [...args], { shell: false, stdio: ["ignore", "pipe", "pipe"] }); }
+  const command = grokBuildCommand();
+  try { child = spawn(command, [...args], { shell: false, stdio: ["ignore", "pipe", "pipe"] }); }
   catch { reject(new GrokBuildDiscoveryError("GROK_CLI_UNAVAILABLE")); return; }
   let output = "";
   let settled = false;
   const finish = (value: string | null, error?: GrokBuildDiscoveryError) => {
     if (settled) return;
     settled = true;
-    clearTimeout(timer);
+    disarm();
     if (error) { child.kill("SIGKILL"); reject(error); } else resolve(value ?? "");
   };
-  const timer = setTimeout(() => finish(null, timedOut()), bound.timeoutMs);
+  // A child that has already exited when the bound fires finishes with its real result.
+  const disarm = armProbeTimeBound({
+    child, bound, runtime: "grok", command: [command, ...args].join(" "), onTimedOut: () => finish(null, timedOut()),
+  });
   const collect = (chunk: Buffer) => {
     output += chunk.toString("utf8");
     if (output.length > PROBE_OUTPUT_LIMIT) finish(null, new GrokBuildDiscoveryError("GROK_CLI_UNSUPPORTED"));
