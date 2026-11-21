@@ -1,0 +1,10 @@
+  · seeded
+  · team view open
+  · rows after the change (no reload)
+  · reviewer selected
+  · Team tab
+TFU-01 Pass
+  · fresh load after the coordinator change
+TFU-02 Pass
+  · while the reviewer is leaving (server snapshot says leaving)
+TFU-03 Fail — design: the leaving member is shown, tagged Leaving, until it stops (no row and no tag in the rendered app)

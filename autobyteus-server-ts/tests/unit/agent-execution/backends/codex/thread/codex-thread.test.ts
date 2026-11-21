@@ -99,7 +99,7 @@ const createMemberExecutionContext = () =>
       memberAddress: "/ping",
       agentRunId: "ping-run-1",
     },
-    collaboration: { outgoingHandoffs: [], deliverLogicalMessage: async () => ({ accepted: true }) },
+    collaboration: { outgoingHandoffs: () => [], deliverLogicalMessage: async () => ({ accepted: true }) },
     tasks: testMemberTaskCapability("team-1"),
   });
 

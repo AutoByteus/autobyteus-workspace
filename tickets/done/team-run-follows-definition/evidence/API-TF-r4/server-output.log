@@ -1,0 +1,741 @@
+===== server #1
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+App data directory: /tmp/tf-e2e-BPrH04
+Config file path: /tmp/tf-e2e-BPrH04/.env
+Loading environment from: /tmp/tf-e2e-BPrH04/.env
+◇ injected env (2) from ../../../../../../../tmp/tf-e2e-BPrH04/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/tf-e2e-BPrH04
+DB DIRECTORY: /tmp/tf-e2e-BPrH04/db
+LOGS DIRECTORY: /tmp/tf-e2e-BPrH04/logs
+DOWNLOAD DIRECTORY: /tmp/tf-e2e-BPrH04/download
+MEMORY DIRECTORY: /tmp/tf-e2e-BPrH04/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-linux-arm64-openssl-3.0.x.so.node, schema=schema-engine-linux-arm64-openssl-3.0.x)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/tmp/tf-e2e-BPrH04/db/production.db"
+
+SQLite database production.db created at file:/tmp/tf-e2e-BPrH04/db/production.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:44249) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-21T16:40:23.768Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 34 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /tmp/tf-e2e-BPrH04/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/tf-e2e-BPrH04/temp_workspace.
+Initialized TempWorkspace at /tmp/tf-e2e-BPrH04/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1795279224591,"pid":44249,"hostname":"8abfa09513cd","msg":"Server listening at http://127.0.0.1:33781"}
+{"level":30,"time":1795279224630,"pid":44249,"hostname":"8abfa09513cd","msg":"Server listening at http://127.0.0.1:33623"}
+[2026-11-21T16:40:24.630Z] [INFO] [server.runtime] Server listening on 127.0.0.1:0
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Hub Staging Sweep' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":40,"time":1795279224666,"pid":44249,"hostname":"8abfa09513cd","reqId":"req-1","method":"POST","url":"/graphql","statusCode":404,"elapsedMs":2.6681250000001455,"msg":"http request completed"}
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Creating new workspace for rootPath: /tmp/tf-e2e-BPrH04/workspace
+Created metadata-only FileSystemWorkspace at /tmp/tf-e2e-BPrH04/workspace.
+Created and registered workspace ID: agent_ws_38c8301f3eb9c1c51b417a67a1939f3409d45d58514dda4117f419c418a88705
+Created agent session c0e04f6e-8e75-415f-8415-bfae7749dbf1 for run tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec
+Agent team websocket attached for team run tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec
+Agent Team WebSocket connected: session=c0e04f6e-8e75-415f-8415-bfae7749dbf1, run=tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec
+Creating new workspace for rootPath: /tmp/tf-e2e-BPrH04/workspace
+Created metadata-only FileSystemWorkspace at /tmp/tf-e2e-BPrH04/workspace.
+Reusing registered workspace ID: agent_ws_38c8301f3eb9c1c51b417a67a1939f3409d45d58514dda4117f419c418a88705
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+AGY compaction detection off for run tf_lead_700001_e76a132bd95842708bb41063d1f3560a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Creating new workspace for rootPath: /tmp/tf-e2e-BPrH04/workspace
+Created metadata-only FileSystemWorkspace at /tmp/tf-e2e-BPrH04/workspace.
+Reusing registered workspace ID: agent_ws_38c8301f3eb9c1c51b417a67a1939f3409d45d58514dda4117f419c418a88705
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_writer_700001_e59930ce9db34bffa1f9f7fb4ef3c65c/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_writer_700001_e59930ce9db34bffa1f9f7fb4ef3c65c/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_writer_700001_e59930ce9db34bffa1f9f7fb4ef3c65c/raw_traces_manifest.json
+AGY compaction detection off for run tf_writer_700001_e59930ce9db34bffa1f9f7fb4ef3c65c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_writer_700001_e59930ce9db34bffa1f9f7fb4ef3c65c/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_writer_700001_e59930ce9db34bffa1f9f7fb4ef3c65c/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_writer_700001_e59930ce9db34bffa1f9f7fb4ef3c65c/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_writer_700001_e59930ce9db34bffa1f9f7fb4ef3c65c/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_writer_700001_e59930ce9db34bffa1f9f7fb4ef3c65c/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_writer_700001_e59930ce9db34bffa1f9f7fb4ef3c65c/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Creating new workspace for rootPath: /tmp/tf-e2e-BPrH04/workspace
+Created metadata-only FileSystemWorkspace at /tmp/tf-e2e-BPrH04/workspace.
+Reusing registered workspace ID: agent_ws_38c8301f3eb9c1c51b417a67a1939f3409d45d58514dda4117f419c418a88705
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+AGY compaction detection off for run tf_reviewer_700001_4852eabf56c944e2be5c0f37157aac58: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_reviewer_700001_4852eabf56c944e2be5c0f37157aac58/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_reviewer_700001_4852eabf56c944e2be5c0f37157aac58/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_reviewer_700001_4852eabf56c944e2be5c0f37157aac58/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_reviewer_700001_4852eabf56c944e2be5c0f37157aac58/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_reviewer_700001_4852eabf56c944e2be5c0f37157aac58/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_writer_700001_e59930ce9db34bffa1f9f7fb4ef3c65c/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_reviewer_700001_4852eabf56c944e2be5c0f37157aac58/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Creating new workspace for rootPath: /tmp/tf-e2e-BPrH04/workspace
+Created metadata-only FileSystemWorkspace at /tmp/tf-e2e-BPrH04/workspace.
+Reusing registered workspace ID: agent_ws_38c8301f3eb9c1c51b417a67a1939f3409d45d58514dda4117f419c418a88705
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_writer_700001_e59930ce9db34bffa1f9f7fb4ef3c65c/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_writer_700001_e59930ce9db34bffa1f9f7fb4ef3c65c/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_writer_700001_e59930ce9db34bffa1f9f7fb4ef3c65c/raw_traces_manifest.json
+AGY compaction detection off for run tf_writer_700001_e59930ce9db34bffa1f9f7fb4ef3c65c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_writer_700001_e59930ce9db34bffa1f9f7fb4ef3c65c/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_writer_700001_e59930ce9db34bffa1f9f7fb4ef3c65c/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_writer_700001_e59930ce9db34bffa1f9f7fb4ef3c65c/raw_traces_manifest.json
+Creating new workspace for rootPath: /tmp/tf-e2e-BPrH04/workspace
+Created metadata-only FileSystemWorkspace at /tmp/tf-e2e-BPrH04/workspace.
+Reusing registered workspace ID: agent_ws_38c8301f3eb9c1c51b417a67a1939f3409d45d58514dda4117f419c418a88705
+AGY compaction detection off for run tf_reviewer_700001_fd427abae2f341aab1ccb09be7a0cae8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_reviewer_700001_fd427abae2f341aab1ccb09be7a0cae8/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Creating new workspace for rootPath: /tmp/tf-e2e-BPrH04/workspace
+Created metadata-only FileSystemWorkspace at /tmp/tf-e2e-BPrH04/workspace.
+Reusing registered workspace ID: agent_ws_38c8301f3eb9c1c51b417a67a1939f3409d45d58514dda4117f419c418a88705
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+AGY compaction detection off for run tf_alt_700001_f50a9cd6a90f46308332533ab69cbfcf: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_alt_700001_f50a9cd6a90f46308332533ab69cbfcf/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_alt_700001_f50a9cd6a90f46308332533ab69cbfcf/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+TEAM_RUN_DEFINITION_NOT_FOLLOWED: Team run 'tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec' keeps its members: Team definition 'tf-team-700001' could not be read (Invalid JSON: Unexpected token 'o', ..."mbers": [ oops" is not valid JSON); its last good version is not followed.
+TEAM_RUN_DEFINITION_NOT_FOLLOWED: Team run 'tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec' keeps its members: Team definition 'tf-team-700001' could not be read (Invalid JSON: Unexpected token 'o', "not json at all" is not valid JSON); its last good version is not followed.
+TEAM_RUN_DEFINITION_NOT_FOLLOWED: Team run 'tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec' keeps its members: Team definition 'tf-team-700001' cannot be used (AgentDefinition 'tf-no-such-agent-700001' cannot be loaded for agent run identity allocation.).
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+TEAM_RUN_DEFINITION_NOT_FOLLOWED: Team run 'tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec' keeps its members: Team definition 'tf-team-700001' was not found.
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Closed agent session c0e04f6e-8e75-415f-8415-bfae7749dbf1
+Created agent session aa309adb-e33c-4e6d-b53f-ce54648f90f0 for run tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec
+Agent team websocket attached for team run tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec
+Agent Team WebSocket connected: session=aa309adb-e33c-4e6d-b53f-ce54648f90f0, run=tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Creating new workspace for rootPath: /tmp/tf-e2e-BPrH04/workspace
+Created metadata-only FileSystemWorkspace at /tmp/tf-e2e-BPrH04/workspace.
+Reusing registered workspace ID: agent_ws_38c8301f3eb9c1c51b417a67a1939f3409d45d58514dda4117f419c418a88705
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+AGY compaction detection off for run tf_lead_700001_e76a132bd95842708bb41063d1f3560a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Closed agent session aa309adb-e33c-4e6d-b53f-ce54648f90f0
+
+===== server #2
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+App data directory: /tmp/tf-e2e-BPrH04
+Config file path: /tmp/tf-e2e-BPrH04/.env
+Loading environment from: /tmp/tf-e2e-BPrH04/.env
+◇ injected env (3) from ../../../../../../../tmp/tf-e2e-BPrH04/.env // tip: ⌘ suppress logs { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/tf-e2e-BPrH04
+DB DIRECTORY: /tmp/tf-e2e-BPrH04/db
+LOGS DIRECTORY: /tmp/tf-e2e-BPrH04/logs
+DOWNLOAD DIRECTORY: /tmp/tf-e2e-BPrH04/download
+MEMORY DIRECTORY: /tmp/tf-e2e-BPrH04/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-linux-arm64-openssl-3.0.x.so.node, schema=schema-engine-linux-arm64-openssl-3.0.x)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/tmp/tf-e2e-BPrH04/db/production.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.34                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+Database migrations completed successfully.
+(node:45019) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-21T16:40:54.749Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 34 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /tmp/tf-e2e-BPrH04/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/tf-e2e-BPrH04/temp_workspace.
+Initialized TempWorkspace at /tmp/tf-e2e-BPrH04/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1795279255112,"pid":45019,"hostname":"8abfa09513cd","msg":"Server listening at http://127.0.0.1:38603"}
+{"level":30,"time":1795279255152,"pid":45019,"hostname":"8abfa09513cd","msg":"Server listening at http://127.0.0.1:40741"}
+[2026-11-21T16:40:55.152Z] [INFO] [server.runtime] Server listening on 127.0.0.1:0
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Hub Staging Sweep' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":40,"time":1795279255185,"pid":45019,"hostname":"8abfa09513cd","reqId":"req-1","method":"POST","url":"/graphql","statusCode":404,"elapsedMs":2.8765000000003056,"msg":"http request completed"}
+Created agent session a217e7f0-c4b2-4122-96ec-269ed6bc9f82 for run tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec
+Agent team websocket attached for team run tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec
+Agent Team WebSocket connected: session=a217e7f0-c4b2-4122-96ec-269ed6bc9f82, run=tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Creating new workspace for rootPath: /tmp/tf-e2e-BPrH04/workspace
+Created metadata-only FileSystemWorkspace at /tmp/tf-e2e-BPrH04/workspace.
+Created and registered workspace ID: agent_ws_38c8301f3eb9c1c51b417a67a1939f3409d45d58514dda4117f419c418a88705
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+AGY compaction detection off for run tf_lead_700001_e76a132bd95842708bb41063d1f3560a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Creating new workspace for rootPath: /tmp/tf-e2e-BPrH04/workspace
+Created metadata-only FileSystemWorkspace at /tmp/tf-e2e-BPrH04/workspace.
+Reusing registered workspace ID: agent_ws_38c8301f3eb9c1c51b417a67a1939f3409d45d58514dda4117f419c418a88705
+Creating new workspace for rootPath: /tmp/tf-e2e-BPrH04/workspace
+Created metadata-only FileSystemWorkspace at /tmp/tf-e2e-BPrH04/workspace.
+Reusing registered workspace ID: agent_ws_38c8301f3eb9c1c51b417a67a1939f3409d45d58514dda4117f419c418a88705
+AGY compaction detection off for run tf_host_700001_f465b8c1fa3a4e72a222d1c4e48dc1ad: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agents/tf_host_700001_f465b8c1fa3a4e72a222d1c4e48dc1ad/raw_traces_manifest.json
+Agent websocket attached for run tf_host_700001_f465b8c1fa3a4e72a222d1c4e48dc1ad
+Created agent session 410284de-f898-4888-a0cf-8cd5d4a25099 for run tf_host_700001_f465b8c1fa3a4e72a222d1c4e48dc1ad
+Agent WebSocket connected: session=410284de-f898-4888-a0cf-8cd5d4a25099, run=tf_host_700001_f465b8c1fa3a4e72a222d1c4e48dc1ad
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agents/tf_host_700001_f465b8c1fa3a4e72a222d1c4e48dc1ad/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agents/tf_host_700001_f465b8c1fa3a4e72a222d1c4e48dc1ad/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agents/tf_host_700001_f465b8c1fa3a4e72a222d1c4e48dc1ad/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agents/tf_host_700001_f465b8c1fa3a4e72a222d1c4e48dc1ad/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agents/tf_host_700001_f465b8c1fa3a4e72a222d1c4e48dc1ad/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agents/tf_host_700001_f465b8c1fa3a4e72a222d1c4e48dc1ad/raw_traces_manifest.json
+Creating new workspace for rootPath: /tmp/tf-e2e-BPrH04/workspace
+Created metadata-only FileSystemWorkspace at /tmp/tf-e2e-BPrH04/workspace.
+Reusing registered workspace ID: agent_ws_38c8301f3eb9c1c51b417a67a1939f3409d45d58514dda4117f419c418a88705
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agents/tf_host_700001_f465b8c1fa3a4e72a222d1c4e48dc1ad/raw_traces_manifest.json
+Creating new workspace for rootPath: /tmp/tf-e2e-BPrH04/workspace
+Created metadata-only FileSystemWorkspace at /tmp/tf-e2e-BPrH04/workspace.
+Reusing registered workspace ID: agent_ws_38c8301f3eb9c1c51b417a67a1939f3409d45d58514dda4117f419c418a88705
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agents/tf_host_700001_f465b8c1fa3a4e72a222d1c4e48dc1ad/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agents/tf_host_700001_f465b8c1fa3a4e72a222d1c4e48dc1ad/raw_traces_manifest.json
+AGY compaction detection off for run tf_lead_700001_c8c75bf5e03a475185f84adb8dca95dc: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agents/tf_host_700001_f465b8c1fa3a4e72a222d1c4e48dc1ad/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_581bc0b50b53499da10af94e674ff2bb/tf_lead_700001_c8c75bf5e03a475185f84adb8dca95dc/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agents/tf_host_700001_f465b8c1fa3a4e72a222d1c4e48dc1ad/raw_traces_manifest.json
+Created agent session d62dbcbf-c708-4c23-821b-3c2e05ef886f for run tf_team_700001_581bc0b50b53499da10af94e674ff2bb
+Agent team websocket attached for team run tf_team_700001_581bc0b50b53499da10af94e674ff2bb
+Agent Team WebSocket connected: session=d62dbcbf-c708-4c23-821b-3c2e05ef886f, run=tf_team_700001_581bc0b50b53499da10af94e674ff2bb
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_581bc0b50b53499da10af94e674ff2bb/tf_lead_700001_c8c75bf5e03a475185f84adb8dca95dc/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_581bc0b50b53499da10af94e674ff2bb/tf_lead_700001_c8c75bf5e03a475185f84adb8dca95dc/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_581bc0b50b53499da10af94e674ff2bb/tf_lead_700001_c8c75bf5e03a475185f84adb8dca95dc/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_581bc0b50b53499da10af94e674ff2bb/tf_lead_700001_c8c75bf5e03a475185f84adb8dca95dc/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_581bc0b50b53499da10af94e674ff2bb/tf_lead_700001_c8c75bf5e03a475185f84adb8dca95dc/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_581bc0b50b53499da10af94e674ff2bb/tf_lead_700001_c8c75bf5e03a475185f84adb8dca95dc/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_581bc0b50b53499da10af94e674ff2bb/tf_lead_700001_c8c75bf5e03a475185f84adb8dca95dc/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_581bc0b50b53499da10af94e674ff2bb/tf_lead_700001_c8c75bf5e03a475185f84adb8dca95dc/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_581bc0b50b53499da10af94e674ff2bb/tf_lead_700001_c8c75bf5e03a475185f84adb8dca95dc/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_581bc0b50b53499da10af94e674ff2bb/tf_lead_700001_c8c75bf5e03a475185f84adb8dca95dc/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_581bc0b50b53499da10af94e674ff2bb/tf_lead_700001_c8c75bf5e03a475185f84adb8dca95dc/raw_traces_manifest.json
+Creating new workspace for rootPath: /tmp/tf-e2e-BPrH04/workspace
+Created metadata-only FileSystemWorkspace at /tmp/tf-e2e-BPrH04/workspace.
+Reusing registered workspace ID: agent_ws_38c8301f3eb9c1c51b417a67a1939f3409d45d58514dda4117f419c418a88705
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_581bc0b50b53499da10af94e674ff2bb/tf_lead_700001_c8c75bf5e03a475185f84adb8dca95dc/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_581bc0b50b53499da10af94e674ff2bb/tf_lead_700001_c8c75bf5e03a475185f84adb8dca95dc/raw_traces_manifest.json
+AGY compaction detection off for run tf_reviewer_700001_17ea816de85246d4814ee6a4e55e06d1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_581bc0b50b53499da10af94e674ff2bb/tf_reviewer_700001_17ea816de85246d4814ee6a4e55e06d1/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_581bc0b50b53499da10af94e674ff2bb/tf_lead_700001_c8c75bf5e03a475185f84adb8dca95dc/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_581bc0b50b53499da10af94e674ff2bb/tf_reviewer_700001_17ea816de85246d4814ee6a4e55e06d1/raw_traces_manifest.json
+Closed agent session d62dbcbf-c708-4c23-821b-3c2e05ef886f
+Closed agent session 410284de-f898-4888-a0cf-8cd5d4a25099
+Agent WebSocket disconnected: 410284de-f898-4888-a0cf-8cd5d4a25099
+Agent Definition created successfully with ID: tf-own-lead-700001
+Agent Definition created successfully with ID: tf-own-mate-700001
+Agent Definition created successfully with ID: tf-own-extra-700001
+Agent Team Definition created successfully with ID: tf-own-team-700001
+Creating new workspace for rootPath: /tmp/tf-e2e-BPrH04/workspace
+Created metadata-only FileSystemWorkspace at /tmp/tf-e2e-BPrH04/workspace.
+Reusing registered workspace ID: agent_ws_38c8301f3eb9c1c51b417a67a1939f3409d45d58514dda4117f419c418a88705
+Created agent session ea7f99e0-133c-4ce9-915f-fefd414a1aeb for run tf_own_team_700001_9996cccbb9c348cfb23c66cd34c998f8
+Agent team websocket attached for team run tf_own_team_700001_9996cccbb9c348cfb23c66cd34c998f8
+Agent Team WebSocket connected: session=ea7f99e0-133c-4ce9-915f-fefd414a1aeb, run=tf_own_team_700001_9996cccbb9c348cfb23c66cd34c998f8
+Creating new workspace for rootPath: /tmp/tf-e2e-BPrH04/workspace
+Created metadata-only FileSystemWorkspace at /tmp/tf-e2e-BPrH04/workspace.
+Reusing registered workspace ID: agent_ws_38c8301f3eb9c1c51b417a67a1939f3409d45d58514dda4117f419c418a88705
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_own_team_700001_9996cccbb9c348cfb23c66cd34c998f8/tf_own_lead_700001_495bd051c38b4237b3e62923a8598b1f/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_own_team_700001_9996cccbb9c348cfb23c66cd34c998f8/tf_own_lead_700001_495bd051c38b4237b3e62923a8598b1f/raw_traces_manifest.json
+AGY compaction detection off for run tf_own_lead_700001_495bd051c38b4237b3e62923a8598b1f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_own_team_700001_9996cccbb9c348cfb23c66cd34c998f8/tf_own_lead_700001_495bd051c38b4237b3e62923a8598b1f/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_own_team_700001_9996cccbb9c348cfb23c66cd34c998f8/tf_own_lead_700001_495bd051c38b4237b3e62923a8598b1f/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_own_team_700001_9996cccbb9c348cfb23c66cd34c998f8/tf_own_lead_700001_495bd051c38b4237b3e62923a8598b1f/raw_traces_manifest.json
+Agent Team Definition with ID tf-own-team-700001 updated successfully.
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_own_team_700001_9996cccbb9c348cfb23c66cd34c998f8/tf_own_lead_700001_495bd051c38b4237b3e62923a8598b1f/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_own_team_700001_9996cccbb9c348cfb23c66cd34c998f8/tf_own_lead_700001_495bd051c38b4237b3e62923a8598b1f/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_own_team_700001_9996cccbb9c348cfb23c66cd34c998f8/tf_own_lead_700001_495bd051c38b4237b3e62923a8598b1f/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_own_team_700001_9996cccbb9c348cfb23c66cd34c998f8/tf_own_lead_700001_495bd051c38b4237b3e62923a8598b1f/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_own_team_700001_9996cccbb9c348cfb23c66cd34c998f8/tf_own_lead_700001_495bd051c38b4237b3e62923a8598b1f/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_own_team_700001_9996cccbb9c348cfb23c66cd34c998f8/tf_own_lead_700001_495bd051c38b4237b3e62923a8598b1f/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_own_team_700001_9996cccbb9c348cfb23c66cd34c998f8/tf_own_lead_700001_495bd051c38b4237b3e62923a8598b1f/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_own_team_700001_9996cccbb9c348cfb23c66cd34c998f8/tf_own_lead_700001_495bd051c38b4237b3e62923a8598b1f/raw_traces_manifest.json
+Closed agent session ea7f99e0-133c-4ce9-915f-fefd414a1aeb
+Creating new workspace for rootPath: /tmp/tf-e2e-BPrH04/workspace
+Created metadata-only FileSystemWorkspace at /tmp/tf-e2e-BPrH04/workspace.
+Reusing registered workspace ID: agent_ws_38c8301f3eb9c1c51b417a67a1939f3409d45d58514dda4117f419c418a88705
+AGY compaction detection off for run tf_reviewer_700001_16d0d92bf8334b02aa38a836491e474b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_reviewer_700001_16d0d92bf8334b02aa38a836491e474b/raw_traces_manifest.json
+Closed agent session a217e7f0-c4b2-4122-96ec-269ed6bc9f82
+Created agent session d26a9118-6314-4d36-aee3-49594b36840b for run tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec
+Agent team websocket attached for team run tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec
+Agent Team WebSocket connected: session=d26a9118-6314-4d36-aee3-49594b36840b, run=tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Creating new workspace for rootPath: /tmp/tf-e2e-BPrH04/workspace
+Created metadata-only FileSystemWorkspace at /tmp/tf-e2e-BPrH04/workspace.
+Reusing registered workspace ID: agent_ws_38c8301f3eb9c1c51b417a67a1939f3409d45d58514dda4117f419c418a88705
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+AGY compaction detection off for run tf_lead_700001_e76a132bd95842708bb41063d1f3560a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Creating new workspace for rootPath: /tmp/tf-e2e-BPrH04/workspace
+Created metadata-only FileSystemWorkspace at /tmp/tf-e2e-BPrH04/workspace.
+Reusing registered workspace ID: agent_ws_38c8301f3eb9c1c51b417a67a1939f3409d45d58514dda4117f419c418a88705
+AGY compaction detection off for run tf_reviewer_700001_16d0d92bf8334b02aa38a836491e474b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_reviewer_700001_16d0d92bf8334b02aa38a836491e474b/raw_traces_manifest.json
+Closed agent session d26a9118-6314-4d36-aee3-49594b36840b
+
+===== server #3
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+App data directory: /tmp/tf-e2e-BPrH04
+Config file path: /tmp/tf-e2e-BPrH04/.env
+Loading environment from: /tmp/tf-e2e-BPrH04/.env
+◇ injected env (3) from ../../../../../../../tmp/tf-e2e-BPrH04/.env // tip: ⌁ auth for agents [www.vestauth.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/tf-e2e-BPrH04
+DB DIRECTORY: /tmp/tf-e2e-BPrH04/db
+LOGS DIRECTORY: /tmp/tf-e2e-BPrH04/logs
+DOWNLOAD DIRECTORY: /tmp/tf-e2e-BPrH04/download
+MEMORY DIRECTORY: /tmp/tf-e2e-BPrH04/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-linux-arm64-openssl-3.0.x.so.node, schema=schema-engine-linux-arm64-openssl-3.0.x)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/tmp/tf-e2e-BPrH04/db/production.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:45542) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-21T16:41:06.317Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 34 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /tmp/tf-e2e-BPrH04/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/tf-e2e-BPrH04/temp_workspace.
+Initialized TempWorkspace at /tmp/tf-e2e-BPrH04/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1795279266677,"pid":45542,"hostname":"8abfa09513cd","msg":"Server listening at http://127.0.0.1:40031"}
+{"level":30,"time":1795279266716,"pid":45542,"hostname":"8abfa09513cd","msg":"Server listening at http://127.0.0.1:38023"}
+[2026-11-21T16:41:06.716Z] [INFO] [server.runtime] Server listening on 127.0.0.1:0
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Hub Staging Sweep' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":40,"time":1795279266747,"pid":45542,"hostname":"8abfa09513cd","reqId":"req-1","method":"POST","url":"/graphql","statusCode":404,"elapsedMs":2.7646249999997963,"msg":"http request completed"}
+Created agent session 6560ecf6-f15f-4d55-8d60-2bbff4159d38 for run tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec
+Agent team websocket attached for team run tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec
+Agent Team WebSocket connected: session=6560ecf6-f15f-4d55-8d60-2bbff4159d38, run=tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Creating new workspace for rootPath: /tmp/tf-e2e-BPrH04/workspace
+Created metadata-only FileSystemWorkspace at /tmp/tf-e2e-BPrH04/workspace.
+Created and registered workspace ID: agent_ws_38c8301f3eb9c1c51b417a67a1939f3409d45d58514dda4117f419c418a88705
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+AGY compaction detection off for run tf_lead_700001_e76a132bd95842708bb41063d1f3560a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Memory file missing: /tmp/tf-e2e-BPrH04/memory/agent_teams/tf_team_700001_4636cc73e7214dafb49a93c8d6b04cec/tf_lead_700001_e76a132bd95842708bb41063d1f3560a/raw_traces_manifest.json
+Closed agent session 6560ecf6-f15f-4d55-8d60-2bbff4159d38

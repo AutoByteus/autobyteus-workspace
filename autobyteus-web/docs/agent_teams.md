@@ -401,11 +401,36 @@ fails, Agent data may already be fresh; there is no cross-catalog rollback or
 transactional snapshot guarantee. Retry uses the same Reload control.
 
 This is **agent package definition freshness**, not live instruction hot reload.
-Reload does not rewrite package source/configuration or saved run/history state,
-and it does not replace instructions in existing executions. Reload is now the
-manual fallback: watched agent packages already apply file edits automatically.
-Neither path downloads GitHub changes. Reload does not guarantee one
-point-in-time snapshot when files are edited concurrently with it.
+Reload does not rewrite package source/configuration, and it does not replace
+instructions in existing executions. A Team run's members, coordinator and
+handoff rules do follow its Team definition, on the server
+([Team Runs Follow Their Definition](#team-runs-follow-their-definition)).
+Reload is now the manual fallback: watched agent packages already apply file
+edits automatically. Neither path downloads GitHub changes. Reload does not
+guarantee one point-in-time snapshot when files are edited concurrently with it.
+
+### Team Runs Follow Their Definition
+
+When a Team definition's members, coordinator or handoff rules change (a package
+edit, a save in the app), a standalone Team run and a copy of a Team definition
+change with it on the server (rules, which runs follow, and the members' notices:
+[Agent Team Execution](../../autobyteus-server-ts/docs/modules/agent_team_execution.md#membership-follows-the-definition)).
+The Team view shows the change as the run tree's next change, without a reload:
+
+- **A new member** appears in the Team tree, Offline until its first message; the
+  user can message it like any member.
+- **A removed member** leaves the tree. While it is still finishing its turn, its
+  row stays, tagged **Leaving** (title "Removed from the team; finishing its
+  current turn"; `leaving` on the run-tree row, carried to the display row by
+  `utils/runTree/runTreeDisplayRows.ts`). The row opens that member like any
+  other, so a pending approval of a leaving member is answered there. The row
+  goes once the member stops. A copy's members under a host run are tagged the
+  same way. After a Stop or a restart no row is leaving.
+- **A changed coordinator** is the Team's coordinator in the view; a leaving
+  member is never the coordinator, even at the coordinator's address
+  (`teamExecutionTreeSelectors.ts`).
+- **History.** The run-history list shows current members only; a former
+  member's history stays readable by its run ID and on the Memory page.
 
 ## Featured Teams
 

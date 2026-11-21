@@ -91,11 +91,6 @@ describe("TeamMemberRunViewProjectionService exact AgentRun identity", () => {
       .rejects.toThrow("AgentRun 'missing' was not found");
   });
 
-  it("rejects executions that have neither a configured launch placement nor a recorded source", async () => {
-    const { service } = harness({ ...location, configuredPlacement: null });
-    await expect(service.getProjection("team-1", "professor-run"))
-      .rejects.toThrow(new CollaborationMemberNotFoundError("AgentRun 'professor-run' has no configured launch placement or recorded source."));
-  });
 });
 
 describe("TeamMemberRunViewProjectionService file changes", () => {

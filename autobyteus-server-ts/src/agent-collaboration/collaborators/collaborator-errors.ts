@@ -69,6 +69,10 @@ export const delegationTargetUnavailableMessage = (address: string): string =>
 export const messageTargetNotFoundMessage = (address: string): string =>
   `No agent or agent team you can talk with has the address ${address}. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id. To have a task done by a new agent, use delegate_task.`;
 
+/** A message to a member that left its team (REQ-009; design § Exact Texts): its name is its address's last segment. */
+export const formerMemberRefusalMessage = (address: string): string =>
+  `${address.split("/").filter(Boolean).at(-1) ?? address} (${address}) is no longer a member of your team: it was removed from the team definition. Call get_handoff_rules for your current handoff rules.`;
+
 /** `delegate_task(address)` to the sender's own address (autobyteus-435 REQ-013): an agent cannot delegate to itself. */
 export const selfDelegationRefusedMessage = (address: string): string =>
   `${address} is your own address; you can't delegate to yourself. Do the work yourself, or delegate it to another agent or agent team.`;

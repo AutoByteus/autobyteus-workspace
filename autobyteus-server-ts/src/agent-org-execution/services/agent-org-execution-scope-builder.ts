@@ -106,7 +106,8 @@ export class AgentOrgExecutionScopeBuilder {
         inOrganization: true,
         authoredEnclosingScopeInstruction: mode === "fresh" ? await this.resolveInstruction(scope.instructionDefinition) : null,
         collaboration: new MemberCollaborationContext({
-          outgoingHandoffs: scope.outgoingHandoffs,
+          // An Org run's rules are fixed for the run (its mounted teams do not follow their definitions).
+          outgoingHandoffs: () => scope.outgoingHandoffs,
           deliverLogicalMessage: (message) => {
             if (!run) return Promise.resolve({ accepted: false, code: "AGENT_ORG_ROOT_NOT_BOUND", message: "AgentOrg construction is incomplete." });
             return run.deliverLogicalMessage(identity, message);

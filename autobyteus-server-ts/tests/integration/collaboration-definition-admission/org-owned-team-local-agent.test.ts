@@ -181,7 +181,7 @@ describe('Org-owned Team -> Team-local Agent production reads', () => {
     const beginMaterialization = vi.fn((input: Parameters<FlatTeamExecutionFactory['beginMaterialization']>[0]) => {
       callbacks = input.callbacks;
       return {
-        prepare: async () => ({ teamRun: { teamRunId: input.teamNode.teamRunId }, commitAfterDurability() { }, abort: async () => { } }),
+        prepare: async () => ({ teamRun: { teamRunId: input.membership.teamNode.teamRunId }, commitAfterDurability() { }, abort: async () => { } }),
         cancel() { }, release: async () => ({ accepted: true }),
       };
     });

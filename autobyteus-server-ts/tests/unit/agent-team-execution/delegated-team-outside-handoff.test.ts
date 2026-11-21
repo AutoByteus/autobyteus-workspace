@@ -34,7 +34,7 @@ describe("a delegated team's handoff outside the team (CR-461-009)", () => {
     const scope = resolveMemberCollaborationScope({ memberAddress: "/lead" as never, agentRunId: "agent-lead_run",
       root: { configured: { addresses: ["/lead", "/dev"], agentRunIds: ["agent-lead_run", "agent-dev_run"], role: "team_member" } as never,
         handoffs: plan.config.handoffs, definition: { kind: "agent_team", definitionId: "dev-team" } } });
-    const rules = new GetHandoffRulesService().getRules(new MemberCollaborationContext({ outgoingHandoffs: scope.outgoingHandoffs,
+    const rules = new GetHandoffRulesService().getRules(new MemberCollaborationContext({ outgoingHandoffs: () => scope.outgoingHandoffs,
       deliverLogicalMessage: async () => ({ accepted: true }) as never }));
     expect(rules.handoffs).toEqual([
       { when: "When the design is ready.", recipient_address: "/dev" },

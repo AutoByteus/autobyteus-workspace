@@ -1,0 +1,153 @@
+{
+  "stored": {
+    "tree": {
+      "createdAt": "2026-11-21T15:56:21.838Z",
+      "archivedAt": null,
+      "applicationBinding": null,
+      "handoffs": [],
+      "rootTeam": {
+        "address": "/",
+        "teamDefinitionId": "tf-team-4d9d66",
+        "teamDefinitionName": "tf-team-4d9d66",
+        "teamRunId": "tf_team_4d9d66_b610bbb258ce4459b0f87731afac619a",
+        "coordinatorAddress": "/lead",
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "antigravity_cli",
+          "llmModelIdentifier": "gemini-3.8-flash-low",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/tmp/tf-e2e-DEReUC/workspace"
+        },
+        "members": [
+          {
+            "address": "/lead",
+            "agentDefinitionId": "tf-lead-4d9d66",
+            "role": null,
+            "description": null,
+            "agentRunId": "tf_lead_4d9d66_16bb65ab0fa342c0b67e347e8d932605",
+            "platformAgentRunId": "47c06631-61fe-43eb-8ec1-f5fec53fcd98",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/tmp/tf-e2e-DEReUC/workspace"
+            }
+          }
+        ],
+        "formerMembers": [
+          {
+            "address": "/reviewer",
+            "agentDefinitionId": "tf-reviewer-4d9d66",
+            "role": null,
+            "description": null,
+            "agentRunId": "tf_reviewer_4d9d66_68986cb89e45426fbb1804f3078c4e97",
+            "platformAgentRunId": "95a97e68-cd2e-439d-9110-54b5874de940",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/tmp/tf-e2e-DEReUC/workspace"
+            },
+            "launchSource": {
+              "origin": "team_default",
+              "fallbacks": []
+            }
+          },
+          {
+            "address": "/writer",
+            "agentDefinitionId": "tf-writer-4d9d66",
+            "role": null,
+            "description": null,
+            "agentRunId": "tf_writer_4d9d66_aa1b8ce30ff9460fab3aba1831245ec0",
+            "platformAgentRunId": "70a4896d-b2f3-4270-b10e-bba950af2b4e",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/tmp/tf-e2e-DEReUC/workspace"
+            }
+          }
+        ]
+      }
+    },
+    "members": [
+      {
+        "address": "/lead",
+        "agentRunId": "tf_lead_4d9d66_16bb65ab0fa342c0b67e347e8d932605",
+        "agentDefinitionId": "tf-lead-4d9d66",
+        "leaving": false
+      }
+    ],
+    "former": [
+      {
+        "address": "/reviewer",
+        "agentRunId": "tf_reviewer_4d9d66_68986cb89e45426fbb1804f3078c4e97",
+        "agentDefinitionId": "tf-reviewer-4d9d66",
+        "leaving": false
+      },
+      {
+        "address": "/writer",
+        "agentRunId": "tf_writer_4d9d66_aa1b8ce30ff9460fab3aba1831245ec0",
+        "agentDefinitionId": "tf-writer-4d9d66",
+        "leaving": false
+      }
+    ],
+    "coordinator": "/lead",
+    "handoffs": []
+  },
+  "okBefore": 1,
+  "conversation": [
+    "agent_run_input:e2e:e2e-195a2224-ad6c-4c87-b057-aa0cbe926e1d",
+    "Reply OK.",
+    "message",
+    "assistant",
+    "0d5e2733-a8d2-46d5-ae1a-776a2d83577a",
+    "OK"
+  ],
+  "stillLeavingWhileHeld": true,
+  "interruptErrors": [],
+  "interruptAck": {
+    "command_type": "INTERRUPT_GENERATION",
+    "command_id": "a1488ee0-4644-4798-8d22-6c420f46ee78",
+    "state": "accepted",
+    "agent_run_id": "tf_writer_4d9d66_aa1b8ce30ff9460fab3aba1831245ec0"
+  },
+  "released": true,
+  "writerFramesAfterInterrupt": [
+    "TURN_INTERRUPTED {\"turn_id\":\"922d6eab-3616-4046-b64a-83d217d69df3\",\"reason\":null,\"change_sequence\":351,\"agent_run_id\":\"tf_writer_4d9d66_aa1b8ce30ff9460fab3aba1831245ec0\"}",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"offline\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_sequence\":352,\"agent_run_id\":\"tf_writer_4d9d6",
+    "AGENT_INPUT_STATE {\"run_instance_id\":\"d018abae-e8f7-45fa-8fb9-a85e4e301b25\",\"revision\":9,\"entries\":[],\"recoverableBlock\":null,\"change_sequence\":353,\"agent_run_id\":\"tf_writer_4d9d66_aa1b8ce30ff9460fab3aba1831245ec0\"}",
+    "RUN_TREE_CHANGED {\"added\":[],\"removed\":[\"team_member:tf_team_4d9d66_b610bbb258ce4459b0f87731afac619a:tf_writer_4d9d66_aa1b8ce30ff9460fab3aba1831245ec0\"],\"updated\":[],\"change_sequence\":354}",
+    "AGENT_COMMAND_ACK {\"command_type\":\"INTERRUPT_GENERATION\",\"command_id\":\"a1488ee0-4644-4798-8d22-6c420f46ee78\",\"state\":\"accepted\",\"agent_run_id\":\"tf_writer_4d9d66_aa1b8ce30ff9460fab3aba1831245ec0\"}"
+  ],
+  "snapshots": [
+    {
+      "coordinator": "/lead",
+      "members": [
+        {
+          "address": "/lead",
+          "agentRunId": "tf_lead_4d9d66_16bb65ab0fa342c0b67e347e8d932605",
+          "leaving": false
+        },
+        {
+          "address": "/writer",
+          "agentRunId": "tf_writer_4d9d66_aa1b8ce30ff9460fab3aba1831245ec0",
+          "leaving": true
+        }
+      ]
+    },
+    {
+      "coordinator": "/lead",
+      "members": [
+        {
+          "address": "/lead",
+          "agentRunId": "tf_lead_4d9d66_16bb65ab0fa342c0b67e347e8d932605",
+          "leaving": false
+        }
+      ]
+    }
+  ]
+}

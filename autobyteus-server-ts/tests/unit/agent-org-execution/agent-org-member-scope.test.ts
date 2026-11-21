@@ -31,7 +31,7 @@ const buildCallbacks = async () => {
   let callbacks: FlatTeamExecutionCallbacks | undefined;
   const materialize = vi.fn(async (input: Parameters<FlatTeamExecutionFactory["beginMaterialization"]>[0]) => {
     callbacks = input.callbacks;
-    return { teamRun: { teamRunId: input.teamNode.teamRunId }, commitAfterDurability() { }, abort: async () => { } };
+    return { teamRun: { teamRunId: input.membership.teamNode.teamRunId }, commitAfterDurability() { }, abort: async () => { } };
   });
   const instructions: Record<string, string> = {
     [tree.rootOrg.orgDefinitionId]: "Org rules.",
@@ -57,24 +57,24 @@ describe("AgentOrg member collaboration scope (CR-001)", () => {
   it("a mounted Team member keeps its cross-placement Org handoffs and its Team instruction (AC-012)", async () => {
     const { contextOf } = await buildCallbacks();
     const lead = await contextOf("/target/lead", "configured-lead", { address: "/target", teamDefinitionId: "definition-configured-team", handoffs: orgHandoffs });
-    expect(lead.collaboration.outgoingHandoffs).toEqual([orgHandoffs[1]]);
+    expect(lead.collaboration.outgoingHandoffs()).toEqual([orgHandoffs[1]]);
     expect(lead.authoredEnclosingScopeInstruction).toBe("Mounted team rules.");
   });
 
   it("a configured direct Agent keeps the Org handoffs and instruction", async () => {
     const { contextOf } = await buildCallbacks();
     const director = await contextOf("/director", "director");
-    expect(director.collaboration.outgoingHandoffs).toEqual([orgHandoffs[0]]);
+    expect(director.collaboration.outgoingHandoffs()).toEqual([orgHandoffs[0]]);
     expect(director.authoredEnclosingScopeInstruction).toBe("Org rules.");
   });
 
   it("a catalog Team copy's member gets the copy's own handoffs and Team instruction; a catalog Agent copy gets none", async () => {
     const { contextOf } = await buildCallbacks();
     const designer = await contextOf("/product_team/designer", "copy-designer", { address: "/product_team", teamDefinitionId: "product-team", handoffs: copyHandoffs });
-    expect(designer.collaboration.outgoingHandoffs).toEqual(copyHandoffs);
+    expect(designer.collaboration.outgoingHandoffs()).toEqual(copyHandoffs);
     expect(designer.authoredEnclosingScopeInstruction).toBe("Ship the product UI.");
     const reviewer = await contextOf("/code_reviewer", "reviewer-copy");
-    expect(reviewer.collaboration.outgoingHandoffs).toEqual([]);
+    expect(reviewer.collaboration.outgoingHandoffs()).toEqual([]);
     expect(reviewer.authoredEnclosingScopeInstruction).toBeNull();
   });
 });

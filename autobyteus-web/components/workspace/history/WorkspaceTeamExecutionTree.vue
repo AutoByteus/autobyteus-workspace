@@ -118,7 +118,7 @@ const treeRows = computed<VisibleTeamExecutionRow[]>(() => {
     const own = display.tree.kind === 'team_member' && display.tree.parentKey === rootKey && display.tree.openTarget
       ? ownRowsByAgentRunId.value.get(display.tree.openTarget.agentRunId) : undefined;
     const row: RunHistoryTeamExecutionRow = own
-      ? { ...own, rowKey: display.tree.key, depth: display.row.depth, hasChildren: display.row.hasChildren }
+      ? { ...own, rowKey: display.tree.key, depth: display.row.depth, hasChildren: display.row.hasChildren, ...(display.tree.leaving ? { leaving: true } : {}) }
       : display.row;
     return { row, hasChildren: display.row.hasChildren, expanded: isTeamRow(display.tree) === props.isRowExpanded(display.tree.key),
       teamStatus: own ? null : display.teamStatus, continuingAncestorDepths: display.continuingAncestorDepths, hasFollowingSibling: display.hasFollowingSibling };

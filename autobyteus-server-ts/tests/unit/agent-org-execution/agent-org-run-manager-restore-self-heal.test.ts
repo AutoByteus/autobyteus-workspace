@@ -41,7 +41,7 @@ const stuckCapableRun = (orgRunId: string, onTerminated?: () => void, terminateR
     rootIdentity: createAgentOrgRootExecutionIdentity(orgRunId),
     isActive: () => active,
     stick: () => { active = false; },
-    hasAgentExecution: vi.fn(() => false), deliverExactAgentMessage: vi.fn(),
+    hasAgentExecution: vi.fn(() => false), ownsAgentRun: vi.fn(() => false), deliverExactAgentMessage: vi.fn(),
     terminate: vi.fn(async () => {
       active = false;
       const result = terminateResults.shift() ?? { accepted: true };

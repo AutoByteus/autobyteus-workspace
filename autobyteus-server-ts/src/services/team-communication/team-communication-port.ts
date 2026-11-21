@@ -16,6 +16,7 @@ export const createTeamCommunicationPort = (input: Readonly<{
   rootTeamRunId: string;
   initial: TeamCommunicationMessagesSnapshot;
   isCurrentAgent: RootCommunicationPort["isCurrentAgent"];
+  maySend: RootCommunicationPort["maySend"];
   /** The log an endpoint's messages belong to (its memory placement, D-4). */
   messageLogOwnerOf(agentRunId: string): MessageLogOwner;
   assertDeliveryAllowed: RootCommunicationPort["assertDeliveryAllowed"];
@@ -38,6 +39,7 @@ export const createTeamCommunicationPort = (input: Readonly<{
     // terminate). Not the root's broader `isAdmitting()`, which would change the code returned at those edges.
     isOpen: () => true,
     isCurrentAgent: (identity) => input.isCurrentAgent(identity),
+    maySend: (identity) => input.maySend(identity),
     assertDeliveryAllowed: (sender, receiver) => input.assertDeliveryAllowed(sender, receiver),
     buildRecipientInput: ({ delivery, message }) => buildInterAgentDeliveryInputMessage({
       rootTeamRunId: input.rootTeamRunId,

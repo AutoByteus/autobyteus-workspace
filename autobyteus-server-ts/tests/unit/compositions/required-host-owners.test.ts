@@ -21,7 +21,7 @@ describe("required host owners", () => {
       workspaceManager: present, agentProviderFactoryBuilder: present, agentToolMcpSessionAuthority: present,
       integrationRunAccess: null, providerRelayAccess: null, runPasses: null,
       modelSelectionValidator: { validate: () => undefined, listOptions: () => undefined }, taskRecords: present, delegationIndex: present, viewStreams: present,
-      episodicCatalog: present,
+      episodicCatalog: present, definitionChanges: present, teamChangeNotices: present,
       remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES, peerDiscovery: OFF_DISCOVERY,
       receivedFiles: { sweep: async () => undefined },
     };

@@ -72,7 +72,6 @@
   "tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts": 1,
   "tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts": 8,
   "tests/integration/agent-team-execution/configured-scope-readiness.test.ts": 4,
-  "tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts": 1,
   "tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts": 4,
   "tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts": 2,
   "tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts": 1,

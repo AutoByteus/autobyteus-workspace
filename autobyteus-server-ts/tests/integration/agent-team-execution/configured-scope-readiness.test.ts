@@ -1,4 +1,5 @@
 import { testViewStreams } from "../../helpers/view-streams.js";
+import { TeamChangeNoticeSource } from "../../../src/agent-team-execution/membership/team-change-notice-source.js";
 import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { mkdtempSync, rmSync, readFileSync } from 'node:fs';
@@ -104,7 +105,7 @@ const team = async (f: ReturnType<typeof fixture>, mode: 'fresh' | 'restore') =>
   f.useTeamTree();
   const config = testTeamRunConfig({ rootTeamRunId: 'team-lazy', coordinatorAddress: '/lead', children:
     ['lead', 'unused'].map(id => testAgentNode(`/${id}`, { agentRunId: id, runtimeKind: RuntimeKind.CODEX_APP_SERVER })) });
-  return materializeTeamRoot({ remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES, memoryLocator: new AgentRunMemoryLocator({ memoryDir: f.dir }), delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), config, tree: buildInitialTeamRunExecutionTree({ config, teamDefinitionName: 'Lazy Team', createdAt: '2026-09-13T00:00:00.000Z' }),
+  return materializeTeamRoot({ changeNotices: new TeamChangeNoticeSource(), remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES, memoryLocator: new AgentRunMemoryLocator({ memoryDir: f.dir }), delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), config, tree: buildInitialTeamRunExecutionTree({ config, teamDefinitionName: 'Lazy Team', createdAt: '2026-09-13T00:00:00.000Z' }),
     messages: { schemaVersion: 1, rootTeamRunId: 'team-lazy', messages: [] },
     mode, persistInitialPackage: true, teamMemoryDir: f.dir, factory: f.factory,
     memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never, NOT_DELEGATED), executionTreeStore: new TeamRunExecutionTreeStore(),

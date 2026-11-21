@@ -1,0 +1,23 @@
+[
+  {
+    "signal": "SIGTERM",
+    "code": 0,
+    "exitSignal": null,
+    "forced": false,
+    "ms": 34
+  },
+  {
+    "signal": "SIGTERM",
+    "code": 0,
+    "exitSignal": null,
+    "forced": false,
+    "ms": 196
+  },
+  {
+    "signal": "SIGTERM",
+    "code": 0,
+    "exitSignal": null,
+    "forced": false,
+    "ms": 74
+  }
+]

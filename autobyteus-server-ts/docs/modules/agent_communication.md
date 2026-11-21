@@ -108,9 +108,12 @@ flattened into one condition and canonical destination per entry:
 
 An Agent with no outgoing edges succeeds with `handoffs: []`. A call without an
 active Team collaboration context is rejected with
-`COLLABORATION_CONTEXT_REQUIRED`. Handoff rules are launch-time guidance; reading
-them does not authorize a message or task, and the normal target resolver and
-task eligibility policy still apply.
+`COLLABORATION_CONTEXT_REQUIRED`. The rules are read live at each call: in a Team
+run that follows its definition they are the definition's current rules (see
+[Agent Team Execution](./agent_team_execution.md#membership-follows-the-definition));
+a member that left its team has none. Handoff rules are guidance; reading them
+does not authorize a message or task, and the normal target resolver and task
+eligibility policy still apply.
 
 ## Result Shapes
 
@@ -234,9 +237,11 @@ address (CM-13, autobyteus-492): any running agent is reached by its run ID, on 
 paired peer (below).
 
 **Same-root path.** When the sender has a member collaboration context and the
-target AgentRun is one of the sender's own run's agents (`hasAgentExecution`),
-delivery goes through that root's `deliverExactAgentMessage` as ordinary root
-communication. A delegated run is never an agent of the run that delegated to it
+target AgentRun is one the sender's own run names (`ownsAgentRun`: its own agents,
+and in a Team run also a member that left the team, which the root then refuses
+with the former-member text), delivery goes through that root's
+`deliverExactAgentMessage` as ordinary root communication. `hasAgentExecution`
+(its own agents only) is what restart-resume placement reads. A delegated run is never an agent of the run that delegated to it
 (autobyteus-461): it is reached by the next path.
 
 **Cross-run path** (`CrossRunMessageDelivery`, design DS-2, DS-003). A target in another
@@ -428,7 +433,13 @@ this order:
 Any other address is `COLLABORATION_TARGET_NOT_FOUND` ("No agent or agent team
 you can talk with has the address <address>. To answer a message or report your
 task result, use send_message_to with target_agent_run_id set to the sender run
-id. To have a task done by a new agent, use delegate_task."). Nothing is allocated or written, so a message
+id. To have a task done by a new agent, use delegate_task."). An address (or run
+ID) of a member that left its team (a former member, not taken by a current
+member) is refused with the same code and its own text instead: "<name>
+(<address>) is no longer a member of your team: it was removed from the team
+definition. Call get_handoff_rules for your current handoff rules." A member
+that left while mid-turn may still send until it stops; it receives nothing.
+Nothing is allocated or written, so a message
 can never start an agent; the first message to an existing but Offline agent
 starts it (`fresh` on first activation, `restore` after the run is reopened).
 

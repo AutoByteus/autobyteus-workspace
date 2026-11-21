@@ -7,7 +7,8 @@ import type { CollaborationHandoff } from "../domain/collaboration-handoff.js";
 import { rootExecutionIdentityKey, type CollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../execution/domain/root-execution-identity.js";
 import { runIdentityOf, runReferenceOf } from "../execution/task/task-execution-resource-port.js";
 import type { ConfiguredAgentExecutionNode, ConfiguredTeamExecutionNode } from "../../run-history/domain/run-execution-tree-shared-records.js";
-import type { DelegatedChild, DelegationIndex, RunPartsReader } from "./delegation-index.js";
+import type { DelegatedChild, DelegationIndex } from "./delegation-index.js";
+import type { RunPartsReader } from "./run-parts.js";
 
 /** An org run's configured placements, from its own file: its definition, its direct agents' addresses, its handoffs. */
 export type OrgPlacements = Readonly<{ orgDefinitionId: string; agentAddresses: readonly string[]; handoffs: readonly CollaborationHandoff[] }>;
@@ -206,7 +207,7 @@ export class CollaborationTree {
   async delegationPlacementAt(address: AgentTeamAddress): Promise<DelegationPlacement | null> {
     const reached = (await this.stepTwo())?.get(address);
     const found = reached?.rank === "configured" ? await this.files.configuredPlacementOf(reached.assigner, address) : null;
-    return found ? sourcedPlacement(address, configuredPlacementSource(found.node, found.handoffs)) : null;
+    return found ? sourcedPlacement(address, configuredPlacementSource(found.node, found.handoffs), "configured_placement") : null;
   }
 
   /**

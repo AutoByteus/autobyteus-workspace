@@ -30,6 +30,7 @@ export const communicationPortDouble = (root: RootCommunicationPort["root"], ove
   },
   isOpen: () => true,
   isCurrentAgent: () => true,
+  maySend: () => true,
   assertDeliveryAllowed: () => undefined,
   buildRecipientInput: () => new AgentInputUserMessage("x"),
   reserveRecipientInput: vi.fn(async (agentRunId: string) => ({ reserved: true as const, reservation: reservationDouble(agentRunId) })),

@@ -163,6 +163,8 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     const runId = agentRunId.trim();
     return this.index.isRunAgent(runId) || this.remoteLinks.has(runId);
   }
+  /** Run-ID routing: the run's own agent never leaves it. */
+  ownsAgentRun(agentRunId: string): boolean { return this.hasAgentExecution(agentRunId); }
 
   /** The run's agent's real live state (the view's `isActive`). */
   isAgentLive(): boolean { return this.options.agentHandle.readiness === "live"; }

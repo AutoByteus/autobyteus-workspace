@@ -21,6 +21,7 @@ import {
   MODEL_ROUTER_REQUEST_SENDER_ID,
   RESTART_RESUME_NOTICE_SENDER_ID,
   SKILL_UPDATE_NOTICE_SENDER_ID,
+  TEAM_CHANGE_NOTICE_SENDER_ID,
   TOOL_LIST_UPDATE_NOTICE_SENDER_ID,
 } from "../../agent-execution/domain/system-task-notification-senders.js";
 import { readPlatformInputPreface } from "autobyteus-ts/agent/message/platform-input-preface-metadata.js";
@@ -34,6 +35,7 @@ const RECORDED_SYSTEM_NOTICE_SENDER_IDS: ReadonlySet<string> = new Set([
   MODEL_ROUTER_REQUEST_SENDER_ID,
   RESTART_RESUME_NOTICE_SENDER_ID,
   BACKGROUND_TASK_NOTICE_SENDER_ID,
+  TEAM_CHANGE_NOTICE_SENDER_ID,
 ]);
 
 type SegmentState = {

@@ -52,6 +52,7 @@ const buildHarness = (input: {
     receivedFilesFor: vi.fn(async () => { throw new Error("No files in this test."); }),
     assertDeliveryAllowed,
     isCurrentAgent: input.currentAgent ?? (() => true),
+    maySend: input.currentAgent ?? (() => true),
     messageLogOwnerOf: () => OWN_RUN_LOG,
     requireContainingTeamRun: vi.fn(async () => ({ reserveDirectAgentInput }) as unknown as TeamRun),
     commitMessageAppend: commit,

@@ -1,0 +1,15 @@
+  · seeded
+  · team view open
+  · rows after the change (no reload)
+  · reviewer selected
+  · Team tab
+TFU-01 Pass
+  · fresh load after the coordinator change
+TFU-02 Pass
+  · reviewer leaving
+TFU-03 Pass
+  · team stopped while the scout was leaving
+TFU-06 Pass
+TFU-05 Pass
+  · leaving coder opened
+TFU-04 Pass

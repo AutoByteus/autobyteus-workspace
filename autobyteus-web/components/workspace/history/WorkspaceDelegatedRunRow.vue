@@ -100,6 +100,12 @@
       <!-- No visible "Started by" line; the starter stays in the accessible label. -->
       <span class="min-w-0 flex-1" :class="{ 'font-semibold': row.memberKind === 'agent_team' }">
         <span class="block truncate">{{ row.displayName }}</span>
+        <span
+          v-if="row.leaving"
+          class="mt-0.5 inline-block rounded bg-amber-50 px-1 text-[0.6875rem] font-medium leading-4 text-amber-700"
+          data-test="workspace-member-leaving"
+          :title="t('workspace.history.hierarchy.leaving_title')"
+        >{{ t('workspace.history.hierarchy.leaving') }}</span>
         <TaskWorkerTaskSummary v-if="task && !remote" :task="task" :selected="isSelected" @locate="emit('locate-task', task)" />
         <span
           v-if="inspectionAttempt?.state === 'loading'"

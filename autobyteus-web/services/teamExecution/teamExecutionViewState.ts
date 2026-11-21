@@ -149,10 +149,7 @@ export const createTeamExecutionViewState = (
     nextTree: TeamRunExecutionTreeDto,
     nextLocations: ReadonlyMap<string, TeamAgentExecutionLocation>,
   ): readonly TeamAgentContextEntry[] => {
-    const unplacedContext = [...publication.value.contexts.keys()].find((agentRunId) => !nextLocations.has(agentRunId));
-    if (unplacedContext) {
-      throw new Error(`Agent context '${unplacedContext}' has no execution-tree location.`);
-    }
+    // A member no longer in the tree (it left the team, DS-007) loses its context with the tree that drops it.
     const planned: TeamAgentContextEntry[] = [];
     for (const location of nextLocations.values()) {
       if (!publication.value.contexts.has(location.agentRunId)) {
@@ -171,8 +168,11 @@ export const createTeamExecutionViewState = (
     }
     return Object.freeze(planned);
   };
-  const prepareContextAssociations = (planned: readonly TeamAgentContextEntry[]): ReadonlyMap<string, AgentContext> => {
-    const candidate = new Map(publication.value.contexts);
+  const prepareContextAssociations = (
+    planned: readonly TeamAgentContextEntry[],
+    placed: ReadonlyMap<string, TeamAgentExecutionLocation> | null = null,
+  ): ReadonlyMap<string, AgentContext> => {
+    const candidate = new Map([...publication.value.contexts].filter(([agentRunId]) => !placed || placed.has(agentRunId)));
     for (const entry of planned) associate(entry, candidate);
     return candidate;
   };
@@ -273,7 +273,7 @@ export const createTeamExecutionViewState = (
       const unchanged = sameBase && sameJsonValue(payload.execution_tree, publication.value.tree)
       publication.value = {
         tree: structuredClone(payload.execution_tree), locations: nextLocations,
-        contexts: prepareContextAssociations(planned), changeSequence: payload.base_change_sequence,
+        contexts: prepareContextAssociations(planned, nextLocations), changeSequence: payload.base_change_sequence,
       };
       validatedStatuses.forEach(({ context, status, backgroundTasksRunning, recoverableBlock }) => {
         context.state.currentStatus = status; context.state.recoverableBlock = recoverableBlock;

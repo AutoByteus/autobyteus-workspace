@@ -39,7 +39,7 @@ export class DelegatorCatalog {
     try {
       const catalog = await admission.catalogTaskSource(delegator, { address: input.address, senderRunId: parent.delegatorAgentRunId,
         work: input.work, workspaceRootPath: input.folder });
-      return catalog ? sourcedPlacement(input.address as AgentTeamAddress, catalog.source, catalog) as LocalDelegationPlacement : null;
+      return catalog ? sourcedPlacement(input.address as AgentTeamAddress, catalog.source, "team_definition", catalog) as LocalDelegationPlacement : null;
     } catch (cause) {
       if (cause instanceof CollaboratorAddError) {
         throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", `${cause.collaboratorName} can't be delegated to: ${cause.reason.replace(/\.$/, "")}.${cause.nextStep ? ` ${cause.nextStep}` : ""}`);

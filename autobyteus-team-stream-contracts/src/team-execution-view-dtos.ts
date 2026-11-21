@@ -37,6 +37,8 @@ export type ConfiguredAgentExecutionDto = Readonly<{
   agent_run_id: string;
   platform_agent_run_id: string | null;
   launch_configuration: AgentLaunchConfigurationDto;
+  /** A member removed from the team that is still finishing its turn: shown as leaving until it stops. */
+  leaving?: true;
 }>;
 
 const runtimeKindSchema = z.enum(["autobyteus", "claude_agent_sdk", "codex_app_server", "antigravity_cli", "grok_build", "deepseek_harness"]);
@@ -55,6 +57,7 @@ const configuredAgentSchema: z.ZodType<ConfiguredAgentExecutionDto> = z.object({
   agent_definition_id: nonEmptyStringSchema, role: z.string().nullable(), description: z.string().nullable(),
   agent_run_id: nonEmptyStringSchema, platform_agent_run_id: nullableNonEmptyStringSchema,
   launch_configuration: launchConfigurationSchema,
+  leaving: z.literal(true).optional(),
 }).strict();
 
 /** A Team run's own tree: its members. The runs it delegated are its tree's rows (`RUN_TREE_SNAPSHOT`, autobyteus-461 SR-084). */

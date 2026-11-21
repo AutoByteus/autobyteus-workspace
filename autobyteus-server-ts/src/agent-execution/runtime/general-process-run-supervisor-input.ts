@@ -20,6 +20,8 @@ import type { RuntimeSwitching } from "../domain/runtime-switch-memory-port.js";
 import type { AgentRunInputPreface } from "../domain/agent-run-input-preface.js";
 import type { AgentRunLifecycleObserver } from "../domain/agent-run-lifecycle-observer.js";
 import type { EpisodicCatalog } from "../../agent-episodic-catalog/services/episodic-catalog.js";
+import type { AgentDefinitionChangeSignal } from "../../agent-definition/services/agent-definition-change-signal.js";
+import type { TeamChangeNoticeSource } from "../../agent-team-execution/membership/team-change-notice-source.js";
 
 /** What the host composition gives the general process run supervisor: its definitions, owners and dispositions. */
 export type GeneralProcessRunSupervisorInput = Readonly<{
@@ -58,6 +60,10 @@ export type GeneralProcessRunSupervisorInput = Readonly<{
   viewStreams: RunViewStreams;
   /** The episodic catalogs of this node, told by the team and org services after a committed delete (autobyteus-493). */
   episodicCatalog: Pick<EpisodicCatalog, "runDeleted">;
+  /** Every definition change: the live Team runs follow their definitions (D-TRIGGER). */
+  definitionChanges: Pick<AgentDefinitionChangeSignal, "subscribe">;
+  /** The team members' notices of a membership change (also one of `platformInputNotices`' sources). */
+  teamChangeNotices: TeamChangeNoticeSource;
   /**
    * Platform notices that ride along with each run's next external input, told when runs are
    * published and released (the host composition owns and closes it). None by default.
@@ -101,6 +107,8 @@ export const requireGeneralProcessRunSupervisorInput = (
     || !input.delegationIndex
     || !input.viewStreams
     || !input.episodicCatalog
+    || !input.definitionChanges
+    || !input.teamChangeNotices
   ) {
     throw new Error("Complete GeneralProcessRunSupervisor input is required.");
   }

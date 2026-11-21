@@ -152,7 +152,7 @@ export const testMemberExecutionContext = (input: {
   rootTeamRunId?: string;
   agentRunId?: string;
   deliverInterAgentMessage?: (input: unknown) => Promise<{ accepted: boolean }>;
-  outgoingHandoffs?: MemberCollaborationContext["outgoingHandoffs"];
+  outgoingHandoffs?: ReturnType<MemberCollaborationContext["outgoingHandoffs"]>;
   teamInstruction?: string | null;
   taskCapability?: MemberTaskCapability;
   listAvailableAgents?: MemberCollaborationContext["listAvailableAgents"];
@@ -169,7 +169,7 @@ export const testMemberExecutionContext = (input: {
     }),
     authoredEnclosingScopeInstruction: input.teamInstruction ?? null,
     collaboration: new MemberCollaborationContext({
-      outgoingHandoffs: input.outgoingHandoffs,
+      outgoingHandoffs: () => input.outgoingHandoffs ?? [],
       deliverLogicalMessage: async (message) => input.deliverInterAgentMessage
         ? input.deliverInterAgentMessage(message)
         : { accepted: true },

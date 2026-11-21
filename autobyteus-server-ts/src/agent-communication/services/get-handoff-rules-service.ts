@@ -12,7 +12,8 @@ export class GetHandoffRulesService {
       "get_handoff_rules requires an active collaboration context.",
     );
     return Object.freeze({
-      handoffs: Object.freeze(collaboration.outgoingHandoffs.flatMap((handoff) =>
+      // The member's rules now: a team run's follow its definition (DS-005).
+      handoffs: Object.freeze(collaboration.outgoingHandoffs().flatMap((handoff) =>
         handoff.rules.map((when) => Object.freeze({ when, recipient_address: handoff.to as AgentTeamAddress })),
       )),
     });

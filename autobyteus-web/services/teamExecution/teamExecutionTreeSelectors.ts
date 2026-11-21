@@ -39,11 +39,17 @@ export const collectAgentExecutionLocations = (
   agentRunId: member.agent_run_id, memberAddress: member.address, containingTeamRunId: tree.root_team.team_run_id,
 })));
 
+/**
+ * The member at `address`: the current one when a member that is leaving still has the same address (another agent
+ * took its place in the definition); prefer run IDs wherever both can appear.
+ */
 export const findConfiguredAgentByAddress = (
   tree: TeamRunExecutionTreeDto,
   address: AgentTeamAddress,
-): ConfiguredAgentExecutionDto | null =>
-  collectConfiguredAgents(tree).find((agent) => agent.address === address) ?? null;
+): ConfiguredAgentExecutionDto | null => {
+  const atAddress = collectConfiguredAgents(tree).filter((agent) => agent.address === address);
+  return atAddress.find((agent) => !agent.leaving) ?? atAddress[0] ?? null;
+};
 
 /** The Team's own rows: the Team, then its members (the runs it delegated are its tree's rows, SR-084). */
 export const projectNavigationRows = (input: {
@@ -67,7 +73,8 @@ export const projectNavigationRows = (input: {
         displayName: label, accessibleName: label, depth: 1, parentKey: rootKey, agentRunId: member.agent_run_id,
         teamRunId: null, currentStatus: status(member.agent_run_id),
         backgroundTasksRunning: input.contexts.get(member.agent_run_id)?.state.backgroundTasksRunning ?? 0, focusable: true, expandable: false,
-        coordinator: member.address === root.coordinator_address,
+        // A member leaving the team is never its coordinator, even at the coordinator's address (DEC-006).
+        coordinator: member.address === root.coordinator_address && member.leaving !== true,
       });
     }),
   ]);

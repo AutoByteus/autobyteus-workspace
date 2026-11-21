@@ -1,6 +1,6 @@
 import type { EpisodicCatalog } from "../agent-episodic-catalog/services/episodic-catalog.js";
 import type { RemoteFiles } from "../agent-collaboration/execution/remote/transferred-files.js";
-import type { RootExecutionIdentity } from "../agent-collaboration/execution/domain/root-execution-identity.js";
+import { createTeamRootExecutionIdentity, type RootExecutionIdentity } from "../agent-collaboration/execution/domain/root-execution-identity.js";
 import { DelegatorCatalog } from "../agent-collaboration/execution/task/delegator-catalog.js";
 import { RunOwnDelegations } from "../agent-collaboration/execution/task/run-own-delegation.js";
 import { getCollaboratorAdmission } from "../agent-collaboration/collaborators/collaborator-definition-catalog.js";
@@ -262,7 +262,9 @@ export const composeCollaboration = async (input: Readonly<{
 
     // 7. The views' owners (SR-061 … SR-063, SR-083, SR-084): each run's tree and its change notice, the rows' records,
     // each run's own statuses by run ID.
-    const projection = createChildRowProjection({ memoryDir, tree, channel: input.remoteChannel, peerSummaryOf: (runId) => runStatus.peerSummaryOf(runId) });
+    const ownFiles = new RunOwnAgentsReader(memoryDir);
+    const projection = createChildRowProjection({ memoryDir, tree, ownTreeOf: (run) => ownFiles.ownTreeOf(run), channel: input.remoteChannel,
+      peerSummaryOf: (runId) => runStatus.peerSummaryOf(runId) });
     // A peer run, reached by its own identity (SR-066): its handle from the tree.
     const peerRunOf = createPeerRunOf(tree, input.remoteChannel);
     // Each run's statuses by run ID, from the run itself, and its rows' change notice (SR-082, SR-083); a peer run's
@@ -274,8 +276,9 @@ export const composeCollaboration = async (input: Readonly<{
       summaryChanged: (run) => feed.rowChanged(run) });
     const feed = new ChildRowsFeed({ streams: taskSide.viewStreams, tree, rowsChanged: (run) => runStatus.treeChanged(run) });
     releases.push(feed.follow(tree));
-    const ownFiles = new RunOwnAgentsReader(memoryDir);
-    const runTree = new RunTreeView({ tree, ownTreeOf: (run) => ownFiles.ownTreeOf(run), projection });
+    // SR-010: a member leaving shows only while its team run is live (registered).
+    const runTree = new RunTreeView({ tree, ownTreeOf: (run) => ownFiles.ownTreeOf(run), projection,
+      isLiveTeamRun: (teamRunId) => input.activeRoots.resolve(createTeamRootExecutionIdentity(teamRunId)) !== null });
 
     // 8. Their consumers. Older singletons (their getters are FU-011) return the instance created here.
     releases.push(setProcessTaskDelegationToolService(new TaskDelegationToolService({ delegation,

@@ -46,15 +46,25 @@ export type IndexedTeamExecution = Readonly<{
   source: RootConfiguredTeamExecutionNode;
 }>;
 
-/** Immutable derived lookup/ancestry view over one validated execution tree. */
+/**
+ * Immutable derived lookup/ancestry view over one validated execution tree. Its current members answer every lookup;
+ * its former members (removed from the definition) answer only by name: `formerMemberAt`, `formerMemberByRunId`, and
+ * `getAgentForOwnCommand` for one still finishing its turn (`isLeaving`, the live run's membership).
+ */
 export class TeamExecutionIndex implements MessageRecipientIndexPort, MentionViewerIndexPort {
   private readonly agentsByRunId = new Map<string, IndexedAgentExecution>();
   private readonly teamsByRunId = new Map<string, IndexedTeamExecution>();
   private readonly configuredByAddress = new Map<AgentTeamAddress, ConfiguredAgentExecutionNode>();
   private readonly directAgentRunIdsByTeamRunId = new Map<string, string[]>();
   private readonly directTeamRunIdsByTeamRunId = new Map<string, string[]>();
+  private readonly formerByRunId = new Map<string, IndexedAgentExecution>();
+  /** The last former member at each address. */
+  private readonly formerByAddress = new Map<AgentTeamAddress, IndexedAgentExecution>();
 
-  constructor(readonly tree: TeamRunExecutionTreeSnapshot) {
+  constructor(
+    readonly tree: TeamRunExecutionTreeSnapshot,
+    private readonly isLeaving: (agentRunId: string) => boolean = () => false,
+  ) {
     const rootAddress = createAgentTeamAddress([]);
     this.addTeam({
       teamRunId: tree.rootTeam.teamRunId,
@@ -64,6 +74,25 @@ export class TeamExecutionIndex implements MessageRecipientIndexPort, MentionVie
       source: tree.rootTeam,
     });
     this.visitConfiguredRoot(tree.rootTeam);
+    for (const member of tree.rootTeam.formerMembers ?? []) {
+      const former = Object.freeze({ agentRunId: member.agentRunId, address: member.address, containingTeamRunId: tree.rootTeam.teamRunId,
+        executionKind: "configured" as const, source: member });
+      this.formerByRunId.set(member.agentRunId, former);
+      this.formerByAddress.set(member.address, former);
+    }
+  }
+
+  /** A current member, or a leaving one (its own approvals and interrupt only, while it finishes its turn). */
+  getAgentForOwnCommand(agentRunId: string): IndexedAgentExecution | null {
+    return this.getAgent(agentRunId) ?? (this.isLeaving(agentRunId) ? this.formerByRunId.get(agentRunId) ?? null : null);
+  }
+
+  /** A member removed from the team (leaving or stopped), by its run ID. */
+  formerMemberByRunId(agentRunId: string): IndexedAgentExecution | null { return this.formerByRunId.get(agentRunId) ?? null; }
+
+  /** The member that was at `address` and was removed from the team; null when a current member has the address. */
+  formerMemberAt(address: AgentTeamAddress | string): IndexedAgentExecution | null {
+    return this.configuredByAddress.has(address as AgentTeamAddress) ? null : this.formerByAddress.get(address as AgentTeamAddress) ?? null;
   }
 
   get rootTeamRunId(): string {
@@ -154,6 +183,11 @@ export class TeamExecutionIndex implements MessageRecipientIndexPort, MentionVie
     return Object.freeze([...this.agentsByRunId.values()]);
   }
 
+  /** The members removed from the team (history: their memory and messages stay this run's). */
+  listFormerAgentExecutions(): readonly IndexedAgentExecution[] {
+    return Object.freeze([...this.formerByRunId.values()]);
+  }
+
   listTeamExecutions(): readonly IndexedTeamExecution[] {
     return Object.freeze([...this.teamsByRunId.values()]);
   }
@@ -179,12 +213,17 @@ export class TeamExecutionIndex implements MessageRecipientIndexPort, MentionVie
   }
 
   listContainingTeamAncestorsForAgent(agentRunId: string): readonly IndexedTeamExecution[] {
-    return this.listTeamAncestorsDeepestFirst(this.requireAgent(agentRunId).containingTeamRunId);
+    return this.listTeamAncestorsDeepestFirst(this.requireRunAgent(agentRunId).containingTeamRunId);
   }
 
-  /** Where the agent's memory directory is (contract L1): inside its team run's folder. */
+  /** Where the agent's memory directory is (contract L1): inside its team run's folder (a former member's too). */
   getMemoryPlacementForAgent(agentRunId: string): AgentRunMemoryPlacement {
-    return runPartPlacement(this.getTeamRunPhysicalScope(this.requireAgent(agentRunId).containingTeamRunId));
+    return runPartPlacement(this.getTeamRunPhysicalScope(this.requireRunAgent(agentRunId).containingTeamRunId));
+  }
+
+  /** A current or former member: both keep their memory in this run. */
+  private requireRunAgent(agentRunId: string): IndexedAgentExecution {
+    return this.formerByRunId.get(agentRunId) ?? this.requireAgent(agentRunId);
   }
 
   getTeamRunPhysicalScope(teamRunId: string): RootExecutionPhysicalScope {

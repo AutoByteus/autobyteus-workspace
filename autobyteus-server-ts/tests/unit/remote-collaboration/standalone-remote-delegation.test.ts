@@ -1,5 +1,6 @@
 import { createPeerRunOf, executePeerCommand } from "../../../src/agent-collaboration/execution/remote/peer-runs.js";
 import { createChildRowProjection } from "../../../src/agent-collaboration/delegation/run-tree-records.js";
+import { RunOwnAgentsReader } from "../../../src/run-history/store/run-own-agents-reader.js";
 import { DelegatedRunStarter } from "../../../src/agent-collaboration/execution/delegation/delegated-run-starter.js";
 import { peerCallerOf } from "../../helpers/peer-caller.js";
 import { inProcessPeerFiles, peerFilesRequest } from "../../helpers/in-process-peer-files.js";
@@ -297,7 +298,8 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     await expect(fs.access(path.join(path.join(a.memoryDir, "agents", DELEGATOR, "collaboration"), "collaboration_tree.json"))).rejects.toThrow();
     // autobyteus-278, SR-084: A's run tree lists it as a peer row under the delegator, never among the local copies.
     const runTree = new RunTreeView({ tree: a.taskSide.tree, ownTreeOf: async () => ({ kind: "agent", agentRunId: DELEGATOR, address: "/assistant" }),
-      projection: createChildRowProjection({ memoryDir: a.memoryDir, tree: a.taskSide.tree, channel: () => null, peerSummaryOf: () => null }) });
+      projection: createChildRowProjection({ memoryDir: a.memoryDir, tree: a.taskSide.tree, ownTreeOf: (run) => new RunOwnAgentsReader(a.memoryDir).ownTreeOf(run),
+        channel: () => null, peerSummaryOf: () => null }), isLiveTeamRun: () => true });
     const rows = await runTree.rowsOf(createAgentRootExecutionIdentity(DELEGATOR));
     // Its launches are read from B while it is held (SR-038, G-B2); nothing about them is stored on A.
     expect(rows.map((row) => [row.kind, row.key, row.parentKey, row.peer?.nodeId ?? null])).toEqual([

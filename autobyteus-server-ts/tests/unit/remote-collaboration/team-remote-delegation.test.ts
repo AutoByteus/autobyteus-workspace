@@ -1,4 +1,5 @@
 import { testViewStreams } from "../../helpers/view-streams.js";
+import { teamMembershipTestCollaborators } from "../../helpers/team-membership-test-collaborators.js";
 import { DelegatedRunStarter } from "../../../src/agent-collaboration/execution/delegation/delegated-run-starter.js";
 import { peerCallerOf } from "../../helpers/peer-caller.js";
 import fs from "node:fs/promises";
@@ -215,7 +216,7 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
   let channelB: RemoteRunChannel | null = null;
   // autobyteus-587: B's file transfer; its members' workspace is B's temp workspace.
   const peerFiles = inProcessPeerFiles({ dataDir: dir, memoryDir: dir, channel: () => channelB, workspaceOf: () => path.join(dir, "temp_workspace") });
-  const teamManager = new AgentTeamRunManager({ remoteChannel: () => channelB, remoteFiles: peerFiles.remoteFiles,
+  const teamManager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: () => channelB, remoteFiles: peerFiles.remoteFiles,
     memoryDir: dir,
     flatTeamExecutionFactory: new FlatTeamExecutionFactory({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY, agentRunManager: runtimes as never,
       activityInspector: { inspect: ({ agentRunId }: { agentRunId: string }) => ({ kind: conversations.has(agentRunId) ? "present" : "none" }) } as never,

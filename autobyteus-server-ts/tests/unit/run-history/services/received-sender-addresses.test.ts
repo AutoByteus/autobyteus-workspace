@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { DelegationIndex, type RunAgent } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
+import { DelegationIndex } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
+import type { RunAgent } from "../../../../src/agent-collaboration/delegation/run-parts.js";
 import { createCollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { receivedSenderAddresses } from "../../../../src/run-history/services/received-sender-addresses.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";

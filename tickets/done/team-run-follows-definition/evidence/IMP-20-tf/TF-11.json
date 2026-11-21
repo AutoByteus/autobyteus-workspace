@@ -1,0 +1,36 @@
+{
+  "runId": "tf_reviewer_d77e26_a1c6a3ca67b14aad8a104f1553ea9fa9",
+  "rowsLeaving": [
+    {
+      "key": "team_member:tf_team_d77e26_af39311d781347bea567b691817664ac:tf_reviewer_d77e26_a1c6a3ca67b14aad8a104f1553ea9fa9",
+      "kind": "team_member",
+      "address": "/checker",
+      "agentRunId": "tf_reviewer_d77e26_a1c6a3ca67b14aad8a104f1553ea9fa9"
+    }
+  ],
+  "rowsAfterStop": [],
+  "markerAfterStop": [
+    "tf_reviewer_d77e26_a1c6a3ca67b14aad8a104f1553ea9fa9"
+  ],
+  "markerAfterReopen": [],
+  "formerAfterReopen": [
+    "/reviewer",
+    "/writer",
+    "/scout",
+    "/editor",
+    "/scout",
+    "/checker"
+  ],
+  "rowsAfterReopen": [
+    {
+      "kind": "team",
+      "address": null,
+      "leaving": null
+    },
+    {
+      "kind": "team_member",
+      "address": "/lead",
+      "leaving": null
+    }
+  ]
+}
