@@ -1,0 +1,225 @@
+# TF run 4 (superseded; kept for the test-fix history)
+# Command: same
+# Commit: 4773d95936 (+ uncommitted API/E2E test files)
+# Environment: Linux 6.12 aarch64 container (root), Node v22.23.3; built server dist from this worktree
+# Date: 2026-11-21T10:59:47Z
+
+
+ RUN  v4.1.12 /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:9256) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-01 (AC-001, AC-006): an added member and rule reach the running team; the lead is told, the new member starts on its first message 2295ms
+ × tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-02 (AC-002, AC-010, AC-006): a removed idle member is refused by address and run ID, leaves the view, keeps its history 1484ms
+   → by run ID: the former-member refusal: expected '{"accepted":false,"code":"TARGET_AGEN…' to contain 'writer (/writer) is no longer a membe…'
+   → expected '{"accepted":false,"code":"TARGET_AGEN…' to contain 'COLLABORATION_TARGET_NOT_FOUND'
+ × tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-03 (AC-003, DEC-002): a member removed mid-turn is leaving, refused at once, its send is delivered, then it is released 8705ms
+   → by run ID while leaving: the former-member refusal: expected '{"accepted":false,"code":"COLLABORATI…' to contain 'reviewer (/reviewer) is no longer a m…'
+ ✓ tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-04 (DEC-007, AC-003): a removed member added back keeps its run and conversation; its interrupt works while leaving 6975ms
+ ✓ tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-05 (DEC-006): another agent at a busy member's address: the old one finishes, the new one is reached at the address 9807ms
+ ✓ tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-06 (AC-008): a new coordinator is the run's coordinator in the stored tree and the open view 2150ms
+ ✓ tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-07 (AC-007): an unusable Team definition leaves the run unchanged; the problem is reported 43156ms
+ × tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-08 (AC-004): a change made while the run is stopped is applied when it is reopened, also after a server restart 136530ms
+   → Timed out waiting for server #2: server ready
+ × tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-09 (AC-005): a Team copy started by an agent's delegate_task follows the same edits 146ms
+   → fetch failed
+ × tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-10 (AC-001 by the app's editor): a user's own Team saved through updateAgentTeamDefinition: its run follows 21ms
+   → fetch failed
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-02 (AC-002, AC-010, AC-006): a removed idle member is refused by address and run ID, leaves the view, keeps its history
+AssertionError: by run ID: the former-member refusal: expected '{"accepted":false,"code":"TARGET_AGEN…' to contain 'writer (/writer) is no longer a membe…'
+
+Expected: "writer (/writer) is no longer a member of your team: it was removed from the team definition. Call get_handoff_rules for your current handoff rules."
+Received: "{"accepted":false,"code":"TARGET_AGENT_RUN_NOT_ACTIVE","message":"No running agent has the run id 'tf_writer_2c68fe_46c116e50abb40b3b1d947aae01334a6', so the message was not sent. A stopped agent is not woken. Use an exact run id you were given: a sender run id (from a message or your new task), a run id delegate_task returned to you, or one list_running_agents lists. For an agent on another node, also pass node.","isError":true}"
+
+ ❯ tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts:297:82
+    295|     // By run ID (design § Member States: the same refusal). Soft, so …
+    296|     expect.soft(byRunId.isError, JSON.stringify(byRunId)).toBe(true);
+    297|     expect.soft(JSON.stringify(byRunId), "by run ID: the former-member…
+       |                                                                                  ^
+    298|     expect.soft(JSON.stringify(byRunId)).toContain("COLLABORATION_TARG…
+    299|     // The lead's first input after the change was the send above: its…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-02 (AC-002, AC-010, AC-006): a removed idle member is refused by address and run ID, leaves the view, keeps its history
+AssertionError: expected '{"accepted":false,"code":"TARGET_AGEN…' to contain 'COLLABORATION_TARGET_NOT_FOUND'
+
+Expected: "COLLABORATION_TARGET_NOT_FOUND"
+Received: "{"accepted":false,"code":"TARGET_AGENT_RUN_NOT_ACTIVE","message":"No running agent has the run id 'tf_writer_2c68fe_46c116e50abb40b3b1d947aae01334a6', so the message was not sent. A stopped agent is not woken. Use an exact run id you were given: a sender run id (from a message or your new task), a run id delegate_task returned to you, or one list_running_agents lists. For an agent on another node, also pass node.","isError":true}"
+
+ ❯ tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts:298:42
+    296|     expect.soft(byRunId.isError, JSON.stringify(byRunId)).toBe(true);
+    297|     expect.soft(JSON.stringify(byRunId), "by run ID: the former-member…
+    298|     expect.soft(JSON.stringify(byRunId)).toContain("COLLABORATION_TARG…
+       |                                          ^
+    299|     // The lead's first input after the change was the send above: its…
+    300|     const leadConversation = stringsOf(await view.conversationOf(membe…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-03 (AC-003, DEC-002): a member removed mid-turn is leaving, refused at once, its send is delivered, then it is released
+AssertionError: by run ID while leaving: the former-member refusal: expected '{"accepted":false,"code":"COLLABORATI…' to contain 'reviewer (/reviewer) is no longer a m…'
+
+Expected: "reviewer (/reviewer) is no longer a member of your team: it was removed from the team definition. Call get_handoff_rules for your current handoff rules."
+Received: "{"accepted":false,"code":"COLLABORATION_ROOT_NOT_ACTIVE","message":"This work is stopping or has stopped, so the message or delegation was not sent.","isError":true}"
+
+ ❯ tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts:333:103
+    331|     const stillLeaving = view.snapshots().at(-1)!.members.some((entry)…
+    332|     expect(JSON.stringify(refused)).toContain(refusal("reviewer", "/re…
+    333|     expect.soft(JSON.stringify(refusedByRunId), "by run ID while leavi…
+       |                                                                                                       ^
+    334|     await until(async () => stringsOf(await view.conversationOf(member…
+    335|     await until(() => !view.snapshots().at(-1)!.members.some((entry) =…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-08 (AC-004): a change made while the run is stopped is applied when it is reopened, also after a server restart
+Error: Timed out waiting for server #2: server ready
+ ❯ until tests/e2e/helpers/agy-runtime-error-fixture.ts:21:9
+     19|   const deadline = Date.now() + ms;
+     20|   while (Date.now() < deadline) { if (await predicate()) return; await…
+     21|   throw new Error(`Timed out waiting for ${label}`);
+       |         ^
+     22| };
+     23|
+ ❯ startServer tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts:101:5
+ ❯ tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts:487:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-09 (AC-005): a Team copy started by an agent's delegate_task follows the same edits
+TypeError: fetch failed
+ ❯ Object.graphql tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts:112:24
+    110|     if (!url) throw new Error(`${label}: no listener serves GraphQL: $…
+    111|     const graphql = async (query: string, variables: Rec = {}): Promis…
+    112|       const response = await fetch(`${url}/graphql`, { method: "POST",…
+       |                        ^
+    113|       const body = await response.json() as { data?: Rec; errors?: unk…
+    114|       if (!response.ok || !body.data || body.errors?.length) throw new…
+ ❯ tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts:504:19
+
+Caused by: Error: connect ECONNREFUSED 127.0.0.1:44187
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { errno: -111, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 44187 }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts > A Team run follows its Team definition (built server, scripted AGY) > TF-10 (AC-001 by the app's editor): a user's own Team saved through updateAgentTeamDefinition: its run follows
+TypeError: fetch failed
+ ❯ Object.graphql tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts:112:24
+    110|     if (!url) throw new Error(`${label}: no listener serves GraphQL: $…
+    111|     const graphql = async (query: string, variables: Rec = {}): Promis…
+    112|       const response = await fetch(`${url}/graphql`, { method: "POST",…
+       |                        ^
+    113|       const body = await response.json() as { data?: Rec; errors?: unk…
+    114|       if (!response.ok || !body.data || body.errors?.length) throw new…
+ ❯ agent tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts:548:44
+ ❯ tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts:550:25
+
+Caused by: Error: connect ECONNREFUSED 127.0.0.1:44187
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { errno: -111, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 44187 }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 5 passed (10)
+   Start at  10:50:59
+   Duration  247.47s (transform 15.40s, setup 502ms, import 21.00s, tests 224.22s, environment 0ms)
+

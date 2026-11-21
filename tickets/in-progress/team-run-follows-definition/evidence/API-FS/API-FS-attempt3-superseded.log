@@ -1,0 +1,1695 @@
+Cloning into '/root/.autobyteus-e2e/tf-fs-job/clone'...
+443f1c2c0f test(team-run-follows-definition): server E2E suites for Team runs following their definition
+== SKIP (action, emulated): Checkout workspace + submodules
+== SKIP (action, emulated): Setup pnpm
+== SKIP (action, emulated): Setup Node
+== SKIP (host package install, libarchive-tools present?): Install Linux build deps
+== STEP: Install workspace dependencies
+Scope: all 13 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1659
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 1659, reused 1655, downloaded 0, added 20
+Progress: resolved 1659, reused 1655, downloaded 0, added 1659, done
+ WARN  Failed to create bin at /root/.autobyteus-e2e/tf-fs-job/clone/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /root/.autobyteus-e2e/tf-fs-job/clone/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-application-devkit/dist/cli.js'
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] skipped: no spawn-helper found
+autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /root/.autobyteus-e2e/tf-fs-job/clone/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/root/.autobyteus-e2e/tf-fs-job/clone/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /root/.autobyteus-e2e/tf-fs-job/clone/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/root/.autobyteus-e2e/tf-fs-job/clone/applications/socratic-math-teacher/node_modules/@autobyteus/application-devkit/dist/cli.js'
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @google/genai@2.24.0.                               │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 3.3s using pnpm v10.28.2
+== SKIP (action, emulated): Setup pinned native toolchain
+== STEP: Prepare desktop public trust or disposable build-only identity
+== STEP: Check native and signed-record units
+TAP version 13
+# Subtest: current generation with both verified architectures; unrelated failed run not authoritative
+ok 1 - current generation with both verified architectures; unrelated failed run not authoritative
+  ---
+  duration_ms: 5.374417
+  type: 'test'
+  ...
+# Subtest: missing secret refuses
+ok 2 - missing secret refuses
+  ---
+  duration_ms: 0.571667
+  type: 'test'
+  ...
+# Subtest: branch policy refuses
+ok 3 - branch policy refuses
+  ---
+  duration_ms: 0.451792
+  type: 'test'
+  ...
+# Subtest: extra policy refuses
+ok 4 - extra policy refuses
+  ---
+  duration_ms: 0.491292
+  type: 'test'
+  ...
+# Subtest: review gate refuses
+ok 5 - review gate refuses
+  ---
+  duration_ms: 0.494417
+  type: 'test'
+  ...
+# Subtest: setup claim refuses
+ok 6 - setup claim refuses
+  ---
+  duration_ms: 0.366416
+  type: 'test'
+  ...
+# Subtest: public-only input refuses
+ok 7 - public-only input refuses
+  ---
+  duration_ms: 0.461292
+  type: 'test'
+  ...
+# Subtest: secret updated at job start refuses
+ok 8 - secret updated at job start refuses
+  ---
+  duration_ms: 0.502791
+  type: 'test'
+  ...
+# Subtest: later creation refuses
+ok 9 - later creation refuses
+  ---
+  duration_ms: 0.643542
+  type: 'test'
+  ...
+# Subtest: recreated env refuses
+ok 10 - recreated env refuses
+  ---
+  duration_ms: 0.690084
+  type: 'test'
+  ...
+# Subtest: anchor overwritten refuses
+ok 11 - anchor overwritten refuses
+  ---
+  duration_ms: 0.5635
+  type: 'test'
+  ...
+# Subtest: job failed refuses
+ok 12 - job failed refuses
+  ---
+  duration_ms: 0.375416
+  type: 'test'
+  ...
+# Subtest: wrong attempt refuses
+ok 13 - wrong attempt refuses
+  ---
+  duration_ms: 0.310166
+  type: 'test'
+  ...
+# Subtest: wrong repo refuses
+ok 14 - wrong repo refuses
+  ---
+  duration_ms: 0.290708
+  type: 'test'
+  ...
+# Subtest: manual run refuses
+ok 15 - manual run refuses
+  ---
+  duration_ms: 0.284708
+  type: 'test'
+  ...
+# Subtest: unbound tag refuses
+ok 16 - unbound tag refuses
+  ---
+  duration_ms: 0.332625
+  type: 'test'
+  ...
+# Subtest: different signer code refuses
+ok 17 - different signer code refuses
+  ---
+  duration_ms: 0.305584
+  type: 'test'
+  ...
+# Subtest: label only refuses
+ok 18 - label only refuses
+  ---
+  duration_ms: 0.302417
+  type: 'test'
+  ...
+# Subtest: missing arch refuses
+ok 19 - missing arch refuses
+  ---
+  duration_ms: 0.468375
+  type: 'test'
+  ...
+# Subtest: wrong version refuses
+ok 20 - wrong version refuses
+  ---
+  duration_ms: 0.301917
+  type: 'test'
+  ...
+# Subtest: superseded asset refuses
+ok 21 - superseded asset refuses
+  ---
+  duration_ms: 0.293334
+  type: 'test'
+  ...
+# Subtest: wrong public key refuses
+ok 22 - wrong public key refuses
+  ---
+  duration_ms: 1.076834
+  type: 'test'
+  ...
+# Subtest: invalid arm64 signature refuses
+ok 23 - invalid arm64 signature refuses
+  ---
+  duration_ms: 0.535292
+  type: 'test'
+  ...
+# Subtest: metadata not record refuses
+ok 24 - metadata not record refuses
+  ---
+  duration_ms: 0.427666
+  type: 'test'
+  ...
+# Subtest: permission failure refuses
+ok 25 - permission failure refuses
+  ---
+  duration_ms: 0.321208
+  type: 'test'
+  ...
+# Subtest: no successful current witness, including first bootstrap
+ok 26 - no successful current witness, including first bootstrap
+  ---
+  duration_ms: 0.422459
+  type: 'test'
+  ...
+# Subtest: ordered first setup, sole backup, no accidental replacement
+not ok 27 - ordered first setup, sole backup, no accidental replacement
+  ---
+  duration_ms: 2.302583
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:31:1'
+  failureType: 'testCodeFailure'
+  error: 'Trusted login home required'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireState (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-state.mjs:11:60)
+    provision (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/generate-desktop-signing-key.mjs:20:3)
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:32:58)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: interruption after material write 1 cannot regenerate
+not ok 28 - interruption after material write 1 cannot regenerate
+  ---
+  duration_ms: 1.089334
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:40:22'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:42:48)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: interruption after material write 2 cannot regenerate
+not ok 29 - interruption after material write 2 cannot regenerate
+  ---
+  duration_ms: 0.450125
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:40:22'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 2
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 2
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:42:48)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: interruption after material write 3 cannot regenerate
+not ok 30 - interruption after material write 3 cannot regenerate
+  ---
+  duration_ms: 0.902958
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:40:22'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 3
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 3
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:42:48)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: interruption after material write 4 cannot regenerate
+not ok 31 - interruption after material write 4 cannot regenerate
+  ---
+  duration_ms: 0.813208
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:40:22'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 4
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 4
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:42:48)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: interruption after material write 5 cannot regenerate
+not ok 32 - interruption after material write 5 cannot regenerate
+  ---
+  duration_ms: 0.821625
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:40:22'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 5
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 5
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:42:48)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: interruption after material write 6 cannot regenerate
+not ok 33 - interruption after material write 6 cannot regenerate
+  ---
+  duration_ms: 0.46025
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:40:22'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 6
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 6
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:42:48)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: claimed or partial setup refuses before generation
+ok 34 - claimed or partial setup refuses before generation
+  ---
+  duration_ms: 1.041459
+  type: 'test'
+  ...
+# Subtest: stdin-only exact destination; child diagnostics not surfaced on failure
+ok 35 - stdin-only exact destination; child diagnostics not surfaced on failure
+  ---
+  duration_ms: 0.564
+  type: 'test'
+  ...
+# Subtest: claim race is create-only; second operator cannot create file
+ok 36 - claim race is create-only; second operator cannot create file
+  ---
+  duration_ms: 0.834541
+  type: 'test'
+  ...
+# Subtest: explicit saved confirmation and exact backup identity required
+not ok 37 - explicit saved confirmation and exact backup identity required
+  ---
+  duration_ms: 0.373583
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:69:1'
+  failureType: 'testCodeFailure'
+  error: 'Trusted login home required'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireState (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-state.mjs:11:60)
+    provision (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/generate-desktop-signing-key.mjs:20:3)
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:70:32)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: inventory fails closed on wider declarations, shadow/claim, denied or truncated lists
+ok 38 - inventory fails closed on wider declarations, shadow/claim, denied or truncated lists
+  ---
+  duration_ms: 1.097167
+  type: 'test'
+  ...
+# Subtest: disposable rotation checks the prior witness and fingerprint; unused on production
+not ok 39 - disposable rotation checks the prior witness and fingerprint; unused on production
+  ---
+  duration_ms: 0.408208
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:98:1'
+  failureType: 'testCodeFailure'
+  error: 'Trusted login home required'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireState (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-state.mjs:11:60)
+    provision (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/generate-desktop-signing-key.mjs:20:3)
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:99:46)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: unsafe directory or existing destination never overwritten
+ok 40 - unsafe directory or existing destination never overwritten
+  ---
+  duration_ms: 1.137875
+  type: 'test'
+  ...
+# Subtest: changed protection or lost claim refuses before upload and preserves custody
+not ok 41 - changed protection or lost claim refuses before upload and preserves custody
+  ---
+  duration_ms: 4.618708
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:115:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(s.claim)
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: ~
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:122:88)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: CLI refuses tracing before it can acquire a claim or generate material
+ok 42 - CLI refuses tracing before it can acquire a claim or generate material
+  ---
+  duration_ms: 28.031291
+  type: 'test'
+  ...
+# Subtest: empty settings do not allow first provisioning: one prior signed sidecar on an older release
+not ok 43 - empty settings do not allow first provisioning: one prior signed sidecar on an older release
+  ---
+  duration_ms: 0.5965
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:151:4'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /Reconcile official release/. Input:
+    
+    'Error: Trusted login home required'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'Trusted login home required'
+  stack: |-
+    requireState (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-state.mjs:11:60)
+    provision (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/generate-desktop-signing-key.mjs:20:3)
+    file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:21
+    getActual (node:assert:609:5)
+    Function.throws (node:assert:757:24)
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: empty settings do not allow first provisioning: prior signer executed but assets absent
+not ok 44 - empty settings do not allow first provisioning: prior signer executed but assets absent
+  ---
+  duration_ms: 0.498708
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:151:4'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /Reconcile official release/. Input:
+    
+    'Error: Trusted login home required'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'Trusted login home required'
+  stack: |-
+    requireState (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-state.mjs:11:60)
+    provision (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/generate-desktop-signing-key.mjs:20:3)
+    file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:21
+    getActual (node:assert:609:5)
+    Function.throws (node:assert:757:24)
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: empty settings do not allow first provisioning: prior ambiguous execution
+not ok 45 - empty settings do not allow first provisioning: prior ambiguous execution
+  ---
+  duration_ms: 0.28975
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:151:4'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /Reconcile official release/. Input:
+    
+    'Error: Trusted login home required'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'Trusted login home required'
+  stack: |-
+    requireState (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-state.mjs:11:60)
+    provision (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/generate-desktop-signing-key.mjs:20:3)
+    file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:21
+    getActual (node:assert:609:5)
+    Function.throws (node:assert:757:24)
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: empty settings do not allow first provisioning: active managed release
+not ok 46 - empty settings do not allow first provisioning: active managed release
+  ---
+  duration_ms: 0.657125
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:151:4'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /Reconcile official release/. Input:
+    
+    'Error: Trusted login home required'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'Trusted login home required'
+  stack: |-
+    requireState (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-state.mjs:11:60)
+    provision (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/generate-desktop-signing-key.mjs:20:3)
+    file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:21
+    getActual (node:assert:609:5)
+    Function.throws (node:assert:757:24)
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: empty settings do not allow first provisioning: release metadata denied
+not ok 47 - empty settings do not allow first provisioning: release metadata denied
+  ---
+  duration_ms: 0.424375
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:151:4'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /Reconcile official release/. Input:
+    
+    'Error: Trusted login home required'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'Trusted login home required'
+  stack: |-
+    requireState (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-state.mjs:11:60)
+    provision (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/generate-desktop-signing-key.mjs:20:3)
+    file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:21
+    getActual (node:assert:609:5)
+    Function.throws (node:assert:757:24)
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: empty settings do not allow first provisioning: job metadata denied
+not ok 48 - empty settings do not allow first provisioning: job metadata denied
+  ---
+  duration_ms: 0.611917
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:151:4'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /Reconcile official release/. Input:
+    
+    'Error: Trusted login home required'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'Trusted login home required'
+  stack: |-
+    requireState (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-state.mjs:11:60)
+    provision (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/generate-desktop-signing-key.mjs:20:3)
+    file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:21
+    getActual (node:assert:609:5)
+    Function.throws (node:assert:757:24)
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: empty settings do not allow first provisioning: release disappeared
+not ok 49 - empty settings do not allow first provisioning: release disappeared
+  ---
+  duration_ms: 0.648875
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:151:4'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /Reconcile official release/. Input:
+    
+    'Error: Trusted login home required'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'Trusted login home required'
+  stack: |-
+    requireState (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-state.mjs:11:60)
+    provision (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/generate-desktop-signing-key.mjs:20:3)
+    file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:21
+    getActual (node:assert:609:5)
+    Function.throws (node:assert:757:24)
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: empty settings do not allow first provisioning: previously observed run unavailable
+not ok 50 - empty settings do not allow first provisioning: previously observed run unavailable
+  ---
+  duration_ms: 0.329625
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:151:4'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /Reconcile official release/. Input:
+    
+    'Error: Trusted login home required'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'Trusted login home required'
+  stack: |-
+    requireState (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-state.mjs:11:60)
+    provision (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/generate-desktop-signing-key.mjs:20:3)
+    file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:21
+    getActual (node:assert:609:5)
+    Function.throws (node:assert:757:24)
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: empty settings do not allow first provisioning: unknown workflow code
+not ok 51 - empty settings do not allow first provisioning: unknown workflow code
+  ---
+  duration_ms: 0.35125
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:151:4'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /Reconcile official release/. Input:
+    
+    'Error: Trusted login home required'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'Trusted login home required'
+  stack: |-
+    requireState (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-state.mjs:11:60)
+    provision (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/generate-desktop-signing-key.mjs:20:3)
+    file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:21
+    getActual (node:assert:609:5)
+    Function.throws (node:assert:757:24)
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: empty settings do not allow first provisioning: partial release page
+not ok 52 - empty settings do not allow first provisioning: partial release page
+  ---
+  duration_ms: 0.334292
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:151:4'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /Reconcile official release/. Input:
+    
+    'Error: Trusted login home required'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'Trusted login home required'
+  stack: |-
+    requireState (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-state.mjs:11:60)
+    provision (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/generate-desktop-signing-key.mjs:20:3)
+    file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:21
+    getActual (node:assert:609:5)
+    Function.throws (node:assert:757:24)
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: empty settings do not allow first provisioning: partial asset listing
+not ok 53 - empty settings do not allow first provisioning: partial asset listing
+  ---
+  duration_ms: 0.311166
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:151:4'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /Reconcile official release/. Input:
+    
+    'Error: Trusted login home required'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'Trusted login home required'
+  stack: |-
+    requireState (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-state.mjs:11:60)
+    provision (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/generate-desktop-signing-key.mjs:20:3)
+    file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:21
+    getActual (node:assert:609:5)
+    Function.throws (node:assert:757:24)
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: empty settings do not allow first provisioning: attempt mismatch
+not ok 54 - empty settings do not allow first provisioning: attempt mismatch
+  ---
+  duration_ms: 0.273208
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:151:4'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /Reconcile official release/. Input:
+    
+    'Error: Trusted login home required'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'Trusted login home required'
+  stack: |-
+    requireState (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-state.mjs:11:60)
+    provision (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/generate-desktop-signing-key.mjs:20:3)
+    file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:21
+    getActual (node:assert:609:5)
+    Function.throws (node:assert:757:24)
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: empty settings do not allow first provisioning: missing signer
+not ok 55 - empty settings do not allow first provisioning: missing signer
+  ---
+  duration_ms: 0.302917
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:151:4'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /Reconcile official release/. Input:
+    
+    'Error: Trusted login home required'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'Trusted login home required'
+  stack: |-
+    requireState (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-state.mjs:11:60)
+    provision (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/generate-desktop-signing-key.mjs:20:3)
+    file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:21
+    getActual (node:assert:609:5)
+    Function.throws (node:assert:757:24)
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: empty settings do not allow first provisioning: earlier successful attempt later skipped
+not ok 56 - empty settings do not allow first provisioning: earlier successful attempt later skipped
+  ---
+  duration_ms: 0.247666
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:151:4'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /Reconcile official release/. Input:
+    
+    'Error: Trusted login home required'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'Trusted login home required'
+  stack: |-
+    requireState (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-state.mjs:11:60)
+    provision (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/generate-desktop-signing-key.mjs:20:3)
+    file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:21
+    getActual (node:assert:609:5)
+    Function.throws (node:assert:757:24)
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:154:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: complete paginated history with unsigned legacy workflow and originally skipped managed signer permits first setup
+not ok 57 - complete paginated history with unsigned legacy workflow and originally skipped managed signer permits first setup
+  ---
+  duration_ms: 0.347083
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:159:1'
+  failureType: 'testCodeFailure'
+  error: 'Trusted login home required'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireState (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-state.mjs:11:60)
+    provision (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/generate-desktop-signing-key.mjs:20:3)
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:176:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: scope conflict appearing during read-only history inspection still refuses before claim
+not ok 58 - scope conflict appearing during read-only history inspection still refuses before claim
+  ---
+  duration_ms: 0.285208
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:179:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /claim conflict/. Input:
+    
+    'Error: Trusted login home required'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'Trusted login home required'
+  stack: |-
+    requireState (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-state.mjs:11:60)
+    provision (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/generate-desktop-signing-key.mjs:20:3)
+    file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:182:21
+    getActual (node:assert:609:5)
+    Function.throws (node:assert:757:24)
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:182:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:182:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: custody reserved during history inspection is preserved before any provisioning write
+not ok 59 - custody reserved during history inspection is preserved before any provisioning write
+  ---
+  duration_ms: 0.314708
+  type: 'test'
+  location: '/root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:186:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /Backup directory already exists/. Input:
+    
+    'Error: Trusted login home required'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'Trusted login home required'
+  stack: |-
+    requireState (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-state.mjs:11:60)
+    provision (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/generate-desktop-signing-key.mjs:20:3)
+    file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:196:21
+    getActual (node:assert:609:5)
+    Function.throws (node:assert:757:24)
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:196:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/desktop-trust-provision.test.mjs:196:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: production trust cannot use absent provisioning or a build-only key implicitly
+ok 60 - production trust cannot use absent provisioning or a build-only key implicitly
+  ---
+  duration_ms: 68.567541
+  type: 'test'
+  ...
+# Subtest: build-only trust is fresh, separate from supplied production public key
+ok 61 - build-only trust is fresh, separate from supplied production public key
+  ---
+  duration_ms: 22.489625
+  type: 'test'
+  ...
+# Subtest: signing/metadata CLI binds exact final bytes, canonical asset, version, arch and key
+ok 62 - signing/metadata CLI binds exact final bytes, canonical asset, version, arch and key
+  ---
+  duration_ms: 292.270125
+  type: 'test'
+  ...
+# Subtest: canonical
+ok 63 - canonical
+  ---
+  duration_ms: 1.850167
+  type: 'test'
+  ...
+# Subtest: duplicate
+ok 64 - duplicate
+  ---
+  duration_ms: 0.273958
+  type: 'test'
+  ...
+# Subtest: unknown
+ok 65 - unknown
+  ---
+  duration_ms: 0.092833
+  type: 'test'
+  ...
+# Subtest: missing
+ok 66 - missing
+  ---
+  duration_ms: 0.156375
+  type: 'test'
+  ...
+# Subtest: float
+ok 67 - float
+  ---
+  duration_ms: 0.097375
+  type: 'test'
+  ...
+# Subtest: channel
+ok 68 - channel
+  ---
+  duration_ms: 0.17525
+  type: 'test'
+  ...
+# Subtest: version
+ok 69 - version
+  ---
+  duration_ms: 0.135166
+  type: 'test'
+  ...
+# Subtest: writer
+ok 70 - writer
+  ---
+  duration_ms: 0.073166
+  type: 'test'
+  ...
+# Subtest: too-large
+ok 71 - too-large
+  ---
+  duration_ms: 0.501625
+  type: 'test'
+  ...
+# Subtest: no-newline
+ok 72 - no-newline
+  ---
+  duration_ms: 0.480416
+  type: 'test'
+  ...
+# Subtest: wrong-product
+ok 73 - wrong-product
+  ---
+  duration_ms: 0.151125
+  type: 'test'
+  ...
+# Subtest: wrong-signature
+ok 74 - wrong-signature
+  ---
+  duration_ms: 0.198042
+  type: 'test'
+  ...
+1..74
+# tests 74
+# suites 0
+# pass 47
+# fail 27
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 428.970583
+?   	autobyteus.local/desktop/linux-install/cmd/client	[no test files]
+?   	autobyteus.local/desktop/linux-install/cmd/launcher	[no test files]
+ok  	autobyteus.local/desktop/linux-install/cmd/provision	0.003s
+ok  	autobyteus.local/desktop/linux-install/cmd/writer	0.003s
+ok  	autobyteus.local/desktop/linux-install/internal/acquire	0.004s
+?   	autobyteus.local/desktop/linux-install/internal/buildinfo	[no test files]
+?   	autobyteus.local/desktop/linux-install/internal/imagefile	[no test files]
+?   	autobyteus.local/desktop/linux-install/internal/install	[no test files]
+ok  	autobyteus.local/desktop/linux-install/internal/launch	0.156s
+?   	autobyteus.local/desktop/linux-install/internal/protocol	[no test files]
+ok  	autobyteus.local/desktop/linux-install/internal/release	0.005s
+ok  	autobyteus.local/desktop/linux-install/internal/sealed	0.004s
+ok  	autobyteus.local/desktop/linux-install/internal/store	0.020s
+UNITS STEP: PASS
+== STEP: Build Electron Linux ARM64
+
+> autobyteus@1.5.14-beta.3 build:electron:linux:arm64 /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web
+> cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm typecheck && cross-env AUTOBYTEUS_ELECTRON_LINUX_TARGET_ARCH=arm64 pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --linux --arm64
+
+
+> autobyteus@1.5.14-beta.3 guard:web-boundary /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+
+> autobyteus@1.5.14-beta.3 guard:localization-boundary /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+
+> autobyteus@1.5.14-beta.3 audit:localization-literals /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Passed with zero unresolved findings.
+(node:6173) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+> autobyteus@1.5.14-beta.3 typecheck /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web
+> pnpm prepare:shared-types && nuxt prepare && node ./scripts/typecheck.mjs
+
+
+> autobyteus@1.5.14-beta.3 prepare:shared-types /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web
+> pnpm -C ../autobyteus-server-ts prepare:source
+
+
+> autobyteus-server-ts@0.1.1 prepare:source /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 107ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.34                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "actions", the one from "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+│
+◆  Types generated in .nuxt.
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 65.6s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 3.3s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.9s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 37.3s
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+
+> autobyteus@1.5.14-beta.3 prepare-server /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web
+> node ./scripts/prepare-server-dispatch.mjs
+
+=======================================
+   Preparing AutoByteus Server Files   
+=======================================
+✓ Linux server preparation target architecture: arm64
+✓ Created target directory: /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/resources/server
+
+Building server and dependencies...
+Scope: all 13 workspace projects
+ WARN  Failed to create bin at /root/.autobyteus-e2e/tf-fs-job/clone/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /root/.autobyteus-e2e/tf-fs-job/clone/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-application-devkit/dist/cli.js'
+
+../autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+../autobyteus-ts postinstall: [node-pty-fix] skipped: no spawn-helper found
+../autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /root/.autobyteus-e2e/tf-fs-job/clone/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/root/.autobyteus-e2e/tf-fs-job/clone/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /root/.autobyteus-e2e/tf-fs-job/clone/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/root/.autobyteus-e2e/tf-fs-job/clone/applications/socratic-math-teacher/node_modules/@autobyteus/application-devkit/dist/cli.js'
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @google/genai@2.24.0.                               │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 1.5s using pnpm v10.28.1
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 125ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
+
+
+> autobyteus-server-ts@0.1.1 prebuild /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-server-ts
+> pnpm prepare:source
+
+
+> autobyteus-server-ts@0.1.1 prepare:source /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 129ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+
+
+> autobyteus-server-ts@0.1.1 build /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/write-release-identity.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+(node:6891) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+
+Building mobile web assets...
+
+> autobyteus@1.5.14-beta.3 build:mobile-web /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web
+> node ./scripts/build-mobile-web.mjs
+
+
+> autobyteus@1.5.14-beta.3 generate /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web
+> nuxt generate
+
+┌  Building Nuxt for production...
+│
+●  Nuxt 3.21.11 (with Nitro 2.13.5, Vite 7.3.7 and Vue 3.5.44)
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+│
+●  Nitro preset: static
+
+ WARN  Duplicated imports "getters", the one from "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "actions", the one from "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+Duplicated imports "getters", the one from "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+ WARN 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+✔ Client built in 32731ms
+✔ Server built in 79ms
+[nitro] ℹ Initializing prerenderer
+[nitro] ℹ Prerendering 21 initial routes with crawler
+[nitro]   ├─ /chat (63ms)
+[nitro]   ├─ /media (63ms)
+[nitro]   ├─ /nodes (63ms)
+[nitro]   ├─ /tools (63ms)
+[nitro]   ├─ /agents (64ms)
+[nitro]   ├─ /memory (64ms)
+[nitro]   ├─ /skills (65ms)
+[nitro]   ├─ /settings (65ms)
+[nitro]   ├─ /workspace (66ms)
+[nitro]   ├─ /agent-orgs (66ms)
+[nitro]   ├─ /agent-teams (66ms)
+[nitro]   ├─ /integrations (66ms)
+[nitro]   ├─ /projects (67ms)
+[nitro]   ├─ /projects/temp-tasks (67ms)
+[nitro]   ├─ /applications (67ms)
+[nitro]   ├─ / (62ms)
+[nitro]   ├─ /mobile (64ms)
+[nitro]   ├─ /index.html (67ms)
+[nitro]   ├─ /404.html (66ms)
+[nitro]   ├─ /200.html (67ms)
+[nitro]   ├─ /projects/new (66ms)
+[nitro] ℹ Prerendered 21 routes in 1.094 seconds
+[nitro] ✔ Generated public dist/public
+[nitro] ✔ You can preview this build using npx serve dist/public
+│
+▲  HTML content not prerendered because ssr: false was set.
+│
+●  You can read more in https://nuxt.com/docs/getting-started/deployment#static-hosting.
+│
+└  ✨ You can now deploy dist/public to any static hosting!
+The /mobile build holds no demo code.
+Mobile web assets written to /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/dist-mobile/public
+
+Deploying server package into Electron resources...
+ WARN  Shared workspace lockfile detected but configuration forces legacy deploy implementation.
+Packages are copied from the content-addressable store to the virtual store.
+  Content-addressable store is at: /root/.local/share/pnpm/store/v10
+  Virtual store is at:             autobyteus-web/resources/server/node_modules/.pnpm
+Progress: resolved 1, reused 0, downloaded 0, added 0
+autobyteus-web                           |  WARN  deprecated crypto-js@4.2.0
+Progress: resolved 920, reused 0, downloaded 0, added 0
+Progress: resolved 1782, reused 0, downloaded 0, added 0
+Progress: resolved 1797, reused 0, downloaded 0, added 0
+ WARN  24 deprecated subdependencies found: @babel/plugin-proposal-class-properties@7.18.6, @babel/plugin-proposal-object-rest-spread@7.20.7, @graphql-tools/prisma-loader@8.0.17, @npmcli/move-file@2.0.1, are-we-there-yet@3.0.1, gauge@4.0.4, glob@10.5.0, glob@7.2.3, glob@8.1.0, har-validator@5.1.5, inflight@1.0.6, lodash.get@4.4.2, lodash.isequal@4.5.0, mkdirp@0.5.1, node-domexception@1.0.0, npmlog@6.0.2, phin@3.7.1, request@2.88.2, rimraf@3.0.2, tar@6.2.1, tsconfck@3.1.6, unplugin-vue-router@0.19.2, uuid@3.4.0, whatwg-encoding@3.1.1
+Progress: resolved 1848, reused 0, downloaded 0, added 0, done
+ WARN  Issues with peer dependencies found
+applications/brief-studio
+└─┬ @autobyteus/application-devkit 0.1.0
+  └─┬ autobyteus-server-ts 0.1.1
+    ├─┬ autobyteus-ts 1.0.0
+    │ └─┬ @google/genai 2.24.0
+    │   └── ✕ missing peer @modelcontextprotocol/sdk@^1.25.2
+    └─┬ @anthropic-ai/claude-agent-sdk 0.3.280
+      └── ✕ missing peer @modelcontextprotocol/sdk@^1.29.0
+Peer dependencies that should be installed:
+  @modelcontextprotocol/sdk@">=1.29.0 <2.0.0-0"
+
+applications/socratic-math-teacher
+└─┬ @autobyteus/application-devkit 0.1.0
+  └── ✕ missing peer @modelcontextprotocol/sdk@^1.29.0
+Peer dependencies that should be installed:
+  @modelcontextprotocol/sdk@^1.29.0
+
+autobyteus-web
+├─┬ nuxt 3.21.11
+│ └─┬ @nuxt/cli 3.37.0
+│   └── ✕ unmet peer @nuxt/schema@^4.4.6: found 3.21.11
+└─┬ @nuxt/test-utils 3.23.0
+  └─┬ vitest-environment-nuxt 1.0.1
+    └─┬ @nuxt/test-utils 3.23.0
+      └─┬ vitest-environment-nuxt 1.0.1
+        └─┬ @nuxt/test-utils 3.23.0
+          └─┬ h3 2.0.7
+            └── ✕ unmet peer crossws@^0.4.12: found 0.3.5
+.                                        | +346 ++++++++++++++++++++++++++++++++
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @google/genai@2.24.0,                               │
+│   autobyteus-ts@file:autobyteus-ts.                                          │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+Cleaning workspace symlinks in deployment...
+Removed 1 external symlinks from /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/resources/server/node_modules/.pnpm/node_modules
+
+Removing non-runtime test fixtures from deployed dependencies...
+
+Generating Prisma client (ensures engines are bundled)...
+✓ Using PRISMA_CLI_BINARY_TARGETS=linux-arm64-openssl-3.0.x
+Environment variables loaded from .env
+Prisma schema loaded from resources/server/prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 133ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
+
+
+Validating bundled Prisma Linux engine targets...
+✓ Prisma Linux arm64 engine targets verified in /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+✓ Prisma client Linux arm64 runtime engines verified in /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client
+
+Pruning native prebuilds for host platform...
+
+Pruning onnxruntime-web to its Node build and checking the embedding runtime...
+Removed 127 MB of onnxruntime-web browser builds
+Embedding runtime validation passed
+
+Removing the Claude Agent SDK's platform binaries (Claude runs use the installed claude)...
+Removed 459 MB of Claude Agent SDK platform binaries
+
+Rebuilding native modules for Electron...
+Searching dependency tree
+Building modules: node-pty, node-pty
+✔ Rebuild Complete
+
+Normalizing node-pty spawn-helper execute bits...
+✓ Normalized execute bits on 2 node-pty spawn-helper file(s)
+
+Removing symlinks that point outside the bundle...
+Removed 0 external symlinks from /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/resources/server
+
+=======================================
+   Server files prepared successfully!   
+=======================================
+Target directory: /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/resources/server
+You can now build the Electron app with the server included
+
+> autobyteus@1.5.14-beta.3 generate:electron /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web
+> cross-env NODE_ENV=production BUILD_TARGET=electron nuxt generate
+
+┌  Building Nuxt for production...
+│
+●  Nuxt 3.21.11 (with Nitro 2.13.5, Vite 7.3.7 and Vue 3.5.44)
+isElectronBuild true
+[Electron Module] Initializing electron module
+[Electron Module] Applying default Electron configurations
+[Electron Module] Configuring for Electron build target
+[Electron Module] Configuring production settings
+[Electron Module] Electron module initialization completed
+│
+●  Nitro preset: static
+
+ WARN  Duplicated imports "getters", the one from "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "actions", the one from "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+[Electron Module] Extending Vite config
+[Electron Module] Vite config resolved: { mode: 'production', base: './', buildTarget: 'electron' }
+Duplicated imports "getters", the one from "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+ WARN 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+✔ Client built in 32906ms
+[Electron Module] Extending Vite config
+[Electron Module] Vite config resolved: { mode: 'production', base: '/', buildTarget: 'electron' }
+[Electron Module] Processing build manifest
+✔ Server built in 292ms
+[Electron Module] Build process completed
+[Electron Module] Running production build steps
+[Electron Module] Building entry: electron/main.ts
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 483 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/electron/main.js                            0.06 kB │ gzip:   0.08 kB
+dist/electron/main-CKYyFqui.js                  14.53 kB │ gzip:   5.52 kB
+dist/electron/electronApplication-VjgAxH52.js  909.33 kB │ gzip: 243.47 kB
+✓ built in 2.38s
+[Electron Module] Building entry: electron/preload.ts
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 1 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/electron/preload.js  4.49 kB │ gzip: 1.16 kB
+✓ built in 13ms
+[Electron Module] Production build completed successfully
+[nitro] ℹ Initializing prerenderer
+[nitro] ℹ Prerendering 3 initial routes with crawler
+[nitro]   ├─ /200.html (38ms)
+[nitro]   ├─ /index.html (37ms)
+[nitro]   ├─ /404.html (37ms)
+[nitro] ℹ Prerendered 3 routes in 1.044 seconds
+[nitro] ✔ Generated public dist/renderer
+[nitro] ✔ You can preview this build using npx serve dist/renderer
+│
+▲  HTML content not prerendered because ssr: false was set.
+│
+●  You can read more in https://nuxt.com/docs/getting-started/deployment#static-hosting.
+│
+└  ✨ You can now deploy dist/renderer to any static hosting!
+
+> autobyteus@1.5.14-beta.3 transpile-electron /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web
+> tsc -p electron/tsconfig.json
+
+Building with environment: production
+Using environment file: .env.production
+Resolved build flavor: personal
+Artifact base name: AutoByteus_personal
+Requested architecture: ARM64
+Updater publish config: [{"provider":"github","owner":"AutoByteus","repo":"autobyteus-workspace"}]
+Generating application icons...
+Generating 16x16 PNG icon...
+Generating 32x32 PNG icon...
+Generating 48x48 PNG icon...
+Generating 64x64 PNG icon...
+Generating 128x128 PNG icon...
+Generating 256x256 PNG icon...
+Generating 512x512 PNG icon...
+Generating 1024x1024 PNG icon...
+Generating Windows ICO icon...
+Generating macOS ICNS icon...
+Icon generation completed successfully
+Starting electron-builder...
+  • electron-builder  version=25.1.8 os=6.12.54-linuxkit
+  • @electron/rebuild already used by electron-builder, please consider to remove excess dependency from devDependencies
+
+To ensure your native dependencies are always matched electron version, simply add script `"postinstall": "electron-builder install-app-deps" to your `package.json`
+  • executing @electron/rebuild  electronVersion=42.11.16 arch=arm64 buildFromSource=false appDir=./
+  • installing native dependencies  arch=arm64
+  • completed installing native dependencies
+  • packaging       platform=linux arch=arm64 electron=42.11.16 appOutDir=electron-dist/linux-arm64-unpacked
+go: go.mod requires go >= 1.27.4 (running go 1.22.2; GOTOOLCHAIN=local)
+node:internal/errors:983
+  const err = new Error(message);
+              ^
+
+Error: Command failed: go build -trimpath -buildvcs=false -ldflags -X autobyteus.local/desktop/linux-install/internal/buildinfo.Version=1.5.14-beta.3 -X autobyteus.local/desktop/linux-install/internal/buildinfo.Arch=arm64 -X autobyteus.local/desktop/linux-install/internal/buildinfo.Repository=AutoByteus/autobyteus-workspace -X autobyteus.local/desktop/linux-install/internal/buildinfo.Asset=AutoByteus_personal_linux-arm64-1.5.14-beta.3.AppImage -X autobyteus.local/desktop/linux-install/internal/buildinfo.PublicKey=2dePdRIrPLkmPh+BcvNR+IVlE3JqGiIsTdfxce5rvZI= -o /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/linux-install/out/autobyteus-install-client ./cmd/client
+    at genericNodeError (node:internal/errors:983:15)
+    at wrappedFn (node:internal/errors:537:14)
+    at checkExecSyncError (node:child_process:916:11)
+    at execFileSync (node:child_process:952:15)
+    at build (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/build-native.mjs:31:5)
+    at buildNative (file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/build-native.mjs:33:3)
+    at file:///root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/build-native.mjs:44:3
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {
+  status: 1,
+  signal: null,
+  output: [ null, null, null ],
+  pid: 7509,
+  stdout: null,
+  stderr: null
+}
+
+Node.js v22.23.3
+Build process failed: Error: Command failed: /usr/bin/node /root/.autobyteus-e2e/tf-fs-job/clone/scripts/desktop-package/build-native.mjs 1.5.14-beta.3 arm64 /root/.autobyteus-e2e/tf-fs-job/runner-temp/desktop-trust/desktop-public.pem /root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/linux-install/out AutoByteus_personal_linux-arm64-1.5.14-beta.3.AppImage
+    at genericNodeError (node:internal/errors:983:15)
+    at wrappedFn (node:internal/errors:537:14)
+    at checkExecSyncError (node:child_process:916:11)
+    at execFileSync (node:child_process:952:15)
+    at packLinuxInstall (/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/build/dist/linuxInstallPack.js:66:38)
+    at afterPack (/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/build/dist/afterPack.js:74:49)
+    at Packager.afterPack (/root/.autobyteus-e2e/tf-fs-job/clone/node_modules/.pnpm/app-builder-lib@25.1.8_dmg-builder@25.1.8_electron-builder-squirrel-windows@25.1.8/node_modules/app-builder-lib/src/packager.ts:560:29)
+    at LinuxPackager.doPack (/root/.autobyteus-e2e/tf-fs-job/clone/node_modules/.pnpm/app-builder-lib@25.1.8_dmg-builder@25.1.8_electron-builder-squirrel-windows@25.1.8/node_modules/app-builder-lib/src/platformPackager.ts:322:5)
+    at LinuxPackager.pack (/root/.autobyteus-e2e/tf-fs-job/clone/node_modules/.pnpm/app-builder-lib@25.1.8_dmg-builder@25.1.8_electron-builder-squirrel-windows@25.1.8/node_modules/app-builder-lib/src/platformPackager.ts:138:5)
+    at Packager.doBuild (/root/.autobyteus-e2e/tf-fs-job/clone/node_modules/.pnpm/app-builder-lib@25.1.8_dmg-builder@25.1.8_electron-builder-squirrel-windows@25.1.8/node_modules/app-builder-lib/src/packager.ts:459:9)
+    at executeFinally (/root/.autobyteus-e2e/tf-fs-job/clone/node_modules/.pnpm/builder-util@25.1.7/node_modules/builder-util/src/promise.ts:12:14)
+    at Packager.build (/root/.autobyteus-e2e/tf-fs-job/clone/node_modules/.pnpm/app-builder-lib@25.1.8_dmg-builder@25.1.8_electron-builder-squirrel-windows@25.1.8/node_modules/app-builder-lib/src/packager.ts:393:31)
+    at executeFinally (/root/.autobyteus-e2e/tf-fs-job/clone/node_modules/.pnpm/builder-util@25.1.7/node_modules/builder-util/src/promise.ts:12:14)
+    at main (/root/.autobyteus-e2e/tf-fs-job/clone/autobyteus-web/build/dist/build.js:480:28) {
+  status: 1,
+  signal: null,
+  output: [ null, null, null ],
+  pid: 7488,
+  stdout: null,
+  stderr: null
+}
+ ELIFECYCLE  Command failed with exit code 1.
+exit=1
