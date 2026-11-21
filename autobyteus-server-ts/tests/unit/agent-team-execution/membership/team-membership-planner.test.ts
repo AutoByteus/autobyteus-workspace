@@ -111,6 +111,20 @@ describe("TeamMembershipPlanner.viewFor (DS-003, DEC-005, N-7)", () => {
     expect(warn.mock.calls.filter(([line]) => String(line).includes("its coordinator '/writer' could not be added"))).toHaveLength(1);
   });
 
+  it("O-2: a definition naming an agent that does not exist is not followed, warned once per run and reason", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const p = new TeamMembershipPlanner({
+      teamDefinitions: { getDefinitionById: async () => definition(["lead", "ghost"], []), listLoadIssues: async () => [] } as never,
+      agentDefinitions: { getAgentDefinitionById: async () => null },
+      usability: { check: async (request: any) => ({ verdicts: [], inherited: { usable: true, launch: request.inherited } }) } as never,
+      agentRunIds: { allocateForAgentDefinition: async (id: string) => { throw new Error(`AgentDefinition '${id}' cannot be loaded.`); } },
+    });
+    expect(await p.viewFor(tree())).toBeNull();
+    expect(await p.viewFor(tree())).toBeNull();
+    expect(warn).toHaveBeenCalledOnce();
+    expect(warn).toHaveBeenCalledWith("TEAM_RUN_DEFINITION_NOT_FOLLOWED: Team run 'team_1' keeps its members: Team definition 'team-root' cannot be used (AgentDefinition 'agent-ghost' cannot be loaded.).");
+  });
+
   it("followStored clears every leaving marker of the stopped run, even when its definition is not read", async () => {
     vi.spyOn(console, "warn").mockImplementation(() => undefined);
     const base = tree();

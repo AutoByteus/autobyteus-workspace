@@ -76,9 +76,10 @@ export class TeamMembershipPlanner {
         console.warn(`TEAM_MEMBER_NOT_ADDED: ${runLabel} cannot add '${member.address}' yet: ${launch.refused}`);
         continue;
       }
-      newMembers.set(newMemberKey(member.address, member.agentDefinitionId), Object.freeze({
-        ...launch, agentRunId: await this.dependencies.agentRunIds.allocateForAgentDefinition(member.agentDefinitionId),
-      }));
+      // An agent that does not exist makes the whole definition unusable (O-2): the run keeps its members.
+      const agentRunId = await this.dependencies.agentRunIds.allocateForAgentDefinition(member.agentDefinitionId).catch((error: unknown) => ({ failed: message(error) }));
+      if (typeof agentRunId !== "string") return this.notFollowed(teamRunId, `Team definition '${teamDefinitionId}' cannot be used (${agentRunId.failed}).`);
+      newMembers.set(newMemberKey(member.address, member.agentDefinitionId), Object.freeze({ ...launch, agentRunId }));
     }
     const coordinator = resolved.members.find((member) => member.address === resolved.coordinatorAddress);
     if (coordinator && !known.some((node) => node.address === coordinator.address && node.agentDefinitionId === coordinator.agentDefinitionId)
