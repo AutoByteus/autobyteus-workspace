@@ -68,7 +68,9 @@ signature; atomic replacement cannot separate code from its identity. Routine
 compatible updates require no administrator prompt. Invalid bytes, wrong keys,
 replays, stale stages and unsupported writer contracts are refused. A definite
 manual refusal is shown as **Update failed**, independently of automatic retry
-blocking. A lost activation reply is reconciled against the actual installed
+blocking. If automatic installation failed for a version, downloading that
+version manually does not re-enable automatic installation. Use the manual
+action shown in Settings or the update notification. A lost activation reply is reconciled against the actual installed
 file, not guessed from the download event.
 
 ## Removal and repair

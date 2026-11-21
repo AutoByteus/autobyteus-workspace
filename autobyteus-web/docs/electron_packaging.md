@@ -719,6 +719,15 @@ only starts it.
 invalid reads as off; atomic writes; `appUpdateAutomaticStore.ts`). No server,
 GraphQL, REST route or agent tool reads or writes it.
 
+Managed Ubuntu stages signed updates through its writer, not the native
+installer. With a restart-capable launcher, automatic activation requires a
+verified, eligible stage, a fresh idle result from the embedded server, and
+five minutes without input across the app's windows. Unknown activity defers
+the restart; an ordinary quit stays closed. Without a restart channel the app
+cannot reopen itself. See [managed desktop updates](linux-managed-desktop.md#files-and-updates).
+
+For the native automatic install path (macOS, Windows and portable Linux):
+
 - `AppUpdateAutomaticPolicy` (`appUpdateAutomaticPolicy.ts`) owns the sequence and
   calls the same `downloadUpdate()` and `installUpdateAndRestart()` a click runs. A
   version any check finds downloads. The switch is read at each event: turned off

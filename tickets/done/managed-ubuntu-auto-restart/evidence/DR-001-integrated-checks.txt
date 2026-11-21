@@ -1,0 +1,36 @@
+Integrated b3d0ca97a8 (first base)
+CI=true pnpm install --frozen-lockfile
+Done in 3.6s using pnpm v10.28.2
+pnpm -C autobyteus-web test:electron --run application/__tests__ updater/__tests__
+ Test Files  17 passed (17)
+      Tests  200 passed (200)
+pnpm -C autobyteus-web typecheck
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 61.0s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 3.7s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 1.1s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 37.6s
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+pnpm -C autobyteus-server-ts typecheck
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 18.3s
+[typecheck] server tests (tsconfig.tests.json): 1006 errors, exit 2, 48.5s
+[typecheck] production errors: 0; test-file errors: 1006 in 315 files (baseline 1006 in 315 files)
+[typecheck] PASS
+Integrated c64787645c (second base)
+CI=true pnpm install --frozen-lockfile
+Done in 2s using pnpm v10.28.2
+pnpm -C autobyteus-web test:electron --run application/__tests__ updater/__tests__
+ Test Files  17 passed (17)
+      Tests  200 passed (200)
+pnpm -C autobyteus-web typecheck
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 59.1s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 3.5s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 1.0s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 37.5s
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+pnpm -C autobyteus-server-ts typecheck
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 16.8s
+[typecheck] server tests (tsconfig.tests.json): 1006 errors, exit 2, 47.1s
+[typecheck] production errors: 0; test-file errors: 1006 in 315 files (baseline 1006 in 315 files)
+[typecheck] PASS
