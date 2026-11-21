@@ -8,7 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer, `design-review-report.md`, round 2 (Pass) | N/A | `Initial Baseline` | SR-009, ARCH-REV-002, CRR-001 | Implemented; Code Review Pass (CRR-001, no findings); next: API/E2E |
 | IR-002 | Delivery Engineer, `release-deployment-report.md` § Escalation / Reroute (DEL-03, whole unit suite after the base refresh) | DEL-03 stale tests 1–3 | `Local Fix` | CRR-001, CRR-003, API-REV-002; DR: N/A (not yet created) | Stale test fixtures given the new inputs; whole server unit suite Pass (1050 files, 8698 tests); Code Review Pass (CRR-004, no findings); next: API/E2E |
-| IR-003 | Delivery Engineer, `release-deployment-report.md` § Delivery Round 2 (merge with origin/personal 6533d7be04 conflicts) | Round-2 merge conflict (3 production files, 19 test files) | `Local Fix` | CRR-004, API-REV-003, CRR-005; DR: N/A | Merged and resolved (575c4ec9ed); typechecks, whole unit suite (8764 tests), Team integration (58) and two-server E2E (55) Pass; next: Code Review |
+| IR-003 | Delivery Engineer, `release-deployment-report.md` § Delivery Round 2 (merge with origin/personal 6533d7be04 conflicts) | Round-2 merge conflict (3 production files, 19 test files) | `Local Fix` | CRR-004, API-REV-003, CRR-005; DR: N/A | Merged and resolved (575c4ec9ed); typechecks, whole unit suite (8764 tests), Team integration (58) and two-server E2E (55) Pass; Code Review Pass (CRR-006, no findings); next: API/E2E |
 
 ## Revision Entries
 
@@ -92,3 +92,4 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result (all Pass, on 575c4ec9ed): IMP-10 both typechecks (server 1004 in 314 files, web 86 in 36, both at baseline); IMP-11 whole server unit suite (`Test Files  1057 passed | 5 skipped (1062)`, `Tests  8764 passed | 9 skipped (8773)`); IMP-12 Team integration tests (10 files, 58 tests); IMP-13 server rebuild and the gated two-server E2E file (55 tests) — see the handoff.
 - Next recipient or routing: Code Review (Large / High; the merged Team root is production code no reviewer has seen).
 - Remaining limitations or risks: the base moves fast; a later merge that touches the Team root again needs the same check.
+- Code review: Pass, CRR-006, no findings (`code-review-report.md`); the reviewer routed it to API/E2E. Recorded only; no implementation change.
