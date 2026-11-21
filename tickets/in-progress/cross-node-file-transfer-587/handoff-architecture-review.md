@@ -13,3 +13,4 @@
 - ARCH-REV-002, 2026-11-21: Pass for SR-008 (eac8cf3814); handed off to `/implementation_engineer` by the reviewer. AR-007 wording fixed in SR-009.
 - SR-010, 2026-11-21: revision after code review CRR-008 (design § Revision SR-010); sent for architecture review.
 - ARCH-REV-003, 2026-11-21: Pass for SR-010; SR-011 applies RF-14 to the existing-copy form (AR-008) and fixes the spine lines (AR-007).
+- ARCH-REV-004, 2026-11-21: Pass for SR-011 (74abb1a886); AR-007 and AR-008 resolved, no open findings; the reviewer confirmed the handoff to `/implementation_engineer` (591 tests and fixtures for the form without `node` change).
