@@ -1,0 +1,77 @@
+# FT-01: faults in /Users/normy/.cache/abtest594/fs-ios (d9689619e6), each restored after; 2026-11-21T11:00:35Z
+== baseline
+ios-icon:check exit=0
+[ios-icon] all 18 slots match the logo (on #1E3A8A).
+contract check exit=0: iOS release contract checks passed.
+== (a) one pixel of AppIcon-1024.png set to red (#FF0000) at (512, 300)
+ios-icon:check exit=1
+[ios-icon] AppIcon-1024.png: it has an alpha channel (App Store Connect refuses it)
+[ios-icon] 1 of 18 slots do not match the logo.
+contract check exit=1: error: /Users/normy/.cache/abtest594/fs-ios/autobyteus-ios/AutoByteusMobile/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png must be 8-bit RGB without alpha (PNG color type 2, bit depth 8); found color type 6, bit depth 8.
+restored: git status 1 changes
+== (b) AppIcon-iphone-60x60@3x.png deleted
+ios-icon:check exit=1
+[ios-icon] AppIcon-iphone-60x60@3x.png: the file is missing
+[ios-icon] 1 of 18 slots do not match the logo.
+contract check exit=1: error: /Users/normy/.cache/abtest594/fs-ios/autobyteus-ios/AutoByteusMobile/Assets.xcassets/AppIcon.appiconset/Contents.json slot iphone 60x60@3x names AppIcon-iphone-60x60@3x.png, which does not exist.
+restored: git status 1 changes
+== (c) AppIcon-ipad-40x40@2x.png re-saved with an alpha channel (pixels unchanged)
+sips:   hasAlpha: yes
+ios-icon:check exit=1
+[ios-icon] AppIcon-ipad-40x40@2x.png: it has an alpha channel (App Store Connect refuses it)
+[ios-icon] 1 of 18 slots do not match the logo.
+contract check exit=1: error: /Users/normy/.cache/abtest594/fs-ios/autobyteus-ios/AutoByteusMobile/Assets.xcassets/AppIcon.appiconset/AppIcon-ipad-40x40@2x.png must be 8-bit RGB without alpha (PNG color type 2, bit depth 8); found color type 6, bit depth 8.
+restored: git status 1 changes
+== (c2) AppIcon-1024.png at the wrong size (1000x1000)
+ios-icon:check exit=1
+[ios-icon] AppIcon-1024.png: it is 1000x1000, not 1024x1024
+[ios-icon] 1 of 18 slots do not match the logo.
+contract check exit=1: error: /Users/normy/.cache/abtest594/fs-ios/autobyteus-ios/AutoByteusMobile/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png is 1000x1000; slot ios-marketing 1024x1024@1x needs 1024x1024.
+restored: git status 1 changes
+== (d) the SVG's mark recolored #34D399 → #F59E0B, PNGs not regenerated
+fill="#1E3A8A" fill="#F59E0B" 
+ios-icon:check exit=1
+[ios-icon] AppIcon-iphone-20x20@2x.png: its pixels differ from the logo's render (max 193 > 8 or mean 47.107 > 0.5); run ios-icon:build (max 193, mean 47.107)
+[ios-icon] AppIcon-iphone-20x20@3x.png: its pixels differ from the logo's render (max 193 > 8 or mean 47.181 > 0.5); run ios-icon:build (max 193, mean 47.181)
+[ios-icon] AppIcon-iphone-29x29@2x.png: its pixels differ from the logo's render (max 193 > 8 or mean 47.139 > 0.5); run ios-icon:build (max 193, mean 47.139)
+[ios-icon] AppIcon-iphone-29x29@3x.png: its pixels differ from the logo's render (max 193 > 8 or mean 47.238 > 0.5); run ios-icon:build (max 193, mean 47.238)
+[ios-icon] AppIcon-iphone-40x40@2x.png: its pixels differ from the logo's render (max 193 > 8 or mean 47.226 > 0.5); run ios-icon:build (max 193, mean 47.226)
+[ios-icon] AppIcon-iphone-40x40@3x.png: its pixels differ from the logo's render (max 193 > 8 or mean 47.297 > 0.5); run ios-icon:build (max 193, mean 47.297)
+[ios-icon] AppIcon-iphone-60x60@2x.png: its pixels differ from the logo's render (max 193 > 8 or mean 47.297 > 0.5); run ios-icon:build (max 193, mean 47.297)
+[ios-icon] AppIcon-iphone-60x60@3x.png: its pixels differ from the logo's render (max 193 > 8 or mean 47.313 > 0.5); run ios-icon:build (max 193, mean 47.313)
+[ios-icon] AppIcon-ipad-20x20@1x.png: its pixels differ from the logo's render (max 193 > 8 or mean 46.799 > 0.5); run ios-icon:build (max 193, mean 46.799)
+[ios-icon] AppIcon-ipad-20x20@2x.png: its pixels differ from the logo's render (max 193 > 8 or mean 47.107 > 0.5); run ios-icon:build (max 193, mean 47.107)
+[ios-icon] AppIcon-ipad-29x29@1x.png: its pixels differ from the logo's render (max 193 > 8 or mean 47.093 > 0.5); run ios-icon:build (max 193, mean 47.093)
+[ios-icon] AppIcon-ipad-29x29@2x.png: its pixels differ from the logo's render (max 193 > 8 or mean 47.139 > 0.5); run ios-icon:build (max 193, mean 47.139)
+[ios-icon] AppIcon-ipad-40x40@1x.png: its pixels differ from the logo's render (max 193 > 8 or mean 47.107 > 0.5); run ios-icon:build (max 193, mean 47.107)
+[ios-icon] AppIcon-ipad-40x40@2x.png: its pixels differ from the logo's render (max 193 > 8 or mean 47.226 > 0.5); run ios-icon:build (max 193, mean 47.226)
+[ios-icon] AppIcon-ipad-76x76@1x.png: its pixels differ from the logo's render (max 193 > 8 or mean 47.218 > 0.5); run ios-icon:build (max 193, mean 47.218)
+[ios-icon] AppIcon-ipad-76x76@2x.png: its pixels differ from the logo's render (max 193 > 8 or mean 47.301 > 0.5); run ios-icon:build (max 193, mean 47.301)
+[ios-icon] AppIcon-ipad-83_5x83_5@2x.png: its pixels differ from the logo's render (max 193 > 8 or mean 47.311 > 0.5); run ios-icon:build (max 193, mean 47.311)
+[ios-icon] AppIcon-1024.png: its pixels differ from the logo's render (max 193 > 8 or mean 47.367 > 0.5); run ios-icon:build (max 193, mean 47.367)
+[ios-icon] 18 of 18 slots do not match the logo.
+== (d) then ios-icon:build (the README's recovery), then the check
+[ios-icon] wrote AppIcon-ipad-83_5x83_5@2x.png (167x167, RGB on #1E3A8A)
+[ios-icon] wrote AppIcon-1024.png (1024x1024, RGB on #1E3A8A)
+ios-icon:check exit=0
+[ios-icon] all 18 slots match the logo (on #1E3A8A).
+regenerated PNGs differ from the committed ones: 18 files
+restored: git status 1 changes
+== (e) ITSAppUsesNonExemptEncryption removed from Info.plist
+contract check exit=1: error: /Users/normy/.cache/abtest594/fs-ios/autobyteus-ios/AutoByteusMobile/Info.plist must declare ITSAppUsesNonExemptEncryption = false; found None.
+restored: git status 1 changes
+== (e2) ITSAppUsesNonExemptEncryption set to true
+contract check exit=1: error: /Users/normy/.cache/abtest594/fs-ios/autobyteus-ios/AutoByteusMobile/Info.plist must declare ITSAppUsesNonExemptEncryption = false; found True.
+restored: git status 1 changes
+== after all faults
+ios-icon:check exit=0
+[ios-icon] all 18 slots match the logo (on #1E3A8A).
+contract check exit=0: iOS release contract checks passed.
+== (a2) rerun of (a): one pixel of AppIcon-1024.png set to red at (512, 300), saved as RGB without alpha (run (a) above saved it with alpha, so it showed the alpha rule instead)
+sips:  hasAlpha: no  space: RGB 
+ios-icon:check exit=1
+[ios-icon] AppIcon-1024.png: its pixels differ from the logo's render (max 211 > 8 or mean 0.000 > 0.5); run ios-icon:build (max 211, mean 0.000)
+[ios-icon] 1 of 18 slots do not match the logo.
+contract check exit=0: iOS release contract checks passed. (structure only: the pixels are ios-icon:check's)
+restored; check again: [ios-icon] all 18 slots match the logo (on #1E3A8A).
+== the one 'git status' entry after each restore is untracked, from the build: ?? autobyteus-application-sdk-contracts/dist/ 
