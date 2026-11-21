@@ -78,18 +78,18 @@ None: no release, no version bump, no tag.
 
 - Bootstrap context source: `RELEASE.md` Finalization Target (`origin`, `personal`; ticket branch `codex/<ticket-name>`; merge `--no-ff` from a `finalize/` branch in the ticket worktree) and the ticket's bootstrap (base `origin/personal` @ `90c4958a35`).
 - Ticket branch: `codex/runtime-handover-journal-read-583`
-- Ticket branch commit result: `PENDING-TICKET-COMMIT`
-- Ticket branch push result: `PENDING-TICKET-PUSH`
+- Ticket branch commit result: `09807af4bd` (delivery documents, release notes, follow-up FU-004, the archive to `tickets/done/`), on top of the second base merge `2c6cf473b1`, delivery's checkpoint `058293e2ee`, the first base merge `b950c44a84`, API/E2E's `d95f6fcbec` and the implementation commits `5617257773` and `014e281990`.
+- Ticket branch push result: `origin/codex/runtime-handover-journal-read-583` created (new branch) at `09807af4bd`. Secret Gate on `origin/personal..HEAD` (7 commits) `PASS` before the push; licensing `PASS` (8620 tracked files scanned); artifact hygiene `PASS` (102359 tracked files; no file under a `dist/` folder was added by this ticket: the untracked `dist/` folders the build left in the worktree were not staged).
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: `PENDING-ADVANCED`
+- Target advanced after verification / acceptance: `No`: `origin/personal` was `7591aa307f` at the second base merge, before archiving, before the ticket push, before the finalize merge and immediately before the target push (each checked by `git fetch origin personal`).
 - Delivery-owned edits protected before re-integration: `Completed` (checkpoint commit `058293e2ee` before the second merge)
-- Re-integration before final merge result: `PENDING-REINTEGRATION`
-- Target branch update result: `PENDING-TARGET-UPDATE`
-- Merge into target result: `PENDING-MERGE`
-- Push target branch result: `PENDING-PUSH`
-- User's checkout of the target branch (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`): `PENDING-CHECKOUT`
-- Repository finalization status: `PENDING-STATUS`
+- Re-integration before final merge result: `Not needed` (the verified state is the merged state; the target had not moved since the second base merge)
+- Target branch update result: `finalize/runtime-handover-journal-read-583` created from `origin/personal` @ `7591aa307f` in the ticket worktree (not in the main checkout).
+- Merge into target result: `--no-ff` merge `ecccd1d57b`; its tree equals the ticket branch's `09807af4bd` (`git diff --stat codex/runtime-handover-journal-read-583 HEAD` empty). Secret Gate on the merged state (8 commits) `PASS`; licensing `PASS`; artifact hygiene `PASS` (102359 tracked files).
+- Push target branch result: `7591aa307f..ecccd1d57b  HEAD -> personal`. This record commit follows it (fast-forward), and the ticket branch is fast-forwarded to it.
+- User's checkout of the target branch (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`): `Updated to ecccd1d57b` after the merge push: it was on `personal` at `7591aa307f` with no commit the remote lacks (0 ahead, 8 behind), `git fetch` then `git merge --ff-only origin/personal`, no stash, reset, checkout or commit; its 6 uncommitted files (other tickets' `tickets/done/` reports) are untouched. After this record's push the same fast-forward is repeated for the record commit; its result is in the terminal message.
+- Repository finalization status: `Completed`
 - Blocker (if applicable): None
 
 ## Release / Publication / Deployment
@@ -146,10 +146,10 @@ Revert the merge commit on `personal` (RELEASE.md, Rollback). The change convert
 ## Final Status
 
 - Verification complete (from the evidence, or the user's check where needed): `Yes`
-- Repository finalization complete: `PENDING-FINAL-FINALIZATION`
+- Repository finalization complete: `Yes`
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: `PENDING-FINAL-CLEANUP`
+- Applicable safe cleanup complete or not required: `Yes` after the steps above; the terminal message states the result
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: `PENDING-ELIGIBLE`
-- Terminal package sent to the Solution Designer: `PENDING-SENT`
-- Terminal message/reference: `PENDING-MESSAGE`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes`, after this record's push, the update of the user's checkout and the cleanup
+- Terminal message/reference: the `Delivery Completed` message to `/solution_designer` that follows this record
