@@ -2,6 +2,42 @@
 
 ## Review Round Meta
 
+Latest round (round 6, `CRR-006`): **Implementation Review** of IR-004 (the CR-004 Local Fix). The round-5 delta review below holds the CR-003 trace and the reader table this result relies on. The round-3 full re-audit is the structural baseline.
+
+- Review Entry Point (round 6): `Implementation Review`
+- Current Code Review Revision ID: `CRR-006`
+- Current Review Round: `6`
+- Review Scope: `Targeted Delta Review`
+- Review Scope Evidence: `9b0705a8ef..6c7af4a384` touches only CR-004's two files (`team-member-run-view-projection-service.ts` +4/−16; `team-run-execution-tree-location-service.ts` +2/−1), one test (−5) and evidence. No behavior, spine, interface or new-file change. Unaffected checks carry forward.
+- Trigger: implementation engineer, IR-004 (commit `6c7af4a384`)
+- Check reused, not rerun: IMP-22, read in `evidence/IMP-22-cr004-typecheck-tests.log`. Typecheck: production 0 errors, tests 1005 in 314 files (baseline). 96 files, 661 tests passed, including the CR-003 cases.
+
+### CR-004 recheck
+
+| Item | Evidence | Status |
+| --- | --- | --- |
+| `LocatedTeamAgentExecution.configuredPlacement` non-null, documented as the agent's own stored node | `team-run-execution-tree-location-service.ts:20-21` | Done |
+| Unreachable "no configured launch placement or recorded source" throw removed | `requireLocation` returns `tagTeamAgentExecution(found)` | Done |
+| `!` removed; `metadataFor` reads `location.configuredPlacement` | `:140-153` | Done |
+| One derivation: `platformAgentRunId` from the same node; `ownNodeOf` and its second index removed; unused `locatedExecutionSource` import removed | diff; `TeamExecutionIndex` is still used by `senderAddresses` | Done |
+| Stale test removed: it built `configuredPlacement: null`, which the type no longer allows | `team-member-run-view-projection-service.test.ts`. The remaining `configuredPlacement: null` fixtures are Org locations (`agent-org-execution-tree-location-service.test.ts:88`, `run-folder-discovery.test.ts:49`), whose type stays nullable. | Correct |
+
+**CR-004: Resolved.**
+
+### Candidate gate (round 6)
+
+| Candidate ID | Observation | Scenario / Contract | Evidence | Disposition | Reason |
+| --- | --- | --- | --- | --- | --- |
+| C-18 | `run-folder-discovery.ts` `teamMembers` keeps `placement?.` / `?? null` on a value that is now non-null, and `agent-memory-location.ts` keeps a nullable `configuredPlacement` | Principle 7 (touched files) / Principle 11 | Neither file is touched by this ticket's IR-003/IR-004 delta. The optional chains are no-ops on a non-null value. The agent-memory type is a separate domain projection declared beside its Org twin. | Reject | Not in touched files. No reachable branch with behavior, and no consequence. Tightening them is a type-only nicety, not a follow-up. |
+
+### Round-6 score revalidation (other categories as in round 5 / CRR-003)
+
+- Shared-Structure / Data-Model Tightness: 9.0 → **9.4**. The team location type now says what the code guarantees, and there is one derivation of the member's node.
+- Cleanup Completeness: 8.8 → **9.4**. The dead branch, the assertion, the second index, the unused import and the stale test are removed.
+- Overall: 9.4/10 (simple average). Every category is ≥ 9.3.
+
+Round 5 details follow.
+
 Latest round (round 5, `CRR-005`): **Implementation Review** of IR-003 (the CR-003 Local Fix). The round-3 full re-audit below (`CRR-003`) stays as the structural baseline. Round 4's failure-origin record (CR-003) is in `code-review-revision-record.md` CRR-004.
 
 - Review Entry Point (round 5): `Implementation Review`
@@ -260,7 +296,9 @@ None.
 | CR-001 | Run-ID messages to leaving or former members did not reach the refusal (F-1) | Local Fix | Implementation | Resolved (CRR-003; runtime API-REV-002) |
 | CR-002 | The "Leaving" visibility rule was on an unmounted component (F-2) | Design Impact | Solution Designer | Resolved (SR-010, IR-002; rendered API-REV-002) |
 | CR-003 | A leaving or former member could not be opened: no launch source (F-3) | Local Fix | Implementation | Resolved (IR-003; IMP-20, IMP-21) |
-| CR-004 | Dead null branch and `!` in the team projection service, nullable team location type, and a second derivation of the member's node (`ownNodeOf`), all left by the CR-003 fix | `Local Fix` | Implementation engineer | Open |
+| CR-004 | Dead null branch, nullable team location type, and a second derivation of the member's node, left by the CR-003 fix | Local Fix | Implementation | Resolved (IR-004; IMP-22) |
+
+No open findings.
 
 ## Follow-ups
 
@@ -268,23 +306,24 @@ None.
 
 ## Classification
 
-- CR-004: `Local Fix`, implementation-owned (cleanup in two touched files; no behavior change).
+N/A: Pass.
 
 ## Recommended Recipient
 
-The implementation engineer. After the fix: a targeted source review of CR-004, then API/E2E reruns TF-03, TFU-03 and TFU-04 on that commit.
+API/E2E (primary pass rule): rerun TF-03, TFU-03 and TFU-04 on `6c7af4a384`, plus the cases these changes touch. Then an informational notice to implementation.
 
 ## Residual Risks
 
 - Carried from CRR-003: a follower step that throws after a commit skips the rest of that change (C-04); a definite release-write failure keeps the "Leaving" tag until the next plan (C-10, designed); FU-003.
+- The rendered approval (TFU-04) is proven by the implementation's IMP-21 run on IR-003. API/E2E's own rerun on `6c7af4a384` confirms it on the final commit.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Review Entry Point: `Implementation Review` (round 5, `Targeted Delta Review`)
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (round 6, `Targeted Delta Review`)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.3/10 average. Shared-Structure Tightness 9.0 and Cleanup Completeness 8.8 are below 9.2; every other category is ≥ 9.3.
-- Failure Origin: N/A (implementation review)
-- Recommended Recipient: implementation engineer
-- Notes: CR-003 is resolved, and the behavior is correct in the rendered app with real Codex. The fail is for cleanup the fix left behind (CR-004), as the dead-code rule requires. Classification Large/High is preserved.
+- Score Summary: 9.4/10 average; every category ≥ 9.3
+- Failure Origin: N/A
+- Recommended Recipient: API/E2E engineer
+- Notes: CR-001..CR-004 are resolved. Classification Large/High is preserved.
