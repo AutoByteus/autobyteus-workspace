@@ -2,47 +2,78 @@
 
 ## Review Round Meta
 
-Latest round (round 4, `CRR-004`): **API/E2E Failure-Origin Review** of API-REV-002 (Fail: F-3). The round-3 implementation review below (`CRR-003`) stays as the structural baseline. This round updates only the affected findings, score rationale, classification and latest result.
+Latest round (round 5, `CRR-005`): **Implementation Review** of IR-003 (the CR-003 Local Fix). The round-3 full re-audit below (`CRR-003`) stays as the structural baseline. Round 4's failure-origin record (CR-003) is in `code-review-revision-record.md` CRR-004.
 
-- Review Entry Point (round 4): `API/E2E Failure-Origin Review`
-- Current Code Review Revision ID: `CRR-004`
-- Review Scope (round 4): `N/A` (failure-origin round)
-- Trigger: API/E2E engineer, API-REV-002 Fail (F-3); F-1, F-2's tag, O-1 and O-2 pass
-- Source under test: `2bd8a470bf` (IR-002); tests `8789b97a41`; reports and evidence `d31f99ec92`
-- Coverage Investigation / Execution Coverage Report / API/E2E Revision Record Reviewed: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md` (API-REV-002)
-- Failing Scenario IDs: F-3 (TF-03 `openedProjection`/`openedFileChanges`; TFU-03, TFU-04; AC-003, DEC-002; SR-010 "the row still opens")
-- Exact Failing Commands / Execution Mode:
-  - `env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<wt>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts --no-watch`
-  - `node tickets/in-progress/team-run-follows-definition/probes/team-follows-ui-probe.mjs --output-dir <dir>` (built backend, nuxt dev, Chromium; TFU-04 with a real Codex member, auto-execute off)
-- Failure Evidence Paths: `evidence/API-TF-r2/TF-03.json` (`openedProjection`, `openedFileChanges`), `evidence/API-TF-r2/API-TF-r2-run.log`, `evidence/API-TFU-r2/TFU-04-c-leaving-coder-opened.png`, `evidence/API-TFU-r2/TFU-03-b-leaving-member-opened.png`, `evidence/API-TFU-r2/team-follows-ui-evidence.json` (`TFU-03-observed`, `TFU-04-observed`)
-- Project testing guideline applied: root `TESTING.md`; no conflict
+- Review Entry Point (round 5): `Implementation Review`
+- Current Code Review Revision ID: `CRR-005`
+- Current Review Round: `5`
+- Review Scope: `Targeted Delta Review`
+- Review Scope Evidence: the changes since round 4 (`3d8e53cf0c..072bdb7217`) stay within CR-003's files and behavior:
+  - `team-run-execution-tree-location-service.ts` (`toLocation`, +3/−2);
+  - `team-member-run-view-projection-service.ts` (`ownNodeOf`, `metadataFor`, +7/−1);
+  - one test file;
+  - evidence.
 
-### CR-003 — F-3: a leaving (or former) member cannot be opened: its location has no launch source
+  No spine, shared interface or data shape changes, and no new files. Unaffected checks and scores carry forward from CRR-003. CR-003 is rechecked first, then the delta, then the readers of the changed field (Principle 11).
+- Trigger: implementation engineer, IR-003 (commit `072bdb7217`; the first handoff named `74a7ce4c7c` in error, corrected by the engineer)
+- Implementation Handoff / Revision Record Reviewed: `implementation-handoff.md` (IR-003 summary, trace row, IMP-18..IMP-21), `implementation-revision-record.md` (IR-003)
+- Checks reused, not rerun (the code they exercise is unchanged since they ran):
+  - IMP-18 typecheck at baseline;
+  - IMP-19 96 files / 662 tests;
+  - IMP-20 TF suite 12/12, with `TF-03.json` `openedProjection: "ok"` and `openedFileChanges: "ok"`;
+  - IMP-21 rendered probe, real Codex: `TFU-04-observed.approvalShown: true`, `ran: true`, `approvedByStream: []`, row released.
 
-- Scenario basis: `Supported Explicit Edge Scenario` SCN-003a (CRR-003). The user opens a removed busy member's "Leaving" row to answer its pending approval (DEC-002; SR-010: the row "still opens, so its pending approval is answerable"). TFU-04 drove it with a real Codex member waiting for approval.
-- Established: `Read`, confirming API/E2E's `Reproduced` (TF-03, TFU-03, TFU-04). Paths read:
-  - `team-member-run-view-projection-service.ts:128-141` (`requireLocation`) and `:143-160` (`metadataFor`);
-  - `collaboration-execution-location-service.ts:28-29` (`locatedExecutionSource` = `location.configuredPlacement`);
-  - `team-run-execution-tree-location-service.ts:152-206` (`findInTree`, `toLocation`);
-  - `team-execution-index.ts:122-124` (`getConfiguredPlacement`, current members by address).
-- Cause:
-  - IR-001 made `findInTree` and `listInTree` return former members (`listFormerAgentExecutions`).
-  - `toLocation` sets `configuredPlacement` only from `index.getConfiguredPlacement(agent.address)`, which knows current members. It requires the node's run ID to match, so a former member gets `configuredPlacement: null`. A leaving member is a former member on disk (SR-010).
-  - So `requireLocation` throws `CollaborationMemberNotFoundError("… has no configured launch placement or recorded source")` for every former or leaving member. That blocks the projection, the active-trace page, the file changes and the file-change entry.
-  - The web's open of the row loads that projection, so it fails ("Couldn't load activity"), focus stays on the previous member, and no Approve control appears.
-  - The same gap sits in `metadataFor`: `platformAgentRunId` comes from `new TeamExecutionIndex(tree).getAgent(id)`, which is current-only, so a former member would also get `null` there.
-- Invariant that should hold: a member the run still names by run ID (leaving or former) is located with its own stored node (`formerMembers[i]`) as its launch source and provider binding, the same way a current member uses its `members` node. Then every by-run-ID reader that `requireLocation` serves opens it.
-- Origin: `Implementation defect`, together with a source-review gap.
-  - SR-010's "the row still opens" needs the projection path for a leaving member. IR-002 rendered the tag but did not make that path work. Its web spec mounts the row; nothing opens it.
-  - The handoff recorded the symptom as a Known Risk ("`getTeamMemberRunProjection` answers 'no configured launch placement' for a former member"), and I carried it in CRR-003 as a residual risk under IR-001 deviation 1.
-  - I did not connect it to SR-010's "still opens" requirement for leaving members. It was reasonably detectable in source review.
-- Not a design gap: the design already requires the row to open. Using the former member's own stored node as its source stays within existing owners (the location service and the projection service) and approved behavior: REQ-002 keeps a removed member's conversation readable; DEC-002 requires the approval to be answerable.
-- Required action (implementation decides the shape):
-  - Give former and leaving members a located source from their own former node, in the location service and in `metadataFor`'s provider binding.
-  - Then confirm that opening a leaving row in the app focuses the member and shows its pending approval.
-  - Tests: a server test that opens a leaving member through `getTeamMemberRunProjection` / `getTeamMemberFileChanges` (TF-03's new assertions), and the rendered check TFU-03/TFU-04. The projection failure is the proven blocker. Whether the web focus and Approve control then follow is not proven by reading, so the rendered rerun decides.
-- Scope: this ticket (AC-003 / DEC-002 fail without it).
-- Affected CRR-003 scores: Runtime Correctness And Behavioral Fidelity 9.3 → **8.8** (an in-scope edge path not realized). API/E2E Readiness 9.3 → **9.1** (the tag was proven by component specs only). Other rows unchanged.
+  I read the values in the evidence files themselves, not only the handoff.
+
+### CR-003 recheck (scenario traced from its real trigger)
+
+Scenario SCN-003a: the user opens a "Leaving" row to answer the member's pending approval. Path read:
+1. The row's `openTarget` (`{ runKind: "agent_team", runId, agentRunId }`, `run-tree-view.ts`) leads to the web member open.
+2. GraphQL `getTeamMemberRunProjection` / `getTeamMemberFileChanges` call `TeamMemberRunViewProjectionService.requireLocation` (`:128-141`).
+3. That calls `TeamRunExecutionTreeLocationService.findAgent` → `findInTree` (former members included by run ID) → `toLocation` (`:184-206`). `configuredPlacement` is now the located agent's own stored node (`agent.source`, `leaving` stripped).
+4. `locatedExecutionSource` is non-null, so `metadataFor` builds the metadata with the member's own launch and provider binding, and the projection loads.
+
+The rendered result: IMP-21 TFU-04 (real Codex) shows the member focused with its pending `run_bash` and Approve/Deny; approving ran the command and the row was released. A stopped former member opens by run ID too (unit test, REQ-002). The swap case (another member now at the same address) gets its own node, not the current member's (unit test). **CR-003: Resolved.**
+
+### Readers of the changed field (`configuredPlacement` of a team location; Principle 11)
+
+| Reader | Effect of the change | Verdict |
+| --- | --- | --- |
+| `TeamMemberRunViewProjectionService` (`requireLocation`, `metadataFor`) | Opens leaving and former members | Intended (CR-003) |
+| `RunFileChangeProjectionService` (`locatedLaunchConfiguration` → workspace) | A former member's file changes resolve against its own workspace | Intended |
+| `run-folder-discovery.ts:205-217` (memory page, search, episodic catalog) | A former member gets its own runtime kind, workspace and agent-definition attribution (was `null` since IR-001) | Consistent with REQ-002 (its memory stays readable and attributed) |
+| `collaboration-member-memory-targets.ts:62`, `agent-memory-location-service.ts:107,117` | Former member's `agentDefinitionId` is now set | Same |
+| Current members | `agent.source` is the same node `getConfiguredPlacement(address)` returned before (one member per address in `members`) | Unchanged |
+
+No reader uses a non-null `configuredPlacement` to grant an action (start, input, delete), so no removed member becomes addressable through this change.
+
+### Candidate Finding And Mechanism Gate (round 5)
+
+| Candidate ID | Observation | Scenario / Contract | Evidence | Disposition | Scope | Reason / Proportionate Response |
+| --- | --- | --- | --- | --- | --- | --- |
+| C-15 | `requireLocation`'s `if (!locatedExecutionSource(location)) throw … "has no configured launch placement or recorded source"` can no longer run: `toLocation` is the only constructor of a team location (`grep "configuredPlacement:"`: team `:202` only) and now always sets it. `metadataFor`'s `!` asserts the same. | Principle 7 (a branch that can never run, in a touched file; holds in every context) | `team-run-execution-tree-location-service.ts:184-206`; `team-member-run-view-projection-service.ts:137-139,152` | Promote | This ticket | Remove the dead branch and the assertion. Tighten `LocatedTeamAgentExecution.configuredPlacement` to non-null (the Org location keeps its nullable field) so the type says what the code guarantees. |
+| C-16 | `ownNodeOf` builds a second `TeamExecutionIndex` to find the member's node again. `metadataFor` already holds that node as `source`, the location's own stored node, which carries `platformAgentRunId`. | Principle 11 (each fact derived by one owner) | `team-member-run-view-projection-service.ts:144-148,164` | Promote | This ticket | One derivation: use `source.platformAgentRunId` and remove `ownNodeOf`. Concrete problem: two places choosing "the member's node" by different rules is exactly how CR-003 arose (the location picked by address, `metadataFor` by `getAgent`). A second derivation can drift again. |
+| C-17 | Memory-page attribution of former members changes from `null` to their agent definition | REQ-002 | Reader table above | Reject | — | Approved behavior, an improvement |
+
+### CR-004 — dead null branch and a second derivation of the member's node, left by the CR-003 fix
+
+- Evidence: C-15 and C-16 above. Both were created by this change: the fix made the null case impossible and added `ownNodeOf`.
+- Required action (implementation decides the exact shape):
+  - make `configuredPlacement` non-null on `LocatedTeamAgentExecution`;
+  - remove the unreachable throw in `requireLocation` and the `!` in `metadataFor`;
+  - take `platformAgentRunId` from `source` and remove `ownNodeOf`.
+
+  No behavior changes. The CR-003 tests (`team-run-former-member-location.test.ts`) and the typecheck should stay green.
+- Classification: `Local Fix`, implementation engineer.
+- API/E2E impact: none on behavior. API/E2E can rerun TF-03, TFU-03 and TFU-04 on the commit that includes this cleanup.
+
+### Round-5 score revalidation (other categories carried from CRR-003)
+
+- Runtime Correctness And Behavioral Fidelity: 8.8 → **9.4**. CR-003 is resolved and proven in the rendered app with real Codex.
+- API/E2E Readiness: 9.1 → **9.4**. TF 12/12 and TFU-01..06 pass on the built server.
+- Shared-Structure / Data-Model Tightness: 9.4 → **9.0**. The team location type's `| null` no longer describes any value, and the member's node is derived twice (C-15, C-16).
+- Cleanup Completeness: 9.5 → **8.8**. A dead branch in a touched file (C-15).
+- Overall: 9.3/10 (simple average). Two categories are below 9.2, so the round does not pass cleanly.
 
 Round 3 meta follows.
 
@@ -226,9 +257,10 @@ None.
 
 | ID | Finding | Classification | Owner | Status |
 | --- | --- | --- | --- | --- |
-| CR-001 | Run-ID messages to leaving or former members did not reach the refusal (F-1) | Local Fix | Implementation | Resolved (CRR-003; API-REV-002 passed) |
-| CR-002 | The "Leaving" visibility rule was on an unmounted component (F-2) | Design Impact | Solution Designer | Resolved (SR-010, IR-002; tag rendered in API-REV-002) |
-| CR-003 | A leaving or former member cannot be opened: its location has no launch source (F-3) | `Local Fix` | Implementation engineer | Open |
+| CR-001 | Run-ID messages to leaving or former members did not reach the refusal (F-1) | Local Fix | Implementation | Resolved (CRR-003; runtime API-REV-002) |
+| CR-002 | The "Leaving" visibility rule was on an unmounted component (F-2) | Design Impact | Solution Designer | Resolved (SR-010, IR-002; rendered API-REV-002) |
+| CR-003 | A leaving or former member could not be opened: no launch source (F-3) | Local Fix | Implementation | Resolved (IR-003; IMP-20, IMP-21) |
+| CR-004 | Dead null branch and `!` in the team projection service, nullable team location type, and a second derivation of the member's node (`ownNodeOf`), all left by the CR-003 fix | `Local Fix` | Implementation engineer | Open |
 
 ## Follow-ups
 
@@ -236,24 +268,23 @@ None.
 
 ## Classification
 
-- CR-003: `Local Fix`, implementation-owned (bounded: location source of former/leaving members in the run-history location and projection services).
+- CR-004: `Local Fix`, implementation-owned (cleanup in two touched files; no behavior change).
 
 ## Recommended Recipient
 
-The implementation engineer. After the fix: source review again, then API/E2E reruns TF-03 (F-3 assertions), TFU-03 and TFU-04, plus the cases the fix touches.
+The implementation engineer. After the fix: a targeted source review of CR-004, then API/E2E reruns TF-03, TFU-03 and TFU-04 on that commit.
 
 ## Residual Risks
 
-- As in CRR-003, except that the "former member's conversation projection" risk is now CR-003.
-- Whether the web focuses the member and shows the Approve control once the projection loads is not proven by reading. The TFU-04 rerun decides.
+- Carried from CRR-003: a follower step that throws after a commit skips the rest of that change (C-04); a definite release-write failure keeps the "Leaving" tag until the next plan (C-10, designed); FU-003.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (failure-origin round; supersedes the CRR-003 Pass)
-- Review Entry Point: `API/E2E Failure-Origin Review`
-- Supported Product Scenario Gate: `Pass` (SCN-003a, supported explicit edge, real trigger)
+- Review Decision: `Fail`
+- Review Entry Point: `Implementation Review` (round 5, `Targeted Delta Review`)
+- Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: CRR-003 scores carried, except Runtime Correctness 8.8 and API/E2E Readiness 9.1
-- Failure Origin: CR-003 implementation defect plus a source-review gap (`Local Fix`)
+- Score Summary: 9.3/10 average. Shared-Structure Tightness 9.0 and Cleanup Completeness 8.8 are below 9.2; every other category is ≥ 9.3.
+- Failure Origin: N/A (implementation review)
 - Recommended Recipient: implementation engineer
-- Notes: Classification Large/High is preserved. F-1, the F-2 tag, O-1 and O-2 pass in API-REV-002.
+- Notes: CR-003 is resolved, and the behavior is correct in the rendered app with real Codex. The fail is for cleanup the fix left behind (CR-004), as the dead-code rule requires. Classification Large/High is preserved.

@@ -8,6 +8,7 @@
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-001 Fail (F-1, F-2) | Pass (CRR-001) | Fail | CR-001, CR-002 |
 | CRR-003 | `code-review-report.md` | Implementation Review / IR-002 (SR-010, CR-001) | Fail (CRR-002) | Pass | CR-001, CR-002 (resolved) |
 | CRR-004 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-002 Fail (F-3) | Pass (CRR-003) | Fail | CR-003 |
+| CRR-005 | `code-review-report.md` | Implementation Review / IR-003 (CR-003 Local Fix) | Fail (CRR-004) | Fail | CR-003 (resolved), CR-004 (new) |
 
 ## Revision Entries
 
@@ -119,3 +120,36 @@ None (CRR-001 had no findings).
 - Material score or classification changes: Runtime Correctness 9.3 → 8.8; API/E2E Readiness 9.3 → 9.1. Large/High preserved.
 - Recommended recipient: implementation engineer
 - Remaining risks or uncertainty: whether the web focus and Approve control follow once the projection loads is for the TFU-04 rerun to prove.
+
+### CRR-005: Implementation review of IR-003 (Targeted Delta Review)
+
+- Canonical review report updated: `/home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/tickets/in-progress/team-run-follows-definition/code-review-report.md`
+- Review entry point and round: Implementation Review, round 5
+- Review scope: `Targeted Delta Review`. The changes in `3d8e53cf0c..072bdb7217` stay within CR-003's two services and one test file.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-003, commit `072bdb7217`; first handoff named `74a7ce4c7c` in error, corrected); CR-003
+- Relevant solution revision IDs: SR-010
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail (CRR-004)
+- Current authoritative result: Fail
+- What changed in the review result and why:
+  - CR-003 is resolved. Traced from the row's open target to `toLocation`; confirmed by the IMP-20 TF-03 values and the IMP-21 rendered approval with real Codex.
+  - Every reader of the changed `configuredPlacement` was checked: none grants an action from it, and former members now get their own attribution (REQ-002).
+  - New CR-004 (`Local Fix`): the fix left an unreachable null branch and `!` in `TeamMemberRunViewProjectionService`, a nullable team location type that no value uses, and a second derivation of the member's node (`ownNodeOf`). These fail the mandatory dead-code check (Principle 7) and one-derivation (Principle 11).
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-003 | Open (Local Fix) | Resolved | IR-003 | `toLocation` uses the located agent's own node (`:186-188`); `metadataFor` binding from the member's own node; unit tests (own node for a leaving and a stopped former member, swap at the same address; projection and file changes open); IMP-20 `TF-03.json` `openedProjection`/`openedFileChanges` "ok"; IMP-21 `TFU-04-observed.approvalShown: true`, `ran: true` |
+
+- New or remaining finding IDs: CR-004 (Local Fix, implementation)
+- Material score or classification changes:
+  - Runtime Correctness 8.8 → 9.4; API/E2E Readiness 9.1 → 9.4;
+  - Shared-Structure Tightness 9.4 → 9.0; Cleanup Completeness 9.5 → 8.8.
+  - Large/High preserved.
+- Recommended recipient: implementation engineer
+- Remaining risks or uncertainty: none new.
