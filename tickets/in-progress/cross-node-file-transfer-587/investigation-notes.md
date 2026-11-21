@@ -51,7 +51,7 @@ Founder (2026-11-21, via the PM): cross-node `delegate_task` and `send_message_t
 
 | Artifact | Owner | Purpose | Status |
 | --- | --- | --- | --- |
-| `reference-files-contract.md` (RFC-001) | Solution Designer | Contract of reference files on both tools, all routes | Ready for Approval |
+| `reference-files-contract.md` (RFC-001) | Solution Designer | Contract of reference files on both tools, all routes | Approved (founder, 2026-11-21; SR-005) |
 
 ## Contract Investigation (2026-11-21)
 
@@ -76,5 +76,6 @@ Founder (2026-11-21, via the PM): cross-node `delegate_task` and `send_message_t
 | `codex-agent-tools-mcp-materializer.ts:17,36`; `codex-cli 0.171.0` | Our Codex MCP config sets only `startup_timeout_sec` | RF-6: add `tool_timeout_sec` |
 | `grok-build-session-profile.ts:54`, `acp-agent-session-profile.ts:81`, `agy-mcp-config-materializer.ts` | Only readiness timeouts configured | RF-6 risk for AGY/Grok/ACP: measured in implementation |
 | `autobyteus-ts` (grep) | No tool-call time limit in the native runtime | RF-6 holds for AutoByteus |
+| `memory-sync/source/local-memory-export-scanner.ts:25-79`; `memory-sync/shared/memory-sync-path-policy.ts:3-7` (ARCH-REV-001 AR-001) | Memory Sync exports every regular file under `memory/agents`, `memory/agent_teams`, except `.tmp/.partial/.lock/.swp/.swx`/`.DS_Store` | DEC-007 |
 | `run-history/services/agent-run-history-service.ts:250`, `team-run-history-service.ts:122`, `agent-org-run-history-catalog-service.ts:115` | The history delete owners | Cleanup after a delete |
 

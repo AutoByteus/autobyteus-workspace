@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-007` (the Solution Designer's spine walkthrough, G-1 … G-3)
+- Current solution revision ID: `SR-008` (ARCH-REV-001 AR-002 … AR-006 and residuals; AR-001 awaits the founder: DEC-007)
 - Approved requirements: `requirements-doc.md` SR-005 with its behavior-defining supplement `reference-files-contract.md` (RFC-001), approved by the founder 2026-11-21 (DEC-001 … DEC-003, DEC-006 and the contract in his words; DEC-004, DEC-005 by the Solution Designer, confirmed by him).
 - User approval of the design: the founder, 2026-11-21, delegated it: "validate each use case based on your data flow spine … which follows the design principles, and then you just send for review by yourself". Validation: § Design Validation Walkthrough; then independent architecture review.
 - Design status: `Ready`
@@ -41,9 +41,10 @@ Realize RFC-001: files attached to a cross-node message or delegation are valida
 | CM-11 "follow-ups never name the node" | `collaboration_model.md`, `remote_collaboration.md`, tool descriptions, prompt wording, the 492 not-running hint | Rewritten to RF-14 |
 | `send_message_to` / `delegate_task` results | tool contracts (`files_sent`) | Added |
 | Run history delete | three delete owners | After a delete commits, the received-files cleanup runs |
+| Agent folders gain `received_files/` | Memory Sync export (`local-memory-export-scanner.ts:25-79`, `memory-sync-path-policy.ts:3-7`: every regular file of `memory/agents` and `memory/agent_teams` except temporary/lock files) | Per the founder's DEC-007 (AR-001): recommended, `received_files/` is skipped by Memory Sync's path policy (one rule) |
 | Docs | `collaboration_model.md` (CM-14, CM-11), `remote_collaboration.md`, `agent_communication.md`, `agent_tools.md`, GLOSSARY (received files), settings doc (`AUTOBYTEUS_RECEIVED_FILE_MAX_MB`) | Updated |
 
-- Left alone: same-node `reference_files` (RF-1); Memory Sync; context-file uploads; NFS.
+- Left alone: same-node `reference_files` (RF-1); Memory Sync except its path policy (DEC-007); context-file uploads; NFS.
 - Follow-ups: None yet.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
@@ -97,8 +98,8 @@ As RFC-001 § 1. **File descriptor:** `{sha256, size, name}` naming one transfer
 - DS-001: `delegate_task tool → RemoteDelegation.delegate → TaskDelegation.toPeerRun → OutgoingFiles.send(sender, peer, files) [validate RF-3 → hash → channel.receivedFilesStatus → channel.putReceivedFilePiece… → descriptors] → channel.startDelegatedRun → Task link → channel.deliverMessage(work_packet + files) → (B) PeerGateway → RemoteMessageReceiver → root.acceptRemoteWorkPacket → ReceivedFiles.placeFor(agentFolder, senderRunId, descriptors) → work packet with received paths → host input`
 - DS-002: `send_message_to tool → Router.deliver(node) → root.deliverToPeerRun → RemoteMessageSend.sendToPeerRun → OutgoingFiles.send → engine.prepareRemoteSend (sender's paths kept) → RemoteRunLinks.deliver (+ files) → (B) PeerGateway → RemoteMessageReceiver → root.acceptRemoteMessage | acceptPeerRunMessage → ReceivedFiles.placeFor → engine.acceptFromRemote (received paths in the line and the input block) → answer → (A) engine.commitSentToRemote (sender's paths)`
 - DS-003: `PeerClient.putReceivedFilePiece → [signed; gate hashes the ≤ 8 MiB body] → PeerGateway.receivedFilePiece → ReceivedFiles.appendPiece(peer, sha256, offset, size, bytes) → on the last piece: verify size + SHA-256 → rename <sha256>.partial → <sha256>`
-- DS-004: `history delete (agent / team / org owner) commits → ReceivedFiles.sweep() → for each <data>/received_files/<sha256>: stat nlink === 1 → remove; each .partial older than 24 h → remove` (also at server start)
-- DS-005 (G-3: owners as the code routes): no `node`, target is a linked endpoint of the sender's root → the root's `deliverExact` (router step 1 reaches it because `hasAgentExecution` includes remote endpoints) refuses `NODE_REQUIRED` naming `peerName(endpoint.reference.nodeId)`; no `node`, target is a peer run the tree knows (Task entry with `nodeId`) → `CrossRunMessageDelivery.route`'s peer-run branch, after `closedPeerRunRefusal`, refuses `NODE_REQUIRED` with that node; `node` given and the sender's root links the target on another node → `RemoteMessageSend.sendToPeerRun` refuses `NODE_MISMATCH`; otherwise as 492 (an unknown run ID with no `node`: today's not-running text).
+- DS-004: `history delete (agent / team / org owner) commits → ReceivedFiles.sweep() → for each <data>/received_files/<sha256>: stat nlink === 1 and last touched more than 24 h ago → remove; each .partial older than 24 h → remove` (also at server start). `status` and a completed `PUT` touch the entry (mtime), so a file whose message is still uploading its other files, or one deduplicated for a call in flight, is never removed (AR-003; a call lasts at most about 27 min).
+- DS-005 (G-3: owners as the code routes): no `node`, target is a linked endpoint of the sender's root → the root's `deliverExact` (router step 1 reaches it because `hasAgentExecution` includes remote endpoints) refuses `NODE_REQUIRED` naming `peerName(endpoint.reference.nodeId)`; no `node`, target is a peer run the tree knows (Task entry with `nodeId`) → `CrossRunMessageDelivery.route`'s peer-run branch, after `closedPeerRunRefusal`, refuses `NODE_REQUIRED` with that node; `node` given and the sender's root links the target on another node → `RemoteMessageSend.sendToPeerRun` refuses `NODE_MISMATCH`; `node` given and the tree's Task entry puts the run on another node → the router's `node` step asks `CrossRunMessageDelivery.peerRunAdmission({node, agentRunId})` (the former `closedPeerRunRefusal`, AR-005), which answers `TASK_AGENT_RESOURCE_CLOSED` or `NODE_MISMATCH` with the right node or nothing; otherwise as 492 (an unknown run ID with no `node`: today's not-running text).
 
 ## Spine Narratives (Mandatory)
 
@@ -112,9 +113,12 @@ As RFC-001 § 1. **File descriptor:** `{sha256, size, name}` naming one transfer
 
 ## Ownership Map
 
-- **`OutgoingFiles`** (new, `agent-collaboration/execution/remote/outgoing-files.ts`): RF-3 validation (workspace from the sender's active run: `config.workspaceId` → `WorkspaceManager.getWorkspaceRootPathForHistory`; `fs.realpath` of file and workspace; containment; regular file), RF-4 limits (receiver's `maxFileBytes` from status; 4 GiB total), SHA-256 (`hashFile`), RF-11 status/resume, piece upload (8 MiB), refusals of § 5; returns descriptors `{sha256, size, name}`. Called by `TaskDelegation.toPeerRun` and `RemoteMessageSend.sendToPeerRun` before anything else is sent.
-- **`ReceivedFiles`** (new, `remote-collaboration/inbound/received-files.ts`): `<data>/received_files/`: `status(files)`, `appendPiece` (offset check, per-file limit, `.partial`), verify-and-complete, `placeFor(agentFolder, senderRunId, descriptors)` (safe name; temp link then atomic rename over an existing same-named file; `chmod 0444`; hard link, else copy), `sweep()`. Paths are confined with the existing containment helper pattern (`resolveSafeChildPath`).
-- **Roots' accept steps** (standalone, Team, Org): call `placeFor` with their receiving agent's own folder (`AgentMemoryLayout`), then pass the received paths to the engine and the packet builder. A missing or incomplete file → `REFERENCE_FILE_CHECK_FAILED`, nothing written.
+- **`OutgoingFiles`** (new, `agent-collaboration/execution/remote/outgoing-files.ts`): RF-3 validation, done on the opened file: the validated real path is opened once, and the hash and every piece are read from that descriptor (no second path lookup; residual) (workspace from the sender's active run: `config.workspaceId` → `WorkspaceManager.getWorkspaceRootPathForHistory`; `fs.realpath` of file and workspace; containment; regular file), RF-4 limits (receiver's `maxFileBytes` from status; 4 GiB total), SHA-256 (`hashFile`), RF-11 status/resume, piece upload (8 MiB), refusals of § 5; returns descriptors `{sha256, size, name}`. Called by `TaskDelegation.toPeerRun` and `RemoteMessageSend.sendToPeerRun` before anything else is sent.
+- **`ReceivedFiles`** (new, `remote-collaboration/inbound/received-files.ts`): `<data>/received_files/`: `status(files)`, `appendPiece` (offset check, per-file limit, `.partial`), verify-and-complete, `placeFor(agentFolder, senderRunId, descriptors)` (safe name; temp link then atomic rename over an existing same-named file; `chmod 0444`; hard link, else copy), `sweep()` (unlinked and untouched for 24 h). An offset that does not match the bytes held answers `{receivedBytes}` without writing, and the sender resumes from there (concurrent uploads of one content; residual). Paths are confined with the existing containment helper pattern (`resolveSafeChildPath`).
+- **Order on the receiving node (AR-002), one driver each:**
+  - **Message:** the root's accept step only checks that every named file is complete in `<data>/received_files/` (`ReceivedFiles.verify`, no writes; else `REFERENCE_FILE_CHECK_FAILED`) and passes the descriptors to the engine. `RootCommunicationEngine.acceptFromRemote` drives the rest in its existing order: open, current receiver, Task scope (`assertDeliveryAllowed`), content, recipient reservation; **then** places (through its port: `RootCommunicationPort.placeReceivedFiles(receiverIdentity, senderRunId, descriptors)` → the root's `ReceivedFiles.placeFor` with the receiver's own folder), then builds the input with the received paths and commits the log line. Every refusal that can come from the message's admission comes before any file is placed or replaced. A failure of the log append itself after placement (I/O) is the only case left; the new name then stays (a file the sender meant to send) and the message is not delivered — recorded as a residual risk.
+  - **Work packet:** the root's `acceptRemoteWorkPacket` checks the link (as today) and `verify`, makes its host ready (`readyHost`), **then** places, then posts the packet with the received paths.
+  - Placement is a port method the engine calls in its own sequence, not a function passed per call (Case 1).
 - **Engine:** `prepareRemoteSend` keeps the sender's `referenceFiles`; `acceptFromRemote` takes the received paths. Order unchanged.
 - **Remote input builder (G-1):** `buildRemoteCommunicationInputMessage` (`root-communication-runtime-builder.ts:50-75`) today has no "Reference files:" block and sets `reference_files: []`; it uses the same block as `buildRootCommunicationInputMessage` (`:23-24`, one helper for both) and passes the received paths in `reference_files`.
 - **Peer signing (G-2):** `signPeerRequest` takes `body: string | Buffer | null` (`peer-request-signature.ts:67-73`; `sha256Hex` already accepts a Buffer); `PeerClient` gets one raw-body call beside its JSON `call` (`peer-client.ts:370-409`).
@@ -130,6 +134,7 @@ As RFC-001 § 1. **File descriptor:** `{sha256, size, name}` naming one transfer
 | Engine `:180` refusal; forced `[]` at `:189`, `:237`; `acceptRemoteWorkPacket` `referenceFiles: []` | Files allowed | sender/received paths |
 | Linked routing without `node` (root `deliverExact` for a remote endpoint), the 492 hint when the node is known | RF-14 | `NODE_REQUIRED` / `NODE_MISMATCH` |
 | `REMOTE_REFUSAL.ATTACHMENTS_NOT_SUPPORTED` | Dead once both refusals go (verify readers) | — |
+| `RemoteMessageSend.send` and `RemoteMessageSendInput` | Dead under RF-14: their only callers are the roots' `deliverExact` remote branches (`standalone-root-message-delivery.ts:117`, Team `:73`, Org `:68`), which now refuse `NODE_REQUIRED` (AR-004) | `sendToPeerRun` (the `node` path) |
 
 ## Interface Boundary Mapping
 
@@ -209,6 +214,8 @@ Principles: P1 (entry forms, table above), P2/P13 (one owner per sequence; `Outg
 
 - Runtimes without a configurable tool-call limit (AGY, Grok, ACP): a long transfer may be cut by their default; the call then fails cleanly (all or nothing). Measured in implementation (AC-009).
 - Both nodes need the release (DESIGN.md rule 9).
+- A log append that fails after placement leaves a placed file without its message (AR-002 residual; I/O failure only).
+- AGY/Grok/ACP tool-call limits accepted unverified (DEC-008).
 - The node's disk fills: the receiver's per-file limit and the 4 GiB per call bound one transfer; disk-full is a transfer failure.
 
 ## Guidance For Implementation
