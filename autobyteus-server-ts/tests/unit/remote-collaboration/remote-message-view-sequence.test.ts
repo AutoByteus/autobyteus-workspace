@@ -83,6 +83,7 @@ describe("messages with a remote endpoint keep the root view stream consecutive 
       rootTeamRunId: "team-root",
       initial: Object.freeze({ schemaVersion: 1 as const, rootTeamRunId: "team-root", messages: Object.freeze([]) }),
       isCurrentAgent: () => true,
+      maySend: () => true,
       messageLogOwnerOf: () => OWN_RUN_LOG,
       assertDeliveryAllowed: () => undefined,
       requireContainingTeamRun: vi.fn(async () => ({

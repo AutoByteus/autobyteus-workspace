@@ -1,0 +1,18 @@
+{
+  "coordinator": "/scout",
+  "snapshot": {
+    "coordinator": "/scout",
+    "members": [
+      {
+        "address": "/lead",
+        "agentRunId": "tf_lead_4d9d66_16bb65ab0fa342c0b67e347e8d932605",
+        "leaving": false
+      },
+      {
+        "address": "/scout",
+        "agentRunId": "tf_alt_4d9d66_baa9c35c5f404123a1a8543774ce0594",
+        "leaving": false
+      }
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+# IMP-09 — web team execution specs (Leaving row, address preference, snapshot add/keep/drop)
+# Command: (autobyteus-web) pnpm exec cross-env NUXT_TEST=true vitest run services/teamExecution --reporter=verbose
+# Commit: 6b46ec5bdd; Linux container, Node 22; 2026-11-21
+ ✓ services/teamExecution/__tests__/teamExecutionTreeSelectors.spec.ts > teamExecutionTreeSelectors with a leaving member > finds the current member at an address a leaving member still has 3ms
+ ✓ services/teamExecution/__tests__/teamExecutionTreeSelectors.spec.ts > teamExecutionTreeSelectors with a leaving member > marks the leaving member's row Leaving and never as the coordinator 2ms
+ ✓ services/teamExecution/__tests__/teamExecutionContextFactory.spec.ts > teamExecutionContextFactory stored V2 projection > builds a deeply immutable complete stored snapshot without coordinator inference 13ms
+ ✓ services/teamExecution/__tests__/teamExecutionContextFactory.spec.ts > teamExecutionContextFactory stored V2 projection > converts stored history one way into only fields supported by new-run authoring 66ms
+ ✓ services/teamExecution/__tests__/teamExecutionContextFactory.spec.ts > teamExecutionContextFactory stored V2 projection > creates one locked Agent context from the exact configured Agent snapshot 1ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > TeamExecutionViewState > is named by the server's name for a delegated team run, and by its definition otherwise 5ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > TeamExecutionViewState > places each own member in the Team run and keeps one reactive context per member 3ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > TeamExecutionViewState > lists the Team and its members as its own rows; a member is focusable, a run it delegated is not its to focus 2ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > TeamExecutionViewState > reads each own member's workspace root from its own launch, never its Team's default 1ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > TeamExecutionViewState > a snapshot reports every own member's status; one that omits an own member is refused 6ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > TeamExecutionViewState > rejects sequence gaps and invalid snapshots without partially replacing authoritative state 2ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > TeamExecutionViewState > invalidates projection authority and reconciles navigation and focus after a valid snapshot 1ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > TeamExecutionViewState > CR-461-082 (F-64): a stopped Team's stream sends the view its open read: the loaded member and lists hold; a member running again rebuilds 2ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > TeamExecutionViewState > a membership snapshot adds a new member's row and context, shows a leaving member as Leaving, then drops it 3ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > TeamExecutionViewState > SR-084: the tree's change is numbered in the view's sequence and handed to the tree; a message to a delegated agent goes to the Team tab 1ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > SEGMENT_CONTENT_BATCH (autobyteus-139) > dispatches one SEGMENT_CONTENT per item in item order and advances past the whole range 1ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > SEGMENT_CONTENT_BATCH (autobyteus-139) > rejects a batch that does not start at the next sequence as a gap 0ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > SEGMENT_CONTENT_BATCH (autobyteus-139) > rejects a batch naming an AgentRun that is not an own member without dispatching any item 0ms
+ Test Files  3 passed (3)
+      Tests  18 passed (18)

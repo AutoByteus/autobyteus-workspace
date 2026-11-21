@@ -1,4 +1,5 @@
 import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
+import { TeamRunMembership } from "../../../src/agent-team-execution/domain/team-run-membership.js";
 import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
@@ -89,7 +90,7 @@ describe("Brief package team prompt authority", () => {
         }),
         teamRunId: "brief-team-run",
         teamBackendKind: TeamBackendKind.MIXED,
-        teamNode: {
+        membership: new TeamRunMembership({ teamNode: {
           kind: "agent_team",
           address: "/",
           teamDefinitionId: teamResource.definitionId,
@@ -101,7 +102,7 @@ describe("Brief package team prompt authority", () => {
           from: "/researcher",
           to: "/writer",
           rules: ["When research is ready."],
-        }],
+        }] }),
         runtimeContext: null,
       }),
       agentNode: researcherNode as never,

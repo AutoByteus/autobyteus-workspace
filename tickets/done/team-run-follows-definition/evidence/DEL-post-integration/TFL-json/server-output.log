@@ -1,0 +1,617 @@
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+App data directory: /root/.autobyteus-e2e/team-follows-live-ST88fg/data
+Config file path: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/.env
+Loading environment from: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/.env
+◇ injected env (2) from ../../../../../../../root/.autobyteus-e2e/team-follows-live-ST88fg/data/.env // tip: ⌁ auth for agents [www.vestauth.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+APP DATA DIRECTORY: /root/.autobyteus-e2e/team-follows-live-ST88fg/data
+DB DIRECTORY: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/db
+LOGS DIRECTORY: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/logs
+DOWNLOAD DIRECTORY: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/download
+MEMORY DIRECTORY: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-linux-arm64-openssl-3.0.x.so.node, schema=schema-engine-linux-arm64-openssl-3.0.x)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/root/.autobyteus-e2e/team-follows-live-ST88fg/data/db/production.db"
+
+SQLite database production.db created at file:/root/.autobyteus-e2e/team-follows-live-ST88fg/data/db/production.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:98544) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-21T17:32:01.561Z] [INFO] [secret-management.vault] Secret vault: test vault /root/.autobyteus-test/vault (read-only)
+Initialized server settings service with 34 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/temp_workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/team-follows-live-ST88fg/data/temp_workspace.
+Initialized TempWorkspace at /root/.autobyteus-e2e/team-follows-live-ST88fg/data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1795282322199,"pid":98544,"hostname":"8abfa09513cd","msg":"Server listening at http://127.0.0.1:39473"}
+{"level":30,"time":1795282322235,"pid":98544,"hostname":"8abfa09513cd","msg":"Server listening at http://127.0.0.1:44725"}
+[2026-11-21T17:32:02.235Z] [INFO] [server.runtime] Server listening on 127.0.0.1:0
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Hub Staging Sweep' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":40,"time":1795282322298,"pid":98544,"hostname":"8abfa09513cd","reqId":"req-1","method":"POST","url":"/graphql","statusCode":404,"elapsedMs":3.0373749999998836,"msg":"http request completed"}
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Creating new workspace for rootPath: /root/.autobyteus-e2e/team-follows-live-ST88fg/workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/team-follows-live-ST88fg/workspace.
+Created and registered workspace ID: agent_ws_0165fdde5b74aaa4f6706ba856025623148fcac8673454a961d7820b121f0cda
+Created agent session fd83e614-563c-4d0e-a8f2-f1495922363b for run tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c
+Agent team websocket attached for team run tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c
+Agent Team WebSocket connected: session=fd83e614-563c-4d0e-a8f2-f1495922363b, run=tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c
+Creating new workspace for rootPath: /root/.autobyteus-e2e/team-follows-live-ST88fg/workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/team-follows-live-ST88fg/workspace.
+Reusing registered workspace ID: agent_ws_0165fdde5b74aaa4f6706ba856025623148fcac8673454a961d7820b121f0cda
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Creating new workspace for rootPath: /root/.autobyteus-e2e/team-follows-live-ST88fg/workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/team-follows-live-ST88fg/workspace.
+Reusing registered workspace ID: agent_ws_0165fdde5b74aaa4f6706ba856025623148fcac8673454a961d7820b121f0cda
+MediaStorageService initialized. Media root: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/media
+AgentRuntimeState initialized for agent_id 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': LLM instance 'AnthropicLLM' and 8 tools prepared and stored in state.
+AgentContext composed for agent_id 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174' with config: 'tfl-reviewer-56d1503e'.
+AgentWorker initialized for agent_id 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174'.
+Registered AgentContext for agent_id 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174'. Context registered.
+Agent facade initialized for agent_id 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174'.
+Agent 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174' created and stored successfully.
+Agent 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174' requesting runtime to start.
+AgentRuntime for 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': Starting worker.
+AgentWorker 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': Starting...
+AgentWorker 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174' asyncRun(): Starting.
+Agent 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': Runtime init completed (event store initialized).
+Agent 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': Runtime init completed (status deriver initialized).
+Agent 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': Runtime init completed (AgentEventInbox initialized).
+Agent 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174' to become idle (timeout: 30s)...
+AgentEventStream (ID: 46adb3c1-f8cf-422c-bbcc-1aca94ec3b24) initialized for agent_id 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174'. Subscribed to notifier.
+Agent 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': Bootstrapper starting direct lifecycle execution.
+Agent 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': Executing McpServerPrewarmingStep.
+Agent 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': Executing SystemPromptProcessingStep.
+Agent 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': No configured skills. Skipping skill catalog.
+Agent 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': Final processed system prompt configured and captured. Trace ID: rt_1795282331897_9afe5554-b79b-4437-999f-3b71d435292a. Final length: 7824.
+Agent 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174' initialized successfully. Entering main event scheduler loop.
+Agent 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174' has become idle.
+AgentEventStream (ID: 46adb3c1-f8cf-422c-bbcc-1aca94ec3b24) for 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: ead6c464-1df2-4e3d-a1cb-4e50bae6aa78) initialized for agent_id 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174'. Subscribed to notifier.
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174/raw_traces_manifest.json
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': UserInputContextBuildingProcessor completed. Final content length: 219
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': UserInputContextBuildingProcessor completed. Final content length: 50
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': UserInputContextBuildingProcessor completed. Final content length: 53
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Creating new workspace for rootPath: /root/.autobyteus-e2e/team-follows-live-ST88fg/workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/team-follows-live-ST88fg/workspace.
+Reusing registered workspace ID: agent_ws_0165fdde5b74aaa4f6706ba856025623148fcac8673454a961d7820b121f0cda
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_writer_56d1503e_673f8585c7a348feb93fbd222ddc6a05/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/team-follows-live-ST88fg/data/memory/agent_teams/tfl_team_56d1503e_e105336a1b1d4faf9ac8234cc6e7123c/tfl_lead_56d1503e_dd37cee309a54aa980f50dd3d668015a/raw_traces_manifest.json
+Closed agent session fd83e614-563c-4d0e-a8f2-f1495922363b
+Removing agent 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174'. Attempting graceful shutdown.
+Agent 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': Stop requested.
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28d21f75-ef6e-48f6-86fb-281e826dd87f, AgentID: tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174' asyncRun() loop has finished.
+AgentWorker 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': Running shutdown sequence on worker loop.
+AgentWorker 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': Shutdown resource cleanup completed successfully.
+AgentWorker 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174'.
+AgentRuntime for 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': Context unregistered.
+AgentRuntime for 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174' stop() method completed.
+AgentEventStream (ID: ead6c464-1df2-4e3d-a1cb-4e50bae6aa78) for 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: ead6c464-1df2-4e3d-a1cb-4e50bae6aa78) for 'tfl_reviewer_56d1503e_22904955fd0a40e694e1194653739174': close() called. Unsubscribing all listeners and signaling.

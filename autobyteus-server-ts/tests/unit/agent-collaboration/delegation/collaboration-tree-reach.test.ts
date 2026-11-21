@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { DelegationIndex, type RunParts, type RunStanding } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
+import { DelegationIndex } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
+import type { RunParts, RunStanding } from "../../../../src/agent-collaboration/delegation/run-parts.js";
 import { createCollaborationMemberExecutionIdentity, type CollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 
@@ -33,7 +34,7 @@ const STANDING: Record<string, RunStanding> = {
 const partsOf = (standing: RunStanding): RunParts => {
   const entries = [...standing.agents];
   const mounted = entries.filter(([address, id]) => entries.some(([other, otherId]) => otherId === id && other.startsWith(`${address}/`)));
-  return { agents: entries.filter((entry) => !mounted.includes(entry)).map(([address, agentRunId]) => ({ agentRunId, address, agentDefinitionId: null })),
+  return { agents: entries.filter((entry) => !mounted.includes(entry)).map(([address, agentRunId]) => ({ agentRunId, address, agentDefinitionId: null })), formerAgents: [],
     coordinatorAddress: standing.coordinatorAddress, mountedTeams: mounted.map(([address, coordinatorAgentRunId]) => ({ address, coordinatorAgentRunId })) };
 };
 const sender = (root: RootExecutionIdentity, memberAddress: string, agentRunId: string) =>

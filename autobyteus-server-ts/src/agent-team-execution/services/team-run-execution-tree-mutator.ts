@@ -53,6 +53,8 @@ export const adoptAgentPlatformBindingInTree = (input: {
     rootTeam: {
       ...input.tree.rootTeam,
       members: input.tree.rootTeam.members.map(mapAgent),
+      // A leaving member finishes its turn (it is already a former member on disk): its binding is still recorded.
+      ...(input.tree.rootTeam.formerMembers ? { formerMembers: input.tree.rootTeam.formerMembers.map(mapAgent) } : {}),
     },
   };
   if (matches !== 1) {
@@ -99,6 +101,8 @@ export const replaceAgentPlatformBindingWithoutConversationInTree = (input: {
     rootTeam: {
       ...input.tree.rootTeam,
       members: input.tree.rootTeam.members.map(mapAgent),
+      // A leaving member finishes its turn (it is already a former member on disk): its binding is still recorded.
+      ...(input.tree.rootTeam.formerMembers ? { formerMembers: input.tree.rootTeam.formerMembers.map(mapAgent) } : {}),
     },
   };
   if (matches !== 1) {
@@ -142,6 +146,8 @@ export const commitRuntimeSwitchInTree = (input: {
     rootTeam: {
       ...input.tree.rootTeam,
       members: input.tree.rootTeam.members.map(mapAgent),
+      // A leaving member finishes its turn (it is already a former member on disk): its binding is still recorded.
+      ...(input.tree.rootTeam.formerMembers ? { formerMembers: input.tree.rootTeam.formerMembers.map(mapAgent) } : {}),
     },
   };
   if (matches !== 1) {

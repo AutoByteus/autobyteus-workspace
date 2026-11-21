@@ -21,7 +21,7 @@ export class TeamRecipientResolver {
    */
   resolveInRunDelegationPlacement(index: TeamExecutionIndex, address: AgentTeamAddress): TeamDelegationPlacement {
     const node = index.getConfiguredPlacement(address);
-    if (node) return sourcedPlacement(node.address, configuredPlacementSource(node, index.tree.handoffs));
+    if (node) return sourcedPlacement(node.address, configuredPlacementSource(node, index.tree.handoffs), "configured_placement");
     throw new CollaborationContractError(
       "COLLABORATION_TARGET_NOT_FOUND",
       delegationTargetUnavailableMessage(address),

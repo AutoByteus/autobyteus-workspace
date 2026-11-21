@@ -10,6 +10,7 @@ import type { CatalogTaskSource } from "./collaborator-admission.js";
 import { CollaboratorAddError, ownTeamDelegationRefusedMessage, selfDelegationRefusedMessage } from "./collaborator-errors.js";
 import type { PeerNodeRef } from "../execution/remote/remote-run-channel.js";
 import type { DelegationWork, RoutingDecisionDraft } from "../../model-routing/domain/model-routing-types.js";
+import type { TeamRunCopiedFrom } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 
 /** The index facts a root supplies for the self and own-Team delegation rules (CM-1, DEC-008; autobyteus-435 REQ-013). */
 export interface DelegationSourceIndexPort {
@@ -34,6 +35,8 @@ export type DelegationPlacement =
       address: AgentTeamAddress;
       coordinatorAddress: AgentTeamAddress;
       source: TaskTeamExecutionSource;
+      /** What the copy starts from: a Team definition (it follows that definition) or a configured placement. */
+      copiedFrom: TeamRunCopiedFrom;
       launchNotes?: readonly string[];
       routingDecision?: RoutingDecisionDraft;
     }>
@@ -55,12 +58,13 @@ export type RemoteAgentPlacement = Readonly<{
 }>;
 
 /**
- * The placement of a copy at `address` that starts from `source`; a fresh catalog admission's notes and (Model Routing
- * on) decision draft go with it.
+ * The placement of a copy at `address` that starts from `source` (a catalog definition's or a configured placement's,
+ * `copiedFrom`); a fresh catalog admission's notes and (Model Routing on) decision draft go with it.
  */
 export const sourcedPlacement = (
   address: AgentTeamAddress,
   source: TaskExecutionSource,
+  copiedFrom: TeamRunCopiedFrom,
   admission: Readonly<{ launchNotes?: readonly string[]; routingDecision?: RoutingDecisionDraft }> = {},
 ): DelegationPlacement => {
   const extras = {
@@ -69,7 +73,7 @@ export const sourcedPlacement = (
   };
   return source.kind === "agent"
     ? Object.freeze({ kind: "agent", address, source, ...extras })
-    : Object.freeze({ kind: "agent_team", address, coordinatorAddress: source.coordinatorAddress, source, ...extras });
+    : Object.freeze({ kind: "agent_team", address, coordinatorAddress: source.coordinatorAddress, source, copiedFrom, ...extras });
 };
 
 const placementInFolder = (placement: DelegationPlacement, folder: string | null): DelegationPlacement =>
@@ -120,6 +124,6 @@ export const resolveDelegationPlacement = async (input: Readonly<{
       throw cause;
     }
     if (!catalog) throw error;
-    return sourcedPlacement(input.address, catalog.source, catalog);
+    return sourcedPlacement(input.address, catalog.source, "team_definition", catalog);
   }
 };

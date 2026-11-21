@@ -250,7 +250,8 @@ export class TaskDelegation {
         delegatedRun = { kind: "agent", agentRunId: started.agentRunId };
         execution = { agentRunId: started.agentRunId };
       } else {
-        const started = await this.dependencies.starter.startTeam({ source: placement.source, address: placement.address, delegatedFrom: runOrigin });
+        const started = await this.dependencies.starter.startTeam({ source: placement.source, address: placement.address, delegatedFrom: runOrigin,
+          copiedFrom: placement.copiedFrom });
         delegatedRun = { kind: "team", teamRunId: started.teamRunId, teamCoordinatorAgentRunId: started.coordinatorAgentRunId };
         execution = { teamRunId: started.teamRunId };
       }

@@ -1,4 +1,5 @@
 import type { PeerRunOf } from "../../agent-collaboration/execution/remote/peer-runs.js";
+import type { TeamRunCopiedFrom } from "../domain/team-run-execution-tree.js";
 import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import type { RemoteInboundQuery, StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
@@ -67,6 +68,8 @@ export interface CreateTeamRunInput {
   applicationBinding?: { applicationId: string; bindingId: string } | null;
   /** A delegated Team run (local or a peer's, autobyteus-247): the back-link to its delegator, kept on the tree. */
   delegatedFrom?: DelegatedFrom;
+  /** A delegated Team run's origin (only with `delegatedFrom`): only a Team definition's copy follows that definition. */
+  copiedFrom?: TeamRunCopiedFrom;
   /**
    * A delegated Team run's handoff rules as its members have them in the delegating run, in the team's own space (a
    * `to` outside the team as written; CR-461-009). Only with `delegatedFrom`; without them the definition's are used.
@@ -177,7 +180,8 @@ export class TeamRunService {
       ...(input.delegatedFrom ? { handoffs: { kind: "delegated_team" as const, ...(input.handoffs ? { handoffs: input.handoffs } : {}) } } : {}),
     });
     const root = await this.manager.createTeamRun({ config: plan.config, teamDefinitionName: plan.teamDefinitionName,
-      ...(input.delegatedFrom ? { delegatedFrom: input.delegatedFrom } : {}), ...(projectId ? { projectId } : {}) });
+      ...(input.delegatedFrom ? { delegatedFrom: input.delegatedFrom, ...(input.copiedFrom ? { copiedFrom: input.copiedFrom } : {}) } : {}),
+      ...(projectId ? { projectId } : {}) });
     try {
       await this.catalog.recordTeamRunCreated({ tree: root.getExecutionTreeSnapshot(), summary: "" });
       return root;

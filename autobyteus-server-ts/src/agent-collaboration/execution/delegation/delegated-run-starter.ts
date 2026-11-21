@@ -6,7 +6,7 @@ import {
 } from "../../domain/agent-team-address.js";
 import type { CollaborationHandoff } from "../../domain/collaboration-handoff.js";
 import { peerStartedTeamMembers } from "../../../agent-team-execution/domain/team-run-remote-links.js";
-import type { TeamRunExecutionTreeSnapshot } from "../../../agent-team-execution/domain/team-run-execution-tree.js";
+import type { TeamRunCopiedFrom, TeamRunExecutionTreeSnapshot } from "../../../agent-team-execution/domain/team-run-execution-tree.js";
 import { TeamLayoutMismatchError } from "../../../agent-team-execution/services/flat-team-topology-planner.js";
 import type { CreateTeamRunInput, TeamRunMemberConfigInput, TeamRunService } from "../../../agent-team-execution/services/team-run-service.js";
 import type { AgentLaunchConfiguration } from "../../../agent-team-execution/domain/team-run-config.js";
@@ -93,7 +93,9 @@ export class DelegatedRunStarter {
    * member config is passed for every resolved member and the created tree is compared with the source (N-302): a
    * definition edited in between ends the created run and throws `changedWhileStarting`.
    */
-  async startTeam(input: Readonly<{ source: TaskTeamExecutionSource; address: AgentTeamAddress; delegatedFrom: DelegatedFrom }>): Promise<StartedDelegatedTeam> {
+  async startTeam(input: Readonly<{ source: TaskTeamExecutionSource; address: AgentTeamAddress; delegatedFrom: DelegatedFrom;
+    /** What the copy starts from, recorded once on its tree (D-SCOPE). */
+    copiedFrom: TeamRunCopiedFrom; }>): Promise<StartedDelegatedTeam> {
     const memberConfigs: TeamRunMemberConfigInput[] = input.source.members.map((member) => ({
       memberAddress: unmounted(member.address, input.address),
       agentDefinitionId: member.agentDefinitionId,
@@ -107,6 +109,7 @@ export class DelegatedRunStarter {
         ...(input.source.defaultLaunchSource ? { launchSource: input.source.defaultLaunchSource } : {}) }],
       memberConfigs,
       delegatedFrom: input.delegatedFrom,
+      copiedFrom: input.copiedFrom,
       handoffs: handoffsInTeamSpace(input.source.handoffs, input.address),
     };
     // The created team run (its own root): only its ID and tree are read here.

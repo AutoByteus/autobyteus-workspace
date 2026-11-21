@@ -5,11 +5,14 @@ import { createBackgroundTaskNotices } from "../background-task-notices/backgrou
 import type { IntegrationRunAccess } from "../credential-proxy/integration-run-access.js";
 import { createSkillUpdateNotices } from "../skill-update-notices/skill-update-notices.js";
 import { createToolListUpdates } from "../tool-list-updates/tool-list-updates.js";
+import { TeamChangeNoticeSource } from "../agent-team-execution/membership/team-change-notice-source.js";
 
-/** The platform notice subsystems both hosts run: tool list updates, skill notices and background task notices. */
+/** The platform notice subsystems both hosts run: tool list updates, skill, background task and team change notices. */
 export type PlatformNoticeSources = Readonly<{
   /** The notice sources in their slot order (one notice per input). */
   sources: readonly AgentRunPlatformNoticeSource[];
+  /** Where team members' notices of a membership change wait (the team run manager records them, DS-006). */
+  teamChangeNotices: TeamChangeNoticeSource;
   /**
    * Stops them first at shutdown: tool list updates (no new passes, so no run is changed while runs stop), skill
    * notices (watcher, then service) and background task notices, so none go out while runs stop.
@@ -35,8 +38,10 @@ export const createPlatformNoticeSources = (input: Readonly<{
     definitionChanges: input.definitionChanges,
   });
   const backgroundTaskNotices = createBackgroundTaskNotices();
+  const teamChangeNotices = new TeamChangeNoticeSource();
   return Object.freeze({
-    sources: Object.freeze([toolListUpdates.service, skillUpdateNotices.service, backgroundTaskNotices.service]),
+    sources: Object.freeze([toolListUpdates.service, skillUpdateNotices.service, backgroundTaskNotices.service, teamChangeNotices]),
+    teamChangeNotices,
     close: async () => {
       try { await toolListUpdates.close(); } catch (error) { console.warn("TOOL_LIST_UPDATES_CLOSE_FAILED", error); }
       try { await skillUpdateNotices.close(); } catch (error) { console.warn("SKILL_UPDATE_NOTICES_CLOSE_FAILED", error); }

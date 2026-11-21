@@ -48,10 +48,12 @@ export type RunTreeRow = Readonly<{
   launch?: RunTreeLaunch;
   /** A peer's run: its node, and what the node answered about it (`null` while not answered). */
   peer?: Readonly<{ nodeId: string; nodeName: string; title: string | null; reachable: boolean | null }>;
+  /** A team member removed from its team that is still finishing its turn (SR-009): shown "Leaving", still opens. */
+  leaving?: true;
 }>;
 
-/** A run's own parts, from its own file (`RunOwnAgentsReader.ownTreeOf`). */
-export type RunOwnMember = Readonly<{ address: string; agentRunId: string }>;
+/** A run's own parts, from its own file (`RunOwnAgentsReader.ownTreeOf`); `leaving`: a former member marked so (SR-010). */
+export type RunOwnMember = Readonly<{ address: string; agentRunId: string; leaving?: true }>;
 export type RunOwnTree =
   | Readonly<{ kind: "agent"; agentRunId: string; address: string | null }>
   | Readonly<{ kind: "agent_team"; teamRunId: string; coordinatorAddress: string; members: readonly RunOwnMember[] }>
@@ -76,7 +78,17 @@ export type RunTreeSources = Readonly<{
   ownTreeOf(run: RootExecutionIdentity): Promise<RunOwnTree | null>;
   /** The rows' records, as the views read them (a run's own file; a peer's run from its Task entry and its node's answer). */
   projection: ChildRowProjection;
+  /** Whether a team run is live now (registered in the active root directory): only then is a member leaving (SR-010). */
+  isLiveTeamRun(teamRunId: string): boolean;
 }>;
+
+/**
+ * SR-010 (AR-007, AR-009): the member rows of one team run, for every path (the run's own rows, and a delegated Team
+ * copy's rows under its delegating run). A former member marked `leaving` is a member row tagged leaving only while the
+ * run is live; outside a live run nothing executes, so it reads as former and has no row.
+ */
+export const teamMemberRowsOf = <T extends RunOwnMember>(members: readonly T[], isLive: boolean): readonly T[] =>
+  members.filter((member) => !member.leaving || isLive);
 
 /** The one name rule of every view (the address's last segment, `_` and `-` as spaces). */
 export const rowNameOf = (address: string | null, fallback: string): string => slotNameOf(address) || address || fallback;
@@ -151,10 +163,11 @@ export class RunTreeView {
       const key = runTreeRowKey("team", own.teamRunId);
       drafts.push(Object.freeze({ key, parentKey: null, kind: "team", name: rowNameOf(null, own.teamRunId), address: null,
         openTarget: openTargetOf({ teamRunId: own.teamRunId }, own), statusIds: Object.freeze([own.teamRunId]) }));
-      for (const member of own.members) {
+      for (const member of teamMemberRowsOf(own.members, this.sources.isLiveTeamRun(own.teamRunId))) {
         const memberKey = runTreeRowKey("team_member", own.teamRunId, member.agentRunId);
         drafts.push(Object.freeze({ key: memberKey, parentKey: key, kind: "team_member", name: rowNameOf(member.address, member.agentRunId), address: member.address,
-          openTarget: Object.freeze({ runKind: "agent_team" as const, runId: own.teamRunId, agentRunId: member.agentRunId }), statusIds: Object.freeze([member.agentRunId]) }));
+          openTarget: Object.freeze({ runKind: "agent_team" as const, runId: own.teamRunId, agentRunId: member.agentRunId }), statusIds: Object.freeze([member.agentRunId]),
+          ...(member.leaving ? { leaving: true as const } : {}) }));
         anchor(run, member.agentRunId, memberKey);
       }
       return key;
@@ -197,12 +210,12 @@ export class RunTreeView {
     // Its coordinator, by its own address in its own run (TC-12), among the members it lists.
     const rows: Draft[] = [Object.freeze({ key, parentKey: null, kind: "team", name: displayNameOf({ delegated: true, address: record.address }) ?? record.teamRunId, address: record.address,
       openTarget: openTargetOf({ teamRunId: record.teamRunId }, record), statusIds: Object.freeze([record.teamRunId]), launch: launchOf(record.launch) })];
-    for (const member of record.members) {
+    for (const member of teamMemberRowsOf(record.members, this.sources.isLiveTeamRun(record.teamRunId))) {
       const memberKey = runTreeRowKey("team_member", record.teamRunId, member.agentRunId);
       anchor(holder, member.agentRunId, memberKey);
       rows.push(Object.freeze({ key: memberKey, parentKey: key, kind: "team_member", name: rowNameOf(member.address, member.agentRunId), address: member.address,
         openTarget: Object.freeze({ runKind: "agent_team" as const, runId: record.teamRunId, agentRunId: member.agentRunId }), statusIds: Object.freeze([member.agentRunId]),
-        ...(member.launch ? { launch: launchOf(member.launch) } : {}) }));
+        ...(member.launch ? { launch: launchOf(member.launch) } : {}), ...(member.leaving ? { leaving: true as const } : {}) }));
     }
     return rows;
   }

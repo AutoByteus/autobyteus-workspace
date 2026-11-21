@@ -47,7 +47,13 @@ export interface RootCommunicationPort {
   }>;
   /** Root-specific openness, checked together with the engine's own admission. */
   isOpen(): boolean;
+  /** Whether the agent may receive messages here: a current, live agent of the root. */
   isCurrentAgent(identity: CollaborationMemberExecutionIdentity): boolean;
+  /**
+   * Whether the agent may send from here: a current agent, or (a Team run) a member removed from its team that is still
+   * finishing its turn (its messages from that turn still go out, DEC-002). Every other root: its `isCurrentAgent`.
+   */
+  maySend(identity: CollaborationMemberExecutionIdentity): boolean;
   /** Task scope of a message between two runs, by run ID (either may be a remote run of this root). */
   assertDeliveryAllowed(senderAgentRunId: string, receiverAgentRunId: string): void;
   buildRecipientInput(input: Readonly<{

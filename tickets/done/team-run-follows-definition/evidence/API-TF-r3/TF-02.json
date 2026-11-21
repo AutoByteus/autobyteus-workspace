@@ -1,0 +1,240 @@
+{
+  "stored": {
+    "tree": {
+      "createdAt": "2026-11-21T15:56:21.838Z",
+      "archivedAt": null,
+      "applicationBinding": null,
+      "handoffs": [
+        {
+          "from": "/lead",
+          "to": "/reviewer",
+          "rules": [
+            "Review every draft."
+          ]
+        }
+      ],
+      "rootTeam": {
+        "address": "/",
+        "teamDefinitionId": "tf-team-4d9d66",
+        "teamDefinitionName": "tf-team-4d9d66",
+        "teamRunId": "tf_team_4d9d66_b610bbb258ce4459b0f87731afac619a",
+        "coordinatorAddress": "/lead",
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "antigravity_cli",
+          "llmModelIdentifier": "gemini-3.8-flash-low",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/tmp/tf-e2e-DEReUC/workspace"
+        },
+        "members": [
+          {
+            "address": "/lead",
+            "agentDefinitionId": "tf-lead-4d9d66",
+            "role": null,
+            "description": null,
+            "agentRunId": "tf_lead_4d9d66_16bb65ab0fa342c0b67e347e8d932605",
+            "platformAgentRunId": "47c06631-61fe-43eb-8ec1-f5fec53fcd98",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/tmp/tf-e2e-DEReUC/workspace"
+            }
+          },
+          {
+            "address": "/reviewer",
+            "agentDefinitionId": "tf-reviewer-4d9d66",
+            "role": null,
+            "description": null,
+            "agentRunId": "tf_reviewer_4d9d66_68986cb89e45426fbb1804f3078c4e97",
+            "platformAgentRunId": "95a97e68-cd2e-439d-9110-54b5874de940",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/tmp/tf-e2e-DEReUC/workspace"
+            },
+            "launchSource": {
+              "origin": "team_default",
+              "fallbacks": []
+            }
+          }
+        ],
+        "formerMembers": [
+          {
+            "address": "/writer",
+            "agentDefinitionId": "tf-writer-4d9d66",
+            "role": null,
+            "description": null,
+            "agentRunId": "tf_writer_4d9d66_aa1b8ce30ff9460fab3aba1831245ec0",
+            "platformAgentRunId": "70a4896d-b2f3-4270-b10e-bba950af2b4e",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/tmp/tf-e2e-DEReUC/workspace"
+            }
+          }
+        ]
+      }
+    },
+    "members": [
+      {
+        "address": "/lead",
+        "agentRunId": "tf_lead_4d9d66_16bb65ab0fa342c0b67e347e8d932605",
+        "agentDefinitionId": "tf-lead-4d9d66",
+        "leaving": false
+      },
+      {
+        "address": "/reviewer",
+        "agentRunId": "tf_reviewer_4d9d66_68986cb89e45426fbb1804f3078c4e97",
+        "agentDefinitionId": "tf-reviewer-4d9d66",
+        "leaving": false
+      }
+    ],
+    "former": [
+      {
+        "address": "/writer",
+        "agentRunId": "tf_writer_4d9d66_aa1b8ce30ff9460fab3aba1831245ec0",
+        "agentDefinitionId": "tf-writer-4d9d66",
+        "leaving": false
+      }
+    ],
+    "coordinator": "/lead",
+    "handoffs": [
+      {
+        "from": "/lead",
+        "to": "/reviewer",
+        "rules": [
+          "Review every draft."
+        ]
+      }
+    ]
+  },
+  "lastSnapshot": {
+    "coordinator": "/lead",
+    "members": [
+      {
+        "address": "/lead",
+        "agentRunId": "tf_lead_4d9d66_16bb65ab0fa342c0b67e347e8d932605",
+        "leaving": false
+      },
+      {
+        "address": "/reviewer",
+        "agentRunId": "tf_reviewer_4d9d66_68986cb89e45426fbb1804f3078c4e97",
+        "leaving": false
+      }
+    ]
+  },
+  "snapshotPayloadKeys": [
+    "root_team_run_id",
+    "base_change_sequence",
+    "live_sequence_id",
+    "last_message_change_sequence",
+    "execution_tree",
+    "agent_statuses",
+    "agent_input_states"
+  ],
+  "byAddress": {
+    "accepted": false,
+    "code": "COLLABORATION_TARGET_NOT_FOUND",
+    "message": "writer (/writer) is no longer a member of your team: it was removed from the team definition. Call get_handoff_rules for your current handoff rules.",
+    "isError": true
+  },
+  "byRunId": {
+    "accepted": false,
+    "code": "COLLABORATION_TARGET_NOT_FOUND",
+    "message": "writer (/writer) is no longer a member of your team: it was removed from the team definition. Call get_handoff_rules for your current handoff rules.",
+    "isError": true
+  },
+  "reviewerInput": "Your team changed: its definition was updated.\nLeft: writer (/writer); messages to it are no longer delivered.\nYour handoff rules are unchanged.\n\nECHO_INPUT",
+  "leadAgain": "ECHO_INPUT",
+  "rules": {
+    "handoffs": [
+      {
+        "when": "Review every draft.",
+        "recipient_address": "/reviewer"
+      }
+    ],
+    "isError": false
+  },
+  "memory": {
+    "ok": true,
+    "value": {
+      "runId": "tf_writer_4d9d66_aa1b8ce30ff9460fab3aba1831245ec0",
+      "rawTraces": [
+        {
+          "traceType": "user",
+          "content": "Reply OK."
+        },
+        {
+          "traceType": "assistant",
+          "content": "OK"
+        },
+        {
+          "traceType": "user",
+          "content": "ECHO_INPUT"
+        },
+        {
+          "traceType": "system_task_notification",
+          "content": "Your team changed: its definition was updated.\nJoined: reviewer at /reviewer.\nYour handoff rules are unchanged."
+        },
+        {
+          "traceType": "assistant",
+          "content": "ECHO:\"Your team changed: its definition was updated.\\nJoined: reviewer at /reviewer.\\nYour handoff rules are unchanged.\\n\\nECHO_INPUT\""
+        }
+      ]
+    }
+  },
+  "projection": {
+    "ok": true,
+    "value": [
+      {
+        "kind": "message",
+        "role": "user",
+        "messageId": "e2e-d41e9df0-4b5d-416e-817b-2cc5880ae026",
+        "dedupeKey": "agent_run_input:e2e:e2e-d41e9df0-4b5d-416e-817b-2cc5880ae026",
+        "content": "Reply OK.",
+        "media": null,
+        "ts": 1795276582.305
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "turnId": "1dabc51d-b1b6-4779-bfe0-05472d8d87e2",
+        "content": "OK",
+        "media": null,
+        "ts": 1795276582.309
+      },
+      {
+        "kind": "message",
+        "role": "user",
+        "messageId": "e2e-1c2f2845-7cb6-479c-9d90-473ba034d566",
+        "dedupeKey": "agent_run_input:e2e:e2e-1c2f2845-7cb6-479c-9d90-473ba034d566",
+        "content": "ECHO_INPUT",
+        "media": null,
+        "ts": 1795276583.517
+      },
+      {
+        "kind": "system_task_notification",
+        "role": null,
+        "senderId": "system.team_change_notifier",
+        "content": "Your team changed: its definition was updated.\nJoined: reviewer at /reviewer.\nYour handoff rules are unchanged.",
+        "messageId": "09933169-d683-4fcf-84c3-346c2124f1cf",
+        "ts": 1795276583.518
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "turnId": "0cb1c21f-4750-4c16-9115-03307d2918eb",
+        "content": "ECHO:\"Your team changed: its definition was updated.\\nJoined: reviewer at /reviewer.\\nYour handoff rules are unchanged.\\n\\nECHO_INPUT\"",
+        "media": null,
+        "ts": 1795276583.521
+      }
+    ]
+  },
+  "leadNoticeSeen": true
+}

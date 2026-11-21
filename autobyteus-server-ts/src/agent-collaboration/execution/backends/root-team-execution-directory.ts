@@ -1,4 +1,5 @@
 import type { RootExecutionPhysicalScope } from "../domain/root-execution-identity.js";
+import { TeamRunMembership } from "../../../agent-team-execution/domain/team-run-membership.js";
 import type { FlatTeamExecutionCallbacks } from "../../../agent-team-execution/local/flat-team-execution-callbacks.js";
 import { FlatTeamExecutionFactory, type PreparedFlatTeamExecution } from "../../../agent-team-execution/local/flat-team-execution-factory.js";
 import type { TeamRun } from "../../../agent-team-execution/domain/team-run.js";
@@ -49,7 +50,9 @@ export class RootTeamExecutionDirectory {
     this.reserveIds([input.teamNode.teamRunId]);
     let prepared: PreparedFlatTeamExecution;
     try {
-      prepared = await this.factory.beginMaterialization(input).prepare();
+      // A team mounted in an Org run keeps the members and rules it was mounted with (it does not follow its definition).
+      prepared = await this.factory.beginMaterialization({ physicalScope: input.physicalScope, callbacks: input.callbacks,
+        activationMode: input.activationMode, membership: new TeamRunMembership({ teamNode: input.teamNode, handoffs: input.handoffs }) }).prepare();
     } catch (error) {
       this.releaseIds([input.teamNode.teamRunId]);
       throw error;

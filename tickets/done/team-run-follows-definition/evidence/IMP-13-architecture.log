@@ -1,0 +1,5 @@
+# IMP-13 — architecture, composition and supervisor tests, run alone
+# Command: (autobyteus-server-ts) pnpm exec vitest run tests/architecture tests/unit/compositions tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts
+# Commit: d005fa2a5b (plus the uncommitted O-2 planner change committed with this evidence); Linux container, Node 22; 2026-11-21
+ Test Files  20 passed (20)
+      Tests  95 passed (95)

@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { TeamRunMembership } from "../../../src/agent-team-execution/domain/team-run-membership.js";
 import {
   createAgentOrgRootExecutionIdentity,
   createRootExecutionPhysicalScope,
@@ -40,15 +41,14 @@ describe("FlatTeamExecutionFactory", () => {
     const prepareNewAgentRun = vi.fn();
     const prepared = await new FlatTeamExecutionFactory({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY, agentRunManager: { prepareNewAgentRun } as never }).beginMaterialization({
       physicalScope,
-      teamNode,
-      handoffs: [],
+      membership: new TeamRunMembership({ teamNode, handoffs: [] }),
       activationMode: "fresh",
       callbacks,
     }).prepare();
 
     expect(prepared.teamRun.teamRunId).toBe(teamNode.teamRunId);
     expect(prepared.teamRun.context.physicalScope).toEqual(physicalScope);
-    expect(prepared.teamRun.context.runtimeContext?.memberContexts.map((item) => item.address))
+    expect(prepared.teamRun.context.membership.memberContexts().map((item) => item.address))
       .toEqual(teamNode.children.map((item) => item.address));
     prepared.commitAfterDurability();
     expect(prepared.teamRun.isActive()).toBe(true);
@@ -62,8 +62,7 @@ describe("FlatTeamExecutionFactory", () => {
     const root = createAgentOrgRootExecutionIdentity("org-root-run");
     await expect(() => new FlatTeamExecutionFactory({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY }).beginMaterialization({
       physicalScope: createRootExecutionPhysicalScope({ root, ancestorTeamRunIds: [] }),
-      teamNode: node("/ReviewTeam", "mounted-team-run"),
-      handoffs: [],
+      membership: new TeamRunMembership({ teamNode: node("/ReviewTeam", "mounted-team-run"), handoffs: [] }),
       activationMode: "fresh",
       callbacks,
     })).toThrow("contains TeamRun 'none', not 'mounted-team-run'");

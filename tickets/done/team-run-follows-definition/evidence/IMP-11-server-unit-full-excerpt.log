@@ -1,0 +1,28 @@
+# IMP-11 — full server unit suite (excerpt)
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Commit: d005fa2a5b (plus the uncommitted O-2 planner change committed with this evidence); Linux container, Node 22; 2026-11-21
+# Run on d005fa2a5b's code before its 3 lifecycle-test fakes got getExecutionTreeSnapshot (fixed; rerun in IMP-12).
+# Other failures are the known environment ones (root ignores chmod; socratic 'No such built-in module: node:'), identical on base.
+   Duration  1084.17s (transform 33.08s, setup 33.72s, import 612.89s, tests 269.38s, environment 7.46s)
+ Test Files  8 failed | 1038 passed | 5 skipped (1051)
+      Tests  12 failed | 8659 passed | 13 skipped (8684)
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts (22 tests | 4 failed) 151ms
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:310:62
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:526:21
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:553:21
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:568:21
+ ❯ tests/unit/agent-package-definitions/unreadable-package-root.test.ts (2 tests | 2 failed) 34ms
+ ❯ tests/unit/agent-package-definitions/unreadable-package-root.test.ts:55:97
+ ❯ tests/unit/agent-package-definitions/unreadable-package-root.test.ts:66:55
+ ❯ tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts:119:82
+ ❯ tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts:131:12
+ ❯ tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts (6 tests | 3 failed) 13ms
+ ❯ tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts:94:56
+ ❯ tests/unit/agent-team-execution/agent-team-run-manager-restore-self-heal.test.ts (3 tests | 1 failed) 12ms
+ ❯ tests/unit/agent-team-execution/agent-team-run-manager-restore-self-heal.test.ts:76:22
+ ❯ tests/unit/agent-team-execution/closure-stop-during-delivery-team.test.ts (1 test | 1 failed) 92ms
+ ❯ tests/unit/agent-team-execution/closure-stop-during-delivery-team.test.ts:86:26
+ ❯ tests/unit/application-backend/socratic-live-tutor-renderer.test.ts (0 test)
+ ❯ tests/unit/application-backend/socratic-runtime-lifecycle.test.ts (0 test)
+ ❯ tests/unit/config/app-config.test.ts (39 tests | 1 failed) 116ms
+ ❯ tests/unit/config/app-config.test.ts:426:57

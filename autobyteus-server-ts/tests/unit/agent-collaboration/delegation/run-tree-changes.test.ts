@@ -19,6 +19,7 @@ const harness = () => {
     ownTreeOf: async () => ({ kind: "agent", agentRunId: "delegator", address: "/delegator" }),
     projection: { rowOf: async (row) => "agentRunId" in row.run
       ? agentChildRow(row.run.agentRunId, state.addresses.get(row.run.agentRunId) ?? `/${row.run.agentRunId}`) : null },
+    isLiveTeamRun: () => true,
   });
   return { state, runTree };
 };

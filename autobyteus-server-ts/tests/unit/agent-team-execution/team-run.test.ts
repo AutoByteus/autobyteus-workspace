@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { TeamRunMembership } from "../../../src/agent-team-execution/domain/team-run-membership.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { TeamRunBackend } from "../../../src/agent-team-execution/backends/team-run-backend.js";
 import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
@@ -24,6 +25,7 @@ const createBackend = (): TeamRunBackend => ({
   reserveDirectAgentInput: vi.fn(),
   deliverToDirectAgent: vi.fn(async () => ({ accepted: true })),
   executeDirectAgentCommand: vi.fn(async () => ({ accepted: true })),
+  followMembership: vi.fn(),
   prepareTermination: vi.fn(),
   freezeForRootTermination: vi.fn(),
   terminate: vi.fn(async () => ({ accepted: true })),
@@ -37,7 +39,7 @@ const createRun = (backend: TeamRunBackend): TeamRun => new TeamRun(
     }),
     teamRunId: "team-run-1",
     teamBackendKind: TeamBackendKind.MIXED,
-    teamNode: config.rootTeam,
+    membership: new TeamRunMembership({ teamNode: config.rootTeam, handoffs: [] }),
     runtimeContext: null,
   }),
   backend,

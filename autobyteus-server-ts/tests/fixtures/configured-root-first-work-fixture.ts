@@ -1,4 +1,5 @@
 import { testViewStreams } from "../helpers/view-streams.js";
+import { TeamChangeNoticeSource } from "../../src/agent-team-execution/membership/team-change-notice-source.js";
 import { NOT_DELEGATED } from "../helpers/run-collaboration.js";
 import { noDelegations, openTaskRecords } from "../helpers/no-delegations.js";
 import { testActivationManager } from "./agent-run-preparation-fixtures.js";
@@ -126,7 +127,7 @@ export const configuredRootFixture = async (placement: Placement, options: {
     });
     const tree = buildInitialTeamRunExecutionTree({ config, teamDefinitionName: "Test Team" });
     await actualStore.write(memoryDir, tree as never);
-    const root = await materializeTeamRoot({ remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+    const root = await materializeTeamRoot({ changeNotices: new TeamChangeNoticeSource(), remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       config, tree,
       messages: { schemaVersion: 1, rootTeamRunId: rootId, messages: [] },
       teamMemoryDir: memoryDir, mode, persistInitialPackage: false, factory,

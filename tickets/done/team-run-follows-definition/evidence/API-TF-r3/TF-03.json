@@ -1,0 +1,157 @@
+{
+  "stored": {
+    "tree": {
+      "createdAt": "2026-11-21T15:56:21.838Z",
+      "archivedAt": null,
+      "applicationBinding": null,
+      "handoffs": [],
+      "rootTeam": {
+        "address": "/",
+        "teamDefinitionId": "tf-team-4d9d66",
+        "teamDefinitionName": "tf-team-4d9d66",
+        "teamRunId": "tf_team_4d9d66_b610bbb258ce4459b0f87731afac619a",
+        "coordinatorAddress": "/lead",
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "antigravity_cli",
+          "llmModelIdentifier": "gemini-3.8-flash-low",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/tmp/tf-e2e-DEReUC/workspace"
+        },
+        "members": [
+          {
+            "address": "/lead",
+            "agentDefinitionId": "tf-lead-4d9d66",
+            "role": null,
+            "description": null,
+            "agentRunId": "tf_lead_4d9d66_16bb65ab0fa342c0b67e347e8d932605",
+            "platformAgentRunId": "47c06631-61fe-43eb-8ec1-f5fec53fcd98",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/tmp/tf-e2e-DEReUC/workspace"
+            }
+          }
+        ],
+        "formerMembers": [
+          {
+            "address": "/writer",
+            "agentDefinitionId": "tf-writer-4d9d66",
+            "role": null,
+            "description": null,
+            "agentRunId": "tf_writer_4d9d66_aa1b8ce30ff9460fab3aba1831245ec0",
+            "platformAgentRunId": "70a4896d-b2f3-4270-b10e-bba950af2b4e",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/tmp/tf-e2e-DEReUC/workspace"
+            }
+          },
+          {
+            "address": "/reviewer",
+            "agentDefinitionId": "tf-reviewer-4d9d66",
+            "role": null,
+            "description": null,
+            "agentRunId": "tf_reviewer_4d9d66_68986cb89e45426fbb1804f3078c4e97",
+            "platformAgentRunId": "95a97e68-cd2e-439d-9110-54b5874de940",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/tmp/tf-e2e-DEReUC/workspace"
+            },
+            "launchSource": {
+              "origin": "team_default",
+              "fallbacks": []
+            }
+          }
+        ]
+      }
+    },
+    "members": [
+      {
+        "address": "/lead",
+        "agentRunId": "tf_lead_4d9d66_16bb65ab0fa342c0b67e347e8d932605",
+        "agentDefinitionId": "tf-lead-4d9d66",
+        "leaving": false
+      }
+    ],
+    "former": [
+      {
+        "address": "/writer",
+        "agentRunId": "tf_writer_4d9d66_aa1b8ce30ff9460fab3aba1831245ec0",
+        "agentDefinitionId": "tf-writer-4d9d66",
+        "leaving": false
+      },
+      {
+        "address": "/reviewer",
+        "agentRunId": "tf_reviewer_4d9d66_68986cb89e45426fbb1804f3078c4e97",
+        "agentDefinitionId": "tf-reviewer-4d9d66",
+        "leaving": false
+      }
+    ],
+    "coordinator": "/lead",
+    "handoffs": []
+  },
+  "snapshots": [
+    {
+      "coordinator": "/lead",
+      "members": [
+        {
+          "address": "/lead",
+          "agentRunId": "tf_lead_4d9d66_16bb65ab0fa342c0b67e347e8d932605",
+          "leaving": false
+        },
+        {
+          "address": "/reviewer",
+          "agentRunId": "tf_reviewer_4d9d66_68986cb89e45426fbb1804f3078c4e97",
+          "leaving": true
+        }
+      ]
+    },
+    {
+      "coordinator": "/lead",
+      "members": [
+        {
+          "address": "/lead",
+          "agentRunId": "tf_lead_4d9d66_16bb65ab0fa342c0b67e347e8d932605",
+          "leaving": false
+        }
+      ]
+    }
+  ],
+  "refused": {
+    "accepted": false,
+    "code": "COLLABORATION_TARGET_NOT_FOUND",
+    "message": "reviewer (/reviewer) is no longer a member of your team: it was removed from the team definition. Call get_handoff_rules for your current handoff rules.",
+    "isError": true
+  },
+  "refusedByRunId": {
+    "accepted": false,
+    "code": "COLLABORATION_TARGET_NOT_FOUND",
+    "message": "reviewer (/reviewer) is no longer a member of your team: it was removed from the team definition. Call get_handoff_rules for your current handoff rules.",
+    "isError": true
+  },
+  "stillLeavingWhenRefused": true,
+  "markerWhileLeaving": [
+    "tf_reviewer_4d9d66_68986cb89e45426fbb1804f3078c4e97"
+  ],
+  "rowsWhileLeaving": [
+    {
+      "key": "team_member:tf_team_4d9d66_b610bbb258ce4459b0f87731afac619a:tf_reviewer_4d9d66_68986cb89e45426fbb1804f3078c4e97",
+      "kind": "team_member",
+      "address": "/reviewer",
+      "agentRunId": "tf_reviewer_4d9d66_68986cb89e45426fbb1804f3078c4e97"
+    }
+  ],
+  "markerAfterRelease": [],
+  "openedProjection": "ok",
+  "openedFileChanges": "ok",
+  "reviewerGotStop": false,
+  "reviewerGotByRunId": false
+}

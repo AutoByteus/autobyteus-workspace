@@ -18,7 +18,7 @@ const launch = { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "sonne
 const agentPlacement: LocalDelegationPlacement = { kind: "agent", address: "/image_maker" as never,
   source: { kind: "agent", agentDefinitionId: "image-maker", launchConfiguration: launch }, launchNotes: ["note"] };
 const teamPlacement: LocalDelegationPlacement = { kind: "agent_team", address: "/product_team" as never, coordinatorAddress: "/product_team/designer" as never,
-  source: { kind: "agent_team", teamDefinitionId: "product-team", coordinatorAddress: "/product_team/designer" as never, members: [], handoffs: [], defaultLaunchConfiguration: launch } };
+  source: { kind: "agent_team", teamDefinitionId: "product-team", coordinatorAddress: "/product_team/designer" as never, members: [], handoffs: [], defaultLaunchConfiguration: launch }, copiedFrom: "team_definition" };
 
 const harness = (reader: RunFilesReader = NO_RUN_PARTS, fromDelegator: LocalDelegationPlacement | null = null) => {
   const tasks = new InMemoryTaskExecutionResources();

@@ -1,0 +1,30 @@
+{
+  "reviewerLaunch": {
+    "runtimeKind": "autobyteus",
+    "llmModelIdentifier": "claude-haiku-5-5",
+    "llmConfig": null,
+    "autoExecuteTools": true,
+    "workspaceRootPath": "/root/.autobyteus-e2e/team-follows-live-rxvJrz/workspace"
+  },
+  "reviewerLaunchSource": {
+    "origin": "agent_default",
+    "fallbacks": []
+  },
+  "leadConversation": [
+    "tfl_reviewer_7810ccaf_642875c8f9d94feba9c2c69f8371ee86",
+    "inter_agent_message",
+    "user",
+    "tfl_reviewer_7810ccaf_642875c8f9d94feba9c2c69f8371ee86",
+    "/reviewer",
+    "memberinput_hTShWQrwBQWC7yjlLPTCPsEgty0E_8Tm",
+    "member_input:tfl_team_7810ccaf_4c8ab4ad7cc14a5e93b8dcf2316a749f:tfl_lead_7810ccaf_e1458c4d05e54a30809e6bf34c0c037e:memberinput_hTShWQrwBQWC7yjlLPTCPsEgty0E_8Tm",
+    "You received a message from the agent with sender address \"/reviewer\" and sender run id \"tfl_reviewer_7810ccaf_642875c8f9d94feba9c2c69f8371ee86\".\nmessage:\nThe review code is REVIEW-7810ccaf.",
+    "message",
+    "assistant",
+    "01a1fed7-ab77-7013-9af8-bbd5e02589a8",
+    "The team’s review code is **REVIEW-7810ccaf**."
+  ],
+  "reviewerMemoryHasRequest": true,
+  "reviewerSentCode": true,
+  "leadNotice": "Your team changed: its definition was updated.\\nJoined: reviewer at /reviewer."
+}

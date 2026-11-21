@@ -1,0 +1,10 @@
+# IMP-22 — CR-004: server typecheck and the tests around the location and projection services
+# Commands: pnpm -C autobyteus-server-ts typecheck; (autobyteus-server-ts) pnpm exec vitest run tests/unit/run-history tests/unit/agent-memory tests/unit/context-files tests/integration/agent-team-execution/team-run-follows-definition.integration.test.ts tests/unit/api/graphql/types/team-run-history.test.ts
+# Commit: 9b0705a8ef + the CR-004 change (committed with this evidence); Linux container, Node 22; 2026-11-21
+# One test removed: 'rejects executions that have neither a configured launch placement nor a recorded source' (the refusal is gone; a team location always has its own node, by type).
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 16.8s
+[typecheck] server tests (tsconfig.tests.json): 1005 errors, exit 2, 53.0s
+[typecheck] production errors: 0; test-file errors: 1005 in 314 files (baseline 1005 in 314 files)
+[typecheck] PASS
+ Test Files  96 passed (96)
+      Tests  661 passed | 1 skipped (662)

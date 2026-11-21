@@ -78,6 +78,7 @@ export const runTreeDisplayRows = (input: Readonly<{
       remote: tree.peer && target
         ? Object.freeze({ runId: target.runId, nodeName: tree.peer.nodeName, reachable: tree.peer.reachable, title: tree.peer.title })
         : null,
+      ...(tree.leaving ? { leaving: true } : {}),
     }
     return Object.freeze({
       tree, row,

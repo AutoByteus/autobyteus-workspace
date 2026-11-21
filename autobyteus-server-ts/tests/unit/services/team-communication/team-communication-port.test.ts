@@ -51,6 +51,7 @@ const buildHarness = (input: {
     initial: Object.freeze({ schemaVersion: 1 as const, rootTeamRunId, messages: Object.freeze([]) }),
     assertDeliveryAllowed,
     isCurrentAgent: input.currentAgent ?? (() => true),
+    maySend: input.currentAgent ?? (() => true),
     messageLogOwnerOf: () => OWN_RUN_LOG,
     requireContainingTeamRun: vi.fn(async () => ({ reserveDirectAgentInput }) as unknown as TeamRun),
     commitMessageAppend: commit,

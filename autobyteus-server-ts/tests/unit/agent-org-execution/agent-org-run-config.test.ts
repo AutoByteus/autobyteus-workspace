@@ -43,7 +43,7 @@ async function setup() {
   const validator = new RunModelSelectionService(catalog, NO_ON_DEMAND_MODELS, capacity);
   let runActive = true;
   const run = { orgRunId: 'org', rootIdentity: createAgentOrgRootExecutionIdentity('org'), isActive: () => runActive,
-    hasAgentExecution: vi.fn(() => false), deliverExactAgentMessage: vi.fn(), terminate: vi.fn(async () => ({ accepted: true })) };
+    hasAgentExecution: vi.fn(() => false), ownsAgentRun: vi.fn(() => false), deliverExactAgentMessage: vi.fn(), terminate: vi.fn(async () => ({ accepted: true })) };
   const build = vi.fn().mockResolvedValue(run);
   const ensureWorkspaceByRootPath = vi.fn(async (root: string) => ({ getBasePath: () => root }));
   const manager = new AgentOrgRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(), workspaces: { ensureWorkspaceByRootPath } as any, memoryDir, executionTreeStore: store, modelSelectionValidator: validator,

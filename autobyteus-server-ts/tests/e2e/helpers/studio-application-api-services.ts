@@ -23,7 +23,7 @@ const NO_DELEGATIONS = Object.freeze({ childrenOf: () => [], subtreeOf: () => []
   collaborationTreeOf: () => ({ rows: () => [] }) as never });
 const NO_DELEGATIONS_RUN_AGENTS = new DelegatedRunAgentsReader(NO_DELEGATIONS);
 /** A run's tree (SR-084) over the same empty delegation tree: a suite that reads trees passes its own run files. */
-const NO_DELEGATIONS_RUN_TREE = new RunTreeView({ tree: NO_DELEGATIONS, ownTreeOf: async () => null, projection: { rowOf: async () => null } });
+const NO_DELEGATIONS_RUN_TREE = new RunTreeView({ tree: NO_DELEGATIONS, ownTreeOf: async () => null, projection: { rowOf: async () => null }, isLiveTeamRun: () => false });
 
 const unavailableService = <T extends object>(serviceName: string): T =>
   new Proxy(Object.create(null) as T, {

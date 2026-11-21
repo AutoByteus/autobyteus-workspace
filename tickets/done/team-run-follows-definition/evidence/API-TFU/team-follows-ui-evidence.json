@@ -1,0 +1,315 @@
+{
+  "startedAt": "2026-11-21T11:32:56.680Z",
+  "steps": [
+    {
+      "at": "2026-11-21T11:33:29.328Z",
+      "text": "seeded",
+      "details": {
+        "teamRunId": "tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d",
+        "runOf": {
+          "/lead": "tfu_lead_75e8e1_43e94ec225724a5f93c69cf479396801",
+          "/writer": "tfu_writer_75e8e1_3daea43a0d5d44f4a42163e08cbb4925",
+          "/reviewer": "tfu_reviewer_75e8e1_f36f5e9034b5454f9a2bc10e98599fcb"
+        }
+      }
+    },
+    {
+      "at": "2026-11-21T11:33:48.343Z",
+      "text": "team view open",
+      "details": {
+        "before": [
+          {
+            "address": "/lead",
+            "text": "L lead now",
+            "current": "true"
+          },
+          {
+            "address": "/writer",
+            "text": "W writer now",
+            "current": false
+          }
+        ],
+        "dataTests": [
+          "toast-container",
+          "app-left-panel-shell",
+          "app-left-panel-sections",
+          "app-left-panel-primary-nav",
+          "app-left-panel-chat",
+          "app-left-panel-new-chat",
+          "app-left-panel-collapse",
+          "chat-draft-rows",
+          "nodes-network-icon",
+          "app-left-panel-section-resize-handle",
+          "app-left-panel-run-history",
+          "run-section-title",
+          "run-section-view-menu",
+          "workspace-history-tree-scroll",
+          "workspace-row",
+          "workspace-team-definition-row-tfu-team-75e8e1",
+          "team-aggregate-status-dot",
+          "workspace-team-group-archive-tfu-team-75e8e1",
+          "workspace-team-row-tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d",
+          "workspace-team-run-disclosure",
+          "workspace-team-execution-tree",
+          "workspace-team-member-tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d-/lead",
+          "workspace-hierarchy-branches",
+          "workspace-team-member-avatar",
+          "workspace-team-member-tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d-/writer",
+          "workspace-adaptive-layout",
+          "workspace-center-right-flow",
+          "workspace-center-pane",
+          "workspace-center-content-shell",
+          "team-workspace-surface",
+          "workspace-header-edit-config",
+          "workspace-header-new-run",
+          "agent-event-monitor",
+          "agent-conversation-feed",
+          "inter-agent-inline",
+          "inter-agent-toggle",
+          "workspace-right-resize-handle",
+          "workspace-right-panel",
+          "right-side-tab-list",
+          "right-side-panel-toggle",
+          "right-side-tab-content-shell",
+          "collaboration-messages-section",
+          "collaboration-messages-header",
+          "team-communication-split",
+          "team-communication-left-list",
+          "team-communication-message-list",
+          "team-communication-message-row",
+          "team-communication-message-summary",
+          "team-communication-direction-icon",
+          "team-communication-resize-handle",
+          "team-communication-detail-pane",
+          "message-identity-toggle",
+          "team-communication-message-markdown",
+          "right-side-terminal-panel",
+          "terminal-panel",
+          "terminal-panel-entry"
+        ]
+      }
+    },
+    {
+      "at": "2026-11-21T11:33:48.942Z",
+      "text": "rows after the change (no reload)",
+      "details": {
+        "after": [
+          {
+            "address": "/lead",
+            "text": "L lead now",
+            "current": "true"
+          },
+          {
+            "address": "/reviewer",
+            "text": "R reviewer now",
+            "current": false
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-11-21T11:33:50.533Z",
+      "text": "reviewer selected",
+      "details": {
+        "header": "R reviewer Offline Context Files (0) (drag, paste, or upload) Projects Files Tea",
+        "reviewerRow": {
+          "address": "/reviewer",
+          "text": "R reviewer now",
+          "current": false
+        }
+      }
+    },
+    {
+      "at": "2026-11-21T11:33:54.689Z",
+      "text": "Team tab",
+      "details": {
+        "tabFound": true,
+        "writerMessageShown": true,
+        "writerAddressShown": false,
+        "excerpt": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nIntegrations\nWorkspaces\nworkspace\nTEAMS\ntfu-team-75e8e1\n(1)\nCALL_TOOL:{\"name\":\"send_message_to\",\"arguments\":{\"recipient_address\":\"/lead\",\"content\":\"WRITER-NO...\nnow\nL\nlead\nnow\nR\nreviewer\nnow\nSettings\nL\nlead\nIdle\nL\nlead\n\nFrom Tfu Writer:\n\nWRITER-NOTE-75e8e1\n\nOK\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files."
+      }
+    },
+    {
+      "at": "2026-11-21T11:34:03.085Z",
+      "text": "fresh load after the coordinator change",
+      "details": {
+        "rows": [
+          {
+            "address": "/lead",
+            "text": "L lead now",
+            "current": false
+          },
+          {
+            "address": "/reviewer",
+            "text": "R reviewer now",
+            "current": "true"
+          }
+        ],
+        "header": "R reviewer Idle You Hello reviewer, please answer. R reviewer OK Context Files"
+      }
+    },
+    {
+      "at": "2026-11-21T11:34:19.799Z",
+      "text": "while the reviewer is leaving (server snapshot says leaving)",
+      "details": {
+        "rowsWhileLeaving": [
+          {
+            "address": "/lead",
+            "text": "L lead now",
+            "current": false
+          }
+        ],
+        "marks": {
+          "tags": 0,
+          "membersPanels": 0,
+          "word": false
+        },
+        "header": "R reviewer Running You Hello reviewer, please answer. R reviewer OK You Hello",
+        "stopVisible": true
+      }
+    }
+  ],
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 23191
+    },
+    {
+      "label": "frontend",
+      "pid": 23338
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 23338,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 23191,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/tmp/team-follows-ui-probe-HS2T7H"
+    }
+  ],
+  "browserErrors": [],
+  "cases": {
+    "TFU-01": {
+      "result": "Pass",
+      "details": {
+        "before": [
+          {
+            "address": "/lead",
+            "text": "L lead now",
+            "current": "true"
+          },
+          {
+            "address": "/writer",
+            "text": "W writer now",
+            "current": false
+          }
+        ],
+        "after": [
+          {
+            "address": "/lead",
+            "text": "L lead now",
+            "current": "true"
+          },
+          {
+            "address": "/reviewer",
+            "text": "R reviewer now",
+            "current": false
+          }
+        ],
+        "reviewerRow": {
+          "address": "/reviewer",
+          "text": "R reviewer now",
+          "current": false
+        },
+        "writerMessageShown": true,
+        "reviewerOfflineBeforeMessage": "{\"executionTree\":{\"created_at\":\"2026-11-21T11:33:27.777Z\",\"archived_at\":null,\"application_binding\":null,\"handoffs\":[{\"from\":\"/lead\",\"to\":\"/reviewer\",\"rules\":[\"Review drafts.\"]}],\"root_team\":{\"address\":\"/\",\"team_definition_id\":\"tfu-team-75e8e1\",\"team_definition_name\":\"tfu-team-75e8e1\",\"team_run_id\":\""
+      },
+      "ms": 13193
+    },
+    "TFU-02": {
+      "result": "Pass",
+      "details": {
+        "rows": [
+          {
+            "address": "/lead",
+            "text": "L lead now",
+            "current": false
+          },
+          {
+            "address": "/reviewer",
+            "text": "R reviewer now",
+            "current": "true"
+          }
+        ],
+        "header": "R reviewer Idle You Hello reviewer, please answer. R reviewer OK Context Files"
+      },
+      "ms": 10867
+    },
+    "TFU-03-observed": {
+      "rowsWhileLeaving": [
+        {
+          "address": "/lead",
+          "text": "L lead now",
+          "current": false
+        }
+      ],
+      "reviewerRowWhileLeaving": false,
+      "marks": {
+        "tags": 0,
+        "membersPanels": 0,
+        "word": false
+      },
+      "header": "R reviewer Running You Hello reviewer, please answer. R reviewer OK You Hello",
+      "stopVisible": true,
+      "releasedBy": "the composer Stop",
+      "rowsAfter": [
+        {
+          "address": "/lead",
+          "text": "L lead now",
+          "current": "true"
+        }
+      ],
+      "releasedRowGone": true
+    },
+    "TFU-03": {
+      "result": "Fail",
+      "error": "design: the leaving member is shown, tagged Leaving, until it stops (no row and no tag in the rendered app)",
+      "details": {
+        "rowsWhileLeaving": [
+          {
+            "address": "/lead",
+            "text": "L lead now",
+            "current": false
+          }
+        ],
+        "reviewerRowWhileLeaving": false,
+        "marks": {
+          "tags": 0,
+          "membersPanels": 0,
+          "word": false
+        },
+        "header": "R reviewer Running You Hello reviewer, please answer. R reviewer OK You Hello",
+        "stopVisible": true,
+        "releasedBy": "the composer Stop",
+        "rowsAfter": [
+          {
+            "address": "/lead",
+            "text": "L lead now",
+            "current": "true"
+          }
+        ],
+        "releasedRowGone": true
+      },
+      "ms": 16889
+    }
+  },
+  "ownedRoot": "/tmp/team-follows-ui-probe-HS2T7H",
+  "backendUrl": "http://127.0.0.1:33671",
+  "frontUrl": "http://127.0.0.1:41887",
+  "completedAt": "2026-11-21T11:34:23.401Z"
+}

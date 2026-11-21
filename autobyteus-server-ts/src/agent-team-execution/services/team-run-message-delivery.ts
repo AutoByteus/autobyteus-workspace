@@ -2,6 +2,7 @@ import { CollaborationContractError } from "../../agent-collaboration/domain/col
 import { NOT_AN_AGENT_OF_THIS_RUN, type CrossRunAcceptInput } from "../../agent-collaboration/communication/cross-run-accept-input.js";
 import type { WorkPacket } from "../../agent-collaboration/execution/task/task-delegation.js";
 import { reachingAddressOf } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
+import { formerMemberRefusalMessage } from "../../agent-collaboration/collaborators/collaborator-errors.js";
 import type { DelegationWork } from "../../model-routing/domain/model-routing-types.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
@@ -163,6 +164,9 @@ export class TeamRunMessageDelivery {
   async deliverToRunId(input: ExactTeamAgentMessageInput): Promise<AgentOperationResult> {
     this.options.authorizeIdentity(input.sender.identity);
     const execution = this.options.getIndex().getAgent(input.targetAgentRunId.trim());
+    const former = execution ? null : this.options.getIndex().formerMemberByRunId(input.targetAgentRunId.trim());
+    // REQ-009: a member that left the team is not reached by its run ID either.
+    if (former) return { accepted: false, code: "COLLABORATION_TARGET_NOT_FOUND", message: formerMemberRefusalMessage(former.address) };
     if (!execution) {
       return { accepted: false, code: "TARGET_AGENT_RUN_NOT_FOUND", message: `Exact AgentRun target '${input.targetAgentRunId}' is not in root '${this.options.rootTeamRunId}'.` };
     }

@@ -1,4 +1,5 @@
 import type { DelegatedFrom } from "../../../../src/run-history/store/agent-run-metadata-types.js";
+import { TeamChangeNoticeSource } from "../../../../src/agent-team-execution/membership/team-change-notice-source.js";
 import { testViewStreams } from "../../../helpers/view-streams.js";
 import { NOT_DELEGATED } from "../../../helpers/run-collaboration.js";
 import fs from "node:fs/promises";
@@ -86,7 +87,7 @@ export const harness = async (options: { runnable?: boolean; withTeammate?: bool
       ...(options.withTeammate ? [testAgentNode("/worker", { agentRunId: "run-worker", runtimeKind: RuntimeKind.CODEX_APP_SERVER, ...(options.teammateDefinitionId ? { agentDefinitionId: options.teammateDefinitionId } : {}) })] : []),
     ],
   });
-  const root = await materializeTeamRoot({ remoteChannel: NO_PEER_CHANNEL,
+  const root = await materializeTeamRoot({ changeNotices: new TeamChangeNoticeSource(), remoteChannel: NO_PEER_CHANNEL,
     config,
     tree: { ...buildInitialTeamRunExecutionTree({ config, teamDefinitionName: "SE Team" }), ...(options.delegatedFrom ? { delegatedFrom: options.delegatedFrom } : {}) },
     messages: Object.freeze({ schemaVersion: 1 as const, rootTeamRunId: ROOT, messages: Object.freeze([]) }),
@@ -95,7 +96,7 @@ export const harness = async (options: { runnable?: boolean; withTeammate?: bool
   const reopen = async () => {
     const tree = (await dependencies.executionTreeStore.read(teamMemoryDir, ROOT))!;
     const messages = (await dependencies.communicationStore.readLog(teamMemoryDir, ROOT))!;
-    return materializeTeamRoot({ remoteChannel: NO_PEER_CHANNEL,
+    return materializeTeamRoot({ changeNotices: new TeamChangeNoticeSource(), remoteChannel: NO_PEER_CHANNEL,
       config: buildTeamRunConfigFromExecutionTree(tree), tree, messages,
       teamMemoryDir, mode: "restore", persistInitialPackage: false, ...dependencies,
     });

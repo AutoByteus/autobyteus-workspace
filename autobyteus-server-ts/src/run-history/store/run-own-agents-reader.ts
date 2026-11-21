@@ -1,6 +1,6 @@
 import { promises as fs } from "node:fs";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
-import type { RunAgent, RunParts } from "../../agent-collaboration/delegation/delegation-index.js";
+import type { RunAgent, RunParts } from "../../agent-collaboration/delegation/run-parts.js";
 import type { ConfiguredPlacement, OrgPlacements, RunFilesReader } from "../../agent-collaboration/delegation/collaboration-tree.js";
 import type { RunOwnMember, RunOwnTree } from "../../agent-collaboration/delegation/run-tree-view.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -72,25 +72,27 @@ export class RunOwnAgentsReader implements RunFilesReader {
         const metadata = await this.stores.agents.readMetadata(run.rootRunId);
         if (!metadata) return null;
         return { agents: [{ agentRunId: run.rootRunId, address: metadata.address ?? null, agentDefinitionId: metadata.agentDefinitionId }],
-          coordinatorAddress: null, mountedTeams: [] };
+          formerAgents: [], coordinatorAddress: null, mountedTeams: [] };
       }
       case "agent_team": {
         const tree = await this.stores.team.read(this.layout.getTeamDirPath({ rootTeamRunId: run.rootRunId, ancestorTeamRunIds: [] }), run.rootRunId);
-        return tree ? { agents: agentsOfMembers(tree.rootTeam.members as readonly MemberNode[]), coordinatorAddress: tree.rootTeam.coordinatorAddress,
+        return tree ? { agents: agentsOfMembers(tree.rootTeam.members as readonly MemberNode[]),
+          formerAgents: agentsOfMembers((tree.rootTeam.formerMembers ?? []) as readonly MemberNode[]), coordinatorAddress: tree.rootTeam.coordinatorAddress,
           mountedTeams: [] } : null;
       }
       case "agent_org": {
         const tree = await this.stores.org.read(this.layout.getOrgDirPath(run.rootRunId), run.rootRunId);
         if (!tree) return null;
         const members = tree.rootOrg.members as readonly MemberNode[];
-        return { agents: agentsOfMembers(members), coordinatorAddress: null, mountedTeams: mountedTeamsOf(members) };
+        return { agents: agentsOfMembers(members), formerAgents: [], coordinatorAddress: null, mountedTeams: mountedTeamsOf(members) };
       }
     }
   }
 
   /**
    * The run's own parts as its tree shows them (autobyteus-461 SR-084, `RunTreeView`): an agent run's own agent; a team
-   * run's members and coordinator; an org run's direct agents and mounted teams with their members. `null` when absent.
+   * run's members, then its former members marked `leaving` (SR-010: `teamMemberRowsOf` decides their rows), and its
+   * coordinator; an org run's direct agents and mounted teams with their members. `null` when absent.
    */
   async ownTreeOf(run: RootExecutionIdentity): Promise<RunOwnTree | null> {
     switch (run.rootSubjectKind) {
@@ -101,7 +103,9 @@ export class RunOwnAgentsReader implements RunFilesReader {
       case "agent_team": {
         const tree = await this.stores.team.read(this.layout.getTeamDirPath({ rootTeamRunId: run.rootRunId, ancestorTeamRunIds: [] }), run.rootRunId);
         return tree ? { kind: "agent_team", teamRunId: run.rootRunId, coordinatorAddress: tree.rootTeam.coordinatorAddress,
-          members: membersOf(tree.rootTeam.members as readonly MemberNode[]) } : null;
+          members: [...membersOf(tree.rootTeam.members as readonly MemberNode[]),
+            ...membersOf((tree.rootTeam.formerMembers ?? []).filter((member) => member.leaving) as readonly MemberNode[])
+              .map((member) => Object.freeze({ ...member, leaving: true as const }))] } : null;
       }
       case "agent_org": {
         const tree = await this.stores.org.read(this.layout.getOrgDirPath(run.rootRunId), run.rootRunId);
@@ -173,7 +177,9 @@ export class RunOwnAgentsReader implements RunFilesReader {
       if (!entry.isDirectory()) continue;
       const tree = await this.stores.team.read(this.layout.getTeamDirPath({ rootTeamRunId: entry.name, ancestorTeamRunIds: [] }), entry.name)
         .catch((error: unknown) => { console.warn(`Team run '${entry.name}' is skipped: its file cannot be read: ${error instanceof Error ? error.message : String(error)}`); return null; });
-      if (tree && agentsOfMembers(tree.rootTeam.members as readonly MemberNode[]).some((agent) => agent.agentRunId === agentRunId)) {
+      // A former member (removed from the definition) is still of this run: its history is here.
+      if (tree && agentsOfMembers([...tree.rootTeam.members, ...tree.rootTeam.formerMembers ?? []] as readonly MemberNode[])
+        .some((agent) => agent.agentRunId === agentRunId)) {
         return { rootSubjectKind: "agent_team", rootRunId: entry.name };
       }
     }

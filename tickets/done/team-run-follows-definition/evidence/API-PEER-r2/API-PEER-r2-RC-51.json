@@ -1,0 +1,29 @@
+{
+  "note": "RC-51 entry of the round-2 receipt (full receipt and server logs not kept)",
+  "RC-51": {
+    "copiedFrom": "team_definition",
+    "addedMembers": [
+      "/lead",
+      "/checker",
+      "/reviewer"
+    ],
+    "rules": {
+      "handoffs": [
+        {
+          "when": "Review the studio work.",
+          "recipient_address": "/reviewer"
+        }
+      ],
+      "isError": false,
+      "elapsedMs": 216
+    },
+    "removedMembers": [
+      "/lead",
+      "/checker"
+    ],
+    "formerMembers": [
+      "/reviewer"
+    ],
+    "refused": "reviewer (/reviewer) is no longer a member of your team: it was removed from the team definition. Call get_handoff_rules for your current handoff rules."
+  }
+}

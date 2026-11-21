@@ -98,7 +98,7 @@ describe("ChildRowsFeed", () => {
     feed.follow(tree);
     // What the client reads again on each notice (`runTree(run)`).
     const runTree = new RunTreeView({ tree, ownTreeOf: async () => ({ kind: "agent", agentRunId: "manager", address: "/manager" }),
-      projection: { rowOf: async (child) => "agentRunId" in child.run ? agentChildRow(child.run.agentRunId) : null } });
+      projection: { rowOf: async (child) => "agentRunId" in child.run ? agentChildRow(child.run.agentRunId) : null }, isLiveTeamRun: () => true });
     const reRead = async () => (await runTree.rowsOf(M)).map((r) => [r.key, r.parentKey]);
     expect(await reRead()).toEqual([["agent:manager", null]]);
     // The manager's row in the list is expanded but not open: only its status connection follows it.

@@ -6,7 +6,7 @@ import type { RootSnapshotConnection, RunViewStreams, SequencedRootEvent } from 
 import { createTeamRootExecutionIdentity, type RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { ActiveCollaborationRootDirectory } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { RootTeamRun, RootTeamRunPackageSnapshot } from "../../agent-team-execution/domain/root-team-run.js";
-import type { TeamRunEvent } from "../../agent-team-execution/domain/team-run-event.js";
+import { TeamRunEventSourceType, type TeamRunEvent } from "../../agent-team-execution/domain/team-run-event.js";
 import type { TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import { inOrderViewDelivery, isReadBeforeSending, readTreeAtBase, readViewTree, type RunViewRowSources } from "./run-view-rows.js";
 import { isRunTreeChangedEvent, type RunTreeChangedEvent } from "../../agent-collaboration/delegation/run-tree-view.js";
@@ -46,7 +46,7 @@ export class TeamRunNotRestorableError extends Error {
 
 /** What a team run's view stream carries: the run's own events and its tree's notices (`ChildRowsFeed`). */
 type TeamViewEvent = TeamRunEvent | RunTreeChangedEvent;
-type ViewSnapshot = Readonly<{ own: Pick<RootTeamRunPackageSnapshot, "tree" | "statuses" | "inputStates">; tree: RunTreeSessionRows }>;
+type ViewSnapshot = Readonly<{ own: Pick<RootTeamRunPackageSnapshot, "tree" | "statuses" | "inputStates" | "leavingMembers">; tree: RunTreeSessionRows }>;
 
 const lifecycle = (isActive: boolean): TeamStreamServerMessage =>
   parseTeamStreamServerMessage({ type: "TEAM_RUN_LIFECYCLE", payload: { is_active: isActive } });
@@ -124,6 +124,15 @@ export class TeamViewSession {
     else await this.enterStored();
   }
 
+  /** A live view snapshots again (its team's members changed); `follow` would keep it, as it is on the same root. */
+  private async reenterLive(): Promise<void> {
+    if (this.closed || this.mode?.kind !== "live") return;
+    this.leaveMode?.();
+    this.leaveMode = null;
+    this.mode = null;
+    await this.follow();
+  }
+
   private atBase() { return readTreeAtBase(this.sources.rows, this.identity); }
 
   private async enterLive(root: RootTeamRun): Promise<void> {
@@ -179,6 +188,11 @@ export class TeamViewSession {
       if (!open) return;
       try {
         const event = sequenced.event;
+        if ((event as TeamRunEvent).eventSourceType === TeamRunEventSourceType.MEMBERSHIP) {
+          // DS-007 a: the team's members changed: a new live snapshot, in this session's order.
+          if (open && isActive) void this.run(() => this.reenterLive()).catch((error: unknown) => console.error(`A run view could not show its team's change: ${String(error)}`));
+          return;
+        }
         if (isRunTreeChangedEvent(event as { kind?: unknown })) {
           const change = await tree.next();
           if (open) this.sink.send(parseTeamStreamServerMessage({ type: "RUN_TREE_CHANGED", payload: { change_sequence: sequenced.changeSequence, ...change } }));

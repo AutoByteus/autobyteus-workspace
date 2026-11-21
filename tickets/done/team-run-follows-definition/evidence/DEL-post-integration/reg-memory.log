@@ -1,0 +1,1096 @@
+# 2026-11-21T17:20:47Z reg-memory: env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<fixture>  pnpm -C autobyteus-server-ts exec vitest run tests/e2e/memory --no-watch --reporter=verbose
+
+ RUN  v4.1.12 /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:85879) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+Custom app data directory set to: /tmp/episodic-catalog-e2e-0IAclo
+Updated config file path to /tmp/episodic-catalog-e2e-0IAclo/.env
+Loading environment from: /tmp/episodic-catalog-e2e-0IAclo/.env
+◇ injected env (2) from ../../../../../../../tmp/episodic-catalog-e2e-0IAclo/.env // tip: ⌘ enable debugging { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/episodic-catalog-e2e-0IAclo
+DB DIRECTORY: /tmp/episodic-catalog-e2e-0IAclo/db
+LOGS DIRECTORY: /tmp/episodic-catalog-e2e-0IAclo/logs
+DOWNLOAD DIRECTORY: /tmp/episodic-catalog-e2e-0IAclo/download
+MEMORY DIRECTORY: /tmp/episodic-catalog-e2e-0IAclo/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+AgentRunManager initialized.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+AgentRunManager initialized.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+Creating temp workspace at: /tmp/episodic-catalog-e2e-0IAclo/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/temp_workspace.
+Initialized TempWorkspace at /tmp/episodic-catalog-e2e-0IAclo/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+Agent Definition created successfully with ID: ec-writer-e8eb24
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+Agent Definition created successfully with ID: ec-host-e8eb24
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+Agent Definition created successfully with ID: ec-solo-e8eb24
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor)
+Agent Team Definition created successfully with ID: ec-squad-e8eb24
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Created and registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+AGY compaction detection off for run ec_writer_e8eb24_4f42f3a93cc447f5b26a5e0cea1f6d85: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Agent websocket attached for run ec_writer_e8eb24_4f42f3a93cc447f5b26a5e0cea1f6d85
+Created agent session 09898cf8-4445-483d-87be-d09e46795a98 for run ec_writer_e8eb24_4f42f3a93cc447f5b26a5e0cea1f6d85
+Agent WebSocket connected: session=09898cf8-4445-483d-87be-d09e46795a98, run=ec_writer_e8eb24_4f42f3a93cc447f5b26a5e0cea1f6d85
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+AGY compaction detection off for run ec_host_e8eb24_72800244806b499e8fa3a7102b5a442e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Agent websocket attached for run ec_host_e8eb24_72800244806b499e8fa3a7102b5a442e
+Created agent session 678a6d78-70e2-43b4-8c32-4555fe41db79 for run ec_host_e8eb24_72800244806b499e8fa3a7102b5a442e
+Agent WebSocket connected: session=678a6d78-70e2-43b4-8c32-4555fe41db79, run=ec_host_e8eb24_72800244806b499e8fa3a7102b5a442e
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+AGY compaction detection off for run ec_writer_e8eb24_df9e849d818d43cbadb36760092ded43: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+AGY compaction detection off for run ec_writer_e8eb24_d40e2a0ea50048f4bfae9e7a255bc9a3: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+AGY compaction detection off for run ec_host_e8eb24_671a737661c64a3d96e62c71e106766b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Agent websocket attached for run ec_writer_e8eb24_df9e849d818d43cbadb36760092ded43
+Created agent session ff5f24c9-77fa-4476-b046-fb1a1ae4fddd for run ec_writer_e8eb24_df9e849d818d43cbadb36760092ded43
+Agent WebSocket connected: session=ff5f24c9-77fa-4476-b046-fb1a1ae4fddd, run=ec_writer_e8eb24_df9e849d818d43cbadb36760092ded43
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Created agent session 81ba3a9a-0a51-4cd9-a133-6d4e65165f4c for run ec_squad_e8eb24_6c6db0a003d14ea895b5e61fb954f2be
+Agent team websocket attached for team run ec_squad_e8eb24_6c6db0a003d14ea895b5e61fb954f2be
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Agent Team WebSocket connected: session=81ba3a9a-0a51-4cd9-a133-6d4e65165f4c, run=ec_squad_e8eb24_6c6db0a003d14ea895b5e61fb954f2be
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+AGY compaction detection off for run ec_writer_e8eb24_8846396e81cb46478d06be99d054690c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Created agent session 00f4df4b-3f7c-4c5f-92a7-220c07ca4f75 for run ec_squad_e8eb24_a560323451754ed4a6f6e9a30e7b8a4d
+Agent team websocket attached for team run ec_squad_e8eb24_a560323451754ed4a6f6e9a30e7b8a4d
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Agent Team WebSocket connected: session=00f4df4b-3f7c-4c5f-92a7-220c07ca4f75, run=ec_squad_e8eb24_a560323451754ed4a6f6e9a30e7b8a4d
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+AGY compaction detection off for run ec_host_e8eb24_5c9ba7078db34b82aae4512154a2a4be: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+AGY compaction detection off for run ec_writer_e8eb24_53e61e84a07d4ecabaead95bf321407c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+AGY compaction detection off for run ec_host_e8eb24_308e816f058c49678d2a0dff8148a4cf: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+AGY compaction detection off for run ec_writer_e8eb24_1326a6833dc446ca809f7e45ee029aaf: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Created agent session 148e4aa4-1887-4914-a7f7-cd2e0fa42040 for run ec_local_team_e8eb24_7032fa3d51f04354ace5e245faad3ad2
+Agent team websocket attached for team run ec_local_team_e8eb24_7032fa3d51f04354ace5e245faad3ad2
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Agent Team WebSocket connected: session=148e4aa4-1887-4914-a7f7-cd2e0fa42040, run=ec_local_team_e8eb24_7032fa3d51f04354ace5e245faad3ad2
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+AGY compaction detection off for run ec_lead_e8eb24_269d397488eb42dd914e1541b75df4fe: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+AGY compaction detection off for run ec_writer_e8eb24_10003afb80224da9bbf0ad50101b3b0e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+AGY compaction detection off for run ec_solo_e8eb24_df8fb994a2f547739206a3f798d1ac60: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent
+Agent websocket attached for run ec_solo_e8eb24_df8fb994a2f547739206a3f798d1ac60
+Created agent session d5a69bd3-9107-4a6d-8c8f-6eea3610fb11 for run ec_solo_e8eb24_df8fb994a2f547739206a3f798d1ac60
+Agent WebSocket connected: session=d5a69bd3-9107-4a6d-8c8f-6eea3610fb11, run=ec_solo_e8eb24_df8fb994a2f547739206a3f798d1ac60
+
+ ✓ tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-01: every kind of run of one agent is in its one catalog, oldest first, exactly the contract's lines; no conversation text; index.md lists every agent 23663ms
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-02: a turn updates its entry within 60 s; a new run's first turn adds an entry; a burst of turns gives at most two rewrites
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-02: a turn updates its entry within 60 s; a new run's first turn adds an entry; a burst of turns gives at most two rewrites
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-02: a turn updates its entry within 60 s; a new run's first turn adds an entry; a burst of turns gives at most two rewrites
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-02: a turn updates its entry within 60 s; a new run's first turn adds an entry; a burst of turns gives at most two rewrites
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-02: a turn updates its entry within 60 s; a new run's first turn adds an entry; a burst of turns gives at most two rewrites
+AGY compaction detection off for run ec_writer_e8eb24_3c5629ffeabb4a08bb06aa3ae21d9f76: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-02: a turn updates its entry within 60 s; a new run's first turn adds an entry; a burst of turns gives at most two rewrites
+Agent websocket attached for run ec_writer_e8eb24_3c5629ffeabb4a08bb06aa3ae21d9f76
+Created agent session 88d35ce7-08ad-432e-955c-d63b227667f6 for run ec_writer_e8eb24_3c5629ffeabb4a08bb06aa3ae21d9f76
+Agent WebSocket connected: session=88d35ce7-08ad-432e-955c-d63b227667f6, run=ec_writer_e8eb24_3c5629ffeabb4a08bb06aa3ae21d9f76
+
+ ✓ tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-02: a turn updates its entry within 60 s; a new run's first turn adds an entry; a burst of turns gives at most two rewrites 65594ms
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+AGY compaction detection off for run ec_writer_e8eb24_21704843aaec44f39fff3ffdf1b74c23: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Agent websocket attached for run ec_writer_e8eb24_21704843aaec44f39fff3ffdf1b74c23
+Created agent session 6a8634b2-3410-4239-a03c-f0fb884fcdde for run ec_writer_e8eb24_21704843aaec44f39fff3ffdf1b74c23
+Agent WebSocket connected: session=6a8634b2-3410-4239-a03c-f0fb884fcdde, run=ec_writer_e8eb24_21704843aaec44f39fff3ffdf1b74c23
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Created agent session b06dcb93-8481-4e71-99a1-232c5324e4b6 for run ec_squad_e8eb24_b6b4fa2e821545d19e0ae514c90d8a38
+Agent team websocket attached for team run ec_squad_e8eb24_b6b4fa2e821545d19e0ae514c90d8a38
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Agent Team WebSocket connected: session=b06dcb93-8481-4e71-99a1-232c5324e4b6, run=ec_squad_e8eb24_b6b4fa2e821545d19e0ae514c90d8a38
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+AGY compaction detection off for run ec_writer_e8eb24_40a2d1ff146c4059bdb1746422b6e93e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+AGY compaction detection off for run ec_writer_e8eb24_5e59b10e26f3478196ee9beb92131c52: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Created agent session 835c18f3-8299-4ddc-b442-f1d3a660849c for run ec_squad_e8eb24_bace74234c294ecc91cd686bba4758ce
+Agent team websocket attached for team run ec_squad_e8eb24_bace74234c294ecc91cd686bba4758ce
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Agent Team WebSocket connected: session=835c18f3-8299-4ddc-b442-f1d3a660849c, run=ec_squad_e8eb24_bace74234c294ecc91cd686bba4758ce
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+AGY compaction detection off for run ec_writer_e8eb24_2deb921030114b74a819edb9ba950037: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+AGY compaction detection off for run ec_writer_e8eb24_3cce03cc2f4a4ff5884d643c49c9a15a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Closed agent session 88d35ce7-08ad-432e-955c-d63b227667f6
+Agent WebSocket disconnected: 88d35ce7-08ad-432e-955c-d63b227667f6
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Closed agent session 6a8634b2-3410-4239-a03c-f0fb884fcdde
+Agent WebSocket disconnected: 6a8634b2-3410-4239-a03c-f0fb884fcdde
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Closed agent session 00f4df4b-3f7c-4c5f-92a7-220c07ca4f75
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Closed agent session b06dcb93-8481-4e71-99a1-232c5324e4b6
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s
+Closed agent session 835c18f3-8299-4ddc-b442-f1d3a660849c
+
+ ✓ tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-03: archive changes no catalog file; a refused delete changes nothing; deletes of an agent, team and org run remove their entries within 60 s 72482ms
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-04: a hand-edited catalog is rewritten at the agent's next change; an unwritable episodic/ is logged and the run goes on; writable again, it heals
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-04: a hand-edited catalog is rewritten at the agent's next change; an unwritable episodic/ is logged and the run goes on; writable again, it heals
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-04: a hand-edited catalog is rewritten at the agent's next change; an unwritable episodic/ is logged and the run goes on; writable again, it heals
+Creating new workspace for rootPath: /tmp/episodic-catalog-e2e-0IAclo/workspace
+Created metadata-only FileSystemWorkspace at /tmp/episodic-catalog-e2e-0IAclo/workspace.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-04: a hand-edited catalog is rewritten at the agent's next change; an unwritable episodic/ is logged and the run goes on; writable again, it heals
+Reusing registered workspace ID: agent_ws_476ee52e3b1171cad5845a87695a5bdd5fdabbf6e285f0f7dcca50f0582d3752
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-04: a hand-edited catalog is rewritten at the agent's next change; an unwritable episodic/ is logged and the run goes on; writable again, it heals
+AGY compaction detection off for run ec_writer_e8eb24_0d6c20f64bb04f0d973c9448c93a87e1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-04: a hand-edited catalog is rewritten at the agent's next change; an unwritable episodic/ is logged and the run goes on; writable again, it heals
+Agent websocket attached for run ec_writer_e8eb24_0d6c20f64bb04f0d973c9448c93a87e1
+Created agent session 2890176c-3315-465a-a121-5c82e827d60f for run ec_writer_e8eb24_0d6c20f64bb04f0d973c9448c93a87e1
+Agent WebSocket connected: session=2890176c-3315-465a-a121-5c82e827d60f, run=ec_writer_e8eb24_0d6c20f64bb04f0d973c9448c93a87e1
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-05: a start after a pass that never ran, a removed run folder, an agent's only run removed and a hand edit: exactly those catalogs are brought up to date
+Closed agent session 678a6d78-70e2-43b4-8c32-4555fe41db79
+Agent WebSocket disconnected: 678a6d78-70e2-43b4-8c32-4555fe41db79
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-05: a start after a pass that never ran, a removed run folder, an agent's only run removed and a hand edit: exactly those catalogs are brought up to date
+Closed agent session 148e4aa4-1887-4914-a7f7-cd2e0fa42040
+
+ × tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-04: a hand-edited catalog is rewritten at the agent's next change; an unwritable episodic/ is logged and the run goes on; writable again, it heals 89424ms
+   → Timed out waiting for write failure logged
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-05: a start after a pass that never ran, a removed run folder, an agent's only run removed and a hand edit: exactly those catalogs are brought up to date
+Closed agent session d5a69bd3-9107-4a6d-8c8f-6eea3610fb11
+Agent WebSocket disconnected: d5a69bd3-9107-4a6d-8c8f-6eea3610fb11
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-05: a start after a pass that never ran, a removed run folder, an agent's only run removed and a hand edit: exactly those catalogs are brought up to date
+Closed agent session 2890176c-3315-465a-a121-5c82e827d60f
+Agent WebSocket disconnected: 2890176c-3315-465a-a121-5c82e827d60f
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-05: a start after a pass that never ran, a removed run folder, an agent's only run removed and a hand edit: exactly those catalogs are brought up to date
+Closed agent session 81ba3a9a-0a51-4cd9-a133-6d4e65165f4c
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-05: a start after a pass that never ran, a removed run folder, an agent's only run removed and a hand edit: exactly those catalogs are brought up to date
+Closed agent session ff5f24c9-77fa-4476-b046-fb1a1ae4fddd
+Agent WebSocket disconnected: ff5f24c9-77fa-4476-b046-fb1a1ae4fddd
+
+stdout | tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-05: a start after a pass that never ran, a removed run folder, an agent's only run removed and a hand edit: exactly those catalogs are brought up to date
+Closed agent session 09898cf8-4445-483d-87be-d09e46795a98
+Agent WebSocket disconnected: 09898cf8-4445-483d-87be-d09e46795a98
+
+ ✓ tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-05: a start after a pass that never ran, a removed run folder, an agent's only run removed and a hand edit: exactly those catalogs are brought up to date 28781ms
+ ✓ tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-06: a start with no episodic/ rebuilds every catalog as it was, with a run without a journal and an older manifest; damaged team and org trees, damaged run metadata and a non-JSON manifest are left out with a warning naming each; nothing outside episodic/ changes 10176ms
+ ✓ tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-07: a restart with no change writes no file under episodic/ 30004ms
+ ✓ tests/e2e/memory-sync/memory-sync-large-files.e2e.test.ts > Memory Sync large files between two real servers > syncs a 40 MiB attachment, two 20 MiB files and many small files in one run, every request within the limits (AC-001, AC-002) 1735ms
+ ✓ tests/e2e/memory-sync/memory-sync-large-files.e2e.test.ts > Memory Sync large files between two real servers > imports the same attachment under two runs and uploads its content once (AR-001) 395ms
+ ✓ tests/e2e/memory-sync/memory-sync-large-files.e2e.test.ts > Memory Sync large files between two real servers > resumes an interrupted upload from what the hub holds, and shows nothing partial in the imports (AC-005, AC-009) 368ms
+ ✓ tests/e2e/memory-sync/memory-sync-large-files.e2e.test.ts > Memory Sync large files between two real servers > keeps syncing the other files when the hub refuses one, lists it with its reason, and retries it on Sync now (AC-004, AC-010) 1291ms
+ ✓ tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts > Memory Sync multi-process backend e2e > syncs fake source memory from one real backend server process into another 131ms
+ ✓ tests/e2e/memory-sync/raw-trace-manifest-runtime-names-sync.e2e.test.ts > Memory Sync of a converted raw-trace manifest (two real server processes) > uploads the converted manifest once; the hub mirrors the converted file; an older import stays as it is 95ms
+stdout | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:94771) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > build: every runtime's converted cases read in their neutral line through the Memory page reader (AC-001…006, AC-010)
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > build: every runtime's converted cases read in their neutral line through the Memory page reader (AC-001…006, AC-010)
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > build: every runtime's converted cases read in their neutral line through the Memory page reader (AC-001…006, AC-010)
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > build: every runtime's converted cases read in their neutral line through the Memory page reader (AC-001…006, AC-010)
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > build: every runtime's converted cases read in their neutral line through the Memory page reader (AC-001…006, AC-010)
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > build: the same job reads the same on every runtime: a skill load, a message, a refused message (AC-012 through the pipeline)
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > build: the same job reads the same on every runtime: a skill load, a message, a refused message (AC-012 through the pipeline)
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > build: the same job reads the same on every runtime: a skill load, a message, a refused message (AC-012 through the pipeline)
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > build: the same job reads the same on every runtime: a skill load, a message, a refused message (AC-012 through the pipeline)
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > build: the same job reads the same on every runtime: a skill load, a message, a refused message (AC-012 through the pipeline)
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+ ✓ tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > build: every runtime's converted cases read in their neutral line through the Memory page reader (AC-001…006, AC-010) 92ms
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > build: the neutral words are what search_memory's API finds (the Journals step feeds the text index) (AC-010)
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > build: the neutral words are what search_memory's API finds (the Journals step feeds the text index) (AC-010)
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > build: the neutral words are what search_memory's API finds (the Journals step feeds the text index) (AC-010)
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > build: the neutral words are what search_memory's API finds (the Journals step feeds the text index) (AC-010)
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > build: the neutral words are what search_memory's API finds (the Journals step feeds the text index) (AC-010)
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+ ✓ tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > build: the same job reads the same on every runtime: a skill load, a message, a refused message (AC-012 through the pipeline) 59ms
+ ✓ tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > build: the neutral words are what search_memory's API finds (the Journals step feeds the text index) (AC-010) 95ms
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > an update: journals written by an earlier revision (AC-008, AC-009) > the first catch-up pass replaces every journal in place, leaves the raw traces untouched; a second start renders nothing
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > an update: journals written by an earlier revision (AC-008, AC-009) > the first catch-up pass replaces every journal in place, leaves the raw traces untouched; a second start renders nothing
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > an update: journals written by an earlier revision (AC-008, AC-009) > the first catch-up pass replaces every journal in place, leaves the raw traces untouched; a second start renders nothing
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > an update: journals written by an earlier revision (AC-008, AC-009) > the first catch-up pass replaces every journal in place, leaves the raw traces untouched; a second start renders nothing
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > an update: journals written by an earlier revision (AC-008, AC-009) > the first catch-up pass replaces every journal in place, leaves the raw traces untouched; a second start renders nothing
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > an update: journals written by an earlier revision (AC-008, AC-009) > the first catch-up pass replaces every journal in place, leaves the raw traces untouched; a second start renders nothing
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > an update: journals written by an earlier revision (AC-008, AC-009) > the first catch-up pass replaces every journal in place, leaves the raw traces untouched; a second start renders nothing
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > an update: journals written by an earlier revision (AC-008, AC-009) > the first catch-up pass replaces every journal in place, leaves the raw traces untouched; a second start renders nothing
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > an update: journals written by an earlier revision (AC-008, AC-009) > the first catch-up pass replaces every journal in place, leaves the raw traces untouched; a second start renders nothing
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > an update: journals written by an earlier revision (AC-008, AC-009) > the first catch-up pass replaces every journal in place, leaves the raw traces untouched; a second start renders nothing
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > an update: journals written by an earlier revision (AC-008, AC-009) > Rebuild regenerates a closed file whose manifest already has the current revision; Index now leaves it
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > an update: journals written by an earlier revision (AC-008, AC-009) > Rebuild regenerates a closed file whose manifest already has the current revision; Index now leaves it
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > an update: journals written by an earlier revision (AC-008, AC-009) > Rebuild regenerates a closed file whose manifest already has the current revision; Index now leaves it
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > an update: journals written by an earlier revision (AC-008, AC-009) > Rebuild regenerates a closed file whose manifest already has the current revision; Index now leaves it
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > an update: journals written by an earlier revision (AC-008, AC-009) > Rebuild regenerates a closed file whose manifest already has the current revision; Index now leaves it
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > an update: journals written by an earlier revision (AC-008, AC-009) > Rebuild regenerates a closed file whose manifest already has the current revision; Index now leaves it
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > an update: journals written by an earlier revision (AC-008, AC-009) > Rebuild regenerates a closed file whose manifest already has the current revision; Index now leaves it
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+ ✓ tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > an update: journals written by an earlier revision (AC-008, AC-009) > the first catch-up pass replaces every journal in place, leaves the raw traces untouched; a second start renders nothing 281ms
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > an update: journals written by an earlier revision (AC-008, AC-009) > Rebuild regenerates a closed file whose manifest already has the current revision; Index now leaves it
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > an update: journals written by an earlier revision (AC-008, AC-009) > Rebuild regenerates a closed file whose manifest already has the current revision; Index now leaves it
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > an update: journals written by an earlier revision (AC-008, AC-009) > Rebuild regenerates a closed file whose manifest already has the current revision; Index now leaves it
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+ ✓ tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > an update: journals written by an earlier revision (AC-008, AC-009) > Rebuild regenerates a closed file whose manifest already has the current revision; Index now leaves it 141ms
+stdout | tests/e2e/memory-sync/memory-sync-api.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:94806) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/memory-sync/memory-sync-api.e2e.test.ts > Memory Sync public API and imported memory e2e
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+App data directory: /tmp/autobyteus-memory-sync-api-dqV28T
+Config file path: /tmp/autobyteus-memory-sync-api-dqV28T/.env
+Loading environment from: /tmp/autobyteus-memory-sync-api-dqV28T/.env
+◇ injected env (1) from ../../../../../../../tmp/autobyteus-memory-sync-api-dqV28T/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:37654
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:37654
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-memory-sync-api-dqV28T
+DB DIRECTORY: /tmp/autobyteus-memory-sync-api-dqV28T/db
+LOGS DIRECTORY: /tmp/autobyteus-memory-sync-api-dqV28T/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-memory-sync-api-dqV28T/download
+MEMORY DIRECTORY: /tmp/autobyteus-memory-sync-api-dqV28T/memory
+============================================================
+
+stdout | tests/e2e/memory-sync/memory-sync-api.e2e.test.ts > Memory Sync public API and imported memory e2e > configures hub/source, syncs local memory through GraphQL to REST, and exposes imported memory by explicit source
+Initialized server settings service with 34 predefined settings
+
+stderr | tests/e2e/memory-sync/memory-sync-api.e2e.test.ts > Memory Sync public API and imported memory e2e > configures hub/source, syncs local memory through GraphQL to REST, and exposes imported memory by explicit source
+Node request refused NODE_CREDENTIAL_INVALID /rest/memory-sync/v1/batches from 127.0.0.1
+
+ ✓ tests/e2e/memory-sync/memory-sync-api.e2e.test.ts > Memory Sync public API and imported memory e2e > configures hub/source, syncs local memory through GraphQL to REST, and exposes imported memory by explicit source 147ms
+(node:94819) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+Custom app data directory set to: /tmp/memory-sync-held-back-ORiV68
+Updated config file path to /tmp/memory-sync-held-back-ORiV68/.env
+Loading environment from: /tmp/memory-sync-held-back-ORiV68/.env
+◇ injected env (2) from ../../../../../../../tmp/memory-sync-held-back-ORiV68/.env // tip: ⌘ override existing { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/memory-sync-held-back-ORiV68
+DB DIRECTORY: /tmp/memory-sync-held-back-ORiV68/db
+LOGS DIRECTORY: /tmp/memory-sync-held-back-ORiV68/logs
+DOWNLOAD DIRECTORY: /tmp/memory-sync-held-back-ORiV68/download
+MEMORY DIRECTORY: /tmp/memory-sync-held-back-ORiV68/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+AgentRunManager initialized.
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+AgentRunManager initialized.
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Creating temp workspace at: /tmp/memory-sync-held-back-ORiV68/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/memory-sync-held-back-ORiV68/temp_workspace.
+Initialized TempWorkspace at /tmp/memory-sync-held-back-ORiV68/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Successfully registered tool definition: 'delegate_task'
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Registered required tool unit: Task Delegation Tools
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Registered required tool unit: Search Tools
+
+ ✓ tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back > answers the settings query with HTTP 200 and the reason, not a 503 24ms
+stdout | tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:94847) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+
+stdout | tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e
+Custom app data directory set to: /tmp/autobyteus-memory-collaboration-NggwEe
+Config file not found in new data directory: Error: Configuration file not found: /tmp/autobyteus-memory-collaboration-NggwEe/.env
+
+stdout | tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e > lists admitted team roots only, grouped by definition, with the catalog name (AC-005, AC-003)
+Initialized server settings service with 34 predefined settings
+
+ ✓ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e > lists admitted team roots only, grouped by definition, with the catalog name (AC-005, AC-003) 28ms
+ ✓ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e > lists team runs newest first with display names and each member's own run ID; searches and pages (AC-005, AC-010, AC-011) 20ms
+ ✓ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e > opens team member memory for a configured member; a run it delegated to, unknown and non-admitted roots return empty views (AC-006, AC-011) 10ms
+ ✓ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e > skips a team tree corrupted after admission with a warning while other roots still list (AC-003) 18ms
+ ✓ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e > lists org definitions with member memory, using the history index name (AC-007) 18ms
+ ✓ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e > lists org runs with address-path labels and own run IDs, its own members only, searches and pages (AC-008, AC-010, AC-011, AC-014) 22ms
+ ✓ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e > opens org member memory for a team-hosted member; runs it delegated to and unknown members get an empty view (AC-009, AC-011, AC-014) 5ms
+ ✓ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e > serves an imported source: teams list from the import, while the org list is empty (AC-007 alternate) 12ms
+stdout | tests/e2e/memory/memory-search-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:94873) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/memory/memory-search-graphql.e2e.test.ts > Memory search GraphQL e2e > reports not indexed, builds on startMemoryIndexing with step progress, then searches with subjects and pointers
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+
+ ✓ tests/e2e/memory/memory-search-graphql.e2e.test.ts > Memory search GraphQL e2e > reports not indexed, builds on startMemoryIndexing with step progress, then searches with subjects and pointers 49ms
+ ✓ tests/e2e/memory/memory-search-graphql.e2e.test.ts > Memory search GraphQL e2e > opens the Work Journal of a run known only by its folder; refuses any other key 7ms
+stdout | tests/e2e/memory/memory-explorer-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:94886) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/memory/memory-explorer-graphql.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+
+stdout | tests/e2e/memory/memory-explorer-graphql.e2e.test.ts > Memory explorer GraphQL e2e
+Custom app data directory set to: /tmp/autobyteus-memory-explorer-xVL0fX
+Config file not found in new data directory: Error: Configuration file not found: /tmp/autobyteus-memory-explorer-xVL0fX/.env
+
+stdout | tests/e2e/memory/memory-explorer-graphql.e2e.test.ts > Memory explorer GraphQL e2e > lists the agents and one agent's episodes from the episodic catalog through BFF queries (autobyteus-554)
+Initialized server settings service with 34 predefined settings
+
+ ✓ tests/e2e/memory/memory-explorer-graphql.e2e.test.ts > Memory explorer GraphQL e2e > lists the agents and one agent's episodes from the episodic catalog through BFF queries (autobyteus-554) 33ms
+ ✓ tests/e2e/memory/memory-explorer-graphql.e2e.test.ts > Memory explorer GraphQL e2e > answers the folder states without creating a folder, and an empty member list for an unknown team (autobyteus-554) 8ms
+ ✓ tests/e2e/memory/memory-explorer-graphql.e2e.test.ts > Memory explorer GraphQL e2e > refuses the agents list when no composition root bound the catalog (EPISODIC_CATALOG_NOT_COMPOSED) 8ms
+stdout | tests/e2e/memory/imported-team-memory-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:94900) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/memory/imported-team-memory-graphql.e2e.test.ts > imported Team memory GraphQL e2e
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+Custom app data directory set to: /tmp/imported-team-memory-graphql-e3cBie
+Config file not found in new data directory: Error: Configuration file not found: /tmp/imported-team-memory-graphql-e3cBie/.env
+
+ ✓ tests/e2e/memory/imported-team-memory-graphql.e2e.test.ts > imported Team memory GraphQL e2e > uses one tree read per admitted root in each imported GraphQL request without changing any source file 23ms
+stdout | tests/e2e/memory/memory-view-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:94914) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/memory/memory-view-graphql.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+
+stdout | tests/e2e/memory/memory-view-graphql.e2e.test.ts > Memory view GraphQL e2e
+Custom app data directory set to: /tmp/autobyteus-memory-view-2qAvxm
+Config file not found in new data directory: Error: Configuration file not found: /tmp/autobyteus-memory-view-2qAvxm/.env
+
+stderr | tests/e2e/memory/memory-view-graphql.e2e.test.ts > Memory view GraphQL e2e > selects complete segment files, hides pending files, rejects absolute selectors, and preserves merged corpus mode
+Removed the damaged end of a memory log. {
+  filePath: '/tmp/autobyteus-memory-view-2qAvxm/memory/agents/memory-view-segmented-raw-traces/raw_traces_active.jsonl',
+  bytesRemoved: 0,
+  recordsKept: 1
+}
+
+ ✓ tests/e2e/memory/memory-view-graphql.e2e.test.ts > Memory view GraphQL e2e > returns memory view with raw traces 18ms
+ ✓ tests/e2e/memory/memory-view-graphql.e2e.test.ts > Memory view GraphQL e2e > returns an exact run-scoped system-instruction record with nullable turn identity 2ms
+ ✓ tests/e2e/memory/memory-view-graphql.e2e.test.ts > Memory view GraphQL e2e > returns each run's own raw traces, whether or not a working-context snapshot exists 5ms
+ ✓ tests/e2e/memory/memory-view-graphql.e2e.test.ts > Memory view GraphQL e2e > returns active raw trace file metadata and defaults to the active file 3ms
+ ✓ tests/e2e/memory/memory-view-graphql.e2e.test.ts > Memory view GraphQL e2e > selects complete segment files, hides pending files, rejects absolute selectors, and preserves merged corpus mode 10ms
+ ✓ tests/e2e/memory/memory-view-graphql.e2e.test.ts > Memory view GraphQL e2e > uses raw trace file selection for imported read-only memory sources 6ms
+stdout | tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:94927) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts > Codex live memory persistence e2e > persists raw traces without WorkingContext from a real Codex app-server turn without websocket attachment
+ ↓ tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts > Codex live memory persistence e2e > persists an enriched failed-command diagnostic from a real Codex app-server turn
+ ↓ tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts > Codex live memory persistence e2e > persists a live steered input under the same canonical Codex turn identity
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/memory/episodic-catalog.e2e.test.ts > Episodic catalogs on a real server (real runs of every kind, GraphQL deletes, built-server restarts; scripted AGY actor) > EC-04: a hand-edited catalog is rewritten at the agent's next change; an unwritable episodic/ is logged and the run goes on; writable again, it heals
+Error: Timed out waiting for write failure logged
+ ❯ Module.until tests/e2e/helpers/agy-runtime-error-fixture.ts:21:9
+     19|   const deadline = Date.now() + ms;
+     20|   while (Date.now() < deadline) { if (await predicate()) return; await…
+     21|   throw new Error(`Timed out waiting for ${label}`);
+       |         ^
+     22| };
+     23|
+ ❯ tests/e2e/memory/episodic-catalog.e2e.test.ts:539:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 11 passed | 1 skipped (13)
+      Tests  1 failed | 39 passed | 3 skipped (43)
+   Start at  17:20:49
+   Duration  450.82s (transform 12.01s, setup 477ms, import 38.02s, tests 409.77s, environment 1ms)
+

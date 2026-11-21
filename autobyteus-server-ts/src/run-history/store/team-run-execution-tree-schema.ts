@@ -6,7 +6,9 @@ import {
 import { normalizeCollaborationHandoffs } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type {
   ConfiguredAgentExecutionNode,
+  FormerMemberExecutionNode,
   RootConfiguredTeamExecutionNode,
+  TeamRunCopiedFrom,
   TeamRunExecutionTreeFile,
 } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import {
@@ -24,6 +26,13 @@ import {
 import { parseDelegatedFrom } from "./delegated-from-schema.js";
 import { parseOptionalLaunchFields } from "./launch-configuration-source-schema.js";
 
+/** A former member, with its optional `leaving` marker (only `true` is written; absent means stopped). */
+const parseFormerMember = (value: unknown, field: string): FormerMemberExecutionNode => {
+  const { leaving, ...member } = objectRecord(value, field);
+  if (leaving !== undefined && leaving !== true) throw new Error(`${field}.leaving must be true when present.`);
+  return { ...parseConfiguredAgent(member, field), ...(leaving === true ? { leaving: true as const } : {}) };
+};
+
 const parseRootTeam = (value: unknown): RootConfiguredTeamExecutionNode => {
   const root = objectRecord(value, "rootTeam");
   requireKeys(root, [
@@ -39,7 +48,9 @@ const parseRootTeam = (value: unknown): RootConfiguredTeamExecutionNode => {
   const coordinatorAddress = canonicalNonRootAddress(root.coordinatorAddress, "rootTeam.coordinatorAddress");
   const members = requiredArray(root.members, "rootTeam.members").map((member, index) =>
     parseConfiguredAgent(member, `rootTeam.members[${index}]`));
-  for (const member of members) {
+  const formerMembers = root.formerMembers === undefined ? [] : requiredArray(root.formerMembers, "rootTeam.formerMembers")
+    .map((member, index) => parseFormerMember(member, `rootTeam.formerMembers[${index}]`));
+  for (const member of [...members, ...formerMembers]) {
     if (getParentAgentTeamAddress(member.address) !== "/") {
       throw new Error(`Configured placement '${member.address}' is not a direct Agent child of '/'.`);
     }
@@ -56,6 +67,7 @@ const parseRootTeam = (value: unknown): RootConfiguredTeamExecutionNode => {
     defaultLaunchConfiguration: parseLaunchConfiguration(root.defaultLaunchConfiguration, "rootTeam.defaultLaunchConfiguration"),
     ...parseOptionalLaunchFields(root, { source: "defaultLaunchSource" }, "rootTeam"),
     members,
+    ...(formerMembers.length ? { formerMembers } : {}),
   };
 };
 
@@ -68,6 +80,11 @@ const validateInvariants = (tree: TeamRunExecutionTreeFile): void => {
     byAddress.set(member.address, member);
     runIds.add(member.agentRunId);
   }
+  // A former member may share its address with a current member (another agent took its place), never a run ID.
+  for (const member of tree.rootTeam.formerMembers ?? []) {
+    if (runIds.has(member.agentRunId)) throw new Error(`Duplicate run ID '${member.agentRunId}'.`);
+    runIds.add(member.agentRunId);
+  }
   for (const handoff of tree.handoffs) {
     const from = assertAgentTeamAddress(handoff.from);
     assertAgentTeamAddress(handoff.to);
@@ -75,6 +92,11 @@ const validateInvariants = (tree: TeamRunExecutionTreeFile): void => {
     // A `to` outside the team (TC-12: a delegated team copied from an org hands off to `/Teacher`) is an external
     // target, kept as stored and resolved when sent (contract §2.3).
   }
+};
+
+const parseCopiedFrom = (value: unknown): TeamRunCopiedFrom => {
+  if (value === "team_definition" || value === "configured_placement") return value;
+  throw new Error("copiedFrom must be 'team_definition' or 'configured_placement'.");
 };
 
 /**
@@ -98,6 +120,7 @@ export const validateTeamRunExecutionTreePayload = (
     // A Team run a peer node started (autobyteus-247); absent otherwise. A malformed section makes the tree
     // unreadable, as for a standalone run's `run_metadata.json`.
     ...(payload.delegatedFrom === undefined ? {} : { delegatedFrom: parseDelegatedFrom(payload.delegatedFrom) }),
+    ...(payload.copiedFrom === undefined ? {} : { copiedFrom: parseCopiedFrom(payload.copiedFrom) }),
   };
   if (expectedRootTeamRunId && tree.rootTeam.teamRunId !== expectedRootTeamRunId) {
     throw new Error(`Execution tree root '${tree.rootTeam.teamRunId}' does not match '${expectedRootTeamRunId}'.`);
