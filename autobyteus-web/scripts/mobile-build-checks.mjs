@@ -5,6 +5,9 @@
  * - The iOS demo build answers every GraphQL operation compiled into it: each has a demo handler
  *   (`demo/graphql/operations.ts`) or is listed as one the phone never sends, with its reason
  *   (`demo/graphql/unreachable-operations.json`). The list holds nothing else, so it stays exact.
+ *
+ * The same coverage rule also runs on the operations defined in the web source, without a build
+ * (`scripts/__tests__/mobileBuildChecks.spec.ts`, autobyteus-584): the phone build compiles every one of them.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -40,6 +43,26 @@ export const compiledOperations = (publicDir) => {
   return names;
 };
 
+/** Folders whose files are not the app's source: dependencies, build outputs, generated code, tests and the demo node. */
+const NOT_SOURCE = /^(node_modules|\.nuxt|\.output|dist.*|electron-dist|generated|__tests__|tests|demo)$/;
+
+/**
+ * Every GraphQL operation name defined in the web source (`.ts`, `.vue`, `.js`, `.mjs`), outside `NOT_SOURCE` folders: the
+ * operations a phone build compiles (autobyteus-584; measured equal to the demo build's 252).
+ */
+export const sourceOperations = (webRoot) => {
+  const names = new Set();
+  const walk = (current) => {
+    for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+      const full = path.join(current, entry.name);
+      if (entry.isDirectory()) { if (!NOT_SOURCE.test(entry.name)) walk(full); }
+      else if (/\.(ts|vue|m?js)$/.test(entry.name)) for (const match of fs.readFileSync(full, 'utf8').matchAll(OPERATION)) names.add(match[1]);
+    }
+  };
+  walk(webRoot);
+  return names;
+};
+
 /** The operations the demo node answers: the keys of `DemoOperations` (its handler table must cover all of them, by type). */
 export const handledOperations = (webRoot) => {
   const source = fs.readFileSync(path.join(webRoot, 'demo/graphql/operations.ts'), 'utf8');
@@ -51,11 +74,11 @@ export const unreachableOperations = (webRoot) =>
   JSON.parse(fs.readFileSync(path.join(webRoot, 'demo/graphql/unreachable-operations.json'), 'utf8'));
 
 /**
- * The demo build's operation coverage: compiled operations with neither a handler nor a listed reason, list entries
- * that are no longer compiled or are handled, and entries whose reason is not defined.
+ * The demo's operation coverage of `compiled` (the operations of a demo build, `compiledOperations`, or of the source,
+ * `sourceOperations`): operations with neither a handler nor a listed reason, list entries that are not among them or
+ * are handled, and entries whose reason is not defined.
  */
-export const demoOperationCoverage = (publicDir, webRoot) => {
-  const compiled = compiledOperations(publicDir);
+export const demoOperationCoverage = (compiled, webRoot) => {
   const handled = handledOperations(webRoot);
   const { reasons, operations } = unreachableOperations(webRoot);
   return {
