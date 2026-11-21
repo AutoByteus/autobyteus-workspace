@@ -10,4 +10,3 @@
 ## What you need to do
 
 - **Update the desktop app and every node you connect to together** (the desktop app, Docker nodes, paired nodes). The data behind the agent pages and the Memory page changed shape, so an older app with a newer node, or the reverse, can fail to load those pages.
-- Nothing to do for your agents' memory folders: every agent keeps its folder name. Only an ID over 255 bytes once encoded, which could never have had a folder, gets a shortened name.

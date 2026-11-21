@@ -47,7 +47,13 @@ modules.
   **1.0.41** or later by SemVer precedence (a prerelease such as
   `1.0.41-rc.1` is below it), then checks `agent --help` for the required
   agent-mode flags. It is bounded to 3 s, is asynchronous, and opens no ACP
-  session.
+  session. A probe that runs past its bound is a time-out,
+  `GROK_MODEL_DISCOVERY_TIMEOUT`, never `GROK_CLI_UNSUPPORTED`, and the log line
+  `RUNTIME_PROBE_TIMED_OUT { runtime, command, boundMs }` names the command and the bound. A child that has already
+  exited when the bound fires is not a time-out: its real result is used
+  (`runtime-management/probe-time-bound.ts`, shared with the Antigravity probes; a blocked main thread delays the timer
+  and the exit together, so the exit is learned from the child's `exit` event, the decision is deferred past the event
+  loop's poll phase, and the probe waits up to 1 s for the child's `close`).
 - **Safe diagnostics.** Failures become classified diagnostics:
   `GROK_CLI_UNAVAILABLE`, `GROK_CLI_UNSUPPORTED`,
   `GROK_MODEL_DISCOVERY_TIMEOUT`, `GROK_MODEL_DISCOVERY_FAILED`, and

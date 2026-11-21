@@ -325,8 +325,23 @@ A `#section` link scrolls within its own rendered document, as on GitHub (autoby
   - A `#anchor` is decoded and looked up only inside this renderer's root element, so two messages with the same headings never scroll to each other. The heading is brought to the top of its scroll container.
   - The URL does not change: the app's hash router would read `#section` as a route.
   - A missing anchor does nothing.
-  - A link with no scheme (`other.md`, `other.md#x`, `/x.md`, `./x.md`) does nothing instead of opening a 404. Opening such files is FU-001.
+  - A link with no scheme (`other.md`, `other.md#x`, `/x.md`, `./x.md`) never opens a 404. The renderer emits `relative-link` with the raw href and opens nothing itself; a parent that knows the document's place may open it. The Markdown preview of a workspace file does (see [Workspace-Relative Links](#workspace-relative-links)); every other Markdown surface (chat messages, node files) does nothing.
   - These rules run before the external-link rule. External `http(s)` links still open once in a new tab, `mailto:` is left to the browser, and file actions keep their own handling.
+
+### Workspace-Relative Links
+
+In the Files panel's Markdown preview of a workspace file (the Skills page, workspaces and the read-only semantic memory
+view), clicking a relative link opens the file it names as a preview tab of the same workspace
+(`MarkdownPreviewer.openRelativeLink` calls the file explorer store's `openFilePreview`; autobyteus-576). A read-only
+workspace stays read-only: the tab is a preview. `resolveWorkspaceRelativeReference`
+(`utils/fileExplorer/workspaceResourceUrl.ts`) is the one rule for a relative reference, shared with images: the
+`#fragment` and `?query` are not part of the file, each segment is URL-decoded, and the result is resolved against the
+document's folder with POSIX rules.
+
+- A root-absolute link (`/x.md`), a link that leaves the workspace root, a malformed path, and any link in a preview
+  that is not a workspace file (a node file) open nothing.
+- A link to a missing file opens its tab, which shows the viewer's message for a file it cannot read.
+- `#heading`, external and `mailto:` links behave as above.
 
 ### Workspace-Relative Images
 
