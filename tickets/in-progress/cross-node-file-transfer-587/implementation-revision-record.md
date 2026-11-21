@@ -7,7 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer, `design-review-report.md`, round 2 (Pass) | N/A | `Initial Baseline` | SR-009, ARCH-REV-002, CRR-001 | Implemented; Code Review Pass (CRR-001, no findings); next: API/E2E |
-| IR-002 | Delivery Engineer, `release-deployment-report.md` § Escalation / Reroute (DEL-03, whole unit suite after the base refresh) | DEL-03 stale tests 1–3 | `Local Fix` | CRR-001, CRR-003, API-REV-002; DR: N/A (not yet created) | Stale test fixtures given the new inputs; whole server unit suite Pass (1050 files, 8698 tests); next: Code Review |
+| IR-002 | Delivery Engineer, `release-deployment-report.md` § Escalation / Reroute (DEL-03, whole unit suite after the base refresh) | DEL-03 stale tests 1–3 | `Local Fix` | CRR-001, CRR-003, API-REV-002; DR: N/A (not yet created) | Stale test fixtures given the new inputs; whole server unit suite Pass (1050 files, 8698 tests); Code Review Pass (CRR-004, no findings); next: API/E2E |
 
 ## Revision Entries
 
@@ -66,3 +66,4 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result (all Pass, on e295b74b81): IMP-06 whole server unit suite; IMP-07 the five changed test files (44 tests); IMP-08 server typecheck (baseline unchanged, 1005 in 315 files); IMP-09 web typecheck (baseline unchanged, 86 in 36 files) — see the handoff.
 - Next recipient or routing: Code Review (the package stays Large / High; test-only change).
 - Remaining limitations or risks: none new. The guide gap delivery names (a change adding a required input to an owner tests construct should run the whole unit suite) is for TESTING.md's owner.
+- Code review: Pass, CRR-004, no findings (`code-review-report.md`); the reviewer routed it to API/E2E. Recorded only; no implementation change.
