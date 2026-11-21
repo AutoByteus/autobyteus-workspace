@@ -4188,7 +4188,10 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(await linksOf("agent", ids.solo)).toEqual(historyBefore.alphaLinks);
     expect(await remoteRunDirs()).toEqual(historyBefore.betaRuns);
     expect(stringsOf(await remote.conversation()).some((value) => value.includes("STANDALONE-PACKET")), "the remote run's history is readable on beta").toBe(true);
-    expect(stringsOf(await solo.conversation()).some((value) => value.includes("REPLY-FROM-BETA-1")), "the delegator's history is readable on alpha").toBe(true);
+    // Its stored Messages, every page: the run projection's conversation is the latest 100 events only, and the delegator has
+    // made many calls since RC-06 (with both 587's and 591's cases, its reply is past that window).
+    expect((await allPages(alpha, "agent", ids.solo, ids.solo)).flatMap((page) => page.messages).some((message) => String(message.content).includes("REPLY-FROM-BETA-1")),
+      "the delegator's history is readable on alpha").toBe(true);
     record("RC-19", { toBetaAfterRemoval: textOf(toBetaAfterRemoval), fromBetaAfterRemoval: textOf(fromBetaAfterRemoval), fromBetaNoNode, delegateAfterRemoval: textOf(delegateAfterRemoval), historyBefore });
   }, 240_000);
 
