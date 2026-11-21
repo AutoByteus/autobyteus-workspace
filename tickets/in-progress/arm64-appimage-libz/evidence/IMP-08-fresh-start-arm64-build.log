@@ -1,0 +1,84 @@
+# IMP-08 — Fresh-start build (TESTING.md), build-linux-arm64 step order
+# Command: /tmp/ab28/fresh-start.sh 05996bd715 (script copied below the log): git clone --no-local <worktree>; checkout; pnpm install --frozen-lockfile; prepare-build-trust build-only; unit checks; (cd autobyteus-web && AUTOBYTEUS_BUILD_FLAVOR=personal GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace pnpm build:electron:linux:arm64); verify steps
+# Commit: 05996bd715
+# Environment: Linux aarch64 container (Ubuntu 24.04, root, no libz.so, no Docker: clean image via evidence/docker-chroot-shim), Node v22.23.3, pnpm 10.28.2, Go 1.27.4 on PATH
+# Date: 2026-11-21T22:31:51Z
+# Earlier attempts: 7ad305aeb0 failed in the web typecheck gate (TS1484 type-only import), e692d8cfc6 failed with 7za EACCES; both fixed (IR-002).
+# Unit checks: '# fail 27' is desktop-trust-provision.test.mjs refusing to run as root (see IMP-10).
+
+== HEAD 05996bd715a406e69d15dd833b25659c084ffa4a
+go version go1.27.4 linux/arm64
+== pnpm install --frozen-lockfile
+Done in 3.5s using pnpm v10.28.2
+== prepare build-only trust
+== unit checks
+# pass 50
+# fail 27
+ok  	autobyteus.local/desktop/linux-install/internal/launch	(cached)
+?   	autobyteus.local/desktop/linux-install/internal/protocol	[no test files]
+ok  	autobyteus.local/desktop/linux-install/internal/release	0.004s
+ok  	autobyteus.local/desktop/linux-install/internal/sealed	(cached)
+ok  	autobyteus.local/desktop/linux-install/internal/store	(cached)
+== build:electron:linux:arm64
+build-exit=0
+== sign build-only
+== verify layout + metadata
+Verified native AppRun, unchanged Electron ELF, provisioner/client and sandbox-preserving desktop Exec
+arch-ok
+Validated autobyteus-web/electron-dist/latest-linux-arm64.yml: linux-arm64 AppImage metadata includes embedded blockMapSize
+== clean image (docker-chroot-shim)
+Verified the AppImage runtime loads and extracts AppRun in a clean ubuntu:24.04 image without libz.so
+== prisma engines
+engines-ok
+client-ok
+== packaged server startup
+Packaged server startup validation passed for autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+== runtime facts
+{"size":351219109,"elfEnd":936456,"squashfsOffset":936456,"compression":"gzip","runtimeSha256":"00cbdfcf917cc6c0ff6d3347d59e0ca1f7f45a6df1a428a0d6d8a78664d87444"}
+5fffb45e9dc20dcd50001131022dd469368fd4f7698428f6051735e063817009  autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar
+FRESH-START-DONE
+
+## build log tail
+> cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm typecheck && cross-env AUTOBYTEUS_ELECTRON_LINUX_TARGET_ARCH=arm
+> autobyteus@1.5.14-beta.6 guard:web-boundary autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+[guard:web-boundary] Passed.
+> autobyteus@1.5.14-beta.6 guard:localization-boundary autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+[guard:localization-boundary] Passed.
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 62.5s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 3.2s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 1.0s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 37.0s
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+  • electron-builder  version=25.1.8 os=6.12.54-linuxkit
+  • building        target=AppImage arch=arm64 file=electron-dist/AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage
+Build completed: [
+
+## script
+#!/usr/bin/env bash
+# Fresh-start arm64 build of commit $1 (TESTING.md "Fresh-start build"), following build-linux-arm64's step order.
+set -euo pipefail
+C="$1"; F=/tmp/ab28/fresh; rm -rf "$F"
+export PATH=/tmp/ab28/go1.27.4/go/bin:/tmp/sm-bin:$PATH
+git clone -q --no-local /home/autobyteus/workspace/.codex/worktrees/arm64-appimage-libz "$F"
+cd "$F" && git checkout -q "$C" && git submodule update --init --recursive -q || true
+echo "== HEAD $(git rev-parse HEAD)"; go version
+echo "== pnpm install --frozen-lockfile"; pnpm install --frozen-lockfile 2>&1 | tail -1
+echo "== prepare build-only trust"; node scripts/desktop-package/prepare-build-trust.mjs build-only /tmp/ab28/fresh-trust
+export AUTOBYTEUS_DESKTOP_PUBLIC_KEY_FILE=/tmp/ab28/fresh-trust/desktop-public.pem AUTOBYTEUS_DESKTOP_TEST_KEY_FILE=/tmp/ab28/fresh-trust/desktop-test-private.pem
+echo "== unit checks"; node --test scripts/desktop-package/*.test.mjs 2>&1 | grep -E "^# (pass|fail)" || true
+(cd autobyteus-web/linux-install && go test ./... 2>&1 | tail -5)
+echo "== build:electron:linux:arm64"; (cd autobyteus-web && AUTOBYTEUS_BUILD_FLAVOR=personal GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace pnpm build:electron:linux:arm64 > /tmp/ab28/fresh-build.log 2>&1); echo build-exit=$?
+V="$(node -p "require('./autobyteus-web/package.json').version")"; IMG="autobyteus-web/electron-dist/AutoByteus_personal_linux-arm64-$V.AppImage"
+echo "== sign build-only"; cp -p "$IMG" /tmp/ab28/fresh-signed.AppImage; node scripts/desktop-package/sign-release.mjs /tmp/ab28/fresh-signed.AppImage "$V" arm64 "$AUTOBYTEUS_DESKTOP_TEST_KEY_FILE" "$AUTOBYTEUS_DESKTOP_PUBLIC_KEY_FILE" 2>&1 | tail -1 || true
+echo "== verify layout + metadata"; APPIMAGE="$(find autobyteus-web/electron-dist -maxdepth 1 -type f -name '*linux-arm64*.AppImage' -print -quit)"
+node scripts/desktop-package/verify-layout.mjs "$APPIMAGE" "$AUTOBYTEUS_DESKTOP_PUBLIC_KEY_FILE"; file "$APPIMAGE" | grep -Eq 'ARM aarch64|aarch64|ARM64' && echo arch-ok
+python3 scripts/validate_linux_updater_metadata.py --metadata autobyteus-web/electron-dist/latest-linux-arm64.yml --arch-token linux-arm64 --image "$APPIMAGE"
+echo "== clean image (docker-chroot-shim)"; PATH=$PWD/tickets/in-progress/arm64-appimage-libz/evidence/docker-chroot-shim:$PATH UBUNTU_BASE_TARBALL=/tmp/fu004-dl/ubuntu-base/ubuntu-base-24.04.5-base-arm64.tar.gz node scripts/desktop-package/verify-clean-image-runtime.mjs "$APPIMAGE"
+echo "== prisma engines"; ENGINES_DIR="$(find autobyteus-web/resources/server/node_modules -maxdepth 6 -type d -path '*/@prisma/engines' | head -n1)"; test -f "$ENGINES_DIR/schema-engine-linux-arm64-openssl-3.0.x" && test -f "$ENGINES_DIR/libquery_engine-linux-arm64-openssl-3.0.x.so.node" && echo engines-ok
+CLIENT_DIR="$(find autobyteus-web/resources/server/node_modules -maxdepth 10 -type d -path '*/node_modules/.prisma/client' | head -n1)"; test -f "$CLIENT_DIR/libquery_engine-linux-arm64-openssl-3.0.x.so.node" && echo client-ok
+echo "== packaged server startup"; U=autobyteus-web/electron-dist/linux-arm64-unpacked; node autobyteus-web/scripts/verify-packaged-server-startup.mjs --server-root "$U/resources/server" --runtime-executable "$U/autobyteus" 2>&1 | tail -1
+echo "== runtime facts"; node /tmp/ab28/appimage-facts.mjs "$APPIMAGE"; sha256sum "$U/resources/app.asar"
+echo FRESH-START-DONE
