@@ -93,7 +93,7 @@ None (no release).
 - Bootstrap context source: the Solution Designer's bootstrap (worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-operation-coverage`, branch `codex/ios-demo-operation-coverage`, base `origin/personal`) and `RELEASE.md` "Finalization Target".
 - Ticket branch: `codex/ios-demo-operation-coverage` (its upstream is `origin/personal`; delivery pushes only with explicit refspecs, never a bare `git push`, as API/E2E warned).
 - Finalization target remote / branch: `origin` / `personal`, `--no-ff` merge from a `finalize/ios-demo-operation-coverage` branch (RELEASE.md).
-- The outcome (commits, push, the user's checkout, cleanup) is in the "Finalization Record" at the end of this report, written after the push.
+- The outcome (commits, push, the user's checkout, cleanup) is in the "Finalization Record" at the end of this report, written after the push. Merge `f3e47fc6da` on `origin/personal`.
 
 ## Release / Publication / Deployment
 
@@ -120,10 +120,23 @@ Revert the merge commit on `personal` (`git revert -m 1 <merge>`). Nothing persi
 ## Final Status
 
 - Verification complete (from the evidence, or the user's check where needed): `Yes`
-- Repository finalization complete: see the Finalization Record
+- Repository finalization complete: `Yes` (Finalization Record below)
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: see the Finalization Record
+- Applicable safe cleanup complete or not required: run after the record commit's push (Finalization Record, last two bullets); its result is in the terminal message
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: after the Finalization Record
-- Terminal package sent to the Solution Designer: see the Finalization Record
-- Terminal message/reference: see the Finalization Record
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: by `send_message_to` after the record commit's push and the cleanup
+- Terminal message/reference: the `send_message_to` message to the Solution Designer, address from `get_handoff_rules`
+
+## Finalization Record
+
+Written after the push of the merge, the way earlier tickets recorded theirs.
+
+- Ticket branch `codex/ios-demo-operation-coverage`: committed (tip `18ce6f6e7a`) and pushed to `origin` with the explicit refspec `HEAD:refs/heads/codex/ios-demo-operation-coverage` (`929976f818..18ce6f6e7a`, a fast-forward of the tip API/E2E had pushed for the build-only run). The branch's configured upstream is `origin/personal`, so no bare `git push` was used. Secret Gate on `origin/personal..codex/ios-demo-operation-coverage`: `PASS`, 7 commits.
+- Target refreshed before the merge and again before the push: `git fetch origin personal` showed `726c5beaf9` both times, which the ticket branch already contained (merge `44deff6562`); no re-integration and no re-verification were needed.
+- Merge: on `finalize/ios-demo-operation-coverage` (from `origin/personal` `726c5beaf9`), `git merge --no-ff codex/ios-demo-operation-coverage` = `f3e47fc6da` (parents `726c5beaf9` and `18ce6f6e7a`; the merged tree equals the ticket branch's tree). Secret Gate on the merged state: `PASS`, 8 commits. Hygiene check on the archived tree: passed (102 246 tracked files).
+- Push: `git push origin HEAD:personal` `726c5beaf9..f3e47fc6da`; `origin/personal` = `f3e47fc6da` afterwards.
+- Release: none (no tag, no version bump, no pipeline).
+- This record: committed on `finalize/ios-demo-operation-coverage` and pushed to `origin/personal` as the commit that follows `f3e47fc6da`.
+- The user's checkout (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`, on `personal`): `git fetch`, then `git merge --ff-only origin/personal` after this record's push, only if it is on `personal` with no local commits and git accepts it; nothing is stashed, reset or checked out there. The result (commit, or why not) is in the terminal message.
+- Cleanup, after this record's push: `git worktree remove --force /Users/normy/autobyteus_org/autobyteus-worktrees/ios-demo-operation-coverage` (only git-ignored and untracked build output remains), `git worktree prune`, delete the local branches `finalize/ios-demo-operation-coverage` and `codex/ios-demo-operation-coverage`. Remote branch: `Not required` (the repository keeps pushed `codex/*` branches). The result is in the terminal message.

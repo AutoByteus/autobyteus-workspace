@@ -19,8 +19,8 @@
 - Release/publication/deployment report: `release-deployment-report.md` (with its Finalization Record)
 - Integration and post-integration verification: `origin/personal` moved one commit since the bootstrap base (`90c4958a35` → `726c5beaf9`, the beta.4 release record, ticket files only), merged clean as `44deff6562`. The coverage spec 8/8, server typecheck at baseline, web typecheck at baseline after `dist-mobile-demo/` was moved aside (the first run aborted out of memory: FU-001), the iOS build-only run read directly from GitHub (success at the tested commit, publish jobs skipped, no tag); hygiene, frozen lockfile and the Secret Gate pass.
 - Verification (evidence judgement or user check) and finalization state: every critical criterion directly proven by API/E2E (the runner's own build-only run, the spec on the source and its detection of a new operation, a fresh-clone desktop build); no user check needed; release decision: none (the next beta waits for the founder).
-- Terminal return to the Solution Designer: see the Finalization Record in `release-deployment-report.md`.
-- Terminal return message/reference: see the Finalization Record.
+- Terminal return to the Solution Designer: `Sent` after the record commit's push; the terminal message holds the user's-checkout result and the cleanup result.
+- Terminal return message/reference: the message to the Solution Designer; finalization: merge `f3e47fc6da` on `origin/personal` (`release-deployment-report.md` § Finalization Record).
 - Why this baseline was recorded: first delivery of the ticket.
 - Next recipient/action: the Solution Designer verifies the package and sends FU-001 (urgent).
 - Remaining blockers, rollback concerns, or untested scope: none blocking. FU-001 open; R-1 by design; the TestFlight upload, signing and notarization and the other desktop targets were not tested (`handoff-summary.md` § Residual Risks For The User).
