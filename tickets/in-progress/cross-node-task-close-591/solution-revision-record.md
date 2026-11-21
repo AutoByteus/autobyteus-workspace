@@ -2,6 +2,7 @@
 
 | SR | Date | Kind | Summary | Status after |
 | --- | --- | --- | --- | --- |
+| SR-011 | 2026-11-21 | Design Impact (ARCH-REV-005 AR-003) | DN-9's gate moves to the router, once, before every path (the sender root's endpoint, `node`, `route`), outside the root's gate; `closedPeerRunRefusal` and `route`'s peer branch removed | Design `Ready` |
 | SR-010 | 2026-11-21 | Requirement Gap (CRR-002: CR-591-001 … 003) | Local continuation read correctly: the assigner's message reopens and continues (SR-005 had it backwards). REQ-006, DEC-007, AC-007, SCN-005 corrected; REQ-002 (a reopen alone doesn't cancel the close) and REQ-004 / AC-001 / AC-006 (the closed run leaves A's tree, as locally) aligned with the code; DN-9 `admitPeerRun` | Approved within the user's DEC-004; design `Ready` |
 | SR-009 | 2026-11-21 | Design Impact (the implementation engineer: DN-6's premise) | B's closed-delegation state lives in one small node file (`closed-delegations.json`, owner `ClosedDelegations`), read once; the list filters in memory; the run-file field withdrawn | Design `Ready` |
 | SR-008 | 2026-11-21 | Design Impact (ARCH-REV-002 AR-002) | DN-8: a remote run skips the local conversation check; its work goes through the existing peer delivery (`senderRoot.deliverToPeerRun`, extracted from the router into one function both use), chosen by `toExistingRun` | Design `Ready` |
@@ -105,3 +106,11 @@
 - **My miss:** SR-005 read only `reopenAssignment`'s callers through `delegate_task`, not `admit`'s continuation, and wrote "as locally" without checking each rule (Principle 1). Lesson 2 again, now for a parity claim.
 - **Approval:** the user decided "like local" (DEC-004). These corrections realize it with the local code read correctly, and the user's own wording ("send a message again") already said so. Approved within that decision, and the user is told of the correction.
 - **Next:** architecture review of DN-9. Then the implementation, the code reviewer, and the API/E2E rerun of F-1 and F-2.
+
+### SR-011
+
+- **Trigger:** ARCH-REV-005, Fail, AR-003.
+- **Read:** `global-agent-run-message-router.ts:80-112`. The sender root's exact delivery runs before `route`.
+- **Change:** DN-9's gate, S-4b and the tests.
+- **My miss:** DN-9 named the callers of `closedPeerRunRefusal` and missed the path that never called it. Principle 1, every entry form; lesson 2.
+- **Next:** architecture review.

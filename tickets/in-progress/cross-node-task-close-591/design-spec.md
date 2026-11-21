@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-010` (this design, on requirements SR-010).
+- Current solution revision ID: `SR-011` (this design, on requirements SR-010).
 - Approved requirements: `requirements-doc.md` at SR-010. The user decided DEC-004 (SR-002, SR-003); the rest was decided within the direction, and the user was informed.
 - User approval of the design: `Not required`.
 - Design status: `Ready`.
@@ -150,14 +150,29 @@
      - then `await notices.settled(run)` (DN-1b): "open" confirmed by B, after any in-flight notice.
      - Then: admitted.
   3. All closed, another sender: `TASK_AGENT_RESOURCE_CLOSED`, as today.
-- Both callers use `admitPeerRun` in place of `closedPeerRunRefusal`. The ordered step sits inside it, so a message is sent only after B confirmed "open", whichever path sends it.
+- **One gate, in the router, ahead of every path** (SR-011, ARCH-REV-005 AR-003, read: `global-agent-run-message-router.ts:80-112`).
+  - A run-ID message whose target is held by the sender's root goes to `senderRoot.deliverExactAgentMessage` (`:88-103`). The delegator's root holds its peer runs as endpoints, open or closed (`remote-run-links.ts:100-128`; `delegation-index.ts:295-311`), and the roots' exact send goes to `remoteSend.send` with no closed-Task check.
+  - So `GlobalAgentRunMessageRouter.deliver` calls `crossRun.admitPeerRun({ agentRunId: target, senderAgentRunId })` once, after normalizing the input and **before** the `node` branch, the sender-root branch and `route`.
+  - `admitPeerRun` reads A's tree:
+    - **no peer entry names the target** (a local run, or an unlinked run of CM-13): `not_peer`, and the router continues as today;
+    - **otherwise:** rules 1 … 3 above. A refusal is returned; `admitted` continues on the path the router takes today (the sender root's endpoint, `node`, or `route`).
+- **The gate sits outside the root's operation gate,** so `settled(run)`'s network wait never holds a root's gate.
+- **Removed:** `closedPeerRunRefusal`, and the peer-entry branch of `route` (`cross-run-message-delivery.ts:105-109`). `route` then returns `null` for a run with a peer entry, as "reached through the sender root's peer endpoints".
+- **`peer-run-message-delivery.ts` no longer checks the Task.** Its callers have already passed the gate:
+  - the router, for `node`;
+  - `TaskDelegation`'s re-delegation, whose entry it opened itself and whose order it awaited (`settled`, DN-8).
 - **Failures:**
   - `settled` can't reach B: the entry stays reopened and "open" stays owed. The message gets the peer-unreachable refusal (`REMOTE_REFUSAL.PEER_UNREACHABLE`), as a delivery failure.
   - A refusal from B: its answer.
 - `CrossRunMessageDelivery` receives `PeerRunStateNotices` (or a `Pick<…, "settled">`) from the composition.
 - **`delegate_task`:** with a different saved Task, DN-8 stands (built, proven: RC-51 … 53). With the same closed Task, the local refusal applies unchanged (`task-execution-resources.ts:208-210`), so DN-8's "reopened Task" case is withdrawn.
 - **A's tree and Task page (CR-591-003):** unchanged. A closed remote run leaves the tree, as a local one does (`run-tree-view.ts`, open subtree), and the Task page shows it offline.
-- **Test:** `team-remote-delegation.test.ts`'s title no longer says "fences".
+- **Tests:**
+  - the assigner's run-ID message to a closed remote run (held by its root's endpoint) reopens A's entry, sends "open", then delivers;
+  - another sender's message is refused;
+  - with a "closed" notice still owed when the assigner's message is sent, the run isn't stopped afterwards;
+  - the same through `node`;
+  - `team-remote-delegation.test.ts`'s title no longer says "fences".
 
 **DN-7: what is removed.**
 - The `FENCED_REMOTE` branch and the comment of `task-execution-resource-release.ts`.
@@ -181,7 +196,7 @@
 | S-1 close | `update_task` DONE / CANCELLED (A) → `ProjectTaskService` → `TaskExecutionResourceRelease` → `PeerRunStateNotices.changed(run)` → owed mark → `isOpen` = false → `PeerClient.deliveredRunState(open=false)` → B `PeerGateway.admit` → link check → `DelegatedRunStateHandler`: record, publish, ordinary Stop → answer → A clears the owed mark | A: `PeerRunStateNotices`; B: the handler |
 | S-2 unreachable | S-1 until the send; the transport fails → stays owed → the peer's 30 s timer → S-1's send … | `PeerRunStateNotices` |
 | S-3 A restart | Start-up → the delegation index loads the entries → owed runs → per-peer timers → S-1's send | the same |
-| S-4b continuation | Reopen (A) → the assigner's `send_message_to(run ID)` → `route` / the peer delivery → `admitPeerRun`: last entry closed, the sender is its delegator → `assertReopenable` → `reopenAssignment` → `notices.settled(run)` ("open" confirmed) → the message through the link → B lists the run again and wakes it with its conversation | `CrossRunMessageDelivery`; `PeerRunStateNotices` |
+| S-4b continuation | Reopen (A) → the assigner's `send_message_to(run ID)` → `GlobalAgentRunMessageRouter.deliver` → `admitPeerRun` (before any path): last entry closed, the sender is its delegator → `assertReopenable` → `reopenAssignment` → `notices.settled(run)` ("open" confirmed) → the router's usual path (the sender root's endpoint, `deliverExactAgentMessage` → `remoteSend`) → B lists the run again and wakes it with its conversation | `CrossRunMessageDelivery`; `PeerRunStateNotices` |
 | S-4 re-delegation (a different Task) | Reopen (A, no effect on B) → the assigner's `delegate_task(run ID, task_id)` → `TaskDelegation.toExistingRun` (the local checks; the `:370` refusal removed for remote runs) → the entry committed → `notices.settled(run)`: the run's sequence finishes any in-flight notice, then sends `open` and awaits B's confirmation → the `deliverToPeerRun` port (`deliverMessageToPeerRun` → `senderRoot.deliverToPeerRun`, a linked message) → B wakes the run | `TaskDelegation`; `PeerRunStateNotices`; B: the handler and the inbound delivery |
 | S-5 wake | A's message or delegation → existing link delivery → B clears `the `ClosedDelegations` entry` if set → the run wakes (CM-7) | B's inbound delivery |
 | S-6 refused | A third node sends the notice → `admit` (paired) → link check `not_linked` → refused | B's gateway |
