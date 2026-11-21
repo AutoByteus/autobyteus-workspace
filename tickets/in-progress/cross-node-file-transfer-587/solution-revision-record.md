@@ -33,3 +33,5 @@
 - Trigger: the founder asked why a reply to a linked run needs no `node`, preferred symmetry with `delegate_task`, and approved including it here (2026-11-21).
 - Changes: REQ-009, AC-010, DEC-006; RFC-001 RF-14, route row 6, refusals `NODE_REQUIRED`, `NODE_MISMATCH`, example. Replaces autobyteus-191's "follow-ups never name the node" (CM-11 to be updated).
 - Approval: DEC-006 by the founder; RFC-001 as a whole still awaits his approval.
+
+- 2026-11-21 (within SR-004): RFC-001 § 3 Storage Layout added (store `<memory>/received-file-store/<sha256>`, `.partial`, per-agent `received_files/<sender's run ID>/<file name>`); RF-7: the same sender's same-named file replaces the earlier one (founder: "we definitely need to replace the existing one"); folder by sender run ID (Solution Designer's recommendation, explained to the founder); examples updated.

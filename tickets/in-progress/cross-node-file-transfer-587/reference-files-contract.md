@@ -34,7 +34,7 @@ Two agents on two nodes work like two colleagues on two machines (the founder, 2
 | RF-4 Limits | Each node sets the largest file it accepts (setting `AUTOBYTEUS_RECEIVED_FILE_MAX_MB`, default 2048 MiB); one message or delegation carries at most 4 GiB of files in total. Any file type. The sender asks the receiving node for its limit and checks every file before uploading any; the receiving node enforces its limit again on every piece. (Founder, DEC-002.) |
 | RF-5 All or nothing | The message or work packet is delivered only after every file has arrived and its size and SHA-256 matched. If any file fails, nothing is delivered (a delegated run that was being started is discarded), and the tool result names the file and the reason. |
 | RF-6 The call waits | The tool call returns after delivery, as any message: its result says how many files were sent. AutoByteus sets the tool-call time limit of the runtimes it configures so a transfer within RF-4 can finish (measured in design). (Founder, DEC-003.) |
-| RF-7 Where files land | The receiving node places each file at `<receiving agent's own folder>/received_files/<first 12 hex of SHA-256>/<file name>`: the original file name, made safe (path separators and control characters removed; never `.` or `..`). The same content arriving twice for one agent is one file. The file is a hard link to the node file store's copy (a second name for the same bytes on disk, not a shortcut), so it is placed **read-only**: an edit through one name would change every run's file. An agent that wants to change it copies it into its workspace. Where a hard link cannot be made, the node copies the file instead. |
+| RF-7 Where files land | The receiving node places each file at `<receiving agent's own folder>/received_files/<sender's run ID>/<file name>` (§ 3 Storage Layout): the sender's agent run ID, as the message header names it; the original file name, made safe (path separators and control characters removed; never `.` or `..`). **The same sender sending a file of the same name again replaces it** at that path: the new file is checked first, then swapped in at once, so the agent never sees a half-written file; older messages that named the file then open the latest version. A file of the same name from another sender lands in that sender's folder and replaces nothing. The file is a hard link to the node file store's copy (a second name for the same bytes, not a shortcut), so it is placed **read-only**: an edit through one name would change every name's file. An agent that wants to change it copies it into its workspace. Where a hard link cannot be made, the node copies the file instead. (Founder, 2026-11-21: an updated file replaces the existing one.) |
 | RF-8 What the recipient sees | The recipient's message (or work packet) lists the files on its own node, as local reference files are listed today, under the usual "Reference files:" block, and its header names the sender's node. The sender's own records keep the sender's paths. |
 | RF-9 What each node records | Each node writes its own message-log line (CM-9) with the same message ID: the sender's line lists the sender's original paths; the receiver's line lists the received paths. The Messages view on each node opens the file at its own path. |
 | RF-10 Ownership and deletion | A received file belongs to the agent that received it. Deleting that run's history (as in the app) deletes its received files. The node file store keeps one copy per content: it is removed when no agent folder links to it any more; another agent that received the same file keeps it. A transfer that broke off leaves pieces that are removed after 24 hours. Nothing else expires. (DEC-004, confirmed by the founder.) |
@@ -43,7 +43,28 @@ Two agents on two nodes work like two colleagues on two machines (the founder, 2
 | RF-14 Another node is always named | Every call whose recipient is on another node names it with `node`, for both tools, linked or not (founder, 2026-11-21: "always if you're sending into another node then you add the node parameter … similar to delegate task"). A message to a run on another node without `node` is refused with the node to pass; a `node` that is not where the run is gets refused with the right node. The node comes from the delegation result (`node`), the received message's header, or `list_running_agents`. This replaces autobyteus-191's "follow-ups never name the node" (CM-11 is updated with it). |
 | RF-13 Shared storage is separate | `reference_files` across nodes always copy (RF-2). An agent that has a shared folder (NFS and its skill) and wants to use it writes the shared path in its message text and attaches nothing. |
 
-## 3. Route Table
+## 3. Storage Layout (receiving node)
+
+```text
+<memory>/                                    ~/.autobyteus/server-data/memory on the desktop; /data/memory on a Docker node
+├── received-file-store/                     the node file store: never a run, never shown as one
+│   ├── <sha256>                             one entry per file content, named by its SHA-256 (64 hex): the stored bytes
+│   └── <sha256>.partial                     an upload in progress; removed after 24 h if never completed
+├── agents/<agentRunId>/                     a standalone agent's own folder
+│   └── received_files/<sender's run ID>/<file name>          read-only hard link to received-file-store/<sha256>
+├── agent_teams/<teamRunId>/<agentRunId>/    a Team member's own folder
+│   └── received_files/<sender's run ID>/<file name>
+└── agent_orgs/<orgRunId>/…/<agentRunId>/    an Org agent's own folder
+    └── received_files/<sender's run ID>/<file name>
+```
+
+- **The bytes** are on disk once per content. Every `received_files/…` name and the store's `<sha256>` name are equal names for them (hard links); none is the original.
+- **Same file, two senders:** two names in two sender folders, one stored copy; the second sender's upload is skipped (RF-11).
+- **Same sender, same name, new content:** the sender folder's name moves to the new bytes (RF-7); the old bytes stay while another name uses them.
+- **Deleting a run's history** removes its folder and so its names. **The cleanup** removes a store entry when it is the only name left (no run has the file any more), and `.partial` entries older than 24 h. It runs when the server starts and after a run's history is deleted.
+- **The sending node** stores nothing new: its files stay where they are in the sending agent's workspace.
+
+## 4. Route Table
 
 | # | Tool and target | Files go | Recipient sees | Sender's record |
 | --- | --- | --- | --- | --- |
@@ -56,7 +77,7 @@ Two agents on two nodes work like two colleagues on two machines (the founder, 2
 
 Rows 4–6 follow RF-2 … RF-12. Rows 1–3 are today's behavior.
 
-## 4. Refusals
+## 5. Refusals
 
 Every refusal comes before anything is delivered; texts are the agent-facing wording (final words in the wording authority).
 
@@ -72,7 +93,7 @@ Every refusal comes before anything is delivered; texts are the agent-facing wor
 | `NODE_MISMATCH` | `node` names a node the run is not on | "This agent runs on node \"studio\", not \"mac-studio\"; pass node: \"studio\"." |
 | existing peer refusals | Switch off, unknown peer, unreachable, older peer (404) | as today |
 
-## 5. Between Nodes (wire)
+## 6. Between Nodes (wire)
 
 All requests are signed peer requests (route class `REMOTE_PEER`, NA-7, NA-9) and pass `PeerGateway` admission.
 
@@ -84,7 +105,7 @@ All requests are signed peer requests (route class `REMOTE_PEER`, NA-7, NA-9) an
 
 The sending node uploads every file first, then sends the message or work packet naming them; the receiving node places them (RF-7) when it accepts it, in the same step that writes its log line.
 
-## 6. Examples
+## 7. Examples
 
 Node A (`mac-studio`) delegates to node B (`studio`):
 
@@ -97,8 +118,8 @@ A's result: { delegated: true, target_agent_run_id: "video_editor_…", node: "s
 B's work packet (what the task agent reads):
   … Cut a 30 s teaser from the demo.
   Reference files:
-  - /data/memory/agents/video_editor_…/received_files/3f2a9c1e0b7d/demo.mp4
-  - /data/memory/agents/video_editor_…/received_files/a81c44d29e05/brief.pdf
+  - /data/memory/agents/video_editor_…/received_files/project_task_manager_7c8d…/demo.mp4
+  - /data/memory/agents/video_editor_…/received_files/project_task_manager_7c8d…/brief.pdf
 ```
 
 B's agent returns the result (row 6; `node` names A, as the work packet's header did, RF-14):
@@ -108,9 +129,9 @@ B's agent:  send_message_to({ node: "mac-studio", target_agent_run_id: "<A's del
               reference_files: ["/tmp/autobyteus/temp_workspace/teaser.mp4"] })
 A's agent receives: "You received a message from … on node \"studio\". Teaser attached.
   Reference files:
-  - /Users/me/.autobyteus/server-data/memory/agents/project_task_manager_…/received_files/9e1d0c7a33b2/teaser.mp4"
+  - /Users/me/.autobyteus/server-data/memory/agents/project_task_manager_…/received_files/video_editor_…/teaser.mp4"
 ```
 
-## 7. What This Contract Does Not Change
+## 8. What This Contract Does Not Change
 
 Same-node `reference_files` (RF-1); who may message or delegate to whom (CM-1 … CM-13; only CM-11's "follow-ups never name the node" changes, RF-14); the Messages views (autobyteus-565), except that a received file opens at its received path; NFS and its skill.
