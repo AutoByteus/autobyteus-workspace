@@ -1,0 +1,37 @@
+# API-05 AC-008 (S-3): Grok replay files and own-stream (scripted AGY discovery) under this host's load | commit 56c61c3ecb
+## grok-build-runtime-replay | 2026-11-21T03:32:35Z | load { 9.11 11.56 24.55 } | fseventsd 154.6% | FSEvents write->event: event 1801ms close 1ms
+Error in createAgentRun: AgentCreationError: Grok Build: Authentication required: no auth method id provided
+ ❯ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts (10 tests | 1 failed) 39874ms
+     × lists the Grok Build catalog from the agent handshake with the reasoning-effort schema (AC-002) 16185ms
+     ✓ streams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009)  991ms
+     ✓ turns a recorded Grok permission request into a run_bash approval answered over the WebSocket (AC-004) 216ms
+     ✓ completes the turn when Grok ends it after a denied run_bash, and the run takes the next message (AC-004) 252ms
+     ✓ fails run creation with Grok's own authentication error text when Grok is not logged in (AC-012) 94ms
+     ✓ ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006) 150ms
+       ✓ shows Grok's own turn after a background job ended: notice, content, tool card, usage, end; keeps the notice in history (AC-001, AC-003)  1647ms
+       ✓ holds a message sent during Grok's own turn until it ends, and Stop cancels Grok's own turn (AC-002)  3323ms
+       ✓ keeps a message held through the hand-over when a job ends during an input turn, and sends it after Grok's own turn (AC-006)  2870ms
+       ✓ keeps a message sent in the hand-over's gap (after Grok ended the input prompt, before its response) held through Grok's own turn (AC-006)  4335ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > lists the Grok Build catalog from the agent handshake with the reasoning-effort schema (AC-002)
+Error: [{"message":"Grok Build model discovery timed out; check the CLI and retry.","locations":[{"line":2,"column":7}],"path":["providerModelCatalogSnapshots"]}]
+ ❯ graphql tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts:52:66
+ ❯ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts:153:20
+ Test Files  1 failed (1)
+      Tests  1 failed | 9 passed (10)
+exit 1
+## grok-build-compaction-replay | 2026-11-21T03:33:29Z | load { 9.20 11.32 23.72 } | fseventsd 162.1% | FSEvents write->event: no event in 30000ms close 2ms
+ ✓ tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts (3 tests) 4899ms
+     ✓ pairs three automatic compactions and archives one segment per completion (REQ-G1, REQ-G2)  1262ms
+     ✓ closes an automatic compaction stopped by the user as failed, then pairs the next one (REQ-G3)  1021ms
+     ✓ records a manual /compact as one completed compaction with no start (REQ-G1, REQ-G2, REQ-G4)  674ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+exit 0
+## own-stream-turns-read-once | 2026-11-21T03:34:15Z | load { 8.69 10.79 22.81 } | fseventsd 165.0% | FSEvents write->event: no event in 30000ms close 2ms
+ ✓ tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts (2 tests) 22423ms
+     ✓ OST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once  17342ms
+     ✓ OST-3: an error-ended turn reads the same live, in a reconnect's snapshot and in the stopped run's full stored read  2495ms
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+exit 0

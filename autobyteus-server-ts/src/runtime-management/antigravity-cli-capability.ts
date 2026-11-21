@@ -1,5 +1,6 @@
 import { spawn } from "node:child_process";
 import { commandBound, deadlineCause, type CommandBound, type ReadDeadline } from "./read-deadline.js";
+import { armProbeTimeBound } from "./probe-time-bound.js";
 import { compareRuntimeVersions, extractRuntimeVersion } from "./agent-runtimes/runtime-version.js";
 
 const COMMAND = process.env.ANTIGRAVITY_CLI_COMMAND?.trim() || "agy";
@@ -73,13 +74,16 @@ const runCommand = (args: readonly string[], bound: CommandBound, outputLimit: n
     const finish = (output?: CommandOutput, error?: AgyDiscoveryError) => {
       if (settled) return;
       settled = true;
-      clearTimeout(timer);
+      disarm();
       if (error) {
         child.kill("SIGKILL");
         reject(error);
       } else resolve(output!);
     };
-    const timer = setTimeout(() => finish(undefined, timedOut()), bound.timeoutMs);
+    // A child that has already exited when the bound fires finishes with its real result (FU-008).
+    const disarm = armProbeTimeBound({
+      child, bound, runtime: "antigravity", command: [COMMAND, ...args].join(" "), onTimedOut: () => finish(undefined, timedOut()),
+    });
     child.stdout!.on("data", (chunk: Buffer) => {
       if (settled) return;
       if (stdout.length + chunk.length > outputLimit) return finish(undefined, new AgyDiscoveryError("AGY_MODEL_DISCOVERY_FAILED"));

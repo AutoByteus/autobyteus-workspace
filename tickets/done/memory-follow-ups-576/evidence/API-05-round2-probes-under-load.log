@@ -1,0 +1,85 @@
+# API-05 round 2: Grok replay files and own-stream (scripted AGY), clean, each alone, three times | commit a4ed4455fa
+## grok-build-runtime-replay run 1 | 2026-11-21T04:25:30Z | load { 13.33 23.99 24.55 } | fseventsd 151.0%
+Error in createAgentRun: AgentCreationError: Grok Build: Authentication required: no auth method id provided
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts (10 tests) 27210ms
+     ✓ lists the Grok Build catalog from the agent handshake with the reasoning-effort schema (AC-002)  8699ms
+     ✓ streams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009)  1014ms
+       ✓ shows Grok's own turn after a background job ended: notice, content, tool card, usage, end; keeps the notice in history (AC-001, AC-003)  1674ms
+       ✓ holds a message sent during Grok's own turn until it ends, and Stop cancels Grok's own turn (AC-002)  3336ms
+       ✓ keeps a message held through the hand-over when a job ends during an input turn, and sends it after Grok's own turn (AC-006)  2860ms
+       ✓ keeps a message sent in the hand-over's gap (after Grok ended the input prompt, before its response) held through Grok's own turn (AC-006)  4388ms
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+exit 0
+## grok-build-compaction-replay run 1 | 2026-11-21T04:26:08Z | load { 11.44 22.17 23.86 } | fseventsd 168.9%
+ ✓ tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts (3 tests) 4727ms
+     ✓ pairs three automatic compactions and archives one segment per completion (REQ-G1, REQ-G2)  1183ms
+     ✓ closes an automatic compaction stopped by the user as failed, then pairs the next one (REQ-G3)  1051ms
+     ✓ records a manual /compact as one completed compaction with no start (REQ-G1, REQ-G2, REQ-G4)  646ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+exit 0
+## own-stream-turns-read-once run 1 | 2026-11-21T04:26:26Z | load { 10.67 21.29 23.50 } | fseventsd 162.1%
+ ✓ tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts (2 tests) 29748ms
+     ✓ OST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once  10165ms
+     ✓ OST-3: an error-ended turn reads the same live, in a reconnect's snapshot and in the stopped run's full stored read  2469ms
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+exit 0
+## grok-build-runtime-replay run 2 | 2026-11-21T04:27:07Z | load { 9.58 19.74 22.84 } | fseventsd 175.6%
+Error in createAgentRun: AgentCreationError: Grok Build: Authentication required: no auth method id provided
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts (10 tests) 37252ms
+     ✓ lists the Grok Build catalog from the agent handshake with the reasoning-effort schema (AC-002)  4467ms
+     ✓ streams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009)  537ms
+       ✓ shows Grok's own turn after a background job ended: notice, content, tool card, usage, end; keeps the notice in history (AC-001, AC-003)  1650ms
+       ✓ holds a message sent during Grok's own turn until it ends, and Stop cancels Grok's own turn (AC-002)  3312ms
+       ✓ keeps a message held through the hand-over when a job ends during an input turn, and sends it after Grok's own turn (AC-006)  2862ms
+       ✓ keeps a message sent in the hand-over's gap (after Grok ended the input prompt, before its response) held through Grok's own turn (AC-006)  4368ms
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+exit 0
+## grok-build-compaction-replay run 2 | 2026-11-21T04:27:57Z | load { 9.24 18.07 22.04 } | fseventsd 167.2%
+ ✓ tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts (3 tests) 24477ms
+     ✓ pairs three automatic compactions and archives one segment per completion (REQ-G1, REQ-G2)  16852ms
+     ✓ closes an automatic compaction stopped by the user as failed, then pairs the next one (REQ-G3)  993ms
+     ✓ records a manual /compact as one completed compaction with no start (REQ-G1, REQ-G2, REQ-G4)  628ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+exit 0
+## own-stream-turns-read-once run 2 | 2026-11-21T04:28:33Z | load { 9.07 17.09 21.52 } | fseventsd 150.2%
+ ✓ tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts (2 tests) 31488ms
+     ✓ OST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once  17977ms
+     ✓ OST-3: an error-ended turn reads the same live, in a reconnect's snapshot and in the stopped run's full stored read  2468ms
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+exit 0
+## grok-build-runtime-replay run 3 | 2026-11-21T04:29:15Z | load { 10.89 16.51 21.10 } | fseventsd 171.4%
+Error in createAgentRun: AgentCreationError: Grok Build: Authentication required: no auth method id provided
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts (10 tests) 29128ms
+     ✓ lists the Grok Build catalog from the agent handshake with the reasoning-effort schema (AC-002)  2224ms
+     ✓ streams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009)  557ms
+       ✓ shows Grok's own turn after a background job ended: notice, content, tool card, usage, end; keeps the notice in history (AC-001, AC-003)  1652ms
+       ✓ holds a message sent during Grok's own turn until it ends, and Stop cancels Grok's own turn (AC-002)  3305ms
+       ✓ keeps a message held through the hand-over when a job ends during an input turn, and sends it after Grok's own turn (AC-006)  2852ms
+       ✓ keeps a message sent in the hand-over's gap (after Grok ended the input prompt, before its response) held through Grok's own turn (AC-006)  4361ms
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+exit 0
+## grok-build-compaction-replay run 3 | 2026-11-21T04:29:56Z | load { 9.27 15.40 20.49 } | fseventsd 167.3%
+ ❯ tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts (3 tests) 19710ms
+     ✓ pairs three automatic compactions and archives one segment per completion (REQ-G1, REQ-G2)  3970ms
+     ✓ closes an automatic compaction stopped by the user as failed, then pairs the next one (REQ-G3)  991ms
+     ✓ records a manual /compact as one completed compaction with no start (REQ-G1, REQ-G2, REQ-G4)  624ms
+ FAIL  tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts > Grok Build compaction over GraphQL/WebSocket (recorded Grok 1.0.46 replay)
+Error: Hook timed out in 10000ms.
+ ❯ tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts:77:3
+ Test Files  1 failed (1)
+      Tests  3 passed (3)
+exit 1
+## own-stream-turns-read-once run 3 | 2026-11-21T04:30:28Z | load { 8.45 14.53 19.96 } | fseventsd 164.1%
+ ✓ tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts (2 tests) 24872ms
+     ✓ OST-1 / OST-2: a delegated run opened from its tree row, reconnected, stopped, restored and interrupted shows each turn once  19123ms
+     ✓ OST-3: an error-ended turn reads the same live, in a reconnect's snapshot and in the stopped run's full stored read  2468ms
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+exit 0

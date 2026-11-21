@@ -218,6 +218,7 @@ import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import type { WorkspaceInfo } from '~/stores/workspace'
 import { projectFolderOf } from '~/stores/chatDraftProjectChoice'
 import type { Project } from '~/types/project'
+import { isRunnableWorkspaceKind } from '~/utils/workspace/runnableWorkspaceKind'
 
 const props = withDefaults(defineProps<{
   workspace: RunWorkspaceChoice
@@ -262,8 +263,10 @@ watch([
 onBeforeUnmount(() => { disposed = true })
 
 const tempWorkspace = computed(() => workspaceStore.tempWorkspace)
+// Only places to run (DEC-003): a skill's or a semantic memory folder's workspace is a view, never offered here.
 const userWorkspaces = computed(() => workspaceStore.allWorkspaces
-  .filter((workspace) => !workspace.isTemp && workspace.workspaceId !== tempWorkspace.value?.workspaceId)
+  .filter((workspace) => !workspace.isTemp && workspace.workspaceId !== tempWorkspace.value?.workspaceId
+    && isRunnableWorkspaceKind(workspace.kind || 'filesystem'))
   .slice()
   .sort((left, right) => left.name.localeCompare(right.name)))
 

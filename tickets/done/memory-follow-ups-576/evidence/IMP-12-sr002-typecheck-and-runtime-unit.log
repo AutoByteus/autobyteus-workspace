@@ -1,0 +1,546 @@
+# IMP-12-sr002-typecheck-and-runtime-unit.log
+# Check: IMP-12
+# Command: env -i HOME PATH TMPDIR pnpm -C autobyteus-server-ts typecheck; pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-management tests/unit/llm-management tests/unit/agent-org-execution/agent-org-run-service-model-selection.test.ts tests/unit/agent-execution/backends/antigravity tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver.test.ts
+# Commit tested: 3b39828501
+# Environment: macOS (Darwin 25.5), Node v22.23.1, pnpm; env -i; shared host, load average 42-53, fseventsd 137-172% CPU
+# Date: 2026-11-21
+# ----------------------------------------------------------------------
+
+> autobyteus-server-ts@0.1.1 pretypecheck /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+> pnpm prepare:source
+
+
+> autobyteus-server-ts@0.1.1 prepare:source /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 169ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+> node ./scripts/typecheck.mjs
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 9.8s
+[typecheck] server tests (tsconfig.tests.json): 1006 errors, exit 2, 28.6s
+[typecheck] production errors: 0; test-file errors: 1006 in 315 files (baseline 1006 in 315 files)
+[typecheck] PASS
+
+===== server unit: runtime-management, llm-management, model selection, antigravity backends, collaborator launch (ran before the type-only narrowing to ProbeChildExit; no logic change) =====
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+ ✓ tests/unit/runtime-management/probe-time-bound.test.ts (6 tests) 1527ms
+     ✓ returns the real result of a child that exited while the main thread was blocked past the bound  1520ms
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-real-child-retry.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-real-child-retry.test.ts (1 test) 14078ms
+     ✓ reports failed stop while the same test-owned child stays alive, then proves same-child exit/IO on retry  14077ms
+stdout | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > enables AGY availability using capabilities rather than release text
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > makes AGY runtime availability await discovery and report only a safe failure
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > reports a signed-out CLI as not signed in with the recovery step and no CLI output
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > bounds hang-help (`--help`) at 10000 ms and returns a sanitized timeout rather than hanging
+RUNTIME_PROBE_TIMED_OUT {
+  runtime: 'antigravity',
+  command: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-discovery-unit-JbBsf3/agy-fake --help',
+  boundMs: 10000
+}
+
+stderr | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > bounds hang-models (`models`) at 30000 ms and returns a sanitized timeout rather than hanging
+RUNTIME_PROBE_TIMED_OUT {
+  runtime: 'antigravity',
+  command: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-discovery-unit-JbBsf3/agy-fake models',
+  boundMs: 30000
+}
+
+stderr | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > bounds a hung `--version` at 10 s and reads no version
+RUNTIME_PROBE_TIMED_OUT {
+  runtime: 'antigravity',
+  command: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-discovery-unit-JbBsf3/agy-fake --version',
+  boundMs: 10000
+}
+
+stderr | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > shares one step deadline across --help and models: a hanging second command ends by it and is killed (AR-002)
+RUNTIME_PROBE_TIMED_OUT {
+  runtime: 'antigravity',
+  command: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-discovery-unit-JbBsf3/agy-fake models',
+  boundMs: 1466
+}
+
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts (51 tests) 10748ms
+     ✓ accepts a compatible CLI and returns dynamic model slugs  332ms
+     ✓ enables AGY availability using capabilities rather than release text  931ms
+     ✓ returns the real result of a `--help` that exited before its bound but whose close comes after it  4088ms
+     ✓ times out a `--help` that exited but whose close does not come within the grace, logging the command and bound  1547ms
+     ✓ shares one step deadline across --help and models: a hanging second command ends by it and is killed (AR-002)  1523ms
+     ✓ keeps a concurrent health request responsive while model discovery waits  578ms
+stdout | tests/unit/runtime-management/grok/grok-build-capability.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/grok/grok-build-capability.test.ts (7 tests) 5558ms
+     ✓ reads the real result of a command that exited before its bound but whose close comes after it  4336ms
+     ✓ classifies an empty catalog and a failed handshake without provider output  364ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-failure-cli-routing.test.ts (18 tests) 4083ms
+     ✓ retains new native capture and exact resumed conversation binding with monotonically new step indices  1776ms
+     ✓ retains ambiguous native plans and their normal summary stream/completion  725ms
+     ✓ linked_skills BACKGROUND_STEP leaves a daemon step open at turn end, then writes an exit message the production reader parses  366ms
+     ✓ linked_skills HOLD_TURN keeps the turn running until stopped; a tool call or invalid tool JSON is never held  392ms
+ ✓ tests/unit/runtime-management/agent-runtimes/runtime-process-operation.test.ts (6 tests) 3582ms
+     ✓ ends a running process on cancel, with SIGKILL when it ignores SIGTERM  3309ms
+stdout | tests/unit/runtime-management/grok/grok-usage-limits-acp.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/grok/grok-usage-limits-acp.test.ts (2 tests) 2734ms
+     ✓ ends a request that never answers at the step deadline  2517ms
+stdout | tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:24801) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts (30 tests) 2181ms
+     ✓ reads the version from vendor wording and reports a missing or broken command as not installed  384ms
+     ✓ classifies sign-in from model discovery and reads the manifest version  472ms
+     ✓ Codex: a request that never answers ends at the deadline and releases the lease (AR-002)  306ms
+     ✓ Antigravity: agy -p /usage --output-format json; a failed command throws, a hanging one throws the step's time-out  379ms
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-control-query.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:24828) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-control-query.test.ts (7 tests) 475ms
+ ✓ tests/unit/runtime-management/acp/acp-client-connection.test.ts (9 tests) 451ms
+stdout | tests/unit/agent-execution/backends/antigravity/agy-agent-run-backend-factory.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-agent-run-backend-factory.test.ts (26 tests) 334ms
+ ✓ tests/unit/runtime-management/read-deadline.test.ts (3 tests) 307ms
+     ✓ the command runner: an ordinary time-out is an ordinary failure; one set by the deadline is the step's time-out  305ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-configured-skill-linker.test.ts (12 tests) 267ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-native-tool-arguments-reader.test.ts (27 tests) 137ms
+stdout | tests/unit/agent-execution/backends/antigravity/agy-turn-lifecycle.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-turn-lifecycle.test.ts (10 tests) 176ms
+ ✓ tests/unit/llm-management/codex-model-catalog-deadline.test.ts (2 tests) 157ms
+stdout | tests/unit/agent-execution/backends/antigravity/agy-compaction-checkpoint.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-compaction-checkpoint.test.ts (9 tests) 161ms
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:24884) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts > retained SDK opening — actual pinned SDK / public hook > preserves SDK launch options and uses a distinct explicit debug log under test config root
+Claude CLI debug log: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-debug-owner-test-XH7EY2/config/debug/autobyteus-cli-b01f685a-f440-42ae-9b51-a3ece5395b69.log
+
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts (4 tests) 137ms
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts (7 tests) 125ms
+stdout | tests/unit/agent-execution/backends/antigravity/agy-native-argument-lifecycle.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:24921) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-native-argument-lifecycle.test.ts (16 tests) 115ms
+(node:24923) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/llm-management/provider-usage/provider-usage-readers.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/llm-management/provider-usage/provider-usage-readers.test.ts (6 tests) 108ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts (24 tests) 109ms
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:24925) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts (21 tests) 62ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-brain-file.test.ts (10 tests) 61ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-status-service.test.ts (20 tests) 50ms
+stdout | tests/unit/llm-management/llm-providers/custom-llm-provider-store.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/llm-management/llm-providers/custom-llm-provider-store.test.ts (3 tests) 63ms
+stdout | tests/unit/runtime-management/deepseek-harness/deepseek-harness-runtime.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:24957) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/runtime-management/deepseek-harness/deepseek-harness-runtime.test.ts (11 tests) 47ms
+ ✓ tests/unit/runtime-management/acp/acp-layer-neutrality.test.ts (2 tests) 32ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-step-output-reader.test.ts (17 tests) 28ms
+stdout | tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts (79 tests) 22ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-update-automation.test.ts (8 tests) 18ms
+stdout | tests/unit/llm-management/gemini-configuration-service.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/llm-management/gemini-configuration-service.test.ts > GeminiConfigurationService explicit mode commands > starts with no selected mode and no implicit priority
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-Wr0e4P
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-Wr0e4P/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-Wr0e4P/.env
+◇ injected env (3) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-Wr0e4P/.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-Wr0e4P
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-Wr0e4P/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-Wr0e4P/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-Wr0e4P/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-Wr0e4P/memory
+============================================================
+
+stdout | tests/unit/llm-management/gemini-configuration-service.test.ts > GeminiConfigurationService explicit mode commands > saves options independently and activates only through an explicit command
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-A610pa
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-A610pa/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-A610pa/.env
+◇ injected env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-A610pa/.env // tip: ⌘ suppress logs { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-A610pa
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-A610pa/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-A610pa/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-A610pa/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-A610pa/memory
+============================================================
+
+stdout | tests/unit/llm-management/gemini-configuration-service.test.ts > GeminiConfigurationService explicit mode commands > keeps active mode unchanged when its configuration is replaced
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-D2lOCC
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-D2lOCC/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-D2lOCC/.env
+◇ injected env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-D2lOCC/.env // tip: ◈ encrypted .env [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-D2lOCC
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-D2lOCC/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-D2lOCC/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-D2lOCC/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-D2lOCC/memory
+============================================================
+
+stdout | tests/unit/llm-management/gemini-configuration-service.test.ts > GeminiConfigurationService explicit mode commands > rejects activating an incomplete option without persisting a selector
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-ofGsFM
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-ofGsFM/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-ofGsFM/.env
+◇ injected env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-ofGsFM/.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-ofGsFM
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-ofGsFM/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-ofGsFM/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-ofGsFM/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-ofGsFM/memory
+============================================================
+
+stdout | tests/unit/llm-management/gemini-configuration-service.test.ts > GeminiConfigurationService explicit mode commands > returns a truthful partial result when save succeeds but activation fails
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-usVRXo
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-usVRXo/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-usVRXo/.env
+◇ injected env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-usVRXo/.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-usVRXo
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-usVRXo/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-usVRXo/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-usVRXo/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-usVRXo/memory
+============================================================
+
+ ✓ tests/unit/llm-management/gemini-configuration-service.test.ts (5 tests) 21ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-task-exit-message-reader.test.ts (12 tests) 14ms
+stdout | tests/unit/agent-org-execution/agent-org-run-service-model-selection.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:24971) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-org-execution/agent-org-run-service-model-selection.test.ts (12 tests) 16ms
+stdout | tests/unit/agent-execution/backends/antigravity/agy-native-argument-persistence.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-native-argument-persistence.test.ts (2 tests) 14ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-stream-process.test.ts (10 tests) 13ms
+stdout | tests/unit/llm-management/services/model-catalog-service.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:24974) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/llm-management/services/model-catalog-service.test.ts (13 tests) 12ms
+stdout | tests/unit/llm-management/on-demand-stored-model.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:24975) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/llm-management/on-demand-stored-model.test.ts (14 tests) 10ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-background-task-monitor.test.ts (10 tests) 11ms
+stdout | tests/unit/llm-management/llm-providers/llm-provider-service.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:24979) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/llm-management/llm-providers/llm-provider-service.test.ts (11 tests) 9ms
+stdout | tests/unit/llm-management/run-model-selection-service.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:24980) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/llm-management/run-model-selection-service.test.ts (24 tests) 9ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver.test.ts (11 tests) 9ms
+ ✓ tests/unit/runtime-management/agent-runtimes/usage-limits/usage-limit-parsers.test.ts (11 tests) 8ms
+stdout | tests/unit/llm-management/model-metadata-provisioning-service.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:24989) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/llm-management/model-metadata-provisioning-service.test.ts (10 tests) 8ms
+stdout | tests/unit/agent-execution/backends/antigravity/agy-call-throughput.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-call-throughput.test.ts (5 tests) 7ms
+ ✓ tests/unit/runtime-management/codex/client/codex-app-server-client.test.ts (5 tests) 7ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-provider-diagnostic-sink.test.ts (3 tests) 7ms
+stdout | tests/unit/llm-management/services/model-availability-service.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:24993) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/llm-management/services/model-availability-service.test.ts (7 tests) 7ms
+stdout | tests/unit/llm-management/stored-model-offer.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:24994) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/llm-management/stored-model-offer.test.ts (5 tests) 7ms
+ ✓ tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts (13 tests) 6ms
+stdout | tests/unit/runtime-management/grok/grok-build-launch-profile.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/grok/grok-build-launch-profile.test.ts (4 tests) 5ms
+stdout | tests/unit/llm-management/llm-providers/services/custom-llm-provider-runtime-sync-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/llm-management/llm-providers/services/custom-llm-provider-runtime-sync-service.test.ts (3 tests) 5ms
+ ✓ tests/unit/llm-management/services/new-run-llm-config-projection.test.ts (11 tests) 6ms
+stdout | tests/unit/agent-execution/backends/antigravity/agy-native-argument-converter.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-native-argument-converter.test.ts (7 tests) 4ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-spawn-environment.test.ts (15 tests) 5ms
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts (4 tests) 5ms
+ ✓ tests/unit/runtime-management/acp/acp-agent-capabilities.test.ts (4 tests) 4ms
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-model-normalizer.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-model-normalizer.test.ts (6 tests) 5ms
+ ✓ tests/unit/runtime-management/codex/client/codex-app-server-client-manager.test.ts (2 tests) 4ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-mcp-tool-call.test.ts (21 tests) 4ms
+ ✓ tests/unit/llm-management/services/dynamic-model-source-lifecycle.test.ts (3 tests) 4ms
+ ✓ tests/unit/runtime-management/agent-runtimes/runtime-version.test.ts (18 tests) 4ms
+stdout | tests/unit/runtime-management/runtime-availability-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/runtime-availability-service.test.ts (2 tests) 4ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-user-message-text.test.ts (8 tests) 4ms
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-model-selection-presentation.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-model-selection-presentation.test.ts (5 tests) 3ms
+ ✓ tests/unit/llm-management/services/run-model-selection-refusal.test.ts (6 tests) 3ms
+ ✓ tests/unit/runtime-management/claude/claude-prompt-cache-setting.test.ts (5 tests) 3ms
+stdout | tests/unit/llm-management/claude-model-catalog.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:25026) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/llm-management/claude-model-catalog.test.ts (3 tests) 3ms
+ ✓ tests/unit/runtime-management/codex/codex-sandbox-mode-setting.test.ts (3 tests) 2ms
+ ✓ tests/unit/runtime-management/agent-runtimes/sign-in-browser-availability.test.ts (4 tests) 2ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-setting-sources.test.ts (3 tests) 2ms
+ ✓ tests/unit/runtime-management/claude/claude-shell-time-limit-setting.test.ts (2 tests) 2ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-native-tool-policy.test.ts (1 test) 2ms
+ ✓ tests/unit/runtime-management/model-context-capacity.test.ts (1 test) 2ms
+stdout | tests/unit/agent-execution/backends/antigravity/agy-image-input-live.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:25034) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/unit/agent-execution/backends/antigravity/agy-image-input-live.test.ts (1 test | 1 skipped)
+stdout | tests/unit/agent-execution/backends/antigravity/agy-mcp-team-live.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:25036) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/unit/agent-execution/backends/antigravity/agy-mcp-team-live.test.ts (2 tests | 2 skipped)
+stdout | tests/unit/agent-execution/backends/antigravity/agy-production-live.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:25040) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/unit/agent-execution/backends/antigravity/agy-production-live.test.ts (2 tests | 2 skipped)
+stdout | tests/unit/agent-execution/backends/antigravity/agy-restore-live.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:25041) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/unit/agent-execution/backends/antigravity/agy-restore-live.test.ts (1 test | 1 skipped)
+
+ Test Files  74 passed | 4 skipped (78)
+      Tests  778 passed | 6 skipped (784)
+   Start at  05:15:28
+   Duration  88.55s (transform 4.26s, setup 1.73s, import 31.28s, tests 48.22s, environment 4ms)
+

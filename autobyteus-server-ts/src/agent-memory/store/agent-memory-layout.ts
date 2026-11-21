@@ -32,8 +32,8 @@ const resolveSafePath = (rootDir: string, ...segments: string[]): string => {
   return candidate;
 };
 
-/** An encoded definition ID up to this length is the folder name itself; file systems allow 255 bytes per name. */
-const MAX_FULL_DEFINITION_FOLDER_NAME_BYTES = 200;
+/** An encoded definition ID up to this length is the folder name itself: the 255-byte file name limit (autobyteus-576 DEC-001). */
+const MAX_FULL_DEFINITION_FOLDER_NAME_BYTES = 255;
 /** A longer one keeps this many leading bytes, then `#` and a hash of the ID. */
 const SHORTENED_DEFINITION_FOLDER_PREFIX_BYTES = 120;
 const SHORTENED_DEFINITION_FOLDER_HASH_LENGTH = 16;
@@ -54,9 +54,10 @@ const encodedPrefix = (id: string, maxBytes: number): string => {
 
 /**
  * One agent definition's folder name under `semantic/` and `episodic/` (DEC-016), the only rule for it: the
- * URI-encoded definition ID when it is at most 200 bytes; otherwise its first 120 bytes (cut between characters, never
- * inside a `%XX`), `#`, and the first 16 hex characters of the ID's SHA-256. `encodeURIComponent` output is ASCII, so
- * its length is its byte count, and it always escapes `#`, so a shortened name never equals a full one.
+ * URI-encoded definition ID when it is at most 255 bytes, the file name limit; otherwise its first 120 bytes (cut
+ * between characters, never inside a `%XX`), `#`, and the first 16 hex characters of the ID's SHA-256.
+ * `encodeURIComponent` output is ASCII, so its length is its byte count, and it always escapes `#`, so a shortened name
+ * never equals a full one.
  * Application-bundled team-local IDs hold the bundle's path in hex and need the short form.
  */
 const definitionFolderName = (agentDefinitionId: string): string => {

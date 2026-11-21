@@ -26,6 +26,13 @@ if (arg === '--version') {
   else if (mode === 'oversized-help') process.stdout.write('x'.repeat(70 * 1024));
   else if (mode === 'oversized-help-stderr') process.stderr.write('x'.repeat(70 * 1024));
   else if (mode === 'failed-help') { process.stderr.write('secret /private/credential-path token=abc'); process.exitCode = 8; }
+  // FU-008: the CLI answers and exits at once, but a process it leaves behind holds its stdout for 4 s, so the parent
+  // sees the exit long before the close (as on a busy host). It logs "exited --help" as it exits.
+  else if (mode === 'exited-help-late-close') {
+    process.stdout.write('agy version 1.2.11\\n--agent --new-project --add-dir --conversation --input-format --output-format --dangerously-skip-permissions\\n');
+    require('node:child_process').spawn('/bin/sleep', ['4'], { stdio: ['ignore', 'inherit', 'ignore'], detached: true }).unref();
+    process.on('exit', () => appendFileSync(process.env.AGY_FAKE_COMMAND_LOG, 'exited --help\\n'));
+  }
   else {
     const help = (process.env.AGY_FAKE_VERSION ?? 'agy version 1.2.11') + '\\n' +
       (mode === 'bad-flags' ? '--agent\\n' : '--agent --new-project --add-dir --conversation --input-format --output-format --dangerously-skip-permissions\\n');
@@ -62,6 +69,12 @@ const commandStarted = async (command: string) => {
     if (performance.now() > deadline) throw new Error(`the fake CLI never started ${command}`);
     await new Promise((resolve) => setImmediate(resolve));
   }
+};
+
+/** Waits real time while `setTimeout` is faked. */
+const realWait = async (ms: number) => {
+  const until = performance.now() + ms;
+  while (performance.now() < until) await new Promise((resolve) => setImmediate(resolve));
 };
 
 const capability = async (mode: string) => {
@@ -185,6 +198,43 @@ describe("bounded AGY CLI discovery", () => {
       await vi.advanceTimersByTimeAsync(1);
       expect(outcome).toMatchObject({ diagnostic: { code: "AGY_MODEL_DISCOVERY_TIMEOUT" } });
     } finally { vi.useRealTimers(); }
+  });
+
+  // autobyteus-576 FU-008 (AC-008): the bound fires after the child has exited but before its close is processed. The
+  // probe waits for the close (up to 1 s more of its own timers) and returns the real result, not a time-out.
+  it("returns the real result of a `--help` that exited before its bound but whose close comes after it", async () => {
+    const { listAntigravityModels } = await capability("exited-help-late-close");
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    try {
+      let outcome: unknown = "pending";
+      void listAntigravityModels().then((value) => { outcome = value; }, (error: unknown) => { outcome = error; });
+      await commandStarted("exited --help");
+      await realWait(1_500); // the parent processes the child's exit
+      expect(outcome).toBe("pending"); // its stdout is still open
+      await vi.advanceTimersByTimeAsync(10_000); // the `--help` bound fires: the child has exited, so no time-out
+      expect(outcome).toBe("pending");
+      // Real time only (vi.waitFor would advance the faked timers and so the grace): the close comes when the sleep ends.
+      const until = performance.now() + 10_000;
+      while (outcome === "pending" && performance.now() < until) await realWait(50);
+      expect(outcome).toEqual([{ id: "gemini-test", name: "Gemini Test" }]);
+    } finally { vi.useRealTimers(); }
+  }, 20_000);
+
+  it("times out a `--help` that exited but whose close does not come within the grace, logging the command and bound", async () => {
+    const { listAntigravityModels } = await capability("exited-help-late-close");
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    try {
+      let outcome: unknown = "pending";
+      void listAntigravityModels().then((value) => { outcome = value; }, (error: unknown) => { outcome = error; });
+      await commandStarted("exited --help");
+      await realWait(1_500);
+      await vi.advanceTimersByTimeAsync(10_000 + 999);
+      expect(outcome).toBe("pending");
+      await vi.advanceTimersByTimeAsync(1);
+      expect(outcome).toMatchObject({ diagnostic: { code: "AGY_MODEL_DISCOVERY_TIMEOUT" } });
+      expect(warn).toHaveBeenCalledWith("RUNTIME_PROBE_TIMED_OUT", { runtime: "antigravity", command: `${fakeCli} --help`, boundMs: 10_000 });
+    } finally { vi.useRealTimers(); warn.mockRestore(); }
   });
 
   it("bounds a hung `--version` at 10 s and reads no version", async () => {

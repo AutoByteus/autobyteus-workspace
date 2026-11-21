@@ -1,0 +1,76 @@
+# API-04 AC-007: agent-package-definitions-live-refresh alone, three times on this host, scripted AGY | commit 56c61c3ecb
+## live-refresh run 1 | 2026-11-21T03:20:09Z | load { 22.86 39.87 45.94 } | fseventsd 160.6% | FSEvents write->event: no event in 30000ms close 2ms
+Error restoring agent run with ID apar_steady_6dc428227a9d4315948cef6cbe9ab656: Error: AGY_AGENT_DEFINITION_MISSING: apar-steady
+ ❯ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts (10 tests | 2 failed) 245752ms
+     ✓ DCF-E2E-001 (QR-006, REQ-005): `connected` first, no replay, broadcast; remote-access auth like the sibling sockets  3076ms
+     × DCF-E2E-002 (AC-001…005, AC-007, REQ-009, REQ-014): an imported package's files on disk reach GraphQL and the feed without Reload 47948ms
+     ✓ DCF-E2E-003 (AC-011, AC-012, REQ-015): a package folder moved away keeps its definitions and reports it; restore resumes; removal releases it  24472ms
+     ✓ DCF-E2E-004 (AC-013, REQ-017): every manual Reload notifies another connected client of every list  5672ms
+     ✓ DCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client  22641ms
+     ✓ DCF-E2E-010 (SR-009/DSN-005): the renamed contract is a clean cut; the retired route and GraphQL names are gone 59ms
+     ✓ DCF-E2E-006 (DSN-002): a Team present in two packages is unavailable everywhere with DEFINITION_IDENTITY_DUPLICATED 48ms
+     ✓ DCF-E2E-009 (REQ-007, REQ-009, DSN-003, DSN-004): broken org-owned nodes keep their last good version and are listed on the owning Org 56ms
+     × DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools 30831ms
+     ✓ DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found  8906ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-002 (AC-001…005, AC-007, REQ-009, REQ-014): an imported package's files on disk reach Gr
+Error: invalid Team diagnostic: not met within 30000 ms; last value: []
+ ❯ waitFor tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts:189:51
+ ❯ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts:399:25
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the r
+Error: ENVIRONMENT: the OS delivered no file event for agents/apar-fresh-scout within 30000 ms
+ ❯ Timeout.<anonymous> tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts:170:45
+    170|             timer = setTimeout(() => reject(new Error(`ENVIRONMENT: th…
+ Test Files  1 failed (1)
+      Tests  2 failed | 8 passed (10)
+exit 1
+## live-refresh run 2 | 2026-11-21T03:24:58Z | load { 10.02 21.72 35.79 } | fseventsd 167.2% | FSEvents write->event: no event in 30000ms close 1ms
+Error restoring agent run with ID apar_steady_3e2f4ebfae6f4554932bb3bdc165044e: Error: AGY_AGENT_DEFINITION_MISSING: apar-steady
+ ❯ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts (10 tests | 3 failed) 231017ms
+     ✓ DCF-E2E-001 (QR-006, REQ-005): `connected` first, no replay, broadcast; remote-access auth like the sibling sockets  10400ms
+     × DCF-E2E-002 (AC-001…005, AC-007, REQ-009, REQ-014): an imported package's files on disk reach GraphQL and the feed without Reload 47708ms
+     × DCF-E2E-003 (AC-011, AC-012, REQ-015): a package folder moved away keeps its definitions and reports it; restore resumes; removal releases it 38462ms
+     ✓ DCF-E2E-004 (AC-013, REQ-017): every manual Reload notifies another connected client of every list  23130ms
+     ✓ DCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client  11883ms
+     ✓ DCF-E2E-010 (SR-009/DSN-005): the renamed contract is a clean cut; the retired route and GraphQL names are gone 54ms
+     ✓ DCF-E2E-006 (DSN-002): a Team present in two packages is unavailable everywhere with DEFINITION_IDENTITY_DUPLICATED 66ms
+     ✓ DCF-E2E-009 (REQ-007, REQ-009, DSN-003, DSN-004): broken org-owned nodes keep their last good version and are listed on the owning Org 58ms
+     × DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools 32739ms
+     ✓ DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found  1262ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-002 (AC-001…005, AC-007, REQ-009, REQ-014): an imported package's files on disk reach Gr
+Error: invalid Team diagnostic: not met within 30000 ms; last value: []
+ ❯ waitFor tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts:189:51
+ ❯ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts:399:25
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-003 (AC-011, AC-012, REQ-015): a package folder moved away keeps its definitions and repor
+Error: WATCHING again: not met within 30000 ms; last value: {"packageId":"local:%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fagent-package-definitions-e2e-32djtC%2Fmovable-package-e82572","path":"/private/var/folders/7w/9r4_s1_s42z3f7
+ ❯ waitFor tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts:189:51
+ ❯ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts:443:18
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the r
+Error: ENVIRONMENT: the OS delivered no file event for agents/apar-fresh-scout within 30000 ms
+ ❯ Timeout.<anonymous> tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts:170:45
+    170|             timer = setTimeout(() => reject(new Error(`ENVIRONMENT: th…
+ Test Files  1 failed (1)
+      Tests  3 failed | 7 passed (10)
+exit 1
+## live-refresh run 3 | 2026-11-21T03:29:31Z | load { 9.92 14.60 28.60 } | fseventsd 166.4% | FSEvents write->event: no event in 30000ms close 2ms
+Error restoring agent run with ID apar_steady_e583fa09b32347ca92e5e173d18d7925: Error: AGY_AGENT_DEFINITION_MISSING: apar-steady
+ ❯ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts (10 tests | 1 failed) 100629ms
+     ✓ DCF-E2E-001 (QR-006, REQ-005): `connected` first, no replay, broadcast; remote-access auth like the sibling sockets  2998ms
+     ✓ DCF-E2E-002 (AC-001…005, AC-007, REQ-009, REQ-014): an imported package's files on disk reach GraphQL and the feed without Reload  10810ms
+     ✓ DCF-E2E-003 (AC-011, AC-012, REQ-015): a package folder moved away keeps its definitions and reports it; restore resumes; removal releases it  13192ms
+     ✓ DCF-E2E-004 (AC-013, REQ-017): every manual Reload notifies another connected client of every list  7681ms
+     ✓ DCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client  3951ms
+     ✓ DCF-E2E-010 (SR-009/DSN-005): the renamed contract is a clean cut; the retired route and GraphQL names are gone 32ms
+     ✓ DCF-E2E-006 (DSN-002): a Team present in two packages is unavailable everywhere with DEFINITION_IDENTITY_DUPLICATED 50ms
+     ✓ DCF-E2E-009 (REQ-007, REQ-009, DSN-003, DSN-004): broken org-owned nodes keep their last good version and are listed on the owning Org 54ms
+     × DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools 31031ms
+     ✓ DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found  1109ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the r
+Error: ENVIRONMENT: the OS delivered no file event for agents/apar-fresh-scout within 30000 ms
+ ❯ Timeout.<anonymous> tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts:170:45
+    170|             timer = setTimeout(() => reject(new Error(`ENVIRONMENT: th…
+ Test Files  1 failed (1)
+      Tests  1 failed | 9 passed (10)
+exit 1

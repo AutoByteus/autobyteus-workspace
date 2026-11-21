@@ -3,6 +3,7 @@ import { useWorkspaceStore, type WorkspaceInfo } from '~/stores/workspace'
 import type { MobileLaunchPickerItem } from '~/types/mobileLaunch'
 import { useLocalization } from '~/composables/useLocalization'
 import { readWorkspacePathRefusal, workspacePathRefusalText } from '~/utils/workspace/workspacePathRefusal'
+import { isRunnableWorkspaceKind } from '~/utils/workspace/runnableWorkspaceKind'
 
 export interface MobileLaunchWorkspaceLoadResult {
   workspaceId: string
@@ -37,14 +38,17 @@ export function useMobileLaunchWorkspaces() {
   const isLoadingPath = ref(false)
   const error = ref<string | null>(null)
 
-  const workspaceItems = computed<MobileLaunchPickerItem[]>(() => workspaceStore.allWorkspaces.map((workspace) => {
-    const rootPath = workspaceRootPath(workspace)
-    return {
-      id: workspace.workspaceId,
-      label: workspace.name || rootPath || 'Workspace',
-      detail: rootPath || workspace.workspaceId,
-    }
-  }))
+  // Only places to run (DEC-003): a skill's or a semantic memory folder's workspace is a view, never offered here.
+  const workspaceItems = computed<MobileLaunchPickerItem[]>(() => workspaceStore.allWorkspaces
+    .filter((workspace) => isRunnableWorkspaceKind(workspace.kind || 'filesystem'))
+    .map((workspace) => {
+      const rootPath = workspaceRootPath(workspace)
+      return {
+        id: workspace.workspaceId,
+        label: workspace.name || rootPath || 'Workspace',
+        detail: rootPath || workspace.workspaceId,
+      }
+    }))
 
   async function refresh(force = false): Promise<void> {
     error.value = null

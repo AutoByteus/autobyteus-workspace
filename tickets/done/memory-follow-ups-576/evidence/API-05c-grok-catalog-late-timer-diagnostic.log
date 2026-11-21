@@ -1,0 +1,49 @@
+# API-05c Grok catalog test x10 with a TEMPORARY print in probe-time-bound.ts (each bound that fires: lateness, exit seen at the timer and at the deferred decision), restored afterwards | commit a4ed4455fa
+## run 1 | 2026-11-21T04:20:31Z | load { 29.60 20.61 22.88 } | fseventsd 140.0%
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts (10 tests | 9 skipped) 21158ms
+     ✓ lists the Grok Build catalog from the agent handshake with the reasoning-effort schema (AC-002)  861ms
+exit 0
+## run 2 | 2026-11-21T04:21:05Z | load { 39.91 23.88 23.98 } | fseventsd 180.7%
+PTBDIAG {"command":"fake-grok-cli-z8ov7p/grok --version","boundMs":3000,"firedAfterMs":15260,"exitedAtFire":false,"exitedAtDecision":true,"decidedAfterMs":15268}
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts (10 tests | 9 skipped) 24956ms
+     ✓ lists the Grok Build catalog from the agent handshake with the reasoning-effort schema (AC-002)  15383ms
+exit 0
+## run 3 | 2026-11-21T04:21:41Z | load { 40.86 25.81 24.67 } | fseventsd 177.4%
+PTBDIAG {"command":"fake-grok-cli-bfjarV/grok --version","boundMs":3000,"firedAfterMs":9181,"exitedAtFire":false,"exitedAtDecision":true,"decidedAfterMs":9185}
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts (10 tests | 9 skipped) 18990ms
+     ✓ lists the Grok Build catalog from the agent handshake with the reasoning-effort schema (AC-002)  9281ms
+exit 0
+## run 4 | 2026-11-21T04:22:11Z | load { 34.11 25.72 24.68 } | fseventsd 158.2%
+PTBDIAG {"command":"fake-grok-cli-R6wfIe/grok --version","boundMs":3000,"firedAfterMs":22549,"exitedAtFire":false,"exitedAtDecision":true,"decidedAfterMs":22573}
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts (10 tests | 9 skipped) 26164ms
+     ✓ lists the Grok Build catalog from the agent handshake with the reasoning-effort schema (AC-002)  22751ms
+exit 0
+## run 5 | 2026-11-21T04:22:49Z | load { 37.04 27.30 25.29 } | fseventsd 156.4%
+PTBDIAG {"command":"fake-grok-cli-I9rt6m/grok --version","boundMs":3000,"firedAfterMs":8953,"exitedAtFire":false,"exitedAtDecision":true,"decidedAfterMs":8961}
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts (10 tests | 9 skipped) 17827ms
+     ✓ lists the Grok Build catalog from the agent handshake with the reasoning-effort schema (AC-002)  9064ms
+exit 0
+## run 6 | 2026-11-21T04:23:18Z | load { 44.04 29.92 26.31 } | fseventsd 155.5%
+PTBDIAG {"command":"fake-grok-cli-xlq8so/grok --version","boundMs":3000,"firedAfterMs":4101,"exitedAtFire":false,"exitedAtDecision":true,"decidedAfterMs":4102}
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts (10 tests | 9 skipped) 13897ms
+     ✓ lists the Grok Build catalog from the agent handshake with the reasoning-effort schema (AC-002)  4206ms
+exit 0
+## run 7 | 2026-11-21T04:23:43Z | load { 43.07 30.98 26.80 } | fseventsd 151.4%
+PTBDIAG {"command":"fake-grok-cli-zQm3AB/grok --version","boundMs":3000,"firedAfterMs":4812,"exitedAtFire":false,"exitedAtDecision":true,"decidedAfterMs":4813}
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts (10 tests | 9 skipped) 17979ms
+     ✓ lists the Grok Build catalog from the agent handshake with the reasoning-effort schema (AC-002)  4923ms
+exit 0
+## run 8 | 2026-11-21T04:24:12Z | load { 29.25 28.78 26.15 } | fseventsd 164.8%
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts (10 tests | 9 skipped) 18558ms
+     ✓ lists the Grok Build catalog from the agent handshake with the reasoning-effort schema (AC-002)  1086ms
+exit 0
+## run 9 | 2026-11-21T04:24:42Z | load { 20.14 26.63 25.46 } | fseventsd 143.8%
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts (10 tests | 9 skipped) 10407ms
+     ✓ lists the Grok Build catalog from the agent handshake with the reasoning-effort schema (AC-002)  2198ms
+exit 0
+## run 10 | 2026-11-21T04:25:03Z | load { 17.85 25.67 25.14 } | fseventsd 198.9%
+PTBDIAG {"command":"fake-grok-cli-MMRXgi/grok --version","boundMs":3000,"firedAfterMs":4765,"exitedAtFire":false,"exitedAtDecision":true,"decidedAfterMs":4766}
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts (10 tests | 9 skipped) 14327ms
+     ✓ lists the Grok Build catalog from the agent handshake with the reasoning-effort schema (AC-002)  4866ms
+exit 0
+restored: git diff of src lists 0 files

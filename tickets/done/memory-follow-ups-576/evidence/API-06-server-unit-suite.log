@@ -1,0 +1,58 @@
+# API-06 server test:unit | commit 56c61c3ecb | Node v22.23.1 | 2026-11-21T03:56:01Z | load { 49.53 54.51 52.02 } | fseventsd 148.0%
+Claude input for run 'run-1' failed before send: Error: persist failed
+Claude input for run 'run-1' failed before send: Error: Claude Code process exited with code 1
+Claude process for run 'run-1' exited: Error: Claude Code process terminated by signal SIGKILL
+Claude process for run 'run-1' exited: Error: CLAUDE_PROVIDER_SESSION_ID_CONFLICT: Claude returned a different provider session identity.
+Claude process for run 'run-1' exited: Error: killed
+Claude process for run 'run-1' exited: Error: Claude Code process terminated by signal SIGKILL
+Claude process for run 'run-1' exited: Error: Claude Code process terminated by signal SIGKILL
+Failed to preflight discoverable Codex skills for '/tmp/codex-workspace'; falling back to workspace materialization: Error: skills/list failed
+AGENT_PACKAGE_FOLDER_WATCH_UNAVAILABLE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/apar-monitor-ohIEWt/pkg Error: too many open files
+RootTeamRun lifecycle listener failed: Error: listener failure
+test-owned exact retry receipt {"first":{"accepted":false,"code":"RUNTIME_COMMAND_FAILED","message":"Failed to terminate run for runtime 'codex_app_server': AggregateError: Codex exact thread cleanup failed."},"retry":{"accepted":true},"sameThread":"owned-thre
+Restart reminders could not be saved after a delivery: Error: ENOENT: no such file or directory, rename '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-resumer-zIM8Oi/restart-resume/restart-reminders.json.15606.1795233560607.585b249fb6219.tmp' -> '/v
+Restart reminders could not be saved after a delivery: Error: ENOENT: no such file or directory, rename '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-resumer-bbrdaL/restart-resume/restart-reminders.json.15606.1795233560646.b85ee84bfcbd7.tmp' -> '/v
+Restart reminders could not be saved after a delivery: Error: ENOENT: no such file or directory, rename '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-resumer-iytXok/restart-resume/restart-reminders.json.15606.1795233560819.3041ebf923474.tmp' -> '/v
+Restart reminders could not be saved after a delivery: Error: ENOENT: no such file or directory, rename '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-resumer-dU9FLP/restart-resume/restart-reminders.json.15606.1795233560871.fe722dc16ef05.tmp' -> '/v
+Restart reminders could not be saved after a delivery: Error: ENOENT: no such file or directory, rename '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-resumer-pnZO9M/restart-resume/restart-reminders.json.15606.1795233561058.4ea66ff7cc889.tmp' -> '/v
+ERROR: Failed to initialize SQLite path: AppConfigError: DATABASE_URL must be a non-empty SQLite file URL.
+Could not update config file /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-yuTtmc/.env: Error: EACCES: permission denied, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-yuTtmc/.env'. Changes will only be valid for
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-empty-bZ0w2p/.env
+Failed to load environment: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-empty-bZ0w2p/.env
+Agent root of run 'run-1' could not be ended before a history change: Error: a child did not stop
+Agent root of run 'run-1' could not be ended before a history change: Error: a child did not stop
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+Failed to create skill workspace skill_ws_writer: Error: SkillWorkspace creation failed for 'writer': Error: Skill 'writer' not found
+Native event listener failed for 'agent-1'. Error: projection failed
+File explorer WebSocket connection rejected: workspace missing not found (Error: workspace missing)
+Failed to start file watcher: Error: watcher failed
+Failed to set up file explorer session: Error: send failed
+Error sending file change event: Error: file change send failed
+Invalid JSON from client: not-json (SyntaxError: Unexpected token 'o', "not-json" is not valid JSON)
+Agent stream sequence for 'run-1' could not read the run's stored turns: Error: unreadable
+[AgentRunViewProjectionService] local replay projection failed for run 'run-local-provider-fails' (autobyteus): Error: local replay failed
+Backend shutdown incomplete Error: group absence unconfirmed
+Backend shutdown result unconfirmed Error: Shutdown IPC flush timed out
+Projects data committed; lock finalization failed. Error: release failure
+Task context cleanup failed. Error: cleanup unavailable
+Error during bulk import of MCP servers: SyntaxError: Expected double-quoted property name in JSON at position 31 (line 1 column 32)
+Error during bulk import of MCP servers: Error: JSON must contain a top-level 'mcpServers' object.
+Strategy Object failed: Error: Search failed, trying next
+Required agent tool readiness failed. AggregateError: Required server-owned tool registration failed.
+    Error: Required tool unit 'Task Delegation Tools' registration failed: Error: delegation registry unavailable
+      [cause]: Error: delegation registry unavailable
+Required agent tool readiness failed. AggregateError: Required server-owned tool registration failed.
+    Error: Required tool unit 'Media Tools' is missing export 'registerMediaTools'.
+Required agent tool readiness failed. Error: Required tool unit 'Core Tools' could not load 'autobyteus-ts/tools/register-tools.js': Error: core module unavailable
+  [cause]: Error: core module unavailable
+Memory Sync staging sweep failed: Error: ENOENT: no such file or directory, scandir '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-ingestion-sweep-acn3nQ/memory-sync-staging/source-b'
+Failed to decode JSON file /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-0GzEid/bad.json: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+Skipping malformed JSONL line in /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-VhODtv/agents/agent/raw_traces_active.jsonl: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+Strategy FuzzysortSearchStrategy failed: Error: fuzzy unavailable for test, trying next
+Error reloading agent package definitions: Error: EIO
+Failed to parse disabled_skills.json: SyntaxError: Unexpected token 'o', "not valid json {{{" is not valid JSON. Starting with empty list.
+Failed during download process for https://mock.test.com/media/images/test.jpg: Error: HTTP 404 Not Found
+Stopped Agent model-config update failed unexpectedly. Error: runtimeKind must be an agent runtime kind.
+ Test Files  1039 passed | 5 skipped (1044)
+      Tests  8626 passed | 9 skipped (8635)
+exit 0

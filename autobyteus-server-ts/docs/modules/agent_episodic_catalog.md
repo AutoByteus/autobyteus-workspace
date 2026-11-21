@@ -26,7 +26,7 @@ folders (see [agent_memory.md](agent_memory.md)).
 - The folder name is the agent's semantic memory folder name (`AgentMemoryLayout.getAgentEpisodicDirPath`, the same
   rule as `getAgentSemanticMemoryDirPath`, [Agent Memory § Semantic Memory](agent_memory.md#semantic-memory)):
   `encodeURIComponent(agentDefinitionId)`, such as `project-task-manager` or
-  `team-local-agent%3Asoftware-engineering-team%3Asolution-designer`, or, for an ID whose encoded form is over 200 bytes
+  `team-local-agent%3Asoftware-engineering-team%3Asolution-designer`, or, for an ID whose encoded form is over 255 bytes
   (an application-bundled team-local agent), its first 120 bytes, `#` and 16 hex characters of the ID's SHA-256. A
   reader that knows an agent's semantic folder finds its catalog at `<memory>/episodic/<same name>/catalog.md`.
 - The start pass keeps the catalog folders already on disk by decoding their names (`listCatalogDefinitionIds`); a

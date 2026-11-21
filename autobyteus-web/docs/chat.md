@@ -188,7 +188,9 @@ server, which rejects run input with empty text.
   "@", the hint reads "to delegate to an agent or team." The first message keeps
   its mentions.
 - The workspace menu accepts an existing workspace or an absolute folder path
-  (`~` is rejected); the folder is loaded at send time. Its search box (the
+  (`~` is rejected); the folder is loaded at send time. It lists only places to run: workspaces of kind `filesystem` and the
+  temp workspace (`isRunnableWorkspaceKind`, the one rule the run-history sidebar, this menu and the mobile launch picker
+  share), so a skill's or a semantic memory folder's workspace, which is a view, never appears. Its search box (the
   model-menu search styling, placeholder "Search workspaces") is always shown and
   focused on open, and sits outside the listbox. `filterWorkspaceOptions`
   (`chatComposerMenus.ts`) filters the temp workspace and user workspaces by

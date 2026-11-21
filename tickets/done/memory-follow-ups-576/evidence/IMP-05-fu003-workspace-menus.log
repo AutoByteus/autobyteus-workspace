@@ -1,0 +1,282 @@
+# IMP-05-fu003-workspace-menus.log
+# Check: IMP-05
+# Command: env -i HOME PATH TMPDIR pnpm -C autobyteus-web test:nuxt run components/skills components/chat/__tests__/ChatWorkspaceMenu.spec.ts composables/mobile/__tests__/useMobileLaunchWorkspaces.spec.ts utils/workspace stores/__tests__/runHistoryReadModel.spec.ts stores/__tests__/runHistoryOpenRunRemoval.integration.spec.ts; then the three new specs against the old sources
+# Commit tested: working tree committed as f31553c9ee
+# Environment: macOS (Darwin 25.5), Node v22.23.1, pnpm; env -i; shared host, load average 42-53, fseventsd 137-172% CPU
+# Date: 2026-11-21
+# Note: 13 files, 120 tests pass; the old sources fail the 3 new specs
+# ----------------------------------------------------------------------
+
+> autobyteus@1.5.14-beta.3 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web
+> cross-env NUXT_TEST=true vitest run components/skills components/chat/__tests__/ChatWorkspaceMenu.spec.ts composables/mobile/__tests__/useMobileLaunchWorkspaces.spec.ts utils/workspace stores/__tests__/runHistoryReadModel.spec.ts stores/__tests__/runHistoryOpenRunRemoval.integration.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+stderr | components/skills/SkillDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/skills/SkillSourcesModal.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryReadModel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryOpenRunRemoval.integration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/mobile/__tests__/useMobileLaunchWorkspaces.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/skills/SkillSourceRow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/skills/SkillNameConflictDialog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/skills/SkillsList.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatWorkspaceMenu.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/skills/SkillNameConflictDialog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/skills/SkillsList.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryReadModel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatWorkspaceMenu.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryOpenRunRemoval.integration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/skills/SkillSourceRow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/skills/SkillSourcesModal.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/mobile/__tests__/useMobileLaunchWorkspaces.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/skills/SkillDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/skills/SkillNameConflictDialog.spec.ts (3 tests) 47ms
+ ✓ components/skills/SkillSourceRow.spec.ts (28 tests) 112ms
+ ✓ stores/__tests__/runHistoryReadModel.spec.ts (6 tests) 4ms
+ ✓ composables/mobile/__tests__/useMobileLaunchWorkspaces.spec.ts (6 tests) 7ms
+stderr | stores/__tests__/runHistoryOpenRunRemoval.integration.spec.ts > archive / delete of the open run > archiveRun of the open agent run leaves no context, no sidebar row and no other run selected
+[runTreeProjection] Draft run missing workspace root path { runId: 'run-other' }
+
+stderr | stores/__tests__/runHistoryOpenRunRemoval.integration.spec.ts > archive / delete of the open run > deleteRun of the open agent run leaves no context, no sidebar row and no other run selected
+[runTreeProjection] Draft run missing workspace root path { runId: 'run-other' }
+
+stderr | stores/__tests__/runHistoryOpenRunRemoval.integration.spec.ts > archive / delete of the open run > archiving a different agent run keeps the open run selected
+[runTreeProjection] Draft run missing workspace root path { runId: 'run-open' }
+
+ ✓ stores/__tests__/runHistoryOpenRunRemoval.integration.spec.ts (7 tests) 63ms
+ ✓ components/chat/__tests__/ChatWorkspaceMenu.spec.ts (9 tests) 188ms
+ ✓ components/skills/SkillsList.spec.ts (6 tests) 95ms
+ ✓ components/skills/SkillDetail.spec.ts (4 tests) 23ms
+ ✓ components/skills/SkillSourcesModal.spec.ts (41 tests) 704ms
+stderr | utils/workspace/__tests__/workspacePathRefusal.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/skills/SkillWorkspaceLoader.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/skills/SkillCardIntegrationLabel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/workspace/__tests__/runnableWorkspaceKind.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/workspace/__tests__/workspacePathRefusal.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/skills/SkillWorkspaceLoader.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/skills/SkillCardIntegrationLabel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/workspace/__tests__/workspacePathRefusal.spec.ts (2 tests) 2ms
+ ✓ components/skills/SkillCardIntegrationLabel.spec.ts (2 tests) 19ms
+stdout | utils/workspace/__tests__/runnableWorkspaceKind.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/workspace/__tests__/runnableWorkspaceKind.spec.ts (4 tests) 2ms
+ ✓ components/skills/SkillWorkspaceLoader.spec.ts (2 tests) 17ms
+
+ Test Files  13 passed (13)
+      Tests  120 passed (120)
+   Start at  03:28:06
+   Duration  11.28s (transform 5.11s, setup 75.15s, collect 6.26s, tests 1.28s, environment 3.99s, prepare 2.75s)
+
+
+===== negative control: menu, mobile picker and loader as at 4562d8ae5f =====
+
+> autobyteus@1.5.14-beta.3 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web
+> cross-env NUXT_TEST=true vitest run components/skills/SkillWorkspaceLoader.spec.ts components/chat/__tests__/ChatWorkspaceMenu.spec.ts composables/mobile/__tests__/useMobileLaunchWorkspaces.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+stderr | components/skills/SkillWorkspaceLoader.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/mobile/__tests__/useMobileLaunchWorkspaces.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatWorkspaceMenu.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/mobile/__tests__/useMobileLaunchWorkspaces.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatWorkspaceMenu.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/skills/SkillWorkspaceLoader.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ composables/mobile/__tests__/useMobileLaunchWorkspaces.spec.ts (6 tests | 1 failed) 11ms
+   ✓ useMobileLaunchWorkspaces > refreshes through the workspace store and maps every store workspace as a launch choice 2ms
+   × useMobileLaunchWorkspaces > offers no skill or semantic memory workspace, only places to run (autobyteus-576 AC-003, DEC-003) 4ms
+     → expected [ 'workspace-active', …(3) ] to deeply equal [ 'workspace-active', …(1) ]
+   ✓ useMobileLaunchWorkspaces > loads an unlisted server-side path through workspaceStore.createWorkspace 1ms
+   ✓ useMobileLaunchWorkspaces > shows the node's refusal reason under the path field and registers nothing (autobyteus-426 AC-008) 2ms
+   ✓ useMobileLaunchWorkspaces > keeps the request's own message for any other failure 1ms
+   ✓ useMobileLaunchWorkspaces > rejects empty path loads with local picker error state 0ms
+ ❯ components/skills/SkillWorkspaceLoader.spec.ts (2 tests | 1 failed) 22ms
+   ✓ SkillWorkspaceLoader > registers the skill workspace while mounted and releases it on unmount 15ms
+   × SkillWorkspaceLoader > releases a registration that resolves after the loader has unmounted (left mid-load) 6ms
+     → expected [ 'skill_ws_writer' ] to deeply equal []
+ ❯ components/chat/__tests__/ChatWorkspaceMenu.spec.ts (9 tests | 1 failed) 137ms
+   × ChatWorkspaceMenu search > offers no skill or semantic memory workspace, only places to run (autobyteus-576 AC-003, DEC-003) 44ms
+     → expected [ 'chat-workspace-option-temp', …(5) ] to deeply equal [ 'chat-workspace-option-temp', …(3) ]
+   ✓ ChatWorkspaceMenu search > focuses a labelled search box on open and lists every workspace for an empty query 13ms
+   ✓ ChatWorkspaceMenu search > filters by name or path, hides the temp workspace unless it matches, and shows an empty state (AC-007) 13ms
+   ✓ ChatWorkspaceMenu search > ArrowDown moves into the results and Enter picks the highlighted workspace (AC-008) 16ms
+   ✓ ChatWorkspaceMenu search > Enter in the search box picks the first match 9ms
+   ✓ ChatWorkspaceMenu search > Escape closes without selecting, and the query resets on reopen (AC-008) 16ms
+   ✓ ChatWorkspaceMenu placement > opens above its trigger even when there is room below (AC-002) 8ms
+   ✓ ChatWorkspaceMenu placement > shrinks to the space above in a short window and keeps the list scrollable (AC-004) 8ms
+   ✓ ChatWorkspaceMenu placement > keeps the bottom sheet below 640px wide (AC-005) 9ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/skills/SkillWorkspaceLoader.spec.ts > SkillWorkspaceLoader > releases a registration that resolves after the loader has unmounted (left mid-load)
+AssertionError: expected [ 'skill_ws_writer' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "skill_ws_writer",
++ ]
+
+ ❯ components/skills/SkillWorkspaceLoader.spec.ts:35:28
+     33|     wrapper.unmount() // before the registration's await has resolved
+     34|     await flushPromises()
+     35|     expect(skillEntries()).toEqual([])
+       |                            ^
+     36|     expect(useWorkspaceStore().workspaceMetadataById.skill_ws_writer).…
+     37|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  components/chat/__tests__/ChatWorkspaceMenu.spec.ts > ChatWorkspaceMenu search > offers no skill or semantic memory workspace, only places to run (autobyteus-576 AC-003, DEC-003)
+AssertionError: expected [ 'chat-workspace-option-temp', …(5) ] to deeply equal [ 'chat-workspace-option-temp', …(3) ]
+
+- Expected
++ Received
+
+  [
+    "chat-workspace-option-temp",
+    "chat-workspace-option-ws_mcps",
+    "chat-workspace-option-ws_notes",
++   "chat-workspace-option-semantic_ws_researcher",
+    "chat-workspace-option-ws_tools",
++   "chat-workspace-option-skill_ws_writer",
+  ]
+
+ ❯ components/chat/__tests__/ChatWorkspaceMenu.spec.ts:57:31
+     55|     const menu = mountMenu()
+     56|     await openMenu(menu)
+     57|     expect(optionTests(menu)).toEqual(['chat-workspace-option-temp', '…
+       |                               ^
+     58|     expect(menu.text()).not.toContain('writer')
+     59|     expect(menu.text()).not.toContain('Researcher')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  composables/mobile/__tests__/useMobileLaunchWorkspaces.spec.ts > useMobileLaunchWorkspaces > offers no skill or semantic memory workspace, only places to run (autobyteus-576 AC-003, DEC-003)
+AssertionError: expected [ 'workspace-active', …(3) ] to deeply equal [ 'workspace-active', …(1) ]
+
+- Expected
++ Received
+
+  [
+    "workspace-active",
+    "temp_ws_default",
++   "skill_ws_writer",
++   "semantic_ws_researcher",
+  ]
+
+ ❯ composables/mobile/__tests__/useMobileLaunchWorkspaces.spec.ts:49:85
+     47|     workspaceStore.registerSkillWorkspace('writer')
+     48|     workspaceStore.registerSemanticMemoryWorkspace('semantic_ws_resear…
+     49|     expect(useMobileLaunchWorkspaces().workspaceItems.value.map((item)…
+       |                                                                                     ^
+     50|   })
+     51| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  3 failed (3)
+      Tests  3 failed | 14 passed (17)
+   Start at  03:28:27
+   Duration  8.24s (transform 4.20s, setup 20.73s, collect 951ms, tests 170ms, environment 615ms, prepare 573ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

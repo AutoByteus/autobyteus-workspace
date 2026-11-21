@@ -148,11 +148,11 @@ true for everyone (what the product is, the words it uses, the user's standing r
   `getGlobalSemanticMemoryDirPath()` = `<memory>/semantic-global` (a sibling, so no definition ID can collide with it).
 - **Definition folder name** (autobyteus-554 DEC-016; the layout's `definitionFolderName`, the only rule, shared by
   `semantic/`, `episodic/` and the folder view's lookup): `encodeURIComponent(agentDefinitionId)` when that is at most
-  200 bytes (a team-local ID's `:` becomes `%3A`, so the name is valid on every desktop OS and distinct per
+  255 bytes, the file name limit (autobyteus-576; a team-local ID's `:` becomes `%3A`, so the name is valid on every desktop OS and distinct per
   definition); otherwise its first 120 bytes, cut between characters (never inside a `%XX` escape or between the
   escapes of one character, so the prefix decodes), then `#`, then the first 16 hex characters of the ID's SHA-256.
-  File systems allow 255 bytes per name; an application-bundled team-local ID holds its bundle's path in hex and
-  reaches about 440 bytes encoded. `encodeURIComponent` always escapes `#`, so a shortened name never equals a full
+  An application-bundled team-local ID holds its bundle's path in hex and reaches about 440 bytes encoded, so it gets
+  the shortened name. `encodeURIComponent` always escapes `#`, so a shortened name never equals a full
   one. A shortened name cannot be decoded back to its ID: nothing reads IDs from these names except the episodic
   catalog, which skips them ([Agent Episodic Catalog](agent_episodic_catalog.md#files)). A `#` is a URL fragment
   character: a path holding one is always URL-encoded where it goes into a URL (the node-file loader's `?path=`), and

@@ -1,0 +1,149 @@
+# API-09 whole web unit suite: test:nuxt run, then test:electron run | commit 56c61c3ecb | Node v22.23.1 | 2026-11-21T03:40:42Z | load { 36.77 18.23 21.15 }
+## test:nuxt
+[runTree] Could not read the tree of agent_team:team-run-2. ZodError: [
+[runTree] Could not read the tree of agent_team:team-1. ZodError: [
+[runTree] Could not read the tree of agent_team:team-1. ZodError: [
+[runTree] Could not read the tree of agent_team:team-1. ZodError: [
+[runTree] Could not read the tree of agent_team:team-1. ZodError: [
+[runTree] Could not read the tree of agent_team:team-1. ZodError: [
+[runTree] Could not read the tree of agent_team:team-1. ZodError: [
+[runTree] Could not read the tree of agent_team:team-1. ZodError: [
+Failed to send message via activeContextStore: Error: Input was rejected
+Failed to send message via activeContextStore: Error: Input was rejected
+Failed to send message via activeContextStore: Error: Input was rejected
+Error sending requirement: Error: Input was rejected
+Failed to send message via activeContextStore: Error: Input was rejected
+Error sending requirement: Error: Input was rejected
+Failed to send message via activeContextStore: Error: AgentOrg send target is not ready or is stale.
+Failed to send message via activeContextStore: Error: Input was rejected
+Failed to terminate run: Error: network unavailable
+Failed to send message via activeContextStore: Error: Input was rejected
+Failed to send message via activeContextStore: Error: Cannot send: No active workspace target.
+Failed to send message via activeContextStore: Error: Cannot send: No active workspace target.
+Failed to send message via activeContextStore: Error: Input was rejected
+Failed to send message via activeContextStore: Error: Input was rejected
+Failed to fetch server settings: Error: backend readiness timed out
+Core file write operation failed: Error: write refused
+Save operation failed: Error: write refused
+Failed to fetch file content Error: read refused
+Core file write operation failed: Error: write refused
+Save operation failed: Error: write refused
+Core file write operation failed: Error: write refused
+Save operation failed: Error: write refused
+Error terminating Team 'team-terminate-reject': Error: not found
+[agentOrg] Could not load 'agent-director' of 'org-run'. Error: The stored state of 'agent-director' changed while it was loading.
+Error terminating Team 'retention-team': Error: Team termination failed.
+Error terminating Team 'retention-team': Error: denied
+Error terminating Team 'retention-team': Error: offline server
+[runTree] Could not read the tree of agent_team:team-1. TypeError: Cannot read properties of undefined (reading 'errors')
+[runTree] Could not read the tree of agent_team:team-live. TypeError: Cannot read properties of undefined (reading 'errors')
+[runTree] Could not read the tree of agent_team:team-history. TypeError: Cannot read properties of undefined (reading 'errors')
+Failed to reload agent package definitions: Error: mutation transport failure
+Failed to reload agent package definitions: Error: mutation graphql failure
+Failed to reload agent definitions: Error: agent transport failure
+Failed to reload agent package definitions: Error: agent transport failure
+Failed to reload agent definitions: Error: agent graphql failure
+Failed to reload agent package definitions: Error: agent graphql failure
+Failed to reload agent package definitions: Error: team transport failure
+Failed to reload agent package definitions: Error: team graphql failure
+Agent WebSocket error: Error: socket failed
+Rejected invalid Team WebSocket message: Error: TEAM_STREAM_SNAPSHOT_BASE_MISMATCH: Expected 7, received 8.
+Error fetching folder children: Error: Folder children response was missing.
+Error fetching folder children: Error: Folder children response was missing.
+Error fetching folder children: Error: Folder children response was missing.
+Error fetching folder children: Error: Folder children response was missing.
+Error fetching folder children: Error: Folder children response was missing.
+Error fetching folder children: Error: Folder children response was missing.
+[runTree] Could not read the tree of agent_team:team-1. ZodError: [
+[runTree] Could not read the tree of agent_team:team-live. ZodError: [
+[runTree] Could not read the tree of agent_team:team-history. ZodError: [
+Could not read the source Org run; the Org defaults are used. Error: offline
+Failed to start the Agent Org: Error: server said no
+Context file upload failed for 'notes.txt': ContextFileUploadError: Context file upload failed: other
+Failed to send message via activeContextStore: Error: finalize rejected
+Error sending requirement: Error: finalize rejected
+Failed to send message via activeContextStore: Error: Input rejected
+Error sending requirement: Error: Input rejected
+Rejected invalid Team WebSocket message: Error: Team CONNECTED message is invalid during 'awaiting_snapshot'.
+Error sending user input: MessageNotDeliveredError: The stream closed before the node answered message 'client_92fd2d2c-ab70-4614-9fba-d700336c39b6'.
+Error sending user input: MessageNotDeliveredError: The agent stream for run 'run-1' was not ready within 10000 ms.
+Error sending user input: MessageNotDeliveredError: The message 'client_408e4eab-0906-4b5d-a9bd-51190cba41e8' was not in the stream's snapshot after the connection was lost.
+Error sending user input: MessageNotDeliveredError: The message 'client_a94a3db1-77b5-43cd-88b5-3050861662cd' was not in the stream's snapshot after the connection was lost.
+Error sending user input: MessageNotDeliveredError: The stream closed before the node answered message 'client_0cab268a-f7fc-4222-a7ec-9f4480a45a9f'.
+Error sending user input: MessageNotDeliveredError: The agent stream for run 'run-1' was not ready within 10000 ms.
+Error sending user input: MessageNotDeliveredError: The agent stream for run 'run-1' was not ready within 10000 ms.
+Error sending user input: MessageNotDeliveredError: The message 'client_c3e2ea58-8f41-4cf9-859a-8bf44bc64f6f' was not in the stream's snapshot after the connection was lost.
+[mobile] Failed to open run: Error: unavailable
+[mobile] Failed to open run: Error: AgentOrg inspection is unavailable.
+[mobile] Failed to open run: Error: unavailable
+Error terminating run 'lead': Error: Failed to terminate run 'lead'.
+Error terminating Team 'native-team': Error: Team termination failed.
+Team WebSocket error: Error: WebSocket error
+Error creating workspace metadata: Error: GraphQL Error
+Error removing workspace: Error: Stop active runs before removing this workspace.
+Error sending user input: Error: preparation failed
+Error terminating run 'run-1': Error: failure
+Error terminating run 'run-1': Error: failure
+Error sending user input: Error: finalize failed
+Error sending user input: MessageNotDeliveredError: not bound
+[runTree] Could not read the tree of agent_team:team-1. Error: Unexpected query: [object Object]
+[runTree] Could not read the tree of agent_team:source. Error: Unexpected query: GetRunTree
+[runTree] Could not read the tree of agent_team:source. Error: Unexpected query: GetRunTree
+Could not copy the Team run settings; the team defaults are used. Error: Read offline
+[runTree] Could not read the tree of agent_team:team-1. ZodError: [
+[runTree] Could not read the tree of agent_org:org-run. ZodError: [
+[runTree] Could not read the tree of agent_team:team-1. ZodError: [
+Chat 'gone' could not be opened: Error: not found
+Error terminating run 'host-run': Error: This Agent collaboration is being stopped.
+Error terminating run 'host-run': Error: false
+Error terminating run 'host-run': Error: Failed to terminate run 'host-run'.
+Error terminating run 'host-run': Error: lost response
+Error terminating run 'host-run': Error: children-failed-after-inactive
+Error terminating run 'host-run': Error: host-failed-after-children
+[useTerminalSession] Error parsing message: SyntaxError: Unexpected token 'i', "invalid json" is not valid JSON
+Could not copy the Team run settings; the team defaults are used. Error: offline
+[runTree] Could not read the tree of agent:run-1. ZodError: [
+[runTree] Could not read the tree of agent:run-1. ZodError: [
+[runTree] Could not read the tree of agent:run-1. ZodError: [
+[runTree] Could not read the tree of agent:run-1. ZodError: [
+[runTree] Could not read the tree of agent_team:host-run. ZodError: [
+[runTree] Could not read the tree of agent_team:host-run. ZodError: [
+[runTree] Could not read the tree of agent_org:org-1. ZodError: [
+[runTree] Could not read the tree of agent_org:org-1. ZodError: [
+[runTree] Could not read the tree of agent_org:org-1. ZodError: [
+Failed to reload agent teams: Error: Member definitions unavailable
+Failed to resolve the New chat default model: TypeError: catalogs(...).modelConfigSchemaByIdentifier is not a function
+Error sending user input: TypeError: service.whenBound is not a function
+Failed to resolve the New chat default model: TypeError: catalogs(...).modelConfigSchemaByIdentifier is not a function
+Error uploading file: Error: Upload failed
+[runTree] Could not read the tree of agent_org:org-run. ZodError: [
+[runTree] Could not read the tree of agent_org:org-run. ZodError: [
+[runTree] Could not read the tree of agent_org:org-run. ZodError: [
+[runTree] Could not read the tree of agent_org:org-run-next. ZodError: [
+[runTree] Could not read the tree of agent:run-1. ZodError: [
+[delegatedRuns] Could not open delegated run 'agent:child-run'. Error: projection unavailable
+Failed to fetch token usage statistics: Error: task query failed
+[runTree] Could not read the tree of agent:manager. TypeError: Cannot read properties of undefined (reading 'errors')
+[runTree] Could not read the tree of agent:manager. TypeError: Cannot read properties of undefined (reading 'errors')
+[runTree] Could not read the tree of agent:manager. TypeError: Cannot read properties of undefined (reading 'errors')
+Error fetching folder children: Error: Workspace root is unavailable
+Error fetching folder children: Error: Workspace not found
+Failed to stop the run from its settings: Error: The run did not stop.
+Failed to stop the run from its settings: Error: offline
+[ExcelViewer] Error loading Excel file: Error: Failed to fetch file: 500 Server Error
+ Test Files  790 passed (790)
+      Tests  5954 passed | 2 skipped (5956)
+exit 0
+## test:electron
+ ❯ server/__tests__/PortOwnerInspectorFaults.spec.ts (11 tests | 1 failed) 4208ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  server/__tests__/PortOwnerInspectorFaults.spec.ts > actual advisory inspector faults > enforces the real 1000ms subprocess deadline and reaps only its owned child
+Error: ENOENT: no such file or directory, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/port-owner-fault-mgm6tI/child-pid'
+ ❯ server/__tests__/PortOwnerInspectorFaults.spec.ts:81:24
+ Test Files  1 failed | 67 passed | 1 skipped (69)
+      Tests  1 failed | 535 passed | 1 skipped (537)
+exit 1
+## PortOwnerInspectorFaults alone, twice | 2026-11-21T03:48:01Z
+Tests  11 passed (11)
+Tests  11 passed (11)
+cause of the suite failure: line 81 readFileSync(receipt) found no receipt: the shell child was killed by the 1000 ms deadline before it wrote its pid (the hazard the test's comment names), under suite load; no electron file changed in this ticket (git diff 61fd6f41f7 HEAD -- autobyteus-web/electron: none)

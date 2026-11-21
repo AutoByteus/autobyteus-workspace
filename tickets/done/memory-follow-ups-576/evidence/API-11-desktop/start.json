@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-60023-8603",
+    "pid": 12204,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:60024",
+    "graphqlUrl": "http://127.0.0.1:60024/graphql",
+    "controlEndpoint": "http://127.0.0.1:60023",
+    "controlPort": 60023,
+    "serverPort": 60024,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/u576-isolated-root.LKkfxt",
+    "ownsDataRoot": false,
+    "keepDataRoot": false,
+    "testUpdateFeedUrl": null,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/u576-isolated-root.LKkfxt/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-60023-8603.log"
+  }
+}

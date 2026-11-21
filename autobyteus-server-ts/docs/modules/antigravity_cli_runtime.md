@@ -43,7 +43,10 @@ needs its answer, but it does not synchronously block unrelated health
 requests. Probe timeout, process, authentication/network, unsupported
 capability, and unparseable/empty catalog failures are classified into safe
 diagnostics; raw child stderr, paths, commands, and credentials are not sent
-to GraphQL or the browser. A CLI that is not signed in gets its own
+to GraphQL or the browser. The time bound is `runtime-management/probe-time-bound.ts`, shared with the Grok probes: a
+child that has already exited when the bound fires is read by its real result and not reported as a time-out (a blocked
+main thread delays the timer and the exit together), and a real time-out logs
+`RUNTIME_PROBE_TIMED_OUT { runtime, command, boundMs }`. A CLI that is not signed in gets its own
 diagnostic, `AGY_SIGN_IN_REQUIRED` ("Not signed in on this node. Run `agy` to
 sign in."): a failed command whose bounded output contains known sign-in
 wording (for example agy 1.3.3 `agy models`: "Please sign in to view available

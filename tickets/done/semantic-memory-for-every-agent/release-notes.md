@@ -10,4 +10,3 @@
 ## What you need to do
 
 - **Update the desktop app and every node you connect to together** (the desktop app, Docker nodes, paired nodes). The data behind the agent pages and the Memory page changed shape, so an older app with a newer node, or the reverse, can fail to load those pages.
-- If one of your agents has an ID that is between 201 and 255 characters once encoded (very rare), its folder name is now shortened. Its existing memory folder under `memory/semantic/` is not renamed or deleted: move its files into the new folder if you want the agent to keep them.

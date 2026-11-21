@@ -1,0 +1,428 @@
+# IMP-11-sr002-probe-bound-unit.log
+# Check: IMP-11
+# Command: env -i HOME PATH TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-management/probe-time-bound.test.ts tests/unit/runtime-management/antigravity-cli-capability.test.ts tests/unit/runtime-management/grok/grok-build-capability.test.ts; then the real-order case against two weaker versions of probe-time-bound.ts
+# Commit tested: 3b39828501 (working tree)
+# Environment: macOS (Darwin 25.5), Node v22.23.1, pnpm; env -i; shared host, load average 42-53, fseventsd 137-172% CPU
+# Date: 2026-11-21
+# Note: 3 files, 64 tests pass; both weaker versions fail the real-order case (onTimedOut called once)
+# ----------------------------------------------------------------------
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > enables AGY availability using capabilities rather than release text
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > makes AGY runtime availability await discovery and report only a safe failure
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > reports a signed-out CLI as not signed in with the recovery step and no CLI output
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > bounds hang-help (`--help`) at 10000 ms and returns a sanitized timeout rather than hanging
+RUNTIME_PROBE_TIMED_OUT {
+  runtime: 'antigravity',
+  command: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-discovery-unit-xgwpju/agy-fake --help',
+  boundMs: 10000
+}
+
+stderr | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > bounds hang-models (`models`) at 30000 ms and returns a sanitized timeout rather than hanging
+RUNTIME_PROBE_TIMED_OUT {
+  runtime: 'antigravity',
+  command: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-discovery-unit-xgwpju/agy-fake models',
+  boundMs: 30000
+}
+
+stderr | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > bounds a hung `--version` at 10 s and reads no version
+RUNTIME_PROBE_TIMED_OUT {
+  runtime: 'antigravity',
+  command: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-discovery-unit-xgwpju/agy-fake --version',
+  boundMs: 10000
+}
+
+stderr | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > shares one step deadline across --help and models: a hanging second command ends by it and is killed (AR-002)
+RUNTIME_PROBE_TIMED_OUT {
+  runtime: 'antigravity',
+  command: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-discovery-unit-xgwpju/agy-fake models',
+  boundMs: 1461
+}
+
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts (51 tests) 11828ms
+     ✓ accepts a compatible CLI and returns dynamic model slugs  340ms
+     ✓ enables AGY availability using capabilities rather than release text  1912ms
+     ✓ returns the real result of a `--help` that exited before its bound but whose close comes after it  4086ms
+     ✓ times out a `--help` that exited but whose close does not come within the grace, logging the command and bound  1538ms
+     ✓ shares one step deadline across --help and models: a hanging second command ends by it and is killed (AR-002)  1562ms
+     ✓ keeps a concurrent health request responsive while model discovery waits  585ms
+stdout | tests/unit/runtime-management/grok/grok-build-capability.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/grok/grok-build-capability.test.ts (7 tests) 5666ms
+     ✓ reads the real result of a command that exited before its bound but whose close comes after it  4378ms
+     ✓ classifies an empty catalog and a failed handshake without provider output  389ms
+ ✓ tests/unit/runtime-management/probe-time-bound.test.ts (6 tests) 1521ms
+     ✓ returns the real result of a child that exited while the main thread was blocked past the bound  1515ms
+
+ Test Files  3 passed (3)
+      Tests  64 passed (64)
+   Start at  05:17:56
+   Duration  20.87s (transform 1.28s, setup 103ms, import 1.06s, tests 19.01s, environment 0ms)
+
+
+===== negative control 1: SR-001 probe-time-bound.ts (exitCode/signalCode read in the timer), real-order case =====
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+ ❯ tests/unit/runtime-management/probe-time-bound.test.ts (6 tests | 1 failed | 5 skipped) 1519ms
+     ↓ times out a child that never exits and logs the runtime, the command and the bound
+     ↓ waits for the close of a child that has exited (SR-001 late close): no time-out while the close is pending
+     ↓ sees an exit delivered after the timer fired but before its deferred decision (the CR-001 order)
+     ↓ times out an exited child whose close never comes, once the grace has passed
+     ↓ does nothing once disarmed, and removes its exit listener
+     × returns the real result of a child that exited while the main thread was blocked past the bound 1518ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/runtime-management/probe-time-bound.test.ts > armProbeTimeBound with a real child, in the real order (CRR-001 CR-001) > returns the real result of a child that exited while the main thread was blocked past the bound
+AssertionError: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array []
+
+
+Number of calls: 1
+
+ ❯ tests/unit/runtime-management/probe-time-bound.test.ts:100:28
+     98|     Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 1_500…
+     99|     expect(await closed).toBe(0);
+    100|     expect(onTimedOut).not.toHaveBeenCalled();
+       |                            ^
+    101|     expect(warn).not.toHaveBeenCalled();
+    102|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 skipped (6)
+   Start at  05:14:32
+   Duration  2.13s (transform 45ms, setup 59ms, import 13ms, tests 1.52s, environment 0ms)
+
+
+===== negative control 2: exit event without the setImmediate deferral, real-order case =====
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+ ❯ tests/unit/runtime-management/probe-time-bound.test.ts (6 tests | 1 failed | 5 skipped) 1522ms
+     ↓ times out a child that never exits and logs the runtime, the command and the bound
+     ↓ waits for the close of a child that has exited (SR-001 late close): no time-out while the close is pending
+     ↓ sees an exit delivered after the timer fired but before its deferred decision (the CR-001 order)
+     ↓ times out an exited child whose close never comes, once the grace has passed
+     ↓ does nothing once disarmed, and removes its exit listener
+     × returns the real result of a child that exited while the main thread was blocked past the bound 1521ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/runtime-management/probe-time-bound.test.ts > armProbeTimeBound with a real child, in the real order (CRR-001 CR-001) > returns the real result of a child that exited while the main thread was blocked past the bound
+AssertionError: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array []
+
+
+Number of calls: 1
+
+ ❯ tests/unit/runtime-management/probe-time-bound.test.ts:100:28
+     98|     Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 1_500…
+     99|     expect(await closed).toBe(0);
+    100|     expect(onTimedOut).not.toHaveBeenCalled();
+       |                            ^
+    101|     expect(warn).not.toHaveBeenCalled();
+    102|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 skipped (6)
+   Start at  05:14:34
+   Duration  2.10s (transform 41ms, setup 55ms, import 13ms, tests 1.52s, environment 0ms)
+

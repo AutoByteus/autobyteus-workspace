@@ -11,7 +11,8 @@ import { EPISODIC_CATALOG_FILE_NAME, EpisodicCatalogStore } from "../../../src/a
 import { SemanticMemoryWorkspace } from "../../../src/workspaces/semantic-memory-workspace.js";
 
 /**
- * One definition folder name rule (autobyteus-554 SR-009, DEC-016, AC-013): `encodeURIComponent(id)` up to 200 bytes;
+ * One definition folder name rule (autobyteus-554 SR-009, DEC-016, AC-013; autobyteus-576 REQ-001: the limit is 255 bytes,
+ * the file name limit): `encodeURIComponent(id)` up to 255 bytes;
  * a longer one is its first 120 bytes (never inside a `%XX`), `#`, and 16 hex characters of the ID's SHA-256. The
  * semantic folder, the episodic catalog folder and the Semantic tab's workspace lookup all use it (CRR-003 CR-002:
  * a bundled team-local run failed with ENAMETOOLONG).
@@ -43,10 +44,11 @@ describe("definition folder names that fit (unchanged)", () => {
     "computer-use-operator",
     "team-local-agent:marketing-team:marketing-reply-scout",
     "app-agent__6a2f9c__brief-writer",
-    "x".repeat(200),
-    `${"y".repeat(197)}:`,
+    "x".repeat(201),
+    "x".repeat(255),
+    `${"y".repeat(252)}:`,
   ])("%s keeps exactly encodeURIComponent(id)", (id) => {
-    expect(encodeURIComponent(id).length).toBeLessThanOrEqual(200);
+    expect(encodeURIComponent(id).length).toBeLessThanOrEqual(255);
     expect(nameOf(id)).toBe(encodeURIComponent(id));
   });
 });
@@ -60,9 +62,12 @@ describe("definition folder names that do not fit (shortened)", () => {
     expect(Buffer.byteLength(name)).toBe(137);
   });
 
-  it("shortens from 201 bytes on", () => {
-    const id = "x".repeat(201);
+  it("shortens from 256 bytes on (autobyteus-576 AC-001)", () => {
+    const id = "x".repeat(256);
     expect(nameOf(id)).toBe(`${"x".repeat(120)}#${hash16(id)}`);
+    const escaped = `${"y".repeat(253)}:`;
+    expect(encodeURIComponent(escaped).length).toBe(256);
+    expect(nameOf(escaped)).toBe(`${"y".repeat(120)}#${hash16(escaped)}`);
   });
 
   it("gives two long IDs that share the first 120 bytes different names, and never a full name's", () => {
@@ -100,6 +105,24 @@ describe("definition folder names that do not fit (shortened)", () => {
 });
 
 describe("one name for a long ID everywhere (AC-013)", () => {
+  it.each([
+    ["255 bytes: the full name", `${"y".repeat(252)}:`, false],
+    ["256 bytes: the shortened name", `${"y".repeat(253)}:`, true],
+  ])("%s, the same for the semantic folder, the episodic folder and the semantic_ws_ lookup (autobyteus-576 AC-001)", async (_label, id, shortened) => {
+    const layout = new AgentMemoryLayout(memoryDir);
+    const semanticMemory = new AgentSemanticMemory({ memoryDir });
+    const name = path.basename(layout.getAgentSemanticMemoryDirPath(id));
+    expect(name.includes("#")).toBe(shortened);
+    expect(name).toBe(shortened ? `${"y".repeat(120)}#${hash16(id)}` : encodeURIComponent(id));
+    expect(path.basename(layout.getAgentEpisodicDirPath(id))).toBe(name);
+    const { agentFolder } = await semanticMemory.prepareForRun(id);
+    expect(agentFolder).toBe(semanticMemory.folderOf(id));
+    expect(path.basename(agentFolder!)).toBe(name);
+    await fs.writeFile(path.join(agentFolder!, "notes.md"), "# Notes\n");
+    const workspace = await SemanticMemoryWorkspace.open(`semantic_ws_${encodeURIComponent(id)}`, semanticMemory);
+    expect(workspace.getBasePath()).toBe(agentFolder);
+  });
+
   it("prepares the semantic folder, writes the catalog and opens the Semantic tab's workspace under the same name", async () => {
     const id = bundledTeamLocalId();
     const layout = new AgentMemoryLayout(memoryDir);

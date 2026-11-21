@@ -18,6 +18,7 @@ import { AUTO_UPDATE_SETTING_KEYS, UPDATE_CHECK_INTERVAL_SETTING_KEYS, UPDATE_CH
 import { FIRST_TICK_DELAY_MS, TICK_INTERVAL_MS } from "../../../src/update-notifications/services/update-check-scheduler.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { headReadRepository, headReadResponse } from "../helpers/github-head-read-stub.js";
+import { IN_PROCESS_SERVER_HOOK_TIMEOUT_MS } from "../../helpers/os-latency-under-load.js";
 
 // Personal settings of package definitions at the real server boundary (autobyteus-95 stage 1): the Studio
 // HTTP/GraphQL server with the renderer's own GraphQL documents, the three definition services' effective reads
@@ -208,9 +209,12 @@ describe("Personal settings of package definitions at the real server boundary (
     await vi.advanceTimersByTimeAsync(2 * FIRST_TICK_DELAY_MS); // the first tick: nothing imported yet
   }, 120_000);
 
+  // autobyteus-576 FU-005: the in-process server's close closes its package and skill folder watchers on the main thread,
+  // which a busy fseventsd blocks for seconds (11-26 s measured, TESTING.md "File watching on a busy Mac"); the hook takes
+  // its limit from os-latency-under-load. Real timers come back first, so nothing in the close runs on the faked clock.
   afterAll(async () => {
-    if (app) await app.close();
     vi.useRealTimers();
+    if (app) await app.close();
     vi.unstubAllGlobals();
     vi.restoreAllMocks();
     setGitHubRateLimitGateForTests(null);
@@ -223,7 +227,7 @@ describe("Personal settings of package definitions at the real server boundary (
       await fs.writeFile(path.join(dir, "package-personal-settings.json"), `${JSON.stringify({ ...evidence, requests }, null, 2)}\n`);
     }
     if (base) await fs.rm(base, { recursive: true, force: true });
-  });
+  }, IN_PROCESS_SERVER_HOOK_TIMEOUT_MS);
 
   it("API-02 (AC-002 by click, REQ-003, REQ-005): personal edits made in the app go to personal-settings.json, never the package files, and survive an update", async () => {
     phase = "import";
