@@ -1,12 +1,20 @@
 # Implementation handoff — autobyteus-15
 
-**IR-001 · ready for independent source review.** Source `5328f4ce8bce`, branch `feature/managed-ubuntu-auto-restart` → `personal`. Reviewed baseline `f36286782f`; no merge, tag, publication or user installation. Initial cycle; no CRR, API-REV, DR or implementation rework trigger.
+**IR-002 · ready for source rereview.** Current source `f369d87e013b`, branch `feature/managed-ubuntu-auto-restart` → `personal`. IR-001 source `5328f4ce8bce`; reviewed baseline `f36286782f`. Rework trigger: [CRR-001 Fail, F-CR-001](code-review-report.md), [review history](code-review-revision-record.md), receipt `0cbb9cfaf9`. No API-REV or DR. No merge, tag, publication or user installation.
 
 ## Approved basis and routing
 
 [SR-001 requirements](requirements-doc.md), [investigation](investigation-notes.md), [SR-004 design](design-spec.md), [solution history](solution-revision-record.md). [Architecture report](design-review-report.md) / [ARCH-REV-002](architecture-review-revision-record.md) passed after AR-001–003 corrections. [Implementation history](implementation-revision-record.md).
 
 **Medium / High, confirmed → Code Review** (direct-route review not applicable). Scope is bounded to an existing update session, the embedded node's read-only observation, and their consumers. Unattended restart, missed input/background work and concurrent Quit make the risk high. No requirement or design escalation. [FU-001](follow-ups.md) remains a separate product question about non-managed platforms.
+
+## Current delta — F-CR-001
+
+A verified manual redownload of a release that failed automatic installation remains available for manual installation. The app now says so in **both** the notification row and About. It does not promise to reopen by itself or install on ordinary Quit. A later manual failure can be the visible notification without hiding the independent block from readiness presentation.
+
+`AppUpdater.getState()` projects the existing record's `automaticInstallBlockedVersion` into transient shell state. The store carries that value, including an explicit clear. `utils/managedUpdateReadiness.ts` selects one message for both surfaces using the verified staged version, the independent block, capability and switch. With no reopen channel, a blocked release directs the user to quit, reopen from the installed application menu, and update manually. The disabled/native policy, healthy automatic copy, switch, action handlers, update protocol, persistence and session eligibility were not changed.
+
+**IR-002 checks** (Ubuntu 26.04 x64, Node 22.23.2, pnpm 10.28.2): [commands/results and impact selection](evidence/IR-002-checks.txt). The three blocked-state assertions failed first on the reviewed source. Current focused Vue suites cover both readiness surfaces and store propagation. Electron updater tests include real updater/session/record refusal → same release manual redownload → manual refusal → redownload, checking the block on each current shell snapshot. Coverage includes the healthy/mismatched version and no-channel controls. Localization guards, Electron transpile and web type gate checked without changing baselines. In sandboxed Chrome at 420 px, exercised 12 en/zh-CN cases across the actual row and About components with controlled shell state and clicked the manual action (test endpoint only). [Blocked row](evidence/IR-002-row.png) and [About](evidence/IR-002-about.png). No production signing, installation, or runtime restart performed.
 
 ## Changes and behavior trace
 
@@ -23,7 +31,7 @@ Scope guardrail respected. Design health: behavior change with an ownership issu
 
 ## Implementation checks
 
-[Command excerpts, environment, output and failure origins](evidence/IR-001-checks.txt). Source `5328f4ce8bce` or source-equivalent files for each check; earlier working-tree results retained only when their exercised behavior did not change. Ubuntu 26.04 x64, Node 22.23.2, pnpm 10.28.2, frozen lockfile.
+**IR-001 baseline.** [Command excerpts, environment, output and failure origins](evidence/IR-001-checks.txt). Source `5328f4ce8bce` or source-equivalent files for each check; earlier working-tree results retained only when their exercised behavior did not change. Ubuntu 26.04 x64, Node 22.23.2, pnpm 10.28.2, frozen lockfile.
 
 | ID | Coverage / result |
 |---|---|
@@ -39,4 +47,4 @@ The admission decision cannot cover work beginning *after* it, during shutdown; 
 
 ## Downstream gates
 
-After source review, API/E2E should use only isolated managed Ubuntu 24.04 and disposable signing/feed/data: two builds of this branch, signed N→N+1. Show a genuinely busy run defers installation, actual mouse/keyboard input (including another window) resets the wait, and a fresh quiet + idle result reopens N+1 **without a click**, with the running server, preserved synthetic data and automatic notification. Separately Quit while waiting: installed update, stays closed, next manual launch confirms version/outcome. Check opted-out/no-channel behavior, real tampered release refusal and rendered managed copy (including About); inspect dependent acceptance criteria as specified in requirements. No production signing, release or changes to the user's app/profile.
+After source review, API/E2E should use only isolated managed Ubuntu 24.04 and disposable signing/feed/data: two builds of this branch, signed N→N+1. Show a genuinely busy run defers installation, actual mouse/keyboard input (including another window) resets the wait, and a fresh quiet + idle result reopens N+1 **without a click**, with the running server, preserved synthetic data and automatic notification. Separately Quit while waiting: installed update, stays closed, next manual launch confirms version/outcome. Check opted-out/no-channel behavior, real tampered release refusal and rendered managed copy (including About); also check that a confirmed automatic refusal followed by manual redownload shows a manual action in both surfaces (including when a later manual failure masks the automatic outcome). Inspect dependent acceptance criteria as specified in requirements. No production signing, release or changes to the user's app/profile.
