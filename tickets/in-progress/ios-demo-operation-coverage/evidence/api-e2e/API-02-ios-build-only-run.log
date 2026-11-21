@@ -1,0 +1,55 @@
+# API-02 build-only iOS release workflow run (AC-004): gh workflow run release-ios.yml --ref codex/ios-demo-operation-coverage -f publish_app_store_connect=false -f release_ref=codex/ios-demo-operation-coverage
+# run 44881140728, https://github.com/AutoByteus/autobyteus-workspace/actions/runs/44881140728, head 929976f818, event workflow_dispatch; no tag; fetched 2026-11-21T07:58:36Z
+## jobs and steps
+conclusion: success
+Resolve iOS Release Metadata: success
+  Set up job: success
+  Checkout workflow helper scripts: success
+  Resolve release metadata: success
+  Checkout release ref: success
+  Check licensing consistency: success
+  Resolve release commit SHA: success
+  Summarize iOS release plan: success
+  Post Checkout release ref: success
+  Post Checkout workflow helper scripts: success
+  Complete job: success
+Build And Test iOS App: success
+  Set up job: success
+  Checkout workspace: success
+  Select Xcode 27 or newer: success
+  Install XcodeGen: success
+  Select available iOS simulator: success
+  Setup pnpm: success
+  Setup Node: success
+  Install workspace dependencies: success
+  Build the bundled demo: success
+  Generate, build, and run implementation checks: success
+  Write publish secret readiness summary: success
+  Upload iOS build/test artifacts: success
+  Post Setup Node: success
+  Post Setup pnpm: success
+  Post Checkout workspace: success
+  Complete job: success
+Validate iOS Publish Secrets: skipped
+Archive And Upload To App Store Connect: skipped
+## the demo build's lines from the job log
+Build And Test iOS App	Build the bundled demo	2026-11-21T07:44:04.7384410Z The demo answers all 252 compiled operations (handled or listed as unreachable).
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-21T07:44:38.3632350Z ** BUILD SUCCEEDED **
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-21T07:47:25.7583560Z 	 Executed 2 tests, with 0 failures (0 unexpected) in 0.013 (0.191) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-21T07:47:38.5431290Z 	 Executed 5 tests, with 0 failures (0 unexpected) in 0.011 (16.238) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-21T07:47:39.5945590Z 	 Executed 4 tests, with 0 failures (0 unexpected) in 7.753 (7.758) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-21T07:47:40.2099870Z 	 Executed 2 tests, with 0 failures (0 unexpected) in 0.279 (0.280) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-21T07:47:42.9663270Z 	 Executed 9 tests, with 0 failures (0 unexpected) in 2.024 (2.158) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-21T07:47:44.0850940Z 	 Executed 4 tests, with 0 failures (0 unexpected) in 2.878 (2.881) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-21T07:47:47.0932670Z 	 Executed 4 tests, with 0 failures (0 unexpected) in 0.007 (1.411) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-21T07:47:58.0025770Z 	 Executed 7 tests, with 0 failures (0 unexpected) in 1.113 (3.150) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-21T07:47:59.4934740Z 	 Executed 6 tests, with 0 failures (0 unexpected) in 2.572 (2.575) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-21T07:48:00.3973350Z 	 Executed 3 tests, with 0 failures (0 unexpected) in 0.247 (0.249) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-21T07:48:01.0561860Z 	 Executed 2 tests, with 0 failures (0 unexpected) in 0.889 (0.895) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-21T07:48:02.1249730Z 	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.311) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-21T07:48:02.9637260Z 	 Executed 3 tests, with 0 failures (0 unexpected) in 0.002 (1.268) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-21T07:48:03.1262710Z 	 Executed 56 tests, with 0 failures (0 unexpected) in 17.801 (41.362) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-21T07:48:03.2921990Z 	 Executed 56 tests, with 0 failures (0 unexpected) in 17.801 (41.363) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-21T07:48:42.4515560Z ** TEST SUCCEEDED **
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-21T07:52:45.2799810Z 	 Executed 2 tests, with 0 failures (0 unexpected) in 74.232 (74.248) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-21T07:54:44.5090750Z 	 Executed 6 tests, with 0 failures (0 unexpected) in 119.024 (119.031) seconds

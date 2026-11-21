@@ -1,0 +1,17 @@
+# API-01 the coverage spec on the real source, and its detection of a new unlisted operation; commit 929976f818; 2026-11-21T07:37:13Z; Node v22.23.1
+## 1. NUXT_TEST=true pnpm -C autobyteus-web exec vitest run scripts/__tests__/mobileBuildChecks.spec.ts
+ ✓ scripts/__tests__/mobileBuildChecks.spec.ts (8 tests) 553ms
+   ✓ the demo coverage of the web source, without a build (autobyteus-584) > every operation the web source defines is answered by the demo or listed with its reason, and the list holds nothing else  518ms
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Duration  2.05s (transform 284ms, setup 535ms, collect 96ms, tests 553ms, environment 0ms, prepare 151ms)
+## 2. a temporary file autobyteus-web/graphql/queries/zz_probe584.ts defining query ProbeOnlyOperation584 (removed afterwards), same command
+   × the demo coverage of the web source, without a build (autobyteus-584) > every operation the web source defines is answered by the demo or listed with its reason, and the list holds nothing else 607ms
+     → expected { …(3) } to deeply equal { unanswered: [], stale: [], …(1) }
+AssertionError: expected { …(3) } to deeply equal { unanswered: [], stale: [], …(1) }
+-   "unanswered": [],
++   "unanswered": [
++     "ProbeOnlyOperation584",
+     89|     expect({ unanswered: coverage.unanswered, stale: coverage.stale, u…
+      Tests  1 failed | 7 passed (8)
+## 3. after removing it, git status of autobyteus-web/graphql:
