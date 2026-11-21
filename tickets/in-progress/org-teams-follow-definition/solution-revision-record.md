@@ -4,6 +4,7 @@
 
 | Revision ID | Phase | Trigger | Finding IDs | Prior Status | Current Status | Affected IDs | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| SR-004 | Requirements | The user's decisions 2026-11-21 | N/A | Ready for Approval | Approved | DEC-001..DEC-003, REQ-008, REQ-009 | Approved: convert existing Org runs, follow the Org definition, keep FU-003 in this ticket |
 | SR-003 | Requirements | Container restructuring investigation | IF-09..IF-14 | Draft | Ready for Approval | REQ-001..REQ-009, AC-001..AC-008, DEC-001..DEC-005 | Requirements for the Org container; awaiting DEC-001..DEC-003 |
 | SR-002 | Requirements | The user's direction 2026-11-21: Org as a container of independent runs | N/A | Ready for Approval | Draft | FU-002 approach (all REQ) | Direction set; investigation of the container restructuring before new requirements |
 | SR-001 | Requirements | Initial baseline (Task autobyteus-29: FU-002, FU-003 of autobyteus-22) | IF-01..IF-08 | N/A | Ready for Approval | REQ-001..REQ-004, AC-001..AC-007, DEC-001..DEC-004 | Presented to the user; awaiting DEC-001 |
@@ -31,3 +32,13 @@
 - Requirements rewritten: REQ-001..REQ-009, AC-001..AC-008; SR-001's REQ-001/REQ-002/DEC-001 superseded; FU-003 kept as REQ-008 pending DEC-003.
 - Needs user: DEC-001 (convert existing Org runs, recommended), DEC-002 (also follow the Org definition, recommended include), DEC-003 (split FU-003 into its own Task, recommended).
 - Next action: the user's decisions and approval.
+
+#### Note on SR-003 (no new revision)
+
+- 2026-11-21: the user decided DEC-001 (a): existing Org runs are converted by a data migration, learning from the earlier refactorings (`task-agent-own-run-v1`, `delegated-runs-own-runs-v1`). DEC-002 and DEC-003 still open.
+
+### SR-004 — Approval
+
+- Trigger: the user, 2026-11-21: DEC-001 (a) (data migration of existing Org runs, learning from the earlier refactorings), then "I think you should contain both" in answer to "split FU-003 off or keep it?" and "also follow the Org definition?".
+- Recorded: DEC-002 include (Org follows its Org definition), DEC-003 keep FU-003 in this ticket; the reading was stated to the user for correction.
+- Status: requirements `Approved` (SR-004). Next action: architecture design, including the mandatory migration-conventions investigation.

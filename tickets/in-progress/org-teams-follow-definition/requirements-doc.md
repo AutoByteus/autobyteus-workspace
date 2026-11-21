@@ -2,15 +2,16 @@
 
 ## Document Status
 
-- Status: `Ready for Approval`
-- Current solution revision ID: `SR-003`
+- Status: `Approved`
+- Current solution revision ID: `SR-004`
 - Package identifier: `org-teams-follow-definition`
 - Request / ticket: Project Task `autobyteus-29` (FU-002, FU-003 of autobyteus-22)
 - Requested by: `/project_task_manager` (run `project_task_manager_2f41a1df4e464bf2aa8970327d9d7ad0`), on the user's "work on the follow-up immediately" (2026-11-21)
 - Requirements owner: Solution Designer
 - Date: 2026-11-21
 - Direction: the user, 2026-11-21 (SR-002): an Org is a container; each mounted Team is its own Team run and each direct Org agent its own agent run ("let's go with the second option").
-- Approved by and reference: pending (DEC-001..DEC-003 need the user)
+- Approved by and reference: `User`, 2026-11-21, in the Solution Designer conversation: DEC-001 (a) (quoted in its row); then "I think you should contain both", answering whether FU-003 stays in this ticket and whether the Org also follows its Org definition. Recorded as: both fixes stay in this ticket (DEC-003) and the Org follows its Org definition (DEC-002), with that reading told to the user for correction.
+- Exact approved requirements baseline: this document at SR-004 (REQ-001..REQ-009, AC-001..AC-008, DEC-001..DEC-005)
 - Behavior-defining supplements: autobyteus-22's approved behavior (archived `tickets/done/team-run-follows-definition/` on `personal`: requirements SR-005/SR-006, design § Exact Texts, § Member States) applies unchanged to every Team run, including those inside an Org
 
 ## Problem And Desired Outcome
@@ -42,7 +43,7 @@
 | UC-003 | Org units message each other by address and follow Org-level rules across their runs |
 | UC-004 | Existing Org runs keep working after the change (DEC-001) |
 | UC-005 | The delegating node sees a peer Team copy's current members (FU-003; DEC-003) |
-| UC-006 | The Org follows its Org definition: Teams mounted/unmounted, direct agents added/removed, Org rules (only if DEC-002 includes it) |
+| UC-006 | The Org follows its Org definition: Teams mounted/unmounted, direct agents added/removed, Org rules |
 
 ### Out Of Scope
 
@@ -69,8 +70,8 @@ None found.
 | REQ-005 | Stopping the Org stops all its runs; reopening the Org reopens the container and restores its runs as they are needed (Offline until work), each following its definition on reopen. | Preserved |
 | REQ-006 | The Org view, run tree rows (`org_agent`, `org_team`, members), Memory page and run history show the Org and its units as today; a unit row's commands, Stop and Settings go to that unit's own run. | Preserved |
 | REQ-007 | Existing Org runs are handled as DEC-001 decides, keeping every conversation, message, memory folder, Task link and history entry. | DEC-001 |
-| REQ-008 | (FU-003, per DEC-003) The delegating node's record of a peer Team copy (members, coordinator) is updated after the copy's membership changes; if the delegating node is unreachable then, at the next contact. | FU-003 |
-| REQ-009 | (Only if DEC-002 includes it) The Org follows its Org definition: a newly mounted Team or new direct agent becomes a run in the container (Offline); an unmounted Team or removed direct agent leaves with the autobyteus-22 rules (busy members finish as Leaving, history kept); Org rules follow. | DEC-002 |
+| REQ-008 | (FU-003, in this ticket per DEC-003) The delegating node's record of a peer Team copy (members, coordinator) is updated after the copy's membership changes; if the delegating node is unreachable then, at the next contact. | FU-003 |
+| REQ-009 | (DEC-002: included) The Org follows its Org definition: a newly mounted Team or new direct agent becomes a run in the container (Offline); an unmounted Team or removed direct agent leaves with the autobyteus-22 rules (busy members finish as Leaving, history kept); Org rules follow. | DEC-002 |
 
 ## Acceptance Criteria
 
@@ -83,7 +84,7 @@ None found.
 | AC-005 | REQ-005 | Stop the Org; change a Team definition; reopen | All units stopped; reopened Org has the current members |
 | AC-006 | REQ-007 | The user's existing Org run (2026-09-21) after upgrading | Opens; its conversations, messages, memory and history are all there; its Teams now follow their definitions |
 | AC-007 | REQ-008 | Cross-node Team copy gains and loses a member; then with the delegating node offline | Delegating node's rows and run-ID messages follow; updated at the next contact |
-| AC-008 | REQ-009 | (If included) Mount a new Team / unmount one / add or remove an Org agent | New run appears Offline; removed unit leaves per autobyteus-22 rules |
+| AC-008 | REQ-009 | Mount a new Team / unmount one / add or remove an Org agent | New run appears Offline; removed unit leaves per autobyteus-22 rules |
 
 ### Verification Intent (feasibility of the proof)
 
@@ -93,12 +94,13 @@ Isolated server instances from the ticket worktree with their own data directori
 
 | ID | Question | Reasoning And Recommendation | Owner | Status |
 | --- | --- | --- | --- | --- |
-| DEC-001 | Existing Org runs (your Software Development Department run of 2026-09-21, and any others) | (a) Convert them at startup into containers with their Teams and agents as runs of their own, keeping every conversation, message, memory folder and Task link (as the repository did twice before for delegated runs, IF-11); (b) keep them as history you can read but not reopen. (a) keeps your run usable and is the repository's established path; it is hard to undo (a data migration), so it needs your word. **Recommend (a).** | User | Needs user |
-| DEC-002 | Also follow the **Org** definition (mount/unmount Teams, add/remove Org agents, Org rules)? | In the container it is the same mechanism one level up (start or stop a unit run); it completes "the dynamic feature applies to the organization". It adds Org-level leave/join on top of the restructuring. **Recommend: include it** in this ticket as its last step. | User | Needs user |
-| DEC-003 | FU-003 (peer Team copy members) in this ticket or its own | FU-003 is small and independent of the restructuring; in this ticket it waits for the large change to finish. **Recommend: split FU-003 into its own Task** (I ask the Project Task Manager) so it ships soon; this ticket becomes the Org container. | User | Needs user |
+| DEC-001 | Existing Org runs (your Software Development Department run of 2026-09-21, and any others) | (a) Convert them at startup into containers with their Teams and agents as runs of their own, keeping every conversation, message, memory folder and Task link (as the repository did twice before for delegated runs, IF-11); (b) keep them as history you can read but not reopen. (a) keeps your run usable and is the repository's established path; it is hard to undo (a data migration), so it needs your word. **Recommend (a).** **Decided by the user (2026-11-21): (a)**, "the existing organization run well basically you know we need to have a data migration right yeah but in general as you also mentioned that in the past we have already done similar like a refactoring so maybe you can learn from the past and then do the type of refactoring". | User (2026-11-21) | Decided |
+| DEC-002 | Also follow the **Org** definition (mount/unmount Teams, add/remove Org agents, Org rules)? | In the container it is the same mechanism one level up (start or stop a unit run); it completes "the dynamic feature applies to the organization". It adds Org-level leave/join on top of the restructuring. **Recommend: include it** in this ticket as its last step. **Decided by the user (2026-11-21): include** ("I think you should contain both"; reading stated to the user). | User (2026-11-21) | Decided |
+| DEC-003 | FU-003 (peer Team copy members) in this ticket or its own | FU-003 is small and independent of the restructuring; in this ticket it waits for the large change to finish. **Recommend: split FU-003 into its own Task** (I ask the Project Task Manager) so it ships soon; this ticket becomes the Org container. **Decided by the user (2026-11-21): keep both in this ticket** ("I think you should contain both"). | User (2026-11-21) | Decided |
 | DEC-004 | How an Org looks after the change | Unchanged for the user (REQ-006); the container is an internal shape. **Decided.** | Solution Designer | Decided |
 | DEC-005 | Org-level rules | Kept by the container; merged into a unit's rules; left out while a named member is gone (REQ-004). **Decided.** | Solution Designer | Decided |
 
 ## Readiness Check
 
-- Content ready for approval: `Yes`; remaining blockers: DEC-001..DEC-003.
+- Content ready for approval: `Yes`; remaining blockers: None.
+- Approved basis ready for design: `Yes` (User, 2026-11-21).
