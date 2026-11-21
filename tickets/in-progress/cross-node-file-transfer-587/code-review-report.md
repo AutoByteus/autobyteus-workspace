@@ -14,10 +14,10 @@
 - Relevant Architecture Review Revision IDs: ARCH-REV-001, ARCH-REV-002
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001, IR-002
+- Relevant Implementation Revision IDs: IR-001, IR-002, IR-003
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-004`
-- Current Review Round: `2`
+- Current Code Review Revision ID: `CRR-006`
+- Current Review Round: `3`
 - Review Scope: `Targeted Delta Review`
 - Review Scope Evidence (round 2): `ef53fadd52..e295b74b81` changes six test files only. Delivery's merge `3be417f8df` brought six `src` files from `origin/personal`; none is a file this ticket changed (the two change sets do not intersect). No production source of this ticket changed since `e327ba2467`, so round 1's structural checks and scores carry forward
 - Trigger: IR-002 (delivery's DEL-03 Local Fix, items 1–3 in `release-deployment-report.md` § Escalation / Reroute): test fix `e295b74b81`, handoff and evidence `20866c8847`, on delivery's `ef53fadd52`. Round 1: IR-001, code `e327ba2467`, base `fbe714f8bb`
@@ -223,12 +223,33 @@ None.
 - My review gap: in CRR-001 I accepted the handoff's "Not run: full `test:unit` … the rest of the suite exercises nothing this change touches". The change made inputs required on owners that tests construct directly, and the typecheck baseline hides such stale constructions. The claim needed checking, and the whole suite was the cheap check. Delivery's proposed guide fix (`TESTING.md` § Choosing the path: run the whole server unit suite when an owner that tests construct gains a required input) is for the guide's owner (API/E2E) and the Solution Designer.
 - Findings: None.
 
+## Round 3 (CRR-006): IR-003, merge with autobyteus-22 (team-run-follows-definition)
+
+- Scope: `Targeted Delta Review` of merge `575c4ec9ed` (parents `cc077b504c`, `6533d7be04`). I read the production conflict resolutions from the combined diff (`git show --cc`) and checked each point where the two tickets meet.
+- Conflict resolutions (production):
+  - `root-team-run.ts`: the base moved `isCurrentAgent` and `isLiveAgent` into `TeamRunMemberAuthority` (`this.members`). This ticket's `receivedFilesFor`, `remoteSend` (with `outgoing`), `receivedFiles` and `memberFolderOf` are kept, the last on the base's `requireContainingTeamRun`.
+  - `team-root-materializer.ts`: `remoteFiles` and `memoryLocator` (D-6) sit beside the base's `membership`/`changeNotices`.
+  - `collaboration-composition.ts`, `start-standalone-application-host.ts`, `build-studio-server.ts`: both sides' inputs kept.
+- Where the tickets meet:
+  - The router's step 1 is now the base's `ownsAgentRun`. On all three roots it includes `hasAgentExecution`, which still includes `remoteLinks.has`, so RF-14's `NODE_REQUIRED` still comes from the root's `deliverExact`.
+  - The Team `deliverExact` remote branch is unchanged; the base's former-member refusal is on the local path.
+  - The engine checks the receiver with `isCurrent` before any received-files plan (`acceptFromRemote`), so a member that is leaving (which `requireContainingTeamRun` now also resolves) receives no files.
+  - The engine's sender checks are now the base's `maySendAs`. As before (C-04), `RemoteMessageSend` uploads before `prepareRemoteSend`, so a refused sender's bytes are left unlinked and swept.
+- Size: `root-team-run.ts` 477 non-empty lines after the merge, under 500 (the base's own version grew it).
+- Tests: the base's membership collaborators are combined with this ticket's inputs, the base's new integration test gets `remoteFiles`/`peerRunAdmission`, and the construction search was repeated.
+- Evidence I read; I reran nothing:
+  - IMP-10: both typechecks at baseline;
+  - IMP-11: the whole server unit suite, 8764 passed;
+  - IMP-12: the Team integration tests, 58 passed;
+  - IMP-13: the rebuilt two-server E2E, 55 passed.
+- Findings: None.
+
 ## Latest Authoritative Result
 
-- Review Decision: `Pass` (round 2, CRR-004)
+- Review Decision: `Pass` (round 3, CRR-006)
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.4/10 (unchanged; no production change)
-- Recommended Recipient: API/E2E engineer (an implementation-owned fix returns through API/E2E), with delivery's request to have the package back once the gates pass
+- Score Summary: 9.4/10 (unchanged)
+- Recommended Recipient: API/E2E engineer (an implementation-owned fix returns through API/E2E); delivery asked for the package back quickly
 - Notes: round 1's notes and residual risks stand.

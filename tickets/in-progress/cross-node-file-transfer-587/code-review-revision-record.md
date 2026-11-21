@@ -11,6 +11,7 @@ The latest `code-review-report.md` is authoritative for its current result.
 | CRR-003 | `api-e2e-test-review-report.md` | Test-code review round 2 (API-REV-002, `71be9e9e8e`) | Fail (Local Fix, API/E2E) | Pass | T-001 (resolved) |
 | CRR-004 | `code-review-report.md` | Implementation Review, round 2 (IR-002, delivery DEL-03, `e295b74b81`) | Pass (CRR-001) | Pass | None |
 | CRR-005 | `api-e2e-test-review-report.md` | Test-code review round 3 (API-REV-003, IR-002 test files) | Pass (CRR-003) | Pass | None |
+| CRR-006 | `code-review-report.md` | Implementation Review, round 3 (IR-003, merge with autobyteus-22, `575c4ec9ed`) | Pass (CRR-004) | Pass | None |
 
 ## Revision Entries
 
@@ -150,3 +151,34 @@ None.
 - Material score or classification changes: N/A
 - Recommended recipient: delivery engineer
 - Remaining risks or uncertainty: FU-002 (urgent, 565) keeps the gated contract stories red; FU-001, FU-003, FU-004 open.
+
+### CRR-006 — Source review round 3: IR-003, merge with autobyteus-22
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/tickets/in-progress/cross-node-file-transfer-587/code-review-report.md`
+- Review entry point and round: Implementation Review, round 3
+- Review scope: `Targeted Delta Review` of merge `575c4ec9ed`: the production conflict resolutions (`--cc`) and each point where the two tickets meet
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, IR-003; `release-deployment-report.md` § Delivery Round 2
+- Relevant solution revision IDs: SR-009
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: none recorded yet
+- Prior authoritative result: Pass (CRR-004)
+- Current authoritative result: Pass
+- What changed in the review result and why: both tickets' behavior is kept:
+  - RF-14 still answered by the root (`ownsAgentRun` ⊇ `hasAgentExecution` ⊇ remote links);
+  - the receiver checked current before any files are planned;
+  - the D-6 locator still passed;
+  - `root-team-run.ts` 477 lines.
+
+  IMP-10 … IMP-13 pass on the merge.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A
+- Recommended recipient: API/E2E engineer; then the test-code review; then delivery
+- Remaining risks or uncertainty: as CRR-001; FU-001 … FU-004 open.
