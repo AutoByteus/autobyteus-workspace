@@ -68,3 +68,8 @@
 - Residuals: one open of the validated file; offset mismatch answers `receivedBytes`.
 - Next: the founder's DEC-007, then ARCH-REV-002.
 - 2026-11-21 (SR-008): the founder decided DEC-007 (a): "memory sync should not copy files … we cut a tons of duplicated files". AC-011 added; design: path-policy rule. Next: ARCH-REV-002.
+
+### SR-009 — ARCH-REV-002 Pass; AR-007 wording
+
+- ARCH-REV-002: Pass for SR-008 (`eac8cf3814`); the reviewer handed off to `/implementation_engineer`.
+- AR-007 (Low): DS-001 and DS-002 spine lines now show the receiving order of § Ownership Map; DS-005 names `peerRunAdmission`; entry form 6b (wrong `node` from a non-linking root) added. No design change.

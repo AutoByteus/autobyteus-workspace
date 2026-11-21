@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-008` (ARCH-REV-001 AR-001 … AR-006 and residuals; AR-001 decided by the founder, DEC-007 (a))
+- Current solution revision ID: `SR-009` (ARCH-REV-001 AR-001 … AR-006 and residuals; AR-001 decided by the founder, DEC-007 (a))
 - Approved requirements: `requirements-doc.md` SR-005 with its behavior-defining supplement `reference-files-contract.md` (RFC-001), approved by the founder 2026-11-21 (DEC-001 … DEC-003, DEC-006 and the contract in his words; DEC-004, DEC-005 by the Solution Designer, confirmed by him).
 - User approval of the design: the founder, 2026-11-21, delegated it: "validate each use case based on your data flow spine … which follows the design principles, and then you just send for review by yourself". Validation: § Design Validation Walkthrough; then independent architecture review.
 - Design status: `Ready`
@@ -95,11 +95,11 @@ As RFC-001 § 1. **File descriptor:** `{sha256, size, name}` naming one transfer
 
 ## Primary Execution Spine(s)
 
-- DS-001: `delegate_task tool → RemoteDelegation.delegate → TaskDelegation.toPeerRun → OutgoingFiles.send(sender, peer, files) [validate RF-3 → hash → channel.receivedFilesStatus → channel.putReceivedFilePiece… → descriptors] → channel.startDelegatedRun → Task link → channel.deliverMessage(work_packet + files) → (B) PeerGateway → RemoteMessageReceiver → root.acceptRemoteWorkPacket → ReceivedFiles.placeFor(agentFolder, senderRunId, descriptors) → work packet with received paths → host input`
-- DS-002: `send_message_to tool → Router.deliver(node) → root.deliverToPeerRun → RemoteMessageSend.sendToPeerRun → OutgoingFiles.send → engine.prepareRemoteSend (sender's paths kept) → RemoteRunLinks.deliver (+ files) → (B) PeerGateway → RemoteMessageReceiver → root.acceptRemoteMessage | acceptPeerRunMessage → ReceivedFiles.placeFor → engine.acceptFromRemote (received paths in the line and the input block) → answer → (A) engine.commitSentToRemote (sender's paths)`
+- DS-001: `delegate_task tool → RemoteDelegation.delegate → TaskDelegation.toPeerRun → OutgoingFiles.send(sender, peer, files) [validate RF-3 → hash → channel.receivedFilesStatus → channel.putReceivedFilePiece… → descriptors] → channel.startDelegatedRun → Task link → channel.deliverMessage(work_packet + files) → (B) PeerGateway → RemoteMessageReceiver → root.acceptRemoteWorkPacket [link check → ReceivedFiles.verify → readyHost → ReceivedFiles.placeFor(agentFolder, senderRunId, descriptors)] → work packet with received paths → host input`
+- DS-002: `send_message_to tool → Router.deliver(node) → root.deliverToPeerRun → RemoteMessageSend.sendToPeerRun → OutgoingFiles.send → engine.prepareRemoteSend (sender's paths kept) → RemoteRunLinks.deliver (+ files) → (B) PeerGateway → RemoteMessageReceiver → root.acceptRemoteMessage | acceptPeerRunMessage [ReceivedFiles.verify] → engine.acceptFromRemote [open → current receiver → Task scope → content → reservation → port.placeReceivedFiles → input with received paths → log commit] → answer → (A) engine.commitSentToRemote (sender's paths)`
 - DS-003: `PeerClient.putReceivedFilePiece → [signed; gate hashes the ≤ 8 MiB body] → PeerGateway.receivedFilePiece → ReceivedFiles.appendPiece(peer, sha256, offset, size, bytes) → on the last piece: verify size + SHA-256 → rename <sha256>.partial → <sha256>`
 - DS-004: `history delete (agent / team / org owner) commits → ReceivedFiles.sweep() → for each <data>/received_files/<sha256>: stat nlink === 1 and last touched more than 24 h ago → remove; each .partial older than 24 h → remove` (also at server start). `status` and a completed `PUT` touch the entry (mtime), so a file whose message is still uploading its other files, or one deduplicated for a call in flight, is never removed (AR-003; a call lasts at most about 27 min).
-- DS-005 (G-3: owners as the code routes): no `node`, target is a linked endpoint of the sender's root → the root's `deliverExact` (router step 1 reaches it because `hasAgentExecution` includes remote endpoints) refuses `NODE_REQUIRED` naming `peerName(endpoint.reference.nodeId)`; no `node`, target is a peer run the tree knows (Task entry with `nodeId`) → `CrossRunMessageDelivery.route`'s peer-run branch, after `closedPeerRunRefusal`, refuses `NODE_REQUIRED` with that node; `node` given and the sender's root links the target on another node → `RemoteMessageSend.sendToPeerRun` refuses `NODE_MISMATCH`; `node` given and the tree's Task entry puts the run on another node → the router's `node` step asks `CrossRunMessageDelivery.peerRunAdmission({node, agentRunId})` (the former `closedPeerRunRefusal`, AR-005), which answers `TASK_AGENT_RESOURCE_CLOSED` or `NODE_MISMATCH` with the right node or nothing; otherwise as 492 (an unknown run ID with no `node`: today's not-running text).
+- DS-005 (G-3: owners as the code routes): no `node`, target is a linked endpoint of the sender's root → the root's `deliverExact` (router step 1 reaches it because `hasAgentExecution` includes remote endpoints) refuses `NODE_REQUIRED` naming `peerName(endpoint.reference.nodeId)`; no `node`, target is a peer run the tree knows (Task entry with `nodeId`) → `CrossRunMessageDelivery.route`'s peer-run branch, after `peerRunAdmission`, refuses `NODE_REQUIRED` with that node; `node` given and the sender's root links the target on another node → `RemoteMessageSend.sendToPeerRun` refuses `NODE_MISMATCH`; `node` given and the tree's Task entry puts the run on another node → the router's `node` step asks `CrossRunMessageDelivery.peerRunAdmission({node, agentRunId})` (the former `closedPeerRunRefusal`, AR-005), which answers `TASK_AGENT_RESOURCE_CLOSED` or `NODE_MISMATCH` with the right node or nothing; otherwise as 492 (an unknown run ID with no `node`: today's not-running text).
 
 ## Spine Narratives (Mandatory)
 
@@ -159,7 +159,8 @@ Entry forms:
 | 3 | `send_message_to(node)` → unlinked running agent | placed in its folder | 492 |
 | 4 | `send_message_to(node)` → linked remote run (delegator → copy, copy → delegator, a member of a remote Team) | placed in the receiving agent's folder | link if paired, else unlinked (492) |
 | 5 | form 4 without `node` | — | `NODE_REQUIRED` |
-| 6 | form 4 with another node's name | — | `NODE_MISMATCH` |
+| 6 | form 4 with another node's name, from the linking root | — | `NODE_MISMATCH` (`sendToPeerRun`) |
+| 6b | a run the tree knows on another node, with another node's name, from a root that does not link it | — | `NODE_MISMATCH` with the right node (`peerRunAdmission`, AR-005) |
 | 7 | same-node message or delegation with files | unchanged (RF-1) | unchanged |
 | 8 | any cross-node form with a file outside the workspace / folder / too large / no workspace | nothing sent | § 5 refusal |
 
