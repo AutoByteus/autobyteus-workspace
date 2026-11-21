@@ -1,0 +1,258 @@
+# IMP-07 the IR-002 test files (in autobyteus-server-ts)
+# Command: pnpm exec vitest run tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts --reporter=verbose --no-watch
+# Commit: e295b74b81
+# Environment: macOS 26.5.2, Node v22.23.1
+# Date: 2026-11-21T17:25:12Z
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:78410) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-EomDVD
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-EomDVD/.env
+AgentRunManager initialized.
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates native reasoning through standalone and team GraphQL projections
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-EomDVD/memory/agents/native-reasoning-standalone/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates native reasoning through standalone and team GraphQL projections
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-EomDVD/memory/agents/native-reasoning-standalone/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates native reasoning through standalone and team GraphQL projections
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-EomDVD/memory/agent_teams/native-reasoning-team/native-reasoning-member/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates native reasoning through standalone and team GraphQL projections
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-EomDVD/memory/agent_teams/native-reasoning-team/native-reasoning-member/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-EomDVD/memory/agents/system-instruction-baseline/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-EomDVD/memory/agents/system-instruction-standalone/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-EomDVD/memory/agents/system-instruction-standalone/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-EomDVD/memory/agent_teams/system-instruction-team/system-instruction-member/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-EomDVD/memory/agent_teams/system-instruction-team/system-instruction-member/raw_traces_manifest.json
+
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates native reasoning through standalone and team GraphQL projections 64ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals 60ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > omits a rotated system instruction from active hydration without reading its archive 60ms
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects the newest 100 events from a >=5 MB active file without reading or changing its standalone archive
+[recent-run-projection-metrics] {"fixtureBytes":5416102,"canonicalActiveEvents":620,"returnedConversationRows":100,"returnedActivityRows":0,"payloadBytes":868832,"totalMs":19.237}
+
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects the newest 100 events from a >=5 MB active file without reading or changing its standalone archive 130ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects a team member from active traces only and preserves its archive bytes 74ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > traverses exactly 275 standalone active events in fixed pages without opening archives 78ms
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > traverses exactly 275 team-member active events and rejects its cursor for another subject
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-EomDVD/memory/agents/active-page-275-other-subject/raw_traces_manifest.json
+
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > traverses exactly 275 team-member active events and rejects its cursor for another subject 106ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > keeps a cursor valid across append and expires it after an atomic active rewrite 64ms
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > serializes production media and shallow tool state without multi-megabyte result or log payload
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-EomDVD/memory/agents/active-page-closed-payload/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > serializes production media and shallow tool state without multi-megabyte result or log payload
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-EomDVD/memory/agents/active-page-closed-payload/raw_traces_manifest.json
+
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > serializes production media and shallow tool state without multi-megabyte result or log payload
+[active-trace-page-closed-payload-metrics] {"fixtureBytes":4861018,"returnedEvents":3,"returnedVisuals":7,"serializedEventBytes":2386,"totalMs":8.189}
+
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > serializes production media and shallow tool state without multi-megabyte result or log payload 40ms
+stdout | tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:80385) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > runs phases 5-10 in order before event-pipeline and application construction 8ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > marks current-schema failure critical and unwinds Prisma before later phases 2ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > treats vault initialization failure as fatal and unwinds the started vault and Prisma owners 0ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > treats migration runner failure as fatal before catalog rebuild and unwinds repository owners 0ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > keeps token history held back and strict TeamRun admission without blocking a current-schema run 1ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > starts with only custom providers held back while readable-provider identity is missing (AC-004) 1ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > starts with only custom providers held back while readable-provider identity is running (AC-004) 1ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > starts with only custom providers held back while readable-provider identity is failed (AC-004) 1ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > treats catalog rebuild failure as fatal and still unwinds repository resources 1ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > unwinds the bound definition and Agent Tools owners when general run assembly fails 1ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > unwinds general, Agent Tools, and definition owners when application assembly fails 1ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > uses independent package admission for attachment status MISSING 1ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > uses independent package admission for attachment status NOT_RUN 1ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > uses independent package admission for attachment status RUNNING 1ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > uses independent package admission for attachment status FAILED 0ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > uses independent package admission for attachment status SUCCEEDED_WITH_WARNINGS 0ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > uses independent package admission for attachment status SUCCEEDED 0ms
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:81538) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > owns one Agent, standalone Team, and AgentOrg process manager family
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/autobyteus-server-ts
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > continues the exact Org, Team, Agent shutdown order and aggregates failures
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > releases AgentRunManager when exclusive Team manager initialization fails
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > unwinds both root managers when process AgentRunService binding fails
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > refuses a second process RunFileChangeService and unwinds its earlier bindings
+AgentRunManager initialized.
+
+ ✓ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > owns one Agent, standalone Team, and AgentOrg process manager family 8ms
+ ✓ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > continues the exact Org, Team, Agent shutdown order and aggregates failures 1ms
+ ✓ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > releases AgentRunManager when exclusive Team manager initialization fails 1ms
+ ✓ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > unwinds both root managers when process AgentRunService binding fails 1ms
+ ✓ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > refuses a second process RunFileChangeService and unwinds its earlier bindings 1ms
+ ✓ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > rejects validator-only capabilities before manager mutation 0ms
+ ✓ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > rejects each required construction input before manager mutation 1ms
+ ✓ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > rejects an access without the pass revocation of the same host before manager mutation (AR-008) 0ms
+stdout | tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:82810) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts > AgentTeamRunManager root lifecycle > never unregisters from an inactive read and isolates lifecycle listener failures
+RootTeamRun lifecycle listener failed: Error: listener failure
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/autobyteus-server-ts/tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts:140:62
+    at AgentTeamRunManager.notify (/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:479:13)
+    at AgentTeamRunManager.register (/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:450:10)
+    at register (/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/autobyteus-server-ts/tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts:46:65)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/autobyteus-server-ts/tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts:143:18
+    at Proxy.assertThrows (file:///Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/node_modules/.pnpm/chai@6.3.0/node_modules/chai/index.js:2877:5)
+    at Proxy.methodWrapper (file:///Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/node_modules/.pnpm/chai@6.3.0/node_modules/chai/index.js:1737:25)
+    at Proxy.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/node_modules/.pnpm/@vitest+expect@4.1.12/node_modules/@vitest/expect/dist/index.js:1216:12)
+    at Proxy.overwritingMethodWrapper (file:///Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/node_modules/.pnpm/chai@6.3.0/node_modules/chai/index.js:1796:33)
+    at Proxy.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/node_modules/.pnpm/@vitest+expect@4.1.12/node_modules/@vitest/expect/dist/index.js:1552:16)
+
+ ✓ tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts > AgentTeamRunManager root lifecycle > requires the rootless flat-Team factory and keeps process lookup non-constructing 2ms
+ ✓ tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts > AgentTeamRunManager root lifecycle > publishes active after root registration and inactive only after accepted termination 2ms
+ ✓ tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts > AgentTeamRunManager root lifecycle > keeps the exact root managed and lifecycle-active when termination is rejected 0ms
+ ✓ tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts > AgentTeamRunManager root lifecycle > CR-461-001: a closure stop asks whether the Task entry is still closed right before the root's terminate; open again keeps it 1ms
+ ✓ tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts > AgentTeamRunManager root lifecycle > rejects duplicate root registration and makes exact unregister idempotent 0ms
+ ✓ tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts > AgentTeamRunManager root lifecycle > never unregisters from an inactive read and isolates lifecycle listener failures 3ms
+stdout | tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:82818) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts > application team input RootTeamRun dispatch > forwards an authorized exact-member address as the bound agentRunId 5ms
+ ✓ tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts > application team input RootTeamRun dispatch > resolves initial targetMemberAddress through the binding before exact root dispatch 1ms
+ ✓ tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts > application team input RootTeamRun dispatch > rejects an unknown initial targetMemberAddress before root lookup 1ms
+ ✓ tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts > application team input RootTeamRun dispatch > rejects an unknown logical member address before root lookup 0ms
+
+ Test Files  5 passed (5)
+      Tests  44 passed (44)
+   Start at  18:25:12
+   Duration  11.77s (transform 5.05s, setup 140ms, import 10.01s, tests 785ms, environment 0ms)
+
+exit=0

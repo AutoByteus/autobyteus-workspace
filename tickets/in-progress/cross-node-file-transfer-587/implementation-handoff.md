@@ -10,21 +10,21 @@
 - Supplemental task artifacts: `reference-files-contract.md` (RFC-001), `follow-ups.md`
 - Design review report: `tickets/in-progress/cross-node-file-transfer-587/design-review-report.md`
 - Architecture review revision record: `tickets/in-progress/cross-node-file-transfer-587/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence, when applicable: N/A
+- Triggering rework report, revision record, or evidence, when applicable: `release-deployment-report.md` § Escalation / Reroute; `evidence/DEL-post-integration/DEL-03-whole-unit-suite-FAIL-stale-tests.log`
 
 ## Current Implementation Summary
 
 Files attached to a cross-node `delegate_task` or `send_message_to` are checked on the sending node (inside the sender's workspace, links resolved, regular files, distinct names, under the receiver's per-file limit and 4 GiB per call), hashed from one open handle, and uploaded once per content in signed raw pieces of at most 8 MiB into the receiving node's `<data>/received_files/<sha256>` (`.partial` while it arrives; a held file is skipped, a partial one resumed). Only then is the run started (delegation) or the message prepared and delivered. The receiving node verifies every named file before any root sees the request; the root plans the received paths (`<agent folder>/received_files/<sender run ID>/<name>`), holds the receiver's input slot, places the files as read-only hard links (copy as fallback; same sender + same name is replaced by atomic rename), then writes the log line. Every cross-node send names its node (RF-14). Unused entries and old partials are swept after a history delete and at startup; Memory Sync skips `received_files`.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002, a test-only Local Fix from delivery; the implementation summary above is unchanged)
 - Implementation revision record: `tickets/in-progress/cross-node-file-transfer-587/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002` (IR-001 is the baseline)
 - Related solution revision IDs: SR-009
 - Related architecture-review revision IDs: ARCH-REV-002
-- Related code-review revision IDs: N/A
-- Related API/E2E revision IDs: N/A
-- Related delivery revision IDs: N/A
-- Triggering finding IDs: N/A
+- Related code-review revision IDs: CRR-001, CRR-003
+- Related API/E2E revision IDs: API-REV-002
+- Related delivery revision IDs: N/A (delivery has not created DR-001; trigger: `release-deployment-report.md` § Escalation / Reroute)
+- Triggering finding IDs: DEL-03 items 1–3 (stale tests in the whole unit suite after the base refresh)
 
 ## Routing Classification (Mandatory)
 
@@ -139,9 +139,13 @@ All under `autobyteus-server-ts/` unless noted.
 | IMP-03 | `pnpm exec vitest run tests/unit/remote-collaboration tests/unit/agent-collaboration tests/unit/agent-communication tests/unit/standalone-agent-run-root tests/unit/agent-team-execution tests/unit/agent-org-execution tests/unit/memory-sync tests/unit/agent-tools tests/unit/run-history tests/unit/agent-execution/backends tests/unit/compositions tests/unit/api tests/unit/config tests/unit/services` (in `autobyteus-server-ts`) | e327ba2467 content (as IMP-02) | macOS, Node 22 | every changed server module and its in-process two-node flows | DS-001 … DS-005, AC-001, 002, 004, 005, 007 (unit), 008, 010, 011 | Pass | `evidence/IMP-03-server-broad-unit.log` | `Test Files  471 passed \| 4 skipped (475)`; `Tests  3845 passed \| 7 skipped (3852)` |
 | IMP-04 | `pnpm exec vitest run tests/unit/remote-collaboration/standalone-remote-delegation.test.ts tests/unit/remote-collaboration/team-remote-delegation.test.ts tests/unit/remote-collaboration/running-agents-messaging.test.ts tests/unit/remote-collaboration/received-files.test.ts tests/unit/agent-collaboration/execution/remote/outgoing-files.test.ts tests/unit/agent-collaboration/execution/communication/root-communication-engine-received-files.test.ts --reporter=verbose` | e327ba2467 | macOS, Node 22 | in-process two nodes (real `PeerClient`, `PeerGateway`, receivers, roots, stores, `OutgoingFiles`/`ReceivedFiles`; HTTP and the gate's signature check replaced), engine file order, both new owners | AC-001, AC-002, AC-004, AC-005, AC-007 (unit), AC-010, MP-002 | Pass | `evidence/IMP-04-files-in-process.log` | `Tests  51 passed (51)`; the case `autobyteus-587 AC-010 (RF-14): a message to the delegated run without node, or with another node, is refused …` ✓; `… MP-002: a reply after the Task closed is refused before anything is placed …` ✓ |
 | IMP-05 | Fresh-start build check for the changed build input (`typecheck-baseline.json`): `git clone --no-local` of the commit, `pnpm install --frozen-lockfile` alone, then `pnpm -C autobyteus-server-ts typecheck` and `pnpm -C autobyteus-web typecheck` | e327ba2467 | macOS, Node 22, fresh clone | the baseline file and both typecheck gates from a clean install | — | Pass | `evidence/IMP-05-fresh-start-typechecks.log` | `install exit=0`; server `[typecheck] PASS` with `test-file errors: 1005 in 315 files (baseline 1005 in 315 files)`; web `[typecheck] PASS` with `test-file errors: 86 in 36 files (baseline 86 in 36 files)` (this web run is on the commit itself) |
+| IMP-06 | `pnpm -C autobyteus-server-ts test:unit` (IR-002) | e295b74b81 (on delivery's ef53fadd52; base origin/personal ecd6d4556c merged as 3be417f8df) | macOS, Node 22 | the whole server unit suite | all; AC-008 | Pass | `evidence/IMP-06-whole-server-unit-suite.log` | `Test Files  1050 passed \| 5 skipped (1055)`; `Tests  8698 passed \| 9 skipped (8707)`; `exit=0` |
+| IMP-07 | `pnpm exec vitest run` the five IR-002 test files (`general-process-run-supervisor-ownership`, `standalone-application-host-lifecycle`, `application-team-input-root-dispatch`, `agent-team-run-manager-lifecycle`, e2e `recent-run-projection-graphql`) `--reporter=verbose --no-watch` | e295b74b81 | macOS, Node 22 | the supervisor, standalone host, Team root and Team manager constructions; run-history GraphQL e2e | — | Pass | `evidence/IMP-07-ir002-test-files.log` | `Test Files  5 passed (5)`; `Tests  44 passed (44)` |
+| IMP-08 | `pnpm -C autobyteus-server-ts typecheck` (IR-002) | e295b74b81 | macOS, Node 22 | server `src` and tests | all | Pass | `evidence/IMP-08-server-typecheck.log` | `[typecheck] PASS`; `test-file errors: 1005 in 315 files (baseline 1005 in 315 files)` |
+| IMP-09 | `pnpm -C autobyteus-web typecheck` (IR-002) | e295b74b81 | macOS, Node 22 | web, Electron main, cross-package tests | all | Pass | `evidence/IMP-09-web-typecheck.log` | `[typecheck] PASS`; `test-file errors: 86 in 36 files (baseline 86 in 36 files)` |
 
 - Not run, and why:
-  - Full `pnpm -C autobyteus-server-ts test:unit`: the affected set (IMP-03) covers every changed module and fixture; the rest of the suite exercises nothing this change touches.
+  - (IR-001 left out the whole server unit suite as covered by the affected set; that was wrong: delivery's whole run found stale constructions outside it. IR-002 runs it as IMP-06.)
   - Desktop packaging (`build:electron:mac`): the only build input changed is the server's test-error baseline, which only the server typecheck reads (IMP-05 proves it from a clean install); left to delivery's release checks.
   - Two-server E2E (AC-001 … AC-007, AC-010 over real HTTP), the tampering proxy (AC-003), a stopped peer (AC-006), app-level history delete (AC-007): API/E2E.
   - AGY/Grok/ACP tool-call limits (AC-009 for those runtimes): FU-001, needs signed-in runtimes.
