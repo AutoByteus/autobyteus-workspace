@@ -1,0 +1,21 @@
+# API-08 gated collaboration-prompt-wording E2E
+# Command: env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts --no-watch
+# Code e327ba2467; Node 22.23.1; macOS 26; 2026-11-21
+
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts (14 tests) 30390ms
+     ✓ CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs  1178ms
+     ✓ CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team  4743ms
+     ✓ CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team  1860ms
+     ✓ CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)  1592ms
+     ✓ CPW-R2 Agent root: a task agent messaging a running agent of a different Task is delivered (492 AC-008)  1062ms
+     ✓ CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)  829ms
+     ✓ CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate  1343ms
+     ✓ CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots  4498ms
+     ✓ CPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated  4687ms
+     ✓ CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it  732ms
+     ✓ CPW-M3 Org root: a sibling of the organization is reachable and delegable  490ms
+     ✓ CPW-M5 Team root: the user mentions a member of the team in a message to the team's task agent (a child row of the team's view)  1683ms
+     ✓ CPW-M7 C17-02: a run two hops down delegates to an address only the top run's catalog offers, as base answered a copy hosted in the top run  1372ms
+     ✓ CPW-M6 a task agent's in-run set is what it reaches by address (SR-059): delegate_task answers for its assigner's agents as base answered a hosted copy  2617ms
+      Tests  14 passed (14)
+EXIT 0

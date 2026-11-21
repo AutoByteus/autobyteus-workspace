@@ -1,0 +1,20 @@
+# API-07 gated contract stories (S18/S19 drivers now pass node, RF-14)
+# Command: env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs agy-failure-cli.mjs> CONTRACT_STORIES_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/collaboration-contract-stories.e2e.test.ts --no-watch
+# Code e327ba2467; Node 22.23.1; macOS 26; 2026-11-21
+
+## Run 1 (only §5.1, drivers without node): S18 refused NODE_REQUIRED
+AssertionError: S18 (R-10) The peer team reports to M: expected [ …(4) ] to deeply equal []
++   "results: expected 1, got 0: []",
++   "receiver header not found: You received a message from the agent with sender run id \"lead_e8c8036171b3437286e01eae763917ab\" on node \"node-b\".",
+
+## Run 2 (drivers with node: "node-a")
+     × §5.1 S0 … S27: a standalone agent delegates on its node and to a peer node 650935ms
+     × §5.2 U0 … U11: a team the user starts delegates 312742ms
+     ✓ §5.3 O0 … O9: an org the user starts delegates  313619ms
+      Tests  2 failed | 1 passed (3)
+AssertionError: S18 (R-10) The peer team reports to M: expected [ …(2) ] to deeply equal []
++   "A:memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl[6].counterpart: not in the contract ({\"address\":\"/lead\",\"nodeId\":\"srv_PvbyDg5lQ1h2n_uot5mMfo6XDgohMJCc\"})",
++   "B:memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl[0].counterpart: not in the contract ({\"address\":\"/project_task_manager\",\"nodeId\":\"srv_SkNMKlgIK4IkpKC7fb-oxvnyGRpiZyLc\"})",
+AssertionError: U9 (R-7) Delivered: runs of different open Tasks (autobyteus-492, CM-13): expected [ …(2) ] to deeply equal []
++   "A:memory/agents/image_maker_44a1/communication_messages_active.jsonl[1].counterpart: not in the contract ({\"address\":\"/research_agent\",\"nodeId\":null})",
++   "A:memory/agents/research_agent_8f80/communication_messages_active.jsonl[0].counterpart: not in the contract ({\"address\":\"/image_maker\",\"nodeId\":null})",

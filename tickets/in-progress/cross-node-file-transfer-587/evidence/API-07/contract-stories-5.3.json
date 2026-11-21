@@ -1,0 +1,394 @@
+{
+ "report": [
+  {
+   "state": "O0",
+   "cases": [
+    "RUN-3"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].platformAgentRunId: not in the contract (\"9a31d8cf-b0ee-4ee5-9fd8-ac54c92be488\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].platformAgentRunId: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].platformAgentRunId: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].platformAgentRunId: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].platformAgentRunId: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].defaultLaunchConfiguration: not in the contract ({\"runtimeKind\":\"antigravity_cli\",\"llmModelIdentifier\":\"gemini-3.8-flash-low\",\"llmConfig\":null,\"autoExecuteTools\":true,\"w)"
+   ]
+  },
+  {
+   "state": "O1",
+   "cases": [
+    "IN-5",
+    "A-2"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].platformAgentRunId: not in the contract (\"9a31d8cf-b0ee-4ee5-9fd8-ac54c92be488\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].platformAgentRunId: not in the contract (\"2d7978fa-c7e4-40cb-a07f-276afc238960\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].platformAgentRunId: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].platformAgentRunId: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].platformAgentRunId: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].defaultLaunchConfiguration: not in the contract ({\"runtimeKind\":\"antigravity_cli\",\"llmModelIdentifier\":\"gemini-3.8-flash-low\",\"llmConfig\":null,\"autoExecuteTools\":true,\"w)"
+   ]
+  },
+  {
+   "state": "O2",
+   "cases": [
+    "IN-5",
+    "A-2"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].platformAgentRunId: not in the contract (\"9a31d8cf-b0ee-4ee5-9fd8-ac54c92be488\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].platformAgentRunId: not in the contract (\"2d7978fa-c7e4-40cb-a07f-276afc238960\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].platformAgentRunId: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].platformAgentRunId: not in the contract (\"6a3a0fc7-aeb4-47af-a902-67063392c335\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].platformAgentRunId: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].defaultLaunchConfiguration: not in the contract ({\"runtimeKind\":\"antigravity_cli\",\"llmModelIdentifier\":\"gemini-3.8-flash-low\",\"llmConfig\":null,\"autoExecuteTools\":true,\"w)"
+   ]
+  },
+  {
+   "state": "O3",
+   "cases": [
+    "IN-6",
+    "A-3"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].platformAgentRunId: not in the contract (\"9a31d8cf-b0ee-4ee5-9fd8-ac54c92be488\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].platformAgentRunId: not in the contract (\"2d7978fa-c7e4-40cb-a07f-276afc238960\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].platformAgentRunId: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].platformAgentRunId: not in the contract (\"6a3a0fc7-aeb4-47af-a902-67063392c335\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].platformAgentRunId: not in the contract (\"5d71e77f-3141-459e-8f87-c6d7ae595d3d\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].defaultLaunchConfiguration: not in the contract ({\"runtimeKind\":\"antigravity_cli\",\"llmModelIdentifier\":\"gemini-3.8-flash-low\",\"llmConfig\":null,\"autoExecuteTools\":true,\"w)"
+   ]
+  },
+  {
+   "state": "O4",
+   "cases": [
+    "IN-6",
+    "C-4"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].platformAgentRunId: not in the contract (\"9a31d8cf-b0ee-4ee5-9fd8-ac54c92be488\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].platformAgentRunId: not in the contract (\"2d7978fa-c7e4-40cb-a07f-276afc238960\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].platformAgentRunId: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].platformAgentRunId: not in the contract (\"6a3a0fc7-aeb4-47af-a902-67063392c335\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].platformAgentRunId: not in the contract (\"5d71e77f-3141-459e-8f87-c6d7ae595d3d\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].defaultLaunchConfiguration: not in the contract ({\"runtimeKind\":\"antigravity_cli\",\"llmModelIdentifier\":\"gemini-3.8-flash-low\",\"llmConfig\":null,\"autoExecuteTools\":true,\"w)",
+    "refusal: expected the text \"No agent or agent team you can talk with has the address /dev_team/designer. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id. To have a task done by a new agent, use delegate_task.\", got {\"accepted\":false,\"code\":\"COLLABORATION_TARGET_NOT_FOUND\",\"message\":\"Collaboration target '/dev_team/designer' is not a member of your team instance '/dev_team'.\",\"isError\":true}"
+   ]
+  },
+  {
+   "state": "O5",
+   "cases": [
+    "DL-3"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].platformAgentRunId: not in the contract (\"9a31d8cf-b0ee-4ee5-9fd8-ac54c92be488\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].platformAgentRunId: not in the contract (\"2d7978fa-c7e4-40cb-a07f-276afc238960\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].platformAgentRunId: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].platformAgentRunId: not in the contract (\"6a3a0fc7-aeb4-47af-a902-67063392c335\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].platformAgentRunId: not in the contract (\"5d71e77f-3141-459e-8f87-c6d7ae595d3d\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].defaultLaunchConfiguration: not in the contract ({\"runtimeKind\":\"antigravity_cli\",\"llmModelIdentifier\":\"gemini-3.8-flash-low\",\"llmConfig\":null,\"autoExecuteTools\":true,\"w)",
+    "A:memory/agent_teams/dev_team_9a9a/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/dev_team_9a9a/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"configured\",\"fallbacks\":[]})"
+   ]
+  },
+  {
+   "state": "O6",
+   "cases": [
+    "B-5"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].platformAgentRunId: not in the contract (\"9a31d8cf-b0ee-4ee5-9fd8-ac54c92be488\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].platformAgentRunId: not in the contract (\"2d7978fa-c7e4-40cb-a07f-276afc238960\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].platformAgentRunId: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].platformAgentRunId: not in the contract (\"6a3a0fc7-aeb4-47af-a902-67063392c335\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].platformAgentRunId: not in the contract (\"5d71e77f-3141-459e-8f87-c6d7ae595d3d\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].defaultLaunchConfiguration: not in the contract ({\"runtimeKind\":\"antigravity_cli\",\"llmModelIdentifier\":\"gemini-3.8-flash-low\",\"llmConfig\":null,\"autoExecuteTools\":true,\"w)",
+    "A:memory/agent_teams/dev_team_9a9a/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/dev_team_9a9a/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"configured\",\"fallbacks\":[]})"
+   ]
+  },
+  {
+   "state": "O7",
+   "cases": [
+    "B-4"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].platformAgentRunId: not in the contract (\"9a31d8cf-b0ee-4ee5-9fd8-ac54c92be488\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].platformAgentRunId: not in the contract (\"2d7978fa-c7e4-40cb-a07f-276afc238960\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].platformAgentRunId: not in the contract (\"9be02f44-52ad-4380-9e7d-66b2ab90f99f\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].platformAgentRunId: not in the contract (\"6a3a0fc7-aeb4-47af-a902-67063392c335\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].platformAgentRunId: not in the contract (\"5d71e77f-3141-459e-8f87-c6d7ae595d3d\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].defaultLaunchConfiguration: not in the contract ({\"runtimeKind\":\"antigravity_cli\",\"llmModelIdentifier\":\"gemini-3.8-flash-low\",\"llmConfig\":null,\"autoExecuteTools\":true,\"w)",
+    "A:memory/agent_teams/dev_team_9a9a/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/dev_team_9a9a/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"configured\",\"fallbacks\":[]})"
+   ]
+  },
+  {
+   "state": "O8",
+   "cases": [
+    "DL-4"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].platformAgentRunId: not in the contract (\"9a31d8cf-b0ee-4ee5-9fd8-ac54c92be488\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].platformAgentRunId: not in the contract (\"2d7978fa-c7e4-40cb-a07f-276afc238960\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].platformAgentRunId: not in the contract (\"9be02f44-52ad-4380-9e7d-66b2ab90f99f\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].platformAgentRunId: not in the contract (\"6a3a0fc7-aeb4-47af-a902-67063392c335\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].platformAgentRunId: not in the contract (\"5d71e77f-3141-459e-8f87-c6d7ae595d3d\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].defaultLaunchConfiguration: not in the contract ({\"runtimeKind\":\"antigravity_cli\",\"llmModelIdentifier\":\"gemini-3.8-flash-low\",\"llmConfig\":null,\"autoExecuteTools\":true,\"w)",
+    "A:memory/agent_teams/dev_team_9a9a/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/dev_team_9a9a/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"configured\",\"fallbacks\":[]})",
+    "A:memory/agents/release_agent_66c3/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/release_agent_66c3/run_metadata.json.preparedAt: not in the contract (\"2026-11-21T14:31:32.868Z\")",
+    "A:memory/agents/release_agent_66c3/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-22T14:31:32.868Z\")",
+    "A:memory/agents/release_agent_66c3/run_metadata.json.applicationExecutionContext: not in the contract (null)"
+   ]
+  },
+  {
+   "state": "O9",
+   "cases": [
+    "A-5",
+    "A-6"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].platformAgentRunId: not in the contract (\"9a31d8cf-b0ee-4ee5-9fd8-ac54c92be488\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].platformAgentRunId: not in the contract (\"2d7978fa-c7e4-40cb-a07f-276afc238960\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].platformAgentRunId: not in the contract (\"9be02f44-52ad-4380-9e7d-66b2ab90f99f\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].platformAgentRunId: not in the contract (\"6a3a0fc7-aeb4-47af-a902-67063392c335\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].platformAgentRunId: not in the contract (\"5d71e77f-3141-459e-8f87-c6d7ae595d3d\")",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].role: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].description: not in the contract (null)",
+    "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].defaultLaunchConfiguration: not in the contract ({\"runtimeKind\":\"antigravity_cli\",\"llmModelIdentifier\":\"gemini-3.8-flash-low\",\"llmConfig\":null,\"autoExecuteTools\":true,\"w)",
+    "A:memory/agent_teams/dev_team_9a9a/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/dev_team_9a9a/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"configured\",\"fallbacks\":[]})",
+    "A:memory/agents/release_agent_66c3/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/release_agent_66c3/run_metadata.json.preparedAt: not in the contract (\"2026-11-21T14:31:32.868Z\")",
+    "A:memory/agents/release_agent_66c3/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-22T14:31:32.868Z\")",
+    "A:memory/agents/release_agent_66c3/run_metadata.json.applicationExecutionContext: not in the contract (null)"
+   ]
+  }
+ ],
+ "knownDifferences": [
+  {
+   "pattern": "/team_run_execution_tree\\.json\\.schemaVersion: missing$/",
+   "reason": "The team run file has had no schemaVersion since before autobyteus-461 (base 827f1e68dc reads it tolerantly and writes the current shape without it); the contract's §6 example carries it. The shape is unchanged by this ticket."
+  },
+  {
+   "pattern": "/run_metadata\\.json\\.(preparedAt|preparedExpiresAt|applicationExecutionContext): not in the contract/",
+   "reason": "Contract §3.2: a delegated run's own file is 'the ordinary file of its kind, plus delegatedFrom'. These ordinary run_metadata fields exist since before autobyteus-461 (base 827f1e68dc writes them on every run); the §3.2 example lists the collaboration fields only."
+  },
+  {
+   "pattern": "/ad-hoc-tasks\\/[^/]+\\/task\\.json\\.(projectId: missing|title: missing|referenceFiles: not in the contract|status: expected \"IN_PROGRESS\", got \"TODO\")/",
+   "reason": "REQ-005 keeps the Task rules unchanged and the contract text does not define the ad-hoc task.json; the product keeps base 827f1e68dc's shape ({taskId, description, referenceFiles, status TODO, createdAt, updatedAt}). The model (model.py line 358) writes its own approximation."
+  },
+  {
+   "pattern": "/run_metadata\\.json\\.llmConfig: expected an object, got null$/",
+   "reason": "A launch keeps only the settings its model declares (launch-usability-check.ts canonicalLaunch, before autobyteus-461); the scripted AGY model declares none, so a default launch's llmConfig is stored as null. The model writes an open object."
+  },
+  {
+   "pattern": "/agent_org_run_execution_tree\\.json\\.rootOrg(\\.members\\[\\d+\\])+\\.(role|description|platformAgentRunId|defaultLaunchConfiguration): not in the contract/",
+   "reason": "An org file's members carry the ordinary configured-member fields (role, description, platformAgentRunId; a mounted team's defaultLaunchConfiguration) since before autobyteus-461 (base run-execution-tree-shared-record-schemas.ts); the model's org file lists the collaboration fields only (its team file has them as open values)."
+  },
+  {
+   "pattern": "/^refusal: expected the text \"No agent or agent team you can talk with has the address \\/dev_team\\/[a-z_]+\\. .*got \\{\"accepted\":false,\"code\":\"COLLABORATION_TARGET_NOT_FOUND\",\"message\":\"Collaboration target '\\/dev_team\\/[a-z_]+' is not a member of your team instance '\\/dev_team'\\.\"/",
+   "reason": "Contract §2.3 / C-4: a miss returns COLLABORATION_TARGET_NOT_FOUND 'with today's guidance'. A miss under a mounted team's prefix keeps base 827f1e68dc's text (message-recipient-resolution.ts:74); the model writes one text for every miss."
+  },
+  {
+   "pattern": "/team_run_execution_tree\\.json\\.rootTeam\\.(members\\[\\d+\\]\\.launchSource|defaultLaunchSource): not in the contract/",
+   "reason": "A delegated team run's own file records where each launch came from: design-spec DS-10 (E6 row) and the DelegatedRunStarter ('its resolved launch, address and launchSource') name rootTeam.defaultLaunchSource and the members' launchSource; the contract's §3.2 team example omits them."
+  },
+  {
+   "pattern": "/^result\\[0\\]\\.message: expected \"Message delivered\\.\", got \"Message delivered\\. (\\S+) continues with its conversation\\.\"$/",
+   "reason": "Today's text when a message by run ID continues the run of a reopened Task is the run-ID text followed by 'X continues with its conversation.': base 827f1e68dc root-task-execution-lifecycle.ts:301 appends it to the delivery's message, which by run ID on this node is 'Message delivered.' (contract §2, SR-054); kept in cross-run-message-delivery.ts:105; the update_task description names it. The product keeps it (REQ-009); the model writes the plain run-ID text. A contract-model note, not a product difference. (Round 2 quoted 'Delivered message to X. …', the text F-6 had changed.)"
+  },
+  {
+   "pattern": "/team_run_history_index\\.json\\[software_engineering_team_0218\\]\\.terminatedAt: expected a string like/",
+   "reason": "The model lets an agent of a stopped run make a call (S23, S24: solution_designer_65a9 while E is stopped). A real agent acts only on input: the test drives the call by the user's message to it on E's view, which restores E (REQ-003, SR-048), so E's row is active (terminatedAt null)."
+  },
+  {
+   "pattern": "/^B:memory\\/team_run_history_index\\.json\\[research_team_77aa\\]\\.workspaceRootPath: expected \"[^\"]*\\/story-5\\.1-A\\/workspace\", got \"[^\"]*\\/story-5\\.1-B\\/temp_workspace\"$/",
+   "reason": "A run a peer starts runs in a folder of its own node (node B's temporary workspace); the delegator's folder is a path on node A. Unchanged by autobyteus-461 (the peer start path). The model gives B's row A's folder. A contract-model note."
+  },
+  {
+   "pattern": "/^refusal: expected code [A-Z_]+, got \\{\"delegated\":false,\"message\":/",
+   "reason": "A refused delegate_task returns {delegated:false, message} with no code since before autobyteus-461 (task-delegation-result-contract.ts); the agent sees the message, which is compared in full. The model names the code of the rule that refuses."
+  }
+ ],
+ "bindings": {
+  "student": "student",
+  "tutor": "tutor",
+  "Teacher": "Teacher",
+  "project-task-manager": "project-task-manager",
+  "image-maker": "image-maker",
+  "research-agent": "research-agent",
+  "upscaler": "upscaler",
+  "release-agent": "release-agent",
+  "solution-designer": "solution-designer",
+  "architecture-reviewer": "architecture-reviewer",
+  "implementation-engineer": "implementation-engineer",
+  "code-reviewer": "code-reviewer",
+  "product-designer": "product-designer",
+  "prototyper": "prototyper",
+  "lead": "lead",
+  "analyst": "analyst",
+  "ceo-agent": "ceo-agent",
+  "cto": "cto",
+  "dev-lead": "dev-lead",
+  "qa": "qa",
+  "software-engineering-team": "software-engineering-team",
+  "product-team": "product-team",
+  "research-team": "research-team",
+  "dev-team": "dev-team",
+  "company-org": "company-org",
+  "/Users/me/projects/x": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-NPkr2q/story-5.3-A/workspace",
+  "project_8f21": "project_9ee4fe86-02a1-427d-8664-bbfad036cf16",
+  "project_task_4d4d": "project_task_10d93409-1702-4b20-82cd-e2996ed34089",
+  "demo-4": "demo-1",
+  "project_task_5e5e": "project_task_b65fa6f0-5fc5-4a58-8468-23cb6442b2c4",
+  "demo-5": "demo-2",
+  "company_org_9d00": "company_org_b20ce02069d747609d0b7d4f1c636771",
+  "ceo_agent_1f2e": "ceo_agent_16797f6fc00b4235948e07d8f22dbc95",
+  "cto_2a3b": "cto_ad9ce11cb85445a6b4c372beedc76d77",
+  "Teacher_5c6d": "teacher_943ecf8b7b2f4d7993d545937fc08827",
+  "dev_lead_4c3d": "dev_lead_c2b504631e0d49cda1a548e66b58351d",
+  "qa_8e9f": "qa_0e62eeea33cf44cb817b843ef5b3ca9a",
+  "dev_team_6b70": "dev_team_86db11b95497496b9d94f133f1d7d43c",
+  "collabmsg_O1": "collabmsg_efr3dDPnRMIhs9MRmxhNdZaSOocFBrjK",
+  "collabmsg_O2": "collabmsg_653pORe-VAx59u7V5_QbWfagiy6Zj0G5",
+  "collabmsg_O3": "collabmsg_h7LULv2cjmEzGFFgsSQm12XUjSvZ25lW",
+  "dev_team_9a9a": "dev_team_f75a08456a504d42b6c0ff0dbcebf038",
+  "dev_lead_9a01": "dev_lead_4854168a7f35477cb1bdd3fc63806e3c",
+  "qa_9a02": "qa_2bb2bd2377624001ad2f0661828b447f",
+  "collabmsg_O4": "collabmsg_nZRsQpNahUZpQaga309XjGuQjkeRregQ",
+  "collabmsg_O5": "collabmsg_LhpY8axPNAKaAFn61dqR0uSV6f0F201i",
+  "release_agent_66c3": "release_agent_ca44a528be7d40ccadd4d3c03c9f5774"
+ },
+ "failureLogs": {}
+}

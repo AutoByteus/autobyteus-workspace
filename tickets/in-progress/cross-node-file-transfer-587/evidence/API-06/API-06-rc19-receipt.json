@@ -1,0 +1,1462 @@
+{
+  "cases": {
+    "RC-01": {
+      "inbound": {
+        "start": {
+          "status": 401,
+          "answer": {
+            "error": "NODE_CREDENTIAL_INVALID",
+            "code": "NODE_CREDENTIAL_INVALID",
+            "message": "This node does not accept this credential."
+          }
+        },
+        "message": {
+          "status": 401,
+          "answer": {
+            "error": "NODE_CREDENTIAL_INVALID",
+            "code": "NODE_CREDENTIAL_INVALID",
+            "message": "This node does not accept this credential."
+          }
+        }
+      },
+      "addWhileOff": {
+        "message": "Turn on Remote Collaboration before pairing nodes.",
+        "locations": [
+          {
+            "line": 1,
+            "column": 10
+          }
+        ],
+        "path": [
+          "createPeerInvite"
+        ],
+        "extensions": {
+          "code": "REMOTE_COLLABORATION_OFF"
+        }
+      }
+    },
+    "RC-02": {
+      "delegateOff": "Remote collaboration is turned off on this node, so nothing was sent to another node."
+    },
+    "RC-03": {
+      "unregisteredCaller": {
+        "status": 401,
+        "answer": {
+          "error": "NODE_CREDENTIAL_INVALID",
+          "code": "NODE_CREDENTIAL_INVALID",
+          "message": "This node does not accept this credential."
+        }
+      },
+      "alphaPeers": {
+        "peers": [
+          {
+            "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+            "name": "beta-node",
+            "baseUrl": "http://127.0.0.1:58112",
+            "addedAt": "2026-11-21T13:58:39.386Z"
+          }
+        ]
+      },
+      "betaPeers": {
+        "peers": [
+          {
+            "nodeId": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+            "name": "alpha-node",
+            "baseUrl": "http://127.0.0.1:58113",
+            "addedAt": "2026-11-21T13:58:39.376Z"
+          }
+        ]
+      },
+      "notAutobyteus": {
+        "message": "http://127.0.0.1:58163 is not an AutoByteus node.",
+        "locations": [
+          {
+            "line": 1,
+            "column": 34
+          }
+        ],
+        "path": [
+          "changePeerAddress"
+        ],
+        "extensions": {
+          "code": "PEER_NOT_AUTOBYTEUS"
+        }
+      },
+      "notFound": {
+        "message": "http://127.0.0.1:58163/missing is not an AutoByteus node.",
+        "locations": [
+          {
+            "line": 1,
+            "column": 34
+          }
+        ],
+        "path": [
+          "changePeerAddress"
+        ],
+        "extensions": {
+          "code": "PEER_NOT_AUTOBYTEUS"
+        }
+      },
+      "dead": {
+        "message": "http://127.0.0.1:58165 could not be reached: nothing answers at that address and port.",
+        "locations": [
+          {
+            "line": 1,
+            "column": 34
+          }
+        ],
+        "path": [
+          "changePeerAddress"
+        ],
+        "extensions": {
+          "code": "PEER_UNREACHABLE",
+          "reason": "refused",
+          "address": "http://127.0.0.1:58165",
+          "loopbackInContainer": false
+        }
+      },
+      "gateway": {
+        "mismatchStart": {
+          "status": 200,
+          "answer": {
+            "accepted": false,
+            "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+            "code": "PEER_IDENTITY_MISMATCH",
+            "message": "This request was meant for another node."
+          }
+        },
+        "mismatchMessage": {
+          "status": 200,
+          "answer": {
+            "accepted": false,
+            "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+            "code": "PEER_IDENTITY_MISMATCH",
+            "message": "This request was meant for another node."
+          }
+        },
+        "unregisteredStart": {
+          "status": 401,
+          "answer": {
+            "error": "NODE_CREDENTIAL_INVALID",
+            "code": "NODE_CREDENTIAL_INVALID",
+            "message": "This node does not accept this credential."
+          }
+        },
+        "malformedStart": {
+          "status": 400,
+          "answer": {
+            "accepted": false,
+            "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+            "code": "REMOTE_REQUEST_INVALID",
+            "message": "toNodeId must be a non-empty trimmed string."
+          }
+        },
+        "malformedMessage": {
+          "status": 400,
+          "answer": {
+            "accepted": false,
+            "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+            "code": "REMOTE_REQUEST_INVALID",
+            "message": "kind must be 'work_packet' or 'message'."
+          }
+        }
+      },
+      "noPublishing": {
+        "publishQuery": "Cannot query field \"publishedAgents\" on type \"Query\".",
+        "oldField": {
+          "status": 400,
+          "answer": {
+            "accepted": false,
+            "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+            "code": "REMOTE_REQUEST_INVALID",
+            "message": "address must be a non-empty trimmed string."
+          }
+        }
+      }
+    },
+    "RC-04": {
+      "results": {
+        "/blank_slate": {
+          "text": "There is no default runtime configured for the target agent Blank Slate on node \"beta-node\", and Model Routing is off on node \"beta-node\".",
+          "answer": {
+            "accepted": false,
+            "code": "NO_DEFAULT_RUNTIME",
+            "message": "There is no default runtime configured for the target agent Blank Slate",
+            "target": {
+              "kind": "agent",
+              "name": "Blank Slate"
+            },
+            "modelRouting": {
+              "state": "off"
+            },
+            "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+          }
+        },
+        "/half_set": {
+          "text": "There is no default runtime configured for the target agent Half Set on node \"beta-node\", and Model Routing is off on node \"beta-node\".",
+          "answer": {
+            "accepted": false,
+            "code": "NO_DEFAULT_RUNTIME",
+            "message": "There is no default runtime configured for the target agent Half Set",
+            "target": {
+              "kind": "agent",
+              "name": "Half Set"
+            },
+            "modelRouting": {
+              "state": "off"
+            },
+            "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+          }
+        },
+        "/codex_writer": {
+          "text": "The Agent Codex Writer on node \"beta-node\" cannot run there: Codex App Server command '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-bxdChD/beta/missing/codex' is not available, and Model Routing is off on node \"beta-node\".",
+          "answer": {
+            "accepted": false,
+            "code": "AGENT_CANNOT_RUN",
+            "message": "Codex App Server command '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-bxdChD/beta/missing/codex' is not available.",
+            "target": {
+              "kind": "agent",
+              "name": "Codex Writer"
+            },
+            "modelRouting": {
+              "state": "off"
+            },
+            "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+          }
+        },
+        "/fragile": {
+          "text": "The Agent Fragile on node \"beta-node\" cannot run there: its default model cannot be used: 'no-such-model' is no longer offered by Antigravity CLI, and Model Routing is off on node \"beta-node\".",
+          "answer": {
+            "accepted": false,
+            "code": "AGENT_CANNOT_RUN",
+            "message": "its default model cannot be used: 'no-such-model' is no longer offered by Antigravity CLI",
+            "target": {
+              "kind": "agent",
+              "name": "Fragile"
+            },
+            "modelRouting": {
+              "state": "off"
+            },
+            "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+          }
+        },
+        "/model_router": {
+          "text": "Node \"beta-node\" has no Agent or Agent Team at /model_router that can be delegated to. If you have list_available_agents, call it with this node to see what it offers.",
+          "answer": {
+            "accepted": false,
+            "code": "AGENT_NOT_FOUND",
+            "message": "/model_router",
+            "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+          }
+        },
+        "/remote_org_b": {
+          "text": "Node \"beta-node\" has no Agent or Agent Team at /remote_org_b that can be delegated to. If you have list_available_agents, call it with this node to see what it offers.",
+          "answer": {
+            "accepted": false,
+            "code": "AGENT_NOT_FOUND",
+            "message": "/remote_org_b",
+            "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+          }
+        },
+        "/local_scout": {
+          "text": "Node \"beta-node\" has no Agent or Agent Team at /local_scout that can be delegated to. If you have list_available_agents, call it with this node to see what it offers.",
+          "answer": {
+            "accepted": false,
+            "code": "AGENT_NOT_FOUND",
+            "message": "/local_scout",
+            "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+          }
+        },
+        "/nobody_here": {
+          "text": "Node \"beta-node\" has no Agent or Agent Team at /nobody_here that can be delegated to. If you have list_available_agents, call it with this node to see what it offers.",
+          "answer": {
+            "accepted": false,
+            "code": "AGENT_NOT_FOUND",
+            "message": "/nobody_here",
+            "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+          }
+        },
+        "/hollow_team": {
+          "text": "There is no default runtime configured for the target agent team Hollow Team on node \"beta-node\", and Model Routing is off on node \"beta-node\".",
+          "answer": {
+            "accepted": false,
+            "code": "NO_DEFAULT_RUNTIME",
+            "message": "There is no default runtime configured for the target agent team Hollow Team",
+            "target": {
+              "kind": "agent_team",
+              "name": "Hollow Team"
+            },
+            "modelRouting": {
+              "state": "off"
+            },
+            "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+          }
+        },
+        "/codex_team": {
+          "text": "The Agent Team Codex Team on node \"beta-node\" cannot run there: Codex App Server command '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-bxdChD/beta/missing/codex' is not available, and Model Routing is off on node \"beta-node\".",
+          "answer": {
+            "accepted": false,
+            "code": "AGENT_CANNOT_RUN",
+            "message": "Codex App Server command '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-bxdChD/beta/missing/codex' is not available.",
+            "target": {
+              "kind": "agent_team",
+              "name": "Codex Team"
+            },
+            "modelRouting": {
+              "state": "off"
+            },
+            "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+          }
+        }
+      }
+    },
+    "RC-05 565": {
+      "counterparts": {
+        "beta": {
+          "address": "/delegator",
+          "nodeId": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw"
+        },
+        "alpha": {
+          "address": "/publisher",
+          "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+        }
+      },
+      "liveParties": [
+        {
+          "sender": {
+            "agentRunId": "publisher_74b144aedfa34b24bec35d5b40c66c0b",
+            "address": "/publisher",
+            "nodeName": "beta-node"
+          },
+          "receiver": {
+            "agentRunId": "delegator_26b77dcf99bd43c18f4694ed75486cdc",
+            "address": "/delegator",
+            "nodeName": null
+          }
+        },
+        {
+          "sender": {
+            "agentRunId": "delegator_26b77dcf99bd43c18f4694ed75486cdc",
+            "address": "/delegator",
+            "nodeName": null
+          },
+          "receiver": {
+            "agentRunId": "publisher_74b144aedfa34b24bec35d5b40c66c0b",
+            "address": "/publisher",
+            "nodeName": "beta-node"
+          }
+        }
+      ],
+      "soloCounterparts": [
+        {
+          "kind": "remote",
+          "agentRunId": "publisher_74b144aedfa34b24bec35d5b40c66c0b",
+          "address": "/publisher",
+          "nodeName": "beta-node"
+        }
+      ],
+      "r1Counterparts": [
+        {
+          "kind": "remote",
+          "agentRunId": "delegator_26b77dcf99bd43c18f4694ed75486cdc",
+          "address": "/delegator",
+          "nodeName": "alpha-node"
+        }
+      ]
+    },
+    "RC-05": {
+      "titleBeforeOwner": "Publish the draft. Marker STANDALONE-PACKET.",
+      "delegated": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "publisher_74b144aedfa34b24bec35d5b40c66c0b",
+        "node": "beta-node",
+        "task_id": "ad_hoc_task_d9146e99-52a8-45e3-9123-e8cfde1edecd",
+        "isError": false,
+        "elapsedMs": 637
+      },
+      "metadata": {
+        "runId": "publisher_74b144aedfa34b24bec35d5b40c66c0b",
+        "agentDefinitionId": "publisher",
+        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-bxdChD/beta/data/temp_workspace",
+        "memoryDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-bxdChD/beta/data/memory/agents/publisher_74b144aedfa34b24bec35d5b40c66c0b",
+        "llmModelIdentifier": "gemini-3.8-flash-low",
+        "llmConfig": null,
+        "autoExecuteTools": true,
+        "runtimeKind": "antigravity_cli",
+        "platformAgentRunId": "88263d8d-653a-4516-9032-2a08bdc3cb3f",
+        "preparedAt": "2026-11-21T13:58:42.206Z",
+        "preparedExpiresAt": "2026-11-22T13:58:42.206Z",
+        "startedAt": "2026-11-21T13:58:42.505Z",
+        "applicationExecutionContext": null,
+        "address": "/publisher",
+        "launchSource": {
+          "origin": "agent_default",
+          "fallbacks": []
+        },
+        "delegatedFrom": {
+          "delegatingRun": {
+            "kind": "agent",
+            "runId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+          },
+          "delegatorAgentRunId": "delegator_26b77dcf99bd43c18f4694ed75486cdc",
+          "nodeId": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw"
+        }
+      },
+      "packet": "You have a new task from the agent with sender run id \"delegator_26b77dcf99bd43c18f4694ed75486cdc\" on node \"alpha-node\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id set to that sender run id and node set to \"alpha-node\".\n\nDescription:\nPublish the draft. Marker STANDALONE-PACKET.",
+      "link": {
+        "address": "/publisher",
+        "agentRunId": "publisher_74b144aedfa34b24bec35d5b40c66c0b",
+        "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "delegatorAgentRunId": "delegator_26b77dcf99bd43c18f4694ed75486cdc",
+        "startedAt": "2026-11-21T13:58:42.271Z"
+      },
+      "taskResource": {
+        "file": "ad-hoc-tasks/ad_hoc_task_d9146e99-52a8-45e3-9123-e8cfde1edecd/agent_run_resources.json",
+        "entry": {
+          "role": "assigned",
+          "delegatedFrom": {
+            "delegatingRun": {
+              "kind": "agent",
+              "runId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+            },
+            "delegatorAgentRunId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+          },
+          "recipientAddress": "/publisher",
+          "agentRun": {
+            "kind": "agent",
+            "agentRunId": "publisher_74b144aedfa34b24bec35d5b40c66c0b"
+          },
+          "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+          "linkedAt": "2026-11-21T13:58:42.271Z",
+          "start": "started",
+          "closedAt": null
+        }
+      },
+      "reply": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Delivered message to delegator_26b77dcf99bd43c18f4694ed75486cdc on node \"alpha-node\".",
+        "target_agent_run_id": "delegator_26b77dcf99bd43c18f4694ed75486cdc",
+        "isError": false,
+        "elapsedMs": 324
+      },
+      "received": "You received a message from the agent with sender run id \"publisher_74b144aedfa34b24bec35d5b40c66c0b\" on node \"beta-node\".\nmessage:\nREPLY-FROM-BETA-1",
+      "followUp": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Delivered message to publisher_74b144aedfa34b24bec35d5b40c66c0b on node \"beta-node\".",
+        "target_agent_run_id": "publisher_74b144aedfa34b24bec35d5b40c66c0b",
+        "isError": false,
+        "elapsedMs": 212
+      },
+      "atBeta": "You received a message from the agent with sender run id \"delegator_26b77dcf99bd43c18f4694ed75486cdc\" on node \"alpha-node\".\nmessage:\nFOLLOWUP-FROM-ALPHA-1",
+      "replyLogs": {
+        "messageId": "collabmsg_I9hqWziVOcTAG8rj6Og_gjCAzVXO2x18",
+        "files": {
+          "beta": "memory/agents/publisher_74b144aedfa34b24bec35d5b40c66c0b/communication_messages_active.jsonl",
+          "alpha": "memory/agents/delegator_26b77dcf99bd43c18f4694ed75486cdc/communication_messages_active.jsonl"
+        },
+        "counterparts": {
+          "beta": {
+            "address": "/delegator",
+            "nodeId": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw"
+          },
+          "alpha": {
+            "address": "/publisher",
+            "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+          }
+        }
+      },
+      "followUpLogs": {
+        "messageId": "collabmsg_VVtuUICLCx2Zb6sNZzxmPHXoA4ZxcokO",
+        "files": {
+          "alpha": "memory/agents/delegator_26b77dcf99bd43c18f4694ed75486cdc/communication_messages_active.jsonl",
+          "beta": "memory/agents/publisher_74b144aedfa34b24bec35d5b40c66c0b/communication_messages_active.jsonl"
+        },
+        "counterparts": {
+          "alpha": {
+            "address": "/publisher",
+            "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+          },
+          "beta": {
+            "address": "/delegator",
+            "nodeId": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw"
+          }
+        }
+      },
+      "sequences": {
+        "snapshots": [
+          0
+        ],
+        "sequenced": 3,
+        "lastSequence": 3,
+        "gaps": [],
+        "errorFrames": []
+      }
+    },
+    "RC-19": {
+      "toBetaAfterRemoval": "This node and node \"beta-node\" are not paired, so nothing was done there. The user can pair them again on the Nodes page.",
+      "fromBetaAfterRemoval": "No peer node named \"alpha-node\" is registered on this node, so nothing was sent. Use a node name the user gave you; if you have list_peer_nodes, it lists them.",
+      "fromBetaNoNode": {
+        "accepted": false,
+        "code": "NODE_REQUIRED",
+        "message": "This agent runs on node \"srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw\"; pass node: \"srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw\" with its run id.",
+        "isError": true,
+        "elapsedMs": 220
+      },
+      "delegateAfterRemoval": "No peer node named \"beta-node\" is registered on this node, so nothing was sent. Use a node name the user gave you; if you have list_peer_nodes, it lists them.",
+      "historyBefore": {
+        "alphaLinks": [
+          {
+            "address": "/publisher",
+            "agentRunId": "publisher_74b144aedfa34b24bec35d5b40c66c0b",
+            "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+            "delegatorAgentRunId": "delegator_26b77dcf99bd43c18f4694ed75486cdc",
+            "startedAt": "2026-11-21T13:58:42.271Z"
+          }
+        ],
+        "betaRuns": [
+          "publisher_74b144aedfa34b24bec35d5b40c66c0b"
+        ]
+      }
+    }
+  },
+  "nodes": {
+    "alpha": {
+      "nodeId": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+      "port": 58110,
+      "peerUrlOnBeta": "http://127.0.0.1:58113",
+      "canaryKeySaved": true
+    },
+    "beta": {
+      "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+      "port": 58111,
+      "peerUrlOnAlpha": "http://127.0.0.1:58112",
+      "canaryKeySaved": true
+    }
+  },
+  "betaDefinitions": {
+    "delegator": "delegator",
+    "manager": "remote-manager",
+    "worker": "remote-worker",
+    "scout": "scout",
+    "oldNameScout": "old-name-scout",
+    "runningScout": "running-scout",
+    "team": "remote-squad",
+    "org": "remote-org",
+    "publisher": "publisher",
+    "blank": "blank-slate",
+    "half": "half-set",
+    "codex": "codex-writer",
+    "fragile": "fragile",
+    "bystander": "bystander",
+    "betaPm": "project-task-manager",
+    "checker": "checker",
+    "studioTeam": "studio-team",
+    "hollowTeam": "hollow-team",
+    "codexTeam": "codex-team",
+    "betaOrg": "remote-org-b"
+  },
+  "captured": [
+    {
+      "seq": 1,
+      "at": 1795269519400,
+      "via": "toBeta",
+      "method": "GET",
+      "path": "/rest/remote-access/status",
+      "headers": {
+        "host": "127.0.0.1:58112",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "body": null,
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "phoneAccessEnabled": false,
+        "pairingAvailable": false,
+        "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+      }
+    },
+    {
+      "seq": 2,
+      "at": 1795269519414,
+      "via": "toAlpha",
+      "method": "GET",
+      "path": "/rest/remote-access/status",
+      "headers": {
+        "host": "127.0.0.1:58113",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "body": null,
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "phoneAccessEnabled": false,
+        "pairingAvailable": false,
+        "nodeId": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw"
+      }
+    },
+    {
+      "seq": 3,
+      "at": 1795269519632,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:58112",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "x-autobyteus-peer-to": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "x-autobyteus-peer-timestamp": "1795269519",
+        "x-autobyteus-peer-nonce": "d1d4f0e9830fead74410439a63208f42",
+        "x-autobyteus-peer-body-sha256": "e3ce16cfda2ecb06bcc782dd7d35685f908b2c2b5aa1a5707edcf75063c44e2e",
+        "x-autobyteus-peer-signature": "bbc15612e6f5a17fdc204ebf7a394170afd8886dc1c5e57d947cb3df688e6d07",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "406"
+      },
+      "body": {
+        "fromNodeId": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "toNodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "address": "/blank_slate",
+        "delegator": {
+          "agentRunId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+        },
+        "delegatingRun": {
+          "kind": "agent",
+          "runId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+        },
+        "task": {
+          "text": "Work for /blank_slate.",
+          "title": "Work for /blank_slate.",
+          "taskKey": null,
+          "projectId": null,
+          "taskId": null
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "NO_DEFAULT_RUNTIME",
+        "message": "There is no default runtime configured for the target agent Blank Slate",
+        "target": {
+          "kind": "agent",
+          "name": "Blank Slate"
+        },
+        "modelRouting": {
+          "state": "off"
+        },
+        "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+      }
+    },
+    {
+      "seq": 4,
+      "at": 1795269519848,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:58112",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "x-autobyteus-peer-to": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "x-autobyteus-peer-timestamp": "1795269519",
+        "x-autobyteus-peer-nonce": "502cd4ef22f73d2cb4a7c5a5a59b3b0d",
+        "x-autobyteus-peer-body-sha256": "c3ece91b9b22b269e685600a6c59c8852aa9efec04c8ca08789b21e53c14b378",
+        "x-autobyteus-peer-signature": "4f335821f03fb533263e83634b5ecaf937db8e8099a382115d97a176d5f0bff1",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "397"
+      },
+      "body": {
+        "fromNodeId": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "toNodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "address": "/half_set",
+        "delegator": {
+          "agentRunId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+        },
+        "delegatingRun": {
+          "kind": "agent",
+          "runId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+        },
+        "task": {
+          "text": "Work for /half_set.",
+          "title": "Work for /half_set.",
+          "taskKey": null,
+          "projectId": null,
+          "taskId": null
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "NO_DEFAULT_RUNTIME",
+        "message": "There is no default runtime configured for the target agent Half Set",
+        "target": {
+          "kind": "agent",
+          "name": "Half Set"
+        },
+        "modelRouting": {
+          "state": "off"
+        },
+        "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+      }
+    },
+    {
+      "seq": 5,
+      "at": 1795269520059,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:58112",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "x-autobyteus-peer-to": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "x-autobyteus-peer-timestamp": "1795269520",
+        "x-autobyteus-peer-nonce": "7d13a66b1f4480ec036d9532bc20de5a",
+        "x-autobyteus-peer-body-sha256": "82ee263ab64a95efb1ffee888d6287be8135a8b577e245f926a9b839ceb76a09",
+        "x-autobyteus-peer-signature": "3bc7570c3e12da57aaac31bc0b91a240082449b2040db6a68400c2b271de9986",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "409"
+      },
+      "body": {
+        "fromNodeId": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "toNodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "address": "/codex_writer",
+        "delegator": {
+          "agentRunId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+        },
+        "delegatingRun": {
+          "kind": "agent",
+          "runId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+        },
+        "task": {
+          "text": "Work for /codex_writer.",
+          "title": "Work for /codex_writer.",
+          "taskKey": null,
+          "projectId": null,
+          "taskId": null
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "AGENT_CANNOT_RUN",
+        "message": "Codex App Server command '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-bxdChD/beta/missing/codex' is not available.",
+        "target": {
+          "kind": "agent",
+          "name": "Codex Writer"
+        },
+        "modelRouting": {
+          "state": "off"
+        },
+        "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+      }
+    },
+    {
+      "seq": 6,
+      "at": 1795269520283,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:58112",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "x-autobyteus-peer-to": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "x-autobyteus-peer-timestamp": "1795269520",
+        "x-autobyteus-peer-nonce": "d29836cfa5ab906384f39c33f44525ed",
+        "x-autobyteus-peer-body-sha256": "5c5ac33e691aaacefb05376a29639ef6b855c49ff57c14330ca3e26da4afbcba",
+        "x-autobyteus-peer-signature": "35701f185681f12d8d3ac7e2d339c478cce1fc52622d87fb54d5e25bc2077b2b",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "394"
+      },
+      "body": {
+        "fromNodeId": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "toNodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "address": "/fragile",
+        "delegator": {
+          "agentRunId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+        },
+        "delegatingRun": {
+          "kind": "agent",
+          "runId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+        },
+        "task": {
+          "text": "Work for /fragile.",
+          "title": "Work for /fragile.",
+          "taskKey": null,
+          "projectId": null,
+          "taskId": null
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "AGENT_CANNOT_RUN",
+        "message": "its default model cannot be used: 'no-such-model' is no longer offered by Antigravity CLI",
+        "target": {
+          "kind": "agent",
+          "name": "Fragile"
+        },
+        "modelRouting": {
+          "state": "off"
+        },
+        "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+      }
+    },
+    {
+      "seq": 7,
+      "at": 1795269520607,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:58112",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "x-autobyteus-peer-to": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "x-autobyteus-peer-timestamp": "1795269520",
+        "x-autobyteus-peer-nonce": "64987ffa64011d00d35fd2dafb6d8447",
+        "x-autobyteus-peer-body-sha256": "17b4e076b0d6caa12b88e80c5cdff7f60265a2cbbe5d69a8cb93757ea86a133e",
+        "x-autobyteus-peer-signature": "b5a67bd2550cd16ef14125fd703ec8a9c1c4f2990fd53eb7f184d1421ea0c1e4",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "409"
+      },
+      "body": {
+        "fromNodeId": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "toNodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "address": "/model_router",
+        "delegator": {
+          "agentRunId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+        },
+        "delegatingRun": {
+          "kind": "agent",
+          "runId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+        },
+        "task": {
+          "text": "Work for /model_router.",
+          "title": "Work for /model_router.",
+          "taskKey": null,
+          "projectId": null,
+          "taskId": null
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "AGENT_NOT_FOUND",
+        "message": "/model_router",
+        "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+      }
+    },
+    {
+      "seq": 8,
+      "at": 1795269520821,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:58112",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "x-autobyteus-peer-to": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "x-autobyteus-peer-timestamp": "1795269520",
+        "x-autobyteus-peer-nonce": "8b9d9d8ca5ac8c90c6f337bc17485b0b",
+        "x-autobyteus-peer-body-sha256": "afedce45c20b4d35c0bc5e999da85de52d96b72f1864d5edd5e52a58320d5f02",
+        "x-autobyteus-peer-signature": "7e633381d48b57c9fbc7411d18396b9b92839d615e48a8e6766dd332b43d0a34",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "409"
+      },
+      "body": {
+        "fromNodeId": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "toNodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "address": "/remote_org_b",
+        "delegator": {
+          "agentRunId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+        },
+        "delegatingRun": {
+          "kind": "agent",
+          "runId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+        },
+        "task": {
+          "text": "Work for /remote_org_b.",
+          "title": "Work for /remote_org_b.",
+          "taskKey": null,
+          "projectId": null,
+          "taskId": null
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "AGENT_NOT_FOUND",
+        "message": "/remote_org_b",
+        "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+      }
+    },
+    {
+      "seq": 9,
+      "at": 1795269521046,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:58112",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "x-autobyteus-peer-to": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "x-autobyteus-peer-timestamp": "1795269521",
+        "x-autobyteus-peer-nonce": "bc9a41309f391ec127230d2848e8c433",
+        "x-autobyteus-peer-body-sha256": "b38d6fe61831bea08ff095e6138149345cf395e731602aeb23d76958ac2cd805",
+        "x-autobyteus-peer-signature": "107d0e25bed559ff9f13f32e979b7782a44b135a5682adeb05a13eeda858eaaf",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "406"
+      },
+      "body": {
+        "fromNodeId": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "toNodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "address": "/local_scout",
+        "delegator": {
+          "agentRunId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+        },
+        "delegatingRun": {
+          "kind": "agent",
+          "runId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+        },
+        "task": {
+          "text": "Work for /local_scout.",
+          "title": "Work for /local_scout.",
+          "taskKey": null,
+          "projectId": null,
+          "taskId": null
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "AGENT_NOT_FOUND",
+        "message": "/local_scout",
+        "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+      }
+    },
+    {
+      "seq": 10,
+      "at": 1795269521267,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:58112",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "x-autobyteus-peer-to": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "x-autobyteus-peer-timestamp": "1795269521",
+        "x-autobyteus-peer-nonce": "478db49b03fa61c51ce89fc21ca2cf1f",
+        "x-autobyteus-peer-body-sha256": "104c2e3e994e7eb4c66bf47a67ea5aa6a5adb5003d9ba59fcd43d4963c011a89",
+        "x-autobyteus-peer-signature": "55d4f068898760975b35ff896fc2a3f7dfd499886d04f478a2107b35cc531958",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "406"
+      },
+      "body": {
+        "fromNodeId": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "toNodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "address": "/nobody_here",
+        "delegator": {
+          "agentRunId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+        },
+        "delegatingRun": {
+          "kind": "agent",
+          "runId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+        },
+        "task": {
+          "text": "Work for /nobody_here.",
+          "title": "Work for /nobody_here.",
+          "taskKey": null,
+          "projectId": null,
+          "taskId": null
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "AGENT_NOT_FOUND",
+        "message": "/nobody_here",
+        "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+      }
+    },
+    {
+      "seq": 11,
+      "at": 1795269521499,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:58112",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "x-autobyteus-peer-to": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "x-autobyteus-peer-timestamp": "1795269521",
+        "x-autobyteus-peer-nonce": "393b34586246fe03337f91eb9ad6728d",
+        "x-autobyteus-peer-body-sha256": "d471adabadc6fda1e7ac7b627c3ab2d1d1d5c1766cfb45f672320cac10510f09",
+        "x-autobyteus-peer-signature": "08692b3e61cf682355b2611d283c59dadf4c242a4645cecb60fee5fd1f9246c8",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "406"
+      },
+      "body": {
+        "fromNodeId": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "toNodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "address": "/hollow_team",
+        "delegator": {
+          "agentRunId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+        },
+        "delegatingRun": {
+          "kind": "agent",
+          "runId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+        },
+        "task": {
+          "text": "Work for /hollow_team.",
+          "title": "Work for /hollow_team.",
+          "taskKey": null,
+          "projectId": null,
+          "taskId": null
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "NO_DEFAULT_RUNTIME",
+        "message": "There is no default runtime configured for the target agent team Hollow Team",
+        "target": {
+          "kind": "agent_team",
+          "name": "Hollow Team"
+        },
+        "modelRouting": {
+          "state": "off"
+        },
+        "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+      }
+    },
+    {
+      "seq": 12,
+      "at": 1795269521721,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:58112",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "x-autobyteus-peer-to": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "x-autobyteus-peer-timestamp": "1795269521",
+        "x-autobyteus-peer-nonce": "1a5555b07841fab9f524611638140041",
+        "x-autobyteus-peer-body-sha256": "64cc2fb491eb7c5f1a62623c6e3deb62c0384f7f2e6ced35572ae1d91e006b53",
+        "x-autobyteus-peer-signature": "6e69e002cd3c0da20645d9618142afe005865baa6e465b54da8f0569fd15b797",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "403"
+      },
+      "body": {
+        "fromNodeId": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "toNodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "address": "/codex_team",
+        "delegator": {
+          "agentRunId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+        },
+        "delegatingRun": {
+          "kind": "agent",
+          "runId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+        },
+        "task": {
+          "text": "Work for /codex_team.",
+          "title": "Work for /codex_team.",
+          "taskKey": null,
+          "projectId": null,
+          "taskId": null
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "AGENT_CANNOT_RUN",
+        "message": "Codex App Server command '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-bxdChD/beta/missing/codex' is not available.",
+        "target": {
+          "kind": "agent_team",
+          "name": "Codex Team"
+        },
+        "modelRouting": {
+          "state": "off"
+        },
+        "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+      }
+    },
+    {
+      "seq": 13,
+      "at": 1795269522050,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:58112",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "x-autobyteus-peer-to": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "x-autobyteus-peer-timestamp": "1795269522",
+        "x-autobyteus-peer-nonce": "2b09328a5c76e850a52bc57f71577f2f",
+        "x-autobyteus-peer-body-sha256": "fb29aab5b1df259fd15a37d19482161e107efcc7923adb19fc6bbcc66d940f28",
+        "x-autobyteus-peer-signature": "3b3583378f4b0fd8cd056bf60b05e444e1cb63afa36e861be9df27a0e46de29c",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "448"
+      },
+      "body": {
+        "fromNodeId": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "toNodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "address": "/publisher",
+        "delegator": {
+          "agentRunId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+        },
+        "delegatingRun": {
+          "kind": "agent",
+          "runId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+        },
+        "task": {
+          "text": "Publish the draft. Marker STANDALONE-PACKET.",
+          "title": "Publish the draft. Marker STANDALONE-PACKET.",
+          "taskKey": null,
+          "projectId": null,
+          "taskId": null
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "kind": "agent",
+        "agentRunId": "publisher_74b144aedfa34b24bec35d5b40c66c0b",
+        "launches": [
+          {
+            "address": "/publisher",
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "source": {
+              "origin": "agent_default",
+              "fallbacks": []
+            }
+          }
+        ],
+        "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+      }
+    },
+    {
+      "seq": 14,
+      "at": 1795269522320,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:58112",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "x-autobyteus-peer-to": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "x-autobyteus-peer-timestamp": "1795269522",
+        "x-autobyteus-peer-nonce": "77838af99ddb9da2665b001fa0570e99",
+        "x-autobyteus-peer-body-sha256": "98282772a0d38790ffb9de4d421137a10f52df83542b492c00119c7c28bc717c",
+        "x-autobyteus-peer-signature": "68f84cd8a559a9e3b8219f37abaa73114732e0bce10127187605eec1fb4884e1",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "508"
+      },
+      "body": {
+        "fromNodeId": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "toNodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "kind": "work_packet",
+        "sender": {
+          "agentRunId": "delegator_26b77dcf99bd43c18f4694ed75486cdc",
+          "address": "/delegator"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_74b144aedfa34b24bec35d5b40c66c0b"
+        },
+        "target": {
+          "agentRunId": "publisher_74b144aedfa34b24bec35d5b40c66c0b"
+        },
+        "content": "Publish the draft. Marker STANDALONE-PACKET.",
+        "messageType": "task_work_packet",
+        "createdAt": "2026-11-21T13:58:42.317Z",
+        "files": []
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "receiverAddress": null,
+        "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+      }
+    },
+    {
+      "seq": 15,
+      "at": 1795269522824,
+      "via": "toAlpha",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:58113",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "x-autobyteus-peer-to": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "x-autobyteus-peer-timestamp": "1795269522",
+        "x-autobyteus-peer-nonce": "43950866b95523652abe84e2e3faa818",
+        "x-autobyteus-peer-body-sha256": "901aefbd7f023b7f5f8177acf41d233984b2b4ac54a760b60c9f5f09106e1207",
+        "x-autobyteus-peer-signature": "6bb74b722e395ca9f46aa5e442b5f26f153e16c4514ad77cfc8990c23c2f35cc",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "531"
+      },
+      "body": {
+        "fromNodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "toNodeId": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "kind": "message",
+        "messageId": "collabmsg_I9hqWziVOcTAG8rj6Og_gjCAzVXO2x18",
+        "sender": {
+          "agentRunId": "publisher_74b144aedfa34b24bec35d5b40c66c0b",
+          "address": "/publisher"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+        },
+        "target": {
+          "agentRunId": "delegator_26b77dcf99bd43c18f4694ed75486cdc"
+        },
+        "content": "REPLY-FROM-BETA-1",
+        "messageType": "agent_message",
+        "createdAt": "2026-11-21T13:58:42.820Z",
+        "files": []
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "receiverAddress": "/delegator",
+        "nodeId": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw"
+      }
+    },
+    {
+      "seq": 16,
+      "at": 1795269523042,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:58112",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "x-autobyteus-peer-to": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "x-autobyteus-peer-timestamp": "1795269523",
+        "x-autobyteus-peer-nonce": "2bc60c537b6043fed90e3c352afacc78",
+        "x-autobyteus-peer-body-sha256": "5789f391b21b68ce8d1a5e882e4c241e9aeeb524b4d64a1bb8fda5148df6e427",
+        "x-autobyteus-peer-signature": "efe548cccb17667ff6019072f685930a26e7901d52ebe8dba5be36be427dfdcb",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "535"
+      },
+      "body": {
+        "fromNodeId": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "toNodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "kind": "message",
+        "messageId": "collabmsg_VVtuUICLCx2Zb6sNZzxmPHXoA4ZxcokO",
+        "sender": {
+          "agentRunId": "delegator_26b77dcf99bd43c18f4694ed75486cdc",
+          "address": "/delegator"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_74b144aedfa34b24bec35d5b40c66c0b"
+        },
+        "target": {
+          "agentRunId": "publisher_74b144aedfa34b24bec35d5b40c66c0b"
+        },
+        "content": "FOLLOWUP-FROM-ALPHA-1",
+        "messageType": "agent_message",
+        "createdAt": "2026-11-21T13:58:43.040Z",
+        "files": []
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "receiverAddress": "/publisher",
+        "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+      }
+    },
+    {
+      "seq": 17,
+      "at": 1795269525317,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:58112",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "x-autobyteus-peer-to": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "x-autobyteus-peer-timestamp": "1795269525",
+        "x-autobyteus-peer-nonce": "c9684c932d1ce17e1581fa14224a2993",
+        "x-autobyteus-peer-body-sha256": "d721f43873688155897760fd2de860f80faa8f8d4d6536282df543f8eb3fefc3",
+        "x-autobyteus-peer-signature": "2ac8d8685482354225fc4efba38dd59f60bce694d219c5072c710bbed8ca4dbb",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "535"
+      },
+      "body": {
+        "fromNodeId": "srv_GLNHHfffyF2C6B1hfhxtdSOh1LIV93mw",
+        "toNodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k",
+        "kind": "message",
+        "messageId": "collabmsg_HKGkLfDfO-PoCrw0qFIqIY8QXEM9TXIi",
+        "sender": {
+          "agentRunId": "delegator_26b77dcf99bd43c18f4694ed75486cdc",
+          "address": "/delegator"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_74b144aedfa34b24bec35d5b40c66c0b"
+        },
+        "target": {
+          "agentRunId": "publisher_74b144aedfa34b24bec35d5b40c66c0b"
+        },
+        "content": "AFTER-REMOVAL-TO-BETA",
+        "messageType": "agent_message",
+        "createdAt": "2026-11-21T13:58:45.315Z",
+        "files": []
+      },
+      "status": 401,
+      "outcome": "forwarded",
+      "answer": {
+        "error": "NODE_CREDENTIAL_INVALID",
+        "code": "NODE_CREDENTIAL_INVALID",
+        "message": "This node does not accept this credential."
+      }
+    },
+    {
+      "seq": 18,
+      "at": 1795269525318,
+      "via": "toBeta",
+      "method": "GET",
+      "path": "/rest/remote-access/status",
+      "headers": {
+        "host": "127.0.0.1:58112",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "body": null,
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "phoneAccessEnabled": false,
+        "pairingAvailable": false,
+        "nodeId": "srv_qhFQ1JJWpoNMnvPrFAGlh3rHrixAX80k"
+      }
+    }
+  ],
+  "cleanup": {
+    "rootRemoved": true,
+    "serversStopped": true,
+    "leftoverAgy": [],
+    "errors": []
+  }
+}
