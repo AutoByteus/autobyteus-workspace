@@ -2,6 +2,7 @@
 
 | SR | Date | Kind | Summary | Status after |
 | --- | --- | --- | --- | --- |
+| SR-010 | 2026-11-21 | Requirement Gap (CRR-002: CR-591-001 … 003) | Local continuation read correctly: the assigner's message reopens and continues (SR-005 had it backwards). REQ-006, DEC-007, AC-007, SCN-005 corrected; REQ-002 (a reopen alone doesn't cancel the close) and REQ-004 / AC-001 / AC-006 (the closed run leaves A's tree, as locally) aligned with the code; DN-9 `admitPeerRun` | Approved within the user's DEC-004; design `Ready` |
 | SR-009 | 2026-11-21 | Design Impact (the implementation engineer: DN-6's premise) | B's closed-delegation state lives in one small node file (`closed-delegations.json`, owner `ClosedDelegations`), read once; the list filters in memory; the run-file field withdrawn | Design `Ready` |
 | SR-008 | 2026-11-21 | Design Impact (ARCH-REV-002 AR-002) | DN-8: a remote run skips the local conversation check; its work goes through the existing peer delivery (`senderRoot.deliverToPeerRun`, extracted from the router into one function both use), chosen by `toExistingRun` | Design `Ready` |
 | SR-007 | 2026-11-21 | Design Impact (ARCH-REV-001 AR-001, notes 1-2) | DN-1b: one ordered sequence per remote run (one notice in flight; the re-delegated work after `open` is confirmed; B answers after its Stop); DN-5: round-trip fields; DN-8: the local `deliverToRun` path, not `work_packet` | Design `Ready` |
@@ -92,3 +93,15 @@
 
 - ARCH-REV-004: **Pass** (`design-review-report.md`). The reviewer verified that the index readers are strict, and sent the package to the implementation engineer.
 - Note to the implementation: remove a deleted run's entry from `ClosedDelegations`.
+
+### SR-010
+
+- **Trigger:** API/E2E round 1 failed on F-1 and F-2. The code reviewer's CRR-002 found three Requirement Gaps: the approved basis described local behavior wrongly, and the code followed it.
+- **Read:**
+  - `cross-run-message-delivery.ts:202-219` (the assigner's continuation) and `:138-148` (`closedPeerRunRefusal`);
+  - `task-execution-resources.ts:200-210` (the same Task refused, "message instead");
+  - `peer-run-message-delivery.ts:29`;
+  - `run-tree-view.ts` (the open subtree).
+- **My miss:** SR-005 read only `reopenAssignment`'s callers through `delegate_task`, not `admit`'s continuation, and wrote "as locally" without checking each rule (Principle 1). Lesson 2 again, now for a parity claim.
+- **Approval:** the user decided "like local" (DEC-004). These corrections realize it with the local code read correctly, and the user's own wording ("send a message again") already said so. Approved within that decision, and the user is told of the correction.
+- **Next:** architecture review of DN-9. Then the implementation, the code reviewer, and the API/E2E rerun of F-1 and F-2.
