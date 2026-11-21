@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-008` (ARCH-REV-001 AR-002 … AR-006 and residuals; AR-001 awaits the founder: DEC-007)
+- Current solution revision ID: `SR-008` (ARCH-REV-001 AR-001 … AR-006 and residuals; AR-001 decided by the founder, DEC-007 (a))
 - Approved requirements: `requirements-doc.md` SR-005 with its behavior-defining supplement `reference-files-contract.md` (RFC-001), approved by the founder 2026-11-21 (DEC-001 … DEC-003, DEC-006 and the contract in his words; DEC-004, DEC-005 by the Solution Designer, confirmed by him).
 - User approval of the design: the founder, 2026-11-21, delegated it: "validate each use case based on your data flow spine … which follows the design principles, and then you just send for review by yourself". Validation: § Design Validation Walkthrough; then independent architecture review.
 - Design status: `Ready`
@@ -41,7 +41,7 @@ Realize RFC-001: files attached to a cross-node message or delegation are valida
 | CM-11 "follow-ups never name the node" | `collaboration_model.md`, `remote_collaboration.md`, tool descriptions, prompt wording, the 492 not-running hint | Rewritten to RF-14 |
 | `send_message_to` / `delegate_task` results | tool contracts (`files_sent`) | Added |
 | Run history delete | three delete owners | After a delete commits, the received-files cleanup runs |
-| Agent folders gain `received_files/` | Memory Sync export (`local-memory-export-scanner.ts:25-79`, `memory-sync-path-policy.ts:3-7`: every regular file of `memory/agents` and `memory/agent_teams` except temporary/lock files) | Per the founder's DEC-007 (AR-001): recommended, `received_files/` is skipped by Memory Sync's path policy (one rule) |
+| Agent folders gain `received_files/` | Memory Sync export (`local-memory-export-scanner.ts:25-79`, `memory-sync-path-policy.ts:3-7`: every regular file of `memory/agents` and `memory/agent_teams` except temporary/lock files) | The founder's DEC-007 (AR-001): Memory Sync's path policy skips every path with a `received_files` segment (one rule in `memory-sync-path-policy.ts`, read by the scanner); AC-011 |
 | Docs | `collaboration_model.md` (CM-14, CM-11), `remote_collaboration.md`, `agent_communication.md`, `agent_tools.md`, GLOSSARY (received files), settings doc (`AUTOBYTEUS_RECEIVED_FILE_MAX_MB`) | Updated |
 
 - Left alone: same-node `reference_files` (RF-1); Memory Sync except its path policy (DEC-007); context-file uploads; NFS.
@@ -201,7 +201,7 @@ Principles: P1 (entry forms, table above), P2/P13 (one owner per sequence; `Outg
 3. Messages: `RemoteMessageSend` + engine + roots' accept + `files` on `messages`/`run-messages`.
 4. Delegation: `TaskDelegation.toPeerRun` + work packet `files` + roots' `acceptRemoteWorkPacket`.
 5. RF-14 (router, `RemoteMessageSend`, roots' `deliverExact`), texts, results `files_sent`.
-6. History delete → `sweep`; startup sweep; setting; runtime timeouts (Codex, Claude); measure AGY/Grok/ACP limits with a slow stub tool and record them.
+6. Memory Sync path policy skips `received_files/` (DEC-007); history delete → `sweep`; startup sweep; setting; runtime timeouts (Codex, Claude); measure AGY/Grok/ACP limits with a slow stub tool and record them.
 7. Docs (CM-14, CM-11 rewrite, modules, glossary, settings); two-server E2E with `.mp4`/`.pdf`/`.png` (AC-001 … AC-007, AC-010), a tampering proxy (AC-003), a stopped peer (AC-006), history delete (AC-007).
 
 ## Key Tradeoffs

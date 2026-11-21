@@ -11,7 +11,7 @@
 | SR-005 | Requirements | The founder's approval of RFC-001, 2026-11-21 | — | Ready for Approval (supplement) | Approved | RFC-001 (storage layout, RF-7, vocabulary) | Contract approved: folders by sender run ID, same-sender replacement, node-level `<data>/received_files/` |
 | SR-006 | Design | Architecture design | — | Approved | Approved; design Ready | all | `OutgoingFiles`, `ReceivedFiles`, two peer routes, RF-14 routing, runtime timeouts; Large/High |
 | SR-007 | Design | The founder: validate each use case yourself, then send for review (2026-11-21) | G-1, G-2, G-3 | Design Ready | Design Ready (self-validated) | DS-002, DS-003, DS-005 | Remote input builder lists received files; raw-body signing; RF-14 owners named |
-| SR-008 | Mixed | ARCH-REV-001 (Fail) | AR-001 … AR-006 | Design Ready; review Fail | Requirements Ready for Approval (DEC-007); design Needs the founder's DEC-007 | DEC-005, DEC-007, DEC-008; DS-002, DS-004, DS-005; removal plan | Order on the receiving node; sweep grace; dead send path; NODE_MISMATCH via the Task entry; evidence decision; Memory Sync question to the founder |
+| SR-008 | Mixed | ARCH-REV-001 (Fail) | AR-001 … AR-006 | Design Ready; review Fail | Approved (DEC-007 (a), founder); design Ready for ARCH-REV-002 | DEC-005, DEC-007, DEC-008; DS-002, DS-004, DS-005; removal plan | Order on the receiving node; sweep grace; dead send path; NODE_MISMATCH via the Task entry; evidence decision; Memory Sync question to the founder |
 
 ## Revision Entries
 
@@ -67,3 +67,4 @@
 - AR-006: DEC-005 corrected; RFC-001 marked Approved in the notes; DEC-008 evidence decision (Codex/Claude config evidence; AGY/Grok/ACP accepted, FU-001).
 - Residuals: one open of the validated file; offset mismatch answers `receivedBytes`.
 - Next: the founder's DEC-007, then ARCH-REV-002.
+- 2026-11-21 (SR-008): the founder decided DEC-007 (a): "memory sync should not copy files … we cut a tons of duplicated files". AC-011 added; design: path-policy rule. Next: ARCH-REV-002.
