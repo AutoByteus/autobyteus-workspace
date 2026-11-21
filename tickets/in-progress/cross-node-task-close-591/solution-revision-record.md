@@ -114,3 +114,7 @@
 - **Change:** DN-9's gate, S-4b and the tests.
 - **My miss:** DN-9 named the callers of `closedPeerRunRefusal` and missed the path that never called it. Principle 1, every entry form; lesson 2.
 - **Next:** architecture review.
+
+### Review of SR-010 / SR-011
+
+- ARCH-REV-005 failed with AR-003; SR-011 resolved it. ARCH-REV-006: **Pass** (`design-review-report.md`). The reviewer sent the package to the implementation engineer.
