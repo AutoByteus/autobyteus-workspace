@@ -51,12 +51,14 @@ export type WorkJournalFileVersion = Readonly<{
 /** A day a journal file covers, with the first line of that day. */
 export type WorkJournalDay = Readonly<{ day: string; line: number }>;
 
-/** A journal file for a reader: its size, lines and days. */
+/** A journal file for a reader: its size, lines, work entries and days. */
 export type WorkJournalFileSummary = Readonly<{
   journalFile: string;
   state: WorkJournalFileState;
   sizeBytes: number;
   lineCount: number;
+  /** Its work entries: entries that are not a notice (a request, reply, action or note; autobyteus-583). */
+  workEntryCount: number;
   days: readonly WorkJournalDay[];
 }>;
 

@@ -218,6 +218,9 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
 - **Work Journal:** a run's readable Markdown record, rendered from its raw
   traces by the journal service; one file per raw-trace segment
   (`work_journal/`).
+- **Work entry** (of a Work Journal file): an entry that is not a notice: a
+  request, a reply, an action or a note (`workEntryCount` in code). A file that
+  a runtime switch left with only its hand-over notice has none.
 - **Episodic catalog** (of an agent): the system-maintained list of an agent
   definition's runs on this node, oldest first, pointing to their Work
   Journals: `<memory>/episodic/<definition folder name>/catalog.md`, the
@@ -415,7 +418,9 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   runtime, held in the Agent's record (`pendingRuntimeSwitch`: a standalone run's metadata,
   a member's node in the run's execution tree) until that input.
 - **Hand-over notice:** the system notice the new agent receives with that input:
-  where the Work Journals are and how they are laid out. It names no agent runtime.
+  where the Work Journals are and how they are laid out. It names the newest closed
+  journal file with work entries, the previous agent's most recent work, and asks
+  for a complete read of it before replying (autobyteus-583). It names no agent runtime.
 - **Switch marker:** the notice record that starts the new raw-trace file; the chat
   and the Work Journal show it ("Agent runtime changed from … to …").
 - **Previous agent:** the agent that worked on the run on the earlier agent runtime
