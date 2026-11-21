@@ -1,0 +1,21 @@
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      PASS
+claude      brand-new team member                    PASS
+claude      different same-named skill               PASS
+codex       new run + restore, linked workspace      PASS
+codex       brand-new team member                    PASS
+codex       different same-named skill               PASS
+grok        new run + restore, linked workspace      FAIL    skipped: Error: [{"message":"Grok Build model discovery timed out; check the CLI and retry.","locations":[{"line":1,"column":21}],"path":["providerModelCatalogSnapshots"]}]
+grok        brand-new team member                    FAIL    skipped: Error: [{"message":"Grok Build model discovery timed out; check the CLI and retry.","locations":[{"line":1,"column":21}],"path":["providerModelCatalogSnapshots"]}]
+grok        different same-named skill               FAIL    skipped: Error: [{"message":"Grok Build model discovery timed out; check the CLI and retry.","locations":[{"line":1,"column":21}],"path":["providerModelCatalogSnapshots"]}]
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+
+commit    827bcc84ead7f6f787b6a19a168a1c8bb0f8d617
+models    {"claude": "haiku", "codex": "gpt-5.6-luna"}
+duration  live 155s, antigravity 41s, autobyteus 17s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-7wp50poe

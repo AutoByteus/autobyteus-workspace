@@ -1,0 +1,2 @@
+611: FAIL  tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok
+612:Error: [{"message":"Grok Build model discovery timed out; check the CLI and retry.","locations":[{"line":1,"column":21}],"path":["providerModelCatalogSnapshots"]}]

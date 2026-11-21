@@ -1,0 +1,44 @@
+# API-03 desktop fresh-start build (TESTING.md Fresh-start build): git clone --no-local <worktree>, checkout 929976f818, pnpm install --frozen-lockfile, then in autobyteus-web: NO_TIMESTAMP=1 AUTOBYTEUS_BUILD_FLAVOR=personal PRISMA_CLI_BINARY_TARGETS=darwin-arm64,debian-openssl-1.1.x,debian-openssl-3.0.x CSC_IDENTITY_AUTO_DISCOVERY=false GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace pnpm build:electron:mac -- --arm64; then the job's two verify steps; 2026-11-21T07:38:28Z; Node v22.23.1; macOS 26.5.2 arm64
+929976f818 docs(ios-demo-operation-coverage): implementation handoff, evidence IMP-01…IMP-04 and FU-001 (autobyteus-584, IR-001)
+## pnpm install --frozen-lockfile
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 13.5s using pnpm v10.28.2
+install exit 0
+## build:electron:mac -- --arm64
+build exit 0
+
+## excerpt of the build log (full log: kept out of the commit, 1 line per step below)
+9:[guard:web-boundary] Passed.
+14:[guard:localization-boundary] Passed.
+69:[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 71.5s
+70:[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 3.2s
+71:[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.8s
+72:[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 46.5s
+73:[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+74:[typecheck] PASS
+164:> autobyteus@1.5.14-beta.4 build:mobile-web /private/tmp/api584/fresh/autobyteus-web
+467:The /mobile build holds no demo code.
+468:Mobile web assets written to /private/tmp/api584/fresh/autobyteus-web/dist-mobile/public
+914:  • building        target=DMG arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.14-beta.4.dmg
+915:  • building        target=macOS zip arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.14-beta.4.zip
+917:  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.5.14-beta.4.dmg.blockmap
+918:  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.5.14-beta.4.zip.blockmap
+919:Build completed: [
+920:  '/private/tmp/api584/fresh/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.14-beta.4.dmg.blockmap',
+921:  '/private/tmp/api584/fresh/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.14-beta.4.dmg',
+922:  '/private/tmp/api584/fresh/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.14-beta.4.zip.blockmap',
+923:  '/private/tmp/api584/fresh/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.14-beta.4.zip'
+
+## the job's verify steps, from the clone's root
+## Verify bundled Prisma ARM64 engine target
+engines ok
+client ok
+## Verify packaged terminal runtime ARM64
+[terminal-runtime] ok target helper: /private/tmp/api584/fresh/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /private/tmp/api584/fresh/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok target helper: /private/tmp/api584/fresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /private/tmp/api584/fresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+verify exit 0
