@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-007` (this design, on requirements SR-005).
+- Current solution revision ID: `SR-008` (this design, on requirements SR-005).
 - Approved requirements: `requirements-doc.md` at SR-005. The user decided DEC-004 (SR-002, SR-003); the rest was decided within the direction, and the user was informed.
 - User approval of the design: `Not required`.
 - Design status: `Ready`.
@@ -131,12 +131,24 @@
 **DN-8: giving a saved Task to an existing remote run (REQ-006).**
 - In `TaskDelegation.toExistingRun` (`task-delegation.ts:357-…`), the refusal of a run with a `nodeId` entry (`:370`, `REMOTE_ROOT_REFUSAL_TEXT.savedTask`) goes. The local checks hold unchanged: the sender is the run's last assigner, and the reopen rules (`assertReopenable`).
 - The entry is reopened or appended with the same `nodeId` (and `members` for a team), as the local path does.
-- The Task's work goes through **the local path, unchanged**: `deliverToRun` with `TASK_ASSIGNMENT_MESSAGE_TYPE` (`task-delegation.ts:398-401`), which the composition wires to `crossRun.route` (`collaboration-composition.ts:236`), the message routing that reaches a remote run through the link (CM-11). Not `work_packet`: it is admitted only from the back-link's delegator endpoint and treated as a run's first message (`remote-run-links.ts:137-140`; `remote-message-receiver.ts:117-125`; ARCH-REV-001 note 2).
-- **To verify by the implementation:**
-  - `crossRun.route` routes a remote target with a reopened entry through the link;
-  - the conversation check before it (`taskExecutionConversationUnavailable`, `:381-385`) holds for a remote run (it may need the remote run's conversation answer through the link, or a remote branch);
-  - if either doesn't hold, the gap returns as a Design Impact.
-- **Before the delivery,** `toExistingRun` awaits `notices.settled(run)` (DN-1b) for a run with a `nodeId` entry.
+- **For a run with a `nodeId` entry, two local steps don't apply** (SR-008, ARCH-REV-002 AR-002, read):
+  - **The conversation check is skipped.** `toExistingRun` refuses unless `conversationOf` answers present (`task-delegation.ts:381-385`), and `createRunConversationAvailability` (`run-conversation-availability.ts:26-36`) knows only this node's runs. A remote run's conversation and restorability are B's (CM-10; `delegated-run-restorability.ts:44-47`). B's answer to the delivery stands.
+  - **`deliverToRun` (→ `crossRun.route`) doesn't reach a peer run.** It returns `null` for a run with a peer entry (`cross-run-message-delivery.ts:105-109`), which `toExistingRun` treats as not delivered (`:398-404`).
+- **The owner that chooses the delivery is `TaskDelegation.toExistingRun`:**
+  - local run: `deliverToRun`, as today;
+  - remote run: a second passed-in port, `deliverToPeerRun({ sender, nodeId, targetAgentRunId, content, messageType, referenceFiles })`, with `TASK_ASSIGNMENT_MESSAGE_TYPE` and the entry's `nodeId`, after `notices.settled(run)` (DN-1b).
+- **The port is the existing peer delivery,** not a copy. The core of `GlobalAgentRunMessageRouter.deliverToPeer` after its peer-name lookup (`global-agent-run-message-router.ts:188-205`) becomes one function, `deliverMessageToPeerRun`:
+  1. the sender's collaboration context;
+  2. the channel (off: refused);
+  3. `closedPeerRunRefusal`;
+  4. the sender root by `activeRootDirectory.resolve`;
+  5. `senderRoot.deliverToPeerRun`.
+
+  The router (after `findPeer`) and the composition's port for `TaskDelegation` both call it.
+- `closedPeerRunRefusal` doesn't refuse here, because the entry was just reopened or appended (open).
+- On B, the linked message is admitted by the back-link endpoints (CM-11) and wakes the run (S-5 clears `delegationClosedAt` if still set).
+- **A refusal from B, or an unreachable peer,** gives `TASK_WORK_NOT_DELIVERED`, as today's delivery failure (`:398-404`).
+- **Test (AC-007), two-node integration:** the re-delegated Task's work reaches B's run and wakes it, for an agent run and a team run (its coordinator).
 - Reference files travel as in `toNewRun`'s remote path (paths only; transfer is autobyteus-587).
 - `REMOTE_ROOT_REFUSAL_TEXT.savedTask` is removed if nothing else uses it.
 - A refused delivery (peer unreachable) gives the same result as a new remote delegation's delivery failure (`:189`). The entry stays as committed, and the sender can retry, as for a local delivery failure.
@@ -163,7 +175,7 @@
 | S-1 close | `update_task` DONE / CANCELLED (A) → `ProjectTaskService` → `TaskExecutionResourceRelease` → `PeerRunStateNotices.changed(run)` → owed mark → `isOpen` = false → `PeerClient.deliveredRunState(open=false)` → B `PeerGateway.admit` → link check → `DelegatedRunStateHandler`: record, publish, ordinary Stop → answer → A clears the owed mark | A: `PeerRunStateNotices`; B: the handler |
 | S-2 unreachable | S-1 until the send; the transport fails → stays owed → the peer's 30 s timer → S-1's send … | `PeerRunStateNotices` |
 | S-3 A restart | Start-up → the delegation index loads the entries → owed runs → per-peer timers → S-1's send | the same |
-| S-4 re-delegation | Reopen (A, no effect on B) → the assigner's `delegate_task(run ID, task_id)` → `TaskDelegation.toExistingRun` (the local checks; the `:370` refusal removed for remote runs) → the entry committed → `notices.settled(run)`: the run's sequence finishes any in-flight notice, then sends `open` and awaits B's confirmation → `deliverToRun` (`crossRun.route`, through the link) → B wakes the run | `TaskDelegation`; `PeerRunStateNotices`; B: the handler and the inbound delivery |
+| S-4 re-delegation | Reopen (A, no effect on B) → the assigner's `delegate_task(run ID, task_id)` → `TaskDelegation.toExistingRun` (the local checks; the `:370` refusal removed for remote runs) → the entry committed → `notices.settled(run)`: the run's sequence finishes any in-flight notice, then sends `open` and awaits B's confirmation → the `deliverToPeerRun` port (`deliverMessageToPeerRun` → `senderRoot.deliverToPeerRun`, a linked message) → B wakes the run | `TaskDelegation`; `PeerRunStateNotices`; B: the handler and the inbound delivery |
 | S-5 wake | A's message or delegation → existing link delivery → B clears `delegationClosedAt` if set → the run wakes (CM-7) | B's inbound delivery |
 | S-6 refused | A third node sends the notice → `admit` (paired) → link check `not_linked` → refused | B's gateway |
 
@@ -200,7 +212,7 @@
   - Link: `peer-client.ts`, `peer-gateway.ts`, `api/rest/remote.ts` (the route).
   - B: the new handler; the agent run metadata and team tree (`delegationClosedAt`); `top-level-run-rule.ts` and its list signal; the inbound delivery's clear.
   - Docs: the collaboration model, the glossary, the node access model.
-  - A: `task-delegation.ts` (`toExistingRun`), `remote-refusal-codes.ts`.
+  - A: `task-delegation.ts` (`toExistingRun`: the remote branch and its port), `remote-refusal-codes.ts`, `global-agent-run-message-router.ts` (the extracted `deliverMessageToPeerRun`), and the composition's port.
   - Tests: unit, integration, and the two-node E2E (AC-001 … AC-007).
 - **Left alone:**
   - the local closure and re-delegation paths;

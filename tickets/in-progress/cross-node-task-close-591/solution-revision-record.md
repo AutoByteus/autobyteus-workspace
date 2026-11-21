@@ -2,6 +2,7 @@
 
 | SR | Date | Kind | Summary | Status after |
 | --- | --- | --- | --- | --- |
+| SR-008 | 2026-11-21 | Design Impact (ARCH-REV-002 AR-002) | DN-8: a remote run skips the local conversation check; its work goes through the existing peer delivery (`senderRoot.deliverToPeerRun`, extracted from the router into one function both use), chosen by `toExistingRun` | Design `Ready` |
 | SR-007 | 2026-11-21 | Design Impact (ARCH-REV-001 AR-001, notes 1-2) | DN-1b: one ordered sequence per remote run (one notice in flight; the re-delegated work after `open` is confirmed; B answers after its Stop); DN-5: round-trip fields; DN-8: the local `deliverToRun` path, not `work_packet` | Design `Ready` |
 | SR-006 | 2026-11-21 | Design | DN-1's trigger is the run's entries (close, re-delegation), not the Task's reopen; DN-8 adds the remote re-delegation (the `:370` refusal removed; the work through the link) | Design `Ready`, Medium / High |
 | SR-005 | 2026-11-21 | Requirements (the PM's new comment; a correction) | Local reopen read: it reopens no run; the run returns when given the Task again. SR-003's "reopen lists the run" corrected to that. REQ-006 / DEC-007: giving a saved or reopened Task to an existing remote run, as locally (the PM's stuck case) | Approved; design to revise |
@@ -58,4 +59,12 @@
 - **Trigger:** ARCH-REV-001, Fail, AR-001, plus notes 1-2.
 - **Premise read:** `task-delegation.ts:398-401` (`deliverToRun`, `TASK_ASSIGNMENT_MESSAGE_TYPE`) and `collaboration-composition.ts:236` (`crossRun.route`).
 - **Change:** DN-1b, DN-5's round-trip, DN-8's path, S-4 and the walks.
+- **Next:** architecture review.
+
+### SR-008
+
+- **Trigger:** ARCH-REV-002, Fail, AR-002. The reviewer read DN-8's two "to verify" premises, and both fail.
+- **Verified:** `cross-run-message-delivery.ts:100-109` and `global-agent-run-message-router.ts:185-205`.
+- **My miss:** I left two premises as "to verify" instead of reading them before handing off (lesson 2).
+- **Change:** DN-8, S-4 and the scope.
 - **Next:** architecture review.
