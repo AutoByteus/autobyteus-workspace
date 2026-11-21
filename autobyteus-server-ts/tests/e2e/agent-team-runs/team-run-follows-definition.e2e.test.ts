@@ -11,7 +11,7 @@ import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { callTool, calledResults, objectsIn, segment, stringsOf, taskAgentsIn, toolResult, type Rec } from "../helpers/collaboration-root-harness.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
-import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
+import { delegatedRunsTree, readRunTree } from "../helpers/run-tree-delegated.js";
 
 /**
  * team-run-follows-definition (Task autobyteus-22) through the built server (`dist/app.js`) in its own process on a
@@ -36,11 +36,14 @@ import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
  *    is reached at the address.
  *  - TF-06 (AC-008): the coordinator changes: the live tree and the open view name the new coordinator.
  *  - TF-07 (AC-007): an unparsable team-config.json, a member whose agent does not exist, and a Team definition that is
- *    gone leave the run unchanged; the problem is reported (definition load issue, server warning naming the run).
+ *    gone leave the run unchanged; each logs one warning naming the run and the reason (again after a valid edit and a
+ *    new breakage); the unparsable file is also a load issue on the definition.
  *  - TF-08 (AC-004): a change made while the run is stopped is applied when it is reopened, and again after a server
  *    restart; the lead is told at its next input.
  *  - TF-09 (AC-005): a Team copy started by an agent's delegate_task (copiedFrom team_definition) follows the same edits.
  *  - TF-10 (AC-001 by the app's editor): a user's own Team saved with updateAgentTeamDefinition: its run follows.
+ *  - TF-11, TF-12 (AC-003, design SR-010): a member removed while its turn is held is leaving (stored marker, tagged
+ *    run-tree row); a Stop, and a server restart, while it is leaving show no leaving row; reopening clears the marker.
  * Prerequisites: `pnpm -C autobyteus-server-ts build` for the current worktree.
  * Run: env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
  *   ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
@@ -201,6 +204,13 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
       coordinator: tree.rootTeam.coordinatorAddress as string, handoffs: (tree.handoffs ?? tree.rootTeam.handoffs ?? []) as Rec[] };
   };
   const addresses = (members: Member[]) => members.map((member) => member.address).sort();
+  /** The stored leaving marker (design SR-010): `formerMembers[i].leaving: true` while the member finishes its turn. */
+  const storedLeaving = (id: string = teamRunId) => ((treeFile(id).rootTeam.formerMembers ?? []) as Rec[]).filter((entry) => entry.leaving === true)
+    .map((entry) => String(entry.agentRunId));
+  /** The run-tree rows the app's member list renders (`runTree`), and which of them are tagged leaving. */
+  const runTreeRows = async (kind: string, id: string) => (await readRunTree(server.graphql, kind, id)).rows as Rec[];
+  const leavingRows = async (kind: string, id: string) => (await runTreeRows(kind, id)).filter((row) => row.leaving === true)
+    .map((row) => ({ key: row.key, kind: row.kind, address: row.address, agentRunId: row.openTarget?.agentRunId as string | undefined }));
 
   type TeamConfig = { coordinatorMemberName: string; members: Array<{ memberName: string; ref: string; refScope: string }>;
     handoffs: Array<{ from: string; to: string; rules: string[] }>; avatarUrl: null };
@@ -302,10 +312,11 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
     expect(byAddress.isError, JSON.stringify(byAddress)).toBe(true);
     expect(JSON.stringify(byAddress)).toContain(refusal("writer", "/writer"));
     expect(JSON.stringify(byAddress)).toContain("COLLABORATION_TARGET_NOT_FOUND");
-    // By run ID (design § Member States: the same refusal). Soft, so the rest of the case still runs and is recorded.
-    expect.soft(byRunId.isError, JSON.stringify(byRunId)).toBe(true);
-    expect.soft(JSON.stringify(byRunId), "by run ID: the former-member refusal").toContain(refusal("writer", "/writer"));
-    expect.soft(JSON.stringify(byRunId)).toContain("COLLABORATION_TARGET_NOT_FOUND");
+    // By run ID (design § Member States: the same refusal).
+    expect(byRunId.isError, JSON.stringify(byRunId)).toBe(true);
+    expect(JSON.stringify(byRunId), "by run ID: the former-member refusal").toContain(refusal("writer", "/writer"));
+    expect(JSON.stringify(byRunId)).toContain("COLLABORATION_TARGET_NOT_FOUND");
+    expect(storedLeaving(), "an idle member leaves no leaving marker").toEqual([]);
     // The lead's first input after the change was the send above: its notice came with it. The reviewer has its own.
     const leadConversation = stringsOf(await view.conversationOf(memberRun["/lead"]!));
     const reviewerInput = await echo(view, memberRun["/reviewer"]!);
@@ -340,13 +351,29 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
     const refusedByRunId = await calls(view, memberRun["/lead"]!, callTool("send_message_to", { target_agent_run_id: reviewerRunId, content: `BYRUNID-${u}` }));
     const stillLeaving = view.snapshots().at(-1)!.members.some((entry) => entry.agentRunId === reviewerRunId && entry.leaving);
     expect(JSON.stringify(refused)).toContain(refusal("reviewer", "/reviewer"));
-    expect.soft(JSON.stringify(refusedByRunId), "by run ID while leaving: the former-member refusal").toContain(refusal("reviewer", "/reviewer"));
+    expect(JSON.stringify(refusedByRunId), "by run ID while leaving: the former-member refusal").toContain(refusal("reviewer", "/reviewer"));
+    expect(JSON.stringify(refusedByRunId)).toContain("COLLABORATION_TARGET_NOT_FOUND");
+    const markerWhileLeaving = storedLeaving();
+    const rowsWhileLeaving = await leavingRows("team", teamRunId);
+    expect(markerWhileLeaving, "the stored leaving marker while it finishes its turn").toEqual([reviewerRunId]);
+    expect(rowsWhileLeaving.map((row) => row.agentRunId), "the run-tree row of the leaving member is tagged").toEqual([reviewerRunId]);
+    // Its row still opens it (design SR-010): the member's own reads the app makes when the row is opened.
+    const openedProjection = await attempt(() => view.conversationOf(reviewerRunId));
+    const openedFileChanges = await attempt(() => server.graphql(`query($id:String!,$a:String!){getTeamMemberFileChanges(teamRunId:$id,agentRunId:$a){__typename}}`,
+      { id: teamRunId, a: reviewerRunId }));
     await until(async () => stringsOf(await view.conversationOf(memberRun["/lead"]!)).some((text) => text.includes(late)), "the leaving member's send reached the lead", 60_000);
     await until(() => !view.snapshots().at(-1)!.members.some((entry) => entry.agentRunId === reviewerRunId), "the reviewer was released from the view", 60_000);
+    await until(() => storedLeaving().length === 0, "the release write cleared the marker", 30_000);
+    const rowsAfterRelease = await runTreeRows("team", teamRunId);
+    expect(rowsAfterRelease.some((row) => row.openTarget?.agentRunId === reviewerRunId), "the released member's row is gone").toBe(false);
     // The leaving member received nothing new (its memory holds no message sent to it after the removal).
     const reviewerMemory = JSON.stringify(await memoryViewOf(teamRunId, reviewerRunId));
     await keep("TF-03.json", { stored: stored(), snapshots: view.snapshots().slice(snapshotsBefore), refused, refusedByRunId, stillLeavingWhenRefused: stillLeaving,
+      markerWhileLeaving, rowsWhileLeaving, markerAfterRelease: storedLeaving(),
+      openedProjection: openedProjection.ok ? "ok" : openedProjection.error, openedFileChanges: openedFileChanges.ok ? "ok" : openedFileChanges.error,
       reviewerGotStop: reviewerMemory.includes("Stop."), reviewerGotByRunId: reviewerMemory.includes(`BYRUNID-${u}`) });
+    expect(openedProjection.ok, `the leaving member opens (getTeamMemberRunProjection): ${openedProjection.ok ? "" : openedProjection.error}`).toBe(true);
+    expect(openedFileChanges.ok, `the leaving member opens (getTeamMemberFileChanges): ${openedFileChanges.ok ? "" : openedFileChanges.error}`).toBe(true);
     expect(reviewerMemory.includes("Stop.")).toBe(false);
     expect(reviewerMemory.includes(`BYRUNID-${u}`), "a leaving member receives nothing").toBe(false);
     expect(stillLeaving, "the refusal came while the member was still leaving").toBe(true);
@@ -434,11 +461,22 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
       .agentTeamDefinitions as Rec[]).find((team) => team.id === teamDefinitionId) ?? null;
     const linesSince = (from: number) => server.output().slice(from).split("\n")
       .filter((line) => /TEAM_RUN_DEFINITION_NOT_FOLLOWED|TEAM_MEMBER_NOT_ADDED|team-config|load ?issue|invalid|last.good/i.test(line));
-    // (a) An unparsable file.
+    /** The planner's warning for this run (IR-002: once per run and reason). */
+    const runWarnings = (lines: string[]) => lines.filter((line) => line.includes(`TEAM_RUN_DEFINITION_NOT_FOLLOWED: Team run '${teamRunId}' keeps its members: `));
+    // (a) An unparsable file; then another definition announcement while it is still broken (another agent's file changes):
+    // still one warning; a valid edit and a new breakage: one more.
     let from = server.output().length;
     await fsp.writeFile(configFile, "{ \"coordinatorMemberName\": \"lead\", \"members\": [ oops");
     await wait(6_000);
+    await fsp.appendFile(path.join(packageRoot, "agents", ids.alt, "agent.md"), "\nMore instructions.\n");
+    await wait(6_000);
     const broken = { stored: stored(), definition: await teamIssues(), serverLines: linesSince(from) };
+    await writeConfig(valid);
+    await wait(5_000);
+    from = server.output().length;
+    await fsp.writeFile(configFile, "not json at all");
+    await wait(6_000);
+    const brokenAgain = { stored: stored(), serverLines: linesSince(from) };
     // (b) A member whose agent does not exist, with a rule to it.
     await writeConfig(valid);
     await wait(4_000);
@@ -459,16 +497,18 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
     await fsp.rename(path.join(root, "moved-team"), teamDir);
     await wait(6_000);
     const back = { stored: stored(), definition: await teamIssues() };
-    await keep("TF-07.json", { before: { members: before.members, coordinator: before.coordinator }, broken, ghost, gone, back });
-    for (const [label, after] of [["unparsable", broken.stored], ["unknown agent", ghost.stored], ["definition gone", gone.stored], ["back", back.stored]] as const) {
+    await keep("TF-07.json", { before: { members: before.members, coordinator: before.coordinator }, broken, brokenAgain, ghost, gone, back });
+    for (const [label, after] of [["unparsable", broken.stored], ["unparsable again", brokenAgain.stored], ["unknown agent", ghost.stored], ["definition gone", gone.stored], ["back", back.stored]] as const) {
       expect(after.members, label).toEqual(before.members);
       expect(after.coordinator, label).toBe(before.coordinator);
     }
     expect(JSON.stringify(ghost.rules)).not.toContain("/ghost");
     expect(JSON.stringify(broken.definition?.loadIssues ?? []), "the unparsable file is reported on the definition").not.toBe("[]");
-    expect.soft(gone.serverLines.some((line) => line.includes("TEAM_RUN_DEFINITION_NOT_FOLLOWED") && line.includes(teamRunId)),
-      `definition gone: a warning naming the run; lines: ${gone.serverLines.join(" | ").slice(0, 1500)}`).toBe(true);
-    expect.soft(broken.serverLines.length + ghost.serverLines.length, "the unparsable file and the unknown agent are logged").toBeGreaterThan(0);
+    // Each unusable definition: exactly one warning naming the run and the reason (IR-002 O-1/O-2).
+    for (const [label, lines] of [["unparsable (and a later announcement)", broken.serverLines], ["unparsable again after a valid edit", brokenAgain.serverLines],
+      ["unknown agent", ghost.serverLines], ["definition gone", gone.serverLines]] as const) {
+      expect(runWarnings(lines), `${label}: ${lines.join(" | ").slice(0, 1200)}`).toHaveLength(1);
+    }
     // The run keeps working.
     const rules = await calls(view, memberRun["/lead"]!, callTool("get_handoff_rules", {}));
     expect(JSON.stringify(rules)).toContain("/scout");
@@ -582,5 +622,59 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
     expect(JSON.stringify(rules)).toContain("Ask the extra member.");
     await keep("TF-10.json", { stored: stored(ownRun), leadInput, rules });
     ownView.close();
+  }, 300_000);
+
+  /** A member at `address` holds a turn and is then removed: it is leaving (stored marker and tagged run-tree row). */
+  const removeWhileHeld = async (memberName: string, ref: string) => {
+    if (!teamConfig.members.some((entry) => entry.memberName === memberName)) {
+      await writeConfig({ ...teamConfig, members: [...teamConfig.members, member(memberName, ref)] });
+      await until(() => stored().members.some((entry) => entry.address === `/${memberName}`), `${memberName} is a member`, 60_000);
+    }
+    const runId = stored().members.find((entry) => entry.address === `/${memberName}`)!.agentRunId;
+    view.send(runId, "HOLD_TURN");
+    await wait(2_000);
+    await writeConfig({ ...teamConfig, members: teamConfig.members.filter((entry) => entry.memberName !== memberName),
+      handoffs: teamConfig.handoffs.filter((rule) => rule.to !== `/${memberName}` && rule.from !== `/${memberName}`) });
+    await until(() => storedLeaving().includes(runId), `${memberName} is leaving (stored marker)`, 60_000);
+    await until(async () => (await leavingRows("team", teamRunId)).some((row) => row.agentRunId === runId), `${memberName}'s row is tagged leaving`, 30_000);
+    return runId;
+  };
+
+  it("TF-11 (AC-003, SR-010): a Stop while a member is leaving shows no leaving row; reopening clears the marker", async () => {
+    const runId = await removeWhileHeld("checker", ids.reviewer);
+    const rowsLeaving = await leavingRows("team", teamRunId);
+    view.close();
+    expect((await server.graphql(`mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}`, { id: teamRunId })).terminateAgentTeamRun.success).toBe(true);
+    await wait(2_000);
+    const rowsAfterStop = await leavingRows("team", teamRunId);
+    const markerAfterStop = storedLeaving();
+    view = await openTeam();
+    await echo(view, memberRun["/lead"]!);
+    const markerAfterReopen = storedLeaving();
+    const rowsAfterReopen = await runTreeRows("team", teamRunId);
+    await keep("TF-11.json", { runId, rowsLeaving, rowsAfterStop, markerAfterStop, markerAfterReopen,
+      formerAfterReopen: stored().former.map((entry) => entry.address), rowsAfterReopen: rowsAfterReopen.map((row) => ({ kind: row.kind, address: row.address, leaving: row.leaving ?? null })) });
+    expect(rowsAfterStop, "no leaving row once the team is stopped").toEqual([]);
+    expect(markerAfterReopen, "reopening clears the marker").toEqual([]);
+    expect(rowsAfterReopen.some((row) => row.openTarget?.agentRunId === runId)).toBe(false);
+    expect(stored().former.some((entry) => entry.agentRunId === runId)).toBe(true);
+  }, 300_000);
+
+  it("TF-12 (AC-003, AC-004, SR-010): a server restart while a member is leaving shows no leaving row; reopening clears the marker", async () => {
+    const runId = await removeWhileHeld("checker", ids.reviewer);
+    view.close();
+    await stopServer(server, "SIGTERM");
+    server = await startServer("server #3");
+    const markerAfterRestart = storedLeaving();
+    const rowsAfterRestart = await leavingRows("team", teamRunId);
+    view = await openTeam();
+    await echo(view, memberRun["/lead"]!);
+    const markerAfterReopen = storedLeaving();
+    const rowsAfterReopen = await runTreeRows("team", teamRunId);
+    await keep("TF-12.json", { runId, markerAfterRestart, rowsAfterRestart, markerAfterReopen,
+      rowsAfterReopen: rowsAfterReopen.map((row) => ({ kind: row.kind, address: row.address, leaving: row.leaving ?? null })) });
+    expect(rowsAfterRestart, "no leaving row after a restart").toEqual([]);
+    expect(markerAfterReopen, "reopening clears the marker").toEqual([]);
+    expect(rowsAfterReopen.some((row) => row.openTarget?.agentRunId === runId)).toBe(false);
   }, 300_000);
 });
