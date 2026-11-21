@@ -1,0 +1,8 @@
+# IMP-05 server E2E files that build WorkspaceRunHistoryService (closedDelegations input)
+# command: pnpm -C autobyteus-server-ts exec vitest run <4 files below> --no-watch
+# commit: 9968ee0c73
+# env: macOS Darwin 25.5.0, pnpm 10.28.2
+# date: 2026-11-21 15:17 CET
+
+ Test Files  4 passed (4)
+      Tests  23 passed (23)
