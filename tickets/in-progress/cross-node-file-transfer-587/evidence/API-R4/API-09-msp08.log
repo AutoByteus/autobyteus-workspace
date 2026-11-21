@@ -1,0 +1,9 @@
+# API-09 rerun: pnpm -C autobyteus-web build:mobile-web; test:e2e:mobile-shell --cases=MSP-08
+# Code 575c4ec9ed (HEAD 72b84f3c33, documents only after it); Node 22.23.1; macOS 26; 2026-11-21
+EXIT 0
+> autobyteus@1.5.14-beta.6 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/tmp/api587/r4/msp --cases=MSP-08
+[mobile-shell] MSP-08 …
+[mobile-shell] MSP-08 Pass
+mobile-shell probe: Pass
+EXIT 0

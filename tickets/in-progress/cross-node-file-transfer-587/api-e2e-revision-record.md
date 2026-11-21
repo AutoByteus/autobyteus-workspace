@@ -7,6 +7,7 @@
 | API-REV-001 | Code reviewer, `code-review-report.md` CRR-001 Pass, round 1 | SR-008/SR-009, ARCH-REV-002, IR-001, CRR-001 | N/A | Pass / 95% |
 | API-REV-002 | Code reviewer, `api-e2e-test-review-report.md` CRR-002 Fail (T-001), round 2 | CRR-002 | Pass / 95% | Pass / 95% |
 | API-REV-003 | Code reviewer, `code-review-report.md` CRR-004 Pass of IR-002 (delivery DEL-03), round 3 | DEL-03, IR-002, CRR-004 | Pass / 95% | Pass / 95% |
+| API-REV-004 | Code reviewer, `code-review-report.md` CRR-006 Pass of IR-003 (merge with autobyteus-22), round 4 | IR-003, CRR-006 | Pass / 95% | Pass / 95% |
 
 ## Revision Entries
 
@@ -97,3 +98,25 @@ None.
 - New or remaining failure IDs: none. API-07 is red only because of FU-002.
 - Recommended owner: code reviewer (test-code review of IR-002's files), then delivery.
 - Remaining risks, blocked evidence, or untested scope: as API-REV-001. OBS-1 and OBS-2 are now FU-003 and FU-004.
+
+### API-REV-004 — Round 4: the merge with autobyteus-22
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md` (CRR-006 Pass of IR-003), round 4; code `575c4ec9ed`.
+- Triggering finding or case IDs: IR-003, the merge of `origin/personal` `6533d7be04` (autobyteus-22).
+- Related revision IDs: IR-003, CRR-006.
+- Why recorded: an implementation-owned merge returns through API/E2E.
+- Coverage decisions or durable test paths changed:
+  - `remote-delegation-two-server.e2e.test.ts`: autobyteus-22's merged `RC-51` collided with this ticket's `RC-51` (same test ID, same receipt key). This ticket's RC-51 … RC-54 are renumbered RC-55 … RC-58. The base's RC-51 keeps its number, because autobyteus-22's archived records name it.
+- Cases added, changed, removed, or rechecked: all Rerun (the contract packages and `typecheck-baseline.json` changed), except the unit suite and the typechecks, which were reused from IMP-11/IMP-10 on the same code. API-12 (fresh start) and API-13 (autobyteus-22's gated Team suite) were added. The plan is in the execution report's Round section.
+- Commands, environment, fixture, or broader-validation delta: two lanes, server suites in sequence; a temporary fresh clone of the base `6533d7be04` to compare TF-04 (removed after).
+
+#### Prior Failure Resolution
+
+None for this ticket.
+
+- Canonical artifacts and sections updated: the execution report (Round, Latest Result), `api-e2e-test-progress.md`, `follow-ups.md` (FU-005, FU-006), `evidence/API-R4/`.
+- Prior result and confidence: Pass / 95%.
+- Current result and confidence: Pass / 95%.
+- New or remaining failure IDs: none for this ticket. On the base: FU-005 (TF-04), and FU-002/FU-006 (contract stories).
+- Recommended owner: code reviewer (test-code review), then delivery. The Solution Designer routes FU-005 and FU-006.
+- Remaining risks, blocked evidence, or untested scope: as API-REV-001. §5.1's cross-node steps are not reached while FU-006 stands; RF-14 is proven on the merged code by the two-server suite.

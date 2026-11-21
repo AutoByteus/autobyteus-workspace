@@ -97,15 +97,15 @@ import { SEND_MESSAGE_TO_LLM_DESCRIPTION, SEND_MESSAGE_TO_NODE_DESCRIPTION, targ
  *   member's list over 50 (50, then the rest, newest first, nothing twice), a live message during Load more, and older lines
  *   of the released shape (unlinked: run ID, no chip; linked: named from the Task entry). Every cross-node message carries
  *   `sender.address` and its accepted answer `receiverAddress` (RC-06, RC-20).
- * 587 (reference files between nodes, RFC-001): RC-51 a delegation to beta with an .mp4, a PDF and a PNG (status, then
+ * 587 (reference files between nodes, RFC-001): RC-55 a delegation to beta with an .mp4, a PDF and a PNG (status, then
  *   signed raw pieces of at most 8 MiB, then the start and the work packet naming the files): beta's task agent reads them
  *   read-only at `<its folder>/received_files/<sender run ID>/<name>`, bytes equal; its reply without node, then with the
  *   wrong node (a third node theta paired with beta), is refused (RF-14), with node it returns a file to alpha (each node's
  *   log names its own paths); a re-sent file is not uploaded again; a new version replaces the old at the same path; two
- *   unrelated runs exchange a file with node. RC-52 the piece route behind the gate (unsigned, wrong secret, a body other
+ *   unrelated runs exchange a file with node. RC-56 the piece route behind the gate (unsigned, wrong secret, a body other
  *   than the signed one, over 8 MiB), a signed piece whose file does not match its SHA-256, a message naming a file not
- *   held, a piece damaged in transit by the proxy, and the receiver's size limit (sender-side and a forged piece). RC-53 the
- *   link breaks mid-upload: the call names the file, nothing delivered, the next send resumes. RC-54 one copy for two runs;
+ *   held, a piece damaged in transit by the proxy, and the receiver's size limit (sender-side and a forged piece). RC-57 the
+ *   link breaks mid-upload: the call names the file, nothing delivered, the next send resumes. RC-58 one copy for two runs;
  *   each history delete removes its run's copy; the bytes and a broken upload's partial file go at the next cleanup once a
  *   day untouched. Every cross-node message names its node (RF-14): RC-06/RC-08/RC-22 check the refusals without it.
  * Beta's agents (245): the shared Agents Publisher (scripted AGY default), Blank Slate (no default), Half Set (runtime only),
@@ -1988,7 +1988,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       linkerCounterparts: linkerPage.counterparts, liveDuring: { nextPageSize: nextPage.messages.length } });
   }, 900_000);
 
-  // ---- autobyteus-587: reference files between nodes (RC-51 … RC-54) ----
+  // ---- autobyteus-587: reference files between nodes (RC-55 … RC-58; numbered after autobyteus-22's RC-51, which the base already holds) ----
   const MiB = 1024 * 1024;
   const sha256Of = (bytes: Buffer) => createHash("sha256").update(bytes).digest("hex");
   /** A file in a workspace, made of random bytes after its format's own leading bytes (enough for its viewer to know it). */
@@ -2024,7 +2024,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
   const lineWith = async (node: NodeServer, content: string) => (await walkFiles(node.memory)).filter((file) => /communication_messages.*\.jsonl$/.test(file))
     .flatMap((file) => fs.readFileSync(file, "utf8").split("\n").filter(Boolean).map((line) => JSON.parse(line) as Rec)).find((line) => line.content === content);
 
-  it("RC-51 587 AC-001/AC-002/AC-010, RF-7/RF-11: a delegation to beta carries an .mp4, a PDF and a PNG (uploaded first, in signed pieces); the task agent reads them read-only at its own paths; its reply with node returns a file; without node or with the wrong node it is refused; a re-sent file is not uploaded again; a new version replaces the old at the same path", async () => {
+  it("RC-55 587 AC-001/AC-002/AC-010, RF-7/RF-11: a delegation to beta carries an .mp4, a PDF and a PNG (uploaded first, in signed pieces); the task agent reads them read-only at its own paths; its reply with node returns a file; without node or with the wrong node it is refused; a re-sent file is not uploaded again; a new version replaces the old at the same path", async () => {
     const sender = await createStandalone(alpha, defs.delegator, "alpha files delegator");
     const files = [await writeBinary(alpha.workspace, "demo.mp4", 20 * MiB, Buffer.from("0000001866747970", "hex")),
       await writeBinary(alpha.workspace, "brief.pdf", 120 * 1024, Buffer.from("%PDF-1.4\n")),
@@ -2116,10 +2116,10 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(await receives(standaloneActor(beta, ids.bystander, "beta bystander"), "NOTES-FOR-BYSTANDER")).toContain(bystanderPath);
     expect((await receivedFact(beta, bystanderPath)).sha256).toBe(note.sha256);
     ids.files = { sender: sender.runId, r9, demo: files[0], brief: files[1] };
-    record("RC-51", { delegated, packet, facts, order, replies, resendWire: filesOf(resendWire), briefFact, bystanderPath });
+    record("RC-55", { delegated, packet, facts, order, replies, resendWire: filesOf(resendWire), briefFact, bystanderPath });
   }, 900_000);
 
-  it("RC-52 587 AC-003/AC-005, QR: the piece route admits only signed pieces of at most 8 MiB; a damaged piece in transit or a piece whose file does not match its SHA-256 is refused and nothing is delivered; a file over the receiver's limit is refused by the sender before any upload and by the receiver on a forged piece", async () => {
+  it("RC-56 587 AC-003/AC-005, QR: the piece route admits only signed pieces of at most 8 MiB; a damaged piece in transit or a piece whose file does not match its SHA-256 is refused and nothing is delivered; a file over the receiver's limit is refused by the sender before any upload and by the receiver on a forged piece", async () => {
     const sender = standaloneActor(alpha, ids.files.sender, "alpha files delegator");
     const remote = composeOnBeta(ids.files.r9);
     const piece = randomBytes(64 * 1024);
@@ -2177,10 +2177,10 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(filesOf(remoteRequests(overBefore).filter((entry) => entry.via === "toBeta" && entry.path !== PATHS.runSummaries)), "only the status: no piece, no message").toEqual([`POST ${PATHS.receivedFilesStatus}`]);
     expect(forgedOversize, JSON.stringify(forgedOversize)).toMatchObject({ status: 200, answer: { accepted: false, code: "REFERENCE_FILE_TOO_LARGE" } });
     await neverReceives(remote, "OVERSIZE", 0);
-    record("RC-52", { unsigned, wrongSecret, tampered, tooBig: tooBig.status, mismatch, unheld, damaged, oversize: textOf(oversize), forgedOversize });
+    record("RC-56", { unsigned, wrongSecret, tampered, tooBig: tooBig.status, mismatch, unheld, damaged, oversize: textOf(oversize), forgedOversize });
   }, 600_000);
 
-  it("RC-53 587 AC-006, RF-11: the link to beta breaks during an upload: the call names the file and nothing is delivered; beta keeps only the partial upload, and the next send resumes it from where it stopped", async () => {
+  it("RC-57 587 AC-006, RF-11: the link to beta breaks during an upload: the call names the file and nothing is delivered; beta keeps only the partial upload, and the next send resumes it from where it stopped", async () => {
     const sender = standaloneActor(alpha, ids.files.sender, "alpha files delegator");
     const remote = composeOnBeta(ids.files.r9);
     const big = await writeBinary(alpha.workspace, "render.mp4", 20 * MiB, Buffer.from("0000001866747970", "hex"));
@@ -2204,10 +2204,10 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const offsets = remoteRequests(retryBefore).filter((entry) => entry.method === "PUT").map((entry) => Number(new URL(entry.path, "http://x").searchParams.get("offset")));
     expect(offsets, "resumed after the held bytes").toEqual([8 * MiB, 16 * MiB]);
     expect((await receivedFact(beta, path.join(beta.memory, "agents", ids.files.r9, "received_files", ids.files.sender, "render.mp4"))).sha256).toBe(big.sha256);
-    record("RC-53", { broken: textOf(broken), partialBytes: partial.size, offsets });
+    record("RC-57", { broken: textOf(broken), partialBytes: partial.size, offsets });
   }, 600_000);
 
-  it("RC-54 587 AC-007, RF-10: the same file sent to two runs is uploaded once and kept once; deleting each run's history removes its own copy only; the stored bytes are freed by the next cleanup once no run has them and they are a day untouched, and a broken upload's pieces likewise", async () => {
+  it("RC-58 587 AC-007, RF-10: the same file sent to two runs is uploaded once and kept once; deleting each run's history removes its own copy only; the stored bytes are freed by the next cleanup once no run has them and they are a day untouched, and a broken upload's pieces likewise", async () => {
     const sender = standaloneActor(alpha, ids.files.sender, "alpha files delegator");
     const shared = await writeBinary(alpha.workspace, "handbook.pdf", 2 * MiB, Buffer.from("%PDF-1.4\n"));
     const runsFor: string[] = [];
@@ -2253,7 +2253,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await deleteRun(third.target_agent_run_id as string);
     await until(async () => !fs.existsSync(storeEntry(beta, shared.sha256)) && !fs.existsSync(partialPath), "the cleanup after the delete", 20_000);
     expect(fs.existsSync(storeEntry(beta, freshNotUsed)), "bytes a run still has are kept").toBe(true);
-    record("RC-54", { runsFor, uploads, afterBothLinks: afterBoth.nlink });
+    record("RC-58", { runsFor, uploads, afterBothLinks: afterBoth.nlink });
   }, 900_000);
 
   it("RC-21 247 AC-301: a Team member on alpha delegates beta's shared Studio Team; beta starts a Team run whose members use their own or the Team's default, and only its coordinator starts", async () => {

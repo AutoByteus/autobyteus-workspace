@@ -3,8 +3,26 @@
 ## Round
 
 - Coverage investigation: `tickets/in-progress/cross-node-file-transfer-587/api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-003`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-004`
 - Test progress log: `api-e2e-test-progress.md`
+- Round 4 and trigger: the code reviewer's CRR-006 Pass of IR-003, the merge with `origin/personal` `6533d7be04` (autobyteus-22, team-run-follows-definition) as `575c4ec9ed`. HEAD `72b84f3c33` (documents only after the merge).
+- **Case IDs from round 4:** autobyteus-22 added its own `RC-51` to the two-server suite, which the base already holds; this ticket's RC-51 … RC-54 are now **RC-55 … RC-58**. Round 1–3 records and evidence keep the old IDs: RC-51 → RC-55, RC-52 → RC-56, RC-53 → RC-57, RC-54 → RC-58. Both cases had called `record("RC-51", …)`, so the receipt kept only one of them (IMP-13's run included).
+- Round 4 rerun plan, following TESTING.md § Rerun by impact. `git diff --name-only a3e86ad971 72b84f3c33` includes both contract packages (`autobyteus-team-stream-contracts`, `autobyteus-collaboration-stream-contracts`, `src` and `dist`) and `typecheck-baseline.json`. That is a shared foundation, so every case is Rerun. Runs already made on `575c4ec9ed` count:
+
+  | Case | Decision | Evidence (`evidence/API-R4/` unless named) |
+  | --- | --- | --- |
+  | Whole server unit suite | Reused: IMP-11 on `575c4ec9ed` | `Tests  8764 passed` |
+  | API-02 typechecks | Reused (IMP-10); rerun after my renumbering | server `1004 in 314 files (baseline 1004 in 314 files)` PASS; web `86 in 36 files` PASS (`API-06/API-06-two-server.log`) |
+  | API-12 fresh start (build inputs: contract packages, baseline) | Rerun | `API-12-fresh-start-typechecks.log`: fresh clone, `install exit 0`, both typechecks PASS |
+  | API-04 whole `test:integration` | Rerun | `Tests  517 passed`, 0 failed |
+  | API-05 whole `pnpm test:e2e` | Rerun | `Test Files  128 passed`, `Tests  574 passed`, 0 failed |
+  | API-06 two-server suite | Rerun after renumbering (IMP-13 ran it before) | `Tests  55 passed (55)`; the receipt holds `RC-51` (autobyteus-22) and `RC-55` … `RC-58` apart |
+  | API-07 contract stories §5.1–§5.3 | Rerun | red, not because of 587: FU-002, plus FU-006 (autobyteus-22's `copiedFrom`, which the 461 model lacks; §5.1 now stops at S1 and §5.3 at O5) |
+  | API-08 CPW | Rerun | 14/14 |
+  | API-09 MSP-08 | Rerun (the merge changed the web's run tree and Team view) | `[mobile-shell] MSP-08 Pass` |
+  | API-10 tracked imports | Rerun | passed, 102898 files |
+  | API-13 autobyteus-22's gated Team suite (new) | Run: it drives the merged Team root with this ticket's `remoteFiles` | 11/12. TF-04 fails twice on the merged branch, the second time alone at lower load, **and also on the base `6533d7be04` in a fresh clone without 587's code**. The leaving member is interrupted and released, but no `AGENT_COMMAND_ACK` arrives. It predates this ticket: FU-005 (urgent) |
+  | API-11 model check | Still valid | the model, stories and fixture are unchanged |
 - Round and trigger: round 3; the code reviewer's CRR-004 Pass of IR-002. Delivery's DEL-03 found ten stale unit tests after its merge of `origin/personal` (`3be417f8df`); IR-002 (`e295b74b81`) fixed them. Round 2: the code reviewer's test-code review CRR-002 Fail, T-001 (`api-e2e-test-review-report.md`). Round 1: the code reviewer's CRR-001 Pass (code `e327ba2467`).
 - Round 3 rerun plan, following TESTING.md § Rerun by impact. The validated commits are `71be9e9e8e` (rounds 1–2) and HEAD `008981c6bd`. `git diff --name-only 71be9e9e8e 008981c6bd` covers:
   - the merged base: server `src` in the work journal, busy runs and runtime handover notices, none of it in this ticket's files; an additive `journal_reads` case in `agy-failure-cli.mjs`; web app-update and notification files; iOS icons; documents;
@@ -151,7 +169,12 @@
 - Result: `Pass`.
 - Criteria not proven, user-only, or accepted risk: AC-009 for AGY/Grok/ACP, `Accepted Unverified Risk (DEC-008)`.
 - Evidence decisions requested: `None`.
-- Next recipient from `get_handoff_rules`: `/code_reviewer` (test-code review of IR-002's test files, round 3).
+- Next recipient from `get_handoff_rules`: `/code_reviewer` (test-code review of IR-003's merged test files and my RC-55 … RC-58 renumbering, round 4).
+- Round 4 result: Pass. Every case this ticket's code reaches passes on `575c4ec9ed`. Two gated suites are red on the base itself:
+  - the contract stories: FU-002 and FU-006, the 461 model lacks fields from 565 and autobyteus-22;
+  - autobyteus-22's TF-04: FU-005, which fails identically on `6533d7be04` without 587.
+
+  The cross-node steps of §5.1 are not reached in this run (it stops at S1). RF-14 on the merged code is proven by the two-server suite (RC-06, RC-08, RC-19, RC-22, RC-55).
 - Round 3 results on HEAD `008981c6bd` (`evidence/API-R3/`):
   - API-04: `Tests  514 passed | 69 skipped (583)`, 0 failed;
   - API-05: `Test Files  128 passed | 156 skipped (284)`, `Tests  574 passed`, 0 failed;
