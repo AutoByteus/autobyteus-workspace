@@ -7,6 +7,7 @@
 | SR-001 | Requirements | Initial coherent baseline (Task autobyteus-15 and user comment, 2026-11-21) | N/A | N/A | Approved | BEH-001..005, REQ-001..009, AC-001..011 | Approved by Solution Designer within the direction, user informed |
 | SR-002 | Design | Architecture design on approved SR-001 | N/A | Requirements Approved; no design | Requirements Approved; design Ready | BEH-001..005; REQ-001..009 | design-spec.md DS-001..DS-004; Medium / High; Architecture Design Complete |
 | SR-003 | Design | ARCH-REV-001 Fail / Design Impact | AR-001, AR-002, AR-003 | design Ready (SR-002), review Fail | design Ready (SR-003); requirements unchanged | BEH-001, BEH-002; REQ-002, REQ-004 | Corrections in design-spec.md "SR-003 Response To ARCH-REV-001"; Medium / High unchanged |
+| SR-004 | Design | ARCH-REV-001 re-review notes (cross-owner finalization; inactive identity) | AR-001, AR-002 | design Ready (SR-003) | design Ready (SR-004); requirements unchanged | BEH-001; REQ-002 | Two-phase busy observation (inspect per owner, finalize both in one synchronous turn); run-object keys, missing entry and `inactive` → unknown |
 
 ## Revision Entries
 
@@ -73,4 +74,15 @@
 - Handoff outcome: re-review by `/architecture_reviewer` (handoff rule 1); see `handoff-architecture-review.md`
 - Downstream impact: no implementation before a passing review
 - Remaining gaps: ASM-001 (guest validation)
+- Next action: architecture re-review
+
+### SR-004 — Cross-owner finalization of the busy observation
+
+- Phase and classification: Design, `Design Impact` (clarification within AR-001/AR-002)
+- Trigger: architecture reviewer's re-review notes on SR-003 (2026-11-21): per-owner status re-read could age while the other owner's inspection was pending; absent map entries and `inactive` (`codex-thread.ts:141`, thread changed during the read) read as idle
+- Current status: requirements Approved (unchanged); design Ready (SR-004)
+- IDs affected: REQ-002, AC-002, QR-001; DS-002
+- Canonical sections changed: `design-spec.md` "SR-004 clarification", SR-003 response row AR-002, DS-002 primary spine and narrative, interfaces (`inspectBackgroundWork` / `finalizeBusyRuns`, application `inspectBusy` / `finalizeBusy`), examples, change sequence tests, file map
+- Intended behavior changed: `No`; no renewed approval
+- Classification: Medium / High (unchanged)
 - Next action: architecture re-review

@@ -48,3 +48,7 @@ Sent to `/architecture_reviewer` (handoff rule 1) on 2026-11-21 with this file a
 ## SR-003 re-review request (2026-11-21)
 
 ARCH-REV-001 (Fail, AR-001..AR-003) is answered in `design-spec.md` section "SR-003 Response To ARCH-REV-001", with the new "Admission Boundary" subsection, revised DS-002/DS-003/DS-004, interfaces (`GET /rest/busy-runs` → `{ busy, unknown }`, `observeBusyRuns`, `ManagedUpdateSession.quitRequested()`), examples and test guidance. Investigation A-F09..A-F12; revision record SR-003. Requirements SR-001 unchanged (no intended-behavior change, no renewed approval). Classification Medium / High unchanged → handoff rule 1, `/architecture_reviewer`.
+
+## SR-004 re-review request (2026-11-21)
+
+Answers the two re-review notes on SR-003: `design-spec.md` "SR-004 clarification" (inspect per owner concurrently, then finalize both owners in one synchronous turn; inspection entries keyed by run object; a still-live run with no entry or with `unavailable`, including `inactive`, is `unknown`; vanished runs ignored; `unsupported` stays `idle`). Revision record SR-004. Requirements unchanged; Medium / High → `/architecture_reviewer`.
