@@ -82,7 +82,8 @@ const AGENT_ID = 'probe-researcher';
 const AGENT_NAME = 'Research Assistant';
 const TEAM_ID = 'probe-product-team';
 // SR-009 (AC-013): a team whose folder name makes its team-local member's ID too long for one file name when encoded.
-const LONG_TEAM_ID = `probe-${'long-archive-team-'.repeat(10)}folder`;
+// The folder name itself stays within the 255-byte file name limit (246 bytes); the member's encoded ID is 274 bytes.
+const LONG_TEAM_ID = `probe-${'long-archive-team-'.repeat(13)}folder`;
 const LONG_TEAM_NAME = 'Long Archive Team';
 const writeAgent = async (dir, name, description) => {
   await fs.mkdir(dir, { recursive: true });
@@ -318,9 +319,9 @@ try {
   check('SMV-064', !existsSync(path.join(memoryDir, 'semantic', encodeURIComponent('team-local-agent:probe-product-team:reviewer'))), 'The view created no folder');
   await shot(page, 'VIS-007-agent-semantic-missing-1440x900');
 
-  // SR-009 (AC-013, N-12): a team-local agent whose encoded ID is over 200 bytes. Its folder has the shortened name
+  // SR-009 (AC-013, N-12): a team-local agent whose encoded ID is over 255 bytes (autobyteus-576). Its folder has the shortened name
   // (`#` and a hash); the Semantic tab finds it and opens a file inside it.
-  check('SMV-100', encodeURIComponent(longId).length > 200 && path.basename(longFolder).includes('#') && Buffer.byteLength(path.basename(longFolder)) <= 255,
+  check('SMV-100', encodeURIComponent(longId).length > 255 && path.basename(longFolder).includes('#') && Buffer.byteLength(path.basename(longFolder)) <= 255,
     "A long ID's folder has the shortened name", { encodedBytes: encodeURIComponent(longId).length, folderName: path.basename(longFolder) });
   await goto('?view=home&section=browse&node=teams');
   await page.locator('[data-test="memory-owner-card"]', { hasText: LONG_TEAM_NAME }).click();

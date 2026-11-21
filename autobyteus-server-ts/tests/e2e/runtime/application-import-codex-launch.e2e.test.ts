@@ -34,12 +34,12 @@ const MODEL = "gpt-5.6-luna";
 
 /**
  * An agent definition's folder name under `semantic/` and `episodic/`, written here from DEC-016 (autobyteus-554), not
- * from the layout's code: `encodeURIComponent(id)` when it is at most 200 bytes; otherwise its first 120 bytes cut
+ * from the layout's code: `encodeURIComponent(id)` when it is at most 255 bytes (autobyteus-576 DEC-001); otherwise its first 120 bytes cut
  * between characters, then `#`, then the first 16 hex characters of the id's SHA-256.
  */
 const definitionFolderNameByDecision = (id: string): string => {
   const encoded = encodeURIComponent(id);
-  if (Buffer.byteLength(encoded) <= 200) return encoded;
+  if (Buffer.byteLength(encoded) <= 255) return encoded;
   let prefix = "";
   for (const character of id) {
     const piece = encodeURIComponent(character);
