@@ -2,8 +2,8 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-004` (this design, on requirements SR-003).
-- Approved requirements: `requirements-doc.md` at SR-003. The user decided DEC-004 (SR-002, SR-003); the rest was decided within the direction, and the user was informed.
+- Current solution revision ID: `SR-006` (this design, on requirements SR-005).
+- Approved requirements: `requirements-doc.md` at SR-005. The user decided DEC-004 (SR-002, SR-003); the rest was decided within the direction, and the user was informed.
 - User approval of the design: `Not required`.
 - Design status: `Ready`.
 - Authorities read:
@@ -18,7 +18,7 @@
 - **On the delegating node A, a Task's close (DONE / CANCELLED)** reaches `TaskExecutionResourceRelease.release` (`projects/runtime/task-execution-resource-release.ts:13-33`):
   - a local run goes to `TaskRunControl.stopForTaskClosure` (`task-run-control.ts:25-34`), its ordinary Stop with the `stillClosed` re-check (`isOpen`, CR-461-001);
   - a run with `nodeId` is skipped (`:18-21`, F-1).
-- **A reopen** starts nothing locally. The run's row returns because the listing follows the Task's open state.
+- **A reopen** changes only the Task's status. The run's entry stays closed: the run stays out of the list, and a message to it is refused (`cross-run-message-delivery.ts:57`). Its assigner's `delegate_task` with the run's ID and `task_id` reopens the entry (`task-execution-resource-service.ts:180-194`, `reopenAssignment`) and delivers the work. For a remote run, this is refused (`task-delegation.ts:370`).
 - **On the peer B**, a run that A's delegation started is a root of its own, with `delegatedFrom.nodeId` (`agent-run-metadata-types.ts:65-82`).
   - Its lifecycle is B's (CM-10). It is listed at the top level always (`top-level-run-rule.ts`, F-7). Its idle shutdown doesn't fire while an agent runs (F-5).
 - **The link** (`/rest/remote/*`, signed and paired; `peer-gateway.ts` `admit`) already carries an owner `terminate` for such runs (F-4), checked by `storedRemoteLinkCheck` (`remote-run-links.ts:55-72`).
@@ -26,7 +26,7 @@
 
 ## Task Size And Architectural Risk (Mandatory)
 
-- **`task_size`: `Medium`.**
+- **`task_size`: `Medium`** (SR-006 adds DN-8: the remote re-delegation, a removed refusal plus a delivery through an existing link call).
   - One new link request and its handler on B.
   - One owner on A for the notices and their retry.
   - Two optional stored fields.
@@ -53,7 +53,8 @@
 
 ## Intended Change
 
-- **A** tells B a remote run's delegation state whenever it changes: **closed** when its Task closes and the run has no other open Task; **open** when a Task naming it is reopened. It retries until B confirms.
+- **A** tells B a remote run's delegation state whenever its entries change it: **closed** when its last open entry closes; **open** when its assigner gives it a Task again. It retries until B confirms.
+- **A** also allows that re-delegation for a remote run (REQ-006), with the local checks, and delivers the Task's work through the link.
 - **B** applies the state:
   - on **closed**, it records it, stops the run through its ordinary Stop, and drops it from its run list;
   - on **open**, it clears the record and lists the run again, starting nothing.
@@ -63,7 +64,7 @@
 **DN-1: the notice, and who decides it (A).**
 - A new owner on A: `PeerRunStateNotices` (`agent-collaboration/execution/remote/peer-run-state-notices.ts`).
 - `TaskExecutionResourceRelease` gives it each closed remote run, in place of the `FENCED_REMOTE` skip.
-- The Task service gives it the remote runs of a Task it reopens. **To verify:** where `ProjectTaskService` commits a DONE/CANCELLED → TODO/IN_PROGRESS change; the notice goes beside that commit, as the release goes beside the close.
+- The re-delegation (DN-8) gives it the run after `reopenAssignment` or a new `assigned` entry commits. A Task's reopen alone gives it nothing (SR-005: it changes no entry).
 - **For each run:**
   1. mark the notice owed on the run's Task entries (DN-3);
   2. send it;
@@ -115,9 +116,17 @@
 - **To verify:** which signal makes a local closure leave the list within seconds (autobyteus-446: the run-list refresh after a Task change; `RunStatusService.RUN_TREE_CHANGED`, `run-status-service.ts:404`, or the history catalog's change notice). B's handler publishes the same one, so desktop and phone drop or restore the row in the existing live-update time (REQ-005).
 - **To verify:** the rule reads the run's own file. If listing doesn't already read it, the field is read where the row's metadata is read, not by a second file read per row.
 
+**DN-8: giving a saved Task to an existing remote run (REQ-006).**
+- In `TaskDelegation.toExistingRun` (`task-delegation.ts:357-…`), the refusal of a run with a `nodeId` entry (`:370`, `REMOTE_ROOT_REFUSAL_TEXT.savedTask`) goes. The local checks hold unchanged: the sender is the run's last assigner, and the reopen rules (`assertReopenable`).
+- The entry is reopened or appended with the same `nodeId` (and `members` for a team), as the local path does.
+- The Task's work goes to the run through the link, as `toNewRun`'s remote path sends a new run's work (`task-delegation.ts:186`, `channel.deliverMessage` with `kind: "work_packet"`), addressed to the existing run's entry agent (an agent run, or a team's coordinator). **To verify:** B's inbound `work_packet` handler accepts it for an existing, possibly stopped, peer-started run and wakes it, as it wakes a run for a linked `message`. If it only serves a just-started run, the same delivery uses `kind: "message"` with the Task's assignment text, as the local path's `task_assignment` message.
+- Reference files travel as in `toNewRun`'s remote path (paths only; transfer is autobyteus-587).
+- `REMOTE_ROOT_REFUSAL_TEXT.savedTask` is removed if nothing else uses it.
+- A refused delivery (peer unreachable) gives the same result as a new remote delegation's delivery failure (`:189`). The entry stays as committed, and the sender can retry, as for a local delivery failure.
+
 **DN-7: what is removed.**
 - The `FENCED_REMOTE` branch and the comment of `task-execution-resource-release.ts`.
-- In `collaboration_model.md`, "stop on Task closure" moves from §4's "later steps" to holds. CM-7 and CM-10 say that a peer-started run's delegation state is sent by its delegating node and recorded on its node. "Reactivation" stays a later step: a reopen lists the run again and wakes nothing.
+- In `collaboration_model.md`, "stop on Task closure" moves from §4's "later steps" to holds. CM-7 and CM-10 say that a peer-started run's delegation state is sent by its delegating node and recorded on its node. "Reactivation" (giving a run a Task again) holds for remote runs too (DN-8).
 - The node access model gains the route's scenario row (`node_access_model.md`: link-only route, paired peer).
 
 ## Persisted Data / State Transition Decision
@@ -137,7 +146,7 @@
 | S-1 close | `update_task` DONE / CANCELLED (A) → `ProjectTaskService` → `TaskExecutionResourceRelease` → `PeerRunStateNotices.changed(run)` → owed mark → `isOpen` = false → `PeerClient.deliveredRunState(open=false)` → B `PeerGateway.admit` → link check → `DelegatedRunStateHandler`: record, publish, ordinary Stop → answer → A clears the owed mark | A: `PeerRunStateNotices`; B: the handler |
 | S-2 unreachable | S-1 until the send; the transport fails → stays owed → the peer's 30 s timer → S-1's send … | `PeerRunStateNotices` |
 | S-3 A restart | Start-up → the delegation index loads the entries → owed runs → per-peer timers → S-1's send | the same |
-| S-4 reopen | Reopen (A) → `PeerRunStateNotices.changed(run)` → `isOpen` = true → `open=true` → B clears and publishes; starts nothing | the same; B: the handler |
+| S-4 re-delegation | Reopen (A, no effect on B) → the assigner's `delegate_task(run ID, task_id)` → `TaskDelegation.toExistingRun` (the local checks; the `:370` refusal removed for remote runs) → `reopenAssignment` / appended entry → `PeerRunStateNotices.changed(run)` → `open=true` → B clears and publishes → the work is delivered through the link (DN-8) → B wakes the run | `TaskDelegation`; `PeerRunStateNotices`; B: the handler and the inbound delivery |
 | S-5 wake | A's message or delegation → existing link delivery → B clears `delegationClosedAt` if set → the run wakes (CM-7) | B's inbound delivery |
 | S-6 refused | A third node sends the notice → `admit` (paired) → link check `not_linked` → refused | B's gateway |
 
@@ -147,9 +156,10 @@
 - B offline, then back: the 30 s retry (AC-004).
 - A restarted while a notice is owed: S-3.
 - B restarted while a notice is owed: the run resumes, then the next retry stops it.
-- Reopen before delivery: the owed notice is sent as "open". B never stopped the run, and the listing is unchanged.
-- Reopen after delivery: S-4. The run returns to B's list, stopped.
-- A message after a reopen whose notice hasn't arrived: S-5 clears the mark.
+- A re-delegation before the close notice was delivered: the owed notice is sent as "open". B never stopped the run, and the listing is unchanged.
+- A re-delegation after delivery: S-4. The run returns to B's list and wakes with the work.
+- A reopen alone: nothing on either side. A message is refused on A (`TASK_AGENT_RESOURCE_CLOSED`), as locally (AC-007).
+- The work delivered before the open notice arrived: S-5 clears the mark.
 - B unpaired from A: the notice is dropped, logged.
 - A run deleted on B: `not_found`, dropped.
 - A third node: S-6.
@@ -172,10 +182,11 @@
   - Link: `peer-client.ts`, `peer-gateway.ts`, `api/rest/remote.ts` (the route).
   - B: the new handler; the agent run metadata and team tree (`delegationClosedAt`); `top-level-run-rule.ts` and its list signal; the inbound delivery's clear.
   - Docs: the collaboration model, the glossary, the node access model.
-  - Tests: unit, integration, and the two-node E2E (AC-001 … AC-006).
+  - A: `task-delegation.ts` (`toExistingRun`), `remote-refusal-codes.ts`.
+  - Tests: unit, integration, and the two-node E2E (AC-001 … AC-007).
 - **Left alone:**
-  - the local closure path;
+  - the local closure and re-delegation paths;
   - autobyteus-380's temp-Task rules (DEC-006);
-  - reactivation on reopen;
+  - a Task's reopen (it changes no entry, as locally);
   - file transfer (587).
 - **Follow-ups:** none yet.

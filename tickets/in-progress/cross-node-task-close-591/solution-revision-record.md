@@ -2,6 +2,7 @@
 
 | SR | Date | Kind | Summary | Status after |
 | --- | --- | --- | --- | --- |
+| SR-006 | 2026-11-21 | Design | DN-1's trigger is the run's entries (close, re-delegation), not the Task's reopen; DN-8 adds the remote re-delegation (the `:370` refusal removed; the work through the link) | Design `Ready`, Medium / High |
 | SR-005 | 2026-11-21 | Requirements (the PM's new comment; a correction) | Local reopen read: it reopens no run; the run returns when given the Task again. SR-003's "reopen lists the run" corrected to that. REQ-006 / DEC-007: giving a saved or reopened Task to an existing remote run, as locally (the PM's stuck case) | Approved; design to revise |
 | SR-004 | 2026-11-21 | Design | Delegation-state notices from the delegating node (closed / open), owed and retried; the peer records, stops and lists by them; Medium / High | Design `Ready` |
 | SR-003 | 2026-11-21 | Requirements (the user) | Reopen behaves as locally: the run is listed on the peer again, stopped, on the Task's reopen, not only on a later message; REQ-005, BEH-004, AC-006, SCN-004 | Approved |
@@ -45,3 +46,8 @@
 - **Correction:** SR-003 wrote that a reopen lists the run again. Locally it doesn't; the re-delegation does. REQ-005, BEH-004, AC-006 and DEC-004's text are corrected, and the user is told.
 - **Added:** REQ-006, BEH-006, UC-004, SCN-005, AC-007 and DEC-007 (decided within the direction; the user is informed).
 - **Design impact:** DN-1's trigger becomes the entry's open/close (the close, and the re-delegation), not the Task's reopen, plus a new DN for the remote re-delegation.
+
+### SR-006 (design)
+
+- **Change:** DN-1, S-4, the walks and the scope follow SR-005, and DN-8 is added.
+- **Next:** architecture review (SR-004 wasn't sent yet; this package replaces it).
