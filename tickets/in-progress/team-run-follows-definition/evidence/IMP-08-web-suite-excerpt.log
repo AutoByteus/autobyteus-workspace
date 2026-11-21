@@ -1,0 +1,21 @@
+# IMP-08 — full web suite (excerpt)
+# Command: (autobyteus-web) pnpm exec cross-env NUXT_TEST=true vitest run
+# Commit: 6b46ec5bdd (web unchanged since); Linux container, Node 22; 2026-11-21; run alone
+# The one failure is the known projectRunsStore spec failing identically on base (implementation engineer's environment note).
+# An earlier run in parallel with server tests was stopped by an app restart; it had one load timeout (client-data-migrations boundaries.spec).
+   Duration  1494.36s (transform 95.33s, setup 9314.50s, collect 369.18s, tests 136.23s, environment 2343.29s, prepare 882.37s)
+ FAIL  stores/__tests__/projectRunsStore.spec.ts > projectRunsStore > keeps one read per Project in flight and one queued; an older answer never replaces a newer one
+   × projectRunsStore > keeps one read per Project in flight and one queued; an older answer never replaces a newer one 22ms
+ ✓ services/teamExecution/__tests__/teamExecutionContextFactory.spec.ts (3 tests) 53ms
+ ✓ services/teamExecution/__tests__/teamExecutionTreeSelectors.spec.ts (2 tests) 3ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts (13 tests) 23ms
+stderr | services/teamExecution/__tests__/teamExecutionContextFactory.spec.ts
+stderr | services/teamExecution/__tests__/teamExecutionTreeSelectors.spec.ts
+stderr | services/teamExecution/__tests__/teamExecutionViewState.spec.ts
+stdout | services/teamExecution/__tests__/teamExecutionContextFactory.spec.ts
+stdout | services/teamExecution/__tests__/teamExecutionTreeSelectors.spec.ts
+stdout | services/teamExecution/__tests__/teamExecutionViewState.spec.ts
+ ❯ stores/__tests__/projectRunsStore.spec.ts (11 tests | 1 failed) 143ms
+ ❯ stores/__tests__/projectRunsStore.spec.ts:133:19
+ Test Files  1 failed | 790 passed (791)
+      Tests  1 failed | 5956 passed | 2 skipped (5959)
