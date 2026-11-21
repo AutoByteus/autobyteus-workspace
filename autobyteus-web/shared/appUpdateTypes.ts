@@ -86,6 +86,8 @@ export type AppUpdateOutcome = 'AUTO_UPDATED' | 'AUTO_FAILED' | 'MANUAL_INSTALL_
 export type AppUpdateActivationMode = 'native' | 'managed-restart' | 'managed-quit';
 export interface AppUpdateState {
   activationMode: AppUpdateActivationMode;
+  /** The record's independent automatic install block, even when a manual failure is the visible outcome. */
+  automaticInstallBlockedVersion: string | null;
   status: AppUpdateStatus;
   currentVersion: string;
   /** True when the running build is a pre-release (for example 1.4.90-beta.3). */

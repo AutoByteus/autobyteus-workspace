@@ -60,6 +60,7 @@ export class DisabledAppUpdater implements AppUpdateController {
     const currentVersion = app.getVersion()
     return {
       activationMode: 'native',
+      automaticInstallBlockedVersion: null,
       status: 'disabled',
       currentVersion,
       currentVersionIsPrerelease: /^\d+\.\d+\.\d+-/.test(currentVersion),

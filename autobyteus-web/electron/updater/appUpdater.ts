@@ -61,7 +61,7 @@ type AppUpdaterOptions = {
 };
 
 export class AppUpdater implements AppUpdateController {
-  private state: AppUpdateState;
+  private state: Omit<AppUpdateState, 'automaticInstallBlockedVersion'>;
   private initialized = false;
   private activeOperation: AppUpdateOperation | null = null;
   private readonly errors = new AppUpdateErrorReporter(partial => this.applyState(partial));
@@ -184,7 +184,7 @@ export class AppUpdater implements AppUpdateController {
   }
 
   getState(): AppUpdateState {
-    return { ...this.state };
+    return { ...this.state, automaticInstallBlockedVersion: this.notificationRecord?.automaticInstallBlockedVersion ?? null };
   }
 
   async checkForUpdates(source: AppUpdateCheckSource | 'manual' = 'manual'): Promise<AppUpdateState> {
@@ -525,8 +525,8 @@ export class AppUpdater implements AppUpdateController {
     }
   }
 
-  private applyState(partial: Partial<AppUpdateState>): void {
-    const nextState: AppUpdateState = {
+  private applyState(partial: Partial<typeof this.state>): void {
+    const nextState = {
       ...this.state,
       ...partial,
     };

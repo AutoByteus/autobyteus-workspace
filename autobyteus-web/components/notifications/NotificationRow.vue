@@ -109,6 +109,7 @@
 <script setup lang="ts">
 import { computed, ref, useId } from 'vue'
 import { Icon } from '@iconify/vue'
+import { managedReadyMessageKey } from '~/utils/managedUpdateReadiness'
 import { useAppUpdateStore } from '~/stores/appUpdateStore'
 import { useNotificationCenterStore } from '~/stores/notificationCenterStore'
 import { useUpdateAutomationStore } from '~/stores/updateAutomationStore'
@@ -151,9 +152,7 @@ const repositoryLine = computed(() => {
 })
 const downloadedKey = computed(() => {
   if (appUpdate.automaticInstallPreparing) return 'settings.notifications.app.preparing'
-  if (appUpdate.automaticUpdate && appUpdate.activationMode === 'managed-restart') return 'settings.notifications.app.readyToRestart'
-  if (appUpdate.automaticUpdate && appUpdate.activationMode === 'managed-quit') return 'settings.notifications.app.readyOnQuit'
-  return 'settings.notifications.app.downloaded'
+  return managedReadyMessageKey(appUpdate) ?? 'settings.notifications.app.downloaded'
 })
 const downloadPercent = computed(() => Math.max(0, Math.min(100, Math.round(appUpdate.downloadPercent ?? 0))))
 

@@ -1,0 +1,14 @@
+import type { AppUpdateState } from '~/shared/appUpdateTypes';
+
+type Readiness = Pick<AppUpdateState, 'activationMode' | 'automaticUpdate' | 'updateStaged' | 'availableVersion' | 'automaticInstallBlockedVersion'>;
+
+/** Describe this verified release; the switch explanation describes the general preference. */
+export function managedReadyMessageKey(state: Readiness) {
+  const { activationMode, availableVersion } = state;
+  if (activationMode === 'native' || !state.updateStaged || !availableVersion) return null;
+  if (state.automaticInstallBlockedVersion === availableVersion) {
+    return activationMode === 'managed-restart' ? 'settings.notifications.app.readyManual' : 'settings.notifications.app.readyManualFromMenu';
+  }
+  if (!state.automaticUpdate) return null;
+  return activationMode === 'managed-restart' ? 'settings.notifications.app.readyToRestart' : 'settings.notifications.app.readyOnQuit';
+}

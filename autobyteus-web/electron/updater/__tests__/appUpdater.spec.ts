@@ -271,6 +271,7 @@ describe('AppUpdater', () => {
       s.updater.setAutomaticUpdate(true);
       await s.updater.checkForUpdates();
       await vi.waitFor(() => expect(s.updater.getState().updateStaged).toBe(true));
+      expect(s.updater.getState().automaticInstallBlockedVersion).toBeNull();
       s.session.willQuit({ preventDefault() {} });
       await vi.waitFor(() => expect(s.hooks.quit).toHaveBeenCalledOnce());
       expect(record().automaticFailure).toMatchObject({ version: '1.1.10', step: 'install' });
@@ -283,6 +284,8 @@ describe('AppUpdater', () => {
         expect(autoUpdaterMock.downloadUpdate).not.toHaveBeenCalled();
         await s.updater.downloadUpdate();
         await vi.waitFor(() => expect(s.updater.getState().updateStaged).toBe(true));
+        expect(s.updater.getState()).toMatchObject({ availableVersion: candidate.identity.version,
+          automaticInstallBlockedVersion: candidate.identity.version, notification: { outcome: 'AUTO_FAILED' } });
         expect(s.writer.activate).not.toHaveBeenCalled();
         if (action === 'ordinary quit') {
           s.session.willQuit({ preventDefault() {} });
@@ -303,6 +306,8 @@ describe('AppUpdater', () => {
             expect(autoUpdaterMock.downloadUpdate).not.toHaveBeenCalled();
             await continued.updater.downloadUpdate();
             await vi.waitFor(() => expect(continued.updater.getState().updateStaged).toBe(true));
+            expect(continued.updater.getState()).toMatchObject({ availableVersion: candidate.identity.version,
+              automaticInstallBlockedVersion: candidate.identity.version, notification: { outcome: 'MANUAL_INSTALL_FAILED' } });
             continued.session.willQuit({ preventDefault() {} });
             await vi.waitFor(() => expect(continued.hooks.quit).toHaveBeenCalledOnce());
             expect(continued.writer.activate).not.toHaveBeenCalled();
