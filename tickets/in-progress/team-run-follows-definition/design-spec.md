@@ -318,7 +318,7 @@ Server (`autobyteus-server-ts/src/`):
 | `autobyteus-web/components/workspace/history/WorkspaceStableExecutionRow.vue` (and the run-tree row model it reads), web locales | Modify | "Leaving" tag on a `team_member` row with `leaving` (SR-009) |
 | `autobyteus-web/components/workspace/team/TeamMembersPanel.vue`, its tests, and locale keys used only by it | Remove | Dead on base (no page, layout or component imports it; CRR-002) and touched by this change: Principle 7 |
 | `autobyteus-collaboration-stream-contracts/src/run-tree-dtos.ts`; `autobyteus-server-ts/src/agent-collaboration/delegation/run-tree-view.ts`; `run-history/store/run-own-agents-reader.ts` | Modify | `leaving?: true` on member rows from the stored marker (SR-009) |
-| `autobyteus-server-ts/src/agent-collaboration/communication/global-agent-run-message-router.ts` (or its location on base) and the roots' `ownsAgentRun` | Modify | Route leaving/former run IDs to the sender's root (CR-001) |
+| `autobyteus-server-ts/src/agent-communication/services/global-agent-run-message-router.ts` and the roots' `ownsAgentRun` | Modify | Route leaving/former run IDs to the sender's root (CR-001) |
 
 Docs: `collaboration_model.md` (membership follows the definition; former members), `agent_team_execution.md` (rewrite the fixed-topology statements), `agent_communication.md` (`get_handoff_rules` current rules; refusal), `GLOSSARY.md` (Former member).
 
