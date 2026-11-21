@@ -6,7 +6,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
-| IR-001 | Architecture Reviewer, `design-review-report.md`, round 2 (Pass) | N/A | `Initial Baseline` | SR-009, ARCH-REV-002 | Implemented; to Code Review |
+| IR-001 | Architecture Reviewer, `design-review-report.md`, round 2 (Pass) | N/A | `Initial Baseline` | SR-009, ARCH-REV-002, CRR-001 | Implemented; Code Review Pass (CRR-001, no findings); next: API/E2E |
 
 ## Revision Entries
 
@@ -39,3 +39,4 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: IMP-01 … IMP-05 in the handoff (all Pass).
 - Next recipient or routing: Code Review (Large / High).
 - Remaining limitations or risks: see the handoff's Known Risks (AGY/Grok/ACP limits FU-001; placement-then-append residual; AC-002 wording).
+- Code review: Pass, CRR-001, no findings (`code-review-report.md`); the reviewer routed it to API/E2E. Recorded only; no implementation change.
