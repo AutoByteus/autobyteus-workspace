@@ -14,3 +14,10 @@
 |006|API-01-results.txt|Proven at prescribed native/portable/disabled policy surface. 195 Electron, 46 renderer, 96 restart/resume and architecture cases passed; no claim about a new cross-platform GUI test.|
 
 **Limits / rollback:** disposable Ubuntu 24.04.5 x64 GNOME, actual signed protected packages and two real embedded-server processes, test trust/feed, scripted local inference. No production credentials, public feed, GUI rollout or destructive writer fault injection. No persistence migration; existing workspace and run were directly reused. A source rollback would revert the merge through normal review, not force replacement of an installed image. No new follow-up.
+
+### Repository and cleanup receipt
+- Archived under `tickets/done/managed-ubuntu-immediate-restart/`. Cross-platform artifact hygiene passed (102501 tracked paths); pre-push secret checks passed on the six ticket commits and seven commits including the merge.
+- Pushed the ticket at `9430e18c27cbe0a05bb716a0e911c1f1ab93faf6`. The latest fetched target was still `9514a05a0e2d9546d3db018d8842eb0ba1ea6d6c`. Pushed the no-fast-forward merge `ca237b7be355186a2c52513093c0fcd9bc9324fc` to `origin/personal`; its tree matched the verified ticket tip. Verified the exact SHA on the remote.
+- Fast-forwarded the user's `personal` checkout at `/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-workspace` from `b768c503f9` to that merge. Unrelated untracked files were preserved.
+- Removed the dedicated ticket worktree, both local ticket/finalization branches and the remote feature branch (lease matched the pushed SHA); no stale registration. QA had removed its disposable update fixtures. Delivery removed the remaining ticket-owned implementation preview/build fixture and locator. No shared caches or other worktrees were removed.
+- Repository delivery complete. No release pipeline, tag, publication or deployment required or initiated; no user check, accepted unverified risk, follow-up or outstanding blocker. The final records-only push and matching user checkout can be identified from this file's adding receipt commit, with exact revision recorded in the terminal handoff.
