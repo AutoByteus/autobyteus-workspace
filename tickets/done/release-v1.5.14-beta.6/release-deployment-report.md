@@ -1,6 +1,6 @@
 # Release Report — release-v1.5.14-beta.6 (autobyteus-595): beta v1.5.14-beta.6
 
-Status: **cutting** (updated below as the release proceeds).
+Status: **released** — all four workflows succeeded on the first attempt, 27 of 27 assets, GitHub pre-release; **iOS 1.5.14 (352)** uploaded to TestFlight ("UPLOAD SUCCEEDED with no errors", no ITMS message); nothing sent to App Store review.
 
 ## Release / Publication / Deployment Scope
 
@@ -26,3 +26,37 @@ Status: **cutting** (updated below as the release proceeds).
 ## Release Decision
 
 - Decision: `Beta`. Decided by: the founder's words above.
+
+## Version / Tag / Release Commit
+
+- With the HTTPS rewrite: `bash scripts/desktop-release.sh beta --branch codex/release-v1.5.14-beta.6 --no-push`; its trust check passed (witness `v1.5.14-beta.5`, run 44885874501); `migrations:record-released` no change. Release commit **`9c5f85f92f`**, annotated tag **`v1.5.14-beta.6`** (tag object `46ac5e9416`).
+- Secret Gate `origin/personal..HEAD` PASS; `origin/personal` fast-forwarded `b768c503f9 → 9c5f85f92f`, then the tag, at 12:00:28Z.
+
+## Release / Publication / Deployment
+
+- Applicable: `Yes`. Method: `Release Script` (RELEASE.md, Cutting The Release).
+
+| Workflow | Run | Result |
+| --- | --- | --- |
+| Desktop Release | 44901757001 | success, attempt 1 |
+| Server Docker Release | 44901757006 | success, attempt 1 |
+| Android APK Release | 44901756978 | success, attempt 1 |
+| iOS App Store Connect Release | 44901756955 | success, attempt 1 |
+
+- No failed job (the poll, stopping on any non-success, ran to "ALL SUCCESS").
+
+### iOS (for autobyteus-592)
+
+- **Build: 1.5.14 (352)** (`iOS build number: 352`; the archive job `CURRENT_PROJECT_VERSION = 352`, `MARKETING_VERSION = 1.5.14`).
+- Step 9 **"Check the app icon against the logo": success**, "[ios-icon] all 18 slots match the logo (on #1E3A8A)."
+- Both macOS jobs: Xcode_27.2.app, iPhoneOS SDK 27.2; "The demo answers all 252 compiled operations"; core `Executed 56 tests, with 0 failures`; smoke `Executed 8 tests, with 0 failures`.
+- Upload: **"UPLOAD SUCCEEDED with no errors"**, Delivery UUID `d7a91c02-0900-47a4-9690-0f11d98a4300`. **No ITMS message** in the log (0 lines). Nothing submitted to App Store review; no reply to Apple. App Store Connect's own processing result (the icon accepted, no "Missing Compliance") shows in App Store Connect, not in this log.
+
+### Published artifacts checked
+
+- Pre-release, not a draft; GitHub Latest stays `v1.5.13`.
+- **27 of 27 assets**; the four `latest*.yml` (12:29:07Z) after all six server packages (last 12:10:10Z) (`evidence/delivery/published-state.txt`).
+- Docker (registry API): `:1.5.14-beta.6` = `:beta` = index `sha256:47b8911073…`, exactly linux/amd64 `sha256:7628f94b47…` and linux/arm64 `sha256:1b58307d10…`, the two package jobs' digests; `:latest` = `1.5.13` = `sha256:13df73db92…`, unchanged.
+- Notes: `release-notes.md` above the generated notes, with **one** `**Full Changelog**` line (the generated body had two; the duplicate removed); the body starts with "## What you need to do"; pre-release kept.
+- Release/publication result: `Completed`. Release notes handoff result: `Used`.
+
