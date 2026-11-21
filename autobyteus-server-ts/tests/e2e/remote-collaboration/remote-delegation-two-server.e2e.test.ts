@@ -44,6 +44,8 @@ import { SEND_MESSAGE_TO_LLM_DESCRIPTION, SEND_MESSAGE_TO_NODE_DESCRIPTION, targ
  *   workspace and auto-approve on); RC-08 AC-107 unlinked senders; RC-09 AC-108 files and saved Tasks; RC-10/RC-11
  *   AC-109 Task closure; RC-12 AC-106 idle shutdown on B and restore; RC-13 restart of B, then of A (inbound restores
  *   every root kind); RC-14 history deleted; RC-15 QR-102 partition and stopped peer; RC-16 identity mismatch;
+ *   team-run-follows-definition (autobyteus-22): RC-51 beta's peer-started Studio Team copy (copiedFrom team_definition) follows
+ *   its Team definition when beta's owner adds a member and a rule and removes them again (AC-005).
  *   247: RC-21 a Team member on alpha delegates beta's shared Team "Studio Team" (AC-301); RC-22 messages with the
  *   coordinator and a never-started member, the team-run-ID guidance, not-permitted senders (AC-303); RC-23 Task closure
  *   fences a remote Team and a saved Task to it is refused (AC-305); RC-12/RC-13 also idle out and restore the Team and
@@ -2057,6 +2059,40 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(studioTitleAfter, "the Team run's title after messages").toBe(ids.studioTitle);
     record("RC-22", { studioTitleAfter, logs, toTeamRun: textOf(toTeamRun), fromMate: textOf(fromMate), fromOther: textOf(fromOther), checkerLaunches, sequences });
   }, 300_000);
+
+  it("RC-51 team-run-follows-definition AC-005: beta's peer-started Studio Team copy follows its Team definition on beta (copiedFrom team_definition): a member and a rule are added, then removed again", async () => {
+    const coordinator = teamActor(beta, ids.studio.teamRunId, ids.studio.coord, "beta studio coordinator");
+    const definitionOf = async () => ((await beta.gql(`{ agentTeamDefinitions { id revision coordinatorMemberName nodes { memberName ref refScope } handoffs { from to rules } } }`))
+      .agentTeamDefinitions as Rec[]).find((definition) => definition.id === defs.studioTeam)!;
+    const save = async (nodes: Rec[], handoffs: Rec[]) => {
+      const current = await definitionOf();
+      await beta.gql(`mutation($input:UpdateAgentTeamDefinitionInput!){updateAgentTeamDefinition(input:$input){id}}`,
+        { input: { id: defs.studioTeam, expectedRevision: current.revision, coordinatorMemberName: "lead", nodes, handoffs } });
+    };
+    const original = await definitionOf();
+    const nodes = (original.nodes as Rec[]).map((node) => ({ memberName: node.memberName, ref: node.ref, refScope: String(node.refScope).toUpperCase() }));
+    const treeBefore = await betaTeamTree(ids.studio.teamRunId);
+    expect(treeBefore.copiedFrom, "a peer-started copy records team_definition").toBe("team_definition");
+    // Beta's owner adds a member and a rule to it (the app's editor on beta).
+    await save([...nodes, { memberName: "reviewer", ref: defs.checker, refScope: "SHARED" }], [{ from: "/lead", to: "/reviewer", rules: ["Review the studio work."] }]);
+    await until(async () => ((await betaTeamTree(ids.studio.teamRunId)).rootTeam.members as Rec[]).some((member) => member.address === "/reviewer"),
+      "beta's copy gained the reviewer", 60_000);
+    const added = await betaTeamTree(ids.studio.teamRunId);
+    const rules = await calls(coordinator, "get_handoff_rules", {});
+    expect(JSON.stringify(rules)).toContain("Review the studio work.");
+    expect(JSON.stringify(rules)).toContain("/reviewer");
+    // The member is removed again: it is a former member of the copy and refused by address.
+    await save(nodes, (original.handoffs as Rec[]) ?? []);
+    await until(async () => ((await betaTeamTree(ids.studio.teamRunId)).rootTeam.formerMembers as Rec[] | undefined ?? []).some((member) => member.address === "/reviewer"),
+      "the reviewer became a former member of beta's copy", 60_000);
+    const removed = await betaTeamTree(ids.studio.teamRunId);
+    const refused = await calls(coordinator, "send_message_to", { recipient_address: "/reviewer", content: "Still there?" });
+    expect(textOf(refused)).toBe("reviewer (/reviewer) is no longer a member of your team: it was removed from the team definition. Call get_handoff_rules for your current handoff rules.");
+    expect(((removed.rootTeam.members as Rec[]).map((member) => member.address)).sort()).toEqual(["/checker", "/lead"]);
+    record("RC-51", { copiedFrom: treeBefore.copiedFrom, addedMembers: (added.rootTeam.members as Rec[]).map((member) => member.address),
+      rules, removedMembers: (removed.rootTeam.members as Rec[]).map((member) => member.address),
+      formerMembers: ((removed.rootTeam.formerMembers ?? []) as Rec[]).map((member) => member.address), refused: textOf(refused) });
+  }, 240_000);
 
   it("RC-23 247 AC-305: a saved Task to a remote Team is refused; after the delegator's Task is DONE, messages both ways are refused and the Team keeps running on beta", async () => {
     const solo = standaloneActor(alpha, ids.solo, "alpha standalone delegator");
