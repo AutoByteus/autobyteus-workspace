@@ -106,3 +106,7 @@
 - AR-009: delegated Team copy member rows under the delegating run read the child's `ownTreeOf` through the same `teamMemberRowsOf`; `DelegationIndex.agentsOf` unchanged for messages and history.
 - O-1 note: the warn-once set clears when the definition becomes valid.
 - Intended behavior changed: No. Classification unchanged: Large / High. Route: architecture re-review; CR-001 stays an implementation Local Fix.
+
+#### Review note on SR-010 (no new revision)
+
+- 2026-11-21: architecture review `ARCH-REV-004` — Pass on SR-010, AR-007..AR-009 resolved, Large / High confirmed; the reviewer routed the package to implementation with CR-001 as a Local Fix in the same round. Informational for the Solution Designer.
