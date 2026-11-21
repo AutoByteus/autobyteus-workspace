@@ -2,11 +2,11 @@
 
 ## Document Status
 
-- Status: `Ready for Approval` (DEC-001 … DEC-003 need the founder)
-- Current solution revision ID: `SR-001`
+- Status: `Approved`
+- Current solution revision ID: `SR-002`
 - Request: Project Task `autobyteus-587`; requested by `/project_task_manager` for the founder
 - Owner: Solution Designer; date 2026-11-21
-- Approved by and reference: pending
+- Approved by and reference: `User` (the founder), 2026-11-21, in the Solution Designer's conversation: "Yes I strongly agree the agent can only send files in its own workspace; size limits I agree with you; I guess the tool call will need to wait" (DEC-001 as he worded it, DEC-002, DEC-003 (a)); DEC-004 and DEC-005 by the Solution Designer within the direction, explained to him the same day. Baseline SR-002.
 
 ## Problem And Desired Outcome
 
@@ -56,7 +56,7 @@ None.
 | REQ-001 | `delegate_task` with `node` and `send_message_to` to an agent on another node (by `node`, or a linked run) accept `reference_files`. | Must | Task |
 | REQ-002 | Each file is sent over the authenticated peer connection in raw bytes (no base64 in JSON), in bounded signed pieces, and its size and SHA-256 are verified on arrival; a file that fails verification is not delivered. | Must | Task; peer gate (investigation) |
 | REQ-003 | The receiving node stores the files in the receiving run's own folder and gives the recipient their local paths in its message or work packet; the sender's records keep the sender's paths. | Must | Task |
-| REQ-004 | Only files allowed by DEC-001 can be sent; symlinks are resolved and must stay inside the allowed places; directories are refused. | Must | Task (security); DEC-001 |
+| REQ-004 | Only files inside the sending run's workspace folder can be sent (DEC-001); symlinks are resolved and must stay inside the allowed places; directories are refused. | Must | Task (security); DEC-001 |
 | REQ-005 | Size limits per DEC-002, checked by the sender before sending and enforced by the receiver. | Must | DEC-002 |
 | REQ-006 | The tool call behaves per DEC-003; on any failure the agent gets a clear reason (which file, why), and nothing is delivered to the recipient (the message or delegation is all or nothing). | Must | Task; DEC-003 |
 | REQ-007 | The receiving node keeps one stored copy per content (SHA-256) and links it into each run that received it; a re-sent file is not uploaded again; stored copies no run uses any more, and abandoned partial uploads, are removed (DEC-004). | Must | Task |
@@ -80,9 +80,9 @@ None.
 
 | ID | Question | Options / Evidence | Reasoning And Recommendation | Owner | Status |
 | --- | --- | --- | --- | --- | --- |
-| DEC-001 | Which local files may an agent send to another node? | Locally any absolute file of the node is accepted (BEH-003). Sending moves data off the machine | (a) only files inside the sending run's workspace folder, or files it received itself (its run's received files); (b) any file the agent can reference locally. (a) stops a misled agent from sending `~/.ssh` or another project's data to another machine; a file elsewhere is copied into the workspace first, a visible step. **Recommend (a).** | Founder | Needs user |
-| DEC-002 | How large may files be? | Context-file limits: 2 GiB audio/video, 25 MiB others; Memory Sync stages multi-GiB files in 8 MiB pieces | One limit per file, set on each node for what it accepts (new setting, default 2 GiB), and a total per message or delegation of 4 GiB; any file type. **Recommend this.** | Founder | Needs user |
-| DEC-003 | Does the tool call wait for the transfer? | A 300 MB file over a 20 Mbit/s upload takes ~2 min; runtime tool timeouts are unknown (UNK-001) | (a) wait: the call returns when every file arrived and the message or delegation is delivered ("delivered, 2 files"); timeouts of our tools raised where we configure them; (b) return at once and deliver in the background, with a later notice. (a) has no hidden state: "sent" means delivered, as between colleagues. **Recommend (a)**, with the timeout measured and set in design. | Founder | Needs user |
+| DEC-001 | Which local files may an agent send to another node? | Locally any absolute file of the node is accepted (BEH-003). Sending moves data off the machine | (a) only files inside the sending run's workspace folder, or files it received itself (its run's received files); (b) any file the agent can reference locally. (a) stops a misled agent from sending `~/.ssh` or another project's data to another machine; a file elsewhere is copied into the workspace first, a visible step. **Recommend (a).** Founder, 2026-11-21: "the agent can only send files in its own workspace" → **Decided: only files inside the sending run's workspace folder** (symlinks resolved, must stay inside). A file it received (in its run folder) is forwarded by copying it into its workspace first, a visible step. | Founder | Decided (User) |
+| DEC-002 | How large may files be? | Context-file limits: 2 GiB audio/video, 25 MiB others; Memory Sync stages multi-GiB files in 8 MiB pieces | One limit per file, set on each node for what it accepts (new setting, default 2 GiB), and a total per message or delegation of 4 GiB; any file type. **Recommend this.** Founder, 2026-11-21: "size limits I agree with you" → **Decided.** | Founder | Decided (User) |
+| DEC-003 | Does the tool call wait for the transfer? | A 300 MB file over a 20 Mbit/s upload takes ~2 min; runtime tool timeouts are unknown (UNK-001) | (a) wait: the call returns when every file arrived and the message or delegation is delivered ("delivered, 2 files"); timeouts of our tools raised where we configure them; (b) return at once and deliver in the background, with a later notice. (a) has no hidden state: "sent" means delivered, as between colleagues. **Recommend (a)**, with the timeout measured and set in design. Founder, 2026-11-21: "the tool call will need to wait" → **Decided (a).** | Founder | Decided (User) |
 | DEC-004 | Deduplication and retention | Task asks to consider SHA-256 dedup and retention | A content-addressed store per receiving node; each run gets a link (same file, no extra space) under `received_files/`; a stored copy no run links any more is removed by a sweep; partial uploads are removed after 24 h. No time-based expiry of delivered files: they live as long as their run. | Solution Designer | Decided |
 | DEC-005 | Where files land and how they are named | — | `<receiving run folder>/received_files/<first 12 hex of SHA-256>/<original file name>` (name sanitized): readable names, no collisions; the recipient's message lists these paths under "Reference files", as local messages do. | Solution Designer | Decided |
 
@@ -92,4 +92,4 @@ None.
 
 ## Readiness
 
-- Content ready: `Yes`; open: DEC-001, DEC-002, DEC-003.
+- Content ready: `Yes`. Approval recorded: `Yes` (SR-002). Ready for design: `Yes`.
