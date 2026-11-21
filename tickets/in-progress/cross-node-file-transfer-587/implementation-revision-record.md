@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-001 | Architecture Reviewer, `design-review-report.md`, round 2 (Pass) | N/A | `Initial Baseline` | SR-009, ARCH-REV-002, CRR-001 | Implemented; Code Review Pass (CRR-001, no findings); next: API/E2E |
 | IR-002 | Delivery Engineer, `release-deployment-report.md` § Escalation / Reroute (DEL-03, whole unit suite after the base refresh) | DEL-03 stale tests 1–3 | `Local Fix` | CRR-001, CRR-003, API-REV-002; DR: N/A (not yet created) | Stale test fixtures given the new inputs; whole server unit suite Pass (1050 files, 8698 tests); Code Review Pass (CRR-004, no findings); next: API/E2E |
 | IR-003 | Delivery Engineer, `release-deployment-report.md` § Delivery Round 2 (merge with origin/personal 6533d7be04 conflicts) | Round-2 merge conflict (3 production files, 19 test files) | `Local Fix` | CRR-004, API-REV-003, CRR-005; DR: N/A | Merged and resolved (575c4ec9ed); typechecks, whole unit suite (8764 tests), Team integration (58) and two-server E2E (55) Pass; Code Review Pass (CRR-006, no findings); next: API/E2E |
+| IR-004 | Delivery Engineer, `release-deployment-report.md` § Delivery Round 3 (merge with origin/personal 9f6add773b conflicts, autobyteus-591) | Round-3 merge conflict (9 production, 3 docs, 17 test files) | `Local Fix` | CRR-006, API-REV-004, CRR-007; DR: N/A | Merged and resolved (bcd05494cb, f86a45d99f, RC-19 test fix cc6a9f2f60); typechecks, whole unit suite (8812 tests), integration (116) and two-server E2E (59) Pass; next: Code Review |
 
 ## Revision Entries
 
@@ -93,3 +94,31 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Next recipient or routing: Code Review (Large / High; the merged Team root is production code no reviewer has seen).
 - Remaining limitations or risks: the base moves fast; a later merge that touches the Team root again needs the same check.
 - Code review: Pass, CRR-006, no findings (`code-review-report.md`); the reviewer routed it to API/E2E. Recorded only; no implementation change.
+
+### IR-004 — Merge with autobyteus-591 (cross-node-task-close)
+
+- Triggering role, report path, and round: Delivery Engineer, `tickets/in-progress/cross-node-file-transfer-587/release-deployment-report.md` § Delivery Round 3 (`git merge origin/personal` conflicts in 29 files).
+- Triggering finding IDs: the round-3 merge conflict.
+- Classification: `Local Fix` (integration of two changes of the same remote-messaging core).
+- Prior authoritative result: IR-003 with CRR-006, API-REV-004, CRR-007 Pass, on ab7195a342 / ef09221c17.
+- Current authoritative result: origin/personal 9f6add773b merged as bcd05494cb (fixture fix f86a45d99f); 591's closed-Task rules and this ticket's file transfer and RF-14 hold together; both typechecks, the whole server unit suite, the Team/collaboration/API/restart-resume integration tests and the gated two-server E2E on a rebuilt server pass.
+- Related solution revision IDs: N/A
+- Related architecture-review revision IDs: N/A
+- Related code-review revision IDs: CRR-006, CRR-007
+- Related API/E2E revision IDs: API-REV-004
+- Related delivery revision IDs: N/A (no DR yet)
+- Why this implementation revision is recorded: 591 (a closed Task's remote run stops on its node; the assigner's message continues it, DN-9; a saved Task to a peer run brings it back, DN-8) changed the router, `CrossRunMessageDelivery`, `RemoteMessageReceiver`, `TaskDelegation`, the gateway and the compositions that this ticket also changed. 591 was designed on the old CM-11 (linked messages without `node`), which RF-14 replaced.
+- Approved behavior or requirement IDs affected: RF-14 (order of its refusals with 591's admission), DS-002 (the send after 591's admission), DEC-011 (kept); no requirement changed.
+- Implementation delta (merge decisions, M-1 … M-4; the handoff lists them):
+  - M-1 Router order: with `node`, the peer is found first; then the node rule (`CrossRunMessageDelivery.peerRunNodeRefusal`, read only); then 591's Task admission (`admitPeerRun`, which can reopen a Task and tell the node "open"); then the path. A call without the right node therefore reopens nothing and tells no node anything. 591 asked its admission before the peer lookup; the node rule needs the peer's node ID, and comes before the admission because the admission has effects.
+  - M-2 Node rule (my `peerRunAdmission` renamed `peerRunNodeRefusal`; its closed check moved to 591's admission): `node` names another node → `NODE_MISMATCH`; no `node` and the run closed and the sender is not the assigner who may continue it → `TASK_AGENT_RESOURCE_CLOSED` (DEC-011, as before both tickets: row 13); no `node` otherwise → `NODE_REQUIRED` (the assigner is told the node, and continues the run with it). The continuation predicate is shared with `admitPeerRun` (`continuesClosedPeerRun`). `route`'s peer branch refuses through the same rule.
+  - M-3 Receiving: `RemoteMessageReceiver` takes 591's `closedDelegations` (5th) and this ticket's `receivedFiles` (6th); files are verified before any root; 591's "opened by" record is written after an accepted message or work packet.
+  - M-4 A saved Task with reference files given to a run on another node (591 DN-8) keeps 591's refusal, which used the removed "can't be sent … yet" text: new `REFERENCE_FILE_REFUSAL_TEXT.savedTaskFiles`. Copying a saved Task's files is neither ticket's approved behavior: FU-007.
+  - Other production conflicts (compositions, host, gateway, `TaskDelegation` dependencies): both sides' collaborators kept; the startup sweep kept beside 591's `deletedRuns`.
+  - Docs: CM-10 from 591 (and its "names the node only when it delegates" corrected for RF-14), CM-11 from this ticket; 591's continuation text says the message names the node; the node rule documented beside 591's admission (`agent_communication.md`, `remote_collaboration.md`); status table rows combined.
+  - Tests: `testTaskSide(tasks, channel, { outgoing, peerRuns })` (both sides had added a third positional argument); fixtures combine both sides' collaborators; 591's continuations name the node (unit, in-process and the two-server file); my two-server cases renumbered RC-56 … RC-59 (591 holds RC-54, RC-55); RC-09 merged (591's saved Task with files with the new text; my workspace cases in place of 591's "files can't be sent" case); new in-process case: the assigner continues a closed remote run with a file (B told open, then the upload, then the message; the file lands; another sender's file is refused CLOSED before any upload).
+  - RC-19 (two-server, test-side): with both tickets' cases the delegator makes 61 calls before RC-19 (591's file: 60), so the RC-06 reply leaves the run projection's latest-100-event conversation that RC-19 read as its history (cause: `recent-run-projection-policy.ts` `RECENT_RUN_PROJECTION_EVENT_LIMIT = 100`); RC-19 now reads the delegator's stored Messages, every page (cc6a9f2f60).
+- Changed files or areas: merge commit bcd05494cb, f86a45d99f, cc6a9f2f60; `follow-ups.md` FU-007.
+- Local validation and result: IMP-14 both typechecks at baseline (server 1000 in 313 files, web 86 in 36); IMP-15 whole server unit suite (`Test Files  1060 passed | 5 skipped (1065)`, `Tests  8812 passed | 9 skipped (8821)`); IMP-16 integration (18 files, 116 tests); IMP-17 rebuild and two-server E2E: RC-19 failed (cause above); IMP-18 after the fix: 59/59 — all on f86a45d99f / cc6a9f2f60, see the handoff.
+- Next recipient or routing: Code Review (Large / High; the merged message path is production code no reviewer has seen).
+- Remaining limitations or risks: M-1 changes 591's order (peer lookup before its admission): an unknown peer name to a closed run now answers the peer refusal, not CLOSED. FU-007 is a product decision.
