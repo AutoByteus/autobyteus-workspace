@@ -96,7 +96,19 @@ None (no release).
 
 ## Repository Finalization
 
-Recorded after finalization (record commit on `personal`).
+- Bootstrap context source: the code reviewer's handoff (branch `codex/team-run-follows-definition`, base `origin/personal`) and `RELEASE.md` Finalization Target
+- Ticket branch: `codex/team-run-follows-definition`
+- Secret Gate before the first push: `scripts/check_secrets.sh origin/personal..HEAD` PASS (38 commits). Artifact hygiene PASS (exit 0).
+- Ticket branch commit result: `17d7af45c3` (docs sync, delivery records, evidence, ticket archived), on top of base merge `e87b6b9ac9`
+- Ticket branch push result: pushed `origin/codex/team-run-follows-definition` (new branch)
+- Finalization target: `origin`, `personal`
+- Target advanced after verification: `No` (`ecd6d4556c` at every fetch)
+- Delivery-owned edits protected before re-integration / re-integration: `Not needed`
+- Target branch update result: `finalize/team-run-follows-definition` created from `origin/personal` @ `ecd6d4556c`
+- Merge into target result: `--no-ff` merge `3f75e22589`; its tree equals the ticket branch's `17d7af45c3`. Secret Gate on the merged state: PASS
+- Push target branch result: `ecd6d4556c..3f75e22589  HEAD -> personal`
+- User's checkout of the target branch (`/home/autobyteus/workspace/autobyteus-workspace`): on `personal` at `a07767f4d0`, no local commits, 116 behind. It is fast-forwarded with `git fetch` and `git merge --ff-only origin/personal` after this record commit's push; the result is in the terminal message.
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
@@ -117,7 +129,8 @@ None. This repository deploys no hosted service.
 
 ## Verification Checks
 
-- Secret Gate and artifact hygiene: recorded with finalization.
+- Secret Gate on the ticket branch (38 commits) and on the merged state: PASS
+- `python3 scripts/check_repository_artifact_hygiene.py`: PASS (exit 0); the ticket's file names have no `:` or other Windows-hostile characters
 
 ## Rollback Criteria
 
@@ -131,6 +144,18 @@ None. This repository deploys no hosted service.
 4. Root container: the release job's signing-record unit tests refuse uid 0 (27 tests not proven here); EC-04 cannot pass as root (FU-005).
 5. FU-004 (urgent, outside this ticket): the Linux arm64 AppImage runtime needs `libz.so`.
 
+## Post-Finalization Cleanup
+
+- Dedicated ticket worktree: `/home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition`
+- Plan, run after the record commit's push: `git worktree remove --force` (only untracked `*/dist/` build output remains), `git worktree prune`, delete the local branches `codex/team-run-follows-definition` and `finalize/team-run-follows-definition`, remove the temp files `/tmp/tf-del`, `/tmp/tf-bin`, `/tmp/tf-*.txt`. Remote branch: kept, as for earlier tickets. The result is in the terminal message.
+- Test servers and runtimes: every suite stopped its own built servers and CLIs when it ended; none was left running.
+
 ## Final Status
 
-Recorded after finalization.
+- Verification complete: `Yes` (from the evidence, plus every case rerun on the merged state)
+- Repository finalization complete: `Yes` (`3f75e22589` on `personal`; this record commit follows it)
+- Applicable release/deployment/rollout complete or not required: `Yes` (not required)
+- Applicable safe cleanup complete or not required: run after this record's push; result in the terminal message
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: by `send_message_to` after this record's push

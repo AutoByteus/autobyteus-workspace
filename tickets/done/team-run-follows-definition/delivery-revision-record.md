@@ -19,8 +19,8 @@ The latest docs sync report, handoff summary, and release/publication/deployment
 - Handoff summary: `handoff-summary.md`
 - Release/publication/deployment report: `release-deployment-report.md`
 - Integration and post-integration verification: `evidence/DEL-post-integration/`
-- Verification and finalization state: evidence judged sufficient; finalization on `origin/personal` follows this commit.
-- Terminal return to the Solution Designer: `Not yet eligible` (finalization and cleanup pending)
+- Verification and finalization state: evidence judged sufficient; ticket branch `17d7af45c3` pushed; `--no-ff` merge `3f75e22589` pushed to `origin/personal` (`ecd6d4556c..3f75e22589`); Secret Gate PASS on the ticket commits and the merged state.
+- Terminal return to the Solution Designer: `Sent` after this record's push, the user's checkout update and cleanup
 - Why recorded: first delivery result.
-- Next action: Secret Gate, push the ticket branch, merge `--no-ff` into `personal`, push, record, update the user's checkout, clean up.
+- Next action: update the user's checkout (`--ff-only`), remove the worktree, local branches and temp files, return Delivery Completed.
 - Remaining blockers, rollback concerns, or untested scope: none blocking; residual risks and the unverified rollback in `release-deployment-report.md`.
