@@ -170,8 +170,8 @@ const TEXT_261 = {
   listPeerNodes: "List the peer nodes registered on this node, each with its name and status: available (it takes work from this node now) or unavailable. Use the name as node in list_available_agents and delegate_task; for an unavailable node, list_available_agents with that node says why. This read-only tool takes no arguments.",
   listAgents: "List the agents and agent teams you can work with, each with its name, kind (agent or agent_team), address and description (when it has one). With node, list what that peer node offers for delegation instead; use an address from that list as recipient_address in delegate_task with the same node. This tool is read-only.",
   listAgentsNode: "Optional: the name of a peer node registered on this node. Without it, this node's agents and agent teams are listed.",
-  delegateNode: "Optional, only with recipient_address and description: the name of a peer node registered on this node. The new task agent then runs on that node, and recipient_address is the address of an agent or agent team on that node.",
-  delegateNodeLine: "With node in mode (1), the task agent starts on that peer node, from the agent or agent team at recipient_address there;",
+  delegateNode: "Optional: the name of a peer node registered on this node. With recipient_address, the new task agent runs on that node, and recipient_address is the address of an agent or agent team on that node. With target_agent_run_id or target_team_run_id, required when that task agent runs on another node: its node, as the delegation result named it.",
+  delegateNodeLine: "With node in mode (1) or (2), the task agent starts on that peer node, from the agent or agent team at recipient_address there;",
   unknownNode: (node: string) => `No peer node named "${node}" is registered on this node, so nothing was sent. Use a node name the user gave you; if you have list_peer_nodes, it lists them.`,
   notFound: (node: string, address: string) => `Node "${node}" has no Agent or Agent Team at ${address} that can be delegated to. If you have list_available_agents, call it with this node to see what it offers.`,
   blankNode: "node must be the name of a peer node registered on this node; leave it out to list this node's agents and agent teams.",
@@ -1567,7 +1567,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect((await closedOnBeta()).some((entry) => entry.runId === r4), "still recorded closed on beta").toBe(true);
     expect(await betaListed(r4), "still off beta's list").toBe(false);
     // Another sender's message is refused; delegate_task with the same Task gets the local refusal; nothing is sent.
-    const byOther = await calls(standaloneActor(alpha, ids.other, "alpha other root"), "send_message_to", { target_agent_run_id: r4, content: "OTHER-AFTER-REOPEN" });
+    const byOther = await calls(standaloneActor(alpha, ids.other, "alpha other root"), "send_message_to", { node: LABEL.beta, target_agent_run_id: r4, content: "OTHER-AFTER-REOPEN" });
     expect(byOther.accepted, JSON.stringify(byOther)).toBe(false);
     expect(byOther.code, JSON.stringify(byOther)).toBe("TASK_AGENT_RESOURCE_CLOSED");
     const sameTask = await calls(solo, "delegate_task", { node: LABEL.beta, target_agent_run_id: r4, task_id: saved.taskId });
@@ -3984,7 +3984,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(owedLogs(ra.runId)[0], "the reason: beta unreachable").toMatch(/open: false/);
     // The alternate: rc gets another open Task before beta is back: its work is not delivered; the owed notice is now "open".
     const rcSaved = await savedTaskOnAlpha("Owed, then another Task. Marker OWED-C-SAVED.");
-    const againWhileDown = await calls(solo, "delegate_task", { target_agent_run_id: rc.runId, task_id: rcSaved.taskId });
+    const againWhileDown = await calls(solo, "delegate_task", { node: LABEL.beta, target_agent_run_id: rc.runId, task_id: rcSaved.taskId });
     expect(againWhileDown.delegated, JSON.stringify(againWhileDown)).toBe(false);
     expect(textOf(againWhileDown)).toContain("was given to the task agent, but the message with its work was not delivered");
     expect(await owedMarks(rc.runId), "open is owed").toContain(true);
