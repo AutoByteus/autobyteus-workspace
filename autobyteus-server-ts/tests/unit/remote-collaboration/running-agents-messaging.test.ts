@@ -109,7 +109,7 @@ const buildNode = async (input: Readonly<{ nodeId: string; peers: PeerNode[]; ne
     }) as never,
   });
   const peerFiles = inProcessPeerFiles({ dataDir: memoryDir, memoryDir, channel: () => client, workspaceOf: (runId) => metadata.get(runId)?.workspaceRootPath ?? null });
-  const taskSide = testTaskSide(resources, () => client, peerFiles.remoteFiles.outgoing);
+  const taskSide = testTaskSide(resources, () => client, { outgoing: peerFiles.remoteFiles.outgoing });
   const views = testViewStreams();
   const viewPublications = vi.spyOn(views.messages, "publish");
   const directory = new ActiveCollaborationRootDirectory();
