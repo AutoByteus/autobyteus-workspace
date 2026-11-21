@@ -1,0 +1,64 @@
+# IMP-03 — every unit test file the ticket touched or added (43 files), after commit
+# Command: (autobyteus-server-ts) pnpm exec vitest run <files listed by `git diff --name-only a54485a260..HEAD -- tests` (unit) + tests/architecture/*>
+# Commit: 6b46ec5bdd; Linux container, Node 22; 2026-11-21; run in parallel with the full web suite
+# The 3 failures are 5 s timeouts in tests/architecture under that parallel load; rerun alone in IMP-05 (pass).
+ ❯ tests/architecture/application-framework-boundaries.test.ts (20 tests | 2 failed) 65867ms
+     × keeps the complete current TS/JS/Vue tree inside AFB-001 through AFB-005 12682ms
+     × guards the exact SR-011 host definition and public/general run authority 22719ms
+ ❯ tests/architecture/tracked-imports.test.ts (2 tests | 1 failed) 21206ms
+     × finds no tracked code importing an untracked file in this repository 20735ms
+ FAIL  tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > keeps the complete current TS/JS/Vue tree inside AFB-001 through AFB-005
+Error: Test timed out in 5000ms.
+ ❯ tests/architecture/application-framework-boundaries.test.ts:2017:3
+ FAIL  tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > guards the exact SR-011 host definition and public/general run authority
+Error: Test timed out in 5000ms.
+ ❯ tests/architecture/application-framework-boundaries.test.ts:2870:3
+ FAIL  tests/architecture/tracked-imports.test.ts > tracked imports > finds no tracked code importing an untracked file in this repository
+Error: Test timed out in 5000ms.
+ ❯ tests/architecture/tracked-imports.test.ts:25:3
+ Test Files  2 failed | 41 passed (43)
+      Tests  3 failed | 377 passed (380)
+# Files run:
+#   tests/unit/agent-collaboration/collaborators/message-recipient-resolution.test.ts
+#   tests/unit/agent-collaboration/delegation/collaboration-tree-in-run.test.ts
+#   tests/unit/agent-collaboration/delegation/collaboration-tree-reach.test.ts
+#   tests/unit/agent-collaboration/delegation/delegated-run-starter.test.ts
+#   tests/unit/agent-collaboration/delegation/delegation-index-agents.test.ts
+#   tests/unit/agent-collaboration/delegation/task-delegation.test.ts
+#   tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts
+#   tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts
+#   tests/unit/agent-execution/events/token-usage-event-enrichment-transformer.test.ts
+#   tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts
+#   tests/unit/agent-execution/prompt/collaboration-prompt-sections.test.ts
+#   tests/unit/agent-org-execution/agent-org-member-scope.test.ts
+#   tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts
+#   tests/unit/agent-team-execution/agent-team-run-manager-project-start.test.ts
+#   tests/unit/agent-team-execution/agent-team-run-manager-restore-self-heal.test.ts
+#   tests/unit/agent-team-execution/closure-stop-during-delivery-team.test.ts
+#   tests/unit/agent-team-execution/delegated-team-outside-handoff.test.ts
+#   tests/unit/agent-team-execution/flat-team-execution-factory.test.ts
+#   tests/unit/agent-team-execution/flat-team-execution-manager-routing.test.ts
+#   tests/unit/agent-team-execution/member-team-context-builder.test.ts
+#   tests/unit/agent-team-execution/membership/team-change-notice-source.test.ts
+#   tests/unit/agent-team-execution/membership/team-membership-change.test.ts
+#   tests/unit/agent-team-execution/membership/team-membership-committer.test.ts
+#   tests/unit/agent-team-execution/membership/team-membership-planner.test.ts
+#   tests/unit/agent-team-execution/membership/team-run-membership.test.ts
+#   tests/unit/agent-team-execution/team-run-model-selection-save.test.ts
+#   tests/unit/agent-team-execution/team-run-physical-scope.test.ts
+#   tests/unit/agent-team-execution/team-run.test.ts
+#   tests/unit/compositions/required-host-owners.test.ts
+#   tests/unit/remote-collaboration/remote-message-view-sequence.test.ts
+#   tests/unit/remote-collaboration/team-remote-delegation.test.ts
+#   tests/unit/run-history/services/received-sender-addresses.test.ts
+#   tests/unit/run-history/services/team-run-former-member-location.test.ts
+#   tests/unit/run-history/store/run-own-agents-reader.test.ts
+#   tests/unit/run-history/team-run-tree-former-members-schema.test.ts
+#   tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+#   tests/unit/services/agent-streaming/team-org-view-base-shapes.test.ts
+#   tests/unit/services/team-communication/team-communication-port.test.ts
+#   tests/unit/standalone-agent-run-root/standalone-host-member-context-tools.test.ts
+#   tests/unit/standalone-application-host/standalone-application-host-delegation.test.ts
+#   tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts
+#   tests/architecture/tracked-imports.test.ts
+#   tests/architecture/application-framework-boundaries.test.ts

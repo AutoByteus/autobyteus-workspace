@@ -1,0 +1,7 @@
+# IMP-01 — server typecheck (baseline-gated)
+# Command: pnpm -C autobyteus-server-ts typecheck
+# Commit: 6b46ec5bdd; Linux container, Node 22; 2026-11-21
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 59.0s
+[typecheck] server tests (tsconfig.tests.json): 1005 errors, exit 2, 245.8s
+[typecheck] production errors: 0; test-file errors: 1005 in 314 files (baseline 1005 in 314 files)
+[typecheck] PASS

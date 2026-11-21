@@ -1,0 +1,6 @@
+# IMP-07 — web guards
+# Command: (autobyteus-web) pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals
+# Commit: 6b46ec5bdd; Linux container, Node 22; 2026-11-21
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
