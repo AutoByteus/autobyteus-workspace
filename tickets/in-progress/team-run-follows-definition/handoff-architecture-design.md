@@ -30,3 +30,7 @@ A running or reopened Team run (standalone or catalog copy) follows its Team def
 
 - Three files at or over the size limit gain small changes (`root-team-run.ts`, `agent-team-run-manager.ts` 495; `delegation-index.ts` 548): implementation keeps them within limits by moving a cohesive block out.
 - Delivery racing a removal is ordered by the swap (design § Risks).
+
+## Route Applied
+
+- 2026-11-21: rule "task_size=Large or architectural_risk=High" matched; sent to `/architecture_reviewer` (run `architecture_reviewer_10c7315fd51048c3873b8b6fffa6924c`), delivered.
