@@ -13,6 +13,7 @@ The latest `code-review-report.md` is authoritative for its current result.
 | CRR-005 | `api-e2e-test-review-report.md` | Test-code review round 3 (API-REV-003, IR-002 test files) | Pass (CRR-003) | Pass | None |
 | CRR-006 | `code-review-report.md` | Implementation Review, round 3 (IR-003, merge with autobyteus-22, `575c4ec9ed`) | Pass (CRR-004) | Pass | None |
 | CRR-007 | `api-e2e-test-review-report.md` | Test-code review round 4 (API-REV-004, IR-003 tests, RC renumbering `d112f58c9a`) | Pass (CRR-005) | Pass | None |
+| CRR-008 | `code-review-report.md` | Implementation Review round 4, Full Re-Audit (IR-004, merge with autobyteus-591, `bcd05494cb`) | Pass (CRR-006) | Fail (Design Impact + Local Fixes) | CR-587-01 … CR-587-05 |
 
 ## Revision Entries
 
@@ -208,3 +209,38 @@ None.
 - Material score or classification changes: N/A
 - Recommended recipient: delivery engineer
 - Remaining risks or uncertainty: FU-002, FU-005, FU-006 (urgent, base issues, outside this ticket); FU-001, FU-003, FU-004.
+
+### CRR-008 — Source review round 4: full re-audit at IR-004
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/tickets/in-progress/cross-node-file-transfer-587/code-review-report.md`
+- Review entry point and round: Implementation Review, round 4
+- Review scope: `Full Re-Audit`. The user asked for a complete review. The branch merges autobyteus-22 and autobyteus-591 into this ticket's message path, and the follow-ups were re-judged under the user's direction to fix in this ticket what belongs to it.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, IR-004; `release-deployment-report.md` § Delivery Round 3
+- Relevant solution revision IDs: SR-009
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-001 … IR-004
+- Relevant API/E2E revision IDs: API-REV-001 … API-REV-004
+- Relevant delivery revision IDs: none recorded yet (delivery rounds 1–3 in the release report)
+- Prior authoritative result: Pass (CRR-006; test review CRR-007)
+- Current authoritative result: Fail
+- What changed in the review result and why:
+  - The merge itself is sound (M-1 … M-4).
+  - New: CR-587-01. The router reopens a closed peer Task (591's `admitPeerRun`) before this ticket's file checks and upload, so a refused file leaves the Task reopened and the peer told "open", unannounced.
+  - Moved into this ticket: CR-587-02 (was FU-003) and CR-587-03 (was FU-004).
+  - Recorded now: CR-587-04, the design's single opening not met. CRR-001 accepted it as a residual; that was wrong, because it is a mismatch with the design in this ticket's own code.
+  - Proposed into this ticket: CR-587-05, the contract model this ticket edits (was FU-002, FU-006).
+  - Earlier rulings changed, with the evidence: the user's direction on ticket scope, and the 591 merge.
+- Supported product scenario / material-premise basis changes: None (CR-587-01 rests on SEC-1, a supported edge: an assigner's continuation with a file from outside its workspace).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| FU-003 (follow-up) | Follow-up | Promoted to CR-587-02 | CRR-002 | REQ-006 applies to this ticket's transfer path |
+| FU-004 (follow-up) | Follow-up | Promoted to CR-587-03 | CRR-002 | Introduced by RF-14 |
+| FU-002, FU-006 (follow-ups) | Follow-up | Proposed as CR-587-05 | API-REV-001, API-REV-004 | This ticket edits the model (T-001) |
+
+- New or remaining finding IDs: CR-587-01 … CR-587-05
+- Material score or classification changes: overall 9.4 → 9.2. Runtime Correctness 8.8; API/Interface and API/E2E Readiness 9.0. Classification: `Design Impact` with `Local Fix` items.
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: FU-001, FU-005 (follow-ups); the RF-14 consolidation recommendation; FU-007 and the AC wording questions.

@@ -14,10 +14,10 @@
 - Relevant Architecture Review Revision IDs: ARCH-REV-001, ARCH-REV-002
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001, IR-002, IR-003
+- Relevant Implementation Revision IDs: IR-001 … IR-004
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-006`
-- Current Review Round: `3`
+- Current Code Review Revision ID: `CRR-008`
+- Current Review Round: `4`
 - Review Scope: `Targeted Delta Review`
 - Review Scope Evidence (round 2): `ef53fadd52..e295b74b81` changes six test files only. Delivery's merge `3be417f8df` brought six `src` files from `origin/personal`; none is a file this ticket changed (the two change sets do not intersect). No production source of this ticket changed since `e327ba2467`, so round 1's structural checks and scores carry forward
 - Trigger: IR-002 (delivery's DEL-03 Local Fix, items 1–3 in `release-deployment-report.md` § Escalation / Reroute): test fix `e295b74b81`, handoff and evidence `20866c8847`, on delivery's `ef53fadd52`. Round 1: IR-001, code `e327ba2467`, base `fbe714f8bb`
@@ -244,12 +244,88 @@ None.
   - IMP-13: the rebuilt two-server E2E, 55 passed.
 - Findings: None.
 
+## Round 4 (CRR-008): Full Re-Audit at IR-004 (merge with autobyteus-591)
+
+### Why a full re-audit
+
+The user asked for a complete review, not a delta. The user also asked that problems belonging to this ticket be fixed in it rather than recorded as follow-ups. The branch now merges autobyteus-22 and autobyteus-591 into this ticket's message path. So I re-read the whole ticket at HEAD `5cbffaded7` (merge `bcd05494cb`, parents `ef09221c17` and `9f6add773b`):
+- `outgoing-files.ts`, `received-files.ts`, the engine order, `remote-message-send.ts`;
+- the router and `CrossRunMessageDelivery` as merged;
+- the three roots' accept and `deliverExact` paths, the receiver, gateway, client and routes;
+- the compositions.
+
+I re-judged every follow-up with three questions:
+1. Did this change introduce it?
+2. Is it in the code, contract or texts this ticket adds or changes?
+3. Is it in an artifact this ticket already edits, where the fix is small?
+
+"Prefer a follow-up when unsure" was my earlier tiebreaker. It does not override those three questions.
+
+### The merge with autobyteus-591 (IR-004)
+
+- **M-1 Router order.** The order is: the peer, then `peerRunNodeRefusal` (reads only), then 591's `admitPeerRun` (may reopen a closed Task and tell the peer "open"), then the path. A call without the right `node` changes nothing. Correct, and better than 591's own order.
+- **M-2 Node rule.** It is shared through `continuesClosedPeerRun`: a wrong `node` gets `NODE_MISMATCH`; with no `node`, a closed run gets `CLOSED` unless the sender is the assigner who may continue it; otherwise `NODE_REQUIRED`. It matches DEC-011 and 591 DN-9.
+- **M-3 Receiver.** Files are verified before any root; 591's "opened by" record is written after an accepted message or work packet. Both kept.
+- **M-4 Saved Task with files to a peer run (591 DN-8).** It is still refused, now with a text that no longer says "yet" (`savedTaskFiles`). Whether to copy those files is FU-007 (below).
+- Compositions, hosts, gateway and routes keep both sides. File sizes stay under 500 lines (`peer-client.ts` 480, `root-team-run.ts` 477, `task-delegation.ts` 473).
+- The evidence, which I read and did not rerun:
+  - IMP-14: typechecks at baseline;
+  - IMP-15: the whole server unit suite, 8812 tests;
+  - IMP-16: integration, 116 tests;
+  - IMP-18: two-server, 59/59, after the RC-19 test fix. That case now reads stored Messages instead of the 100-event projection window, which the merged case count overflowed.
+
+### Findings
+
+| ID | Finding | Evidence | Ticket scope | Classification / owner |
+| --- | --- | --- | --- | --- |
+| CR-587-01 | **Local file checks run after a Task reopen.** With `node`, the router runs 591's `admitPeerRun` first: for the assigner it reopens the closed Task and tells the peer "open". Then `RemoteMessageSend` runs `OutgoingFiles.send`. If a file is then refused (outside the workspace, a folder, too large, two of one name) or its upload fails, the Task stays reopened and the peer was told "open". The agent's answer names only the file and says nothing of the reopen. The local path appends "its Task is open again" (`notDeliveredAfterReopen`); this path does not (`peer-run-message-delivery.ts` returns the root's refusal as is). The implementation's own new case codifies the order ("B is told open first, then the file is uploaded"). | `global-agent-run-message-router.ts` (merged order); `cross-run-message-delivery.ts` `admitPeerRun`; `remote-message-send.ts`; `outgoing-files.ts`. Scenario: an assigner continues its closed remote task agent and attaches a file from outside its workspace (SEC-1, a supported edge) | This ticket: the merge composed the two orders, and the file sequence is this ticket's | `Design Impact` (Solution Designer). Choose one: (a) run `OutgoingFiles`' local checks (RF-3, RF-4 total, names) before `admitPeerRun`, and upload after; or (b) keep the order and say "its Task is open again" on every refusal after a reopen. (a) is cleaner; it needs `OutgoingFiles` split into check and transfer, with one owner of the order |
+| CR-587-02 | **A piece damaged in transit tells the agent to re-pair** (was FU-003). The gate refuses the piece 401 (body hash); `PeerClient` maps any 401 from a peer that still answers as itself to `PEER_NOT_PAIRED` ("… are not paired … pair them again", `peer-client.ts:447, 471`). The agent reads `REFERENCE_FILE_TRANSFER_FAILED` with that reason and is pointed at the wrong action. REQ-006 asks for a clear reason (which file, why) | RC-56 `damaged` (API-06); `peer-client.ts` | This ticket: its new transfer path, and its REQ-006 (moved from follow-up) | `Local Fix` (implementation). For a piece refused 401 after the same call's status succeeded (pairing just proven), report the piece as damaged or refused in transit ("try again"). Do not change the gate's codes (NA-9) |
+| CR-587-03 | **`NODE_REQUIRED` / `NODE_MISMATCH` can name a raw node ID** (was FU-004). `peerName` falls back to the node ID when the peer is no longer registered, so the agent is told to pass `node: "srv_…"`, which no call accepts | `nodeRequired(peerName(nodeId))` in the roots' `deliverExact`, `peerRunNodeRefusal`, `sendToPeerRun` | This ticket: introduced by RF-14's refusals (moved from follow-up) | `Local Fix` (implementation). When the run's node is not a registered peer, refuse with a text that says the node is no longer paired, and give no `node` to pass |
+| CR-587-04 | **A second path lookup between the check and the open** (design: "opened once … no second path lookup"). `open()` resolves the path with `realpath`, checks containment, then opens the resolved path by name again. A path component swapped in between could escape the workspace | `outgoing-files.ts:126-141`; design § Ownership Map (`OutgoingFiles`) | This ticket: the code does not match its design, and the fix is small | `Local Fix` (implementation). Open the given path once, `fstat` the handle, `realpath` the path, `stat` that and require the same `dev`/`ino` before the containment check; else refuse |
+| CR-587-05 | **The contract stories cannot prove this ticket's steps.** The 461 model, which this ticket already edits (T-001), lacks autobyteus-565's `counterpart` and autobyteus-22's `copiedFrom`. So the gated suite stops at §5.1 S1, and this ticket's S18/S19 never run there (was FU-002, FU-006) | API-R4 `API-07` logs | This ticket by question 3 (an artifact it edits), though the fields are other tickets' rules | Scope confirmation for the Solution Designer; then `Local Fix` for API/E2E (encode `counterpart` and `copiedFrom` in the model, regenerate, `--check`, gated rerun) |
+
+Recommendations for the Solution Designer, not blocking:
+- **RF-14 lives in several places:** the router (`peerRunNodeRefusal`), `CrossRun.route`, the three roots' `deliverExact`, and `sendToPeerRun`. The 591 merge had to split and reorder it (M-1, M-2), which shows how easily it can drift. One owner of "which node a run is on, and the refusal" would be cleaner. The architecture review accepted the current shape, so this is the Solution Designer's call.
+- **Requirement questions:**
+  - FU-007: copy a saved Task's reference files to a peer run? This is new product behavior at 591's and 587's intersection, a `Requirement Gap`.
+  - AC-002's wording ("no `node`").
+  - AC-007's timing under the 24 h cleanup rule.
+
+Kept as follow-ups (only other functionality, and the ticket does not need them):
+- FU-001: AGY/Grok/ACP limits; needs signed-in runtimes.
+- FU-005: autobyteus-22's TF-04; fails identically on the base.
+- The shared `AgentOperationResult` gaining optional fields: a trend across tickets.
+
+### Scorecard (full re-audit)
+
+- Overall score: 9.2/10
+
+| Priority | Category | Score | Why / what holds it down |
+| --- | --- | --- | --- |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.2 | DS-002 now begins with 591's admission; the reopen and the upload are ordered by two owners (CR-587-01) |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.2 | RF-14 in several places (recommendation) |
+| 3 | API / Interface / Query / Command Clarity | 9.0 | A refusal can name a node ID no call accepts (CR-587-03) |
+| 4 | Separation of Concerns and File Placement | 9.4 | Unchanged |
+| 5 | Shared-Structure / Data-Model Tightness | 9.3 | `AgentOperationResult` growth (follow-up) |
+| 6 | Naming Quality and Local Readability | 9.3 | Unchanged |
+| 7 | API/E2E Readiness | 9.0 | The gated contract stories cannot run this ticket's steps (CR-587-05) |
+| 8 | Runtime Correctness And Behavioral Fidelity | 8.8 | A refused call can leave a Task reopened without saying so (CR-587-01); a misleading reason (CR-587-02); a second lookup in the containment check (CR-587-04) |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | Unchanged |
+| 10 | Cleanup Completeness | 9.3 | The "yet" text replaced; dead paths removed |
+
 ## Latest Authoritative Result
 
-- Review Decision: `Pass` (round 3, CRR-006)
+- Review Decision: `Fail` (round 4, CRR-008, full re-audit)
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.4/10 (unchanged)
-- Recommended Recipient: API/E2E engineer (an implementation-owned fix returns through API/E2E); delivery asked for the package back quickly
-- Notes: round 1's notes and residual risks stand.
+- Score Summary: 9.2/10. Runtime Correctness 8.8; API/Interface and API/E2E Readiness 9.0.
+- Classification:
+  - `Design Impact`: CR-587-01;
+  - `Local Fix` (implementation): CR-587-02, -03, -04;
+  - scope confirmation, then `Local Fix` (API/E2E): CR-587-05;
+  - `Requirement Gap`: FU-007, AC-002/AC-007 wording.
+- Recommended Recipient: Solution Designer. It decides CR-587-01's order and the requirement questions, then sends one revision through implementation (and API/E2E for the model).
+- Notes:
+  - The merge itself is sound (M-1 … M-4).
+  - The findings are this ticket's own work that my earlier rounds wrongly left as follow-ups or accepted (CR-587-02 … -05), plus the reopen-before-upload order the 591 merge created (CR-587-01).
