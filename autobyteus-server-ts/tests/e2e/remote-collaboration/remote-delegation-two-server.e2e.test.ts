@@ -96,16 +96,19 @@ import { SEND_MESSAGE_TO_LLM_DESCRIPTION, SEND_MESSAGE_TO_NODE_DESCRIPTION, targ
  *   `sender.address` and its accepted answer `receiverAddress` (RC-06, RC-20).
  * 591 (a closed Task's remote run stops on its node): RC-10 a task agent's sub-work run and RC-11 (AC-001) an agent stop on
  *   beta within 30 s of DONE: no runtime process, beta's `closed-delegations.json` names it, alpha logs
- *   `TASK_PEER_NOTICE_CONFIRMED` (alpha runs at INFO) and owes nothing; beta's run list drops it, alpha keeps it offline under
- *   its delegator and on the Task; a later message on beta wakes it (REQ-004). RC-51 (AC-007): a reopen alone changes nothing
- *   on beta and a message stays refused; another root is refused; `delegate_task` with the run's ID and `task_id` sends "open"
- *   first, then the work: listed again, woken. RC-23: a saved Task given to the running remote Team; DONE on one Task while
- *   another is open sends nothing (AC-003); CANCELLED on the last with the coordinator mid-turn stops the whole Team (AC-002);
- *   RC-53 gives the Team its Task again. RC-09: a saved Task with files to an existing remote run is refused (attachments).
+ *   `TASK_PEER_NOTICE_CONFIRMED` (alpha runs at INFO) and owes nothing; beta's run list drops it; on alpha it leaves the
+ *   delegator's tree, as a local closed run does; a later message on beta wakes it (REQ-004). RC-51 (AC-007, SR-010): a saved
+ *   Task given with the run's ID wakes it ("open" first, then the work); its DONE stops it again and its Task page shows it
+ *   offline; a reopen alone changes nothing on beta; another sender's message is refused and `delegate_task` with the same Task
+ *   gets the local refusal; the assigner's message continues it ("open" first, listed, woken). RC-23: a saved Task given to the
+ *   running remote Team; DONE on one Task while another is open sends nothing (AC-003); CANCELLED on the last with the
+ *   coordinator mid-turn stops the whole Team (AC-002); RC-53 continues the Team through its coordinator. RC-09: a saved Task
+ *   with files to an existing remote run is refused (attachments).
  *   RC-35: the state from a peer that did not start the run is refused (AC-005). RC-52 (AC-004): closes while beta is down are
  *   owed (marked, logged once) and delivered within 30 s of alpha seeing beta again, after alpha's restart and after beta's
- *   alone (a busy run resumes, then stops); a Task given again before beta is back goes as "open"; an older beta (404) keeps
- *   it owed. RC-20 audits the new route.
+ *   alone; a run whose entry is reopened before beta is back (another Task, or the assigner's message, which answers "… did not
+ *   receive this message; send it again") goes as "open"; a Task's reopen alone still stops it; an older beta (404) keeps it
+ *   owed. RC-20 audits the new route.
  * Beta's agents (245): the shared Agents Publisher (scripted AGY default), Blank Slate (no default), Half Set (runtime only),
  * Codex Writer (a Codex default; Codex is unavailable on beta) and Fragile (a model AGY does not offer); a shared Team, an
  * Agent Org, and a file-authored Team with the team-local Agent "Local Scout" (a complete default). Nothing is published.
@@ -783,13 +786,16 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     return Date.now() - since;
   };
   const betaTeamActive = async (teamRunId: string) => Boolean((await beta.gql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){isActive}}`, { id: teamRunId })).getTeamRunResumeConfig?.isActive);
+  /** Its delegator's message to a closed run, as locally (591 SR-010: the local reopen checks, `assertReopenable`). */
+  const closedForDelegator = (status: "DONE" | "CANCELLED") =>
+    `This Task is ${status}. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again.`;
   /** A saved Project Task on alpha (591's re-delegations take a saved Task; an ad-hoc delegation's Task is not one). */
   const savedTaskOnAlpha = async (title: string) => {
     ids.project591 ??= (await alpha.gql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`, { input: { name: "591 project" } })).createProject.projectId as string;
     const taskId = (await alpha.gql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`, { input: { projectId: ids.project591, title, description: title } })).createProjectTask.taskId as string;
     return { projectId: ids.project591 as string, taskId };
   };
-  const taskOnAlpha = async (projectId: string, taskId: string) => ((await alpha.gql(`query($id:String!){projectTasks(projectId:$id){taskId status root{kind ingressAgentRunId teamRunId closed}}}`,
+  const taskOnAlpha = async (projectId: string, taskId: string) => ((await alpha.gql(`query($id:String!){projectTasks(projectId:$id){taskId status root{kind ingressAgentRunId teamRunId closed status}}}`,
     { id: projectId })).projectTasks as Rec[]).find((task) => task.taskId === taskId);
   /** autobyteus-32: beta's scripted router plan and its log of answered routing requests (one JSON line per request). */
   const routerPlanFile = () => path.join(root, "beta", "router-plan.json");
@@ -1450,16 +1456,17 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     // AC-006 (the server's list): beta's list drops r4; alpha keeps it under the delegator, offline, and on the Task.
     await until(async () => !(await betaListed(r4)), "beta's run list drops r4", 10_000);
     await until(() => r4Status.latest(r4) === "offline", "alpha reads r4 offline (REQ-004)", 20_000);
-    // F-1 (recorded, not asserted): the delegator's tree on alpha lists only open delegated runs (run-tree-view.ts, 469/461),
-    // so the closed run's row leaves it, as a local one's does; AC-006 says it stays under its delegating run.
+    // AC-001 / REQ-004 (SR-010): on alpha it leaves the delegating run's tree, as a local closed run does (its Task's page
+    // shows it offline: RC-51, a Project Task's page).
     const row = peerRowIn(await treeOf(alpha, "agent", ids.solo), r4) ?? null;
+    expect(row, "r4 left the delegator's tree").toBeNull();
     // REQ-004: the conversation stays on beta.
     expect(stringsOf(await remote.conversation()).some((value) => value.includes("ADHOC-PACKET")), "r4's conversation is kept on beta").toBe(true);
     // A message to the closed run is refused on alpha and nothing is sent.
     const sentBefore = captured.length;
     const toRemote = await calls(solo, "send_message_to", { target_agent_run_id: r4, content: "AFTER-DONE-TO-REMOTE" });
-    expect(toRemote.accepted, JSON.stringify(toRemote)).toBe(false);
-    expect(textOf(toRemote)).toMatch(/DONE or CANCELLED|closed/i);
+    expect(toRemote, JSON.stringify(toRemote)).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
+    expect(textOf(toRemote), "its delegator gets the local text").toBe(closedForDelegator("DONE"));
     expect(sentRequests(sentBefore), "nothing sent to a closed remote run").toEqual([]);
     // REQ-004: beta's owner messages the stopped run from beta's window: it wakes; its message to alpha is refused.
     const fromRemote = await calls(remote, "send_message_to", { target_agent_run_id: ids.solo, content: "AFTER-DONE-FROM-REMOTE" });
@@ -1471,39 +1478,39 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       peerRow: row, toRemote: textOf(toRemote), fromRemote: textOf(fromRemote) });
   }, 240_000);
 
-  it("RC-51 591 AC-007/AC-006/REQ-006: a saved Task given to the stopped remote run wakes it (open first, listed again); its DONE stops it again and the Task page keeps it; a reopen alone changes nothing on beta and a message is refused; another root can't give it the Task; its last assigner gives it again: open, listed, woken with the work", async () => {
+  it("RC-51 591 AC-007/AC-006/REQ-006: a saved Task given to the stopped remote run wakes it (open first, listed again); its DONE stops it again and its Task page shows it offline; a reopen alone changes nothing on beta; another sender's message is refused, delegate_task with the same Task gets the local refusal; the assigner's message continues it: open, listed, woken with the message", async () => {
     const solo = standaloneActor(alpha, ids.solo, "alpha standalone delegator");
     const r4 = ids.r4 as string;
     const remote = composeOnBeta(r4);
-    const packets = async () => stringsOf(await remote.conversation()).filter((value) => value.includes("FOLLOWUP-PACKET")).length;
-    /** `delegate_task` with r4's ID and the Task: "open" first, then the work over the link; beta clears its record and lists it. */
-    const giveTask = async (label: string) => {
-      const before = await packets();
-      const sentBefore = captured.length;
-      const given = await calls(solo, "delegate_task", { target_agent_run_id: r4, task_id: saved.taskId });
-      expect(given, `${label}: ${JSON.stringify(given)}`).toMatchObject({ delegated: true });
-      const sent = remoteRequests(sentBefore).filter((entry) => entry.path === PATHS.runStates || entry.path === PATHS.messages);
-      expect(sent.map((entry) => entry.path), `${label}: the open notice before the work`).toEqual([PATHS.runStates, PATHS.messages]);
+    const saved = await savedTaskOnAlpha("Follow-up work. Marker FOLLOWUP-PACKET.");
+    /** The open notice before the message or work, beta's record cleared, listed again, nothing owed, the entry open. */
+    const reopenedOnBeta = async (label: string, sentBefore: number, path: string) => {
+      const sent = remoteRequests(sentBefore).filter((entry) => entry.path === PATHS.runStates || entry.path === path);
+      expect(sent.map((entry) => entry.path), `${label}: the open notice before the delivery`).toEqual([PATHS.runStates, path]);
       expect(sent[0]!.body as Rec).toMatchObject({ run: { kind: "agent", runId: r4 }, open: true });
       expect(sent[0]!.answer).toEqual({ accepted: true, nodeId: beta.nodeId, open: true });
       expect((await closedOnBeta()).some((entry) => entry.runId === r4), `${label}: beta's record no longer names r4`).toBe(false);
       await until(() => betaListed(r4), `${label}: beta lists r4 again`, 10_000);
-      await until(async () => (await packets()) > before, `${label}: r4 wakes with the Task's work`, 60_000);
       expect(await owedMarks(r4), `${label}: nothing owed`).not.toContain(true);
       expect((await taskOnAlpha(saved.projectId, saved.taskId))?.root, `${label}: its entry open on alpha`).toMatchObject({ ingressAgentRunId: r4, closed: false });
-      return { given, sent: sent.map((entry) => ({ path: entry.path, body: entry.body, answer: entry.answer })) };
+      return sent.map((entry) => ({ path: entry.path, body: entry.body, answer: entry.answer }));
     };
-    // A saved Task to the stopped, closed run (REQ-006): it wakes on beta.
-    const saved = await savedTaskOnAlpha("Follow-up work. Marker FOLLOWUP-PACKET.");
-    const first = await giveTask("the saved Task");
-    // Its DONE stops it again; the Task page on alpha keeps naming it (AC-006).
+    // A saved Task to the stopped, closed run (REQ-006, another Task): it wakes on beta with the work.
+    const packetsBefore = stringsOf(await remote.conversation()).filter((value) => value.includes("FOLLOWUP-PACKET")).length;
+    const sentBeforeGive = captured.length;
+    const given = await calls(solo, "delegate_task", { target_agent_run_id: r4, task_id: saved.taskId });
+    expect(given, JSON.stringify(given)).toMatchObject({ delegated: true });
+    const first = await reopenedOnBeta("the saved Task", sentBeforeGive, PATHS.messages);
+    await until(async () => stringsOf(await remote.conversation()).filter((value) => value.includes("FOLLOWUP-PACKET")).length > packetsBefore, "r4 wakes with the Task's work", 60_000);
+    // Its DONE stops it again; its Task page on alpha shows it offline (AC-001, AC-006).
     const closedAt = Date.now();
     expect(await calls(solo, "update_task", { task_id: saved.taskId, status: "DONE" })).toMatchObject({ task: { status: "DONE" } });
     const stoppedMs = await stoppedOnBeta([r4], closedAt, "r4 after the saved Task's DONE");
     await until(async () => (await closedOnBeta()).some((entry) => entry.runId === r4), "beta records r4 closed again", 10_000);
     await until(async () => !(await betaListed(r4)), "off beta's list again", 10_000);
-    const taskPage = await taskOnAlpha(saved.projectId, saved.taskId);
-    expect(taskPage, "the Task page names r4, closed").toMatchObject({ status: "DONE", root: { ingressAgentRunId: r4, closed: true } });
+    let taskPage: Rec | undefined;
+    await until(async () => (taskPage = await taskOnAlpha(saved.projectId, saved.taskId))?.root?.status === "offline", "the Task page shows r4 offline", 20_000);
+    expect(taskPage, "the Task page names r4, closed and offline").toMatchObject({ status: "DONE", root: { ingressAgentRunId: r4, closed: true, status: "offline" } });
     // A reopen alone (the agent's update_task): nothing is sent; beta keeps the run recorded closed and off its list.
     const sentBeforeReopen = captured.length;
     expect(await calls(solo, "update_task", { task_id: saved.taskId, status: "TODO" })).toMatchObject({ task: { status: "TODO" } });
@@ -1511,19 +1518,23 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(remoteRequests(sentBeforeReopen).filter((entry) => entry.path === PATHS.runStates), "a reopen sends nothing").toEqual([]);
     expect((await closedOnBeta()).some((entry) => entry.runId === r4), "still recorded closed on beta").toBe(true);
     expect(await betaListed(r4), "still off beta's list").toBe(false);
-    const message = await calls(solo, "send_message_to", { target_agent_run_id: r4, content: "AFTER-REOPEN-TO-REMOTE" });
-    expect(message.accepted, JSON.stringify(message)).toBe(false);
-    expect(message.code, JSON.stringify(message)).toBe("TASK_AGENT_RESOURCE_CLOSED");
-    // Another root (not its assigner) is refused, and nothing is sent.
-    const byOther = await calls(standaloneActor(alpha, ids.other, "alpha other root"), "delegate_task", { target_agent_run_id: r4, task_id: saved.taskId });
-    expect(byOther.delegated, JSON.stringify(byOther)).toBe(false);
+    // Another sender's message is refused; delegate_task with the same Task gets the local refusal; nothing is sent.
+    const byOther = await calls(standaloneActor(alpha, ids.other, "alpha other root"), "send_message_to", { target_agent_run_id: r4, content: "OTHER-AFTER-REOPEN" });
+    expect(byOther.accepted, JSON.stringify(byOther)).toBe(false);
+    expect(byOther.code, JSON.stringify(byOther)).toBe("TASK_AGENT_RESOURCE_CLOSED");
+    const sameTask = await calls(solo, "delegate_task", { target_agent_run_id: r4, task_id: saved.taskId });
+    expect(sameTask.delegated, JSON.stringify(sameTask)).toBe(false);
+    expect(textOf(sameTask)).toMatch(/^This task agent already has Task \S+\. To continue it, set Task \S+ to TODO or IN_PROGRESS, then message the task agent's run id/);
     expect(remoteRequests(sentBeforeReopen).filter((entry) => entry.path === PATHS.runStates || entry.path === PATHS.messages), "nothing sent").toEqual([]);
-    // Its last assigner gives it the reopened Task again.
-    const again = await giveTask("the reopened Task");
+    // The assigner's message continues it, as locally (SR-010): open first, then the message; it wakes with it.
+    const sentBeforeContinue = captured.length;
+    const continued = await calls(solo, "send_message_to", { target_agent_run_id: r4, content: "CONTINUE-591-AGENT" });
+    expect(continued, JSON.stringify(continued)).toMatchObject({ accepted: true });
+    const again = await reopenedOnBeta("the assigner's message", sentBeforeContinue, PATHS.messages);
+    await receives(remote, "CONTINUE-591-AGENT");
+    expect(stringsOf(await remote.conversation()).some((value) => value.includes("FOLLOWUP-PACKET")), "with its conversation").toBe(true);
     expect(noticeRecords("TASK_PEER_NOTICE_CONFIRMED").filter((block) => block.includes(r4)).at(-1)).toContain("open: true");
-    expect(await calls(solo, "send_message_to", { target_agent_run_id: r4, content: "AFTER-AGAIN-TO-REMOTE" })).toMatchObject({ accepted: true });
-    await receives(remote, "AFTER-AGAIN-TO-REMOTE");
-    record("RC-51", { r4, taskId: saved.taskId, first, stoppedMs, taskPage, message: textOf(message), byOther: textOf(byOther), again });
+    record("RC-51", { r4, taskId: saved.taskId, first, stoppedMs, taskPage, byOther: textOf(byOther), sameTask: textOf(sameTask), continued, again });
   }, 300_000);
 
   // ---- autobyteus-492: the run ID is the address; list_running_agents (RC-47 one node, RC-48 two nodes, RC-49 rows 13/14) ----
@@ -1993,7 +2004,9 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
         const result = await calls(actor, "send_message_to", { ...extra, target_agent_run_id: r6, content: `ROW13-${label.replace(/ /g, "-").toUpperCase()}` });
         expect(result.accepted, `${label}: ${JSON.stringify(result)}`).toBe(false);
         expect(result.code, label).toBe("TASK_AGENT_RESOURCE_CLOSED");
-        expect(textOf(result), label).toMatch(/DONE or CANCELLED|closed/i);
+        // 591 SR-010: its delegator gets the local reopen text; every other sender the closed refusal.
+        if (actor === fenceDelegator) expect(textOf(result), label).toBe(closedForDelegator("DONE"));
+        else expect(textOf(result), label).toMatch(/DONE or CANCELLED|closed/i);
         closed[label] = textOf(result);
       }
       expect(sentRequests(sentBefore), "nothing was sent to the fenced run from alpha").toEqual([]);
@@ -2272,8 +2285,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     // Messages both ways are refused, as for every closed Task.
     const sentBefore = captured.length;
     const toRemote = await calls(solo, "send_message_to", { target_agent_run_id: coord, content: "AFTER-DONE-TO-STUDIO" });
-    expect(toRemote.accepted, JSON.stringify(toRemote)).toBe(false);
-    expect(textOf(toRemote)).toMatch(/DONE or CANCELLED|closed/i);
+    expect(toRemote, JSON.stringify(toRemote)).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
+    expect(textOf(toRemote), "its delegator gets the local text").toBe(closedForDelegator("CANCELLED"));
     expect(sentRequests(sentBefore), "nothing was sent to the closed Team").toEqual([]);
     const fromRemote = await calls(coordinator, "send_message_to", { target_agent_run_id: ids.solo, content: "AFTER-DONE-FROM-STUDIO" });
     expect(fromRemote.accepted, JSON.stringify(fromRemote)).toBe(false);
@@ -2285,7 +2298,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       closedRecord: (await closedOnBeta()).find((entry) => entry.runId === teamRunId), toRemote: textOf(toRemote), fromRemote: textOf(fromRemote) });
   }, 300_000);
 
-  it("RC-53 591 AC-007 (Team): the assigner reopens the cancelled Task (nothing on beta) and gives it to the stopped remote Team again: beta is told open, lists the Team again, and its coordinator wakes with the work", async () => {
+  it("RC-53 591 AC-007 (Team): the assigner reopens the cancelled Task (nothing on beta); delegate_task with the same Task gets the local refusal; its message to the stopped remote Team's coordinator continues it: beta is told open, lists the Team again, and the coordinator wakes with the message", async () => {
     const solo = standaloneActor(alpha, ids.solo, "alpha standalone delegator");
     const { teamRunId, coord, projectId, savedTaskId } = ids.closureTeam as Rec;
     const coordinator = teamActor(beta, teamRunId, coord, "beta closure coordinator");
@@ -2294,18 +2307,21 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await wait(3_000);
     expect(remoteRequests(sentBeforeReopen).filter((entry) => entry.path === PATHS.runStates), "a reopen sends nothing").toEqual([]);
     expect(await betaListed(teamRunId), "still off beta's list").toBe(false);
-    const packetsBefore = stringsOf(await coordinator.conversation()).filter((value) => value.includes("SAVED-TEAM-PACKET")).length;
+    const sameTask = await calls(solo, "delegate_task", { target_team_run_id: teamRunId, task_id: savedTaskId });
+    expect(sameTask.delegated, JSON.stringify(sameTask)).toBe(false);
+    expect(textOf(sameTask)).toMatch(/^This task agent already has Task \S+\. To continue it, set Task \S+ to TODO or IN_PROGRESS, then message the task agent's run id/);
     const sentBefore = captured.length;
-    const again = await calls(solo, "delegate_task", { target_team_run_id: teamRunId, task_id: savedTaskId });
-    expect(again, JSON.stringify(again)).toMatchObject({ delegated: true });
+    const continued = await calls(solo, "send_message_to", { target_agent_run_id: coord, content: "CONTINUE-591-TEAM" });
+    expect(continued, JSON.stringify(continued)).toMatchObject({ accepted: true });
     const sent = remoteRequests(sentBefore).filter((entry) => entry.path === PATHS.runStates || entry.path === PATHS.messages);
-    expect(sent.map((entry) => entry.path), "the open notice before the work").toEqual([PATHS.runStates, PATHS.messages]);
+    expect(sent.map((entry) => entry.path), "the open notice before the message").toEqual([PATHS.runStates, PATHS.messages]);
     expect(sent[0]!.body as Rec).toMatchObject({ run: { kind: "agent_team", runId: teamRunId }, open: true });
     expect((await closedOnBeta()).some((entry) => entry.runId === teamRunId), "beta's record no longer names the Team").toBe(false);
     await until(() => betaListed(teamRunId), "beta lists the Team again", 10_000);
-    await until(async () => stringsOf(await coordinator.conversation()).filter((value) => value.includes("SAVED-TEAM-PACKET")).length > packetsBefore, "the coordinator wakes with the work", 60_000);
+    await receives(coordinator, "CONTINUE-591-TEAM");
+    expect(stringsOf(await coordinator.conversation()).some((value) => value.includes("SAVED-TEAM-PACKET")), "with its conversation").toBe(true);
     expect((await taskOnAlpha(projectId, savedTaskId))?.root, "the Task's entry is open on alpha").toMatchObject({ teamRunId, closed: false });
-    record("RC-53", { teamRunId, again, sent: sent.map((entry) => ({ path: entry.path, body: entry.body, answer: entry.answer })) });
+    record("RC-53", { teamRunId, sameTask: textOf(sameTask), continued, sent: sent.map((entry) => ({ path: entry.path, body: entry.body, answer: entry.answer })) });
   }, 240_000);
 
   it("RC-25 247 RSK-301/DEC-304: when alpha's work packet to a just-started remote Team fails, beta keeps an unused Team run (no member starts); RC-12 shows its idle schedule stops it", async () => {
@@ -3516,7 +3532,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     record("RC-46", { a1, t1, checker, ...out });
   }, 420_000);
 
-  it("RC-52 591 AC-004/REQ-002: a close while beta is down is owed (marked, logged once) and delivered within 30 s of alpha seeing beta again, after alpha restarted (a busy run resumes on beta, then stops); a run given another open Task before beta is back is told open and not stopped; beta restarted alone, and an older beta (404), keep it owed until it is delivered", async () => {
+  it("RC-52 591 AC-004/REQ-002: a close while beta is down is owed (marked, logged once) and delivered within 30 s of alpha seeing beta again, after alpha restarted (a busy run resumes on beta, then stops); a run whose entry is reopened before beta is back (another Task, or its assigner's message) is told open and not stopped, while a Task's reopen alone still stops it; beta restarted alone, and an older beta (404), keep it owed until it is delivered", async () => {
     // A delegator of its own (the long-lived delegator's view keeps only its latest events, which later cases read).
     const solo = await createStandalone(alpha, defs.delegator, "alpha owed-notice delegator");
     const remoteRun = async (marker: string) => {
@@ -3536,13 +3552,25 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     try {
     // Round 1. ra: a quiet run; rb: a busy run (it resumes when beta starts again); rc: gets another open Task (a saved Task
     // given with its run ID) while beta is down, before the close is delivered (REQ-002's second clause).
-    const [ra, rb, rc, rf] = [await remoteRun("OWED-A-PACKET"), await remoteRun("OWED-B-PACKET"), await remoteRun("OWED-C-PACKET"), await remoteRun("OWED-F-PACKET")];
+    const [ra, rb, rc, rf, rg] = [await remoteRun("OWED-A-PACKET"), await remoteRun("OWED-B-PACKET"), await remoteRun("OWED-C-PACKET"),
+      await remoteRun("OWED-F-PACKET"), await remoteRun("OWED-G-PACKET")];
+    // rg holds a saved Task, so its assigner can continue it by message after a reopen (SR-010).
+    const rgSaved = await savedTaskOnAlpha("Owed, then continued. Marker OWED-G-SAVED.");
+    expect(await calls(solo, "delegate_task", { target_agent_run_id: rg.runId, task_id: rgSaved.taskId })).toMatchObject({ delegated: true });
+    await receives(composeOnBeta(rg.runId), "OWED-G-SAVED");
     await busy(rb.runId, "OWED-B-HOLD");
     await beta.stop();
-    for (const taskId of [ra.taskId, rb.taskId, rc.taskId, rf.taskId]) expect(await calls(solo, "update_task", { task_id: taskId, status: "DONE" })).toMatchObject({ task: { status: "DONE" } });
-    // rf: its Task reopened alone before beta is back. Recorded, not asserted (finding F-2): REQ-002 says such a close is
-    // never delivered; under SR-005 a reopen changes no entry, so the owed "closed" is still sent.
+    for (const taskId of [ra.taskId, rb.taskId, rc.taskId, rf.taskId, rg.taskId, rgSaved.taskId]) expect(await calls(solo, "update_task", { task_id: taskId, status: "DONE" })).toMatchObject({ task: { status: "DONE" } });
+    // rf: its Task reopened alone before beta is back: as locally, a Task's reopen changes no entry, so the close is still
+    // delivered (REQ-002, SR-010).
     expect(await calls(solo, "update_task", { task_id: rf.taskId, status: "TODO" })).toMatchObject({ task: { status: "TODO" } });
+    // rg: reopened and continued by its assigner's message before beta is back: its entry is open again; the message is not
+    // delivered (beta unreachable), "open" is owed, and the close is never delivered (REQ-002).
+    expect(await calls(solo, "update_task", { task_id: rgSaved.taskId, status: "TODO" })).toMatchObject({ task: { status: "TODO" } });
+    const continuedWhileDown = await calls(solo, "send_message_to", { target_agent_run_id: rg.runId, content: "CONTINUE-WHILE-DOWN" });
+    expect(continuedWhileDown.accepted, JSON.stringify(continuedWhileDown)).toBe(false);
+    expect(textOf(continuedWhileDown)).toContain(`${rg.runId} continues with its conversation (its Task is open again) but did not receive this message; send it again.`);
+    expect(await owedMarks(rg.runId), "open is owed for rg").toContain(true);
     for (const run of [ra, rb, rc]) await until(async () => (await owedMarks(run.runId)).includes(true) && owedLogs(run.runId).length > 0, `${run.runId} owed on alpha`, 30_000);
     expect(owedLogs(ra.runId)[0], "the reason: beta unreachable").toMatch(/open: false/);
     // The alternate: rc gets another open Task before beta is back: its work is not delivered; the owed notice is now "open".
@@ -3561,12 +3589,19 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await beta.start();
     const betaBack = Date.now();
     const rbResumed = await processLive(rb.runId);
-    for (const run of [ra, rb, rc]) await until(async () => !(await owedMarks(run.runId)).includes(true), `${run.runId} delivered after beta returns`, 45_000);
+    for (const run of [ra, rb, rc, rg]) await until(async () => !(await owedMarks(run.runId)).includes(true), `${run.runId} delivered after beta returns`, 45_000);
     const deliveredMs = Date.now() - betaBack;
     expect(deliveredMs, "within 30 s of alpha seeing beta (one retry period, plus beta's start)").toBeLessThanOrEqual(40_000);
-    await until(async () => !(await owedMarks(rf.runId)).includes(true), "rf's notice delivered", 45_000).catch(() => undefined);
+    await until(async () => !(await owedMarks(rf.runId)).includes(true), "rf's notice delivered", 45_000);
     const rfOutcome = { recordedClosed: (await closedOnBeta()).some((entry) => entry.runId === rf.runId), listed: await betaListed(rf.runId),
       confirmed: noticeRecords("TASK_PEER_NOTICE_CONFIRMED").filter((block) => block.includes(rf.runId)).at(-1) ?? null };
+    expect(rfOutcome, "rf: a Task's reopen alone does not prevent the close").toMatchObject({ recordedClosed: true, listed: false, confirmed: expect.stringContaining("open: false") });
+    // rg: never recorded closed; listed; its "open" confirmed; the assigner's next message reaches it.
+    expect((await closedOnBeta()).some((entry) => entry.runId === rg.runId), "rg: never recorded closed").toBe(false);
+    expect(await betaListed(rg.runId), "rg listed").toBe(true);
+    expect(confirmedOf(rg.runId).at(-1)).toContain("open: true");
+    expect(await calls(solo, "send_message_to", { target_agent_run_id: rg.runId, content: "CONTINUE-AFTER-RETURN" })).toMatchObject({ accepted: true });
+    await receives(composeOnBeta(rg.runId), "CONTINUE-AFTER-RETURN");
     const closedNow = await closedOnBeta();
     expect(closedNow.filter((entry) => [ra.runId, rb.runId].includes(entry.runId)).map((entry) => entry.runId).sort()).toEqual([ra.runId, rb.runId].sort());
     expect(closedNow.some((entry) => entry.runId === rc.runId), "rc: open, never recorded closed").toBe(false);
@@ -3598,7 +3633,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       // Nothing reached the older beta: the run is neither recorded closed nor dropped from its list (it may idle out on its own).
       expect((await closedOnBeta()).some((entry) => entry.runId === re.runId), "not recorded on the older beta").toBe(false);
       expect(await betaListed(re.runId), "still listed on the older beta").toBe(true);
-      record("RC-52", { ra: ra.runId, rb: rb.runId, rc: rc.runId, rd: rd.runId, re: re.runId, rf: rf.runId, rfOutcome, deliveredMs, rdDeliveredMs, rbResumed, rdResumed,
+      record("RC-52", { ra: ra.runId, rb: rb.runId, rc: rc.runId, rd: rd.runId, re: re.runId, rf: rf.runId, rfOutcome, rg: rg.runId, continuedWhileDown: textOf(continuedWhileDown), deliveredMs, rdDeliveredMs, rbResumed, rdResumed,
         owedLog: owedLogs(ra.runId)[0], olderBetaLog: owedLogs(re.runId)[0], againWhileDown: textOf(againWhileDown), confirmedRc: confirmedOf(rc.runId).at(-1) });
     } finally {
       toBeta.answerWith = null;

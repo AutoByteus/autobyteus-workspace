@@ -14,8 +14,8 @@
 //
 //   MSP-93 AC-006  Both lists show the delegated run. Beta's manager sets the Task DONE: alpha stops the run and records it
 //                  closed, and its row leaves the phone and the desktop within 5 s of alpha's run list dropping it (the 5 s
-//                  list re-read). Beta's manager reopens the Task: nothing changes on alpha (the row stays away). It gives the
-//                  run a saved Task with the run's ID and `task_id`: the row returns on both.
+//                  list re-read). Beta's manager reopens the Task: nothing changes on alpha (the row stays away). Its message
+//                  to the run continues it (SR-010): the row returns on both.
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
@@ -135,13 +135,10 @@ export const runClosedDelegationCases = async (probe) => {
     const afterReopen = { recorded: await recorded(), listed: await alphaListed(), phone: await onPhone(), desktop: await onDesktop() };
     assert(afterReopen.recorded && !afterReopen.listed && !afterReopen.phone && !afterReopen.desktop, 'a reopen alone changes nothing on alpha', afterReopen);
 
-    // Given a saved Task with its run ID (REQ-006): the row returns on both. (The run's own reopened Task can't be given
-    // again: finding F-2 of autobyteus-591's API/E2E round 1.)
-    const project = (await beta.gql('mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}', { input: { name: `Closed delegation ${tag}` } })).createProject.projectId;
-    const savedTaskId = (await beta.gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}', { input: { projectId: project, title: 'More night work.', description: 'More night work.' } })).createProjectTask.taskId;
+    // The assigner's message continues it after the reopen (REQ-006, SR-010): the row returns on both.
     const givenAt = Date.now();
-    const again = await callTool('delegate_task', { target_agent_run_id: runId, task_id: savedTaskId });
-    assert(/"delegated\\*"\s*:\s*true/.test(again), 'the Task given again', { again: redact(again).slice(0, 600) });
+    const again = await callTool('send_message_to', { target_agent_run_id: runId, content: `Continue the night work. Marker MSP93-CONTINUE-${tag}.` });
+    assert(/"accepted\\*"\s*:\s*true/.test(again), 'the assigner continues the run', { again: redact(again).slice(0, 600) });
     await waitFor('alpha lists the run again', alphaListed, 30_000);
     await waitFor('the phone shows the row again', onPhone, LIST_REFRESH_BOUND_MS + 2_000);
     await waitFor('the desktop shows the row again', onDesktop, LIST_REFRESH_BOUND_MS + 2_000);
