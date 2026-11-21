@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-003` (SR-003: AC-003 wording clarified, no behavior change)
 - Package identifier: `managed-ubuntu-immediate-restart`
 - Request / ticket: Project Task autobyteus-16, Project `project_de48ed0e-f4a2-43d7-b22a-4c162c9b1dda`
 - Requested by: `/project_task_manager`, on the user's direction of 2026-11-21
@@ -81,7 +81,7 @@ None.
 | --- | --- | --- | --- | --- |
 | AC-001 | REQ-001 | Switch on, newer signed release, agent busy, user active | Verified stage → app stops, activates, reopens on N+1 with no click; row "Updated automatically to <version>" | Owner tests; guest (AC-007) |
 | AC-002 | REQ-002 | AC-001 with a run mid-turn | After reopening, that run receives the restart notice naming an update and continues (a further turn completes) | Guest with scripted local inference (AC-007); server restart-resume suites stay green |
-| AC-003 | REQ-003 | Quit before readiness or during the restart | Installs, stays closed | Owner tests (existing from autobyteus-15, kept); guest |
+| AC-003 | REQ-003 | (a) Quit while the downloaded release is still being verified (no verified stage yet); (b) Quit after the automatic restart was admitted (restart in progress) | (a) Stays closed on the old version N; nothing is installed; the late verification result is discarded; the next launch checks again. (b) Installs N+1 and stays closed (no reopen). Only a verified stage is ever installed (autobyteus-15 REQ-004) | Owner tests (existing from autobyteus-15, kept); guest, both boundaries |
 | AC-004 | REQ-004 | Switch off, channel change, blocked version, no restart channel, refused/unknown activation, click | As autobyteus-15 | Existing owner tests stay green (rewritten only where they asserted the wait) |
 | AC-005 | REQ-005 | Managed with restart channel | Switch shows Mac's text in en and zh-CN; row/About "Restarting to install…" during the restart; no text mentions 5 minutes or idle agents; `managed-quit` texts unchanged | Component tests; guest screenshot |
 | AC-006 | REQ-006 | Mac/Windows/portable | Native policy and copy unchanged | Existing suites |
