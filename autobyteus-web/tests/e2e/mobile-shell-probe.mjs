@@ -190,8 +190,9 @@
 //                  an Org Team member's Save, and a run on beta (one sentence, no rows): `mobile-every-run-settings-cases.mjs`
 //                  (after 458's cases, before MSP-13).
 //   MSP-93 autobyteus-591 AC-006  A run alpha runs for beta leaves the phone's and the desktop's run lists within one list
-//                  re-read of beta closing its Task, stays away after a reopen alone, and returns when beta gives it the Task
-//                  again: `mobile-closed-delegation-cases.mjs` (on alpha and beta, after 526's cases; about 2 minutes).
+//                  re-read of beta closing its Task, stays away after a reopen alone, and returns when the assigner's message
+//                  continues it (SR-010): `mobile-closed-delegation-cases.mjs` (on alpha and beta, after 526's cases; about
+//                  2 minutes).
 //
 // Prerequisites: `pnpm -C autobyteus-server-ts build` and `pnpm -C autobyteus-web build:mobile-web` (alpha serves
 // `autobyteus-web/dist/public` at /mobile); Chrome. Run: `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<fresh>`
