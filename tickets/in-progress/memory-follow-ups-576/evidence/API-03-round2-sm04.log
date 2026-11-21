@@ -1,0 +1,33 @@
+# API-03 round 2 (CF-05): agent-semantic-memory whole file (SM-04 needs the earlier cases), scripted AGY, three times, errors kept | commit a4ed4455fa
+## agent-semantic-memory run 1 | 2026-11-21T04:31:03Z | load { 8.35 13.79 19.47 } | fseventsd 155.6%
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts (10 tests) 46369ms
+       ✓ SM-04 (AC-001, AC-009): a run under Project A is told both folders after the Project section; both exist outside the workspace and the package  15889ms
+       ✓ SM-05: a run under Project B, the agent as a shared team member and as a delegated copy are told the same folders; every other agent its own and the same global one  1784ms
+       ✓ SM-06: a team-local agent with the same local name has its own folder  380ms
+       ✓ SM-08 (REQ-010): deleting the agent leaves its semantic memory folder and the global folder  11647ms
+       ✓ SM-12 (AC-014, DEC-015): when an agent's folder cannot be made, its run still starts, told only the global folder, and the log names the agent and the reason  3898ms
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+exit 0
+## agent-semantic-memory run 2 | 2026-11-21T04:32:01Z | load { 9.16 12.93 18.76 } | fseventsd 151.1%
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts (10 tests) 59125ms
+       ✓ SM-04 (AC-001, AC-009): a run under Project A is told both folders after the Project section; both exist outside the workspace and the package  5620ms
+       ✓ SM-05: a run under Project B, the agent as a shared team member and as a delegated copy are told the same folders; every other agent its own and the same global one  1940ms
+       ✓ SM-06: a team-local agent with the same local name has its own folder  380ms
+       ✓ SM-07 (AC-001): an agent whose package file says false gets both sections; the folders' files are kept across runs  304ms
+       ✓ SM-08 (REQ-010): deleting the agent leaves its semantic memory folder and the global folder  23007ms
+       ✓ SM-12 (AC-014, DEC-015): when an agent's folder cannot be made, its run still starts, told only the global folder, and the log names the agent and the reason  13931ms
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+exit 0
+## agent-semantic-memory run 3 | 2026-11-21T04:33:13Z | load { 8.02 11.92 17.92 } | fseventsd 167.0%
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts (10 tests) 51706ms
+     ✓ SM-01 (AC-003, AC-004): every agent has its path; a stored key is read without it and dropped at the next save; reads create no folder  15839ms
+       ✓ SM-04 (AC-001, AC-009): a run under Project A is told both folders after the Project section; both exist outside the workspace and the package  7288ms
+       ✓ SM-05: a run under Project B, the agent as a shared team member and as a delegated copy are told the same folders; every other agent its own and the same global one  1748ms
+       ✓ SM-06: a team-local agent with the same local name has its own folder  391ms
+       ✓ SM-08 (REQ-010): deleting the agent leaves its semantic memory folder and the global folder  501ms
+       ✓ SM-12 (AC-014, DEC-015): when an agent's folder cannot be made, its run still starts, told only the global folder, and the log names the agent and the reason  316ms
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+exit 0

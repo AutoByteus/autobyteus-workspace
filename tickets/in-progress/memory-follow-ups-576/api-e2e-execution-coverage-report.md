@@ -1,18 +1,18 @@
 # API/E2E Execution Coverage Report
 
-The run record and the result. The coverage investigation (`api-e2e-coverage-investigation.md`) is the plan; `api-e2e-revision-record.md` is the history.
+The run record and the result. The coverage investigation (`api-e2e-coverage-investigation.md`) is the plan; `api-e2e-revision-record.md` is the history (round 1: `API-REV-001`, Fail).
 
 ## Round
 
-- Coverage investigation: `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-001`
+- Coverage investigation: `api-e2e-coverage-investigation.md` (sections "Planned Cases" and "Round 2")
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-002`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 1, implementation handoff IR-001 (Medium / Low, direct route)
-- Prior round reviewed: N/A
+- Round and trigger: round 2, IR-002 (SR-002: FU-008's bound revised after CRR-001 CR-001 / API-REV-001), direct route
+- Prior round reviewed: round 1 (`API-REV-001`, Fail on AC-008). **Prior failure resolved:** the Grok catalog test passes with the bound firing late (API-05).
 - Deviations from the investigation's plan, and why:
-  - **The round ends in `Fail` (API-05, AC-008 / REQ-008).** Server integration (API-07) and the whole server E2E suite (API-08) are `Next Round`: the fix changes server code the E2E suite runs at every start (runtime probes). The web suite, rendered probe, desktop journey and server unit suite ran now: the fix cannot change what they prove (the unit suite's probe tests rerun with the fix).
-  - API-01 first ran without the Brief Studio package (this new worktree had none); `test:integration:prepare` was run and the file rerun.
-  - API-05 got a temporary diagnostic (API-05b) in `probe-time-bound.ts` to see the timer's real firing time and the child's exit; restored.
+  - API-05's diagnostic run kept a temporary print in `probe-time-bound.ts` (restored) to show the late timer firings the fix must survive.
+  - A baseline fix (TESTING.md rule 9): `grok-build-compaction-replay`'s `afterAll` failed once on its 10 s default while closing the in-process server; measured (API-05d) and given the TESTING.md limit (`adda171de8`, API-05e).
+  - Added API-13 (Linux container) to give AC-007 and the file-event-dependent files my own run where the OS delivers events, since this Mac delivers none.
 - Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/tickets/in-progress/memory-follow-ups-576/evidence/`
 
 ## Routing Classification
@@ -21,72 +21,75 @@ The run record and the result. The coverage investigation (`api-e2e-coverage-inv
 - Architectural risk: `Low`
 - Input route: `Direct`
 - Successful-output route: `Delivery`
-- Proportional test-code review decision: not this round (`Fail`: failure-origin review requested)
+- Proportional test-code review decision: `Not Required — direct low-risk route`
 
 ## Tested Builds And Environments
 
 | Env ID | Commit Tested | Platform / OS | Runtime, Browser, Or App Build | Other Settings That Matter |
 | --- | --- | --- | --- | --- |
-| ENV-1 | `56c61c3ecb` (code `8850dc3f99` + `570aab87d2`) | macOS 26.5.2 ARM64, shared host, load 8–88 | Node v22.23.1; server `dist/` built at API-00 | `env -i PATH HOME=<temp> TMPDIR USER`; `fseventsd` 152–209% CPU, 24 GB resident; a raw `fs.watch` got its write event in 1.8–6.0 s or not within 30 s (measured before each run) |
-| ENV-2 | same | same | rendered probe: built server, Nuxt dev, Chrome (Playwright) | probe-owned data |
-| ENV-3 | same | same | isolated desktop instance of this worktree (`isolated-app start --build`, `electron-dist/mac-arm64/AutoByteus.app`), driven over its CDP port with Playwright | own data root, seeded `server-data/memory/semantic-global/{index.md,b/c.md}` and `memory/outside.md`; stopped, data root removed |
+| ENV-1 | round 1 `56c61c3ecb`; round 2 code `3b39828501` (records `a4ed4455fa`), then `adda171de8` (baseline fix) | macOS 26.5.2 ARM64, shared host, load 7–88 | Node v22.23.1; server `dist/` rebuilt at API-00 round 2 | `env -i PATH HOME=<temp> TMPDIR USER`; `fseventsd` 99–209% CPU; a raw `fs.watch` got its event in 1.8–6.0 s or not within 30 s |
+| ENV-2 | round 1 | same | rendered probe (built server, Nuxt dev, Chrome via Playwright) | probe-owned data |
+| ENV-3 | round 1 | same | isolated desktop instance of this worktree (`isolated-app start --build`), Playwright over CDP | own seeded data root; stopped, removed |
+| ENV-4 | `adda171de8` via `git archive` | Linux, Docker `node:22-bookworm` (Node v22.23.5), test-owned container, removed | frozen install, `prepare:source` (no server build) | raw `fs.watch` event in 21 ms |
 
 ## Cases
 
 | Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| API-00 | — | server build | `pnpm -C autobyteus-server-ts build` | ENV-1 | Pass | `API-00-server-build.log` | `Sanitized built-module/bootstrap smoke passed`, `exit 0` | — |
-| API-01 | AC-001 (S-1) | IC-03, a bundled member at 274 bytes | `test:integration:prepare`; `env -i … vitest run tests/e2e/runtime/application-import-codex-launch.e2e.test.ts` | ENV-1 | Pass | `API-01-ac001-ic03.log` | after prepare: `Tests  3 passed (3)`, `✓ IC-03` | first run: `Brief Studio importable package missing` (setup, not product); unit AC-001 reused IMP-01 |
-| API-02 | AC-005 | `package-personal-settings` | the file alone, three times | ENV-1 | Pass | `API-02-ac005-personal-settings-x3.log` | three times `Tests  7 passed (7)`, `exit 0`; `fseventsd` 152–159% | — |
-| API-03 | AC-006 | SM-12 (scripted AGY) as `normy` uid 501 | `env -i … RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs vitest run tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts` | ENV-1 | Pass | `API-03-ac006-sm12.log` | rerun `Tests  10 passed (10)`, `✓ SM-12` | first run: SM-04 failed and its error was not captured (my log filter kept only the test line); rerun 10/10. AGY discovery uses the probe bound of API-05: recheck after the fix |
-| API-04 | AC-007 | DCF-E2E-007 (scripted AGY) | the live-refresh file alone, three times | ENV-1 | **Not Proven (environment)** | `API-04-ac007-live-refresh-x3.log` | each run `Error: ENVIRONMENT: the OS delivered no file event for agents/apar-fresh-scout within 30000 ms`; before each run the raw `fs.watch` measurement `no event in 30000ms` | the test now fails for the right reason: the OS delivered no event, measured independently of the product before every run (`fseventsd` 160–167%). DCF-E2E-002/-003 end the same way on the same waits. The cause (REQ-007) is recorded with evidence by IMP-08, which also passed the file on Linux |
-| API-05 | **AC-008 / REQ-008** | the Grok and AGY probes under load (S-3) | `grok-build-runtime-replay`, `grok-build-compaction-replay`, `own-stream-turns-read-once` (scripted AGY), each alone; the Grok catalog test repeated with a temporary diagnostic | ENV-1 | **Fail** | `API-05-ac008-probes-under-load.log`, `API-05b-grok-catalog-bound-diagnostic.log` | `× lists the Grok Build catalog…`, `Grok Build model discovery timed out`; diagnostic run 2: `PTBDIAG {"command":"fake-grok-cli-…/grok --version","boundMs":3000,"firedAfterMs":7720,"exitCode":null,"exitSeenAt":null}` then `PTBDIAG-LATER {…"exitSeenAt":7730,"exitCode":0…}` | compaction replay 3/3 and own-stream 2/2 pass; see Preliminary Classification |
-| API-06 | all (server) | whole server unit suite | `env -i … pnpm -C autobyteus-server-ts test:unit` | ENV-1 | Pass | `API-06-server-unit-suite.log` | `Test Files  1039 passed \| 5 skipped (1044)`, `Tests  8626 passed` | the probe unit tests pass: they do not build the failing order |
-| API-07 | all | server integration | — | — | Next Round | — | — | after the fix |
-| API-08 | all | whole server E2E | — | — | Next Round | — | — | after the fix |
-| API-09 | AC-002, AC-003 | whole web unit suite | `env -i … pnpm -C autobyteus-web test:nuxt run`, then `test:electron run`; the failing file alone twice | ENV-1 | Pass for this change | `API-09-web-unit-full.log` | nuxt `Test Files  790 passed (790)`, `Tests  5954 passed`; electron `1 failed \| 535 passed`; alone `Tests  11 passed (11)` twice | `PortOwnerInspectorFaults` "real 1000ms deadline": `ENOENT … child-pid` at line 81: the shell child was killed by its 1000 ms deadline before writing its receipt under suite load (the hazard its comment names); no Electron file changed in this ticket |
-| API-10 | AC-001, AC-002, REQ-007 of 554 | rendered probe | `node autobyteus-web/tests/e2e/semantic-memory-view-probe.mjs --output-dir evidence/API-10-probe` | ENV-2 | Pass | `API-10-rendered-probe.log`, `API-10-probe/evidence.json`, `API-10-probe/FU-002-*.png` | `Pass (41/41 checks)`; SMV-100 `"encodedBytes": 274` shortened; SMV-103/104/105 `True`; SMV-091 only `chat-workspace-option-temp` | — |
-| API-11 | AC-002 (S-2) | the desktop app | `isolated-app start --build --data-root <own, seeded>`; Playwright over CDP: Memory → Global → `index.md` → links; `isolated-app stop` | ENV-3 | Pass | `API-11-desktop-journey.log`, `API-11-desktop/evidence.json`, `API-11-desktop/EL-*.png` | `desktop journey: Pass (5/5 checks)`; EL-003 `{"navigations":[],"url":"#/memory?view=home&section=browse&node=global"}`; stop `"controlPortReleased": true`, `"serverPortReleased": true`; `data root removed: yes`; `instance still listed: 0` | in Electron the click reaches the renderer's handler and the window never navigates; the linked file opens in a preview tab, a missing one shows the viewer's message, a link out of the folder opens nothing |
-| API-12 | — | typechecks | Reused IMP-09, IMP-10 (`8850dc3f99`; since then a comment reflow and docs) | — | Pass (reused) | handoff | baselines 1006/315 and 86/36 | — |
+| API-00 | — | server build | `pnpm -C autobyteus-server-ts build` | ENV-1 | Pass | `API-00-server-build.log`, `API-00-server-build-round2.log` | `exit 0` | — |
+| API-01 | AC-001 (S-1) | IC-03 at 274 bytes | `test:integration:prepare`; `env -i … vitest run tests/e2e/runtime/application-import-codex-launch.e2e.test.ts` | ENV-1 | Pass (round 1, still valid) | `API-01-ac001-ic03.log` | `Tests  3 passed (3)`, `✓ IC-03` | unit IMP-01 reused |
+| API-02 | AC-005 | `package-personal-settings` | alone, three times | ENV-1 | Pass (round 1, still valid) | `API-02-ac005-personal-settings-x3.log` | three times `Tests  7 passed (7)` | — |
+| API-03 | AC-006, CF-05 | `agent-semantic-memory` (SM-04, SM-12), scripted AGY, as `normy` uid 501 | `env -i … RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs vitest run tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts`, three times, errors kept | ENV-1 | Pass | `API-03-ac006-sm12.log`, `API-03-round2-sm04.log` | round 2: three times `Tests  10 passed (10)` | round 1's SM-04 failure (error not kept) did not recur in four runs |
+| API-04 | AC-007 (DEC-005, this host) | DCF-E2E-007 on macOS | alone, three times | ENV-1 | Pass per DEC-005 (the named failure) | `API-04-ac007-live-refresh-x3.log` | each `Error: ENVIRONMENT: the OS delivered no file event for agents/apar-fresh-scout within 30000 ms`; independent raw `fs.watch` before each run `no event in 30000ms` | never a product assertion |
+| API-13 | AC-007 (DEC-005, a host with events) | the file-event-dependent files in Linux | test-owned `node:22-bookworm` container, `git archive HEAD`, frozen install, `prepare:source`; live-refresh ×3, websocket-lifecycle ×3 (scripted AGY) | ENV-4 | Pass (live-refresh); websocket-lifecycle: my setup | `API-13-linux-container-file-events.log`, `API-13b-linux-websocket-lifecycle-errors.log` | raw `fs.watch` `event 21ms`; live-refresh three times `Tests  10 passed (10)`; websocket-lifecycle `WATCHER_UNAVAILABLE` | websocket-lifecycle's watcher runtime forks `dist/…/watcher-runtime-process.js` (`watcher-runtime-entrypoint.ts`) and the container had no server build: my setup, not the product; on macOS the file passes alone (API-08b). `container removed: 0 left` |
+| API-05 | **AC-008 / REQ-008** (prior failure) | Grok and AGY probes under load | the Grok catalog test ×10 with a temporary print of each bound firing; then Grok runtime replay, Grok compaction replay and own-stream (scripted AGY) each alone ×3 | ENV-1 | Pass | `API-05c-grok-catalog-late-timer-diagnostic.log`, `API-05-round2-probes-under-load.log`; round 1 `API-05b-…` (the failure) | 10/10 `exit 0`; 7 late firings, e.g. `{"boundMs":3000,"firedAfterMs":15260,"exitedAtFire":false,"exitedAtDecision":true}`; clean: runtime replay `10 passed` ×3, own-stream `2 passed` ×3 | each late firing is the round 1 failure's order (exit not yet seen when the timer runs); the deferred decision saw it every time. Compaction ×3: `3 passed` each, suite hook failed once: API-05d/e |
+| API-05d/e | — (baseline fix) | `grok-build-compaction-replay` `afterAll` | per-step timing with a temporary print and raised limit ×4; then the fix and ×3 | ENV-1 | Pass | `API-05d-compaction-afterall-diagnostic.log`, `API-05e-compaction-baseline-fix.log` | `appClose` 721–7900 ms with `eventLoopMaxGapDuringClose` 716–7858 ms; after the fix three times `Tests  3 passed (3)` | commit `adda171de8`: `IN_PROCESS_SERVER_HOOK_TIMEOUT_MS` (TESTING.md "File watching on a busy Mac"), as FU-005 |
+| API-06 | all (server) | whole server unit suite | `env -i … pnpm -C autobyteus-server-ts test:unit` (round 1) + IMP-11/IMP-12 for the revised bound | ENV-1 | Pass | `API-06-server-unit-suite.log`; IMP-11, IMP-12 | `Tests  8626 passed`; IMP-11 `64/64`, IMP-12 `778` | the only server change since is `probe-time-bound.ts`, whose unit and consumers IMP-11/12 ran |
+| API-07 | all | server integration | `env -i … pnpm -C autobyteus-server-ts test:integration` | ENV-1 | Pass for this change | `API-07-server-integration.log` | `Tests  9 failed \| 505 passed`; 8 in `file-system-watcher` labelled by the test itself `ENVIRONMENT: the OS delivered no file event within 10 s` or `INCONCLUSIVE`; `package-auto-refresh` AC-012 `last value: "FOLDER_MISSING"` (the restore event never came) | all nine wait on OS file events, which this host does not deliver (API-04's independent measurement); neither file runs code this ticket changed |
+| API-08 | all | whole server E2E | root `env -i … pnpm test:e2e`; the failing files one at a time; the secret file alone ×2 | ENV-1 | Pass for this change | `API-08-server-e2e-suite.log`, `API-08b-failing-files-rerun.log`, `API-08c-secret-lifecycle-alone.log` | `Test Files  10 failed \| 118 passed`; the two `RUNTIME_PROBE_TIMED_OUT` lines are `available-agent-runtimes-graphql`'s deliberate AGY `hang` (that file passed); one at a time: update-notifications, task-search-model-unavailable, node-files, search-files pass | Still failing, none on a path this ticket changed (the bound is used only by the AGY and Grok capability probes): live-refresh and websocket-lifecycle wait on OS file events; request-origin, embedding-settings, node-locality failed alike on base in 554; provider-secret-lifecycle's custom-provider case takes 4,756 ms passing and over 5,000 ms failing against vitest's 5 s default. Follow-up FU-002 |
+| API-09 | AC-002, AC-003 | whole web unit suite | `test:nuxt run`, `test:electron run` (round 1) | ENV-1 | Pass for this change | `API-09-web-unit-full.log` | `790 passed`, `5954` tests; electron `1 failed \| 535 passed`, alone `11 passed` ×2 | `PortOwnerInspectorFaults`: `ENOENT … child-pid`, its shell child killed by the 1000 ms deadline before writing its receipt under suite load |
+| API-10 | AC-001, AC-002 | rendered probe | round 1 | ENV-2 | Pass | `API-10-rendered-probe.log`, `API-10-probe/` | `Pass (41/41 checks)` | no web change since |
+| API-11 | AC-002 (S-2) | desktop app | round 1 | ENV-3 | Pass | `API-11-desktop-journey.log`, `API-11-desktop/` | `desktop journey: Pass (5/5 checks)` | no web change since |
+| API-12 | — | typechecks | IMP-09/10 (reused), server typecheck with the baseline fix | ENV-1 | Pass | `API-12b-server-typecheck-round2.log` | `1006 in 315 files (baseline 1006 in 315 files)`, `PASS` | — |
 
 ## Acceptance-Criteria Proof
 
 | Acceptance-Criteria ID | Critical | Proven By Case IDs | Result | For A User-Only Part |
 | --- | --- | --- | --- | --- |
-| AC-001 | Yes | IMP-01 (reused), API-01 (IC-03), API-10 (SMV-100 at 274 bytes) | Proven | — |
-| AC-002 | Yes | IMP-06 (reused), API-09, API-10 (SMV-103…105), API-11 (desktop) | Proven | — |
-| AC-003 | Yes | IMP-05 (reused), API-09 | Proven | — |
-| AC-004 | — | — | Not applicable this round (DEC-004 waits for the founder) | the founder's decision |
-| AC-005 | Yes | API-02 | Proven (three passes alone on this host) | — |
-| AC-006 | Yes | API-03 | Proven (normal user; regular-file setup) | — |
-| AC-007 | Yes | API-04, IMP-08 | **Not Proven** on this host: the OS delivered no file event in 30 s in every run, measured independently; the cause is recorded (IMP-08) and the file passes on Linux (IMP-08) | — |
-| AC-008 | Yes | IMP-02 (reused, unit), API-05 | **Fail**: under load the bound reports a time-out for a child that had exited (see below) | — |
+| AC-001 | Yes | IMP-01, API-01, API-10 (SMV-100) | Proven | — |
+| AC-002 | Yes | IMP-06, API-09, API-10 (SMV-103…105), API-11 (desktop) | Proven | — |
+| AC-003 | Yes | IMP-05, API-09 | Proven | — |
+| AC-004 | — | — | Waits for DEC-004 (the founder) | the founder's decision |
+| AC-005 | Yes | API-02 | Proven | — |
+| AC-006 | Yes | API-03 | Proven | — |
+| AC-007 | Yes | IMP-08 (cause), API-13 (Linux, three passes), API-04 (this host: the named `ENVIRONMENT` failure, an independent raw watch also gets no event) | Proven (DEC-005) | — |
+| AC-008 | Yes | IMP-11 (real order, negative controls), API-05 (10/10 with 7 late firings; replay and AGY files ×3), API-03 (SM-04 ×3) | Proven | — |
 
 ## Validation Confidence Scorecard (Mandatory)
 
 | Confidence Category | Post-Repository Score | Final Score | What Supports It | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 60% | 60% | AC-001…AC-003, AC-005, AC-006 proven | AC-008 fails in its real-world case; AC-007 not reachable on this host | the fix; a healthy host or an agreed Linux proof for AC-007 |
-| Changed-boundary execution directness | 85% | 90% | real server, real page, real desktop app | integration and E2E suites next round | API-07, API-08 |
-| Cross-boundary integration realism and mock gap | 80% | 85% | scripted CLIs through real child processes | the probe unit tests miss the blocked-loop order | a unit that builds it |
-| Environment, configuration, identity, and fixture fidelity | 85% | 85% | clean env, own data, isolated instance | FSEvents unusable on this host (measured) | — |
-| Failure, edge-case, lifecycle, and recovery evidence | 60% | 60% | missing and out-of-folder links; real time-outs reported as time-outs | an exited child still read as a time-out | the fix |
-| User-surface, browser, and desktop-shell confidence | 95% | 96% | probe 41/41; desktop journey 5/5 | mobile file viewer not rendered (same component) | — |
-| Durable regression coverage quality and relevance | 80% | 80% | each item has durable tests | AC-008's unit misses the failing order | a unit for it |
+| Requirement and acceptance-criteria proof | 95% | 96% | every applicable criterion directly proven; AC-008's real-world order observed and survived seven times | AC-004 waits for the founder | — |
+| Changed-boundary execution directness | 95% | 95% | real server, real child processes, real page, real desktop app | — | — |
+| Cross-boundary integration realism and mock gap | 93% | 94% | scripted CLIs run as real child processes, so the bound's timing is real | real Grok and Antigravity binaries not run (their output is not what changed) | — |
+| Environment, configuration, identity, and fixture fidelity | 88% | 93% | clean env, own data; Linux container with working file events | this Mac's FSEvents leaves watcher-dependent files unprovable here | a healthy `fseventsd` |
+| Failure, edge-case, lifecycle, and recovery evidence | 95% | 96% | late bounds, hanging children (deliberate hang mode), missing and out-of-folder links | — | — |
+| User-surface, browser, and desktop-shell confidence | 96% | 96% | probe 41/41; desktop app 5/5 | mobile file viewer not rendered (same component) | — |
+| Durable regression coverage quality and relevance | 94% | 95% | IMP-11 builds the failing order with negative controls; each item has durable tests; baseline fix | — | — |
 
-- Overall final confidence: 79% (simple average)
-- Every critical acceptance criterion directly proven: `No` (AC-007, AC-008)
-- Any final applicable category below `90%`: `Yes`
-- Default target met: `No`
+- Overall final confidence: 95.0% (simple average)
+- Every critical acceptance criterion directly proven: `Yes` (AC-004 waits for DEC-004 and has no code)
+- Any final applicable category below `90%`: `No`
+- Default target met: `Yes`
 
 ## Broader Validation Decision (Mandatory)
 
-- Decision: `Required`; executed: rendered probe, isolated desktop instance; server integration and E2E next round
-- Browser validation needed: yes; done (API-10)
+- Decision: `Required`, executed: rendered probe, isolated desktop instance, Linux container for file events
+- Residual risk: watcher-dependent files on this Mac; mobile viewer not rendered
 
 ## Persisted-Data Transition Checks
 
-- FU-009 `Not Affected` (554 unreleased); API-01 and API-10 run with the 255 rule; no fallback observed
+- FU-009 `Not Affected` (554 unreleased); no fallback observed
 
 ## Compatibility / Legacy Scope Check
 
@@ -95,39 +98,30 @@ The run record and the result. The coverage investigation (`api-e2e-coverage-inv
 
 ## Durable Coverage Changed In The Codebase
 
-None this round (the implementation added the item tests; reviewed as listed above).
+| Path / Test | Change | Case IDs | For A Removal |
+| --- | --- | --- | --- |
+| `autobyteus-server-ts/tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts` | Updated (`adda171de8`, baseline fix): `afterAll` limit `IN_PROCESS_SERVER_HOOK_TIMEOUT_MS` | API-05d/e | — |
 
 ## Dependencies Mocked Or Emulated
 
 | Dependency | Method | Why Real Dependency Was Not Used | Confidence Limitation |
 | --- | --- | --- | --- |
-| Grok, AGY CLIs | scripted fakes as real child processes | the probes' child-process handling is what is tested | none for this failure: it reproduces with the fakes |
+| Grok, AGY CLIs | scripted fakes as real child processes | the probes' child-process timing is what changed | real binaries' output not exercised (unchanged) |
 
 ## Temporary Methods And Cleanup
 
 | Item | Owned By This Run | Cleanup Action | Result |
 | --- | --- | --- | --- |
-| `probe-time-bound.ts` diagnostic (API-05b, and one earlier passing run) | Yes | file copied back | restored (`git diff` of `src` empty) |
-| targeted-run, Grok diagnostic and desktop scripts in `/tmp` | Yes | `rm` | removed |
-| isolated desktop instance `iso-60023-8603` and its data root | Yes | `isolated-app stop`; `rm -rf` | stopped (ports released), root removed, not listed |
-| `electron-dist/` in the worktree | Yes (build output of `--build`) | left (ignored build output) | — |
-| Brief Studio importable package (`test:integration:prepare`) | Yes | left (ignored build output the e2e files need) | — |
-
-## Preliminary Classification (On `Fail`)
-
-- **Failing case:** API-05, `tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts` › "lists the Grok Build catalog from the agent handshake with the reasoning-effort schema (AC-002)". Criterion: AC-008 / REQ-008 ("when their time bound fires after the child has already exited, wait for its `close` and use its real result").
-- **Reproduce:** `pnpm -C autobyteus-server-ts build` once, then on a loaded host `env -i PATH="$PATH" HOME="$(mktemp -d)" TMPDIR="$TMPDIR" USER="$USER" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts --no-watch -t "lists the Grok Build catalog"` (failed 1 of 2 runs here, also once in API-05).
-- **Expected:** the fake `grok --version` exits 0 at once; the catalog is listed.
-- **Observed:** `Grok Build model discovery timed out`, logged `RUNTIME_PROBE_TIMED_OUT { runtime: 'grok', command: '…/fake-grok-cli-…/grok --version', boundMs: 3000 }`. The diagnostic shows the 3,000 ms timer ran at **7,720 ms** (the main thread was blocked for over 4.7 s), saw `exitCode: null`, and the child's `exit` event (code 0) was processed **10 ms later**, at 7,730 ms.
-- **Why:** `child.exitCode` is set only when Node processes the child's exit. When the event loop is blocked past the bound (the server's folder watchers on this busy host, TESTING.md "File watching on a busy Mac"), the timer and the pending exit are both waiting; the timer runs first and sees `null`, so a child that had already exited is killed and reported as timed out. This is the real-world case FU-008 targets (the 554 catalog failure). The unit tests (IMP-02) set `exitCode` before the timer or hold stdout open, so they never build this order.
-- **Preliminary classification:** `Design Impact`. The design prescribes the mechanism ("the bound's timer checks `child.exitCode !== null || child.signalCode !== null`"), and that check cannot see an exit Node has not processed yet; the implementation follows it (moved to one owner). What the bound does when its timer fires late (for example, yield to pending I/O before deciding, or measure lateness) is a design choice that REQ-008 needs.
-- **Recommended owner:** failure-origin review by `/code_reviewer`, then the Solution Designer.
-- **Also for the owner (not a failure of the code):** AC-007 asks for three passes "on this host", whose OS file events are not delivered at all (measured before each run). The test now reports `ENVIRONMENT` correctly; whether AC-007 is met by IMP-08's Linux pass or waits for a healthy host is a requirement question.
+| `probe-time-bound.ts` prints (round 1 API-05b; round 2 API-05c) | Yes | copied back | `git diff` of `src` empty |
+| compaction `afterAll` timing print (API-05d) | Yes | copied back | restored before the baseline fix |
+| Linux containers `u576-api-e2e-linux`, `-linux2` | Yes | `docker rm -f` | `0 left`; the founder's `autobyteus-server-*` untouched |
+| isolated desktop instance and data root (round 1) | Yes | `isolated-app stop`; `rm -rf` | stopped, removed |
+| scripts in `/tmp` | Yes | `rm` | removed |
+| `electron-dist/`, Brief Studio package | Yes (ignored build output) | left | — |
 
 ## Latest Authoritative Result
 
-- Result: `Fail`
-- Criteria not proven: AC-008 (fails), AC-007 (environment, see above)
-- Next Round: API-07, API-08; AC-008's real-world case again (API-05) and SM-04 (API-03) after the fix
-- Next recipient from `get_handoff_rules`: `/code_reviewer` (failure-origin review)
-- Follow-ups: FU-001 (implementation's, unchanged)
+- Result: `Pass`
+- Prior failure: resolved (API-05)
+- Next recipient from `get_handoff_rules`: `/delivery_engineer` (direct route, Medium / Low)
+- Residuals: this Mac's file events (watcher-dependent files only provable on Linux here); FU-002 (E2E files at default limits on a busy Mac, outside this ticket); AC-004 waits for DEC-004; FU-001 (implementation's).

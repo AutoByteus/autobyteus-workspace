@@ -1,0 +1,24 @@
+# API-13b file-explorer-websocket-lifecycle in a test-owned Linux container (node:22-bookworm, removed after), failure output kept | adda171de8 | 2026-11-21T05:51:50Z
+setup 0
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+ FAIL  tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Error: Timed out waiting for CONNECTED. Seen: {"type":"ERROR","payload":{"code":"WATCHER_UNAVAILABLE","message":"File watcher is not available for this workspace"}}
+ ❯ Timeout._onTimeout tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts:67:14
+     65|     const timer = setTimeout(() => {
+     66|       socket.off("message", onMessage);
+     67|       reject(new Error(`Timed out waiting for ${label}. Seen: ${seen.s…
+       |              ^
+     68|     }, timeoutMs);
+     69|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 1 passed (3)
+   Start at  05:54:27
+   Duration  22.83s (transform 3.87s, setup 89ms, import 5.52s, tests 16.14s, environment 0ms)
+
+container removed: 0 left

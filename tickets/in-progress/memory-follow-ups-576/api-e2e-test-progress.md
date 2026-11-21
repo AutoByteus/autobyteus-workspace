@@ -39,3 +39,31 @@
 | 2026-11-21 04:56 | API-06 | Started | | server test:unit |
 | 2026-11-21 05:09 | API-06 | Completed | Pass | 1039 files, 8626 tests |
 | 2026-11-21 05:09 | Round 1 | Closed | Fail | AC-008 (API-05b); report and API-REV-001; failure-origin review requested |
+| 2026-11-21 05:19 | Round 2 | Started | | IR-002 / SR-002 at 3b39828501 (records a4ed4455fa); plan in the investigation's Round 2 |
+| 2026-11-21 05:20 | API-00 | Completed | exit 0 | round 2 |
+| 2026-11-21 05:20 | API-05 | Started | | diagnostic repeats (temporary print in probe-time-bound.ts) |
+| 2026-11-21 05:25 | API-05 | Checkpoint | | diagnostic repeats done; source restored |
+| 2026-11-21 05:26 | API-05 | Completed | Pass | grok-build-runtime-replay run 1 |
+| 2026-11-21 05:26 | API-05 | Completed | Pass | grok-build-compaction-replay run 1 |
+| 2026-11-21 05:27 | API-05 | Completed | Pass | own-stream-turns-read-once run 1 |
+| 2026-11-21 05:27 | API-05 | Completed | Pass | grok-build-runtime-replay run 2 |
+| 2026-11-21 05:28 | API-05 | Completed | Pass | grok-build-compaction-replay run 2 |
+| 2026-11-21 05:29 | API-05 | Completed | Pass | own-stream-turns-read-once run 2 |
+| 2026-11-21 05:29 | API-05 | Completed | Pass | grok-build-runtime-replay run 3 |
+| 2026-11-21 05:30 | API-05 | Completed | Fail | grok-build-compaction-replay run 3 |
+| 2026-11-21 05:31 | API-05 | Completed | Pass | own-stream-turns-read-once run 3 |
+| 2026-11-21 05:32 | API-03 | Completed | Pass | agent-semantic-memory run 1 |
+| 2026-11-21 05:33 | API-03 | Completed | Pass | agent-semantic-memory run 2 |
+| 2026-11-21 05:34 | API-03 | Completed | Pass | agent-semantic-memory run 3 |
+| 2026-11-21 05:38 | API-05 | Completed | Pass | diagnostic x10: 7 late timer firings (4.1-22.5 s for a 3 s bound), each exitedAtFire false / exitedAtDecision true, all pass; clean x3: runtime replay 10/10 x3, own-stream 2/2 x3, compaction suite hook failed once (afterAll app.close blocked the loop, API-05d) -> baseline fix adda171de8, 3/3 x3 (API-05e) |
+| 2026-11-21 05:38 | API-03 | Completed | Pass | SM file 10/10 x3 (SM-04 included), CF-05 |
+| 2026-11-21 05:39 | API-07 | Started | | test:integration |
+| 2026-11-21 05:52 | API-07 | Completed | Pass for this change | 505 passed / 9 failed: 8 file-system-watcher self-labelled ENVIRONMENT/INCONCLUSIVE, package-auto-refresh AC-012 (restore event not delivered): no OS file events on this host |
+| 2026-11-21 05:52 | API-08 | Started | | root pnpm test:e2e |
+| 2026-11-21 06:36 | API-08 | Checkpoint | | 118 passed / 10 failed files; the 2 RUNTIME_PROBE_TIMED_OUT lines are available-agent-runtimes' deliberate AGY hang (file passed); rerunning the 10 one at a time |
+| 2026-11-21 06:45 | API-13 | Started | | Linux container: live-refresh x3, websocket-lifecycle x3 |
+| 2026-11-21 06:51 | API-13 | Completed | see log | Linux container runs done |
+| 2026-11-21 06:56 | API-07 | Completed | Pass for this change | (see report) |
+| 2026-11-21 06:56 | API-08 | Completed | Pass for this change | 118 passed / 10 failed; one at a time 4 pass; rest classified, none on a changed path; FU-002 |
+| 2026-11-21 06:56 | API-13 | Completed | Pass | Linux live-refresh 10/10 x3; websocket-lifecycle WATCHER_UNAVAILABLE = container without server build (my setup) |
+| 2026-11-21 06:56 | Round 2 | Closed | Pass | API-REV-002; to delivery |

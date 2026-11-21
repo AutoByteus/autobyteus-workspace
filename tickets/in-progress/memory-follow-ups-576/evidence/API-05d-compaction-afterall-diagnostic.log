@@ -1,0 +1,18 @@
+# API-05d grok-build-compaction-replay afterAll timed per step (TEMPORARY print, hook limit raised to 180 s for the measurement), restored afterwards | 2026-11-21T04:34:51Z
+## run 1 | load { 7.58 10.69 16.80 } | fseventsd 153.7%
+exit 0
+COMPDIAG {"terminate":58,"deleteDefinition":196,"appClose":2279,"eventLoopMaxGapDuringClose":2275}
+      Tests  3 passed (3)
+## run 2 | load { 6.80 10.21 16.42 } | fseventsd 159.5%
+exit 0
+COMPDIAG {"terminate":57,"deleteDefinition":2655,"appClose":7900,"eventLoopMaxGapDuringClose":7858}
+      Tests  3 passed (3)
+## run 3 | load { 7.35 10.03 16.17 } | fseventsd 166.9%
+exit 0
+COMPDIAG {"terminate":57,"deleteDefinition":221,"appClose":721,"eventLoopMaxGapDuringClose":716}
+      Tests  3 passed (3)
+## run 4 | load { 7.15 9.87 16.00 } | fseventsd 149.0%
+exit 0
+COMPDIAG {"terminate":56,"deleteDefinition":1115,"appClose":2812,"eventLoopMaxGapDuringClose":2800}
+      Tests  3 passed (3)
+restored: 0 changed test files

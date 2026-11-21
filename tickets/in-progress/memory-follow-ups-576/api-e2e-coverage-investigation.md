@@ -110,6 +110,14 @@ None planned: the implementation added the durable coverage. The desktop journey
 
 AC-007 asks three passes on this host, whose file events the handoff found 2–6 s late or missing. If the runs end `ENVIRONMENT`, the cause is measured and the result recorded with it; the design's escalation trigger (a product defect in watching or listing) is checked against the measurement.
 
+## Round 2
+
+- Trigger: IR-002 (SR-002, Design Impact after CRR-001 CR-001 / API-REV-001), direct route, Medium / Low. Code `3b39828501` (records `a4ed4455fa`).
+- Changed since round 1 (`git diff --name-only e99963e815 HEAD`, outside `tickets/`): `src/runtime-management/probe-time-bound.ts` and its unit test only. The bound learns the exit from the child's `exit` event and decides after `setImmediate` (after the poll phase that delivers an exit held up by a blocked main thread).
+- Requirements now: AC-007 per DEC-005 (a Linux pass plus the named `ENVIRONMENT` failure on a host without file events); AC-008 adds the real-order unit and the E2E cases (API-05, SM-04).
+- Still valid (nothing they exercise changed): API-01, API-02, API-04 (AC-007 now proven per DEC-005 with IMP-08 + API-04), API-06 (server unit; the changed file's consumers rerun by IMP-12), API-09, API-10, API-11, API-12.
+- Rerun or new: API-00 (build), API-05 (the Grok catalog test repeated under load, with a temporary diagnostic run that records late timer firings, and clean runs), API-03 (SM-04, CF-05: whole file, errors kept), API-07 (server integration), API-08 (whole server E2E).
+
 ## Investigation Decision
 
 - Proceed To API/E2E Execution: `Yes`

@@ -1,0 +1,5 @@
+# API-12b server typecheck with the baseline fix | 2026-11-21T04:38:13Z
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 9.8s
+[typecheck] server tests (tsconfig.tests.json): 1006 errors, exit 2, 29.5s
+[typecheck] production errors: 0; test-file errors: 1006 in 315 files (baseline 1006 in 315 files)
+[typecheck] PASS

@@ -1,0 +1,108 @@
+# API-13 file-event-dependent E2E files in a test-owned Linux container (node:22-bookworm, label owner=autobyteus-576-api-e2e, removed after); tracked files of adda171de8 via git archive | 2026-11-21T05:45:42Z
+d8efc2279b93a7939d3cc5384f2403e81a97ad4182a9f8a08ea02ea8b7eb63b4
+## setup: corepack, pnpm install --frozen-lockfile, prepare:source
+v22.23.5
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 47.5s using pnpm v10.28.2
+Tip: Want real-time updates to your database without manual polling? Discover how with Pulse: https://pris.ly/tip-0-pulse
+
+## raw fs.watch latency in the container
+event 21ms
+## tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts run 1 | 2026-11-21T05:48:21Z
+Error restoring agent run with ID apar_steady_be50522c766e4030b4486d2cade8220e: Error: AGY_AGENT_DEFINITION_MISSING: apar-steady
+ ✓ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts (10 tests) 14452ms
+     ✓ DCF-E2E-001 (QR-006, REQ-005): `connected` first, no replay, broadcast; remote-access auth like the sibling sockets  593ms
+     ✓ DCF-E2E-002 (AC-001…005, AC-007, REQ-009, REQ-014): an imported package's files on disk reach GraphQL and the feed without Reload  2464ms
+     ✓ DCF-E2E-003 (AC-011, AC-012, REQ-015): a package folder moved away keeps its definitions and reports it; restore resumes; removal releases it  4392ms
+     ✓ DCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client  1645ms
+     ✓ DCF-E2E-009 (REQ-007, REQ-009, DSN-003, DSN-004): broken org-owned nodes keep their last good version and are listed on the owning Org  425ms
+     ✓ DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools  3298ms
+     ✓ DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found  745ms
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+exit 0
+## tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts run 2 | 2026-11-21T05:48:56Z
+Error restoring agent run with ID apar_steady_a830569569a145d9aaf2590a3585f307: Error: AGY_AGENT_DEFINITION_MISSING: apar-steady
+ ✓ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts (10 tests) 14008ms
+     ✓ DCF-E2E-001 (QR-006, REQ-005): `connected` first, no replay, broadcast; remote-access auth like the sibling sockets  585ms
+     ✓ DCF-E2E-002 (AC-001…005, AC-007, REQ-009, REQ-014): an imported package's files on disk reach GraphQL and the feed without Reload  2423ms
+     ✓ DCF-E2E-003 (AC-011, AC-012, REQ-015): a package folder moved away keeps its definitions and reports it; restore resumes; removal releases it  4544ms
+     ✓ DCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client  1669ms
+     ✓ DCF-E2E-009 (REQ-007, REQ-009, DSN-003, DSN-004): broken org-owned nodes keep their last good version and are listed on the owning Org  400ms
+     ✓ DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools  2929ms
+     ✓ DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found  748ms
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+exit 0
+## tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts run 3 | 2026-11-21T05:49:28Z
+Error restoring agent run with ID apar_steady_728167eebd6141229f859d30278a67b3: Error: AGY_AGENT_DEFINITION_MISSING: apar-steady
+ ✓ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts (10 tests) 14321ms
+     ✓ DCF-E2E-001 (QR-006, REQ-005): `connected` first, no replay, broadcast; remote-access auth like the sibling sockets  594ms
+     ✓ DCF-E2E-002 (AC-001…005, AC-007, REQ-009, REQ-014): an imported package's files on disk reach GraphQL and the feed without Reload  2460ms
+     ✓ DCF-E2E-003 (AC-011, AC-012, REQ-015): a package folder moved away keeps its definitions and reports it; restore resumes; removal releases it  4435ms
+     ✓ DCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client  1666ms
+     ✓ DCF-E2E-009 (REQ-007, REQ-009, DSN-003, DSN-004): broken org-owned nodes keep their last good version and are listed on the owning Org  389ms
+     ✓ DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools  3293ms
+     ✓ DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found  797ms
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+exit 0
+## tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts run 1 | 2026-11-21T05:50:00Z
+Config file not found in new data directory: Error: Configuration file not found: /tmp/file-explorer-ws-e2e-appdata-P0WFnI/.env
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /work/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /work/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /work/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /work/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /work/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /work/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /work/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+ ❯ tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts (3 tests | 2 failed) 16152ms
+     × keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers 8043ms
+     ✓ does not leak watcher leases when sockets close before CONNECTED is observed 29ms
+     × survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy 8017ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+Error: Timed out waiting for CONNECTED. Seen: {"type":"ERROR","payload":{"code":"WATCHER_UNAVAILABLE","message":"File watcher is not available for this workspace"}}
+ ❯ Timeout._onTimeout tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts:67:14
+ Test Files  1 failed (1)
+      Tests  2 failed | 1 passed (3)
+exit 1
+## tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts run 2 | 2026-11-21T05:50:26Z
+Config file not found in new data directory: Error: Configuration file not found: /tmp/file-explorer-ws-e2e-appdata-su1UId/.env
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /work/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /work/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /work/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /work/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /work/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /work/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /work/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+ ❯ tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts (3 tests | 2 failed) 16188ms
+     × keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers 8059ms
+     ✓ does not leak watcher leases when sockets close before CONNECTED is observed 26ms
+     × survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy 8042ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+Error: Timed out waiting for CONNECTED. Seen: {"type":"ERROR","payload":{"code":"WATCHER_UNAVAILABLE","message":"File watcher is not available for this workspace"}}
+ ❯ Timeout._onTimeout tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts:67:14
+ Test Files  1 failed (1)
+      Tests  2 failed | 1 passed (3)
+exit 1
+## tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts run 3 | 2026-11-21T05:50:53Z
+Config file not found in new data directory: Error: Configuration file not found: /tmp/file-explorer-ws-e2e-appdata-Lipjv5/.env
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /work/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /work/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /work/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /work/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /work/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /work/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /work/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+ ❯ tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts (3 tests | 2 failed) 16142ms
+     × keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers 8044ms
+     ✓ does not leak watcher leases when sockets close before CONNECTED is observed 34ms
+     × survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy 8019ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+Error: Timed out waiting for CONNECTED. Seen: {"type":"ERROR","payload":{"code":"WATCHER_UNAVAILABLE","message":"File watcher is not available for this workspace"}}
+ ❯ Timeout._onTimeout tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts:67:14
+ Test Files  1 failed (1)
+      Tests  2 failed | 1 passed (3)
+exit 1
+container removed: 0 left
