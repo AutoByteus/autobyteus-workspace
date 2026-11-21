@@ -118,3 +118,7 @@
 ### Review of SR-010 / SR-011
 
 - ARCH-REV-005 failed with AR-003; SR-011 resolved it. ARCH-REV-006: **Pass** (`design-review-report.md`). The reviewer sent the package to the implementation engineer.
+
+### SR-010 correction (CRR-003, CR-591-002)
+
+- AC-004's alternate column still said a Task's reopen prevents the stop. It now follows REQ-002 as corrected at SR-010: only a reopened entry (the assigner's message, or another Task) prevents it. Evidence-only alignment of one line; no change of intent.
