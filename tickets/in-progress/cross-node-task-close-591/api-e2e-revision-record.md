@@ -24,3 +24,28 @@ None (the first round).
 - Remaining risks, blocked evidence, or untested scope:
   - a real runtime as the mid-turn member (Not Tested);
   - the contract stories stop early on a base-side fixture gap (FU-591-01).
+
+### API-REV-002: round 2 (CRR-003): F-1 and F-2 resolved against SR-010; Pass
+
+- Triggering role, report path, and round: `/code_reviewer`, `code-review-report.md` round 2 (CRR-003 Pass on IR-002 DN-9; head `81a504de13`, code `a811f94348`), API/E2E round 2.
+- Triggering finding or case IDs: F-1, F-2 (round 1); the corrected requirements SR-010 (CR-591-002, CR-591-003) and SR-011.
+- Why this revision was recorded: the rerun after the requirements were corrected and the continuation implemented.
+- Coverage decisions or durable test paths changed:
+  - `remote-delegation-two-server.e2e.test.ts`: RC-11 asserts the closed run left the delegator's tree; RC-51 (agent) and RC-53 (Team) test the continuation by the assigner's message, another sender's refusal and `delegate_task`'s local refusal for the same Task; RC-52 asserts `rfOutcome` (a Task's reopen alone still stops) and adds rg (the continuation while beta is down); RC-11/RC-23/RC-49 assert the delegator's local text;
+  - `mobile-closed-delegation-cases.mjs`: MSP-93's row returns through the assigner's message.
+
+#### Prior Failure Resolution
+
+- F-1: resolved (SR-010): on A the closed run leaves the delegating run's tree, as a local one, and its Task's page shows it `offline` (RC-11, RC-51).
+- F-2: resolved (IR-002, DN-9): the assigner's message continues the closed remote run after a reopen ("open" confirmed first; listed again; woken with its conversation) for an agent and a Team; `delegate_task` with the same Task gets the local refusal; another sender is refused CLOSED; B unreachable answers "… continues with its conversation (its Task is open again) but did not receive this message; send it again." with "open" owed and delivered on B's return. A Task's reopen alone does not prevent the close (REQ-002 corrected).
+- Rerun delta: r5 failed only on my round-1 wording for the delegator's message to a closed run (it now gets the local `assertReopenable` text); r6 53/53; MSP-93 Pass; CPW 14/14.
+
+- Canonical artifacts and sections updated: the execution report (Round, Routing, Environments, Cases, Round 2 Resolution, AC proof, scorecard, Durable Coverage, Cleanup, Result); the investigation (Round 2 Updates); the progress log; `evidence/api-e2e/API-r2-*`.
+- Prior result and confidence: `Fail` / 89%
+- Current result and confidence: `Pass` / 95%
+- New or remaining failure IDs: none
+- Recommended owner: the Code Reviewer, for the proportional test-code review of `52a1507b80` and round 2's test commit, then delivery.
+- Remaining risks, blocked evidence, or untested scope:
+  - a real runtime as the mid-turn member (Not Tested);
+  - AC-004's alternate column still awaits alignment with REQ-002 (wording; RC-52 tests REQ-002);
+  - FU-591-01 (the contract stories stop early, base-side).

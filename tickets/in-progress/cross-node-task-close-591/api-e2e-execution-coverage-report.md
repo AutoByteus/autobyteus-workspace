@@ -5,10 +5,10 @@ The run record and the result. The plan is `api-e2e-coverage-investigation.md`; 
 ## Round
 
 - Coverage investigation: `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-001`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-002`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 1, on CRR-001 Pass (head `dd5b230e7e`; code `9abe7086fd`, IR-001).
-- Prior round reviewed: none.
+- Round and trigger: **round 2**, on CRR-003 Pass (head `81a504de13`; code `a811f94348`, IR-002 DN-9), against the corrected requirements (SR-010, SR-011). Round 1: CRR-001 (head `dd5b230e7e`).
+- Prior round reviewed: round 1 (`Fail`, F-1 and F-2); both are rechecked first below.
 - Deviations from the investigation's plan, and why:
   - RC-49 (492 rows 13/14) was also made untrue by this ticket (the handoff did not list it): its row 14 expected agents of beta and of a third node to reach the closed Task's run "while it runs"; the run now stops. Updated to the not-running refusal (492 REQ-010), the run not woken.
   - RC-51, RC-52 and MSP-93 give a remote run a saved Project Task: an ad-hoc delegation's Task is not a saved Task (`delegate_task` with its ID: "must identify exactly one current node-local Task (found 0)"), local and remote alike.
@@ -22,7 +22,7 @@ The run record and the result. The plan is `api-e2e-coverage-investigation.md`; 
 - Architectural risk: `High`
 - Input route: `Reviewed`
 - Successful-output route: `Code Review`
-- Proportional test-code review decision: `Required` (after the failures are resolved); this round's result is `Fail` → failure-origin review.
+- Proportional test-code review decision: `Required` (`52a1507b80` and round 2's test commit).
 
 ## Tested Builds And Environments
 
@@ -30,6 +30,7 @@ The run record and the result. The plan is `api-e2e-coverage-investigation.md`; 
 | --- | --- | --- | --- | --- |
 | ENV-1 | `dd5b230e7e` (code `9abe7086fd`) + this round's test changes | macOS 26 (Darwin 25.5.0) arm64, load 24–31 | Node 22; `autobyteus-ts` and server `dist` built from the worktree; Brief Studio package (`test:integration:prepare`); scripted AGY CLI | `env -i PATH HOME=<fresh temp> TMPDIR`, `RUN_AGY_FAILURE_E2E=1`; test-owned roots, ports, HOMEs; alpha at LOG_LEVEL INFO; idle grace 60 s on both nodes |
 | ENV-2 | as ENV-1 | as ENV-1 | the phone probe: built alpha and beta, the production phone bundle (`build:mobile-web`), `nuxt dev` desktop window against alpha, headless Chrome | phone paired with alpha through Phone Access on a private host (192.168.77.40 → 127.0.0.1) |
+| ENV-1b (r2) | `81a504de13` (code `a811f94348`) + round 2's test changes | as ENV-1 | as ENV-1, rebuilt | as ENV-1 |
 | ENV-B | base `7591aa307f` (merge base) | as ENV-1 | its own worktree `591-base-7591aa30`, install and build; removed after | comparisons only (contract stories) |
 
 ## Cases
@@ -37,6 +38,10 @@ The run record and the result. The plan is `api-e2e-coverage-investigation.md`; 
 | Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | REUSE-IMP | all (unit, in-process two-node) | units, in-process suites, typecheck, run-history E2E, architecture | Reused: IMP-01, IMP-03, IMP-04, IMP-05, IMP-06 | — | Pass (reused) | implementation handoff § Checks Run | — | `git diff --name-only 9abe7086fd dd5b230e7e` lists only ticket docs and evidence |
+| REUSE-IMP-R2 | REQ-006 continuation (unit, in-process) | units, typecheck | Reused: IMP-07, IMP-08, IMP-09, IMP-10 | — | Pass (reused) | implementation handoff § Checks Run | — | on `a811f94348`; the head adds only ticket docs (`git diff --name-only a811f94348 81a504de13` lists only `tickets/`) |
+| F-1/F-2 RECHECK (r2) | AC-001, AC-004, AC-006, AC-007; REQ-002, REQ-004, REQ-006 (SR-010) | the whole two-server file, round 2 | as RC-ALL, on ENV-1b | ENV-1b | Pass | `API-r2-runs.txt` §2; `API-r2-rc-receipt.json` | r6 `Tests  53 passed (53)`; RC-11 tree row absent; RC-51 `taskPage.root.status` `"offline"`; RC-51/RC-53 `continued` `{accepted:true, code:"DELIVERED"}` after `{open:true}` confirmed, `sameTask` the local refusal; RC-52 `rfOutcome.recordedClosed` true, `continuedWhileDown` "… continues with its conversation (its Task is open again) but did not receive this message; send it again." | r5 failed on my round-1 wording for the delegator (now the local "This Task is DONE. The agent that assigned it can …"); fixed |
+| MSP-93 (r2) | AC-006 (the continuation) | phone bundle and desktop window | as MSP-93 | ENV-2 on ENV-1b | Pass | `API-r2-runs.txt` §3; `API-r2-msp93.json`; `API-r2-MSP-93-*.png` | `listAfterCloseMs` 917, `phoneAfterListMs` 27, `desktopAfterListMs` 4059; `afterReopen` all away; `backMs` 2062 (the assigner's message) | |
+| CPW (r2) | regression (the router changed) | prompt wording | as CPW | ENV-1b | Pass | `API-r2-runs.txt` §4 | `Tests  14 passed (14)` | |
 | TYPECHECK | — | server `src` + tests (my edits) | `pnpm -C autobyteus-server-ts typecheck` | ENV-1 | Pass | `API-r1-runs.txt` §1 | `production errors: 0; test-file errors: 1002 in 314 files (baseline 1002 in 314 files)` | |
 | RC-09 | REQ-006 (files) | link, Task side | RC suite (whole file) | ENV-1 | Pass | §2; `API-r1-rc-receipt.json` `cases["RC-09"]` | `existingCopy`: "Files (reference_files) can't be sent to an agent on another node yet, so nothing was sent." | A saved Task to a *new* remote run keeps its refusal |
 | RC-10 | REQ-001 (sub-work run) | close → beta Stop | RC suite | ENV-1 | Pass | §2; receipt `RC-10.stoppedMs` | `stoppedMs` 329 | then the owner's message on beta wakes it; its message refused CLOSED |
@@ -53,43 +58,49 @@ The run record and the result. The plan is `api-e2e-coverage-investigation.md`; 
 | CPW | regression | prompt wording, refusals | `vitest run tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts` (gated) | ENV-1 | Pass | §5 | 14 CPW cases ✓ | |
 | STORIES | regression | the 461 contract stories | `vitest run tests/e2e/projects/collaboration-contract-stories.e2e.test.ts` (gated) | ENV-1, ENV-B | Fail on the base too (FU-591-01) | §5 | branch and base: S18 and U9 `…counterpart: not in the contract ({…})`; §5.3 ✓ | the stories stop there on both, before their remote-closure steps |
 
-### Findings
+### Findings (round 1; both resolved in round 2: see Round 2 Resolution)
 
 | ID | What | Expected (approved artifacts) | Observed | Base | Preliminary classification |
 | --- | --- | --- | --- | --- | --- |
 | F-1 | After the close, the run's row on alpha | AC-006: "stays listed on A under its delegating run and on the Task's page"; AC-001/REQ-004: "A's child row shows it offline" | The Task page names it (`root.closed: true`), and its status by run ID reads `offline`; the delegator's tree (`runTree`) has no row for it (`peerRow: null`): the tree lists open delegated runs only (`run-tree-view.ts:105`, 461/469), as for a local closed Task's run (`task-reactivation-root-visibility.e2e.test.ts:315` "A closed Task's run leaves" the tree) | unchanged by this ticket (`git diff 7591aa307f HEAD` of `run-tree-view.ts` is empty): the closed remote run's row left the tree before too (it only kept running) | `Requirement Gap`: the AC asks for a row the existing rule (local and remote) removes; DEC-004 says "as a local one" |
 | F-2 | Continuing a closed remote run on its own reopened Task (the PM's case, REQ-006 / AC-007) | AC-007: after a reopen, a message is refused (`TASK_AGENT_RESOURCE_CLOSED`) and `delegate_task` with the run's ID and `task_id` wakes it; REQ-002: a close is never delivered for a run whose Task was reopened before delivery | (a) `delegate_task(run, its reopened Task)` is refused "already has Task … set it to TODO or IN_PROGRESS, then message the task agent's run id" (`task-execution-resources.ts:208`), for an agent and a Team; the message is refused CLOSED, so the run cannot be continued (the PM's dead end stays). (b) A Task reopened alone while beta is down: the owed "closed" is still delivered and the run stopped (RC-52 `rfOutcome`). Giving the run a *different* saved Task works (RC-51, RC-52, MSP-93). | `cross-run-message-delivery.ts` and the eligibility rule (`task-execution-resources.ts:186-215`) are unchanged by this ticket. Locally, the reopened Task is continued by the assigner's **message** (the reopen happens in `cross-run-message-delivery.ts:205-218`; `project-change-feed.e2e.test.ts:421-426` AC-023 "… continues with its conversation."); for the remote run the message is refused | `Requirement Gap` (or `Design Impact`): SR-005 / AC-007 read local behavior as "a message is refused; `delegate_task` reopens", the reverse of the code; the design built `toExistingRun` for the remote run, and the message path refuses it |
 
+### Round 2 Resolution
+
+- **F-1 resolved** by the corrected requirements (SR-010, CR-591-003): on A the closed run leaves the delegating run's tree, as a local one, and its Task's page shows it offline. RC-11 asserts the row is gone; RC-51 asserts the Task page `{closed: true, status: "offline"}`.
+- **F-2 resolved** by IR-002 (DN-9): the assigner's message continues the closed remote run after a reopen ("open" confirmed first, then the message; listed again, woken with its conversation), for an agent (RC-51) and a Team's coordinator (RC-53); another sender `TASK_AGENT_RESOURCE_CLOSED`; `delegate_task` with the same Task the local refusal; B unreachable: the not-delivered text, "open" owed and delivered when B returns (RC-52 rg). REQ-002 (corrected): a Task's reopen alone does not prevent the close (RC-52 `rfOutcome`, asserted).
+- Note: the requirements' AC-004 alternate column still says "If the Task is reopened … nothing is stopped"; the code reviewer asked the Solution Designer to align it with REQ-002. RC-52 tests REQ-002's rule.
+
 ## Acceptance-Criteria Proof
 
 | Acceptance-Criteria ID | Critical | Proven By Case IDs | Result | For A User-Only Or Accepted-Risk Part |
 | --- | --- | --- | --- | --- |
-| AC-001 | Yes | RC-11, RC-10, RC-49; REUSE-IMP | Not Proven (one clause): stop within 30 s, record, no owed mark, CONFIRMED, conversation kept, alpha's status `offline` are proven; "A's child row shows it offline" has no row (F-1) | — |
-| AC-002 | Yes | RC-23 (scripted AGY member mid-turn); REUSE-IMP | Proven | Real runtime mid-turn: Not Tested (below) |
+| AC-001 | Yes | RC-11, RC-10, RC-49, RC-51 (Task page); REUSE-IMP | Proven (r2) | — |
+| AC-002 | Yes | RC-23 (scripted AGY member mid-turn); REUSE-IMP | Proven | Real runtime mid-turn: Not Tested (Latest Authoritative Result notes) |
 | AC-003 | Yes | RC-23; REUSE-IMP | Proven | — |
-| AC-004 | Yes | RC-52 | Proven for the close, the restarts, the other-open-Task alternate and an older beta; Not Proven for "If the Task is reopened before B is reachable, nothing is stopped" (F-2 b) | — |
+| AC-004 | Yes | RC-52 (beta down, alpha restarted, beta restarted alone, 30 s retry, an older beta 404; an entry reopened before delivery (another Task; the assigner's message) goes as open; a Task's reopen alone still stops, REQ-002) | Proven (r2, against REQ-002) | AC-004's alternate column awaits the Solution Designer's alignment with REQ-002 |
 | AC-005 | Yes | RC-35; REUSE-IMP | Proven | — |
-| AC-006 | Yes | RC-11 (beta's list over GraphQL), RC-51 (Task page), MSP-93 (desktop and phone) | Not Proven (one clause): beta's lists drop and restore it in one re-read; the Task page keeps it; "under its delegating run" on alpha: no row (F-1) | — |
-| AC-007 | Yes | RC-51, RC-53, RC-52 (B unreachable), RC-09 (files) | Not Proven: the reopened own Task can't be given again (F-2 a); a different saved Task, B unreachable ("not delivered", open owed), another root refused, files refused, a reopen alone changing nothing on B are proven | — |
+| AC-006 | Yes | RC-11 (beta's list), RC-51 (Task page offline), MSP-93 r1 and r2 (desktop and phone: leaves; a reopen alone: away; the assigner's message: back) | Proven (r2) | — |
+| AC-007 | Yes | RC-51 (agent), RC-53 (Team), RC-52 rg (B unreachable), RC-09 (files); REUSE-IMP-R2 (a message while the closed notice is in flight) | Proven (r2) | — |
 
 ## Validation Confidence Scorecard (Mandatory)
 
 | Confidence Category | Post-Repository Score | Final Score | What Supports It | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 75% | 70% | REUSE-IMP; RC cases; MSP-93 | F-1 and F-2 leave AC-001, AC-004, AC-006 and AC-007 clauses unmet | decisions on F-1 and F-2 |
-| Changed-boundary execution directness | 90% | 95% | two built nodes over signed HTTP through capturing proxies; real restarts; the phone bundle | — | — |
+| Requirement and acceptance-criteria proof | 90% | 96% | r2: every AC proven directly on two built nodes (AC-004 against REQ-002) | AC-004's alternate text not yet aligned (wording) | — |
+| Changed-boundary execution directness | 90% | 96% | two built nodes over signed HTTP through capturing proxies; real restarts; the phone bundle and the desktop window | — | — |
 | Cross-boundary integration realism and mock gap | 85% | 92% | real processes, real pairing; only inference scripted | no real runtime mid-turn | a real runtime member |
-| Environment, configuration, identity, and fixture fidelity | 90% | 92% | built dist, Node 22, clean env, test-owned roots | the contract stories stop at a base-side fixture gap (FU-591-01) | fix the fixture, rerun |
-| Failure, edge-case, lifecycle, and recovery evidence | 85% | 95% | beta down, alpha restart, beta restart alone, 30 s retry, 404, another open Task, third node | busy runs did not resume at the sample (not asserted) | — |
-| User-surface, browser, and desktop-shell confidence | N/A | 92% | MSP-93 desktop window and phone bundle | alpha's side of F-1 not rendered | after F-1's decision |
-| Durable regression coverage quality and relevance | 85% | 90% | RC-09/10/11/23/35/49/20 updated, RC-51/52/53 and MSP-93 added | RC-51/RC-53 assert the AC text that F-2 contests | adjust after the decision |
+| Environment, configuration, identity, and fixture fidelity | 90% | 95% | built dist, Node 22, clean env, test-owned roots | the contract stories stop early on a base-side fixture gap (FU-591-01); the RC suite covers the remote closure | — |
+| Failure, edge-case, lifecycle, and recovery evidence | 90% | 96% | beta down, both restarts, the 30 s retry, an older beta, another Task, the continuation while down, a third node | — | — |
+| User-surface, browser, and desktop-shell confidence | N/A | 95% | MSP-93 r1/r2 | — | — |
+| Durable regression coverage quality and relevance | 90% | 95% | RC-09/10/11/23/35/49/20 updated; RC-51/52/53 and MSP-93 added; every assertion on the approved behavior | — | — |
 
-- Overall post-repository confidence: 85%
-- Overall final confidence: 89% (simple average of the applicable categories)
-- Every critical acceptance criterion directly proven: `No` (F-1, F-2)
-- Any final applicable category below `90%`: `Yes` — requirement and acceptance-criteria proof 70%
-- Default final confidence target of `95%` met: `No`
-- Confidence-limiting residual risks: F-1, F-2; FU-591-01 (stories stop early).
+- Overall post-repository confidence: 89%
+- Overall final confidence: 95% (simple average of the applicable categories; round 1: 89%)
+- Every critical acceptance criterion directly proven: `Yes`
+- Any final applicable category below `90%`: `No`
+- Default final confidence target of `95%` met: `Yes`
+- Confidence-limiting residual risks: a real runtime as the mid-turn member (Not Tested); FU-591-01 (stories stop early, base-side).
 
 ## Broader Validation Decision (Mandatory)
 
@@ -118,7 +129,10 @@ The run record and the result. The plan is `api-e2e-coverage-investigation.md`; 
 | same file: RC-51, RC-52, RC-53 | Added | RC-51, RC-52, RC-53 | — |
 | `autobyteus-web/tests/e2e/mobile-closed-delegation-cases.mjs`; `mobile-shell-probe.mjs` (header, import, call) | Added / Updated | MSP-93 | — |
 
-- Added or updated paths attached for proportional test-code review: `Not Applicable` this round (`Fail`).
+| same file (r2): RC-11 (tree row absent), RC-51, RC-53 (the continuation), RC-52 (rf asserted; rg the continuation while beta is down), RC-11/RC-23/RC-49 (the delegator's local text), header | Updated | F-1/F-2 RECHECK | RC-51/RC-53's "`delegate_task` with the reopened Task is accepted" (round 1, from the superseded AC-007) replaced by SR-010: the local refusal for the same Task, the assigner's message continuing it |
+| `autobyteus-web/tests/e2e/mobile-closed-delegation-cases.mjs` (r2) | Updated | MSP-93 (r2) | the row returns through the assigner's message (SR-010) instead of a new saved Task |
+
+- Added or updated paths attached for proportional test-code review: `Yes`.
 
 ## Dependencies Mocked Or Emulated
 
@@ -134,22 +148,22 @@ The run record and the result. The plan is `api-e2e-coverage-investigation.md`; 
 | RC suite nodes, proxies, roots, AGY processes | Yes | suite `afterAll` | receipts: `rootRemoved`, `serversStopped` |
 | Phone probe stack | Yes | the probe's `finally` | `{frontendExited: true, serversLeft: 0, rootRemoved: true}` |
 | Base worktree `591-base-7591aa30` | Yes | `git worktree remove --force` | Removed |
+| Round 2's suite nodes and phone probe stack | Yes | the suites' own cleanup | probe `{frontendExited: true, serversLeft: 0, rootRemoved: true}` |
 | `/tmp/api591` logs and outputs | Yes | kept; extracts committed | Kept |
 
 ## Preliminary Classification (On `Fail`)
 
-- F-1 `Requirement Gap`: AC-006/AC-001 ask for a row on A that the existing tree rule (local and remote) removes on close; decide whether the AC changes or the tree should keep a closed remote run.
-- F-2 `Requirement Gap` (possibly `Design Impact`): AC-007/SR-005/REQ-002 assume the wrong local continuation path; locally a reopened Task is continued by the assigner's message. Decide the remote continuation path (the message reactivating the remote run, as locally, or `delegate_task` for the run's own reopened Task) and what a reopen before delivery means.
-- Recommended owner: the Code Reviewer's failure-origin review, then the Solution Designer.
+- Round 1 (`Fail`): F-1 and F-2 `Requirement Gap` (confirmed at CRR-002; resolved by SR-010 and IR-002). Round 2: none.
 
 ## Latest Authoritative Result
 
-- Result: `Fail`
-- Criteria not proven: AC-001 (child row clause, F-1), AC-004 (reopened-before-delivery clause, F-2 b), AC-006 (A's row under its delegating run, F-1), AC-007 (the reopened own Task, F-2 a).
+- Result: `Pass` (round 2), 95%.
+- Criteria not proven, parts only the user can check, or accepted as unverified risk: `None`.
 - Evidence decisions requested: `None`.
-- Preliminary classification and recommended owner: F-1 and F-2 `Requirement Gap` → the Code Reviewer (failure-origin review).
-- Next recipient from `get_handoff_rules`: `/code_reviewer`.
+- Next recipient from `get_handoff_rules`: `/code_reviewer`, for the proportional test-code review of `52a1507b80` and round 2's test commit, then delivery.
 - Notes:
   - Not Tested: a real (non-scripted) runtime as the mid-turn member (AC-002 "if possible"): the Stop is the existing closure Stop for every runtime; the scripted process held mid-turn shows the working member is interrupted and its process ends.
+  - AC-004's alternate column in the requirements still contradicts REQ-002 (the code reviewer asked the Solution Designer to align it); RC-52 tests REQ-002.
   - Out of scope: FU-591-01 (the contract stories' fixture lacks 565's `counterpart`; the same on base).
-  - The unit test title `team-remote-delegation.test.ts` "AC-305: closing the Task on A fences the remote Team both ways (fenced_remote)" still says "fences" (implementation's test; noted for code review).
+  - The unit test title `team-remote-delegation.test.ts` "closing the Task on A fences the remote Team (fenced_remote)" still says "fences".
+  - Round 1: `Fail`, 89% (F-1, F-2).

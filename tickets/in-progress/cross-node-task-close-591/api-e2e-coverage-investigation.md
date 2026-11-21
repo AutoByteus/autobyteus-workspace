@@ -174,3 +174,15 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 | RC-52 alternate | Revised to REQ-002's other clause (another open Task before delivery): the run's own reopened Task can't be given again (F-2) | r2 | a reopen alone is recorded, not asserted (`rfOutcome`, F-2 b) |
 | RC-11 tree row | Recorded, not asserted, pending F-1 | r1 | assertions on the Task page (RC-51) and alpha's status by run ID |
 | collaboration-contract-stories | Out Of Scope at S18/U9 (base-side) | base `7591aa307f`: identical failures | FU-591-01 |
+
+## Round 2 Updates (SR-010, SR-011; IR-002 DN-9)
+
+| Path / Test | Decision | Evidence | Action |
+| --- | --- | --- | --- |
+| RC-11 tree row | Needs Update: SR-010 (CR-591-003): the closed run leaves the delegating run's tree, as locally | REQ-004, AC-001 corrected | assert absent; the Task page `offline` in RC-51 |
+| RC-51, RC-53 | Needs Update: SR-010: the assigner's message continues the run; `delegate_task` with the same Task gets the local refusal | REQ-006, AC-007 corrected | test the continuation, another sender, the same-Task refusal |
+| RC-52 rf; new rg | Needs Update / Add: REQ-002 corrected (a Task's reopen alone doesn't prevent the close; an entry reopened by the assigner's message does) | REQ-002 | assert rf stopped; rg continued while beta is down, "open" owed, never stopped |
+| RC-11, RC-23, RC-49 delegator's message | Needs Update: its delegator now gets the local `assertReopenable` text | r5 | exact local text; other senders unchanged |
+| MSP-93 | Needs Update: the row returns through the continuation | AC-006 corrected | the assigner's `send_message_to` |
+| CPW | Still Valid; rerun (the router changed) | — | run |
+| AC-007's "a message while the closed notice is in flight" | Reused (in-process, IMP-08) | timing a real race between processes is not deterministic | REUSE-IMP-R2 |

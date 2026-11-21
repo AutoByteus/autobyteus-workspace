@@ -24,3 +24,14 @@ My working log. The report's Cases table is the result.
 | 2026-11-21 17:16 | RC-ALL r4 (final) | Started | | /tmp/api591/rc4.log |
 | 2026-11-21 17:28 | RC-ALL r4 (final) | Completed | Fail (2, F-2) | 51 passed; RC-51, RC-53 = F-2 |
 | 2026-11-21 17:31 | ROUND 1 | Completed | Fail | F-1, F-2 (Requirement Gap, preliminary); 89% |
+| 2026-11-21 18:01 | ROUND 2 | Started | | CRR-003 (head 81a504de13, code a811f94348, DN-9): F-1, F-2 rerun against SR-010 |
+| 2026-11-21 18:01 | BUILD (r2) | Started | | /tmp/api591/r2/build.log |
+| 2026-11-21 18:03 | BUILD (r2) | Completed | Pass | exit 0 |
+| 2026-11-21 18:03 | RC-ALL r5 (round 2) | Started | | /tmp/api591/r2/rc.log |
+| 2026-11-21 18:15 | RC-ALL r5 (round 2) | Completed | Fail (5) | the delegator now gets the local text "This Task is DONE. The agent that assigned it can …" (my assertions: RC-11, RC-23, RC-49); cascades RC-51, RC-53 |
+| 2026-11-21 18:16 | RC-ALL r6 (round 2) | Started | | /tmp/api591/r2/rc6.log |
+| 2026-11-21 18:28 | RC-ALL r6 (round 2) | Completed | Pass | 53/53 |
+| 2026-11-21 18:28 | MSP-93 (round 2) | Started | | /tmp/api591/r2/msp |
+| 2026-11-21 18:30 | MSP-93 (round 2) | Completed | Pass | back 2.1 s after the assigner's message |
+| 2026-11-21 18:32 | CPW (round 2) | Completed | Pass | 14/14 |
+| 2026-11-21 18:40 | ROUND 2 | Completed | Pass | 95%; F-1, F-2 resolved |

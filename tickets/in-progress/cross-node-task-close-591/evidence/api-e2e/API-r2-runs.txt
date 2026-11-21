@@ -1,0 +1,34 @@
+API/E2E round 2 — autobyteus-591 (CRR-003; head 81a504de13, code a811f94348, IR-002 DN-9; requirements SR-010/SR-011)
+Environment as round 1 (macOS 26 arm64, Node 22; autobyteus-ts and server dist rebuilt from the head; scripted AGY;
+env -i, test-owned roots). Raw logs: /tmp/api591/r2/.
+
+§1 Typecheck after my changes: "[typecheck] production errors: 0; test-file errors: 1002 in 314 files (baseline 1002 in 314
+   files)", "[typecheck] PASS". IR-002's IMP-07 … IMP-10 reused (a811f94348; the head adds only ticket docs).
+
+§2 remote-delegation-two-server.e2e.test.ts (whole file):
+   r5 "Tests 5 failed | 48 passed (53)": its delegator's message to a closed run now gets the local text (SR-010, the local
+      assertReopenable) "This Task is DONE. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then
+      message this run id again." (code TASK_AGENT_RESOURCE_CLOSED); my RC-11, RC-23 and RC-49 still expected round 1's
+      wording; RC-51 and RC-53 failed after them (no run IDs). Fixed: the delegator's exact local text, every other sender
+      the closed refusal.
+   r6 "Tests 53 passed (53)". Receipt extract: API-r2-rc-receipt.json.
+   - F-1 (AC-001, AC-006, REQ-004): RC-11 asserts the run left the delegator's tree; RC-51 "taskPage":
+     {status:"DONE", root:{ingressAgentRunId, closed:true, status:"offline"}}.
+   - F-2 (AC-007, REQ-006): RC-51 (agent) and RC-53 (Team): after the reopen, another sender's message
+     TASK_AGENT_RESOURCE_CLOSED; delegate_task with the same Task "This task agent already has Task 591-project-1. To continue
+     it, set Task 591-project-1 to TODO or IN_PROGRESS, then message the task agent's run id …"; the assigner's message
+     {accepted:true, code:"DELIVERED", message:"Delivered message to <run> on node \"beta-node\"."}, preceded by
+     delegated-run-states {open:true} answered {accepted:true, nodeId, open:true}, then the message; beta's record cleared,
+     listed again; the run (the coordinator) receives the message with its earlier conversation.
+   - REQ-002 (corrected): RC-52 rfOutcome (a Task reopened alone while beta was down) {recordedClosed:true, listed:false,
+     confirmed … open: false}: stopped, as expected now. rg (reopened and continued by its assigner's message while beta was
+     down): "Node \"beta-node\" could not be reached (fetch failed). <run> continues with its conversation (its Task is open
+     again) but did not receive this message; send it again."; "open" owed; after beta returned never recorded closed, listed,
+     CONFIRMED open: true, and the assigner's next message received. deliveredMs 28172, rdDeliveredMs 28186.
+
+§3 MSP-93 (round 2; the assigner's message brings the row back): API-r2-msp93.json, API-r2-MSP-93-*.png.
+   "[mobile-shell] MSP-93 Pass": listAfterCloseMs 917, phoneAfterListMs 27, desktopAfterListMs 4059; afterReopen
+   {recorded:true, listed:false, phone:false, desktop:false}; backMs 2062; no unknown browser errors; cleanup complete.
+
+§4 collaboration-prompt-wording (the router changed): "Tests 14 passed (14)".
+   collaboration-contract-stories: not rerun (FU-591-01: the base fixture stops it at S18 / U9 on any commit).
