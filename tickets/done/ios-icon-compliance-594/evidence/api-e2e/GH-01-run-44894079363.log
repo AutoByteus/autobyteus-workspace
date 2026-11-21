@@ -1,0 +1,67 @@
+# GH-01: my own read of build-only run 44894079363 (read only: gh run view --json, --log 7256 lines, grepped); 2026-11-21T10:51:33Z
+head f0e6d1eb33ede8a4d7e088f407bd186d93efd8d5 branch codex/ios-icon-compliance-594 event workflow_dispatch created 2026-11-21T10:22:59Z conclusion success
+job: Resolve iOS Release Metadata: success
+job: Build And Test iOS App: success
+   step 1: Set up job: success
+   step 2: Checkout workspace: success
+   step 3: Select Xcode 27 or newer: success
+   step 4: Install XcodeGen: success
+   step 5: Select available iOS simulator: success
+   step 6: Setup pnpm: success
+   step 7: Setup Node: success
+   step 8: Install workspace dependencies: success
+   step 9: Check the app icon against the logo: success
+   step 10: Build the bundled demo: success
+   step 11: Generate, build, and run implementation checks: success
+   step 12: Write publish secret readiness summary: success
+   step 13: Upload iOS build/test artifacts: success
+   step 24: Post Setup Node: success
+   step 25: Post Setup pnpm: success
+   step 26: Post Checkout workspace: success
+   step 27: Complete job: success
+job: Archive And Upload To App Store Connect: skipped
+job: Validate iOS Publish Secrets: skipped
+== input
+2026-11-21T10:24:30.5895141Z   INPUT_PUBLISH_APP_STORE_CONNECT: false
+== image, Xcode
+2026-11-21T10:24:39.5859050Z Image: xcode-27-arm64
+2026-11-21T10:29:32.8212400Z Selected Xcode app: /Applications/Xcode_27.2.app
+2026-11-21T10:29:32.8304560Z Selected iPhoneOS SDK: 27.2
+== the icon step
+﻿2026-11-21T10:30:18.4476800Z ##[group]Run pnpm --dir autobyteus-web ios-icon:check
+2026-11-21T10:30:18.4479440Z [36;1mpnpm --dir autobyteus-web ios-icon:check[0m
+2026-11-21T10:30:18.7890010Z > autobyteus@1.5.14-beta.5 ios-icon:check /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+2026-11-21T10:30:18.9196800Z [ios-icon] AppIcon-iphone-20x20@2x.png: 40x40 matches (max 0, mean 0.000)
+2026-11-21T10:30:18.9223480Z [ios-icon] AppIcon-iphone-20x20@3x.png: 60x60 matches (max 0, mean 0.000)
+2026-11-21T10:30:18.9246760Z [ios-icon] AppIcon-iphone-29x29@2x.png: 58x58 matches (max 0, mean 0.000)
+2026-11-21T10:30:18.9267880Z [ios-icon] AppIcon-iphone-29x29@3x.png: 87x87 matches (max 0, mean 0.000)
+2026-11-21T10:30:18.9286140Z [ios-icon] AppIcon-iphone-40x40@2x.png: 80x80 matches (max 0, mean 0.000)
+2026-11-21T10:30:18.9304270Z [ios-icon] AppIcon-iphone-40x40@3x.png: 120x120 matches (max 0, mean 0.000)
+2026-11-21T10:30:18.9321130Z [ios-icon] AppIcon-iphone-60x60@2x.png: 120x120 matches (max 0, mean 0.000)
+2026-11-21T10:30:18.9342200Z [ios-icon] AppIcon-iphone-60x60@3x.png: 180x180 matches (max 0, mean 0.000)
+2026-11-21T10:30:18.9359000Z [ios-icon] AppIcon-ipad-20x20@1x.png: 20x20 matches (max 0, mean 0.000)
+2026-11-21T10:30:18.9376910Z [ios-icon] AppIcon-ipad-20x20@2x.png: 40x40 matches (max 0, mean 0.000)
+2026-11-21T10:30:18.9390270Z [ios-icon] AppIcon-ipad-29x29@1x.png: 29x29 matches (max 0, mean 0.000)
+2026-11-21T10:30:18.9403820Z [ios-icon] AppIcon-ipad-29x29@2x.png: 58x58 matches (max 0, mean 0.000)
+2026-11-21T10:30:18.9417680Z [ios-icon] AppIcon-ipad-40x40@1x.png: 40x40 matches (max 0, mean 0.000)
+2026-11-21T10:30:18.9431730Z [ios-icon] AppIcon-ipad-40x40@2x.png: 80x80 matches (max 0, mean 0.000)
+2026-11-21T10:30:18.9448700Z [ios-icon] AppIcon-ipad-76x76@1x.png: 76x76 matches (max 0, mean 0.000)
+2026-11-21T10:30:18.9467910Z [ios-icon] AppIcon-ipad-76x76@2x.png: 152x152 matches (max 0, mean 0.000)
+2026-11-21T10:30:18.9489750Z [ios-icon] AppIcon-ipad-83_5x83_5@2x.png: 167x167 matches (max 0, mean 0.000)
+2026-11-21T10:30:18.9606590Z [ios-icon] AppIcon-1024.png: 1024x1024 matches (max 0, mean 0.000)
+2026-11-21T10:30:18.9607280Z [ios-icon] all 18 slots match the logo (on #1E3A8A).
+== asset catalog diagnostics (lines '<…>.xcassets…: warning|error|notice:'; actool's own command lines excluded)
+2026-11-21T10:31:17.7496810Z /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios/AutoByteusMobile/Assets.xcassets:./AppIcon.appiconset/[][ipad][76x76][][][1x][][][][]: notice: 76x76@1x app icons only apply to iPad apps targeting releases of iOS prior to 10.0.
+(diagnostic lines: 1; warnings: 0; errors: 0)
+== build and tests
+Generate, build, and run implementation checks 2026-11-21T10:30:56.9008930Z iOS release contract checks passed.
+Generate, build, and run implementation checks 2026-11-21T10:31:23.9925920Z ** BUILD SUCCEEDED **
+Generate, build, and run implementation checks 2026-11-21T10:34:39.2696310Z   Executed 56 tests, with 0 failures (0 unexpected) in 25.030 (35.858) seconds
+Generate, build, and run implementation checks 2026-11-21T10:34:39.2698330Z   Executed 56 tests, with 0 failures (0 unexpected) in 25.030 (36.591) seconds
+Generate, build, and run implementation checks 2026-11-21T10:35:52.5253360Z ** TEST SUCCEEDED **
+Generate, build, and run implementation checks 2026-11-21T10:36:17.0279360Z Selected simulator: iPhone 17 (iOS 27.2), UDID 4AD2086B-7B8F-4608-A742-AA422A0B8D74
+Generate, build, and run implementation checks 2026-11-21T10:45:24.4997080Z   Executed 8 tests, with 0 failures (0 unexpected) in 336.299 (336.334) seconds
+Generate, build, and run implementation checks 2026-11-21T10:45:24.4999470Z   Executed 8 tests, with 0 failures (0 unexpected) in 336.299 (336.336) seconds
+Generate, build, and run implementation checks 2026-11-21T10:45:28.5650470Z ** TEST SUCCEEDED **
+Generate, build, and run implementation checks 2026-11-21T10:45:43.4214520Z Smoke UI tests: executed and passed without skips
+Select available iOS simulator 2026-11-21T10:29:45.3837250Z Selected simulator: iPhone 17 (iOS 27.2), UDID 4AD2086B-7B8F-4608-A742-AA422A0B8D74

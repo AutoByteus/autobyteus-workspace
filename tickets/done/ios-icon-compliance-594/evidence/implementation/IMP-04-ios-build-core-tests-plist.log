@@ -1,0 +1,33 @@
+# IMP-04 local simulator build (asset catalog warnings), core tests, and the built app's Info.plist (AC-001, AC-004)
+# commands: (autobyteus-ios) scripts/generate-project.sh; xcodebuild -project AutoByteusMobile.xcodeproj -scheme AutoByteusMobile -destination id=<my iPhone 17 simulator> CODE_SIGNING_ALLOWED=NO build; the same with -only-testing:AutoByteusMobileCoreTests test; plutil -p <built AutoByteus.app>/Info.plist; DemoWeb from prepare-demo-web.sh --build
+# commit: f0e6d1eb33
+# env: macOS 26.5.2, Xcode 26.1.1; my iPhone 17 simulator, iOS 26.1
+# date: 2026-11-21T10:25:33Z
+
+== build
+** BUILD SUCCEEDED **
+build exit=0
+asset catalog: actool ran with --warnings --notices for the AppIcon set; it reported no warning and no error, and one notice, about a slot Contents.json has always had (unchanged by this ticket):
+  Assets.xcassets:./AppIcon.appiconset/[][ipad][76x76][][][1x][][][][]: notice: 76x76@1x app icons only apply to iPad apps targeting releases of iOS prior to 10.0.
+  (follow-up FU-001)
+all build warnings: 0
+compiled icon files in the app: 2
+AppIcon60x60@2x.png
+AppIcon76x76@2x~ipad.png
+
+== core tests
+	 Executed 56 tests, with 0 failures (0 unexpected) in 1.945 (2.023) seconds
+** TEST SUCCEEDED **
+test exit=0
+
+== plutil -p <built app>/Info.plist (excerpt)
+  "CFBundleIcons" => {
+    "CFBundlePrimaryIcon" => {
+        0 => "AppIcon60x60"
+      "CFBundleIconName" => "AppIcon"
+  "CFBundleIcons~ipad" => {
+    "CFBundlePrimaryIcon" => {
+        0 => "AppIcon60x60"
+        1 => "AppIcon76x76"
+      "CFBundleIconName" => "AppIcon"
+  "ITSAppUsesNonExemptEncryption" => false

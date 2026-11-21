@@ -1,0 +1,5 @@
+# Follow-ups — ios-icon-compliance-594 (autobyteus-594)
+
+| ID | Found by (role, document) | What is wrong, where | Evidence | Why it is outside this ticket | Urgent (`Yes`/`No`) | Suggested Task description | Sent (to, date) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FU-001 | Implementation engineer, `implementation-handoff.md` (IMP-04) | `autobyteus-ios/AutoByteusMobile/Assets.xcassets/AppIcon.appiconset/Contents.json` keeps an iPad 76x76@1x slot (`AppIcon-ipad-76x76@1x.png`). The app's minimum is iOS 17.0, and actool says such icons apply only to iPad apps targeting iOS before 10.0. Other @1x iPad slots may be equally unused. | `evidence/implementation/IMP-04-ios-build-core-tests-plist.log`: `notice: 76x76@1x app icons only apply to iPad apps targeting releases of iOS prior to 10.0.` (a notice, not a warning) | The design keeps `Contents.json` unchanged; the slot predates this ticket and harms nothing. | No | Trim the AppIcon set to the slots iOS 17 uses (or a single 1024 universal icon, if the project prefers), regenerate with `ios-icon:build`, and keep the contract check and `ios-icon:check` green. | |
