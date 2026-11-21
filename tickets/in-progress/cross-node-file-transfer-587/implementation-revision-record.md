@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer, `design-review-report.md`, round 2 (Pass) | N/A | `Initial Baseline` | SR-009, ARCH-REV-002, CRR-001 | Implemented; Code Review Pass (CRR-001, no findings); next: API/E2E |
 | IR-002 | Delivery Engineer, `release-deployment-report.md` § Escalation / Reroute (DEL-03, whole unit suite after the base refresh) | DEL-03 stale tests 1–3 | `Local Fix` | CRR-001, CRR-003, API-REV-002; DR: N/A (not yet created) | Stale test fixtures given the new inputs; whole server unit suite Pass (1050 files, 8698 tests); Code Review Pass (CRR-004, no findings); next: API/E2E |
+| IR-003 | Delivery Engineer, `release-deployment-report.md` § Delivery Round 2 (merge with origin/personal 6533d7be04 conflicts) | Round-2 merge conflict (3 production files, 19 test files) | `Local Fix` | CRR-004, API-REV-003, CRR-005; DR: N/A | Merged and resolved (575c4ec9ed); typechecks, whole unit suite (8764 tests), Team integration (58) and two-server E2E (55) Pass; next: Code Review |
 
 ## Revision Entries
 
@@ -67,3 +68,27 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Next recipient or routing: Code Review (the package stays Large / High; test-only change).
 - Remaining limitations or risks: none new. The guide gap delivery names (a change adding a required input to an owner tests construct should run the whole unit suite) is for TESTING.md's owner.
 - Code review: Pass, CRR-004, no findings (`code-review-report.md`); the reviewer routed it to API/E2E. Recorded only; no implementation change.
+
+### IR-003 — Merge with autobyteus-22 (team-run-follows-definition)
+
+- Triggering role, report path, and round: Delivery Engineer, `tickets/in-progress/cross-node-file-transfer-587/release-deployment-report.md` § Delivery Round 2 (`git merge origin/personal` conflicts in 22 files).
+- Triggering finding IDs: the round-2 merge conflict.
+- Classification: `Local Fix` (integration of two Large changes in production code).
+- Prior authoritative result: IR-002 with CRR-004, API-REV-003, CRR-005 Pass, on a5ae791726 / cc077b504c.
+- Current authoritative result: origin/personal 6533d7be04 merged as 575c4ec9ed; both tickets' behavior kept; both typechecks, the whole server unit suite, the Team integration tests and the gated two-server E2E on a rebuilt server pass.
+- Related solution revision IDs: N/A
+- Related architecture-review revision IDs: N/A
+- Related code-review revision IDs: CRR-004, CRR-005
+- Related API/E2E revision IDs: API-REV-003
+- Related delivery revision IDs: N/A (no DR yet)
+- Why this implementation revision is recorded: the base reworked the Team root (`TeamRunMemberAuthority`, `TeamRunResolver`, `TeamRunMembership`, former members, `maySend`, `ownsAgentRun`); this ticket's Team-root and composition changes had to be merged onto it, and the merged root has been seen by no reviewer.
+- Approved behavior or requirement IDs affected: none changed; DS-001/DS-002 receive paths and RF-14 re-checked on the merged root.
+- Implementation delta:
+  - Production conflicts: `root-team-run.ts` (the base moved `isCurrentAgent` / `isLiveAgent` into `TeamRunMemberAuthority`; this ticket's `memberFolderOf` kept, on the base's `requireContainingTeamRun`, which now also resolves a member that is leaving (`getAgentForOwnCommand`); a leaving member cannot receive a remote message, since `acceptFromRemote` checks the receiver is current before any plan); `collaboration-composition.ts` (both imports); `start-standalone-application-host.ts` (the base's `definitionChanges` / `teamChangeNotices` beside `remoteFiles` / `receivedFiles`).
+  - Auto-merged production files changed by both sides (20, listed in the handoff) checked: the engine's sender check is now the base's `maySendAs` for `prepareRemoteSend` too (a member finishing its turn after leaving may still send), the remote receiver check stays `isCurrent`; the router's `ownsAgentRun` includes `hasAgentExecution` (remote links), so RF-14's `NODE_REQUIRED` still comes from the root; the Team `deliverExact` remote branch is unchanged beside the base's former-member refusal on the local path; the materializer and manager still pass `remoteFiles` and the manager's `memoryLocator`; all merged files stay under 500 non-empty lines (largest `root-team-run.ts` 477).
+  - Test conflicts (19 files): the base's `teamMembershipTestCollaborators()` / `changeNotices` combined with `remoteChannel` / `remoteFiles` / `memoryLocator`; `required-host-owners` keeps both sides' inputs; the router test keeps the base's `ownsAgentRun` with `peerRunAdmission`.
+  - Base test not in conflict but stale for this ticket: `tests/integration/agent-team-execution/team-run-follows-definition.integration.test.ts` (three `AgentTeamRunManager`s get `remoteFiles: NO_REMOTE_FILES`; `closedPeerRunRefusal` → `peerRunAdmission`). A scan of every construction of the owners that take the new inputs found no other.
+- Changed files or areas: merge commit 575c4ec9ed.
+- Local validation and result (all Pass, on 575c4ec9ed): IMP-10 both typechecks (server 1004 in 314 files, web 86 in 36, both at baseline); IMP-11 whole server unit suite (`Test Files  1057 passed | 5 skipped (1062)`, `Tests  8764 passed | 9 skipped (8773)`); IMP-12 Team integration tests (10 files, 58 tests); IMP-13 server rebuild and the gated two-server E2E file (55 tests) — see the handoff.
+- Next recipient or routing: Code Review (Large / High; the merged Team root is production code no reviewer has seen).
+- Remaining limitations or risks: the base moves fast; a later merge that touches the Team root again needs the same check.

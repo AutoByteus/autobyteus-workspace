@@ -16,15 +16,15 @@
 
 Files attached to a cross-node `delegate_task` or `send_message_to` are checked on the sending node (inside the sender's workspace, links resolved, regular files, distinct names, under the receiver's per-file limit and 4 GiB per call), hashed from one open handle, and uploaded once per content in signed raw pieces of at most 8 MiB into the receiving node's `<data>/received_files/<sha256>` (`.partial` while it arrives; a held file is skipped, a partial one resumed). Only then is the run started (delegation) or the message prepared and delivered. The receiving node verifies every named file before any root sees the request; the root plans the received paths (`<agent folder>/received_files/<sender run ID>/<name>`), holds the receiver's input slot, places the files as read-only hard links (copy as fallback; same sender + same name is replaced by atomic rename), then writes the log line. Every cross-node send names its node (RF-14). Unused entries and old partials are swept after a history delete and at startup; Memory Sync skips `received_files`.
 
-- Implementation cycle: `Rework` (IR-002, a test-only Local Fix from delivery; the implementation summary above is unchanged)
+- Implementation cycle: `Rework` (IR-003: the merge with origin/personal 6533d7be04, autobyteus-22; IR-002 was a test-only Local Fix; the implementation summary above is unchanged)
 - Implementation revision record: `tickets/in-progress/cross-node-file-transfer-587/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002` (IR-001 is the baseline)
+- Current implementation revision ID: `IR-003` (IR-001 baseline, IR-002 stale test fixtures)
 - Related solution revision IDs: SR-009
 - Related architecture-review revision IDs: ARCH-REV-002
-- Related code-review revision IDs: CRR-001, CRR-003
-- Related API/E2E revision IDs: API-REV-002
+- Related code-review revision IDs: CRR-001, CRR-003, CRR-004, CRR-005
+- Related API/E2E revision IDs: API-REV-002, API-REV-003
 - Related delivery revision IDs: N/A (delivery has not created DR-001; trigger: `release-deployment-report.md` § Escalation / Reroute)
-- Triggering finding IDs: DEL-03 items 1–3 (stale tests in the whole unit suite after the base refresh)
+- Triggering finding IDs: IR-003: delivery round 2, the merge conflict with origin/personal 6533d7be04 (`release-deployment-report.md` § Delivery Round 2); IR-002: DEL-03 items 1–3
 
 ## Routing Classification (Mandatory)
 
@@ -92,7 +92,7 @@ All under `autobyteus-server-ts/` unless noted.
 - AGY, Grok and ACP tool-call limits are unknown (FU-001, DEC-008): a long transfer may be cut by them; the call then fails cleanly.
 - A log append that fails after placement leaves a placed file without its message (design's AR-002 residual; I/O failure only). Also: the append's own Task-scope recheck runs after placement, so a Task closed in the instant between the early check and the append can leave a placed (replaced) file with a refused message; narrow race, same class.
 - Both nodes need this release (DESIGN.md rule 9): an older peer answers the new routes as unknown and the sender reports it unreachable.
-- `origin/personal` moved to 9514a05a0e after the ticket base fbe714f8bb; integration is delivery's.
+- Base integration: delivery merged origin/personal ecd6d4556c (3be417f8df); IR-003 merged 6533d7be04 (autobyteus-22, the Team root rework) as 575c4ec9ed. The base moves fast: a later merge that touches the Team root or the root communication engine again needs the same check.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -143,6 +143,10 @@ All under `autobyteus-server-ts/` unless noted.
 | IMP-07 | `pnpm exec vitest run` the five IR-002 test files (`general-process-run-supervisor-ownership`, `standalone-application-host-lifecycle`, `application-team-input-root-dispatch`, `agent-team-run-manager-lifecycle`, e2e `recent-run-projection-graphql`) `--reporter=verbose --no-watch` | e295b74b81 | macOS, Node 22 | the supervisor, standalone host, Team root and Team manager constructions; run-history GraphQL e2e | — | Pass | `evidence/IMP-07-ir002-test-files.log` | `Test Files  5 passed (5)`; `Tests  44 passed (44)` |
 | IMP-08 | `pnpm -C autobyteus-server-ts typecheck` (IR-002) | e295b74b81 | macOS, Node 22 | server `src` and tests | all | Pass | `evidence/IMP-08-server-typecheck.log` | `[typecheck] PASS`; `test-file errors: 1005 in 315 files (baseline 1005 in 315 files)` |
 | IMP-09 | `pnpm -C autobyteus-web typecheck` (IR-002) | e295b74b81 | macOS, Node 22 | web, Electron main, cross-package tests | all | Pass | `evidence/IMP-09-web-typecheck.log` | `[typecheck] PASS`; `test-file errors: 86 in 36 files (baseline 86 in 36 files)` |
+| IMP-10 | `pnpm -C autobyteus-server-ts typecheck`; `pnpm -C autobyteus-web typecheck` (IR-003) | 575c4ec9ed (merge of origin/personal 6533d7be04) | macOS, Node 22 | server and web, merged tree | all | Pass | `evidence/IMP-10-typechecks.log` | server `test-file errors: 1004 in 314 files (baseline 1004 in 314 files)` PASS; web `86 in 36 files (baseline 86 in 36 files)` PASS |
+| IMP-11 | `pnpm -C autobyteus-server-ts test:unit` (IR-003) | 575c4ec9ed | macOS, Node 22 | the whole server unit suite on the merged tree | all | Pass | `evidence/IMP-11-whole-server-unit-suite.log` | `Test Files  1057 passed \| 5 skipped (1062)`; `Tests  8764 passed \| 9 skipped (8773)`; `exit=0` |
+| IMP-12 | `pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-team-execution tests/integration/api/team-communication-api.integration.test.ts tests/integration/api/run-file-changes-api.integration.test.ts --no-watch` (IR-003) | 575c4ec9ed | macOS, Node 22 | the merged Team root and manager (incl. autobyteus-22's team-run-follows-definition integration) | DS-001, DS-002 (Team receive paths), RF-14 | Pass | `evidence/IMP-12-team-integration.log` | `Test Files  10 passed (10)`; `Tests  58 passed (58)` |
+| IMP-13 | `pnpm -C autobyteus-server-ts build`, then `env -i PATH HOME=<fresh temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs REMOTE_E2E_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts --no-watch` (delivery's DEL-02 command) (IR-003) | 575c4ec9ed | macOS, Node 22, rebuilt server, real HTTP between server processes | file transfer, RF-14 and remote delegation end to end on the merged tree | AC-001 … AC-007, AC-010 | Pass | `evidence/IMP-13-two-server-e2e.log`, `evidence/IMP-13-remote-two-server-receipt.json.gz` | `build exit=0`; `Tests  55 passed (55)`; `exit=0` |
 
 - Not run, and why:
   - (IR-001 left out the whole server unit suite as covered by the affected set; that was wrong: delivery's whole run found stale constructions outside it. IR-002 runs it as IMP-06.)
