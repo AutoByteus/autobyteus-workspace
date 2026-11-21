@@ -1,0 +1,25 @@
+{"supervisor": [{"pid": "10521", "ppid": "10512", "exe": "/tmp/.mount_AutoByBzpVL1/AppRun", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["10521"]}], "main": [{"pid": "11220", "ppid": "10521", "exe": "/tmp/.mount_AutoByBzpVL1/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["11220"]}], "server": [{"pid": "11318", "ppid": "11220", "exe": "/tmp/.mount_AutoByBzpVL1/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["11318"]}], "renderer": [{"pid": "11429", "ppid": "11274", "exe": "/tmp/.mount_AutoByBzpVL1/autobyteus", "uid": "1000", "NoNewPrivs": "1", "Seccomp": "2", "NSpid": ["11429", "4", "1"]}], "file": "972814b1c8d5aa63d8be27e952717d08b7a421e898ecb8832c694dad3d3c33b8", "work": "4cf425aa7afbe1732ac6a4317305420d62749bcacc3287d1fd819b52bc1c3fde"}
+{"at": "2026-11-21T16:21:04.827843+00:00", "kind": "start", "role": "held", "last": "QA16-ACTIVE Please answer when ready."}
+{"at": "2026-11-21T16:21:16.334320+00:00", "kind": "disconnected", "role": "held"}
+{"at": "2026-11-21T16:21:22.991072+00:00", "kind": "start", "role": "notice", "last": "[Platform notice \u2014 application restarted]\n\nThe application restarted at 2026-11-21 16:21 UTC (reason: an update to v1.5.19).\nYour previous turn was interrupted; check the results of any tool calls that were running before you repeat them.\nIf you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."}
+{"at": "2026-11-21T16:21:22.991500+00:00", "kind": "completed", "role": "notice"}
+{
+  "manualInstall": null,
+  "manualFailure": null,
+  "version": "1.5.19",
+  "fromVersion": "1.5.18",
+  "foundAt": "2026-11-21T16:21:08.359Z",
+  "read": false,
+  "handledVersion": "1.5.19",
+  "handledAt": "2026-11-21T16:21:18.944Z",
+  "automatic": null,
+  "automaticFailure": null,
+  "outcome": "AUTO_UPDATED"
+}
+[2026-11-21T16:21:03.861Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-21T16:21:23.028Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-21T16:21:24.062Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-21T16:21:24.143Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-21T16:21:26.030Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-21T16:21:29.407Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-21T16:21:31.247Z] [INFO] [electron] [updater] Update for version 1.5.19 is not available (latest version: 1.5.19, downgrade is disallowed).

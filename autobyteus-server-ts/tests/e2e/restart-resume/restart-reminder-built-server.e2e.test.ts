@@ -498,7 +498,21 @@ describe.skipIf(!ENABLED)("Restart reminder across real restarts of the built se
       () => ({ toolCalls: [{ name: "run_bash", args: { command: tagged(`${tag}_FG`), timeout_seconds: 600 } }] }),
       text("Resuming after the update."),
     ], true, false);
-    await record("RR-04", result);
+    // The notice alone does not prove that the interrupted run can accept another user turn.
+    const next = await channelOf(session, result.runId);
+    try {
+      const reply = "The follow-up after the update is complete.";
+      model.script("RR-04", [text(reply)]);
+      next.send("CASE:RR-04 Continue after the update.");
+      await idleAfter(next, 0);
+      const followUp = model.of("RR-04").find((request) => request.lastUser.includes("Continue after the update."));
+      expect(followUp?.lastUser).toBe("CASE:RR-04 Continue after the update.");
+      const projection = await session.gql(`query($id:String!){getRunProjection(runId:$id){conversation}}`, { id: result.runId });
+      expect(projection.getRunProjection.conversation).toEqual(expect.arrayContaining([
+        expect.objectContaining({ role: "assistant", content: reply }),
+      ]));
+      await record("RR-04", { ...result, followUp: followUp?.lastUser, reply });
+    } finally { next.close(); }
     await node.stop(session, "SIGTERM");
 
     expect(result.entry).toMatchObject({ status: "running", backgroundTasks: true });
