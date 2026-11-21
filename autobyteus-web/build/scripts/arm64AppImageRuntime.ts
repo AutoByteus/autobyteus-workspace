@@ -61,6 +61,8 @@ export async function prepareArm64AppImageToolset(): Promise<string> {
   try {
     const legacyArchive = path.join(downloads, 'appimage-12.0.1.7z')
     await downloadVerified(LEGACY_TOOLSET, legacyArchive)
+    // The 7zip-bin package installs 7za without its executable bit; electron-builder chmods it the same way before use.
+    chmodSync(path7za, 0o755)
     execFileSync(path7za, ['x', '-y', `-o${staging}`, legacyArchive], { stdio: 'pipe' })
 
     const staticArchive = path.join(downloads, 'appimage-tools-runtime.tar.gz')
