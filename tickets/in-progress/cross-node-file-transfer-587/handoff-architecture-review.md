@@ -12,3 +12,4 @@
 - Route: `get_handoff_rules` 2026-11-21 → `/architecture_reviewer` (Large or High).
 - ARCH-REV-002, 2026-11-21: Pass for SR-008 (eac8cf3814); handed off to `/implementation_engineer` by the reviewer. AR-007 wording fixed in SR-009.
 - SR-010, 2026-11-21: revision after code review CRR-008 (design § Revision SR-010); sent for architecture review.
+- ARCH-REV-003, 2026-11-21: Pass for SR-010; SR-011 applies RF-14 to the existing-copy form (AR-008) and fixes the spine lines (AR-007).

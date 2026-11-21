@@ -80,3 +80,10 @@
 - Founder (2026-11-21): FU-007 → DEC-009 (a saved Task's files travel to another node, to the Agent or a Team's coordinator, as a new copy or to an existing copy; RF-3 exception for the Task's own context files); confirmed the R1 order after the explanation of the run's assignment ("you already figured out the correct order").
 - Changes: design § Revision SR-010 (R1 order; R2 `PeerRunNodes`; R3 saved Tasks; R4 fixes; R5 tests); requirements DEC-009, AC-012, AC-002 and AC-007 wording; RFC-001 RF-3 exception, route rows 4b, 4c; follow-ups FU-002/3/4/6/7 resolved into this ticket.
 - Classification unchanged (`Large` / `High`). Next: architecture review of the revision, then implementation and API/E2E.
+
+### SR-011 — ARCH-REV-003 Pass; AR-008, AR-007
+
+- ARCH-REV-003: Pass for SR-010 (`beb161d299`); handed off to `/implementation_engineer`.
+- AR-008: RF-14 applied to the third form (a saved Task given to an existing copy on another node takes `node`), per the founder's rule with no exception; RFC-001 RF-14 and row 4c, DEC-006, AC-012, design R3 note. The implementer told before building 4c.
+- AR-007: DS-001, DS-002, DS-005 lines now show the SR-010/011 shapes.
+- Residual for the founder (reviewer's note): an agent can attach a file to a Task itself (`create_task`/`update_task` `context_files`), and the RF-3 exception then lets it travel — the same visible-step model as copying into the workspace.
