@@ -1,0 +1,1006 @@
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/release-v1.5.14-beta.4/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/release-v1.5.14-beta.4/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:18599) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/release-v1.5.14-beta.4/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/release-v1.5.14-beta.4/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/.env // tip: ⌘ enable debugging { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/release-v1.5.14-beta.4/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/release-v1.5.14-beta.4/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+AgentRunManager initialized.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Node access: local control socket not opened. The node's local control socket path is 116 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/node-access/local-control.sock. Use a shorter data folder path.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E01: Chat (Daily Assistant, all installed skills) starts with a skill holding a local environment and reads it through the link (AC-001, AC-002, AC-006)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-chat
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-chat.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E01: Chat (Daily Assistant, all installed skills) starts with a skill holding a local environment and reads it through the link (AC-001, AC-002, AC-006)
+Created and registered workspace ID: agent_ws_26c2d38432d66cdecdb77d789479aabd5e3fbe7723b877d92c5a3c853f53debb
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E01: Chat (Daily Assistant, all installed skills) starts with a skill holding a local environment and reads it through the link (AC-001, AC-002, AC-006)
+Agent websocket attached for run daily_assistant_f064b1e68d6644d3add6da40d2f4e5f2
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E01: Chat (Daily Assistant, all installed skills) starts with a skill holding a local environment and reads it through the link (AC-001, AC-002, AC-006)
+Created agent session 3282cfa2-5dcf-4ded-926e-76534ca8ebe6 for run daily_assistant_f064b1e68d6644d3add6da40d2f4e5f2
+Agent WebSocket connected: session=3282cfa2-5dcf-4ded-926e-76534ca8ebe6, run=daily_assistant_f064b1e68d6644d3add6da40d2f4e5f2
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E01: Chat (Daily Assistant, all installed skills) starts with a skill holding a local environment and reads it through the link (AC-001, AC-002, AC-006)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agents/daily_assistant_f064b1e68d6644d3add6da40d2f4e5f2/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E01: Chat (Daily Assistant, all installed skills) starts with a skill holding a local environment and reads it through the link (AC-001, AC-002, AC-006)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-chat
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-chat.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E01: Chat (Daily Assistant, all installed skills) starts with a skill holding a local environment and reads it through the link (AC-001, AC-002, AC-006)
+Reusing registered workspace ID: agent_ws_26c2d38432d66cdecdb77d789479aabd5e3fbe7723b877d92c5a3c853f53debb
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E01: Chat (Daily Assistant, all installed skills) starts with a skill holding a local environment and reads it through the link (AC-001, AC-002, AC-006)
+AGY compaction detection off for run daily_assistant_f064b1e68d6644d3add6da40d2f4e5f2: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E01: Chat (Daily Assistant, all installed skills) starts with a skill holding a local environment and reads it through the link (AC-001, AC-002, AC-006)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agents/daily_assistant_f064b1e68d6644d3add6da40d2f4e5f2/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E01: Chat (Daily Assistant, all installed skills) starts with a skill holding a local environment and reads it through the link (AC-001, AC-002, AC-006)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agents/daily_assistant_f064b1e68d6644d3add6da40d2f4e5f2/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E01: Chat (Daily Assistant, all installed skills) starts with a skill holding a local environment and reads it through the link (AC-001, AC-002, AC-006)
+Closed agent session 3282cfa2-5dcf-4ded-926e-76534ca8ebe6
+Agent WebSocket disconnected: 3282cfa2-5dcf-4ded-926e-76534ca8ebe6
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E02: an all-installed run skips a skill the workspace already owns, with a warning, and keeps the others (AC-004)
+Agent Definition created successfully with ID: all-installed-99a2982e
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E02: an all-installed run skips a skill the workspace already owns, with a warning, and keeps the others (AC-004)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-owned
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-owned.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E02: an all-installed run skips a skill the workspace already owns, with a warning, and keeps the others (AC-004)
+Created and registered workspace ID: agent_ws_fd50e36795b3c468448e999d1f70c05df411a8f912a26fc96f05e2b666a0ff3a
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E02: an all-installed run skips a skill the workspace already owns, with a warning, and keeps the others (AC-004)
+Agent websocket attached for run all_installed_99a2982e_26604cb520aa4d65a2f7e05b33408fb9
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E02: an all-installed run skips a skill the workspace already owns, with a warning, and keeps the others (AC-004)
+Created agent session 36ce547c-ef3c-4715-87a5-7c2e72010aa5 for run all_installed_99a2982e_26604cb520aa4d65a2f7e05b33408fb9
+Agent WebSocket connected: session=36ce547c-ef3c-4715-87a5-7c2e72010aa5, run=all_installed_99a2982e_26604cb520aa4d65a2f7e05b33408fb9
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E02: an all-installed run skips a skill the workspace already owns, with a warning, and keeps the others (AC-004)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agents/all_installed_99a2982e_26604cb520aa4d65a2f7e05b33408fb9/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E02: an all-installed run skips a skill the workspace already owns, with a warning, and keeps the others (AC-004)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-owned
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-owned.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E02: an all-installed run skips a skill the workspace already owns, with a warning, and keeps the others (AC-004)
+Reusing registered workspace ID: agent_ws_fd50e36795b3c468448e999d1f70c05df411a8f912a26fc96f05e2b666a0ff3a
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E02: an all-installed run skips a skill the workspace already owns, with a warning, and keeps the others (AC-004)
+AGY configured skill skipped: run=all_installed_99a2982e_26604cb520aa4d65a2f7e05b33408fb9, agent=all-installed-99a2982e, skill=owned-skill, disposition=skipped-workspace-owned, reason=workspace_owned
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E02: an all-installed run skips a skill the workspace already owns, with a warning, and keeps the others (AC-004)
+AGY compaction detection off for run all_installed_99a2982e_26604cb520aa4d65a2f7e05b33408fb9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E02: an all-installed run skips a skill the workspace already owns, with a warning, and keeps the others (AC-004)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agents/all_installed_99a2982e_26604cb520aa4d65a2f7e05b33408fb9/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E02: an all-installed run skips a skill the workspace already owns, with a warning, and keeps the others (AC-004)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agents/all_installed_99a2982e_26604cb520aa4d65a2f7e05b33408fb9/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E02: an all-installed run skips a skill the workspace already owns, with a warning, and keeps the others (AC-004)
+Closed agent session 36ce547c-ef3c-4715-87a5-7c2e72010aa5
+Agent WebSocket disconnected: 36ce547c-ef3c-4715-87a5-7c2e72010aa5
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E03: a named skill that cannot be used fails the run with the skill and reason, not a generic error (AC-005, REQ-006)
+Agent Definition created successfully with ID: named-efb6c789
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E03: a named skill that cannot be used fails the run with the skill and reason, not a generic error (AC-005, REQ-006)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-named
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-named.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E03: a named skill that cannot be used fails the run with the skill and reason, not a generic error (AC-005, REQ-006)
+Created and registered workspace ID: agent_ws_c366cc7671c568fd9d7776fbfca03b7426295ef69d914e71e953d8f792dae208
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E03: a named skill that cannot be used fails the run with the skill and reason, not a generic error (AC-005, REQ-006)
+Agent websocket attached for run named_efb6c789_73535ae59a3b4f3a91f3116bedbbc69b
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E03: a named skill that cannot be used fails the run with the skill and reason, not a generic error (AC-005, REQ-006)
+Created agent session 5f773fd4-790b-42bb-afa0-d24511b35eac for run named_efb6c789_73535ae59a3b4f3a91f3116bedbbc69b
+Agent WebSocket connected: session=5f773fd4-790b-42bb-afa0-d24511b35eac, run=named_efb6c789_73535ae59a3b4f3a91f3116bedbbc69b
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E03: a named skill that cannot be used fails the run with the skill and reason, not a generic error (AC-005, REQ-006)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agents/named_efb6c789_73535ae59a3b4f3a91f3116bedbbc69b/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E03: a named skill that cannot be used fails the run with the skill and reason, not a generic error (AC-005, REQ-006)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-named
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-named.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E03: a named skill that cannot be used fails the run with the skill and reason, not a generic error (AC-005, REQ-006)
+Reusing registered workspace ID: agent_ws_c366cc7671c568fd9d7776fbfca03b7426295ef69d914e71e953d8f792dae208
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E03: a named skill that cannot be used fails the run with the skill and reason, not a generic error (AC-005, REQ-006)
+SEND_MESSAGE command not accepted for agent run named_efb6c789_73535ae59a3b4f3a91f3116bedbbc69b: [ACTIVATION_FAILED] Antigravity could not use skill 'env-skill': the selected workspace already has a skill with this name.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E03: a named skill that cannot be used fails the run with the skill and reason, not a generic error (AC-005, REQ-006)
+Closed agent session 5f773fd4-790b-42bb-afa0-d24511b35eac
+Agent WebSocket disconnected: 5f773fd4-790b-42bb-afa0-d24511b35eac
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E03: a named skill that cannot be used fails the run with the skill and reason, not a generic error (AC-005, REQ-006)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-named
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-named.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E03: a named skill that cannot be used fails the run with the skill and reason, not a generic error (AC-005, REQ-006)
+Reusing registered workspace ID: agent_ws_c366cc7671c568fd9d7776fbfca03b7426295ef69d914e71e953d8f792dae208
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E03: a named skill that cannot be used fails the run with the skill and reason, not a generic error (AC-005, REQ-006)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-named
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-named.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E03: a named skill that cannot be used fails the run with the skill and reason, not a generic error (AC-005, REQ-006)
+Reusing registered workspace ID: agent_ws_c366cc7671c568fd9d7776fbfca03b7426295ef69d914e71e953d8f792dae208
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E03: a named skill that cannot be used fails the run with the skill and reason, not a generic error (AC-005, REQ-006)
+Error in createAgentRun: AgentCreationError: Antigravity could not use skill 'env-skill': the selected workspace already has a skill with this name.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E04: in a Team with auto-approve stored off, a member's named-skill failure names the skill and reason, and the other member runs with skip-permissions (REQ-006, AC-006)
+Agent Definition created successfully with ID: lead-d78448e8
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E04: in a Team with auto-approve stored off, a member's named-skill failure names the skill and reason, and the other member runs with skip-permissions (REQ-006, AC-006)
+Agent Definition created successfully with ID: blocked-c8c490f8
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E04: in a Team with auto-approve stored off, a member's named-skill failure names the skill and reason, and the other member runs with skip-permissions (REQ-006, AC-006)
+Agent Team Definition created successfully with ID: agy-linked-team-34574617
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E04: in a Team with auto-approve stored off, a member's named-skill failure names the skill and reason, and the other member runs with skip-permissions (REQ-006, AC-006)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-team
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-team.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E04: in a Team with auto-approve stored off, a member's named-skill failure names the skill and reason, and the other member runs with skip-permissions (REQ-006, AC-006)
+Created and registered workspace ID: agent_ws_d97d8dcaceff9438e8ba1dece5d395afc753f510d754fd9e5d17e7951f2510f2
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E04: in a Team with auto-approve stored off, a member's named-skill failure names the skill and reason, and the other member runs with skip-permissions (REQ-006, AC-006)
+Created agent session 478afedb-70fb-4353-a1bb-427f2a5b9425 for run agy_linked_team_34574617_afde0c6376014246b6a538e9f71a8b44
+Agent team websocket attached for team run agy_linked_team_34574617_afde0c6376014246b6a538e9f71a8b44
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E04: in a Team with auto-approve stored off, a member's named-skill failure names the skill and reason, and the other member runs with skip-permissions (REQ-006, AC-006)
+Agent Team WebSocket connected: session=478afedb-70fb-4353-a1bb-427f2a5b9425, run=agy_linked_team_34574617_afde0c6376014246b6a538e9f71a8b44
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E04: in a Team with auto-approve stored off, a member's named-skill failure names the skill and reason, and the other member runs with skip-permissions (REQ-006, AC-006)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-team
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-team.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E04: in a Team with auto-approve stored off, a member's named-skill failure names the skill and reason, and the other member runs with skip-permissions (REQ-006, AC-006)
+Reusing registered workspace ID: agent_ws_d97d8dcaceff9438e8ba1dece5d395afc753f510d754fd9e5d17e7951f2510f2
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E04: in a Team with auto-approve stored off, a member's named-skill failure names the skill and reason, and the other member runs with skip-permissions (REQ-006, AC-006)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-team
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-team.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E04: in a Team with auto-approve stored off, a member's named-skill failure names the skill and reason, and the other member runs with skip-permissions (REQ-006, AC-006)
+Reusing registered workspace ID: agent_ws_d97d8dcaceff9438e8ba1dece5d395afc753f510d754fd9e5d17e7951f2510f2
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E04: in a Team with auto-approve stored off, a member's named-skill failure names the skill and reason, and the other member runs with skip-permissions (REQ-006, AC-006)
+AGY compaction detection off for run lead_d78448e8_d01b2066983a4dc5b9d0c8babd90c78c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E04: in a Team with auto-approve stored off, a member's named-skill failure names the skill and reason, and the other member runs with skip-permissions (REQ-006, AC-006)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agent_teams/agy_linked_team_34574617_afde0c6376014246b6a538e9f71a8b44/lead_d78448e8_d01b2066983a4dc5b9d0c8babd90c78c/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E05: an Org member launched with auto-approve stored off runs with skip-permissions (AC-006)
+Closed agent session 478afedb-70fb-4353-a1bb-427f2a5b9425
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E05: an Org member launched with auto-approve stored off runs with skip-permissions (AC-006)
+Agent Definition created successfully with ID: director-96b3c833
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E05: an Org member launched with auto-approve stored off runs with skip-permissions (AC-006)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-org
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-org.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E05: an Org member launched with auto-approve stored off runs with skip-permissions (AC-006)
+Created and registered workspace ID: agent_ws_6e2e5bddba3e2847fa46bc9ecf4cdaf330ebf4fafd8dd74912f1f594927a5d5e
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E05: an Org member launched with auto-approve stored off runs with skip-permissions (AC-006)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-org
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-org.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E05: an Org member launched with auto-approve stored off runs with skip-permissions (AC-006)
+Reusing registered workspace ID: agent_ws_6e2e5bddba3e2847fa46bc9ecf4cdaf330ebf4fafd8dd74912f1f594927a5d5e
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E05: an Org member launched with auto-approve stored off runs with skip-permissions (AC-006)
+AGY compaction detection off for run director_96b3c833_37179026ae0040d484e469b8a351d877: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E05: an Org member launched with auto-approve stored off runs with skip-permissions (AC-006)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agent_orgs/agy_linked_org_89c5375b_0c83254f88134a0c9d163514dcb461ce/director_96b3c833_37179026ae0040d484e469b8a351d877/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E06: a child started by an AGY agent's delegate_task call, configured with auto-approve off, runs with skip-permissions (AC-006)
+Agent Definition created successfully with ID: coordinator-86769898
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E06: a child started by an AGY agent's delegate_task call, configured with auto-approve off, runs with skip-permissions (AC-006)
+Agent Definition created successfully with ID: helper-107eddbc
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E06: a child started by an AGY agent's delegate_task call, configured with auto-approve off, runs with skip-permissions (AC-006)
+Agent Team Definition created successfully with ID: agy-delegation-team-8c0a5d8a
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E06: a child started by an AGY agent's delegate_task call, configured with auto-approve off, runs with skip-permissions (AC-006)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-delegation
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-delegation.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E06: a child started by an AGY agent's delegate_task call, configured with auto-approve off, runs with skip-permissions (AC-006)
+Created and registered workspace ID: agent_ws_d062c8817e7e062a46e1f31dc008e12f843d3157499533bc327e5e98f1deec06
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E06: a child started by an AGY agent's delegate_task call, configured with auto-approve off, runs with skip-permissions (AC-006)
+Created agent session e530f48c-f389-4287-b620-1dcfc9b33856 for run agy_delegation_team_8c0a5d8a_b0405f0c6b5a44f882fa72c543d3a6be
+Agent team websocket attached for team run agy_delegation_team_8c0a5d8a_b0405f0c6b5a44f882fa72c543d3a6be
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E06: a child started by an AGY agent's delegate_task call, configured with auto-approve off, runs with skip-permissions (AC-006)
+Agent Team WebSocket connected: session=e530f48c-f389-4287-b620-1dcfc9b33856, run=agy_delegation_team_8c0a5d8a_b0405f0c6b5a44f882fa72c543d3a6be
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E06: a child started by an AGY agent's delegate_task call, configured with auto-approve off, runs with skip-permissions (AC-006)
+Agent Definition created successfully with ID: outsider-080dba2a
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E06: a child started by an AGY agent's delegate_task call, configured with auto-approve off, runs with skip-permissions (AC-006)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-delegation
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-delegation.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E06: a child started by an AGY agent's delegate_task call, configured with auto-approve off, runs with skip-permissions (AC-006)
+Reusing registered workspace ID: agent_ws_d062c8817e7e062a46e1f31dc008e12f843d3157499533bc327e5e98f1deec06
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E06: a child started by an AGY agent's delegate_task call, configured with auto-approve off, runs with skip-permissions (AC-006)
+AGY compaction detection off for run coordinator_86769898_b16e20504e514b3ea41a841baec86256: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E06: a child started by an AGY agent's delegate_task call, configured with auto-approve off, runs with skip-permissions (AC-006)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agent_teams/agy_delegation_team_8c0a5d8a_b0405f0c6b5a44f882fa72c543d3a6be/coordinator_86769898_b16e20504e514b3ea41a841baec86256/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E06: a child started by an AGY agent's delegate_task call, configured with auto-approve off, runs with skip-permissions (AC-006)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-delegation
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-delegation.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E06: a child started by an AGY agent's delegate_task call, configured with auto-approve off, runs with skip-permissions (AC-006)
+Reusing registered workspace ID: agent_ws_d062c8817e7e062a46e1f31dc008e12f843d3157499533bc327e5e98f1deec06
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E06: a child started by an AGY agent's delegate_task call, configured with auto-approve off, runs with skip-permissions (AC-006)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-delegation
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-delegation.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E06: a child started by an AGY agent's delegate_task call, configured with auto-approve off, runs with skip-permissions (AC-006)
+Reusing registered workspace ID: agent_ws_d062c8817e7e062a46e1f31dc008e12f843d3157499533bc327e5e98f1deec06
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E06: a child started by an AGY agent's delegate_task call, configured with auto-approve off, runs with skip-permissions (AC-006)
+AGY compaction detection off for run outsider_080dba2a_a1b0254d0afc44b5b70f986ae2acf48e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E06: a child started by an AGY agent's delegate_task call, configured with auto-approve off, runs with skip-permissions (AC-006)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agents/outsider_080dba2a_a1b0254d0afc44b5b70f986ae2acf48e/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)
+Closed agent session e530f48c-f389-4287-b620-1dcfc9b33856
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)
+Agent Definition created successfully with ID: resume-deleted-7d169605
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)
+AGY configured skill skipped: run=all_installed_99a2982e_26604cb520aa4d65a2f7e05b33408fb9, agent=all-installed-99a2982e, skill=owned-skill, disposition=skipped-workspace-owned, reason=workspace_owned
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-resume-deleted
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-resume-deleted.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)
+Created and registered workspace ID: agent_ws_8214fe85b85ad3d0eb720ade4d17e9cbda55b31e13cb64b8cc4a476d2c74f936
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)
+Agent websocket attached for run resume_deleted_7d169605_0258773d982b4e5d8d7e08628399fe6a
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)
+Created agent session 3d4b9ed3-6f35-4eb9-b654-6636e826b230 for run resume_deleted_7d169605_0258773d982b4e5d8d7e08628399fe6a
+Agent WebSocket connected: session=3d4b9ed3-6f35-4eb9-b654-6636e826b230, run=resume_deleted_7d169605_0258773d982b4e5d8d7e08628399fe6a
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agents/resume_deleted_7d169605_0258773d982b4e5d8d7e08628399fe6a/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-resume-deleted
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-resume-deleted.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)
+Reusing registered workspace ID: agent_ws_8214fe85b85ad3d0eb720ade4d17e9cbda55b31e13cb64b8cc4a476d2c74f936
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)
+AGY compaction detection off for run resume_deleted_7d169605_0258773d982b4e5d8d7e08628399fe6a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agents/resume_deleted_7d169605_0258773d982b4e5d8d7e08628399fe6a/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agents/resume_deleted_7d169605_0258773d982b4e5d8d7e08628399fe6a/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)
+Closed agent session 3d4b9ed3-6f35-4eb9-b654-6636e826b230
+Agent WebSocket disconnected: 3d4b9ed3-6f35-4eb9-b654-6636e826b230
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)
+Agent websocket attached for run resume_deleted_7d169605_0258773d982b4e5d8d7e08628399fe6a
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)
+Created agent session 0d797e1d-b888-4c62-84bc-ad6c2ec16cde for run resume_deleted_7d169605_0258773d982b4e5d8d7e08628399fe6a
+Agent WebSocket connected: session=0d797e1d-b888-4c62-84bc-ad6c2ec16cde, run=resume_deleted_7d169605_0258773d982b4e5d8d7e08628399fe6a
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agents/resume_deleted_7d169605_0258773d982b4e5d8d7e08628399fe6a/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-resume-deleted
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-resume-deleted.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)
+Reusing registered workspace ID: agent_ws_8214fe85b85ad3d0eb720ade4d17e9cbda55b31e13cb64b8cc4a476d2c74f936
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)
+AGY configured skill skipped on restore: run=resume_deleted_7d169605_0258773d982b4e5d8d7e08628399fe6a, skill=doomed-skill, disposition=skipped-missing-source
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)
+AGY compaction detection off for run resume_deleted_7d169605_0258773d982b4e5d8d7e08628399fe6a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agents/resume_deleted_7d169605_0258773d982b4e5d8d7e08628399fe6a/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)
+Skill 'doomed-skill' defined in agent definition 'resume-deleted-7d169605' could not be resolved. Recording an unresolved binding for workspace reconciliation.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agents/resume_deleted_7d169605_0258773d982b4e5d8d7e08628399fe6a/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)
+Closed agent session 0d797e1d-b888-4c62-84bc-ad6c2ec16cde
+Agent WebSocket disconnected: 0d797e1d-b888-4c62-84bc-ad6c2ec16cde
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)
+Agent Definition created successfully with ID: resume-legacy-e4aec250
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)
+AGY configured skill skipped: run=all_installed_99a2982e_26604cb520aa4d65a2f7e05b33408fb9, agent=all-installed-99a2982e, skill=owned-skill, disposition=skipped-workspace-owned, reason=workspace_owned
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-resume-legacy
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-resume-legacy.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)
+Skill 'doomed-skill' defined in agent definition 'resume-deleted-7d169605' could not be resolved. Recording an unresolved binding for workspace reconciliation.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)
+Created and registered workspace ID: agent_ws_b85a2862df17dc0c8911623ffe48a73840680be2b966e5aa7e738e80086be412
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)
+Agent websocket attached for run resume_legacy_e4aec250_cd80a54bfb054d1f83d9f9c638a0a60d
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)
+Created agent session 3ed25131-12d7-466e-b1b2-4292600c5a20 for run resume_legacy_e4aec250_cd80a54bfb054d1f83d9f9c638a0a60d
+Agent WebSocket connected: session=3ed25131-12d7-466e-b1b2-4292600c5a20, run=resume_legacy_e4aec250_cd80a54bfb054d1f83d9f9c638a0a60d
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agents/resume_legacy_e4aec250_cd80a54bfb054d1f83d9f9c638a0a60d/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-resume-legacy
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-resume-legacy.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)
+Reusing registered workspace ID: agent_ws_b85a2862df17dc0c8911623ffe48a73840680be2b966e5aa7e738e80086be412
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)
+AGY compaction detection off for run resume_legacy_e4aec250_cd80a54bfb054d1f83d9f9c638a0a60d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agents/resume_legacy_e4aec250_cd80a54bfb054d1f83d9f9c638a0a60d/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agents/resume_legacy_e4aec250_cd80a54bfb054d1f83d9f9c638a0a60d/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)
+Closed agent session 3ed25131-12d7-466e-b1b2-4292600c5a20
+Agent WebSocket disconnected: 3ed25131-12d7-466e-b1b2-4292600c5a20
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)
+Agent websocket attached for run resume_legacy_e4aec250_cd80a54bfb054d1f83d9f9c638a0a60d
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)
+Created agent session a3a3d9eb-105f-4855-a399-87b8e7e5da43 for run resume_legacy_e4aec250_cd80a54bfb054d1f83d9f9c638a0a60d
+Agent WebSocket connected: session=a3a3d9eb-105f-4855-a399-87b8e7e5da43, run=resume_legacy_e4aec250_cd80a54bfb054d1f83d9f9c638a0a60d
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agents/resume_legacy_e4aec250_cd80a54bfb054d1f83d9f9c638a0a60d/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-resume-legacy
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-resume-legacy.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)
+Reusing registered workspace ID: agent_ws_b85a2862df17dc0c8911623ffe48a73840680be2b966e5aa7e738e80086be412
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)
+AGY compaction detection off for run resume_legacy_e4aec250_cd80a54bfb054d1f83d9f9c638a0a60d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agents/resume_legacy_e4aec250_cd80a54bfb054d1f83d9f9c638a0a60d/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agents/resume_legacy_e4aec250_cd80a54bfb054d1f83d9f9c638a0a60d/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)
+Closed agent session a3a3d9eb-105f-4855-a399-87b8e7e5da43
+Agent WebSocket disconnected: a3a3d9eb-105f-4855-a399-87b8e7e5da43
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E09: a brand-new run of an imported agent with a configured skill starts in a workspace with same-skill links and reaches the skill (release smoke)
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E09: a brand-new run of an imported agent with a configured skill starts in a workspace with same-skill links and reaches the skill (release smoke)
+AGY configured skill skipped: run=all_installed_99a2982e_26604cb520aa4d65a2f7e05b33408fb9, agent=all-installed-99a2982e, skill=owned-skill, disposition=skipped-workspace-owned, reason=workspace_owned
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E09: a brand-new run of an imported agent with a configured skill starts in a workspace with same-skill links and reaches the skill (release smoke)
+Skill 'doomed-skill' defined in agent definition 'resume-deleted-7d169605' could not be resolved. Recording an unresolved binding for workspace reconciliation.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E09: a brand-new run of an imported agent with a configured skill starts in a workspace with same-skill links and reaches the skill (release smoke)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-new-run-links
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-new-run-links.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E09: a brand-new run of an imported agent with a configured skill starts in a workspace with same-skill links and reaches the skill (release smoke)
+Created and registered workspace ID: agent_ws_e2484dddee58ceff108a41a8fde95fc6e28e0a91f932b53f6c9976ad39f872cf
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E09: a brand-new run of an imported agent with a configured skill starts in a workspace with same-skill links and reaches the skill (release smoke)
+Agent websocket attached for run agy_package_agent_004ed134_36f03a2ff70d40a6a406ed0888133d20
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E09: a brand-new run of an imported agent with a configured skill starts in a workspace with same-skill links and reaches the skill (release smoke)
+Created agent session d55f6405-8dc9-41fb-81b5-3e98d9a4f88a for run agy_package_agent_004ed134_36f03a2ff70d40a6a406ed0888133d20
+Agent WebSocket connected: session=d55f6405-8dc9-41fb-81b5-3e98d9a4f88a, run=agy_package_agent_004ed134_36f03a2ff70d40a6a406ed0888133d20
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E09: a brand-new run of an imported agent with a configured skill starts in a workspace with same-skill links and reaches the skill (release smoke)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agents/agy_package_agent_004ed134_36f03a2ff70d40a6a406ed0888133d20/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E09: a brand-new run of an imported agent with a configured skill starts in a workspace with same-skill links and reaches the skill (release smoke)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-new-run-links
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-new-run-links.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E09: a brand-new run of an imported agent with a configured skill starts in a workspace with same-skill links and reaches the skill (release smoke)
+Reusing registered workspace ID: agent_ws_e2484dddee58ceff108a41a8fde95fc6e28e0a91f932b53f6c9976ad39f872cf
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E09: a brand-new run of an imported agent with a configured skill starts in a workspace with same-skill links and reaches the skill (release smoke)
+AGY compaction detection off for run agy_package_agent_004ed134_36f03a2ff70d40a6a406ed0888133d20: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E09: a brand-new run of an imported agent with a configured skill starts in a workspace with same-skill links and reaches the skill (release smoke)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agents/agy_package_agent_004ed134_36f03a2ff70d40a6a406ed0888133d20/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E09: a brand-new run of an imported agent with a configured skill starts in a workspace with same-skill links and reaches the skill (release smoke)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agents/agy_package_agent_004ed134_36f03a2ff70d40a6a406ed0888133d20/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E09: a brand-new run of an imported agent with a configured skill starts in a workspace with same-skill links and reaches the skill (release smoke)
+Closed agent session d55f6405-8dc9-41fb-81b5-3e98d9a4f88a
+Agent WebSocket disconnected: d55f6405-8dc9-41fb-81b5-3e98d9a4f88a
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E10: a brand-new team member with a configured skill starts on its first message in a workspace with same-skill links and reaches the skill (release smoke)
+Agent Team Definition created successfully with ID: agy-package-team-17c2eb5d
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E10: a brand-new team member with a configured skill starts on its first message in a workspace with same-skill links and reaches the skill (release smoke)
+Skill 'doomed-skill' defined in agent definition 'resume-deleted-7d169605' could not be resolved. Recording an unresolved binding for workspace reconciliation.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E10: a brand-new team member with a configured skill starts on its first message in a workspace with same-skill links and reaches the skill (release smoke)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-team-links
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-team-links.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E10: a brand-new team member with a configured skill starts on its first message in a workspace with same-skill links and reaches the skill (release smoke)
+Created and registered workspace ID: agent_ws_e513a577595e4f00f3cf9a5edaa02669cf0ee99258a8abd0db7d033afb62c6f6
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E10: a brand-new team member with a configured skill starts on its first message in a workspace with same-skill links and reaches the skill (release smoke)
+Created agent session f19a1282-e3b2-44d1-ac65-68ab3ee1c0ac for run agy_package_team_17c2eb5d_54bb077d035249b89417c4d71081d3e3
+Agent team websocket attached for team run agy_package_team_17c2eb5d_54bb077d035249b89417c4d71081d3e3
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E10: a brand-new team member with a configured skill starts on its first message in a workspace with same-skill links and reaches the skill (release smoke)
+Agent Team WebSocket connected: session=f19a1282-e3b2-44d1-ac65-68ab3ee1c0ac, run=agy_package_team_17c2eb5d_54bb077d035249b89417c4d71081d3e3
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E10: a brand-new team member with a configured skill starts on its first message in a workspace with same-skill links and reaches the skill (release smoke)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-team-links
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/workspace-team-links.
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E10: a brand-new team member with a configured skill starts on its first message in a workspace with same-skill links and reaches the skill (release smoke)
+Reusing registered workspace ID: agent_ws_e513a577595e4f00f3cf9a5edaa02669cf0ee99258a8abd0db7d033afb62c6f6
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E10: a brand-new team member with a configured skill starts on its first message in a workspace with same-skill links and reaches the skill (release smoke)
+AGY compaction detection off for run agy_package_agent_004ed134_5c938e855b8847c28d37c7910edeb052: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E10: a brand-new team member with a configured skill starts on its first message in a workspace with same-skill links and reaches the skill (release smoke)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-e2e-wvSWit/memory/agent_teams/agy_package_team_17c2eb5d_54bb077d035249b89417c4d71081d3e3/agy_package_agent_004ed134_5c938e855b8847c28d37c7910edeb052/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI) > E10: a brand-new team member with a configured skill starts on its first message in a workspace with same-skill links and reaches the skill (release smoke)
+Closed agent session f19a1282-e3b2-44d1-ac65-68ab3ee1c0ac
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent Team Definition with ID agy-package-team-17c2eb5d deleted successfully.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Skill 'doomed-skill' defined in agent definition 'resume-deleted-7d169605' could not be resolved. Recording an unresolved binding for workspace reconciliation.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+Skill 'doomed-skill' defined in agent definition 'resume-deleted-7d169605' could not be resolved. Recording an unresolved binding for workspace reconciliation.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent Definition with ID resume-legacy-e4aec250 deleted successfully.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+Skill 'doomed-skill' defined in agent definition 'resume-deleted-7d169605' could not be resolved. Recording an unresolved binding for workspace reconciliation.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent Definition with ID resume-deleted-7d169605 deleted successfully.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent Definition with ID outsider-080dba2a deleted successfully.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent Team Definition with ID agy-delegation-team-8c0a5d8a deleted successfully.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent Definition with ID helper-107eddbc deleted successfully.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent Definition with ID coordinator-86769898 deleted successfully.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+TOOL_LIST_UPDATE_APPLY_FAILED:director_96b3c833_37179026ae0040d484e469b8a351d877: Error: Agent run 'director_96b3c833_37179026ae0040d484e469b8a351d877' is not active.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent Definition with ID director-96b3c833 deleted successfully.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+TOOL_LIST_UPDATE_APPLY_FAILED:lead_d78448e8_d01b2066983a4dc5b9d0c8babd90c78c: Error: Agent run 'lead_d78448e8_d01b2066983a4dc5b9d0c8babd90c78c' is not active.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent Team Definition with ID agy-linked-team-34574617 deleted successfully.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent Definition with ID blocked-c8c490f8 deleted successfully.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent Definition with ID lead-d78448e8 deleted successfully.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent Definition with ID named-efb6c789 deleted successfully.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+TOOL_LIST_UPDATE_APPLY_FAILED:all_installed_99a2982e_26604cb520aa4d65a2f7e05b33408fb9: Error: Agent run 'all_installed_99a2982e_26604cb520aa4d65a2f7e05b33408fb9' is not active.
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stderr | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+Agent package root path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-package-djcpWt
+
+stdout | tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts > AGY linked skills and always auto-approve through the server (scripted CLI)
+Agent Definition with ID all-installed-99a2982e deleted successfully.
+
+ ✓ tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts (10 tests) 34954ms
+     ✓ E01: Chat (Daily Assistant, all installed skills) starts with a skill holding a local environment and reads it through the link (AC-001, AC-002, AC-006)  3007ms
+     ✓ E02: an all-installed run skips a skill the workspace already owns, with a warning, and keeps the others (AC-004)  583ms
+     ✓ E03: a named skill that cannot be used fails the run with the skill and reason, not a generic error (AC-005, REQ-006)  628ms
+     ✓ E04: in a Team with auto-approve stored off, a member's named-skill failure names the skill and reason, and the other member runs with skip-permissions (REQ-006, AC-006)  933ms
+     ✓ E05: an Org member launched with auto-approve stored off runs with skip-permissions (AC-006)  501ms
+     ✓ E06: a child started by an AGY agent's delegate_task call, configured with auto-approve off, runs with skip-permissions (AC-006)  849ms
+     ✓ E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)  2312ms
+     ✓ E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)  4298ms
+     ✓ E09: a brand-new run of an imported agent with a configured skill starts in a workspace with same-skill links and reaches the skill (release smoke)  494ms
+     ✓ E10: a brand-new team member with a configured skill starts on its first message in a workspace with same-skill links and reaches the skill (release smoke)  605ms
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  07:39:36
+   Duration  47.30s (transform 7.87s, setup 60ms, import 11.17s, tests 34.95s, environment 0ms)
+
+JSON report written to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-wr1sr_7o/antigravity.json
