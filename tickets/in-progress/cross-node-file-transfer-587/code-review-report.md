@@ -14,13 +14,14 @@
 - Relevant Architecture Review Revision IDs: ARCH-REV-001, ARCH-REV-002
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
-- Review Scope: `Full Review`
-- Trigger: IR-001: code `e327ba2467`, handoff and evidence `69b98df45a`, branch `codex/cross-node-file-transfer-587`, base `fbe714f8bb`
-- Prior Review Round Reviewed: N/A; Latest Authoritative Round: 1
+- Current Code Review Revision ID: `CRR-004`
+- Current Review Round: `2`
+- Review Scope: `Targeted Delta Review`
+- Review Scope Evidence (round 2): `ef53fadd52..e295b74b81` changes six test files only. Delivery's merge `3be417f8df` brought six `src` files from `origin/personal`; none is a file this ticket changed (the two change sets do not intersect). No production source of this ticket changed since `e327ba2467`, so round 1's structural checks and scores carry forward
+- Trigger: IR-002 (delivery's DEL-03 Local Fix, items 1–3 in `release-deployment-report.md` § Escalation / Reroute): test fix `e295b74b81`, handoff and evidence `20866c8847`, on delivery's `ef53fadd52`. Round 1: IR-001, code `e327ba2467`, base `fbe714f8bb`
+- Prior Review Round Reviewed: 1 (CRR-001); Latest Authoritative Round: 2
 - Failure-origin fields: N/A
 
 ## Routing Classification Review
@@ -214,16 +215,20 @@ None.
 - **AC-002 wording (C-10)** and the new `REFERENCE_FILE_NAME_REPEATED` (C-05) are for the Solution Designer's documents.
 - **Both nodes need this release** (DESIGN.md rule 9). `origin/personal` has moved on; integration is delivery's.
 
+## Round 2 (CRR-004): IR-002, stale test constructions
+
+- What failed at delivery (DEL-03): after the base refresh, the whole server unit suite had ten failures in three test files. Each constructs an owner without an input this ticket made required: the supervisor's `receivedFiles`; the standalone host's expected supervisor input; `RootTeamRun`'s `remoteFiles`.
+- The fix (`e295b74b81`) gives those constructions the explicit no-peer collaborators: `NO_PEER_CHANNEL`, `NO_REMOTE_FILES`, `NO_FILES_RECEIVED` with a no-op `sweep`. It does the same for two more `AgentTeamRunManager` constructions found by search. The standalone-host test gains stronger assertions: one `remoteFiles` object shared by the supervisor, the collaboration and the platform runtime, with `receivedFiles` being its `received` part. No assertion was loosened.
+- Verified: the diff above; no `src` change of this ticket since `e327ba2467`; the merge's `src` files do not intersect this ticket's. IMP-06 (whole server unit suite, 8698 passed) and IMP-08/09 (both typechecks at baseline) ran on `e295b74b81`; I reran nothing.
+- My review gap: in CRR-001 I accepted the handoff's "Not run: full `test:unit` … the rest of the suite exercises nothing this change touches". The change made inputs required on owners that tests construct directly, and the typecheck baseline hides such stale constructions. The claim needed checking, and the whole suite was the cheap check. Delivery's proposed guide fix (`TESTING.md` § Choosing the path: run the whole server unit suite when an owner that tests construct gains a required input) is for the guide's owner (API/E2E) and the Solution Designer.
+- Findings: None.
+
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
+- Review Decision: `Pass` (round 2, CRR-004)
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.4/10; every category ≥ 9.3.
-- Recommended Recipient: API/E2E engineer
-- Notes: the security boundary holds on both sides:
-  - sender: workspace containment after resolving links, regular files only, and one handle for hash and pieces;
-  - receiver: the signed body hash, the 8 MiB bound, size and SHA-256 at completion, and placement confined to cleaned names inside the agent's folder.
-
-  Deviations D-1 … D-6 and the Principle 16 note hold.
+- Score Summary: 9.4/10 (unchanged; no production change)
+- Recommended Recipient: API/E2E engineer (an implementation-owned fix returns through API/E2E), with delivery's request to have the package back once the gates pass
+- Notes: round 1's notes and residual risks stand.

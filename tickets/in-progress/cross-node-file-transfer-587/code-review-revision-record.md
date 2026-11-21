@@ -9,6 +9,7 @@ The latest `code-review-report.md` is authoritative for its current result.
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001, `e327ba2467`) | N/A | Pass | None |
 | CRR-002 | `api-e2e-test-review-report.md` | Proportional test-code review after API/E2E Pass (API-REV-001, `eaf53c5c7b`) | N/A (first test review) | Fail (Local Fix, API/E2E) | T-001 |
 | CRR-003 | `api-e2e-test-review-report.md` | Test-code review round 2 (API-REV-002, `71be9e9e8e`) | Fail (Local Fix, API/E2E) | Pass | T-001 (resolved) |
+| CRR-004 | `code-review-report.md` | Implementation Review, round 2 (IR-002, delivery DEL-03, `e295b74b81`) | Pass (CRR-001) | Pass | None |
 
 ## Revision Entries
 
@@ -98,3 +99,28 @@ None.
 - Material score or classification changes: N/A
 - Recommended recipient: delivery engineer
 - Remaining risks or uncertainty: the gated contract stories stay red for FU-002 (565, urgent); FU-001 (AGY/Grok/ACP limits); FU-003, FU-004 wording; the narrow placement race; the AC-007 timing under the 24 h rule; AC-002's wording.
+
+### CRR-004 — Source review round 2: IR-002 (delivery DEL-03 stale test constructions)
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/tickets/in-progress/cross-node-file-transfer-587/code-review-report.md`
+- Review entry point and round: Implementation Review, round 2
+- Review scope: `Targeted Delta Review`. `ef53fadd52..e295b74b81` changes six test files only; delivery's merge brought `src` files that do not intersect this ticket's.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, IR-002; delivery's `release-deployment-report.md` § Escalation / Reroute (DEL-03 items 1–3)
+- Relevant solution revision IDs: SR-009
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-001, IR-002
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: none recorded yet (DEL-03 in the release report)
+- Prior authoritative result: Pass (CRR-001; test review CRR-003)
+- Current authoritative result: Pass
+- What changed in the review result and why: stale constructions now get the explicit no-peer collaborators. The standalone-host test gained stronger assertions (one shared `remoteFiles`; `receivedFiles` is its `received` part). The whole server unit suite passes (IMP-06). My CRR-001 gap is recorded in the report: I accepted an affected-set unit run for a change that made constructor inputs required.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+None (no finding was open; DEL-03 was raised by delivery).
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A
+- Recommended recipient: API/E2E engineer; then the test-code review; then delivery, which asked for the package back
+- Remaining risks or uncertainty: as CRR-001 and CRR-003; delivery's proposed `TESTING.md` check is for the guide's owner.
