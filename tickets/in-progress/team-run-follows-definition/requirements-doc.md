@@ -2,14 +2,15 @@
 
 ## Document Status
 
-- Status: `Ready for Approval`
-- Current solution revision ID: `SR-002`
+- Status: `Approved`
+- Current solution revision ID: `SR-005`
 - Package identifier: `team-run-follows-definition`
 - Request / ticket: Project Task `autobyteus-22` (Project `project_f34a9537-07d7-449a-b78f-16368f1aa619`)
 - Requested by: `/project_task_manager` (run `project_task_manager_2f41a1df4e464bf2aa8970327d9d7ad0`), on the user's questions of 2026-11-11
 - Requirements owner: Solution Designer
 - Date: 2026-11-11
-- Approved by and reference: pending (DEC-001..DEC-004 need the user)
+- Approved by and reference: `User`, 2026-11-21, in the Solution Designer conversation: "Anyway I think now you have the fourth picture also the requirement is also clear right now I think you can work on it now is it" — given after the Solution Designer's summary asking for a yes on recommendations 1–3 (DEC-001 (a), DEC-002 (a), DEC-003 standalone + delegated copies) and after the user decided DEC-004 (notice to every remaining member).
+- Exact approved requirements baseline: this document at SR-005 (REQ-001..REQ-009, AC-001..AC-010, DEC-001..DEC-009)
 - Behavior-defining supplements: None yet
 
 ## Problem And Desired Outcome
@@ -69,8 +70,9 @@ None found.
 | REQ-003 | The run's coordinator and handoff rules follow the definition; `get_handoff_rules` returns the run's current rules. | BEH-001, BEH-004 | Direction; investigation finding |
 | REQ-004 | It applies to standalone Team runs and delegated Team copies (the SemFlow study's team is a copy, IF-06), while they run and when a stopped run is reopened, without starting a new run. | BEH-001 | DEC-001, DEC-003 |
 | REQ-005 | The change is saved with the run, so a restart or restore keeps it. | BEH-001 | Safety |
-| REQ-006 | The team's agents are told about the change (DEC-004). | — | DEC-004 |
+| REQ-006 | The team's agents are told about the change: every remaining member gets one short notice (DEC-004). | — | DEC-004 |
 | REQ-008 | In the app, the running team's view shows the current members: a member that joins appears (Offline until it starts) without reopening the run, and a member that leaves disappears from the member list; the user can select and message every current member, which starts a not-yet-started member. A removed member's past messages stay visible in the team's history, named by its address. | — | The user, Task comment 2026-11-18 |
+| REQ-009 | A message to a member that left the team is not delivered, and the sender gets a clear refusal naming that the member is no longer in the team and pointing to `get_handoff_rules` (the platform's safety net for a rare mistake, the user 2026-11-21). | BEH-003 | The user, 2026-11-21; Solution Designer (wording at design) |
 | REQ-007 | When the Team definition can't be read or is invalid, the run keeps its current members and the problem is logged; the run keeps working. | — | DESIGN.md rule 7 |
 
 ## Acceptance Criteria
@@ -82,9 +84,10 @@ None found.
 | AC-003 | REQ-002 | The removed member is busy when the change arrives | Behaves as DEC-002 decides |
 | AC-004 | REQ-004, REQ-005 | The definition changes while the run is stopped; the run is reopened (and after a server restart) | The reopened run has the current members and rules |
 | AC-005 | REQ-004 | Delegated Team copy (as the SemFlow team) | Same as AC-001/AC-002 |
-| AC-006 | REQ-006 | Any of the above | The agents named in DEC-004 receive the notice |
+| AC-006 | REQ-006 | Any of the above | Every remaining member receives one notice (joined, left, current rules) when idle; the new member gets none |
 | AC-007 | REQ-007 | Definition made invalid | Run unchanged, warning logged |
 | AC-008 | REQ-003 | Coordinator changed in the definition | User messages to the team reach the new coordinator |
+| AC-010 | REQ-009 | After a member is removed, a remaining member messages its address | Not delivered; the refusal says it left the team and points to get_handoff_rules |
 | AC-009 | REQ-008 | The team's view is open in the app while a member is added and another removed | The new member appears (Offline) and the removed one disappears without reloading; the user messages the new member and it starts and answers; the removed member's earlier messages remain in the Team tab |
 
 ## Relevant Scenarios
@@ -102,10 +105,10 @@ None found.
 
 | ID | Question | Reasoning And Recommendation | Owner | Status |
 | --- | --- | --- | --- | --- |
-| DEC-001 | When does a run follow a changed definition? (a) automatically right away: running runs at once, stopped runs when reopened; (b) only when the run is reopened; (c) only when the user presses "Update team" on the run | You asked why it doesn't happen automatically; agent definition changes (tools) already apply live (IF-11), and a new member costs nothing until first needed (IF-08). (c) adds a manual step you'd forget for delegated copies running unattended. **Recommend (a).** | User | Needs user |
-| DEC-002 | A removed member that is busy (mid-turn) | (a) it finishes its current turn (its outgoing messages from that turn still go out), then it is stopped and retired; no new messages reach it from the moment of removal. (b) stop it immediately, losing the turn. (a) avoids losing half-done work and is predictable. **Recommend (a).** | User | Needs user |
-| DEC-003 | Which team runs | Standalone Team runs and delegated Team copies cover both your cases (IF-05, IF-06) and share one saved format. Teams mounted in an Org keep separate copies of members and rules (IF-10); including them roughly doubles the work. **Recommend: standalone + delegated copies now; Org-mounted Teams as a follow-up (FU-002).** | User | Needs user |
-| DEC-004 | Who is told, and how | One short system notice, like skill-update notices (IF-12), delivered when the agent is idle: to the **coordinator** ("Your team changed: X joined at /…; Y left"), and to each **member whose handoff rules changed** ("Your handoff rules changed; call get_handoff_rules"). The new member needs no notice (it starts with current instructions). **Recommend this.** | User | Needs user |
+| DEC-001 | When does a run follow a changed definition? (a) automatically right away: running runs at once, stopped runs when reopened; (b) only when the run is reopened; (c) only when the user presses "Update team" on the run | You asked why it doesn't happen automatically; agent definition changes (tools) already apply live (IF-11), and a new member costs nothing until first needed (IF-08). (c) adds a manual step you'd forget for delegated copies running unattended. **Recommend (a).** **Decided by the user (2026-11-21): (a).** | User (2026-11-21) | Decided |
+| DEC-002 | A removed member that is busy (mid-turn) | (a) it finishes its current turn (its outgoing messages from that turn still go out), then it is stopped and retired; no new messages reach it from the moment of removal. (b) stop it immediately, losing the turn. (a) avoids losing half-done work and is predictable. **Recommend (a).** **Decided by the user (2026-11-21): (a).** | User (2026-11-21) | Decided |
+| DEC-003 | Which team runs | Standalone Team runs and delegated Team copies cover both your cases (IF-05, IF-06) and share one saved format. Teams mounted in an Org keep separate copies of members and rules (IF-10); including them roughly doubles the work. **Recommend: standalone + delegated copies now; Org-mounted Teams as a follow-up (FU-002).** **Decided by the user (2026-11-21): standalone Team runs and delegated Team copies now; Org-mounted Teams as follow-up FU-002.** | User (2026-11-21) | Decided |
+| DEC-004 | Who is told, and how | The user (2026-11-21): every member still in the team gets the notice, not only the coordinator; agents act correctly on a clear notice, and the platform catches a rare mistake. **Decided by the user:** one short system notice, delivered when the agent is idle (like skill-update notices, IF-12), to **every remaining member**: who joined (with address), who left, and its current handoff rules (or to call `get_handoff_rules`). The new member needs none (it starts with the current team). | User (2026-11-21) | Decided |
 | DEC-005 | Runtime and model of an added member | Nobody picks it, as for catalog copies; reuse that rule (IF-13): the agent definition's default, else the team run's own launch choice; workspace and auto-approve from the run. **Decided.** | Solution Designer | Decided |
 | DEC-006 | Same member name, different agent | Treat as remove + add: the old member retires, a new run starts fresh (another agent's conversation must not continue). **Decided.** | Solution Designer | Decided |
 | DEC-007 | Removed member added back later | It returns as the same member with its old conversation (identity kept as retired). Keeps context, matches what you value here. **Decided.** | Solution Designer | Decided |
@@ -124,5 +127,5 @@ None found.
 
 ## Readiness Check
 
-- Content ready for approval: `Yes`; remaining blocker: DEC-001..DEC-004.
-- Approved basis ready for design: `No`.
+- Content ready for approval: `Yes`; remaining blocker: None.
+- Approved basis ready for design: `Yes` (User, 2026-11-21).
