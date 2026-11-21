@@ -1,0 +1,22 @@
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      PASS
+claude      brand-new team member                    PASS
+claude      different same-named skill               PASS
+codex       new run + restore, linked workspace      PASS
+codex       brand-new team member                    PASS
+codex       different same-named skill               PASS
+grok        new run + restore, linked workspace      FAIL    failed: AssertionError: AgentCreationError: ACP_REQUEST_TIMEOUT: initialize did not respond in time.: expected { success: false, …(2) } to match object { success: true, …(1) }
+grok        brand-new team member                    FAIL    failed: AssertionError: turn errors: {"code":"COLLABORATION_AGENT_ACTIVATION_FAILED","message":"ACP_REQUEST_TIMEOUT: initialize did not respond in time.","error_scope":"runtime","error_effect":"terminal","turn_id":null,"change_sequence":2,"agent_run_id":"link_probe_agent_46b57977_d09bad7ac49c440a9270a9b5585
+grok        different same-named skill               PASS
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+worktree    left unchanged                           FAIL    git status changed: ?? tickets/in-progress/release-v1.5.14-beta.4/release-notes.md
+
+commit    a87db45ba4f218ef72c774170047d0fc03c7882c
+models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.5 (pinned grok-4.7 not offered)"}
+duration  live 351s, antigravity 48s, autobyteus 12s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-wr1sr_7o

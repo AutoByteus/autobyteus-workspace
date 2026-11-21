@@ -1,0 +1,65 @@
+{
+  "runId": "restart_reminder_13bd5955_5ae4f003aed44042b636e3dc8fc6048e",
+  "entry": {
+    "root": {
+      "rootSubjectKind": "agent",
+      "rootRunId": "restart_reminder_13bd5955_5ae4f003aed44042b636e3dc8fc6048e"
+    },
+    "agentRunId": "restart_reminder_13bd5955_5ae4f003aed44042b636e3dc8fc6048e",
+    "place": "host",
+    "status": "running",
+    "backgroundTasks": true,
+    "recordedAt": "2026-11-21T15:57:35.236Z",
+    "version": "0.0.0-previous"
+  },
+  "stopped": {
+    "entries": [
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "restart_reminder_13bd5955_5ae4f003aed44042b636e3dc8fc6048e"
+        },
+        "agentRunId": "restart_reminder_13bd5955_5ae4f003aed44042b636e3dc8fc6048e",
+        "place": "host",
+        "status": "running",
+        "backgroundTasks": true,
+        "recordedAt": "2026-11-21T15:57:35.263Z",
+        "version": "0.0.0-previous"
+      }
+    ],
+    "shutdownAt": "2026-11-21T15:57:35.264Z"
+  },
+  "requestsBeforeRestart": 3,
+  "inputSentAt": null,
+  "reminders": null,
+  "requests": [
+    {
+      "at": 1795276653780,
+      "lastRole": "user",
+      "lastUser": "CASE:RR-04 Start the build in the background.",
+      "toolResults": []
+    },
+    {
+      "at": 1795276653889,
+      "lastRole": "tool",
+      "lastUser": "CASE:RR-04 Start the build in the background.",
+      "toolResults": [
+        "{\"pid\":369733,\"status\":\"running\",\"effectiveCwd\":\"/tmp/abt16.T2RloO/rr/tmp/restart-reminder-e2e-MKjpFB/workspace\",\"outputFile\":\"/tmp/abt16.T2RloO/rr/tmp/autobyteus-background-tasks/restart_reminder_13bd5955_5ae4f003aed44042b636e3dc8fc6048e/call-1795276653876-369724.log\"}"
+      ]
+    },
+    {
+      "at": 1795276655459,
+      "lastRole": "tool",
+      "lastUser": "CASE:RR-04 Start the build in the background.",
+      "toolResults": [
+        "{\"exitCode\":null,\"effectiveCwd\":\"/tmp/abt16.T2RloO/rr/tmp/restart-reminder-e2e-MKjpFB/workspace\"}"
+      ]
+    },
+    {
+      "at": 1795276659810,
+      "lastRole": "user",
+      "lastUser": "[Platform notice — application restarted]\n\nThe application restarted at 2026-11-21 15:57 UTC (reason: an update to v1.5.14-beta.6).\nYour previous turn was interrupted; check the results of any tool calls that were running before you repeat them.\nIf you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+      "toolResults": []
+    }
+  ]
+}

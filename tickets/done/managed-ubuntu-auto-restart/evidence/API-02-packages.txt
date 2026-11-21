@@ -1,0 +1,12 @@
+Reviewed commit 23ce81353b065390e5c78e0deb4ce2f7be3426ec; branch source f369d87e013b, fresh no-local clone; frozen workspace, full build:electron:linux:x64 twice; only version and test-origin binding differ; ephemeral build trust. Server, renderer, Electron, native writer and supervisor packaged normally.
+32766db6b460a9d42d1dbd1ed781528f50634c2e12e1d6dbdd3b0a2a8e6f430d  AutoByteus_personal_linux-x64-1.5.16.AppImage
+dc756dc1ef4dc758adc72700ea7eba50f11d7b0906151feca930eca383b8ea88  AutoByteus_personal_linux-x64-1.5.16.AppImage.release.json
+3e9b072250595ceb9531e11df6d60964350333c44bd839cfb4747937c3d524f2  AutoByteus_personal_linux-x64-1.5.16.AppImage.release.json.sig
+daf03930e34ab475e38a58eb7e71e5ecc9f6edf9861e56fb6df88d054282b319  latest-linux.yml
+17d945c6fc5c5841580287b0dbfdefc77fa6a64eb0c868bd7a2fc9916946376f  AutoByteus_personal_linux-x64-1.5.17.AppImage
+7bf403af2d4f6b2b5ccf79e7a59a45d1cfd4651f7fd7b5344dbf2c552c91fb76  AutoByteus_personal_linux-x64-1.5.17.AppImage.release.json
+e8e9a95889a76c87e9119574347a9a4fb649e9dcbb0d32a0b578a2c7bc1c0bb6  AutoByteus_personal_linux-x64-1.5.17.AppImage.release.json.sig
+a731f783201ecf0de5bbf8e573180124f637a31d0a4c08b7a41f51d48e6d6800  latest-linux.yml
+For each: release signature verified with disposable public trust; checked native AppRun, unchanged Electron ELF, provisioner/client, sandbox-preserving desktop Exec; linux-x64 feed includes embedded blockMapSize.
+Disposable Ubuntu 24.04.5 amd64 (Canonical image SHA256 verified); GNOME 46 Xorg, kernel 6.8.0-147-generic, AppArmor unprivileged userns restriction=1, UID1000, independent system PKAuth enrollment. Only loopback test feed, local runtime, synthetic workspace; nonloopback new outbound denied for GUI UID.
+Disposable public build trust SHA256 (PEM): 3df06ff39dbcebb54da2cadc40a8652af70411d285e482c658c1cd693723883e

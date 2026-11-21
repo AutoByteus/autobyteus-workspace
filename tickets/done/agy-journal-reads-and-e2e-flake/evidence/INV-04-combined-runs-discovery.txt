@@ -1,0 +1,17 @@
+== run 1 load 49.20 43.19 30.67
+   1       Tests  9 passed (9)
+   1  Test Files  3 passed (3)
+== run 2 load 54.50 51.02 38.56
+   1       Tests  9 passed (9)
+   1  FAIL  tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts > Work Journal neutral vocabulary on a real (scripted) runtime
+   1  Test Files  1 failed | 2 passed (3)
+   1 Error: Hook timed out in 10000ms.
+== run 3 load 43.69 47.00 41.05
+   1       Tests  9 passed (9)
+   1  Test Files  3 passed (3)
+== run 4 load 89.54 61.26 48.36
+   1       Tests  9 passed (9)
+   1  Test Files  3 passed (3)
+== run 5 load 67.98 64.91 54.04
+   1       Tests  9 passed (9)
+   1  Test Files  3 passed (3)

@@ -1,0 +1,14 @@
+Review base edbbe874603a. Full x64 build:electron:linux:x64 twice, frozen pnpm clone, ephemeral desktop test trust, supported build-only loopback release origin. No production keys or runtime trust override.
+Verified signed desktop release 1.5.18 x64
+Verified native AppRun, unchanged Electron ELF, provisioner/client and sandbox-preserving desktop Exec
+Validated <fixture>/feeds/1.5.18/latest-linux.yml: linux-x64 AppImage metadata includes embedded blockMapSize
+76ac9cfa2b5521811e6407d2ceec379b6fd100c3bc16c09fd0f07508b621a87c  <fixture>/feeds/1.5.18/AutoByteus_personal_linux-x64-1.5.18.AppImage
+Verified signed desktop release 1.5.19 x64
+Verified native AppRun, unchanged Electron ELF, provisioner/client and sandbox-preserving desktop Exec
+Validated <fixture>/feeds/1.5.19/latest-linux.yml: linux-x64 AppImage metadata includes embedded blockMapSize
+972814b1c8d5aa63d8be27e952717d08b7a421e898ecb8832c694dad3d3c33b8  <fixture>/feeds/1.5.19/AutoByteus_personal_linux-x64-1.5.19.AppImage
+Final unpacked successor server stamp:
+{
+  "version": "1.5.19"
+}
+Pristine Ubuntu Noble image, verified from SHA256SUMS; Ubuntu 24.04.5 GNOME Xorg, guest-only install/auth, UID 1000, loopback origin and inference, non-loopback new GUI UID egress denied.

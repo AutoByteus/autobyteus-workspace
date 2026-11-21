@@ -1,0 +1,10 @@
+481aef33e3 Merge memory-follow-ups-576: the autobyteus-554 follow-ups: agent definition folders keep their full name up to 255 bytes; a relative link 
+fd2d1fc4a1 Merge semantic-memory-for-every-agent: semantic memory is on for every agent with no switch, with a node-wide global semantic folder every 
+13144f0712 Merge managed Ubuntu desktop icon and window grouping (autobyteus-12)
+20d1e52e78 Merge chat-media-path-playback: tapping a video or audio path in chat on the phone no longer shows Video URL is not available while the fil
+9b0c5c5012 Merge desktop signing custody and pre-tag trust checks (autobyteus-11)
+44a3ee6c68 Merge grok-self-started-turns-517: a Grok agent turn that Grok starts itself (after its background command ended) is shown in the run with 
+ca676f27d7 Merge standalone-run-messages-565: every agent run has a Messages list (desktop tab, phone menu): every message its agent sent or received,
+10b18a67eb Merge followup-cleanups-568: dead GraphQL removed, three flaky tests fixed, one iOS simulator chooser (autobyteus-568)
+df12d95629 Merge follow-ups-448-final, autobyteus-526 round 2 (the unmounted running-team panel removed; the background-contention and Org draft-reten
+8f2d209b2c Merge ios-xcode27-sdk-571: iOS release builds use Xcode 27 and the iOS 27 SDK, and refuse anything older (ITMS-90725; autobyteus-571)

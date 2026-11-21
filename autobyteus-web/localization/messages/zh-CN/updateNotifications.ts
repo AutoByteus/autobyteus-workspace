@@ -24,6 +24,8 @@ const updateNotificationsMessages = {
   'settings.notifications.app.name': 'AutoByteus',
   'settings.notifications.app.download': '下载',
   'settings.notifications.app.downloading': '正在下载 {{percent}}%',
+  'settings.notifications.app.readyManual': '请选择“安装并重启”来安装此版本。',
+  'settings.notifications.app.readyManualFromMenu': '请退出 AutoByteus，从已安装的应用菜单重新打开，然后手动更新。',
   'settings.notifications.app.readyOnQuit': '已准备好在你下次退出时安装。AutoByteus 不会自动重新打开。',
   'settings.notifications.app.downloaded': '已下载。重启 AutoByteus 即可安装。',
   'settings.notifications.app.preparing': '正在准备安装。完成后应用会自动重启。',

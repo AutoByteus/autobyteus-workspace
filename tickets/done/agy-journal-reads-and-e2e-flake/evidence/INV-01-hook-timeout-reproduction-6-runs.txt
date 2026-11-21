@@ -1,0 +1,20 @@
+== run 1 load: 37.18 21.97 15.26
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+== run 2 load: 37.49 23.01 15.79
+Error: Hook timed out in 10000ms.
+ Test Files  1 failed (1)
+      Tests  1 passed (1)
+== run 3 load: 40.02 24.79 16.64
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+== run 4 load: 41.29 25.82 17.15
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+== run 5 load: 38.69 26.71 17.77
+Error: Hook timed out in 10000ms.
+ Test Files  1 failed (1)
+      Tests  1 passed (1)
+== run 6 load: 44.79 29.76 19.26
+ Test Files  1 passed (1)
+      Tests  1 passed (1)

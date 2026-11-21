@@ -1,0 +1,14 @@
+{"at":"2026-11-21T16:21:07.494Z","rendered":"New versions on your channel install as soon as they are downloaded, and the app restarts by itself. Switch off to update by hand."}
+{"at":"2026-11-21T16:21:08.360Z","status":"available","version":"1.5.18","candidate":"1.5.19","message":"Version 1.5.19 is available."}
+{"at":"2026-11-21T16:21:08.396Z","rendered":"New versions on your channel install as soon as they are downloaded, and the app restarts by itself. Switch off to update by hand. | Download Update"}
+{"at":"2026-11-21T16:21:08.398Z","status":"downloading","version":"1.5.18","candidate":"1.5.19","message":"Downloading update..."}
+{"at":"2026-11-21T16:21:08.400Z","rendered":"Downloading | Downloading the latest update package. | New versions on your channel install as soon as they are downloaded, and the app restarts by itself. Switch off to update by hand."}
+{"at":"2026-11-21T16:21:09.392Z","status":"downloading","version":"1.5.18","candidate":"1.5.19","message":"Downloading update..."}
+{"at":"2026-11-21T16:21:09.723Z","status":"downloading","version":"1.5.18","candidate":"1.5.19","message":"Downloading update..."}
+{"at":"2026-11-21T16:21:09.735Z","status":"downloading","version":"1.5.18","candidate":"1.5.19","message":"Verifying downloaded update..."}
+{"at":"2026-11-21T16:21:09.735Z","status":"downloading","version":"1.5.18","candidate":"1.5.19","message":"Verifying downloaded update..."}
+{"at":"2026-11-21T16:21:15.526Z","status":"downloaded","version":"1.5.18","candidate":"1.5.19","message":"Update ready."}
+{"at":"2026-11-21T16:21:15.528Z","rendered":"Ready to install | Update downloaded. Restart to install it. | An update is downloaded. Install it or restart AutoByteus before changing the update channel. | New versions on your channel install as soon as they are downloaded, and the app restarts by itself. Switch off to update by hand. | Install & Restart"}
+{"at":"2026-11-21T16:21:15.530Z","status":"installing","version":"1.5.18","candidate":"1.5.19","message":"Installing update and restarting..."}
+{"at":"2026-11-21T16:21:15.532Z","rendered":"Restarting app | Restarting to install the downloaded update. | An update is downloaded. Install it or restart AutoByteus before changing the update channel. | New versions on your channel install as soon as they are downloaded, and the app restarts by itself. Switch off to update by hand. | Restarting..."}
+{"at":"2026-11-21T16:21:15.626Z","status":"installing","version":"1.5.18","candidate":"1.5.19","message":"Installing update and restarting..."}

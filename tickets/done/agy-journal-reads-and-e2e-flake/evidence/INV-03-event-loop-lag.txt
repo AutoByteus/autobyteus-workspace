@@ -1,0 +1,10 @@
+== run 1 load 39.80 38.80 26.18
+TEARDOWN deleteDefinition 215 ms;TEARDOWN app.close 1999 ms;TEARDOWN max event-loop lag over the whole file 6988 ms;
+== run 2 load 41.92 39.29 26.64
+TEARDOWN deleteDefinition 1484 ms;TEARDOWN app.close 1196 ms;TEARDOWN max event-loop lag over the whole file 6774 ms;
+== run 3 load 39.55 38.92 26.87
+TEARDOWN deleteDefinition 1230 ms;TEARDOWN app.close 12909 ms;TEARDOWN max event-loop lag over the whole file 12867 ms;
+== run 4 load 43.92 40.05 27.70
+TEARDOWN deleteDefinition 48 ms;TEARDOWN app.close 8191 ms;TEARDOWN max event-loop lag over the whole file 15492 ms;
+== run 5 load 40.06 39.66 28.13
+TEARDOWN deleteDefinition 4469 ms;TEARDOWN app.close 2484 ms;TEARDOWN max event-loop lag over the whole file 4457 ms;

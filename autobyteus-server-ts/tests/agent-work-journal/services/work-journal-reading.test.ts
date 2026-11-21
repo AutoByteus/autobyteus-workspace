@@ -182,7 +182,7 @@ describe("WorkJournalService reads, notification and unrecorded runtime", () => 
     expect(await service.readJournalSpans(runDir)).toEqual({ kind: "spans", spans: [] });
   });
 
-  it("lists journal files with versions, sizes, lines and days, and reads lines of manifest files only", async () => {
+  it("lists journal files with versions, sizes, lines, work entries and days, and reads lines of manifest files only", async () => {
     const service = new WorkJournalService();
     expect(await service.listJournalFiles(runDir)).toBeNull();
     expect(await service.journalFileVersions(runDir)).toEqual([]);
@@ -197,10 +197,12 @@ describe("WorkJournalService reads, notification and unrecorded runtime", () => 
 
     const files = await service.listJournalFiles(runDir);
     const activeText = fs.readFileSync(path.join(runDir, "work_journal", "work_journal_active.md"), "utf-8");
+    // A turn (user, command, reply) is three work entries (autobyteus-583); the closed file holds the first turn.
     expect(files![1]).toEqual({
       journalFile: "work_journal_active.md", state: "open", sizeBytes: Buffer.byteLength(activeText),
-      lineCount: activeText.split("\n").length - 1, days: [{ day: expect.stringMatching(/^\d{4}-\d\d-\d\d$/), line: 5 }],
+      lineCount: activeText.split("\n").length - 1, workEntryCount: 3, days: [{ day: expect.stringMatching(/^\d{4}-\d\d-\d\d$/), line: 5 }],
     });
+    expect(files![0]).toMatchObject({ journalFile: "work_journal_000001.md", state: "closed", workEntryCount: 3 });
 
     const lines = await service.readJournalLines(runDir, "work_journal_active.md", { start: 1, end: 2 });
     expect(lines).toEqual({ journalFile: "work_journal_active.md", start: 1, end: 2, lineCount: files![1]!.lineCount, lines: activeText.split("\n").slice(0, 2) });

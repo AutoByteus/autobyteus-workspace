@@ -1,0 +1,74 @@
+import "reflect-metadata";
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { randomUUID } from "node:crypto";
+import { spawnSync } from "node:child_process";
+import type { FastifyInstance } from "fastify";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
+
+// SCRATCH (autobyteus-561 D-6 step 1, AC-009): stalls the test process's main thread (it hosts the in-process server) for N seconds at
+// a chosen delay after a run start is requested, and records which probe and bound fires and the run start's result.
+const fakeCommand = process.env["ANTIGRAVITY_CLI_COMMAND"] ?? "";
+const enabled = process.env["RUN_AGY_FAILURE_E2E"] === "1" && spawnSync(fakeCommand, ["--version"], { stdio: "ignore" })["status"] === 0;
+const suite = enabled ? describe : describe.skip;
+const stall = (seconds: number) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, seconds * 1000);
+
+suite("D-6 stall reproduction", () => {
+  let dataDir = ""; let workspace = ""; let app: FastifyInstance; let url: URL; let definitionId = "";
+  const graphql = async <T>(query: string, variables?: Record<string, unknown>): Promise<T> => {
+    const response = await fetch(new URL("/graphql", url), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }) });
+    const body = await response.json() as { data?: T; errors?: Array<{ message: string }> };
+    if (!response.ok || !body.data || body.errors?.length) throw new Error(JSON.stringify(body.errors ?? body));
+    return body.data;
+  };
+  beforeAll(async () => {
+    process.env["AGY_FAKE_CASE"] = "mcp_calls";
+    dataDir = await fs.mkdtemp(path.join(os.tmpdir(), "stall-repro-"));
+    workspace = path.join(dataDir, "workspace"); await fs.mkdir(workspace);
+    await fs.writeFile(path.join(dataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n");
+    appConfigProvider.config.setCustomAppDataDir(dataDir);
+    const started = await startStudioE2eRuntimeServer();
+    app = started.fastify; url = started.mainUrl;
+    definitionId = (await graphql<{ createAgentDefinition: { id: string } }>(
+      "mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }",
+      { input: { name: "stall-" + randomUUID(), role: "assistant", description: "d", instructions: "Reply.", category: "runtime-e2e", toolNames: [] } })).createAgentDefinition.id;
+  });
+  afterAll(async () => { if (app) await app.close(); if (dataDir) await fs.rm(dataDir, { recursive: true, force: true }); delete process.env["AGY_FAKE_CASE"]; });
+
+  const results: unknown[] = [];
+  // The stall starts when a probe child of the scripted CLI is seen running (`--help`, then `models`): the main thread is blocked while the child
+  // runs, exits and its output waits. `trigger` picks which probe's start begins the stall.
+  for (const seconds of [5, 9, 12]) for (const trigger of ["--help", "models"]) {
+    it(`stall ${seconds}s from the start of the ${trigger} probe`, async () => {
+      const warns: unknown[][] = [];
+      const warn = vi.spyOn(console, "warn").mockImplementation((...args: unknown[]) => { warns.push(args); });
+      const started = Date.now();
+      let stalledAt = -1; let seen = "";
+      const timer = setInterval(() => {
+        if (stalledAt >= 0) return;
+        const found = spawnSync("pgrep", ["-fl", "agy-failure-cli"], { encoding: "utf8" }).stdout.split("\n").find((line) => line.trim().endsWith(trigger));
+        if (!found) return;
+        seen = found.trim(); stalledAt = Date.now() - started; clearInterval(timer);
+        stall(seconds);
+      }, 1);
+      let outcome: unknown;
+      try {
+        const created = await graphql<{ createAgentRun: { success: boolean; message: string; runId: string | null } }>(
+          "mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
+          { input: { agentDefinitionId: definitionId, workspaceRootPath: workspace, llmModelIdentifier: "gemini-3.8-flash-low", llmConfig: null, autoExecuteTools: true, runtimeKind: "antigravity_cli" } });
+        outcome = { success: created.createAgentRun.success, message: created.createAgentRun.message };
+        if (created.createAgentRun.runId) await graphql("mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success } }", { id: created.createAgentRun.runId }).catch(() => undefined);
+      } catch (error) { outcome = { threw: String((error as Error).message).slice(0, 300) }; }
+      warn.mockRestore();
+      clearInterval(timer);
+      const line = { seconds, trigger, stalledAtMs: stalledAt, seen, elapsedMs: Date.now() - started, outcome,
+        probeWarnings: warns.filter((args) => String(args[0]).includes("RUNTIME_PROBE_TIMED_OUT")).map((args) => args[1]) };
+      results.push(line);
+      await fs.appendFile("/tmp/d6-stall-results.jsonl", JSON.stringify(line) + "\n");
+      expect(true).toBe(true);
+    }, 120_000);
+  }
+});

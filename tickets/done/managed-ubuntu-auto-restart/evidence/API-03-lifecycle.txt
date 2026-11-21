@@ -1,0 +1,35 @@
+2026-11-21T11:03:07+00:00
+LISTEN 0      511          0.0.0.0:29696      0.0.0.0:*    users:(("autobyteus",pid=12928,fd=74))
+LISTEN 0      10         127.0.0.1:18990      0.0.0.0:*    users:(("autobyteus",pid=12928,fd=60),("autobyteus",pid=12815,fd=60))
+{"supervisor": [{"pid": "12786", "ppid": "12777", "exe": "/tmp/.mount_AutoBya29R3O/AppRun", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["12786"]}], "main": [{"pid": "12815", "ppid": "12786", "exe": "/tmp/.mount_AutoBya29R3O/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["12815"]}], "server": [{"pid": "12928", "ppid": "12815", "exe": "/tmp/.mount_AutoBya29R3O/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["12928"]}], "renderer": [{"pid": "13045", "ppid": "12880", "exe": "/tmp/.mount_AutoBya29R3O/autobyteus", "uid": "1000", "NoNewPrivs": "1", "Seccomp": "2", "NSpid": ["13045", "4", "1"]}, {"pid": "13106", "ppid": "12880", "exe": "/tmp/.mount_AutoBya29R3O/autobyteus", "uid": "1000", "NoNewPrivs": "1", "Seccomp": "2", "NSpid": ["13106", "23", "1"]}], "file": "32766db6b460a9d42d1dbd1ed781528f50634c2e12e1d6dbdd3b0a2a8e6f430d", "work": "b8036326d85284af41eedcb47327f9509175e8aaced96477ef7c7db61e62a9df"}
+After quiet>5m while still busy
+2026-11-21T11:09:17+00:00
+LISTEN 0      511          0.0.0.0:29696      0.0.0.0:*    users:(("autobyteus",pid=12928,fd=74))
+LISTEN 0      10         127.0.0.1:18990      0.0.0.0:*    users:(("autobyteus",pid=12928,fd=60),("autobyteus",pid=12815,fd=60))
+{"supervisor": [{"pid": "12786", "ppid": "12777", "exe": "/tmp/.mount_AutoBya29R3O/AppRun", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["12786"]}], "main": [{"pid": "12815", "ppid": "12786", "exe": "/tmp/.mount_AutoBya29R3O/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["12815"]}], "server": [{"pid": "12928", "ppid": "12815", "exe": "/tmp/.mount_AutoBya29R3O/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["12928"]}], "renderer": [{"pid": "13045", "ppid": "12880", "exe": "/tmp/.mount_AutoBya29R3O/autobyteus", "uid": "1000", "NoNewPrivs": "1", "Seccomp": "2", "NSpid": ["13045", "4", "1"]}, {"pid": "13106", "ppid": "12880", "exe": "/tmp/.mount_AutoBya29R3O/autobyteus", "uid": "1000", "NoNewPrivs": "1", "Seccomp": "2", "NSpid": ["13106", "23", "1"]}], "file": "32766db6b460a9d42d1dbd1ed781528f50634c2e12e1d6dbdd3b0a2a8e6f430d", "work": "b8036326d85284af41eedcb47327f9509175e8aaced96477ef7c7db61e62a9df"}
+Last OS input on focused QA15 secondary; then released inference:
+2026-11-21T11:09:30+00:00
+autobyteus
+2026-11-21T11:09:30+00:00
+{"http":200,"runId":"qa15_1795258984689_29e7286e002e4b8d8bd4c54082cd7c77","priorUserMessage":true,"completedReply":true,"items":2}
+After unsolicited activation and successor:
+2026-11-21T11:15:29+00:00
+LISTEN 0      511          0.0.0.0:29696      0.0.0.0:*    users:(("autobyteus",pid=14163,fd=72))
+{"supervisor": [{"pid": "12786", "ppid": "12777", "exe": "/tmp/.mount_AutoByI5JqZw/AppRun", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["12786"]}], "main": [{"pid": "14117", "ppid": "12786", "exe": "/tmp/.mount_AutoByI5JqZw/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["14117"]}], "server": [{"pid": "14163", "ppid": "14117", "exe": "/tmp/.mount_AutoByI5JqZw/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["14163"]}], "renderer": [{"pid": "14255", "ppid": "14125", "exe": "/tmp/.mount_AutoByI5JqZw/autobyteus", "uid": "1000", "NoNewPrivs": "1", "Seccomp": "2", "NSpid": ["14255", "4", "1"]}], "file": "17d945c6fc5c5841580287b0dbfdefc77fa6a64eb0c868bd7a2fc9916946376f", "work": "b8036326d85284af41eedcb47327f9509175e8aaced96477ef7c7db61e62a9df"}
+[2026-11-21T11:15:24.560Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-21T11:15:29.562Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-21T11:15:29.852Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+{
+  "manualInstall": null,
+  "manualFailure": null,
+  "version": "1.5.17",
+  "fromVersion": "1.5.16",
+  "foundAt": "2026-11-21T11:03:11.633Z",
+  "read": true,
+  "handledVersion": "1.5.17",
+  "handledAt": "2026-11-21T11:14:34.043Z",
+  "automatic": null,
+  "automaticFailure": null,
+  "outcome": "AUTO_UPDATED"
+}
+Old main 12815 and embedded server 12928 gone. Same protected supervisor exec handback, new GUI 1.5.17, new server, renderer; saved work text still present in run projection/traces. No CDP argv forwarded to successor, so observed health, original processes and actual GNOME pixels directly.

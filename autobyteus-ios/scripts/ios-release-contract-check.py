@@ -5,7 +5,9 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import plistlib
 import re
+import struct
 import subprocess
 import tempfile
 import sys
@@ -290,6 +292,81 @@ def check_simulator_wiring(workflow_path: Path, workflow: str, smoke_path: Path,
     check_simulator_chooser(chooser)
 
 
+APP_ICON_SET = "autobyteus-ios/AutoByteusMobile/Assets.xcassets/AppIcon.appiconset"
+APP_INFO_PLIST = "autobyteus-ios/AutoByteusMobile/Info.plist"
+ICON_CHECK_STEP = "      - name: Check the app icon against the logo"
+ICON_CHECK_COMMAND = "pnpm --dir autobyteus-web ios-icon:check"
+PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
+
+
+def png_structure(path: Path) -> tuple[int, int, int, int, set[bytes]]:
+    """(width, height, bit depth, color type, chunk types) from a PNG's chunks, without decoding its pixels."""
+    data = path.read_bytes()
+    if not data.startswith(PNG_SIGNATURE):
+        fail(f"{path} is not a PNG file.")
+    offset = len(PNG_SIGNATURE)
+    chunks: set[bytes] = set()
+    header = None
+    while offset + 8 <= len(data):
+        length, kind = struct.unpack(">I4s", data[offset : offset + 8])
+        if kind == b"IHDR":
+            header = struct.unpack(">IIBB", data[offset + 8 : offset + 18])
+        chunks.add(kind)
+        offset += 12 + length
+        if kind == b"IEND":
+            break
+    if header is None:
+        fail(f"{path} has no IHDR chunk.")
+    width, height, bit_depth, color_type = header
+    return width, height, bit_depth, color_type, chunks
+
+
+def check_app_icon(repo_root: Path) -> None:
+    """autobyteus-594: every slot of the app icon set exists at its exact pixel size, 8-bit RGB without alpha (App Store
+    Connect refuses an icon with alpha). Whether the pixels match the logo is ios-icon:check's (it needs sharp)."""
+    icon_set = repo_root / APP_ICON_SET
+    contents_path = icon_set / "Contents.json"
+    contents = json.loads(read_required(contents_path))
+    images = contents.get("images") or []
+    if not images:
+        fail(f"{contents_path} lists no icon images.")
+    for image in images:
+        label = f"{image.get('idiom')} {image.get('size')}@{image.get('scale')}"
+        filename = image.get("filename")
+        if not filename:
+            fail(f"{contents_path} slot {label} has no filename.")
+        path = icon_set / filename
+        if not path.is_file():
+            fail(f"{contents_path} slot {label} names {filename}, which does not exist.")
+        points = float(str(image["size"]).split("x")[0])
+        pixels = round(points * int(str(image["scale"]).rstrip("x")))
+        width, height, bit_depth, color_type, chunks = png_structure(path)
+        if (width, height) != (pixels, pixels):
+            fail(f"{path} is {width}x{height}; slot {label} needs {pixels}x{pixels}.")
+        if color_type != 2 or bit_depth != 8:
+            fail(f"{path} must be 8-bit RGB without alpha (PNG color type 2, bit depth 8); found color type {color_type}, bit depth {bit_depth}.")
+        if b"tRNS" in chunks:
+            fail(f"{path} has a tRNS chunk (transparency); the app icon must be opaque.")
+
+
+def check_export_compliance(repo_root: Path) -> None:
+    """autobyteus-594 DEC-002: the app declares it uses no non-exempt encryption (only the OS's and authentication-only
+    encryption), so App Store Connect does not ask for each build."""
+    path = repo_root / APP_INFO_PLIST
+    with path.open("rb") as handle:
+        info = plistlib.load(handle)
+    if info.get("ITSAppUsesNonExemptEncryption") is not False:
+        fail(f"{path} must declare ITSAppUsesNonExemptEncryption = false; found {info.get('ITSAppUsesNonExemptEncryption')!r}.")
+
+
+def check_icon_step(workflow_path: Path, workflow: str) -> None:
+    """The release build checks the icon set against the logo before building the app."""
+    job = workflow_job_block(workflow_path, workflow, "build-ios")
+    require_contains(workflow_path, job, f"{ICON_CHECK_STEP}\n        run: {ICON_CHECK_COMMAND}\n")
+    require_order(workflow_path, job, "      - name: Install workspace dependencies", ICON_CHECK_STEP, "build-ios icon check")
+    require_order(workflow_path, job, ICON_CHECK_STEP, "      - name: Generate, build, and run implementation checks", "build-ios icon check")
+
+
 def check_static_files(repo_root: Path) -> None:
     workflow_path = repo_root / ".github/workflows/release-ios.yml"
     project_path = repo_root / "autobyteus-ios/project.yml"
@@ -344,6 +421,9 @@ def check_static_files(repo_root: Path) -> None:
     require_contains(smoke_path, smoke, "iOS marketing version: $MARKETING_VERSION")
 
     check_simulator_wiring(workflow_path, workflow, smoke_path, smoke, repo_root / SIMULATOR_CHOOSER)
+    check_icon_step(workflow_path, workflow)
+    check_app_icon(repo_root)
+    check_export_compliance(repo_root)
 
 
 def main() -> None:

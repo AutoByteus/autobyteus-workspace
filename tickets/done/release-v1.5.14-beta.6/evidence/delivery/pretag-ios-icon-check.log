@@ -1,0 +1,23 @@
+
+> autobyteus@1.5.14-beta.5 ios-icon:check /Users/normy/autobyteus_org/autobyteus-worktrees/release-v1.5.14-beta.6/autobyteus-web
+> node scripts/build-ios-app-icon.mjs --check
+
+[ios-icon] AppIcon-iphone-20x20@2x.png: 40x40 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-20x20@3x.png: 60x60 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-29x29@2x.png: 58x58 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-29x29@3x.png: 87x87 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-40x40@2x.png: 80x80 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-40x40@3x.png: 120x120 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-60x60@2x.png: 120x120 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-iphone-60x60@3x.png: 180x180 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-20x20@1x.png: 20x20 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-20x20@2x.png: 40x40 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-29x29@1x.png: 29x29 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-29x29@2x.png: 58x58 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-40x40@1x.png: 40x40 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-40x40@2x.png: 80x80 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-76x76@1x.png: 76x76 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-76x76@2x.png: 152x152 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-ipad-83_5x83_5@2x.png: 167x167 matches (max 0, mean 0.000)
+[ios-icon] AppIcon-1024.png: 1024x1024 matches (max 0, mean 0.000)
+[ios-icon] all 18 slots match the logo (on #1E3A8A).

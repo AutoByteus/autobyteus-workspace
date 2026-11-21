@@ -1,0 +1,15 @@
+# IMP-02 the spec after D-1
+# command: cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run scripts/__tests__/mobileBuildChecks.spec.ts --reporter=verbose
+# commit: 0d197a73b9 (run before committing; same files)
+# env: macOS, Node v22.23.1
+# date: 2026-11-21
+
+ ✓ scripts/__tests__/mobileBuildChecks.spec.ts > the /mobile build check > finds each demo marker, with its file
+ ✓ scripts/__tests__/mobileBuildChecks.spec.ts > the /mobile build check > passes a build with no demo code
+ ✓ scripts/__tests__/mobileBuildChecks.spec.ts > the demo build check > reads the handled operations from the DemoOperations table
+ ✓ scripts/__tests__/mobileBuildChecks.spec.ts > the demo build check > names a compiled operation the demo neither answers nor lists
+ ✓ scripts/__tests__/mobileBuildChecks.spec.ts > the demo build check > passes when every compiled operation is answered or listed with a defined reason
+ ✓ scripts/__tests__/mobileBuildChecks.spec.ts > the demo build check > keeps the list exact: no entry for an answered or vanished operation, none with an undefined reason
+ ✓ scripts/__tests__/mobileBuildChecks.spec.ts > the demo coverage of the web source, without a build (autobyteus-584) > reads the operations defined in the source, not in dependencies, build outputs, generated code, tests or the demo
+ ✓ scripts/__tests__/mobileBuildChecks.spec.ts > the demo coverage of the web source, without a build (autobyteus-584) > every operation the web source defines is answered by the demo or listed with its reason, and the list holds nothing else
+      Tests  8 passed (8)

@@ -29,9 +29,19 @@ import type {
 const AGY_CALL_NOTES = new Set(["toolAction", "toolSummary", "WaitMsBeforeAsync"]);
 const TRUNCATED = /<truncated (\d+) lines>/g;
 const SIZE_ONLY = /^(\d+) lines, (\d+) bytes$/;
+/**
+ * AGY records a long result as this runtime sentence, naming the file that holds the full output, then a preview (autobyteus-561).
+ * Anchored at the start of the text: any other wording, or the sentence quoted inside other text, stays as recorded.
+ */
+const SPILLED_OUTPUT = /^The tool's output was truncated due to being too long\. You can find the full output in a file at file:\/\/([^\n]+)\n+Here is a preview with the middle of the output truncated:\n?([\s\S]*)$/;
+
+/** The preview, then the marker every runtime's spill gets (Claude's `PERSISTED_OUTPUT` has the same words, with a size AGY does not give). */
+const normalizeAgyText = (text: string): string => text
+  .replace(SPILLED_OUTPUT, (_match, path: string, preview: string) => `${preview.trimEnd()}\n…[full output was saved outside the raw trace: ${path.trim()}]`)
+  .replace(TRUNCATED, (_match, count: string) => `…[${count} lines not recorded]`);
 
 const normalizeAgyResult = (result: RecordedResult): NormalizedToolResult => normalizeRecordedResult(result, {
-  normalizeText: (text) => text.replace(TRUNCATED, (_match, count: string) => `…[${count} lines not recorded]`),
+  normalizeText: normalizeAgyText,
   interpretError: interruptedFromError,
 });
 
@@ -60,10 +70,13 @@ const runCommand: BuiltInConverter = (call, result) => {
     normalized(result));
 };
 
-/** AGY usually records only the size of a read: the line says the content was not recorded. */
-const viewFile: BuiltInConverter = (call, result) => {
+/**
+ * AGY usually records only the size of a read: the line says the content was not recorded. The file read is `view_file {AbsolutePath}`
+ * in older records and `read_file {Path}` in current ones (autobyteus-561).
+ */
+const readFile: BuiltInConverter = (call, result) => {
   const offset = asInteger(call.args.ContentOffset);
-  const command = catCommand(asText(call.args.AbsolutePath) ?? "(path not recorded)", false,
+  const command = catCommand(asText(call.args.AbsolutePath) ?? asText(call.args.Path) ?? "(path not recorded)", false,
     startEndRange(call.args.StartLine, call.args.EndLine)) + (offset !== null ? ` (from byte ${offset})` : "");
   const read = normalized(result);
   const sizeOnly = read?.outcome.kind === "ok" && read.output !== null ? SIZE_ONLY.exec(read.output.trim()) : null;
@@ -136,7 +149,8 @@ export const antigravityTranslation: RuntimeTranslation = Object.freeze({
   label: agentRuntimeName(RuntimeKind.ANTIGRAVITY_CLI),
   builtInTools: new Map<string, BuiltInConverter>([
     ["run_command", runCommand],
-    ["view_file", viewFile],
+    ["view_file", readFile],
+    ["read_file", readFile],
     ["grep_search", grepSearch],
     ["find_by_name", findByName],
     ["list_dir", listDir],

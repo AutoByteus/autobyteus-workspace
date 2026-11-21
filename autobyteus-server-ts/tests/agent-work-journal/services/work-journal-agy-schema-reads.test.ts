@@ -46,7 +46,7 @@ describe("Antigravity MCP schema reads in the journal service (autobyteus-560)",
     expect(manifest().files[0]).toMatchObject({ source_file: "raw_traces_active.jsonl", source_record_count: 5, runtime_kind: "antigravity_cli" });
   });
 
-  it("AC-006: a closed journal of the previous revision is rendered again and loses the schema lines; a file the rule does not touch is identical", async () => {
+  it("AC-006: a closed journal of the previous renderer revision is rendered again and loses the schema lines; a file the rule does not touch is identical", async () => {
     const service = new WorkJournalService();
     writeActive(runDir, schemaTurn("t1"));
     rotateActive(runDir, "antigravity_cli");
@@ -58,9 +58,8 @@ describe("Antigravity MCP schema reads in the journal service (autobyteus-560)",
     const plainBefore = read(plainFile);
     // What the previous revision wrote: the read as a line, from the same raw file, with its recorded revision.
     const previous = read(schemaFile).replace("\n", `\n[06:00:02] Tool: read_file Path="${SCHEMA}" → ok\n`);
-    expect(WORK_JOURNAL_RENDERER_REVISION).toBe(3);
     fs.writeFileSync(schemaFile, previous);
-    fs.writeFileSync(path.join(journalDir(), "work_journal_manifest.json"), JSON.stringify({ ...manifest(), renderer_revision: 2 }));
+    fs.writeFileSync(path.join(journalDir(), "work_journal_manifest.json"), JSON.stringify({ ...manifest(), renderer_revision: WORK_JOURNAL_RENDERER_REVISION - 1 }));
     expect(read(schemaFile)).toContain("read_file");
 
     await service.ensureCurrent(target());

@@ -11,6 +11,7 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { agentStreamFramesOf } from "../helpers/agent-stream-frames.js";
+import { recordProbeTimeouts, withProbeEvidence } from "../helpers/probe-timeout-evidence.js";
 
 import { WORK_JOURNAL_RENDERER_REVISION } from "../../../src/agent-work-journal/domain/work-journal-models.js";
 // Antigravity's own MCP schema reads are left out of the Work Journal on a real (scripted) runtime path (journal-omit-agy-schema-reads,
@@ -54,11 +55,13 @@ suite("Antigravity MCP schema reads in the Work Journal on a real (scripted) run
   let definitionId = "";
   const runIds: string[] = [];
   const sockets: WebSocket[] = [];
+  const probes = recordProbeTimeouts();
   const graphql = async <T>(query: string, variables?: Record<string, unknown>): Promise<T> => {
     const response = await fetch(new URL("/graphql", url), { method: "POST",
       headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }) });
     const body = await response.json() as { data?: T; errors?: Array<{ message: string }> };
-    if (!response.ok || !body.data || body.errors?.length) throw new Error(JSON.stringify(body.errors ?? body));
+    // A discovery time-out says which probe and bound ended it (autobyteus-561, D-6).
+    if (!response.ok || !body.data || body.errors?.length) throw new Error(withProbeEvidence(JSON.stringify(body.errors ?? body), probes));
     return body.data;
   };
 
@@ -87,6 +90,7 @@ suite("Antigravity MCP schema reads in the Work Journal on a real (scripted) run
         { id: definitionId }).catch(() => undefined);
     }
     if (app) await app.close();
+    probes.stop();
     if (dataDir) await fs.rm(dataDir, { recursive: true, force: true });
     delete process.env["AGY_FAKE_CASE"];
     delete process.env["AGY_FAKE_MCP_SCHEMA_PATH"];

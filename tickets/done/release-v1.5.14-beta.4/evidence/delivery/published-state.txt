@@ -1,0 +1,59 @@
+# v1.5.14-beta.4 published state, 2026-11-21T07:21Z
+Desktop Release success a1
+  Resolve Release Metadata: success
+  Build Windows x64: success
+  Build Linux ARM64: success
+  Build Linux x64: success
+  Build macOS Intel x64: success
+  Build macOS ARM64: success
+  Sign authenticated Linux desktop releases: success
+  Publish GitHub Release: success
+Server Docker Release success a1
+  Resolve Release Metadata: success
+  Build Server Image (linux/arm64): success
+  Build Server Image (linux/amd64): success
+  Publish Server Image: success
+  Publish Server Package (linux/amd64): success
+  Publish Server Package (linux/arm64): success
+Android APK Release success a1
+  Resolve Android Release Metadata: success
+  Build Android APK: success
+  Publish Android APK To GitHub Release: success
+iOS App Store Connect Release failure a1
+  Resolve iOS Release Metadata: success
+  Build And Test iOS App: failure
+  Archive And Upload To App Store Connect: skipped
+  Validate iOS Publish Secrets: skipped
+## release
+prerelease true draft false
+GitHub Latest: v1.5.13
+2026-11-21T07:01:15Z	AutoByteus_personal_android-1.5.14-beta.4-release.apk
+2026-11-21T07:01:15Z	AutoByteus_personal_android-1.5.14-beta.4-release.apk.sha256
+2026-11-21T07:02:53Z	autobyteus-server-1.5.14-beta.4-linux-arm64.tar.gz
+2026-11-21T07:02:56Z	autobyteus-server-1.5.14-beta.4-linux-x64.tar.gz
+2026-11-21T07:02:58Z	autobyteus-server-1.5.14-beta.4-linux-arm64.json
+2026-11-21T07:02:59Z	autobyteus-server-1.5.14-beta.4-linux-arm64.json.sig
+2026-11-21T07:03:01Z	autobyteus-server-1.5.14-beta.4-linux-x64.json
+2026-11-21T07:03:02Z	autobyteus-server-1.5.14-beta.4-linux-x64.json.sig
+2026-11-21T07:19:55Z	AutoByteus_personal_linux-arm64-1.5.14-beta.4.AppImage
+2026-11-21T07:19:55Z	AutoByteus_personal_linux-arm64-1.5.14-beta.4.AppImage.release.json
+2026-11-21T07:19:55Z	AutoByteus_personal_linux-arm64-1.5.14-beta.4.AppImage.release.json.sig
+2026-11-21T07:19:55Z	AutoByteus_personal_linux-x64-1.5.14-beta.4.AppImage
+2026-11-21T07:19:55Z	AutoByteus_personal_linux-x64-1.5.14-beta.4.AppImage.release.json
+2026-11-21T07:19:55Z	AutoByteus_personal_linux-x64-1.5.14-beta.4.AppImage.release.json.sig
+2026-11-21T07:19:55Z	AutoByteus_personal_macos-arm64-1.5.14-beta.4.dmg
+2026-11-21T07:19:55Z	AutoByteus_personal_macos-arm64-1.5.14-beta.4.dmg.blockmap
+2026-11-21T07:19:55Z	AutoByteus_personal_macos-arm64-1.5.14-beta.4.zip
+2026-11-21T07:19:55Z	AutoByteus_personal_macos-arm64-1.5.14-beta.4.zip.blockmap
+2026-11-21T07:19:55Z	AutoByteus_personal_macos-x64-1.5.14-beta.4.dmg
+2026-11-21T07:19:55Z	AutoByteus_personal_macos-x64-1.5.14-beta.4.dmg.blockmap
+2026-11-21T07:19:55Z	AutoByteus_personal_macos-x64-1.5.14-beta.4.zip
+2026-11-21T07:19:55Z	AutoByteus_personal_macos-x64-1.5.14-beta.4.zip.blockmap
+2026-11-21T07:19:55Z	AutoByteus_personal_windows-1.5.14-beta.4.exe
+2026-11-21T07:20:14Z	latest-linux-arm64.yml
+2026-11-21T07:20:14Z	latest-linux.yml
+2026-11-21T07:20:14Z	latest-mac.yml
+2026-11-21T07:20:14Z	latest.yml
+## Docker (registry API)
+1.5.14-beta.4 = beta = sha256:8ae63b56173e6d155a420858485e40725950edd45500cceb841f97de27a0f5cf (linux/amd64 sha256:497f741cddaf615cc87e17555388cefada147537a0177a676ed8c2bcca1fe5a8, linux/arm64 sha256:0332378fcb6167cd5a8f9637d8e9deb3cf50a48675b5f6bf0897c4682265be4f = the two Publish Server Package jobs' digests)
+latest = 1.5.13 = sha256:13df73db926a646237143db070bec31cc2a9742a94069cb71814cd6a730a20de (unchanged)
