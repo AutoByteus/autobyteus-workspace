@@ -1,3 +1,5 @@
+export type { BusyRunCount } from "../../agent-execution/services/busy-runs.js";
+import type { BackgroundWorkInspection, BusyRunCount } from "../../agent-execution/services/busy-runs.js";
 import type { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
 import type { ApplicationBackendApiGatewayService } from "../../application-backend-api-gateway/services/application-backend-api-gateway-service.js";
 import type { ApplicationBackendNotificationHub } from "../../application-backend-api-gateway/notifications/application-backend-notification-hub.js";
@@ -69,5 +71,5 @@ export type ApplicationPlatformHostManagementContracts = Readonly<{
   catalogTransition: ApplicationCatalogTransitionService;
   runOwnership: ApplicationRunOwnershipReader;
   /** Live Application agents by runtime (Settings → Agent Runtimes blocks Update while they run). */
-  activeAgentRuns: Readonly<{ countByRuntimeKind(runtimeKind: RuntimeKind): number }>;
+  activeAgentRuns: Readonly<{ countByRuntimeKind(runtimeKind: RuntimeKind): number; inspectBusy(): Promise<BackgroundWorkInspection>; finalizeBusy(inspection: BackgroundWorkInspection): BusyRunCount }>;
 }>;

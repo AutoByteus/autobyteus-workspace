@@ -159,12 +159,12 @@ describe('AppUpdater', () => {
       activate: vi.fn(async () => ({ version: '1.1.10', sha256: 'new' })),
       status: vi.fn(), discard: vi.fn(async () => {}) };
     const stop = vi.fn(async () => {}), quit = vi.fn(), requestReopen = vi.fn();
-    const session = new ManagedUpdateSession({ writer, shutdown: new ApplicationShutdown(stop, vi.fn()),
+    const session = new ManagedUpdateSession({ restartMoment: {watch:vi.fn(),cancel:vi.fn()}, writer, shutdown: new ApplicationShutdown(stop, vi.fn()),
       initialSettings: { automaticUpdate: false, updateChannel: 'stable' }, serverGone: () => true,
       quit, requestReopen, notifyQuit: vi.fn(), exit: vi.fn(), report: vi.fn() });
     const updater = new AppUpdater({ managedSession: session }); updater.initialize();
     updater.setAutomaticUpdate(true);
-    expect(updater.getState().activationMode).toBe('managed-quit');
+    expect(updater.getState().activationMode).toBe('managed-restart');
     expect(autoUpdaterMock.autoInstallOnAppQuit).toBe(false);
     autoUpdaterMock.emit('update-available', { version: '1.1.10' });
     autoUpdaterMock.emit('update-downloaded', { version: '1.1.10', downloadedFile: '/cache/image' });
@@ -188,7 +188,7 @@ describe('AppUpdater', () => {
     let resolve!: (stage: typeof candidate) => void;
     const writer = { activate: vi.fn(), status: vi.fn(), discard: vi.fn(async () => {}),
       stage: vi.fn(async () => ({ ...candidate, id: 'fresh' })).mockImplementationOnce(() => new Promise(r => { resolve = r; })) };
-    const quit = vi.fn(), session = new ManagedUpdateSession({ writer, shutdown: new ApplicationShutdown(async () => {}, vi.fn()),
+    const quit = vi.fn(), session = new ManagedUpdateSession({ restartMoment: {watch:vi.fn(),cancel:vi.fn()}, writer, shutdown: new ApplicationShutdown(async () => {}, vi.fn()),
       initialSettings: { automaticUpdate: false, updateChannel: 'stable' }, serverGone: () => true,
       quit, requestReopen: vi.fn(), notifyQuit: vi.fn(), exit: vi.fn(), report: vi.fn() });
     const updater = new AppUpdater({ managedSession: session }); updater.initialize(); updater.setAutomaticUpdate(true);
@@ -217,7 +217,7 @@ describe('AppUpdater', () => {
       activate: vi.fn(async () => { throw new ManagedStageGone('gone'); }),
       status: vi.fn(async () => ({ version: '1.1.9', sha256: 'old' })), discard: vi.fn(async () => {}) };
     const quit = vi.fn();
-    const makeSession = () => new ManagedUpdateSession({ writer, shutdown: new ApplicationShutdown(async () => {}, vi.fn()),
+    const makeSession = () => new ManagedUpdateSession({ restartMoment: {watch:vi.fn(),cancel:vi.fn()}, writer, shutdown: new ApplicationShutdown(async () => {}, vi.fn()),
       initialSettings: { automaticUpdate: true, updateChannel: 'stable' }, serverGone: () => true,
       quit, requestReopen: vi.fn(), notifyQuit: vi.fn(), exit: vi.fn(), report: vi.fn() });
     const session = makeSession(), updater = new AppUpdater({ managedSession: session }); updater.initialize(); updater.setAutomaticUpdate(true);
@@ -260,7 +260,7 @@ describe('AppUpdater', () => {
       const stop = vi.fn(async () => {});
       const hooks = { serverGone: vi.fn(() => true), quit: vi.fn(), requestReopen: vi.fn(),
         notifyQuit: vi.fn(), exit: vi.fn(), report: vi.fn() };
-      const session = new ManagedUpdateSession({ writer, shutdown: new ApplicationShutdown(stop, vi.fn()),
+      const session = new ManagedUpdateSession({ restartMoment: {watch:vi.fn(),cancel:vi.fn()}, writer, shutdown: new ApplicationShutdown(stop, vi.fn()),
         initialSettings: { automaticUpdate: false, updateChannel: 'stable' }, ...hooks });
       const updater = new AppUpdater({ managedSession: session, platform: 'linux', appUpdateConfigPath: null });
       updater.initialize();
@@ -271,6 +271,7 @@ describe('AppUpdater', () => {
       s.updater.setAutomaticUpdate(true);
       await s.updater.checkForUpdates();
       await vi.waitFor(() => expect(s.updater.getState().updateStaged).toBe(true));
+      expect(s.updater.getState().automaticInstallBlockedVersion).toBeNull();
       s.session.willQuit({ preventDefault() {} });
       await vi.waitFor(() => expect(s.hooks.quit).toHaveBeenCalledOnce());
       expect(record().automaticFailure).toMatchObject({ version: '1.1.10', step: 'install' });
@@ -283,6 +284,8 @@ describe('AppUpdater', () => {
         expect(autoUpdaterMock.downloadUpdate).not.toHaveBeenCalled();
         await s.updater.downloadUpdate();
         await vi.waitFor(() => expect(s.updater.getState().updateStaged).toBe(true));
+        expect(s.updater.getState()).toMatchObject({ availableVersion: candidate.identity.version,
+          automaticInstallBlockedVersion: candidate.identity.version, notification: { outcome: 'AUTO_FAILED' } });
         expect(s.writer.activate).not.toHaveBeenCalled();
         if (action === 'ordinary quit') {
           s.session.willQuit({ preventDefault() {} });
@@ -303,6 +306,8 @@ describe('AppUpdater', () => {
             expect(autoUpdaterMock.downloadUpdate).not.toHaveBeenCalled();
             await continued.updater.downloadUpdate();
             await vi.waitFor(() => expect(continued.updater.getState().updateStaged).toBe(true));
+            expect(continued.updater.getState()).toMatchObject({ availableVersion: candidate.identity.version,
+              automaticInstallBlockedVersion: candidate.identity.version, notification: { outcome: 'MANUAL_INSTALL_FAILED' } });
             continued.session.willQuit({ preventDefault() {} });
             await vi.waitFor(() => expect(continued.hooks.quit).toHaveBeenCalledOnce());
             expect(continued.writer.activate).not.toHaveBeenCalled();

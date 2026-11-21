@@ -176,6 +176,7 @@ import { isAppUpdateChannelLocked } from '~/shared/appUpdateTypes';
 import { useLocalization } from '~/composables/useLocalization';
 import { useAppUpdateStore } from '~/stores/appUpdateStore';
 import { getSettingsAppUpdateErrorMessageKey } from '~/utils/appUpdateErrorDisplay';
+import { managedReadyMessageKey } from '~/utils/managedUpdateReadiness';
 import { describeInterval } from '~/utils/updateInterval';
 import UpdateIntervalField from '~/components/settings/UpdateIntervalField.vue';
 import AutoUpdateSwitch from '~/components/notifications/AutoUpdateSwitch.vue';
@@ -253,11 +254,13 @@ const statusMessage = computed(() => {
         : t('settings.components.settings.AboutSettingsManager.message.available');
     case 'downloading':
       return t('settings.components.settings.AboutSettingsManager.message.downloading');
-    case 'downloaded':
-      if (appUpdateStore.activationMode === 'managed-quit' && appUpdateStore.automaticUpdate) return t('settings.notifications.app.readyOnQuit');
+    case 'downloaded': {
+      const managedMessage = managedReadyMessageKey(appUpdateStore);
+      if (managedMessage) return t(managedMessage);
       return t(appUpdateStore.automaticInstallPreparing
         ? 'settings.components.settings.AboutSettingsManager.message.preparing'
         : 'settings.components.settings.AboutSettingsManager.message.downloaded');
+    }
     case 'installing':
       return t('settings.components.settings.AboutSettingsManager.message.installing');
     case 'no-update':

@@ -1,0 +1,132 @@
+[
+  {
+    "phase": "warm-initial",
+    "at": "2026-11-21T10:58:15.755Z",
+    "serverHTTP": 200,
+    "counts": {
+      "busy": 0,
+      "unknown": 0
+    },
+    "state": "no-update",
+    "running": "1.5.16",
+    "stage": false,
+    "candidate": null,
+    "windows": [
+      {
+        "windowId": 1,
+        "entryId": "embedded-local"
+      }
+    ]
+  },
+  {
+    "phase": "after-send",
+    "at": "2026-11-21T11:03:05.874Z",
+    "serverHTTP": 200,
+    "counts": {
+      "busy": 1,
+      "unknown": 0
+    },
+    "state": "idle",
+    "running": "1.5.16",
+    "stage": false,
+    "candidate": null,
+    "windows": [
+      {
+        "windowId": 1,
+        "entryId": "embedded-local"
+      }
+    ]
+  },
+  {
+    "phase": "staged-busy",
+    "at": "2026-11-21T11:03:25.762Z",
+    "serverHTTP": 200,
+    "counts": {
+      "busy": 1,
+      "unknown": 0
+    },
+    "state": "downloaded",
+    "running": "1.5.16",
+    "stage": true,
+    "candidate": "1.5.17",
+    "windows": [
+      {
+        "windowId": 1,
+        "entryId": "embedded-local"
+      },
+      {
+        "windowId": 2,
+        "entryId": "qa15-local-second"
+      }
+    ]
+  },
+  {
+    "phase": "held-end",
+    "at": "2026-11-21T11:09:17.100Z",
+    "serverHTTP": 200,
+    "counts": {
+      "busy": 1,
+      "unknown": 0
+    },
+    "state": "downloaded",
+    "running": "1.5.16",
+    "stage": true,
+    "candidate": "1.5.17",
+    "windows": [
+      {
+        "windowId": 1,
+        "entryId": "embedded-local"
+      },
+      {
+        "windowId": 2,
+        "entryId": "qa15-local-second"
+      }
+    ]
+  },
+  {
+    "phase": "released",
+    "at": "2026-11-21T11:09:31.539Z",
+    "serverHTTP": 200,
+    "counts": {
+      "busy": 1,
+      "unknown": 0
+    },
+    "state": "downloaded",
+    "running": "1.5.16",
+    "stage": true,
+    "candidate": "1.5.17",
+    "windows": [
+      {
+        "windowId": 1,
+        "entryId": "embedded-local"
+      },
+      {
+        "windowId": 2,
+        "entryId": "qa15-local-second"
+      }
+    ]
+  },
+  {
+    "phase": "idle",
+    "at": "2026-11-21T11:09:51.199Z",
+    "serverHTTP": 200,
+    "counts": {
+      "busy": 0,
+      "unknown": 0
+    },
+    "state": "downloaded",
+    "running": "1.5.16",
+    "stage": true,
+    "candidate": "1.5.17",
+    "windows": [
+      {
+        "windowId": 1,
+        "entryId": "embedded-local"
+      },
+      {
+        "windowId": 2,
+        "entryId": "qa15-local-second"
+      }
+    ]
+  }
+]

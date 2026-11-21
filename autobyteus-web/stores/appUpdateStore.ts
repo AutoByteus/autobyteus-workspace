@@ -26,6 +26,7 @@ interface AppUpdateStoreState extends AppUpdateStatePayload {
 
 const DEFAULT_STATE: AppUpdateStatePayload = {
   activationMode: 'native',
+  automaticInstallBlockedVersion: null,
   status: 'idle',
   currentVersion: '',
   currentVersionIsPrerelease: false,
@@ -269,6 +270,7 @@ export const useAppUpdateStore = defineStore('appUpdate', {
       this.notification = payload.notification !== undefined ? payload.notification : this.notification;
       this.autoCheck = payload.autoCheck !== undefined ? payload.autoCheck : this.autoCheck;
       this.activationMode = payload.activationMode ?? this.activationMode;
+      if (payload.automaticInstallBlockedVersion !== undefined) this.automaticInstallBlockedVersion = payload.automaticInstallBlockedVersion;
       this.automaticUpdate = payload.automaticUpdate ?? this.automaticUpdate;
       this.automaticInstallPreparing = payload.automaticInstallPreparing ?? this.automaticInstallPreparing;
 

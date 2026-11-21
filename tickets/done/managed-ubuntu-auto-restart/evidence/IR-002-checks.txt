@@ -1,0 +1,72 @@
+IR-002 | F-CR-001 | 2026-11-21 | Ubuntu 26.04 x86_64, Node v22.23.2, pnpm 10.28.2, Chrome 151.0.7922.173
+Baseline CRR-001 0cbb9cfaf9; current source f369d87e013b. Final affected tests are on that source or source-equivalent precommit files. Earlier Vue result retained for unchanged cases; the typed assertion adjustment was rechecked separately.
+
+IMP-09 | Started from the review reproduction. Before changing production, added both managed row failures (including masked block) and About. All three received the healthy automatic message instead of manual guidance.
+> cross-env NUXT_TEST=true vitest --run components/notifications/__tests__/NotificationCenter.appAutomatic.spec.ts components/settings/__tests__/AboutSettingsManager.spec.ts -t 'blocked.*(redownload|verified release)'
+Received: "Ready. AutoByteus reopens on the new version by itself when no agent is working and you haven't used the app for 5 minutes."
+Received: "Ready. AutoByteus reopens on the new version by itself when no agent is working and you haven't used the app for 5 minutes."
+      Tests  3 failed | 42 skipped (45)
+
+IMP-10 | Renderer and shell-store propagation (actual components, controlled state)
+> cross-env NUXT_TEST=true vitest --run components/notifications/__tests__/NotificationCenter.appAutomatic.spec.ts components/settings/__tests__/AboutSettingsManager.spec.ts stores/__tests__/appUpdateStore.spec.ts
+ ✓ stores/__tests__/appUpdateStore.spec.ts (19 tests) 28ms
+ ✓ components/notifications/__tests__/NotificationCenter.appAutomatic.spec.ts (13 tests) 248ms
+ ✓ components/settings/__tests__/AboutSettingsManager.spec.ts (32 tests) 328ms
+ Test Files  3 passed (3)
+      Tests  64 passed (64)
+> cross-env NUXT_TEST=true vitest --run stores/__tests__/appUpdateStore.automatic.spec.ts
+ ✓ stores/__tests__/appUpdateStore.automatic.spec.ts (7 tests) 11ms
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+> cross-env NUXT_TEST=true vitest --run components/settings/__tests__/AboutSettingsManager.spec.ts -t 'a blocked verified release'
+ ✓ components/settings/__tests__/AboutSettingsManager.spec.ts (32 tests | 31 skipped) 27ms
+ Test Files  1 passed (1)
+      Tests  1 passed | 31 skipped (32)
+
+IMP-11 | Updater, session and actual notification-record sequence (temporary profile, mocked OS/writer only) + unchanged native and disabled updater control.
+> vitest --config ./electron/vitest.config.ts --run updater/__tests__
+ ✓ updater/__tests__/safeRestartMoment.spec.ts (4 tests) 26ms
+ ✓ updater/__tests__/appUpdateNotificationRecord.spec.ts (19 tests) 37ms
+ ✓ updater/__tests__/appUpdateCheckSchedule.spec.ts (9 tests) 24ms
+ ✓ updater/__tests__/appUpdaterAutoCheck.spec.ts (9 tests) 58ms
+ ✓ updater/__tests__/appUpdaterAutomatic.spec.ts (23 tests) 99ms
+ ✓ updater/__tests__/appUpdaterAutomaticMac.spec.ts (17 tests) 119ms
+ ✓ updater/__tests__/appUpdateChannelStore.spec.ts (9 tests) 24ms
+ ✓ updater/__tests__/appUpdateErrorClassifier.spec.ts (4 tests) 16ms
+ ✓ updater/__tests__/electronUpdaterCachedDownload.spec.ts (1 test) 27ms
+ ✓ updater/__tests__/appReleasePage.spec.ts (3 tests) 7ms
+ ✓ updater/__tests__/appUpdateAutomaticStore.spec.ts (4 tests) 10ms
+ ✓ updater/__tests__/disabledAppUpdater.spec.ts (3 tests) 16ms
+ ✓ updater/__tests__/appUpdater.spec.ts (46 tests) 1279ms
+ Test Files  13 passed (13)
+      Tests  151 passed (151)
+
+IMP-12 | Narrow browser inspection. Actual Vue components + product localization runtime/catalogs + Tailwind, isolated Vite loopback preview, controlled update store/action, sandboxed Chromium, 420x500. Blocked and masked show manual copy, control shows eligible automatic copy. Each manual click dispatched once to the fixture. No pageerrors or horizontal overflow. Preview-only corrections: wired the row fixture to notifications.installApp; used full locale runtime to render About labels. Neither was a product change. See IR-002-row.png, IR-002-about.png.
+en row blocked Choose Install and restart to install this version. manual clicks=1
+en row masked Choose Install and restart to install this version. manual clicks=1
+en row eligible Ready. AutoByteus reopens on the new version by itself when no agent is working and you haven't used the app for 5 minutes. manual clicks=1
+en about blocked Choose Install and restart to install this version. manual clicks=1
+en about masked Choose Install and restart to install this version. manual clicks=1
+en about eligible Ready. AutoByteus reopens on the new version by itself when no agent is working and you haven't used the app for 5 minutes. manual clicks=1
+zh row blocked 请选择“安装并重启”来安装此版本。 manual clicks=1
+zh row masked 请选择“安装并重启”来安装此版本。 manual clicks=1
+zh row eligible 更新已就绪。当没有智能体正在工作，且你已连续 5 分钟未操作应用时，AutoByteus 会自动重启并使用新版本。 manual clicks=1
+zh about blocked 请选择“安装并重启”来安装此版本。 manual clicks=1
+zh about masked 请选择“安装并重启”来安装此版本。 manual clicks=1
+zh about eligible 更新已就绪。当没有智能体正在工作，且你已连续 5 分钟未操作应用时，AutoByteus 会自动重启并使用新版本。 manual clicks=1
+
+IMP-13 | Local code/type/locale checks
+pnpm -C autobyteus-web guard:localization-boundary
+[guard:localization-boundary] Passed.
+pnpm -C autobyteus-web audit:localization-literals
+[audit:localization-literals] Passed with zero unresolved findings.
+pnpm -C autobyteus-web transpile-electron: exit 0
+pnpm -C autobyteus-web typecheck generated packages/Nuxt types; its first process was interrupted before completion. Updated the full shell state in the typed store fixture; a subsequent full gate found the About test calling exists() on get() (strict wrapper); changed to find(). Final gate from prepared web directory: node scripts/typecheck.mjs.
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 63.1s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 3.5s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 1.0s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 50.0s
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+
+Scope/ledger: git diff --name-only 0cbb9cfaf9 f369d87e013b touches only web read-only state projection, store, readiness presentation/locales, relevant tests. No changed server observation, Electron admission/session, channel, shutdown, native writer, data file, lockfile or workflow. IR-001 IMP-02 admission/quit, IMP-03 server, IMP-06 server build/types, IMP-07 authenticated route and IMP-08 native tree remain valid for unchanged exercised files. No release build, signed N→N+1, packaged UI, or user installation run; AC-011 is separate.

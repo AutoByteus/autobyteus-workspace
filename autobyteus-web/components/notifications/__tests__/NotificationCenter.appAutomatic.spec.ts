@@ -87,8 +87,28 @@ describe('Notification Center: the app automatic update', () => {
     expect($('[data-testid="auto-update-app-explanation"]')!.textContent).toContain('restarts by itself. Switch off to update by hand.')
   })
 
+  it('managed safe restart names both conditions and distinguishes an intentional quit', async () => {
+    await mountWith({ activationMode: 'managed-restart', status: 'downloaded', updateStaged: true, availableVersion: '1.5.7', automaticUpdate: true, notification: record() })
+    await openPanel()
+    const copy = $('[data-testid="auto-update-app-explanation"]')!.textContent
+    expect(copy).toContain('no agent is working'); expect(copy).toContain('5 minutes')
+    expect(copy).toContain('stays closed')
+    expect($('[data-testid="notification-row-downloaded"]')!.textContent).toContain('reopens on the new version')
+    expect($('[data-testid="notification-row-install"]')).not.toBeNull()
+  })
+
+  it.each(['AUTO_FAILED', 'MANUAL_INSTALL_FAILED'] as const)('a blocked manual redownload shows the manual action even with visible %s', async outcome => {
+    await mountWith({ activationMode: 'managed-restart', status: 'downloaded', updateStaged: true, availableVersion: '1.5.7',
+      automaticUpdate: true, automaticInstallBlockedVersion: '1.5.7', notification: record({
+        outcome, outcomeStep: outcome === 'AUTO_FAILED' ? 'install' : null, outcomeReason: 'refused',
+      }) })
+    await openPanel()
+    expect($('[data-testid="notification-row-downloaded"]')!.textContent).toBe('Choose Install and restart to install this version.')
+    expect($('[data-testid="notification-row-install"]')).not.toBeNull()
+  })
+
   it('managed readiness explains independent quit, without promising a self-restart', async () => {
-    await mountWith({ activationMode: 'managed-quit', status: 'downloaded', automaticUpdate: true, notification: record() })
+    await mountWith({ activationMode: 'managed-quit', status: 'downloaded', updateStaged: true, availableVersion: '1.5.7', automaticUpdate: true, notification: record() })
     await openPanel()
     expect($('[data-testid="auto-update-app-explanation"]')!.textContent).toContain('when you next quit')
     expect($('[data-testid="auto-update-app-explanation"]')!.textContent).toContain('will not close or reopen by itself')

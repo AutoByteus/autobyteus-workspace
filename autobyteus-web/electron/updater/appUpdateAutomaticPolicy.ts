@@ -25,7 +25,7 @@ export type AppUpdateAutomaticHost = Readonly<{
 
 type PolicyOptions = Readonly<{
   platform: NodeJS.Platform;
-  activation?: 'native' | 'managed-quit';
+  activation?: AppUpdateState['activationMode'];
   record: () => AppUpdateNotificationRecord | null;
   settleInstall: () => Promise<boolean>;
   recoverAfterFailedInstall: () => void | Promise<void>;
@@ -73,7 +73,7 @@ export class AppUpdateAutomaticPolicy {
   found(version: string): void {
     const state = this.host.state();
     if (!state.automaticUpdate || this.run.blocks(version)) return;
-    if (this.options.activation === 'managed-quit' && state.updateStaged) return;
+    if ((this.options.activation ?? 'native') !== 'native' && state.updateStaged) return;
     if (state.updateStaged && this.readiness.readyFor(version)) {
       this.host.apply({ status: 'downloaded', message: UPDATE_DOWNLOADED_MESSAGE });
       this.installAutomatically(version);
@@ -87,7 +87,7 @@ export class AppUpdateAutomaticPolicy {
 
   /** electron-updater reported a download, whatever the switch says. */
   downloaded(version: string | null): void {
-    if (this.options.activation === 'managed-quit') { this.run.downloadDone(); return; }
+    if ((this.options.activation ?? 'native') !== 'native') { this.run.downloadDone(); return; }
     this.readiness.downloadReported(version);
     this.run.downloadDone();
     if (version) this.installWhenReady(version);
@@ -147,7 +147,7 @@ export class AppUpdateAutomaticPolicy {
   quitStarted(): void { this.run.quitStarted(); }
 
   private installWhenReady(version: string): void {
-    if (this.options.activation === 'managed-quit') return;
+    if ((this.options.activation ?? 'native') !== 'native') return;
     if (!this.host.state().automaticUpdate || this.run.blocks(version)) return;
     if (this.readiness.readyFor(version)) {
       this.installAutomatically(version);

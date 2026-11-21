@@ -1,0 +1,3 @@
+GET /rest/busy-runs with synthetic launch owner: 200 {'busy': 0, 'unknown': 0}; without credential: 401
+Server exited: 0
+Disposable home, data and temp tree removed.
