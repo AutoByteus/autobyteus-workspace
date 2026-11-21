@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-008` (this design, on requirements SR-005).
+- Current solution revision ID: `SR-009` (this design, on requirements SR-005).
 - Approved requirements: `requirements-doc.md` at SR-005. The user decided DEC-004 (SR-002, SR-003); the rest was decided within the direction, and the user was informed.
 - User approval of the design: `Not required`.
 - Design status: `Ready`.
@@ -92,14 +92,14 @@
   - A peer-client method `deliveredRunState(nodeId, run, open)` (`peer-client.ts`) sends it.
 - **B's handler,** `DelegatedRunStateHandler` beside `RemoteRunViews` (`remote-collaboration/inbound/`):
   - **`open: false`:**
-    1. record `delegationClosedAt` in the run's own file (DN-5);
+    1. record the run in `ClosedDelegations` (DN-5);
     2. publish the run-list change (DN-6);
     3. stop the run through its ordinary Stop: `TeamRunService.terminateTeamRun` for a team, or the run root's Stop for an agent (the same calls the owner `terminate` uses).
 
     Already stopped: nothing to stop. Already recorded: idempotent.
-  - **`open: true`:** clear `delegationClosedAt` and publish the change. Start nothing.
+  - **`open: true`:** remove it from `ClosedDelegations` and publish the change. Start nothing.
   - The handler stops nothing on `open: true`, and never deletes anything.
-- **A message or delegation from A that reaches the run** (the existing inbound delivery, CM-11) also clears `delegationClosedAt`, if it's set. A run that is being worked on is open; this covers a reopen notice still in flight.
+- **A message or delegation from A that reaches the run** (the existing inbound delivery, CM-11) also removes the run from `ClosedDelegations`, if it's there. A run that is being worked on is open; this covers a reopen notice still in flight.
 
 **DN-3: A's persisted owed mark.**
 - On the Task entry, an optional `peerNoticeOwed: true`, written only when true and cleared on confirmation.
@@ -115,43 +115,26 @@
 - `not_found` or `not_linked` from B, or a peer no longer paired (`PeerDirectory.findByNodeId` null), drops the notice, logged: there is nothing to stop.
 - A restart of A loses nothing (DN-3). A restart of B: the run resumes as today, then the next retry stops it.
 
-**DN-5: B's persisted delegation state.**
-- In the run's own file, an optional `delegationClosedAt: string`: `run_metadata.json` for an agent run, `team_run_execution_tree.json` for a team run.
-- Set only on a run with `delegatedFrom.nodeId` (a peer-started run), meaning its delegating node closed every Task naming it.
-- **Round-trip, not just tolerated** (ARCH-REV-001 note 1): the run_metadata parser builds from known fields only (`agent-run-metadata-store.ts:40-64`), and `writeMetadata` (`:135`) writes the parsed object. A tolerated unknown field would be dropped by the next rewrite (a Settings save, a runtime switch, a restore), and the run would return to B's list. So `delegationClosedAt` is a field of `AgentRunMetadata` and of its parser and writer, and likewise of the team tree's type, parser and writer, with a round-trip test each (read, rewrite, read).
-- Absence means open. A local delegated run derives its state from its Task entries and never carries the field.
-- **To verify:** both readers tolerate unknown keys (`agent-run-metadata-store.ts:55-70`; the team tree reader). A strict one is converted in this change (guideline §3, "Convert strict readers when you touch them").
-- **Glossary:** "Closed delegated run" gains: "on the node that runs a peer-started run, recorded in its own file as `delegationClosedAt`".
+**DN-5: B's persisted delegation state (revised at SR-009).**
+- **One record on B, the only one:** `<appDataDir>/remote-collaboration/closed-delegations.json`, a list of `{ kind: "agent" | "agent_team", runId, closedAt }`. Each entry is a peer-started run whose delegating node closed every Task naming it.
+- **Absence means open.** The run's own file gets **no** field (SR-008's `the `ClosedDelegations` entry` is withdrawn).
+- **Why (the implementation engineer's Design Impact, read and confirmed):**
+  - B's run list never reads a run's own file. It filters the history catalog's index rows (`workspace-run-history-service.ts:81-96`; `agent-run-history-service.ts:101-109`).
+  - The index readers reject a whole file on any unknown key (`agent-run-history-index-store.ts:15-25, 74-76`; the team index `:10, 83`), and an unreadable index is overwritten as empty (`:162-170`). A row flag would erase B's run history after a rollback to an older build.
+  - Reading each row's own file at the first listing is about 1,070 reads on the founder's node (500 agent rows plus 570 team rows, counted read-only). That is global work on the list's critical path (DESIGN.md rule 3).
+  - One small file read once avoids all three.
+- **Owner:** `ClosedDelegations` (`remote-collaboration/inbound/closed-delegations.ts`).
+  - It loads at start.
+  - `has(run)`, `close(run)` and `open(run)` each write atomically with the existing atomic JSON writer.
+  - It is passed to B's state handler, to the inbound delivery's clear (S-5), and to the list rule.
+- **Reader:** tolerant (it projects the known fields), with exact writes.
+- **Rollback:** an older build doesn't read the file, so the runs are listed again. Harmless.
+- **A run deleted on B:** its entry is removed by the run's delete path, if one is cheap to hook. **To verify;** otherwise it's a stale entry naming no run, ignored by the list.
 
-**DN-6: B's list.**
-- The top-level rule (`top-level-run-rule.ts`) leaves out a peer-started run whose own file has `delegationClosedAt`. On B such a run is in no list, as a local closed delegated run is in no sidebar list. It is still in B's memory and history, and on A's tree and Task page.
-- **To verify:** which signal makes a local closure leave the list within seconds (autobyteus-446: the run-list refresh after a Task change; `RunStatusService.RUN_TREE_CHANGED`, `run-status-service.ts:404`, or the history catalog's change notice). B's handler publishes the same one, so desktop and phone drop or restore the row in the existing live-update time (REQ-005).
-- **To verify:** the rule reads the run's own file. If listing doesn't already read it, the field is read where the row's metadata is read, not by a second file read per row.
-
-**DN-8: giving a saved Task to an existing remote run (REQ-006).**
-- In `TaskDelegation.toExistingRun` (`task-delegation.ts:357-…`), the refusal of a run with a `nodeId` entry (`:370`, `REMOTE_ROOT_REFUSAL_TEXT.savedTask`) goes. The local checks hold unchanged: the sender is the run's last assigner, and the reopen rules (`assertReopenable`).
-- The entry is reopened or appended with the same `nodeId` (and `members` for a team), as the local path does.
-- **For a run with a `nodeId` entry, two local steps don't apply** (SR-008, ARCH-REV-002 AR-002, read):
-  - **The conversation check is skipped.** `toExistingRun` refuses unless `conversationOf` answers present (`task-delegation.ts:381-385`), and `createRunConversationAvailability` (`run-conversation-availability.ts:26-36`) knows only this node's runs. A remote run's conversation and restorability are B's (CM-10; `delegated-run-restorability.ts:44-47`). B's answer to the delivery stands.
-  - **`deliverToRun` (→ `crossRun.route`) doesn't reach a peer run.** It returns `null` for a run with a peer entry (`cross-run-message-delivery.ts:105-109`), which `toExistingRun` treats as not delivered (`:398-404`).
-- **The owner that chooses the delivery is `TaskDelegation.toExistingRun`:**
-  - local run: `deliverToRun`, as today;
-  - remote run: a second passed-in port, `deliverToPeerRun({ sender, nodeId, targetAgentRunId, content, messageType, referenceFiles })`, with `TASK_ASSIGNMENT_MESSAGE_TYPE` and the entry's `nodeId`, after `notices.settled(run)` (DN-1b).
-- **The port is the existing peer delivery,** not a copy. The core of `GlobalAgentRunMessageRouter.deliverToPeer` after its peer-name lookup (`global-agent-run-message-router.ts:188-205`) becomes one function, `deliverMessageToPeerRun`:
-  1. the sender's collaboration context;
-  2. the channel (off: refused);
-  3. `closedPeerRunRefusal`;
-  4. the sender root by `activeRootDirectory.resolve`;
-  5. `senderRoot.deliverToPeerRun`.
-
-  The router (after `findPeer`) and the composition's port for `TaskDelegation` both call it.
-- `closedPeerRunRefusal` doesn't refuse here, because the entry was just reopened or appended (open).
-- On B, the linked message is admitted by the back-link endpoints (CM-11) and wakes the run (S-5 clears `delegationClosedAt` if still set).
-- **A refusal from B, or an unreachable peer,** gives `TASK_WORK_NOT_DELIVERED`, as today's delivery failure (`:398-404`).
-- **Test (AC-007), two-node integration:** the re-delegated Task's work reaches B's run and wakes it, for an agent run and a team run (its coordinator).
-- Reference files travel as in `toNewRun`'s remote path (paths only; transfer is autobyteus-587).
-- `REMOTE_ROOT_REFUSAL_TEXT.savedTask` is removed if nothing else uses it.
-- A refused delivery (peer unreachable) gives the same result as a new remote delegation's delivery failure (`:189`). The entry stays as committed, and the sender can retry, as for a local delivery failure.
+**DN-6: B's list (revised at SR-009).**
+- The workspace history listing (`workspace-run-history-service.ts:81-96`) leaves out a row when `ClosedDelegations.has(run)`. That is a lookup in memory, with no file read per row.
+- `top-level-run-rule.ts` is unchanged.
+- **To verify:** which signal makes a local closure leave the list within seconds (autobyteus-446). B's handler publishes the same signal after `close` and `open`, so desktop and phone drop or restore the row in the existing live-update time (REQ-005).
 
 **DN-7: what is removed.**
 - The `FENCED_REMOTE` branch and the comment of `task-execution-resource-release.ts`.
@@ -163,10 +146,10 @@
 | Data | Decision | Evidence |
 | --- | --- | --- |
 | A: Task entry `peerNoticeOwed` | Compatible optional field, no migration | §3; absence = nothing owed |
-| B: run file `delegationClosedAt` | Compatible optional field, no migration | §3; absence = open |
+| B: `remote-collaboration/closed-delegations.json` | A new small file, no migration | Absence (no file, or no entry) means open |
 | Runs leaked before this fix | Not affected (DEC-005) | — |
 
-- **Rollback:** an older build ignores both fields, if its readers are tolerant (DN-5 to verify). A run left with `delegationClosedAt` would then be listed again, which is harmless.
+- **Rollback:** an older build ignores both fields, if its readers are tolerant (DN-5 to verify). A run left with `the `ClosedDelegations` entry` would then be listed again, which is harmless.
 
 ## Spines
 
@@ -176,7 +159,7 @@
 | S-2 unreachable | S-1 until the send; the transport fails → stays owed → the peer's 30 s timer → S-1's send … | `PeerRunStateNotices` |
 | S-3 A restart | Start-up → the delegation index loads the entries → owed runs → per-peer timers → S-1's send | the same |
 | S-4 re-delegation | Reopen (A, no effect on B) → the assigner's `delegate_task(run ID, task_id)` → `TaskDelegation.toExistingRun` (the local checks; the `:370` refusal removed for remote runs) → the entry committed → `notices.settled(run)`: the run's sequence finishes any in-flight notice, then sends `open` and awaits B's confirmation → the `deliverToPeerRun` port (`deliverMessageToPeerRun` → `senderRoot.deliverToPeerRun`, a linked message) → B wakes the run | `TaskDelegation`; `PeerRunStateNotices`; B: the handler and the inbound delivery |
-| S-5 wake | A's message or delegation → existing link delivery → B clears `delegationClosedAt` if set → the run wakes (CM-7) | B's inbound delivery |
+| S-5 wake | A's message or delegation → existing link delivery → B clears `the `ClosedDelegations` entry` if set → the run wakes (CM-7) | B's inbound delivery |
 | S-6 refused | A third node sends the notice → `admit` (paired) → link check `not_linked` → refused | B's gateway |
 
 **Walks per case (lesson 1):**
@@ -210,7 +193,7 @@
 - **In scope:**
   - A: `task-execution-resource-release.ts`; the new `peer-run-state-notices.ts`; the Task entry type and schema (`peerNoticeOwed`); the reopen commit point; the composition.
   - Link: `peer-client.ts`, `peer-gateway.ts`, `api/rest/remote.ts` (the route).
-  - B: the new handler; the agent run metadata and team tree (`delegationClosedAt`); `top-level-run-rule.ts` and its list signal; the inbound delivery's clear.
+  - B: the new handler; the agent run metadata and team tree (`the `ClosedDelegations` entry`); `top-level-run-rule.ts` and its list signal; the inbound delivery's clear.
   - Docs: the collaboration model, the glossary, the node access model.
   - A: `task-delegation.ts` (`toExistingRun`: the remote branch and its port), `remote-refusal-codes.ts`, `global-agent-run-message-router.ts` (the extracted `deliverMessageToPeerRun`), and the composition's port.
   - Tests: unit, integration, and the two-node E2E (AC-001 … AC-007).

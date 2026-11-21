@@ -2,6 +2,7 @@
 
 | SR | Date | Kind | Summary | Status after |
 | --- | --- | --- | --- | --- |
+| SR-009 | 2026-11-21 | Design Impact (the implementation engineer: DN-6's premise) | B's closed-delegation state lives in one small node file (`closed-delegations.json`, owner `ClosedDelegations`), read once; the list filters in memory; the run-file field withdrawn | Design `Ready` |
 | SR-008 | 2026-11-21 | Design Impact (ARCH-REV-002 AR-002) | DN-8: a remote run skips the local conversation check; its work goes through the existing peer delivery (`senderRoot.deliverToPeerRun`, extracted from the router into one function both use), chosen by `toExistingRun` | Design `Ready` |
 | SR-007 | 2026-11-21 | Design Impact (ARCH-REV-001 AR-001, notes 1-2) | DN-1b: one ordered sequence per remote run (one notice in flight; the re-delegated work after `open` is confirmed; B answers after its Stop); DN-5: round-trip fields; DN-8: the local `deliverToRun` path, not `work_packet` | Design `Ready` |
 | SR-006 | 2026-11-21 | Design | DN-1's trigger is the run's entries (close, re-delegation), not the Task's reopen; DN-8 adds the remote re-delegation (the `:370` refusal removed; the work through the link) | Design `Ready`, Medium / High |
@@ -73,3 +74,16 @@
 
 - ARCH-REV-001 failed with AR-001, resolved by SR-007. ARCH-REV-002 failed with AR-002, resolved by SR-008.
 - ARCH-REV-003: **Pass** (`design-review-report.md`). The reviewer sent the package to the implementation engineer.
+
+### SR-009
+
+- **Trigger:** the implementation engineer's Design Impact on DN-6, with options (a) … (d).
+- **Read:**
+  - the listing reads index rows only;
+  - the index readers are strict;
+  - the founder's node lists 1,070 rows.
+- **Decision (Solution Designer):** a variant of (c). One B-side record is the only source; DN-5's run-file field is withdrawn.
+  - (a) is rejected: the rollback erases history.
+  - (b) is rejected: about 1,070 reads on the first list paint.
+- **My miss:** DN-6's premise was left "to verify" (lesson 2, again).
+- **Next:** architecture review. The engineer goes on with the parts that don't depend on it.
