@@ -1,0 +1,6 @@
+# Follow-ups — agy-journal-reads-and-e2e-flake
+
+| ID | Found by | What is wrong, where | Evidence | Why outside this ticket | Urgent | Suggested Task | Sent |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FU-1 | Solution Designer, notes (observations) | The preview of a spilled Antigravity `run_command` result carries Antigravity's wrapper lines (`Created At: … Completed At: … Command exited with code 0. Command output:`) in the journal | 114 such lines among 3,070 command entries in one run, all in spill previews (counts) | A different runtime text; this ticket changes the sentence around the preview only | No | "Remove Antigravity's `Created At`/`Completed At`/`Command exited with code N`/`Command output:` wrapper from spilled `run_command` previews in the journal, showing the exit code as the outcome as the other runtimes do; synthetic fixtures; raise the renderer revision." | Not yet |
+| FU-2 | Solution Designer, notes (observations) | A second spill shape of `grep_search`: a result with `File Path: file://… Total Lines: N … Showing lines a to b` is not normalized | 1–2 instances measured | Rare; needs its own measured shape | No | "Measure the `grep_search` result-file shape and render it neutrally (a search with a saved result file); synthetic fixtures." | Not yet |
