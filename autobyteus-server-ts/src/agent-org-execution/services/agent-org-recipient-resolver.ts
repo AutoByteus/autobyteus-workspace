@@ -52,7 +52,7 @@ export class AgentOrgRecipientResolver {
   private resolveInRunDelegationPlacement(address: AgentTeamAddress): ResolvedAgentOrgRecipient {
     const index = this.options.getIndex();
     const configured = index.getConfiguredPlacement(address);
-    if (configured) return sourcedPlacement(address, configuredPlacementSource(configured, index.tree.handoffs));
+    if (configured) return sourcedPlacement(address, configuredPlacementSource(configured, index.tree.handoffs), "configured_placement");
     throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", delegationTargetUnavailableMessage(address));
   }
 

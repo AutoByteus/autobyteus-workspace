@@ -1,11 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
-import { DelegationIndex, type RunAgent } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
+import { DelegationIndex } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
+import type { RunAgent } from "../../../../src/agent-collaboration/delegation/run-parts.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 
 /** autobyteus-461 SR-041 (contract §4, `model.py` `agents_with_addresses`): the tree keeps each run's agents by run ID and address. */
 const M = { rootSubjectKind: "agent" as const, rootRunId: "manager" };
 const from = { delegatingRun: M, delegatorAgentRunId: "manager" };
-const parts = (agents: RunAgent[]) => ({ agents, coordinatorAddress: null, mountedTeams: [] });
+const parts = (agents: RunAgent[]) => ({ agents, formerAgents: [], coordinatorAddress: null, mountedTeams: [] });
 
 describe("DelegationIndex.agentsOf", () => {
   it("reads a run's agents once from its own file and keeps them; an agent run without a stored address shows its delegation address", async () => {
@@ -67,8 +68,8 @@ describe("DelegationIndex.agentsOf", () => {
     const org = { rootSubjectKind: "agent_org" as const, rootRunId: "org" };
     const reader = { orgPlacementsOf: async () => null, configuredPlacementOf: async () => null, isStored: async () => true, partsOf: vi.fn(async (run: { rootRunId: string }) => run.rootRunId === "org"
       ? { agents: [{ agentRunId: "ceo", address: "/ceo", agentDefinitionId: null }, { agentRunId: "lead", address: "/dev/lead", agentDefinitionId: null }],
-        coordinatorAddress: null, mountedTeams: [{ address: "/dev", coordinatorAgentRunId: "lead" }] }
-      : { agents: [{ agentRunId: "tutor", address: "/tutor", agentDefinitionId: null }], coordinatorAddress: "/tutor", mountedTeams: [] }) };
+        formerAgents: [], coordinatorAddress: null, mountedTeams: [{ address: "/dev", coordinatorAgentRunId: "lead" }] }
+      : { agents: [{ agentRunId: "tutor", address: "/tutor", agentDefinitionId: null }], formerAgents: [], coordinatorAddress: "/tutor", mountedTeams: [] }) };
     const tree = new DelegationIndex(() => tasks, reader);
     tree.build(); tasks.setEntriesListener(tree);
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/study", delegatedFrom: { delegatingRun: org, delegatorAgentRunId: "ceo" },
@@ -82,7 +83,7 @@ describe("DelegationIndex.agentsOf", () => {
 
 /** autobyteus-461 R-12 (SR-071, CR-461-047): the one owner of a team run's coordinator when the team does not run. */
 describe("DelegationIndex.teamCoordinatorOf", () => {
-  const team = (agents: RunAgent[], coordinatorAddress: string) => ({ agents, coordinatorAddress, mountedTeams: [] });
+  const team = (agents: RunAgent[], coordinatorAddress: string) => ({ agents, formerAgents: [], coordinatorAddress, mountedTeams: [] });
   const build = () => {
     const tasks = new InMemoryTaskExecutionResources();
     tasks.addTask("T1"); tasks.addTask("T2"); tasks.addTask("T3");
@@ -127,5 +128,34 @@ describe("DelegationIndex.teamCoordinatorOf", () => {
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T3", recipientAddress: "/lone", delegatedFrom: from, execution: { teamRunId: "lone" }, teamCoordinatorAgentRunId: "lone-lead" });
     expect(await tree.teamCoordinatorOf("lone")).toBe("lone-lead");
     warn.mockRestore();
+  });
+});
+
+/** DS-007 b: a Team run that followed its definition: its parts are read again and the run and every run above it hear of it. */
+describe("DelegationIndex.runPartsChanged", () => {
+  it("forgets the run's cached parts (former agents included) and tells the child-rows listeners for the run and its ancestors", async () => {
+    const tasks = new InMemoryTaskExecutionResources();
+    tasks.addTask("T1");
+    let removed = false;
+    const reader = { orgPlacementsOf: async () => null, configuredPlacementOf: async () => null, isStored: async () => true,
+      partsOf: vi.fn(async (run: { rootRunId: string }) => run.rootRunId !== "eng" ? parts([{ agentRunId: "manager", address: null, agentDefinitionId: "m" }]) : {
+        ...parts(removed ? [{ agentRunId: "lead", address: "/lead", agentDefinitionId: "lead" }]
+          : [{ agentRunId: "lead", address: "/lead", agentDefinitionId: "lead" }, { agentRunId: "coder", address: "/coder", agentDefinitionId: "coder" }]),
+        formerAgents: removed ? [{ agentRunId: "coder", address: "/coder", agentDefinitionId: "coder" }] : [],
+      }) };
+    const tree = new DelegationIndex(() => tasks, reader);
+    tree.build(); tasks.setEntriesListener(tree);
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/eng", delegatedFrom: from, execution: { teamRunId: "eng" }, teamCoordinatorAgentRunId: "lead" });
+    const eng = { rootSubjectKind: "agent_team" as const, rootRunId: "eng" };
+    const before = await tree.standingOf(eng);
+    expect(before?.agents.get("/coder")).toBe("coder");
+    const heard: string[] = [];
+    tree.subscribeChildRows((change) => heard.push(change.run.rootRunId));
+    removed = true;
+    tree.runPartsChanged(eng);
+    expect(heard).toEqual(["eng", "manager"]);
+    expect((await tree.standingOf(eng))?.agents.has("/coder")).toBe(false);
+    // A former member is still the run's agent by run ID (its history), not by address.
+    expect((await tree.agentsOf(eng)).map((agent) => agent.agentRunId)).toContain("coder");
   });
 });

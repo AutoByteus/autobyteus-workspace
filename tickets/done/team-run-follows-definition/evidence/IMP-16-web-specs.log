@@ -1,0 +1,38 @@
+# IMP-16 — web specs: leaving tag on run-tree rows, row model, team view state, delegated row
+# Command: (autobyteus-web) pnpm exec cross-env NUXT_TEST=true vitest run components/workspace/history/__tests__/WorkspaceMemberLeavingTag.spec.ts services/teamExecution components/workspace/history/__tests__/WorkspaceDelegatedRunRow.spec.ts --reporter=verbose
+# Commit: d005fa2a5b (plus the uncommitted O-2 planner change committed with this evidence); Linux container, Node 22; 2026-11-21
+ ✓ services/teamExecution/__tests__/teamExecutionTreeSelectors.spec.ts > teamExecutionTreeSelectors with a leaving member > finds the current member at an address a leaving member still has 1ms
+ ✓ services/teamExecution/__tests__/teamExecutionTreeSelectors.spec.ts > teamExecutionTreeSelectors with a leaving member > never marks the leaving member's row as the coordinator 1ms
+ ✓ services/teamExecution/__tests__/teamExecutionContextFactory.spec.ts > teamExecutionContextFactory stored V2 projection > builds a deeply immutable complete stored snapshot without coordinator inference 3ms
+ ✓ services/teamExecution/__tests__/teamExecutionContextFactory.spec.ts > teamExecutionContextFactory stored V2 projection > converts stored history one way into only fields supported by new-run authoring 10ms
+ ✓ services/teamExecution/__tests__/teamExecutionContextFactory.spec.ts > teamExecutionContextFactory stored V2 projection > creates one locked Agent context from the exact configured Agent snapshot 1ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > TeamExecutionViewState > is named by the server's name for a delegated team run, and by its definition otherwise 2ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > TeamExecutionViewState > places each own member in the Team run and keeps one reactive context per member 1ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > TeamExecutionViewState > lists the Team and its members as its own rows; a member is focusable, a run it delegated is not its to focus 1ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > TeamExecutionViewState > reads each own member's workspace root from its own launch, never its Team's default 1ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > TeamExecutionViewState > a snapshot reports every own member's status; one that omits an own member is refused 4ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > TeamExecutionViewState > rejects sequence gaps and invalid snapshots without partially replacing authoritative state 1ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > TeamExecutionViewState > invalidates projection authority and reconciles navigation and focus after a valid snapshot 1ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > TeamExecutionViewState > CR-461-082 (F-64): a stopped Team's stream sends the view its open read: the loaded member and lists hold; a member running again rebuilds 1ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > TeamExecutionViewState > a membership snapshot adds a new member's row and context, keeps a leaving member's context, then drops it 2ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > TeamExecutionViewState > SR-084: the tree's change is numbered in the view's sequence and handed to the tree; a message to a delegated agent goes to the Team tab 1ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > SEGMENT_CONTENT_BATCH (autobyteus-139) > dispatches one SEGMENT_CONTENT per item in item order and advances past the whole range 0ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > SEGMENT_CONTENT_BATCH (autobyteus-139) > rejects a batch that does not start at the next sequence as a gap 0ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts > SEGMENT_CONTENT_BATCH (autobyteus-139) > rejects a batch naming an AgentRun that is not an own member without dispatching any item 0ms
+ ✓ components/workspace/history/__tests__/WorkspaceMemberLeavingTag.spec.ts > a leaving member's run-tree row > carries the server row's leaving mark into the row model; other rows have none 2ms
+ ✓ components/workspace/history/__tests__/WorkspaceMemberLeavingTag.spec.ts > a leaving member's run-tree row > a delegated copy's member row shows "Leaving" when it leaves, and nothing otherwise 15ms
+ ✓ components/workspace/history/__tests__/WorkspaceMemberLeavingTag.spec.ts > a leaving member's run-tree row > the Team's own member row shows "Leaving" when it leaves, and nothing otherwise 5ms
+ ✓ components/workspace/history/__tests__/WorkspaceDelegatedRunRow.spec.ts > WorkspaceDelegatedRunRow clean delegated-row style > has no dashed box or tint; gray-600 text, gray-50 hover and a 2px indigo-500 focus ring 13ms
+ ✓ components/workspace/history/__tests__/WorkspaceDelegatedRunRow.spec.ts > WorkspaceDelegatedRunRow clean delegated-row style > keeps the selected style of member rows (no hover tint, indigo-900 text) 5ms
+ ✓ components/workspace/history/__tests__/WorkspaceDelegatedRunRow.spec.ts > WorkspaceDelegatedRunRow clean delegated-row style > keeps a 16px slate people-group for Teams (collaborator opensOnAppear=false) 9ms
+ ✓ components/workspace/history/__tests__/WorkspaceDelegatedRunRow.spec.ts > WorkspaceDelegatedRunRow clean delegated-row style > keeps a 16px slate people-group for Teams (collaborator opensOnAppear=true) 3ms
+ ✓ components/workspace/history/__tests__/WorkspaceDelegatedRunRow.spec.ts > WorkspaceDelegatedRunRow clean delegated-row style > shows the running Team status as a dot before the slate people-group and in the accessible label 4ms
+ ✓ components/workspace/history/__tests__/WorkspaceDelegatedRunRow.spec.ts > WorkspaceDelegatedRunRow clean delegated-row style > shows the error Team status as a dot before the slate people-group and in the accessible label 3ms
+ ✓ components/workspace/history/__tests__/WorkspaceDelegatedRunRow.spec.ts > WorkspaceDelegatedRunRow clean delegated-row style > shows the idle Team status as a dot before the slate people-group and in the accessible label 3ms
+ ✓ components/workspace/history/__tests__/WorkspaceDelegatedRunRow.spec.ts > WorkspaceDelegatedRunRow clean delegated-row style > shows the offline Team status as a dot before the slate people-group and in the accessible label 3ms
+ ✓ components/workspace/history/__tests__/WorkspaceDelegatedRunRow.spec.ts > WorkspaceDelegatedRunRow clean delegated-row style > reads offline for a Team row without a Team status and shows no Team dot on an Agent row 7ms
+ ✓ components/workspace/history/__tests__/WorkspaceDelegatedRunRow.spec.ts > WorkspaceDelegatedRunRow clean delegated-row style > keeps the status dot and initials avatar of a delegated Agent 3ms
+ ✓ components/workspace/history/__tests__/WorkspaceDelegatedRunRow.spec.ts > WorkspaceDelegatedRunRow clean delegated-row style > CR-461-104: an agent row with delegated rows opens on click, Enter and Space without folding; its disclosure button folds it 4ms
+ ✓ components/workspace/history/__tests__/WorkspaceDelegatedRunRow.spec.ts > WorkspaceDelegatedRunRow clean delegated-row style > still selects and toggles on click, Enter and Space (AC-002) 4ms
+ Test Files  5 passed (5)
+      Tests  33 passed (33)

@@ -6,7 +6,7 @@ import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.
 import type { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { AgentTeamRunManager as DefaultManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { TeamExecutionIndex, type AgentExecutionKind } from "../../agent-team-execution/services/team-execution-index.js";
-import type { ConfiguredAgentExecutionNode, TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
+import type { ConfiguredAgentExecutionNode, FormerMemberExecutionNode, TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { TeamRunExecutionTreeStore } from "../store/team-run-execution-tree-store.js";
 import { TeamRunPackageCatalog } from "./team-run-package-catalog.js";
@@ -17,7 +17,8 @@ export type LocatedTeamAgentExecution = Readonly<{
   ancestorTeamRunIds: readonly string[];
   agentRunId: string;
   memberAddress: AgentTeamAddress;
-  configuredPlacement: ConfiguredAgentExecutionNode | null;
+  /** Its own stored node, found by its run ID: a member's, or a former member's (leaving or stopped). Every team agent has one. */
+  configuredPlacement: ConfiguredAgentExecutionNode;
   executionKind: AgentExecutionKind;
   /** Task agents only. */
   startedAt: string | null;
@@ -159,7 +160,8 @@ export class TeamRunExecutionTreeLocationService {
     const memberAddress = input.memberAddress?.trim() || null;
     const containing = input.containingTeamRunId?.trim() || null;
     if (containing && !index.getTeam(containing)) return null;
-    const candidates = index.listAgentExecutions().filter((agent) =>
+    // A former member is found by its run ID (its memory and conversation stay this run's), never by an address alone.
+    const candidates = [...index.listAgentExecutions(), ...(agentRunId ? index.listFormerAgentExecutions() : [])].filter((agent) =>
       (!agentRunId || agent.agentRunId === agentRunId) &&
       (!memberAddress || agent.address === memberAddress) &&
       (!containing || agent.containingTeamRunId === containing));
@@ -172,7 +174,7 @@ export class TeamRunExecutionTreeLocationService {
     isActive: boolean,
   ): LocatedTeamAgentExecution[] {
     const index = new TeamExecutionIndex(tree);
-    return index.listAgentExecutions().map((agent) => this.toLocation(tree, index, agent, isActive));
+    return [...index.listAgentExecutions(), ...index.listFormerAgentExecutions()].map((agent) => this.toLocation(tree, index, agent, isActive));
   }
 
   private toLocation(
@@ -182,8 +184,9 @@ export class TeamRunExecutionTreeLocationService {
     isActive: boolean,
   ): LocatedTeamAgentExecution {
     const scope = index.getTeamRunPhysicalScope(agent.containingTeamRunId);
-    const configured = index.getConfiguredPlacement(agent.address);
-    const configuredPlacement = configured && "agentRunId" in configured ? configured : null;
+    // Its own stored node, by run ID: a member's, or a former member's (leaving or stopped, CR-003), never another run's
+    // at the same address. It is the launch and provider binding the member's views and history read.
+    const { leaving: _leaving, ...configuredPlacement } = agent.source as FormerMemberExecutionNode;
     const groupPath = [...index.listContainingTeamAncestorsForAgent(agent.agentRunId)].reverse().slice(1)
       .map((team): LocatedExecutionGroup => Object.freeze({
         teamRunId: team.teamRunId,

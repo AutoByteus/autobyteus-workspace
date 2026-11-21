@@ -145,6 +145,8 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   hasAgentExecution(agentRunId: string): boolean {
     return this.index.getAgent(agentRunId.trim()) !== null || this.remoteLinks.has(agentRunId.trim());
   }
+  /** Run-ID routing: an Org's agents never leave it. */
+  ownsAgentRun(agentRunId: string): boolean { return this.hasAgentExecution(agentRunId); }
   getExecutionCheckpoint(): Readonly<{
     orgRunId: string;
     changeSequence: number;

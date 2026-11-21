@@ -1,0 +1,497 @@
+# API-FS attempt 1 (superseded): fresh clone of 443f1c2c0f with hand-picked job steps
+# Stopped at packaging: 'Desktop release public key must be provisioned before Linux packaging' because the job's 'Prepare desktop public trust or disposable build-only identity' step was not run (my omission). Attempt 2 runs every step of build-linux-arm64 parsed from the workflow.
+
++ export PATH=/tmp/sm-bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
++ PATH=/tmp/sm-bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
++ git clone --no-local /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition /root/.autobyteus-e2e/tf-fs-clone
+Cloning into '/root/.autobyteus-e2e/tf-fs-clone'...
++ cd /root/.autobyteus-e2e/tf-fs-clone
++ git checkout --quiet 443f1c2c0f
++ git log --oneline -1
+443f1c2c0f test(team-run-follows-definition): server E2E suites for Team runs following their definition
++ pnpm install --frozen-lockfile
+Scope: all 13 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1659
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 1659, reused 47, downloaded 0, added 0
+Progress: resolved 1659, reused 673, downloaded 0, added 0
+Progress: resolved 1659, reused 1650, downloaded 4, added 83
+Progress: resolved 1659, reused 1650, downloaded 5, added 618
+Progress: resolved 1659, reused 1650, downloaded 5, added 1659, done
+ WARN  Failed to create bin at /root/.autobyteus-e2e/tf-fs-clone/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/root/.autobyteus-e2e/tf-fs-clone/autobyteus-application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /root/.autobyteus-e2e/tf-fs-clone/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/root/.autobyteus-e2e/tf-fs-clone/autobyteus-application-devkit/dist/cli.js'
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] skipped: no spawn-helper found
+autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /root/.autobyteus-e2e/tf-fs-clone/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/root/.autobyteus-e2e/tf-fs-clone/applications/socratic-math-teacher/node_modules/@autobyteus/application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /root/.autobyteus-e2e/tf-fs-clone/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/root/.autobyteus-e2e/tf-fs-clone/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @google/genai@2.24.0.                               │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 7.4s using pnpm v10.28.2
++ cd autobyteus-web
++ GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace
++ AUTOBYTEUS_BUILD_FLAVOR=personal
++ pnpm build:electron:linux:arm64
+
+> autobyteus@1.5.14-beta.3 build:electron:linux:arm64 /root/.autobyteus-e2e/tf-fs-clone/autobyteus-web
+> cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm typecheck && cross-env AUTOBYTEUS_ELECTRON_LINUX_TARGET_ARCH=arm64 pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --linux --arm64
+
+
+> autobyteus@1.5.14-beta.3 guard:web-boundary /root/.autobyteus-e2e/tf-fs-clone/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+
+> autobyteus@1.5.14-beta.3 guard:localization-boundary /root/.autobyteus-e2e/tf-fs-clone/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+
+> autobyteus@1.5.14-beta.3 audit:localization-literals /root/.autobyteus-e2e/tf-fs-clone/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Passed with zero unresolved findings.
+(node:41564) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+> autobyteus@1.5.14-beta.3 typecheck /root/.autobyteus-e2e/tf-fs-clone/autobyteus-web
+> pnpm prepare:shared-types && nuxt prepare && node ./scripts/typecheck.mjs
+
+
+> autobyteus@1.5.14-beta.3 prepare:shared-types /root/.autobyteus-e2e/tf-fs-clone/autobyteus-web
+> pnpm -C ../autobyteus-server-ts prepare:source
+
+
+> autobyteus-server-ts@0.1.1 prepare:source /root/.autobyteus-e2e/tf-fs-clone/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /root/.autobyteus-e2e/tf-fs-clone/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 177ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want real-time updates to your database without manual polling? Discover how with Pulse: https://pris.ly/tip-0-pulse
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "actions", the one from "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+│
+◆  Types generated in .nuxt.
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 977.5s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 6.2s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 1.2s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 66.0s
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+
+> autobyteus@1.5.14-beta.3 prepare-server /root/.autobyteus-e2e/tf-fs-clone/autobyteus-web
+> node ./scripts/prepare-server-dispatch.mjs
+
+=======================================
+   Preparing AutoByteus Server Files   
+=======================================
+✓ Linux server preparation target architecture: arm64
+✓ Created target directory: /root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/resources/server
+
+Building server and dependencies...
+Scope: all 13 workspace projects
+ WARN  Failed to create bin at /root/.autobyteus-e2e/tf-fs-clone/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/root/.autobyteus-e2e/tf-fs-clone/autobyteus-application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /root/.autobyteus-e2e/tf-fs-clone/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/root/.autobyteus-e2e/tf-fs-clone/autobyteus-application-devkit/dist/cli.js'
+
+../autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+../autobyteus-ts postinstall: [node-pty-fix] skipped: no spawn-helper found
+../autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /root/.autobyteus-e2e/tf-fs-clone/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/root/.autobyteus-e2e/tf-fs-clone/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /root/.autobyteus-e2e/tf-fs-clone/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/root/.autobyteus-e2e/tf-fs-clone/applications/socratic-math-teacher/node_modules/@autobyteus/application-devkit/dist/cli.js'
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @google/genai@2.24.0.                               │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 3.4s using pnpm v10.28.1
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 445ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Help us improve the Prisma ORM for everyone. Share your feedback in a short 2-min survey: https://pris.ly/orm/survey/release-5-22
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.34                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+
+> autobyteus-server-ts@0.1.1 prebuild /root/.autobyteus-e2e/tf-fs-clone/autobyteus-server-ts
+> pnpm prepare:source
+
+
+> autobyteus-server-ts@0.1.1 prepare:source /root/.autobyteus-e2e/tf-fs-clone/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /root/.autobyteus-e2e/tf-fs-clone/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 246ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to react to database changes in your app as they happen? Discover how with Pulse: https://pris.ly/tip-1-pulse
+
+
+> autobyteus-server-ts@0.1.1 build /root/.autobyteus-e2e/tf-fs-clone/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /root/.autobyteus-e2e/tf-fs-clone/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/write-release-identity.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+(node:43707) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+
+Building mobile web assets...
+
+> autobyteus@1.5.14-beta.3 build:mobile-web /root/.autobyteus-e2e/tf-fs-clone/autobyteus-web
+> node ./scripts/build-mobile-web.mjs
+
+
+> autobyteus@1.5.14-beta.3 generate /root/.autobyteus-e2e/tf-fs-clone/autobyteus-web
+> nuxt generate
+
+┌  Building Nuxt for production...
+│
+●  Nuxt 3.21.11 (with Nitro 2.13.5, Vite 7.3.7 and Vue 3.5.44)
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+│
+●  Nitro preset: static
+
+ WARN  Duplicated imports "getters", the one from "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "actions", the one from "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+Duplicated imports "getters", the one from "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+ WARN 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+✔ Client built in 59192ms
+✔ Server built in 136ms
+[nitro] ℹ Initializing prerenderer
+[nitro] ℹ Prerendering 21 initial routes with crawler
+[nitro]   ├─ /chat (79ms)
+[nitro]   ├─ /media (79ms)
+[nitro]   ├─ /tools (81ms)
+[nitro]   ├─ /nodes (80ms)
+[nitro]   ├─ /agents (81ms)
+[nitro]   ├─ /memory (81ms)
+[nitro]   ├─ /skills (83ms)
+[nitro]   ├─ /settings (82ms)
+[nitro]   ├─ /workspace (82ms)
+[nitro]   ├─ /agent-orgs (83ms)
+[nitro]   ├─ /agent-teams (83ms)
+[nitro]   ├─ /integrations (83ms)
+[nitro]   ├─ /applications (84ms)
+[nitro]   ├─ /projects/temp-tasks (84ms)
+[nitro]   ├─ /projects (83ms)
+[nitro]   ├─ / (79ms)
+[nitro]   ├─ /mobile (81ms)
+[nitro]   ├─ /404.html (84ms)
+[nitro]   ├─ /index.html (84ms)
+[nitro]   ├─ /200.html (84ms)
+[nitro]   ├─ /projects/new (83ms)
+[nitro] ℹ Prerendered 21 routes in 1.738 seconds
+[nitro] ✔ Generated public dist/public
+[nitro] ✔ You can preview this build using npx serve dist/public
+│
+▲  HTML content not prerendered because ssr: false was set.
+│
+●  You can read more in https://nuxt.com/docs/getting-started/deployment#static-hosting.
+│
+└  ✨ You can now deploy dist/public to any static hosting!
+The /mobile build holds no demo code.
+Mobile web assets written to /root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/dist-mobile/public
+
+Deploying server package into Electron resources...
+ WARN  Shared workspace lockfile detected but configuration forces legacy deploy implementation.
+Packages are copied from the content-addressable store to the virtual store.
+  Content-addressable store is at: /root/.local/share/pnpm/store/v10
+  Virtual store is at:             autobyteus-web/resources/server/node_modules/.pnpm
+Progress: resolved 1, reused 0, downloaded 0, added 0
+autobyteus-web                           |  WARN  deprecated crypto-js@4.2.0
+Progress: resolved 74, reused 0, downloaded 0, added 0
+Progress: resolved 687, reused 0, downloaded 0, added 0
+Progress: resolved 1571, reused 0, downloaded 0, added 0
+Progress: resolved 1782, reused 0, downloaded 0, added 0
+Progress: resolved 1784, reused 0, downloaded 0, added 0
+Progress: resolved 1848, reused 0, downloaded 0, added 0
+ WARN  24 deprecated subdependencies found: @babel/plugin-proposal-class-properties@7.18.6, @babel/plugin-proposal-object-rest-spread@7.20.7, @graphql-tools/prisma-loader@8.0.17, @npmcli/move-file@2.0.1, are-we-there-yet@3.0.1, gauge@4.0.4, glob@10.5.0, glob@7.2.3, glob@8.1.0, har-validator@5.1.5, inflight@1.0.6, lodash.get@4.4.2, lodash.isequal@4.5.0, mkdirp@0.5.1, node-domexception@1.0.0, npmlog@6.0.2, phin@3.7.1, request@2.88.2, rimraf@3.0.2, tar@6.2.1, tsconfck@3.1.6, unplugin-vue-router@0.19.2, uuid@3.4.0, whatwg-encoding@3.1.1
+Progress: resolved 1848, reused 0, downloaded 0, added 0, done
+ WARN  Issues with peer dependencies found
+applications/brief-studio
+└─┬ @autobyteus/application-devkit 0.1.0
+  └─┬ autobyteus-server-ts 0.1.1
+    ├─┬ autobyteus-ts 1.0.0
+    │ └─┬ @google/genai 2.24.0
+    │   └── ✕ missing peer @modelcontextprotocol/sdk@^1.25.2
+    └─┬ @anthropic-ai/claude-agent-sdk 0.3.280
+      └── ✕ missing peer @modelcontextprotocol/sdk@^1.29.0
+Peer dependencies that should be installed:
+  @modelcontextprotocol/sdk@">=1.29.0 <2.0.0-0"
+
+applications/socratic-math-teacher
+└─┬ @autobyteus/application-devkit 0.1.0
+  └── ✕ missing peer @modelcontextprotocol/sdk@^1.29.0
+Peer dependencies that should be installed:
+  @modelcontextprotocol/sdk@^1.29.0
+
+autobyteus-web
+├─┬ nuxt 3.21.11
+│ └─┬ @nuxt/cli 3.37.0
+│   └── ✕ unmet peer @nuxt/schema@^4.4.6: found 3.21.11
+└─┬ @nuxt/test-utils 3.23.0
+  └─┬ vitest-environment-nuxt 1.0.1
+    └─┬ @nuxt/test-utils 3.23.0
+      └─┬ vitest-environment-nuxt 1.0.1
+        └─┬ @nuxt/test-utils 3.23.0
+          └─┬ h3 2.0.7
+            └── ✕ unmet peer crossws@^0.4.12: found 0.3.5
+.                                        | +346 ++++++++++++++++++++++++++++++++
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @google/genai@2.24.0,                               │
+│   autobyteus-ts@file:autobyteus-ts.                                          │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+Cleaning workspace symlinks in deployment...
+Removed 1 external symlinks from /root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/resources/server/node_modules/.pnpm/node_modules
+
+Removing non-runtime test fixtures from deployed dependencies...
+
+Generating Prisma client (ensures engines are bundled)...
+✓ Using PRISMA_CLI_BINARY_TARGETS=linux-arm64-openssl-3.0.x
+Environment variables loaded from .env
+Prisma schema loaded from resources/server/prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 145ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+
+
+Validating bundled Prisma Linux engine targets...
+✓ Prisma Linux arm64 engine targets verified in /root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+✓ Prisma client Linux arm64 runtime engines verified in /root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client
+
+Pruning native prebuilds for host platform...
+
+Pruning onnxruntime-web to its Node build and checking the embedding runtime...
+Removed 127 MB of onnxruntime-web browser builds
+Embedding runtime validation passed
+
+Removing the Claude Agent SDK's platform binaries (Claude runs use the installed claude)...
+Removed 459 MB of Claude Agent SDK platform binaries
+
+Rebuilding native modules for Electron...
+Searching dependency tree
+Building modules: node-pty, node-pty
+✔ Rebuild Complete
+
+Normalizing node-pty spawn-helper execute bits...
+✓ Normalized execute bits on 2 node-pty spawn-helper file(s)
+
+Removing symlinks that point outside the bundle...
+Removed 0 external symlinks from /root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/resources/server
+
+=======================================
+   Server files prepared successfully!   
+=======================================
+Target directory: /root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/resources/server
+You can now build the Electron app with the server included
+
+> autobyteus@1.5.14-beta.3 generate:electron /root/.autobyteus-e2e/tf-fs-clone/autobyteus-web
+> cross-env NODE_ENV=production BUILD_TARGET=electron nuxt generate
+
+┌  Building Nuxt for production...
+│
+●  Nuxt 3.21.11 (with Nitro 2.13.5, Vite 7.3.7 and Vue 3.5.44)
+isElectronBuild true
+[Electron Module] Initializing electron module
+[Electron Module] Applying default Electron configurations
+[Electron Module] Configuring for Electron build target
+[Electron Module] Configuring production settings
+[Electron Module] Electron module initialization completed
+│
+●  Nitro preset: static
+
+ WARN  Duplicated imports "getters", the one from "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "actions", the one from "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+[Electron Module] Extending Vite config
+[Electron Module] Vite config resolved: { mode: 'production', base: './', buildTarget: 'electron' }
+Duplicated imports "getters", the one from "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+ WARN 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+✔ Client built in 54022ms
+[Electron Module] Extending Vite config
+[Electron Module] Vite config resolved: { mode: 'production', base: '/', buildTarget: 'electron' }
+[Electron Module] Processing build manifest
+✔ Server built in 138ms
+[Electron Module] Build process completed
+[Electron Module] Running production build steps
+[Electron Module] Building entry: electron/main.ts
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 483 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/electron/main.js                            0.06 kB │ gzip:   0.08 kB
+dist/electron/main-CKYyFqui.js                  14.53 kB │ gzip:   5.52 kB
+dist/electron/electronApplication-VjgAxH52.js  909.33 kB │ gzip: 243.47 kB
+✓ built in 3.56s
+[Electron Module] Building entry: electron/preload.ts
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 1 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/electron/preload.js  4.49 kB │ gzip: 1.16 kB
+✓ built in 35ms
+[Electron Module] Production build completed successfully
+[nitro] ℹ Initializing prerenderer
+[nitro] ℹ Prerendering 3 initial routes with crawler
+[nitro]   ├─ /200.html (129ms)
+[nitro]   ├─ /404.html (129ms)
+[nitro]   ├─ /index.html (130ms)
+[nitro] ℹ Prerendered 3 routes in 2.707 seconds
+[nitro] ✔ Generated public dist/renderer
+[nitro] ✔ You can preview this build using npx serve dist/renderer
+│
+▲  HTML content not prerendered because ssr: false was set.
+│
+●  You can read more in https://nuxt.com/docs/getting-started/deployment#static-hosting.
+│
+└  ✨ You can now deploy dist/renderer to any static hosting!
+
+> autobyteus@1.5.14-beta.3 transpile-electron /root/.autobyteus-e2e/tf-fs-clone/autobyteus-web
+> tsc -p electron/tsconfig.json
+
+Building with environment: production
+Using environment file: .env.production
+Resolved build flavor: personal
+Artifact base name: AutoByteus_personal
+Requested architecture: ARM64
+Updater publish config: [{"provider":"github","owner":"AutoByteus","repo":"autobyteus-workspace"}]
+Generating application icons...
+Generating 16x16 PNG icon...
+Generating 32x32 PNG icon...
+Generating 48x48 PNG icon...
+Generating 64x64 PNG icon...
+Generating 128x128 PNG icon...
+Generating 256x256 PNG icon...
+Generating 512x512 PNG icon...
+Generating 1024x1024 PNG icon...
+Generating Windows ICO icon...
+Generating macOS ICNS icon...
+Icon generation completed successfully
+Starting electron-builder...
+  • electron-builder  version=25.1.8 os=6.12.54-linuxkit
+  • @electron/rebuild already used by electron-builder, please consider to remove excess dependency from devDependencies
+
+To ensure your native dependencies are always matched electron version, simply add script `"postinstall": "electron-builder install-app-deps" to your `package.json`
+  • executing @electron/rebuild  electronVersion=42.11.16 arch=arm64 buildFromSource=false appDir=./
+  • installing native dependencies  arch=arm64
+  • completed installing native dependencies
+  • packaging       platform=linux arch=arm64 electron=42.11.16 appOutDir=electron-dist/linux-arm64-unpacked
+Build process failed: Error: Desktop release public key must be provisioned before Linux packaging
+    at packLinuxInstall (/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/build/dist/linuxInstallPack.js:52:15)
+    at afterPack (/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/build/dist/afterPack.js:74:49)
+    at Packager.afterPack (/root/.autobyteus-e2e/tf-fs-clone/node_modules/.pnpm/app-builder-lib@25.1.8_dmg-builder@25.1.8_electron-builder-squirrel-windows@25.1.8/node_modules/app-builder-lib/src/packager.ts:560:29)
+    at LinuxPackager.doPack (/root/.autobyteus-e2e/tf-fs-clone/node_modules/.pnpm/app-builder-lib@25.1.8_dmg-builder@25.1.8_electron-builder-squirrel-windows@25.1.8/node_modules/app-builder-lib/src/platformPackager.ts:322:5)
+    at LinuxPackager.pack (/root/.autobyteus-e2e/tf-fs-clone/node_modules/.pnpm/app-builder-lib@25.1.8_dmg-builder@25.1.8_electron-builder-squirrel-windows@25.1.8/node_modules/app-builder-lib/src/platformPackager.ts:138:5)
+    at Packager.doBuild (/root/.autobyteus-e2e/tf-fs-clone/node_modules/.pnpm/app-builder-lib@25.1.8_dmg-builder@25.1.8_electron-builder-squirrel-windows@25.1.8/node_modules/app-builder-lib/src/packager.ts:459:9)
+    at executeFinally (/root/.autobyteus-e2e/tf-fs-clone/node_modules/.pnpm/builder-util@25.1.7/node_modules/builder-util/src/promise.ts:12:14)
+    at Packager.build (/root/.autobyteus-e2e/tf-fs-clone/node_modules/.pnpm/app-builder-lib@25.1.8_dmg-builder@25.1.8_electron-builder-squirrel-windows@25.1.8/node_modules/app-builder-lib/src/packager.ts:393:31)
+    at executeFinally (/root/.autobyteus-e2e/tf-fs-clone/node_modules/.pnpm/builder-util@25.1.7/node_modules/builder-util/src/promise.ts:12:14)
+    at main (/root/.autobyteus-e2e/tf-fs-clone/autobyteus-web/build/dist/build.js:480:28)
+ ELIFECYCLE  Command failed with exit code 1.
++ exit 3
+exit=3

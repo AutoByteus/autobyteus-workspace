@@ -1,0 +1,20 @@
+# IMP-21 — rendered UI probe TFU-01…06 (built server, Nuxt dev, Chromium, scripted AGY; TFU-04 a real signed-in Codex member via a throwaway CODEX_HOME)
+# Command: pnpm -C autobyteus-server-ts build; node tickets/in-progress/team-run-follows-definition/probes/team-follows-ui-probe.mjs --output-dir <dir>
+# Commit: 3d8e53cf0c + the CR-003 fix (committed with this evidence); Linux container, Node 22; 2026-11-21
+# Receipts and screenshots: IMP-21-tfu/. TFU-04-c-leaving-coder-opened.png: the coder's Leaving row opened, its run_bash approval with Deny/Approve shown.
+  · seeded
+  · team view open
+  · rows after the change (no reload)
+  · reviewer selected
+  · Team tab
+TFU-01 Pass
+  · fresh load after the coordinator change
+TFU-02 Pass
+  · reviewer leaving
+TFU-03 Pass
+  · team stopped while the scout was leaving
+TFU-06 Pass
+TFU-05 Pass
+  · leaving coder opened
+TFU-04 Pass
+

@@ -76,6 +76,9 @@ import {
 } from "./general-process-run-supervisor-input.js";
 import { getInternalAgentVisibility } from "../../agent-definition/services/internal-agent-visibility.js";
 import { PROCESS_MODEL_ROUTING } from "../../model-routing/services/model-routing-binding.js";
+import { TeamMembershipPlanner } from "../../agent-team-execution/membership/team-membership-planner.js";
+import { TeamDefinitionChangeListener } from "../../agent-team-execution/membership/team-definition-change-listener.js";
+import { LaunchUsabilityCheck } from "../../launch-preferences/launch-usability-check.js";
 
 export class GeneralProcessRunSupervisor {
   readonly agentRunService: AgentRunService;
@@ -97,6 +100,8 @@ export class GeneralProcessRunSupervisor {
   private readonly collaboratorAdmission: CollaboratorAdmission;
   private readonly runFileChangeService: RunFileChangeService;
   private closePromise: Promise<void> | null = null;
+  /** Stops the live Team runs following their definitions (before they stop). */
+  private stopFollowingDefinitions: () => void = () => undefined;
 
   constructor(input: GeneralProcessRunSupervisorInput) {
     input = requireGeneralProcessRunSupervisorInput(input);
@@ -215,6 +220,10 @@ export class GeneralProcessRunSupervisor {
         activityInspector,
         workspaceManager,
       });
+      const membershipPlanner = new TeamMembershipPlanner({
+        teamDefinitions: input.agentTeamDefinitionService, agentDefinitions: input.agentDefinitionService, agentRunIds: agentRunIdentityAllocator,
+        usability: new LaunchUsabilityCheck({ availability: getRuntimeAvailabilityService(), validator: input.modelSelectionValidator }),
+      });
       agentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
         memoryDir,
         taskRecords: input.taskRecords,
@@ -224,7 +233,13 @@ export class GeneralProcessRunSupervisor {
         modelSelectionValidator: input.modelSelectionValidator,
         flatTeamExecutionFactory,
         memberExecutionContextBuilder,
+        changeNotices: input.teamChangeNotices,
+        membershipPlanner,
       });
+      const teamRuns = agentTeamRunManager;
+      // D-TRIGGER: every definition change, every live Team run follows its definition.
+      this.stopFollowingDefinitions = new TeamDefinitionChangeListener({ liveRuns: () => teamRuns.listActiveTeamRuns(),
+        planner: membershipPlanner }).listen(input.definitionChanges);
       agentOrgRunManager = AgentOrgRunManager.initializeProcessInstance({
         workspaces: workspaceManager,
         memoryDir,
@@ -408,6 +423,7 @@ export class GeneralProcessRunSupervisor {
 
   private async closeInternal(): Promise<void> {
     const errors: unknown[] = [];
+    this.stopFollowingDefinitions();
     this.agentOrgRunManager.closeRootAdmission();
     this.agentTeamRunManager.closeRootAdmission();
     this.agentRunManager.closeActivationAdmission();

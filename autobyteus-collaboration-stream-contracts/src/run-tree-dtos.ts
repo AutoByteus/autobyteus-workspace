@@ -52,6 +52,8 @@ export const runTreeRowDtoSchema = z.object({
     title: z.string().nullable(),
     reachable: z.boolean().nullable(),
   }).strict().optional(),
+  /** A team member removed from its team, still finishing its turn while the team run is live: shown "Leaving", still opens. */
+  leaving: z.literal(true).optional(),
 }).strict();
 export type RunTreeRowDto = Readonly<z.infer<typeof runTreeRowDtoSchema>>;
 

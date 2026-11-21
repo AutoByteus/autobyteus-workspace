@@ -1,0 +1,100 @@
+# IMP-05 — architecture, composition and supervisor tests, run alone
+# Command: (autobyteus-server-ts) pnpm exec vitest run tests/architecture tests/unit/compositions tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts --reporter=verbose
+# Commit: 6b46ec5bdd; Linux container, Node 22; 2026-11-21
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > keeps the complete current TS/JS/Vue tree inside AFB-001 through AFB-005 1928ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > keeps required tool registration behind the single lifecycle readiness owner 3427ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > extracts every governed import form without reading comments or arbitrary strings 6ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > enforces every named AFB-001 private runtime category while retaining exact inputs 11ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > enforces each GraphQL and Studio presentation direction in AFB-002 8ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > enforces every AFB-003 outward owner direction with only the named catalog-transition seam 9ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > fails closed for malformed Vue and unresolved governed source 4ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > resolves Vue external-script imports from that script while keeping SFC-owned diagnostics 4ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > governs Vue external-script targets under AFB-002 and AFB-005 4ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > resolves package imports only from the owning manifest 4ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > uses each AFB-005 importer's own manifest and project root 5ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > resolves named aliases and namespace members for every direct AFB-004 callee 7ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > accepts only the two named assembly roots as general-process selection exemptions 5ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > accepts complete construction shapes and rejects every omission, null, undefined, and opaque spread 158ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > enforces the exact scope, orchestration, and platform assembly call shapes 54ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > guards the exact ApplicationExecutionScope containment and consumer shapes 86ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > rejects synthetic live-aggregate escape and direct consumer access 1ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > guards the exact SR-011 host definition and public/general run authority 2940ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > guards SR-003 completion-only correlation and the two lifecycle control callsites 417ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > guards the revised root-neutral Agent and flat-Team execution boundary 1900ms
+ ✓ tests/architecture/tracked-imports.test.ts > tracked imports > finds no tracked code importing an untracked file in this repository 3735ms
+ ✓ tests/architecture/tracked-imports.test.ts > tracked imports > fails on tracked code importing an untracked or ignored file, and passes once it is tracked 114ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > keeps each supported root on one exact workspace, builder, Host, and authority family 7ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > keeps application capability injection tight on the tokenless run-session foundation 10ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > closes retired symbols and provider-specific construction below supported roots 2257ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > keeps activation provider-local and deactivation at the AgentRun resource owner 2ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > keeps the application kernel private to its builder and owning scope 595ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > keeps configured Agent and flat-Team construction inside their owned factories 925ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > keeps AgentTeamRunManager creation explicit and process access lookup-only 631ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > binds exactly two production flat-Team factories to complete lifecycle roots 527ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > closes complete Agent manager and AgentRun construction to production roots 5022ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > selects one host validator and propagates it to the two exact lifecycle roots 4136ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > keeps context translation provider-neutral and all path authority explicit 4489ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > creates one frozen context path value per host and shares it across both roots 472ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > rejects retired root-bound execution construction symbols 539ms
+ ✓ tests/architecture/web-generated-graphql-current.test.ts > autobyteus-web/generated/graphql.ts > equals the web codegen output for the current server schema, and the check fails on a changed schema 10514ms
+ ✓ tests/architecture/server-package-contents.test.ts > the server package > lists exactly dist, prisma and application-packages 4ms
+ ✓ tests/architecture/server-package-contents.test.ts > the server package > declares the Prisma CLI as a production dependency, once 1ms
+ ✓ tests/architecture/server-package-contents.test.ts > the server package > has no file nothing refers to (canuse-ok.txt is gone) 1ms
+ ✓ tests/architecture/server-package-contents.test.ts > the server package > packs the runtime content and nothing else 4ms
+ ✓ tests/architecture/server-package-contents.test.ts > the server package > keeps every migration folder of prisma/ in the package 6ms
+ ✓ tests/architecture/app-data-migration-boundaries.test.ts > sealed app-data migration area > allows no import between production code and migration code, nor between migration folders 4317ms
+ ✓ tests/architecture/app-data-migration-boundaries.test.ts > sealed app-data migration area > reaches every frozen file from a migration folder 2337ms
+ ✓ tests/architecture/app-data-migration-boundaries.test.ts > sealed app-data migration area > fails on each kind of crossing and reports an unused frozen file 9ms
+ ✓ tests/architecture/node-access-boundaries.test.ts > node access boundaries > registers every node WebSocket route behind the gate, except /graphql and /rest/remote/run-observations 30ms
+ ✓ tests/architecture/node-access-boundaries.test.ts > node access boundaries > lists only registered WebSocket routes as phone routes, and every registered one has a permission (owner, phones only when listed) 5ms
+ ✓ tests/architecture/node-access-boundaries.test.ts > node access boundaries > leaves access decisions to the gate: handlers read the established identity and never import the gate or the permissions 515ms
+ ✓ tests/architecture/node-access-boundaries.test.ts > node access boundaries > names every scenario of the contract's table (NAS-01…) in at least one test 1208ms
+ ✓ tests/architecture/runtime-labels-source-check.test.ts > old runtime labels > do not occur as string literals in current source outside the sealed migration area 1857ms
+ ✓ tests/unit/compositions/native-command-shutdown.test.ts > drains real commands before the remaining Fastify cleanup, retaining commands after their manager is discarded 814ms
+ ✓ tests/unit/compositions/native-command-shutdown.test.ts > still attempts remaining host cleanup after native failure and caches the aggregate 2ms
+ ✓ tests/unit/compositions/studio-file-watch-exit.test.ts > studio file watches at process exit > stops both watchers for the exit before the close; the close then finds them stopped 404ms
+ ✓ tests/unit/compositions/studio-file-watch-exit.test.ts > studio file watches at process exit > closes both watchers normally (OS watches released) when the studio is closed without the exit stop 115ms
+ ✓ tests/unit/compositions/studio-preclose-order.test.ts > studio server preClose order > runs the client-connection close last, after the native drain and the WebSocket plugin 441ms
+ ✓ tests/architecture/projects-boundaries.test.ts > projects subsystem boundaries > keeps the workspace subsystem unaware of projects 6ms
+ ✓ tests/architecture/projects-boundaries.test.ts > projects subsystem boundaries > reads workspace registration only through WorkspaceManager 18ms
+ ✓ tests/architecture/projects-boundaries.test.ts > projects subsystem boundaries > keeps GraphQL transport off the project store 34ms
+ ✓ tests/architecture/projects-boundaries.test.ts > projects subsystem boundaries > keeps Project Tasks and execution-internal delegated tasks apart (REQ-012, SR-021/SR-023) 210ms
+ ✓ tests/architecture/e2e-node-credential-paths.test.ts > server E2E node credential paths > composes in-process nodes only through startStudioE2eRuntimeServer 186ms
+ ✓ tests/architecture/e2e-node-credential-paths.test.ts > server E2E node credential paths > opens the MCP gateway only through connectMcpGatewayClient 113ms
+ ✓ tests/architecture/e2e-node-credential-paths.test.ts > server E2E node credential paths > flags a directly composed node, naming the file, the cause and the helper 1ms
+ ✓ tests/architecture/e2e-node-credential-paths.test.ts > server E2E node credential paths > flags a gateway transport without the helper across lines, and leaves other MCP transports alone 0ms
+ ✓ tests/architecture/user-file-replies.test.ts > user file replies (autobyteus-416) > streams a file only as the body of the content given to sendUserFile 101ms
+ ✓ tests/architecture/user-file-replies.test.ts > user file replies (autobyteus-416) > leaves the user-file headers to sendUserFile 47ms
+ ✓ tests/architecture/user-file-replies.test.ts > user file replies (autobyteus-416) > finds sendUserFile in every file route (F1-F15) and a stream in every named exception 5ms
+ ✓ tests/architecture/agent-tool-result-boundaries.test.ts > agent tool result boundaries (one result rule) > scans the platform tool adapters 24ms
+ ✓ tests/architecture/agent-tool-result-boundaries.test.ts > agent tool result boundaries (one result rule) > has no removed serializer left 32ms
+ ✓ tests/architecture/agent-tool-result-boundaries.test.ts > agent tool result boundaries (one result rule) > serializes no tool result with JSON.stringify outside the allow-list 39ms
+ ✓ tests/architecture/agent-tool-result-boundaries.test.ts > agent tool result boundaries (one result rule) > builds structuredContent only in the MCP structured helper 37ms
+ ✓ tests/architecture/agent-tool-result-boundaries.test.ts > agent tool result boundaries (one result rule) > keeps each allow-list entry needed (no stale entry) 1ms
+ ✓ tests/unit/compositions/update-notifications-composition.test.ts > composeUpdateNotifications > reconciles when an owner announces a change, runs the pass through the owners, and closes cleanly 16ms
+ ✓ tests/unit/compositions/update-notifications-composition.test.ts > composeUpdateNotifications > leaves agent runtimes out on a node that is not the desktop's embedded node (AR-005) 3ms
+ ✓ tests/unit/compositions/update-notifications-composition.test.ts > composeUpdateNotifications > a failing reconcile is logged and never reaches the source owner 54ms
+ ✓ tests/architecture/application-agent-addressing-boundaries.test.ts > logical application-agent addressing boundaries > keeps the public contract exact and rooted-member canonical 4ms
+ ✓ tests/architecture/application-agent-addressing-boundaries.test.ts > logical application-agent addressing boundaries > keeps authorization as the sole public-to-runtime translator 3ms
+ ✓ tests/architecture/application-agent-addressing-boundaries.test.ts > logical application-agent addressing boundaries > removes old target, URL, and application-role shapes from supported production copies 30ms
+ ✓ tests/architecture/application-agent-addressing-boundaries.test.ts > logical application-agent addressing boundaries > keeps only logical root/member backend builders 1ms
+ ✓ tests/architecture/application-agent-addressing-boundaries.test.ts > logical application-agent addressing boundaries > requires owned current-schema projectors and the one private physical role constant 1ms
+ ✓ tests/architecture/application-agent-addressing-boundaries.test.ts > logical application-agent addressing boundaries > keeps old wire literals only as explicit rejection fixtures 2ms
+ ✓ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > owns one Agent, standalone Team, and AgentOrg process manager family 12ms
+ ✓ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > continues the exact Org, Team, Agent shutdown order and aggregates failures 3ms
+ ✓ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > releases AgentRunManager when exclusive Team manager initialization fails 3ms
+ ✓ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > unwinds both root managers when process AgentRunService binding fails 3ms
+ ✓ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > refuses a second process RunFileChangeService and unwinds its earlier bindings 2ms
+ ✓ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > rejects validator-only capabilities before manager mutation 0ms
+ ✓ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > rejects each required construction input before manager mutation 4ms
+ ✓ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > rejects an access without the pass revocation of the same host before manager mutation (AR-008) 4ms
+ ✓ tests/unit/compositions/required-host-owners.test.ts > required host owners > the run supervisor names a missing remoteChannel or peerDiscovery 2ms
+ ✓ tests/unit/compositions/required-host-owners.test.ts > required host owners > the Agent Tools MCP host and its catalog need the host's discovery and adapters 1ms
+ ✓ tests/unit/compositions/required-host-owners.test.ts > required host owners > AgentRunService needs its standalone runs; an application scope passes its explicit 'not eligible' port 2ms
+ ✓ tests/unit/compositions/required-host-owners.test.ts > required host owners > the Task service is the composition's: asked before it, it fails instead of answering unbound 0ms
+ ✓ tests/unit/compositions/required-host-owners.test.ts > required host owners > a host without remote collaboration answers the discovery tools with the 'turned off' refusal 1ms
+ ✓ tests/unit/compositions/host-definition-services.test.ts > HostDefinitionServices > binds one exact Agent/Team pair, closes idempotently, and permits a second host 3ms
+ ✓ tests/unit/compositions/host-definition-services.test.ts > HostDefinitionServices > fails on an early Agent definition singleton without replacing it 1ms
+ ✓ tests/unit/compositions/host-definition-services.test.ts > HostDefinitionServices > unwinds the Agent binding when Team binding fails 0ms
+ Test Files  20 passed (20)
+      Tests  95 passed (95)

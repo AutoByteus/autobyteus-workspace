@@ -22,7 +22,7 @@ const projectReference = (ownerId: string, filePath: string, timestamp: string):
 export const projectTeamExecutionViewSnapshot = (
   rootTeamRunId: string,
   { snapshot, baseChangeSequence, liveSequenceId, lastMessageChangeSequence }: Readonly<{
-    snapshot: Pick<RootTeamRunPackageSnapshot, "tree" | "statuses" | "inputStates">; baseChangeSequence: number; liveSequenceId: string;
+    snapshot: Pick<RootTeamRunPackageSnapshot, "tree" | "statuses" | "inputStates" | "leavingMembers">; baseChangeSequence: number; liveSequenceId: string;
     lastMessageChangeSequence: number;
   }>,
 ): TeamStreamServerMessage => parseTeamStreamServerMessage({
@@ -32,17 +32,19 @@ export const projectTeamExecutionViewSnapshot = (
     base_change_sequence: baseChangeSequence,
     live_sequence_id: liveSequenceId,
     last_message_change_sequence: lastMessageChangeSequence,
-    // Its own members; the runs it delegated are its tree's rows (`RUN_TREE_SNAPSHOT`, SR-084).
-    execution_tree: projectExecutionTree(snapshot.tree),
+    // Its own members, and the ones leaving the team (still finishing their turn); the runs it delegated are its tree's
+    // rows (`RUN_TREE_SNAPSHOT`, SR-084).
+    execution_tree: projectExecutionTree(snapshot.tree, snapshot.leavingMembers),
     // The Team's own agents; a delegated or peer run's status is its own, read by its run ID (SR-083).
     agent_statuses: snapshot.statuses.map(projectTeamAgentStatusSnapshotDto),
     agent_input_states: snapshot.inputStates,
   },
 });
 
+/** One run event as its frame; null for the membership notice (the session takes a new snapshot instead, DS-007 a). */
 export const projectSequencedTeamRunEvent = (
   sequenced: SequencedRootEvent<TeamRunEvent>,
-): TeamStreamServerMessage => {
+): TeamStreamServerMessage | null => {
   const { event, changeSequence } = sequenced;
   switch (event.eventSourceType) {
     case TeamRunEventSourceType.AGENT:
@@ -65,6 +67,8 @@ export const projectSequencedTeamRunEvent = (
         sender_agent_run_id: event.payload.senderAgentRunId,
         parent_communication_message_id: event.payload.parentCommunicationMessageId,
       } });
+    case TeamRunEventSourceType.MEMBERSHIP:
+      return null;
   }
 };
 
@@ -81,7 +85,10 @@ const projectCommunicationMessage = (
 });
 
 /** A Team run's own tree: its members (the runs it delegated are its tree's rows, SR-084). */
-export const projectExecutionTree = (tree: TeamRunExecutionTreeSnapshot): TeamRunExecutionTreeDto => ({
+export const projectExecutionTree = (
+  tree: TeamRunExecutionTreeSnapshot,
+  leavingMembers: readonly ConfiguredExecutionNode[] = [],
+): TeamRunExecutionTreeDto => ({
   created_at: tree.createdAt,
   archived_at: tree.archivedAt,
   application_binding: tree.applicationBinding ? {
@@ -96,7 +103,8 @@ export const projectExecutionTree = (tree: TeamRunExecutionTreeSnapshot): TeamRu
     team_run_id: tree.rootTeam.teamRunId,
     coordinator_address: tree.rootTeam.coordinatorAddress,
     default_launch_configuration: projectLaunchConfiguration(tree.rootTeam.defaultLaunchConfiguration),
-    members: tree.rootTeam.members.map(projectConfiguredMember),
+    members: [...tree.rootTeam.members.map(projectConfiguredMember),
+      ...leavingMembers.map((member) => ({ ...projectConfiguredMember(member), leaving: true as const }))],
   },
 });
 

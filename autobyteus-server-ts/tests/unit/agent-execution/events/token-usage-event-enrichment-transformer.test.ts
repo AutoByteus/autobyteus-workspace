@@ -32,7 +32,7 @@ const runContext = new AgentRunContext({
         memberAddress: '/planner/worker',
         agentRunId: 'member-run-1',
       },
-      collaboration: { outgoingHandoffs: [], deliverLogicalMessage: async () => ({ accepted: true }) },
+      collaboration: { outgoingHandoffs: () => [], deliverLogicalMessage: async () => ({ accepted: true }) },
       tasks: testMemberTaskCapability('team-run-1'),
     }),
   }),

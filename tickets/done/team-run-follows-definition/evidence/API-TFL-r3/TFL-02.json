@@ -1,0 +1,51 @@
+{
+  "request": {
+    "tool": "run_bash",
+    "invocation": "exec-c5b29eea-675c-4c52-b145-7180efb9ffe3"
+  },
+  "approvalFrames": [
+    "TOOL_APPROVED {\"invocation_id\":\"exec-c5b29eea-675c-4c52-b145-7180efb9ffe3\",\"tool_name\":\"run_bash\",\"turn_id\":null,\"reason\":null,\"change_sequence\":258,\"agent_run_id\":\"tfl_writer_7810ccaf_c00e3e864d084e6ba52d9490f13f2",
+    "TOOL_APPROVAL_REQUESTED {\"invocation_id\":\"exec-385e06cd-ec6a-4ab9-bc7e-17da9b7940c3\",\"tool_name\":\"send_message_to\",\"turn_id\":\"01a1fed7-d090-7450-8c8a-2e0004be25fd\",\"arguments\":{\"recipient_address\":\"/lead\",\"content\":\"WRITER-D",
+    "TOOL_APPROVED {\"invocation_id\":\"exec-385e06cd-ec6a-4ab9-bc7e-17da9b7940c3\",\"tool_name\":\"send_message_to\",\"turn_id\":null,\"reason\":null,\"change_sequence\":276,\"agent_run_id\":\"tfl_writer_7810ccaf_c00e3e864d084e6ba52d94"
+  ],
+  "outsideFile": "leaving\n",
+  "snapshots": [
+    [
+      {
+        "address": "/lead",
+        "agentRunId": "tfl_lead_7810ccaf_e1458c4d05e54a30809e6bf34c0c037e",
+        "leaving": false
+      },
+      {
+        "address": "/reviewer",
+        "agentRunId": "tfl_reviewer_7810ccaf_642875c8f9d94feba9c2c69f8371ee86",
+        "leaving": false
+      },
+      {
+        "address": "/writer",
+        "agentRunId": "tfl_writer_7810ccaf_c00e3e864d084e6ba52d9490f13f2159",
+        "leaving": true
+      }
+    ],
+    [
+      {
+        "address": "/lead",
+        "agentRunId": "tfl_lead_7810ccaf_e1458c4d05e54a30809e6bf34c0c037e",
+        "leaving": false
+      },
+      {
+        "address": "/reviewer",
+        "agentRunId": "tfl_reviewer_7810ccaf_642875c8f9d94feba9c2c69f8371ee86",
+        "leaving": false
+      }
+    ]
+  ],
+  "leadAfterRefusal": [
+    "01a1fed8-02cd-75e0-b91e-598f6061b7c0",
+    "",
+    "send_message_to",
+    "writer (/writer) is no longer a member of your team: it was removed from the team definition. Call get_handoff_rules for your current handoff rules.",
+    "/writer",
+    "Are you still there?"
+  ]
+}

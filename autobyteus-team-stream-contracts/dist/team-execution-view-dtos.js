@@ -31,6 +31,7 @@ const configuredAgentSchema = z.object({
     agent_definition_id: nonEmptyStringSchema, role: z.string().nullable(), description: z.string().nullable(),
     agent_run_id: nonEmptyStringSchema, platform_agent_run_id: nullableNonEmptyStringSchema,
     launch_configuration: launchConfigurationSchema,
+    leaving: z.literal(true).optional(),
 }).strict();
 export const teamRunExecutionTreeDtoSchema = z.object({
     created_at: nonEmptyStringSchema, archived_at: nullableNonEmptyStringSchema,

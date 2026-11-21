@@ -1,0 +1,4 @@
+# autobyteus-15 — managed Ubuntu automatic restart
+Medium / High, independently reviewed. SR-001/SR-004, ARCH-REV-002, IR-002 product f369d87e013b, CRR-002 source Pass, API-REV-001 Pass 96%, CRR-003 test review Pass. Signed disposable Ubuntu desktop demonstrated real busy deferral, a five-minute quiet window, no-click successor and intentional quit staying closed. Failed verification and opt-out preserved manual control. Owner controls bound the untested combinations; no accepted unverified-risk decision or required user check.
+
+Integrated two advances of origin/personal before finalization, confirmed the Electron and typecheck results on both trees, synchronized operator guides. See release-deployment-report.md. No release. FU-001 is a separate product decision for the coordinator, not a change to native timing.

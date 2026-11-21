@@ -5,37 +5,7 @@ import {
 } from "../execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../execution/task/task-execution-reference.js";
 import { CollaborationTree, type RunFilesReader, type SubtreeRow } from "./collaboration-tree.js";
-
-/**
- * An agent of a run: its run, its address in the run's own space (`null`: an agent run not yet collaborating), and its
- * definition (`null` for a peer's run, whose node keeps it).
- */
-export type RunAgent = Readonly<{ agentRunId: string; address: string | null; agentDefinitionId: string | null }>;
-
-/**
- * What a run's own file says about its agents, none of which changes while the run lives (contract §4, `model.py`
- * `agents_with_addresses`, `standing`): its agents (an agent run's own agent with its stored address; a team run's
- * members; an org run's direct agents and its mounted teams' members), a team run's coordinator address, and each
- * mounted team of an org run with its coordinator.
- */
-export type RunParts = Readonly<{
-  agents: readonly RunAgent[];
-  coordinatorAddress: string | null;
-  mountedTeams: readonly Readonly<{ address: string; coordinatorAgentRunId: string }>[];
-}>;
-
-/** A run's standing agents by address (contract §2.3, `model.py` `standing`), and a team run's coordinator address. */
-export type RunStanding = Readonly<{ agents: ReadonlyMap<string, string>; coordinatorAddress: string | null }>;
-
-/**
- * Reads a run's parts from its own file. `null` when the file is absent; a read error rejects. Created by the
- * composition (run-history owns the files).
- */
-export interface RunPartsReader {
-  partsOf(run: RootExecutionIdentity): Promise<RunParts | null>;
-  /** Whether the run's own file is stored, without reading it (SR-067: the startup build skips a deleted run). */
-  isStored(run: RootExecutionIdentity): Promise<boolean>;
-}
+import type { RunAgent, RunParts, RunStanding } from "./run-parts.js";
 
 /** A run that a run delegated to, whose Task work is open (one hop, DS-8). */
 export type DelegatedChild = Readonly<{
@@ -159,6 +129,21 @@ export class DelegationIndex implements TaskEntriesListener {
     this.rebuildEntryAgents();
     this.notify();
     for (const ancestor of above) this.reportChildRows(ancestor, before.get(keyOf(ancestor)) ?? []);
+  }
+
+  /**
+   * A team run followed its definition (DS-007 b): what was read of its own file is read again on next use, and its
+   * rows and every row above it are reported changed (its views read their trees again).
+   */
+  runPartsChanged(run: RootExecutionIdentity): void {
+    const key = keyOf(run);
+    this.partsByRun.delete(key);
+    this.membersRead.delete(key);
+    for (const ancestor of this.chainOf(run)) {
+      for (const listener of [...this.childRowsListeners]) {
+        try { listener({ run: ancestor, added: [], removed: [] }); } catch (error) { console.warn("A delegation tree child-rows listener failed:", error); }
+      }
+    }
   }
 
   /** At startup (SR-067): the runs the Task records name whose own files are gone were deleted; the tree skips them. */
@@ -389,6 +374,8 @@ export class DelegationIndex implements TaskEntriesListener {
     }
     const parts = await this.partsOf(run);
     if (!parts) return [];
+    // A team run's former members are still its agents (their messages are in its history), never standing ones.
+    if (parts.formerAgents.length) return [...parts.agents, ...parts.formerAgents];
     return run.rootSubjectKind === "agent" && latest
       ? parts.agents.map((agent) => agent.address ? agent : Object.freeze({ ...agent, address: latest.recipientAddress }))
       : parts.agents;
@@ -439,7 +426,8 @@ export class DelegationIndex implements TaskEntriesListener {
     try {
       const parts = await this.reader.partsOf(run);
       if (!parts) console.warn(`The agents of ${name} are left out: its own file was not found.`);
-      return parts && Object.freeze({ ...parts, agents: Object.freeze(parts.agents.map((agent) => Object.freeze({ ...agent }))) });
+      return parts && Object.freeze({ ...parts, agents: Object.freeze(parts.agents.map((agent) => Object.freeze({ ...agent }))),
+        formerAgents: Object.freeze(parts.formerAgents.map((agent) => Object.freeze({ ...agent }))) });
     } catch (error) {
       console.warn(`The agents of ${name} are left out: its own file could not be read (${error instanceof Error ? error.message : String(error)}).`);
       return null;
@@ -467,7 +455,7 @@ export class DelegationIndex implements TaskEntriesListener {
         if (parts === null) continue;
         this.membersRead.add(key);
         this.partsByRun.set(key, parts);
-        for (const { agentRunId } of parts.agents) this.memberAgents.set(agentRunId, run);
+        for (const { agentRunId } of [...parts.agents, ...parts.formerAgents]) this.memberAgents.set(agentRunId, run);
       }
     })().finally(() => { this.reading = null; });
     return this.reading;

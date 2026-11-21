@@ -1,0 +1,83 @@
+IR-001 | implementation checks | source 5328f4ce8bce (or same exercised files in the precommit tree) | 2026-11-21
+Ubuntu 26.04 x86_64, Node v22.23.2, pnpm 10.28.2. Results are retained excerpts, not an AC-011 acceptance claim.
+
+IMP-01 | session red at reviewed baseline f36286782f + new tests (before production changes)
+   × managed update session ownership > automatically reopens once when safe, recording automatic consent 1039ms
+   × managed update session ownership > early Quit during automatic activation settles closed despite a later will-quit 1008ms
+ Test Files  1 failed (1)
+      Tests  2 failed | 18 passed (20)
+
+IMP-02 | pnpm -C autobyteus-web test:electron --run application/__tests__ updater/__tests__
+ ✓ updater/__tests__/safeRestartMoment.spec.ts (4 tests) 28ms
+ ✓ updater/__tests__/appUpdateNotificationRecord.spec.ts (19 tests) 35ms
+ ✓ updater/__tests__/appUpdaterAutoCheck.spec.ts (9 tests) 49ms
+ ✓ updater/__tests__/appUpdaterAutomaticMac.spec.ts (17 tests) 79ms
+ ✓ updater/__tests__/appUpdaterAutomatic.spec.ts (23 tests) 86ms
+ ✓ application/__tests__/ApplicationShutdown.spec.ts (5 tests) 15ms
+ ✓ updater/__tests__/appUpdateCheckSchedule.spec.ts (9 tests) 43ms
+ ✓ updater/__tests__/appUpdateChannelStore.spec.ts (9 tests) 14ms
+ ✓ updater/__tests__/electronUpdaterCachedDownload.spec.ts (1 test) 20ms
+ ✓ updater/__tests__/disabledAppUpdater.spec.ts (3 tests) 13ms
+ ✓ application/__tests__/ElectronInstallPreparation.spec.ts (3 tests) 16ms
+ ✓ application/__tests__/ElectronAutomaticUpdateWiring.spec.ts (8 tests) 15ms
+ ✓ updater/__tests__/appUpdateErrorClassifier.spec.ts (4 tests) 15ms
+ ✓ updater/__tests__/appUpdateAutomaticStore.spec.ts (4 tests) 10ms
+ ✓ updater/__tests__/appReleasePage.spec.ts (3 tests) 7ms
+ ✓ updater/__tests__/appUpdater.spec.ts (46 tests) 1270ms
+ ✓ application/__tests__/managedUpdateSession.spec.ts (28 tests) 1528ms
+ Test Files  17 passed (17)
+      Tests  195 passed (195)
+Impact recheck after wiring, injected timers, and continued journeys:
+> vitest --config ./electron/vitest.config.ts --run application/__tests__/managedUpdateSession.spec.ts application/__tests__/ElectronAutomaticUpdateWiring.spec.ts updater/__tests__/safeRestartMoment.spec.ts
+ ✓ updater/__tests__/safeRestartMoment.spec.ts (4 tests) 21ms
+ ✓ application/__tests__/ElectronAutomaticUpdateWiring.spec.ts (10 tests) 13ms
+ ✓ application/__tests__/managedUpdateSession.spec.ts (31 tests) 1638ms
+ Test Files  3 passed (3)
+      Tests  45 passed (45)
+
+IMP-03 | in autobyteus-server-ts: pnpm exec vitest run tests/unit/restart-resume/{busy-run-count,busy-run-recorder}.test.ts tests/architecture/{agent-provider-composition-boundaries,application-agent-addressing-boundaries,application-framework-boundaries}.test.ts
+ Test Files  1 failed | 4 passed (5)
+      Tests  1 failed | 54 passed (55)
+Only failure: AFB-001 for two type-only REST imports from private agent-execution. Kept the rule unchanged, used public application-platform runtime contract; targeted rerun:
+pnpm exec vitest run tests/architecture/application-framework-boundaries.test.ts -t 'keeps the complete current'
+ Test Files  1 passed (1)
+      Tests  1 passed | 19 skipped (20)
+
+IMP-04 | Nuxt/Vue tests and localization
+> cross-env NUXT_TEST=true vitest --run components/notifications/__tests__/NotificationCenter.appAutomatic.spec.ts
+ ✓ components/notifications/__tests__/NotificationCenter.appAutomatic.spec.ts (11 tests) 197ms
+ Test Files  1 passed (1)
+      Tests  11 passed (11)
+> cross-env NUXT_TEST=true vitest --run components/settings/__tests__/AboutSettingsManager.spec.ts
+ ✓ components/settings/__tests__/AboutSettingsManager.spec.ts (31 tests) 229ms
+ Test Files  1 passed (1)
+      Tests  31 passed (31)
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+
+IMP-05 | sandboxed headless Chrome 151, 420x500 narrow viewport. Live rendering of AutoUpdateSwitch and NotificationRow from Vue/Vite, real en / zh-CN catalogs and Tailwind; isolated controlled store. Clicked toggle; no pageerror or horizontal scroll. Initial preview stub omitted destination version and list container; fixed the fixture and re-inspected, not a production defect.
+en ON: Ready. AutoByteus reopens on the new version by itself when no agent is working and you haven't used the app for 5 minutes. OFF: Download and verify new versions on your channel, then install them and reopen AutoByteus by itself when no agent is working and you haven't used the app for 5 minutes.
+zh ON: 更新已就绪。当没有智能体正在工作，且你已连续 5 分钟未操作应用时，AutoByteus 会自动重启并使用新版本。 OFF: 下载并验证当前渠道的新版本。当没有智能体正在工作，且你已连续 5 分钟未操作应用时，AutoByteus 会自动安装并重新打开。
+
+IMP-06 | pnpm -C autobyteus-server-ts typecheck; pnpm -C autobyteus-web typecheck (baseline-aware)
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 21.4s
+[typecheck] server tests (tsconfig.tests.json): 1006 errors, exit 2, 49.4s
+[typecheck] production errors: 0; test-file errors: 1006 in 315 files (baseline 1006 in 315 files)
+[typecheck] PASS
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 67.3s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 4.2s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 1.2s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 44.4s
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+pnpm -C autobyteus-web transpile-electron: exit 0
+pnpm -C autobyteus-server-ts build: exit 0
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+
+IMP-07 | from root: python3 tickets/in-progress/managed-ubuntu-auto-restart/evidence/IR-001-busy-probe.py; built production node; loopback only, test home/data plus empty-provider APP_ENV=test configuration. First fixture lacked required data/.env: server refused startup with APP_CONFIG_INITIALIZATION_FAILED before serving; fixed fixture only.
+GET /rest/busy-runs with synthetic launch owner: 200 {'busy': 0, 'unknown': 0}; without credential: 401
+Server exited: 0
+Disposable home, data and temp tree removed.
+
+IMP-08 | git diff --exit-code 960fb46ad0 5328f4ce8bce -- autobyteus-web/linux-install ; exit 0. Reuse prior writer tests only for those unchanged native paths (tickets/done/managed-desktop-icon/evidence/IMP-01-native.log).

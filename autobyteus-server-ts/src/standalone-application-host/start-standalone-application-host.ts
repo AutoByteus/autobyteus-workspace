@@ -284,6 +284,7 @@ export const startStandaloneApplicationHost = async (
         episodicCatalog: currentEpisodicCatalog,
         // One notice slot: tool list updates, skill notices, then background task notices (one notice per input).
         platformInputNotices: new AgentRunPlatformNotices(platformNotices.sources),
+        definitionChanges: hostDefinitionServices.agentDefinitionChanges, teamChangeNotices: platformNotices.teamChangeNotices,
         // No peer nodes on this host (ARCH-REV-027; autobyteus-500 FU-011).
         remoteChannel: () => null,
         peerDiscovery: () => REMOTE_COLLABORATION_OFF_DISCOVERY,

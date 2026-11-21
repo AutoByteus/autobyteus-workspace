@@ -5,19 +5,94 @@ import { ManagedStageGone, type ManagedStage } from '../../updater/linuxManagedI
 
 function deferred<T>() { let resolve!: (value: T) => void; const promise = new Promise<T>(r => { resolve = r }); return { promise, resolve } }
 const candidate: ManagedStage = { id: 'stage', baseline: 'old', identity: { version: '1.5.14', sha256: 'new' }, channel: 'stable' }
-function setup(automaticUpdate = true, stop = vi.fn(async () => {})) {
+function setup(automaticUpdate = true, stop = vi.fn(async () => {}), canReopen = true) {
   const writer = { stage: vi.fn(async () => candidate),
     activate: vi.fn(async () => candidate.identity), discard: vi.fn(async () => {}), status: vi.fn(async () => ({ version: '1.5.13', sha256: 'old' })) }
   const shutdown = new ApplicationShutdown(stop, vi.fn())
   const hooks = { serverGone: vi.fn(() => true), notifyQuit: vi.fn(), quit: vi.fn(), exit: vi.fn(), requestReopen: vi.fn(), report: vi.fn() }
-  const session = new ManagedUpdateSession({ writer, shutdown, initialSettings: { automaticUpdate, updateChannel: 'stable' }, ...hooks })
+  const session = new ManagedUpdateSession({ writer, shutdown, initialSettings: { automaticUpdate, updateChannel: 'stable' }, ...hooks, requestReopen: canReopen ? hooks.requestReopen : null })
   const events: unknown[] = []; session.onChange(e => events.push(e))
   return { writer, stop, hooks, session, events }
 }
 
 describe('managed update session ownership', () => {
-  it('stages without stopping and activates only at independent quit, without reopening', async () => {
-    const s = setup(); await s.session.stageDownloaded('/cache/update', '1.5.14')
+  it('automatically reopens once immediately after verification, recording automatic consent', async () => {
+    const s = setup(); await s.session.stageDownloaded('/candidate','1.5.14'); expect(s.stop).toHaveBeenCalledOnce()
+    await vi.waitFor(() => expect(s.hooks.exit).toHaveBeenCalledWith(76))
+    expect(s.writer.activate).toHaveBeenCalledOnce()
+    expect(s.events).toContainEqual({type:'activating', version:'1.5.14', automatic:true})
+  })
+  it('early Quit during automatic activation settles closed despite a later will-quit', async () => {
+    const s = setup(), commit=deferred<typeof candidate.identity>()
+    s.writer.activate.mockReturnValue(commit.promise)
+    await s.session.stageDownloaded('/candidate','1.5.14')
+    await vi.waitFor(() => expect(s.writer.activate).toHaveBeenCalledOnce())
+    s.session.quitRequested(); commit.resolve(candidate.identity)
+    await vi.waitFor(() => expect(s.hooks.quit).toHaveBeenCalledOnce())
+    s.session.willQuit({preventDefault:vi.fn()})
+    expect(s.writer.activate).toHaveBeenCalledOnce();expect(s.hooks.requestReopen).not.toHaveBeenCalled()
+  })
+  it.each(['old','new','stage-gone','unknown'])('before-quit while restart status is pending settles %s without reopening', async outcome => {
+    const s = setup(false), status = deferred<{version:string;sha256:string}>()
+    s.writer.activate.mockRejectedValue(outcome === 'stage-gone' ? new ManagedStageGone('lost') : Error('no ack'))
+    s.writer.status.mockReturnValue(status.promise)
+    await s.session.stageDownloaded('/candidate','1.5.14'); s.session.requestRestart()
+    await vi.waitFor(() => expect(s.writer.status).toHaveBeenCalledOnce())
+    s.session.quitRequested(); s.session.willQuit({preventDefault:vi.fn()})
+    status.resolve({version:'test',sha256:outcome==='stage-gone'?'old':outcome})
+    await vi.waitFor(() => outcome === 'unknown' ? expect(s.hooks.exit).toHaveBeenCalledWith(1) : expect(s.hooks.quit).toHaveBeenCalledOnce())
+    expect(s.stop).toHaveBeenCalledOnce(); expect(s.writer.activate).toHaveBeenCalledOnce()
+    expect(s.hooks.requestReopen).not.toHaveBeenCalled();expect(s.hooks.exit).not.toHaveBeenCalledWith(76)
+  })
+  it.each(['block','channel','quit'])('stale automatic admission cannot win after %s', async change => {
+    const s=setup(), receipt=deferred<ManagedStage>()
+    s.writer.stage.mockReturnValueOnce(receipt.promise)
+    const verification=s.session.stageDownloaded('/candidate',candidate.identity.version)
+    if(change==='block')s.session.automaticInstallBlockChanged(candidate.identity.version)
+    if(change==='channel')s.session.settingsChanged({automaticUpdate:true,updateChannel:'beta'})
+    if(change==='quit')s.session.quitRequested()
+    receipt.resolve(candidate); await verification
+    expect(s.stop).not.toHaveBeenCalled();expect(s.writer.activate).not.toHaveBeenCalled()
+  })
+  it('consumes an already verified release once when its independent automatic block clears', async () => {
+    const s = setup()
+    s.session.automaticInstallBlockChanged(candidate.identity.version)
+    await s.session.stageDownloaded('/cache/update', candidate.identity.version)
+    expect(s.stop).not.toHaveBeenCalled()
+    s.session.automaticInstallBlockChanged(null)
+    expect(s.stop).toHaveBeenCalledOnce()
+    expect(s.events.filter(e => (e as {type:string}).type === 'restarting')).toHaveLength(1)
+    expect(s.session.requestRestart().accepted).toBe(false)
+    await vi.waitFor(() => expect(s.hooks.exit).toHaveBeenCalledWith(76))
+    expect(s.writer.activate).toHaveBeenCalledOnce()
+  })
+  it('Quit latched at ready takes the ordinary ending even with a reopen channel', async () => {
+    const s = setup()
+    s.session.onChange(event => { if (event.type === 'ready') s.session.quitRequested() })
+    await s.session.stageDownloaded('/cache/update', candidate.identity.version)
+    expect(s.stop).not.toHaveBeenCalled()
+    s.session.willQuit({ preventDefault() {} })
+    await vi.waitFor(() => expect(s.hooks.quit).toHaveBeenCalledOnce())
+    expect(s.writer.activate).toHaveBeenCalledOnce()
+    expect(s.hooks.requestReopen).not.toHaveBeenCalled()
+    expect(s.hooks.exit).not.toHaveBeenCalled()
+  })
+  it('turning on the switch immediately installs an existing manually staged update', async () => {
+    const s=setup(false);await s.session.stageDownloaded('/candidate','1.5.14');expect(s.stop).not.toHaveBeenCalled()
+    s.session.settingsChanged({automaticUpdate:true,updateChannel:'stable'})
+    await vi.waitFor(()=>expect(s.hooks.exit).toHaveBeenCalledWith(76))
+  })
+  it.each([false,true])('automatic restart invalidated during stop checks baseline before ending (Quit=%s)',async quit => {
+    const stopped=deferred<void>(), s=setup(true,vi.fn(()=>stopped.promise))
+    await s.session.stageDownloaded('/candidate','1.5.14')
+    s.session.settingsChanged({automaticUpdate:false,updateChannel:'stable'})
+    if(quit)s.session.quitRequested()
+    stopped.resolve();await vi.waitFor(()=>expect(s.writer.status).toHaveBeenCalledOnce())
+    expect(s.writer.activate).not.toHaveBeenCalled(); expect(s.hooks.requestReopen).toHaveBeenCalledTimes(quit?0:1)
+    if(quit)expect(s.hooks.quit).toHaveBeenCalledOnce();else expect(s.hooks.exit).toHaveBeenCalledWith(76)
+  })
+  it('a quit-only launch activates once without reopening', async () => {
+    const s = setup(true, undefined, false); await s.session.stageDownloaded('/cache/update', '1.5.14')
     expect(s.stop).not.toHaveBeenCalled(); expect(s.writer.activate).not.toHaveBeenCalled()
     const event = { preventDefault: vi.fn() }; s.session.willQuit(event); s.session.willQuit(event)
     await vi.waitFor(() => expect(s.hooks.quit).toHaveBeenCalledOnce())
@@ -49,7 +124,7 @@ describe('managed update session ownership', () => {
     expect(s.hooks.requestReopen).not.toHaveBeenCalled()
   })
   it('does not block an unrelated release', async () => {
-    const s = setup(); s.session.automaticInstallBlockChanged('1.5.13')
+    const s = setup(true, undefined, false); s.session.automaticInstallBlockChanged('1.5.13')
     await s.session.stageDownloaded('/cache/update', '1.5.14'); s.session.willQuit({ preventDefault() {} })
     await vi.waitFor(() => expect(s.hooks.quit).toHaveBeenCalledOnce())
     expect(s.writer.activate).toHaveBeenCalledOnce()
@@ -57,7 +132,7 @@ describe('managed update session ownership', () => {
   it('allows verified manual restart with automation off, once, via the canonical outer image', async () => {
     const s = setup(false); expect(s.session.requestRestart().accepted).toBe(false)
     await s.session.stageDownloaded('/cache/update', '1.5.14'); expect(s.session.requestRestart().accepted).toBe(true)
-    expect(s.session.requestRestart().accepted).toBe(false); s.session.willQuit({ preventDefault() {} })
+    expect(s.session.requestRestart().accepted).toBe(false)
     await vi.waitFor(() => expect(s.hooks.exit).toHaveBeenCalledWith(76))
     expect(s.hooks.requestReopen).toHaveBeenCalledOnce(); expect(s.writer.activate).toHaveBeenCalledOnce()
   })
@@ -80,6 +155,7 @@ describe('managed update session ownership', () => {
   })
   it.each([true,false])('requires confirmed old baseline on cancelled manual stop (confirmed=%s)', async (confirmed) => {
     const stopped = deferred<void>(), s = setup(true, vi.fn(() => stopped.promise))
+    s.session.automaticInstallBlockChanged(candidate.identity.version) // manual activation remains available
     if (!confirmed) s.writer.status.mockRejectedValue(new Error('status unavailable'))
     await s.session.stageDownloaded('/cache/update','1.5.14'); s.session.requestRestart()
     s.session.settingsChanged({automaticUpdate:false,updateChannel:'stable'}); stopped.resolve()
@@ -90,7 +166,7 @@ describe('managed update session ownership', () => {
     else expect(s.hooks.exit).not.toHaveBeenCalled()
   })
   it('does not send a completion exit or reactivate after failed restart write', async () => {
-    const s=setup(); s.hooks.requestReopen.mockImplementation(() => { throw new Error('channel closed') })
+    const s=setup(false); s.hooks.requestReopen.mockImplementation(() => { throw new Error('channel closed') })
     await s.session.stageDownloaded('/cache/update','1.5.14'); s.session.requestRestart()
     await vi.waitFor(() => expect(s.hooks.report).toHaveBeenCalledOnce())
     expect(s.hooks.exit).not.toHaveBeenCalled()
@@ -118,7 +194,7 @@ describe('managed update session ownership', () => {
     expect(s.writer.activate).not.toHaveBeenCalled(); expect(s.hooks.requestReopen).not.toHaveBeenCalled()
   })
   it('treats known receipt loss with confirmed old baseline as retryable, without reopening ordinary quit', async () => {
-    const s = setup(); s.writer.activate.mockRejectedValue(new ManagedStageGone('gone'))
+    const s = setup(true, undefined, false); s.writer.activate.mockRejectedValue(new ManagedStageGone('gone'))
     await s.session.stageDownloaded('/cache/update', '1.5.14'); s.session.willQuit({ preventDefault() {} })
     await vi.waitFor(() => expect(s.hooks.quit).toHaveBeenCalledOnce())
     expect(s.events).toContainEqual({ type: 'stage-gone', version: '1.5.14', automatic: true })

@@ -124,7 +124,7 @@ export class RootCommunicationEngine {
   async deliver(input: RootCommunicationDeliveryInput): Promise<AgentOperationResult> {
     const closed = this.refuseUnlessOpen(this.port.rejections.deliverNotAccepting);
     if (closed) return closed;
-    if (!this.isCurrent(input.senderIdentity) || !this.isCurrent(input.receiverIdentity)) {
+    if (!this.maySendAs(input.senderIdentity) || !this.isCurrent(input.receiverIdentity)) {
       return { accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED", message: NOT_HERE };
     }
     if (input.senderIdentity.agentRunId === input.receiverIdentity.agentRunId) {
@@ -168,7 +168,7 @@ export class RootCommunicationEngine {
     const closed = this.refuseUnlessOpen(ROOT_NOT_ACCEPTING_MESSAGES);
     if (closed) return refuse(closed);
     const remoteAgentRunId = input.endpoint.reference.agentRunId;
-    if (!this.isCurrent(input.senderIdentity)) return refuse({ accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED", message: NOT_HERE });
+    if (!this.maySendAs(input.senderIdentity)) return refuse({ accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED", message: NOT_HERE });
     if (input.senderIdentity.agentRunId === remoteAgentRunId) {
       return refuse({ accepted: false, code: "COLLABORATION_SELF_TARGET_REJECTED", message: "You can't send a message to yourself." });
     }
@@ -261,7 +261,7 @@ export class RootCommunicationEngine {
     const refuse = (refusal: Refusal): PreparedRunSend => Object.freeze({ ok: false as const, refusal });
     const closed = this.refuseUnlessOpen(ROOT_NOT_ACCEPTING_MESSAGES);
     if (closed) return refuse(closed);
-    if (!this.isCurrent(input.senderIdentity)) return refuse({ accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED", message: NOT_HERE });
+    if (!this.maySendAs(input.senderIdentity)) return refuse({ accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED", message: NOT_HERE });
     if (input.senderIdentity.agentRunId === input.receiverAgentRunId) {
       return refuse({ accepted: false, code: "COLLABORATION_SELF_TARGET_REJECTED", message: "You can't send a message to yourself." });
     }
@@ -397,6 +397,11 @@ export class RootCommunicationEngine {
 
   private isCurrent(identity: CollaborationMemberExecutionIdentity): boolean {
     return sameRootExecutionIdentity(identity.root, this.port.root) && this.port.isCurrentAgent(identity);
+  }
+
+  /** A sender: a current agent, or a member that left its team and is finishing its turn (the port decides). */
+  private maySendAs(identity: CollaborationMemberExecutionIdentity): boolean {
+    return sameRootExecutionIdentity(identity.root, this.port.root) && this.port.maySend(identity);
   }
 
   private refuseOutsideTaskScope(assertAllowed: () => void): Refusal | null {

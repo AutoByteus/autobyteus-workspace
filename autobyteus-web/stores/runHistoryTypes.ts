@@ -195,6 +195,8 @@ export interface RunHistoryTeamExecutionRowBase {
   displayName: string;
   depth: number;
   hasChildren: boolean;
+  /** A member removed from its team, still finishing its turn while the team run is live (the server's run-tree row says so). */
+  leaving?: boolean;
 }
 
 export interface RunHistoryStableExecutionRow extends RunHistoryTeamExecutionRowBase {

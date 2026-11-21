@@ -1,0 +1,6 @@
+# IMP-19 — server tests around the location and projection services (CR-003)
+# Command: (autobyteus-server-ts) pnpm exec vitest run tests/unit/run-history tests/unit/agent-memory tests/unit/context-files tests/integration/agent-team-execution/team-run-follows-definition.integration.test.ts tests/unit/api/graphql/types/team-run-history.test.ts
+# Commit: 3d8e53cf0c + the CR-003 fix (committed with this evidence); Linux container, Node 22; 2026-11-21
+# New cases: tests/unit/run-history/services/team-run-former-member-location.test.ts 'CR-003: …' (located with its own stored node; projection and file changes of a leaving member, a stopped former member's conversation).
+ Test Files  96 passed (96)
+      Tests  662 passed | 1 skipped (663)

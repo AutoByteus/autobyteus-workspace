@@ -1,0 +1,215 @@
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+App data directory: /tmp/team-follows-ui-probe-HS2T7H/server-data
+Config file path: /tmp/team-follows-ui-probe-HS2T7H/server-data/.env
+Loading environment from: /tmp/team-follows-ui-probe-HS2T7H/server-data/.env
+◇ injected env (0) from ../../../../../../../tmp/team-follows-ui-probe-HS2T7H/server-data/.env // tip: ◈ secrets for agents [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:33671
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:33671
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/team-follows-ui-probe-HS2T7H/server-data
+DB DIRECTORY: /tmp/team-follows-ui-probe-HS2T7H/server-data/db
+LOGS DIRECTORY: /tmp/team-follows-ui-probe-HS2T7H/server-data/logs
+DOWNLOAD DIRECTORY: /tmp/team-follows-ui-probe-HS2T7H/server-data/download
+MEMORY DIRECTORY: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-linux-arm64-openssl-3.0.x.so.node, schema=schema-engine-linux-arm64-openssl-3.0.x)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/tmp/team-follows-ui-probe-HS2T7H/server-data/db/probe.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.34                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+Database migrations completed successfully.
+(node:23191) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-21T11:33:10.364Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 34 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /tmp/team-follows-ui-probe-HS2T7H/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/team-follows-ui-probe-HS2T7H/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/team-follows-ui-probe-HS2T7H/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1795260791242,"pid":23191,"hostname":"8abfa09513cd","msg":"Server listening at http://127.0.0.1:41187"}
+{"level":30,"time":1795260791286,"pid":23191,"hostname":"8abfa09513cd","msg":"Server listening at http://127.0.0.1:33671"}
+[2026-11-21T11:33:11.286Z] [INFO] [server.runtime] Server listening on 127.0.0.1:33671
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Hub Staging Sweep' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Creating new workspace for rootPath: /tmp/team-follows-ui-probe-HS2T7H/workspace
+Created metadata-only FileSystemWorkspace at /tmp/team-follows-ui-probe-HS2T7H/workspace.
+Created and registered workspace ID: agent_ws_839a2fe824499b4ff4b52ac7b24b09e4856150618ef53db41168ea80c8a93ed7
+Created agent session e1d0007c-0e6d-4c00-b759-8fc6cd862e26 for run tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d
+Agent team websocket attached for team run tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d
+Agent Team WebSocket connected: session=e1d0007c-0e6d-4c00-b759-8fc6cd862e26, run=tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d
+Memory file missing: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory/agent_teams/tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d/tfu_lead_75e8e1_43e94ec225724a5f93c69cf479396801/raw_traces_manifest.json
+Creating new workspace for rootPath: /tmp/team-follows-ui-probe-HS2T7H/workspace
+Created metadata-only FileSystemWorkspace at /tmp/team-follows-ui-probe-HS2T7H/workspace.
+Reusing registered workspace ID: agent_ws_839a2fe824499b4ff4b52ac7b24b09e4856150618ef53db41168ea80c8a93ed7
+AGY compaction detection off for run tfu_writer_75e8e1_3daea43a0d5d44f4a42163e08cbb4925: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory/agent_teams/tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d/tfu_writer_75e8e1_3daea43a0d5d44f4a42163e08cbb4925/raw_traces_manifest.json
+Memory file missing: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory/agent_teams/tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d/tfu_lead_75e8e1_43e94ec225724a5f93c69cf479396801/raw_traces_manifest.json
+Creating new workspace for rootPath: /tmp/team-follows-ui-probe-HS2T7H/workspace
+Created metadata-only FileSystemWorkspace at /tmp/team-follows-ui-probe-HS2T7H/workspace.
+Reusing registered workspace ID: agent_ws_839a2fe824499b4ff4b52ac7b24b09e4856150618ef53db41168ea80c8a93ed7
+AGY compaction detection off for run tfu_lead_75e8e1_43e94ec225724a5f93c69cf479396801: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory/agent_teams/tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d/tfu_lead_75e8e1_43e94ec225724a5f93c69cf479396801/raw_traces_manifest.json
+Memory file missing: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory/agent_teams/tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d/tfu_lead_75e8e1_43e94ec225724a5f93c69cf479396801/raw_traces_manifest.json
+Closed agent session e1d0007c-0e6d-4c00-b759-8fc6cd862e26
+Memory file missing: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory/agent_teams/tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d/tfu_lead_75e8e1_43e94ec225724a5f93c69cf479396801/raw_traces_manifest.json
+Created agent session edc169d3-82e5-4ac9-bfed-43014cc6f1b4 for run tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d
+Agent team websocket attached for team run tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d
+Agent Team WebSocket connected: session=edc169d3-82e5-4ac9-bfed-43014cc6f1b4, run=tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d
+Created terminal session 37656c1c-bed6-4d87-a19d-1414c1a4d976 using backend PtySession for target /tmp/team-follows-ui-probe-HS2T7H/home
+Terminal WebSocket connected: 37656c1c-bed6-4d87-a19d-1414c1a4d976
+Terminal websocket attached for cwd /tmp/team-follows-ui-probe-HS2T7H/home
+Memory file missing: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory/agent_teams/tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d/tfu_lead_75e8e1_43e94ec225724a5f93c69cf479396801/raw_traces_manifest.json
+Closed agent session edc169d3-82e5-4ac9-bfed-43014cc6f1b4
+Closed PTY session 37656c1c-bed6-4d87-a19d-1414c1a4d976
+Terminal WebSocket disconnected: 37656c1c-bed6-4d87-a19d-1414c1a4d976
+Memory file missing: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory/agent_teams/tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d/tfu_lead_75e8e1_43e94ec225724a5f93c69cf479396801/raw_traces_manifest.json
+Created agent session afdff9bd-2359-4607-8921-395380f325bc for run tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d
+Agent team websocket attached for team run tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d
+Agent Team WebSocket connected: session=afdff9bd-2359-4607-8921-395380f325bc, run=tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d
+Memory file missing: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory/agent_teams/tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d/tfu_lead_75e8e1_43e94ec225724a5f93c69cf479396801/raw_traces_manifest.json
+Created terminal session 5b73e5a4-03b0-49ae-9bb5-fb45297b0d7e using backend PtySession for target /tmp/team-follows-ui-probe-HS2T7H/home
+Terminal WebSocket connected: 5b73e5a4-03b0-49ae-9bb5-fb45297b0d7e
+Terminal websocket attached for cwd /tmp/team-follows-ui-probe-HS2T7H/home
+Memory file missing: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory/agent_teams/tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d/tfu_lead_75e8e1_43e94ec225724a5f93c69cf479396801/raw_traces_manifest.json
+Memory file missing: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory/agent_teams/tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d/tfu_lead_75e8e1_43e94ec225724a5f93c69cf479396801/raw_traces_manifest.json
+Memory file missing: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory/agent_teams/tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d/tfu_reviewer_75e8e1_f36f5e9034b5454f9a2bc10e98599fcb/raw_traces_manifest.json
+Creating new workspace for rootPath: /tmp/team-follows-ui-probe-HS2T7H/workspace
+Created metadata-only FileSystemWorkspace at /tmp/team-follows-ui-probe-HS2T7H/workspace.
+Reusing registered workspace ID: agent_ws_839a2fe824499b4ff4b52ac7b24b09e4856150618ef53db41168ea80c8a93ed7
+Memory file missing: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory/agent_teams/tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d/tfu_reviewer_75e8e1_f36f5e9034b5454f9a2bc10e98599fcb/raw_traces_manifest.json
+AGY compaction detection off for run tfu_reviewer_75e8e1_f36f5e9034b5454f9a2bc10e98599fcb: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory/agent_teams/tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d/tfu_reviewer_75e8e1_f36f5e9034b5454f9a2bc10e98599fcb/raw_traces_manifest.json
+Memory file missing: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory/agent_teams/tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d/tfu_reviewer_75e8e1_f36f5e9034b5454f9a2bc10e98599fcb/raw_traces_manifest.json
+Memory file missing: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory/agent_teams/tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d/tfu_lead_75e8e1_43e94ec225724a5f93c69cf479396801/raw_traces_manifest.json
+Closed agent session afdff9bd-2359-4607-8921-395380f325bc
+Closed PTY session 5b73e5a4-03b0-49ae-9bb5-fb45297b0d7e
+Terminal WebSocket disconnected: 5b73e5a4-03b0-49ae-9bb5-fb45297b0d7e
+Memory file missing: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory/agent_teams/tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d/tfu_reviewer_75e8e1_f36f5e9034b5454f9a2bc10e98599fcb/raw_traces_manifest.json
+Created agent session 1e24c5ee-83b5-4a9a-b3c6-b4d4cd28c81a for run tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d
+Agent team websocket attached for team run tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d
+Agent Team WebSocket connected: session=1e24c5ee-83b5-4a9a-b3c6-b4d4cd28c81a, run=tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d
+Memory file missing: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory/agent_teams/tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d/tfu_reviewer_75e8e1_f36f5e9034b5454f9a2bc10e98599fcb/raw_traces_manifest.json
+Created terminal session 5258deb5-5796-44a2-94b0-14ed02a04a95 using backend PtySession for target /tmp/team-follows-ui-probe-HS2T7H/home
+Terminal WebSocket connected: 5258deb5-5796-44a2-94b0-14ed02a04a95
+Terminal websocket attached for cwd /tmp/team-follows-ui-probe-HS2T7H/home
+Memory file missing: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory/agent_teams/tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d/tfu_reviewer_75e8e1_f36f5e9034b5454f9a2bc10e98599fcb/raw_traces_manifest.json
+Memory file missing: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory/agent_teams/tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d/tfu_reviewer_75e8e1_f36f5e9034b5454f9a2bc10e98599fcb/raw_traces_manifest.json
+Memory file missing: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory/agent_teams/tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d/tfu_reviewer_75e8e1_f36f5e9034b5454f9a2bc10e98599fcb/raw_traces_manifest.json
+Memory file missing: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory/agent_teams/tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d/tfu_reviewer_75e8e1_f36f5e9034b5454f9a2bc10e98599fcb/raw_traces_manifest.json
+Closed agent session 1e24c5ee-83b5-4a9a-b3c6-b4d4cd28c81a
+Closed PTY session 5258deb5-5796-44a2-94b0-14ed02a04a95
+Terminal WebSocket disconnected: 5258deb5-5796-44a2-94b0-14ed02a04a95
+Memory file missing: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory/agent_teams/tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d/tfu_lead_75e8e1_43e94ec225724a5f93c69cf479396801/raw_traces_manifest.json
+Created agent session fb9a2e11-43cf-4244-9f48-3132982bbe81 for run tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d
+Agent team websocket attached for team run tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d
+Agent Team WebSocket connected: session=fb9a2e11-43cf-4244-9f48-3132982bbe81, run=tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d
+Memory file missing: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory/agent_teams/tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d/tfu_lead_75e8e1_43e94ec225724a5f93c69cf479396801/raw_traces_manifest.json
+Created terminal session 38c264e0-3ce2-41a4-9f0c-7c7c0b457aac using backend PtySession for target /tmp/team-follows-ui-probe-HS2T7H/home
+Terminal WebSocket connected: 38c264e0-3ce2-41a4-9f0c-7c7c0b457aac
+Terminal websocket attached for cwd /tmp/team-follows-ui-probe-HS2T7H/home
+Created agent session 6f24fdc6-050a-47c7-86c5-725a05f9e029 for run tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d
+Agent team websocket attached for team run tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d
+Agent Team WebSocket connected: session=6f24fdc6-050a-47c7-86c5-725a05f9e029, run=tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d
+Memory file missing: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory/agent_teams/tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d/tfu_reviewer_75e8e1_f36f5e9034b5454f9a2bc10e98599fcb/raw_traces_manifest.json
+{"level":30,"time":1795260856254,"pid":23191,"hostname":"8abfa09513cd","reqId":"req-57","err":{"type":"GraphQLError","message":"AgentRun 'tfu_reviewer_75e8e1_f36f5e9034b5454f9a2bc10e98599fcb' has no configured launch placement or recorded source.","stack":"CollaborationMemberNotFoundError: AgentRun 'tfu_reviewer_75e8e1_f36f5e9034b5454f9a2bc10e98599fcb' has no configured launch placement or recorded source.\n    at TeamMemberRunViewProjectionService.requireLocation (file:///home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts/dist/run-history/services/team-member-run-view-projection-service.js:91:19)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async TeamMemberRunViewProjectionService.getProjection (file:///home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts/dist/run-history/services/team-member-run-view-projection-service.js:39:26)\n    at async TeamRunHistoryResolver.getTeamMemberRunProjection (file:///home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts/dist/api/graphql/types/team-run-history.js:178:28)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/node_modules/.pnpm/mercurius@16.12.1_graphql@16.12.0/node_modules/mercurius/index.js:713:23)","path":["getTeamMemberRunProjection"],"locations":[{"line":2,"column":3}],"extensions":{}},"msg":"AgentRun 'tfu_reviewer_75e8e1_f36f5e9034b5454f9a2bc10e98599fcb' has no configured launch placement or recorded source."}
+{"level":30,"time":1795260856256,"pid":23191,"hostname":"8abfa09513cd","reqId":"req-58","err":{"type":"GraphQLError","message":"AgentRun 'tfu_reviewer_75e8e1_f36f5e9034b5454f9a2bc10e98599fcb' has no configured launch placement or recorded source.","stack":"CollaborationMemberNotFoundError: AgentRun 'tfu_reviewer_75e8e1_f36f5e9034b5454f9a2bc10e98599fcb' has no configured launch placement or recorded source.\n    at TeamMemberRunViewProjectionService.requireLocation (file:///home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts/dist/run-history/services/team-member-run-view-projection-service.js:91:19)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async TeamMemberRunViewProjectionService.getFileChanges (file:///home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/autobyteus-server-ts/dist/run-history/services/team-member-run-view-projection-service.js:71:26)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/node_modules/.pnpm/mercurius@16.12.1_graphql@16.12.0/node_modules/mercurius/index.js:713:23)","path":["getTeamMemberFileChanges"],"locations":[{"line":2,"column":3}],"extensions":{}},"msg":"AgentRun 'tfu_reviewer_75e8e1_f36f5e9034b5454f9a2bc10e98599fcb' has no configured launch placement or recorded source."}
+Memory file missing: /tmp/team-follows-ui-probe-HS2T7H/server-data/memory/agent_teams/tfu_team_75e8e1_7c8ea92f86ab4f3b8b35ed9df871cd3d/tfu_lead_75e8e1_43e94ec225724a5f93c69cf479396801/raw_traces_manifest.json
+Closed agent session 6f24fdc6-050a-47c7-86c5-725a05f9e029
+Closed agent session fb9a2e11-43cf-4244-9f48-3132982bbe81
+Closed PTY session 38c264e0-3ce2-41a4-9f0c-7c7c0b457aac
+Terminal WebSocket disconnected: 38c264e0-3ce2-41a4-9f0c-7c7c0b457aac

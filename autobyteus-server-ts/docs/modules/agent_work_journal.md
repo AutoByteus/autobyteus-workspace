@@ -41,7 +41,10 @@ caller.
 - Reading (no generation; a run without a journal answers empty or `null`):
   - `journalFileVersions(memoryDir)`: each file's name, state and `content_sha256` from the
     manifest, without reading the files;
-  - `listJournalFiles(memoryDir)`: each file's size, line count and days (`[YYYY-MM-DD]` lines);
+  - `listJournalFiles(memoryDir)`: each file's state, size, line count, work entry count (entries that are not
+    notices: a request, reply, action or note; a file a runtime switch left with only its hand-over notice has none) and
+    days (`[YYYY-MM-DD]` lines). The runtime hand-over notice uses the work entry count to name the newest closed file
+    with work (see [Run History](run_history.md));
   - `readJournalSpans(memoryDir)`: `{ kind: "spans", spans }` with each manifest file's path, size
     and the time range its header states (`YYYY-MM-DD HH:MM` on both sides, UTC; `null` for "no
     records"), reading at most the first 1 KB of each file; `{ kind: "none" }` without a manifest;

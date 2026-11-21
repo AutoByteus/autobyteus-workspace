@@ -37,6 +37,7 @@ const port = (overrides: Partial<MessageRecipientIndexPort> = {}): MessageRecipi
       ? messagePlacement("agent", address, { agentRunId: `wide${address.replaceAll("/", "-")}`, address })
       : null,
     isOwnTeamAddress: () => false,
+    formerMemberAt: () => null,
     ...overrides,
   };
 };
@@ -176,7 +177,7 @@ describe("catalog delegation placement (DS-001)", () => {
     expect(await resolveDelegationPlacement({
       port: delegationPort, senderAgentRunId: "pm", address: a("/product_team"), newDelegatedRunFolder: null, resolveInRun: notFound,
       catalogSource: async () => ({ name: "Product Team", source: snapshot, launchNotes: [] }),
-    })).toEqual({ kind: "agent_team", address: "/product_team", coordinatorAddress: "/product_team/lead", source: snapshot });
+    })).toEqual({ kind: "agent_team", address: "/product_team", coordinatorAddress: "/product_team/lead", source: snapshot, copiedFrom: "team_definition" });
     await expect(resolveDelegationPlacement({
       port: delegationPort, senderAgentRunId: "pm", address: a("/nobody"), newDelegatedRunFolder: null, resolveInRun: notFound, catalogSource: async () => null,
     })).rejects.toThrow("not in run");
@@ -196,7 +197,7 @@ describe("catalog delegation placement (DS-001)", () => {
 
     const inRunTeam = await resolveDelegationPlacement({
       port: delegationPort, senderAgentRunId: "pm", address: a("/product_team"), newDelegatedRunFolder: "/projects/f",
-      resolveInRun: async () => ({ kind: "agent_team", address: a("/product_team"), coordinatorAddress: a("/product_team/lead"), source: teamSource }), catalogSource: vi.fn(),
+      resolveInRun: async () => ({ kind: "agent_team", address: a("/product_team"), coordinatorAddress: a("/product_team/lead"), source: teamSource, copiedFrom: "configured_placement" as const }), catalogSource: vi.fn(),
     }) as never as { source: { defaultLaunchConfiguration: typeof launch; members: Array<{ launchConfiguration: typeof launch }> } };
     expect([inRunTeam.source.defaultLaunchConfiguration, ...inRunTeam.source.members.map((member) => member.launchConfiguration)].map(folderOf))
       .toEqual(["/projects/f", "/projects/f", "/projects/f"]);
@@ -264,7 +265,7 @@ describe("catalog delegation placement (DS-001)", () => {
     expect(await resolveDelegationPlacement({
       port: delegationPort, senderAgentRunId: "pm", address: a("/product_team"), newDelegatedRunFolder: null, resolveInRun: notFound,
       catalogSource: async () => ({ name: "Product Team", source: snapshot, launchNotes: ["designer: fell back"] }),
-    })).toEqual({ kind: "agent_team", address: "/product_team", coordinatorAddress: "/product_team/lead", source: snapshot, launchNotes: ["designer: fell back"] });
+    })).toEqual({ kind: "agent_team", address: "/product_team", coordinatorAddress: "/product_team/lead", source: snapshot, copiedFrom: "team_definition", launchNotes: ["designer: fell back"] });
     const quiet = await resolveDelegationPlacement({
       port: delegationPort, senderAgentRunId: "pm", address: a("/product_team"), newDelegatedRunFolder: null, resolveInRun: notFound,
       catalogSource: async () => ({ name: "Product Team", source: snapshot, launchNotes: [] }),

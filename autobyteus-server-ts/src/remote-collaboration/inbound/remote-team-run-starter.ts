@@ -31,7 +31,9 @@ export class RemoteTeamRunStarter {
     const refuse = (message: string): PeerHandlerRefusal =>
       Object.freeze({ accepted: false, code: REMOTE_REFUSAL.AGENT_CANNOT_RUN, message, target: Object.freeze({ kind: "agent_team" as const, name: input.name }) });
     try {
-      const started = await this.dependencies.starter.startTeam({ source: input.source, address: input.address, delegatedFrom: input.delegatedFrom });
+      // N-6: a peer delegates to a catalog address, so its copy is a copy of the Team definition (it follows it).
+      const started = await this.dependencies.starter.startTeam({ source: input.source, address: input.address, delegatedFrom: input.delegatedFrom,
+        copiedFrom: "team_definition" });
       return Object.freeze({
         accepted: true as const,
         kind: "agent_team" as const,

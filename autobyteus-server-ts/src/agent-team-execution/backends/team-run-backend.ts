@@ -22,6 +22,12 @@ export interface TeamRunBackend {
   reserveDirectAgentInput(agentRunId: string, message: AgentInputUserMessage, options?: AgentRunInputOptions): Promise<AgentRunInputReservationResult>;
   deliverToDirectAgent(agentRunId: string, message: AgentInputUserMessage): Promise<AgentOperationResult>;
   executeDirectAgentCommand(agentRunId: string, command: TeamMemberExecutionCommand): Promise<AgentOperationResult>;
+  /** The leaving members stop (each when quiet); `stopped` is told for each one (DS-004). */
+  followMembership(leavingAgentRunIds: readonly string[], stopped: (agentRunId: string) => void): void;
+  /** The members whose execution is live (a handle that has not stopped); a plain synchronous read (N-14). */
+  liveExecutionIds(): ReadonlySet<string>;
+  /** A stopped member's handle goes. */
+  removeStoppedHandle(agentRunId: string): void;
   cancelRuntimeActivation(): void;
   releaseOwnedRuntime(): Promise<AgentOperationResult>;
   prepareTermination(): Promise<PreparedLocalExecutionTermination>;

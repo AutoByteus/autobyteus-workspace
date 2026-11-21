@@ -238,12 +238,6 @@ const messages = {
     "显示全部 {{count}} 个文件",
   "workspace.components.workspace.team.AgentTeamEventMonitor.no_activity_yet":
     "还没有活动。",
-  "workspace.components.workspace.team.TeamMembersPanel.team_members":
-    "团队名册",
-  "workspace.components.workspace.team.TeamMembersPanel.no_active_team_members":
-    "没有团队名册成员。",
-  "workspace.components.workspace.team.TeamMembersPanel.roster_non_execution_note":
-    "逻辑成员名册，不代表活跃任务执行。",
   "workspace.components.workspace.team.TeamTaskAgentActivityBar.active_task_agents":
     "活跃任务智能体",
   "workspace.components.workspace.team.TeamTaskAgentActivityBar.task_agent_badge":
@@ -262,6 +256,8 @@ const messages = {
     "团队状态：离线",
   "workspace.history.hierarchy.tree_label": "{{name}}组织树",
   "workspace.history.hierarchy.role.agent": "智能体",
+  "workspace.history.hierarchy.leaving": "正在离开",
+  "workspace.history.hierarchy.leaving_title": "已从团队移除，正在完成当前回合",
   "workspace.history.delegatedRunTask.locate": "在项目中显示任务：{{title}}",
   "workspace.history.delegatedRunTask.accessible": "任务：{{title}}",
   "workspace.history.hierarchy.role.temporary_task_team": "临时任务团队",

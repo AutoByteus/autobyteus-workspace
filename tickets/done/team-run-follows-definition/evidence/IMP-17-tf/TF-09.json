@@ -1,0 +1,63 @@
+{
+  "copiedFrom": "team_definition",
+  "copyBefore": [
+    {
+      "address": "/lead",
+      "agentRunId": "tf_lead_745cc0_a2feee7a44574ea4a5954e864a5b65b3",
+      "agentDefinitionId": "tf-lead-745cc0",
+      "leaving": false
+    },
+    {
+      "address": "/scout",
+      "agentRunId": "tf_alt_745cc0_28de30e7c57648ff818d3a4ebf6a993c",
+      "agentDefinitionId": "tf-alt-745cc0",
+      "leaving": false
+    }
+  ],
+  "copyAfter": {
+    "members": [
+      {
+        "address": "/lead",
+        "agentRunId": "tf_lead_745cc0_a2feee7a44574ea4a5954e864a5b65b3",
+        "agentDefinitionId": "tf-lead-745cc0",
+        "leaving": false
+      },
+      {
+        "address": "/checker",
+        "agentRunId": "tf_reviewer_745cc0_44b37c9d10b64fac9fe322d00d4bcd1c",
+        "agentDefinitionId": "tf-reviewer-745cc0",
+        "leaving": false
+      }
+    ],
+    "former": [
+      {
+        "address": "/scout",
+        "agentRunId": "tf_alt_745cc0_28de30e7c57648ff818d3a4ebf6a993c",
+        "agentDefinitionId": "tf-alt-745cc0",
+        "leaving": false
+      }
+    ]
+  },
+  "rules": {
+    "handoffs": [
+      {
+        "when": "Check facts.",
+        "recipient_address": "/checker"
+      }
+    ],
+    "isError": false
+  },
+  "refused": {
+    "accepted": false,
+    "code": "COLLABORATION_TARGET_NOT_FOUND",
+    "message": "scout (/scout) is no longer a member of your team: it was removed from the team definition. Call get_handoff_rules for your current handoff rules.",
+    "isError": true
+  },
+  "sent": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to /checker.",
+    "target_agent_run_id": "tf_reviewer_745cc0_44b37c9d10b64fac9fe322d00d4bcd1c",
+    "isError": false
+  }
+}

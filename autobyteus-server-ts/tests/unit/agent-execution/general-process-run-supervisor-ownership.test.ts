@@ -1,4 +1,6 @@
+import { TeamChangeNoticeSource } from "../../../src/agent-team-execution/membership/team-change-notice-source.js";
 import { testViewStreams } from "../../helpers/view-streams.js";
+import { teamMembershipTestCollaborators } from "../../helpers/team-membership-test-collaborators.js";
 import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
 import { openTaskRecords } from "../../helpers/no-delegations.js";
 import { noDelegations, noEpisodicCatalog } from "../../helpers/no-delegations.js";
@@ -76,6 +78,7 @@ const createSupervisorInput = () => {
     modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn(), listOptions: vi.fn(), listOptionsMany: vi.fn(), storedModelOffer: OFFERED_STORED_MODEL_OFFER },
     taskRecords: { isOpen: vi.fn(() => true), statusChanged: vi.fn() },
     delegationIndex: noDelegations(), viewStreams: testViewStreams(), episodicCatalog: noEpisodicCatalog(),
+    definitionChanges: { subscribe: () => () => undefined }, teamChangeNotices: new TeamChangeNoticeSource(),
   };
 };
 
@@ -146,7 +149,7 @@ describe("GeneralProcessRunSupervisor ownership", () => {
 
   it("releases AgentRunManager when exclusive Team manager initialization fails", async () => {
     const input = createSupervisorInput();
-    const conflictingTeamManager = AgentTeamRunManager.initializeProcessInstance({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
+    const conflictingTeamManager = AgentTeamRunManager.initializeProcessInstance({ ...teamMembershipTestCollaborators(), delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
       memoryDir: "/tmp/general-process-run-supervisor-conflict",
       flatTeamExecutionFactory: new FlatTeamExecutionFactory({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY }),
       memberExecutionContextBuilder: new MemberExecutionContextBuilder(input.agentTeamDefinitionService, NOT_DELEGATED),
@@ -204,7 +207,7 @@ describe("GeneralProcessRunSupervisor ownership", () => {
       "memoryDir", "contextFilePathEnvironment", "agentDefinitionService", "agentTeamDefinitionService",
       "agentOrgDefinitionService", "definitionAdmissionService", "workspaceManager", "agentProviderFactoryBuilder",
       "agentToolMcpSessionAuthority", "integrationRunAccess", "providerRelayAccess", "runPasses", "modelSelectionValidator",
-      "episodicCatalog",
+      "episodicCatalog", "definitionChanges", "teamChangeNotices",
     ] as const) {
       const invalid = { ...createSupervisorInput() } as Record<string, unknown>;
       delete invalid[property];

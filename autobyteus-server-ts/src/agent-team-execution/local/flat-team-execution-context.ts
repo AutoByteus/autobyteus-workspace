@@ -48,14 +48,10 @@ export class FlatAgentExecutionContext implements TeamAgentMemberRuntimeContext 
 
 export type FlatTeamMemberExecutionContext = FlatAgentExecutionContext;
 
+/** A local Team's execution state; its members' runtime contexts are the membership's (`TeamRunContext.membership`). */
 export class FlatTeamExecutionContext {
-  readonly memberContexts: FlatTeamMemberExecutionContext[];
   readonly configuredMemberActivationMode: ConfiguredMemberActivationMode;
-  constructor(input: {
-    memberContexts: FlatTeamMemberExecutionContext[];
-    configuredMemberActivationMode: ConfiguredMemberActivationMode;
-  }) {
-    this.memberContexts = [...input.memberContexts];
+  constructor(input: { configuredMemberActivationMode: ConfiguredMemberActivationMode }) {
     this.configuredMemberActivationMode = input.configuredMemberActivationMode;
   }
 }

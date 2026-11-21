@@ -1,0 +1,68 @@
+# IMP-04 — server integration around the changed code
+# Command 1: (autobyteus-server-ts) pnpm exec vitest run tests/integration/agent-team-execution tests/integration/collaboration-definition-admission tests/integration/api/team-communication-api.integration.test.ts tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+# Command 2: (autobyteus-server-ts) pnpm exec vitest run tests/integration/api/team-communication-api.integration.test.ts --hookTimeout=60000
+# Commit: 6b46ec5bdd; Linux container, Node 22; 2026-11-21 (command 1 ran in parallel with the full web suite)
+# Run 1 failures: team-communication-api beforeAll "Hook timed out in 10000ms" under load (passes alone, run 2);
+#   brief-package-team-prompt: "Standalone package root is not a directory: .../applications/brief-studio/dist/importable-package" (the app is not built here; environment).
+# The ticket's reproduction: tests/integration/agent-team-execution/team-run-follows-definition.integration.test.ts (2 tests).
+## Run 1
+     56|       throw new Error(`Standalone package root is not a directory: ${c…
+     × composes the exact graph-local package team and member semantics through Codex bootstrap 11ms
+Error: Hook timed out in 10000ms.
+Error: Standalone package root is not a directory: /home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/applications/brief-studio/dist/importable-package
+ FAIL  tests/integration/api/team-communication-api.integration.test.ts > Team communication API integration
+ FAIL  tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+ ❯ StandaloneApplicationSelectionService.resolve src/standalone-application-host/services/standalone-application-selection-service.ts:56:13
+ Test Files  2 failed | 9 passed (11)
+      Tests  1 failed | 65 passed | 4 skipped (70)
+ ❯ tests/integration/api/team-communication-api.integration.test.ts:120:3
+ ❯ tests/integration/api/team-communication-api.integration.test.ts:193:15
+ ❯ tests/integration/api/team-communication-api.integration.test.ts (4 tests | 4 skipped) 10028ms
+ ❯ tests/integration/application-backend/brief-package-team-prompt.integration.test.ts (1 test | 1 failed) 12ms
+ ❯ tests/integration/application-backend/brief-package-team-prompt.integration.test.ts:30:23
+ ❯ validateStandaloneApplicationPackage src/application-platform/launch-configuration/application-standalone-package-validator.ts:68:27
+## Run 2
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+## Run 3 — verbose: the reproduction and the membership unit tests
+# Command: (autobyteus-server-ts) pnpm exec vitest run tests/integration/agent-team-execution/team-run-follows-definition.integration.test.ts tests/unit/agent-team-execution/membership --reporter=verbose
+ ✓ tests/integration/agent-team-execution/team-run-follows-definition.integration.test.ts > A live Team run follows its definition (reproduction) > adds a member and a rule; then removes a member, which is refused by run ID with the exact text 140ms
+ ✓ tests/integration/agent-team-execution/team-run-follows-definition.integration.test.ts > A live Team run follows its definition (reproduction) > a stopped run whose definition changed is brought up to date before it is restored, then its members are told 74ms
+ ✓ tests/unit/agent-team-execution/membership/team-membership-change.test.ts > planTeamMembershipChange (DS-003) > is null when the definition matches the run (no write, no event) 3ms
+ ✓ tests/unit/agent-team-execution/membership/team-membership-change.test.ts > planTeamMembershipChange (DS-003) > adds a new member with its view launch and the definition's rule to it 2ms
+ ✓ tests/unit/agent-team-execution/membership/team-membership-change.test.ts > planTeamMembershipChange (DS-003) > does not add a member the view has no launch for (it cannot be launched yet) 0ms
+ ✓ tests/unit/agent-team-execution/membership/team-membership-change.test.ts > planTeamMembershipChange (DS-003) > removes a member: it becomes a former member and rules from or to it are left out (N-3) 1ms
+ ✓ tests/unit/agent-team-execution/membership/team-membership-change.test.ts > planTeamMembershipChange (DS-003) > swaps a member whose address now has another agent (DEC-006): the old leaves, a new run ID joins at the same address 1ms
+ ✓ tests/unit/agent-team-execution/membership/team-membership-change.test.ts > planTeamMembershipChange (DS-003) > brings a former member back with its run ID (DEC-007), the latest one at that address 1ms
+ ✓ tests/unit/agent-team-execution/membership/team-membership-change.test.ts > planTeamMembershipChange (DS-003) > follows a coordinator change and a rule-only change 1ms
+ ✓ tests/unit/agent-team-execution/membership/team-membership-change.test.ts > planTeamMembershipChange (DS-003) > keeps a rule to an address outside the team out of the run (N-3) 0ms
+ ✓ tests/unit/agent-team-execution/membership/team-membership-change.test.ts > planTeamMembershipChange (DS-003) > refuses a definition whose coordinator cannot be added: the run stays as it is 1ms
+ ✓ tests/unit/agent-team-execution/membership/team-membership-change.test.ts > followsTeamDefinition (D-SCOPE) > follows a standalone run, a Team definition copy and an older copy without copiedFrom 0ms
+ ✓ tests/unit/agent-team-execution/membership/team-membership-change.test.ts > followsTeamDefinition (D-SCOPE) > does not follow a configured-placement copy or an application-bound run 0ms
+ ✓ tests/unit/agent-team-execution/membership/team-membership-committer.test.ts > TeamMembershipCommitter (DS-001) > plans under the lock, writes once, swaps the tree, then leaves, notices, run parts and the view, in order 5ms
+ ✓ tests/unit/agent-team-execution/membership/team-membership-committer.test.ts > TeamMembershipCommitter (DS-001) > an unchanged definition writes nothing and tells nobody 2ms
+ ✓ tests/unit/agent-team-execution/membership/team-membership-committer.test.ts > TeamMembershipCommitter (DS-001) > a write that does not commit leaves the run as it is 2ms
+ ✓ tests/unit/agent-team-execution/membership/team-membership-committer.test.ts > TeamMembershipCommitter (DS-001) > a durable change that cannot be applied live stops the run (fail-stop) 1ms
+ ✓ tests/unit/agent-team-execution/membership/team-membership-committer.test.ts > TeamDefinitionChangeListener (D-TRIGGER, N-4) > follows every live run; a failing run is logged and the next one still follows 1ms
+ ✓ tests/unit/agent-team-execution/membership/team-membership-committer.test.ts > TeamDefinitionChangeListener (D-TRIGGER, N-4) > a change during a pass asks for exactly one more pass; after close nothing follows 0ms
+ ✓ tests/unit/agent-team-execution/membership/team-membership-committer.test.ts > TeamDefinitionChangeListener (D-TRIGGER, N-4) > followLiveTeamRun skips a run that stopped while its view was read 1ms
+ ✓ tests/unit/agent-team-execution/membership/team-membership-planner.test.ts > TeamMembershipPlanner.viewFor (DS-003, DEC-005, N-7) > reads the definition: members, coordinator, own-team rules, and each new member's launch from its agent's default when usable 4ms
+ ✓ tests/unit/agent-team-execution/membership/team-membership-planner.test.ts > TeamMembershipPlanner.viewFor (DS-003, DEC-005, N-7) > falls back to the run's own launch when the agent's default is not usable, recording why 1ms
+ ✓ tests/unit/agent-team-execution/membership/team-membership-planner.test.ts > TeamMembershipPlanner.viewFor (DS-003, DEC-005, N-7) > leaves out a member no launch covers, with a warning naming the run (the next change tries again) 1ms
+ ✓ tests/unit/agent-team-execution/membership/team-membership-planner.test.ts > TeamMembershipPlanner.viewFor (DS-003, DEC-005, N-7) > compiles a delegated copy's rules as a delegated team (N-7) 1ms
+ ✓ tests/unit/agent-team-execution/membership/team-membership-planner.test.ts > TeamMembershipPlanner.viewFor (DS-003, DEC-005, N-7) > does not follow an application run or a configured-placement copy; a missing or unreadable definition leaves the run with a warning 2ms
+ ✓ tests/unit/agent-team-execution/membership/team-membership-planner.test.ts > TeamMembershipPlanner.viewFor (DS-003, DEC-005, N-7) > followStored: a stopped run's change against its current definition 2ms
+ ✓ tests/unit/agent-team-execution/membership/team-run-membership.test.ts > TeamRunMembership (DS-004, DS-005) > keeps a retained member's context object; a removed member is leaving until released 4ms
+ ✓ tests/unit/agent-team-execution/membership/team-run-membership.test.ts > TeamRunMembership (DS-004, DS-005) > a rejoin while leaving cancels the leave and keeps the context; a stopped former member's rejoin resumes it 1ms
+ ✓ tests/unit/agent-team-execution/membership/team-run-membership.test.ts > TeamRunMembership (DS-004, DS-005) > a same-address swap: the old run is leaving, the new one is current at the address, each with its own context 1ms
+ ✓ tests/unit/agent-team-execution/membership/team-run-membership.test.ts > TeamRunMembership (DS-004, DS-005) > reads each member's live rules: a rule added for a current member shows at once 1ms
+ ✓ tests/unit/agent-team-execution/membership/team-run-membership.test.ts > TeamExecutionIndex former members (REQ-009) > refuses a message to a former member's address with the exact text and code 3ms
+ ✓ tests/unit/agent-team-execution/membership/team-run-membership.test.ts > TeamExecutionIndex former members (REQ-009) > a former member's address taken by a current member resolves to the current one 1ms
+ ✓ tests/unit/agent-team-execution/membership/team-run-membership.test.ts > TeamExecutionIndex former members (REQ-009) > answers a leaving member's own commands only while it is leaving; never as a current agent 1ms
+ ✓ tests/unit/agent-team-execution/membership/team-change-notice-source.test.ts > teamChangeNoticeText (design § Exact Texts) > has the exact lines, only those that apply 1ms
+ ✓ tests/unit/agent-team-execution/membership/team-change-notice-source.test.ts > TeamChangeNoticeSource (DEC-004, DS-006, N-2) > tells each remaining member at its next input, with the team's change and whether its own rules changed; not the joined member 1ms
+ ✓ tests/unit/agent-team-execution/membership/team-change-notice-source.test.ts > TeamChangeNoticeSource (DEC-004, DS-006, N-2) > names a member that joined and left again before delivery in neither line; drops a notice with nothing to say 0ms
+ ✓ tests/unit/agent-team-execution/membership/team-change-notice-source.test.ts > TeamChangeNoticeSource (DEC-004, DS-006, N-2) > states rules as changed only against the last delivered notice (a change and its revert say unchanged) 0ms
+ ✓ tests/unit/agent-team-execution/membership/team-change-notice-source.test.ts > TeamChangeNoticeSource (DEC-004, DS-006, N-2) > settles only what was sent: a change while the notice is on its way stays pending; a returned notice is sent again 0ms
+ Test Files  6 passed (6)
+      Tests  38 passed (38)

@@ -1,0 +1,21 @@
+# DEL-08: the failed watcher unit test alone, 3 runs (the whole-suite run DEL-05 failed it at its 15 s wait for the folder's own file event)
+10:59  up 32 days, 20:38, 9 users, load averages: 53.53 59.21 76.36
+--- run 1
+ ✓ tests/unit/file-explorer/watcher/chokidar-watcher-runtime-links.test.ts > ChokidarWatcherRuntime with followSymbolicLinks: false > reports a change in the folder and never one inside a linked folder's target 2238ms
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Duration  3.41s (transform 116ms, setup 96ms, import 81ms, tests 2.24s, environment 0ms)
+--- run 2
+ ✓ tests/unit/file-explorer/watcher/chokidar-watcher-runtime-links.test.ts > ChokidarWatcherRuntime with followSymbolicLinks: false > reports a change in the folder and never one inside a linked folder's target 4979ms
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Duration  5.88s (transform 192ms, setup 167ms, import 89ms, tests 4.98s, environment 0ms)
+--- run 3
+ ✓ tests/unit/file-explorer/watcher/chokidar-watcher-runtime-links.test.ts > ChokidarWatcherRuntime with followSymbolicLinks: false > reports a change in the folder and never one inside a linked folder's target 3933ms
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Duration  4.63s (transform 88ms, setup 83ms, import 49ms, tests 3.93s, environment 0ms)
+
+# raw fs.watch diagnostic (independent of chokidar), run after DEL-05
+raw fs.watch (recursive): first event 939 ms after the watch started (write at 500 ms)
+  480 170.6 23071472 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd

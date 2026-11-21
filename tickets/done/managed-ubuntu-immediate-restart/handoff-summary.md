@@ -1,0 +1,4 @@
+# autobyteus-16 — immediate managed Ubuntu update
+Medium / Low, direct implementation and independent executable QA; independent architecture/source/test reviews N/A. SR-001 requirements, SR-002 design and SR-003 Quit clarification, IR-001 product 2d26c0fb6a4a, API-REV-001 Pass 96%. Automatic restart starts when an eligible stage verifies, even with active work or recent input. After reopening, the interrupted recorded run gets the update notice and can complete a later turn. Turning automation off keeps manual control. Both intentional Quit cases stay closed.
+
+Latest base 9514a05a0e already contained in validated c347611f99. No new base commits or code rerun required. Delivery audit, integration and owned cleanup in release-deployment-report.md. No release or changes to the running desktop.

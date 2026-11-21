@@ -48,7 +48,7 @@ const createRunContext = (
               memberAddress: `/${runId}`,
               agentRunId: runId,
             },
-            collaboration: { outgoingHandoffs: [], deliverLogicalMessage: async () => ({ accepted: true }) },
+            collaboration: { outgoingHandoffs: () => [], deliverLogicalMessage: async () => ({ accepted: true }) },
             tasks: testMemberTaskCapability(input.teamRunId),
           })
         : null,

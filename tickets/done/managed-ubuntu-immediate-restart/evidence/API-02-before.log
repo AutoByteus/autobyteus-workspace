@@ -1,0 +1,20 @@
+{
+  "entries": [
+    {
+      "root": {
+        "rootSubjectKind": "agent",
+        "rootRunId": "qa16_1795278064692_33018ba9ff2146bb94be9d5a033236f4"
+      },
+      "agentRunId": "qa16_1795278064692_33018ba9ff2146bb94be9d5a033236f4",
+      "place": "host",
+      "status": "running",
+      "backgroundTasks": false,
+      "recordedAt": "2026-11-21T16:21:06.174Z",
+      "version": "1.5.18"
+    }
+  ]
+}
+{"at": "2026-11-21T16:21:04.827843+00:00", "kind": "start", "role": "held", "last": "QA16-ACTIVE Please answer when ready."}
+{"supervisor": [{"pid": "10521", "ppid": "10512", "exe": "/tmp/.mount_AutoByUxVubP/AppRun", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["10521"]}], "main": [{"pid": "10547", "ppid": "10521", "exe": "/tmp/.mount_AutoByUxVubP/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["10547"]}], "server": [{"pid": "10656", "ppid": "10547", "exe": "/tmp/.mount_AutoByUxVubP/autobyteus", "uid": "1000", "NoNewPrivs": "0", "Seccomp": "0", "NSpid": ["10656"]}], "renderer": [{"pid": "10770", "ppid": "10614", "exe": "/tmp/.mount_AutoByUxVubP/autobyteus", "uid": "1000", "NoNewPrivs": "1", "Seccomp": "2", "NSpid": ["10770", "4", "1"]}], "file": "76ac9cfa2b5521811e6407d2ceec379b6fd100c3bc16c09fd0f07508b621a87c", "work": "4cf425aa7afbe1732ac6a4317305420d62749bcacc3287d1fd819b52bc1c3fde"}
+autobyteus
+2026-11-21T16:21:07+00:00

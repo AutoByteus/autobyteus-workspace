@@ -9,6 +9,8 @@ import type { RemoteRunChannel } from "../execution/remote/remote-run-channel.js
 import { describeRemoteTaskExecutions, type RemoteRunSummaryEvent, type RemoteTaskExecutionView } from "../execution/remote/remote-run-observation.js";
 import type { DelegatedChild, DelegationIndex } from "./delegation-index.js";
 import type { SubtreeRow } from "./collaboration-tree.js";
+import type { RootExecutionIdentity } from "../execution/domain/root-execution-identity.js";
+import type { RunOwnMember, RunOwnTree } from "./run-tree-view.js";
 
 /** A run's launch as its own file has it: what it runs with, and where that came from (`null` when not recorded). */
 export type RunLaunchRecord = Readonly<{
@@ -31,7 +33,8 @@ export type ChildRowRecord =
   | Readonly<{ kind: "agent"; agentRunId: string; address: string; launch: RunLaunchRecord }>
   | Readonly<{
       kind: "agent_team"; teamRunId: string; address: string; coordinatorAddress: string; launch: RunLaunchRecord;
-      members: readonly Readonly<{ address: string; agentRunId: string; launch: RunLaunchRecord | null }>[];
+      /** Its own members as its file has them (`ownTreeOf`: leaving ones marked); `teamMemberRowsOf` decides the rows. */
+      members: readonly (RunOwnMember & Readonly<{ launch: RunLaunchRecord | null }>)[];
     }>
   | Readonly<{
       kind: "peer"; link: RemoteTaskExecutionView;
@@ -61,11 +64,16 @@ const launchRecordOf = (launch: RecordedLaunch, source: LaunchConfigurationSourc
 const readTeamFile = (memoryDir: string, teamRunId: string) =>
   new TeamRunExecutionTreeStore().read(new AgentMemoryLayout(memoryDir).getTeamDirPath({ rootTeamRunId: teamRunId, ancestorTeamRunIds: [] }), teamRunId);
 
+/** A run's own parts as its tree shows them (`RunOwnAgentsReader.ownTreeOf`). */
+export type OwnTreeOf = (run: RootExecutionIdentity) => Promise<RunOwnTree | null>;
+
 /**
- * A run on this node: its identity from the tree's per-run data (read once, SR-056) and its launch details from its own
+ * A run on this node: an agent run's identity from the tree's per-run data (read once, SR-056); a team run's members
+ * from its own parts (`ownTreeOf`, the same source as its own rows, SR-010 AR-009); its launch details from its own
  * file, read fresh (a Settings save changes them, SR-039); `null` when either is missing.
  */
-export const localChildRecord = async (child: DelegatedChild, memoryDir: string, tree: Pick<DelegationIndex, "agentsOf">): Promise<ChildRowRecord | null> => {
+export const localChildRecord = async (child: DelegatedChild, memoryDir: string, tree: Pick<DelegationIndex, "agentsOf">,
+  ownTreeOf: OwnTreeOf): Promise<ChildRowRecord | null> => {
   const childRun = child.run;
   if ("agentRunId" in childRun) {
     const [agent] = await tree.agentsOf({ rootSubjectKind: "agent", rootRunId: childRun.agentRunId });
@@ -76,19 +84,18 @@ export const localChildRecord = async (child: DelegatedChild, memoryDir: string,
     return metadata ? Object.freeze({ kind: "agent", agentRunId: childRun.agentRunId, address: agent.address,
       launch: launchRecordOf(metadata, metadata.launchSource, true) }) : null;
   }
-  const agents = await tree.agentsOf({ rootSubjectKind: "agent_team", rootRunId: childRun.teamRunId });
-  if (!agents.length) return null;
+  const own = await ownTreeOf({ rootSubjectKind: "agent_team", rootRunId: childRun.teamRunId });
+  if (own?.kind !== "agent_team" || !own.members.length) return null;
   const file = await readTeamFile(memoryDir, childRun.teamRunId);
   if (!file) return null;
   const team = file.rootTeam;
+  const nodes = [...team.members, ...team.formerMembers ?? []];
   return Object.freeze({
     kind: "agent_team", teamRunId: childRun.teamRunId, address: child.recipientAddress, coordinatorAddress: team.coordinatorAddress,
     launch: launchRecordOf(team.defaultLaunchConfiguration, team.defaultLaunchSource, true),
-    members: Object.freeze(agents.map((agent) => {
-      // A team run's members are stored at their addresses (the team file's schema requires one).
-      if (!agent.address) throw new Error(`Member '${agent.agentRunId}' of team run '${childRun.teamRunId}' has no address.`);
-      const recorded = team.members.find((member) => member.address === agent.address);
-      return Object.freeze({ address: agent.address, agentRunId: agent.agentRunId,
+    members: Object.freeze(own.members.map((member) => {
+      const recorded = nodes.find((node) => node.agentRunId === member.agentRunId);
+      return Object.freeze({ ...member,
         launch: recorded ? launchRecordOf(recorded.launchConfiguration, recorded.launchSource ?? team.defaultLaunchSource, Boolean(recorded.launchSource)) : null });
     })),
   });
@@ -101,11 +108,13 @@ export const localChildRecord = async (child: DelegatedChild, memoryDir: string,
 export const createChildRowProjection = (input: Readonly<{
   memoryDir: string;
   tree: Pick<DelegationIndex, "agentsOf" | "peerChildrenOf">;
+  /** A team run's own members (`RunOwnAgentsReader.ownTreeOf`). */
+  ownTreeOf: OwnTreeOf;
   channel: () => RemoteRunChannel | null;
   /** A held peer run's latest answer from its node (`RunStatusService`); `null` until it answered. */
   peerSummaryOf(runId: string): RemoteRunSummaryEvent | null;
 }>): ChildRowProjection => ({ rowOf: async (child) => {
-  if (child.nodeId === undefined) return localChildRecord(child, input.memoryDir, input.tree);
+  if (child.nodeId === undefined) return localChildRecord(child, input.memoryDir, input.tree, input.ownTreeOf);
   const runId = "agentRunId" in child.run ? child.run.agentRunId : child.run.teamRunId;
   const links = peerRunLinksOf(child.parent, input.tree).filter((link) => peerRunIdOf(link) === runId);
   const [link] = await describeRemoteTaskExecutions(links, input.channel());

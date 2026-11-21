@@ -57,7 +57,7 @@ export class StandaloneRunAgentContextBuilder {
       inOrganization: false,
       authoredEnclosingScopeInstruction: instruction,
       collaboration: new MemberCollaborationContext({
-        outgoingHandoffs: collaboration.placement?.handoffs ?? [],
+        outgoingHandoffs: () => collaboration.placement?.handoffs ?? [],
         deliverLogicalMessage: async (message) => {
           const active = this.options.getActiveRoot(metadata.runId);
           return active

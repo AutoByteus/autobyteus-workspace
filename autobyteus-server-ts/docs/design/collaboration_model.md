@@ -83,6 +83,16 @@ The members of one Team, the units of one Org and a standalone run's own agent
 are parts of one run. They work together only by **messages**
 (`send_message_to`, guided by the run's handoff rules).
 
+A Team run's membership follows its Team definition while the run exists
+(since team-run-follows-definition): a member the definition adds joins the
+run, a member it removes leaves it and becomes a **former member** (kept with its
+run ID and history, not addressable; it finishes a turn it is in, then stops),
+and the run's coordinator and handoff rules are the definition's current ones.
+This holds for a standalone Team run and for a copy of a Team definition; an
+application's Team run, a copy of a configured placement and a Team mounted in
+an Org run keep their members. See
+[Agent Team Execution](../modules/agent_team_execution.md#membership-follows-the-definition).
+
 ### 2.2 Delegation: handing work to an independent run
 
 `delegate_task` hands one Task's work to an **independent** unit. It starts a
@@ -178,7 +188,8 @@ memory/<kind>/<delegatingRunId>/                       team_run_execution_tree.j
 - A remote Team's entry also holds its members by run ID and by their address
   in their own team (`members`); the coordinator is the entry's
   `coordinatorAgentRunId`. These are assigned when the Team run is created and
-  never change. The entry holds no member content: no launch settings, status
+  never change on the delegating node, even when the Team run follows a changed
+  definition on its own node (a message to a member that left is refused there). The entry holds no member content: no launch settings, status
   or conversation.
 - On the node that runs it, the run is a run of its own: a standalone run for
   an Agent, a top-level Team run for an Agent Team. It is the root of its own run

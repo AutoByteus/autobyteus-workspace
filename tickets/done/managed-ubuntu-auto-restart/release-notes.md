@@ -1,0 +1,2 @@
+# Managed Ubuntu desktop updates
+With **Update automatically** enabled, AutoByteus can reopen itself on a verified update once no agent is working and you haven’t used any app window for five minutes. It waits if it cannot confirm that work has stopped. If you choose Quit first, it installs an eligible update and stays closed. **Install and restart** remains available when you want to update immediately. Other platforms’ update timing is unchanged.

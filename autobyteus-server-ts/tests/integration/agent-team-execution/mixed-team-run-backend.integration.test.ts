@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { TeamRunMembership } from "../../../src/agent-team-execution/domain/team-run-membership.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { FlatTeamRunBackend } from "../../../src/agent-team-execution/local/flat-team-run-backend.js";
 import { FlatAgentExecutionContext, FlatTeamExecutionContext } from "../../../src/agent-team-execution/local/flat-team-execution-context.js";
@@ -26,16 +27,7 @@ const createHarness = () => {
     coordinatorAddress: coordinator.address,
     children: [coordinator, reviewer],
   });
-  const runtimeContext = new FlatTeamExecutionContext({
-    memberContexts: [coordinator, reviewer].map((node) => new FlatAgentExecutionContext({
-      address: node.address,
-      agentRunId: node.agentRunId,
-      runtimeKind: node.runtimeKind,
-      platformAgentRunId: node.runtimeKind === RuntimeKind.CODEX_APP_SERVER
-        ? "thread-coordinator"
-        : "session-reviewer",
-    })),
-  });
+  const runtimeContext = new FlatTeamExecutionContext({ configuredMemberActivationMode: "fresh" });
   const context = new TeamRunContext({
     physicalScope: createRootExecutionPhysicalScope({
       root: createTeamRootExecutionIdentity(config.rootTeam.teamRunId),
@@ -43,8 +35,7 @@ const createHarness = () => {
     }),
     teamRunId: config.rootTeam.teamRunId,
     teamBackendKind: TeamBackendKind.MIXED,
-    teamNode: config.rootTeam,
-    handoffs: config.handoffs,
+    membership: new TeamRunMembership({ teamNode: config.rootTeam, handoffs: config.handoffs }),
     runtimeContext,
   });
   const manager = {

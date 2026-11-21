@@ -1,0 +1,29 @@
+10:48:44.575398879 window 1 pointer
+10:48:45.982280204 window 1 key
+10:48:48.884659722 window 2 pointer
+10:48:50.295395202 window 2 key
+{"at":1795258122964,"label":"physical-pointer","last":73.406133,"window":2,"kind":"mouseMove"}
+{"at":1795258122969,"label":"physical-pointer","last":391.683476,"window":2,"kind":"mouseMove"}
+{"at":1795258122979,"label":"ready","last":394.636435}
+{"at":1795258123171,"label":"physical-pointer","last":394.636435,"window":2,"kind":"mouseLeave"}
+{"at":1795258123172,"label":"physical-pointer","last":597.026531,"window":1,"kind":"mouseMove"}
+{"at":1795258123172,"label":"physical-pointer","last":597.530836,"window":1,"kind":"mouseMove"}
+{"at":1795258123172,"label":"physical-pointer","last":597.765242,"window":1,"kind":"mouseMove"}
+{"at":1795258123980,"label":"sample","last":598.210763}
+{"at":1795258124578,"label":"physical-pointer","last":598.210763,"window":1,"kind":"mouseMove"}
+{"at":1795258124982,"label":"sample","last":2004.575909}
+{"at":1795258125983,"label":"sample","last":2004.575909}
+{"at":1795258125987,"label":"physical-key","last":2004.575909,"window":1,"kind":"keyDown"}
+{"at":1795258125991,"label":"physical-key","last":3413.174254,"window":1,"kind":"keyUp"}
+{"at":1795258126984,"label":"sample","last":3417.231736}
+{"at":1795258127480,"label":"physical-pointer","last":3417.231736,"window":1,"kind":"mouseLeave"}
+{"at":1795258127481,"label":"physical-pointer","last":4906.30259,"window":2,"kind":"mouseMove"}
+{"at":1795258127481,"label":"physical-pointer","last":4906.626728,"window":2,"kind":"mouseMove"}
+{"at":1795258127481,"label":"physical-pointer","last":4906.801043,"window":2,"kind":"mouseMove"}
+{"at":1795258127984,"label":"sample","last":4907.052881}
+{"at":1795258128890,"label":"physical-pointer","last":4907.052881,"window":2,"kind":"mouseMove"}
+{"at":1795258128985,"label":"sample","last":6316.262888}
+{"at":1795258129987,"label":"sample","last":6316.262888}
+{"at":1795258130299,"label":"physical-key","last":6316.262888,"window":2,"kind":"keyDown"}
+{"at":1795258130305,"label":"physical-key","last":7724.811269,"window":2,"kind":"keyUp"}
+{"at":1795258130988,"label":"sample","last":7731.16419}

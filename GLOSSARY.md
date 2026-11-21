@@ -229,6 +229,9 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
 - **Work Journal:** a run's readable Markdown record, rendered from its raw
   traces by the journal service; one file per raw-trace segment
   (`work_journal/`).
+- **Work entry** (of a Work Journal file): an entry that is not a notice: a
+  request, a reply, an action or a note (`workEntryCount` in code). A file that
+  a runtime switch left with only its hand-over notice has none.
 - **Episodic catalog** (of an agent): the system-maintained list of an agent
   definition's runs on this node, oldest first, pointing to their Work
   Journals: `<memory>/episodic/<definition folder name>/catalog.md`, the
@@ -426,7 +429,9 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   runtime, held in the Agent's record (`pendingRuntimeSwitch`: a standalone run's metadata,
   a member's node in the run's execution tree) until that input.
 - **Hand-over notice:** the system notice the new agent receives with that input:
-  where the Work Journals are and how they are laid out. It names no agent runtime.
+  where the Work Journals are and how they are laid out. It names the newest closed
+  journal file with work entries, the previous agent's most recent work, and asks
+  for a complete read of it before replying (autobyteus-583). It names no agent runtime.
 - **Switch marker:** the notice record that starts the new raw-trace file; the chat
   and the Work Journal show it ("Agent runtime changed from … to …").
 - **Previous agent:** the agent that worked on the run on the earlier agent runtime
@@ -484,8 +489,8 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   tasks it started (stopped by an update or a restart; possibly still running and
   no longer tracked after an unexpected stop). Woken with it after an update; otherwise it rides
   the run's next input. Delivered exactly once.
-- **Busy run** (restart record): a run that was mid-turn or had a running
-  background task when the node recorded it (`busy-runs.json`).
+- **Busy run**: a live run that is initializing, running a turn, or has a running
+  background task. The restart reminder records eligible placed collaboration runs.
 - **Background task running** (status shown): what desktop and phone lists and
   headers show for an `idle` agent whose run has running background tasks ("N
   background tasks running" for several; zh-CN "后台任务运行中"), with the active,
@@ -510,6 +515,22 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   (`AgentToolSearch`). The external runtimes' own searches keep their names:
   `ToolSearch` (Claude Agent SDK), `tool_search` (Codex), `search_tool` (Grok
   Build).
+
+## Team Runs
+
+- **Former member** (`formerMembers` in a Team run's tree): a member removed from its Team definition while the run
+  existed. The run keeps it with its run ID and history (it stays in the run's history and run-tree rows), but it is not
+  addressable: a message to it, by address or run ID, is refused. If the definition adds it again (same address, same
+  agent), it comes back as the same member with its conversation. Code, stored field, docs and UI use this one word;
+  agent-facing text says it "left the team" or "is no longer a member of your team".
+- **Leaving** (a member's state, `leaving: true` on a former member in a Team run's tree and on its run-tree row): a
+  former member removed while its execution was live, still finishing its turn. It can still send and its approvals and
+  interrupt still work, but it receives nothing; it stops when it is quiet, then it is former. It is leaving only while
+  its team run is live; a stopped run has no leaving members. Its run-tree row is tagged "Leaving".
+- **Follows its definition** (a Team run): its members, coordinator and handoff rules change when its Team definition
+  changes. A standalone Team run and a copy of a Team definition do; an application's Team run, a copy of a configured
+  placement and a Team mounted in an Org run do not (`copiedFrom`,
+  [agent_team_execution.md](autobyteus-server-ts/docs/modules/agent_team_execution.md#membership-follows-the-definition)).
 
 ## Agent Definitions
 

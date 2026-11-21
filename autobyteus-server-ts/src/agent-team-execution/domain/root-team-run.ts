@@ -8,7 +8,6 @@ import { ASSIGNER_ONLY_REACTIVATION_MESSAGE, type RunTaskRecords } from "../../a
 import { runOwnTaskOf } from "../../agent-collaboration/delegation/run-own-task.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { RUN_NOT_ACTIVE, type AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
-import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 import { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import { createTeamCommunicationPort } from "../../services/team-communication/team-communication-port.js";
 import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-messages-file.js";
@@ -53,12 +52,20 @@ import { TeamAgentPlatformBindingCommitter } from "../services/team-agent-platfo
 import type { FrozenTeamRunTerminationScope } from "./frozen-team-run-termination-scope.js";
 import { RootTeamRunMaterializationGate } from "./root-team-run-materialization-gate.js";
 import { TaskWorkerStatusNotice } from "../../agent-collaboration/execution/task/task-worker-status-notice.js";
+import type { TeamRunMembership } from "./team-run-membership.js";
+import { TeamMembershipCommitter } from "../membership/team-membership-committer.js";
+import type { TeamChangeNoticeSource } from "../membership/team-change-notice-source.js";
+import type { TeamDefinitionView, TeamMembershipChange } from "../membership/team-membership-change.js";
+import { TeamRunMemberAuthority } from "./team-run-member-authority.js";
+import type { ConfiguredAgentExecutionNode } from "./team-run-execution-tree.js";
 
 export type RootTeamRunPackageSnapshot = Readonly<{
   tree: TeamRunExecutionTreeSnapshot;
   /** Nothing is hosted (autobyteus-461): always empty; a view's children are the runs it delegated to. */
   statuses: readonly TeamAgentStatusSnapshot[];
   inputStates: readonly import("../../agent-collaboration/execution/domain/live-agent-input-snapshot.js").LiveAgentInputSnapshot[];
+  /** Former members marked `leaving` (removed with a live execution, still finishing their turn): shown as leaving. */
+  leavingMembers: readonly ConfiguredAgentExecutionNode[];
 }>;
 
 export type TeamRunExecutionCheckpoint = Readonly<{
@@ -80,6 +87,8 @@ export class RootTeamRun {
   private readonly teamRunResolver: TeamRunResolver;
   private readonly communication: RootCommunicationEngine;
   private readonly platformBindings: TeamAgentPlatformBindingCommitter;
+  private readonly membershipChanges: TeamMembershipCommitter;
+  private readonly members: TeamRunMemberAuthority;
   private readonly materializationGate: RootTeamRunMaterializationGate;
   private readonly collaborators: TeamRunCollaborators;
   private readonly delivery: TeamRunMessageDelivery;
@@ -101,8 +110,12 @@ export class RootTeamRun {
     /** The node's message feed (SR-072): its committed messages into the views of its runs and the runs above them. */
     messageFeed: Pick<RunMessagesFeed, "publish">;
     taskRecords: RunTaskRecords;
-    /** The relationships between runs (the Task entries): its peer children and its own Task (SR-047). */
-    delegationIndex: Pick<DelegationIndex, "peerChildrenOf" | "currentTaskOf" | "collaborationTreeOf">;
+    /** The relationships between runs (the Task entries): its peer children, its own Task (SR-047), its rows' refresh. */
+    delegationIndex: Pick<DelegationIndex, "peerChildrenOf" | "currentTaskOf" | "collaborationTreeOf" | "runPartsChanged">;
+    /** The one live view of its members, coordinator and rules; the same its TeamRun's contexts read. */
+    membership: TeamRunMembership;
+    /** Where each remaining member's notice of a membership change waits (DS-006). */
+    changeNotices: Pick<TeamChangeNoticeSource, "recordChange">;
     /** The host's channel to peer nodes (autobyteus-500 FU-011). */
     remoteChannel: RemoteRunChannelAccess;
     /** The closed-Task input fence, from the tree and the Task records (DS-15, SR-070). */
@@ -115,7 +128,7 @@ export class RootTeamRun {
     onTerminated?(ending: TeamRunEnding): void;
   }) {
     this.tree = options.tree;
-    this.index = new TeamExecutionIndex(options.tree);
+    this.index = new TeamExecutionIndex(options.tree, (agentRunId) => options.membership.isLeaving(agentRunId));
     this.materializationGate = new RootTeamRunMaterializationGate({
       rootTeamRunId: this.teamRunId,
       canEnter: () => this.isAdmitting(),
@@ -125,13 +138,17 @@ export class RootTeamRun {
       rootTeamRun: options.rootRun,
       getIndex: () => this.index,
     });
+    this.members = new TeamRunMemberAuthority({ teamRunId: this.teamRunId, getIndex: () => this.index, resolver: this.teamRunResolver });
     this.communication = new RootCommunicationEngine(createTeamCommunicationPort({
       rootTeamRunId: this.teamRunId,
       initial: options.messages,
       // AR-020: a message to or from a peer run whose Task entry is closed is refused (its node keeps the run).
       assertDeliveryAllowed: (sender, receiver) => { this.assertPeerEntryOpen(sender); this.assertPeerEntryOpen(receiver); },
-      isCurrentAgent: (identity) => this.isCurrentAgent(identity),
-      messageLogOwnerOf: (agentRunId) => this.remoteLinks.has(agentRunId) || !this.index.getAgent(agentRunId) ? OTHER_RUN_LOG : OWN_RUN_LOG,
+      isCurrentAgent: (identity) => this.members.isCurrentAgent(identity),
+      maySend: (identity) => this.members.maySend(identity),
+      // A member that left keeps its messages in this run's log (it is still this run's agent).
+      messageLogOwnerOf: (agentRunId) => this.remoteLinks.has(agentRunId) || (!this.index.getAgent(agentRunId)
+        && !this.index.formerMemberByRunId(agentRunId)) ? OTHER_RUN_LOG : OWN_RUN_LOG,
       requireContainingTeamRun: (agentRunId) => this.requireContainingTeamRun(agentRunId),
       commitMessageAppend: (append) => options.persistence.commitMessageAppend(append),
       publish: (event) => options.publisher.publish(event),
@@ -150,7 +167,7 @@ export class RootTeamRun {
       collaborators: this.collaborators,
       communication: this.communication,
       authorizeIdentity: (identity) => this.authorizeIdentity(identity),
-      isLiveAgent: (agentRunId) => this.isLiveAgent(agentRunId),
+      isLiveAgent: (agentRunId) => this.members.isLiveAgent(agentRunId),
       remoteLinks: this.remoteLinks,
       remoteSend: new RemoteMessageSend({ engine: () => this.communication, links: this.remoteLinks }),
     });
@@ -161,14 +178,19 @@ export class RootTeamRun {
       replaceTree: (tree) => this.replaceTree(tree),
       enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
     });
+    this.membershipChanges = new TeamMembershipCommitter({
+      rootIdentity: this.rootIdentity, persistence: options.persistence, getTree: () => this.tree,
+      assertAdmitting: () => this.assertAdmitting(), isAdmitting: () => this.isAdmitting(), replaceTree: (tree) => this.replaceTree(tree),
+      enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
+      followers: { teamRun: options.rootRun, notices: options.changeNotices, runParts: options.delegationIndex,
+        publish: (event) => options.publisher.publish(event) },
+    });
     this.delegatedIdle = this.tree.delegatedFrom ? new DelegatedTeamIdleShutdown({ teamRunId: this.teamRunId,
       shutDownIfQuiet: () => this.shutDownIfQuiet(), ...options.taskExecutionIdleShutdown }) : null;
     this.workerStatus = this.tree.delegatedFrom ? new TaskWorkerStatusNotice({ teamRunId: this.teamRunId }, options.taskRecords) : null;
     this.unsubscribeIdleEvents = options.publisher.subscribe(({ event }) => { this.delegatedIdle?.onRootEvent(event); this.workerStatus?.onTeamEvent(event); });
     this.assertRootCorrelation();
   }
-
-  /** The user's Stop of a peer child, by its node (DEC-804). A run delegated on this node is stopped as itself. */
 
   get teamRunId(): string { return this.tree.rootTeam.teamRunId; }
   get rootIdentity(): RootExecutionIdentity { return createTeamRootExecutionIdentity(this.teamRunId); }
@@ -204,6 +226,8 @@ export class RootTeamRun {
   hasAgentExecution(agentRunId: string): boolean {
     return this.index.getAgent(agentRunId.trim()) !== null || this.remoteLinks.has(agentRunId.trim());
   }
+  /** Run-ID routing (CR-001): also a member that left (leaving or former), so this root answers it by name. */
+  ownsAgentRun(agentRunId: string): boolean { return this.hasAgentExecution(agentRunId) || this.index.formerMemberByRunId(agentRunId.trim()) !== null; }
   getCommunicationSnapshot(): TeamCommunicationMessagesSnapshot {
     return Object.freeze({ schemaVersion: 1, rootTeamRunId: this.teamRunId, messages: this.communication.getMessages() });
   }
@@ -211,6 +235,11 @@ export class RootTeamRun {
   commitAgentPlatformBindingChange(change: CollaborationAgentPlatformBindingChange): Promise<void> {
     return this.platformBindings.commit(change);
   }
+
+  /** DS-001: the run follows its Team definition's current `view`; the committed change, or null when nothing changed. */
+  followDefinition(view: TeamDefinitionView): Promise<TeamMembershipChange | null> { return this.membershipChanges.follow(view); }
+  /** DS-002: a change its stored tree took before it was restored: its members are told and the views follow. */
+  followedStored(change: TeamMembershipChange): void { this.membershipChanges.applied(change); }
 
   getCoordinatorAgentRunId(teamRunId: string = this.teamRunId): string {
     this.index.requireTeam(teamRunId);
@@ -245,18 +274,10 @@ export class RootTeamRun {
 
   collaboratorPort(): CollaboratorRootPort { return this.collaborators.port(); }
 
+  /** A sender of this run: a current member, or one that left and is finishing its turn (it may still send). */
   authorizeIdentity(identity: CollaborationMemberExecutionIdentity): void {
     this.assertAdmitting();
-    this.authorizeCurrentIdentity(identity);
-  }
-
-  private authorizeCurrentIdentity(identity: CollaborationMemberExecutionIdentity): void {
-    if (!this.isCurrentAgent(identity)) {
-      throw new CollaborationContractError(
-        "COLLABORATION_CONTEXT_REQUIRED",
-        `AgentRun '${identity.agentRunId}' is not a live execution at '${identity.memberAddress}' in root '${this.teamRunId}'.`,
-      );
-    }
+    this.members.authorizeSender(identity);
   }
 
   /**
@@ -305,7 +326,6 @@ export class RootTeamRun {
     return this.materializationGate.run(async () => { this.assertAdmitting(); return this.delivery.acceptPeerRunMessage(input); });
   }
 
-  /** N-6 for a Team a peer started: the delegator's work packet starts the coordinator with the task notification. */
   /** DS-2: a message from, and to, another run of this node (CrossRunMessageDelivery: receiver in the gate, sender's own log). */
   acceptFromRun(input: import("../../agent-collaboration/communication/cross-run-accept-input.js").CrossRunAcceptInput): Promise<AgentOperationResult> { return this.materializationGate.run(() => this.delivery.acceptFromRun(input)); }
   prepareSendToRun(input: import("../../agent-collaboration/execution/communication/root-communication-engine.js").RunSendInput) { return this.communication.prepareSendToRun(input); }
@@ -323,18 +343,16 @@ export class RootTeamRun {
     command: TeamMemberExecutionCommand,
   ): Promise<AgentOperationResult> {
     return this.materializationGate.run(async () => {
-      const execution = this.index.getAgent(agentRunId);
+      // A member that left takes no new message, only its own approvals and interrupt while it finishes its turn.
+      const execution = command.kind === "post_message" ? this.index.getAgent(agentRunId) : this.index.getAgentForOwnCommand(agentRunId);
       if (!execution) {
         return { accepted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${agentRunId}' is not in root '${this.teamRunId}'.` };
       }
       // DS-15: a delegated team run whose Task is closed takes no input (a message or an approval), as base fenced a copy.
       const refusal = command.kind === "interrupt" ? null : this.options.closedTasks.refusal(createTeamRootExecutionIdentity(this.teamRunId), Boolean(this.tree.delegatedFrom));
       if (refusal) return refusal;
-      if (command.kind !== "post_message") {
-        if (!this.isLiveAgent(agentRunId)) {
-          return { accepted: false, code: RUN_NOT_ACTIVE, message: `AgentRun '${agentRunId}' is shut down in root '${this.teamRunId}'.` };
-        }
-        return (await this.requireContainingTeamRun(agentRunId)).executeDirectAgentCommand(agentRunId, command);
+      if (command.kind !== "post_message" && !this.members.isLiveAgent(agentRunId)) {
+        return { accepted: false, code: RUN_NOT_ACTIVE, message: `AgentRun '${agentRunId}' is shut down in root '${this.teamRunId}'.` };
       }
       return (await this.requireContainingTeamRun(agentRunId)).executeDirectAgentCommand(agentRunId, command);
     });
@@ -360,6 +378,7 @@ export class RootTeamRun {
         tree: this.tree,
         statuses: this.getLeafAgentStatusSnapshots(),
         inputStates: this.options.rootRun.getInputStateSnapshots(),
+        leavingMembers: (this.tree.rootTeam.formerMembers ?? []).filter((member) => member.leaving),
       }));
       return read(own, rows);
     });
@@ -451,23 +470,6 @@ export class RootTeamRun {
     if (!this.isAdmitting()) throw new Error(`RootTeamRun '${this.teamRunId}' is not accepting operations.`);
   }
 
-  private isCurrentAgent(identity: CollaborationMemberExecutionIdentity): boolean {
-    if (
-      identity.root.rootSubjectKind !== "agent_team"
-      || identity.root.rootRunId !== this.teamRunId
-    ) return false;
-    const execution = this.index.getAgent(identity.agentRunId);
-    return !!execution && execution.address === identity.memberAddress && this.isLiveAgent(identity.agentRunId);
-  }
-
-  /**
-   * Runtime liveness: a member is live with its active TeamRun (lazy start).
-   */
-  private isLiveAgent(agentRunId: string): boolean {
-    const agent = this.index.getAgent(agentRunId);
-    return !!agent && this.teamRunResolver.getActive(agent.containingTeamRunId) !== null;
-  }
-
   private async requireTeamRun(teamRunId: string): Promise<TeamRun> {
     this.index.requireTeam(teamRunId);
     const active = this.teamRunResolver.getActive(teamRunId);
@@ -476,13 +478,15 @@ export class RootTeamRun {
   }
 
   private async requireContainingTeamRun(agentRunId: string): Promise<TeamRun> {
-    const execution = this.index.requireAgent(agentRunId);
+    const execution = this.index.getAgentForOwnCommand(agentRunId) ?? this.index.requireAgent(agentRunId);
     return this.requireTeamRun(execution.containingTeamRunId);
   }
 
+  /** A committed tree: the tree, its index and the membership change together (one view, D-ONE-VIEW). */
   private replaceTree(tree: TeamRunExecutionTreeSnapshot): void {
     this.tree = tree;
-    this.index = new TeamExecutionIndex(tree);
+    this.index = new TeamExecutionIndex(tree, (agentRunId) => this.options.membership.isLeaving(agentRunId));
+    this.options.membership.replace(tree);
     this.assertRootCorrelation();
   }
 

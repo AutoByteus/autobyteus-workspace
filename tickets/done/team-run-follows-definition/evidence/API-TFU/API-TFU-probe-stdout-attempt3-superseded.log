@@ -1,0 +1,10 @@
+  · seeded
+  · team view open
+  · rows after the change (no reload)
+  · reviewer selected
+  · Team tab
+TFU-01 Fail — the removed writer's earlier message is still in the Team tab
+  · fresh load after the coordinator change
+TFU-02 Pass
+  · while the reviewer is leaving (server snapshot says leaving)
+TFU-03 Pass

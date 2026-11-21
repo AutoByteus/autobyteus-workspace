@@ -28,10 +28,39 @@ describe("RunOwnAgentsReader", () => {
     const reader = new RunOwnAgentsReader(memory);
     expect(await reader.partsOf({ rootSubjectKind: "agent_team", rootRunId: "team-b" })).toEqual({
       agents: [{ agentRunId: "lead-b", address: "/lead", agentDefinitionId: "agent-lead" }, { agentRunId: "writer-b", address: "/writer", agentDefinitionId: "agent-writer" }],
-      coordinatorAddress: "/lead", mountedTeams: [] });
+      formerAgents: [], coordinatorAddress: "/lead", mountedTeams: [] });
     for (const rootSubjectKind of ["agent", "agent_team", "agent_org"] as const) {
       expect(await reader.partsOf({ rootSubjectKind, rootRunId: "gone" })).toBeNull();
     }
+  });
+
+  it("partsOf: a team run's former members (removed from its definition) are its former agents, not its agents", async () => {
+    const memory = await fs.mkdtemp(path.join(os.tmpdir(), "run-own-agents-former-"));
+    roots.push(memory);
+    const dir = new AgentMemoryLayout(memory).getTeamDirPath({ rootTeamRunId: "team-f", ancestorTeamRunIds: [] });
+    const tree = testExecutionTree({ rootTeamRunId: "team-f", coordinatorAddress: "/lead",
+      children: [testAgentNode("/lead", { agentRunId: "lead-f" }), testAgentNode("/writer", { agentRunId: "writer-f" })] });
+    const [lead, writer] = tree.rootTeam.members;
+    await new TeamRunExecutionTreeStore().write(dir, validateTeamRunExecutionTreePayload({ ...tree, handoffs: [],
+      rootTeam: { ...tree.rootTeam, members: [lead!], formerMembers: [writer!] } }, "team-f"));
+    expect(await new RunOwnAgentsReader(memory).partsOf({ rootSubjectKind: "agent_team", rootRunId: "team-f" })).toEqual({
+      agents: [{ agentRunId: "lead-f", address: "/lead", agentDefinitionId: "agent-lead" }],
+      formerAgents: [{ agentRunId: "writer-f", address: "/writer", agentDefinitionId: "agent-writer" }],
+      coordinatorAddress: "/lead", mountedTeams: [] });
+  });
+
+  it("ownTreeOf (SR-010): a team run's members, then its former members marked leaving (marked so); stopped former members are not listed", async () => {
+    const memory = await fs.mkdtemp(path.join(os.tmpdir(), "run-own-tree-leaving-"));
+    roots.push(memory);
+    const dir = new AgentMemoryLayout(memory).getTeamDirPath({ rootTeamRunId: "team-l", ancestorTeamRunIds: [] });
+    const tree = testExecutionTree({ rootTeamRunId: "team-l", coordinatorAddress: "/lead",
+      children: [testAgentNode("/lead", { agentRunId: "lead-l" }), testAgentNode("/writer", { agentRunId: "writer-l" }), testAgentNode("/old", { agentRunId: "old-l" })] });
+    const [lead, writer, old] = tree.rootTeam.members;
+    await new TeamRunExecutionTreeStore().write(dir, validateTeamRunExecutionTreePayload({ ...tree, handoffs: [],
+      rootTeam: { ...tree.rootTeam, members: [lead!], formerMembers: [old!, { ...writer!, leaving: true }] } }, "team-l"));
+    expect(await new RunOwnAgentsReader(memory).ownTreeOf({ rootSubjectKind: "agent_team", rootRunId: "team-l" } as never)).toEqual({
+      kind: "agent_team", teamRunId: "team-l", coordinatorAddress: "/lead",
+      members: [{ address: "/lead", agentRunId: "lead-l" }, { address: "/writer", agentRunId: "writer-l", leaving: true }] });
   });
 
   it("partsOf (contract §2.3, model.py standing): an agent run's stored address, or none before it collaborates; an org's agents, mounted members and mounted teams", async () => {
@@ -47,14 +76,14 @@ describe("RunOwnAgentsReader", () => {
     await new AgentRunMetadataStore(memory).writeMetadata("fresh", { ...(metadata as object), runId: "fresh", memoryDir: path.join(memory, "agents", "fresh") } as never);
     const reader = new RunOwnAgentsReader(memory);
     expect(await reader.partsOf({ rootSubjectKind: "agent", rootRunId: "manager" })).toEqual({
-      agents: [{ agentRunId: "manager", address: "/project_task_manager", agentDefinitionId: "project-task-manager" }], coordinatorAddress: null, mountedTeams: [] });
+      agents: [{ agentRunId: "manager", address: "/project_task_manager", agentDefinitionId: "project-task-manager" }], formerAgents: [], coordinatorAddress: null, mountedTeams: [] });
     // Not collaborating yet: no address fixed.
     expect(await reader.partsOf({ rootSubjectKind: "agent", rootRunId: "fresh" })).toEqual({
-      agents: [{ agentRunId: "fresh", address: null, agentDefinitionId: "project-task-manager" }], coordinatorAddress: null, mountedTeams: [] });
+      agents: [{ agentRunId: "fresh", address: null, agentDefinitionId: "project-task-manager" }], formerAgents: [], coordinatorAddress: null, mountedTeams: [] });
     expect(await reader.partsOf({ rootSubjectKind: "agent_org", rootRunId: "org-1" })).toEqual({
       agents: [expect.objectContaining({ agentRunId: "ceo", address: "/ceo_agent" }), expect.objectContaining({ agentRunId: "dev_lead", address: "/dev_team/dev_lead" }),
         expect.objectContaining({ agentRunId: "qa", address: "/dev_team/qa" })],
-      coordinatorAddress: null, mountedTeams: [{ address: "/dev_team", coordinatorAgentRunId: "dev_lead" }] });
+      formerAgents: [], coordinatorAddress: null, mountedTeams: [{ address: "/dev_team", coordinatorAgentRunId: "dev_lead" }] });
   });
 
   it("delegationOf (SR-072 F-24): a delegated run's own delegation, address, definition and entry agent; none for a peer-started or user-started run", async () => {

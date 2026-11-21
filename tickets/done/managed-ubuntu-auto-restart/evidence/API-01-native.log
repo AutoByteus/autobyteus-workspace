@@ -1,0 +1,13 @@
+?   	autobyteus.local/desktop/linux-install/cmd/client	[no test files]
+?   	autobyteus.local/desktop/linux-install/cmd/launcher	[no test files]
+ok  	autobyteus.local/desktop/linux-install/cmd/provision	0.002s
+ok  	autobyteus.local/desktop/linux-install/cmd/writer	0.015s
+ok  	autobyteus.local/desktop/linux-install/internal/acquire	0.007s
+?   	autobyteus.local/desktop/linux-install/internal/buildinfo	[no test files]
+?   	autobyteus.local/desktop/linux-install/internal/imagefile	[no test files]
+?   	autobyteus.local/desktop/linux-install/internal/install	[no test files]
+ok  	autobyteus.local/desktop/linux-install/internal/launch	0.388s
+?   	autobyteus.local/desktop/linux-install/internal/protocol	[no test files]
+ok  	autobyteus.local/desktop/linux-install/internal/release	0.007s
+ok  	autobyteus.local/desktop/linux-install/internal/sealed	0.004s
+ok  	autobyteus.local/desktop/linux-install/internal/store	0.010s

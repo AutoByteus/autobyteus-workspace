@@ -45,6 +45,8 @@ export const runTreeRowDtoSchema = z.object({
         title: z.string().nullable(),
         reachable: z.boolean().nullable(),
     }).strict().optional(),
+    /** A team member removed from its team, still finishing its turn while the team run is live: shown "Leaving", still opens. */
+    leaving: z.literal(true).optional(),
 }).strict();
 /** What changed since the rows a view had: rows that came (in the tree's order), keys of rows that left, rows that changed. */
 export const runTreeChangeDtoSchema = z.object({

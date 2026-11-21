@@ -1,0 +1,19 @@
+# Managed Ubuntu automatic restart — API/E2E test review
+
+**CRR-003 · Pass.** The new built-server test observes the busy count while a real agent turn waits for an inference reply. It does not set the busy flag it asserts. No actionable test findings.
+
+**Basis:** First proportional review after [API-REV-001](api-e2e-revision-record.md) passed, QA confidence 96%, required broader validation executed. Reviewed QA commit `77009f92a6` against [CRR-002](code-review-report.md) at `23ce81353b`, product `f369d87e013b`, branch feature/managed-ubuntu-auto-restart → personal. Medium / High unchanged. Context: [approved SR-001 requirements](requirements-doc.md), [investigation](investigation-notes.md), [solution history](solution-revision-record.md), [SR-004 design](design-spec.md), [ARCH-REV-002](architecture-review-revision-record.md), [IR-002](implementation-revision-record.md), [coverage investigation](api-e2e-coverage-investigation.md) and [execution report](api-e2e-execution-coverage-report.md). No predecessor test-review findings; DR N/A. Applied [TESTING.md](../../../TESTING.md) and server package rules: isolate state, use the real system boundaries and distinguish a deterministic inference fixture from an actual provider or desktop. No conflict.
+
+## Complete durable delta and checks
+
+**Updated:** `autobyteus-server-ts/tests/e2e/restart-resume/restart-reminder-built-server.e2e.test.ts`. No added or removed test files and no product changes. Ticket logs, screenshots and observations are execution evidence.
+
+| Proportional check | Result and reason |
+| --- | --- |
+| Scenario basis, trigger and naming | Pass. SCN-002 / AC-002 independently require the app not to stop a working agent. The named case creates a native run on a built server, sends a message through the agent WebSocket, and observes the same REST count used by the desktop. |
+| Assertions | Pass. Each read requires HTTP 200 and exact counts: 0/0 before input, 1/0 with inference pending, 0/0 after completion (busy/unknown). Distinguishes idle from both busy and unknown. Auth uses the harness's launch owner and loopback credential attachment; unauthenticated 401 is separately evidenced, not asserted by this test. |
+| Fixture reuse and navigability | Pass. The existing responder gains an awaitable reply, so one case can hold the turn without creating another model service or mocking the run manager. Existing synchronous scripts still work. The new case sits with the same built-process/run lifecycle harness; existing tests were not weakened, duplicated or disabled. |
+| Isolation and determinism | Pass. Test-owned data and local inference; waits for the tagged request before measuring busy, then releases the reply and waits for turn completion. No guessed timing delay manufactures the busy interval. Finally releases the gate, closes the WebSocket and stops the node. The existing explicit E2E opt-in remains appropriate. |
+| Agreement with proof and limits | Pass. [API-01 runs](evidence/API-01-runs.txt) record successful focused execution, with earlier setup failures identified. The REST test proves the busy predicate, **not** automatic restart. Independent signed guest evidence covers busy/input deferral and the [unsolicited successor](evidence/API-03-lifecycle.txt), with a [separate intentional Quit](evidence/API-03-quit.txt). Unknown writer outcomes, blocked-version controls and non-Linux policies are credited only at their exercised layers. |
+
+**Result: Pass → Delivery Engineer.** No unresolved findings, new follow-ups, evidence waivers or need for a duplicate rerun. FU-001 remains separate. The signed N→N+1 evidence is from disposable Ubuntu 24.04.5 x64 GNOME/X11 and synthetic data/trust, not a production rollout or other-platform desktop run. Integration, documentation sync and finalization are not part of this review.

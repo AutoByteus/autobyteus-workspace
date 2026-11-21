@@ -34,8 +34,10 @@ describe("RunTreeView's records", () => {
   it("a delegated team's record: its launch and each member's, a member without its own source taking its team's", async () => {
     dir = mkdtempSync(path.join(tmpdir(), "run-tree-records-"));
     await new TeamRunExecutionTreeStore().write(new AgentMemoryLayout(dir).getTeamDirPath({ rootTeamRunId: "se-run", ancestorTeamRunIds: [] }), teamFile() as never);
-    const tree = { agentsOf: async () => [{ agentRunId: "lead-run", address: "/lead", agentDefinitionId: null }, { agentRunId: "ie-run", address: "/ie", agentDefinitionId: null }] };
-    const record = await localChildRecord({ run: { teamRunId: "se-run" }, recipientAddress: "/se" } as never, dir, tree as never);
+    const tree = { agentsOf: async () => [] };
+    const ownTreeOf = async (run: { rootRunId: string }) => run.rootRunId === "se-run" ? { kind: "agent_team" as const, teamRunId: "se-run", coordinatorAddress: "/lead",
+      members: [{ agentRunId: "lead-run", address: "/lead" }, { agentRunId: "ie-run", address: "/ie" }] } : null;
+    const record = await localChildRecord({ run: { teamRunId: "se-run" }, recipientAddress: "/se" } as never, dir, tree as never, ownTreeOf as never);
     expect(record).toMatchObject({ kind: "agent_team", teamRunId: "se-run", address: "/se", coordinatorAddress: "/lead",
       launch: { llmModelIdentifier: "opus", source: { origin: "inherited", fallbacks: [fallback] }, ownSource: true },
       members: [
@@ -43,7 +45,7 @@ describe("RunTreeView's records", () => {
         { address: "/ie", agentRunId: "ie-run", launch: { llmModelIdentifier: "sol-6.1", source: { origin: "settings" }, ownSource: true } },
       ] });
     // A run whose own file is missing has no record.
-    expect(await localChildRecord({ run: { teamRunId: "gone" }, recipientAddress: "/x" } as never, dir, tree as never)).toBeNull();
+    expect(await localChildRecord({ run: { teamRunId: "gone" }, recipientAddress: "/x" } as never, dir, tree as never, ownTreeOf as never)).toBeNull();
   });
 
   it("F-66, SR-086 G-B2: a peer's record carries its launches from its node's latest answer, kept with its status, never asking the node", async () => {
@@ -52,7 +54,7 @@ describe("RunTreeView's records", () => {
       launches: [{ address: "/helper", runtimeKind: "codex_app_server", llmModelIdentifier: "gpt", source: { origin: "agent_default", fallbacks: [] } }] };
     const channel = { peerName: async () => "B", runSummaries: vi.fn() };
     let kept: typeof summary | null = summary;
-    const projection = createChildRowProjection({ memoryDir: "/unused", channel: () => channel as never, peerSummaryOf: () => kept as never,
+    const projection = createChildRowProjection({ memoryDir: "/unused", ownTreeOf: async () => null, channel: () => channel as never, peerSummaryOf: () => kept as never,
       tree: { agentsOf: async () => [], peerChildrenOf: () => [link] } as never });
     const child = { run: { agentRunId: "peer-agent" }, nodeId: "node-b", parent: { rootSubjectKind: "agent", rootRunId: "host" } } as never;
     expect(await projection.rowOf(child)).toMatchObject({ kind: "peer", summary: { title: "Help", reachable: true },

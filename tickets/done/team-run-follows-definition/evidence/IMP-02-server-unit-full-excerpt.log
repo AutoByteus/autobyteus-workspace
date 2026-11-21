@@ -1,0 +1,71 @@
+# IMP-02 — full server unit suite (excerpt)
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Tree: working tree between 19b31ad365 and 6b46ec5bdd (before the last test fixes); Linux container, Node 22; 2026-11-21
+# Disposition of each failing file:
+#   - message-recipient-resolution, general-process-run-supervisor-ownership, run-own-agents-reader,
+#     standalone-application-host-lifecycle, compositions/required-host-owners: test expectations missing the new
+#     inputs/fields (copiedFrom, definitionChanges/teamChangeNotices, formerAgents); fixed in 6b46ec5bdd, rerun in IMP-03/IMP-05.
+#   - architecture/application-framework-boundaries AFB-004 (getRuntimeAvailabilityService in the app kernel): fixed in
+#     6b46ec5bdd (NO_TEAM_DEFINITION_FOLLOWING); rerun in IMP-05.
+#   - architecture/tracked-imports: tracked tests imported the then-untracked helper; cleared by the commit; rerun in IMP-05.
+#   - agent-package-folder-watcher, unreadable-package-root, app-config "read-only", socratic-* (load): known on this
+#     machine, identical on base (root ignores chmod; "No such built-in module: node:").
+   Duration  2054.25s (transform 63.63s, setup 60.26s, import 1291.96s, tests 358.51s, environment 5.21s)
+ FAIL  tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > keeps the complete current TS/JS/Vue tree inside AFB-001 through AFB-005
+ FAIL  tests/architecture/tracked-imports.test.ts > tracked imports > finds no tracked code importing an untracked file in this repository
+ FAIL  tests/unit/agent-collaboration/collaborators/message-recipient-resolution.test.ts > catalog delegation placement (DS-001) > a catalog copy's placement carries its admission's launch notes; empty notes add no key (REQ-008, AR-002)
+ FAIL  tests/unit/agent-collaboration/collaborators/message-recipient-resolution.test.ts > catalog delegation placement (DS-001) > in-run placements win; a catalog address gets a sourced placement; no source means not found
+ FAIL  tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > continues the exact Org, Team, Agent shutdown order and aggregates failures
+ FAIL  tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > owns one Agent, standalone Team, and AgentOrg process manager family
+ FAIL  tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > refuses a second process RunFileChangeService and unwinds its earlier bindings
+ FAIL  tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > releases AgentRunManager when exclusive Team manager initialization fails
+ FAIL  tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > unwinds both root managers when process AgentRunService binding fails
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > allows another repair after a folder is added or removed
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > re-arms quietly once when a definition folder on disk is not in the watch, then reconciles after the new ready
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > repairs a folder that stays unwatched only once, warns, and reconciles on every catch-up
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports UNAVAILABLE for a root whose definition folder cannot be listed, and re-arms once it can
+ FAIL  tests/unit/agent-package-definitions/unreadable-package-root.test.ts > an unreadable registered package folder > does not block population: other packages, admission and Teams stay available
+ FAIL  tests/unit/agent-package-definitions/unreadable-package-root.test.ts > an unreadable registered package folder > keeps the folder's definitions at their last loaded version with an issue naming it, then recovers
+ FAIL  tests/unit/application-backend/socratic-live-tutor-renderer.test.ts [ tests/unit/application-backend/socratic-live-tutor-renderer.test.ts ]
+ FAIL  tests/unit/application-backend/socratic-runtime-lifecycle.test.ts [ tests/unit/application-backend/socratic-runtime-lifecycle.test.ts ]
+ FAIL  tests/unit/compositions/required-host-owners.test.ts > required host owners > the run supervisor names a missing remoteChannel or peerDiscovery
+ FAIL  tests/unit/config/app-config.test.ts > AppConfig > keeps the retired key inert in-session when its persisted file is read-only
+ FAIL  tests/unit/run-history/store/run-own-agents-reader.test.ts > RunOwnAgentsReader > partsOf: a team run's members and coordinator address; a missing run is null
+ FAIL  tests/unit/run-history/store/run-own-agents-reader.test.ts > RunOwnAgentsReader > partsOf (contract §2.3, model.py standing): an agent run's stored address, or none before it collaborates; an org's agents, mounted members and mounted teams
+ FAIL  tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > runs phases 5-10 in order before event-pipeline and application construction
+ ❯ new GeneralProcessRunSupervisor src/agent-execution/runtime/general-process-run-supervisor.ts:107:13
+ ❯ requireGeneralProcessRunSupervisorInput src/agent-execution/runtime/general-process-run-supervisor-input.ts:108:11
+ Test Files  12 failed | 1031 passed | 5 skipped (1048)
+      Tests  20 failed | 8617 passed | 13 skipped (8650)
+ ❯ tests/architecture/application-framework-boundaries.test.ts:2020:52
+ ❯ tests/architecture/application-framework-boundaries.test.ts (20 tests | 1 failed) 13380ms
+ ❯ tests/architecture/tracked-imports.test.ts:27:43
+ ❯ tests/architecture/tracked-imports.test.ts (2 tests | 1 failed) 12255ms
+ ❯ tests/unit/agent-collaboration/collaborators/message-recipient-resolution.test.ts:180:9
+ ❯ tests/unit/agent-collaboration/collaborators/message-recipient-resolution.test.ts (19 tests | 2 failed) 23ms
+ ❯ tests/unit/agent-collaboration/collaborators/message-recipient-resolution.test.ts:268:9
+ ❯ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts:129:24
+ ❯ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts:157:60
+ ❯ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts:169:78
+ ❯ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts:182:78
+ ❯ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts (8 tests | 5 failed) 36ms
+ ❯ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts:93:24
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts (22 tests | 4 failed) 198ms
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:310:62
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:526:21
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:553:21
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:568:21
+ ❯ tests/unit/agent-package-definitions/unreadable-package-root.test.ts (2 tests | 2 failed) 52ms
+ ❯ tests/unit/agent-package-definitions/unreadable-package-root.test.ts:55:97
+ ❯ tests/unit/agent-package-definitions/unreadable-package-root.test.ts:66:55
+ ❯ tests/unit/application-backend/socratic-live-tutor-renderer.test.ts (0 test)
+ ❯ tests/unit/application-backend/socratic-runtime-lifecycle.test.ts (0 test)
+ ❯ tests/unit/compositions/required-host-owners.test.ts:27:12
+ ❯ tests/unit/compositions/required-host-owners.test.ts (5 tests | 1 failed) 18ms
+ ❯ tests/unit/config/app-config.test.ts (39 tests | 1 failed) 152ms
+ ❯ tests/unit/config/app-config.test.ts:426:57
+ ❯ tests/unit/run-history/store/run-own-agents-reader.test.ts:29:90
+ ❯ tests/unit/run-history/store/run-own-agents-reader.test.ts:49:86
+ ❯ tests/unit/run-history/store/run-own-agents-reader.test.ts (5 tests | 2 failed) 91ms
+ ❯ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts (17 tests | 1 failed) 63ms
+ ❯ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts:317:53

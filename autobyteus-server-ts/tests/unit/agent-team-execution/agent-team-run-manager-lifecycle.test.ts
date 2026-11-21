@@ -1,4 +1,5 @@
 import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
+import { teamMembershipTestCollaborators } from "../../helpers/team-membership-test-collaborators.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { describe, expect, it, vi } from "vitest";
 import type { RootTeamRun } from "../../../src/agent-team-execution/domain/root-team-run.js";
@@ -21,7 +22,7 @@ const memberExecutionContextBuilder = new MemberExecutionContextBuilder({
   getDefinitionById: async () => null,
 } as never, NOT_DELEGATED);
 
-const createManager = () => new AgentTeamRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
+const createManager = () => new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
   memoryDir: "/tmp/api-e2e-agent-team-run-manager",
   flatTeamExecutionFactory,
   memberExecutionContextBuilder,
@@ -36,7 +37,7 @@ const createRoot = (input: {
 } = {}) => ({
   teamRunId: input.teamRunId ?? "team-run-1",
   isActive: input.active ?? (() => true),
-  hasAgentExecution: vi.fn(() => false),
+  hasAgentExecution: vi.fn(() => false), ownsAgentRun: vi.fn(() => false), getExecutionTreeSnapshot: () => ({ rootTeam: {} }),
   deliverExactAgentMessage: vi.fn(async () => ({ accepted: true })),
   terminate: vi.fn(input.terminate ?? (async () => ({ accepted: true }))),
 }) as unknown as RootTeamRun;

@@ -1,0 +1,30 @@
+{
+  "reviewerLaunch": {
+    "runtimeKind": "autobyteus",
+    "llmModelIdentifier": "claude-haiku-5-5",
+    "llmConfig": null,
+    "autoExecuteTools": true,
+    "workspaceRootPath": "/root/.autobyteus-e2e/team-follows-live-HGof81/workspace"
+  },
+  "reviewerLaunchSource": {
+    "origin": "agent_default",
+    "fallbacks": []
+  },
+  "leadConversation": [
+    "exec-525c05ef-b2fa-42c3-b06d-e373622ae3a1",
+    "01a1ff00-f61d-7ed0-87d6-67097f101021",
+    "",
+    "get_handoff_rules",
+    "Ask the writer to write files.",
+    "/writer",
+    "When the user asks for the review code, ask the reviewer for it.",
+    "/reviewer",
+    "message",
+    "assistant",
+    "01a1ff00-f61d-7ed0-87d6-67097f101021",
+    "The review code is **REVIEW-a6412198**."
+  ],
+  "reviewerMemoryHasRequest": true,
+  "reviewerSentCode": true,
+  "leadNotice": "Your team changed: its definition was updated.\\nJoined: reviewer at /reviewer."
+}

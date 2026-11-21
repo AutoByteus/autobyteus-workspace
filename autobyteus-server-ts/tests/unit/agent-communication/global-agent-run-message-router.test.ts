@@ -132,7 +132,7 @@ describe("GlobalAgentRunMessageRouter", () => {
     }));
     const activeRootDirectory = new ActiveCollaborationRootDirectory();
     const hasAgentExecution = vi.fn((agentRunId: string) => agentRunId === "same-root-target");
-    activeRootDirectory.reserve(memberExecutionContext.identity.root, { hasAgentExecution, deliverExactAgentMessage, deliverToPeerRun: vi.fn() }).commit();
+    activeRootDirectory.reserve(memberExecutionContext.identity.root, { hasAgentExecution, ownsAgentRun: hasAgentExecution, deliverExactAgentMessage, deliverToPeerRun: vi.fn() }).commit();
     const router = new GlobalAgentRunMessageRouter({ crossRun: { route: async () => null, admitPeerRun: async () => "not_peer" as const }, channel: () => null, coordinators: { teamCoordinatorOf: async () => null },
       agentRunManager: { getActiveRun: vi.fn(() => target.run) },
       activeRootDirectory,
@@ -169,6 +169,7 @@ describe("GlobalAgentRunMessageRouter", () => {
     const activeRootDirectory = new ActiveCollaborationRootDirectory();
     activeRootDirectory.reserve(memberExecutionContext.identity.root, {
       hasAgentExecution: (agentRunId: string) => agentRunId === "dormant-child",
+      ownsAgentRun: (agentRunId: string) => agentRunId === "dormant-child",
       deliverExactAgentMessage,
       deliverToPeerRun: vi.fn(),
     }).commit();
@@ -200,7 +201,8 @@ describe("GlobalAgentRunMessageRouter", () => {
     const deliverExactAgentMessage = vi.fn(async () => { order.push("endpoint"); return { accepted: true }; });
     const activeRootDirectory = new ActiveCollaborationRootDirectory();
     activeRootDirectory.reserve(memberExecutionContext.identity.root, {
-      hasAgentExecution: (agentRunId: string) => agentRunId === "remote_1", deliverExactAgentMessage, deliverToPeerRun: vi.fn(),
+      hasAgentExecution: (agentRunId: string) => agentRunId === "remote_1", ownsAgentRun: (agentRunId: string) => agentRunId === "remote_1",
+      deliverExactAgentMessage, deliverToPeerRun: vi.fn(),
     }).commit();
     let admission: PeerRunAdmission = "admitted";
     const admitPeerRun = vi.fn(async () => { order.push("admission"); return admission; });
@@ -224,6 +226,7 @@ describe("GlobalAgentRunMessageRouter", () => {
     const activeRootDirectory = new ActiveCollaborationRootDirectory();
     activeRootDirectory.reserve(memberExecutionContext.identity.root, {
       hasAgentExecution: (agentRunId: string) => agentRunId === "copy-lead",
+      ownsAgentRun: (agentRunId: string) => agentRunId === "copy-lead",
       teamCoordinatorOf: (teamRunId: string) => teamRunId === "copy-team" ? "copy-lead" : null,
       deliverToPeerRun: vi.fn(),
       deliverExactAgentMessage,
@@ -322,7 +325,7 @@ describe("GlobalAgentRunMessageRouter", () => {
     const setup = (options: { closed?: boolean; peer?: "found" | "refused"; channel?: boolean; root?: boolean } = {}) => {
       const deliverToPeerRun = vi.fn(async () => ({ accepted: true as const, message: "Delivered message to pm_b on node \"docker\"." }));
       const directory = new ActiveCollaborationRootDirectory();
-      if (options.root !== false) directory.reserve(senderContext.identity.root, { hasAgentExecution: () => false, deliverExactAgentMessage: vi.fn(), deliverToPeerRun }).commit();
+      if (options.root !== false) directory.reserve(senderContext.identity.root, { hasAgentExecution: () => false, ownsAgentRun: () => false, deliverExactAgentMessage: vi.fn(), deliverToPeerRun }).commit();
       const closed = { accepted: false as const, code: "TASK_AGENT_RESOURCE_CLOSED", message: "closed" };
       const crossRun = { route: vi.fn(async () => null),
         admitPeerRun: vi.fn(async (): Promise<PeerRunAdmission> => options.closed ? closed : "admitted") };

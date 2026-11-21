@@ -1,6 +1,6 @@
 import type { AgentTeamAddress } from "../domain/agent-team-address.js";
 import { CollaborationContractError } from "../domain/collaboration-contract-error.js";
-import { messageTargetNotFoundMessage } from "./collaborator-errors.js";
+import { formerMemberRefusalMessage, messageTargetNotFoundMessage } from "./collaborator-errors.js";
 
 /** One message target: the receiving Agent of an Agent address, or a Team's coordinator. */
 export type CollaborationMessagePlacement = Readonly<{
@@ -39,7 +39,13 @@ export interface MessageRecipientIndexPort {
    * when the sender is a configured member and `address` is a configured placement of the root Team.
    */
   isOwnTeamAddress(senderAgentRunId: string, address: AgentTeamAddress): boolean;
+  /** A member that was at `address` and left its team (a team run follows its definition); null for every other root. */
+  formerMemberAt(address: AgentTeamAddress): Readonly<{ address: AgentTeamAddress }> | null;
 }
+
+/** REQ-009: a message to a member that left the team is refused with this text (and `COLLABORATION_TARGET_NOT_FOUND`). */
+export const formerMemberRefusal = (address: AgentTeamAddress): CollaborationContractError =>
+  new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", formerMemberRefusalMessage(address));
 
 /** Whether `address` is the instance's own address or lies inside it, at any depth. */
 export const isWithinTeamInstance = (address: string, instance: SenderTeamInstance): boolean =>
@@ -71,10 +77,12 @@ export const resolveMessageRecipient = (input: Readonly<{
     if (!isWithinTeamInstance(input.address, instance)) continue;
     const placement = port.memberOfInstance(instance.teamRunId, input.address);
     if (placement) return placement;
+    if (port.formerMemberAt(input.address)) throw formerMemberRefusal(input.address);
     throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", `Collaboration target '${input.address}' is not a member of your team instance '${instance.address}'.`);
   }
   const outside = port.getMessagePlacement(input.address);
   if (outside) return outside;
+  if (port.formerMemberAt(input.address)) throw formerMemberRefusal(input.address);
   throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", messageTargetNotFoundMessage(input.address));
 };
 

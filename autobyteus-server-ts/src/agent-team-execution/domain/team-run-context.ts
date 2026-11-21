@@ -2,6 +2,7 @@ import type { CollaborationHandoff } from "../../agent-collaboration/domain/coll
 import type { TeamBackendKind } from "./team-backend-kind.js";
 import type { TeamRunAgentTeamNode, TeamRunApplicationBinding } from "./team-run-config.js";
 import type { FlatTeamExecutionContext } from "../local/flat-team-execution-context.js";
+import type { TeamRunMembership } from "./team-run-membership.js";
 import {
   createRootExecutionPhysicalScope,
   type RootExecutionPhysicalScope,
@@ -25,8 +26,8 @@ export class TeamRunContext<TRuntimeContext = RuntimeTeamRunContext> {
   readonly physicalScope: RootExecutionPhysicalScope;
   readonly teamRunId: string;
   readonly teamBackendKind: TeamBackendKind;
-  readonly teamNode: TeamRunAgentTeamNode;
-  readonly handoffs: readonly CollaborationHandoff[];
+  /** The one live view of the team's members, coordinator and rules (a team run follows its definition through it). */
+  readonly membership: TeamRunMembership;
   readonly applicationBinding: TeamRunApplicationBinding | null;
   readonly runtimeContext: TRuntimeContext;
 
@@ -34,8 +35,7 @@ export class TeamRunContext<TRuntimeContext = RuntimeTeamRunContext> {
     physicalScope: RootExecutionPhysicalScope;
     teamRunId: string;
     teamBackendKind: TeamBackendKind;
-    teamNode: TeamRunAgentTeamNode;
-    handoffs?: readonly CollaborationHandoff[] | null;
+    membership: TeamRunMembership;
     applicationBinding?: TeamRunApplicationBinding | null;
     runtimeContext: TRuntimeContext;
   }) {
@@ -50,12 +50,11 @@ export class TeamRunContext<TRuntimeContext = RuntimeTeamRunContext> {
         `Physical scope contains TeamRun '${containingTeamRunId ?? "none"}', not '${this.teamRunId}'.`,
       );
     }
-    if (input.teamNode.teamRunId !== this.teamRunId) {
-      throw new Error(`Team node '${input.teamNode.address}' does not own TeamRun '${this.teamRunId}'.`);
+    if (input.membership.teamNode.teamRunId !== this.teamRunId) {
+      throw new Error(`Team node '${input.membership.teamNode.address}' does not own TeamRun '${this.teamRunId}'.`);
     }
     this.teamBackendKind = input.teamBackendKind;
-    this.teamNode = input.teamNode;
-    this.handoffs = Object.freeze([...(input.handoffs ?? [])]);
+    this.membership = input.membership;
     this.applicationBinding = input.applicationBinding
       ? Object.freeze({ ...input.applicationBinding })
       : null;
@@ -63,6 +62,10 @@ export class TeamRunContext<TRuntimeContext = RuntimeTeamRunContext> {
   }
 
   get rootIdentity() { return this.physicalScope.root; }
+  /** The team's current members and coordinator. */
+  get teamNode(): TeamRunAgentTeamNode { return this.membership.teamNode; }
+  /** The team's current handoff rules. */
+  get handoffs(): readonly CollaborationHandoff[] { return this.membership.handoffs; }
   /** Where this team's members keep their memory (contract L1): inside the run, or inside the task agent team's own folder. */
   get memberMemoryPlacement(): AgentRunMemoryPlacement {
     return runPartPlacement(this.physicalScope);

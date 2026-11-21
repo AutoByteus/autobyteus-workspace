@@ -160,6 +160,7 @@ export declare const agentRunCollaborationEventDtoSchema: z.ZodDiscriminatedUnio
             title: z.ZodNullable<z.ZodString>;
             reachable: z.ZodNullable<z.ZodBoolean>;
         }, z.core.$strict>>;
+        leaving: z.ZodOptional<z.ZodLiteral<true>>;
     }, z.core.$strict>>;
     removed: z.ZodArray<z.ZodString>;
     updated: z.ZodArray<z.ZodObject<{
@@ -256,6 +257,7 @@ export declare const agentRunCollaborationEventDtoSchema: z.ZodDiscriminatedUnio
             title: z.ZodNullable<z.ZodString>;
             reachable: z.ZodNullable<z.ZodBoolean>;
         }, z.core.$strict>>;
+        leaving: z.ZodOptional<z.ZodLiteral<true>>;
     }, z.core.$strict>>;
     kind: z.ZodLiteral<"run_tree_changed">;
 }, z.core.$strict>], "kind">;

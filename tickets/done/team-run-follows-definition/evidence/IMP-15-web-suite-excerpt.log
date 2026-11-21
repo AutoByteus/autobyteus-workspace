@@ -1,0 +1,11 @@
+# IMP-15 — full web suite (excerpt)
+# Command: (autobyteus-web) pnpm exec cross-env NUXT_TEST=true vitest run
+# Commit: d005fa2a5b (web unchanged since); Linux container, Node 22; 2026-11-21; run alone
+# The one failure is the known projectRunsStore spec (identical on base).
+   Duration  901.41s (transform 40.45s, setup 5798.00s, collect 177.94s, tests 102.03s, environment 1229.06s, prepare 532.88s)
+ FAIL  stores/__tests__/projectRunsStore.spec.ts > projectRunsStore > keeps one read per Project in flight and one queued; an older answer never replaces a newer one
+   × projectRunsStore > keeps one read per Project in flight and one queued; an older answer never replaces a newer one 19ms
+ ❯ stores/__tests__/projectRunsStore.spec.ts (11 tests | 1 failed) 112ms
+ ❯ stores/__tests__/projectRunsStore.spec.ts:133:19
+ Test Files  1 failed | 791 passed (792)
+      Tests  1 failed | 5959 passed | 2 skipped (5962)

@@ -31,6 +31,12 @@ export const TOOL_LIST_UPDATE_NOTICE_SENDER_ID = "system.tool_list_update_notifi
 export const BACKGROUND_TASK_NOTICE_SENDER_ID = "system.background_task_notifier";
 
 /**
+ * `sender_id` of the platform notice that tells a team member its team changed (members joined or left, its rules).
+ * Shared by the team change notice source, which produces it, and agent memory, which records it.
+ */
+export const TEAM_CHANGE_NOTICE_SENDER_ID = "system.team_change_notifier";
+
+/**
  * `sender_id` of a routing request posted into the node's Model Router agent (autobyteus-32 A-31). Shared by Model
  * Routing, which produces it, and agent memory, which records it so the agent's conversation keeps its requests.
  */

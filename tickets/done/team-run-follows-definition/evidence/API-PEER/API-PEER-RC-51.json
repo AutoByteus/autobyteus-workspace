@@ -1,0 +1,29 @@
+{
+  "note": "RC-51 entry of remote-two-server-receipt.json (the full receipt and the servers logs were not kept: size and peer secrets)",
+  "RC-51": {
+    "copiedFrom": "team_definition",
+    "addedMembers": [
+      "/lead",
+      "/checker",
+      "/reviewer"
+    ],
+    "rules": {
+      "handoffs": [
+        {
+          "when": "Review the studio work.",
+          "recipient_address": "/reviewer"
+        }
+      ],
+      "isError": false,
+      "elapsedMs": 221
+    },
+    "removedMembers": [
+      "/lead",
+      "/checker"
+    ],
+    "formerMembers": [
+      "/reviewer"
+    ],
+    "refused": "reviewer (/reviewer) is no longer a member of your team: it was removed from the team definition. Call get_handoff_rules for your current handoff rules."
+  }
+}
