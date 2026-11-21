@@ -1,7 +1,7 @@
 # Handoff — Architecture Design Complete (team-run-follows-definition)
 
 - Package: `team-run-follows-definition`; Project Task `autobyteus-22` (Project `project_f34a9537-07d7-449a-b78f-16368f1aa619`), requested by `/project_task_manager` on the user's questions (2026-11-11, scope comment 2026-11-18).
-- Result: `Architecture Design Complete`, revision `SR-007`. Classification: task_size `Large`, architectural_risk `High` (live membership mutation in a running root, persisted tree field read by history, shared member-context contract, recipient refusal).
+- Result: `Architecture Design Complete`, revision `SR-008` (revised after ARCH-REV-001 Fail; see the SR-008 entry and design § Member States And Call-Site Rules, D-SCOPE, DS-007). Classification: task_size `Large`, architectural_risk `High` (live membership mutation in a running root, persisted tree field read by history, shared member-context contract, recipient refusal).
 - Route: independent architecture review.
 
 ## Request and approval
@@ -34,3 +34,4 @@ A running or reopened Team run (standalone or catalog copy) follows its Team def
 ## Route Applied
 
 - 2026-11-21: rule "task_size=Large or architectural_risk=High" matched; sent to `/architecture_reviewer` (run `architecture_reviewer_10c7315fd51048c3873b8b6fffa6924c`), delivered.
+- 2026-11-21: SR-008 resubmitted to `/architecture_reviewer` for re-review (AR-001..AR-006, N-1..N-5 addressed).

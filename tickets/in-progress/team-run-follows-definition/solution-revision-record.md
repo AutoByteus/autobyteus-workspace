@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Requirements | Initial baseline (Task autobyteus-22) | IF-01..IF-15 | N/A | Ready for Approval | BEH-001..005, REQ-001..007, AC-001..008, DEC-001..009 | Recommendation presented to the user; awaiting DEC-001..DEC-004 |
 | SR-002 | Requirements | The user's Task comment 2026-11-18 (UI; rules believed dynamic) | IF-16 | Ready for Approval | Ready for Approval | UC-005, REQ-008, AC-009, SCN-006; premise correction | UI added; dynamic-rules premise checked and corrected with evidence |
+| SR-008 | Design | Architecture review ARCH-REV-001 Fail (Design Impact) | AR-001..AR-006, N-1..N-5 | Approved; design Ready (reviewed Fail) | Approved; design Ready (revised) | REQ-002, REQ-004, REQ-008, REQ-009, AC-003, AC-009, AC-010; DEC-002/003/006/007 (realization only) | Design revised; resubmitted |
 | SR-007 | Design | Architecture design | AF-01..AF-18 | Approved; design N/A | Approved; design Ready | REQ-001..REQ-009 (realized) | design-spec.md; Large / High |
 | SR-006 | Evidence | Skill update 2026-11-21 (feasibility of the proof) | AF-01..AF-18 | Approved | Approved | AC-001..AC-010 (verification intent) | Verification intent recorded; proof feasible, no evidence decision |
 | SR-005 | Requirements | The user's approval, 2026-11-21 | N/A | Ready for Approval | Approved | DEC-001..DEC-003 | Requirements approved by the user |
@@ -65,3 +66,16 @@
 - Vocabulary: the requirements' "retire/retired" is the action; the stored and documented word for the result is "former member" (GLOSSARY entry in this change).
 - Classification: task_size Large, architectural_risk High.
 - Next action: independent architecture review.
+
+### SR-008 — Design revision after ARCH-REV-001
+
+- Trigger: `/architecture_reviewer` ARCH-REV-001 (`design-review-report.md`), Fail, `Design Impact`, AR-001..AR-006 and notes N-1..N-5; core approach kept.
+- AR-001: one member-state rule (current / leaving / former) applied at every call site, with file:line; engine sender/receiver split (`maySend`); leaving members stay listed with a "Leaving" tag until stopped (visibility decision within REQ-008/DEC-002).
+- AR-002: scope keyed on `copiedFrom`, recorded once at copy creation and never edited; old copies = `team_definition` (AF-13).
+- AR-003: handles keyed by agent run ID; a rejoin while leaving cancels the leave.
+- AR-004: open Team view re-opens its live snapshot (in-band `TEAM_EXECUTION_VIEW_SNAPSHOT`, no new frame type) on a `team_membership_changed` view event; member DTO `leaving?`; contracts, server streaming and web files in scope; run-tree rows keep `DelegationIndex.runPartsChanged`.
+- AR-005: former-member refusal in both address-resolution steps and for `send_message_to` by run ID.
+- AR-006: `TeamRunMembership` is the sole creator of member contexts (retained ones kept by run ID); `applyMembership` only retires handles.
+- N-1 follow right after restore registration; N-2 net-merge of notices; N-3 rules to an unlaunchable member left out; N-4 per-root containment; N-5 size limits kept.
+- Intended behavior changed: No (realization of approved DEC/REQ; the "Leaving" tag is a presentation detail within REQ-008). Classification unchanged: Large / High.
+- Next action: architecture re-review.

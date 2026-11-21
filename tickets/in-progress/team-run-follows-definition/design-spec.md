@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-007`
+- Current solution revision ID: `SR-008` (revises SR-007 after architecture review `ARCH-REV-001` Fail: AR-001..AR-006, notes N-1..N-5; the core approach is kept as the review asked)
 - Approved requirements: `requirements-doc.md` at SR-005/SR-006 (REQ-001..REQ-009, AC-001..AC-010), approved by the User on 2026-11-21 ("Anyway I think now you have the fourth picture also the requirement is also clear right now I think you can work on it now is it").
 - Behavior-defining supplements: the notice and refusal texts in § Exact Texts (this design; they realize DEC-004 and REQ-009).
 - User approval of the design: `Not required` (the direction does not ask for it).
@@ -51,9 +51,9 @@ When a Team definition changes, each running or reopened Team run of it (standal
 
 ## Change Scope (Mandatory)
 
-- In scope: UC-001..UC-005. Areas: `agent-team-execution` (new `membership/` folder, root, execution manager, contexts, registry, manager restore, tree schema/builder), `agent-collaboration` (member context live handoffs, recipient resolution refusal, delegation index run-file notice), `agent-communication` (get_handoff_rules), `agent-execution/prompt` (handoff section reads live rules), `run-history` (history readers include former members), composition, docs and glossary.
+- In scope: UC-001..UC-005. Areas: `agent-team-execution` (new `membership/` folder, root, execution manager, contexts, registry, manager restore, tree schema/builder), `agent-collaboration` (member context live handoffs, recipient resolution refusal, delegation index run-file notice), `agent-communication` (get_handoff_rules), `agent-execution/prompt` (handoff section reads live rules), `run-history` (history readers include former members), the communication engine's sender/receiver split, Team copy creation (`copiedFrom`), the Team view stream (server session and projector, stream contract DTO, web streaming service, view state and members panel), composition, docs and glossary.
 - Derived consumers (Principle 11): the 14 readers of `rootTeam.members` (AF-16) — current-member readers unchanged (former members are not in `members`); history readers (`team-root-memory-source.ts`, `team-run-history-service.ts`, `run-own-agents-reader.ts` `agentsOfMembers`, participant messages via `DelegationIndex.agentsOf`) include `formerMembers`; `team-run-execution-tree-schema.ts` accepts it; every tree write keeps it (`team-run-execution-tree-builder.ts`, mutators).
-- Deliberately left alone: Org runs and Org-mounted Teams (FU-002); copies of configured placements (they follow their placement, with Orgs); application-bound Team runs (they follow their application package's lifecycle); Team-level launch defaults and Team instruction text; a running member's already-composed instructions (DEC-009).
+- Deliberately left alone: Org runs and Org-mounted Teams (FU-002); copies with `copiedFrom: configured_placement` (they follow their placement, with Orgs); application-bound Team runs (they follow their application package's lifecycle); Team-level launch defaults and Team instruction text; a running member's already-composed instructions (DEC-009).
 - Follow-ups: FU-001 (doc), FU-002 (Orgs), FU-003 (peer link member list).
 
 ## Relevant Behavior And Production-Path Map
@@ -97,8 +97,8 @@ When a Team definition changes, each running or reopened Team run of it (standal
 
 ## Persisted Data / State Transition Decision (Mandatory)
 
-- Subject: `team_run_execution_tree.json` of Team runs: `rootTeam.formerMembers?: ConfiguredAgentExecutionNode[]` (optional, absent = none); `members`, `coordinatorAddress`, `handoffs` rewritten by the follow step.
-- Readers: tolerant schema (`team-run-execution-tree-schema.ts`) gains the optional list validated like `members`; current-member readers ignore it; history readers include it (AF-16).
+- Subject: `team_run_execution_tree.json` of Team runs: `rootTeam.formerMembers?: ConfiguredAgentExecutionNode[]` (optional, absent = none); `copiedFrom?: "team_definition" | "configured_placement"` at the file root (optional; written once at a delegated Team run's creation; absent = a standalone run, or a copy created before this change, treated as `team_definition`); `members`, `coordinatorAddress`, `handoffs` rewritten by the follow step.
+- Readers: tolerant schema (`team-run-execution-tree-schema.ts`) gains the optional list validated like `members` and the optional `copiedFrom` enum; current-member readers ignore `formerMembers`; history readers include it (AF-16); only the planner reads `copiedFrom`.
 - Decision: `Directly Usable — No Migration` (data migration guideline §3: optional field whose absence truthfully means "no former members").
 - Guideline §2 checklist: 1 Need: none. 2 Availability: a definition that can't be read leaves the run unchanged (REQ-007), contained to that run. 3 Source shapes: current trees (65 standalone, 30 copies, AF-13), all without the field. 4 Disposition: unchanged runs untouched; changed runs rewritten through the normal writer. 5 Commit: existing locked atomic tree write (AF-02). 6 Current-only: no old-shape code. 7 Cost: one definition resolve per live Team run per announcement; one write only when something changed. 8 References: former members' run IDs stay valid for history and message logs. 9 Evidence: tests in Guidance. 10 Lessons: no version field, no mapping.
 
@@ -123,13 +123,13 @@ When a Team definition changes, each running or reopened Team run of it (standal
 
 | Spine | Narrative |
 | --- | --- |
-| DS-001 | On every announcement the listener walks this process's live Team roots. For each it asks the planner for the run's current definition view (definition read, launch for possible new members resolved outside any lock). The root's committer then plans against the root's *current* tree under the persistence lock; nothing changed → no write, no event. Otherwise one locked write saves the next tree, then the root swaps tree, index and `TeamRunMembership` together, the execution manager adds member contexts for new members (Offline, lazy) and retires removed ones, notices are queued, and the window is told. |
-| DS-002 | A stopped run is followed before it comes alive: the planner computes the next tree from the stored one; when it changed it is written, then the run restores from it as today. Notices are queued for its remaining members. |
+| DS-001 | On every announcement the listener walks this process's live Team roots, each in its own try/catch: a failure of one root logs a warning naming the run and the reason and the loop continues (N-4, DESIGN.md rule 7). For each it asks the planner for the run's current definition view (definition read, launch for possible new members resolved outside any lock). The root's committer then plans against the root's *current* tree under the persistence lock; nothing changed → no write, no event. Otherwise one locked write saves the next tree, then the root swaps tree, index and `TeamRunMembership` together, the execution manager adds member contexts for new members (Offline, lazy) and retires removed ones, notices are queued, and the window is told. |
+| DS-002 | A stopped run is followed before it comes alive: the planner computes the next tree from the stored one; when it changed it is written, then the run restores from it as today, inside `withRootTransition`. Notices are queued for its remaining members. Right after `register(root)` the manager runs one live follow for that root (N-1), so an announcement that arrived while it was restoring (after `followStored`, before `register`) is not missed; an empty plan makes it free. |
 | DS-003 | Pure: compares definition members (by address and agent definition ID) with `members` and `formerMembers`: added (new address, or same address with another agent → old one becomes former, DEC-006), rejoined (a former member at the same address and agent, DEC-007), removed (→ former). Coordinator and rules are replaced by the definition's, compiled as the run was created (own team, or catalog copy at its mount path). |
-| DS-004 | A removed member that is idle stops at once. A busy one is marked leaving: it receives nothing new (its address resolves to the former-member refusal), may still send from its current turn, and is terminated when its handle is next quiescent; then its handle is removed from the registry. |
+| DS-004 | A removed member that is idle stops at once. A busy one is leaving (rules in § Member States And Call-Site Rules): it receives nothing new, may still send and answer its own commands, and is terminated when its handle is next quiescent (checked on each of its status changes to idle with `tryPrepareTerminationIfQuiescent`); then `registry.remove(agentRunId)`, `membership.release(agentRunId)`, and a `team_membership_changed` view event. |
 | DS-005 | The member context reads its outgoing rules from `TeamRunMembership` on each call, so `get_handoff_rules` and the next composed prompt use current rules. |
 | DS-006 | The notice source holds one pending notice per remaining member (merged when several changes arrive before delivery) and hands it over at the member's next input or idle, as skill-update notices do. |
-| DS-007 | `DelegationIndex.runPartsChanged(run)` forgets that run's cached parts and reports child rows for the run and its ancestors; `ChildRowsFeed` publishes `RUN_TREE_CHANGED`; open views re-read `runTree(run)`. |
+| DS-007 (revised for AR-004) | Two consumers, one trigger. (a) The open Team view: its member rows and agent contexts come from the one-time `TEAM_EXECUTION_VIEW_SNAPSHOT` (`team-execution-view-projector.ts:99`; web `teamExecutionTreeSelectors.ts`, `TeamMembersPanel.vue`), so the root publishes a `team_membership_changed` event in its view event stream after every committed change and after a leaving member is released; `TeamViewSession` (`team-view-session.ts`) treats it like a mode switch: it leaves the current subscription and re-opens the live snapshot connection, sending an in-band `TEAM_EXECUTION_VIEW_SNAPSHOT` at the new base, which the web already accepts after the first one (`TeamStreamingService.ts:312-329`, SR-046) and from which `applySnapshot` plans agent contexts (keeps existing ones by run ID, creates new ones, drops absent ones; `teamExecutionViewState.ts:240-262`). No new frame type. The snapshot's own members are current + leaving (from `TeamRunMembership`), each member DTO gaining `leaving?: true` (`team-execution-view-dtos.ts`); every listed member reports a status as today. (b) The run-tree rows elsewhere (other runs' trees): `DelegationIndex.runPartsChanged(run)` forgets that run's cached parts and reports child rows for the run and its ancestors; `ChildRowsFeed` publishes `RUN_TREE_CHANGED`. |
 
 ## Spine Actors / Main-Line Nodes
 
@@ -141,9 +141,9 @@ When a Team definition changes, each running or reopened Team run of it (standal
 | --- | --- |
 | `TeamMembershipPlanner` (new) | Which runs follow (D-SCOPE), reading the definition view, compiling rules as the run was created, launch of new members, the pure diff into `TeamMembershipChange` and the next tree |
 | `TeamMembershipCommitter` (new, built inside `RootTeamRun` like `TeamAgentPlatformBindingCommitter`) | Ordering of a live change: plan under lock → durable write → swap → apply to execution → notices → window; fail-stop on an indeterminate write (existing rule) |
-| `TeamRunMembership` (new domain) | The one in-memory execution view of current members (node + runtime context), coordinator, handoffs, leaving and former members; replaced only from a committed tree |
+| `TeamRunMembership` (new domain) | The one in-memory execution view: each agent run's state (current, leaving, former), the member runtime contexts (sole creator; retained members keep their context objects), coordinator, handoffs; changed only by `replace(committedTree, leaving)` and `release(agentRunId)` |
 | `RootTeamRun` | Persisted tree and index (unchanged role); identity authorization accepts leaving members until stopped |
-| `FlatTeamExecutionManager` | Adding member contexts, retiring handles (DS-004) |
+| `FlatTeamExecutionManager` | Retiring handles only (DS-004); creates no contexts |
 | `TeamDefinitionChangeListener` (new) | Reacting to announcements by following every live Team root |
 | `TeamChangeNoticeSource` (new) | Pending notices per member and their delivery |
 | `DelegationIndex` | Window rows; gains `runPartsChanged(run)` |
@@ -161,7 +161,9 @@ When a Team definition changes, each running or reopened Team run of it (standal
 | Fixed `TeamRunContext.teamNode` / `.handoffs` fields | Second copy of membership | Getters reading `TeamRunMembership` |
 | Fixed `FlatTeamExecutionContext.memberContexts` array | Third copy | `TeamRunMembership` member contexts |
 | `MemberCollaborationContext.outgoingHandoffs` frozen array | Frozen rules | `outgoingHandoffs()` read (team: from `TeamRunMembership`; Org and standalone roots: their constant list) |
-| `ConfiguredAgentExecutionRegistry.remove` unused | Dead today (AF-05) | Becomes used by DS-004 (not removed) |
+| `ConfiguredAgentExecutionRegistry.remove(address)` unused, handles keyed by address | Dead today (AF-05); address keys collide on reuse (AR-003) | Handles keyed by agent run ID; `remove(agentRunId)` used by DS-004 |
+| `defaultLaunchSource` as a run-kind marker in the D-SCOPE draft | Settings rewrites it (AR-002) | `copiedFrom` |
+| Engine `deliver` applying `isCurrentAgent` to sender and receiver | Leaving members may send, not receive (AR-001) | `maySend` (sender) + `isCurrentAgent` (receiver) |
 
 ## Off-Spine Concerns
 
@@ -176,14 +178,50 @@ When a Team definition changes, each running or reopened Team run of it (standal
 
 ## Decisions (design)
 
-- **D-SCOPE:** follow: standalone Team runs (`own_team` compilation) and Team copies (`delegated_team` at the mount path = parent of the stored coordinator address), including peer-started copies on the node that runs them. Not followed: application-bound runs (`applicationBinding` set); copies whose `defaultLaunchSource.origin` is `configured` (copies of a configured placement, AF-12); existing copies with no source are catalog copies (AF-13: none came from an Org run).
+- **D-SCOPE (revised for AR-002):** follow: standalone Team runs (`own_team` compilation) and catalog Team copies (`delegated_team` at the mount path = parent of the stored coordinator address), including peer-started copies on the node that runs them. Not followed: application-bound runs (`applicationBinding` set) and copies of a configured placement. What a copy was made from is a fact recorded once, when the copy is created, in its own tree: `copiedFrom: "team_definition" | "configured_placement"` (root of `TeamRunExecutionTreeFile`; written only for delegated Team runs; never edited — no writer other than creation sets it, and every tree writer keeps it). The delegation knows it at creation: a catalog entry (`collaborator-entry-builder.ts:100-137`) → `team_definition`; a configured placement (`collaborator-source-projector.ts:20-50`, reached through `TeamRecipientResolver.resolveInRunDelegationPlacement`) → `configured_placement`; it is passed in `CreateTeamRunInput` (`team-run-service.ts:63-77`) beside `delegatedFrom`. A copy without the field (every copy created before this change) is treated as `team_definition`: measured, none of the 30 existing copies was delegated from an Org run (AF-13). The launch source (`defaultLaunchSource`) is no longer consulted: it records where a launch came from and Settings rewrites it (`team-run-selection-mutator.ts:92-101`).
 - **D-TRIGGER:** every `announce` (any list kind) re-checks all live Team roots; a run whose plan is empty is untouched, so repeated announcements are harmless.
 - **D-COMMIT:** plan against the root's current tree inside the lock (a stale plan cannot overwrite a newer change); swap only after the durable write.
-- **D-RETIRE:** removal is effective for inbound delivery at the swap; a busy member stops when next quiescent; its sends from that turn are authorized (leaving set).
+- **D-RETIRE (revised for AR-001, AR-003, AR-006):** see § Member States And Call-Site Rules. Removal is effective for receiving and for addressing at the swap; a busy member is *leaving* until its handle is next quiescent, then it is stopped and released.
 - **D-LIVE-RULES:** `get_handoff_rules` and prompt composition read rules through `outgoingHandoffs()`.
 - **D-FORMER:** former members stay in the tree; history readers include them; a rejoin restores the same run.
 - **D-WINDOW / D-NOTICE / D-LAUNCH:** as Off-Spine Concerns.
 - **D-INVALID:** definition missing, unreadable or invalid → warning naming run and reason, run unchanged (REQ-007, DESIGN.md rule 7).
+
+## Member States And Call-Site Rules (SR-008: AR-001, AR-003, AR-005, AR-006)
+
+`TeamRunMembership` gives every agent run ID of the run one state:
+
+| State | Meaning | Stored |
+| --- | --- | --- |
+| `current` | In the definition | `members` |
+| `leaving` | Removed while busy; finishing its turn | `formerMembers` (it is already former on disk) + in-memory leaving set |
+| `former` | Removed and stopped | `formerMembers` |
+
+One rule, applied at each call site that resolves an agent run of this run:
+
+| Call site (file:line on `a07767f4d0`) | `current` | `leaving` | `former` |
+| --- | --- | --- | --- |
+| Address resolution, own team instance step (`message-recipient-resolution.ts:70-73`) and run-wide step (`:75-78`) | resolves | refused with the former-member text (checked in each step before its generic not-found throw, through the index's `formerMemberAt(address)`, which answers leaving and former runs) | same refusal |
+| `send_message_to` by run ID (`team-run-message-delivery.ts:163-168`) | resolves | refused with the former-member text (index `getAgent` misses → `formerMemberByRunId(id)`) | same refusal |
+| Engine `deliver` receiver check (`root-communication-engine.ts:127`) | may receive | may not | may not |
+| Engine `deliver` sender check (`root-communication-engine.ts:127`) and `authorizeIdentity` (`root-team-run.ts:248-265`, `team-run-message-delivery.ts:164`) | may send | may send | may not |
+| Own commands: `executeAgentCommand` approve/deny/interrupt (`root-team-run.ts:321-341,366-369`) → `getDirectAgent` (`flat-team-execution-manager.ts:292-299`) | yes | yes (its pending approval and interrupt work) | `RUN_NOT_FOUND` |
+| Message-log owner of its messages (`root-team-run.ts:126`) | own log | own log | own log (its messages stay in this run's log) |
+| Status snapshots (`flat-team-execution-manager.ts:74-82`) and view snapshot members | listed | listed, marked leaving | not listed |
+| Handoff rules from/to it | current rules | none (it is no longer in the compiled rules) | none |
+
+How the rule is carried:
+- The engine's one check is split: the shared `RootCommunicationPort` (`root-communication-port.ts:50`) gets `maySend(identity)` beside `isCurrentAgent(identity)`; `deliver` checks `maySend` for the sender and `isCurrentAgent` for the receiver. Team root: `maySend` = current or leaving; Org and standalone roots: `maySend` is their `isCurrentAgent` (they have no leaving state). Required, not optional.
+- `TeamExecutionIndex` is built from the tree (`members` and `formerMembers`) plus the leaving set: `getAgent` answers current only; `getAgentForOwnCommand` (new) answers current and leaving; `formerMemberAt(address)` and `formerMemberByRunId(id)` answer leaving and former. `RootTeamRun` call sites above use these by name.
+- Visibility (decision within REQ-008/DEC-002): a leaving member stays in the open Team view, tagged "Leaving", until it stops (its pending approval must be answerable there); then it disappears.
+
+Address reuse and rejoin (AR-003):
+- `ConfiguredAgentExecutionRegistry` keys handles by **agent run ID** (today by address, `configured-agent-execution-registry.ts:18,35-45`); `remove(agentRunId)`. So a new member at the address of a still-leaving member (DEC-006) gets its own handle and starts at once; the old handle keeps finishing its turn.
+- A former member that rejoins (DEC-007) keeps its run ID. If it is still leaving when it rejoins, the rejoin cancels the leave: it returns to `current` with the same live handle. If it is already stopped, its handle is created on its next message in restore mode (its conversation continues).
+
+One owner of member runtime contexts (AR-006):
+- `TeamRunMembership.replace(committedTree, leaving)` owns the member contexts: it **keeps the existing `FlatAgentExecutionContext` object of every retained member by agent run ID** (its runtime kind and provider binding are live state handles reference), creates contexts for added members, keeps leaving members' contexts, and drops former members'. `TeamRunMembership.release(agentRunId)` drops a leaving member's context after its handle is removed.
+- `FlatTeamExecutionManager.applyMembership(change)` only acts on handles: for each removed member, stop now if idle, else watch for quiescence (DS-004); after stopping, `registry.remove(agentRunId)`, then `membership.release(agentRunId)` and a view refresh (DS-007). It creates no contexts.
 
 ## Exact Texts (normative)
 
@@ -197,6 +235,10 @@ Your handoff rules changed; call get_handoff_rules to read them.
 ```
 
 The last line is replaced by `Your handoff rules are unchanged.` when that member's outgoing rules did not change. One `Joined:`/`Left:` line per member, in definition order.
+
+Merging (N-2): a member's pending notice states the **net** change since its last delivered notice. A member that joined and then left before delivery, or left and then rejoined, gets no line; the rules line says "changed" when its outgoing rules now differ from the rules at its last delivered notice. A pending notice whose net change is empty is dropped.
+
+A member whose launch can't be resolved (N-3) is not added (warning naming run, address and reason); the compiled rules leave out every rule from or to an address that is not a current member, so `get_handoff_rules` never names a member that does not exist. The next announcement retries the member and, when it is added, its rules come with it.
 
 Refusal for a message to a former member (code `COLLABORATION_TARGET_NOT_FOUND`, existing handling):
 
@@ -223,6 +265,11 @@ Refusal for a message to a former member (code `COLLABORATION_TARGET_NOT_FOUND`,
 | `TeamChangeNoticeSource.queue(agentRunId, notice)` | one member run | agent run ID |
 | `DelegationIndex.runPartsChanged(run)` | one run | `RootExecutionIdentity` |
 | Index `formerMemberAt(address)` (MessageRecipientIndexPort; Org/standalone return null) | one address | address |
+| Index `formerMemberByRunId(id)`, `getAgentForOwnCommand(id)` | one agent run | agent run ID |
+| `RootCommunicationPort.maySend(identity)` (required; team: current or leaving; Org/standalone: = `isCurrentAgent`) | one sender | member identity |
+| `TeamRunMembership.release(agentRunId)` | one leaving member | agent run ID |
+| Root view event `team_membership_changed` → `TeamViewSession` re-opens the live snapshot | one open view | team run |
+| `CreateTeamRunInput.copiedFrom` | one delegated Team run | creation input |
 
 ## Existing Capability Reuse Check
 
@@ -260,6 +307,13 @@ Server (`autobyteus-server-ts/src/`):
 | `agent-collaboration/delegation/delegation-index.ts` | Modify | `runPartsChanged`; must not grow (move a cohesive block out) |
 | `agent-memory/services/team-root-memory-source.ts`, `run-history/services/team-run-history-service.ts`, `run-history/store/run-own-agents-reader.ts` | Modify | History includes former members |
 | composition (server) | Modify | Construct and wire new owners; register notice source |
+| `agent-collaboration/execution/communication/root-communication-port.ts`, `root-communication-engine.ts`; Org and standalone communication ports | Modify | `maySend` split (AR-001) |
+| `agent-team-execution/local/registries/configured-agent-execution-registry.ts` | Modify | Key by agent run ID (AR-003) |
+| `agent-team-execution/services/team-run-message-delivery.ts` | Modify | Former-member refusal by run ID; sender authorization accepts leaving (AR-001, AR-005) |
+| `agent-team-execution/services/team-run-service.ts`; `agent-collaboration/collaborators/collaborator-entry-builder.ts`, `collaborator-source-projector.ts` and the delegation step that creates a Team copy | Modify | Pass and record `copiedFrom` (AR-002) |
+| `agent-team-execution/domain/team-run-event.ts`, `services/agent-streaming/team-view-session.ts`, `services/agent-streaming/team-execution-view-projector.ts` | Modify | `team_membership_changed` event; re-open live snapshot; project leaving members (AR-004) |
+| `autobyteus-team-stream-contracts/src/team-execution-view-dtos.ts` | Modify | Member DTO `leaving?: true` (AR-004) |
+| `autobyteus-web/services/agentStreaming/TeamStreamingService.ts`, `services/teamExecution/teamExecutionViewState.ts`, `teamExecutionTreeSelectors.ts`, `components/workspace/team/TeamMembersPanel.vue`, web locales | Modify | Apply in-band snapshot member changes (keep, add, drop contexts); "Leaving" tag (AR-004) |
 
 Docs: `collaboration_model.md` (membership follows the definition; former members), `agent_team_execution.md` (rewrite the fixed-topology statements), `agent_communication.md` (`get_handoff_rules` current rules; refusal), `GLOSSARY.md` (Former member).
 
@@ -305,6 +359,6 @@ Docs: `collaboration_model.md` (membership follows the definition; former member
 ## Guidance For Implementation
 
 - Reproduction: start a Team run of a test package Team, add a member and a rule to its `team-config.json`; today `get_handoff_rules` of the sender omits it and `send_message_to` returns `COLLABORATION_TARGET_NOT_FOUND`; after the change both succeed.
-- Tests: pure planner (add, remove, swap DEC-006, rejoin DEC-007, coordinator change, rules for own team and copy, placement copy and application run not followed, invalid definition); committer ordering and fail-stop; retire while busy; refusal text; notice merge and texts; window notice; restore follow; schema with/without `formerMembers`; history readers.
+- Tests: pure planner (add, remove, swap DEC-006, rejoin DEC-007, coordinator change, rules for own team and copy, `copiedFrom: configured_placement` and application run not followed, a copy without `copiedFrom` followed, a Settings-edited copy keeps its `copiedFrom`, rules to an unlaunchable member left out, invalid definition); committer ordering and fail-stop; leaving member: approve/deny/interrupt work, its sends delivered, messages to it refused by address (both resolution steps) and by run ID with the exact text, listed with status and "Leaving" until stopped, then released; swap at the same address while the old member is leaving (new member starts, old one finishes); rejoin while leaving cancels the leave; retained members keep their context objects; notice net-merge cases; listener continues past a failing root; follow right after restore registration; open Team view receives an in-band snapshot with the new/removed member and the web adds/drops the row and context; run-tree row notice; schema with/without `formerMembers` and `copiedFrom`; history readers.
 - Real E2E per the requirements' Verification Intent.
 - Keep `root-team-run.ts`, `agent-team-run-manager.ts` ≤500 and `delegation-index.ts` ≤548 lines; name any block moved in the implementation handoff.
