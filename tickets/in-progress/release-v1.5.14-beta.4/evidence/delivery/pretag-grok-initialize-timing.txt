@@ -1,0 +1,6 @@
+# Grok ACP initialize, direct (grok agent --no-leader stdio, one JSON-RPC initialize), CLI 1.0.92
+06:41Z, load ~45 (between runs): 5651 ms, 5395 ms, 3299 ms; 1 model offered each time
+06:45Z, load ~70-75 (after run 2): 4504 ms, 5150 ms, 5994 ms; 1 model offered each time
+The smoke's models line (run 1): grok-4.5 (pinned grok-4.7 not offered).
+Server bounds: INITIALIZE_TIMEOUT_MS = 30_000 (acp-client-connection.ts:28, run creation); DISCOVERY_TIMEOUT_MS = 15_000 (acp-discovery-handshake.ts:8, model discovery); PROBE_TIMEOUT_MS = 3_000 (grok-build-capability.ts:11, --version / agent --help). Changed since v1.5.13: only grok-build-capability.ts by 5999a84ca8 (autobyteus-576 FU-008: a probe whose child already exited waits for its result).
+beta.3 (2026-11-20): the same failure, Grok 0 of 3 with ACP_REQUEST_TIMEOUT initialize (16.5, 34.6, 31.4 s at load ~42, CLI 1.0.89); the founder waived it for beta.3 (tickets/done/release-v1.5.14-beta.3/release-deployment-report.md).
