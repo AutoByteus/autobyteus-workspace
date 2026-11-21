@@ -2,6 +2,7 @@
 
 | SR | Date | Kind | Summary | Status after |
 | --- | --- | --- | --- | --- |
+| SR-005 | 2026-11-21 | Requirements (the PM's new comment; a correction) | Local reopen read: it reopens no run; the run returns when given the Task again. SR-003's "reopen lists the run" corrected to that. REQ-006 / DEC-007: giving a saved or reopened Task to an existing remote run, as locally (the PM's stuck case) | Approved; design to revise |
 | SR-004 | 2026-11-21 | Design | Delegation-state notices from the delegating node (closed / open), owed and retried; the peer records, stops and lists by them; Medium / High | Design `Ready` |
 | SR-003 | 2026-11-21 | Requirements (the user) | Reopen behaves as locally: the run is listed on the peer again, stopped, on the Task's reopen, not only on a later message; REQ-005, BEH-004, AC-006, SCN-004 | Approved |
 | SR-002 | 2026-11-21 | Requirements | DEC-004 decided by the user: like a local closed delegated run, the remote run stops and leaves the peer's run list; REQ-005 and AC-006 rewritten; requirements approved | Approved |
@@ -33,3 +34,14 @@
   - B records `delegationClosedAt`, stops the run through its ordinary Stop, and drops it from its list. On open, it lists the run again.
 - **Classification:** `Medium` / `High`.
 - **Next:** architecture review.
+
+### SR-005
+
+- **Trigger:** the Task's new comment from the PM: after reopening `ad_hoc_task_889b2aa6-…`, `send_message_to` to docker-8001 was refused with `TASK_AGENT_RESOURCE_CLOSED`.
+- **Read:**
+  - A Task's reopen leaves its entries closed (`task-execution-resource-service.ts:180-194`: only `reopenAssignment` reopens an entry, from `delegate_task` with the run's ID and `task_id`).
+  - A message to a run whose entries are all closed is refused (`cross-run-message-delivery.ts:57`).
+  - For a remote run, `delegate_task` with `task_id` is refused (`task-delegation.ts:370`).
+- **Correction:** SR-003 wrote that a reopen lists the run again. Locally it doesn't; the re-delegation does. REQ-005, BEH-004, AC-006 and DEC-004's text are corrected, and the user is told.
+- **Added:** REQ-006, BEH-006, UC-004, SCN-005, AC-007 and DEC-007 (decided within the direction; the user is informed).
+- **Design impact:** DN-1's trigger becomes the entry's open/close (the close, and the re-delegation), not the Task's reopen, plus a new DN for the remote re-delegation.
