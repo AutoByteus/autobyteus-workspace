@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-002` (FU-008 decision revised after CRR-001 CR-001)
 - Approved requirements: `requirements-doc.md` SR-001. The Solution Designer approved within the direction and informed the user. FU-004 waits for DEC-004.
 - User approval of the design: `Not required`
 - Design status: `Ready` (FU-004 per DEC-004 when answered)
@@ -60,10 +60,18 @@ See I-1…I-8. Every item has one existing owner; none needs a new one.
 7. **FU-007 (REQ-007)**: implementation first reproduces it alone on this host (`env -i … vitest run` of the file) and records the timings.
    - If the write's detection by the watcher comes after the 300 ms: the test waits for the monitor to see the write, through the TESTING.md helper, before asserting the lookup. That is REQ-018's real contract: "changes already detected". The settle-window assertion stays.
    - If detection is on time but the lookup misses it: it is a product defect. Stop and return it as a Design Impact (escalation trigger).
-8. **FU-008 (REQ-008)**, in both `antigravity-cli-capability.ts` and `grok/grok-build-capability.ts`:
-   - the bound's timer checks `child.exitCode !== null || child.signalCode !== null`. When the child has exited, it does not kill it or report a time-out, but waits for the pending `close`, up to 1 s more, and finishes with the real result.
-   - Otherwise it kills the child and reports a time-out that names the command and the bound. For Grok the time-out code replaces `GROK_CLI_UNSUPPORTED` on this path; that code stays for a real unsupported answer.
-   - Each probe gets one log line, `RUNTIME_PROBE_TIMED_OUT { runtime, command, boundMs }`.
+8. **FU-008 (REQ-008), revised in SR-002 after CRR-001 CR-001.** There is one owner, `runtime-management/probe-time-bound.ts` (`armProbeTimeBound`), used by both `antigravity-cli-capability.ts` and `grok/grok-build-capability.ts`.
+   - **Why SR-001 was wrong.** It read `child.exitCode` / `child.signalCode` when the timer ran. Node sets those only when it processes the exit. After a main-thread block longer than the bound, the expired timer runs before the poll phase that delivers the exit: API-05b had the 3,000 ms timer at 7,720 ms with `exitCode` null, and the exit (code 0) at 7,730 ms. So an exited child was killed and reported as timed out. SR-001 called this "an explicit check of the child's state", but the fields are not the state until the exit is delivered.
+   - **Target, combining options (c) and (a):**
+     - The bound learns the exit from the child's `exit` event, a flag set by a listener, not from its fields. Its input type becomes `Pick<ChildProcess, "once">` plus the existing fields.
+     - When the timer fires, it does not decide in that callback. It defers the decision with `setImmediate`. The check phase runs after the same loop iteration's poll phase, so an exit that happened during the block is delivered (and the flag set) first.
+     - Then: if the child has exited, it waits up to 1 s for `close` with the real result. Otherwise it kills the child and reports the time-out, logging `RUNTIME_PROBE_TIMED_OUT { runtime, command, boundMs }`. For Grok the time-out code is used, not `GROK_CLI_UNSUPPORTED`.
+     - Disarming also removes the listener.
+     - The callers keep their interfaces.
+   - **Tests (AC-008):**
+     - In the real order: spawn `process.execPath -e ""`, arm a 200 ms bound, then block the main thread for 600 ms (for example `Atomics.wait` on a `SharedArrayBuffer`). The child exits during the block. The probe returns its real result. A deterministic regression for CR-001.
+     - A child that never exits times out, with the log.
+     - The SR-001 unit case for a late `close` stays.
 
 ## Change Scope (Mandatory)
 

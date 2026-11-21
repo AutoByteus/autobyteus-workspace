@@ -15,7 +15,26 @@ Commits, one per item in the design's order:
 | FU-002 relative Markdown links | `8c3810df95` |
 | FU-007 DCF-E2E-007 | `8850dc3f99` |
 
-The ticket documents, this handoff and evidence IMP-01…IMP-10 follow in the next commit.
+The ticket documents, this handoff and evidence IMP-01…IMP-10 are in `56c61c3ecb`.
+
+## SR-002: FU-008's Bound Revised (IR-002)
+
+After CRR-001 CR-001 (API-REV-001; API-05b) the Solution Designer revised design item 8. The fix is in `3b39828501`; its records and evidence IMP-11 and IMP-12 follow in the next commit.
+
+- **The SR-001 bound was wrong.** It read `child.exitCode`/`signalCode` when its timer ran, and Node sets those only when it processes the exit. After a main-thread block past the bound, the expired timer runs before the poll phase that delivers the exit, so an exited child read as running and was reported as timed out.
+- **Now** `probe-time-bound.ts`:
+  - learns the exit from the child's `exit` event (a flag; disarm removes the listener);
+  - defers the timer's decision with `setImmediate`, which runs after the same loop turn's poll phase;
+  - then gives an exited child up to 1 s for its `close`. Only a running child, or a `close` that never comes, times out, with `RUNTIME_PROBE_TIMED_OUT { runtime, command, boundMs }`; for Grok that is the time-out code.
+  - The callers (`antigravity-cli-capability.ts`, `grok/grok-build-capability.ts`) are unchanged.
+- **Tests:**
+  - the real-order case, a real `process.execPath -e ""` that exits while the main thread is blocked (`Atomics.wait`) past a 200 ms bound, returns its real result;
+  - the never-exits and late-close cases stay, with a fake `EventEmitter` child.
+  - Negative controls: the SR-001 field check and an event-only check without the deferral both fail the real-order case (IMP-11).
+- **Two choices within the design** (also in the revision record):
+  - The input type is `ProbeChildExit`, the `exit` notification's `once`/`removeListener`. The design names `Pick<ChildProcess, "once">` plus the old fields, but nothing reads the fields any more, and disarm needs `removeListener`.
+  - The real-order test blocks 1,500 ms rather than 600 ms, so the child's Node start fits inside the block on this loaded host.
+- **AC-007:** decided by DEC-005; nothing changed in that test.
 
 ## Upstream Artifact Package
 
@@ -41,15 +60,15 @@ Seven of the eight follow-ups are implemented, each in its existing owner; FU-00
 
 Two causes turned out different from the investigation's (I-5, I-7). Both are host file-event latency, not product defects, and both fixes stay in the tests (§ Reviewed Behavior Implementation Trace).
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Design Impact` (SR-002; after `Initial` IR-001)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-001`
+- Current implementation revision ID: `IR-002`
+- Related solution revision IDs: `SR-001`, `SR-002`
 - Related architecture-review revision IDs: `N/A`
-- Related code-review revision IDs: `N/A`
-- Related API/E2E revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
+- Related API/E2E revision IDs: `API-REV-001`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `CR-001`
 
 ## Routing Classification (Mandatory)
 
@@ -70,7 +89,7 @@ Two causes turned out different from the investigation's (I-5, I-7). Both are ho
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
 | REQ-001 / AC-001 (FU-009) | Full encoded name up to 255 bytes; longer ids shortened (120 bytes, `#`, 16 hex) | `agent-memory-layout.ts`: `MAX_FULL_DEFINITION_FOLDER_NAME_BYTES = 255`. Docs: `agent_memory.md`, `agent_episodic_catalog.md`. The 554 release note's rare-id bullet is replaced. IC-03's copy of the decision and the probe's long team id (now 274 encoded bytes) follow the new limit | Implemented. Unit: 255 bytes → full name, 256 → shortened; the semantic folder, the episodic folder and the `semantic_ws_` lookup agree. Negative control at 200 fails the new cases (IMP-01). The 554 DEC-016 text stays as archived; this ticket's REQ-001 and DEC-001 correct it to 255 |
-| REQ-008 / AC-008 (FU-008) | A bound that fires after the child exited waits for its `close` and the real result; a real time-out is a time-out (Grok: not `GROK_CLI_UNSUPPORTED`) and is logged with the command and the bound | `runtime-management/probe-time-bound.ts` (`armProbeTimeBound`: an exited child gets up to 1 s more; otherwise `RUNTIME_PROBE_TIMED_OUT { runtime, command, boundMs }`), used by `antigravity-cli-capability.ts` `runCommand` and `grok/grok-build-capability.ts` `runProbe`. Grok's `timedOut` is now always `GROK_MODEL_DISCOVERY_TIMEOUT` (with the deadline cause when the step's deadline set the bound) | Implemented. Unit with fake timers; per probe, a real CLI that exits at once but holds its stdout open past the bound returns the real result, and a hanging Grok CLI gives the time-out code and the log line. The old probes fail all 4 real-process cases (IMP-02) |
+| REQ-008 / AC-008 (FU-008; revised in SR-002, see above) | A bound that fires after the child exited waits for its `close` and the real result; a real time-out is a time-out (Grok: not `GROK_CLI_UNSUPPORTED`) and is logged with the command and the bound | `runtime-management/probe-time-bound.ts` (`armProbeTimeBound`: an exited child gets up to 1 s more; otherwise `RUNTIME_PROBE_TIMED_OUT { runtime, command, boundMs }`), used by `antigravity-cli-capability.ts` `runCommand` and `grok/grok-build-capability.ts` `runProbe`. Grok's `timedOut` is now always `GROK_MODEL_DISCOVERY_TIMEOUT` (with the deadline cause when the step's deadline set the bound) | Implemented. Unit with fake timers; per probe, a real CLI that exits at once but holds its stdout open past the bound returns the real result, and a hanging Grok CLI gives the time-out code and the log line. The old probes fail all 4 real-process cases (IMP-02) |
 | REQ-005 / AC-005 (FU-005) | `afterAll` finishes within its hook limit | `package-personal-settings.e2e.test.ts`: real timers first (as designed), and the hook limit `IN_PROCESS_SERVER_HOOK_TIMEOUT_MS` from `tests/helpers/os-latency-under-load.ts` | Implemented. **The cause differs from I-5.** Real timers first did not end the time-out. `app.close()` took 11.4 s and 26.1 s with real timers, and a 50 ms interval never ran during it, so the main thread was blocked closing the in-process server's package and skill folder watchers. `fseventsd` was at 160–172% CPU. This is TESTING.md's "File watching on a busy Mac" rule for such a hook (IMP-03). AC-005's three passes are API/E2E's |
 | REQ-006 / AC-006 (FU-006) | SM-12's setup binds root too | `agent-semantic-memory.e2e.test.ts` SM-12: a regular file at `folderOf(id)`, checked unchanged and removed in `finally`; the reason matches `EEXIST\|ENOTDIR`; the `chmod` is gone | Implemented; 10/10 with the scripted AGY gate (IMP-04) |
 | REQ-003 / AC-003 (FU-003) | The menus offer only `filesystem` and `temp`; a skill workspace registered by the Skills page is always released | `utils/workspace/runnableWorkspaceKind.ts`, used by `runHistoryReadModel.ts` (same result as before: a missing kind is `filesystem`; `isTemp` and the fixed temp id stay temp), `ChatWorkspaceMenu.vue` `userWorkspaces` and `useMobileLaunchWorkspaces.ts` `workspaceItems`. `SkillWorkspaceLoader.vue` has a `disposed` flag: a registration that resolves after unmount is unregistered at once | Implemented. Specs on the real store; the old sources fail the 3 new specs (IMP-05) |
@@ -154,7 +173,7 @@ Evidence is in `evidence/`, each file with a header (check, command, commit, env
 | Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | IMP-01 | server unit: agent-memory, episodic catalog, workspaces; negative control with the limit at 200 | `72f7ebe040` | macOS, Node 22 | folder-name rule, catalog, `semantic_ws_` lookup | REQ-001, AC-001 | Pass | `IMP-01-fu009-folder-name-unit.log` | `Test Files  35 passed (35)`; control `Tests  4 failed \| 14 passed (18)` |
-| IMP-02 | `probe-time-bound`, Antigravity and Grok capability tests; negative control with the old probes | `5999a84ca8` | macOS, Node 22 | both probes and the shared bound | REQ-008, AC-008 | Pass | `IMP-02-fu008-probe-unit.log` | `Tests  63 passed (63)`; control `Tests  4 failed \| 54 passed (58)` |
+| IMP-02 | `probe-time-bound`, Antigravity and Grok capability tests; negative control with the old probes (the SR-001 bound; superseded for the bound by IMP-11) | `5999a84ca8` | macOS, Node 22 | both probes and the shared bound | REQ-008, AC-008 | Pass | `IMP-02-fu008-probe-unit.log` | `Tests  63 passed (63)`; control `Tests  4 failed \| 54 passed (58)` |
 | IMP-03 | `package-personal-settings.e2e` alone: before, real timers alone, two diagnostics, the fix; raw `fs.watch` | `f9a26707eb` | macOS, Node 22, `fseventsd` 160–172% | the e2e `afterAll` | REQ-005 | Pass (fix) | `IMP-03-fu005-personal-settings-afterall.log` | before `Hook timed out in 10000ms`; `FU005DIAG app.close 26090 ms; event-loop max gap 0 ms`; fix `Tests  7 passed (7)`, exit 0 |
 | IMP-04 | `agent-semantic-memory.e2e` with the scripted AGY gate | `4562d8ae5f` | macOS, Node 22 | SM-12 setup | REQ-006 | Pass | `IMP-04-fu006-sm12.log` | `✓ SM-12`; `Tests  10 passed (10)` |
 | IMP-05 | web specs: skills, menu, mobile picker, `utils/workspace`, run history; negative control | `f31553c9ee` | macOS, Node 22 | menus, loader, run-history rule | REQ-003, AC-003 | Pass | `IMP-05-fu003-workspace-menus.log` | `Tests  120 passed (120)`; control `3 failed \| 14 passed (17)` |
@@ -162,6 +181,8 @@ Evidence is in `evidence/`, each file with a header (check, command, commit, env
 | IMP-07 | rendered probe after `pnpm -C autobyteus-server-ts build` | `8c3810df95` | macOS, Chromium (Playwright), Nuxt dev | Memory page, semantic folder view, links | REQ-001, REQ-002 (AC-002 UI) | Pass | `IMP-07-rendered-probe.log`, `IMP-07-*.png` | `Pass (41/41 checks)`; SMV-100…105 `true` |
 | IMP-08 | DCF-E2E-007: macOS timed diagnostic, fixed file on macOS; fixed file and unchanged test on Linux | `8850dc3f99` | macOS (as above); Linux `node:22-bookworm` | the live-refresh test's waits | REQ-007 | Pass on Linux; `ENVIRONMENT` on macOS | `IMP-08-fu007-live-refresh.log` | `FU007DIAG {"firstListAtMs":374,…"scoutListedAtMs":6241,"rawFsWatchEventMs":6053}`; Linux `Tests  10 passed (10)` |
 | IMP-09 | server typecheck; server unit for the touched areas, runtime consumers and architecture | `8850dc3f99` | macOS, Node 22 | all server changes | all | Pass | `IMP-09-server-typecheck-and-unit.log` | `production errors: 0; test-file errors: 1006 in 315 files (baseline 1006 in 315 files)`; `Test Files  122 passed \| 4 skipped (126)` |
+| IMP-11 | SR-002: `probe-time-bound`, Antigravity and Grok capability tests; the real-order case against the SR-001 bound and against an event-only bound without the deferral | `3b39828501` | macOS, Node 22 | `probe-time-bound.ts` and both probes | REQ-008, AC-008 (SR-002) | Pass | `IMP-11-sr002-probe-bound-unit.log` | `Tests  64 passed (64)`; both controls `expected "vi.fn()" to not be called at all, but actually been called 1 times` |
+| IMP-12 | SR-002: server typecheck; server unit for runtime-management, llm-management, model selection, Antigravity backends, collaborator launch | `3b39828501` | macOS, Node 22 | the probes' consumers | REQ-008 | Pass | `IMP-12-sr002-typecheck-and-runtime-unit.log` | `production errors: 0; test-file errors: 1006 in 315 files (baseline 1006 in 315 files)`; `Test Files  74 passed \| 4 skipped (78)` |
 | IMP-10 | web typecheck; web specs for the touched folders | `8850dc3f99` | macOS, Node 22 | all web changes | all | Pass | `IMP-10-web-typecheck-and-specs.log` | `production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)`; `Test Files  193 passed (193)` |
 
 - Not run, and why:

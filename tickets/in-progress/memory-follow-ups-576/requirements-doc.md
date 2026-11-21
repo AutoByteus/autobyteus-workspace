@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved` for FU-009, FU-002, FU-003 and FU-005…FU-008 (Solution Designer within the direction; user informed 2026-11-21). FU-004 waits for the founder (DEC-004).
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-002`
 - Package identifier: `memory-follow-ups-576` (autobyteus-576)
 - Request: Project Task autobyteus-576 (the autobyteus-554 follow-ups FU-002…FU-009, merged at the founder's instruction on 2026-11-21)
 - Requested by: `/project_task_manager` (`project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`)
@@ -67,8 +67,8 @@ None.
 | AC-004 | REQ-004 | Per DEC-004 | — |
 | AC-005 | REQ-005 | The file passes alone three times in a row on this host | API/E2E |
 | AC-006 | REQ-006 | SM-12 passes as a normal user. Its setup no longer depends on permission bits | API/E2E |
-| AC-007 | REQ-007 | The cause is recorded with evidence; DCF-E2E-007 passes alone on this host three times | API/E2E |
-| AC-008 | REQ-008 | Unit: a fake child exits before the bound but its `close` is processed after the timer, and the probe returns the child's real result. A child that never exits gives a time-out message naming the command and bound (Grok: not `GROK_CLI_UNSUPPORTED`) | Unit |
+| AC-007 | REQ-007 | The cause is recorded with evidence (IMP-08). DCF-E2E-007 passes on a host whose OS delivers file events (Linux run recorded). On a host whose FSEvents delivers no event at all (an independent raw `fs.watch` also gets none), the test fails only with its named `ENVIRONMENT` reason, never as a product assertion (DEC-005) | API/E2E |
+| AC-008 | REQ-008 | Unit, built in the real order: a real child (`node -e ""`) exits while the main thread is blocked longer than the bound, so its exit is delivered after the timer callback starts; the probe returns the child's real result. A child that never exits gives a time-out naming the command and the bound (Grok: not `GROK_CLI_UNSUPPORTED`). E2E: the Grok catalog case (API-05) and SM-04 pass under load | Unit + API/E2E |
 
 ## Decisions
 
@@ -77,4 +77,5 @@ None.
 | DEC-001 | Folder-name limit | 255 bytes is the real limit, so 200 needlessly renamed ids of 201–255 bytes. autobyteus-554 is not released, so no shortened name exists in the wild; no migration. | Solution Designer | Decided |
 | DEC-002 | How a relative link opens | Open as a preview tab in the same workspace: consistent with clicking a file in the tree, and safe in the read-only view. Links outside the root open nothing (workspace confinement). | Solution Designer | Decided |
 | DEC-003 | Which workspaces the menus offer | Only `filesystem` and `temp`, the run-history sidebar's rule. Skill and semantic memory workspaces are views, not places to run. | Solution Designer | Decided |
+| DEC-005 | AC-007 on a host whose file events do not arrive (CRR-001) | The founder's Mac's `fseventsd` (160–167% CPU, 23.8 GB earlier) delivers no event within 30 s, even to a raw `fs.watch`. The cause is the host, not the code, and the test now says so by name. The proof is a pass where events arrive (Linux) plus the named failure here. Waiting for a working host would block the Task on something only a root restart of `fseventsd` or a reboot fixes; that is recommended to the founder, but not required. | Solution Designer (within the direction; user informed) | Decided |
 | DEC-004 | Older-layout imported teams | Options: (a) no code change: the Docker node, once updated, converts its own data at startup and the next sync imports the current layout; (b) the Memory page reads older layouts for imports (permanent compatibility readers, against DESIGN.md rule 8 and the Data Migration Guideline). The import was last synced on 2026-11-08 and holds older-layout files (`team_communication_messages.json`, `task_delegation_records.json`). Recommendation: (a). | User | Needs user |
