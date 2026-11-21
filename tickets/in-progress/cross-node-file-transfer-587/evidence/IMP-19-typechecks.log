@@ -1,0 +1,18 @@
+# IMP-19 both typechecks (IR-005)
+# Command: pnpm -C autobyteus-server-ts typecheck; pnpm -C autobyteus-web typecheck
+# Commit: 07b4b83cef (IR-005, SR-010/SR-011)
+# Environment: macOS 26.5.2, Node v22.23.1
+# Date: 2026-11-21T21:31:29Z
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 10.1s
+[typecheck] server tests (tsconfig.tests.json): 1000 errors, exit 2, 28.1s
+[typecheck] production errors: 0; test-file errors: 1000 in 313 files (baseline 1000 in 313 files)
+[typecheck] PASS
+server exit=0
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 38.8s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.0s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 22.7s
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+web exit=0
