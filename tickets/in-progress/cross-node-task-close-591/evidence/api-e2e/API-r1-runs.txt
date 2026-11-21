@@ -1,0 +1,54 @@
+API/E2E round 1 — autobyteus-591 (CRR-001; head dd5b230e7e, code 9abe7086fd)
+Environment: macOS 26 (Darwin 25.5.0) arm64, Node 22, load 24-31. autobyteus-ts and server dist built from the worktree;
+test:integration:prepare. E2E: env -i PATH HOME=<fresh temp> TMPDIR, RUN_AGY_FAILURE_E2E=1,
+ANTIGRAVITY_CLI_COMMAND=<server>/tests/fixtures/agy-failure-cli.mjs. No user data or nodes; test-owned roots only.
+Raw logs (this machine): /tmp/api591/.
+
+§1 Typecheck after my test edits: "[typecheck] production errors: 0; test-file errors: 1002 in 314 files (baseline 1002 in
+   314 files)", "[typecheck] PASS".
+
+§2 remote-delegation-two-server.e2e.test.ts (whole file), four runs:
+   r1 "Tests 6 failed | 47 passed (53)": RC-11's tree row (F-1); my errors: an ad-hoc Task given by task_id ("must identify
+      exactly one current node-local Task (found 0)": not a saved Task), update_task's Task key vs the GraphQL ID; cascades.
+   r2 "Tests 6 failed | 47 passed (53)": F-2 found (RC-51, RC-52: "This task agent already has Task …"); RC-23 read the
+      first confirmation (the saved Task's "open"); RC-19's delegator view (100 events) lost RC-05's reply because my cases
+      added calls on the shared delegator -> RC-52 got its own delegator; cascades.
+   r3 "Tests 3 failed | 50 passed (53)": RC-51, RC-53 (F-2); RC-52 round 2 asserted an idle run still live (the 60 s idle
+      grace stops it) -> asserts "not recorded, still listed" instead.
+   r4 (final) "Tests 2 failed | 51 passed (53)": RC-51 and RC-53 only, both F-2:
+      "This task agent already has Task 591-project-1. To continue it, set Task 591-project-1 to TODO or IN_PROGRESS, then
+       message the task agent's run id (for a task agent team, its coordinator's run id)."
+      "This task agent already has Task rc-23-project-1. To continue it, …"
+   Receipt extract: API-r1-rc-receipt.json (r4). Stops after the close: RC-10 329 ms, RC-11 315 ms, RC-23 329 ms
+   (coordinator mid-turn, checker running), RC-49 308 ms. RC-11: one notice {open:false} answered {accepted:true, nodeId,
+   open:false}; TASK_PEER_NOTICE_CONFIRMED … open: false; owed marks [null]; peerRow null (F-1).
+   RC-35: gamma (paired with beta only) and alpha for beta's own run: {accepted:false, code:"REMOTE_TARGET_NOT_PERMITTED"}.
+
+§3 F-2 evidence: RC-51 passes every step up to giving the reopened own Task (a different saved Task woke the stopped run;
+   its DONE stopped it again; Task page {status:DONE, root:{closed:true}}; a reopen sent nothing and changed nothing on beta;
+   a message was refused TASK_AGENT_RESOURCE_CLOSED; another root was refused). Locally the assigner's message after a
+   reopen continues the run (project-change-feed.e2e.test.ts:421-426, "… continues with its conversation."); the eligibility
+   rule task-execution-resources.ts:208 refuses delegate_task for the run's own closed current Task. Neither file is
+   changed by this ticket.
+
+§4 RC-52 alone with RC-01, RC-03 (rc52.log, "Tests 3 passed | 50 skipped (53)"; extract API-r1-rc52-receipt.json), and in r4:
+   owedLog "TASK_PEER_NOTICE_OWED { … open: false, code: 'PEER_UNREACHABLE', reason: 'Node "beta-node" could not be reached
+   (fetch failed).' }", once per run over a 30 s retry; marks survive alpha's stop; deliveredMs 28014 (alpha restarted,
+   then beta started), rdDeliveredMs 28252 (beta restarted alone); rc (another open Task while beta was down): "Task
+   591-project-1 was given to the task agent, but the message with its work was not delivered (Node "beta-node" could not be
+   reached (fetch failed).). …", then CONFIRMED open: true, never recorded closed, listed; older beta: reason "… (it
+   answered HTTP 404)" logged once, owed, delivered once the route answered. rbResumed/rdResumed false (not asserted).
+   rfOutcome (Task reopened alone while beta down): {recordedClosed: true, listed: false, confirmed … open: false} (F-2 b).
+
+§5 Neighbours (neighbours.log): collaboration-prompt-wording 14 CPW cases ✓. collaboration-contract-stories: §5.3 ✓; §5.1
+   S18 and §5.2 U9 fail with "…counterpart: not in the contract ({"address":…,"nodeId":…})". Base 7591aa307f in its own
+   worktree (base-stories.log, base-stories51.log): identical lines at S18 and U9 -> base-side, FU-591-01. The stories stop
+   there on both commits, before their remote-closure steps.
+
+§6 MSP-93 (autobyteus-web test:e2e:mobile-shell --cases=MSP-93; build:mobile-web first; API-r1-msp93.json, MSP-93-*.png):
+   "[mobile-shell] MSP-93 Pass": listAfterCloseMs 919, phoneAfterListMs 4148, desktopAfterListMs 4177; afterReopen
+   {recorded:true, listed:false, phone:false, desktop:false}; backMs 1345 (a new saved Task); no unknown browser errors;
+   cleanup {frontendExited:true, serversLeft:0, rootRemoved:true}. (The screenshots after the close are scrolled by the
+   "Show older" unfold; the DOM checks are the proof.)
+
+Cleanup: base worktree ../591-base-7591aa30 removed; suites removed their own roots and servers.
