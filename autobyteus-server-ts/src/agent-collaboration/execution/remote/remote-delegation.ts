@@ -36,12 +36,11 @@ export class RemoteDelegation {
   }>) {}
 
   /**
-   * `delegate_task` with `node` (DEC-111): refuses a saved Task or files before anything is sent (REQ-110),
-   * resolves the peer by this owner's label, and returns the remote placement for the root's lifecycle.
+   * `delegate_task` with `node` (DEC-111): refuses a saved Task before anything is sent (REQ-110; its files go with it,
+   * autobyteus-587), resolves the peer by this owner's label, and returns the remote placement for the root's lifecycle.
    */
   async delegationPlacement(input: SpawnTaskInput & Readonly<{ node: string }>): Promise<RemotePlacementTarget | TaskDelegationOutcome> {
     if (input.task_id !== undefined) return { delegated: false, message: REMOTE_ROOT_REFUSAL_TEXT.savedTask };
-    if (input.reference_files?.some((file) => file.trim())) return { delegated: false, message: REMOTE_ROOT_REFUSAL_TEXT.attachments };
     const channel = this.channel();
     if (!channel) return { delegated: false, message: REMOTE_ROOT_REFUSAL_TEXT.off };
     const peer = await channel.findPeer(input.node);

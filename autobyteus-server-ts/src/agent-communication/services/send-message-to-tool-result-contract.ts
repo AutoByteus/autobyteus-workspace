@@ -9,6 +9,8 @@ const SendMessageToAcceptedResultSchema = z.strictObject({
   code: z.string(),
   message: z.string(),
   target_agent_run_id: NonBlankAgentRunIdSchema,
+  /** autobyteus-587 RF-6: how many reference files were copied to the receiving node, when any. */
+  files_sent: z.number().int().positive().optional(),
 });
 
 const SendMessageToRejectedResultSchema = z.strictObject({
@@ -30,7 +32,7 @@ export const toSendMessageToResult = (
   accepted: result.accepted,
   code: result.code ?? (result.accepted ? "DELIVERED" : "SEND_MESSAGE_TO_FAILED"),
   message: result.message ?? (result.accepted ? MESSAGE_DELIVERED_TEXT : "send_message_to failed."),
-  ...(result.accepted ? { target_agent_run_id: result.agentRunId } : {}),
+  ...(result.accepted ? { target_agent_run_id: result.agentRunId, ...(result.filesSent ? { files_sent: result.filesSent } : {}) } : {}),
 });
 
 export const serializeSendMessageToResult = (

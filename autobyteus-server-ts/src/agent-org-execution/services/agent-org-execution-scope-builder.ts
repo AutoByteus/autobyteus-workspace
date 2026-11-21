@@ -1,4 +1,5 @@
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
+import type { RemoteFiles } from "../../agent-collaboration/execution/remote/transferred-files.js";
 import type { ConfiguredAgentExecutionFactory } from "../../agent-collaboration/execution/backends/configured-agent-execution-factory.js";
 import type { RemoteRunChannelAccess } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
@@ -42,6 +43,7 @@ export class AgentOrgExecutionScopeBuilder {
     delegationIndex: DelegationIndex;
     /** The host's channel to peer nodes (autobyteus-500 FU-011). */
     remoteChannel: RemoteRunChannelAccess;
+    remoteFiles: RemoteFiles;
     /** Each run's view stream (SR-062). */
     viewStreams: RunViewStreams;
     orgDefinitions: Pick<AgentOrgDefinitionService, "getDefinitionById">;
@@ -202,6 +204,7 @@ export class AgentOrgExecutionScopeBuilder {
         taskRecords: this.dependencies.taskRecords,
         delegationIndex: this.dependencies.delegationIndex,
         remoteChannel: this.dependencies.remoteChannel,
+        remoteFiles: this.dependencies.remoteFiles,
         memoryLocator: this.dependencies.memoryLocator,
         activityInspector: this.dependencies.activityInspector,
         onTerminated: input.onTerminated,

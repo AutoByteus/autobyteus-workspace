@@ -2,6 +2,9 @@ import { toTaskDelegationToolErrorPayload } from "../../../../src/agent-tools/ta
 import type { RunOwnDelegation } from "../../../../src/agent-collaboration/execution/task/run-own-delegation.js";
 import type { AgentConversationActivity } from "../../../../src/agent-memory/services/agent-conversation-activity-inspector.js";
 import { NO_RUN_PARTS, readerOfAgents } from "../../../helpers/run-agents-reader.js";
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { acceptWorkPacketIfAllowed, TaskDelegation, type LocalDelegationPlacement, type WorkPacket } from "../../../../src/agent-collaboration/execution/task/task-delegation.js";
 import { DelegationIndex } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
@@ -10,6 +13,7 @@ import { DelegatedRunStartError } from "../../../../src/agent-collaboration/exec
 import { createCollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
+import { NO_REMOTE_FILES } from "../../../helpers/explicit-host-collaborators.js";
 
 /** autobyteus-461 design DS-1 (`TaskDelegation`), contract §13.1 D1, D2, D5: a delegation creates an ordinary run and its Task entry. */
 const M: RootExecutionIdentity = { rootSubjectKind: "agent", rootRunId: "project_task_manager_7c8d" };
@@ -30,7 +34,7 @@ const harness = (reader: RunFilesReader = NO_RUN_PARTS, fromDelegator: LocalDele
   const deliverWorkPacket = vi.fn(async (_run: unknown, _packet: WorkPacket) => ({ accepted: true }) as { accepted: boolean; code?: string; message?: string });
   const discard = vi.fn(async () => undefined);
   const recordCollaborating = vi.fn(async () => undefined);
-  const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter, deliverWorkPacket, discard, recordCollaborating,
+  const delegation = new TaskDelegation({ outgoing: NO_REMOTE_FILES.outgoing, tasks: () => tasks, tree: () => tree, starter, deliverWorkPacket, discard, recordCollaborating,
     deliverToRun: vi.fn(async () => ({ accepted: true })), channel: () => null,
     reachingAddress: (sender, receiverRun) => tree.collaborationTreeOf(receiverRun).reachingAddressOf(sender), ownDelegations: { of: async () => null }, delegatorCatalog: { placementAt: vi.fn(async () => fromDelegator) }, conversationOf: async () => ({ entryAddress: "/entry", activity: { kind: "present" as const } }) });
   const folders: (string | null)[] = [];
@@ -236,17 +240,42 @@ describe("TaskDelegation.toNewRun", () => {
     const placement = { kind: "remote_agent" as const, address: "/research_team" as never, peer, description: "Research it." };
     const channelWith = (started: unknown, delivered: unknown = { accepted: true, peerName: "Studio B" }) => ({
       startDelegatedRun: vi.fn(async () => started), deliverMessage: vi.fn(async () => delivered) });
-    const peerHarness = (channel: ReturnType<typeof channelWith>) => {
+    const peerHarness = (channel: ReturnType<typeof channelWith>, outgoing: { send: ReturnType<typeof vi.fn> } = { send: vi.fn(NO_REMOTE_FILES.outgoing.send) }) => {
       const tasks = new InMemoryTaskExecutionResources();
       const tree = new DelegationIndex(() => tasks, NO_RUN_PARTS);
       tree.build();
       tasks.setEntriesListener(tree);
-      const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(),
+      const delegation = new TaskDelegation({ outgoing: outgoing as never, tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(),
         channel: () => channel as never, deliverToRun: vi.fn(async () => ({ accepted: true })), recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null, ownDelegations: { of: async () => null }, delegatorCatalog: { placementAt: async () => null }, conversationOf: async () => ({ entryAddress: "/entry", activity: { kind: "present" as const } }) });
-      const delegate = () => delegation.toPeerRun({ sender: createCollaborationMemberExecutionIdentity({ root: M, memberAddress: "/project_task_manager" as never, agentRunId: M.rootRunId }),
-        senderRun: M, spawn: { recipient_address: "/research_team", description: "Research it." } as never, placement });
-      return { tasks, tree, delegate };
+      const delegate = (referenceFiles?: readonly string[]) => delegation.toPeerRun({ sender: createCollaborationMemberExecutionIdentity({ root: M, memberAddress: "/project_task_manager" as never, agentRunId: M.rootRunId }),
+        senderRun: M, spawn: { recipient_address: "/research_team", description: "Research it.", ...(referenceFiles ? { reference_files: referenceFiles } : {}) } as never, placement });
+      return { tasks, tree, delegate, outgoing };
     };
+
+    it("autobyteus-587 RF-1: the files go to the peer before its run starts; the work packet names them; the result says how many; a refused file starts nothing", async () => {
+      const folder = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "task-delegation-files-")));
+      try {
+        const brief = path.join(folder, "brief.pdf");
+        await fs.writeFile(brief, "brief");
+        const FILES = [{ sha256: "b".repeat(64), size: 5, name: "brief.pdf" }];
+        const calls: string[] = [];
+        const channel = channelWith({ accepted: true, kind: "agent", agentRunId: "remote_agent_1", launches: [] });
+        channel.startDelegatedRun.mockImplementation(async () => { calls.push("start"); return { accepted: true, kind: "agent", agentRunId: "remote_agent_1", launches: [] }; });
+        const h = peerHarness(channel, { send: vi.fn(async () => { calls.push("files"); return { ok: true, files: FILES }; }) });
+        await expect(h.delegate([brief])).resolves.toMatchObject({ outcome: { delegated: true, node: "Studio B", filesSent: 1 } });
+        expect(calls).toEqual(["files", "start"]);
+        expect(h.outgoing.send).toHaveBeenCalledWith({ senderAgentRunId: M.rootRunId, nodeId: "node-b-1f0e", peerName: "Studio B", referenceFiles: [brief] });
+        expect(channel.deliverMessage).toHaveBeenCalledWith(expect.objectContaining({ kind: "work_packet", files: FILES }));
+
+        const refusedChannel = channelWith({ accepted: true, kind: "agent", agentRunId: "remote_agent_2", launches: [] });
+        const refused = peerHarness(refusedChannel, { send: vi.fn(async () => ({ ok: false, refusal: { accepted: false, code: "REFERENCE_FILE_OUTSIDE_WORKSPACE", message: "outside" } })) });
+        await expect(refused.delegate([brief])).resolves.toEqual({ outcome: { delegated: false, message: "outside" }, launches: [] });
+        expect(refusedChannel.startDelegatedRun).not.toHaveBeenCalled();
+        expect(refused.tasks.links).toEqual([]);
+      } finally {
+        await fs.rm(folder, { recursive: true, force: true });
+      }
+    });
 
     it("a team on a peer: the entry holds nodeId, members and the address; the work packet goes to its coordinator; the result names the peer", async () => {
       const channel = channelWith({ accepted: true, kind: "agent_team", teamRunId: "research_team_77aa", coordinatorAddress: "/research_team/lead",
@@ -295,7 +324,7 @@ describe("TaskDelegation.toNewRun", () => {
       await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/software_engineering_team",
         delegatedFrom: { delegatingRun: M, delegatorAgentRunId: M.rootRunId }, execution: { teamRunId: E.rootRunId }, teamCoordinatorAgentRunId: "solution_designer_65a9" });
       await tasks.markStarted({ teamRunId: E.rootRunId });
-      const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(), deliverToRun,
+      const delegation = new TaskDelegation({ outgoing: NO_REMOTE_FILES.outgoing, tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(), deliverToRun,
         channel: () => null, recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null,
         ownDelegations: { of: async (execution) => ownDelegation && "teamRunId" in execution && execution.teamRunId === E.rootRunId ? ownDelegation : null },
         delegatorCatalog: { placementAt: async () => null }, conversationOf: vi.fn(async () => ({ entryAddress: "/solution_designer", activity })) });
@@ -325,7 +354,7 @@ describe("TaskDelegation.toNewRun", () => {
       tasks.addTask("T1", "Build it", "abc-1"); tasks.addTask("T2", "Polish it", "abc-2");
       await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/software_engineering_team",
         delegatedFrom: { delegatingRun: M, delegatorAgentRunId: M.rootRunId }, execution: { teamRunId: E.rootRunId }, teamCoordinatorAgentRunId: "solution_designer_65a9" });
-      const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(), deliverToRun: vi.fn(),
+      const delegation = new TaskDelegation({ outgoing: NO_REMOTE_FILES.outgoing, tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(), deliverToRun: vi.fn(),
         channel: () => null, recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null, ownDelegations: { of: async () => null }, delegatorCatalog: { placementAt: async () => null },
         conversationOf: async () => ({ entryAddress: "/solution_designer", activity: { kind: "present" as const } }) });
       const give = (agentRunId: string) => delegation.toExistingRun({ sender: createCollaborationMemberExecutionIdentity({ root: M, memberAddress: `/${M.rootRunId}` as never, agentRunId: M.rootRunId }),

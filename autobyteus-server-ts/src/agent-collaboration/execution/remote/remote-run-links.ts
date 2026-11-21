@@ -4,6 +4,7 @@ import type { RootExecutionIdentity } from "../domain/root-execution-identity.js
 import type { PeerDelegatedFrom } from "../../../run-history/store/agent-run-metadata-types.js";
 import type { CollaborationCommunicationMessage } from "../communication/collaboration-communication-message.js";
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "./remote-refusal-codes.js";
+import type { TransferredFile } from "./transferred-files.js";
 import { delegatedRunEndpoint, delegatedTeamEndpoints, delegatorEndpoint, type LinkedRemoteEndpoint, type RemoteEndpoint } from "./remote-endpoint.js";
 import {
   type RemoteRunChannelAccess,
@@ -21,6 +22,8 @@ export type RemoteInboundMessage = Readonly<{
   message: CollaborationCommunicationMessage;
   /** The sending agent's address in its own run, as the request carried it (autobyteus-565). */
   senderAddress: string | null;
+  /** autobyteus-587: the reference files, already checked complete in this node's received files. */
+  files: readonly TransferredFile[];
 }>;
 
 /** The work packet that starts a remote run on its own node (N-6); not a message-log entry. */
@@ -30,6 +33,8 @@ export type RemoteInboundWorkPacket = Readonly<{
   senderAgentRunId: string;
   targetAgentRunId: string;
   description: string;
+  /** autobyteus-587: the reference files, already checked complete in this node's received files. */
+  files: readonly TransferredFile[];
 }>;
 
 /**
@@ -157,11 +162,15 @@ export class RemoteRunLinks {
       : this.inboundEndpoint(query.fromNodeId, query.senderAgentRunId, query.targetAgentRunId) !== null;
   }
 
-  /** Transmits a prepared message to the endpoint's node, linked or unlinked (the channel only; no state changes here). */
-  async deliver(endpoint: RemoteEndpoint, message: CollaborationCommunicationMessage, senderAddress: string | null): Promise<RemoteDeliveryAnswer> {
+  /**
+   * Transmits a prepared message to the endpoint's node, linked or unlinked, with its files as that node holds them
+   * (the channel only; no state changes here).
+   */
+  async deliver(endpoint: RemoteEndpoint, message: CollaborationCommunicationMessage, senderAddress: string | null,
+    files: readonly TransferredFile[]): Promise<RemoteDeliveryAnswer> {
     const channel = this.channel();
     if (!channel) return { accepted: false, code: REMOTE_REFUSAL.OFF, message: REMOTE_ROOT_REFUSAL_TEXT.off };
-    const receipt = await channel.deliverMessage(endpoint.transmission(message, senderAddress));
+    const receipt = await channel.deliverMessage(endpoint.transmission(message, senderAddress, files));
     return receipt.accepted ? { accepted: true, peerName: await channel.peerName(endpoint.reference.nodeId), receiverAddress: receipt.receiverAddress } : receipt;
   }
 

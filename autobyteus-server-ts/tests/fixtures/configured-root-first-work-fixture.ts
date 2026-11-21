@@ -23,7 +23,8 @@ import { TeamRunExecutionTreeStore } from "../../src/run-history/store/team-run-
 import type { RunPackageFileWriteResult } from "../../src/run-history/store/atomic-run-package-file-commit-writer.js";
 import { testAgentNode, testTeamRunConfig } from "./current-team-run-fixtures.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "./current-agent-org-run-fixtures.js";
-import { NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY } from "../helpers/explicit-host-collaborators.js";
+import { NO_PEER_CHANNEL, NO_REMOTE_FILES, OFFERED_MODEL_EXECUTION_FACTORY } from "../helpers/explicit-host-collaborators.js";
+import { AgentRunMemoryLocator } from "../../src/agent-collaboration/execution/services/agent-run-memory-locator.js";
 
 export type Placement = "standalone_team" | "direct_org" | "mounted_team";
 export const placements: readonly Placement[] = ["standalone_team", "direct_org", "mounted_team"];
@@ -126,7 +127,7 @@ export const configuredRootFixture = async (placement: Placement, options: {
     });
     const tree = buildInitialTeamRunExecutionTree({ config, teamDefinitionName: "Test Team" });
     await actualStore.write(memoryDir, tree as never);
-    const root = await materializeTeamRoot({ remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+    const root = await materializeTeamRoot({ remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES, memoryLocator: new AgentRunMemoryLocator({ memoryDir }), delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       config, tree,
       messages: { schemaVersion: 1, rootTeamRunId: rootId, messages: [] },
       teamMemoryDir: memoryDir, mode, persistInitialPackage: false, factory,
@@ -158,7 +159,7 @@ export const configuredRootFixture = async (placement: Placement, options: {
     executionTreeStore: { write } as never,
     communicationStore: { write: sidecarWrite, appendMessage: sidecarWrite } as never, enterPersistenceFailStop: failStop,
   });
-  const root = await new AgentOrgExecutionScopeBuilder({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY, remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), flatTeamExecutionFactory: factory, orgDefinitions: definitions as never, teamDefinitions: definitions as never,
+  const root = await new AgentOrgExecutionScopeBuilder({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY, remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), flatTeamExecutionFactory: factory, orgDefinitions: definitions as never, teamDefinitions: definitions as never,
     ...dependencies,
   }).build({ state, persistence, activationMode: mode, persistInitialPackage: false });
   const flatten = (tree: typeof state.executionTree) => tree.rootOrg.members.flatMap((member) => "agentRunId" in member ? [member] : [...member.members]);

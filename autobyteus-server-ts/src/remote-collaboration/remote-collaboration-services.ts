@@ -3,6 +3,7 @@ import { RemoteCollaborationSettingsError } from "./domain/remote-collaboration-
 import { NodeIdentityNotMigratedError } from "../remote-access/services/node-identity-service.js";
 import type { ServerSettingsService } from "../services/server-settings-service.js";
 import { PeerClient } from "./channel/peer-client.js";
+import type { ReceivedFilesHandler } from "./channel/peer-gateway.js";
 import {
   PeerGateway,
   type AvailableAgentsHandler,
@@ -56,6 +57,8 @@ export const composeRemoteCollaboration = (input: Readonly<{
   tempWorkspaceDir: string;
   /** Whether this server runs in a container (the loopback hint); the process check by default. */
   runsInContainer?(): boolean;
+  /** autobyteus-587: the node's received files, which a peer uploads into before its message or work packet. */
+  receivedFiles: ReceivedFilesHandler;
   handlers(services: Omit<RemoteCollaborationServices, "gateway" | "discovery" | "addresses" | "pairing" | "peerRequestVerifier">): Readonly<{
     delegatedRuns: DelegatedRunHandler; messages: RemoteMessageHandler; availableAgents: AvailableAgentsHandler;
     runningAgents: RunningAgentsHandler; runViews: RemoteRunViewHandler;
@@ -86,7 +89,7 @@ export const composeRemoteCollaboration = (input: Readonly<{
   peers = new PeerDirectory({ store, probe: client, capability, ownNodeId: ownNodeIdForSettings, runsInContainer });
   const services = { capability, peers, catalogPort: new NodeCatalogPort(input.tempWorkspaceDir), client };
   const handlers = input.handlers(services);
-  const gateway = new PeerGateway({ ownNodeId: input.ownNodeId, capability, peers, ...handlers });
+  const gateway = new PeerGateway({ ownNodeId: input.ownNodeId, capability, peers, ...handlers, receivedFiles: input.receivedFiles });
   const discovery = new PeerNodeDiscovery({ capability, peers, client });
   const addresses = new PeerAddressResolver({ probe: client, capability, ownNodeId: ownNodeIdForSettings, runsInContainer });
   const pairing = new PeerPairingService({

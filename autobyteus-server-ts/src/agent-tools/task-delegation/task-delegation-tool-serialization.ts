@@ -33,6 +33,7 @@ export const toDelegateTaskResult = (outcome: TaskDelegationOutcome): DelegateTa
     ...(outcome.node ? { node: outcome.node } : {}),
     ...(outcome.taskId ? { task_id: outcome.taskId } : {}),
     ...(outcome.launchNotes?.length ? { launch_notes: [...outcome.launchNotes] } : {}),
+    ...(outcome.filesSent ? { files_sent: outcome.filesSent } : {}),
   };
   return outcome.delegatedRun.kind === "agent"
     ? { delegated: true, target_kind: "agent", target_agent_run_id: outcome.delegatedRun.agentRunId, ...extras }

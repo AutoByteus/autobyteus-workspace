@@ -68,12 +68,20 @@ export const resolveKindRelativePathUnderRoot = (
   return resolveUnderRoot(rootDir, normalizedKind, ...normalizedRelativePath.split("/"));
 };
 
+/**
+ * autobyteus-587 (DEC-007): an agent's files received from another node live in its folder's `received_files/`. They are
+ * copies of another node's files, not the run's memory, so Memory Sync never exports them (the message lines that name
+ * them still sync). The scanner checks every entry, folders too, so the whole folder is skipped.
+ */
+const RECEIVED_FILES_FOLDER = "received_files";
+
+/** Whether the scanner leaves out this entry (a file, or a folder with everything in it). */
 export const shouldExcludeMemorySyncLeaf = (leafName: string): boolean => {
   const normalized = String(leafName ?? "").trim();
   if (!normalized) {
     return true;
   }
-  if (normalized === ".DS_Store") {
+  if (normalized === ".DS_Store" || normalized === RECEIVED_FILES_FOLDER) {
     return true;
   }
   return DISALLOWED_LEAF_SUFFIXES.some((suffix) => normalized.endsWith(suffix));

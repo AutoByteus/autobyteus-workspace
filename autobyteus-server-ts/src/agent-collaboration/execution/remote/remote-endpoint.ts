@@ -1,4 +1,5 @@
 import type { PeerAgentRunLink, PeerTeamRunLink } from "./peer-run-link.js";
+import type { TransferredFile } from "./transferred-files.js";
 import type { PeerDelegatedFrom } from "../../../run-history/store/agent-run-metadata-types.js";
 import { getAgentTeamAddressBasename } from "../../domain/agent-team-address.js";
 import type { CollaborationCommunicationMessage } from "../communication/collaboration-communication-message.js";
@@ -23,8 +24,11 @@ type RemoteEndpointCore = Readonly<{
   allowsSender(agentRunId: string): boolean;
   /** The pair rule, inbound: may the endpoint send to this local agent? */
   allowsTarget(agentRunId: string): boolean;
-  /** The request that carries a prepared message from a paired agent to the endpoint. */
-  transmission(message: CollaborationCommunicationMessage, senderAddress: string | null): RemoteMessageTransmission;
+  /**
+   * The request that carries a prepared message from a paired agent to the endpoint, with its reference files as the
+   * receiving node holds them (autobyteus-587; the message itself keeps the sender's paths).
+   */
+  transmission(message: CollaborationCommunicationMessage, senderAddress: string | null, files: readonly TransferredFile[]): RemoteMessageTransmission;
 }>;
 
 /**
@@ -78,7 +82,7 @@ const pairRule = (paired: readonly string[]) => {
 };
 
 const messageRequest = (nodeId: string, targetRoot: RemoteTargetRoot, message: CollaborationCommunicationMessage,
-  senderAddress: string | null): RemoteMessageTransmission => Object.freeze({
+  senderAddress: string | null, files: readonly TransferredFile[]): RemoteMessageTransmission => Object.freeze({
   nodeId,
   kind: "message",
   messageId: message.messageId,
@@ -89,6 +93,7 @@ const messageRequest = (nodeId: string, targetRoot: RemoteTargetRoot, message: C
   content: message.content,
   messageType: message.messageType,
   createdAt: message.createdAt,
+  files,
 });
 
 
@@ -100,7 +105,8 @@ export const delegatedRunEndpoint = (link: PeerAgentRunLink): DelegatedRunEndpoi
     reference: Object.freeze({ nodeId: link.nodeId, agentRunId: link.agentRunId }),
     ...pairRule([link.delegatorAgentRunId]),
     displayName: getAgentTeamAddressBasename(link.address) ?? link.agentRunId,
-    transmission: (message: CollaborationCommunicationMessage, senderAddress: string | null) => messageRequest(link.nodeId, targetRoot, message, senderAddress),
+    transmission: (message: CollaborationCommunicationMessage, senderAddress: string | null, files: readonly TransferredFile[]) =>
+      messageRequest(link.nodeId, targetRoot, message, senderAddress, files),
   });
 };
 
@@ -114,7 +120,8 @@ export const delegatedTeamEndpoints = (link: PeerTeamRunLink): readonly Delegate
     reference: Object.freeze({ nodeId: link.nodeId, agentRunId: member.agentRunId }),
     ...rule,
     displayName: getAgentTeamAddressBasename(member.address) ?? member.agentRunId,
-    transmission: (message: CollaborationCommunicationMessage, senderAddress: string | null) => messageRequest(link.nodeId, targetRoot, message, senderAddress),
+    transmission: (message: CollaborationCommunicationMessage, senderAddress: string | null, files: readonly TransferredFile[]) =>
+      messageRequest(link.nodeId, targetRoot, message, senderAddress, files),
   })));
 };
 
@@ -127,7 +134,8 @@ export const delegatorEndpoint = (pairedAgentRunIds: readonly string[], delegate
     ...rule,
     displayName: delegatedFrom.delegatorAgentRunId,
     // The delegating node receives it in the delegating run it named at start.
-    transmission: (message: CollaborationCommunicationMessage, senderAddress: string | null) => messageRequest(delegatedFrom.nodeId, delegatedFrom.delegatingRun, message, senderAddress),
+    transmission: (message: CollaborationCommunicationMessage, senderAddress: string | null, files: readonly TransferredFile[]) =>
+      messageRequest(delegatedFrom.nodeId, delegatedFrom.delegatingRun, message, senderAddress, files),
     admitsWorkPacket: (fromNodeId: string, senderAgentRunId: string, targetAgentRunId: string) =>
       fromNodeId === delegatedFrom.nodeId && senderAgentRunId === delegatedFrom.delegatorAgentRunId && rule.allowsTarget(targetAgentRunId),
   });
@@ -143,7 +151,7 @@ export const unlinkedRunEndpoint = (input: Readonly<{ nodeId: string; agentRunId
     reference: Object.freeze({ nodeId: input.nodeId, agentRunId: input.agentRunId }),
     ...pairRule([input.pairedAgentRunId]),
     displayName: input.agentRunId,
-    transmission: (message: CollaborationCommunicationMessage, senderAddress: string | null): RemoteMessageTransmission => Object.freeze({
+    transmission: (message: CollaborationCommunicationMessage, senderAddress: string | null, files: readonly TransferredFile[]): RemoteMessageTransmission => Object.freeze({
       nodeId: input.nodeId,
       kind: "run_message",
       messageId: message.messageId,
@@ -153,5 +161,6 @@ export const unlinkedRunEndpoint = (input: Readonly<{ nodeId: string; agentRunId
       content: message.content,
       messageType: message.messageType,
       createdAt: message.createdAt,
+      files,
     }),
   });

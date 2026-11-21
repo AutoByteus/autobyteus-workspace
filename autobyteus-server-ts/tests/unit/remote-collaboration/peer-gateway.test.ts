@@ -18,7 +18,7 @@ const startBody = (overrides: Record<string, unknown> = {}) => ({
 const messageBody = (overrides: Record<string, unknown> = {}) => ({
   fromNodeId: PEER.nodeId, toNodeId: SELF, kind: "message", messageId: "collabmsg_1",
   sender: { agentRunId: "agent_a1", address: "/assistant" }, targetRoot: { kind: "agent", runId: "publisher_7f3" }, target: { agentRunId: "publisher_7f3" },
-  content: "hello", messageType: "agent_message", createdAt: "2026-10-20T10:00:00.000Z", ...overrides,
+  content: "hello", messageType: "agent_message", createdAt: "2026-10-20T10:00:00.000Z", files: [], ...overrides,
 });
 
 const gateway = (input: { enabled?: boolean; registered?: boolean } = {}) => {
@@ -26,6 +26,12 @@ const gateway = (input: { enabled?: boolean; registered?: boolean } = {}) => {
   const messages = { accept: vi.fn(async () => ({ accepted: true as const, receiverAddress: "/publisher" })), acceptRunMessage: vi.fn(async () => ({ accepted: true as const, receiverAddress: null })) };
   const runningAgents = { list: vi.fn(async () => ({ accepted: true as const, agents: [{ kind: "agent" as const, name: "PM", agent_run_id: "pm_b", state: "idle" as const }] })) };
   const availableAgents = { list: vi.fn(async () => ({ accepted: true as const, agents: [{ name: "Publisher", kind: "agent" as const, address: "/publisher" }] })) };
+  // autobyteus-587: the node's received files (DS-003).
+  const receivedFiles = {
+    status: vi.fn(async (files: readonly { sha256: string }[]) => ({ maxFileBytes: 1024, files: files.map((file) => ({ sha256: file.sha256, receivedBytes: 0, complete: false })) })),
+    appendPiece: vi.fn(async (piece: { offset: number; bytes: Buffer; size: number }) => ({ receivedBytes: piece.offset + piece.bytes.byteLength,
+      complete: piece.offset + piece.bytes.byteLength === piece.size })),
+  };
   const gate = new PeerGateway({
     ownNodeId: async () => SELF,
     capability: { isEnabled: () => input.enabled ?? true },
@@ -35,8 +41,9 @@ const gateway = (input: { enabled?: boolean; registered?: boolean } = {}) => {
     availableAgents,
     runningAgents,
     runViews: {} as never,
+    receivedFiles,
   });
-  return { gate, delegatedRuns, messages, availableAgents, runningAgents };
+  return { gate, delegatedRuns, messages, availableAgents, runningAgents, receivedFiles };
 };
 
 describe("PeerGateway", () => {
@@ -124,14 +131,14 @@ describe("PeerGateway", () => {
   describe("autobyteus-492: run-messages and running-agents", () => {
     const runMessageBody = (overrides: Record<string, unknown> = {}) => ({
       fromNodeId: PEER.nodeId, toNodeId: SELF, messageId: "collabmsg_9", sender: { agentRunId: "pm_a", address: "/project_task_manager" }, target: { agentRunId: "pm_b" },
-      content: "hello B", messageType: "agent_message", createdAt: "2026-11-18T10:00:00.000Z", ...overrides,
+      content: "hello B", messageType: "agent_message", createdAt: "2026-11-18T10:00:00.000Z", files: [], ...overrides,
     });
 
     it("a message by run ID is parsed without a root and handed to the receiver's acceptRunMessage, with the calling peer", async () => {
       const f = gateway();
       await expect(f.gate.deliverRunMessage(runMessageBody(), PEER_CALLER)).resolves.toEqual({ status: 200, answer: { accepted: true, nodeId: SELF, receiverAddress: null } });
       expect(f.messages.acceptRunMessage).toHaveBeenCalledWith({ fromNodeId: PEER.nodeId, toNodeId: SELF, messageId: "collabmsg_9",
-        sender: { agentRunId: "pm_a", address: "/project_task_manager" }, target: { agentRunId: "pm_b" }, content: "hello B", messageType: "agent_message", createdAt: "2026-11-18T10:00:00.000Z" }, PEER);
+        sender: { agentRunId: "pm_a", address: "/project_task_manager" }, target: { agentRunId: "pm_b" }, content: "hello B", messageType: "agent_message", createdAt: "2026-11-18T10:00:00.000Z", files: [] }, PEER);
       expect(f.messages.accept).not.toHaveBeenCalled();
     });
 
@@ -159,6 +166,44 @@ describe("PeerGateway", () => {
       const f = gateway();
       await expect(f.gate.listRunningAgents({ fromNodeId: PEER.nodeId, toNodeId: SELF }, PEER_CALLER)).resolves.toEqual({ status: 200,
         answer: { accepted: true, nodeId: SELF, agents: [{ kind: "agent", name: "PM", agent_run_id: "pm_b", state: "idle" }] } });
+    });
+  });
+
+  describe("autobyteus-587: reference files (RFC-001 § 6)", () => {
+    const SHA = "a".repeat(64);
+    const piece = (overrides: Record<string, unknown> = {}) => ({ fromNodeId: PEER.nodeId, toNodeId: SELF, sha256: SHA, offset: "0", size: "4",
+      bytes: Buffer.from("abcd"), ...overrides });
+
+    it("a message and a run message carry their files strictly: each {sha256 of 64 hex, size, name}; a malformed one is 400", async () => {
+      const f = gateway();
+      const files = [{ sha256: SHA, size: 4, name: "brief.pdf" }];
+      await expect(f.gate.deliverMessage(messageBody({ files }), PEER_CALLER)).resolves.toMatchObject({ status: 200, answer: { accepted: true } });
+      expect(f.messages.accept).toHaveBeenCalledWith(expect.objectContaining({ files }), PEER);
+      for (const bad of [undefined, [{ sha256: "abc", size: 4, name: "x" }], [{ sha256: SHA, size: -1, name: "x" }], [{ sha256: SHA, size: 4, name: "" }]]) {
+        await expect(f.gate.deliverMessage(messageBody({ files: bad }), PEER_CALLER)).resolves.toMatchObject({ status: 400, answer: { code: "REMOTE_REQUEST_INVALID" } });
+      }
+      await expect(f.gate.deliverRunMessage({ fromNodeId: PEER.nodeId, toNodeId: SELF, messageId: "m", sender: { agentRunId: "pm_a", address: null },
+        target: { agentRunId: "pm_b" }, content: "hi", messageType: "agent_message", createdAt: "2026-11-18T10:00:00.000Z" }, PEER_CALLER))
+        .resolves.toMatchObject({ status: 400 });
+    });
+
+    it("status and pieces pass the same admission first, then reach the node's received files", async () => {
+      const f = gateway();
+      await expect(f.gate.receivedFilesStatus({ fromNodeId: PEER.nodeId, toNodeId: SELF, files: [{ sha256: SHA, size: 4 }] }, PEER_CALLER)).resolves.toEqual({
+        status: 200, answer: { accepted: true, nodeId: SELF, maxFileBytes: 1024, files: [{ sha256: SHA, receivedBytes: 0, complete: false }] } });
+      await expect(f.gate.receivedFilePiece(piece(), PEER_CALLER)).resolves.toEqual({ status: 200, answer: { accepted: true, nodeId: SELF, receivedBytes: 4, complete: true } });
+      expect(f.receivedFiles.appendPiece).toHaveBeenCalledWith({ fromNodeId: PEER.nodeId, toNodeId: SELF, sha256: SHA, offset: 0, size: 4, bytes: Buffer.from("abcd") });
+      await expect(f.gate.receivedFilePiece(piece(), null)).resolves.toMatchObject({ status: 200, answer: { accepted: false, code: "PEER_IDENTITY_MISMATCH" } });
+      await expect(gateway({ enabled: false }).gate.receivedFilePiece(piece(), PEER_CALLER)).resolves.toMatchObject({ answer: { code: "REMOTE_COLLABORATION_OFF" } });
+      // A malformed piece: a bad name, a bad offset, a body that is not bytes, a piece over 8 MiB.
+      for (const bad of [piece({ sha256: "../x" }), piece({ offset: "-1" }), piece({ bytes: "abcd" }), piece({ bytes: Buffer.alloc(8 * 1024 * 1024 + 1) })]) {
+        await expect(f.gate.receivedFilePiece(bad, PEER_CALLER)).resolves.toMatchObject({ status: 400, answer: { code: "REMOTE_REQUEST_INVALID" } });
+      }
+      expect(f.receivedFiles.appendPiece).toHaveBeenCalledOnce();
+      // The node's own refusal (its per-file limit) passes through.
+      f.receivedFiles.appendPiece.mockResolvedValueOnce({ accepted: false, code: "REFERENCE_FILE_TOO_LARGE", message: "too large" } as never);
+      await expect(f.gate.receivedFilePiece(piece(), PEER_CALLER)).resolves.toEqual({ status: 200,
+        answer: { accepted: false, code: "REFERENCE_FILE_TOO_LARGE", message: "too large", nodeId: SELF } });
     });
   });
 });

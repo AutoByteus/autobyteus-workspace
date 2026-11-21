@@ -4,6 +4,7 @@ import { taskExecutionConversationUnavailable, type RunConversationAvailability 
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import type { DelegationPlacement, RemoteAgentPlacement } from "../../collaborators/catalog-delegation.js";
 import type { RemoteAgentLaunch, RemoteRunChannel } from "../remote/remote-run-channel.js";
+import type { OutgoingFiles } from "../remote/outgoing-files.js";
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "../remote/remote-refusal-codes.js";
 import type { DelegationIndex } from "../../delegation/delegation-index.js";
 import { ownTeamDelegationRefusedMessage, selfDelegationRefusedMessage } from "../../collaborators/collaborator-errors.js";
@@ -123,6 +124,8 @@ export class TaskDelegation {
     discard(run: TaskExecutionReference): Promise<void>;
     /** The peer channel; `null` where remote collaboration is not composed (the application host). */
     channel(): RemoteRunChannel | null;
+    /** autobyteus-587: a peer delegation's reference files, uploaded to that node before its run starts (DS-001). */
+    outgoing: Pick<OutgoingFiles, "send">;
     /** An agent run that delegates collaborates: its own address is fixed and its history row says so (contract §3.3). */
     recordCollaborating(agentRunId: string, address: AgentTeamAddress): Promise<void>;
     /**
@@ -141,8 +144,9 @@ export class TaskDelegation {
   /**
    * `delegate_task` with `node` (DEC-111, CM-10): the run is created by the peer, which owns it; this node keeps its
    * Task entry, with the peer's node, the team's members and the address (contract §2.1, E3; no tree link). The order
-   * is `toNewRun`'s: work, run (on the peer), Task entry, work packet (through the channel), `markStarted`. The result
-   * names the peer, and the launches the peer resolved are returned for the root's notes (REQ-009).
+   * is `toNewRun`'s: work, its files (uploaded to the peer, autobyteus-587 DS-001: a refusal there starts nothing), run
+   * (on the peer), Task entry, work packet (through the channel, naming the files), `markStarted`. The result names the
+   * peer and the files sent, and the launches the peer resolved are returned for the root's notes (REQ-009).
    */
   async toPeerRun(input: Readonly<{
     sender: CollaborationMemberExecutionIdentity;
@@ -158,6 +162,9 @@ export class TaskDelegation {
     try { work = await this.prepareWork(input.senderRun, input.spawn); }
     catch (error) { const refusal = asRefusal(error); if (refusal && !refusal.delegated) return refused(refusal.message); throw error; }
     const { placement } = input;
+    const sent = await this.dependencies.outgoing.send({ senderAgentRunId: input.sender.agentRunId, nodeId: placement.peer.nodeId,
+      peerName: placement.peer.name, referenceFiles: work.referenceFiles });
+    if (!sent.ok) return refused(sent.refusal.message);
     const started = await channel.startDelegatedRun({ nodeId: placement.peer.nodeId, address: placement.address, delegatorAgentRunId: input.sender.agentRunId,
       delegatingRun: { kind: input.senderRun.rootSubjectKind, runId: input.senderRun.rootRunId }, work: work.delegation });
     if (!started.accepted) return refused(started.message);
@@ -185,7 +192,7 @@ export class TaskDelegation {
     await this.recordCollaborating(input);
     const delivered = await channel.deliverMessage({ nodeId: placement.peer.nodeId, kind: "work_packet", senderAgentRunId: input.sender.agentRunId, senderAddress: input.sender.memberAddress,
       targetRoot: team ? { kind: "agent_team", runId: started.teamRunId } : { kind: "agent", runId: entryAgentRunId }, targetAgentRunId: entryAgentRunId,
-      content: placement.description, messageType: "task_work_packet", createdAt: new Date().toISOString() })
+      content: placement.description, messageType: "task_work_packet", createdAt: new Date().toISOString(), files: sent.files })
       .catch((error: unknown) => ({ accepted: false as const, code: REMOTE_REFUSAL.PEER_UNREACHABLE, message: message(error) }));
     if (!delivered.accepted) {
       // As base, any failed dispatch of a new run is recorded as TASK_DISPATCH_FAILED with its message (CR-461-052, REQ-005).
@@ -195,7 +202,8 @@ export class TaskDelegation {
     await tasks.markStarted(execution);
     const delegatedRun: DelegatedRun = team ? { kind: "team", teamRunId: started.teamRunId, teamCoordinatorAgentRunId: entryAgentRunId } : { kind: "agent", agentRunId: entryAgentRunId };
     const createdTaskId = work.join.role === "assigned" && "adHocTask" in work.join ? link.taskId : null;
-    return { outcome: { delegated: true, delegatedRun, node: placement.peer.name, ...(createdTaskId ? { taskId: createdTaskId } : {}) }, launches: started.launches };
+    return { outcome: { delegated: true, delegatedRun, node: placement.peer.name, ...(createdTaskId ? { taskId: createdTaskId } : {}),
+      ...(sent.files.length ? { filesSent: sent.files.length } : {}) }, launches: started.launches };
   }
 
   /**

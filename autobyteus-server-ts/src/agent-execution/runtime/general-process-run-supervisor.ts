@@ -220,6 +220,7 @@ export class GeneralProcessRunSupervisor {
         taskRecords: input.taskRecords,
         delegationIndex: input.delegationIndex,
         remoteChannel: input.remoteChannel,
+        remoteFiles: input.remoteFiles,
         viewStreams: input.viewStreams,
         modelSelectionValidator: input.modelSelectionValidator,
         flatTeamExecutionFactory,
@@ -237,6 +238,7 @@ export class GeneralProcessRunSupervisor {
           taskRecords: input.taskRecords,
           delegationIndex: input.delegationIndex,
           remoteChannel: input.remoteChannel,
+          remoteFiles: input.remoteFiles,
           viewStreams: input.viewStreams,
           orgDefinitions: input.agentOrgDefinitionService,
           teamDefinitions: input.agentTeamDefinitionService,
@@ -280,6 +282,7 @@ export class GeneralProcessRunSupervisor {
           taskRecords: input.taskRecords,
           delegationIndex: input.delegationIndex,
           remoteChannel: input.remoteChannel,
+          remoteFiles: input.remoteFiles,
         viewStreams: input.viewStreams,
           agentRunManager: generalAgentRunManager,
           collaboratorAdmission,
@@ -321,7 +324,8 @@ export class GeneralProcessRunSupervisor {
         peerRunOf,
       });
       const delegatedWorkGuard = new DelegatedWorkGuard({ tree: input.delegationIndex,
-        statusOf: (child) => runOwnStatus({ agentRuns: agentRunService!, teamRuns: teamRunService! }, child), peerRunOf });
+        statusOf: (child) => runOwnStatus({ agentRuns: agentRunService!, teamRuns: teamRunService! }, child), peerRunOf,
+        receivedFiles: input.receivedFiles });
       this.delegatedWorkGuard = delegatedWorkGuard;
       const agentOrgRunService = new AgentOrgRunService({
         workGuard: delegatedWorkGuard,

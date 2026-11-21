@@ -8,6 +8,8 @@ import type {
   RemoteMessageTransmission,
   RemoteOwnerCommand,
   PeerNodeRef,
+  ReceivedFilePieceReceipt,
+  ReceivedFilesStatusReceipt,
   RemoteRunChannel,
   RemoteRunObservationStream,
   RemoteRunObserver,
@@ -34,6 +36,8 @@ import {
   REMOTE_DELEGATED_RUNS_PATH,
   REMOTE_MESSAGES_PATH,
   REMOTE_OWNER_COMMANDS_PATH,
+  REMOTE_RECEIVED_FILES_PATH,
+  REMOTE_RECEIVED_FILES_STATUS_PATH,
   REMOTE_RUN_OBSERVATIONS_PATH,
   REMOTE_RUN_MESSAGES_PATH,
   REMOTE_RUN_SUMMARIES_PATH,
@@ -64,12 +68,30 @@ export const PEER_REQUEST_TIMEOUT_MS = 20_000;
  * under the runtimes' tool-call time-outs (Codex 60 s).
  */
 export const PEER_START_REQUEST_TIMEOUT_MS = 50_000;
+/** autobyteus-587: one file piece (≤ 8 MiB) gets its own bound, for a slow upload link (8 MiB at 1 MiB/s is 8 s). */
+export const PEER_FILE_PIECE_TIMEOUT_MS = 120_000;
+
+/** A request body of raw bytes (a file piece, autobyteus-587), sent with PUT; every other body is JSON, sent with POST. */
+class RawPeerBody { constructor(readonly bytes: Buffer) {} }
 
 type FetchLike = (url: string, init: RequestInit) => Promise<Pick<Response, "ok" | "status" | "json">>;
 
 type PeerAnswer = Readonly<{ accepted: boolean; nodeId?: unknown; code?: unknown; message?: unknown; target?: unknown; [field: string]: unknown }>;
 
 const nonEmpty = (value: unknown): value is string => typeof value === "string" && value.trim().length > 0;
+const count = (value: unknown): value is number => typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
+
+/** The peer's status of the files asked about, read strictly: one entry per file, in order; `null` when malformed. */
+const receivedFilesOf = (answer: PeerAnswer, asked: readonly Readonly<{ sha256: string }>[]) => {
+  if (!count(answer.maxFileBytes) || !Array.isArray(answer.files) || answer.files.length !== asked.length) return null;
+  const files = answer.files.map((value: unknown, index) => {
+    const file = value as { sha256?: unknown; receivedBytes?: unknown; complete?: unknown } | null;
+    return file && file.sha256 === asked[index]!.sha256 && count(file.receivedBytes) && typeof file.complete === "boolean"
+      ? Object.freeze({ sha256: file.sha256, receivedBytes: file.receivedBytes, complete: file.complete }) : null;
+  });
+  return files.some((file) => file === null) ? null
+    : Object.freeze({ accepted: true as const, maxFileBytes: answer.maxFileBytes, files: Object.freeze(files as NonNullable<(typeof files)[number]>[]) });
+};
 
 /**
  * What the peer started, read strictly from its accepted answer (autobyteus-247 G-7): an Agent run, or a Team run
@@ -209,10 +231,11 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe, PeerPair
     const receipt = (answer: PeerAnswer, peer: PeerNode): RemoteMessageReceipt => answer.receiverAddress === null || nonEmpty(answer.receiverAddress)
       ? Object.freeze({ accepted: true as const, receiverAddress: answer.receiverAddress as string | null })
       : refusal(REMOTE_REFUSAL.PEER_UNREACHABLE, peerRefusalText(peer.name, REMOTE_REFUSAL.PEER_UNREACHABLE, "it answered without the receiving agent"));
+    const files = input.files.map((file) => ({ sha256: file.sha256, size: file.size, name: file.name }));
     if (input.kind === "run_message") {
       return this.call(input.nodeId, REMOTE_RUN_MESSAGES_PATH, (envelope): DeliverRunMessageRequest => ({
         ...envelope, messageId: input.messageId, sender: { agentRunId: input.senderAgentRunId, address: input.senderAddress },
-        target: { agentRunId: input.targetAgentRunId }, content: input.content, messageType: input.messageType, createdAt: input.createdAt,
+        target: { agentRunId: input.targetAgentRunId }, content: input.content, messageType: input.messageType, createdAt: input.createdAt, files,
       }), timeoutText, receipt);
     }
     return this.call(input.nodeId, REMOTE_MESSAGES_PATH, (envelope): DeliverRemoteMessageRequest => ({
@@ -225,7 +248,27 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe, PeerPair
       content: input.content,
       messageType: input.messageType,
       createdAt: input.createdAt,
+      files,
     }), timeoutText, receipt);
+  }
+
+  /** autobyteus-587: what the peer holds of these files, and its per-file limit; a malformed answer is unreachable. */
+  receivedFilesStatus(nodeId: string, files: readonly Readonly<{ sha256: string; size: number }>[]): Promise<ReceivedFilesStatusReceipt> {
+    return this.call(nodeId, REMOTE_RECEIVED_FILES_STATUS_PATH, (envelope) => ({
+      ...envelope, files: files.map((file) => ({ sha256: file.sha256, size: file.size })),
+    }), "did not answer in time", (answer, peer) => receivedFilesOf(answer, files)
+      ?? refusal(REMOTE_REFUSAL.PEER_UNREACHABLE, peerRefusalText(peer.name, REMOTE_REFUSAL.PEER_UNREACHABLE, "it answered without the files' status")));
+  }
+
+  /** autobyteus-587: one piece of a file, raw bytes in a signed PUT (the envelope in its query, NA-9). */
+  putReceivedFilePiece(input: Readonly<{ nodeId: string; sha256: string; offset: number; size: number; bytes: Buffer }>): Promise<ReceivedFilePieceReceipt> {
+    const query = (envelope: Readonly<{ fromNodeId: string; toNodeId: string }>) => new URLSearchParams({
+      fromNodeId: envelope.fromNodeId, toNodeId: envelope.toNodeId, offset: String(input.offset), size: String(input.size) });
+    return this.call(input.nodeId, (envelope) => `${REMOTE_RECEIVED_FILES_PATH}/${input.sha256}?${query(envelope)}`, () => new RawPeerBody(input.bytes),
+      "did not answer in time", (answer, peer) => count(answer.receivedBytes) && typeof answer.complete === "boolean"
+        ? Object.freeze({ accepted: true as const, receivedBytes: answer.receivedBytes, complete: answer.complete })
+        : refusal(REMOTE_REFUSAL.PEER_UNREACHABLE, peerRefusalText(peer.name, REMOTE_REFUSAL.PEER_UNREACHABLE, "it answered without the bytes it holds")),
+      PEER_FILE_PIECE_TIMEOUT_MS);
   }
 
   /** autobyteus-278: titles and statuses of runs this node's delegation started on that peer; a malformed answer is unreachable. */
@@ -369,8 +412,8 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe, PeerPair
 
   private async call<TResult>(
     nodeId: string,
-    path: string,
-    body: (envelope: Readonly<{ fromNodeId: string; toNodeId: string }>) => object,
+    path: string | ((envelope: Readonly<{ fromNodeId: string; toNodeId: string }>) => string),
+    body: (envelope: Readonly<{ fromNodeId: string; toNodeId: string }>) => object | RawPeerBody,
     timeoutText: string,
     accepted: (answer: PeerAnswer, peer: PeerNode) => TResult | PeerRefusal,
     timeoutMs: number = this.dependencies.timeoutMs ?? PEER_REQUEST_TIMEOUT_MS,
@@ -397,13 +440,17 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe, PeerPair
     if (!secret) return notPaired();
     let answer: PeerAnswer;
     try {
-      const requestBody = JSON.stringify(body({ fromNodeId, toNodeId: peer.nodeId }));
-      const { url, pathWithQuery } = peerRequestTarget(peer.baseUrl, path);
+      const envelope = { fromNodeId, toNodeId: peer.nodeId };
+      const built = body(envelope);
+      const requestBody = built instanceof RawPeerBody ? new Uint8Array(built.bytes) : JSON.stringify(built);
+      const method = built instanceof RawPeerBody ? "PUT" : "POST";
+      const { url, pathWithQuery } = peerRequestTarget(peer.baseUrl, typeof path === "string" ? path : path(envelope));
       const response = await this.fetchJson(url.toString(), {
-        method: "POST",
+        method,
         headers: {
-          "content-type": "application/json",
-          ...signPeerRequest({ secret, method: "POST", pathWithQuery, fromNodeId, toNodeId: peer.nodeId, body: requestBody }),
+          "content-type": built instanceof RawPeerBody ? "application/octet-stream" : "application/json",
+          ...signPeerRequest({ secret, method, pathWithQuery, fromNodeId, toNodeId: peer.nodeId,
+            body: built instanceof RawPeerBody ? built.bytes : requestBody as string }),
         },
         body: requestBody,
       }, timeoutMs);

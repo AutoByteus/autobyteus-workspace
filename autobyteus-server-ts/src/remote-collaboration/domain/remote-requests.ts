@@ -8,6 +8,7 @@ import type {
 } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { DelegatingRunRef } from "../../run-history/store/agent-run-metadata-types.js";
 import type { RunningAgentEntry } from "../../agent-collaboration/running/running-agent-entry.js";
+import type { TransferredFile } from "../../agent-collaboration/execution/remote/transferred-files.js";
 
 /**
  * The inter-node contract (design § Contract Between Nodes; CM-12). Every request carries the envelope; every
@@ -42,6 +43,13 @@ export const REMOTE_OWNER_COMMANDS_PATH = "/rest/remote/owner-commands";
 export const REMOTE_RUN_OBSERVATIONS_PATH = "/rest/remote/run-observations";
 /** autobyteus-461 SR-088: one agent's own stream snapshot. */
 export const REMOTE_AGENT_STREAM_SNAPSHOT_PATH = "/rest/remote/agent-stream-snapshot";
+/**
+ * autobyteus-587 (RFC-001 § 6): what the called node holds of these files, and its per-file limit; then the pieces, raw
+ * bytes at `received-files/<sha256>?fromNodeId=&toNodeId=&offset=&size=` (the envelope in the signed query: the body is
+ * the piece).
+ */
+export const REMOTE_RECEIVED_FILES_STATUS_PATH = "/rest/remote/received-files/status";
+export const REMOTE_RECEIVED_FILES_PATH = "/rest/remote/received-files";
 /** autobyteus-437: the pairing exchange (exempt from credentials: the accepting node has no peer secret yet). */
 export const REMOTE_PEER_PAIRING_EXCHANGES_PATH = "/rest/remote/peer-pairing-exchanges";
 
@@ -79,6 +87,8 @@ export type DeliverRemoteMessageRequest = RemoteEnvelope & Readonly<{
   content: string;
   messageType: string;
   createdAt: string;
+  /** autobyteus-587: the reference files, each already complete on the called node (uploaded first). */
+  files: readonly TransferredFile[];
 }>;
 
 /** autobyteus-492: one message from an agent of the caller to a running agent of the called node, by run IDs only. */
@@ -90,7 +100,18 @@ export type DeliverRunMessageRequest = RemoteEnvelope & Readonly<{
   content: string;
   messageType: string;
   createdAt: string;
+  files: readonly TransferredFile[];
 }>;
+
+/** autobyteus-587: what the called node holds of each of these files (by SHA-256 and size). */
+export type ReceivedFilesStatusRequest = RemoteEnvelope & Readonly<{ files: readonly Readonly<{ sha256: string; size: number }>[] }>;
+export type ReceivedFilesStatusAnswer = Readonly<{
+  accepted: true; nodeId: string; maxFileBytes: number;
+  files: readonly Readonly<{ sha256: string; receivedBytes: number; complete: boolean }>[];
+}> | RemoteRefusalAnswer;
+/** One piece of one file (the bytes are the request body). */
+export type ReceivedFilePieceRequest = RemoteEnvelope & Readonly<{ sha256: string; offset: number; size: number; bytes: Buffer }>;
+export type ReceivedFilePieceAnswer = Readonly<{ accepted: true; nodeId: string; receivedBytes: number; complete: boolean }> | RemoteRefusalAnswer;
 
 /** The target definition a refusal is about, on the responder: its kind and its name (autobyteus-261 DEC-407). */
 export type RemoteRefusalTarget = Readonly<{ kind: "agent" | "agent_team"; name: string }>;

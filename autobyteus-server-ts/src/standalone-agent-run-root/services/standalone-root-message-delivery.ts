@@ -17,7 +17,8 @@ import type { TaskDelegationContext } from "../../agent-collaboration/execution/
 import { localPlacement } from "../../agent-collaboration/execution/task/task-delegation.js";
 import type { DelegationSource } from "../../agent-collaboration/execution/task/member-task-capability.js";
 import { buildTaskAssigneeWorkPacket } from "../../agent-collaboration/execution/task/task-execution-input.js";
-import { REMOTE_REFUSAL, remoteTargetNotRunning } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
+import { nodeRequired, REFERENCE_FILE_REFUSAL_TEXT, REMOTE_REFUSAL, remoteTargetNotRunning } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
+import { receivingAgentFolder, type ReceivedFilesPlacement } from "../../agent-collaboration/execution/remote/transferred-files.js";
 import type { RemoteInboundMessage, RemoteInboundWorkPacket, RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import type { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
 import { unlinkedRunEndpoint } from "../../agent-collaboration/execution/remote/remote-endpoint.js";
@@ -55,6 +56,8 @@ export class StandaloneRootMessageDelivery {
     agent: StandaloneRunAgentHandle;
     remoteLinks: RemoteRunLinks;
     remoteSend: RemoteMessageSend;
+    /** autobyteus-587: where files from another node land (the run's own folder). */
+    receivedFiles: ReceivedFilesPlacement;
     /** Told each time the run's agent is made ready (its idle shutdown follows it). */
     onAgentReady?(run: AgentRun): void;
     authorizeIdentity(identity: CollaborationMemberExecutionIdentity): void;
@@ -105,16 +108,19 @@ export class StandaloneRootMessageDelivery {
     return SELF;
   }
 
-  /** `send_message_to(run ID)` to one of this run's peer endpoints (the run's own agent is the sender). */
-  deliverExact(input: ExactAgentMessageInput): Promise<AgentOperationResult> {
+  /**
+   * `send_message_to(run ID)` without `node` to one of this run's peer endpoints (the run's own agent is the sender): a run
+   * on another node is always named with its node (autobyteus-587 RF-14), so it is refused with the node to pass.
+   */
+  async deliverExact(input: ExactAgentMessageInput): Promise<AgentOperationResult> {
     const sender = input.sender.identity;
     this.options.authorizeIdentity(sender);
     const endpoint = this.options.remoteLinks.endpointFor(input.targetAgentRunId);
     if (!endpoint) {
-      return Promise.resolve(this.options.getIndex().isRunAgent(input.targetAgentRunId) ? SELF
-        : { accepted: false, code: "TARGET_AGENT_RUN_NOT_FOUND", message: `AgentRun '${input.targetAgentRunId}' is not in this Agent run.` });
+      return this.options.getIndex().isRunAgent(input.targetAgentRunId) ? SELF
+        : { accepted: false, code: "TARGET_AGENT_RUN_NOT_FOUND", message: `AgentRun '${input.targetAgentRunId}' is not in this Agent run.` };
     }
-    return this.options.remoteSend.send({ sender, endpoint, content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles });
+    return nodeRequired(await this.options.remoteLinks.peerName(endpoint.reference.nodeId));
   }
 
   /** DS-004: `send_message_to(node, run ID)` from the run's agent to an agent of a peer node (`RemoteMessageSend` chooses the endpoint). */
@@ -134,7 +140,8 @@ export class StandaloneRootMessageDelivery {
     if (!this.options.getIndex().isRunAgent(receiver) || !this.options.agent.getActiveRun()?.isActive()) return Promise.resolve(remoteTargetNotRunning(receiver));
     return this.options.getCommunication().acceptFromRemote({ message: input.message,
       endpoint: unlinkedRunEndpoint({ nodeId: input.fromNodeId, agentRunId: input.message.senderAgentRunId, pairedAgentRunId: receiver }),
-      receiverIdentity: this.agentIdentity(), receiverDisplayName: this.hostName(), senderNodeName: input.fromNodeName, senderAddress: input.senderAddress });
+      receiverIdentity: this.agentIdentity(), receiverDisplayName: this.hostName(), senderNodeName: input.fromNodeName, senderAddress: input.senderAddress,
+      files: input.files });
   }
 
   /** The inbound order from a peer: the link check, then the run's agent is made ready (N-8), then the engine admits it. */
@@ -143,6 +150,7 @@ export class StandaloneRootMessageDelivery {
     if (!endpoint || !this.options.getIndex().isRunAgent(input.message.receiverAgentRunId)) return Promise.resolve(notLinked);
     return this.whenReady(() => this.options.getCommunication().acceptFromRemote({
       message: input.message, endpoint, receiverIdentity: this.agentIdentity(), receiverDisplayName: this.hostName(), senderNodeName: input.fromNodeName, senderAddress: input.senderAddress,
+      files: input.files,
     }));
   }
 
@@ -153,13 +161,21 @@ export class StandaloneRootMessageDelivery {
       receiverIdentity: this.agentIdentity(), receiverDisplayName: this.hostName() }));
   }
 
-  /** N-6: the work packet of the peer's delegation that started this run (the `delegator` endpoint's link check). */
+  /**
+   * N-6: the work packet of the peer's delegation that started this run (the `delegator` endpoint's link check), its
+   * agent made ready, then its files placed in the run's own folder (autobyteus-587 AR-002), then the packet posted with
+   * their received paths (RF-8).
+   */
   async acceptRemoteWorkPacket(input: RemoteInboundWorkPacket): Promise<AgentOperationResult> {
     if (!this.options.remoteLinks.admitsWorkPacket(input.fromNodeId, input.senderAgentRunId, input.targetAgentRunId)) return notLinked;
     let run;
     try { run = await this.readyAgent(); } catch (error) { return unavailable(error); }
+    const files = this.options.receivedFiles.planFor({ agentFolder: receivingAgentFolder(run, this.options.agentRunId),
+      senderAgentRunId: input.senderAgentRunId, files: input.files });
+    const placed = await files.place();
+    if (!placed.ok) return { accepted: false, code: REMOTE_REFUSAL.REFERENCE_FILE_CHECK_FAILED, message: REFERENCE_FILE_REFUSAL_TEXT.notReceived(placed.name) };
     return run.postUserMessage(buildTaskAssigneeWorkPacket({ delegator: { agentRunId: input.senderAgentRunId }, delegatorAddress: null,
-      delegatorNode: input.fromNodeName, description: input.description, referenceFiles: [] }));
+      delegatorNode: input.fromNodeName, description: input.description, referenceFiles: files.paths }));
   }
 
   /** DS-1: the work packet of a local delegation that created this run: its first input (makes its agent ready). */

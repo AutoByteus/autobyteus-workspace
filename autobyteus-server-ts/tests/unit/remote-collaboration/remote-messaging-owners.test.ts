@@ -40,9 +40,9 @@ describe("remote endpoint kinds (AR-006)", () => {
     expect(endpoint).toMatchObject({ kind: "delegated_run", reference: { nodeId: PEER_NODE, agentRunId: REMOTE }, displayName: "publisher" });
     expect([...endpoint.pairedAgentRunIds]).toEqual([DELEGATOR]);
     expect([endpoint.allowsSender(DELEGATOR), endpoint.allowsSender("other"), endpoint.allowsTarget(DELEGATOR), endpoint.allowsTarget("other")]).toEqual([true, false, true, false]);
-    expect(endpoint.transmission(message(DELEGATOR, REMOTE), "/lead")).toEqual({ nodeId: PEER_NODE, kind: "message", messageId: "collabmsg_1",
+    expect(endpoint.transmission(message(DELEGATOR, REMOTE), "/lead", [])).toEqual({ nodeId: PEER_NODE, kind: "message", messageId: "collabmsg_1",
       senderAgentRunId: DELEGATOR, senderAddress: "/lead", targetRoot: { kind: "agent", runId: REMOTE }, targetAgentRunId: REMOTE, content: "hello", messageType: "agent_message",
-      createdAt: "2026-10-20T10:01:00.000Z" });
+      createdAt: "2026-10-20T10:01:00.000Z", files: [] });
   });
 
   it("autobyteus-247 G-1: a delegated Team is one endpoint per member; only its delegator, the Team's Task, the Team as the root there", () => {
@@ -53,7 +53,7 @@ describe("remote endpoint kinds (AR-006)", () => {
       expect([...endpoint.pairedAgentRunIds]).toEqual([DELEGATOR]);
       expect([endpoint.allowsSender(DELEGATOR), endpoint.allowsSender("other"), endpoint.allowsTarget(DELEGATOR), endpoint.allowsTarget("other")]).toEqual([true, false, true, false]);
     }
-    expect(endpoints[1]!.transmission(message(DELEGATOR, "writer_b"), "/lead")).toMatchObject({ nodeId: PEER_NODE,
+    expect(endpoints[1]!.transmission(message(DELEGATOR, "writer_b"), "/lead", [])).toMatchObject({ nodeId: PEER_NODE,
       targetRoot: { kind: "agent_team", runId: "team_b" }, targetAgentRunId: "writer_b" });
   });
 
@@ -62,7 +62,7 @@ describe("remote endpoint kinds (AR-006)", () => {
     expect(endpoint).toMatchObject({ kind: "delegator", reference: { nodeId: "srv_node_a", agentRunId: DELEGATOR } });
     expect([...endpoint.pairedAgentRunIds]).toEqual([HOST]);
     expect([endpoint.allowsSender(HOST), endpoint.allowsSender("child"), endpoint.allowsTarget(HOST), endpoint.allowsTarget("child")]).toEqual([true, false, true, false]);
-    expect(endpoint.transmission(message(HOST, DELEGATOR), null)).toMatchObject({ nodeId: "srv_node_a", targetRoot: { kind: "agent_team", runId: "team_a" } });
+    expect(endpoint.transmission(message(HOST, DELEGATOR), null, [])).toMatchObject({ nodeId: "srv_node_a", targetRoot: { kind: "agent_team", runId: "team_a" } });
     expect(endpoint.admitsWorkPacket("srv_node_a", DELEGATOR, HOST)).toBe(true);
     expect(endpoint.admitsWorkPacket("srv_other", DELEGATOR, HOST)).toBe(false);
     expect(endpoint.admitsWorkPacket("srv_node_a", "someone", HOST)).toBe(false);
@@ -80,8 +80,8 @@ describe("remote endpoint kinds (AR-006)", () => {
     const endpoint = unlinkedRunEndpoint({ nodeId: PEER_NODE, agentRunId: "pm_b", pairedAgentRunId: DELEGATOR });
     expect(endpoint).toMatchObject({ kind: "unlinked_run", reference: { nodeId: PEER_NODE, agentRunId: "pm_b" }, displayName: "pm_b" });
     expect([endpoint.allowsSender(DELEGATOR), endpoint.allowsSender("other"), endpoint.allowsTarget(DELEGATOR)]).toEqual([true, false, true]);
-    expect(endpoint.transmission(message(DELEGATOR, "pm_b"), "/lead")).toEqual({ nodeId: PEER_NODE, kind: "run_message", messageId: "collabmsg_1",
-      senderAgentRunId: DELEGATOR, senderAddress: "/lead", targetAgentRunId: "pm_b", content: "hello", messageType: "agent_message", createdAt: "2026-10-20T10:01:00.000Z" });
+    expect(endpoint.transmission(message(DELEGATOR, "pm_b"), "/lead", [])).toEqual({ nodeId: PEER_NODE, kind: "run_message", messageId: "collabmsg_1",
+      senderAgentRunId: DELEGATOR, senderAddress: "/lead", targetAgentRunId: "pm_b", content: "hello", messageType: "agent_message", createdAt: "2026-10-20T10:01:00.000Z", files: [] });
   });
 
   it("RemoteRunLinks holds membership only: both kinds by run ID, and the inbound link check by node, sender and target", () => {
@@ -106,67 +106,73 @@ describe("remote endpoint kinds (AR-006)", () => {
   });
 });
 
-describe("RemoteMessageSend: the one owner of the outbound sequence (AR-005, AR-008)", () => {
+describe("RemoteMessageSend: the one owner of the outbound sequence (AR-005, AR-008; autobyteus-587)", () => {
   const sender = createCollaborationMemberExecutionIdentity({ root: createAgentRootExecutionIdentity(DELEGATOR), memberAddress: "/lead" as never, agentRunId: DELEGATOR });
   const endpoint = delegatedRunEndpoint(link);
-  const harness = (options: { prepared?: PreparedRemoteSend; receipt?: { accepted: true; receiverAddress: string | null } | { accepted: false; code: string; message: string } } = {}) => {
+  const FILES = [{ sha256: "d".repeat(64), size: 4, name: "brief.pdf" }];
+  const harness = (options: { prepared?: PreparedRemoteSend; receipt?: { accepted: true; receiverAddress: string | null } | { accepted: false; code: string; message: string };
+    outgoing?: { ok: false; refusal: { accepted: false; code: string; message: string } } } = {}) => {
     const calls: string[] = [];
     const prepared: PreparedRemoteSend = options.prepared ?? { ok: true, message: message(DELEGATOR, REMOTE), endpoint, senderAddress: "/lead" };
     const engine = {
       prepareRemoteSend: vi.fn(() => { calls.push("prepare"); return prepared; }),
       commitSentToRemote: vi.fn(async () => { calls.push("commit"); return { accepted: true as const, agentRunId: REMOTE, displayName: "publisher" }; }),
     };
-    const channel: RemoteRunChannel = {
+    const channel = {
       findPeer: vi.fn(), startDelegatedRun: vi.fn(),
-      peerName: vi.fn(async () => "docker"),
+      peerName: vi.fn(async (nodeId: string) => nodeId === PEER_NODE ? "docker" : "mac-studio"),
       deliverMessage: vi.fn(async () => { calls.push("deliver"); return options.receipt ?? { accepted: true as const, receiverAddress: "/publisher" }; }),
-    };
-    const send = new RemoteMessageSend({ engine: () => engine as never, links: new RemoteRunLinks({ peerRuns: () => [link], channel: () => channel }) });
-    return { send, engine, channel, calls };
+    } as unknown as RemoteRunChannel;
+    const outgoing = { send: vi.fn(async (input: { referenceFiles?: readonly string[] | null }) => { calls.push("files");
+      return options.outgoing ?? { ok: true as const, files: input.referenceFiles?.length ? FILES : [] }; }) };
+    const send = new RemoteMessageSend({ engine: () => engine as never, links: new RemoteRunLinks({ peerRuns: () => [link], channel: () => channel }), outgoing });
+    return { send, engine, channel, calls, outgoing };
   };
 
-  it("prepares, delivers, then commits; the result names the node", async () => {
+  it("sends the files, prepares, delivers, then commits; the result names the node and the files sent; the line keeps the sender's paths", async () => {
     const h = harness();
-    await expect(h.send.send({ sender, endpoint, content: "hello" })).resolves.toEqual({
-      accepted: true, agentRunId: REMOTE, displayName: "publisher", message: `Delivered message to ${REMOTE} on node "docker".` });
-    expect(h.calls).toEqual(["prepare", "deliver", "commit"]);
-    expect(h.channel.deliverMessage).toHaveBeenCalledWith(expect.objectContaining({ nodeId: PEER_NODE, kind: "message", messageId: "collabmsg_1", senderAddress: "/lead" }));
+    await expect(h.send.sendToPeerRun({ sender, nodeId: PEER_NODE, targetAgentRunId: REMOTE, content: "hello", referenceFiles: ["/work/brief.pdf"] })).resolves.toEqual({
+      accepted: true, agentRunId: REMOTE, displayName: "publisher", message: `Delivered message to ${REMOTE} on node "docker".`, filesSent: 1 });
+    expect(h.calls).toEqual(["files", "prepare", "deliver", "commit"]);
+    expect(h.outgoing.send).toHaveBeenCalledWith({ senderAgentRunId: DELEGATOR, nodeId: PEER_NODE, peerName: "docker", referenceFiles: ["/work/brief.pdf"] });
+    expect(h.engine.prepareRemoteSend).toHaveBeenCalledWith(expect.objectContaining({ referenceFiles: ["/work/brief.pdf"] }));
+    expect(h.channel.deliverMessage).toHaveBeenCalledWith(expect.objectContaining({ nodeId: PEER_NODE, kind: "message", messageId: "collabmsg_1",
+      senderAddress: "/lead", files: FILES }));
     // autobyteus-565: the sender's line records the receiver's address from the answer and this node's name for the peer.
     expect(h.engine.commitSentToRemote).toHaveBeenCalledWith(expect.objectContaining({ ok: true }), { address: "/publisher", nodeName: "docker" });
   });
 
-  it("autobyteus-492 DS-006: a sender the link does not pair (a teammate of the delegator) is sent as an unlinked run_message to the same run on the same node", async () => {
-    const h = harness();
-    const other = { ...sender, agentRunId: "not_the_delegator" };
-    await expect(h.send.send({ sender: other, endpoint, content: "hello" })).resolves.toMatchObject({ accepted: true });
-    expect(h.engine.prepareRemoteSend).toHaveBeenCalledWith(expect.objectContaining({ endpoint: expect.objectContaining({ kind: "unlinked_run",
-      reference: { nodeId: PEER_NODE, agentRunId: REMOTE } }) }));
-    expect(h.calls).toEqual(["prepare", "deliver", "commit"]);
-  });
-
-  it("autobyteus-492 DS-004: sendToPeerRun uses the root's link when the sender is paired on that node, else an unlinked endpoint", async () => {
+  it("autobyteus-492 DS-004, DS-006: the root's link when the sender is paired on that node, else an unlinked run_message to the same run", async () => {
     const linked = harness();
     await linked.send.sendToPeerRun({ sender, nodeId: PEER_NODE, targetAgentRunId: REMOTE, content: "hello" });
     expect(linked.engine.prepareRemoteSend).toHaveBeenCalledWith(expect.objectContaining({ endpoint: expect.objectContaining({ kind: "delegated_run" }) }));
-    const otherNode = harness();
-    await otherNode.send.sendToPeerRun({ sender, nodeId: "srv_other", targetAgentRunId: REMOTE, content: "hello" });
-    expect(otherNode.engine.prepareRemoteSend).toHaveBeenCalledWith(expect.objectContaining({ endpoint: expect.objectContaining({ kind: "unlinked_run",
-      reference: { nodeId: "srv_other", agentRunId: REMOTE } }) }));
+    const teammate = harness();
+    await teammate.send.sendToPeerRun({ sender: { ...sender, agentRunId: "not_the_delegator" }, nodeId: PEER_NODE, targetAgentRunId: REMOTE, content: "hello" });
+    expect(teammate.engine.prepareRemoteSend).toHaveBeenCalledWith(expect.objectContaining({ endpoint: expect.objectContaining({ kind: "unlinked_run",
+      reference: { nodeId: PEER_NODE, agentRunId: REMOTE } }) }));
     const unknown = harness();
     await unknown.send.sendToPeerRun({ sender, nodeId: PEER_NODE, targetAgentRunId: "pm_b", content: "hello" });
     expect(unknown.engine.prepareRemoteSend).toHaveBeenCalledWith(expect.objectContaining({ endpoint: expect.objectContaining({ kind: "unlinked_run" }) }));
   });
 
-  it("returns the engine's refusal and sends nothing", async () => {
-    const refusal = { accepted: false as const, code: "REMOTE_ATTACHMENTS_NOT_SUPPORTED", message: "no files" };
-    const h = harness({ prepared: { ok: false, refusal } });
-    await expect(h.send.send({ sender, endpoint, content: "hello", referenceFiles: ["/a.md"] })).resolves.toEqual(refusal);
-    expect(h.calls).toEqual(["prepare"]);
+  it("autobyteus-587 RF-14: a run the root links on another node than `node` is refused with the node it runs on, before any file is sent", async () => {
+    const h = harness();
+    await expect(h.send.sendToPeerRun({ sender, nodeId: "srv_other", targetAgentRunId: REMOTE, content: "hello", referenceFiles: ["/work/brief.pdf"] }))
+      .resolves.toEqual({ accepted: false, code: "NODE_MISMATCH", message: 'This agent runs on node "docker", not "mac-studio"; pass node: "docker".' });
+    expect(h.calls).toEqual([]);
   });
 
-  it("returns the peer's refusal and writes nothing", async () => {
-    const h = harness({ receipt: { accepted: false, code: "PEER_UNREACHABLE", message: "Node \"docker\" could not be reached." } });
-    await expect(h.send.send({ sender, endpoint, content: "hello" })).resolves.toMatchObject({ accepted: false, code: "PEER_UNREACHABLE" });
-    expect(h.calls).toEqual(["prepare", "deliver"]);
+  it("a refusal of the files, of the engine or of the peer stops there: nothing is delivered or written", async () => {
+    const files = harness({ outgoing: { ok: false, refusal: { accepted: false, code: "REFERENCE_FILE_OUTSIDE_WORKSPACE", message: "outside" } } });
+    await expect(files.send.sendToPeerRun({ sender, nodeId: PEER_NODE, targetAgentRunId: REMOTE, content: "hello", referenceFiles: ["/etc/passwd"] }))
+      .resolves.toEqual({ accepted: false, code: "REFERENCE_FILE_OUTSIDE_WORKSPACE", message: "outside" });
+    expect(files.calls).toEqual(["files"]);
+    const refusal = { accepted: false as const, code: "INVALID_MESSAGE", message: "Message content is required." };
+    const engine = harness({ prepared: { ok: false, refusal } });
+    await expect(engine.send.sendToPeerRun({ sender, nodeId: PEER_NODE, targetAgentRunId: REMOTE, content: " " })).resolves.toEqual(refusal);
+    expect(engine.calls).toEqual(["files", "prepare"]);
+    const peer = harness({ receipt: { accepted: false, code: "PEER_UNREACHABLE", message: "Node \"docker\" could not be reached." } });
+    await expect(peer.send.sendToPeerRun({ sender, nodeId: PEER_NODE, targetAgentRunId: REMOTE, content: "hello" })).resolves.toMatchObject({ accepted: false, code: "PEER_UNREACHABLE" });
+    expect(peer.calls).toEqual(["files", "prepare", "deliver"]);
   });
 });

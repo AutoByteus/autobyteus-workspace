@@ -23,7 +23,8 @@ import type { TeamExecutionIndex } from "./team-execution-index.js";
 import { TeamRecipientResolver } from "./team-recipient-resolver.js";
 import type { TeamDelegationPlacement } from "./resolved-team-recipient.js";
 import type { TeamRunCollaborators } from "./team-run-collaborators.js";
-import { REMOTE_REFUSAL, remoteTargetNotRunning } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
+import { nodeRequired, REFERENCE_FILE_REFUSAL_TEXT, REMOTE_REFUSAL, remoteTargetNotRunning } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
+import type { ReceivedFilesPlacement } from "../../agent-collaboration/execution/remote/transferred-files.js";
 import { unlinkedRunEndpoint } from "../../agent-collaboration/execution/remote/remote-endpoint.js";
 import type { PeerRunMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { RemoteInboundMessage, RemoteInboundWorkPacket, RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
@@ -58,20 +59,21 @@ export class TeamRunMessageDelivery {
     isLiveAgent(agentRunId: string): boolean;
     remoteLinks: RemoteRunLinks;
     remoteSend: RemoteMessageSend;
+    /** autobyteus-587: where files from another node land, in a member's own folder. */
+    receivedFiles: ReceivedFilesPlacement;
+    memberFolderOf(agentRunId: string): Promise<string>;
   }>) {}
 
   /**
-   * `send_message_to(run ID)` from an agent of this Team: the routing decision only. A remote endpoint goes to
-   * the shared remote send (never reactivated, S3); any other run ID through
+   * `send_message_to(run ID)` from an agent of this Team: the routing decision only. A remote endpoint is always named
+   * with its node (autobyteus-587 RF-14), so it is refused with the node to pass; any other run ID goes through
    * today's exact delivery (`local`).
    */
-  deliverExact(input: ExactTeamAgentMessageInput, local: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
-    const sender = input.sender.identity;
+  async deliverExact(input: ExactTeamAgentMessageInput, local: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
     const endpoint = this.options.remoteLinks.endpointFor(input.targetAgentRunId);
     if (!endpoint) return local();
-    this.options.authorizeIdentity(sender);
-    return this.options.remoteSend.send({ sender, endpoint,
-      content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles });
+    this.options.authorizeIdentity(input.sender.identity);
+    return nodeRequired(await this.options.remoteLinks.peerName(endpoint.reference.nodeId));
   }
 
   /** DS-2: a message from another run of this node, for a member of this team run; the member is woken or restored first. */
@@ -100,7 +102,7 @@ export class TeamRunMessageDelivery {
       endpoint: unlinkedRunEndpoint({ nodeId: input.fromNodeId, agentRunId: input.message.senderAgentRunId, pairedAgentRunId: receiver.agentRunId }),
       receiverIdentity: this.identityFor(receiver.address, receiver.agentRunId),
       receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId,
-      senderNodeName: input.fromNodeName, senderAddress: input.senderAddress,
+      senderNodeName: input.fromNodeName, senderAddress: input.senderAddress, files: input.files,
     });
   }
 
@@ -115,21 +117,26 @@ export class TeamRunMessageDelivery {
       endpoint,
       receiverIdentity: this.identityFor(receiver.address, receiver.agentRunId),
       receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId,
-      senderNodeName: input.fromNodeName, senderAddress: input.senderAddress,
+      senderNodeName: input.fromNodeName, senderAddress: input.senderAddress, files: input.files,
     });
   }
 
   /**
    * N-6 for a Team run a peer started (autobyteus-247 G-8): the link check (from the delegator on its node, for the
-   * coordinator), then the task notification naming the node, posted as the coordinator's input (it starts the
-   * coordinator). Called outside the gate: `post` is the root's own input path, which takes it.
+   * coordinator), its files placed in the coordinator's own folder (autobyteus-587), then the task notification naming
+   * the node and the files' received paths, posted as the coordinator's input (it starts the coordinator). Called outside
+   * the gate: `post` is the root's own input path, which takes it.
    */
-  acceptRemoteWorkPacket(input: RemoteInboundWorkPacket, coordinatorAgentRunId: string,
+  async acceptRemoteWorkPacket(input: RemoteInboundWorkPacket, coordinatorAgentRunId: string,
     post: (message: AgentInputUserMessage, agentRunId: string) => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
     if (input.targetAgentRunId !== coordinatorAgentRunId
-      || !this.options.remoteLinks.admitsWorkPacket(input.fromNodeId, input.senderAgentRunId, input.targetAgentRunId)) return Promise.resolve(notLinked);
+      || !this.options.remoteLinks.admitsWorkPacket(input.fromNodeId, input.senderAgentRunId, input.targetAgentRunId)) return notLinked;
+    const files = this.options.receivedFiles.planFor({ agentFolder: await this.options.memberFolderOf(coordinatorAgentRunId),
+      senderAgentRunId: input.senderAgentRunId, files: input.files });
+    const placed = await files.place();
+    if (!placed.ok) return { accepted: false, code: REMOTE_REFUSAL.REFERENCE_FILE_CHECK_FAILED, message: REFERENCE_FILE_REFUSAL_TEXT.notReceived(placed.name) };
     return post(buildTaskAssigneeWorkPacket({ delegator: { agentRunId: input.senderAgentRunId }, delegatorAddress: null,
-      delegatorNode: input.fromNodeName, description: input.description, referenceFiles: [] }), coordinatorAgentRunId);
+      delegatorNode: input.fromNodeName, description: input.description, referenceFiles: files.paths }), coordinatorAgentRunId);
   }
 
   /** DS-1: the work packet of a local delegation that created this team run: the coordinator's first input. */

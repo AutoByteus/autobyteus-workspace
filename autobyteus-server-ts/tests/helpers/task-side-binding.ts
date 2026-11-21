@@ -6,7 +6,8 @@ import type { AssignToExistingDelegatedRunInput, SpawnTaskInput, TaskDelegationC
 import { RemoteDelegation } from "../../src/agent-collaboration/execution/remote/remote-delegation.js";
 import type { InMemoryTaskExecutionResources } from "../fixtures/task-execution-resource-fixtures.js";
 import type { RemoteRunChannel } from "../../src/agent-collaboration/execution/remote/remote-run-channel.js";
-import { NO_PEER_CHANNEL } from "./explicit-host-collaborators.js";
+import type { RemoteFiles } from "../../src/agent-collaboration/execution/remote/transferred-files.js";
+import { NO_PEER_CHANNEL, NO_REMOTE_FILES } from "./explicit-host-collaborators.js";
 
 const notInThisTest = async (): Promise<never> => { throw new Error("A local run is not started in this test."); };
 
@@ -18,11 +19,13 @@ type DelegatingRoot = Readonly<{ delegationSource(context: TaskDelegationContext
  * `assign` take the tool path: the sender's root answers for its own run, the delegation goes on outside it. Only peer
  * delegation runs a delegation to the end: starting a local run refuses.
  */
-export const testTaskSide = (tasks: InMemoryTaskExecutionResources, channel?: () => RemoteRunChannel | null) => {
+export const testTaskSide = (tasks: InMemoryTaskExecutionResources, channel?: () => RemoteRunChannel | null,
+  /** autobyteus-587: the node's outgoing files (a node that sends none refuses any file). */
+  outgoing: RemoteFiles["outgoing"] = NO_REMOTE_FILES.outgoing) => {
   const tree = new DelegationIndex(() => tasks, NO_RUN_PARTS);
   tree.build();
   tasks.setEntriesListener(tree);
-  const delegation = new TaskDelegation({
+  const delegation = new TaskDelegation({ outgoing,
     tasks: () => tasks, tree: () => tree,
     starter: { startAgent: notInThisTest, startTeam: notInThisTest } as never,
     deliverWorkPacket: notInThisTest, discard: async () => undefined, recordCollaborating: async () => undefined,

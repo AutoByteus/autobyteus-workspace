@@ -27,7 +27,7 @@ import {
   testMemberExecutionContext,
   testTeamRunConfig,
 } from "../../fixtures/current-team-run-fixtures.js";
-import { NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
+import { NO_PEER_CHANNEL, NO_REMOTE_FILES, OFFERED_MODEL_EXECUTION_FACTORY, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
 
 const loggingConfig = Object.freeze({
   pinoLogLevel: "silent" as const,
@@ -187,7 +187,7 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
             : { kind: "none" as const }),
         },
       });
-      const teamRunManager = new AgentTeamRunManager({ remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+      const teamRunManager = new AgentTeamRunManager({ remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
         memoryDir,
         flatTeamExecutionFactory: teamExecutionFactory,
         memberExecutionContextBuilder: {

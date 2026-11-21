@@ -25,8 +25,10 @@ switch on, every shared Agent is available to registered peers. autobyteus-247 a
 autobyteus-261 discovery. autobyteus-278 shows remote runs in the delegator's run tree and lets the owner drive
 them (see [Remote runs in the run tree](#remote-runs-in-the-run-tree)). autobyteus-492 lets any agent list the
 running agents of a peer and message one by its run ID, linked or not (see
-[Messages by run ID and running agents](#messages-by-run-id-and-running-agents)). Attachments, a remote run's files, stop
-on Task closure and peer authentication come in later slices.
+[Messages by run ID and running agents](#messages-by-run-id-and-running-agents)). autobyteus-587 sends `reference_files`
+with a cross-node message or delegation as copies, and makes every cross-node send name its node (see
+[Reference files between nodes](#reference-files-between-nodes)). A remote run's files and stop on Task closure come in
+later slices.
 
 ## Settings (per node)
 
@@ -164,12 +166,16 @@ autobyteus-492 (CM-13): the run ID is the address across nodes too.
   `TARGET_IS_TEAM_RUN` with its coordinator's run ID (`RunningAgents.teamCoordinatorOf`, from the team's own
   root). The sending node words both with its name for the peer, the second saying to keep `node`.
 - **Who sends it.** `send_message_to(target_agent_run_id, node)` from any agent of this node: the router finds the
-  peer, applies this node's closed-Task admission (`CrossRunMessageDelivery.closedPeerRunRefusal`: a run this
-  node's Tasks hold on that node, all closed, is `TASK_AGENT_RESOURCE_CLOSED` for every sender here, with or
-  without `node`), then the sender's root sends it (`deliverToPeerRun`). `RemoteMessageSend` chooses the endpoint:
-  the root's link when the sender is paired with that run, else `unlinked_run`. A root's linked run ID messaged
-  by an agent the link does not pair (a teammate of the delegator) goes unlinked too, to the same node. The
-  sender's log gets the message once the peer accepted it, as for a linked message.
+  peer, applies this node's admission of a run its Tasks hold on a peer (`CrossRunMessageDelivery.peerRunAdmission`:
+  `NODE_MISMATCH` when `node` names another node than its Task entries; `TASK_AGENT_RESOURCE_CLOSED` when they are all
+  closed, for every sender here), then the sender's root sends it (`deliverToPeerRun`). `RemoteMessageSend` refuses a
+  run the root links on another node (`NODE_MISMATCH`), uploads the files (below), and chooses the endpoint: the root's
+  link when the sender is paired with that run, else `unlinked_run`. A root's linked run ID messaged by an agent the
+  link does not pair (a teammate of the delegator) goes unlinked too, to the same node. The sender's log gets the
+  message once the peer accepted it, as for a linked message.
+- **Without `node` (autobyteus-587 RF-14).** A message to a run on another node always names its node: the sender's
+  root refuses a run ID it links (`deliverExact`), and `CrossRunMessageDelivery.route` one its Tasks hold on a peer,
+  with `NODE_REQUIRED` and the node to pass.
 - **`running-agents`**: the envelope only; the answer `{accepted: true, nodeId, agents: [entry]}` is the called
   node's `RunningAgentsListing` with no caller (the entries `list_running_agents` lists, without `node`). The
   asking node's `PeerClient` reads it strictly (each kind's fields only; anything else is a malformed answer,
@@ -186,6 +192,42 @@ same code ("This node's identity is waiting for its data migration, so nothing w
 adding a peer or resolving an address is refused with it as a settings error. A peer that answers 503 with the code is
 named as waiting for its data migration (a refusal, a probe's settings error, an address attempt `identity_pending`),
 not as unreachable or "not an AutoByteus node".
+
+## Reference files between nodes
+
+autobyteus-587 (CM-14, contract RFC-001): files attached to a cross-node `delegate_task` or `send_message_to` are copied
+to the receiving node, which owns its copy.
+
+- **Wire.** `POST /rest/remote/received-files/status` `{files: [{sha256, size}]}` answers `{maxFileBytes, files:
+  [{sha256, receivedBytes, complete}]}`. `PUT /rest/remote/received-files/<sha256>?fromNodeId=&toNodeId=&offset=&size=`
+  carries one piece of raw bytes (`application/octet-stream`, at most 8 MiB); the envelope is in the query, which is
+  signed (NA-9), and the gate checks the body against the signed hash before the handler runs. It answers
+  `{receivedBytes, complete}`. `messages`, `run-messages` and the work packet carry `files: [{sha256, size, name}]`, each
+  already complete there; a request that names one that is not is refused `REFERENCE_FILE_CHECK_FAILED`.
+- **Sending node (`OutgoingFiles`, `agent-collaboration/execution/remote/outgoing-files.ts`), for both tools.** Each file
+  must be inside the sending agent's workspace once links are resolved and be a regular file; it is opened once, and its
+  SHA-256 and every piece are read from that opening. One call carries at most 4 GiB; the status names the receiving
+  node's per-file limit, checked before any piece. A file it holds complete is skipped; one it holds in part resumes
+  there; after each piece the upload goes on from the bytes the node answers it holds (another sender of the same content
+  may be uploading it too). Two different files of one name in one call are refused (`REFERENCE_FILE_NAME_REPEATED`:
+  the second would replace the first there). Every refusal (§ 5 of the contract) comes before the message or work
+  packet, so nothing is delivered.
+- **Receiving node (`ReceivedFiles`, `remote-collaboration/inbound/received-files.ts`).** Pieces append to
+  `<data>/received_files/<sha256>.partial` at the bytes held, under the content's lock; the per-file limit
+  (`AUTOBYTEUS_RECEIVED_FILE_MAX_MB`, default 2048) applies to every piece; the last one is checked (size and SHA-256) and
+  renamed to `<sha256>`. `RemoteMessageReceiver` checks every named file is complete before any root sees the request.
+  The root places them at `<agent's own folder>/received_files/<sender's run ID>/<name>` (a temporary name, then a rename
+  over the same sender's earlier file; a read-only hard link, or a copy where a link cannot be made) only after its
+  admission: a message after the engine's checks and the receiver's slot, a work packet after the link check and the
+  host made ready.
+- **Cleanup.** A run's history delete removes its folder and so its names; then `ReceivedFiles.sweep` removes every entry
+  whose only name is its own and that nothing touched for 24 hours, and every `.partial` untouched for 24 hours. It runs
+  after each committed delete (`DelegatedWorkGuard`) and at startup. `status`, completion and placement touch an entry.
+  Memory Sync never exports a `received_files` folder.
+- **Tool-call time.** The call waits until the files arrived and the message or work packet was delivered. Codex
+  (`tool_timeout_sec: 3600`) and Claude (`timeout: 3_600_000`) get an hour for the Agent Tools server; AutoByteus has no
+  limit. Antigravity, Grok and ACP-based runtimes offer no per-server setting here; a transfer longer than their default
+  fails cleanly (FU-001 of the ticket).
 
 ## Discovery
 
@@ -212,23 +254,25 @@ each offers, then delegates with `delegate_task` without being told an address.
 
 ## In the roots
 
-- **Delegating node.** `delegate_task({node, recipient_address, description})`: `RemoteDelegation` refuses
-  `task_id` and `reference_files` first, resolves the peer by this owner's label, then calls
-  `TaskDelegation.toPeerRun`, the one caller of `startDelegatedRun`: the peer creates the run, so its run ID is
+- **Delegating node.** `delegate_task({node, recipient_address, description, reference_files?})`: `RemoteDelegation`
+  refuses `task_id` first, resolves the peer by this owner's label, then calls `TaskDelegation.toPeerRun`, the one
+  caller of `startDelegatedRun`. It uploads the files first (`OutgoingFiles`; a refusal starts nothing on the peer),
+  then the peer creates the run, so its run ID is
   known before the Task link; the Task entry is then written with `nodeId` (and for a Team, `members` by run ID
   and their own address, and the coordinator as `teamCoordinatorAgentRunId`), and the work packet is sent to the
-  Agent run or the Team's coordinator. A refusal by the peer leaves nothing on this node. The result is a local
-  delegation's shape plus `node`. Nothing is stored in the delegating run (autobyteus-461): its peer children
+  Agent run or the Team's coordinator, naming the files. A refusal by the peer leaves nothing on this node. The result
+  is a local delegation's shape plus `node` (and `files_sent`). Nothing is stored in the delegating run (autobyteus-461): its peer children
   are read from the Task entries (`peerRunLinksOf`, through the `DelegationIndex`).
 - **Receiving node, an Agent.** The run is an ordinary standalone run; `run_metadata.json` carries
   `delegatedFrom` `{nodeId, delegatingRun, delegatorAgentRunId}`. Its root admits the work packet (link
-  check, host made ready, system task notification naming the node), knows the delegator as its back-link
+  check, host made ready, its files placed, system task notification naming the node and the files' received paths),
+  knows the delegator as its back-link
   endpoint, writes the first message to its own log, and shuts the host down after the idle grace period
   (`DelegatedRunIdleShutdown`); the next message restores it.
 - **Receiving node, an Agent Team.** The run is an ordinary top-level Team run (history, open, watch, stop);
   its `team_run_execution_tree.json` carries the same `delegatedFrom`. Its root pairs the delegator with every
-  member, admits the work packet for the coordinator (link check, then the coordinator's input with the
-  system task notification naming the node, which starts it), and has a quiet idle shutdown
+  member, admits the work packet for the coordinator (link check, its files placed in the coordinator's own folder,
+  then the coordinator's input with the system task notification naming the node and the files, which starts it), and has a quiet idle shutdown
   (`DelegatedTeamIdleShutdown`, see [Agent Team Execution](agent_team_execution.md)); the next message restores
   it.
 - **Endpoints.** `RemoteRunLinks` holds a root's remote endpoints, of three kinds (`remote-endpoint.ts`).
@@ -247,12 +291,13 @@ each offers, then delegates with `delegate_task` without being told an address.
   checks (`admitsWorkPacket`, `admitsInbound`, also used against stored links before a restore) and
   `deliver` (the channel only).
 - **Messages.** A root's `hasAgentExecution` answers for its remote endpoints too, so `send_message_to`
-  by run ID reaches the root. The root's delivery only routes: a remote endpoint goes to the root's
-  `RemoteMessageSend`, which runs the endpoint's pair rule → `RootCommunicationEngine.prepareRemoteSend` (the
-  checks and the message ID, no state change) → `RemoteRunLinks.deliver` → `commitSentToRemote` (the
-  sender's log), so nothing is written unless the peer accepted. Inbound, the root's `acceptRemoteMessage`
-  runs the shared link check (`inboundEndpoint`), its own wake, then `engine.acceptFromRemote` (the
-  receiver's log). The sender's node assigns the message ID; each node writes only its own run's log line
+  by run ID without `node` reaches the root, which refuses it with the node to pass (RF-14). With `node`, the root's
+  `RemoteMessageSend` runs the endpoint choice → `OutgoingFiles.send` → `RootCommunicationEngine.prepareRemoteSend` (the
+  checks and the message ID, no state change; the line keeps the sender's paths) → `RemoteRunLinks.deliver` →
+  `commitSentToRemote` (the sender's log), so nothing is written unless the peer accepted. Inbound, the root's
+  `acceptRemoteMessage` runs the shared link check (`inboundEndpoint`), its own wake, then `engine.acceptFromRemote`:
+  its checks and the receiver's slot, then the files placed (`RootCommunicationPort.receivedFilesFor`), then the
+  receiver's log with the received paths. The sender's node assigns the message ID; each node writes only its own run's log line
   (CM-9). Headers and results name the other run's node.
 - **Who the other agent is (autobyteus-565).** Both message requests (`messages`, `run-messages`) carry the sending
   agent's address in its own run (`sender: {agentRunId, address}`, `address` null when it has none), and their accepted

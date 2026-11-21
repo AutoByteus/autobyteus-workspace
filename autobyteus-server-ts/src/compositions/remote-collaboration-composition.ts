@@ -1,4 +1,5 @@
 import { getCollaboratorAdmission } from "../agent-collaboration/collaborators/collaborator-definition-catalog.js";
+import type { ReceivedFiles } from "../remote-collaboration/inbound/received-files.js";
 import { PeerStartedRunDecisions } from "../remote-collaboration/inbound/peer-started-run-decisions.js";
 import type { AgentRunService } from "../agent-execution/services/agent-run-service.js";
 import type { AgentOrgRunService } from "../agent-org-execution/services/agent-org-run-service.js";
@@ -62,6 +63,8 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
   rootResolver: CollaborationRootResolver;
   /** autobyteus-492: this node's running agents (messages by run ID) and their listing (a peer's `running-agents`). */
   running: RunningAgentsComposition;
+  /** autobyteus-587: the node's received files: a peer uploads into them; a message or work packet names only complete ones. */
+  receivedFiles: ReceivedFiles;
 }>): Readonly<{ services: RemoteCollaborationServices; release: () => void }> => {
   const resolve = (rootSubjectKind: RootSubjectKind, rootRunId: string) =>
     input.rootResolver.resolveOrRestore(createRootExecutionIdentity({ rootSubjectKind, rootRunId }));
@@ -86,6 +89,7 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
     settings: getServerSettingsService(),
     ownNodeId: () => getNodeIdentityService().getNodeId(),
     tempWorkspaceDir: input.tempWorkspaceDir,
+    receivedFiles: input.receivedFiles,
     handlers: (services) => ({
       delegatedRuns: ((starter) => new RemoteDelegationReceiver({ admission: getCollaboratorAdmission, catalogPort: services.catalogPort, starter,
         teams: new RemoteTeamRunStarter({ starter }), decisions: peerStartedRunDecisions }))(new DelegatedRunStarter({ agentRuns: input.agentRuns, teamRuns: input.teamRuns })),
@@ -94,7 +98,7 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
         recordFirstMessage: (root, content) => root.kind === "agent" ? input.agentRuns.recordRunTitle(root.runId, content)
           : root.kind === "agent_team" ? input.teamRuns.recordRunTitle(root.runId, content)
             : Promise.resolve(),
-      }, peerStartedRunDecisions, input.running.runningAgents),
+      }, peerStartedRunDecisions, input.running.runningAgents, input.receivedFiles),
       availableAgents: new RemoteCatalogLister({ policy: () => getCollaboratorAdmission().policy, catalogPort: services.catalogPort }),
       // autobyteus-492: this node's running runs a person started, for a peer (no caller here).
       runningAgents: { list: async () => Object.freeze({ accepted: true as const, agents: await input.running.listing.list({ caller: null }) }) },

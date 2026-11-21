@@ -64,7 +64,9 @@ const harness = async () => {
     : ["designer", "coder"].includes(agentRunId)
       ? { delegatedFrom: from(M, "manager"), address: null, definition: { kind: "agent_team" as const, definitionId: "eng" }, entryAgentRunId: "designer" } : null) };
   const restored = vi.fn();
-  const delivery = new CrossRunMessageDelivery({ tree: () => tree, tasks: () => tasks, senderRoot: (r) => senderRoot(r) as never, senderAddress: async () => null, runFiles, restorability,
+  // This node's names for its peers (autobyteus-587 RF-14: the refusals name the node to pass).
+  const peerName = async (nodeId: string) => nodeId === "node-b" ? "studio" : nodeId;
+  const delivery = new CrossRunMessageDelivery({ tree: () => tree, tasks: () => tasks, senderRoot: (r) => senderRoot(r) as never, senderAddress: async () => null, runFiles, restorability, peerName,
     receiverRoot: async (r) => { restored(r); await beforeReceive.hook(); return receiverRoot(r); },
     runningAgents: { rootOf: (agentRunId) => { const root = running.get(agentRunId); return root ? { root, status: { agentRunId, status: "idle", backgroundTasksRunning: 0 } } : null; } },
     activeReceiverRoot: (r) => receiverRoot(r) });
@@ -218,7 +220,7 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
     expect(h.restorability.refusal).not.toHaveBeenCalled();
   });
 
-  it("R-9 (autobyteus-492): a run no Task names is unrelated, both ways: delivered while running, not this route's when stopped; R-10: an open run on a peer goes through the peer endpoints", async () => {
+  it("R-9 (autobyteus-492): a run no Task names is unrelated, both ways: delivered while running, not this route's when stopped; R-10: an open run on a peer is refused with the node to pass (autobyteus-587 RF-14)", async () => {
     const h = await harness();
     await expect(h.send(LEGACY, "legacy", "designer")).resolves.toMatchObject({ accepted: true, agentRunId: "designer" });
     await expect(h.send(M, "manager", "legacy")).resolves.toMatchObject({ accepted: true, agentRunId: "legacy" });
@@ -227,24 +229,31 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
     expect(h.restored).not.toHaveBeenCalled();
     await h.tasks.linkNewTaskExecution({ role: "assigned", taskId: "T2", recipientAddress: "/remote", delegatedFrom: { delegatingRun: M, delegatorAgentRunId: "manager" },
       execution: { agentRunId: "remote_1" }, nodeId: "node-b" });
-    await expect(h.send(M, "manager", "remote_1")).resolves.toBeNull();
+    await expect(h.send(M, "manager", "remote_1")).resolves.toEqual({ accepted: false, code: "NODE_REQUIRED",
+      message: 'This agent runs on node "studio"; pass node: "studio" with its run id.' });
     // Inside one run: the same run's own route.
     await expect(h.send(E, "coder", "designer")).resolves.toBeNull();
   });
 
-  describe("closedPeerRunRefusal (AR-001, AR-007, DEC-011): a peer run this node's tree holds", () => {
+  describe("peerRunAdmission (AR-001, AR-007, DEC-011; autobyteus-587 RF-14, AR-005): a peer run this node's tree holds", () => {
     const linkRemote = async (h: Awaited<ReturnType<typeof harness>>) => h.tasks.linkNewTaskExecution({ role: "assigned", taskId: "T2", recipientAddress: "/remote",
       delegatedFrom: { delegatingRun: M, delegatorAgentRunId: "manager" }, execution: { agentRunId: "remote_1" }, nodeId: "node-b" });
 
-    it("open: no refusal; all its entries on that node closed: TASK_AGENT_RESOURCE_CLOSED; another node or an unknown run: no refusal", async () => {
+    it("the right node and an open entry: no refusal; no node: NODE_REQUIRED; another node: NODE_MISMATCH with the right one; all entries closed: CLOSED; an unknown run: no refusal", async () => {
       const h = await harness();
       await linkRemote(h);
-      await expect(h.delivery.closedPeerRunRefusal({ nodeId: "node-b", agentRunId: "remote_1" })).resolves.toBeNull();
+      const studio = { nodeId: "node-b", name: "studio" }, macStudio = { nodeId: "node-c", name: "mac-studio" };
+      await expect(h.delivery.peerRunAdmission({ agentRunId: "remote_1", node: studio })).resolves.toBeNull();
+      await expect(h.delivery.peerRunAdmission({ agentRunId: "remote_1", node: null }))
+        .resolves.toEqual({ accepted: false, code: "NODE_REQUIRED", message: 'This agent runs on node "studio"; pass node: "studio" with its run id.' });
+      const mismatch = { accepted: false, code: "NODE_MISMATCH", message: 'This agent runs on node "studio", not "mac-studio"; pass node: "studio".' };
+      await expect(h.delivery.peerRunAdmission({ agentRunId: "remote_1", node: macStudio })).resolves.toEqual(mismatch);
       h.tasks.close("T2");
-      await expect(h.delivery.closedPeerRunRefusal({ nodeId: "node-b", agentRunId: "remote_1" }))
-        .resolves.toEqual({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: ASSIGNER_ONLY_REACTIVATION_MESSAGE });
-      await expect(h.delivery.closedPeerRunRefusal({ nodeId: "node-c", agentRunId: "remote_1" })).resolves.toBeNull();
-      await expect(h.delivery.closedPeerRunRefusal({ nodeId: "node-b", agentRunId: "nobody" })).resolves.toBeNull();
+      const closed = { accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: ASSIGNER_ONLY_REACTIVATION_MESSAGE };
+      await expect(h.delivery.peerRunAdmission({ agentRunId: "remote_1", node: studio })).resolves.toEqual(closed);
+      await expect(h.delivery.peerRunAdmission({ agentRunId: "remote_1", node: null })).resolves.toEqual(closed);
+      await expect(h.delivery.peerRunAdmission({ agentRunId: "remote_1", node: macStudio })).resolves.toEqual(mismatch);
+      await expect(h.delivery.peerRunAdmission({ agentRunId: "nobody", node: studio })).resolves.toBeNull();
     });
 
     it("entry-form row 13 without node (AR-007): any sender here, in any run, is refused CLOSED by the route itself; nothing is written", async () => {
@@ -279,7 +288,7 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
   it("a receiver that refuses (its root's own refusal) writes nothing on the sender's side", async () => {
     const h = await harness();
     const commitSentToRun = vi.fn();
-    const refusing = new CrossRunMessageDelivery({ tree: () => h.tree, tasks: () => h.tasks, senderAddress: async () => null, runFiles: { delegationOfAgent: async () => null }, restorability: { refusal: async () => null },
+    const refusing = new CrossRunMessageDelivery({ tree: () => h.tree, tasks: () => h.tasks, senderAddress: async () => null, runFiles: { delegationOfAgent: async () => null }, restorability: { refusal: async () => null }, peerName: async (nodeId) => nodeId,
       senderRoot: () => ({ prepareSendToRun: (input) => ({ ok: true, message: { messageId: "m", senderAgentRunId: input.senderIdentity.agentRunId, receiverAgentRunId: input.receiverAgentRunId,
         content: "x", messageType: "agent_message", referenceFiles: [], createdAt: "t" } }), commitSentToRun }),
       receiverRoot: async () => ({ acceptFromRun: async () => ({ accepted: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: "AgentRun is not accepting input." }) }),
@@ -292,7 +301,7 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
   it("SR-076: a refusal after the receiver's durable write is recorded on the sender's side too (TC-13), and answered as the receiver's refusal", async () => {
     const h = await harness();
     const commitSentToRun = vi.fn(async () => undefined);
-    const delivery = new CrossRunMessageDelivery({ tree: () => h.tree, tasks: () => h.tasks, senderAddress: async () => null, runFiles: { delegationOfAgent: async () => null }, restorability: { refusal: async () => null },
+    const delivery = new CrossRunMessageDelivery({ tree: () => h.tree, tasks: () => h.tasks, senderAddress: async () => null, runFiles: { delegationOfAgent: async () => null }, restorability: { refusal: async () => null }, peerName: async (nodeId) => nodeId,
       senderRoot: () => ({ prepareSendToRun: (input) => ({ ok: true, message: { messageId: "m", senderAgentRunId: input.senderIdentity.agentRunId, receiverAgentRunId: input.receiverAgentRunId,
         content: "x", messageType: "agent_message", referenceFiles: [], createdAt: "t" } }), commitSentToRun }),
       receiverRoot: async () => ({ acceptFromRun: async () => ({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: ASSIGNER_ONLY_REACTIVATION_MESSAGE, recordedByReceiver: true }) }),

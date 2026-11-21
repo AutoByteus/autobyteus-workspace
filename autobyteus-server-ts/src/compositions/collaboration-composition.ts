@@ -1,4 +1,5 @@
 import type { EpisodicCatalog } from "../agent-episodic-catalog/services/episodic-catalog.js";
+import type { RemoteFiles } from "../agent-collaboration/execution/remote/transferred-files.js";
 import type { RootExecutionIdentity } from "../agent-collaboration/execution/domain/root-execution-identity.js";
 import { DelegatorCatalog } from "../agent-collaboration/execution/task/delegator-catalog.js";
 import { RunOwnDelegations } from "../agent-collaboration/execution/task/run-own-delegation.js";
@@ -159,6 +160,8 @@ export const composeCollaboration = async (input: Readonly<{
   activeRoots: Pick<ActiveCollaborationRootDirectory, "resolve" | "onRegistrationChanged">;
   /** This node's channel to its peers (`null` where it has none). */
   remoteChannel: () => RemoteRunChannel | null;
+  /** This node's file transfer between nodes (autobyteus-587): a peer delegation's files are uploaded before its run starts. */
+  remoteFiles: RemoteFiles;
   /** The episodic catalogs, told by the agent run history service after a committed delete (autobyteus-493). */
   episodicCatalog: Pick<EpisodicCatalog, "runDeleted">;
   /** This node's running agents and their listing (autobyteus-492), created before remote collaboration. */
@@ -219,6 +222,7 @@ export const composeCollaboration = async (input: Readonly<{
     const crossRun = new CrossRunMessageDelivery({
       runFiles,
       restorability,
+      peerName: async (nodeId) => (await input.remoteChannel()?.peerName(nodeId)) ?? nodeId,
       senderAddress: (message) => tree.collaborationTreeOf(message.receiverRun).reachingAddressOf(message.sender),
       tree: () => tree,
       tasks: () => tasks,
@@ -237,6 +241,7 @@ export const composeCollaboration = async (input: Readonly<{
       tasks: () => tasks,
       tree: () => tree,
       channel: input.remoteChannel,
+      outgoing: input.remoteFiles.outgoing,
       starter: new DelegatedRunStarter({ agentRuns: runs.agentRunService, teamRuns: runs.teamRunService }),
       deliverWorkPacket: async (run, packet) => {
         const resolved = await input.rootResolver.resolveOrRestore(run);

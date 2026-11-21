@@ -24,7 +24,7 @@ import {
   bindProcessRunFileChangeService,
   releaseProcessRunFileChangeService,
 } from "../../../src/services/run-file-changes/run-file-change-service.js";
-import { NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
+import { NO_PEER_CHANNEL, NO_REMOTE_FILES } from "../../helpers/explicit-host-collaborators.js";
 
 const toPosix = (value: string): string => value.replace(/\\/g, "/");
 
@@ -164,7 +164,7 @@ describe("Run file changes API integration", () => {
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
       agentToolMcpRunSessionDeactivator: {} as never,
     });
-    ownedTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+    ownedTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       memoryDir: getMemoryDir(), flatTeamExecutionFactory: {} as never,
       memberExecutionContextBuilder: {} as never,
       modelSelectionValidator: { validate: () => undefined } as never,

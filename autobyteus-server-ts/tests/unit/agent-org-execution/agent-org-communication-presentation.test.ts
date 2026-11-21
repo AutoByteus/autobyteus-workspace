@@ -18,7 +18,7 @@ import { CrossRunMessageDelivery } from "../../../src/agent-collaboration/commun
 import { DelegationIndex } from "../../../src/agent-collaboration/delegation/delegation-index.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
 import { readerOfAgentRunIds } from "../../helpers/run-agents-reader.js";
-import { NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
+import { NO_PEER_CHANNEL, NO_REMOTE_FILES } from "../../helpers/explicit-host-collaborators.js";
 
 type ReservedAgentInput = Extract<AgentRunInputReservationResult, { reserved: true }>;
 
@@ -74,7 +74,7 @@ const createSubject = (options: Readonly<{
     return value;
   }
   const reserveRootAgentInput = vi.fn(async (agentRunId: string): Promise<AgentRunInputReservationResult> => reservation(agentRunId));
-  const run = new AgentOrgRun({ remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
+  const run = new AgentOrgRun({ remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES, delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
     root,
     tree,
     messages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] },
@@ -314,7 +314,7 @@ it("a message from a run the Org delegated to is presented and the Org stays up,
   await tasks.markStarted({ teamRunId: "dev-team-copy" });
   const senderLog: string[] = [];
   let next = 0;
-  const delivery = new CrossRunMessageDelivery({ runningAgents: { rootOf: () => null }, activeReceiverRoot: () => null, runFiles: { delegationOfAgent: async () => null }, restorability: { refusal: async () => null }, tree: () => tree, tasks: () => tasks, senderAddress: async () => null,
+  const delivery = new CrossRunMessageDelivery({ peerName: async (nodeId) => nodeId, runningAgents: { rootOf: () => null }, activeReceiverRoot: () => null, runFiles: { delegationOfAgent: async () => null }, restorability: { refusal: async () => null }, tree: () => tree, tasks: () => tasks, senderAddress: async () => null,
     senderRoot: () => ({
       prepareSendToRun: (input: { senderIdentity: { agentRunId: string }; receiverAgentRunId: string; content: string }) => ({ ok: true as const,
         message: { messageId: `cross-${++next}`, senderAgentRunId: input.senderIdentity.agentRunId, receiverAgentRunId: input.receiverAgentRunId,

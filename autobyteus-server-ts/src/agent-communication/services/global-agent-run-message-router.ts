@@ -60,14 +60,16 @@ const notRunning = (targetAgentRunId: string): AgentOperationResult =>
  * is the address, CM-13). Without `node`: the sender's own root; another run of this node (`CrossRunMessageDelivery`:
  * Task-related, or any running agent); a team run's ID (refused with its coordinator's); a live run without a
  * collaboration root (a direct post); else "not running". With `node`: the peer, the closed-Task admission of this node
- * (`closedPeerRunRefusal`), then the sender's root, which sends it to that node.
+ * (`peerRunAdmission`: closed, or the run is on another node), then the sender's root, which sends it to that node. A run on
+ * another node is always named with `node` (autobyteus-587 RF-14): without it, the sender's root (a run it links) or
+ * `CrossRunMessageDelivery` (a run this node's Tasks hold) refuses it with the node to pass.
  */
 export class GlobalAgentRunMessageRouter {
   constructor(private readonly deps: {
     agentRunManager?: ActiveRunLookup;
     activeRootDirectory?: ActiveCollaborationRootDirectory;
     /** Messages between two runs of this node (DS-2, DS-003) and the closed-Task admission of a peer run; the composition root's. */
-    crossRun: Pick<CrossRunMessageDelivery, "route" | "closedPeerRunRefusal">;
+    crossRun: Pick<CrossRunMessageDelivery, "route" | "peerRunAdmission">;
     /** A team run's coordinator when the team does not run (R-12, SR-071): the tree, its one owner. */
     coordinators: Pick<DelegationIndex, "teamCoordinatorOf">;
     /** This node's channel to its peers (`null` where it has none): `findPeer` for `node` (DS-004). */
@@ -183,7 +185,7 @@ export class GlobalAgentRunMessageRouter {
 
   /**
    * DS-004: `send_message_to(node, run ID)`. The peer by this node's name for it (the same refusals as `delegate_task`
-   * with `node`), this node's closed-Task admission of that run (AR-001), then the sender's root sends it to that node.
+   * with `node`), this node's admission of that run (closed, or on another node; AR-001, autobyteus-587 RF-14), then the sender's root sends it to that node.
    */
   private async deliverToPeer(input: GlobalAgentRunMessageDeliveryInput, node: string, targetAgentRunId: string, content: string,
     messageType: string, referenceFiles: string[]): Promise<AgentOperationResult> {
@@ -193,8 +195,8 @@ export class GlobalAgentRunMessageRouter {
     if (!channel) return { accepted: false, code: REMOTE_REFUSAL.OFF, message: REMOTE_ROOT_REFUSAL_TEXT.off };
     const peer = await channel.findPeer(node.trim());
     if ("accepted" in peer) return peer;
-    const closed = await this.deps.crossRun.closedPeerRunRefusal({ nodeId: peer.nodeId, agentRunId: targetAgentRunId });
-    if (closed) return closed;
+    const refused = await this.deps.crossRun.peerRunAdmission({ agentRunId: targetAgentRunId, node: peer });
+    if (refused) return refused;
     const senderRoot = this.activeRootDirectory.resolve(context.identity.root);
     if (!senderRoot) return { accepted: false, code: "COLLABORATION_ROOT_NOT_ACTIVE", message: ROOT_NOT_ACTIVE_MESSAGE };
     const result = await senderRoot.deliverToPeerRun({

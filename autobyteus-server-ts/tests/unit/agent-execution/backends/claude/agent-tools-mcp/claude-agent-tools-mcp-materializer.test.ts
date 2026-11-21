@@ -24,6 +24,8 @@ describe("claude-agent-tools-mcp-materializer", () => {
         type: "http",
         url: "http://127.0.0.1:3000/mcp/agent-tools/session-materializer",
         alwaysLoad: true,
+        // autobyteus-587 RF-6: a call that sends files waits for them (up to about 27 minutes for 4 GiB).
+        timeout: 3_600_000,
       },
     });
     expect(result.autobyteus_agent_tools).not.toHaveProperty("enabledTools");

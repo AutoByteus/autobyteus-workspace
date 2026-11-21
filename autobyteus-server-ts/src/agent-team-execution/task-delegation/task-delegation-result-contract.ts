@@ -7,7 +7,8 @@ const LaunchNotesSchema = z.array(NonBlankTaskResultStringSchema).min(1);
  * The `delegate_task` result. Success names the copy for what it is: an Agent copy by its
  * `target_agent_run_id`; a Team copy by its `target_team_run_id` and its coordinator's
  * `target_team_coordinator_agent_run_id`. `task_id` is present only when the delegation created a Task
- * with no Project. `node` is present only when the task agent runs on a peer node (the peer's name here).
+ * with no Project. `node` is present only when the task agent runs on a peer node (the peer's name here);
+ * `files_sent` only when reference files were copied to that node (autobyteus-587 RF-6).
  * `launch_notes` is present only when the new copy's configured launch layer could not
  * be used and a fallback was taken (one note per skipped layer). Failure (`delegated: false`) carries the
  * reason and no copy ID.
@@ -20,6 +21,7 @@ export const DelegateTaskResultSchema = z.union([
     node: NonBlankTaskResultStringSchema.optional(),
     task_id: NonBlankTaskResultStringSchema.optional(),
     launch_notes: LaunchNotesSchema.optional(),
+    files_sent: z.number().int().positive().optional(),
   }),
   z.strictObject({
     delegated: z.literal(true),
@@ -29,6 +31,7 @@ export const DelegateTaskResultSchema = z.union([
     node: NonBlankTaskResultStringSchema.optional(),
     task_id: NonBlankTaskResultStringSchema.optional(),
     launch_notes: LaunchNotesSchema.optional(),
+    files_sent: z.number().int().positive().optional(),
   }),
   z.strictObject({ delegated: z.literal(false), message: NonBlankTaskResultStringSchema }),
 ]);

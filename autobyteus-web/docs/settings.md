@@ -208,6 +208,14 @@ per-team, runtime, provider, or frontend-renderer preference.
   Rebinding the window reads the newly bound server's effective value, so two
   nodes can legitimately retain different settings without cross-node leakage.
 
+## Server Settings: Received File Size Limit
+
+`AUTOBYTEUS_RECEIVED_FILE_MAX_MB` (autobyteus-587) is the largest file this node accepts from another node with a
+message or delegation, in whole MiB: default 2048 (2 GiB), allowed 1–4096. The sending node asks for it before it sends
+anything and refuses a larger file; this node enforces it again on every piece. Terms are in
+[GLOSSARY.md](../../GLOSSARY.md) "Received Files". It is an ordinary predefined server setting, set like the context
+file limits below.
+
 ## Server Settings: Context File Size Limits
 
 Two node settings bound the size of a context file (a file attached to a message or a Project

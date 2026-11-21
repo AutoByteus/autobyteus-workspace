@@ -1,4 +1,5 @@
 import { NativeCommandShutdown } from "../compositions/native-command-shutdown.js";
+import { composeRemoteFiles } from "../compositions/remote-files-composition.js";
 import { REMOTE_COLLABORATION_OFF_DISCOVERY } from "../agent-tools/agent-discovery/agent-discovery-refusal.js";
 import "reflect-metadata";
 import type { FastifyInstance } from "fastify";
@@ -224,6 +225,9 @@ export const startStandaloneApplicationHost = async (
       console.warn(`DEFINITION_ADMISSION_UNAVAILABLE:${diagnostic.subjectKind}:${diagnostic.definitionId ?? "unknown"}:${diagnostic.code}:${diagnostic.definitionPath}`);
     }
     const workspaceManager = getWorkspaceManager();
+    // autobyteus-587: this host has no peers, so its roots' file transfer refuses any file (its channel answers null).
+    const files = composeRemoteFiles({ appDataDir: processResources.appConfig.getAppDataDir(),
+      memoryDir: processResources.appConfig.getMemoryDir(), channel: () => null, workspaces: workspaceManager });
     const contextFilePathEnvironment = createContextFilePathEnvironment({
       appDataDir: processResources.appConfig.getAppDataDir(),
       baseUrl: processResources.appConfig.getBaseUrl(),
@@ -283,9 +287,10 @@ export const startStandaloneApplicationHost = async (
         episodicCatalog: currentEpisodicCatalog,
         // One notice slot: tool list updates, skill notices, then background task notices (one notice per input).
         platformInputNotices: new AgentRunPlatformNotices(platformNotices.sources),
-        // No peer nodes on this host (ARCH-REV-027; autobyteus-500 FU-011).
+        // No peer nodes on this host (ARCH-REV-027; autobyteus-500 FU-011): its file transfer refuses any file.
         remoteChannel: () => null,
         peerDiscovery: () => REMOTE_COLLABORATION_OFF_DISCOVERY,
+        remoteFiles: files.remoteFiles, receivedFiles: files.receivedFiles,
       });
     generalProcessAuthority = null;
     collaboration = await composeCollaboration({ memoryDir: processResources.appConfig.getMemoryDir(), taskSide, runs: generalProcessRunSupervisor,
@@ -294,6 +299,7 @@ export const startStandaloneApplicationHost = async (
       activeRoots: getActiveCollaborationRootDirectory(),
       // This host has no peer nodes (ARCH-REV-027: its real equivalent, as at base).
       remoteChannel: () => null,
+      remoteFiles: files.remoteFiles,
       episodicCatalog: currentEpisodicCatalog,
       // autobyteus-492: this node's running agents (messages by run ID and list_running_agents).
       running: composeRunningAgents({ memoryDir: processResources.appConfig.getMemoryDir(), tempWorkspaceDir: processResources.appConfig.getTempWorkspaceDir(),
@@ -318,6 +324,7 @@ export const startStandaloneApplicationHost = async (
       runPasses: null,
       // No peer nodes on this host (autobyteus-500 FU-011).
       remoteChannel: () => null,
+      remoteFiles: files.remoteFiles,
       peerDiscovery: () => REMOTE_COLLABORATION_OFF_DISCOVERY,
       modelAvailabilityService: getModelAvailabilityService(),
       llmProviderService: getLlmProviderService(),

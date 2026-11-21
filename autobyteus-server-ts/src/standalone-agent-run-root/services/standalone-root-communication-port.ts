@@ -20,6 +20,7 @@ export const createStandaloneRootCommunicationPort = (input: Readonly<{
   messageLogOwnerOf(agentRunId: string): MessageLogOwner;
   assertDeliveryAllowed: RootCommunicationPort["assertDeliveryAllowed"];
   reserveRecipientInput: RootCommunicationPort["reserveRecipientInput"];
+  receivedFilesFor: RootCommunicationPort["receivedFilesFor"];
   /** The node's message feed (SR-072): each committed message into the views of its runs and the runs above them. */
   messageFeed: Pick<RunMessagesFeed, "publish">;
   presentCommittedMessage: RootCommunicationPort["presentRecipientInput"];
@@ -37,6 +38,7 @@ export const createStandaloneRootCommunicationPort = (input: Readonly<{
     assertDeliveryAllowed: (sender, receiver) => input.assertDeliveryAllowed(sender, receiver),
     buildRecipientInput: (delivery) => buildRootCommunicationInputMessage(delivery),
     reserveRecipientInput: (agentRunId, message) => input.reserveRecipientInput(agentRunId, message),
+    receivedFilesFor: (receiver, senderAgentRunId, files) => input.receivedFilesFor(receiver, senderAgentRunId, files),
     logOwnersOf: (message) => messageLogOwners(message, (agentRunId) => input.messageLogOwnerOf(agentRunId)),
     commitMessageAppend: (append) => input.persistence.commitMessageAppend(append),
     publishMessage: (publication) => input.messageFeed.publish(publication),

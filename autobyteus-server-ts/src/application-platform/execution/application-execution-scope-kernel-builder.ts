@@ -173,6 +173,7 @@ export const buildApplicationExecutionScopeKernel = (
       modelSelectionValidator: input.modelSelectionValidator,
       delegationIndex: input.delegationIndex,
       remoteChannel: input.remoteChannel,
+      remoteFiles: input.remoteFiles,
       viewStreams: input.viewStreams,
       taskRecords: input.taskRecords,
       flatTeamExecutionFactory: new FlatTeamExecutionFactory({

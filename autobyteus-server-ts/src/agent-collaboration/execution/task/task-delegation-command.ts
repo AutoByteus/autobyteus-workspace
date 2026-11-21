@@ -36,7 +36,7 @@ export type DelegatedRun =
  * commit, that its work was not delivered) and carries the reason.
  */
 export type TaskDelegationOutcome =
-  | Readonly<{ delegated: true; delegatedRun: DelegatedRun; taskId?: string; launchNotes?: readonly string[]; node?: string }>
+  | Readonly<{ delegated: true; delegatedRun: DelegatedRun; taskId?: string; launchNotes?: readonly string[]; node?: string; filesSent?: number }>
   | Readonly<{ delegated: false; message: string }>;
 
 /** The delegated run at a target: its reference and ingress (the Agent itself, or the Team's coordinator). */

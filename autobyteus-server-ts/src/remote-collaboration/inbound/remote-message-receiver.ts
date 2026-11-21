@@ -16,6 +16,9 @@ import type { PeerHandlerRefusal, RemoteMessageHandler } from "../channel/peer-g
 import type { PeerNode } from "../domain/peer-node.js";
 import { REMOTE_REFUSAL } from "../domain/remote-refusals.js";
 import type { DeliverRemoteMessageRequest, DeliverRunMessageRequest } from "../domain/remote-requests.js";
+import type { ReceivedFiles } from "./received-files.js";
+import { REFERENCE_FILE_REFUSAL_TEXT } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
+import type { TransferredFile } from "../../agent-collaboration/execution/remote/transferred-files.js";
 
 /** A collaboration root that admits messages from its linked runs on peer nodes (all three root kinds). */
 export type RemoteMessageRoot = Readonly<{ acceptRemoteMessage(input: RemoteInboundMessage): Promise<AgentOperationResult> }>;
@@ -74,7 +77,15 @@ export class RemoteMessageReceiver implements RemoteMessageHandler {
     private readonly decisions: Pick<PeerStartedRunDecisions, "workArrived">,
     /** autobyteus-492: which live root runs an agent now, and a live team's coordinator. */
     private readonly running: Pick<RunningAgents, "rootOf" | "teamCoordinatorOf">,
+    /** autobyteus-587: every file a message or work packet names is complete here before any root sees it. */
+    private readonly receivedFiles: Pick<ReceivedFiles, "verify">,
   ) {}
+
+  /** A file the request names is not complete in this node's received files (RF-5): nothing is delivered. */
+  private async missingFile(files: readonly TransferredFile[]): Promise<PeerHandlerRefusal | null> {
+    const verified = await this.receivedFiles.verify(files);
+    return verified.ok ? null : refusal(REMOTE_REFUSAL.REFERENCE_FILE_CHECK_FAILED, REFERENCE_FILE_REFUSAL_TEXT.notReceived(verified.name));
+  }
 
   /**
    * autobyteus-492 DS-004 on the receiving node: a peer agent's message by run ID only (the run ID is the address, CM-13).
@@ -90,6 +101,8 @@ export class RemoteMessageReceiver implements RemoteMessageHandler {
       const coordinator = this.running.teamCoordinatorOf(target);
       return coordinator ? refusal("TARGET_IS_TEAM_RUN", targetIsTeamRunText(target, coordinator)) : refusal(REMOTE_REFUSAL.TARGET_NOT_RUNNING, remoteTargetNotRunning(target).message);
     }
+    const missing = await this.missingFile(request.files);
+    if (missing) return missing;
     return answerOf(await root.acceptPeerRunMessage({
       fromNodeId: from.nodeId,
       fromNodeName: from.name,
@@ -98,6 +111,7 @@ export class RemoteMessageReceiver implements RemoteMessageHandler {
         messageId: request.messageId, senderAgentRunId: request.sender.agentRunId, receiverAgentRunId: target,
         content: request.content, messageType: request.messageType, referenceFiles: [], createdAt: request.createdAt,
       },
+      files: request.files,
     }));
   }
 
@@ -108,12 +122,15 @@ export class RemoteMessageReceiver implements RemoteMessageHandler {
     const stored = await this.resolve(() => this.roots.storedLinkCheck(request.targetRoot, query));
     if (stored === "not_linked") return notLinked();
     if (stored !== "proceed") return notFound();
+    // autobyteus-587 (RF-5): every file it names arrived complete, before any root sees it.
+    const missing = await this.missingFile(request.files);
+    if (missing) return missing;
     if (request.kind === "work_packet") {
       const root = await this.resolve(() => this.delegationRoot(request.targetRoot));
       if (!root) return notFound();
       const accepted = await root.acceptRemoteWorkPacket({
         fromNodeId: from.nodeId, fromNodeName: from.name, senderAgentRunId: request.sender.agentRunId,
-        targetAgentRunId: request.target.agentRunId, description: request.content,
+        targetAgentRunId: request.target.agentRunId, description: request.content, files: request.files,
       });
       // The packet is the run's first message: its description (not the task notification built here) is the title.
       // Not awaited on the answer path; a failure is logged, as on the window's path.
@@ -140,6 +157,7 @@ export class RemoteMessageReceiver implements RemoteMessageHandler {
         referenceFiles: [],
         createdAt: request.createdAt,
       },
+      files: request.files,
     }));
   }
 

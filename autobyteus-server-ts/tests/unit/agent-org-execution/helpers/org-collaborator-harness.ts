@@ -26,7 +26,7 @@ import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "..
 import { observeConfiguredHandles } from "./task-publication-handles.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 import { agentOrgMessageEvent, isAgentOrgMessageEvent } from "../../../../src/agent-org-execution/domain/agent-org-run-event.js";
-import { NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY } from "../../../helpers/explicit-host-collaborators.js";
+import { NO_PEER_CHANNEL, NO_REMOTE_FILES, OFFERED_MODEL_EXECUTION_FACTORY } from "../../../helpers/explicit-host-collaborators.js";
 
 /**
  * An AgentOrg (`/director`, mounted Team `/target` with `/target/lead` and `/target/writer`) over a
@@ -101,7 +101,7 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
   }
   const publisher = new RunViewStream<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
   let allocation = 0;
-  run = new AgentOrgRun({ remoteChannel: NO_PEER_CHANNEL, root, tree, messages, rootAgents, teams, callbacks, persistence, publisher, messageFeed: messageFeedInto(publisher, agentOrgMessageEvent, root),
+  run = new AgentOrgRun({ remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES, root, tree, messages, rootAgents, teams, callbacks, persistence, publisher, messageFeed: messageFeedInto(publisher, agentOrgMessageEvent, root),
     activityInspector: { inspect: vi.fn(() => ({ kind: "present" as const })) } as never,
     collaboratorAdmission: admission(options.runnable ?? true),
     // Production always binds the Task side; every delegated copy belongs to a Task.

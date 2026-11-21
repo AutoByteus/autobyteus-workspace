@@ -1,4 +1,5 @@
 import { TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
+import { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import { ASSIGNER_ONLY_REACTIVATION_MESSAGE } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { OTHER_RUN_LOG, OWN_RUN_LOG } from "../../run-history/store/message-log-owners.js";
 import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
@@ -95,7 +96,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       teams: options.teams,
       publisher: options.publisher,
       remoteLinks: this.remoteLinks,
-      remoteSend: new RemoteMessageSend({ engine: () => this.communication, links: this.remoteLinks }),
+      remoteSend: new RemoteMessageSend({ engine: () => this.communication, links: this.remoteLinks, outgoing: options.remoteFiles.outgoing }),
       authorizeIdentity: (identity) => this.authorizeIdentity(identity),
     });
     this.communication = new RootCommunicationEngine(createAgentOrgCommunicationPort({
@@ -108,9 +109,20 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       isCurrentAgent: (identity) => this.isPublishedAgent(identity),
       messageLogOwnerOf: (agentRunId) => this.remoteLinks.has(agentRunId) || !this.index.getAgent(agentRunId) ? OTHER_RUN_LOG : OWN_RUN_LOG,
       reserveRecipientInput: (agentRunId, message) => this.delivery.reserveAgentInput(agentRunId, message),
+      // autobyteus-587: files from another node land in the receiving agent's own folder.
+      receivedFilesFor: async (receiver, senderAgentRunId, files) => options.remoteFiles.received.planFor({
+        agentFolder: this.agentFolderOf(receiver.agentRunId), senderAgentRunId, files }),
       messageFeed: options.messageFeed,
       presentCommittedMessage: (message, receiverInput) => this.delivery.presentCommittedCommunication(message, receiverInput),
     }));
+  }
+
+  /** An agent's own folder (its memory; autobyteus-587: where files from another node land): a root agent's, or a mounted team member's. */
+  private agentFolderOf(agentRunId: string): string {
+    const agent = this.index.getAgent(agentRunId);
+    if (!agent) throw new Error(`AgentRun '${agentRunId}' is not in AgentOrg '${this.orgRunId}'.`);
+    return agent.host.hostKind === "root" ? this.options.rootAgents.ownFolderOf(agentRunId)
+      : (this.options.memoryLocator ?? new AgentRunMemoryLocator()).getMemoryDir(this.options.teams.require(agent.host.hostRunId).context.memberMemoryPlacement, agentRunId);
   }
 
   /** An org agent takes input while the org run is active; nothing hosted is fenced here (autobyteus-461). */

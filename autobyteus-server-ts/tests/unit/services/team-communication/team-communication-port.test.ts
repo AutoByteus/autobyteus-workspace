@@ -49,6 +49,7 @@ const buildHarness = (input: {
   const engine = new RootCommunicationEngine(createTeamCommunicationPort({
     rootTeamRunId,
     initial: Object.freeze({ schemaVersion: 1 as const, rootTeamRunId, messages: Object.freeze([]) }),
+    receivedFilesFor: vi.fn(async () => { throw new Error("No files in this test."); }),
     assertDeliveryAllowed,
     isCurrentAgent: input.currentAgent ?? (() => true),
     messageLogOwnerOf: () => OWN_RUN_LOG,

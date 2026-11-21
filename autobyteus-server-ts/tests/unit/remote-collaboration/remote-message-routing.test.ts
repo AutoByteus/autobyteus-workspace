@@ -14,9 +14,10 @@ import { StandaloneRootMessageDelivery } from "../../../src/standalone-agent-run
 import { NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
 
 /**
- * AR-008: each root's message delivery keeps only the routing decision. A run ID that is a remote endpoint goes
- * to the root's shared `RemoteMessageSend`; any other run ID takes the root's own path (a standalone run holds no other
- * agent: another run's agent is reached through the cross-run router, autobyteus-461).
+ * AR-008: each root's message delivery keeps only the routing decision. A run ID that is a remote endpoint is refused
+ * with the node it runs on (autobyteus-587 RF-14: a message to another node always carries `node`, and goes through
+ * `RemoteMessageSend.sendToPeerRun`); any other run ID takes the root's own path (a standalone run holds no other agent:
+ * another run's agent is reached through the cross-run router, autobyteus-461).
  */
 
 const LEAD = "lead_run";
@@ -30,7 +31,7 @@ const links = () => new RemoteRunLinks({
 type Harness = Readonly<{
   root: RootExecutionIdentity;
   deliverExact(target: string): Promise<AgentOperationResult>;
-  remoteSend: { send: ReturnType<typeof vi.fn> };
+  remoteSend: { sendToPeerRun: ReturnType<typeof vi.fn> };
   local: ReturnType<typeof vi.fn>;
 }>;
 
@@ -40,7 +41,7 @@ const input = (root: RootExecutionIdentity, targetAgentRunId: string) => ({
 });
 
 const common = () => ({
-  remoteSend: { send: vi.fn(async () => ({ accepted: true, message: "remote" })) },
+  remoteSend: { sendToPeerRun: vi.fn(async () => ({ accepted: true, message: "remote" })) },
   local: vi.fn(async () => ({ accepted: true, message: "local" })),
 });
 
@@ -79,20 +80,18 @@ describe.each([
   { kind: "Team root", build: team },
   { kind: "Org root", build: org },
 ])("$kind: run-ID routing (AR-008)", ({ build }) => {
-  it("sends to a remote endpoint through the shared RemoteMessageSend", async () => {
+  it("autobyteus-587 RF-14: a remote endpoint without node is refused with the node it runs on; nothing is sent", async () => {
     const h = build();
-    await expect(h.deliverExact(REMOTE)).resolves.toEqual({ accepted: true, message: "remote" });
-    expect(h.remoteSend.send).toHaveBeenCalledExactlyOnceWith({
-      sender: expect.objectContaining({ agentRunId: LEAD }), endpoint: expect.objectContaining({ kind: "delegated_run", reference: { nodeId: "srv_peer_b", agentRunId: REMOTE } }),
-      content: "hello", messageType: "agent_message", referenceFiles: null,
-    });
+    await expect(h.deliverExact(REMOTE)).resolves.toEqual({ accepted: false, code: "NODE_REQUIRED",
+      message: 'This agent runs on node "srv_peer_b"; pass node: "srv_peer_b" with its run id.' });
+    expect(h.remoteSend.sendToPeerRun).not.toHaveBeenCalled();
     expect(h.local).not.toHaveBeenCalled();
   });
 
   it("takes the root's own path for a run ID that is not a remote endpoint", async () => {
     const h = build();
     await expect(h.deliverExact(LOCAL)).resolves.toEqual({ accepted: true, message: "local" });
-    expect(h.remoteSend.send).not.toHaveBeenCalled();
+    expect(h.remoteSend.sendToPeerRun).not.toHaveBeenCalled();
     expect(h.local).toHaveBeenCalledTimes(1);
   });
 });
