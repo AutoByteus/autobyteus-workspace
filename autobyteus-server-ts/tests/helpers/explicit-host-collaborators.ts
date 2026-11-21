@@ -43,10 +43,12 @@ export const NO_REMOTE_FILES: RemoteFiles = Object.freeze({
 });
 
 /**
- * autobyteus-587: a node's received files in a test that sends it none: a peer's status or piece is not expected, and a
- * message that names a file is refused as not received (as a node that holds none of it would).
+ * autobyteus-587: a node's received files in a test that sends it none: a peer's status or piece is not expected, a
+ * message that names a file is refused as not received (as a node that holds none of it would), and a sweep (after a
+ * history delete, or at startup) has nothing to remove.
  */
-export const NO_FILES_RECEIVED: Pick<ReceivedFiles, "status" | "appendPiece" | "verify"> = Object.freeze({
+export const NO_FILES_RECEIVED: Pick<ReceivedFiles, "status" | "appendPiece" | "verify" | "sweep"> = Object.freeze({
+  sweep: async () => undefined,
   status: async () => { throw new Error("This test sends this node no files."); },
   appendPiece: async () => { throw new Error("This test sends this node no files."); },
   verify: async (files: readonly Readonly<{ name: string }>[]) => files.length

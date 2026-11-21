@@ -27,6 +27,7 @@ import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-
 import { testAgentNode, testExecutionTree, writeCurrentTeamRunPackage } from "../../fixtures/current-team-run-fixtures.js";
 import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
 import { setE2eRunHistoryServices } from "../helpers/e2e-run-history-services.js";
+import { NO_PEER_CHANNEL, NO_REMOTE_FILES } from "../../helpers/explicit-host-collaborators.js";
 
 const GRAPHQL_QUERY = `
   query RunProjection($runId: String!) {
@@ -288,6 +289,7 @@ describe("recent run projection GraphQL e2e", () => {
       agentToolMcpRunSessionDeactivator: unusedExecutionBoundary(),
     });
     ownedAgentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
+      remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES,
       memoryDir,
       flatTeamExecutionFactory: unusedExecutionBoundary(),
       memberExecutionContextBuilder: unusedExecutionBoundary(),

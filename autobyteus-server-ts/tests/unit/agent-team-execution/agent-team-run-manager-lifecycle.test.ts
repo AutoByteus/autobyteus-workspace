@@ -6,7 +6,7 @@ import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/
 import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import { MemberExecutionContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
 import { ActiveCollaborationRootDirectory } from "../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import { OFFERED_MODEL_EXECUTION_FACTORY } from "../../helpers/explicit-host-collaborators.js";
+import { NO_PEER_CHANNEL, NO_REMOTE_FILES, OFFERED_MODEL_EXECUTION_FACTORY } from "../../helpers/explicit-host-collaborators.js";
 
 const modelSelectionValidator = Object.freeze({
   validateMany: async () => [],
@@ -22,6 +22,7 @@ const memberExecutionContextBuilder = new MemberExecutionContextBuilder({
 } as never, NOT_DELEGATED);
 
 const createManager = () => new AgentTeamRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
+  remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES,
   memoryDir: "/tmp/api-e2e-agent-team-run-manager",
   flatTeamExecutionFactory,
   memberExecutionContextBuilder,
