@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Requirements | Initial baseline (Task autobyteus-22) | IF-01..IF-15 | N/A | Ready for Approval | BEH-001..005, REQ-001..007, AC-001..008, DEC-001..009 | Recommendation presented to the user; awaiting DEC-001..DEC-004 |
 | SR-002 | Requirements | The user's Task comment 2026-11-18 (UI; rules believed dynamic) | IF-16 | Ready for Approval | Ready for Approval | UC-005, REQ-008, AC-009, SCN-006; premise correction | UI added; dynamic-rules premise checked and corrected with evidence |
+| SR-010 | Design | Architecture review ARCH-REV-003 Fail (Design Impact) | AR-007, AR-008, AR-009 | Approved; design Ready (SR-009 reviewed Fail) | Approved; design Ready (revised) | AC-003, AC-005, AC-009; DEC-002 (realization) | Leaving outside a live run; committer-owned release; one member source for both tree paths |
 | SR-009 | Design | Failure-origin review CRR-002 (API-REV-001 Fail) | CR-002 (Design Impact), CR-001 (Local Fix routing choice), O-1, O-2 | Approved; design Ready (implemented, validation Fail) | Approved; design Ready (revised) | AC-003, AC-007, AC-009, AC-010; DEC-002 (realization) | Leaving shown on the rendered run-tree rows from a stored marker; routing invariant; planner warning; dead panel removed |
 | SR-008 | Design | Architecture review ARCH-REV-001 Fail (Design Impact) | AR-001..AR-006, N-1..N-5 | Approved; design Ready (reviewed Fail) | Approved; design Ready (revised) | REQ-002, REQ-004, REQ-008, REQ-009, AC-003, AC-009, AC-010; DEC-002/003/006/007 (realization only) | Design revised; resubmitted |
 | SR-007 | Design | Architecture design | AF-01..AF-18 | Approved; design N/A | Approved; design Ready | REQ-001..REQ-009 (realized) | design-spec.md; Large / High |
@@ -96,3 +97,12 @@
   - O-1: the planner logs `TEAM_RUN_DEFINITION_NOT_FOLLOWED` naming the load issue and does not plan against the kept last good definition; O-2 agreed (whole-definition invalid → unchanged + warning).
 - Intended behavior changed: No. Classification unchanged: Large / High.
 - Route: revised design → architecture re-review (handoff rule for a revised Large/High package); CR-001 stays an implementation Local Fix for the same round.
+
+### SR-010 — Leaving outside a live run; release ownership; one member source
+
+- Trigger: `/architecture_reviewer` ARCH-REV-003 (Fail, Design Impact) on SR-009: AR-007, AR-008, AR-009; note on O-1's warn-once set.
+- AR-007: a `leaving` marker shows as a leaving row only while the Team run is live; outside a live run it reads as former (no row), decided in one function `teamMemberRowsOf(ownTeam, isLive)`; the manager's unregister of a root with markers calls `runPartsChanged`; restore clears stale markers.
+- AR-008: marker = "removed with a live execution, not yet stopped", set by the locked plan from live execution IDs; the execution manager only stops handles and reports `released`; the committer owns the release step (locked write → replaceTree + membership.replace → removeStoppedHandle → runPartsChanged → view event); `TeamRunMembership.release` removed; a definitely failed release write is healed by the next plan; an indeterminate one fail-stops the root (existing rule).
+- AR-009: delegated Team copy member rows under the delegating run read the child's `ownTreeOf` through the same `teamMemberRowsOf`; `DelegationIndex.agentsOf` unchanged for messages and history.
+- O-1 note: the warn-once set clears when the definition becomes valid.
+- Intended behavior changed: No. Classification unchanged: Large / High. Route: architecture re-review; CR-001 stays an implementation Local Fix.
