@@ -1,0 +1,25 @@
+# IMP-03 web typecheck, and why it aborts while a demo build exists
+# command: pnpm -C autobyteus-web typecheck (twice with autobyteus-web/dist-mobile-demo/ present, once with it moved aside)
+# commit: 0d197a73b9 (run before committing; same files)
+# env: macOS, Node v22.23.1, 64 GB (53% free); the gate gives the Nuxt app's compiler a 4096 MB heap
+# date: 2026-11-21
+# result: Pass for this change. With dist-mobile-demo/ present (left by the investigation's demo build) the Nuxt app
+#   project aborts out of heap: .nuxt/tsconfig.json includes ../**/* with allowJs, and its exclude list
+#   (nuxt.config.ts:261) has ../dist-mobile/** but not ../dist-mobile-demo/**, so vue-tsc also loads the 13 MB
+#   minified demo bundle. Moved aside, the gate passes at its baseline. Recorded as FU-001.
+
+## with dist-mobile-demo/ present (both runs the same)
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.7s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.7s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 34.5s
+[typecheck] FAIL: Nuxt app (tsconfig.json): the compiler ended by signal SIGABRT (FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory)
+[typecheck] production errors: 0; test-file errors: 27 in 8 files (baseline 86 in 36 files)
+[typecheck] FAIL
+
+## dist-mobile-demo/ moved aside
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 136.6s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 6.6s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 2.5s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 82.9s
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
