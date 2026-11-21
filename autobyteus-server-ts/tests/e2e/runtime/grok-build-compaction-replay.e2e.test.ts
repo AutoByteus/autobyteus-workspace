@@ -10,6 +10,7 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { createFakeGrokCommand, grokAcpFixturePath, overrideEnv, type FakeGrokCommand } from "../helpers/grok-fake-cli.js";
+import { IN_PROCESS_SERVER_HOOK_TIMEOUT_MS } from "../../helpers/os-latency-under-load.js";
 
 // Zero-cost Grok Build compaction coverage through the real Studio server (GraphQL, agent WebSocket,
 // AgentRunManager, ACP backend, memory recorder, run-history projection). `GROK_BUILD_COMMAND` points at
@@ -74,6 +75,9 @@ describe("Grok Build compaction over GraphQL/WebSocket (recorded Grok 1.0.46 rep
         instructions: "Reply exactly as asked.", category: "runtime-e2e", toolNames: [] } })).createAgentDefinition.id;
   }, 60_000);
 
+  // The in-process server's close closes its folder watchers on the main thread, which a busy fseventsd blocks for
+  // seconds (0.7-7.9 s measured, autobyteus-576 API-05d; TESTING.md "File watching on a busy Mac"): the hook takes its
+  // limit from os-latency-under-load.
   afterAll(async () => {
     for (const socket of sockets) if (socket.readyState === WebSocket.OPEN) socket.close();
     if (app) {
@@ -88,7 +92,7 @@ describe("Grok Build compaction over GraphQL/WebSocket (recorded Grok 1.0.46 rep
     restoreEnv?.();
     if (fakeGrok) await fs.rm(fakeGrok.dir, { recursive: true, force: true });
     if (dataDir) await fs.rm(dataDir, { recursive: true, force: true });
-  });
+  }, IN_PROCESS_SERVER_HOOK_TIMEOUT_MS);
 
   /** Starts a Grok run replaying `fixture` and opens its agent socket. */
   const startRun = async (fixture: string) => {
