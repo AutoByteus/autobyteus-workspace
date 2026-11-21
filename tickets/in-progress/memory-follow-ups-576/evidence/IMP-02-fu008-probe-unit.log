@@ -1,0 +1,439 @@
+# IMP-02-fu008-probe-unit.log
+# Check: IMP-02
+# Command: env -i HOME PATH TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-management/probe-time-bound.test.ts tests/unit/runtime-management/antigravity-cli-capability.test.ts tests/unit/runtime-management/grok/grok-build-capability.test.ts; then the last two with the probes as at 72f7ebe040
+# Commit tested: working tree committed as 5999a84ca8
+# Environment: macOS (Darwin 25.5), Node v22.23.1, pnpm; env -i; shared host, load average 42-53, fseventsd 137-172% CPU
+# Date: 2026-11-21
+# Note: 3 files, 63 tests pass; the old probes fail all 4 new real-process cases
+# ----------------------------------------------------------------------
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > enables AGY availability using capabilities rather than release text
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > makes AGY runtime availability await discovery and report only a safe failure
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > reports a signed-out CLI as not signed in with the recovery step and no CLI output
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > bounds hang-help (`--help`) at 10000 ms and returns a sanitized timeout rather than hanging
+RUNTIME_PROBE_TIMED_OUT {
+  runtime: 'antigravity',
+  command: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-discovery-unit-cAk8Io/agy-fake --help',
+  boundMs: 10000
+}
+
+stderr | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > bounds hang-models (`models`) at 30000 ms and returns a sanitized timeout rather than hanging
+RUNTIME_PROBE_TIMED_OUT {
+  runtime: 'antigravity',
+  command: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-discovery-unit-cAk8Io/agy-fake models',
+  boundMs: 30000
+}
+
+stderr | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > bounds a hung `--version` at 10 s and reads no version
+RUNTIME_PROBE_TIMED_OUT {
+  runtime: 'antigravity',
+  command: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-discovery-unit-cAk8Io/agy-fake --version',
+  boundMs: 10000
+}
+
+stderr | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > shares one step deadline across --help and models: a hanging second command ends by it and is killed (AR-002)
+RUNTIME_PROBE_TIMED_OUT {
+  runtime: 'antigravity',
+  command: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-discovery-unit-cAk8Io/agy-fake models',
+  boundMs: 1465
+}
+
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts (51 tests) 12367ms
+     ✓ accepts a compatible CLI and returns dynamic model slugs  425ms
+     ✓ enables AGY availability using capabilities rather than release text  2272ms
+     ✓ returns the real result of a `--help` that exited before its bound but whose close comes after it  4093ms
+     ✓ times out a `--help` that exited but whose close does not come within the grace, logging the command and bound  1535ms
+     ✓ shares one step deadline across --help and models: a hanging second command ends by it and is killed (AR-002)  1563ms
+     ✓ keeps a concurrent health request responsive while model discovery waits  586ms
+stdout | tests/unit/runtime-management/grok/grok-build-capability.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/grok/grok-build-capability.test.ts (7 tests) 5742ms
+     ✓ reads the real result of a command that exited before its bound but whose close comes after it  4458ms
+     ✓ rejects versions below the minimum and CLIs without agent-mode flags  304ms
+     ✓ classifies an empty catalog and a failed handshake without provider output  363ms
+ ✓ tests/unit/runtime-management/probe-time-bound.test.ts (5 tests) 6ms
+
+ Test Files  3 passed (3)
+      Tests  63 passed (63)
+   Start at  03:13:33
+   Duration  19.95s (transform 1.51s, setup 112ms, import 943ms, tests 18.11s, environment 0ms)
+
+
+===== negative control: both probes as at 72f7ebe040 =====
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > enables AGY availability using capabilities rather than release text
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > makes AGY runtime availability await discovery and report only a safe failure
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > reports a signed-out CLI as not signed in with the recovery step and no CLI output
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/runtime-management/antigravity-cli-capability.test.ts (51 tests | 2 failed) 9501ms
+     ✓ classifies a missing CLI without exposing its configured path 31ms
+     ✓ accepts a compatible CLI and returns dynamic model slugs  314ms
+     ✓ ignores release text "1.2.10" and never requests --version 69ms
+     ✓ ignores release text "1.2.11" and never requests --version 71ms
+     ✓ ignores release text "1.2.12" and never requests --version 78ms
+     ✓ ignores release text "99.0.0" and never requests --version 74ms
+     ✓ ignores release text "unparseable release" and never requests --version 75ms
+     ✓ ignores release text "" and never requests --version 70ms
+     ✓ accepts required help flags on stderr 71ms
+     ✓ enables AGY availability using capabilities rather than release text  2080ms
+     ✓ makes AGY runtime availability await discovery and report only a safe failure 107ms
+     ✓ reports a signed-out CLI as not signed in with the recovery step and no CLI output 98ms
+     ✓ keeps a successful listing usable even when its output mentions signing in 77ms
+     ✓ names the update step for a CLI missing required options 36ms
+     ✓ returns a safe typed diagnostic for bad-flags 39ms
+     ✓ returns a safe typed diagnostic for invalid-models 73ms
+     ✓ returns a safe typed diagnostic for failed-models 69ms
+     ✓ returns a safe typed diagnostic for signin-models 71ms
+     ✓ returns a safe typed diagnostic for signin-models-stdout 70ms
+     ✓ returns a safe typed diagnostic for network-models 71ms
+     ✓ returns a safe typed diagnostic for empty-models 72ms
+     ✓ returns a safe typed diagnostic for failed-help 36ms
+     ✓ returns a safe typed diagnostic for oversized-help 34ms
+     ✓ returns a safe typed diagnostic for oversized-help-stderr 36ms
+     ✓ returns a safe typed diagnostic for oversized-models 69ms
+     ✓ returns a safe typed diagnostic for oversized-models-stderr 77ms
+     ✓ bounds hang-help (`--help`) at 10000 ms and returns a sanitized timeout rather than hanging 38ms
+     ✓ bounds hang-models (`models`) at 30000 ms and returns a sanitized timeout rather than hanging 74ms
+     × returns the real result of a `--help` that exited before its bound but whose close comes after it 1540ms
+     × times out a `--help` that exited but whose close does not come within the grace, logging the command and bound 1543ms
+     ✓ bounds a hung `--version` at 10 s and reads no version 66ms
+     ✓ shares one step deadline across --help and models: a hanging second command ends by it and is killed (AR-002)  1559ms
+     ✓ starts no command once the step deadline has passed 4ms
+     ✓ keeps a concurrent health request responsive while model discovery waits  584ms
+     ✓ treats CLI version "1.2.16" as supported=true 3ms
+     ✓ treats CLI version "1.2.17" as supported=true 1ms
+     ✓ treats CLI version "1.3.0" as supported=true 1ms
+     ✓ treats CLI version "1.10.0" as supported=true 1ms
+     ✓ treats CLI version "2.0.0" as supported=true 0ms
+     ✓ treats CLI version "agy version 1.2.16\n" as supported=true 0ms
+     ✓ treats CLI version "1.2.15" as supported=false 1ms
+     ✓ treats CLI version "1.1.99" as supported=false 1ms
+     ✓ treats CLI version "0.9.30" as supported=false 1ms
+     ✓ treats CLI version "" as supported=false 0ms
+     ✓ treats CLI version "garbage" as supported=false 0ms
+     ✓ treats CLI version null as supported=false 1ms
+     ✓ treats CLI version "1.2.16-rc.1" as supported=false 1ms
+     ✓ treats CLI version "1.2.17-rc.1" as supported=true 0ms
+     ✓ reads the trimmed `agy --version` output once per process 38ms
+     ✓ returns null for an unreadable version without caching the failure 72ms
+     ✓ returns null when the CLI is missing 1ms
+stdout | tests/unit/runtime-management/grok/grok-build-capability.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/runtime-management/grok/grok-build-capability.test.ts (7 tests | 2 failed) 2760ms
+     × ends a hanging CLI in the time-out diagnostic once the bound passes, logging the command and the bound 110ms
+     × reads the real result of a command that exited before its bound but whose close comes after it 1427ms
+     ✓ is available for a supported CLI with ACP agent mode (AC-001) 237ms
+     ✓ reports a missing command safely 2ms
+     ✓ rejects versions below the minimum and CLIs without agent-mode flags  306ms
+     ✓ discovers models through an initialize-only handshake (no session, no prompt) 285ms
+     ✓ classifies an empty catalog and a failed handshake without provider output  391ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > returns the real result of a `--help` that exited before its bound but whose close comes after it
+AssertionError: expected AgyDiscoveryError: Antigravity model disc… { diagnostic: { …(2) } } to be 'pending' // Object.is equality
+
+- Expected:
+"pending"
+
++ Received:
+AgyDiscoveryError {
+  "message": "Antigravity model discovery timed out; check the CLI and retry.",
+  "diagnostic": {
+    "code": "AGY_MODEL_DISCOVERY_TIMEOUT",
+    "message": "Antigravity model discovery timed out; check the CLI and retry.",
+  },
+  "name": "AgyDiscoveryError",
+}
+
+ ❯ tests/unit/runtime-management/antigravity-cli-capability.test.ts:215:23
+    213|       expect(outcome).toBe("pending"); // its stdout is still open
+    214|       await vi.advanceTimersByTimeAsync(10_000); // the `--help` bound…
+    215|       expect(outcome).toBe("pending");
+       |                       ^
+    216|       // Real time only (vi.waitFor would advance the faked timers and…
+    217|       const until = performance.now() + 10_000;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > times out a `--help` that exited but whose close does not come within the grace, logging the command and bound
+AssertionError: expected AgyDiscoveryError: Antigravity model disc… { diagnostic: { …(2) } } to be 'pending' // Object.is equality
+
+- Expected:
+"pending"
+
++ Received:
+AgyDiscoveryError {
+  "message": "Antigravity model discovery timed out; check the CLI and retry.",
+  "diagnostic": {
+    "code": "AGY_MODEL_DISCOVERY_TIMEOUT",
+    "message": "Antigravity model discovery timed out; check the CLI and retry.",
+  },
+  "name": "AgyDiscoveryError",
+}
+
+ ❯ tests/unit/runtime-management/antigravity-cli-capability.test.ts:233:23
+    231|       await realWait(1_500);
+    232|       await vi.advanceTimersByTimeAsync(10_000 + 999);
+    233|       expect(outcome).toBe("pending");
+       |                       ^
+    234|       await vi.advanceTimersByTimeAsync(1);
+    235|       expect(outcome).toMatchObject({ diagnostic: { code: "AGY_MODEL_D…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/runtime-management/grok/grok-build-capability.test.ts > Grok Build capability > ends a hanging CLI in the time-out diagnostic once the bound passes, logging the command and the bound
+AssertionError: expected { available: false, …(1) } to match object { available: false, …(1) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "available": false,
+    "diagnostic": {
+-     "code": "GROK_MODEL_DISCOVERY_TIMEOUT",
++     "code": "GROK_CLI_UNSUPPORTED",
+    },
+  }
+
+ ❯ tests/unit/runtime-management/grok/grok-build-capability.test.ts:43:59
+     41|     try {
+     42|       const startedAt = Date.now();
+     43|       expect(await probeGrokBuildCli({ timeoutMs: 100 })).toMatchObjec…
+       |                                                           ^
+     44|         available: false,
+     45|         diagnostic: { code: "GROK_MODEL_DISCOVERY_TIMEOUT" },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/runtime-management/grok/grok-build-capability.test.ts > Grok Build capability > reads the real result of a command that exited before its bound but whose close comes after it
+AssertionError: expected { available: false, …(1) } to be 'pending' // Object.is equality
+
+- Expected:
+"pending"
+
++ Received:
+{
+  "available": false,
+  "diagnostic": {
+    "code": "GROK_CLI_UNSUPPORTED",
+    "message": "Grok CLI version or agent mode is unsupported; update to 1.0.41 or later and retry.",
+  },
+}
+
+ ❯ tests/unit/runtime-management/grok/grok-build-capability.test.ts:73:23
+     71|       expect(outcome).toBe("pending");
+     72|       await vi.advanceTimersByTimeAsync(3_000); // the bound fires aft…
+     73|       expect(outcome).toBe("pending");
+       |                       ^
+     74|       const until = performance.now() + 15_000; // real time only: the…
+     75|       while (outcome === "pending" && performance.now() < until) await…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  4 failed | 54 passed (58)
+   Start at  03:14:00
+   Duration  13.82s (transform 1.32s, setup 79ms, import 784ms, tests 12.26s, environment 0ms)
+

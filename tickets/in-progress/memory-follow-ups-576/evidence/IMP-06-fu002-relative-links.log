@@ -1,0 +1,149 @@
+# IMP-06-fu002-relative-links.log
+# Check: IMP-06
+# Command: env -i HOME PATH TMPDIR pnpm -C autobyteus-web test:nuxt run components/fileExplorer/viewers; then MarkdownPreviewer.relativeLinks.spec.ts against the old previewer, renderer and resolver
+# Commit tested: working tree committed as 8c3810df95
+# Environment: macOS (Darwin 25.5), Node v22.23.1, pnpm; env -i; shared host, load average 42-53, fseventsd 137-172% CPU
+# Date: 2026-11-21
+# Note: 8 files, 48 tests pass; the old code fails the opening case, keeps the three preserved-behavior cases
+# ----------------------------------------------------------------------
+
+> autobyteus@1.5.14-beta.3 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web
+> cross-env NUXT_TEST=true vitest run components/fileExplorer/viewers
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+stderr | components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > shows the fetch error with Retry, and Retry loads the file
+[ExcelViewer] Error loading Excel file: Error: Failed to fetch file: 500 Server Error
+    at loadExcel (/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/components/fileExplorer/viewers/ExcelViewer.vue:89:15)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts (10 tests) 116ms
+stderr | components/fileExplorer/viewers/__tests__/AudioPlayer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/viewers/__tests__/MarkdownPreviewer.relativeLinks.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/viewers/__tests__/HtmlPreviewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/viewers/__tests__/VideoPlayer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/viewers/__tests__/MediaLoadingState.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/viewers/__tests__/PdfViewer.touchLayout.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/viewers/__tests__/MarkdownPreviewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/fileExplorer/viewers/__tests__/AudioPlayer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/viewers/__tests__/MediaLoadingState.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/viewers/__tests__/HtmlPreviewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/viewers/__tests__/VideoPlayer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/viewers/__tests__/MarkdownPreviewer.relativeLinks.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/viewers/__tests__/PdfViewer.touchLayout.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/viewers/__tests__/MarkdownPreviewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/fileExplorer/viewers/__tests__/MediaLoadingState.spec.ts (9 tests) 8ms
+ ✓ components/fileExplorer/viewers/__tests__/VideoPlayer.spec.ts (8 tests) 30ms
+ ✓ components/fileExplorer/viewers/__tests__/AudioPlayer.spec.ts (8 tests) 24ms
+ ✓ components/fileExplorer/viewers/__tests__/HtmlPreviewer.spec.ts (4 tests) 31ms
+ ✓ components/fileExplorer/viewers/__tests__/MarkdownPreviewer.spec.ts (2 tests) 11ms
+ ✓ components/fileExplorer/viewers/__tests__/MarkdownPreviewer.relativeLinks.spec.ts (4 tests) 47ms
+ ✓ components/fileExplorer/viewers/__tests__/PdfViewer.touchLayout.spec.ts (3 tests) 525ms
+
+ Test Files  8 passed (8)
+      Tests  48 passed (48)
+   Start at  03:31:01
+   Duration  8.97s (transform 4.34s, setup 52.36s, collect 1.11s, tests 793ms, environment 2.99s, prepare 1.63s)
+
+
+===== negative control: previewer, renderer and resolver as at f31553c9ee =====
+
+> autobyteus@1.5.14-beta.3 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web
+> cross-env NUXT_TEST=true vitest run components/fileExplorer/viewers/__tests__/MarkdownPreviewer.relativeLinks.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+stderr | components/fileExplorer/viewers/__tests__/MarkdownPreviewer.relativeLinks.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/fileExplorer/viewers/__tests__/MarkdownPreviewer.relativeLinks.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/fileExplorer/viewers/__tests__/MarkdownPreviewer.relativeLinks.spec.ts (4 tests | 1 failed) 43ms
+   × MarkdownPreviewer relative links > opens a relative link, relative to the document and without its fragment, as a preview tab of the same workspace 23ms
+     → expected "spy" to be called with arguments: [ 'b/c.md', 'ws-1' ]
+
+Number of calls: 0
+
+   ✓ MarkdownPreviewer relative links > opens nothing for a link that leaves the workspace root, or a root-absolute one 6ms
+   ✓ MarkdownPreviewer relative links > keeps external and #heading links as before 5ms
+   ✓ MarkdownPreviewer relative links > opens nothing in a preview that is not a workspace file (a node file, no document path) 8ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/fileExplorer/viewers/__tests__/MarkdownPreviewer.relativeLinks.spec.ts > MarkdownPreviewer relative links > opens a relative link, relative to the document and without its fragment, as a preview tab of the same workspace
+AssertionError: expected "spy" to be called with arguments: [ 'b/c.md', 'ws-1' ]
+
+Number of calls: 0
+
+ ❯ components/fileExplorer/viewers/__tests__/MarkdownPreviewer.relativeLinks.spec.ts:66:29
+     64|     const wrapper = render(workspaceFile)
+     65|     expect(click(wrapper, '../b/c.md#x')).toBe(true)
+     66|     expect(openFilePreview).toHaveBeenCalledWith('b/c.md', 'ws-1')
+       |                             ^
+     67|     click(wrapper, 'notes/today%20plan.md')
+     68|     expect(openFilePreview).toHaveBeenLastCalledWith('a/notes/today pl…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+   Start at  03:31:19
+   Duration  6.50s (transform 3.57s, setup 5.63s, collect 68ms, tests 43ms, environment 181ms, prepare 183ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

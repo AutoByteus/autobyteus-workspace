@@ -1,0 +1,1058 @@
+# IMP-09-server-typecheck-and-unit.log
+# Check: IMP-09
+# Command: env -i HOME PATH TMPDIR pnpm -C autobyteus-server-ts typecheck; pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-memory tests/unit/agent-episodic-catalog tests/unit/workspaces tests/unit/runtime-management tests/unit/llm-management tests/unit/agent-org-execution/agent-org-run-service-model-selection.test.ts tests/unit/agent-execution/backends/antigravity tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver.test.ts tests/architecture
+# Commit tested: 8850dc3f99
+# Environment: macOS (Darwin 25.5), Node v22.23.1, pnpm; env -i; shared host, load average 42-53, fseventsd 137-172% CPU
+# Date: 2026-11-21
+# ----------------------------------------------------------------------
+
+> autobyteus-server-ts@0.1.1 pretypecheck /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+> pnpm prepare:source
+
+
+> autobyteus-server-ts@0.1.1 prepare:source /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 183ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+> node ./scripts/typecheck.mjs
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 10.0s
+[typecheck] server tests (tsconfig.tests.json): 1006 errors, exit 2, 30.0s
+[typecheck] production errors: 0; test-file errors: 1006 in 315 files (baseline 1006 in 315 files)
+[typecheck] PASS
+
+===== server unit, impacted folders =====
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+ ✓ tests/architecture/application-framework-boundaries.test.ts (20 tests) 4119ms
+     ✓ keeps the complete current TS/JS/Vue tree inside AFB-001 through AFB-005  645ms
+     ✓ keeps required tool registration behind the single lifecycle readiness owner  1606ms
+     ✓ guards the exact SR-011 host definition and public/general run authority  831ms
+     ✓ guards the revised root-neutral Agent and flat-Team execution boundary  390ms
+stdout | tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts (79 tests) 21ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts (13 tests) 7241ms
+     ✓ closes retired symbols and provider-specific construction below supported roots  582ms
+     ✓ closes complete Agent manager and AgentRun construction to production roots  2387ms
+     ✓ selects one host validator and propagates it to the two exact lifecycle roots  1825ms
+     ✓ keeps context translation provider-neutral and all path authority explicit  1748ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts (24 tests) 105ms
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:77451) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts (21 tests) 65ms
+stdout | tests/unit/agent-execution/backends/antigravity/agy-agent-run-backend-factory.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-agent-run-backend-factory.test.ts (26 tests) 345ms
+stdout | tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:77499) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts (30 tests) 2290ms
+     ✓ reads the version from vendor wording and reports a missing or broken command as not installed  444ms
+     ✓ classifies sign-in from model discovery and reads the manifest version  491ms
+     ✓ Codex: a request that never answers ends at the deadline and releases the lease (AR-002)  307ms
+     ✓ Antigravity: agy -p /usage --output-format json; a failed command throws, a hanging one throws the step's time-out  371ms
+stdout | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > enables AGY availability using capabilities rather than release text
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > makes AGY runtime availability await discovery and report only a safe failure
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > reports a signed-out CLI as not signed in with the recovery step and no CLI output
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > bounds hang-help (`--help`) at 10000 ms and returns a sanitized timeout rather than hanging
+RUNTIME_PROBE_TIMED_OUT {
+  runtime: 'antigravity',
+  command: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-discovery-unit-ZGfTGX/agy-fake --help',
+  boundMs: 10000
+}
+
+stderr | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > bounds hang-models (`models`) at 30000 ms and returns a sanitized timeout rather than hanging
+RUNTIME_PROBE_TIMED_OUT {
+  runtime: 'antigravity',
+  command: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-discovery-unit-ZGfTGX/agy-fake models',
+  boundMs: 30000
+}
+
+stderr | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > bounds a hung `--version` at 10 s and reads no version
+RUNTIME_PROBE_TIMED_OUT {
+  runtime: 'antigravity',
+  command: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-discovery-unit-ZGfTGX/agy-fake --version',
+  boundMs: 10000
+}
+
+stderr | tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > shares one step deadline across --help and models: a hanging second command ends by it and is killed (AR-002)
+RUNTIME_PROBE_TIMED_OUT {
+  runtime: 'antigravity',
+  command: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-discovery-unit-ZGfTGX/agy-fake models',
+  boundMs: 1458
+}
+
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts (51 tests) 10855ms
+     ✓ accepts a compatible CLI and returns dynamic model slugs  420ms
+     ✓ enables AGY availability using capabilities rather than release text  756ms
+     ✓ returns the real result of a `--help` that exited before its bound but whose close comes after it  4148ms
+     ✓ times out a `--help` that exited but whose close does not come within the grace, logging the command and bound  1543ms
+     ✓ shares one step deadline across --help and models: a hanging second command ends by it and is killed (AR-002)  1566ms
+     ✓ keeps a concurrent health request responsive while model discovery waits  581ms
+ ✓ tests/unit/agent-episodic-catalog/episodic-catalog.test.ts (13 tests) 1384ms
+stdout | tests/unit/agent-execution/backends/antigravity/agy-turn-lifecycle.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-turn-lifecycle.test.ts (10 tests) 175ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-failure-cli-routing.test.ts (18 tests) 4208ms
+     ✓ retains new native capture and exact resumed conversation binding with monotonically new step indices  1848ms
+     ✓ retains ambiguous native plans and their normal summary stream/completion  730ms
+     ✓ linked_skills BACKGROUND_STEP leaves a daemon step open at turn end, then writes an exit message the production reader parses  370ms
+     ✓ linked_skills HOLD_TURN keeps the turn running until stopped; a tool call or invalid tool JSON is never held  379ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-status-service.test.ts (20 tests) 46ms
+stdout | tests/unit/agent-execution/backends/antigravity/agy-native-argument-lifecycle.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:77732) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-native-argument-lifecycle.test.ts (16 tests) 111ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-configured-skill-linker.test.ts (12 tests) 236ms
+stdout | tests/unit/llm-management/llm-providers/llm-provider-service.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:77768) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/llm-management/llm-providers/llm-provider-service.test.ts (11 tests) 9ms
+ ✓ tests/unit/agent-memory/agent-org-memory-explorer-service.test.ts (7 tests) 664ms
+stdout | tests/unit/agent-memory/runtime-switch-recorder.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-memory/runtime-switch-recorder.test.ts (11 tests) 535ms
+stdout | tests/unit/agent-org-execution/agent-org-run-service-model-selection.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:77790) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-org-execution/agent-org-run-service-model-selection.test.ts (12 tests) 18ms
+stdout | tests/unit/runtime-management/deepseek-harness/deepseek-harness-runtime.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:77792) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/runtime-management/deepseek-harness/deepseek-harness-runtime.test.ts (11 tests) 44ms
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts (7 tests) 123ms
+stdout | tests/unit/llm-management/services/model-catalog-service.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:77798) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/llm-management/services/model-catalog-service.test.ts (13 tests) 12ms
+ ✓ tests/unit/agent-memory/agent-conversation-activity-inspector.test.ts (17 tests) 84ms
+stdout | tests/unit/agent-execution/backends/antigravity/agy-compaction-checkpoint.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-compaction-checkpoint.test.ts (9 tests) 160ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-stream-process.test.ts (10 tests) 14ms
+ ✓ tests/unit/runtime-management/acp/acp-client-connection.test.ts (9 tests) 481ms
+ ✓ tests/unit/runtime-management/agent-runtimes/usage-limits/usage-limit-parsers.test.ts (11 tests) 10ms
+stdout | tests/unit/agent-memory/agent-run-memory-recorder.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:77834) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-memory/agent-run-memory-recorder.test.ts (5 tests) 69ms
+ ✓ tests/unit/agent-memory/agent-memory-explorer-service.test.ts (10 tests) 48ms
+ ✓ tests/architecture/app-data-migration-boundaries.test.ts (3 tests) 959ms
+     ✓ allows no import between production code and migration code, nor between migration folders  619ms
+     ✓ reaches every frozen file from a migration folder  333ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-background-task-monitor.test.ts (10 tests) 10ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-native-tool-arguments-reader.test.ts (27 tests) 124ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-task-exit-message-reader.test.ts (12 tests) 15ms
+stdout | tests/unit/runtime-management/grok/grok-build-capability.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/grok/grok-build-capability.test.ts (7 tests) 5804ms
+     ✓ reads the real result of a command that exited before its bound but whose close comes after it  4376ms
+     ✓ is available for a supported CLI with ACP agent mode (AC-001)  362ms
+     ✓ rejects versions below the minimum and CLIs without agent-mode flags  310ms
+     ✓ classifies an empty catalog and a failed handshake without provider output  372ms
+stdout | tests/unit/agent-execution/backends/antigravity/agy-production-live.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:77897) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/unit/agent-execution/backends/antigravity/agy-production-live.test.ts (2 tests | 2 skipped)
+stdout | tests/unit/llm-management/services/model-availability-service.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:77913) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/llm-management/services/model-availability-service.test.ts (7 tests) 7ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-brain-file.test.ts (10 tests) 59ms
+stdout | tests/unit/agent-execution/backends/antigravity/agy-restore-live.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:77921) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/unit/agent-execution/backends/antigravity/agy-restore-live.test.ts (1 test | 1 skipped)
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-model-normalizer.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-model-normalizer.test.ts (6 tests) 4ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-update-automation.test.ts (8 tests) 18ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-step-output-reader.test.ts (17 tests) 27ms
+stdout | tests/unit/agent-execution/backends/antigravity/agy-native-argument-persistence.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-native-argument-persistence.test.ts (2 tests) 13ms
+stdout | tests/unit/agent-execution/backends/antigravity/agy-mcp-team-live.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:77942) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/unit/agent-execution/backends/antigravity/agy-mcp-team-live.test.ts (2 tests | 2 skipped)
+stdout | tests/unit/agent-execution/backends/antigravity/agy-image-input-live.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:77948) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/unit/agent-execution/backends/antigravity/agy-image-input-live.test.ts (1 test | 1 skipped)
+stdout | tests/unit/agent-execution/backends/antigravity/agy-call-throughput.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-call-throughput.test.ts (5 tests) 7ms
+stdout | tests/unit/agent-execution/backends/antigravity/agy-native-argument-converter.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-native-argument-converter.test.ts (7 tests) 4ms
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-control-query.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:77968) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-control-query.test.ts (7 tests) 507ms
+ ✓ tests/unit/runtime-management/codex/client/codex-app-server-client.test.ts (5 tests) 7ms
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:78003) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts > retained SDK opening — actual pinned SDK / public hook > preserves SDK launch options and uses a distinct explicit debug log under test config root
+Claude CLI debug log: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-debug-owner-test-3kX13Y/config/debug/autobyteus-cli-870d02c0-283d-4a7d-af85-034b6f497a7d.log
+
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts (4 tests) 123ms
+ ✓ tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts (13 tests) 6ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-user-message-text.test.ts (8 tests) 4ms
+ ✓ tests/unit/llm-management/services/dynamic-model-source-lifecycle.test.ts (3 tests) 4ms
+stdout | tests/unit/runtime-management/grok/grok-usage-limits-acp.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/grok/grok-usage-limits-acp.test.ts (2 tests) 2739ms
+     ✓ ends a request that never answers at the step deadline  2527ms
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts (4 tests) 5ms
+stdout | tests/unit/llm-management/llm-providers/services/custom-llm-provider-runtime-sync-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/llm-management/llm-providers/services/custom-llm-provider-runtime-sync-service.test.ts (3 tests) 5ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-mcp-tool-call.test.ts (21 tests) 4ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-spawn-environment.test.ts (15 tests) 4ms
+ ✓ tests/unit/runtime-management/acp/acp-agent-capabilities.test.ts (4 tests) 4ms
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-model-selection-presentation.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-model-selection-presentation.test.ts (5 tests) 3ms
+ ✓ tests/unit/llm-management/services/new-run-llm-config-projection.test.ts (11 tests) 6ms
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-real-child-retry.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-real-child-retry.test.ts (1 test) 14089ms
+     ✓ reports failed stop while the same test-owned child stays alive, then proves same-child exit/IO on retry  14088ms
+ ✓ tests/unit/llm-management/services/run-model-selection-refusal.test.ts (6 tests) 3ms
+stdout | tests/unit/llm-management/llm-providers/custom-llm-provider-store.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/llm-management/llm-providers/custom-llm-provider-store.test.ts (3 tests) 68ms
+stdout | tests/unit/runtime-management/grok/grok-build-launch-profile.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/grok/grok-build-launch-profile.test.ts (4 tests) 5ms
+ ✓ tests/unit/runtime-management/codex/client/codex-app-server-client-manager.test.ts (2 tests) 4ms
+ ✓ tests/unit/runtime-management/agent-runtimes/runtime-process-operation.test.ts (6 tests) 3586ms
+     ✓ ends a running process on cancel, with SIGKILL when it ignores SIGTERM  3312ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-provider-diagnostic-sink.test.ts (3 tests) 8ms
+ ✓ tests/unit/runtime-management/agent-runtimes/runtime-version.test.ts (18 tests) 4ms
+ ✓ tests/unit/runtime-management/claude/claude-prompt-cache-setting.test.ts (5 tests) 3ms
+ ✓ tests/unit/agent-memory/memory-layout-cleanup-regression.test.ts (1 test) 594ms
+     ✓ keeps removed run-specific layout symbols out of source and tests  593ms
+ ✓ tests/unit/agent-memory/team-memory-explorer-service.test.ts (7 tests) 469ms
+ ✓ tests/unit/agent-memory/agent-memory-location-service.test.ts (7 tests) 429ms
+stdout | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > rejects segment lifecycle without an exact turn instead of inventing a fallback turn
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-f4Nosj/raw_traces_active.jsonl
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > does not substitute an active turn when forwarded input lacks its exact turn identity
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-rwZW8B/raw_traces_active.jsonl
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > does not create a fallback turn for a segment without exact turn identity
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-QF4gdT/raw_traces_active.jsonl
+
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts (25 tests) 363ms
+ ✓ tests/unit/agent-memory/run-folder-discovery.test.ts (10 tests) 183ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver.test.ts (11 tests) 9ms
+stdout | tests/unit/llm-management/on-demand-stored-model.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:78215) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/llm-management/on-demand-stored-model.test.ts (14 tests) 13ms
+stdout | tests/unit/agent-memory/agent-memory-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-memory/agent-memory-service.test.ts (7 tests) 60ms
+ ✓ tests/unit/agent-memory/agent-semantic-memory.test.ts (14 tests) 20ms
+ ✓ tests/unit/agent-episodic-catalog/catalog-markdown-renderer.test.ts (6 tests) 3ms
+ ✓ tests/architecture/application-agent-addressing-boundaries.test.ts (6 tests) 18ms
+stdout | tests/unit/agent-memory/definition-folder-names.test.ts > one name for a long ID everywhere (AC-013) > 255 bytes: the full name, the same for the semantic folder, the episodic folder and the semantic_ws_ lookup (autobyteus-576 AC-001)
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-folder-names-cjDtTg/memory/semantic/yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy%3A.
+
+stdout | tests/unit/agent-memory/definition-folder-names.test.ts > one name for a long ID everywhere (AC-013) > 256 bytes: the shortened name, the same for the semantic folder, the episodic folder and the semantic_ws_ lookup (autobyteus-576 AC-001)
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-folder-names-TTVa8J/memory/semantic/yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy#50b72cdf60e7fd9f.
+
+stdout | tests/unit/agent-memory/definition-folder-names.test.ts > one name for a long ID everywhere (AC-013) > prepares the semantic folder, writes the catalog and opens the Semantic tab's workspace under the same name
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-folder-names-6gZj9m/memory/semantic/team-local-agent%3Abundle-team__6170706c69636174696f6e2d6c6f63616c3a2532465573657273253246736f6d656f6e652532466175746f62#e3b8827b45d37ffe.
+
+ ✓ tests/unit/agent-memory/definition-folder-names.test.ts (18 tests) 53ms
+stdout | tests/unit/agent-memory/external-runtime-memory-writer.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-memory/external-runtime-memory-writer.test.ts (5 tests) 134ms
+stdout | tests/unit/workspaces/workspace-manager.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:78245) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reads registered roots without activation, temp cleanup, existence checks or registry writes
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates and registers a workspace
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-w0l7Ii
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-w0l7Ii.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates and registers a workspace
+Created and registered workspace ID: agent_ws_b2114ad8639e244e92c67435a96a55063303c1ddb5416acaa04e5c22bb172b66
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates and registers a workspace
+Closing FileSystemWorkspace agent_ws_b2114ad8639e244e92c67435a96a55063303c1ddb5416acaa04e5c22bb172b66
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace with the same config
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-RPghAz
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-RPghAz.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace with the same config
+Created and registered workspace ID: agent_ws_c71ff4d762a3b0de553cdee234de65a71e816dc5494c3c56c3d5dc9a79a499bd
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace with the same config
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-RPghAz
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-RPghAz.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace with the same config
+Reusing registered workspace ID: agent_ws_c71ff4d762a3b0de553cdee234de65a71e816dc5494c3c56c3d5dc9a79a499bd
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace with the same config
+Closing FileSystemWorkspace agent_ws_c71ff4d762a3b0de553cdee234de65a71e816dc5494c3c56c3d5dc9a79a499bd
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace when equivalent root paths normalize to the same workspace ID
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-FWBXbs
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-FWBXbs.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace when equivalent root paths normalize to the same workspace ID
+Created and registered workspace ID: agent_ws_dde75461f83872d79d0f640634e7395c27900ae47adf7670f9c0aac2e0d7cb93
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace when equivalent root paths normalize to the same workspace ID
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-FWBXbs/.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-FWBXbs.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace when equivalent root paths normalize to the same workspace ID
+Reusing registered workspace ID: agent_ws_dde75461f83872d79d0f640634e7395c27900ae47adf7670f9c0aac2e0d7cb93
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace when equivalent root paths normalize to the same workspace ID
+Closing FileSystemWorkspace agent_ws_dde75461f83872d79d0f640634e7395c27900ae47adf7670f9c0aac2e0d7cb93
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > routes the configured temp root to TempWorkspace instead of registering a filesystem workspace
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-AmLKtg/.
+Resolved configured temp workspace root to TempWorkspace.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > routes the configured temp root to TempWorkspace instead of registering a filesystem workspace
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-AmLKtg
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-AmLKtg.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-AmLKtg with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > routes the configured temp root to TempWorkspace instead of registering a filesystem workspace
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > decommissions persisted filesystem entries for the configured temp root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-kjYWcD.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > decommissions persisted filesystem entries for the configured temp root
+Removed 1 persisted filesystem registry entry for the configured temp workspace root.
+Closing FileSystemWorkspace agent_ws_bfea0ec2765b098a21ca435d831ed6cef214c5caf72ef3b65a9b2433f5c6f795
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > decommissions persisted filesystem entries for the configured temp root
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-kjYWcD
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-kjYWcD.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-kjYWcD with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > decommissions persisted filesystem entries for the configured temp root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-hg4i3g.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > decommissions persisted filesystem entries for the configured temp root
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > autobyteus-32 REQ-008: leaves internal workspaces out of the list while internal agents are hidden; opening one by ID still works
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-kAKbJC
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-kAKbJC.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > autobyteus-32 REQ-008: leaves internal workspaces out of the list while internal agents are hidden; opening one by ID still works
+Created and registered workspace ID: agent_ws_14d2b0bd5a2f6555dae05ac3e6387600fe997c7ee519e18488c4f26c97e222ca
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > autobyteus-32 REQ-008: leaves internal workspaces out of the list while internal agents are hidden; opening one by ID still works
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-H2NGjZ/internal-workspaces/autobyteus-model-router
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-H2NGjZ/internal-workspaces/autobyteus-model-router.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > autobyteus-32 REQ-008: leaves internal workspaces out of the list while internal agents are hidden; opening one by ID still works
+Created and registered workspace ID: agent_ws_901e3fd10a854156b21fe68b43ced92b1f4db52e344a230291903aed9bef2712
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > autobyteus-32 REQ-008: leaves internal workspaces out of the list while internal agents are hidden; opening one by ID still works
+Closing FileSystemWorkspace agent_ws_14d2b0bd5a2f6555dae05ac3e6387600fe997c7ee519e18488c4f26c97e222ca
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > autobyteus-32 REQ-008: leaves internal workspaces out of the list while internal agents are hidden; opening one by ID still works
+Closing FileSystemWorkspace agent_ws_901e3fd10a854156b21fe68b43ced92b1f4db52e344a230291903aed9bef2712
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-J0i087
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-J0i087.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Created and registered workspace ID: agent_ws_80b674b9bf9da5cf8f9ddbb7b1549c3f983ccb4c8d352acd527974b9e40d8d9e
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-S1aJ5F
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-S1aJ5F.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Created and registered workspace ID: agent_ws_a3eaadd9817de1e2af17d515100ae2caccdb606b7351e8573ee134441d4b7cb2
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Closing FileSystemWorkspace agent_ws_80b674b9bf9da5cf8f9ddbb7b1549c3f983ccb4c8d352acd527974b9e40d8d9e
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Closing FileSystemWorkspace agent_ws_a3eaadd9817de1e2af17d515100ae2caccdb606b7351e8573ee134441d4b7cb2
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates the temp workspace on first call
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-yYpSit
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-yYpSit.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-yYpSit with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates the temp workspace on first call
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns cached temp workspace on subsequent calls
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-rn07NT
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-rn07NT.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-rn07NT with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns cached temp workspace on subsequent calls
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-AaJjf7
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-AaJjf7.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Created and registered workspace ID: agent_ws_0dc54a0bf37170406c76b918984e667f647671bef921286840b1a285c1d2b3b8
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Closing FileSystemWorkspace agent_ws_0dc54a0bf37170406c76b918984e667f647671bef921286840b1a285c1d2b3b8
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-AaJjf7
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-AaJjf7.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Created and registered workspace ID: agent_ws_0dc54a0bf37170406c76b918984e667f647671bef921286840b1a285c1d2b3b8
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Closing FileSystemWorkspace agent_ws_0dc54a0bf37170406c76b918984e667f647671bef921286840b1a285c1d2b3b8
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > removes a registered workspace entry without deleting workspace files
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-dv8MOY
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-dv8MOY.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > removes a registered workspace entry without deleting workspace files
+Created and registered workspace ID: agent_ws_bedea1fde15f27e03c9af4fb4b138a7329bb1418f15e24d61ee22198f6878803
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > removes a registered workspace entry without deleting workspace files
+Closing FileSystemWorkspace agent_ws_bedea1fde15f27e03c9af4fb4b138a7329bb1418f15e24d61ee22198f6878803
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates the temp workspace from its stable workspace ID
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-bDBiro
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-bDBiro.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-bDBiro with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates the temp workspace from its stable workspace ID
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > rebinds a cached skill workspace after generation publication and rejects a removed skill
+Creating on-demand SkillWorkspace for: writer
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > rebinds a cached skill workspace after generation publication and rejects a removed skill
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-pbS1BJ/g1.
+Initialized SkillWorkspace for skill 'writer' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-pbS1BJ/g1
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > rebinds a cached skill workspace after generation publication and rejects a removed skill
+Closing FileSystemWorkspace skill_ws_writer
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > rebinds a cached skill workspace after generation publication and rejects a removed skill
+Creating on-demand SkillWorkspace for: writer
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > rebinds a cached skill workspace after generation publication and rejects a removed skill
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-pbS1BJ/g2.
+Initialized SkillWorkspace for skill 'writer' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-pbS1BJ/g2
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > rebinds a cached skill workspace after generation publication and rejects a removed skill
+Closing FileSystemWorkspace skill_ws_writer
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > rebinds a cached skill workspace after generation publication and rejects a removed skill
+Creating on-demand SkillWorkspace for: writer
+
+stderr | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > rebinds a cached skill workspace after generation publication and rejects a removed skill
+Failed to create skill workspace skill_ws_writer: Error: SkillWorkspace creation failed for 'writer': Error: Skill 'writer' not found
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > refuses a path that is not yet registered unless it is an existing absolute folder, and registers nothing
+Creating new workspace for rootPath: relative/dir
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts/relative/dir.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > refuses a path that is not yet registered unless it is an existing absolute folder, and registers nothing
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-R8PiAZ/missing
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-R8PiAZ/missing.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > refuses a path that is not yet registered unless it is an existing absolute folder, and registers nothing
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-R8PiAZ/notes.txt/below-a-file
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-R8PiAZ/notes.txt/below-a-file.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > refuses a path that is not yet registered unless it is an existing absolute folder, and registers nothing
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-R8PiAZ/notes.txt
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-R8PiAZ/notes.txt.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > refuses an unregistered missing folder on the server-internal registration path too
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-2gug49/gone
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-2gug49/gone.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > accepts an already registered path whose folder no longer exists
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-fNfTaN/deleted-folder
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-fNfTaN/deleted-folder.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > accepts an already registered path whose folder no longer exists
+Created and registered workspace ID: agent_ws_2eed40e1bdaadacf331017d342e20dcc2318602ecfccf86b2b50764c55544c19
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > accepts an already registered path whose folder no longer exists
+Closing FileSystemWorkspace agent_ws_2eed40e1bdaadacf331017d342e20dcc2318602ecfccf86b2b50764c55544c19
+
+ ✓ tests/unit/workspaces/workspace-manager.test.ts (18 tests) 88ms
+ ✓ tests/unit/agent-memory/runtime-tool-trace-sequencer.test.ts (11 tests) 32ms
+stdout | tests/unit/llm-management/run-model-selection-service.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:78247) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/llm-management/run-model-selection-service.test.ts (24 tests) 9ms
+stdout | tests/unit/llm-management/model-metadata-provisioning-service.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:78254) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/llm-management/model-metadata-provisioning-service.test.ts (10 tests) 8ms
+stdout | tests/unit/workspaces/workspace-registry-store.test.ts > WorkspaceRegistryStore > preserves existing registry entries when load and upsert overlap
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+
+ ✓ tests/unit/workspaces/workspace-registry-store.test.ts (5 tests) 28ms
+ ✓ tests/unit/agent-memory/memory-group-members.test.ts (5 tests) 23ms
+(node:78259) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/llm-management/provider-usage/provider-usage-readers.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/llm-management/provider-usage/provider-usage-readers.test.ts (6 tests) 108ms
+stdout | tests/unit/workspaces/semantic-memory-workspace.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:78276) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/workspaces/semantic-memory-workspace.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+
+stdout | tests/unit/workspaces/semantic-memory-workspace.test.ts > SemanticMemoryWorkspace through WorkspaceManager > opens an agent's existing folder and the global folder on demand: read-only, links not followed
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/semantic-memory-workspace-sgllyH/memory/semantic/team-local-agent%3Ase%3Adesigner.
+
+stdout | tests/unit/workspaces/semantic-memory-workspace.test.ts > SemanticMemoryWorkspace through WorkspaceManager > opens an agent's existing folder and the global folder on demand: read-only, links not followed
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/semantic-memory-workspace-sgllyH/memory/semantic-global.
+
+stdout | tests/unit/workspaces/semantic-memory-workspace.test.ts > SemanticMemoryWorkspace through WorkspaceManager > opens an agent's existing folder and the global folder on demand: read-only, links not followed
+Closing FileSystemWorkspace semantic_ws_team-local-agent%3Ase%3Adesigner
+
+stdout | tests/unit/workspaces/semantic-memory-workspace.test.ts > SemanticMemoryWorkspace through WorkspaceManager > opens an agent's existing folder and the global folder on demand: read-only, links not followed
+Closing FileSystemWorkspace semantic_global_ws
+
+stdout | tests/unit/workspaces/semantic-memory-workspace.test.ts > SemanticMemoryWorkspace through WorkspaceManager > never lists a semantic memory workspace (AC-011)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/semantic-memory-workspace-sgllyH/listed-KXo8Ei
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/semantic-memory-workspace-sgllyH/listed-KXo8Ei.
+
+stdout | tests/unit/workspaces/semantic-memory-workspace.test.ts > SemanticMemoryWorkspace through WorkspaceManager > never lists a semantic memory workspace (AC-011)
+Created and registered workspace ID: agent_ws_7f3fe4e20b4436ad9cf814aef3a89c51c3e195c2f923fe6a55c3769d78e9d33c
+
+stdout | tests/unit/workspaces/semantic-memory-workspace.test.ts > SemanticMemoryWorkspace through WorkspaceManager > never lists a semantic memory workspace (AC-011)
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/semantic-memory-workspace-sgllyH/memory/semantic/team-local-agent%3Ase%3Adesigner.
+
+stdout | tests/unit/workspaces/semantic-memory-workspace.test.ts > SemanticMemoryWorkspace through WorkspaceManager > never lists a semantic memory workspace (AC-011)
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/semantic-memory-workspace-sgllyH/memory/semantic-global.
+
+stdout | tests/unit/workspaces/semantic-memory-workspace.test.ts > SemanticMemoryWorkspace through WorkspaceManager > never lists a semantic memory workspace (AC-011)
+Closing FileSystemWorkspace agent_ws_7f3fe4e20b4436ad9cf814aef3a89c51c3e195c2f923fe6a55c3769d78e9d33c
+
+stdout | tests/unit/workspaces/semantic-memory-workspace.test.ts > SemanticMemoryWorkspace through WorkspaceManager > never lists a semantic memory workspace (AC-011)
+Closing FileSystemWorkspace semantic_ws_team-local-agent%3Ase%3Adesigner
+
+stdout | tests/unit/workspaces/semantic-memory-workspace.test.ts > SemanticMemoryWorkspace through WorkspaceManager > never lists a semantic memory workspace (AC-011)
+Closing FileSystemWorkspace semantic_global_ws
+
+stdout | tests/unit/workspaces/semantic-memory-workspace.test.ts > SemanticMemoryWorkspace through WorkspaceManager > refuses a semantic workspace as a run's workspace, opened or not, without creating one (AC-011)
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/semantic-memory-workspace-sgllyH/memory/semantic-global.
+
+stdout | tests/unit/workspaces/semantic-memory-workspace.test.ts > SemanticMemoryWorkspace through WorkspaceManager > refuses a semantic workspace as a run's workspace, opened or not, without creating one (AC-011)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/semantic-memory-workspace-sgllyH/runnable-fFvYSb
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/semantic-memory-workspace-sgllyH/runnable-fFvYSb.
+
+stdout | tests/unit/workspaces/semantic-memory-workspace.test.ts > SemanticMemoryWorkspace through WorkspaceManager > refuses a semantic workspace as a run's workspace, opened or not, without creating one (AC-011)
+Created and registered workspace ID: agent_ws_26b6432449b95b5713c3627e588dce5ca61a290cf6592f1704edfdc60c8d8112
+
+stdout | tests/unit/workspaces/semantic-memory-workspace.test.ts > SemanticMemoryWorkspace through WorkspaceManager > refuses a semantic workspace as a run's workspace, opened or not, without creating one (AC-011)
+Closing FileSystemWorkspace semantic_global_ws
+
+stdout | tests/unit/workspaces/semantic-memory-workspace.test.ts > SemanticMemoryWorkspace through WorkspaceManager > refuses a semantic workspace as a run's workspace, opened or not, without creating one (AC-011)
+Closing FileSystemWorkspace agent_ws_26b6432449b95b5713c3627e588dce5ca61a290cf6592f1704edfdc60c8d8112
+
+stdout | tests/unit/workspaces/semantic-memory-workspace.test.ts > SemanticMemoryWorkspace through WorkspaceManager > refuses writes on the semantic workspace only, and reading a path through a link (AC-006)
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/semantic-memory-workspace-sgllyH/memory/semantic/team-local-agent%3Ase%3Adesigner.
+
+stdout | tests/unit/workspaces/semantic-memory-workspace.test.ts > SemanticMemoryWorkspace through WorkspaceManager > refuses writes on the semantic workspace only, and reading a path through a link (AC-006)
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/semantic-memory-workspace-sgllyH.
+
+stdout | tests/unit/workspaces/semantic-memory-workspace.test.ts > SemanticMemoryWorkspace through WorkspaceManager > refuses writes on the semantic workspace only, and reading a path through a link (AC-006)
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/semantic-memory-workspace-sgllyH/memory/semantic/team-local-agent%3Ase%3Adesigner.
+
+stdout | tests/unit/workspaces/semantic-memory-workspace.test.ts > SemanticMemoryWorkspace through WorkspaceManager > refuses writes on the semantic workspace only, and reading a path through a link (AC-006)
+Closing FileSystemWorkspace semantic_ws_team-local-agent%3Ase%3Adesigner
+
+ ✓ tests/unit/workspaces/semantic-memory-workspace.test.ts (7 tests) 24ms
+stdout | tests/unit/agent-memory/runtime-memory-system-task-notification.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-memory/runtime-memory-system-task-notification.test.ts > system task notification memory trace (REQ-003, ARCH-F-004) > does not record notices from other producers (history behavior unchanged)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-notice-HcP9fq/raw_traces_active.jsonl
+
+ ✓ tests/unit/agent-memory/runtime-memory-system-task-notification.test.ts (5 tests) 12ms
+ ✓ tests/architecture/node-access-boundaries.test.ts (4 tests) 648ms
+     ✓ names every scenario of the contract's table (NAS-01…) in at least one test  407ms
+ ✓ tests/architecture/e2e-node-credential-paths.test.ts (4 tests) 57ms
+stdout | tests/unit/llm-management/gemini-configuration-service.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/llm-management/gemini-configuration-service.test.ts > GeminiConfigurationService explicit mode commands > starts with no selected mode and no implicit priority
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-IXXxRK
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-IXXxRK/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-IXXxRK/.env
+◇ injected env (3) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-IXXxRK/.env // tip: ⌘ suppress logs { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-IXXxRK
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-IXXxRK/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-IXXxRK/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-IXXxRK/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-IXXxRK/memory
+============================================================
+
+stdout | tests/unit/llm-management/gemini-configuration-service.test.ts > GeminiConfigurationService explicit mode commands > saves options independently and activates only through an explicit command
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-FFLPMs
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-FFLPMs/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-FFLPMs/.env
+◇ injected env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-FFLPMs/.env // tip: ⌘ enable debugging { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-FFLPMs
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-FFLPMs/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-FFLPMs/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-FFLPMs/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-FFLPMs/memory
+============================================================
+
+stdout | tests/unit/llm-management/gemini-configuration-service.test.ts > GeminiConfigurationService explicit mode commands > keeps active mode unchanged when its configuration is replaced
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-ZDr1Ce
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-ZDr1Ce/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-ZDr1Ce/.env
+◇ injected env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-ZDr1Ce/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-ZDr1Ce
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-ZDr1Ce/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-ZDr1Ce/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-ZDr1Ce/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-ZDr1Ce/memory
+============================================================
+
+stdout | tests/unit/llm-management/gemini-configuration-service.test.ts > GeminiConfigurationService explicit mode commands > rejects activating an incomplete option without persisting a selector
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-aHnK1A
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-aHnK1A/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-aHnK1A/.env
+◇ injected env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-aHnK1A/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-aHnK1A
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-aHnK1A/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-aHnK1A/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-aHnK1A/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-aHnK1A/memory
+============================================================
+
+stdout | tests/unit/llm-management/gemini-configuration-service.test.ts > GeminiConfigurationService explicit mode commands > returns a truthful partial result when save succeeds but activation fails
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-0sKqz8
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-0sKqz8/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-0sKqz8/.env
+◇ injected env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-0sKqz8/.env // tip: ⌘ enable debugging { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-0sKqz8
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-0sKqz8/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-0sKqz8/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-0sKqz8/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-0sKqz8/memory
+============================================================
+
+ ✓ tests/unit/llm-management/gemini-configuration-service.test.ts (5 tests) 17ms
+stdout | tests/unit/agent-memory/external-runtime-user-message-identity.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-memory/external-runtime-user-message-identity.test.ts > the identity of a stored external-runtime user message > stores message_id and dedupe_key from the forwarded message's metadata, and the projection returns them
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-user-identity-yTWmB7/agents/run-1/raw_traces_manifest.json
+
+stderr | tests/unit/agent-memory/external-runtime-user-message-identity.test.ts > the identity of a stored external-runtime user message > writes no identity keys for a message without identity, and an older record without them still loads
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-user-identity-89N3VO/agents/run-1/raw_traces_manifest.json
+
+ ✓ tests/unit/agent-memory/external-runtime-user-message-identity.test.ts (2 tests) 9ms
+ ✓ tests/architecture/agent-tool-result-boundaries.test.ts (5 tests) 26ms
+ ✓ tests/architecture/user-file-replies.test.ts (3 tests) 63ms
+ ✓ tests/unit/agent-memory/runtime-handover-reader.test.ts (7 tests) 9ms
+stderr | tests/unit/agent-memory/memory-file-store.test.ts > MemoryFileStore > returns null for missing or invalid JSON
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-uGizjS/missing.json
+Failed to decode JSON file /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-uGizjS/bad.json: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+
+stderr | tests/unit/agent-memory/memory-file-store.test.ts > MemoryFileStore > reads JSONL and skips malformed lines
+Skipping malformed JSONL line in /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-oBcj54/agents/agent/raw_traces_active.jsonl: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+
+stderr | tests/unit/agent-memory/memory-file-store.test.ts > MemoryFileStore > returns empty array for missing JSONL
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-ZfoZdr/missing.jsonl
+
+ ✓ tests/unit/agent-memory/memory-file-store.test.ts (8 tests) 10ms
+ ✓ tests/architecture/projects-boundaries.test.ts (4 tests) 50ms
+ ✓ tests/unit/agent-memory/agent-memory-layout.test.ts (5 tests) 6ms
+stdout | tests/unit/agent-memory/raw-trace-record-normalizer.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-memory/raw-trace-record-normalizer.test.ts > raw trace record normalizer outcome presence > isolates malformed run rows and preserves strict run/turn scope
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+ ✓ tests/unit/agent-memory/raw-trace-record-normalizer.test.ts (6 tests) 5ms
+ ✓ tests/unit/agent-episodic-catalog/catalog-entry-builder.test.ts (2 tests) 4ms
+ ✓ tests/architecture/server-package-contents.test.ts (5 tests) 5860ms
+ ✓ tests/architecture/tracked-imports.test.ts (2 tests) 2277ms
+     ✓ finds no tracked code importing an untracked file in this repository  2046ms
+stdout | tests/unit/workspaces/workspace-removal-guard.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:78532) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/workspaces/workspace-removal-guard.test.ts (3 tests) 4ms
+stdout | tests/unit/llm-management/stored-model-offer.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:78544) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/llm-management/stored-model-offer.test.ts (5 tests) 7ms
+ ✓ tests/unit/runtime-management/probe-time-bound.test.ts (5 tests) 6ms
+stdout | tests/architecture/web-generated-graphql-current.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:78553) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/architecture/web-generated-graphql-current.test.ts (1 test) 4164ms
+     ✓ equals the web codegen output for the current server schema, and the check fails on a changed schema  4056ms
+ ✓ tests/unit/agent-episodic-catalog/episodic-catalog-store.test.ts (2 tests) 25ms
+ ✓ tests/unit/runtime-management/read-deadline.test.ts (3 tests) 307ms
+     ✓ the command runner: an ordinary time-out is an ordinary failure; one set by the deadline is the step's time-out  305ms
+stdout | tests/unit/runtime-management/runtime-availability-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/runtime-availability-service.test.ts (2 tests) 4ms
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > uses the fixed TEMP_WORKSPACE_ID
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-65dd1Y.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-65dd1Y with fixed ID 'temp_ws_default'
+
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > returns a friendly name
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-4owfTz.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-4owfTz with fixed ID 'temp_ws_default'
+
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > inherits from FileSystemWorkspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-N913Hd.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-N913Hd with fixed ID 'temp_ws_default'
+
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > stores rootPath in config
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-LtjYZ6.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-LtjYZ6 with fixed ID 'temp_ws_default'
+
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > initializes metadata only and acquires file explorer explicitly
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-Hm5o7Y.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-Hm5o7Y with fixed ID 'temp_ws_default'
+
+stderr | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > initializes metadata only and acquires file explorer explicitly
+FileSystemWorkspace.initialize() is metadata-only for temp_ws_default; file explorer acquisition is explicit.
+
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > initializes metadata only and acquires file explorer explicitly
+Created WorkspaceFileExplorer for temp_ws_default (unit-test).
+
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > initializes metadata only and acquires file explorer explicitly
+Closing FileSystemWorkspace temp_ws_default
+
+ ✓ tests/unit/workspaces/temp-workspace.test.ts (5 tests) 6ms
+stdout | tests/unit/workspaces/workspace-manager-skill-integration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:78664) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/workspaces/workspace-manager-skill-integration.test.ts > WorkspaceManager skill integration > creates and caches a SkillWorkspace for skill_ws_ IDs
+Creating on-demand SkillWorkspace for: MySkill
+
+stdout | tests/unit/workspaces/workspace-manager-skill-integration.test.ts > WorkspaceManager skill integration > throws for unknown workspace IDs
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-follow-ups-576/autobyteus-server-ts
+
+ ✓ tests/unit/workspaces/workspace-manager-skill-integration.test.ts (3 tests) 5ms
+stdout | tests/unit/llm-management/claude-model-catalog.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:78670) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/llm-management/claude-model-catalog.test.ts (3 tests) 3ms
+ ✓ tests/unit/llm-management/codex-model-catalog-deadline.test.ts (2 tests) 157ms
+ ✓ tests/architecture/runtime-labels-source-check.test.ts (1 test) 1195ms
+     ✓ do not occur as string literals in current source outside the sealed migration area  1194ms
+ ✓ tests/unit/runtime-management/acp/acp-layer-neutrality.test.ts (2 tests) 21ms
+ ✓ tests/unit/runtime-management/codex/codex-sandbox-mode-setting.test.ts (3 tests) 2ms
+ ✓ tests/unit/runtime-management/agent-runtimes/sign-in-browser-availability.test.ts (4 tests) 2ms
+stdout | tests/unit/workspaces/skill-workspace.test.ts > SkillWorkspace > creates a workspace for an existing skill
+Created metadata-only FileSystemWorkspace at /opt/skills/TestSkill.
+Initialized SkillWorkspace for skill 'TestSkill' at /opt/skills/TestSkill
+
+ ✓ tests/unit/workspaces/skill-workspace.test.ts (2 tests) 3ms
+stdout | tests/unit/workspaces/filesystem-workspace-id.test.ts > FileSystemWorkspace ID > derives a deterministic workspaceId from the normalized root path
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace.
+
+stdout | tests/unit/workspaces/filesystem-workspace-id.test.ts > FileSystemWorkspace ID > canonicalizes the root path before deriving the workspaceId
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace.
+
+stdout | tests/unit/workspaces/filesystem-workspace-id.test.ts > FileSystemWorkspace ID > accepts an explicit workspaceId when provided
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace.
+
+ ✓ tests/unit/workspaces/filesystem-workspace-id.test.ts (3 tests) 3ms
+ ✓ tests/unit/workspaces/workspace-path-utils.test.ts (3 tests) 2ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-setting-sources.test.ts (3 tests) 2ms
+ ✓ tests/unit/runtime-management/claude/claude-shell-time-limit-setting.test.ts (2 tests) 2ms
+ ✓ tests/unit/runtime-management/model-context-capacity.test.ts (1 test) 2ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-native-tool-policy.test.ts (1 test) 2ms
+
+ Test Files  122 passed | 4 skipped (126)
+      Tests  1113 passed | 6 skipped (1119)
+   Start at  03:55:03
+   Duration  142.07s (transform 7.25s, setup 2.79s, import 48.08s, tests 79.36s, environment 6ms)
+
