@@ -1,0 +1,10 @@
+# local reproduction on 90c4958a35 (the tagged commit), 2026-11-21
+pnpm --filter "{./autobyteus-web}^..." run build  -> exit 0
+pnpm -C autobyteus-web build:mobile-web --demo  -> exit 1
+  if (problems.length) throw new Error(`The demo build's operations are not all answered:\n${problems.join('\n')}`)
+Error: The demo build's operations are not all answered:
+compiled but neither answered nor listed as unreachable: AgentSemanticMemoryFolder
+compiled but neither answered nor listed as unreachable: GlobalSemanticMemoryFolder
+compiled but neither answered nor listed as unreachable: ListAgentEpisodes
+compiled but neither answered nor listed as unreachable: ListMemoryGroupMembers
+listed as unreachable but handled or no longer compiled: ListAgentRunsWithMemory
