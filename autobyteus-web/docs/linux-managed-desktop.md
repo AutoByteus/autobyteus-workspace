@@ -51,8 +51,9 @@ With **Update automatically** on, the app downloads and verifies a newer release
 while work continues. As soon as an eligible update is verified, AutoByteus stops the
 server, installs the update and reopens through its original launcher. Typing or an
 active agent does not postpone installation. Recorded busy runs receive the existing
-update restart notice after reopening. An intentional quit stays
-closed, even if a restart was already in progress. Without a launcher restart
+update restart notice after reopening. If you quit before verification finishes,
+the old version stays installed and closed. If you quit after the verified update
+starts installing, installation finishes but the app stays closed. Without a launcher restart
 channel, automatic installation waits for your next quit. **Install and Restart** explicitly requests activation now and
 asks the original desktop launcher to reopen the fixed outer AppImage after the
 old app and server stop. Electron does not launch a successor from a transient

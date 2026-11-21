@@ -1,0 +1,16 @@
+# Delivery verification — autobyteus-16 / DR-001
+**Decision:** repository only. No release, version bump, tag, deployment or change to the user's running desktop. 1.5.18 and 1.5.19 were test versions, not release targets. RELEASE.md at origin/personal 9514a05a0e; retained the assigned feature/ branch instead of renaming to the guide's example codex/. No release-rule change. See docs-sync-report.md, handoff-summary.md and release-notes.md.
+
+**Base refresh:** clean API-REV-001 candidate c347611f99 already included fetched origin/personal 9514a05a0e. Five ticket commits, zero missing base commits. No merge, safety checkpoint or new executable run needed. Confirmed unchanged target after audit. Product 2d26c0fb6a4a; IR-001, SR-001–003; Medium / Low direct route: independent architecture/code/test review N/A.
+
+**Evidence judgement:** AC-001–007 proven to the stated surfaces. QA 96% after required broader desktop/live API/lifecycle execution (repository alone 79%). The 4 ms observation is the gap between two renderer state events, not total installation time or a performance guarantee. No accepted unverified risk (DEC-*), no further test or user check needed.
+
+| AC | Evidence opened, under evidence/ | Judgement |
+|---|---|---|
+|001, 007|API-02-before/after.log, API-02-states.jsonl, API-02-real-inference.jsonl, API-02-notification.png|Proven. With actual input and outstanding inference, ready at 16:21:15.526; installing at .530 before inference disconnected. Verified signed successor and one healthy server, workspace intact, visible success notice, no click to reopen.|
+|002|API-01-continued-turn.json, API-02-real-inference.jsonl, API-02-continued.png|Proven. Model received interruption notice naming update to 1.5.19; user sent a further turn in the original run and its specific completed reply appeared in the GUI. Built RR-04 also checked persisted response. This is continuation of the run, not uninterrupted execution of the old turn.|
+|003|API-03-quit.txt|Proven. During signature fetch, last-window close left old protected digest and no GUI/server. After admission on the next launch, close left new digest, same workspace hash and no GUI/server during 25 s observation.|
+|004, 005|API-03-manual-and-enable.txt, API-03-row-zh.png, API-02-installing/switch-en/switch-zh PNG and API-01-results.txt|Proven. With switch off the manual verified stage waited; enabling it started installation. Bilingual installing/switch surfaces observed; other eligibility/block/refusal outcomes controlled at owner layer.|
+|006|API-01-results.txt|Proven at prescribed native/portable/disabled policy surface. 195 Electron, 46 renderer, 96 restart/resume and architecture cases passed; no claim about a new cross-platform GUI test.|
+
+**Limits / rollback:** disposable Ubuntu 24.04.5 x64 GNOME, actual signed protected packages and two real embedded-server processes, test trust/feed, scripted local inference. No production credentials, public feed, GUI rollout or destructive writer fault injection. No persistence migration; existing workspace and run were directly reused. A source rollback would revert the merge through normal review, not force replacement of an installed image. No new follow-up.
