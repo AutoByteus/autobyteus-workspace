@@ -2,6 +2,50 @@
 
 ## Review Round Meta
 
+Latest round (round 4, `CRR-004`): **API/E2E Failure-Origin Review** of API-REV-002 (Fail: F-3). The round-3 implementation review below (`CRR-003`) stays as the structural baseline. This round updates only the affected findings, score rationale, classification and latest result.
+
+- Review Entry Point (round 4): `API/E2E Failure-Origin Review`
+- Current Code Review Revision ID: `CRR-004`
+- Review Scope (round 4): `N/A` (failure-origin round)
+- Trigger: API/E2E engineer, API-REV-002 Fail (F-3); F-1, F-2's tag, O-1 and O-2 pass
+- Source under test: `2bd8a470bf` (IR-002); tests `8789b97a41`; reports and evidence `d31f99ec92`
+- Coverage Investigation / Execution Coverage Report / API/E2E Revision Record Reviewed: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md` (API-REV-002)
+- Failing Scenario IDs: F-3 (TF-03 `openedProjection`/`openedFileChanges`; TFU-03, TFU-04; AC-003, DEC-002; SR-010 "the row still opens")
+- Exact Failing Commands / Execution Mode:
+  - `env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<wt>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts --no-watch`
+  - `node tickets/in-progress/team-run-follows-definition/probes/team-follows-ui-probe.mjs --output-dir <dir>` (built backend, nuxt dev, Chromium; TFU-04 with a real Codex member, auto-execute off)
+- Failure Evidence Paths: `evidence/API-TF-r2/TF-03.json` (`openedProjection`, `openedFileChanges`), `evidence/API-TF-r2/API-TF-r2-run.log`, `evidence/API-TFU-r2/TFU-04-c-leaving-coder-opened.png`, `evidence/API-TFU-r2/TFU-03-b-leaving-member-opened.png`, `evidence/API-TFU-r2/team-follows-ui-evidence.json` (`TFU-03-observed`, `TFU-04-observed`)
+- Project testing guideline applied: root `TESTING.md`; no conflict
+
+### CR-003 — F-3: a leaving (or former) member cannot be opened: its location has no launch source
+
+- Scenario basis: `Supported Explicit Edge Scenario` SCN-003a (CRR-003). The user opens a removed busy member's "Leaving" row to answer its pending approval (DEC-002; SR-010: the row "still opens, so its pending approval is answerable"). TFU-04 drove it with a real Codex member waiting for approval.
+- Established: `Read`, confirming API/E2E's `Reproduced` (TF-03, TFU-03, TFU-04). Paths read:
+  - `team-member-run-view-projection-service.ts:128-141` (`requireLocation`) and `:143-160` (`metadataFor`);
+  - `collaboration-execution-location-service.ts:28-29` (`locatedExecutionSource` = `location.configuredPlacement`);
+  - `team-run-execution-tree-location-service.ts:152-206` (`findInTree`, `toLocation`);
+  - `team-execution-index.ts:122-124` (`getConfiguredPlacement`, current members by address).
+- Cause:
+  - IR-001 made `findInTree` and `listInTree` return former members (`listFormerAgentExecutions`).
+  - `toLocation` sets `configuredPlacement` only from `index.getConfiguredPlacement(agent.address)`, which knows current members. It requires the node's run ID to match, so a former member gets `configuredPlacement: null`. A leaving member is a former member on disk (SR-010).
+  - So `requireLocation` throws `CollaborationMemberNotFoundError("… has no configured launch placement or recorded source")` for every former or leaving member. That blocks the projection, the active-trace page, the file changes and the file-change entry.
+  - The web's open of the row loads that projection, so it fails ("Couldn't load activity"), focus stays on the previous member, and no Approve control appears.
+  - The same gap sits in `metadataFor`: `platformAgentRunId` comes from `new TeamExecutionIndex(tree).getAgent(id)`, which is current-only, so a former member would also get `null` there.
+- Invariant that should hold: a member the run still names by run ID (leaving or former) is located with its own stored node (`formerMembers[i]`) as its launch source and provider binding, the same way a current member uses its `members` node. Then every by-run-ID reader that `requireLocation` serves opens it.
+- Origin: `Implementation defect`, together with a source-review gap.
+  - SR-010's "the row still opens" needs the projection path for a leaving member. IR-002 rendered the tag but did not make that path work. Its web spec mounts the row; nothing opens it.
+  - The handoff recorded the symptom as a Known Risk ("`getTeamMemberRunProjection` answers 'no configured launch placement' for a former member"), and I carried it in CRR-003 as a residual risk under IR-001 deviation 1.
+  - I did not connect it to SR-010's "still opens" requirement for leaving members. It was reasonably detectable in source review.
+- Not a design gap: the design already requires the row to open. Using the former member's own stored node as its source stays within existing owners (the location service and the projection service) and approved behavior: REQ-002 keeps a removed member's conversation readable; DEC-002 requires the approval to be answerable.
+- Required action (implementation decides the shape):
+  - Give former and leaving members a located source from their own former node, in the location service and in `metadataFor`'s provider binding.
+  - Then confirm that opening a leaving row in the app focuses the member and shows its pending approval.
+  - Tests: a server test that opens a leaving member through `getTeamMemberRunProjection` / `getTeamMemberFileChanges` (TF-03's new assertions), and the rendered check TFU-03/TFU-04. The projection failure is the proven blocker. Whether the web focus and Approve control then follow is not proven by reading, so the rendered rerun decides.
+- Scope: this ticket (AC-003 / DEC-002 fail without it).
+- Affected CRR-003 scores: Runtime Correctness And Behavioral Fidelity 9.3 → **8.8** (an in-scope edge path not realized). API/E2E Readiness 9.3 → **9.1** (the tag was proven by component specs only). Other rows unchanged.
+
+Round 3 meta follows.
+
 - Review Entry Point: `Implementation Review`
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (Approved; REQ-001..REQ-009, AC-001..AC-010, DEC-001..DEC-009)
 - Investigation Notes Reviewed As Context: `investigation-notes.md`, through the design's citations
@@ -180,33 +224,36 @@ None.
 
 ## Findings
 
-None open. CR-001 and CR-002 are resolved (see `code-review-revision-record.md` CRR-003).
+| ID | Finding | Classification | Owner | Status |
+| --- | --- | --- | --- | --- |
+| CR-001 | Run-ID messages to leaving or former members did not reach the refusal (F-1) | Local Fix | Implementation | Resolved (CRR-003; API-REV-002 passed) |
+| CR-002 | The "Leaving" visibility rule was on an unmounted component (F-2) | Design Impact | Solution Designer | Resolved (SR-010, IR-002; tag rendered in API-REV-002) |
+| CR-003 | A leaving or former member cannot be opened: its location has no launch source (F-3) | `Local Fix` | Implementation engineer | Open |
 
 ## Follow-ups
 
-- Follow-ups this review added: None. FU-002, FU-003 and FU-004 remain; FU-001 is fixed.
+- Follow-ups this review added: None. FU-002, FU-003 and FU-004 remain.
 
 ## Classification
 
-N/A: Pass.
+- CR-003: `Local Fix`, implementation-owned (bounded: location source of former/leaving members in the run-history location and projection services).
 
 ## Recommended Recipient
 
-API/E2E (primary pass rule), then an informational notice to implementation.
+The implementation engineer. After the fix: source review again, then API/E2E reruns TF-03 (F-3 assertions), TFU-03 and TFU-04, plus the cases the fix touches.
 
 ## Residual Risks
 
-- Rendered behavior (TFU-03) and real-runtime leaving with approvals (TFL-02) still need API/E2E's rerun. Check both row components show the tag, that opening the row lets the user approve, and that Stop while leaving drops the tag.
-- Declared risks carried: a follower step that throws after commit skips the rest of that change (C-04); a definite release-write failure keeps the tag until the next plan (C-10, designed); FU-003.
-- A former member's conversation projection answers "no configured launch placement" (handoff Known Risks); its history is read through the Memory page (IR-001 deviation 1, accepted in CRR-001 C-05).
+- As in CRR-003, except that the "former member's conversation projection" risk is now CR-003.
+- Whether the web focuses the member and shows the Approve control once the projection loads is not proven by reading. The TFU-04 rerun decides.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
-- Review Entry Point: `Implementation Review`
-- Supported Product Scenario Gate: `Pass`
+- Review Decision: `Fail` (failure-origin round; supersedes the CRR-003 Pass)
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Supported Product Scenario Gate: `Pass` (SCN-003a, supported explicit edge, real trigger)
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.4/10 average; every category ≥ 9.3
-- Failure Origin: N/A
-- Recommended Recipient: API/E2E engineer
-- Notes: Classification Large/High is preserved. CR-001 and CR-002 are resolved; the new deviation (warning format) has a reason that holds.
+- Score Summary: CRR-003 scores carried, except Runtime Correctness 8.8 and API/E2E Readiness 9.1
+- Failure Origin: CR-003 implementation defect plus a source-review gap (`Local Fix`)
+- Recommended Recipient: implementation engineer
+- Notes: Classification Large/High is preserved. F-1, the F-2 tag, O-1 and O-2 pass in API-REV-002.

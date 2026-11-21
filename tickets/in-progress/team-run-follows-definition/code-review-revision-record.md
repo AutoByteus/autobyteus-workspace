@@ -7,6 +7,7 @@
 | CRR-001 | `code-review-report.md` | Implementation Review / IR-001 complete | N/A | Pass | None |
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-001 Fail (F-1, F-2) | Pass (CRR-001) | Fail | CR-001, CR-002 |
 | CRR-003 | `code-review-report.md` | Implementation Review / IR-002 (SR-010, CR-001) | Fail (CRR-002) | Pass | CR-001, CR-002 (resolved) |
+| CRR-004 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-002 Fail (F-3) | Pass (CRR-003) | Fail | CR-003 |
 
 ## Revision Entries
 
@@ -90,3 +91,31 @@ None (CRR-001 had no findings).
 - Material score or classification changes: Runtime Correctness 8.6 → 9.3; API/E2E Readiness 9.0 → 9.3; dead-code row Pass. Large/High preserved.
 - Recommended recipient: API/E2E engineer
 - Remaining risks or uncertainty: the TFU-03 rendered rerun and the TFL-02 real-runtime rerun are pending.
+
+### CRR-004: Failure-origin review of API-REV-002 (F-3)
+
+- Canonical review report updated: `/home/autobyteus/workspace/.codex/worktrees/team-run-follows-definition/tickets/in-progress/team-run-follows-definition/code-review-report.md`
+- Review entry point and round: API/E2E Failure-Origin Review, round 4
+- Review scope: `N/A` (failure-origin round)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-002); F-3 (TF-03, TFU-03, TFU-04; AC-003, DEC-002)
+- Relevant solution revision IDs: SR-010
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-001 (location service change), IR-002
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-003)
+- Current authoritative result: Fail
+- What changed in the review result and why: `TeamRunExecutionTreeLocationService.toLocation` gives former and leaving members `configuredPlacement: null` (it reads current members by address only). So `TeamMemberRunViewProjectionService.requireLocation` refuses them, and a "Leaving" row cannot open the member to answer its approval. The same current-only read affects `metadataFor`'s `platformAgentRunId`. Classified `Local Fix`. It is also a source-review gap: CRR-003 carried the handoff's known risk without tying it to SR-010's "still opens".
+- Supported product scenario / material-premise basis changes: None (SCN-003a).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Resolved (CRR-003) | Resolved, confirmed at runtime | API-REV-002 | TF-02, TF-03, TFL-02: exact refusal with `COLLABORATION_TARGET_NOT_FOUND` |
+| CR-002 | Resolved (CRR-003) | Resolved, tag confirmed rendered | API-REV-002 | TFU-03, TFU-05, TFU-06, TF-11, TF-12 |
+
+- New or remaining finding IDs: CR-003 (Local Fix, implementation)
+- Material score or classification changes: Runtime Correctness 9.3 → 8.8; API/E2E Readiness 9.3 → 9.1. Large/High preserved.
+- Recommended recipient: implementation engineer
+- Remaining risks or uncertainty: whether the web focus and Approve control follow once the projection loads is for the TFU-04 rerun to prove.
