@@ -30,10 +30,11 @@ Repository finalization into `origin/personal`. No release, tag or deployment.
 Moved to `tickets/done/agy-journal-reads-and-e2e-flake`: `Yes`.
 
 ## Repository Finalization
-TBD
+- Ticket branch committed and pushed after Secret Gate PASS; target `origin/personal` @ `fbe714f8bb` unchanged since the integration; `finalize/agy-journal-reads-and-e2e-flake` from it; `--no-ff` merge `5631c8b133`; Secret Gate, hygiene and licensing pass on the merged state; pushed `fbe714f8bb..5631c8b133` (a record-only commit follows). Status `Completed`; blocker none.
 
 ## User's checkout and Cleanup
-TBD
+- User's checkout (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`, on `personal`): fast-forwarded from `fbe714f8bb` to `5631c8b133` after the merge push (it had no local commits and none of the update's files had uncommitted changes); its six modified and 40 untracked files were left as they were. It is fast-forwarded again to this record commit after the push (see the terminal message).
+- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-journal-reads-and-e2e-flake` removed and pruned; local branches and remote branch `origin/codex/agy-journal-reads-and-e2e-flake` deleted after the merge was confirmed. Status `Completed`.
 
 ## Release Notes Summary
 `release-notes.md` written (cleaner Antigravity reads and spills; the one-time re-render and re-index); not used: no release.
@@ -45,4 +46,4 @@ Journals are derived data: revision 4 re-renders them once in place from the raw
 Revert the merge on `personal`; the next release's journals then show `Tool: read_file` lines and the spill sentence again after another re-render, and the scripted-Antigravity files lose the helper's hook timeout. Nothing is released.
 
 ## Final Status
-TBD
+- Verification complete `Yes`; repository finalization complete `Yes` (`personal` @ `5631c8b133` plus this record commit); release not required; cleanup complete `Yes`; blocker `None` (the discovery timeout's cause is open: FU-3); terminal package sent `Yes`.
