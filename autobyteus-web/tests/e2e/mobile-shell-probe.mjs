@@ -1455,7 +1455,7 @@ const runCases = async () => {
     // A standalone agent (autobyteus-565 DEC-001): Messages like every run that collaborates. Its own messages, whatever
     // the other side: another run of this node (form 4, no chip) and a run on beta (form 6, the chip "beta-node").
     await stack.agentCall(stack.plain[1], 'send_message_to', { target_agent_run_id: stack.plain[0], content: 'PLAIN-NOTE-565 from a local run.' });
-    await stack.agentCall(stack.ptm, 'send_message_to', { target_agent_run_id: stack.remoteAgentRun, content: 'Keep going. Marker PTM-WAKE-565.' });
+    await stack.agentCall(stack.ptm, 'send_message_to', { node: PEER, target_agent_run_id: stack.remoteAgentRun, content: 'Keep going. Marker PTM-WAKE-565.' }); // 587 RF-14: name the node
     const toPeer = await stack.agentCall(stack.plain[0], 'send_message_to', { node: PEER, target_agent_run_id: stack.remoteAgentRun, content: 'PEER-NOTE-565 to beta.' });
     // More than one page (DEC-004): 55 more from the local run, in one turn (the scripted CLI's `CALL_TOOLS`, 30 ms apart).
     await stack.agentSay(stack.plain[1], `CALL_TOOLS:${JSON.stringify(Array.from({ length: 55 }, (_, i) => ({ name: 'send_message_to',

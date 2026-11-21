@@ -727,10 +727,11 @@ suite("The collaboration contract's stories, run against the built server (autob
         expect(((peerOwn.agents ?? []) as Rec[]).map((agent) => agent.agentRunId).sort(), "the peer run's own answer lists its agents").toEqual([...peerAgents].sort());
         statusSocket.close();
       },
-      S18: async (ctx) => { await ctx.call("lead_0c11", "send_message_to", { target_agent_run_id: ctx.real(M), content: "Findings …" }); },
+      // autobyteus-587 RF-14: a message to a run on another node always names the node (here B's name for A, "node-a").
+      S18: async (ctx) => { await ctx.call("lead_0c11", "send_message_to", { node: "node-a", target_agent_run_id: ctx.real(M), content: "Findings …" }); },
       S19: async (ctx) => {
         await ctx.call(M, "update_task", { task_id: ctx.real("adhoc_task_7c7c"), status: "DONE" });
-        await ctx.call("lead_0c11", "send_message_to", { target_agent_run_id: ctx.real(M), content: "More findings …" });
+        await ctx.call("lead_0c11", "send_message_to", { node: "node-a", target_agent_run_id: ctx.real(M), content: "More findings …" });
       },
       S20: async (ctx) => {
         const r = await ctx.call(M, "delegate_task", { recipient_address: "/research_agent", task_id: key(ctx, "demo-2") });

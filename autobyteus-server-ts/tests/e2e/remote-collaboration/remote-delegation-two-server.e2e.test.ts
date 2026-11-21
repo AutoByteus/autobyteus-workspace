@@ -4,7 +4,7 @@ import http from "node:http";
 import net from "node:net";
 import os from "node:os";
 import path from "node:path";
-import { randomBytes, randomUUID } from "node:crypto";
+import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { execFile, spawn, spawnSync, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { promisify } from "node:util";
 import WebSocket from "ws";
@@ -95,6 +95,17 @@ import { SEND_MESSAGE_TO_LLM_DESCRIPTION, SEND_MESSAGE_TO_NODE_DESCRIPTION, targ
  *   member's list over 50 (50, then the rest, newest first, nothing twice), a live message during Load more, and older lines
  *   of the released shape (unlinked: run ID, no chip; linked: named from the Task entry). Every cross-node message carries
  *   `sender.address` and its accepted answer `receiverAddress` (RC-06, RC-20).
+ * 587 (reference files between nodes, RFC-001): RC-51 a delegation to beta with an .mp4, a PDF and a PNG (status, then
+ *   signed raw pieces of at most 8 MiB, then the start and the work packet naming the files): beta's task agent reads them
+ *   read-only at `<its folder>/received_files/<sender run ID>/<name>`, bytes equal; its reply without node, then with the
+ *   wrong node (a third node theta paired with beta), is refused (RF-14), with node it returns a file to alpha (each node's
+ *   log names its own paths); a re-sent file is not uploaded again; a new version replaces the old at the same path; two
+ *   unrelated runs exchange a file with node. RC-52 the piece route behind the gate (unsigned, wrong secret, a body other
+ *   than the signed one, over 8 MiB), a signed piece whose file does not match its SHA-256, a message naming a file not
+ *   held, a piece damaged in transit by the proxy, and the receiver's size limit (sender-side and a forged piece). RC-53 the
+ *   link breaks mid-upload: the call names the file, nothing delivered, the next send resumes. RC-54 one copy for two runs;
+ *   each history delete removes its run's copy; the bytes and a broken upload's partial file go at the next cleanup once a
+ *   day untouched. Every cross-node message names its node (RF-14): RC-06/RC-08/RC-22 check the refusals without it.
  * Beta's agents (245): the shared Agents Publisher (scripted AGY default), Blank Slate (no default), Half Set (runtime only),
  * Codex Writer (a Codex default; Codex is unavailable on beta) and Fragile (a model AGY does not offer); a shared Team, an
  * Agent Org, and a file-authored Team with the team-local Agent "Local Scout" (a complete default). Nothing is published.
@@ -128,7 +139,9 @@ const PATHS = { runs: "/rest/remote/delegated-runs", messages: "/rest/remote/mes
   runSummaries: "/rest/remote/run-summaries", agentProjection: "/rest/remote/agent-projection", ownerCommands: "/rest/remote/owner-commands",
   runObservations: "/rest/remote/run-observations", agentStreamSnapshot: "/rest/remote/agent-stream-snapshot",
   // autobyteus-492: a message to a running agent by its run ID only, and the running runs a person started.
-  runMessages: "/rest/remote/run-messages", runningAgents: "/rest/remote/running-agents" } as const;
+  runMessages: "/rest/remote/run-messages", runningAgents: "/rest/remote/running-agents",
+  // autobyteus-587: files sent with a message or delegation (status; then raw signed pieces `PUT received-files/<sha256>?…`).
+  receivedFilesStatus: "/rest/remote/received-files/status", receivedFiles: "/rest/remote/received-files" } as const;
 /** The Brief Studio sample application's importable package (`pnpm -C autobyteus-server-ts test:integration:prepare`):
  * beta loads it, so beta has an application-owned Agent Team that discovery must not list (261 AC-402). */
 const BRIEF_STUDIO_PACKAGE = path.resolve(import.meta.dirname, "../../../../applications/brief-studio/dist/importable-package");
@@ -187,6 +200,9 @@ const textOf = (result: Rec): string => String(result.message ?? result.text ?? 
  * agent is not woken; the agent may find run IDs with list_running_agents, and passes node for another node's agent).
  */
 const notRunningRefusal = (runId: string) => `No running agent has the run id '${runId}', so the message was not sent. A stopped agent is not woken. Use an exact run id you were given: a sender run id (from a message or your new task), a run id delegate_task returned to you, or one list_running_agents lists. For an agent on another node, also pass node.`;
+/** autobyteus-587 RF-14: a run on another node named without node (or the run is on another node than the one named). */
+const nodeRequiredText = (node: string) => `This agent runs on node "${node}"; pass node: "${node}" with its run id.`;
+const nodeMismatchText = (node: string, given: string) => `This agent runs on node "${node}", not "${given}"; pass node: "${node}".`;
 /** autobyteus-492 row 8: the peer found no running agent with that run ID; A words it with its name for the node. */
 const peerNotRunningRefusal = (runId: string, node: string) => `No running agent has the run id '${runId}' on node "${node}", so the message was not sent. A stopped agent is not woken. If you have list_running_agents, call it with node "${node}" to see what runs there.`;
 const getFreePort = async (): Promise<number> => new Promise((resolve, reject) => {
@@ -320,6 +336,8 @@ class CapturingProxy {
   mode: "forward" | "blackhole" = "forward";
   /** A request this returns true for fails like a broken connection (its caller sees a network error). */
   drop: ((entry: Captured) => boolean) | null = null;
+  /** autobyteus-587 AC-003: rewrites a request's body in transit (a damaged link); the original stays recorded. */
+  tamper: ((entry: Captured, raw: Buffer) => Buffer) | null = null;
   targetPort: number;
   private server: http.Server | null = null;
   private readonly held = new Set<http.ServerResponse>();
@@ -331,20 +349,29 @@ class CapturingProxy {
       const chunks: Buffer[] = [];
       req.on("data", (chunk: Buffer) => chunks.push(chunk));
       req.on("end", () => {
-        const raw = Buffer.concat(chunks).toString("utf8");
-        let body: unknown = raw;
-        try { body = raw ? JSON.parse(raw) : null; } catch { /* keep the raw text */ }
+        // Bytes are forwarded as they came (autobyteus-587: a file piece is raw binary); a piece is recorded by its size and
+        // SHA-256 only, every other body as its JSON.
+        let raw: Buffer = Buffer.concat(chunks);
+        let body: unknown;
+        if (String(req.headers["content-type"] ?? "").startsWith("application/octet-stream")) {
+          body = { bytes: raw.byteLength, sha256: createHash("sha256").update(raw).digest("hex") };
+        } else {
+          const text = raw.toString("utf8");
+          body = text;
+          try { body = text ? JSON.parse(text) : null; } catch { /* keep the raw text */ }
+        }
         const entry: Captured = { seq: this.captured.length + 1, at: Date.now(), via: this.via, method: req.method ?? "", path: req.url ?? "", headers: { ...req.headers }, body };
         this.captured.push(entry);
         if (this.mode === "blackhole") { entry.outcome = "held"; this.held.add(res); return; }
         if (this.drop?.(entry)) { entry.outcome = "dropped by the test"; res.socket?.destroy(); return; }
+        if (this.tamper) { const changed = this.tamper(entry, raw); if (changed !== raw) { raw = changed; entry.outcome = "tampered"; } }
         const upstream = http.request({ host: "127.0.0.1", port: this.targetPort, method: req.method, path: req.url,
           headers: { ...req.headers, host: `127.0.0.1:${this.targetPort}` } }, (answer) => {
           const parts: Buffer[] = [];
           answer.on("data", (chunk: Buffer) => parts.push(chunk));
           answer.on("end", () => {
             const text = Buffer.concat(parts).toString("utf8");
-            entry.status = answer.statusCode; entry.outcome = "forwarded";
+            entry.status = answer.statusCode; entry.outcome = entry.outcome === "tampered" ? "tampered, forwarded" : "forwarded";
             try { entry.answer = JSON.parse(text); } catch { entry.answer = text; }
             res.writeHead(answer.statusCode ?? 502, answer.headers); res.end(text);
           });
@@ -429,7 +456,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
   /** Requests that send work or a message (starts, packets, messages, owner commands); since autobyteus-278 an open
    * root view also reads its remote runs' summaries, which a "nothing was sent" check does not count. */
   const sentRequests = (since = 0) => remoteRequests(since).filter((entry) => entry.path === PATHS.runs || entry.path === PATHS.messages
-    || entry.path === PATHS.runMessages || entry.path === PATHS.ownerCommands);
+    || entry.path === PATHS.runMessages || entry.path === PATHS.ownerCommands || entry.path.startsWith(PATHS.receivedFiles));
 
   const connect = async (node: NodeServer, route: string, id: string, ready: (frames: Frame[]) => boolean) => {
     const socket = new WebSocket(`ws://127.0.0.1:${node.port}/ws/${route}/${id}`);
@@ -871,7 +898,9 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
   const inboundMessage = (fromNodeId: string, toNodeId: string, messageId: string) => ({ fromNodeId, toNodeId, kind: "message", messageId,
     targetRoot: { kind: "agent", runId: "agent_probe_target" },
     // autobyteus-565: a cross-node message names its sender's address in its own run (`sender.address`).
-    sender: { agentRunId: "agent_probe", address: "/agent_probe" }, target: { agentRunId: "agent_probe_target" }, content: "x", messageType: "agent_message", createdAt: new Date().toISOString() });
+    sender: { agentRunId: "agent_probe", address: "/agent_probe" }, target: { agentRunId: "agent_probe_target" }, content: "x", messageType: "agent_message", createdAt: new Date().toISOString(),
+    // autobyteus-587: every message names its files (none here).
+    files: [] });
 
   it("RC-01 AC-101/AC-111: off by default; with the switch off, inbound requests of an unpaired node are refused at the gate and no invite can be made", async () => {
     for (const node of [alpha, beta]) {
@@ -1084,12 +1113,12 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     // Reply from beta (its owner asks the remote run to answer), then a follow-up from alpha.
     // 269 AC-601: before any owner message, beta's history titles the run with the delegated description (not the wrapper).
     const titleBeforeOwner = await titledOnBeta("agent", r1, "Publish the draft. Marker STANDALONE-PACKET.");
-    const reply = await calls(remote, "send_message_to", { target_agent_run_id: ids.solo, content: "REPLY-FROM-BETA-1" });
+    const reply = await calls(remote, "send_message_to", { node: LABEL.alpha, target_agent_run_id: ids.solo, content: "REPLY-FROM-BETA-1" });
     expect(reply, JSON.stringify(reply)).toMatchObject({ accepted: true });
     expect(textOf(reply)).toContain(`on node "${LABEL.alpha}"`);
     const received = await receives(solo, "REPLY-FROM-BETA-1");
     expect(received).toContain(`You received a message from the agent with sender run id "${r1}" on node "${LABEL.beta}".`);
-    const followUp = await calls(solo, "send_message_to", { target_agent_run_id: r1, content: "FOLLOWUP-FROM-ALPHA-1" });
+    const followUp = await calls(solo, "send_message_to", { node: LABEL.beta, target_agent_run_id: r1, content: "FOLLOWUP-FROM-ALPHA-1" });
     expect(followUp, JSON.stringify(followUp)).toMatchObject({ accepted: true });
     expect(textOf(followUp)).toBe(`Delivered message to ${r1} on node "${LABEL.beta}".`);
     const atBeta = await receives(remote, "FOLLOWUP-FROM-ALPHA-1");
@@ -1134,7 +1163,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     record("RC-05", { titleBeforeOwner, delegated, metadata, packet, link: links[0], taskResource: resources[0], reply, received, followUp, atBeta, replyLogs, followUpLogs, sequences });
   }, 240_000);
 
-  it("RC-06 AC-104/105/107, 492 DS-006: a Team coordinator delegates; messages both ways with the Team view open; a later local message appears; the other member reaches the remote run unlinked while it runs", async () => {
+  it("RC-06 AC-104/105/107, 492 DS-006, 587 RF-14: a Team coordinator delegates; messages both ways with the Team view open; a later local message appears; the other member is told to name the node, then reaches the remote run unlinked while it runs", async () => {
     const created = (await alpha.gql(`mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}`,
       { input: { teamDefinitionId: defs.team, teamConfigs: [{ teamAddress: "/", ...runConfig(alpha) }], memberConfigs: [
         { memberAddress: "/lead", agentDefinitionId: defs.delegator, ...runConfig(alpha) },
@@ -1155,9 +1184,9 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const remote = composeOnBeta(r2);
     expect((await betaMetadata(r2)).delegatedFrom).toEqual({ nodeId: alpha.nodeId, delegatingRun: { kind: "agent_team", runId: teamRunId }, delegatorAgentRunId: lead.runId });
     expect(await receives(remote, "TEAM-PACKET")).toContain(`sender run id "${lead.runId}" on node "${LABEL.alpha}"`);
-    expect(await calls(remote, "send_message_to", { target_agent_run_id: lead.runId, content: "REPLY-TO-TEAM-LEAD" })).toMatchObject({ accepted: true });
+    expect(await calls(remote, "send_message_to", { node: LABEL.alpha, target_agent_run_id: lead.runId, content: "REPLY-TO-TEAM-LEAD" })).toMatchObject({ accepted: true });
     expect(await receives(lead, "REPLY-TO-TEAM-LEAD")).toContain(`sender run id "${r2}" on node "${LABEL.beta}"`);
-    expect(await calls(lead, "send_message_to", { target_agent_run_id: r2, content: "FOLLOWUP-FROM-TEAM-LEAD" })).toMatchObject({ accepted: true });
+    expect(await calls(lead, "send_message_to", { node: LABEL.beta, target_agent_run_id: r2, content: "FOLLOWUP-FROM-TEAM-LEAD" })).toMatchObject({ accepted: true });
     await receives(remote, "FOLLOWUP-FROM-TEAM-LEAD");
     const replyLogs = await assertBothLogs("REPLY-TO-TEAM-LEAD", remote, lead);
     await assertBothLogs("FOLLOWUP-FROM-TEAM-LEAD", lead, remote);
@@ -1168,10 +1197,15 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await receives(mate, "LOCAL-AFTER-REMOTE-TEAM");
     await until(() => view.frames.some((frame) => frame.type === "TEAM_COMMUNICATION_MESSAGE" && JSON.stringify(frame.payload).includes("LOCAL-AFTER-REMOTE-TEAM")), "local message on the Team view", 20_000);
 
-    // Same root, not the delegator (autobyteus-492 DS-006, design row 6): the run ID is the address, so the message goes to
-    // the remote run unlinked (`run-messages`, no root named) while it runs; the link (`messages`) stays the delegator's.
+    // Same root, not the delegator (autobyteus-492 DS-006, design row 6): the run ID is the address. autobyteus-587 RF-14:
+    // a run on another node is always named with node: without it the call is refused with the node to pass, nothing sent;
+    // with it the message goes to the remote run unlinked (`run-messages`, no root named) while it runs.
     const sentBefore = captured.length;
-    const mateUnlinked = await calls(mate, "send_message_to", { target_agent_run_id: r2, content: "MATE-TO-REMOTE" });
+    const mateWithoutNode = await calls(mate, "send_message_to", { target_agent_run_id: r2, content: "MATE-TO-REMOTE-NO-NODE" });
+    expect(mateWithoutNode, JSON.stringify(mateWithoutNode)).toMatchObject({ accepted: false, code: "NODE_REQUIRED" });
+    expect(textOf(mateWithoutNode)).toBe(nodeRequiredText(LABEL.beta));
+    expect(sentRequests(sentBefore), "587 RF-14: nothing sent without node").toEqual([]);
+    const mateUnlinked = await calls(mate, "send_message_to", { node: LABEL.beta, target_agent_run_id: r2, content: "MATE-TO-REMOTE" });
     expect(mateUnlinked, JSON.stringify(mateUnlinked)).toMatchObject({ accepted: true, target_agent_run_id: r2 });
     expect(textOf(mateUnlinked)).toBe(`Delivered message to ${r2} on node "${LABEL.beta}".`);
     expect(await receives(remote, "MATE-TO-REMOTE")).toContain(`You received a message from the agent with sender run id "${mate.runId}" on node "${LABEL.alpha}".`);
@@ -1215,9 +1249,9 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const remote = composeOnBeta(r5);
     expect((await betaMetadata(r5)).delegatedFrom).toEqual({ nodeId: alpha.nodeId, delegatingRun: { kind: "agent_org", runId: orgRunId }, delegatorAgentRunId: lead.runId });
     await receives(remote, "ORG-PACKET");
-    expect(await calls(remote, "send_message_to", { target_agent_run_id: lead.runId, content: "REPLY-TO-ORG-LEAD" })).toMatchObject({ accepted: true });
+    expect(await calls(remote, "send_message_to", { node: LABEL.alpha, target_agent_run_id: lead.runId, content: "REPLY-TO-ORG-LEAD" })).toMatchObject({ accepted: true });
     expect(await receives(lead, "REPLY-TO-ORG-LEAD")).toContain(`sender run id "${r5}" on node "${LABEL.beta}"`);
-    expect(await calls(lead, "send_message_to", { target_agent_run_id: r5, content: "FOLLOWUP-FROM-ORG-LEAD" })).toMatchObject({ accepted: true });
+    expect(await calls(lead, "send_message_to", { node: LABEL.beta, target_agent_run_id: r5, content: "FOLLOWUP-FROM-ORG-LEAD" })).toMatchObject({ accepted: true });
     await receives(remote, "FOLLOWUP-FROM-ORG-LEAD");
     const replyLogs = await assertBothLogs("REPLY-TO-ORG-LEAD", remote, lead);
     await assertBothLogs("FOLLOWUP-FROM-ORG-LEAD", lead, remote);
@@ -1236,15 +1270,16 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     record("RC-07", { orgRunId, delegated, link: orgLinks[0], replyLogs, sequences, frameTypes: view.frames.map((frame) => frame.type) });
   }, 300_000);
 
-  it("RC-08 AC-107, 492 REQ-010: without node, unlinked senders get the not-running refusal on both nodes; forged linked messages are refused; the target receives nothing", async () => {
+  it("RC-08 AC-107, 492 REQ-010, 587 RF-14: without node, an unlinked sender on alpha is told the node to pass, one on beta gets the not-running refusal; forged linked messages are refused; the target receives nothing", async () => {
     const other = await createStandalone(alpha, defs.delegator, "alpha other root");
     ids.other = other.runId;
     const sentBefore = captured.length;
     const otherRoot = await calls(other, "send_message_to", { target_agent_run_id: ids.r1, content: "OTHER-ROOT-TO-REMOTE" });
     expect(otherRoot.accepted, JSON.stringify(otherRoot)).toBe(false);
-    // Without node, a run ID that no agent of this node runs and the sender's root does not link is "not running" here
-    // (autobyteus-492 row 4: the refusal names node for an agent on another node; RC-48 sends with node).
-    expect(textOf(otherRoot)).toBe(notRunningRefusal(ids.r1));
+    // Without node, a run on another node that this node's Task records know is refused with the node to pass
+    // (autobyteus-587 RF-14, design DS-005: the CrossRun peer-run branch names the node it knows).
+    expect(otherRoot.code, JSON.stringify(otherRoot)).toBe("NODE_REQUIRED");
+    expect(textOf(otherRoot)).toBe(nodeRequiredText(LABEL.beta));
     expect(sentRequests(sentBefore), "the live-only path never reaches a peer").toEqual([]);
 
     const bystander = await createStandalone(beta, defs.bystander, "beta bystander");
@@ -1258,7 +1293,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     // Every message names the root that receives it (247 contract): a standalone run is its own root.
     const forged = (fromNodeId: string, toNodeId: string, sender: string, target: string, messageId: string, targetRoot: Rec = { kind: "agent", runId: target }) => ({
       fromNodeId, toNodeId, kind: "message", messageId, sender: { agentRunId: sender, address: "/forger" }, target: { agentRunId: target }, targetRoot,
-      content: `FORGED ${messageId}`, messageType: "agent_message", createdAt: new Date().toISOString() });
+      content: `FORGED ${messageId}`, messageType: "agent_message", createdAt: new Date().toISOString(), files: [] });
     const toBystander = await beta.post(PATHS.messages, forged(alpha.nodeId, beta.nodeId, ids.solo, ids.bystander, "collabmsg_forged_bystander"));
     const toR1FromOther = await beta.post(PATHS.messages, forged(alpha.nodeId, beta.nodeId, ids.other, ids.r1, "collabmsg_forged_r1"));
     const toSoloFromBystander = await alpha.post(PATHS.messages, forged(beta.nodeId, alpha.nodeId, ids.bystander, ids.solo, "collabmsg_forged_solo", { kind: "agent", runId: ids.solo }));
@@ -1276,30 +1311,39 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     record("RC-08", { otherRoot: textOf(otherRoot), fromBystander: textOf(fromBystander), forged: { toBystander, toR1FromOther, toSoloFromBystander } });
   }, 240_000);
 
-  it("RC-09 AC-108: files and saved Tasks across nodes are refused before anything is sent", async () => {
+  it("RC-09 AC-108, 587 AC-004: saved Tasks across nodes are refused; a file outside the workspace, a link leading out of it and a folder are refused before anything is sent", async () => {
     const solo = standaloneActor(alpha, ids.solo, "alpha standalone delegator");
-    const file = path.join(alpha.workspace, "draft.txt");
-    await fsp.writeFile(file, "draft");
+    // autobyteus-587 RF-3: only files inside the sending agent's workspace go to another node (links resolved); a folder never.
+    const outside = path.join(root, "alpha", "outside-secret.txt");
+    await fsp.writeFile(outside, "not for another node");
+    const linkOut = path.join(alpha.workspace, "link-to-outside.txt");
+    await fsp.symlink(outside, linkOut).catch(() => undefined);
+    const folder = path.join(alpha.workspace, "drafts-folder");
+    await fsp.mkdir(folder, { recursive: true });
     const projectId = (await alpha.gql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`, { input: { name: "RC-09 project" } })).createProject.projectId as string;
     const taskId = (await alpha.gql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`, { input: { projectId, title: "Saved work.", description: "Saved work." } })).createProjectTask.taskId as string;
     const sentBefore = captured.length;
     const runsBefore = await remoteRunDirs();
-    const withFiles = await delegateRemote(solo, "With a file.", { reference_files: [file] });
+    const withOutside = await delegateRemote(solo, "With a file from outside.", { reference_files: [outside] });
+    const withLinkOut = await calls(solo, "send_message_to", { node: LABEL.beta, target_agent_run_id: ids.r1, content: "WITH-LINK-OUT", reference_files: [linkOut] });
+    const withFolder = await calls(solo, "send_message_to", { node: LABEL.beta, target_agent_run_id: ids.r1, content: "WITH-FOLDER", reference_files: [folder] });
     const savedTask = await calls(solo, "delegate_task", { node: LABEL.beta, recipient_address: "/publisher", task_id: taskId });
-    const followUpFiles = await calls(solo, "send_message_to", { target_agent_run_id: ids.r1, content: "WITH-FILE", reference_files: [file] });
     const existingCopy = await calls(solo, "delegate_task", { target_agent_run_id: ids.r1, task_id: taskId });
-    expect(textOf(withFiles)).toBe("Files (reference_files) can't be sent to an agent on another node yet, so nothing was sent.");
+    expect(withOutside.delegated, JSON.stringify(withOutside)).toBe(false);
+    expect(textOf(withOutside)).toBe(`${outside} is outside your workspace, so nothing was sent. Only files in your workspace (${alpha.workspace}) can go to another node; copy the file there first.`);
+    expect(withLinkOut, JSON.stringify(withLinkOut)).toMatchObject({ accepted: false, code: "REFERENCE_FILE_OUTSIDE_WORKSPACE" });
+    expect(textOf(withLinkOut)).toContain("is outside your workspace, so nothing was sent.");
+    expect(withFolder, JSON.stringify(withFolder)).toMatchObject({ accepted: false, code: "REFERENCE_FILE_NOT_A_FILE" });
+    expect(textOf(withFolder)).toBe(`${folder} is a folder, so nothing was sent. Send files, not folders (zip it first).`);
     expect(textOf(savedTask)).toBe("A saved Task (task_id) can't be given to an agent on another node yet, so nothing was started. Delegate with a description instead.");
-    expect(textOf(followUpFiles)).toBe("Files (reference_files) can't be sent to an agent on another node yet, so nothing was sent.");
     expect(textOf(existingCopy)).toBe("A saved Task (task_id) can't be given to an agent on another node yet, so nothing was started. Delegate with a description instead.");
-    for (const result of [withFiles, savedTask, existingCopy]) expect(result.delegated, JSON.stringify(result)).toBe(false);
-    expect(followUpFiles.accepted).toBe(false);
-    expect(sentRequests(sentBefore), "nothing sent").toEqual([]);
+    for (const result of [savedTask, existingCopy]) expect(result.delegated, JSON.stringify(result)).toBe(false);
+    expect(remoteRequests(sentBefore).filter((entry) => entry.path !== PATHS.runSummaries), "nothing sent, not even a file status").toEqual([]);
     expect(await remoteRunDirs(), "nothing started").toEqual(runsBefore);
-    await neverReceives(composeOnBeta(ids.r1), "WITH-FILE", 1_000);
+    await neverReceives(composeOnBeta(ids.r1), "WITH-", 1_000);
     const task = ((await alpha.gql(`query($id:String!){projectTasks(projectId:$id){taskId status}}`, { id: projectId })).projectTasks as Rec[]).find((entry) => entry.taskId === taskId);
     expect(task?.status, "the saved Task is unchanged").toBe("TODO");
-    record("RC-09", { withFiles: textOf(withFiles), savedTask: textOf(savedTask), followUpFiles: textOf(followUpFiles), existingCopy: textOf(existingCopy) });
+    record("RC-09", { withOutside: textOf(withOutside), withLinkOut: textOf(withLinkOut), withFolder: textOf(withFolder), savedTask: textOf(savedTask), existingCopy: textOf(existingCopy) });
   }, 240_000);
 
   it("RC-10 AC-109: a task agent on a Project Task delegates remotely; the remote run is a run of that Task; after DONE its messages are not delivered", async () => {
@@ -1335,12 +1379,12 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(resources[0]!.entry).toMatchObject({ role: "subWork", delegatedFrom: { delegatingRun: { kind: "agent", runId: workerRunId }, delegatorAgentRunId: workerRunId }, agentRun: { kind: "agent", agentRunId: r3 } });
     // The hosting tree file is gone (contract §6); the Task entry above is the record of the peer delegation.
 
-    expect(await calls(remote, "send_message_to", { target_agent_run_id: workerRunId, content: "BEFORE-DONE-TO-WORKER" })).toMatchObject({ accepted: true });
+    expect(await calls(remote, "send_message_to", { node: LABEL.alpha, target_agent_run_id: workerRunId, content: "BEFORE-DONE-TO-WORKER" })).toMatchObject({ accepted: true });
     await receives(worker, "BEFORE-DONE-TO-WORKER");
     const done = await calls(manager, "update_task", { task_id: taskId, status: "DONE" });
     expect(done, JSON.stringify(done)).toMatchObject({ task: { projectId, status: "DONE" } });
     expect(JSON.stringify(done), "nothing says the remote run was stopped (AR-007)").not.toMatch(/stopped/i);
-    const afterDone = await calls(remote, "send_message_to", { target_agent_run_id: workerRunId, content: "AFTER-DONE-TO-WORKER" });
+    const afterDone = await calls(remote, "send_message_to", { node: LABEL.alpha, target_agent_run_id: workerRunId, content: "AFTER-DONE-TO-WORKER" });
     expect(afterDone.accepted, JSON.stringify(afterDone)).toBe(false);
     expect(textOf(afterDone)).toMatch(/DONE or CANCELLED|closed/i);
     await neverReceives(worker, "AFTER-DONE-TO-WORKER", 3_000);
@@ -1361,11 +1405,11 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(done, JSON.stringify(done)).toMatchObject({ task: { taskId: delegated.task_id, status: "DONE" } });
     expect(JSON.stringify(done), "nothing says the remote run was stopped (AR-007)").not.toMatch(/stopped/i);
     const sentBefore = captured.length;
-    const toRemote = await calls(solo, "send_message_to", { target_agent_run_id: r4, content: "AFTER-DONE-TO-REMOTE" });
+    const toRemote = await calls(solo, "send_message_to", { node: LABEL.beta, target_agent_run_id: r4, content: "AFTER-DONE-TO-REMOTE" });
     expect(toRemote.accepted, JSON.stringify(toRemote)).toBe(false);
     expect(textOf(toRemote)).toMatch(/DONE or CANCELLED|closed/i);
     expect(sentRequests(sentBefore), "nothing sent to a closed remote run").toEqual([]);
-    const fromRemote = await calls(remote, "send_message_to", { target_agent_run_id: ids.solo, content: "AFTER-DONE-FROM-REMOTE" });
+    const fromRemote = await calls(remote, "send_message_to", { node: LABEL.alpha, target_agent_run_id: ids.solo, content: "AFTER-DONE-FROM-REMOTE" });
     expect(fromRemote.accepted, JSON.stringify(fromRemote)).toBe(false);
     await neverReceives(solo, "AFTER-DONE-FROM-REMOTE", 3_000);
     await neverReceives(remote, "AFTER-DONE-TO-REMOTE", 0);
@@ -1758,7 +1802,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     for (const route of [PATHS.runMessages, PATHS.runningAgents]) {
       const body = route === PATHS.runningAgents ? { fromNodeId: alpha.nodeId, toNodeId: beta.nodeId }
         : { fromNodeId: alpha.nodeId, toNodeId: beta.nodeId, messageId: `collabmsg_${randomUUID()}`, sender: { agentRunId: scout.runId, address: "/running_scout" },
-          target: { agentRunId: pm.runId }, content: "QR003-FORGED", messageType: "agent_message", createdAt: new Date().toISOString() };
+          target: { agentRunId: pm.runId }, content: "QR003-FORGED", messageType: "agent_message", createdAt: new Date().toISOString(), files: [] };
       const text = JSON.stringify(body);
       const unsigned = await rawPost(beta.port, route, text);
       const ownerBearer = await fetch(`${beta.baseUrl}${route}`, { method: "POST", headers: { "content-type": "application/json" }, body: text })
@@ -1776,7 +1820,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       gate[route] = { unsigned, ownerBearer, wrongSecret, notPaired, wrongTo };
     }
     const malformed = await beta.post(PATHS.runMessages, { fromNodeId: alpha.nodeId, toNodeId: beta.nodeId, sender: { agentRunId: scout.runId, address: "/running_scout" }, target: { agentRunId: pm.runId },
-      content: "x", messageType: "agent_message", createdAt: new Date().toISOString() });
+      content: "x", messageType: "agent_message", createdAt: new Date().toISOString(), files: [] });
     expect(malformed, "a run message without messageId").toMatchObject({ status: 400, answer: { accepted: false, nodeId: beta.nodeId, code: "REMOTE_REQUEST_INVALID" } });
     await neverReceives(pm, "QR003-FORGED", 1_000);
 
@@ -1942,6 +1986,274 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       linkerCounterparts: linkerPage.counterparts, liveDuring: { nextPageSize: nextPage.messages.length } });
   }, 900_000);
 
+  // ---- autobyteus-587: reference files between nodes (RC-51 … RC-54) ----
+  const MiB = 1024 * 1024;
+  const sha256Of = (bytes: Buffer) => createHash("sha256").update(bytes).digest("hex");
+  /** A file in a workspace, made of random bytes after its format's own leading bytes (enough for its viewer to know it). */
+  const writeBinary = async (dir: string, name: string, bytes: number, head: Buffer = Buffer.alloc(0)) => {
+    const content = Buffer.concat([head, randomBytes(Math.max(0, bytes - head.byteLength))]);
+    const file = path.join(dir, name);
+    await fsp.writeFile(file, content);
+    return { file, name, size: content.byteLength, sha256: sha256Of(content) };
+  };
+  /** A received file as the receiving node keeps it: its bytes' SHA-256, read-only, a hard link to the node's store entry. */
+  const receivedFact = async (node: NodeServer, file: string) => {
+    const stat = await fsp.stat(file);
+    const content = await fsp.readFile(file);
+    const store = path.join(node.dataDir, "received_files", sha256Of(content));
+    const storeStat = await fsp.stat(store).catch(() => null);
+    return { sha256: sha256Of(content), size: stat.size, readOnly: (stat.mode & 0o222) === 0, links: stat.nlink, sameAsStore: storeStat?.ino === stat.ino };
+  };
+  const storeEntry = (node: NodeServer, sha256: string) => path.join(node.dataDir, "received_files", sha256);
+  /** One piece sent straight to a node's piece route, signed as `fromNodeId` signs it (or with a secret the node does not hold). */
+  const putPiece = async (node: NodeServer, input: { fromNodeId: string; sha256: string; offset: number; size: number; bytes: Buffer; signedBytes?: Buffer; secret?: string; toNodeId?: string }) => {
+    const toNodeId = input.toNodeId ?? node.nodeId;
+    const route = `${PATHS.receivedFiles}/${input.sha256}?fromNodeId=${encodeURIComponent(input.fromNodeId)}&toNodeId=${encodeURIComponent(toNodeId)}&offset=${input.offset}&size=${input.size}`;
+    const secret = input.secret ?? await node.peerSecretOf(input.fromNodeId) ?? randomBytes(32).toString("base64url");
+    const headers = { "content-type": "application/octet-stream", ...signPeerRequest({ secret, method: "PUT", pathWithQuery: route, fromNodeId: input.fromNodeId, toNodeId: node.nodeId, body: input.signedBytes ?? input.bytes }) };
+    const response = await fetch(`${node.baseUrl}${route}`, { method: "PUT", headers, body: new Uint8Array(input.bytes) });
+    const text = await response.text();
+    let answer: Rec; try { answer = JSON.parse(text) as Rec; } catch { answer = { raw: text.slice(0, 300) }; }
+    return { status: response.status, answer };
+  };
+  const pieceCount = (size: number) => Math.max(1, Math.ceil(size / (8 * MiB)));
+  const filesOf = (entries: Captured[]) => entries.map((entry) => entry.method === "PUT" ? `PUT ${new URL(entry.path, "http://x").pathname.split("/").pop()!.slice(0, 8)} @${new URL(entry.path, "http://x").searchParams.get("offset")}`
+    : `${entry.method} ${entry.path}${(entry.body as Rec)?.kind ? ` ${(entry.body as Rec).kind}` : ""}`);
+  const lineWith = async (node: NodeServer, content: string) => (await walkFiles(node.memory)).filter((file) => /communication_messages.*\.jsonl$/.test(file))
+    .flatMap((file) => fs.readFileSync(file, "utf8").split("\n").filter(Boolean).map((line) => JSON.parse(line) as Rec)).find((line) => line.content === content);
+
+  it("RC-51 587 AC-001/AC-002/AC-010, RF-7/RF-11: a delegation to beta carries an .mp4, a PDF and a PNG (uploaded first, in signed pieces); the task agent reads them read-only at its own paths; its reply with node returns a file; without node or with the wrong node it is refused; a re-sent file is not uploaded again; a new version replaces the old at the same path", async () => {
+    const sender = await createStandalone(alpha, defs.delegator, "alpha files delegator");
+    const files = [await writeBinary(alpha.workspace, "demo.mp4", 20 * MiB, Buffer.from("0000001866747970", "hex")),
+      await writeBinary(alpha.workspace, "brief.pdf", 120 * 1024, Buffer.from("%PDF-1.4\n")),
+      await writeBinary(alpha.workspace, "cover.png", 60 * 1024, Buffer.from("89504e470d0a1a0a", "hex"))];
+    // AC-001: the delegation waits for the files and says how many went.
+    const sentBefore = captured.length;
+    const delegated = await calls(sender, "delegate_task", { node: LABEL.beta, recipient_address: "/publisher", description: "Cut the teaser. Marker FILES-PACKET.",
+      reference_files: files.map((entry) => entry.file) }, 240_000);
+    expect(delegated, JSON.stringify(delegated)).toMatchObject({ delegated: true, node: LABEL.beta, files_sent: 3 });
+    const r9 = delegated.target_agent_run_id as string;
+    const remote = composeOnBeta(r9);
+    const packet = await receives(remote, "FILES-PACKET", 120_000);
+    const receivedDir = path.join(beta.memory, "agents", r9, "received_files", sender.runId);
+    const receivedPaths = files.map((entry) => path.join(receivedDir, entry.name));
+    expect(packet, "the work packet lists the three files at B's own paths").toContain("Reference files:");
+    for (const received of receivedPaths) expect(packet).toContain(received);
+    const facts = await Promise.all(receivedPaths.map((file) => receivedFact(beta, file)));
+    expect(facts.map((fact) => fact.sha256), "the same bytes on B").toEqual(files.map((entry) => entry.sha256));
+    expect(facts.every((fact) => fact.readOnly && fact.sameAsStore && fact.links === 2), JSON.stringify(facts)).toBe(true);
+    // On the wire: one status, then every piece (≤ 8 MiB each), then the start and the work packet naming the files.
+    const wire = remoteRequests(sentBefore).filter((entry) => entry.via === "toBeta" && entry.path !== PATHS.runSummaries);
+    const order = filesOf(wire);
+    expect(order[0], order.join(" | ")).toBe(`POST ${PATHS.receivedFilesStatus}`);
+    const pieces = wire.filter((entry) => entry.method === "PUT");
+    expect(pieces.length, order.join(" | ")).toBe(files.reduce((sum, entry) => sum + pieceCount(entry.size), 0));
+    expect(wire.indexOf(pieces.at(-1)!), "every piece before the run starts").toBeLessThan(wire.findIndex((entry) => entry.path === PATHS.runs));
+    expect(pieces.every((entry) => entry.status === 200 && (entry.answer as Rec).accepted === true), JSON.stringify(pieces.map((entry) => entry.answer))).toBe(true);
+    const packetRequest = wire.find((entry) => entry.path === PATHS.messages && (entry.body as Rec).kind === "work_packet")!;
+    expect((packetRequest.body as Rec).files).toEqual(files.map(({ sha256, size, name }) => ({ sha256, size, name })));
+
+    // AC-010 (RF-14): the copy answers without node, then with the wrong node, then with the right one (a file attached).
+    const theta = new NodeServer("theta", root, await getFreePort());
+    let thetaPaired = false;
+    let replies: Rec = {};
+    try {
+      await theta.start();
+      await theta.gql(`mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}`);
+      await pairNodes({ inviter: (query, variables) => theta.gql(query, variables), accepter: (query, variables) => beta.gql(query, variables), inviterName: "theta-node", accepterName: LABEL.beta });
+      thetaPaired = true;
+      const teaser = await writeBinary(betaTempWorkspace(), "teaser.mp4", 5 * MiB, Buffer.from("0000001866747970", "hex"));
+      const noNode = await calls(remote, "send_message_to", { target_agent_run_id: sender.runId, content: "TEASER-NO-NODE", reference_files: [teaser.file] });
+      const wrongNode = await calls(remote, "send_message_to", { node: "theta-node", target_agent_run_id: sender.runId, content: "TEASER-WRONG-NODE", reference_files: [teaser.file] });
+      expect(noNode, JSON.stringify(noNode)).toMatchObject({ accepted: false, code: "NODE_REQUIRED" });
+      expect(textOf(noNode)).toBe(nodeRequiredText(LABEL.alpha));
+      expect(wrongNode, JSON.stringify(wrongNode)).toMatchObject({ accepted: false, code: "NODE_MISMATCH" });
+      expect(textOf(wrongNode)).toBe(nodeMismatchText(LABEL.alpha, "theta-node"));
+      const replyBefore = captured.length;
+      const reply = await calls(remote, "send_message_to", { node: LABEL.alpha, target_agent_run_id: sender.runId, content: "TEASER-ATTACHED", reference_files: [teaser.file] }, 180_000);
+      expect(reply, JSON.stringify(reply)).toMatchObject({ accepted: true, target_agent_run_id: sender.runId, files_sent: 1 });
+      // AC-002 / UC-003: A's message lists A-local paths; each node's log line names its own paths (RF-9).
+      const atAlpha = await receives(sender, "TEASER-ATTACHED", 60_000);
+      const alphaPath = path.join(alpha.memory, "agents", sender.runId, "received_files", r9, "teaser.mp4");
+      expect(atAlpha).toContain(`You received a message from the agent with sender run id "${r9}" on node "${LABEL.beta}".`);
+      expect(atAlpha).toContain("Reference files:");
+      expect(atAlpha).toContain(alphaPath);
+      const alphaFact = await receivedFact(alpha, alphaPath);
+      expect(alphaFact, JSON.stringify(alphaFact)).toMatchObject({ sha256: teaser.sha256, readOnly: true, sameAsStore: true });
+      expect((await lineWith(alpha, "TEASER-ATTACHED"))?.referenceFiles, "A's line: A's paths").toEqual([alphaPath]);
+      expect((await lineWith(beta, "TEASER-ATTACHED"))?.referenceFiles, "B's line: B's original path").toEqual([teaser.file]);
+      expect(remoteRequests(replyBefore).filter((entry) => entry.via === "toAlpha" && entry.method === "PUT").length).toBe(pieceCount(teaser.size));
+      replies = { noNode: textOf(noNode), wrongNode: textOf(wrongNode), reply, alphaFact };
+    } finally {
+      if (thetaPaired) await beta.gql(`mutation($id:String!){removePeerNode(nodeId:$id)}`, { id: theta.nodeId }).catch(() => undefined);
+      await theta.stop();
+    }
+    await neverReceives(sender, "TEASER-NO-NODE", 0);
+    await neverReceives(sender, "TEASER-WRONG-NODE", 0);
+
+    // RF-11: the same video again: only its status, no piece; the same path keeps the same bytes.
+    const resendBefore = captured.length;
+    const resend = await calls(sender, "send_message_to", { node: LABEL.beta, target_agent_run_id: r9, content: "DEMO-AGAIN", reference_files: [files[0]!.file] });
+    expect(resend, JSON.stringify(resend)).toMatchObject({ accepted: true, files_sent: 1 });
+    await receives(remote, "DEMO-AGAIN");
+    const resendWire = remoteRequests(resendBefore).filter((entry) => entry.via === "toBeta" && entry.path !== PATHS.runSummaries);
+    expect(filesOf(resendWire), "no piece for a file beta holds").toEqual([`POST ${PATHS.receivedFilesStatus}`, `POST ${PATHS.messages} message`]);
+    // RF-7: a new version of the brief replaces the old one at the same path (another name keeps nothing of it).
+    const brief2 = await writeBinary(alpha.workspace, "brief.pdf", 150 * 1024, Buffer.from("%PDF-1.4\n"));
+    const replaced = await calls(sender, "send_message_to", { node: LABEL.beta, target_agent_run_id: r9, content: "BRIEF-V2", reference_files: [brief2.file] });
+    expect(replaced, JSON.stringify(replaced)).toMatchObject({ accepted: true, files_sent: 1 });
+    await receives(remote, "BRIEF-V2");
+    const briefFact = await receivedFact(beta, receivedPaths[1]!);
+    expect(briefFact, JSON.stringify(briefFact)).toMatchObject({ sha256: brief2.sha256, size: brief2.size, readOnly: true, sameAsStore: true });
+    // AC-002, the PM's case: two runs no Task relates, on two nodes, with node and a file (`run-messages`).
+    const scout = standaloneActor(alpha, ids.runningScout, "alpha running scout");
+    const note = await writeBinary(alpha.workspace, "notes.pdf", 40 * 1024, Buffer.from("%PDF-1.4\n"));
+    const toBystander = await calls(scout, "send_message_to", { node: LABEL.beta, target_agent_run_id: ids.bystander, content: "NOTES-FOR-BYSTANDER", reference_files: [note.file] });
+    expect(toBystander, JSON.stringify(toBystander)).toMatchObject({ accepted: true, files_sent: 1 });
+    const bystanderPath = path.join(beta.memory, "agents", ids.bystander, "received_files", ids.runningScout, "notes.pdf");
+    expect(await receives(standaloneActor(beta, ids.bystander, "beta bystander"), "NOTES-FOR-BYSTANDER")).toContain(bystanderPath);
+    expect((await receivedFact(beta, bystanderPath)).sha256).toBe(note.sha256);
+    ids.files = { sender: sender.runId, r9, demo: files[0], brief: files[1] };
+    record("RC-51", { delegated, packet, facts, order, replies, resendWire: filesOf(resendWire), briefFact, bystanderPath });
+  }, 900_000);
+
+  it("RC-52 587 AC-003/AC-005, QR: the piece route admits only signed pieces of at most 8 MiB; a damaged piece in transit or a piece whose file does not match its SHA-256 is refused and nothing is delivered; a file over the receiver's limit is refused by the sender before any upload and by the receiver on a forged piece", async () => {
+    const sender = standaloneActor(alpha, ids.files.sender, "alpha files delegator");
+    const remote = composeOnBeta(ids.files.r9);
+    const piece = randomBytes(64 * 1024);
+    const pieceSha = sha256Of(piece);
+    // The gate (NA-9): unsigned, signed with a secret beta does not hold, or a body other than the one signed.
+    const unsigned = await fetch(`${beta.baseUrl}${PATHS.receivedFiles}/${pieceSha}?fromNodeId=${alpha.nodeId}&toNodeId=${beta.nodeId}&offset=0&size=${piece.byteLength}`,
+      { method: "PUT", headers: { "content-type": "application/octet-stream", authorization: "Bearer not-a-node-credential" }, body: piece }).then(async (response) => ({ status: response.status, answer: await response.json() as Rec }));
+    const wrongSecret = await putPiece(beta, { fromNodeId: alpha.nodeId, sha256: pieceSha, offset: 0, size: piece.byteLength, bytes: piece, secret: randomBytes(32).toString("base64url") });
+    const flipped = Buffer.from(piece); flipped[100] = flipped[100]! ^ 0xff;
+    const tampered = await putPiece(beta, { fromNodeId: alpha.nodeId, sha256: pieceSha, offset: 0, size: piece.byteLength, bytes: flipped, signedBytes: piece });
+    expect(unsigned.status, JSON.stringify(unsigned)).toBe(401);
+    expect(wrongSecret, JSON.stringify(wrongSecret)).toMatchObject({ status: 401, answer: { code: "NODE_CREDENTIAL_INVALID" } });
+    expect(tampered, JSON.stringify(tampered)).toMatchObject({ status: 401, answer: { code: "NODE_CREDENTIAL_INVALID" } });
+    // The piece route's body limit: more than 8 MiB is refused before it is read into the handler.
+    const huge = randomBytes(8 * MiB + 1024);
+    const tooBig = await putPiece(beta, { fromNodeId: alpha.nodeId, sha256: sha256Of(huge), offset: 0, size: huge.byteLength, bytes: huge });
+    expect(tooBig.status, JSON.stringify(tooBig)).toBe(413);
+    // Signed bytes that are not the file the SHA-256 names: refused on the last piece; nothing kept.
+    const claimed = sha256Of(randomBytes(64 * 1024));
+    const mismatch = await putPiece(beta, { fromNodeId: alpha.nodeId, sha256: claimed, offset: 0, size: piece.byteLength, bytes: piece });
+    expect(mismatch, JSON.stringify(mismatch)).toMatchObject({ status: 200, answer: { accepted: false, code: "REFERENCE_FILE_CHECK_FAILED" } });
+    expect(fs.existsSync(storeEntry(beta, claimed)) || fs.existsSync(`${storeEntry(beta, claimed)}.partial`), "nothing kept").toBe(false);
+    // A message naming a file beta does not hold: refused before any root sees it.
+    const unheld = await beta.post(PATHS.messages, { fromNodeId: alpha.nodeId, toNodeId: beta.nodeId, kind: "message", messageId: "collabmsg_unheld_587",
+      sender: { agentRunId: ids.files.sender, address: "/delegator" }, target: { agentRunId: ids.files.r9 }, targetRoot: { kind: "agent", runId: ids.files.r9 },
+      content: "UNHELD-FILE", messageType: "agent_message", createdAt: new Date().toISOString(), files: [{ sha256: claimed, size: 10, name: "ghost.pdf" }] });
+    expect(unheld, JSON.stringify(unheld)).toMatchObject({ status: 200, answer: { accepted: false, code: "REFERENCE_FILE_CHECK_FAILED" } });
+    await neverReceives(remote, "UNHELD-FILE", 1_000);
+
+    // AC-003 on the real link: a piece damaged in transit. The gate refuses it; the call names the file; nothing delivered.
+    const damagedFile = await writeBinary(alpha.workspace, "storyboard.png", 3 * MiB, Buffer.from("89504e470d0a1a0a", "hex"));
+    toBeta.tamper = (entry, raw) => { if (entry.method !== "PUT") return raw; const copy = Buffer.from(raw); copy[copy.byteLength - 1] = copy[copy.byteLength - 1]! ^ 0x01; return copy; };
+    let damaged: Rec;
+    try { damaged = await calls(sender, "send_message_to", { node: LABEL.beta, target_agent_run_id: ids.files.r9, content: "DAMAGED-IN-TRANSIT", reference_files: [damagedFile.file] }, 180_000); }
+    finally { toBeta.tamper = null; }
+    expect(damaged.accepted, JSON.stringify(damaged)).toBe(false);
+    expect(["REFERENCE_FILE_TRANSFER_FAILED", "REFERENCE_FILE_CHECK_FAILED"], JSON.stringify(damaged)).toContain(damaged.code);
+    expect(textOf(damaged), "the agent is told which file").toContain("storyboard.png");
+    expect(textOf(damaged)).toContain("so nothing was delivered");
+    expect(fs.existsSync(storeEntry(beta, damagedFile.sha256)), "no complete copy on B").toBe(false);
+    await neverReceives(remote, "DAMAGED-IN-TRANSIT", 1_000);
+
+    // AC-005: beta accepts at most 1 MiB per file: the sender refuses before any piece; a forged oversize piece is refused.
+    expect((await beta.gql(`mutation($k:String!,$v:String!){updateServerSetting(key:$k,value:$v)}`, { k: "AUTOBYTEUS_RECEIVED_FILE_MAX_MB", v: "1" })).updateServerSetting).toBeTruthy();
+    let oversize: Rec, forgedOversize: Awaited<ReturnType<typeof putPiece>>;
+    const overBefore = captured.length;
+    try {
+      oversize = await calls(sender, "send_message_to", { node: LABEL.beta, target_agent_run_id: ids.files.r9, content: "OVERSIZE", reference_files: [ids.files.demo.file] });
+      forgedOversize = await putPiece(beta, { fromNodeId: alpha.nodeId, sha256: pieceSha, offset: 0, size: 2 * MiB, bytes: piece });
+    } finally {
+      await beta.gql(`mutation($k:String!,$v:String!){updateServerSetting(key:$k,value:$v)}`, { k: "AUTOBYTEUS_RECEIVED_FILE_MAX_MB", v: "2048" });
+    }
+    expect(oversize, JSON.stringify(oversize)).toMatchObject({ accepted: false, code: "REFERENCE_FILE_TOO_LARGE" });
+    expect(textOf(oversize)).toBe(`demo.mp4 is 20 MiB; node "${LABEL.beta}" accepts files up to 1 MiB, so nothing was sent.`);
+    expect(filesOf(remoteRequests(overBefore).filter((entry) => entry.via === "toBeta" && entry.path !== PATHS.runSummaries)), "only the status: no piece, no message").toEqual([`POST ${PATHS.receivedFilesStatus}`]);
+    expect(forgedOversize, JSON.stringify(forgedOversize)).toMatchObject({ status: 200, answer: { accepted: false, code: "REFERENCE_FILE_TOO_LARGE" } });
+    await neverReceives(remote, "OVERSIZE", 0);
+    record("RC-52", { unsigned, wrongSecret, tampered, tooBig: tooBig.status, mismatch, unheld, damaged, oversize: textOf(oversize), forgedOversize });
+  }, 600_000);
+
+  it("RC-53 587 AC-006, RF-11: the link to beta breaks during an upload: the call names the file and nothing is delivered; beta keeps only the partial upload, and the next send resumes it from where it stopped", async () => {
+    const sender = standaloneActor(alpha, ids.files.sender, "alpha files delegator");
+    const remote = composeOnBeta(ids.files.r9);
+    const big = await writeBinary(alpha.workspace, "render.mp4", 20 * MiB, Buffer.from("0000001866747970", "hex"));
+    toBeta.drop = (entry) => entry.method === "PUT" && new URL(entry.path, "http://x").searchParams.get("offset") !== "0";
+    let broken: Rec;
+    const before = captured.length;
+    try { broken = await calls(sender, "send_message_to", { node: LABEL.beta, target_agent_run_id: ids.files.r9, content: "RENDER-BROKEN-LINK", reference_files: [big.file] }, 240_000); }
+    finally { toBeta.drop = null; }
+    expect(broken, JSON.stringify(broken)).toMatchObject({ accepted: false, code: "REFERENCE_FILE_TRANSFER_FAILED" });
+    expect(textOf(broken)).toMatch(new RegExp(`^render\\.mp4 could not be sent to node "${LABEL.beta}" \\(.+\\), so nothing was delivered\\. Try again\\.$`));
+    expect(remoteRequests(before).filter((entry) => entry.path === PATHS.messages || entry.path === PATHS.runMessages), "no message sent").toEqual([]);
+    await neverReceives(remote, "RENDER-BROKEN-LINK", 1_000);
+    const partial = await fsp.stat(`${storeEntry(beta, big.sha256)}.partial`);
+    expect(partial.size, "the first piece is held").toBe(8 * MiB);
+    expect(fs.existsSync(storeEntry(beta, big.sha256))).toBe(false);
+    // The agent tries again: the status names the bytes held, the upload resumes there, and the message is delivered.
+    const retryBefore = captured.length;
+    const retry = await calls(sender, "send_message_to", { node: LABEL.beta, target_agent_run_id: ids.files.r9, content: "RENDER-RETRY", reference_files: [big.file] }, 240_000);
+    expect(retry, JSON.stringify(retry)).toMatchObject({ accepted: true, files_sent: 1 });
+    await receives(remote, "RENDER-RETRY");
+    const offsets = remoteRequests(retryBefore).filter((entry) => entry.method === "PUT").map((entry) => Number(new URL(entry.path, "http://x").searchParams.get("offset")));
+    expect(offsets, "resumed after the held bytes").toEqual([8 * MiB, 16 * MiB]);
+    expect((await receivedFact(beta, path.join(beta.memory, "agents", ids.files.r9, "received_files", ids.files.sender, "render.mp4"))).sha256).toBe(big.sha256);
+    record("RC-53", { broken: textOf(broken), partialBytes: partial.size, offsets });
+  }, 600_000);
+
+  it("RC-54 587 AC-007, RF-10: the same file sent to two runs is uploaded once and kept once; deleting each run's history removes its own copy only; the stored bytes are freed by the next cleanup once no run has them and they are a day untouched, and a broken upload's pieces likewise", async () => {
+    const sender = standaloneActor(alpha, ids.files.sender, "alpha files delegator");
+    const shared = await writeBinary(alpha.workspace, "handbook.pdf", 2 * MiB, Buffer.from("%PDF-1.4\n"));
+    const runsFor: string[] = [];
+    const uploads: number[] = [];
+    for (const marker of ["SHARED-ONE", "SHARED-TWO"]) {
+      const before = captured.length;
+      const delegated = await calls(sender, "delegate_task", { node: LABEL.beta, recipient_address: "/publisher", description: `Read the handbook. Marker ${marker}.`, reference_files: [shared.file] }, 240_000);
+      expect(delegated, JSON.stringify(delegated)).toMatchObject({ delegated: true, files_sent: 1 });
+      runsFor.push(delegated.target_agent_run_id as string);
+      await receives(composeOnBeta(delegated.target_agent_run_id as string), marker);
+      uploads.push(remoteRequests(before).filter((entry) => entry.method === "PUT").length);
+    }
+    expect(uploads, "uploaded once (RF-11)").toEqual([1, 0]);
+    const placed = runsFor.map((runId) => path.join(beta.memory, "agents", runId, "received_files", ids.files.sender, "handbook.pdf"));
+    expect((await fsp.stat(storeEntry(beta, shared.sha256))).nlink, "one stored copy, two names (and the store's)").toBe(3);
+    const deleteRun = async (runId: string) => {
+      await beta.gql(`mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}`, { id: runId });
+      const deleted = (await beta.gql(`mutation($id:String!){deleteStoredRun(runId:$id){success message}}`, { id: runId })).deleteStoredRun;
+      expect(deleted.success, deleted.message).toBe(true);
+    };
+    await deleteRun(runsFor[0]!);
+    expect(fs.existsSync(placed[0]!), "the first run's copy is gone with its history").toBe(false);
+    expect((await receivedFact(beta, placed[1]!)).sha256, "the second run keeps its own").toBe(shared.sha256);
+    await deleteRun(runsFor[1]!);
+    expect(fs.existsSync(placed[1]!)).toBe(false);
+    const afterBoth = await fsp.stat(storeEntry(beta, shared.sha256));
+    expect(afterBoth.nlink, "no run has it any more").toBe(1);
+    // A file received less than 24 h ago stays until a later cleanup (RF-10, the review's note): it is still here now.
+    // A broken upload leaves a partial file too.
+    const broken = await writeBinary(alpha.workspace, "abandoned.mp4", 12 * MiB, Buffer.from("0000001866747970", "hex"));
+    toBeta.drop = (entry) => entry.method === "PUT" && new URL(entry.path, "http://x").searchParams.get("offset") !== "0";
+    try { await calls(sender, "send_message_to", { node: LABEL.beta, target_agent_run_id: ids.files.r9, content: "ABANDONED", reference_files: [broken.file] }, 240_000); }
+    finally { toBeta.drop = null; }
+    const partialPath = `${storeEntry(beta, broken.sha256)}.partial`;
+    expect(fs.existsSync(partialPath), "the broken upload left its partial file").toBe(true);
+    // A day later (the clock of these test-owned files is set back 25 h), the next history delete runs the cleanup.
+    const dayAgo = new Date(Date.now() - 25 * 3600_000);
+    await fsp.utimes(storeEntry(beta, shared.sha256), dayAgo, dayAgo);
+    await fsp.utimes(partialPath, dayAgo, dayAgo);
+    const freshNotUsed = ids.files.demo.sha256 as string;
+    const third = await calls(sender, "delegate_task", { node: LABEL.beta, recipient_address: "/publisher", description: "Short work. Marker SWEEP-TRIGGER." }, 240_000);
+    await receives(composeOnBeta(third.target_agent_run_id as string), "SWEEP-TRIGGER");
+    await deleteRun(third.target_agent_run_id as string);
+    await until(async () => !fs.existsSync(storeEntry(beta, shared.sha256)) && !fs.existsSync(partialPath), "the cleanup after the delete", 20_000);
+    expect(fs.existsSync(storeEntry(beta, freshNotUsed)), "bytes a run still has are kept").toBe(true);
+    record("RC-54", { runsFor, uploads, afterBothLinks: afterBoth.nlink });
+  }, 900_000);
+
   it("RC-21 247 AC-301: a Team member on alpha delegates beta's shared Studio Team; beta starts a Team run whose members use their own or the Team's default, and only its coordinator starts", async () => {
     const lead = teamActor(alpha, ids.team.teamRunId, ids.team.lead, "alpha team lead");
     const view = await connect(alpha, "agent-team", ids.team.teamRunId, (frames) => frames.some((frame) => frame.type === "TEAM_EXECUTION_VIEW_SNAPSHOT"));
@@ -2005,17 +2317,17 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const coordinator = teamActor(beta, ids.studio.teamRunId, ids.studio.coord, "beta studio coordinator");
     const checker = teamActor(beta, ids.studio.teamRunId, ids.studio.checker, "beta studio checker");
     // Coordinator ↔ delegator.
-    expect(await calls(coordinator, "send_message_to", { target_agent_run_id: lead.runId, content: "STUDIO-REPLY-1" })).toMatchObject({ accepted: true });
+    expect(await calls(coordinator, "send_message_to", { node: LABEL.alpha, target_agent_run_id: lead.runId, content: "STUDIO-REPLY-1" })).toMatchObject({ accepted: true });
     expect(await receives(lead, "STUDIO-REPLY-1")).toContain(`You received a message from the agent with sender run id "${ids.studio.coord}" on node "${LABEL.beta}".`);
-    expect(await calls(lead, "send_message_to", { target_agent_run_id: ids.studio.coord, content: "STUDIO-FOLLOWUP-1" })).toMatchObject({ accepted: true });
+    expect(await calls(lead, "send_message_to", { node: LABEL.beta, target_agent_run_id: ids.studio.coord, content: "STUDIO-FOLLOWUP-1" })).toMatchObject({ accepted: true });
     expect(await receives(coordinator, "STUDIO-FOLLOWUP-1")).toContain(`sender run id "${lead.runId}" on node "${LABEL.alpha}"`);
     // Delegator → the never-started member: it starts (its Team default model) and receives; then it replies.
     const launchesBefore = (await beta.launches()).length;
-    expect(await calls(lead, "send_message_to", { target_agent_run_id: ids.studio.checker, content: "TO-CHECKER-1" })).toMatchObject({ accepted: true });
+    expect(await calls(lead, "send_message_to", { node: LABEL.beta, target_agent_run_id: ids.studio.checker, content: "TO-CHECKER-1" })).toMatchObject({ accepted: true });
     expect(await receives(checker, "TO-CHECKER-1")).toContain(`sender run id "${lead.runId}" on node "${LABEL.alpha}"`);
     const checkerLaunches = (await beta.launches()).slice(launchesBefore).filter((launch) => launch.cwd.includes(ids.studio.checker));
     expect(checkerLaunches.map((launch) => launch.argv[launch.argv.indexOf("--model") + 1]), "the member started on its first message").toEqual(["alt-model"]);
-    expect(await calls(checker, "send_message_to", { target_agent_run_id: lead.runId, content: "FROM-CHECKER-1" })).toMatchObject({ accepted: true });
+    expect(await calls(checker, "send_message_to", { node: LABEL.alpha, target_agent_run_id: lead.runId, content: "FROM-CHECKER-1" })).toMatchObject({ accepted: true });
     expect(await receives(lead, "FROM-CHECKER-1")).toContain(`sender run id "${ids.studio.checker}" on node "${LABEL.beta}"`);
     // Each message once in alpha's Team log and once in beta's Team log, with one message ID.
     const logs: Rec = {};
@@ -2024,20 +2336,26 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     }
     expect(logs["FROM-CHECKER-1"].files).toEqual({ beta: `memory/agent_teams/${ids.studio.teamRunId}/team_communication_messages_active.jsonl`,
       alpha: `memory/agent_teams/${ids.team.teamRunId}/team_communication_messages_active.jsonl` });
-    // Refusals: the team run ID (coordinator guidance); another root without node (not running here, autobyteus-492 row 4).
+    // Refusals: the team run ID (coordinator guidance); another root without node (autobyteus-587 RF-14: this node's Task
+    // records know the member runs on beta, so the refusal names the node to pass).
     const sentBefore = captured.length;
     const toTeamRun = await calls(lead, "send_message_to", { target_agent_run_id: ids.studio.teamRunId, content: "TO-TEAM-RUN" });
     expect(toTeamRun.accepted, JSON.stringify(toTeamRun)).toBe(false);
     expect(textOf(toTeamRun)).toBe(`${ids.studio.teamRunId} is a task agent team's run id, and send_message_to talks with agents. To talk with the team, use its coordinator's run id: ${ids.studio.coord}.`);
     const fromOther = await calls(other, "send_message_to", { target_agent_run_id: ids.studio.checker, content: "OTHER-TO-STUDIO" });
     expect(fromOther.accepted, JSON.stringify(fromOther)).toBe(false);
-    expect(textOf(fromOther)).toBe(notRunningRefusal(ids.studio.checker));
+    expect(fromOther.code, JSON.stringify(fromOther)).toBe("NODE_REQUIRED");
+    expect(textOf(fromOther)).toBe(nodeRequiredText(LABEL.beta));
     expect(sentRequests(sentBefore), "none of the refused messages was sent").toEqual([]);
     await neverReceives(checker, "OTHER-TO-STUDIO", 1_000);
-    // Another member of the delegating root (autobyteus-492 DS-006): delivered to the running coordinator unlinked
-    // (`run-messages`), logged once on each node; the link stays the delegator's.
+    // Another member of the delegating root (autobyteus-492 DS-006): without node it is told the node to pass (587 RF-14);
+    // with node, delivered to the running coordinator unlinked (`run-messages`), logged once on each node.
     const mateSentBefore = captured.length;
-    const fromMate = await calls(mate, "send_message_to", { target_agent_run_id: ids.studio.coord, content: "MATE-TO-STUDIO" });
+    const mateNoNode = await calls(mate, "send_message_to", { target_agent_run_id: ids.studio.coord, content: "MATE-TO-STUDIO-NO-NODE" });
+    expect(mateNoNode, JSON.stringify(mateNoNode)).toMatchObject({ accepted: false, code: "NODE_REQUIRED" });
+    expect(textOf(mateNoNode)).toBe(nodeRequiredText(LABEL.beta));
+    expect(sentRequests(mateSentBefore), "nothing sent without node").toEqual([]);
+    const fromMate = await calls(mate, "send_message_to", { node: LABEL.beta, target_agent_run_id: ids.studio.coord, content: "MATE-TO-STUDIO" });
     expect(fromMate, JSON.stringify(fromMate)).toMatchObject({ accepted: true, target_agent_run_id: ids.studio.coord });
     expect(textOf(fromMate)).toBe(`Delivered message to ${ids.studio.coord} on node "${LABEL.beta}".`);
     expect(await receives(coordinator, "MATE-TO-STUDIO")).toContain(`You received a message from the agent with sender run id "${mate.runId}" on node "${LABEL.alpha}".`);
@@ -2084,11 +2402,11 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const done = await calls(solo, "update_task", { task_id: delegated.task_id, status: "DONE" });
     expect(done, JSON.stringify(done)).toMatchObject({ task: { taskId: delegated.task_id, status: "DONE" } });
     expect(JSON.stringify(done), "nothing says the remote Team was stopped").not.toMatch(/stopped/i);
-    const toRemote = await calls(solo, "send_message_to", { target_agent_run_id: coord, content: "AFTER-DONE-TO-STUDIO" });
+    const toRemote = await calls(solo, "send_message_to", { node: LABEL.beta, target_agent_run_id: coord, content: "AFTER-DONE-TO-STUDIO" });
     expect(toRemote.accepted, JSON.stringify(toRemote)).toBe(false);
     expect(textOf(toRemote)).toMatch(/DONE or CANCELLED|closed/i);
     expect(sentRequests(sentBefore), "nothing was sent for the saved Task or to the fenced Team").toEqual([]);
-    const fromRemote = await calls(coordinator, "send_message_to", { target_agent_run_id: ids.solo, content: "AFTER-DONE-FROM-STUDIO" });
+    const fromRemote = await calls(coordinator, "send_message_to", { node: LABEL.alpha, target_agent_run_id: ids.solo, content: "AFTER-DONE-FROM-STUDIO" });
     expect(fromRemote.accepted, JSON.stringify(fromRemote)).toBe(false);
     expect(textOf(fromRemote)).toMatch(/DONE or CANCELLED|closed/i);
     await neverReceives(solo, "AFTER-DONE-FROM-STUDIO", 3_000);
@@ -2500,14 +2818,14 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     // 247: a member with a running background task is not quiet, so the whole remote Team stays (all or nothing).
     const BUSY_SECONDS = 90;
     const busyFrom = Date.now();
-    expect(await calls(lead, "send_message_to", { target_agent_run_id: ids.studio.checker,
+    expect(await calls(lead, "send_message_to", { node: LABEL.beta, target_agent_run_id: ids.studio.checker,
       content: `BUSY-CHECKER BACKGROUND_STEP:${JSON.stringify({ seconds: BUSY_SECONDS, exitCode: 0 })}` })).toMatchObject({ accepted: true });
     await receives(teamActor(beta, ids.studio.teamRunId, ids.studio.checker, "beta studio checker"), "BUSY-CHECKER");
     const startedWaiting = Date.now();
     await until(async () => !(await processLive(ids.r1)), "remote run shut down after the idle grace period", GRACE_MS + 120_000);
     const shutDownAfterMs = Date.now() - startedWaiting;
     const launchesBefore = (await beta.launches()).length;
-    expect(await calls(solo, "send_message_to", { target_agent_run_id: ids.r1, content: "AFTER-IDLE-FROM-ALPHA" })).toMatchObject({ accepted: true });
+    expect(await calls(solo, "send_message_to", { node: LABEL.beta, target_agent_run_id: ids.r1, content: "AFTER-IDLE-FROM-ALPHA" })).toMatchObject({ accepted: true });
     await receives(composeOnBeta(ids.r1), "AFTER-IDLE-FROM-ALPHA");
     const relaunches = (await beta.launches()).slice(launchesBefore).filter((launch) => launch.cwd.includes(ids.r1));
     expect(relaunches, "restored once").toHaveLength(1);
@@ -2529,7 +2847,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       "the unused Team run has no messages").toEqual([]);
     const studioListed = (await teamRuns()).find((run) => run.teamRunId === ids.studio.teamRunId);
     const teamLaunchesBefore = (await beta.launches()).length;
-    expect(await calls(lead, "send_message_to", { target_agent_run_id: ids.studio.coord, content: "AFTER-IDLE-TO-STUDIO" })).toMatchObject({ accepted: true });
+    expect(await calls(lead, "send_message_to", { node: LABEL.beta, target_agent_run_id: ids.studio.coord, content: "AFTER-IDLE-TO-STUDIO" })).toMatchObject({ accepted: true });
     await receives(teamActor(beta, ids.studio.teamRunId, ids.studio.coord, "beta studio coordinator"), "AFTER-IDLE-TO-STUDIO");
     const teamRelaunches = (await beta.launches()).slice(teamLaunchesBefore).filter((launch) => launch.cwd.includes(ids.studio.coord));
     expect(teamRelaunches.filter((launch) => launch.argv.includes("--conversation")), "the coordinator restored with its conversation").toHaveLength(1);
@@ -2576,12 +2894,12 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await beta.stop();
     await beta.start();
     const betaLaunches = (await beta.launches()).length;
-    expect(await calls(solo, "send_message_to", { target_agent_run_id: ids.r1, content: "AFTER-BETA-RESTART-SOLO" })).toMatchObject({ accepted: true });
+    expect(await calls(solo, "send_message_to", { node: LABEL.beta, target_agent_run_id: ids.r1, content: "AFTER-BETA-RESTART-SOLO" })).toMatchObject({ accepted: true });
     await receives(composeOnBeta(ids.r1), "AFTER-BETA-RESTART-SOLO");
     const betaRelaunches = (await beta.launches()).slice(betaLaunches).filter((launch) => launch.cwd.includes(ids.r1));
     expect(betaRelaunches.filter((launch) => launch.argv.includes("--conversation")), "remote run restored once").toHaveLength(1);
     // 247: the remote Team on the restarted beta is restored by the delegator's follow-up (alpha still running).
-    expect(await calls(teamLead, "send_message_to", { target_agent_run_id: ids.studio.coord, content: "AFTER-BETA-RESTART-STUDIO" })).toMatchObject({ accepted: true });
+    expect(await calls(teamLead, "send_message_to", { node: LABEL.beta, target_agent_run_id: ids.studio.coord, content: "AFTER-BETA-RESTART-STUDIO" })).toMatchObject({ accepted: true });
     await receives(studioCoordinator, "AFTER-BETA-RESTART-STUDIO");
     expect((await beta.launches()).slice(betaLaunches).filter((launch) => launch.cwd.includes(ids.studio.coord) && launch.argv.includes("--conversation")), "remote Team coordinator restored").toHaveLength(1);
 
@@ -2592,13 +2910,13 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const replies: Rec = {};
     for (const [kind, remoteId, delegator, marker] of [["solo", ids.r1, ids.solo, "AFTER-ALPHA-RESTART-TO-SOLO"], ["team", ids.team.r2, ids.team.lead, "AFTER-ALPHA-RESTART-TO-TEAM"],
       ["org", ids.org.r5, ids.org.lead, "AFTER-ALPHA-RESTART-TO-ORG"]] as const) {
-      replies[kind] = await calls(composeOnBeta(remoteId), "send_message_to", { target_agent_run_id: delegator, content: marker });
+      replies[kind] = await calls(composeOnBeta(remoteId), "send_message_to", { node: LABEL.alpha, target_agent_run_id: delegator, content: marker });
     }
     expect(replies.solo, JSON.stringify(replies.solo)).toMatchObject({ accepted: true });
     expect(await receives(solo, "AFTER-ALPHA-RESTART-TO-SOLO")).toContain(`on node "${LABEL.beta}"`);
     const alphaRelaunches = (await alpha.launches()).slice(alphaLaunches);
     expect(alphaRelaunches.filter((launch) => launch.cwd.includes(ids.solo) && launch.argv.includes("--conversation")), "standalone delegator woken").toHaveLength(1);
-    expect(await calls(solo, "send_message_to", { target_agent_run_id: ids.r1, content: "AFTER-ALPHA-RESTART-FROM-SOLO" })).toMatchObject({ accepted: true });
+    expect(await calls(solo, "send_message_to", { node: LABEL.beta, target_agent_run_id: ids.r1, content: "AFTER-ALPHA-RESTART-FROM-SOLO" })).toMatchObject({ accepted: true });
     await receives(composeOnBeta(ids.r1), "AFTER-ALPHA-RESTART-FROM-SOLO");
     expect(await linksNow(), "links unchanged on disk after restarts and later saves").toEqual(linksBefore);
     expect(await Promise.all([ids.r1, ids.team.r2, ids.org.r5].map(async (id) => (await betaMetadata(id)).delegatedFrom))).toEqual(backLinksBefore);
@@ -2625,12 +2943,12 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(flattenE2eConfiguredAgentExecutions(teamConfig.executionTree).map((member) => member.agentRunId)).toContain(ids.team.lead);
     expect((orgConfig.executionTree.rootOrg.members as Rec[]).map((member) => member.agentRunId)).toContain(ids.org.lead);
     for (const [actor, remoteId, marker] of [[teamLead, ids.team.r2, "AFTER-ALPHA-RESTART-FROM-TEAM"], [orgLead, ids.org.r5, "AFTER-ALPHA-RESTART-FROM-ORG"]] as const) {
-      expect(await calls(actor, "send_message_to", { target_agent_run_id: remoteId, content: marker })).toMatchObject({ accepted: true });
+      expect(await calls(actor, "send_message_to", { node: LABEL.beta, target_agent_run_id: remoteId, content: marker })).toMatchObject({ accepted: true });
       await receives(composeOnBeta(remoteId), marker);
       await assertBothLogs(marker, actor, composeOnBeta(remoteId));
     }
     // 247: after alpha's restart, the remote Team's coordinator replies; alpha's Team root takes it and the lead reads it.
-    const studioReply = await calls(studioCoordinator, "send_message_to", { target_agent_run_id: ids.team.lead, content: "AFTER-ALPHA-RESTART-FROM-STUDIO" });
+    const studioReply = await calls(studioCoordinator, "send_message_to", { node: LABEL.alpha, target_agent_run_id: ids.team.lead, content: "AFTER-ALPHA-RESTART-FROM-STUDIO" });
     expect(studioReply, JSON.stringify(studioReply)).toMatchObject({ accepted: true });
     expect(await receives(teamLead, "AFTER-ALPHA-RESTART-FROM-STUDIO")).toContain(`sender run id "${ids.studio.coord}" on node "${LABEL.beta}"`);
     expect((await betaTeamTree(ids.studio.teamRunId)).delegatedFrom, "beta's Team back-link unchanged").toEqual(studioBackLinkBefore);
@@ -2639,7 +2957,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await alpha.stop();
     await alpha.start();
     const coldLaunches = (await alpha.launches()).length;
-    const coldReply = await calls(studioCoordinator, "send_message_to", { target_agent_run_id: ids.team.lead, content: "COLD-WAKE-FROM-STUDIO" });
+    const coldReply = await calls(studioCoordinator, "send_message_to", { node: LABEL.alpha, target_agent_run_id: ids.team.lead, content: "COLD-WAKE-FROM-STUDIO" });
     expect(coldReply, JSON.stringify(coldReply)).toMatchObject({ accepted: true });
     const coldWoken = (launch: { argv: string[]; cwd: string }) => launch.cwd.includes(ids.team.lead) && launch.argv.includes("--conversation");
     await until(async () => (await alpha.launches()).slice(coldLaunches).some(coldWoken), "the lead woken by the Team link alone", 30_000);
@@ -2660,7 +2978,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const listed = history.flatMap((group) => (group.teamDefinitions as Rec[]).flatMap((definition) => definition.runs as Rec[])).find((run) => run.teamRunId === ids.studio.teamRunId);
     expect(listed, "still in history, inactive").toMatchObject({ isActive: false });
     const launchesBefore = (await beta.launches()).length;
-    expect(await calls(lead, "send_message_to", { target_agent_run_id: ids.studio.coord, content: "AFTER-OWNER-STOP" })).toMatchObject({ accepted: true });
+    expect(await calls(lead, "send_message_to", { node: LABEL.beta, target_agent_run_id: ids.studio.coord, content: "AFTER-OWNER-STOP" })).toMatchObject({ accepted: true });
     await receives(teamActor(beta, ids.studio.teamRunId, ids.studio.coord, "beta studio coordinator"), "AFTER-OWNER-STOP");
     const relaunches = (await beta.launches()).slice(launchesBefore).filter((launch) => launch.cwd.includes(ids.studio.coord));
     expect(relaunches.filter((launch) => launch.argv.includes("--conversation")), "restored with its conversation").toHaveLength(1);
@@ -2816,7 +3134,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       .toEqual([{ name: "Daily Assistant", kind: "agent", address: "/daily_assistant", description: daily.description }]);
     // The work itself makes the Daily Assistant report to its delegator (the scripted CLI runs the call on receipt).
     const delegated = await calls(delegator, "delegate_task", { node: LABEL.beta, recipient_address: "/daily_assistant",
-      description: `Plan my day. ${callTool("send_message_to", { target_agent_run_id: delegator.runId, content: "Done. Marker DA-REMOTE-REPORT." })}` });
+      description: `Plan my day. ${callTool("send_message_to", { node: LABEL.alpha, target_agent_run_id: delegator.runId, content: "Done. Marker DA-REMOTE-REPORT." })}` });
     expect(delegated, JSON.stringify(delegated)).toMatchObject({ delegated: true, target_kind: "agent", node: LABEL.beta });
     const runId = delegated.target_agent_run_id as string;
     const metadata = await betaMetadata(runId);
@@ -3308,7 +3626,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const deleted = (await beta.gql(`mutation($id:String!){deleteStoredRun(runId:$id){success message}}`, { id: doomed })).deleteStoredRun;
     expect(deleted.success, deleted.message).toBe(true);
     expect(fs.existsSync(path.join(beta.memory, "agents", doomed))).toBe(false);
-    const notFound = await calls(solo, "send_message_to", { target_agent_run_id: doomed, content: "TO-DELETED-RUN" });
+    const notFound = await calls(solo, "send_message_to", { node: LABEL.beta, target_agent_run_id: doomed, content: "TO-DELETED-RUN" });
     expect(notFound.accepted, JSON.stringify(notFound)).toBe(false);
     expect(textOf(notFound)).toBe(`That run no longer exists on node "${LABEL.beta}".`);
     record("RC-14", { doomed, deleted, notFound: textOf(notFound) });
@@ -3322,7 +3640,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     toBeta.mode = "blackhole";
     try {
       partitionedDelegation = await delegateRemote(solo, "Partitioned.");
-      partitionedMessage = await calls(solo, "send_message_to", { target_agent_run_id: ids.r1, content: "PARTITIONED-MESSAGE" });
+      partitionedMessage = await calls(solo, "send_message_to", { node: LABEL.beta, target_agent_run_id: ids.r1, content: "PARTITIONED-MESSAGE" });
     } finally { toBeta.mode = "forward"; toBeta.releaseHeld(); }
     expect(textOf(partitionedDelegation)).toBe(`Node "${LABEL.beta}" could not be reached (it did not answer in time).`);
     expect(textOf(partitionedMessage)).toBe(`Node "${LABEL.beta}" could not be reached (it did not answer in time; the message may have been delivered).`);
@@ -3352,7 +3670,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     toBeta.targetPort = alpha.port;
     try {
       mismatch = await delegateRemote(solo, "Wrong server.");
-      mismatchMessage = await calls(solo, "send_message_to", { target_agent_run_id: ids.r1, content: "TO-WRONG-SERVER" });
+      mismatchMessage = await calls(solo, "send_message_to", { node: LABEL.beta, target_agent_run_id: ids.r1, content: "TO-WRONG-SERVER" });
       pageMismatch = (await peerNodeOffer(alpha, beta.nodeId)).offer;
     } finally { toBeta.targetPort = beta.port; }
     expect(pageMismatch, "267: the page's query").toEqual({ entries: null, refusalCode: "PEER_IDENTITY_MISMATCH" });
@@ -3373,9 +3691,9 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     // autobyteus-500 FU-030: a peer's refusal keeps only the peer's reason.
     expect(textOf(refused)).toBe(`The Agent Publisher on node "${LABEL.beta}" cannot run there: its default model cannot be used: 'retired-model' is no longer offered by Antigravity CLI, and Model Routing is off on node "${LABEL.beta}".`);
     expect(await remoteRunDirs()).toEqual(runsBefore);
-    expect(await calls(solo, "send_message_to", { target_agent_run_id: ids.r1, content: "AFTER-DEFAULT-CHANGE-FOLLOWUP" })).toMatchObject({ accepted: true });
+    expect(await calls(solo, "send_message_to", { node: LABEL.beta, target_agent_run_id: ids.r1, content: "AFTER-DEFAULT-CHANGE-FOLLOWUP" })).toMatchObject({ accepted: true });
     await receives(composeOnBeta(ids.r1), "AFTER-DEFAULT-CHANGE-FOLLOWUP");
-    expect(await calls(composeOnBeta(ids.r1), "send_message_to", { target_agent_run_id: ids.solo, content: "AFTER-DEFAULT-CHANGE-REPLY" })).toMatchObject({ accepted: true });
+    expect(await calls(composeOnBeta(ids.r1), "send_message_to", { node: LABEL.alpha, target_agent_run_id: ids.solo, content: "AFTER-DEFAULT-CHANGE-REPLY" })).toMatchObject({ accepted: true });
     await receives(solo, "AFTER-DEFAULT-CHANGE-REPLY");
     expect((await betaMetadata(ids.r1)).llmModelIdentifier, "the running run keeps the launch it started with").toBe(MODEL);
     record("RC-17", { refused: textOf(refused) });
@@ -3387,14 +3705,14 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     let offOnBeta: Rec, offFromBeta: Rec, offOnAlpha: Rec, inboundWhileAlphaOff: Rec, sentDuringAlphaOff: string[];
     await beta.gql(`mutation{setRemoteCollaborationEnabled(enabled:false){enabled}}`);
     try {
-      offOnBeta = await calls(solo, "send_message_to", { target_agent_run_id: ids.r1, content: "WHILE-BETA-OFF" });
-      offFromBeta = await calls(remote, "send_message_to", { target_agent_run_id: ids.solo, content: "FROM-BETA-WHILE-OFF" });
+      offOnBeta = await calls(solo, "send_message_to", { node: LABEL.beta, target_agent_run_id: ids.r1, content: "WHILE-BETA-OFF" });
+      offFromBeta = await calls(remote, "send_message_to", { node: LABEL.alpha, target_agent_run_id: ids.solo, content: "FROM-BETA-WHILE-OFF" });
     } finally { await beta.gql(`mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}`); }
     await alpha.gql(`mutation{setRemoteCollaborationEnabled(enabled:false){enabled}}`);
     try {
       const sentBefore = captured.length;
       offOnAlpha = await delegateRemote(solo, "While alpha off.");
-      inboundWhileAlphaOff = await calls(remote, "send_message_to", { target_agent_run_id: ids.solo, content: "TO-ALPHA-WHILE-OFF" });
+      inboundWhileAlphaOff = await calls(remote, "send_message_to", { node: LABEL.alpha, target_agent_run_id: ids.solo, content: "TO-ALPHA-WHILE-OFF" });
       sentDuringAlphaOff = remoteRequests(sentBefore).map((entry) => entry.via);
     } finally { await alpha.gql(`mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}`); }
     expect(textOf(offOnBeta)).toBe(`Remote collaboration is turned off on node "${LABEL.beta}", so it refused the request.`);
@@ -3415,11 +3733,16 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const historyBefore = { alphaLinks: await linksOf("agent", ids.solo),
       betaRuns: await remoteRunDirs() };
     expect((await beta.gql(`mutation($id:String!){removePeerNode(nodeId:$id)}`, { id: alpha.nodeId })).removePeerNode).toBe(true);
-    const toBetaAfterRemoval = await calls(solo, "send_message_to", { target_agent_run_id: ids.r1, content: "AFTER-REMOVAL-TO-BETA" });
+    const toBetaAfterRemoval = await calls(solo, "send_message_to", { node: LABEL.beta, target_agent_run_id: ids.r1, content: "AFTER-REMOVAL-TO-BETA" });
     // autobyteus-437: beta no longer holds the secret, so its gate refuses alpha's signature (unpaired there).
     expect(textOf(toBetaAfterRemoval)).toBe(`This node and node "${LABEL.beta}" are not paired, so nothing was done there. The user can pair them again on the Nodes page.`);
-    const fromBetaAfterRemoval = await calls(remote, "send_message_to", { target_agent_run_id: ids.solo, content: "AFTER-REMOVAL-TO-ALPHA" });
-    expect(textOf(fromBetaAfterRemoval)).toBe(`The node of that run (${alpha.nodeId}) is no longer a registered peer of this node, so nothing was sent.`);
+    // autobyteus-587 RF-14: the reply names its node, which beta no longer has: the unknown-node refusal (as delegate_task's).
+    const removedBefore = captured.length;
+    const fromBetaAfterRemoval = await calls(remote, "send_message_to", { node: LABEL.alpha, target_agent_run_id: ids.solo, content: "AFTER-REMOVAL-TO-ALPHA" });
+    expect(textOf(fromBetaAfterRemoval)).toBe(TEXT_261.unknownNode(LABEL.alpha));
+    const fromBetaNoNode = await calls(remote, "send_message_to", { target_agent_run_id: ids.solo, content: "AFTER-REMOVAL-NO-NODE" });
+    expect(fromBetaNoNode.accepted, JSON.stringify(fromBetaNoNode)).toBe(false);
+    expect(sentRequests(removedBefore).filter((entry) => entry.via === "toAlpha"), "nothing reaches alpha").toEqual([]);
     expect((await alpha.gql(`mutation($id:String!){removePeerNode(nodeId:$id)}`, { id: beta.nodeId })).removePeerNode).toBe(true);
     const delegateAfterRemoval = await delegateRemote(solo, "After removal.");
     expect(textOf(delegateAfterRemoval)).toBe(TEXT_261.unknownNode(LABEL.beta));
@@ -3428,14 +3751,16 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(await remoteRunDirs()).toEqual(historyBefore.betaRuns);
     expect(stringsOf(await remote.conversation()).some((value) => value.includes("STANDALONE-PACKET")), "the remote run's history is readable on beta").toBe(true);
     expect(stringsOf(await solo.conversation()).some((value) => value.includes("REPLY-FROM-BETA-1")), "the delegator's history is readable on alpha").toBe(true);
-    record("RC-19", { toBetaAfterRemoval: textOf(toBetaAfterRemoval), fromBetaAfterRemoval: textOf(fromBetaAfterRemoval), delegateAfterRemoval: textOf(delegateAfterRemoval), historyBefore });
+    record("RC-19", { toBetaAfterRemoval: textOf(toBetaAfterRemoval), fromBetaAfterRemoval: textOf(fromBetaAfterRemoval), fromBetaNoNode, delegateAfterRemoval: textOf(delegateAfterRemoval), historyBefore });
   }, 240_000);
 
   it("RC-20 AC-111/REQ-113/REQ-114, 437 NAS-20: every captured request between the nodes carries only its peer signature (never the secret, no other credential) and only the contract's fields", () => {
     const allowed = new Set([PATHS.runs, PATHS.messages, PATHS.status, PATHS.availability, PATHS.availableAgents,
       PATHS.runSummaries, PATHS.agentProjection, PATHS.ownerCommands, PATHS.runObservations, PATHS.agentStreamSnapshot,
-      PATHS.runMessages, PATHS.runningAgents]);
-    expect(captured.filter((entry) => !allowed.has(entry.path)).map((entry) => entry.path)).toEqual([]);
+      PATHS.runMessages, PATHS.runningAgents, PATHS.receivedFilesStatus]);
+    // autobyteus-587: a file piece's path carries its SHA-256 and its envelope in the (signed) query.
+    const isPiece = (entry: Captured) => entry.method === "PUT" && /^\/rest\/remote\/received-files\/[0-9a-f]{64}\?/.test(entry.path);
+    expect(captured.filter((entry) => !allowed.has(entry.path) && !isPiece(entry)).map((entry) => entry.path)).toEqual([]);
     const keysByKind: Record<string, string[]> = {
       [PATHS.runs]: ["address", "delegatingRun", "delegator", "fromNodeId", "task", "toNodeId"],
       // 261: the discovery requests are the envelope only.
@@ -3448,11 +3773,13 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       // 461 G-D1 (SR-088): one agent's own snapshot, by its run and agent.
       [PATHS.agentStreamSnapshot]: ["agentRunId", "fromNodeId", "targetRoot", "toNodeId"],
       // 492 QR-002/QR-003: a message by run IDs only (no root named), and the running-runs list (the envelope only).
-      [PATHS.runMessages]: ["content", "createdAt", "fromNodeId", "messageId", "messageType", "sender", "target", "toNodeId"],
+      [PATHS.runMessages]: ["content", "createdAt", "files", "fromNodeId", "messageId", "messageType", "sender", "target", "toNodeId"],
       [PATHS.runningAgents]: ["fromNodeId", "toNodeId"],
-      work_packet: ["content", "createdAt", "fromNodeId", "kind", "messageType", "sender", "target", "targetRoot", "toNodeId"],
-      toBeta: ["content", "createdAt", "fromNodeId", "kind", "messageId", "messageType", "sender", "target", "targetRoot", "toNodeId"],
-      toAlpha: ["content", "createdAt", "fromNodeId", "kind", "messageId", "messageType", "sender", "target", "targetRoot", "toNodeId"],
+      // autobyteus-587: work packets and messages name their files (`files`, empty when none).
+      work_packet: ["content", "createdAt", "files", "fromNodeId", "kind", "messageType", "sender", "target", "targetRoot", "toNodeId"],
+      toBeta: ["content", "createdAt", "files", "fromNodeId", "kind", "messageId", "messageType", "sender", "target", "targetRoot", "toNodeId"],
+      toAlpha: ["content", "createdAt", "files", "fromNodeId", "kind", "messageId", "messageType", "sender", "target", "targetRoot", "toNodeId"],
+      [PATHS.receivedFilesStatus]: ["files", "fromNodeId", "toNodeId"],
     };
     const counts: Record<string, number> = {};
     // Credential shapes (provider keys, mobile and Memory Hub tokens) start a value or follow a non-identifier character,
@@ -3472,10 +3799,20 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       expect(entry.headers["x-autobyteus-peer-to"], `receiver of request ${entry.seq}`).toBe(entry.via === "toBeta" ? beta.nodeId : alpha.nodeId);
       // 278: the observation stream's upgrade (its frames are not decoded here; RC-35 reads the route directly).
       if (entry.upgrade) { expect(entry.path).toBe(PATHS.runObservations); expect(entry.method).toBe("GET"); counts.observation = (counts.observation ?? 0) + 1; continue; }
+      // 587 RFC-001 § 6: a piece is raw bytes (at most 8 MiB), its envelope and offset in the query, signed like any request.
+      if (isPiece(entry)) {
+        const url = new URL(entry.path, "http://piece");
+        expect([...url.searchParams.keys()].sort(), `query of piece ${entry.seq}`).toEqual(["fromNodeId", "offset", "size", "toNodeId"]);
+        expect(url.searchParams.get("toNodeId")).toBe(entry.via === "toBeta" ? beta.nodeId : alpha.nodeId);
+        expect(String(entry.headers["content-type"])).toMatch(/^application\/octet-stream/);
+        expect((entry.body as Rec).bytes, `size of piece ${entry.seq}`).toBeLessThanOrEqual(8 * 1024 * 1024);
+        counts.piece = (counts.piece ?? 0) + 1;
+        continue;
+      }
       const body = entry.body as Rec;
       expect(secretLike(JSON.stringify(body)), `secret-like text in request ${entry.seq}: ${JSON.stringify(body).slice(0, 300)}`).toBe(false);
       const kind = [PATHS.runs, PATHS.availability, PATHS.availableAgents, PATHS.runSummaries, PATHS.agentProjection, PATHS.ownerCommands,
-        PATHS.agentStreamSnapshot, PATHS.runMessages, PATHS.runningAgents].includes(entry.path as never) ? entry.path
+        PATHS.agentStreamSnapshot, PATHS.runMessages, PATHS.runningAgents, PATHS.receivedFilesStatus].includes(entry.path as never) ? entry.path
         : body.kind === "work_packet" ? "work_packet" : entry.via;
       // 261 REQ-403: an accepted discovery answer carries only the contract's fields.
       const answer = entry.answer as Rec | undefined;
@@ -3512,6 +3849,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(counts.status ?? 0, "the identity checks were captured").toBeGreaterThan(0);
     expect(counts[PATHS.runMessages] ?? 0, "492: unlinked messages were captured and audited").toBeGreaterThan(0);
     expect(counts.receiverAddress ?? 0, "565: accepted message answers named the receiver").toBeGreaterThan(0);
+    expect(counts.piece ?? 0, "587: file pieces were captured and audited").toBeGreaterThan(0);
+    expect(counts[PATHS.receivedFilesStatus] ?? 0, "587: file status requests were captured and audited").toBeGreaterThan(0);
     expect(counts.runningAgentsEntries ?? 0, "492: running-runs answers with entries were captured and audited").toBeGreaterThan(0);
     expect(evidence.nodes.alpha.canaryKeySaved, "the canary key was saved on alpha").toBe(true);
     expect(evidence.nodes.beta.canaryKeySaved, "the canary key was saved on beta").toBe(true);
