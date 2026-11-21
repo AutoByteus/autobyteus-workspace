@@ -2,6 +2,7 @@ import "reflect-metadata";
 import { projectionByOwnRun } from "../helpers/own-run-reads.js";
 import { headReadRepository, headReadResponse } from "../helpers/github-head-read-stub.js";
 import fs from "node:fs/promises";
+import { watch as watchFolder } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
@@ -146,6 +147,35 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     return { socket, frames, closed };
   };
   const changed = (feed: Feed, from = 0) => feed.frames.slice(from).filter((frame) => frame.type === "agent_package_definitions_changed");
+  /**
+   * The OS has delivered the file events of these paths (relative to `dir`, POSIX) to a raw `fs.watch` of this test
+   * (autobyteus-576 FU-007). A lookup is asserted only once the change can have been detected: REQ-018 covers changes
+   * already detected, and on a busy Mac the OS delivers them seconds late (6 s measured, TESTING.md "File watching on a
+   * busy Mac"). Start it before the writes; `delivered()` waits with the shared limit and labels a time-out ENVIRONMENT.
+   */
+  const osFileEvents = (dir: string, expected: readonly string[]) => {
+    const pending = new Set(expected);
+    let resolveDelivered!: () => void;
+    const done = new Promise<void>((resolve) => { resolveDelivered = resolve; });
+    const watcher = watchFolder(dir, { recursive: true }, (_event, name) => {
+      const file = name === null || name === undefined ? null : String(name).split(path.sep).join("/");
+      for (const prefix of [...pending]) if (file === null || file === prefix || file.startsWith(`${prefix}/`)) pending.delete(prefix);
+      if (pending.size === 0) resolveDelivered();
+    });
+    return {
+      delivered: async () => {
+        let timer: ReturnType<typeof setTimeout> | undefined;
+        try {
+          await Promise.race([done, new Promise<never>((_resolve, reject) => {
+            timer = setTimeout(() => reject(new Error(`ENVIRONMENT: the OS delivered no file event for ${[...pending].join(", ")} within ${OS_FILE_EVENT_WAIT_MS} ms`)), OS_FILE_EVENT_WAIT_MS);
+          })]);
+        } finally {
+          clearTimeout(timer);
+          watcher.close();
+        }
+      },
+    };
+  };
   /**
    * Waits for a change on disk to reach GraphQL. The latency is the OS file event's, so the limit is the shared one;
    * the measured time is kept in the evidence, not compared with the product's 5 s goal (DEC-002 of autobyteus-517).
@@ -678,18 +708,26 @@ describe("Agent package definitions live refresh at the real server/wire boundar
 
     // (a) The Agent Package Creator writes a new agent and a new Team. The next delegation, still inside the settle
     // window (nothing published yet), finds the new agent: the lookup applies the detected change first (AC-016,
-    // REQ-018). The short pause stands in for the creator's reply turn; the monitor detects a write in ~5-30 ms here.
+    // REQ-018). The short pause stands in for the creator's reply turn. The lookup is asserted once the OS has delivered
+    // the write (FU-007): the lookup that first lists the agent ran before anything was published.
     const writtenAt = Date.now();
     const mark = monitor.frames.length;
+    const scoutEvents = osFileEvents(root, ["agents/apar-fresh-scout"]);
     await writeAgent(path.join(root, "agents", "apar-fresh-scout"), "APAR Fresh Scout", "Scout new ground. MARK_SCOUT_V1");
     await writeTeam(path.join(root, "agent-teams", "apar-fresh-squad"), "APAR Fresh Squad", [
       { memberName: "lead", ref: "apar-fresh-scout", refScope: "shared" },
       { memberName: "mate", ref: "apar-editor", refScope: "shared" }]);
     await sleep(300);
-    expect(changed(monitor, mark), "still inside the 1 s settle window").toEqual([]);
-    const listedAfterWrite = await listNames();
+    await scoutEvents.delivered();
+    record.osEventAfterWriteMs = Date.now() - writtenAt;
+    let publishedBeforeLookup: unknown[] = [];
+    const listedAfterWrite = (await waitFor(async () => {
+      publishedBeforeLookup = changed(monitor, mark);
+      return listNames();
+    }, (names) => names.includes("APAR Fresh Scout"), "the next lookup lists the detected agent")).value;
     record.listAfterWriteMs = Date.now() - writtenAt;
     record.framesWhenListed = changed(monitor, mark);
+    expect(publishedBeforeLookup, "still inside the 1 s settle window when the lookup applied the change").toEqual([]);
     expect(listedAfterWrite).toContain("APAR Fresh Scout");
     // The Team is found by the next delegation (AC-015). On a loaded machine its folder can be detected after the first
     // lookup; REQ-018 covers changes already detected, and real use has a model turn here.
@@ -705,12 +743,14 @@ describe("Agent package definitions live refresh at the real server/wire boundar
 
     // (b) The creator edits the Team (new coordinator, new member set, a handoff) and an agent's instructions;
     // a new copy spawned right away has the current members and its agents the current instructions.
+    const editEvents = osFileEvents(root, ["agents/apar-editor", "agent-teams/apar-fresh-squad"]);
     await writeAgent(path.join(root, "agents", "apar-editor"), "APAR Editor", "Edit drafts. MARK_EDITOR_V2");
     await writeTeam(path.join(root, "agent-teams", "apar-fresh-squad"), "APAR Fresh Squad", [
       { memberName: "chief", ref: "apar-editor", refScope: "shared" },
       { memberName: "scout", ref: "apar-fresh-scout", refScope: "shared" }],
     [{ from: "/chief", to: "/scout", rules: ["Hand over the survey."] }]);
     await sleep(300); // the creator's reply turn
+    await editEvents.delivered();
     const squadV2 = await delegateAndReadPrompt(`/${segment("APAR Fresh Squad")}`);
     expect(squadV2.prompt).toContain("MARK_EDITOR_V2");
     expect(squadV2.prompt).not.toContain("MARK_EDITOR_V1");
@@ -730,8 +770,10 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     expect(JSON.parse(v1Again[0]!)).toContain("MARK_SCOUT_V1");
 
     // (c) The creator deletes an agent; the next delegation no longer lists it and gets the not-found result.
+    const removalEvents = osFileEvents(root, ["agents/apar-doomed"]);
     await fs.rm(path.join(root, "agents", "apar-doomed"), { recursive: true });
     await sleep(300); // the creator's reply turn
+    await removalEvents.delivered();
     expect(await listNames()).not.toContain("APAR Doomed");
     const refused = await managerCalls(callTool("delegate_task", { recipient_address: `/${segment("APAR Doomed")}`, description: "Reply OK." }));
     record.deletedDelegation = refused;
