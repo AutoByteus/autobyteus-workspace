@@ -10,6 +10,7 @@ The latest `code-review-report.md` is authoritative for its current result.
 | CRR-002 | `api-e2e-test-review-report.md` | Proportional test-code review after API/E2E Pass (API-REV-001, `eaf53c5c7b`) | N/A (first test review) | Fail (Local Fix, API/E2E) | T-001 |
 | CRR-003 | `api-e2e-test-review-report.md` | Test-code review round 2 (API-REV-002, `71be9e9e8e`) | Fail (Local Fix, API/E2E) | Pass | T-001 (resolved) |
 | CRR-004 | `code-review-report.md` | Implementation Review, round 2 (IR-002, delivery DEL-03, `e295b74b81`) | Pass (CRR-001) | Pass | None |
+| CRR-005 | `api-e2e-test-review-report.md` | Test-code review round 3 (API-REV-003, IR-002 test files) | Pass (CRR-003) | Pass | None |
 
 ## Revision Entries
 
@@ -124,3 +125,28 @@ None (no finding was open; DEL-03 was raised by delivery).
 - Material score or classification changes: N/A
 - Recommended recipient: API/E2E engineer; then the test-code review; then delivery, which asked for the package back
 - Remaining risks or uncertainty: as CRR-001 and CRR-003; delivery's proposed `TESTING.md` check is for the guide's owner.
+
+### CRR-005 — Test-code review round 3: IR-002's test files on the merged base
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/tickets/in-progress/cross-node-file-transfer-587/api-e2e-test-review-report.md`
+- Review entry point and round: successful API/E2E test-code review, round 3
+- Review scope: `N/A` (test review); IR-002's six test files (`e295b74b81`); round 3 itself changed only documents and one `TESTING.md` row
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, API-REV-003
+- Relevant solution revision IDs: SR-009
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: none recorded yet (DEL-03 in the release report)
+- Prior authoritative result: Pass (CRR-003)
+- Current authoritative result: Pass
+- What changed in the review result and why: the stale constructions now pass the explicit no-peer collaborators. The host test is stronger (shared `remoteFiles` identity). Whole suites pass on the merged base. A wording nit in the new `TESTING.md` row was noted for its owner.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: FU-002 (urgent, 565) keeps the gated contract stories red; FU-001, FU-003, FU-004 open.

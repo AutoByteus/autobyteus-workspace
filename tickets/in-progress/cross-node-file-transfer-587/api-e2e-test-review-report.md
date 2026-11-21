@@ -2,7 +2,7 @@
 
 ## Review Meta
 
-- Review Round: 2
+- Review Round: 3 (round 3: API-REV-003 on the merged base, reviewing IR-002's test files `e295b74b81`)
 - Trigger: API-REV-002 (T-001 fixed in `71be9e9e8e`, no product source change); round 1 reviewed API-REV-001 (tests `eaf53c5c7b`, documents `839c8937e5`). Code under test: `e327ba2467`.
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (REQ-001 … REQ-009, AC-001 … AC-011)
 - Investigation Notes Reviewed As Context: not reopened
@@ -13,7 +13,7 @@
 - Implementation Revision Record Reviewed As Context: IR-001
 - Original Code Review Report: `code-review-report.md` (CRR-001 Pass)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-003`
+- Current Code Review Revision ID: `CRR-005`
 - Coverage Investigation: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001)
@@ -79,13 +79,30 @@ Observation kept, not a finding: RC-52's in-transit case accepts either of two c
 - **FU-004 (OBS-2):** after a peer is removed, a reply without `node` is refused `NODE_REQUIRED` naming the raw node ID (`srv_…`), because `peerName` falls back to the ID. Introduced by this change. Impact is low: nothing can be sent to an unpaired node either way, and passing that ID gets the correct "not registered" refusal on the next call. Recorded as a follow-up rather than reopening implementation, since everything the ticket delivers works. The Solution Designer may pull it into this ticket. Not urgent.
 - FU-002 (recorded by API/E2E, urgent): the gated contract stories are red since autobyteus-565 wrote `counterpart` on log lines. **My own miss:** my autobyteus-565 test review (CRR-002 there) passed without noticing that its API/E2E round did not run this gated suite. 565 changed exactly what the suite compares (the bytes of the log lines).
 
+## Round 3 (CRR-005): IR-002's test files
+
+| Durable Test Path | Change | Notes |
+| --- | --- | --- |
+| `tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts` | Updated | The supervisor input gets `receivedFiles: NO_FILES_RECEIVED`; its Team manager gets `remoteChannel`, `remoteFiles` |
+| `tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts` | Updated | The expected supervisor input names `remoteFiles`/`receivedFiles`. New identity assertions: one `remoteFiles` shared by the supervisor, the collaboration and the platform runtime, and `receivedFiles` is its `received` part. Stronger, not looser |
+| `tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts` | Updated | `RootTeamRun` gets the no-peer collaborators |
+| `tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts`, `tests/e2e/…/recent-run-projection-graphql.e2e.test.ts` | Updated | Two more `AgentTeamRunManager` constructions found by search |
+| `tests/helpers/explicit-host-collaborators.ts` | Updated | `NO_FILES_RECEIVED` gains a no-op `sweep` (the shared helper, reused) |
+
+- Checks:
+  - Pass: each test builds the owner as the host does, with the explicit no-peer collaborators the helpers already provide. No assertion was removed or weakened.
+  - Evidence: the whole unit suite 8698 passed (IMP-06); the whole `test:integration` 514/514 and `pnpm test:e2e` 574/574 on the merged base (API-R3); the two-server suite 54/54 (DEL-02).
+- Round 3 changed no other test code (`fdd918a7b4..a3e86ad971`: documents and the one `TESTING.md` row).
+- `TESTING.md` (not test code; noted only): the new row in § Choosing the path covers this failure class. One wording nit for its owner: "the no-op collaborator the source provides (for example `NO_PEER_CHANNEL`)". Those no-ops live in `tests/helpers/explicit-host-collaborators.ts`, not in the source.
+- Findings: None.
+
 ## Latest Authoritative Result
 
-- Result: `Pass` (round 2, CRR-003)
-- Changed durable test paths reviewed: the seven paths above, plus round 2's `model.py`, `stories.py` and `contract-states.json`
+- Result: `Pass` (round 3, CRR-005)
+- Changed durable test paths reviewed: round 1's seven, round 2's model, stories and fixture, round 3's six IR-002 files
 - Unresolved finding IDs: None
-- Recommended Recipient: `delivery_engineer`
+- Recommended Recipient: `delivery_engineer` (it asked for the package back)
 - Notes:
-  - The file-transfer cases prove the security boundary on real servers: the gate's hash on raw pieces, the 8 MiB limit, tampering, oversize, workspace containment, read-only hard links, resume, dedup and the 24 h cleanup.
-  - The gated contract-stories suite remains red only for FU-002 (autobyteus-565's `counterpart`, urgent), outside this ticket.
-  - FU-003 and FU-004 are recorded follow-ups.
+  - The gated contract stories stay red only for FU-002 (autobyteus-565, urgent).
+  - FU-001, FU-003 and FU-004 are open follow-ups.
+  - Round 1's notes stand.
