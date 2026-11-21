@@ -24,6 +24,9 @@ import { displayNameOf } from "../agent-collaboration/delegation/collaboration-t
 import { CrossRunMessageDelivery } from "../agent-collaboration/communication/cross-run-message-delivery.js";
 import { DelegatedRunStarter } from "../agent-collaboration/execution/delegation/delegated-run-starter.js";
 import { RemoteDelegation } from "../agent-collaboration/execution/remote/remote-delegation.js";
+import { PeerRunStateNotices } from "../agent-collaboration/execution/remote/peer-run-state-notices.js";
+import { deliverMessageToPeerRun } from "../agent-communication/services/peer-run-message-delivery.js";
+import type { ClosedDelegations } from "../remote-collaboration/inbound/closed-delegations.js";
 import type { RemoteRunChannel } from "../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { ActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { TaskDelegation } from "../agent-collaboration/execution/task/task-delegation.js";
@@ -166,6 +169,8 @@ export const composeCollaboration = async (input: Readonly<{
   episodicCatalog: Pick<EpisodicCatalog, "runDeleted">;
   /** This node's running agents and their listing (autobyteus-492), created before remote collaboration. */
   running: RunningAgentsComposition;
+  /** The peer-started runs their delegating node closed (autobyteus-591 DN-6), loaded; they leave the run list. */
+  closedDelegations: Pick<ClosedDelegations, "has">;
 }>): Promise<Collaboration> => {
   const { memoryDir, taskSide, runs } = input;
   const { tree, resources } = taskSide;
@@ -173,6 +178,10 @@ export const composeCollaboration = async (input: Readonly<{
   try {
     // 4. What the Task side asks of a run by its own identity: its closure stop, its own status (DS-5).
     const runControl = new TaskRunControl({ agentRuns: runs.agentRunService, teamRuns: runs.teamRunService, tasks: resources });
+    // What a run's peer node is told of its delegation state, owed until confirmed, retried per peer (autobyteus-591 DN-1).
+    const peerNotices = new PeerRunStateNotices({ channel: input.remoteChannel, tasks: resources });
+    peerNotices.start();
+    releases.push(() => peerNotices.close());
     // 5. The Project Task service, the full Task port, with the run control (SR-053), and what serves it.
     const projectRunLinks = await composeProjectRunLinks({ projectsLayout: taskSide.projectsLayout });
     releases.push(() => projectRunLinks.close());
@@ -180,6 +189,7 @@ export const composeCollaboration = async (input: Readonly<{
       taskExecutionResources: resources,
       adHocTasks: new AdHocTaskStore(taskSide.adHocTasksLayout),
       requestRelease: (run) => runControl.stopForTaskClosure(run),
+      noticePeerRun: (peerRun) => peerNotices.changed(peerRun),
       workerStatus: (run) => runControl.ownStatus(run),
       // Where a worker's row is listed: the top of its tree (SR-080).
       topRun: (run) => tree.topOf(runIdentityOf(run)),
@@ -223,6 +233,8 @@ export const composeCollaboration = async (input: Readonly<{
       runFiles,
       restorability,
       peerName: async (nodeId) => (await input.remoteChannel()?.peerName(nodeId)) ?? nodeId,
+      // autobyteus-591 DN-9: the assigner's message continues a closed peer run once its node confirmed "open".
+      peerNotices,
       senderAddress: (message) => tree.collaborationTreeOf(message.receiverRun).reachingAddressOf(message.sender),
       tree: () => tree,
       tasks: () => tasks,
@@ -242,6 +254,9 @@ export const composeCollaboration = async (input: Readonly<{
       tree: () => tree,
       channel: input.remoteChannel,
       outgoing: input.remoteFiles.outgoing,
+      // autobyteus-591 DN-8: a peer run's follow-up Task, after its node confirmed it open, over the run's link.
+      deliverToPeerRun: (message) => deliverMessageToPeerRun({ activeRoots: input.activeRoots }, message),
+      peerNotices,
       starter: new DelegatedRunStarter({ agentRuns: runs.agentRunService, teamRuns: runs.teamRunService }),
       deliverWorkPacket: async (run, packet) => {
         const resolved = await input.rootResolver.resolveOrRestore(run);
@@ -293,7 +308,7 @@ export const composeCollaboration = async (input: Readonly<{
     const agentRunHistory = new AgentRunHistoryService(memoryDir, { tree, workGuard: runs.delegatedWorkGuard, episodicCatalog: input.episodicCatalog });
     releases.push(setProcessAgentRunHistoryService(agentRunHistory));
     releases.push(setProcessTeamRunHistoryService(runs.teamRunHistoryService));
-    releases.push(setProcessWorkspaceRunHistoryService(new WorkspaceRunHistoryService({ tree,
+    releases.push(setProcessWorkspaceRunHistoryService(new WorkspaceRunHistoryService({ tree, closedDelegations: input.closedDelegations,
       agentRunHistoryService: agentRunHistory, teamRunHistoryService: runs.teamRunHistoryService })));
     const views = createRunViewSources({ memoryDir, streams: taskSide.viewStreams, rows: { peerRunOf, runTree }, registrations: input.activeRoots,
       closedTasks: taskSide.closedTasks, restorability });

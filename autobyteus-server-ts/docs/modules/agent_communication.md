@@ -270,8 +270,22 @@ run of this node goes from root to root:
    kept there), like a message with another node; both agents' conversations and both
    logs hold it, each line recording the other agent.
 5. a run on a peer that this node's tree holds is the peer path's: without `node`,
-   `peerRunAdmission` answers `TASK_AGENT_RESOURCE_CLOSED` when all its Task entries
-   are closed, else `NODE_REQUIRED` with the node to pass (autobyteus-587 RF-14).
+   `peerRunNodeRefusal` answers (closed for any sender but its assigner, else `NODE_REQUIRED` with the node
+   to pass, autobyteus-587 RF-14); the router checked its node and admitted it first (below), so only another
+   caller reaches this.
+
+**Peer-run node rule and admission (autobyteus-587 RF-14, autobyteus-591 DN-9).** `GlobalAgentRunMessageRouter.deliver`'s
+first steps after normalizing (and, with `node`, finding the peer), before every path and outside any root's gate:
+`CrossRunMessageDelivery.peerRunNodeRefusal`, then `CrossRunMessageDelivery.admitPeerRun`. The node rule reads only: a
+target whose run this node's Task entries name on a peer is refused `NODE_MISMATCH` with the right node when `node`
+names another one; without `node` it is `TASK_AGENT_RESOURCE_CLOSED` when the run is closed and the sender is not the
+assigner who may continue it (DEC-011, as before), else `NODE_REQUIRED` with the node to pass. It comes first, because
+the admission can reopen a Task: a call without the right node changes nothing. The admission admits the target while an entry is open. When they
+are all closed, the assigner of its last `assigned` entry continues it, as locally: the entry reopens
+(`assertReopenable`, `reopenAssignment`), the run's node is told it is open (`PeerRunStateNotices`, in the
+run's order), and the message goes on once the node confirmed (otherwise the notice's refusal, the entry
+open and "open" owed). Any other sender gets `TASK_AGENT_RESOURCE_CLOSED`. Any other target is `not_peer`,
+and the router goes on as before.
 
 The receiver sees the sender's address only when it can use that address to reach
 the sender (contract §2.5); otherwise the run ID only.
@@ -282,13 +296,13 @@ whether the ID is one of its team run IDs; if so it refuses with `TARGET_IS_TEAM
 and the coordinator's agent run ID to use.
 
 **Peer path (`node`, DS-004).** `send_message_to(target_agent_run_id, node)` finds the peer by this
-node's name for it (`RemoteRunChannel.findPeer`: the refusals of `delegate_task` with `node`), applies this
-node's admission of a run its Tasks hold on a peer (`peerRunAdmission`: `NODE_MISMATCH` with the right node, or
-closed), then hands the message to the sender's root (`deliverToPeerRun`). Its `RemoteMessageSend` refuses a run the
-root links on another node (`NODE_MISMATCH`), uploads the reference files (`OutgoingFiles`), and uses the root's
-link when the sender is paired with that run, else a one-message `unlinked_run` endpoint (`/rest/remote/run-messages`).
-Every message to another node takes this path: a run ID on another node without `node` is refused `NODE_REQUIRED`
-by the sender's root (a run it links) or by `CrossRunMessageDelivery` (a run its Tasks hold), RF-14. The peer delivers it only to an
+node's name for it (`RemoteRunChannel.findPeer`: the refusals of `delegate_task` with `node`), after the
+peer-run node rule and admission above, then hands the message to the sender's root (`deliverToPeerRun`). Its
+`RemoteMessageSend` refuses a run the root links on another node (`NODE_MISMATCH`), uploads the reference files
+(`OutgoingFiles`), and uses the root's link when the sender is paired with that run, else a one-message `unlinked_run`
+endpoint (`/rest/remote/run-messages`). Every message to another node takes this path: a run ID on another node
+without `node` is refused `NODE_REQUIRED` by the node rule above (a run this node's Tasks hold) or by the sender's root
+(a run it links), RF-14. The peer delivers it only to an
 agent that runs there and never wakes it; a team run's ID is refused with its coordinator's run ID. `node`
 goes only with `target_agent_run_id`, and needs a sender in a collaboration run. The receiver's header names
 the sender's node, and it answers with that `node`. See [Remote Collaboration](remote_collaboration.md).
@@ -534,7 +548,8 @@ startup into ordinary, unowned delegated runs of the same root (migration
   `[Mentioned collaborators]` notes), so stored history displays unchanged.
 - **Task closure (DONE or CANCELLED).** Closing a Task stops its runs that have no
   other open Task, each through its own ordinary Stop (`TaskRunControl`); a peer's
-  run is fenced, not stopped. A delegated run is a row of its delegator's tree while
+  run is fenced at once and stopped by its node, which its delegating node tells
+  (`PeerRunStateNotices`, autobyteus-591). A delegated run is a row of its delegator's tree while
   it has an open Task entry, so a closed run's row leaves the tree and comes back when
   its assigner continues it; an open view learns it from the tree's next change
   (`RUN_TREE_CHANGED`, see

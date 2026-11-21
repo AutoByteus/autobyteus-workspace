@@ -1,0 +1,8 @@
+# IMP-06 architecture suites and the two renamed test files, after the NAS-41 naming fix
+# command: pnpm -C autobyteus-server-ts exec vitest run tests/architecture tests/unit/remote-collaboration/standalone-remote-delegation.test.ts tests/unit/remote-collaboration/peer-gateway.test.ts --no-watch
+# commit: 9abe7086fd
+# env: macOS Darwin 25.5.0, pnpm 10.28.2
+# date: 2026-11-21 15:30 CET
+
+ Test Files  15 passed (15)
+      Tests  98 passed (98)

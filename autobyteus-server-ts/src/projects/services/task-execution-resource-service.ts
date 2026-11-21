@@ -8,7 +8,7 @@ import { taskExecutionReferenceKey } from "@autobyteus/collaboration-stream-cont
 import { ProjectError } from "../domain/project-errors.js";
 import {
   assertTaskExecutionReopenable, closedAssignments, closeTaskExecutionResources, latestEntryOf, linkExistingTaskExecution, linkNewTaskExecution,
-  openAssignments, reopenTaskExecution, settleTaskExecutionStart, type TaskAssignmentView, type TaskExecutionHistory, type TaskExecutionResource,
+  openAssignments, reopenTaskExecution, setPeerNoticeOwed, settleTaskExecutionStart, type TaskAssignmentView, type TaskExecutionHistory, type TaskExecutionResource,
   type TaskExecutionResourceFile,
 } from "../domain/task-execution-resources.js";
 import type { TaskLocation } from "../domain/models.js";
@@ -17,8 +17,10 @@ import { latestAssignedEntry } from "./task-root-view-builder.js";
 
 type Loaded = { location: TaskLocation; file: TaskExecutionResourceFile };
 type Current = Readonly<{ taskId: string; entry: TaskExecutionResource }>;
-/** A run of a closed Task to stop (DS-5): by its own identity; a peer's run is fenced, not stopped. */
+/** A run of a closed Task to stop (DS-5): by its own identity; a peer's run is stopped by its node, told by its notice. */
 export type ReleasableRun = Readonly<{ run: TaskExecutionReference; nodeId?: string }>;
+/** autobyteus-591: a run on a peer node, by its identity and its node. */
+export type PeerTaskRun = Readonly<{ run: TaskExecutionReference; nodeId: string }>;
 export type TaskAssignmentViews = Readonly<{ open: TaskAssignmentView[]; closed: TaskAssignmentView[] }>;
 const ingressOf = (entry: TaskExecutionResource): string =>
   "agentRunId" in entry.execution ? entry.execution.agentRunId : entry.teamCoordinatorAgentRunId!;
@@ -114,12 +116,15 @@ export class TaskExecutionResourceService {
    */
   async assignExisting(location: TaskLocation, input: ExistingTaskExecutionAssignInput): Promise<void> {
     // A run no Task names any more gives its own address (SR-072 F-24).
-    const recipientAddress = this.currentOf(input.execution)?.entry.recipientAddress ?? input.recipientAddress;
+    const previous = this.currentOf(input.execution)?.entry;
+    const recipientAddress = previous?.recipientAddress ?? input.recipientAddress;
     if (!recipientAddress) throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "The agent run belongs to no Task.");
     await this.update(location, file => linkExistingTaskExecution(file, {
       delegatedFrom: input.delegatedFrom, execution: input.execution,
       ...(input.teamCoordinatorAgentRunId ? { teamCoordinatorAgentRunId: input.teamCoordinatorAgentRunId } : {}),
       recipientAddress,
+      // A run on a peer node stays on its node, with its members (autobyteus-591 DN-8).
+      ...(previous?.nodeId !== undefined ? { nodeId: previous.nodeId, ...(previous.members ? { members: previous.members } : {}) } : {}),
     }, this.now().toISOString()), next => this.commit(location, next));
   }
   async markStarted(execution: TaskExecutionReference): Promise<void> {
@@ -267,6 +272,34 @@ export class TaskExecutionResourceService {
     if (this.damaged.has(taskId)) return "unavailable";
     const loaded = this.files.get(taskId);
     return loaded ? { open: openAssignments(loaded.file), closed: closedAssignments(loaded.file) } : { open: [], closed: [] };
+  }
+
+  /**
+   * autobyteus-591 DN-3: the peer run's delegation state is owed to its node (marked on its current Task's entry) or
+   * confirmed (cleared from every Task's entries). Each Task file is written under its Task's ordering, only when it changes.
+   */
+  async setPeerNoticeOwed(execution: TaskExecutionReference, owed: boolean): Promise<void> {
+    await this.load();
+    const current = this.currentOf(execution)?.taskId;
+    const taskIds = owed ? (current ? [current] : []) : [...this.entriesByExecution.get(taskExecutionReferenceKey(execution))?.keys() ?? []];
+    for (const taskId of taskIds) {
+      await this.serialize(taskId, async () => {
+        const loaded = this.files.get(taskId);
+        if (!loaded || this.damaged.has(taskId) || setPeerNoticeOwed(loaded.file, execution, owed) === loaded.file) return;
+        await this.update(loaded.location, file => setPeerNoticeOwed(file, execution, owed), next => this.commit(loaded.location, next));
+      });
+    }
+  }
+  /** autobyteus-591 DN-4: the peer runs whose delegation state is owed, one per run, from the view (start-up's retry list). */
+  owedPeerNotices(): PeerTaskRun[] {
+    this.assertLoaded();
+    const owed = new Map<string, PeerTaskRun>();
+    for (const { file } of this.files.values()) {
+      for (const entry of file.executionResources) {
+        if (entry.peerNoticeOwed && entry.nodeId !== undefined) owed.set(taskExecutionReferenceKey(entry.execution), { run: entry.execution, nodeId: entry.nodeId });
+      }
+    }
+    return [...owed.values()];
   }
 
   isOpen(execution: TaskExecutionReference): boolean {

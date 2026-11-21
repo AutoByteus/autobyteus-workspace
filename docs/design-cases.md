@@ -339,3 +339,13 @@ Principle 1 (trace the state at the lifecycle point the behavior uses).
 - **The fix (SR-001):** the journal summary counts each file's work entries (entries that are not notices). The notice names the newest closed file with work entries and asks for a complete read before the agent replies. It says the open file starts with the hand-over.
 - **Why it mattered:** the hand-over existed so the new agent would continue with the context. A pointer to the wrong file defeated it on every switch.
 - **Notice it by:** "latest", "current" or "most recent" chosen by position in a list (the last file, the newest row), without stating what that item holds at the exact lifecycle moment the text or decision is produced. Check the state table for that moment, not the steady state.
+
+### Case 26: "As Locally" Read From One Path (autobyteus-591, CRR-002)
+
+Principle 1 (compare "the same as" rule by rule against the code; trace each entry form).
+
+- **The design said:** a remote delegated run continues "as locally": a reopened Task's run is continued by `delegate_task` with its run ID and `task_id`, and a message to it is refused. The Solution Designer read `reopenAssignment` from its `delegate_task` caller only.
+- **What the code does:** locally the assigner's **message** continues the run. `CrossRunMessageDelivery.admit` reopens the closed last entry and delivers. `delegate_task` with the same Task is refused, and its text says to message instead (`task-execution-resources.ts:208-210`). The remote path refused every message, so the founder's reopened cross-node Task was a dead end both ways.
+- **The fix (SR-010):** `admitPeerRun` applies the local continuation's test to a peer run. The assigner's message reopens the entry, waits until the peer confirmed "open", then is delivered.
+- **Why it mattered:** the reopened Task couldn't continue at all. The user's own description ("you send a message again") was right, and the design overrode it with a wrong reading.
+- **Notice it by:** "as locally" or "the same as" backed by one caller of the mechanism. List every caller of the state change (here `reopenAssignment`: the message admission and `delegate_task`), and match the remote rule to each.

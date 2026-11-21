@@ -38,6 +38,8 @@ export async function registerRemoteCollaborationRoutes(app: FastifyInstance, re
   post("/remote/run-summaries", (gateway, body, caller) => gateway.runSummaries(body, caller));
   post("/remote/agent-projection", (gateway, body, caller) => gateway.agentProjection(body, caller));
   post("/remote/owner-commands", (gateway, body, caller) => gateway.ownerCommand(body, caller));
+  // autobyteus-591: the delegating node's Task state of a run its delegation started (closed: stopped before the answer).
+  post("/remote/delegated-run-states", (gateway, body, caller) => gateway.deliveredRunState(body, caller));
   // autobyteus-461 SR-088: one agent's own stream snapshot (its frames come on `run-observations`, opened for the agent).
   post("/remote/agent-stream-snapshot", (gateway, body, caller) => gateway.agentStreamSnapshot(body, caller));
   // autobyteus-587: files sent with a message or delegation, uploaded before it (RFC-001 § 6).

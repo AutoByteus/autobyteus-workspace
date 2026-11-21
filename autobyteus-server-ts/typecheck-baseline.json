@@ -265,7 +265,6 @@
   "tests/unit/remote-collaboration/remote-team-run-starter.test.ts": 1,
   "tests/unit/remote-collaboration/run-agent-access.test.ts": 2,
   "tests/unit/remote-collaboration/standalone-remote-delegation.test.ts": 3,
-  "tests/unit/remote-collaboration/team-remote-delegation.test.ts": 4,
   "tests/unit/run-history/agent-run-metadata-service.test.ts": 2,
   "tests/unit/run-history/projection/active-trace-event-page-policy.test.ts": 7,
   "tests/unit/run-history/projection/claude-run-view-projection-provider.test.ts": 1,

@@ -14,7 +14,7 @@ import { DelegationIndex } from "../../../src/agent-collaboration/delegation/del
 import { createAgentRootExecutionIdentity, createCollaborationMemberExecutionIdentity, createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { createCollaborationRootResolver } from "../../../src/compositions/collaboration-root-resolver.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
-import { NO_PEER_CHANNEL, NO_REMOTE_FILES, OFFERED_MODEL_EXECUTION_FACTORY } from "../../helpers/explicit-host-collaborators.js";
+import { NO_PEER_CHANNEL, NO_PEER_RUN_PORTS, NO_REMOTE_FILES, OFFERED_MODEL_EXECUTION_FACTORY } from "../../helpers/explicit-host-collaborators.js";
 
 /**
  * autobyteus-461 CR-461-001 (residual), team run: DONE(A) closes the team run's last Task and its stop begins; the
@@ -69,7 +69,7 @@ describe("a closure stop and a follow-up Task delivered while the team run stops
     (manager as unknown as { register(root: RootTeamRun): void }).register(ending as unknown as RootTeamRun);
     const resolver = createCollaborationRootResolver({ standaloneRoots: {} as never, teamRuns: manager, orgRuns: {} as never });
     const delegation = new TaskDelegation({ outgoing: NO_REMOTE_FILES.outgoing, tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(),
-      channel: () => null, recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null, ownDelegations: { of: async () => null }, delegatorCatalog: { placementAt: async () => null }, conversationOf: async () => ({ entryAddress: "/entry", activity: { kind: "present" as const } }),
+      channel: () => null, ...NO_PEER_RUN_PORTS, recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null, ownDelegations: { of: async () => null }, delegatorCatalog: { placementAt: async () => null }, conversationOf: async () => ({ entryAddress: "/entry", activity: { kind: "present" as const } }),
       deliverToRun: async (input) => {
         const resolved = await resolver.resolveOrRestore(createTeamRootExecutionIdentity("eng"));
         return (resolved!.root as unknown as { acceptFromRun(input: unknown): Promise<{ accepted: boolean }> }).acceptFromRun(input);

@@ -143,7 +143,7 @@ const buildNode = async (input: Readonly<{ nodeId: string; peers: PeerNode[]; ne
   const activeRoot = (run: RootExecutionIdentity) => run.rootSubjectKind === "agent" ? manager.getActive(run.rootRunId) : null;
   const crossRun = new CrossRunMessageDelivery({
     tree: () => taskSide.tree, tasks: () => resources, senderAddress: async () => null,
-    runFiles: { delegationOfAgent: async () => null }, restorability: { refusal: async () => null },
+    runFiles: { delegationOfAgent: async () => null }, restorability: { refusal: async () => null }, peerNotices: { changed: async () => ({ confirmed: true as const }) },
     senderRoot: (run) => activeRoot(run),
     receiverRoot: async (run) => manager.resolveRoot(run.rootRunId),
     runningAgents, activeReceiverRoot: (run) => activeRoot(run),
@@ -153,12 +153,12 @@ const buildNode = async (input: Readonly<{ nodeId: string; peers: PeerNode[]; ne
     agentRunManager: { getActiveRun: () => null } });
   input.network.set(input.nodeId, new PeerGateway({
     ownNodeId: async () => input.nodeId, capability: { isEnabled: () => true }, peers: peerDirectory, receivedFiles: peerFiles.receivedFiles,
-    delegatedRuns: {} as never, availableAgents: {} as never, runViews: {} as never,
+    delegatedRuns: {} as never, availableAgents: {} as never, runViews: {} as never, delegatedRunStates: {} as never,
     messages: new RemoteMessageReceiver({
       storedLinkCheck: async (root, query) => root.kind === "agent" ? manager.storedRemoteLinkCheck(root.runId, query) : "not_found",
       standalone: (runId) => manager.resolveRoot(runId), team: async () => null, org: async () => null, runAgents: () => manager.runAgents,
       liveRoot: (run) => activeRoot(run),
-    }, { recordFirstMessage: async () => undefined }, new PeerStartedRunDecisions(), runningAgents, peerFiles.receivedFiles),
+    }, { recordFirstMessage: async () => undefined }, new PeerStartedRunDecisions(), runningAgents, { openedBy: async () => undefined }, peerFiles.receivedFiles),
     runningAgents: { list: async () => ({ accepted: true as const, agents: await listing.list({ caller: null }) }) },
   }));
   const discovery = new PeerNodeDiscovery({ capability: { isEnabled: () => true }, peers: { list: async () => input.peers }, client });

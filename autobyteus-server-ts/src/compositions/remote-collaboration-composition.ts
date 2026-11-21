@@ -7,6 +7,8 @@ import type { TeamRunService } from "../agent-team-execution/services/team-run-s
 import { RemoteDelegationReceiver } from "../remote-collaboration/inbound/remote-delegation-receiver.js";
 import { RemoteMessageReceiver, type RemoteRootDirectory } from "../remote-collaboration/inbound/remote-message-receiver.js";
 import { RemoteRunViewProvider } from "../remote-collaboration/inbound/remote-run-view-provider.js";
+import { DelegatedRunStateHandler } from "../remote-collaboration/inbound/delegated-run-state-handler.js";
+import type { ClosedDelegations } from "../remote-collaboration/inbound/closed-delegations.js";
 import { getAgentRunViewProjectionService } from "../run-history/services/agent-run-view-projection-service.js";
 import { getTeamMemberRunViewProjectionService } from "../run-history/services/team-member-run-view-projection-service.js";
 import { DelegatedRunStarter } from "../agent-collaboration/execution/delegation/delegated-run-starter.js";
@@ -55,9 +57,9 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
   appDataDir: string;
   memoryDir: string;
   tempWorkspaceDir: string;
-  agentRuns: Pick<AgentRunService, "prepareAgentRun" | "recordRunTitle" | "readRunTitle">;
+  agentRuns: Pick<AgentRunService, "prepareAgentRun" | "recordRunTitle" | "readRunTitle" | "stopForTaskClosure">;
   teamRuns: Pick<TeamRunService, "storedRemoteLinkCheck" | "createTeamRun" | "terminateTeamRun" | "recordRunTitle"
-    | "readRunTitle" | "runAgents">;
+    | "readRunTitle" | "runAgents" | "stopForTaskClosure">;
   orgRuns: Pick<AgentOrgRunService, "storedRemoteLinkCheck">;
   /** The node's one root resolution (autobyteus-285 D5); the receivers keep their own "not found" handling. */
   rootResolver: CollaborationRootResolver;
@@ -65,6 +67,8 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
   running: RunningAgentsComposition;
   /** autobyteus-587: the node's received files: a peer uploads into them; a message or work packet names only complete ones. */
   receivedFiles: ReceivedFiles;
+  /** autobyteus-591: the peer-started runs their delegating node closed, loaded (the state handler and S-5 write it). */
+  closedDelegations: ClosedDelegations;
 }>): Readonly<{ services: RemoteCollaborationServices; release: () => void }> => {
   const resolve = (rootSubjectKind: RootSubjectKind, rootRunId: string) =>
     input.rootResolver.resolveOrRestore(createRootExecutionIdentity({ rootSubjectKind, rootRunId }));
@@ -98,7 +102,10 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
         recordFirstMessage: (root, content) => root.kind === "agent" ? input.agentRuns.recordRunTitle(root.runId, content)
           : root.kind === "agent_team" ? input.teamRuns.recordRunTitle(root.runId, content)
             : Promise.resolve(),
-      }, peerStartedRunDecisions, input.running.runningAgents, input.receivedFiles),
+      }, peerStartedRunDecisions, input.running.runningAgents, input.closedDelegations, input.receivedFiles),
+      // autobyteus-591 DN-2: a delegating node's state of a run it started here (closed: recorded and stopped).
+      delegatedRunStates: new DelegatedRunStateHandler({ roots, closed: input.closedDelegations,
+        agentRuns: input.agentRuns, teamRuns: input.teamRuns }),
       availableAgents: new RemoteCatalogLister({ policy: () => getCollaboratorAdmission().policy, catalogPort: services.catalogPort }),
       // autobyteus-492: this node's running runs a person started, for a peer (no caller here).
       runningAgents: { list: async () => Object.freeze({ accepted: true as const, agents: await input.running.listing.list({ caller: null }) }) },

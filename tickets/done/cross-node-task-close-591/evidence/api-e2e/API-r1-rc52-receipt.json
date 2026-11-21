@@ -1,0 +1,32 @@
+{
+ "source": "remote-delegation-two-server receipt (extract of the autobyteus-591 cases; request headers left out)",
+ "cases": {
+  "RC-52": {
+   "ra": "publisher_6a12560d6da14494ac2db853db0377fe",
+   "rb": "publisher_4f087b98b3e9454b8d2a14239db5ba86",
+   "rc": "publisher_cfd44d9de45047f9aee6340ff9106dba",
+   "rd": "publisher_ead97872d27648c2aea944007fe1ea52",
+   "re": "publisher_a608b997bd5b4cc8b5cd1380392f103c",
+   "rf": "publisher_11c545d3f58743e1b0fa67d12eea3d92",
+   "rfOutcome": {
+    "recordedClosed": true,
+    "listed": false,
+    "confirmed": "TASK_PEER_NOTICE_CONFIRMED {\n  execution: { agentRunId: 'publisher_11c545d3f58743e1b0fa67d12eea3d92' },\n  nodeId: 'srv_TNFLsd3MnxoxuD2ZFXdtiPHegvaTuxDU',\n  open: false\n}"
+   },
+   "deliveredMs": 28014,
+   "rdDeliveredMs": 28252,
+   "rbResumed": false,
+   "rdResumed": false,
+   "owedLog": "TASK_PEER_NOTICE_OWED {\n  execution: { agentRunId: 'publisher_6a12560d6da14494ac2db853db0377fe' },\n  nodeId: 'srv_TNFLsd3MnxoxuD2ZFXdtiPHegvaTuxDU',\n  open: false,\n  code: 'PEER_UNREACHABLE',\n  reason: 'Node \"beta-node\" could not be reached (fetch failed).'\n}",
+   "olderBetaLog": "TASK_PEER_NOTICE_OWED {\n  execution: { agentRunId: 'publisher_a608b997bd5b4cc8b5cd1380392f103c' },\n  nodeId: 'srv_TNFLsd3MnxoxuD2ZFXdtiPHegvaTuxDU',\n  open: false,\n  code: 'PEER_UNREACHABLE',\n  reason: 'Node \"beta-node\" could not be reached (it answered HTTP 404).'\n}",
+   "againWhileDown": "Task 591-project-1 was given to the task agent, but the message with its work was not delivered (Node \"beta-node\" could not be reached (fetch failed).). Message the task agent's run id publisher_cfd44d9de45047f9aee6340ff9106dba, or set Task 591-project-1 to CANCELLED, or delegate it to a new task agent.",
+   "confirmedRc": "TASK_PEER_NOTICE_CONFIRMED {\n  execution: { agentRunId: 'publisher_cfd44d9de45047f9aee6340ff9106dba' },\n  nodeId: 'srv_TNFLsd3MnxoxuD2ZFXdtiPHegvaTuxDU',\n  open: true\n}"
+  }
+ },
+ "cleanup": {
+  "rootRemoved": true,
+  "serversStopped": true,
+  "leftoverAgy": [],
+  "errors": []
+ }
+}

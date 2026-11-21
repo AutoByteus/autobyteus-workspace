@@ -131,6 +131,7 @@ name the scenario ID. "Owner" is the user on his desktop app.
 | NAS-38 | Peer request whose body was changed in transit | Valid signature of the original body | `/rest/remote/*` POST | 401 before any handler runs |
 | NAS-39 | Phone (or owner) taps a file path outside the run's folder | Phone credential | `GET /rest/node-files/content?path=<absolute>` | The file, read-only, with the user-file headers; a folder or relative path 400, a missing file 404 (autobyteus-436) |
 | NAS-40 | Peer or memory sync source | Its credential | `GET /rest/node-files/content` | 403 `NODE_ROUTE_NOT_PERMITTED` |
+| NAS-41 | Paired peer that delegated a run to this node | Peer signature | `POST /rest/remote/delegated-run-states` (a run's delegation state, autobyteus-591) | Works for the runs its own delegations started: closed records and stops the run, open lists it again; another peer's run `REMOTE_TARGET_NOT_PERMITTED`, no such run `REMOTE_TARGET_NOT_FOUND`; unpaired 401 |
 
 Out of the model: protection against software already running as the user on
 the same computer (it can read the user's files directly), and what each

@@ -131,7 +131,7 @@ describe("A live Team run follows its definition (reproduction)", () => {
     expect(root.getExecutionTreeSnapshot().rootTeam.formerMembers).toEqual([expect.objectContaining({ agentRunId: "writer_1", leaving: true })]);
     expect(membership().stateOf("writer_1")).toBe("leaving");
     const leadContext = testMemberExecutionContext({ rootTeamRunId: "team_1", memberAddress: "/lead", agentRunId: "lead_1" });
-    const router = new GlobalAgentRunMessageRouter({ crossRun: { route: async () => null, peerRunAdmission: async () => null }, channel: () => null,
+    const router = new GlobalAgentRunMessageRouter({ crossRun: { route: async () => null, admitPeerRun: async () => "not_peer" as const, peerRunNodeRefusal: async () => null }, channel: () => null,
       coordinators: { teamCoordinatorOf: async () => null }, agentRunManager: { getActiveRun: () => null } as never, activeRootDirectory });
     const sender = buildAgentRunMessageSenderContext({ senderRunId: "lead_1", senderName: "lead", runtimeKind: RuntimeKind.AUTOBYTEUS, memberExecutionContext: leadContext });
     const refusal = { accepted: false, code: "COLLABORATION_TARGET_NOT_FOUND",

@@ -1,0 +1,24 @@
+{
+  "result": "Pass",
+  "case": {
+    "result": "Pass",
+    "seconds": 22.5,
+    "runId": "night_writer_7723_4fc2714b6e5f431a996413df324ee502",
+    "listAfterCloseMs": 917,
+    "phoneAfterListMs": 186,
+    "desktopAfterListMs": 4188,
+    "afterReopen": {
+      "recorded": true,
+      "listed": false,
+      "phone": false,
+      "desktop": false
+    },
+    "backMs": 2386
+  },
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "unknownBrowserErrors": []
+}

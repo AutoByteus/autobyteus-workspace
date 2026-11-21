@@ -18,6 +18,8 @@ import type {
   DeliverRemoteMessageAnswer,
   DeliverRemoteMessageRequest,
   DeliverRunMessageRequest,
+  DelegatedRunStateAnswer,
+  DelegatedRunStateRequest,
   OwnerCommandAnswer,
   OwnerCommandRequest,
   ReceivedFilePieceAnswer,
@@ -102,6 +104,14 @@ export type RemoteRunViewHandler = Readonly<{
   /** autobyteus-461 SR-088: one agent's own stream snapshot, and its numbered frames. */
   agentStreamSnapshot(request: AgentProjectionRequest, from: PeerNode): Promise<Readonly<{ accepted: true; snapshot: unknown; status: unknown }> | PeerHandlerRefusal>;
   observeAgentStream(opening: RunObservationOpening & Readonly<{ agentRunId: string }>, from: PeerNode, sink: RunObservationSink): Promise<Readonly<{ accepted: true; observation: RunAgentObservation }> | PeerHandlerRefusal>;
+}>;
+
+/**
+ * autobyteus-591 DN-2: the delegating node's Task state of a run its delegation started here (one owner,
+ * `DelegatedRunStateHandler`): closed is recorded and the run stopped before the answer; open clears the record.
+ */
+export type DelegatedRunStatesHandler = Readonly<{
+  apply(request: DelegatedRunStateRequest, from: PeerNode): Promise<Readonly<{ accepted: true; open: boolean }> | PeerHandlerRefusal>;
 }>;
 
 class MalformedRequestError extends Error {}
@@ -264,6 +274,12 @@ const parseOwnerCommandRequest = (value: unknown): OwnerCommandRequest => {
   };
 };
 
+const parseDelegatedRunStateRequest = (value: unknown): DelegatedRunStateRequest => {
+  const body = field(() => objectRecord(value, "request"));
+  if (typeof body.open !== "boolean") throw new MalformedRequestError("open must be a boolean.");
+  return { ...parseEnvelope(body), run: startedRunRef(body.run, "run"), open: body.open };
+};
+
 /** An observation's opening: a run's (statuses and summaries), or one agent's own stream when it names the agent (SR-088). */
 const parseObservationOpening = (value: unknown): RunObservationOpening & Readonly<{ agentRunId?: string }> => {
   const body = field(() => objectRecord(value, "request"));
@@ -293,6 +309,7 @@ export class PeerGateway {
     runningAgents: RunningAgentsHandler;
     runViews: RemoteRunViewHandler;
     receivedFiles: ReceivedFilesHandler;
+    delegatedRunStates: DelegatedRunStatesHandler;
   }>) {}
 
   /**
@@ -353,6 +370,11 @@ export class PeerGateway {
   /** autobyteus-278: a command of the caller's owner for one agent of such a run. */
   ownerCommand(body: unknown, caller: ClientIdentity | null): Promise<PeerGatewayResponse<OwnerCommandAnswer>> {
     return this.admit(body, caller, parseOwnerCommandRequest, (request, peer) => this.dependencies.runViews.command(request, peer));
+  }
+
+  /** autobyteus-591 DN-2: the delegating node's Task state of a run its delegation started; answered once applied. */
+  deliveredRunState(body: unknown, caller: ClientIdentity | null): Promise<PeerGatewayResponse<DelegatedRunStateAnswer>> {
+    return this.admit(body, caller, parseDelegatedRunStateRequest, (request, peer) => this.dependencies.delegatedRunStates.apply(request, peer));
   }
 
   /**

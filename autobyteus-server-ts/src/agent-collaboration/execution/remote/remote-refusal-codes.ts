@@ -92,4 +92,9 @@ export const REFERENCE_FILE_REFUSAL_TEXT = Object.freeze({
   damaged: (name: string, nodeName: string) => `${name} arrived damaged on node "${nodeName}", so nothing was delivered. Try again.`,
   /** The receiving node's own refusal: a file the message names is not complete there. */
   notReceived: (name: string) => `The file ${name} has not been received complete on this node, so the message was not delivered.`,
+  /**
+   * A saved Task given to a run on another node (autobyteus-591 DN-8) carries no files: its reference files are the Task's,
+   * not files of the sender's workspace (RF-3); send them with send_message_to and node instead.
+   */
+  savedTaskFiles: "A saved Task with reference files can't be given to an agent on another node, so nothing was given. Give it a Task without files, and send the files with send_message_to and node.",
 });

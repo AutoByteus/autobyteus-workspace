@@ -1,0 +1,12 @@
+# IMP-09 server unit suite (full, IR-002)
+# command: pnpm -C autobyteus-server-ts test:unit
+# commit: a811f94348
+# env: macOS Darwin 25.5.0, pnpm 10.28.2
+# date: 2026-11-21 17:44 CET
+
+# excerpt: the summary; the full log stays at /tmp/r591/IMP-09-unit-full.log on this machine
+
+ Test Files  1047 passed | 5 skipped (1052)
+      Tests  8688 passed | 9 skipped (8697)
+   Duration  738.84s (transform 19.47s, setup 24.32s, import 322.78s, tests 296.58s, environment 801ms)
+exit 0

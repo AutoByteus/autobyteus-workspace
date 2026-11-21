@@ -44,6 +44,17 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   `peers.json`, "pair", `list_peer_nodes`). *Peer* names a relationship; a
   remote node that isn't paired is not a peer. A peer recorded before nodes
   paired has no secret (`paired: false`): the Nodes page shows "Pair again".
+- **Delegation state** (of a remote run): open while an open Task entry on the
+  delegating node names the run, closed otherwise. Only the delegating node
+  decides it; it sends it to the run's node (`POST
+  /rest/remote/delegated-run-states`, `PeerRunStateNotices`), which stops a
+  closed run and leaves it out of its run list (autobyteus-591).
+- **Closed delegation:** a peer-started run whose delegating node closed every
+  Task naming it, as the run's node records it (`ClosedDelegations`,
+  `closed-delegations.json`). It is not deleted; a new Task for it opens it again.
+- **Owed notice:** a delegation state the delegating node sent, or must send,
+  that the run's node has not confirmed yet (`peerNoticeOwed` on the Task
+  entry). It is sent again every 30 s while its node has owed notices.
 - **Embedded local:** how the desktop starts its own server
   (`nodeType: 'embedded'`, `isDesktopEmbeddedNode`). It is not a kind of node.
 - **Entry:** a client's own record of a node it can open: the desktop's node

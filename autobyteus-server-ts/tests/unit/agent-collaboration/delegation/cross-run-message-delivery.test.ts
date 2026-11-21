@@ -66,15 +66,17 @@ const harness = async () => {
   const restored = vi.fn();
   // This node's names for its peers (autobyteus-587 RF-14: the refusals name the node to pass).
   const peerName = async (nodeId: string) => nodeId === "node-b" ? "studio" : nodeId;
+  // autobyteus-591 DN-9: the peer run's node confirms "open" unless a test says otherwise.
+  const peerNotices = { changed: vi.fn(async (_peerRun: unknown): Promise<{ confirmed: true } | { confirmed: false; code: string; message: string }> => ({ confirmed: true })) };
   const delivery = new CrossRunMessageDelivery({ tree: () => tree, tasks: () => tasks, senderRoot: (r) => senderRoot(r) as never, senderAddress: async () => null, runFiles, restorability, peerName,
     receiverRoot: async (r) => { restored(r); await beforeReceive.hook(); return receiverRoot(r); },
     runningAgents: { rootOf: (agentRunId) => { const root = running.get(agentRunId); return root ? { root, status: { agentRunId, status: "idle", backgroundTasksRunning: 0 } } : null; } },
-    activeReceiverRoot: (r) => receiverRoot(r) });
+    activeReceiverRoot: (r) => receiverRoot(r), peerNotices });
   const send = (from: RootExecutionIdentity, sender: string, target: string) => delivery.route({ sender: agent(from, sender), senderDisplayName: sender,
     targetAgentRunId: target, content: "hello", messageType: "agent_message", referenceFiles: [] });
   const sendAs = (from: RootExecutionIdentity, sender: string, target: string, shownAs: string) => delivery.route({ sender: agent(from, sender),
     senderDisplayName: sender, targetAgentRunId: target, shownAs, content: "hello", messageType: "agent_message", referenceFiles: [] });
-  return { tasks, tree, log, send, sendAs, beforeReceive, runFiles, restorability, running, restored, publishedToViews, senderRecords, delivery };
+  return { tasks, tree, log, send, sendAs, beforeReceive, runFiles, restorability, running, restored, publishedToViews, senderRecords, delivery, peerNotices };
 };
 
 describe("CrossRunMessageDelivery (DS-2)", () => {
@@ -235,35 +237,117 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
     await expect(h.send(E, "coder", "designer")).resolves.toBeNull();
   });
 
-  describe("peerRunAdmission (AR-001, AR-007, DEC-011; autobyteus-587 RF-14, AR-005): a peer run this node's tree holds", () => {
+  describe("peerRunNodeRefusal (autobyteus-587 RF-14, AR-005): the node rule of a peer run this node's Tasks name", () => {
     const linkRemote = async (h: Awaited<ReturnType<typeof harness>>) => h.tasks.linkNewTaskExecution({ role: "assigned", taskId: "T2", recipientAddress: "/remote",
       delegatedFrom: { delegatingRun: M, delegatorAgentRunId: "manager" }, execution: { agentRunId: "remote_1" }, nodeId: "node-b" });
 
-    it("the right node and an open entry: no refusal; no node: NODE_REQUIRED; another node: NODE_MISMATCH with the right one; all entries closed: CLOSED; an unknown run: no refusal", async () => {
+    it("the right node: no refusal; another node: NODE_MISMATCH with the right one; no node: NODE_REQUIRED, but CLOSED for a closed run to every sender except its assigner (DEC-011); an unknown run: no refusal", async () => {
       const h = await harness();
       await linkRemote(h);
       const studio = { nodeId: "node-b", name: "studio" }, macStudio = { nodeId: "node-c", name: "mac-studio" };
-      await expect(h.delivery.peerRunAdmission({ agentRunId: "remote_1", node: studio })).resolves.toBeNull();
-      await expect(h.delivery.peerRunAdmission({ agentRunId: "remote_1", node: null }))
-        .resolves.toEqual({ accepted: false, code: "NODE_REQUIRED", message: 'This agent runs on node "studio"; pass node: "studio" with its run id.' });
+      const required = { accepted: false, code: "NODE_REQUIRED", message: 'This agent runs on node "studio"; pass node: "studio" with its run id.' };
       const mismatch = { accepted: false, code: "NODE_MISMATCH", message: 'This agent runs on node "studio", not "mac-studio"; pass node: "studio".' };
-      await expect(h.delivery.peerRunAdmission({ agentRunId: "remote_1", node: macStudio })).resolves.toEqual(mismatch);
-      h.tasks.close("T2");
       const closed = { accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: ASSIGNER_ONLY_REACTIVATION_MESSAGE };
-      await expect(h.delivery.peerRunAdmission({ agentRunId: "remote_1", node: studio })).resolves.toEqual(closed);
-      await expect(h.delivery.peerRunAdmission({ agentRunId: "remote_1", node: null })).resolves.toEqual(closed);
-      await expect(h.delivery.peerRunAdmission({ agentRunId: "remote_1", node: macStudio })).resolves.toEqual(mismatch);
-      await expect(h.delivery.peerRunAdmission({ agentRunId: "nobody", node: studio })).resolves.toBeNull();
+      const rule = (senderAgentRunId: string | null, node: typeof studio | null) => h.delivery.peerRunNodeRefusal({ agentRunId: "remote_1", senderAgentRunId, node });
+      for (const sender of ["manager", "pd", null]) {
+        await expect(rule(sender, studio)).resolves.toBeNull();
+        await expect(rule(sender, null)).resolves.toEqual(required);
+        await expect(rule(sender, macStudio)).resolves.toEqual(mismatch);
+      }
+      h.tasks.close("T2");
+      // Closed: with the right node, the Task admission decides (admitPeerRun); the wrong node is still refused with the right one.
+      await expect(rule("pd", studio)).resolves.toBeNull();
+      await expect(rule("pd", macStudio)).resolves.toEqual(mismatch);
+      // Without node: closed for every sender but its assigner, who is told the node to pass (it may continue the run with it).
+      for (const sender of ["pd", "legacy", null]) await expect(rule(sender, null)).resolves.toEqual(closed);
+      await expect(rule("manager", null)).resolves.toEqual(required);
+      await expect(h.delivery.peerRunNodeRefusal({ agentRunId: "nobody", senderAgentRunId: "manager", node: studio })).resolves.toBeNull();
+      // It reads only: nothing is reopened, no node is told anything.
+      expect(h.tasks.reopenRequests).toEqual([]);
+      expect(h.peerNotices.changed).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("autobyteus-591 DN-9: admitPeerRun, the Task admission of a message to a peer run this node's Tasks name", () => {
+    const REMOTE = { agentRunId: "remote_1" };
+    const linkRemote = async (h: Awaited<ReturnType<typeof harness>>) => {
+      await h.tasks.linkNewTaskExecution({ role: "assigned", taskId: "T2", recipientAddress: "/remote",
+        delegatedFrom: { delegatingRun: M, delegatorAgentRunId: "manager" }, execution: REMOTE, nodeId: "node-b" });
+      await h.tasks.markStarted(REMOTE);
+    };
+    const admit = (h: Awaited<ReturnType<typeof harness>>, agentRunId: string, senderAgentRunId: string | null) =>
+      h.delivery.admitPeerRun({ agentRunId, senderAgentRunId });
+
+    it("a local run, or a run no Task here names, is not a peer run; an open peer run is admitted without a notice", async () => {
+      const h = await harness();
+      await linkRemote(h);
+      await expect(admit(h, "designer", "manager")).resolves.toBe("not_peer");
+      await expect(admit(h, "nobody", "manager")).resolves.toBe("not_peer");
+      await expect(admit(h, "remote_1", "pd")).resolves.toBe("admitted");
+      expect(h.peerNotices.changed).not.toHaveBeenCalled();
+      expect(h.tasks.reopenRequests).toEqual([]);
     });
 
-    it("entry-form row 13 without node (AR-007): any sender here, in any run, is refused CLOSED by the route itself; nothing is written", async () => {
+    it("closed, another sender (any run, or none): TASK_AGENT_RESOURCE_CLOSED; nothing is reopened or sent", async () => {
       const h = await harness();
       await linkRemote(h);
       h.tasks.close("T2");
-      for (const [from, sender] of [[M, "manager"], [P, "pd"], [LEGACY, "legacy"]] as const) {
+      h.tasks.setTaskOpen("T2");
+      for (const sender of ["pd", "legacy", null]) {
+        await expect(admit(h, "remote_1", sender)).resolves.toEqual({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: ASSIGNER_ONLY_REACTIVATION_MESSAGE });
+      }
+      expect(h.tasks.reopenRequests).toEqual([]);
+      expect(h.peerNotices.changed).not.toHaveBeenCalled();
+    });
+
+    it("closed, its assigner after the Task's reopen: the entry reopens, then its node is told (no local restorability check); admitted", async () => {
+      const h = await harness();
+      await linkRemote(h);
+      h.tasks.close("T2");
+      h.tasks.setTaskOpen("T2");
+      const order: string[] = [];
+      h.peerNotices.changed.mockImplementationOnce(async () => { order.push(`notice (open: ${h.tasks.isOpen(REMOTE)})`); return { confirmed: true }; });
+      await expect(admit(h, "remote_1", "manager")).resolves.toBe("admitted");
+      expect(order).toEqual(["notice (open: true)"]);
+      expect(h.tasks.reopenRequests).toEqual([{ execution: REMOTE, requestedBy: "manager" }]);
+      expect(h.peerNotices.changed).toHaveBeenCalledExactlyOnceWith({ run: REMOTE, nodeId: "node-b" });
+      expect(h.restorability.refusal).not.toHaveBeenCalled();
+    });
+
+    it("the assigner while the Task is still DONE: the Task side's refusal; nothing is reopened or sent", async () => {
+      const h = await harness();
+      await linkRemote(h);
+      h.tasks.close("T2");
+      await expect(admit(h, "remote_1", "manager")).resolves.toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: expect.stringContaining("This Task is DONE") });
+      expect(h.tasks.isOpen(REMOTE)).toBe(false);
+      expect(h.peerNotices.changed).not.toHaveBeenCalled();
+    });
+
+    it("its node not reached: the entry stays open (\"open\" owed) and the answer is the notice's refusal, saying to send again", async () => {
+      const h = await harness();
+      await linkRemote(h);
+      h.tasks.close("T2");
+      h.tasks.setTaskOpen("T2");
+      h.peerNotices.changed.mockResolvedValueOnce({ confirmed: false, code: "PEER_UNREACHABLE", message: "Node \"docker\" could not be reached." });
+      await expect(admit(h, "remote_1", "manager")).resolves.toEqual({ accepted: false, code: "PEER_UNREACHABLE",
+        message: "Node \"docker\" could not be reached. remote_1 continues with its conversation (its Task is open again) but did not receive this message; send it again." });
+      expect(h.tasks.isOpen(REMOTE)).toBe(true);
+      // Sent again: open now, admitted at once.
+      await expect(admit(h, "remote_1", "manager")).resolves.toBe("admitted");
+    });
+
+    it("this route never delivers to a peer run, open or closed: without node it refuses NODE_REQUIRED, or CLOSED for a closed run to all but its assigner (autobyteus-587 RF-14, DEC-011); with node it is the sender root's, after the router's node rule and admission", async () => {
+      const h = await harness();
+      await linkRemote(h);
+      const required = { accepted: false, code: "NODE_REQUIRED", message: 'This agent runs on node "studio"; pass node: "studio" with its run id.' };
+      await expect(h.send(M, "manager", "remote_1")).resolves.toEqual(required);
+      h.tasks.close("T2");
+      await expect(h.send(M, "manager", "remote_1")).resolves.toEqual(required);
+      for (const [from, sender] of [[P, "pd"], [LEGACY, "legacy"]] as const) {
         await expect(h.send(from, sender, "remote_1")).resolves.toEqual({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: ASSIGNER_ONLY_REACTIVATION_MESSAGE });
       }
       expect(h.log).toEqual([]);
+      expect(h.tasks.reopenRequests).toEqual([]);
     });
   });
 
@@ -288,7 +372,7 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
   it("a receiver that refuses (its root's own refusal) writes nothing on the sender's side", async () => {
     const h = await harness();
     const commitSentToRun = vi.fn();
-    const refusing = new CrossRunMessageDelivery({ tree: () => h.tree, tasks: () => h.tasks, senderAddress: async () => null, runFiles: { delegationOfAgent: async () => null }, restorability: { refusal: async () => null }, peerName: async (nodeId) => nodeId,
+    const refusing = new CrossRunMessageDelivery({ tree: () => h.tree, tasks: () => h.tasks, peerNotices: h.peerNotices, senderAddress: async () => null, runFiles: { delegationOfAgent: async () => null }, restorability: { refusal: async () => null }, peerName: async (nodeId) => nodeId,
       senderRoot: () => ({ prepareSendToRun: (input) => ({ ok: true, message: { messageId: "m", senderAgentRunId: input.senderIdentity.agentRunId, receiverAgentRunId: input.receiverAgentRunId,
         content: "x", messageType: "agent_message", referenceFiles: [], createdAt: "t" } }), commitSentToRun }),
       receiverRoot: async () => ({ acceptFromRun: async () => ({ accepted: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: "AgentRun is not accepting input." }) }),
@@ -301,7 +385,7 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
   it("SR-076: a refusal after the receiver's durable write is recorded on the sender's side too (TC-13), and answered as the receiver's refusal", async () => {
     const h = await harness();
     const commitSentToRun = vi.fn(async () => undefined);
-    const delivery = new CrossRunMessageDelivery({ tree: () => h.tree, tasks: () => h.tasks, senderAddress: async () => null, runFiles: { delegationOfAgent: async () => null }, restorability: { refusal: async () => null }, peerName: async (nodeId) => nodeId,
+    const delivery = new CrossRunMessageDelivery({ tree: () => h.tree, tasks: () => h.tasks, peerNotices: h.peerNotices, senderAddress: async () => null, runFiles: { delegationOfAgent: async () => null }, restorability: { refusal: async () => null }, peerName: async (nodeId) => nodeId,
       senderRoot: () => ({ prepareSendToRun: (input) => ({ ok: true, message: { messageId: "m", senderAgentRunId: input.senderIdentity.agentRunId, receiverAgentRunId: input.receiverAgentRunId,
         content: "x", messageType: "agent_message", referenceFiles: [], createdAt: "t" } }), commitSentToRun }),
       receiverRoot: async () => ({ acceptFromRun: async () => ({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: ASSIGNER_ONLY_REACTIVATION_MESSAGE, recordedByReceiver: true }) }),

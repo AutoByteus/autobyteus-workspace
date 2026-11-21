@@ -41,6 +41,11 @@ export const REMOTE_OWNER_COMMANDS_PATH = "/rest/remote/owner-commands";
  * frame `{nodeId}` (or a refusal, then close), then `{agentRunId, message}` frames for the run's own agents only.
  */
 export const REMOTE_RUN_OBSERVATIONS_PATH = "/rest/remote/run-observations";
+/**
+ * autobyteus-591 DN-2: the delegating node's Task state of a run its delegation started here: `open: false` once every
+ * Task entry naming it closed there (this node records it, then stops the run), `open: true` once one opened again.
+ */
+export const REMOTE_DELEGATED_RUN_STATES_PATH = "/rest/remote/delegated-run-states";
 /** autobyteus-461 SR-088: one agent's own stream snapshot. */
 export const REMOTE_AGENT_STREAM_SNAPSHOT_PATH = "/rest/remote/agent-stream-snapshot";
 /**
@@ -168,6 +173,10 @@ export type OwnerCommandRequest = RemoteEnvelope & Readonly<{
   command: RemoteOwnerCommand;
 }>;
 export type OwnerCommandAnswer = Readonly<{ accepted: true; nodeId: string }> | RemoteRefusalAnswer;
+
+/** autobyteus-591 DN-2: `run` is a run the caller's delegation started; answered once its state applied (closed: stopped). */
+export type DelegatedRunStateRequest = RemoteEnvelope & Readonly<{ run: RemoteStartedRunRef; open: boolean }>;
+export type DelegatedRunStateAnswer = Readonly<{ accepted: true; nodeId: string; open: boolean }> | RemoteRefusalAnswer;
 
 /** The first frame of an observation stream from the caller. */
 export type RunObservationOpening = RemoteEnvelope & Readonly<{ targetRoot: DelegatingRunRef }>;

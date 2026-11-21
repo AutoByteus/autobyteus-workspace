@@ -6,7 +6,7 @@ import type { RemoteFiles } from "../../src/agent-collaboration/execution/remote
 import type { ReceivedFiles } from "../../src/remote-collaboration/inbound/received-files.js";
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "../../src/agent-collaboration/execution/remote/remote-refusal-codes.js";
 import type { PeerDiscoveryAccess } from "../../src/agent-collaboration/execution/remote/peer-discovery-channel.js";
-import { runIdentityOf, type TaskExecutionReleaseRequest } from "../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
+import { runIdentityOf, type PeerRunStateNotice, type TaskExecutionReleaseRequest } from "../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import { REMOTE_COLLABORATION_OFF_DISCOVERY } from "../../src/agent-tools/agent-discovery/agent-discovery-refusal.js";
 import type { ProjectTaskSearchCleanup } from "../../src/projects/search/project-task-search-service.js";
 import {
@@ -55,15 +55,23 @@ export const NO_FILES_RECEIVED: Pick<ReceivedFiles, "status" | "appendPiece" | "
     ? Object.freeze({ ok: false as const, name: files[0]!.name }) : Object.freeze({ ok: true as const }),
 });
 
-/** A Task service's run-side ports for a test with no running roots: no stop is asked, a run is its own top. */
+/** A `TaskDelegation`'s peer-run ports on a node without peers (autobyteus-591): nothing is sent to a peer run. */
+export const NO_PEER_RUN_PORTS = Object.freeze({
+  deliverToPeerRun: async () => ({ accepted: false as const, code: "REMOTE_COLLABORATION_OFF", message: "This test has no peer nodes." }),
+  peerNotices: { changed: async () => ({ confirmed: false as const, code: "REMOTE_COLLABORATION_OFF", message: "This test has no peer nodes." }) },
+});
+
+/** A Task service's run-side ports for a test with no running roots and no peers: no stop is asked, a run is its own top. */
 export const NO_RUN_SIDE_TASK_PORTS: Readonly<{
   requestRelease: TaskExecutionReleaseRequest;
+  noticePeerRun: PeerRunStateNotice;
   workerStatus: TaskWorkerStatusResolver;
   topRun: TaskTopRunResolver;
   displayName: TaskDisplayNameResolver;
   searchCleanup: ProjectTaskSearchCleanup;
 }> = Object.freeze({
   requestRelease: () => null,
+  noticePeerRun: async () => undefined,
   workerStatus: () => null,
   topRun: runIdentityOf,
   displayName: () => null,

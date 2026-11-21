@@ -154,6 +154,11 @@ export interface RemoteRunChannel {
   runSummaries(nodeId: string, runs: readonly RemoteStartedRunRef[]): Promise<RemoteRunSummaries>;
   /** autobyteus-278: one agent's stored conversation in a run this node's delegation started. */
   agentProjection(nodeId: string, targetRoot: RemoteTargetRoot, agentRunId: string): Promise<RemoteAgentProjectionAnswer>;
+  /**
+   * autobyteus-591 DN-2: tells the run's node its Task state on this node (closed: every Task entry naming it closed;
+   * open: one opened again). Accepted once applied there: a closed run is stopped before the answer.
+   */
+  deliveredRunState(nodeId: string, run: RemoteStartedRunRef, open: boolean): Promise<RemoteDeliveryReceipt>;
   /** autobyteus-278: a command of this node's owner for one agent of such a run. */
   ownerCommand(nodeId: string, targetRoot: RemoteTargetRoot, agentRunId: string, command: RemoteOwnerCommand): Promise<RemoteDeliveryReceipt>;
   /** autobyteus-278: the run's live output while the stream is open; it never reconnects (DEC-807). */

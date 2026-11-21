@@ -2,6 +2,7 @@ import type { DelegationIndex } from "../../agent-collaboration/delegation/deleg
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { createTopLevelRunRule } from "./top-level-run-rule.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import type { ClosedDelegations } from "../../remote-collaboration/inbound/closed-delegations.js";
 import type {
   RunHistoryAgentGroup,
 } from "../domain/agent-run-history-index-types.js";
@@ -58,6 +59,8 @@ export class WorkspaceRunHistoryService {
   private readonly teamRunHistoryService: TeamRunHistoryService;
   /** DS-11: a run delegated from a stored run is listed under that run, not as a top-level row. */
   private readonly topLevel: (run: TaskExecutionReference) => boolean;
+  /** autobyteus-591 DN-6: a peer-started run whose delegating node closed every Task naming it is not listed. */
+  private readonly closedDelegations: Pick<ClosedDelegations, "has">;
 
   constructor(
     options: {
@@ -66,8 +69,11 @@ export class WorkspaceRunHistoryService {
       agentRunHistoryService?: AgentRunHistoryService;
       teamRunHistoryService?: TeamRunHistoryService;
       topLevel?: (run: TaskExecutionReference) => boolean;
+      /** The peer-started runs their delegating node closed (loaded once; read in memory per row). */
+      closedDelegations: Pick<ClosedDelegations, "has">;
     },
   ) {
+    this.closedDelegations = options.closedDelegations;
     this.topLevel = options.topLevel ?? createTopLevelRunRule(() => appConfigProvider.config.getMemoryDir(), options.tree);
     this.agentRunHistoryService =
       options.agentRunHistoryService ?? getAgentRunHistoryService();
@@ -75,11 +81,17 @@ export class WorkspaceRunHistoryService {
       options.teamRunHistoryService ?? getTeamRunHistoryService();
   }
 
+  /** A row of the list: a top-level run its delegating node has not closed (DN-6). */
+  private listed(run: TaskExecutionReference): boolean {
+    return this.topLevel(run) && !this.closedDelegations.has("agentRunId" in run
+      ? { kind: "agent", runId: run.agentRunId } : { kind: "agent_team", runId: run.teamRunId });
+  }
+
   /** Every folder's runs; `limitPerAgent: null` keeps every agent run (see `AgentRunHistoryService.listRunHistory`). */
   async listWorkspaceRunHistory(limitPerAgent: number | null = 6): Promise<WorkspaceRunHistoryGroup[]> {
     const [agentWorkspaceGroups, teamRuns] = await Promise.all([
-      this.agentRunHistoryService.listRunHistory(limitPerAgent, (row) => this.topLevel({ agentRunId: row.runId })),
-      this.teamRunHistoryService.listTeamRunHistory((row) => this.topLevel({ teamRunId: row.teamRunId })),
+      this.agentRunHistoryService.listRunHistory(limitPerAgent, (row) => this.listed({ agentRunId: row.runId })),
+      this.teamRunHistoryService.listTeamRunHistory((row) => this.listed({ teamRunId: row.teamRunId })),
     ]);
 
     return buildWorkspaceGroups(agentWorkspaceGroups, teamRuns)
@@ -92,8 +104,8 @@ export class WorkspaceRunHistoryService {
   ): Promise<WorkspaceRunHistoryGroup> {
     const canonicalRootPath = canonicalizeWorkspaceRootPath(workspaceRootPath);
     const [agentWorkspaceGroups, teamRuns] = await Promise.all([
-      this.agentRunHistoryService.listRunHistory(limitPerAgent, (row) => this.topLevel({ agentRunId: row.runId })),
-      this.teamRunHistoryService.listTeamRunHistory((row) => this.topLevel({ teamRunId: row.teamRunId })),
+      this.agentRunHistoryService.listRunHistory(limitPerAgent, (row) => this.listed({ agentRunId: row.runId })),
+      this.teamRunHistoryService.listTeamRunHistory((row) => this.listed({ teamRunId: row.teamRunId })),
     ]);
 
     return buildWorkspaceGroups(agentWorkspaceGroups, teamRuns, canonicalRootPath)[0] ?? {
