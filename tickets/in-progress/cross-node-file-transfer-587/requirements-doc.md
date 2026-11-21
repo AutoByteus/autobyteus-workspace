@@ -2,8 +2,8 @@
 
 ## Document Status
 
-- Status: `Ready for Approval` (requirements approved at SR-002; the behavior-defining supplement `reference-files-contract.md` RFC-001, written at the founder's request, awaits his approval)
-- Current solution revision ID: `SR-004`
+- Status: `Approved`
+- Current solution revision ID: `SR-005`
 - Request: Project Task `autobyteus-587`; requested by `/project_task_manager` for the founder
 - Owner: Solution Designer; date 2026-11-21
 - Approved by and reference: `User` (the founder), 2026-11-21, in the Solution Designer's conversation: "Yes I strongly agree the agent can only send files in its own workspace; size limits I agree with you; I guess the tool call will need to wait" (DEC-001 as he worded it, DEC-002, DEC-003 (a)); DEC-004 and DEC-005 by the Solution Designer within the direction, explained to him the same day. Baseline SR-002.
@@ -101,4 +101,4 @@ None.
 
 | Artifact Path | Purpose | Related IDs | Status | Approval |
 | --- | --- | --- | --- | --- |
-| `tickets/in-progress/cross-node-file-transfer-587/reference-files-contract.md` (RFC-001) | The complete contract of reference files on `send_message_to` and `delegate_task`, on one node and across nodes: rules RF-1 … RF-13, route table, refusals, wire, storage, examples | REQ-001 … REQ-008, AC-001 … AC-009, DEC-001 … DEC-005 | Ready for Approval | Behavior-defining; founder's approval required |
+| `tickets/in-progress/cross-node-file-transfer-587/reference-files-contract.md` (RFC-001) | The complete contract of reference files on `send_message_to` and `delegate_task`, on one node and across nodes: rules RF-1 … RF-13, route table, refusals, wire, storage, examples | REQ-001 … REQ-008, AC-001 … AC-009, DEC-001 … DEC-005 | Approved (SR-005) | Approved by the founder, 2026-11-21: "Great I think it's clear now you can work now", with the node-level `received_files` at the server data root |

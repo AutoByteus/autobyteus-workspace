@@ -8,6 +8,7 @@
 | SR-002 | Requirements | The founder's answers, 2026-11-21 | DEC-001…003 | Ready for Approval | Approved | REQ-004, DEC-001…003 | Workspace files only; 2 GiB per file, 4 GiB per call; the call waits |
 | SR-003 | Requirements | The founder: "design the contract file first … make the contract complete" (2026-11-21) | — | Approved | Ready for Approval (supplement) | all; RFC-001 | Contract RFC-001 written: rules, routes, refusals, wire, storage, examples |
 | SR-004 | Requirements | The founder: "always … add the node parameter … similar to delegate task"; "Yes include in this ticket" (2026-11-21) | DEC-006 | Ready for Approval (supplement) | Ready for Approval (supplement) | REQ-009, AC-010, RFC-001 RF-14, row 6, refusals | `node` required for every cross-node message |
+| SR-005 | Requirements | The founder's approval of RFC-001, 2026-11-21 | — | Ready for Approval (supplement) | Approved | RFC-001 (storage layout, RF-7, vocabulary) | Contract approved: folders by sender run ID, same-sender replacement, node-level `<data>/received_files/` |
 
 ## Revision Entries
 
@@ -35,3 +36,9 @@
 - Approval: DEC-006 by the founder; RFC-001 as a whole still awaits his approval.
 
 - 2026-11-21 (within SR-004): RFC-001 § 3 Storage Layout added (store `<memory>/received-file-store/<sha256>`, `.partial`, per-agent `received_files/<sender's run ID>/<file name>`); RF-7: the same sender's same-named file replaces the earlier one (founder: "we definitely need to replace the existing one"); folder by sender run ID (Solution Designer's recommendation, explained to the founder); examples updated.
+
+### SR-005 — Contract approved
+
+- Trigger: the founder, 2026-11-21: "Great I think it's clear now you can work now", then: the node-level received files "not in memory folder … in the roots like a server data folder".
+- Changes: RFC-001 § 3 Storage Layout and vocabulary: `<data>/received_files/<sha256>` (beside `memory/`; one disk, `app-config.ts:333-335`); folder named `received_files` (founder); per-agent `received_files/<sender's run ID>/<file name>`; same sender's same-named file replaces.
+- Approval: `User`; requirements SR-005 with RFC-001 as its approved supplement. Next: architecture design.
