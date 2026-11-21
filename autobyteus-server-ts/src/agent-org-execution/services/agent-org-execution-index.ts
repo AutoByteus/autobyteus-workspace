@@ -93,6 +93,9 @@ export class AgentOrgExecutionIndex implements MessageRecipientIndexPort, Mentio
   /**
    * CM-1 (DEC-008): the sender's own address, or any address inside the mounted Team that contains it. Org siblings are independent units.
    */
+  /** An Org run's members do not follow their definitions: none ever left. */
+  formerMemberAt(_address: AgentTeamAddress): null { return null; }
+
   isOwnTeamAddress(senderAgentRunId: string, address: AgentTeamAddress): boolean {
     const sender = this.getAgent(senderAgentRunId);
     return !!sender && isInsideSenderTeamInstances(this.teamInstancesOf(senderAgentRunId), sender.address, address);

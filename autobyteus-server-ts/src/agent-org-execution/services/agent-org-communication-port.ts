@@ -33,6 +33,8 @@ export const createAgentOrgCommunicationPort = (input: Readonly<{
     }),
     isOpen: () => input.isOpen(),
     isCurrentAgent: (identity) => input.isCurrentAgent(identity),
+    // No member of this root leaves while it runs: whoever may receive may send.
+    maySend: (identity) => input.isCurrentAgent(identity),
     assertDeliveryAllowed: (sender, receiver) => input.assertDeliveryAllowed(sender, receiver),
     buildRecipientInput: (delivery) => buildRootCommunicationInputMessage(delivery),
     reserveRecipientInput: (agentRunId, message) => input.reserveRecipientInput(agentRunId, message),

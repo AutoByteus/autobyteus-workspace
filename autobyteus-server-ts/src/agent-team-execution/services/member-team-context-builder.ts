@@ -63,8 +63,11 @@ export class MemberExecutionContextBuilder {
         definition: { kind: "agent_team", definitionId: input.teamContext.teamNode.teamDefinitionId },
       },
     });
+    const agentRunId = input.agentNode.agentRunId;
+    const membership = input.teamContext.membership;
     const collaboration = new MemberCollaborationContext({
-      outgoingHandoffs: scope.outgoingHandoffs,
+      // DS-005: read from the team's membership on each call: a current member's rules now, none once it left.
+      outgoingHandoffs: scope.role === "team_member" ? () => membership.handoffsOf(agentRunId) : () => scope.outgoingHandoffs,
       deliverLogicalMessage: (message) => input.deliverInterAgentMessage({
         rootTeamRunId: root.rootRunId,
         recipientAddress: message.recipientAddress,

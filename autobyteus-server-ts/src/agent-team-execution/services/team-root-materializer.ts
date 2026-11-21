@@ -23,6 +23,8 @@ import type { MemberExecutionContextBuilder } from "./member-team-context-builde
 import { createTeamFlatExecutionCallbacks } from "./team-flat-execution-callbacks.js";
 import { TeamRunEventPublisher } from "./team-run-event-publisher.js";
 import { TeamRunPersistenceCoordinator } from "./team-run-persistence-coordinator.js";
+import { TeamRunMembership } from "../domain/team-run-membership.js";
+import type { TeamChangeNoticeSource } from "../membership/team-change-notice-source.js";
 
 export type TeamRootMaterializationInput = Readonly<{
   config: TeamRunConfig;
@@ -41,6 +43,8 @@ export type TeamRootMaterializationInput = Readonly<{
   viewStreams: RunViewStreams;
   executionTreeStore: TeamRunExecutionTreeStore;
   communicationStore: TeamCommunicationStore;
+  /** Where the members' notices of a membership change wait (DS-006). */
+  changeNotices: Pick<TeamChangeNoticeSource, "recordChange">;
   /** The process admission coordinator unless given. */
   collaboratorAdmission?: CollaboratorAdmission;
   onTerminated: (root: RootTeamRun, ending: TeamRunEnding) => void;
@@ -77,6 +81,8 @@ export const materializeTeamRoot = async (
   });
   // DS-15 (SR-070): a delegated team run whose Task is closed takes no input, as base fenced a copy's every input.
   const closedTasks = new ClosedTaskFence({ tree: input.delegationIndex, tasks: input.taskRecords });
+  // The one live view of its members, coordinator and rules: the root, its TeamRun and the members' contexts read it.
+  const membership = TeamRunMembership.ofTree(input.tree);
   const callbacks = createTeamFlatExecutionCallbacks({
     // A member takes input while its run is active and its Task, if a Task names it, is open; nothing is hosted.
     // Damaged Task data fails a delegated team closed (CR-461-051): its own tree says it was delegated.
@@ -85,8 +91,7 @@ export const materializeTeamRoot = async (
       physicalScope,
       teamRunId: input.config.rootTeam.teamRunId,
       teamBackendKind: input.config.teamBackendKind,
-      teamNode: input.config.rootTeam,
-      handoffs: input.config.handoffs,
+      membership,
       applicationBinding: input.config.applicationBinding,
       runtimeContext: null,
     }),
@@ -106,8 +111,7 @@ export const materializeTeamRoot = async (
   });
   const prepared = await input.factory.beginMaterialization({
     physicalScope,
-    teamNode: input.config.rootTeam,
-    handoffs: input.config.handoffs,
+    membership,
     applicationBinding: input.config.applicationBinding,
     activationMode: input.mode,
     callbacks,
@@ -136,6 +140,8 @@ export const materializeTeamRoot = async (
       delegationIndex: input.delegationIndex,
       remoteChannel: input.remoteChannel,
       closedTasks,
+      membership,
+      changeNotices: input.changeNotices,
       collaboratorAdmission: input.collaboratorAdmission,
       onTerminated: (ending) => { if (root) input.onTerminated(root, ending); },
     });

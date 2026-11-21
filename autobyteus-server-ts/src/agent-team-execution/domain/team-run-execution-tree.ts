@@ -27,7 +27,15 @@ export type RootConfiguredTeamExecutionNode = Readonly<{
   /** How the team's default launch was resolved, when recorded (a delegated team, DS-10 step 4). */
   defaultLaunchSource?: LaunchConfigurationSource;
   members: readonly ConfiguredAgentExecutionNode[];
+  /**
+   * Former members: members removed from the Team definition while the run existed, kept with their run IDs for the
+   * run's history; not addressable; a member the definition adds again comes back from here. Absent: none.
+   */
+  formerMembers?: readonly ConfiguredAgentExecutionNode[];
 }>;
+
+/** What a delegated Team run was copied from, recorded once at its creation: only a Team definition's copy follows it. */
+export type TeamRunCopiedFrom = "team_definition" | "configured_placement";
 
 /** Persisted TeamRun execution tree: read tolerantly, written exactly, no version field (REQ-018). */
 export type TeamRunExecutionTreeFile = Readonly<{
@@ -41,6 +49,8 @@ export type TeamRunExecutionTreeFile = Readonly<{
    * delegating run there. Absent means the Team run was not started by a peer.
    */
   delegatedFrom?: DelegatedFrom;
+  /** A delegated Team run's origin, written once when it is created (absent: a standalone run, or an older copy). */
+  copiedFrom?: TeamRunCopiedFrom;
 }>;
 
 export type TeamRunExecutionTreeSnapshot = TeamRunExecutionTreeFile;

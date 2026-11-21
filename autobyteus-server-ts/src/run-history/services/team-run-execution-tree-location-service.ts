@@ -159,7 +159,8 @@ export class TeamRunExecutionTreeLocationService {
     const memberAddress = input.memberAddress?.trim() || null;
     const containing = input.containingTeamRunId?.trim() || null;
     if (containing && !index.getTeam(containing)) return null;
-    const candidates = index.listAgentExecutions().filter((agent) =>
+    // A former member is found by its run ID (its memory and conversation stay this run's), never by an address alone.
+    const candidates = [...index.listAgentExecutions(), ...(agentRunId ? index.listFormerAgentExecutions() : [])].filter((agent) =>
       (!agentRunId || agent.agentRunId === agentRunId) &&
       (!memberAddress || agent.address === memberAddress) &&
       (!containing || agent.containingTeamRunId === containing));
@@ -172,7 +173,7 @@ export class TeamRunExecutionTreeLocationService {
     isActive: boolean,
   ): LocatedTeamAgentExecution[] {
     const index = new TeamExecutionIndex(tree);
-    return index.listAgentExecutions().map((agent) => this.toLocation(tree, index, agent, isActive));
+    return [...index.listAgentExecutions(), ...index.listFormerAgentExecutions()].map((agent) => this.toLocation(tree, index, agent, isActive));
   }
 
   private toLocation(
@@ -183,7 +184,7 @@ export class TeamRunExecutionTreeLocationService {
   ): LocatedTeamAgentExecution {
     const scope = index.getTeamRunPhysicalScope(agent.containingTeamRunId);
     const configured = index.getConfiguredPlacement(agent.address);
-    const configuredPlacement = configured && "agentRunId" in configured ? configured : null;
+    const configuredPlacement = configured && "agentRunId" in configured && configured.agentRunId === agent.agentRunId ? configured : null;
     const groupPath = [...index.listContainingTeamAncestorsForAgent(agent.agentRunId)].reverse().slice(1)
       .map((team): LocatedExecutionGroup => Object.freeze({
         teamRunId: team.teamRunId,

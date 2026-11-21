@@ -143,6 +143,6 @@ export const renderCollaborationSections = (context: MemberExecutionContext): st
       parts.push(AGENT_TEAM_ADDRESSING_SECTION, ORG_AGENT_SECTION);
       break;
   }
-  if (context.collaboration.outgoingHandoffs.length > 0) parts.push(HANDOFFS_SECTION);
+  if (context.collaboration.outgoingHandoffs().length > 0) parts.push(HANDOFFS_SECTION);
   return parts.join("\n\n");
 };

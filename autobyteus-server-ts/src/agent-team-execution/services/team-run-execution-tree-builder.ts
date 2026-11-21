@@ -53,7 +53,8 @@ export const buildInitialTeamRunExecutionTree = (input: {
   },
 }, input.config.rootTeam.teamRunId);
 
-const fromConfiguredAgent = (node: ConfiguredAgentExecutionNode): TeamRunAgentNode => ({
+/** A stored member as the run's launch node (also a former member's, for a member still finishing its turn). */
+export const fromConfiguredAgent = (node: ConfiguredAgentExecutionNode): TeamRunAgentNode => ({
   kind: "agent",
   address: node.address,
   agentDefinitionId: node.agentDefinitionId,

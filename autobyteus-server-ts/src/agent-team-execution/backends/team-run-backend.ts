@@ -22,6 +22,8 @@ export interface TeamRunBackend {
   reserveDirectAgentInput(agentRunId: string, message: AgentInputUserMessage, options?: AgentRunInputOptions): Promise<AgentRunInputReservationResult>;
   deliverToDirectAgent(agentRunId: string, message: AgentInputUserMessage): Promise<AgentOperationResult>;
   executeDirectAgentCommand(agentRunId: string, command: TeamMemberExecutionCommand): Promise<AgentOperationResult>;
+  /** The members removed from the team leave (each stops when quiet); `released` is told for each stopped one. */
+  followMembership(removedAgentRunIds: readonly string[], released: () => void): void;
   cancelRuntimeActivation(): void;
   releaseOwnedRuntime(): Promise<AgentOperationResult>;
   prepareTermination(): Promise<PreparedLocalExecutionTermination>;

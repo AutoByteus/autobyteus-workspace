@@ -33,21 +33,27 @@ export type MemberLogicalMessageDelivery = (
 /** `list_available_agents` bound to this member (DS-001); read-only. */
 export type MemberAvailableAgentsLister = () => Promise<readonly AvailableCollaborator[]>;
 
+/** A member's outgoing handoff rules as they are now (a team run's rules follow its definition). */
+export type MemberOutgoingHandoffsReader = () => readonly CollaborationHandoff[];
+
 export class MemberCollaborationContext {
-  readonly outgoingHandoffs: readonly CollaborationHandoff[];
+  /** The member's outgoing handoff rules, read on each call (`get_handoff_rules`, the prompt's Handoffs section). */
+  readonly outgoingHandoffs: MemberOutgoingHandoffsReader;
   readonly deliverLogicalMessage: MemberLogicalMessageDelivery;
   /** Null where the run has no catalog (application-owned and internal runs). */
   readonly listAvailableAgents: MemberAvailableAgentsLister | null;
 
   constructor(input: {
-    outgoingHandoffs?: readonly CollaborationHandoff[] | null;
+    /** Absent: the member has no handoff rules. */
+    outgoingHandoffs?: MemberOutgoingHandoffsReader | null;
     deliverLogicalMessage: MemberLogicalMessageDelivery;
     listAvailableAgents?: MemberAvailableAgentsLister | null;
   }) {
     if (typeof input.deliverLogicalMessage !== "function") {
       throw new Error("deliverLogicalMessage is required.");
     }
-    this.outgoingHandoffs = Object.freeze(cloneCollaborationHandoffs(input.outgoingHandoffs ?? []));
+    const read = input.outgoingHandoffs ?? (() => []);
+    this.outgoingHandoffs = () => Object.freeze(cloneCollaborationHandoffs(read()));
     this.deliverLogicalMessage = async (message) => input.deliverLogicalMessage(normalizeMessage(message));
     this.listAvailableAgents = input.listAvailableAgents ?? null;
     Object.freeze(this);

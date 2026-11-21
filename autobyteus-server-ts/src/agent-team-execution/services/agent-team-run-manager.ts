@@ -19,12 +19,13 @@ import { buildInitialTeamRunExecutionTree, buildTeamRunConfigFromExecutionTree }
 import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-messages-file.js";
 import { TeamRunPackageCatalog } from "../../run-history/services/team-run-package-catalog.js";
 import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
-import {
-  runModelConfigEditability,
-  type RunModelConfigUpdateResult,
-} from "../../run-history/domain/run-model-config.js";
+import type { RunModelConfigUpdateResult } from "../../run-history/domain/run-model-config.js";
+import { teamModelConfigUpdateResult } from "./team-model-config-update-result.js";
+import type { TeamMembershipPlanner } from "../membership/team-membership-planner.js";
+import { followLiveTeamRun } from "../membership/team-definition-change-listener.js";
+import type { TeamChangeNoticeSource } from "../membership/team-change-notice-source.js";
 import type { TeamRunSelectionPatch } from "./team-run-selection-mutator.js";
-import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
+import type { TeamRunCopiedFrom, TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import { createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import {
   ActiveCollaborationRootDirectory,
@@ -58,6 +59,10 @@ export type AgentTeamRunManagerOptions = Readonly<{
   communicationStore?: TeamCommunicationStore;
   activeRootDirectory?: ActiveCollaborationRootDirectory;
   modelSelectionValidator: RunModelSelectionValidator;
+  /** Which runs follow their Team definition, and how (a stopped run is followed before it is restored, DS-002). */
+  membershipPlanner: TeamMembershipPlanner;
+  /** Where the members' notices of a membership change wait (DS-006). */
+  changeNotices: TeamChangeNoticeSource;
 }>;
 
 /** Process-wide catalog and lifecycle owner for root executions only. */
@@ -75,6 +80,8 @@ export class AgentTeamRunManager {
   private readonly viewStreams: RunViewStreams;
   private readonly modelSelectionValidator: RunModelSelectionValidator;
   private readonly activeRootDirectory: ActiveCollaborationRootDirectory;
+  private readonly membershipPlanner: TeamMembershipPlanner;
+  private readonly changeNotices: TeamChangeNoticeSource;
   private readonly managedRoots = new Map<string, RootTeamRun>();
   private readonly rootTransitionLanes = new Map<string, Promise<void>>();
   private readonly lifecycleListeners = new Map<string, Set<TeamRunLifecycleListener>>();
@@ -123,6 +130,8 @@ export class AgentTeamRunManager {
     this.communicationStore = options.communicationStore ?? new TeamCommunicationStore();
     this.modelSelectionValidator = options.modelSelectionValidator;
     this.activeRootDirectory = options.activeRootDirectory ?? getActiveCollaborationRootDirectory();
+    this.membershipPlanner = options.membershipPlanner;
+    this.changeNotices = options.changeNotices;
   }
 
   async createTeamRun(input: {
@@ -130,6 +139,8 @@ export class AgentTeamRunManager {
     teamDefinitionName: string;
     /** A Team run a peer node starts (autobyteus-247): its back-link, kept on the tree. */
     delegatedFrom?: DelegatedFrom;
+    /** A delegated Team run's origin (D-SCOPE): only a copy of a Team definition follows that definition. */
+    copiedFrom?: TeamRunCopiedFrom;
     /** The Project the Team run is started under: recorded by the Project before the tree is written (DS-002). */
     projectId?: string;
   }): Promise<RootTeamRun> {
@@ -142,7 +153,8 @@ export class AgentTeamRunManager {
         config: input.config,
         teamDefinitionName: required(input.teamDefinitionName, "teamDefinitionName"),
       });
-      const tree = input.delegatedFrom ? Object.freeze({ ...initial, delegatedFrom: input.delegatedFrom }) : initial;
+      const tree = input.delegatedFrom
+        ? Object.freeze({ ...initial, delegatedFrom: input.delegatedFrom, ...(input.copiedFrom ? { copiedFrom: input.copiedFrom } : {}) }) : initial;
       const messages: TeamCommunicationMessagesSnapshot = Object.freeze({
         schemaVersion: 1,
         rootTeamRunId,
@@ -186,10 +198,16 @@ export class AgentTeamRunManager {
         communicationStore: this.communicationStore,
       }).load({ teamMemoryDir, rootTeamRunId });
       if (!loaded.loaded) throw new Error(`${loaded.code}: ${loaded.message}`);
-      const config = buildTeamRunConfigFromExecutionTree(loaded.state.executionTree);
+      // DS-002: a stopped run follows its definition before it comes alive; the change is saved first.
+      const stored = await this.membershipPlanner.followStored(loaded.state.executionTree);
+      if (stored && (await this.executionTreeStore.write(teamMemoryDir, stored.tree)).outcome !== "committed") {
+        throw new Error(`TEAM_RUN_DEFINITION_NOT_SAVED: TeamRun '${rootTeamRunId}' could not save its members from its definition.`);
+      }
+      const tree = stored?.tree ?? loaded.state.executionTree;
+      const config = buildTeamRunConfigFromExecutionTree(tree);
       const root = await materializeTeamRoot({
         config,
-        tree: loaded.state.executionTree,
+        tree,
         messages: loaded.state.communicationMessages,
         teamMemoryDir,
         mode: "restore",
@@ -198,9 +216,15 @@ export class AgentTeamRunManager {
         onTerminated: (terminated, ending) => { this.unregister(rootTeamRunId, terminated, ending); },
       });
       this.register(root);
+      if (stored) root.followedStored(stored);
+      // N-1: a change announced while it was restoring is not missed (nothing changed: no write, no event).
+      await followLiveTeamRun(this.membershipPlanner, root);
       return root;
     });
   }
+
+  /** The managed, active team runs of this process (the live runs that follow their definition). */
+  listActiveTeamRuns(): RootTeamRun[] { return [...this.managedRoots.values()].filter((root) => root.isActive()); }
 
   /** Whether the run's stored package is admitted (base's restore check, SR-078); nothing is read or loaded. */
   async isCatalogedPackage(rootTeamRunId: string): Promise<boolean> {
@@ -276,14 +300,14 @@ export class AgentTeamRunManager {
       if (planned.kind === "refused") return planned.result;
       const { tree, nextTree } = planned;
       if (isDeepStrictEqual(nextTree, tree)) {
-        return this.modelConfigUpdateResult("UNCHANGED", "Team model settings are already up to date.", tree, false);
+        return teamModelConfigUpdateResult("UNCHANGED", "Team model settings are already up to date.", tree, false);
       }
       const write = await this.executionTreeStore.write(this.teamMemoryDir(teamRunId), nextTree);
       // Once renamed, unreadable canonical state requires verification, not an ordinary failure.
       const canonical = await this.executionTreeStore.read(this.teamMemoryDir(teamRunId), teamRunId).catch(() => null);
       if (write.outcome === "finalization_indeterminate" ||
           (write.outcome === "committed" && !canonical)) {
-        return this.modelConfigUpdateResult(
+        return teamModelConfigUpdateResult(
           "PERSISTENCE_INDETERMINATE",
           "Update outcome is being verified. Refresh the Team configuration before saving again.",
           canonical ?? tree,
@@ -291,9 +315,9 @@ export class AgentTeamRunManager {
         );
       }
       if (write.outcome !== "committed" || !canonical || !isDeepStrictEqual(canonical, nextTree)) {
-        return this.modelConfigUpdateResult("PERSISTENCE_FAILED", "Team model settings were not saved.", canonical ?? tree, false);
+        return teamModelConfigUpdateResult("PERSISTENCE_FAILED", "Team model settings were not saved.", canonical ?? tree, false);
       }
-      return this.modelConfigUpdateResult(
+      return teamModelConfigUpdateResult(
         "UPDATED",
         "Team model settings updated. They will be used when this team resumes.",
         canonical,
@@ -307,18 +331,18 @@ export class AgentTeamRunManager {
     | Readonly<{ kind: "planned"; tree: TeamRunExecutionTreeSnapshot; nextTree: TeamRunExecutionTreeSnapshot }>> {
     const refused = (result: RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null>) => ({ kind: "refused" as const, result });
     const tree = await this.executionTreeStore.read(this.teamMemoryDir(teamRunId), teamRunId);
-    if (!tree) return refused(this.modelConfigUpdateResult("NOT_FOUND", "Team run was not found.", null, false));
+    if (!tree) return refused(teamModelConfigUpdateResult("NOT_FOUND", "Team run was not found.", null, false));
     await this.packageCatalog.awaitReady();
     if (!this.packageCatalog.isAdmitted(teamRunId)) {
-      return refused(this.modelConfigUpdateResult("NOT_FOUND", "Team run is not an admitted current package.", tree, false));
+      return refused(teamModelConfigUpdateResult("NOT_FOUND", "Team run is not an admitted current package.", tree, false));
     }
     if (this.hasManagedTeamRun(teamRunId)) {
-      return refused(this.modelConfigUpdateResult("RUN_ACTIVE",
+      return refused(teamModelConfigUpdateResult("RUN_ACTIVE",
         "This team became active through another connected workflow. Stop it, reopen Settings, and try again.", tree, true));
     }
-    if (tree.archivedAt) return refused(this.modelConfigUpdateResult("RUN_ARCHIVED", "Archived Team runs cannot be edited.", tree, false, true));
+    if (tree.archivedAt) return refused(teamModelConfigUpdateResult("RUN_ARCHIVED", "Archived Team runs cannot be edited.", tree, false, true));
     const plan = await planStoppedTeamLaunchSave({ tree, configuredPatches: selectionPatches, validator: this.modelSelectionValidator });
-    if (plan.kind === "refused") return refused(this.modelConfigUpdateResult(plan.outcome, plan.message, tree, false, false, plan.fieldErrors));
+    if (plan.kind === "refused") return refused(teamModelConfigUpdateResult(plan.outcome, plan.message, tree, false, false, plan.fieldErrors));
     return { kind: "planned", tree, nextTree: plan.nextTree };
   }
 
@@ -398,30 +422,8 @@ export class AgentTeamRunManager {
       viewStreams: this.viewStreams,
       executionTreeStore: this.executionTreeStore,
       communicationStore: this.communicationStore,
+      changeNotices: this.changeNotices,
     } as const;
-  }
-
-  private modelConfigUpdateResult(
-    outcome: RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null>["outcome"],
-    message: string,
-    tree: TeamRunExecutionTreeSnapshot | null,
-    isActive: boolean,
-    archived = false,
-    fieldErrors: RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null>["fieldErrors"] = [],
-  ): RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null> {
-    return Object.freeze({
-      success: outcome === "UPDATED" || outcome === "UNCHANGED",
-      outcome,
-      message,
-      isActive,
-      editability: runModelConfigEditability({
-        isActive,
-        archived,
-        available: outcome !== "NOT_FOUND",
-      }),
-      canonical: tree,
-      fieldErrors: Object.freeze([...fieldErrors]),
-    });
   }
 
   private register(root: RootTeamRun): void {

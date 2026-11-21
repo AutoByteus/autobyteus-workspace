@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { DelegationIndex, type RunAgent } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
+import { DelegationIndex } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
+import type { RunAgent } from "../../../../src/agent-collaboration/delegation/run-parts.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 
 /** autobyteus-461 SR-041 (contract §4, `model.py` `agents_with_addresses`): the tree keeps each run's agents by run ID and address. */

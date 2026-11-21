@@ -1,4 +1,4 @@
-import type { RunAgent } from "../../src/agent-collaboration/delegation/delegation-index.js";
+import type { RunAgent } from "../../src/agent-collaboration/delegation/run-parts.js";
 import type { RunFilesReader } from "../../src/agent-collaboration/delegation/collaboration-tree.js";
 import type { RootExecutionIdentity } from "../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 

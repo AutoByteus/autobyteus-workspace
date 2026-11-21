@@ -24,6 +24,8 @@ export class StandaloneRootIndex implements MessageRecipientIndexPort, MentionVi
   }
   /** Only the run's own address is its own. */
   isOwnTeamAddress(_senderAgentRunId: string, address: AgentTeamAddress): boolean { return address === this.agent.address; }
+  /** A standalone run has no team members that could leave. */
+  formerMemberAt(_address: AgentTeamAddress): null { return null; }
   instanceDefinitionsOf(): InstanceDefinitions | null { return null; }
   agentAddressOf(agentRunId: string): AgentTeamAddress | null { return agentRunId === this.agent.agentRunId ? this.agent.address : null; }
   isRunAgent(agentRunId: string): boolean { return agentRunId === this.agent.agentRunId; }

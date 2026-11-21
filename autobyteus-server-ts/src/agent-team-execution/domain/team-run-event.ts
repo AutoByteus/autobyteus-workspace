@@ -6,6 +6,8 @@ export enum TeamRunEventSourceType {
   AGENT = "AGENT",
   COMMUNICATION = "COMMUNICATION",
   MEMBER_INPUT = "MEMBER_INPUT",
+  /** The team's members changed (it follows its definition, or a leaving member stopped): open views snapshot again. */
+  MEMBERSHIP = "MEMBERSHIP",
 }
 
 export type TeamRunMemberInputOrigin = "user_message" | "inter_agent_delivery";
@@ -36,7 +38,11 @@ export type TeamRunEvent =
       eventSourceType: TeamRunEventSourceType.MEMBER_INPUT;
       agentRunId: string;
       payload: TeamRunMemberInputEventPayload;
-    }>;
+    }>
+  | Readonly<{ eventSourceType: TeamRunEventSourceType.MEMBERSHIP }>;
+
+/** DS-007 a: the team's members changed; an open Team view takes a new snapshot (no frame of its own). */
+export const TEAM_MEMBERSHIP_CHANGED_EVENT: TeamRunEvent = Object.freeze({ eventSourceType: TeamRunEventSourceType.MEMBERSHIP });
 
 /** The Team's message events: the ones the client adds to the Team tab's lists (autobyteus-358, SR-008). */
 export const isTeamRunMessageEvent = (event: TeamRunEvent): boolean =>

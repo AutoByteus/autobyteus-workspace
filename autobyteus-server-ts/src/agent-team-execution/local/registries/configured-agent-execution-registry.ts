@@ -1,6 +1,5 @@
 import type { AgentRunManager } from "../../../agent-execution/services/agent-run-manager.js";
 import type { ConfiguredAgentExecutionFactory } from "../../../agent-collaboration/execution/backends/configured-agent-execution-factory.js";
-import type { AgentTeamAddress } from "../../../agent-collaboration/domain/agent-team-address.js";
 import type { TeamRunContext } from "../../domain/team-run-context.js";
 import type { FlatTeamExecutionContext, FlatTeamMemberExecutionContext } from "../flat-team-execution-context.js";
 import { FlatTeamAgentExecutionHandle } from "../flat-team-agent-execution-handle.js";
@@ -14,8 +13,12 @@ export type ConfiguredMemberRegistryAccess = {
   getOrCreate(context: FlatTeamMemberExecutionContext): FlatTeamAgentExecutionHandle;
 };
 
+/**
+ * The team's member handles, created on first use, by agent run ID: two runs can briefly share an address (a member that
+ * took the place of one still finishing its turn), each with its own handle.
+ */
 export class ConfiguredAgentExecutionRegistry implements ConfiguredMemberRegistryAccess {
-  private readonly handles = new Map<AgentTeamAddress, FlatTeamAgentExecutionHandle>();
+  private readonly handles = new Map<string, FlatTeamAgentExecutionHandle>();
   private materializationOpen = true;
 
   constructor(private readonly options: {
@@ -32,15 +35,19 @@ export class ConfiguredAgentExecutionRegistry implements ConfiguredMemberRegistr
   listHandles(): FlatTeamAgentExecutionHandle[] { return [...this.handles.values()]; }
   freezeMaterialization(): void { this.materializationOpen = false; }
 
-  remove(address: AgentTeamAddress): boolean {
-    const handle = this.handles.get(address);
+  /** A member's handle when it has one; never creates one. */
+  find(agentRunId: string): FlatTeamAgentExecutionHandle | null { return this.handles.get(agentRunId) ?? null; }
+
+  /** A member left the team and was stopped: its handle goes. */
+  remove(agentRunId: string): boolean {
+    const handle = this.handles.get(agentRunId);
     if (!handle) return false;
     handle.dispose();
-    return this.handles.delete(address);
+    return this.handles.delete(agentRunId);
   }
 
   getOrCreate(context: FlatTeamMemberExecutionContext): FlatTeamAgentExecutionHandle {
-    const existing = this.handles.get(context.address);
+    const existing = this.handles.get(context.agentRunId);
     if (existing) return existing;
     if (!this.materializationOpen) {
       throw new Error(`Configured member '${context.address}' cannot materialize after TeamRun freeze.`);
@@ -51,7 +58,9 @@ export class ConfiguredAgentExecutionRegistry implements ConfiguredMemberRegistr
       context,
       config: node,
       memoryPlacement: this.options.teamContext.memberMemoryPlacement,
-      activationMode: this.options.teamContext.runtimeContext.configuredMemberActivationMode,
+      // A member back from the former members resumes its conversation, whatever the team's own mode.
+      activationMode: this.options.teamContext.membership.wasRejoined(context.agentRunId)
+        ? "restore" : this.options.teamContext.runtimeContext.configuredMemberActivationMode,
       agentRunManager: this.options.agentRunManager,
       memoryLocator: this.options.memoryLocator,
       activityInspector: this.options.activityInspector,
@@ -59,7 +68,7 @@ export class ConfiguredAgentExecutionRegistry implements ConfiguredMemberRegistr
       executionFactory: this.options.executionFactory,
       callbacks: this.options.callbacks,
     });
-    this.handles.set(context.address, handle);
+    this.handles.set(context.agentRunId, handle);
     return handle;
   }
 

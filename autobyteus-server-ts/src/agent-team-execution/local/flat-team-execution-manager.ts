@@ -19,6 +19,9 @@ import { FlatTeamAgentExecutionHandle } from "./flat-team-agent-execution-handle
 import { FlatTeamMemberConfigResolver } from "./registries/flat-team-member-config-resolver.js";
 import type { FrozenTeamRunTerminationScope } from "../domain/frozen-team-run-termination-scope.js";
 
+/** How long a leaving member that was not quiet waits before it is asked again. */
+const LEAVE_RETRY_MS = 1000;
+
 /** Provider/local mechanics for exactly one concrete TeamRun. */
 export class FlatTeamExecutionManager {
   private lifecycle: "active" | "quiescing" | "terminating" | "terminated" = "active";
@@ -27,6 +30,9 @@ export class FlatTeamExecutionManager {
   private termination: Promise<AgentOperationResult> | null = null;
   private frozenTerminationScope: FrozenTeamRunTerminationScope | null = null;
   private readonly configured: ConfiguredAgentExecutionRegistry;
+  /** Removed members finishing their turn (DS-004): each one's release notice, until it is stopped. */
+  private readonly leavingWatch = new Map<string, () => void>();
+  private readonly retiring = new Set<string>();
 
   constructor(
     private readonly context: TeamRunContext<FlatTeamExecutionContext>,
@@ -39,7 +45,11 @@ export class FlatTeamExecutionManager {
       activityInspector: options.activityInspector,
       workspaceManager: options.workspaceManager,
       executionFactory: options.executionFactory,
-      callbacks: options.callbacks,
+      // A leaving member is stopped at its next quiet moment: each of its events is a chance.
+      callbacks: Object.freeze({ ...options.callbacks, publishAgentEvent: (identity, event) => {
+        options.callbacks.publishAgentEvent(identity, event);
+        if (this.leavingWatch.has(identity.agentRunId)) void this.tryRetire(identity.agentRunId);
+      } }) as FlatTeamExecutionManagerOptions["callbacks"],
     };
     this.configured = new ConfiguredAgentExecutionRegistry({
       ...agentMechanics,
@@ -73,9 +83,9 @@ export class FlatTeamExecutionManager {
   }
   getLeafAgentStatusSnapshots(): TeamAgentStatusSnapshot[] {
     if (!this.isActive()) return [];
-    const handles = new Map(this.configured.listHandles().map((handle) => [handle.context.address, handle]));
-    return this.context.runtimeContext.memberContexts.flatMap((member) => {
-      const handle = handles.get(member.address);
+    const handles = new Map(this.configured.listHandles().map((handle) => [handle.context.agentRunId, handle]));
+    return this.context.membership.memberContexts().flatMap((member) => {
+      const handle = handles.get(member.agentRunId);
       if (handle) return handle.getLeafAgentStatusSnapshots();
       return [this.offline(member.address, member.agentRunId)];
     });
@@ -117,6 +127,48 @@ export class FlatTeamExecutionManager {
       case "approve_tool": return handle.approveToolInvocation(command.invocationId, command.approved, command.reason);
       case "interrupt": return handle.interrupt();
     }
+  }
+
+  /**
+   * DS-004: each removed member leaves. One never started, or idle, stops now; a busy one finishes its turn and stops at
+   * its next quiet moment. A stopped member's handle and context go, then `released` is told (the view shows it gone).
+   * A member the definition takes back meanwhile stays (its leave is cancelled).
+   */
+  applyMembership(removedAgentRunIds: readonly string[], released: () => void): void {
+    for (const agentRunId of removedAgentRunIds) {
+      if (!this.context.membership.isLeaving(agentRunId)) continue;
+      this.leavingWatch.set(agentRunId, released);
+      void this.tryRetire(agentRunId);
+    }
+  }
+
+  private async tryRetire(agentRunId: string): Promise<void> {
+    const released = this.leavingWatch.get(agentRunId);
+    if (!released || this.retiring.has(agentRunId)) return;
+    if (!this.context.membership.isLeaving(agentRunId)) { this.leavingWatch.delete(agentRunId); return; }
+    const handle = this.configured.find(agentRunId);
+    if (handle?.hasOpenExecutionWork()) return;
+    this.retiring.add(agentRunId);
+    let stopped = !handle;
+    try {
+      const prepared = handle ? await handle.tryPrepareTerminationIfQuiescent() : null;
+      if (prepared && !this.context.membership.isLeaving(agentRunId)) prepared.cancel();
+      else if (prepared) stopped = (await prepared.commit().finish()).accepted;
+    } catch (error) {
+      console.warn(`TEAM_MEMBER_LEAVE_STOP_FAILED: AgentRun '${agentRunId}' of TeamRun '${this.context.teamRunId}': ${String(error)}`);
+    } finally {
+      this.retiring.delete(agentRunId);
+    }
+    if (!stopped) {
+      // Not quiet yet (its turn is ending): asked again shortly, besides at its next event.
+      setTimeout(() => { void this.tryRetire(agentRunId); }, LEAVE_RETRY_MS).unref?.();
+      return;
+    }
+    if (!this.context.membership.isLeaving(agentRunId)) { this.leavingWatch.delete(agentRunId); return; }
+    this.configured.remove(agentRunId);
+    this.leavingWatch.delete(agentRunId);
+    this.context.membership.release(agentRunId);
+    released();
   }
 
   /** The caller owns this entire stamped assembly; not the outer root or a borrowed host. */
@@ -289,12 +341,11 @@ export class FlatTeamExecutionManager {
     return [...this.configured.listHandles()];
   }
 
-  /** A configured member's handle; null for any other AgentRun. */
+  /** A member's handle (a leaving member's only while it has one: it starts nothing new); null for any other AgentRun. */
   private getDirectAgent(agentRunId: string): FlatTeamAgentExecutionHandle | null {
-    const member = this.context.runtimeContext.memberContexts.find((candidate) =>
-      candidate.kind === "agent" && candidate.agentRunId === agentRunId,
-    );
-    if (!member || member.kind !== "agent") return null;
+    const member = this.context.membership.memberContext(agentRunId);
+    if (!member) return null;
+    if (this.context.membership.isLeaving(agentRunId)) return this.configured.find(agentRunId);
     const handle = this.configured.getOrCreate(member);
     return handle instanceof FlatTeamAgentExecutionHandle ? handle : null;
   }
