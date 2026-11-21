@@ -4,6 +4,7 @@
 
 | Revision ID | Phase | Trigger | Finding IDs | Prior Status | Current Status | Affected IDs | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| SR-005 | Design | Architecture design | AF-01..AF-09 | Approved; design N/A | Approved; design Ready | REQ-001..REQ-009 (realized) | design-spec.md; Large / High |
 | SR-004 | Requirements | The user's decisions 2026-11-21 | N/A | Ready for Approval | Approved | DEC-001..DEC-003, REQ-008, REQ-009 | Approved: convert existing Org runs, follow the Org definition, keep FU-003 in this ticket |
 | SR-003 | Requirements | Container restructuring investigation | IF-09..IF-14 | Draft | Ready for Approval | REQ-001..REQ-009, AC-001..AC-008, DEC-001..DEC-005 | Requirements for the Org container; awaiting DEC-001..DEC-003 |
 | SR-002 | Requirements | The user's direction 2026-11-21: Org as a container of independent runs | N/A | Ready for Approval | Draft | FU-002 approach (all REQ) | Direction set; investigation of the container restructuring before new requirements |
@@ -42,3 +43,10 @@
 - Trigger: the user, 2026-11-21: DEC-001 (a) (data migration of existing Org runs, learning from the earlier refactorings), then "I think you should contain both" in answer to "split FU-003 off or keep it?" and "also follow the Org definition?".
 - Recorded: DEC-002 include (Org follows its Org definition), DEC-003 keep FU-003 in this ticket; the reading was stated to the user for correction.
 - Status: requirements `Approved` (SR-004). Next action: architecture design, including the mandatory migration-conventions investigation.
+
+### SR-005 — Architecture design
+
+- Trigger: approved requirements (SR-004); migration-conventions check and architecture investigation AF-01..AF-09 on `9f6add773b`.
+- Design: Org container (`AgentOrgContainer`), units as Team/agent runs with fixed `containedIn`, cross-run address resolution and delivery inside a container, Org rules merged into unit rules, Org view composed server-side (web contract unchanged), Org follow, sealed migration `20261122_agent_org_units_own_runs_v1` with follow-ups, FU-003 signed peer notice + reconcile; eight ordered slices.
+- Requirements wording: AC-006 and Verification Intent corrected to the guideline's rule (hand-built fixtures of released shapes; never real data or a copy) — evidence-only.
+- Classification: Large / High. Next action: architecture review.

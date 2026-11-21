@@ -82,13 +82,13 @@ None found.
 | AC-003 | REQ-003 | An Org agent hands off to a Team member and back | Delivered by address both ways; stored in both runs' logs; shown in the Org view's messages |
 | AC-004 | REQ-004 | An Org rule targets a Team member that is removed, then re-added | Rule absent then back; the sender notified both times |
 | AC-005 | REQ-005 | Stop the Org; change a Team definition; reopen | All units stopped; reopened Org has the current members |
-| AC-006 | REQ-007 | The user's existing Org run (2026-09-21) after upgrading | Opens; its conversations, messages, memory and history are all there; its Teams now follow their definitions |
+| AC-006 | REQ-007 | A pre-change Org run of every released shape (fixtures modelled on the user's run of 2026-09-21) after the upgrade's conversion | Opens; its conversations, messages, memory, Task links and history are all there; its Teams follow their definitions |
 | AC-007 | REQ-008 | Cross-node Team copy gains and loses a member; then with the delegating node offline | Delegating node's rows and run-ID messages follow; updated at the next contact |
 | AC-008 | REQ-009 | Mount a new Team / unmount one / add or remove an Org agent | New run appears Offline; removed unit leaves per autobyteus-22 rules |
 
 ### Verification Intent (feasibility of the proof)
 
-Isolated server instances from the ticket worktree with their own data directories (never the user's app or data): a test Org definition mounting test Teams in a local test package, edited while the Org runs; AC-006 on fixtures in the released pre-change Org shape (an e2e Org run and a read-only copy of the shape of the user's run) put through the conversion; two paired isolated instances for AC-007; real runtimes via the test vault; the web app against the instance for the Org view. No credentials beyond the test vault; no evidence decision needed.
+Isolated server instances from the ticket worktree with their own data directories (never the user's app or data): a test Org definition mounting test Teams in a local test package, edited while the Org runs; AC-006 on small hand-built fixtures in every released pre-change Org shape (learned by reading real data read-only; never a copy of user data, and the conversion never runs on real user data: data migration guideline §9, TESTING.md), put through the conversion; two paired isolated instances for AC-007; real runtimes via the test vault; the web app against the instance for the Org view. No credentials beyond the test vault; no evidence decision needed.
 
 ## Decisions
 
