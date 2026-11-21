@@ -1,8 +1,8 @@
 # Managed Ubuntu automatic restart — source review
 
-**CRR-001 · Fail · one Local Fix (F-CR-001).** The managed session correctly refuses a second automatic attempt for a blocked version. After the user downloads that version by hand, the new readiness text nevertheless tells them it will reopen by itself. The activation policy should not be relaxed to match the text.
+**CRR-002 · Pass.** F-CR-001 is resolved. After the same release is manually downloaded and verified, a version blocked from automatic installation now has manual readiness text in both the notification row and About. General permission to update automatically is not mistaken for permission to retry this version.
 
-**Round/basis:** Initial full review, 2026-11-21. SR-001 [requirements](requirements-doc.md), [investigation](investigation-notes.md), SR-004 [design](design-spec.md) and [history](solution-revision-record.md), ARCH-REV-002 [review](design-review-report.md) and [revision record](architecture-review-revision-record.md), IR-001 [handoff](implementation-handoff.md), [record](implementation-revision-record.md) and [checks](evidence/IR-001-checks.txt). Base f36286782f; source 5328f4ce8bce; received 8c6120cf853e on feature/managed-ubuntu-auto-restart → personal. Medium / High confirmed: a bounded change, but unattended server stop and GUI restart warrant independent review. CRR predecessor / API-REV / DR: N/A. No scope change.
+**Round/basis:** 2026-11-21. Full Re-Audit: although the correction is local to readiness text, it extends the shared main-to-renderer state shape. Reviewed the IR-002 delta against CRR-001 (`0cbb9cfaf9`), both producers, IPC/store consumers, tests and the cumulative production spines. Base `f36286782f`; current source `f369d87e013b`; received `ddd49c4d0ed6` on feature/managed-ubuntu-auto-restart → personal. Medium / High confirmed. [Approved requirements SR-001](requirements-doc.md), [investigation](investigation-notes.md), [design SR-004](design-spec.md), [history](solution-revision-record.md), [ARCH-REV-002](design-review-report.md), [architecture record](architecture-review-revision-record.md), [IR-002 handoff](implementation-handoff.md), [implementation record](implementation-revision-record.md) and [review history](code-review-revision-record.md). API-REV / DR N/A. No scope revision.
 
 ## Scenario and source trace
 
@@ -12,27 +12,19 @@
 | SCN-003: user uses an app window during the wait | Listener is installed at managed composition before window creation; monotonic clock for each contents' input. After busy query the watch checks token and fresh quiet, rearms as necessary, then calls session admission without yielding. Same stage/generation, channel, switch, block, no intent/latch and available restart channel are checked before assigning intent and calling stop. Physical input in a packaged session remains a QA gate. |
 | SCN-004: intentional Quit while waiting or in flight | before-quit latches and cancels before windows close, except the session's own terminal quit. will-quit owns ordinary quit or defers to the already-running transaction. Confirmed settlements honor latch before writing the restart indication; unknown settlement with Quit exits 1. No second activation. |
 | SCN-005, 006: install by hand or opt out | Click claims a manual intent and cancels watch. Preference change invalidates generation/pending stage. After stop, session rechecks consent separately from ending before dispatch; click does not inherit an automatic version block. Native activation policy excludes both managed modes. |
-| SCN-007: refused, lost or unknown outcome; missing restart channel | Hash status distinguishes committed, confirmed old and unknown; known receipt-loss has its own event, unknown cannot request reopen. No channel → quit-only, not a fallback to native. Automatic refusal records a blocked version, still offering manual recovery. **Eligibility is enforced but not faithfully presented** (below). |
+| SCN-007: refused, lost or unknown outcome; missing restart channel | Hash status distinguishes committed, confirmed old and unknown; known receipt-loss has its own event, unknown cannot request reopen. No channel → quit-only, not a fallback to native. Automatic refusal records a blocked version, still offering manual recovery. The presentation now honors that independent block (below). |
 
 **Material premises:** ARCH-REV-002 MP-001 (input while query pending), MP-002 (unavailable snapshot and changing owners), MP-003 (Quit while activation pending) confirmed against code and focused IR tests. No new production scenario. Post-admission work starting during shutdown is explicitly outside the gate; reject a requirement for a new global run lock. No change to trust, sandbox, writer, native protocol or running-data formats.
 
-## Candidate gate and finding
+## Prior finding and evidence decision
 
-**F-CR-001 · Promote · Local Fix, Implementation Engineer.** Supported explicit failure/recovery case SCN-007: REQ-003 / AC-007 explicitly leave manual installation available after a refused automatic install; REQ-007 / AC-008 require readiness text that matches behavior. With the preference still on, the old version reopens, finds the same release, and the user chooses **Download**. Verification succeeds. `recordFound` retains the same version's failure, the session's `watchForRestart` excludes it, and `managedEvent('ready')` sets status downloaded. No automatic restart is scheduled. The UI should tell the user to use the available manual action rather than wait.
+**F-CR-001 · resolved; no new findings.** SCN-007 / AC-007–008 explicitly allow a manual retry after a writer refusal. The prior failure was a promise to reopen automatically, not an unauthorized activation. Traced the same-version manual download through verification and the updater's ready event (sets staged status and release version). The record continues to own the automatic install block even if a manual failure becomes the visible outcome. AppUpdater.getState() reads the block from that record for full snapshots and broadcasts; it is not a writable policy input. The disabled updater supplies null. Pinia retains the value for unrelated partial updates and clears it on explicit null. Both staged surfaces now select copy with managedReadyMessageKey using staged version, block, mode and switch. A matching block takes precedence; a different version is not suppressed. No-channel guidance does not promise a blocked install on quit. Native readiness remains with its existing owner. No manual action or authority moved.
 
-Instead, `NotificationRow.vue:98,152–156` and `AboutSettingsManager.vue:256–259` select the new auto-reopen message solely from mode and switch. The row can render opposite instructions simultaneously. In a focused Nuxt/Vitest probe at the received HEAD, the real mounted notification row displayed:
-
-> It won’t be tried again automatically. You can still install it yourself.
->
-> Ready. AutoByteus reopens on the new version by itself when no agent is working and you haven't used the app for 5 minutes.
-
-**Evidence:** Temporary sibling of NotificationCenter.appAutomatic.spec.ts using its real Pinia/mountWith/openPanel harness. From autobyteus-web: NUXT_TEST=true node_modules/.bin/vitest --run <temporary-spec>. Used status downloaded, updateStaged true, availableVersion 1.5.7, automaticUpdate true, activationMode managed-restart, same-version waiting notification with AUTO_FAILED / install. Assertion that notification-row-downloaded omits “reopens on the new version” failed (1/1); temporary file removed. This is renderer evidence, not a packaged journey. About's identical selection was source-traced. The existing test of the refused/still-downloaded row does not select managed-restart + enabled or check readiness copy.
-
-**Required correction:** Let both staged surfaces distinguish automatic eligibility of this release from general restart capability. Keep the independent block authoritative even if a later manual outcome is the visible notification (`AppUpdateNotificationRecord.outcomeOf` prioritizes manual failure). Preserve Install and restart, the healthy eligible message, and native behavior. Add focused tests of the blocked manual redownload and eligible control on both surfaces. No new persisted setting, change to consent, or retry policy is called for.
+[IR-002 checks](evidence/IR-002-checks.txt): prior red; green updater, store and mounted components for refused, manual-masked and eligible cases; English and Chinese renderings with manual action. Verified assertions and fixtures against the failure trace. The existing source-level, type, route and renderer results ([IR-001 checks](evidence/IR-001-checks.txt)) remain evidence only for the paths they exercise. No redundant rerun; neither round proves signed, no-click reopening in a guest.
 
 ## Structure, ownership and local source audit
 
-One session owns activation; pass-through composition stays separate from wait policy, input observation and HTTP. One shared run observation with distinct reminder/safety consumers. Platform-private manager stays inside the scope. The UI issue is an eligibility fact missing at the presentation boundary, not a competing execution owner. Accepted small naming variation (composeManagedUpdates.ts). No orphan activation path, stale new flag, compatibility shim, dual read/write, or required migration. Docs impact: GLOSSARY.md and autobyteus-web/docs/linux-managed-desktop.md updated; ordinary quit remains closed. No additional documentation change identified here.
+One session owns activation; pass-through composition stays separate from wait policy, input observation and HTTP. One shared run observation with distinct reminder/safety consumers. Platform-private manager stays inside the scope. Presentation shares a read-only fact, not activation authority. Accepted small naming variation (composeManagedUpdates.ts). No orphan activation path, stale new flag, compatibility shim, dual read/write, or required migration. Docs impact: GLOSSARY.md and autobyteus-web/docs/linux-managed-desktop.md updated; ordinary quit remains closed. No additional documentation change identified here.
 
 Changed implementation files below: effective non-empty lines, base → source, excluding tests/docs. Placement and single responsibility traced above. All pass the 500-line limit and 220-line delta check; no split required.
 
@@ -49,8 +41,8 @@ Changed implementation files below: effective non-empty lines, base → source, 
 | `autobyteus-server-ts/src/compositions/busy-run-count-composition.ts` | 0 | 13 |
 | `autobyteus-server-ts/src/restart-resume/busy-run-recorder.ts` | 127 | 111 |
 | `autobyteus-web/components/notifications/AutoUpdateSwitch.vue` | 145 | 150 |
-| `autobyteus-web/components/notifications/NotificationRow.vue` | 165 | 171 |
-| `autobyteus-web/components/settings/AboutSettingsManager.vue` | 292 | 293 |
+| `autobyteus-web/components/notifications/NotificationRow.vue` | 165 | 170 |
+| `autobyteus-web/components/settings/AboutSettingsManager.vue` | 292 | 295 |
 | `autobyteus-web/electron/application/composeManagedUpdates.ts` | 0 | 30 |
 | `autobyteus-web/electron/application/electronApplication.ts` | 480 | 472 |
 | `autobyteus-web/electron/application/managedUpdateSession.ts` | 147 | 177 |
@@ -58,26 +50,29 @@ Changed implementation files below: effective non-empty lines, base → source, 
 | `autobyteus-web/electron/server/embeddedBusyRuns.ts` | 0 | 11 |
 | `autobyteus-web/electron/updater/appUpdateAutomaticPolicy.ts` | 148 | 148 |
 | `autobyteus-web/electron/updater/appUpdater.ts` | 500 | 500 |
+| `autobyteus-web/electron/updater/disabledAppUpdater.ts` | 78 | 79 |
 | `autobyteus-web/electron/updater/safeRestartMoment.ts` | 0 | 35 |
-| `autobyteus-web/localization/messages/en/updateNotifications.ts` | 131 | 134 |
-| `autobyteus-web/localization/messages/zh-CN/updateNotifications.ts` | 131 | 134 |
-| `autobyteus-web/shared/appUpdateTypes.ts` | 142 | 142 |
+| `autobyteus-web/localization/messages/en/updateNotifications.ts` | 131 | 136 |
+| `autobyteus-web/localization/messages/zh-CN/updateNotifications.ts` | 131 | 136 |
+| `autobyteus-web/shared/appUpdateTypes.ts` | 142 | 144 |
+| `autobyteus-web/stores/appUpdateStore.ts` | 266 | 268 |
+| `autobyteus-web/utils/managedUpdateReadiness.ts` | 0 | 12 |
 
 ## Scorecard
 
-Scores are out of 10; mean 9.3 is descriptive, not a pass rule.
+Scores are out of 10; mean 9.4 is descriptive, not a pass rule.
 
 | Priority / category | Score | Basis; outstanding improvement |
 | --- | ---: | --- |
 | 1. Data-flow spine | 9.5 | Verified stage → quiet/busy → admission → one stop, commit and ending is traceable. No structural action. |
-| 2. Ownership / boundaries | 9.4 | Session owns admission; record owns failed version; no duplicate writer authority. Preserve those owners in the UI fix. |
-| 3. API / interfaces | 8.8 | Count contract distinguishes unknown; presentation has mode and switch but cannot reliably tell eligibility of this staged release. Correct F-CR-001. |
+| 2. Ownership / boundaries | 9.4 | Session owns admission; record owns failed version; no duplicate writer authority. The UI reads the fact without policy authority. |
+| 3. API / interfaces | 9.4 | Count contract distinguishes unknown; shell projects version-specific eligibility from the record for both surfaces. No further change. |
 | 4. Separation / placement | 9.5 | Separate composition, timing and I/O; no unrelated subsystem move. |
-| 5. Shared data model | 9.3 | Same busy observation, separately owned policies; do not substitute visible outcome for the independent failure block. |
+| 5. Shared data model | 9.3 | Same busy observation, separately owned policies; one transient block projection independent of visible outcome. No duplicate persistence. |
 | 6. Naming / readability | 9.4 | Consent and ending name distinct decisions. No naming change needed. |
-| 7. API/E2E readiness | 9.2 | Scoped tests, built route, localized previews and explicit real-guest plan; add blocked-copy regressions before handoff. |
-| 8. Runtime correctness / fidelity | 8.6 | Activation safe, but manual recovery guidance contradicts the session and can leave the user waiting. Correct both surfaces. |
+| 7. API/E2E readiness | 9.2 | Scoped tests, built route, localized previews and explicit real-guest plan; blocked-copy regressions now present; execute the independent guest plan. |
+| 8. Runtime correctness / fidelity | 9.4 | Activation guards and truthful blocked/manual readiness on both surfaces verified at source scope. Packaged timing/reopen proof belongs to AC-011. |
 | 9. No compatibility / legacy retention | 9.5 | No mixed-version fallback; no-channel quit-only behavior is required. |
 | 10. Cleanup | 9.5 | Superseded construction and overloaded flag removed; no obsolete source left by this change. |
 
-**Next owner: Implementation Engineer.** No API/E2E advancement until rereview. No additional follow-ups (existing FU-001 remains outside this ticket). The repaired package still requires independent AC-011 signed branch N→N+1 in disposable Ubuntu 24.04, observed busy/input deferral, spontaneous reopen, intentional Quit stays closed, refusal/data/copy controls. No production signing, deployment, target push or release.
+**Next owner: API/E2E Engineer.** No unresolved source finding or new follow-up (FU-001 remains separate). Independently exercise signed branch N→N+1 in disposable Ubuntu 24.04 with genuine busy/input deferral, no-click reopen and live successor/server, persisted work and automatic notification, plus a separate Quit that stays closed. Include refusal/tamper, manual retry and copy, opt-out and applicable no-channel controls. No production keys, user installation, public release or target push. This is a source pass, not AC-011 or delivery.
