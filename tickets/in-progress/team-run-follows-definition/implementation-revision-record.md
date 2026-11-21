@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer, `design-review-report.md` round 2 (ARCH-REV-002 pass) | N/A | `Initial Baseline` | SR-008, ARCH-REV-002 | Implemented; handed to Code Review |
 | IR-002 | Architecture Reviewer, `design-review-report.md` round 4 (ARCH-REV-004 pass on SR-010), after CRR-002 (API-REV-001 Fail) | CR-001 (Local Fix), CR-002 (Design Impact, resolved by SR-009/SR-010), O-1, C-07 | `Local Fix` + `Design Impact` realization | SR-009, SR-010, ARCH-REV-003, ARCH-REV-004, CRR-002, API-REV-001 | Implemented; handed to Code Review |
+| IR-003 | Code Reviewer, `code-review-report.md` CRR-004 (failure-origin review of API-REV-002) | CR-003 (F-3) | `Local Fix` | SR-010, CRR-004, API-REV-002 | Implemented; handed to Code Review |
 
 ## Revision Entries
 
@@ -67,4 +68,26 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 - Local validation and result: `implementation-handoff.md` § Checks Run, IMP-10 … IMP-17.
 - Next recipient or routing: Code Review (`/code_reviewer`).
 - Remaining limitations or risks: see the handoff's Known Risks.
+
+### IR-003 — A leaving or former member opens by run ID (CR-003)
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md`, CRR-004, the failure-origin review of API-REV-002 (F-3).
+- Triggering finding IDs: CR-003.
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-002 (`d005fa2a5b`, `64a4b6100c`).
+- Current authoritative result: the IR-003 commit after `3d8e53cf0c`.
+- Related solution revision IDs: SR-010 ("the row still opens").
+- Related architecture-review revision IDs: N/A.
+- Related code-review revision IDs: CRR-004.
+- Related API/E2E revision IDs: API-REV-002.
+- Related delivery revision IDs: N/A.
+- Why this revision is recorded: a Leaving row could not open its member, so its pending approval could not be answered. The member projection, the active trace page and the file changes refused a former member with "no configured launch placement or recorded source".
+- Approved behavior or requirement IDs affected: AC-003, DEC-002; REQ-002 (a stopped former member's conversation opens by run ID too).
+- Implementation delta:
+  - **Location.** `TeamRunExecutionTreeLocationService.toLocation` sets `configuredPlacement` to the located agent's own stored node: `members` for a member, `formerMembers` for a former one, leaving or stopped. The `leaving` marker is stripped. Before, it read the node held by the current member at that address, by address.
+  - **Projection metadata.** `TeamMemberRunViewProjectionService.metadataFor` reads `platformAgentRunId` from the member's own node, current or former (`ownNodeOf`).
+- Changed files or areas: `run-history/services/team-run-execution-tree-location-service.ts`, `run-history/services/team-member-run-view-projection-service.ts`, `tests/unit/run-history/services/team-run-former-member-location.test.ts`.
+- Local validation and result: `implementation-handoff.md` § Checks Run, IMP-18 … IMP-21. That includes the rendered TFU-04 with a real Codex member: the Leaving row opens it with its Approve control, the approval runs the command, then its row goes.
+- Next recipient or routing: Code Review (`/code_reviewer`).
+- Remaining limitations or risks: none new. The web needed no change.
 

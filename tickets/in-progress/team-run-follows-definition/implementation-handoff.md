@@ -10,7 +10,7 @@
 - Supplemental task artifacts: `follow-ups.md`, `handoff-architecture-design.md`
 - Design review report: `tickets/in-progress/team-run-follows-definition/design-review-report.md` (round 4, ARCH-REV-004)
 - Architecture review revision record: `tickets/in-progress/team-run-follows-definition/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence:
+- Triggering rework report, revision record, or evidence (IR-003): `code-review-report.md` CRR-004, CR-003 Local Fix (API-REV-002 F-3). Earlier rounds:
   - `code-review-report.md` round 2 (CRR-002: CR-001 Local Fix, CR-002 Design Impact, O-1, O-2);
   - `api-e2e-execution-coverage-report.md` (API-REV-001: F-1, F-2);
   - `code-review-report.md` round 1 note C-07 (cosmetic).
@@ -26,17 +26,20 @@ This round (IR-002) does three things:
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `tickets/in-progress/team-run-follows-definition/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002` (IR-001 kept as the baseline)
+- Current implementation revision ID: `IR-003` (IR-001 baseline, IR-002 rework)
 - Related solution revision IDs: `SR-009`, `SR-010`
 - Related architecture-review revision IDs: `ARCH-REV-003`, `ARCH-REV-004`
-- Related code-review revision IDs: `CRR-001`, `CRR-002`
-- Related API/E2E revision IDs: `API-REV-001`
+- Related code-review revision IDs: `CRR-001` … `CRR-004`
+- Related API/E2E revision IDs: `API-REV-001`, `API-REV-002`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-001`, `CR-002` (via SR-009/SR-010), `O-1`, `O-2`, `C-07`; review notes `N-12`, `N-13`, `N-14`
+- Triggering finding IDs: `CR-003` (IR-003); earlier `CR-001`, `CR-002` (via SR-009/SR-010), `O-1`, `O-2`, `C-07`; review notes `N-12`, `N-13`, `N-14`
 - Commits:
   - `19b31ad365`, `6b46ec5bdd`: IR-001.
   - `d005fa2a5b`: IR-002 code, tests, docs and web.
-  - The handoff commit: this file, IR-002, the evidence, and the O-2 warn-once follow-up in the planner, with its test.
+  - `64a4b6100c`: IR-002's handoff, evidence, and the O-2 warn-once follow-up in the planner, with its test.
+  - The IR-003 commit: the CR-003 fix, its tests, evidence IMP-18 … IMP-21 and this update.
+
+IR-003 (CR-003): a leaving or stopped former member is located with its own stored node. So its member projection, active trace, file changes and file-change entry open by run ID. In the app, its Leaving row now opens it with its pending Approve control (rendered TFU-04 with a real Codex member, IMP-21). This was a server-only change; the web needed nothing.
 
 ## Routing Classification (Mandatory)
 
@@ -60,6 +63,7 @@ Behaviors IR-001 implemented and IR-002 left unchanged (DS-001 trigger, DS-003 p
 | DS-007 (SR-010, AR-007/AR-009) / AC-009 | One rule for member rows in both run-tree paths: a leaving row is tagged only while the run is live. Delegated copies read the child's own parts. | `agent-collaboration/delegation/run-tree-view.ts` (`teamMemberRowsOf`, `RunTreeSources.isLiveTeamRun`, `RunTreeRow.leaving`); `run-tree-records.ts` (`localChildRecord` reads `ownTreeOf`, launch looked up by run ID in members and former members); `run-history/store/run-own-agents-reader.ts` `ownTreeOf` (members, then former members marked `leaving`); `compositions/collaboration-composition.ts` (`isLiveTeamRun` from the active root directory); `autobyteus-collaboration-stream-contracts/src/run-tree-dtos.ts` (`leaving?: true`, dist rebuilt) | `DelegationIndex.agentsOf` is unchanged (messages, history). The root's view snapshot lists `leavingMembers` from the stored marker. |
 | DS-007 web | "Leaving" tag on the rendered member rows; the row still opens | `utils/runTree/runTreeDisplayRows.ts`, `components/workspace/history/WorkspaceTeamExecutionTree.vue` (own-row mapping keeps `leaving`), `WorkspaceStableExecutionRow.vue`, `WorkspaceDelegatedRunRow.vue`, `stores/runHistoryTypes.ts` (`leaving?`), en / zh-CN `workspace.history.hierarchy.leaving(_title)` | `TeamMembersPanel.vue` (unmounted on base) and all its locale keys are removed. The navigation rows' `leaving` field, read only by that panel, is removed. |
 | CR-001 / REQ-009 / AC-010 | A run-ID message to a leaving or former member reaches the root's refusal | `ActiveRootMessageBoundary.ownsAgentRun` (required, also checked at registration); `RootTeamRun.ownsAgentRun` (current, leaving, former); Org / standalone roots: `= hasAgentExecution`; `GlobalAgentRunMessageRouter.deliver` uses `ownsAgentRun` | `hasAgentExecution` is unchanged, so `placeOf` never places a former member (tested). Proven through the router (integration) and through the real tool path (IMP-17 TF-02/TF-03). |
+| CR-003 / AC-003 / DEC-002 / REQ-002 (IR-003) | A Leaving row opens its member: projection, active trace and file changes, so its pending approval can be answered. A stopped former member's conversation opens by run ID. | `run-history/services/team-run-execution-tree-location-service.ts` `toLocation` (`configuredPlacement` = the located agent's own stored node, marker stripped); `run-history/services/team-member-run-view-projection-service.ts` (`ownNodeOf` for `platformAgentRunId`) | No web change. Rendered TFU-04 (real Codex): the Approve control shows and the approval runs the command. |
 | O-1, O-2 / D-INVALID / AC-007 | A definition with a load issue (last good kept), one naming an unknown agent, a missing one, or one whose coordinator can't be added leaves the run unchanged, warned once per run and reason, and again after it was valid | `team-membership-planner.ts` (`listLoadIssues`, `notFollowed` with its warn-once map, coordinator check in `viewFor`, run-ID allocation failure in `viewFor`) | The warning keeps the existing format, `TEAM_RUN_DEFINITION_NOT_FOLLOWED: Team run '<id>' keeps its members: <reason>`, which the TF suite matches. |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`
@@ -94,8 +98,7 @@ Behaviors IR-001 implemented and IR-002 left unchanged (DS-001 trigger, DS-003 p
 ## Known Risks
 
 - **Two row components.** History items list current members only. So without the Team view open, the Workspaces tree shows a leaving member's server row through `WorkspaceDelegatedRunRow` (no own-row match). With the view open, the view's tree contains it and it renders through `WorkspaceStableExecutionRow`. Both components show the tag.
-- **No rendered check.** No rendered-app probe was run in this round (left to API/E2E's TFU-03 rerun); the specs cover the tag in both components.
-- **Leaving member's conversation projection.** As recorded by API/E2E, `getTeamMemberRunProjection` answers "no configured launch placement" for a former member. Its history is read through the Memory page (IR-001 deviation 1). A leaving member's own conversation is open in the team view while it runs.
+- **Rendered check (IR-003).** The rendered UI probe was run (TFU-01 … TFU-06, IMP-21). The tag, the opening of a Leaving row, and its Approve control are verified there.
 - **Error in a follower step.** A follower step that throws after a commit skips the rest of that change's steps (C-04, unchanged).
 - **Remote peer links.** FU-003 still applies (remote peer links).
 
@@ -163,8 +166,12 @@ Evidence is in `tickets/in-progress/team-run-follows-definition/evidence/`. IMP-
 | IMP-16 | web specs: `WorkspaceMemberLeavingTag.spec.ts`, `services/teamExecution`, `WorkspaceDelegatedRunRow.spec.ts` (verbose) | same | Linux, Node 22 | tag on both row components, row model from the DTO, view state contexts, selectors | AC-009, DS-007 | Pass | `IMP-16-web-specs.log` | `Tests  33 passed (33)` |
 | IMP-17 | `pnpm -C autobyteus-server-ts build`, then the API/E2E TF suite (built server, scripted AGY CLI) run as a self-check | same | Linux, Node 22, temp HOME, `env -i` | the whole feature through the built server, the real `send_message_to` tool path and the package watcher | AC-001 … AC-010 (scripted runtime), CR-001/F-1 | Pass | `IMP-17-tf-e2e.log`, `IMP-17-tf/TF-*.json` | `Tests  10 passed (10)`; `TF-02.json` `byRunId` and `TF-03.json` `refusedByRunId`: `"code": "COLLABORATION_TARGET_NOT_FOUND"` with the exact text; three planner warnings, each once |
 
+| IMP-18 | `pnpm -C autobyteus-server-ts typecheck` | IR-003 | Linux, Node 22 | all server src and tests | — | Pass | `IMP-18-server-typecheck.log` | `[typecheck] PASS` |
+| IMP-19 | `vitest run tests/unit/run-history tests/unit/agent-memory tests/unit/context-files`, the integration reproduction, `team-run-history.test.ts` | IR-003 | Linux, Node 22 | location and projection services, memory locations, history readers | CR-003, REQ-002 | Pass | `IMP-19-server-tests-cr003.log` | `Test Files  96 passed (96)`; the new `CR-003: …` cases in `team-run-former-member-location.test.ts` |
+| IMP-20 | The TF suite again (12 cases, including API/E2E's round-2 TF-11, TF-12 and TF-03's projection assertions) | IR-003 | built server, scripted AGY | the whole feature | AC-001 … AC-010, F-3 | Pass | `IMP-20-tf-e2e.log`, `IMP-20-tf/TF-*.json` | `Tests  12 passed (12)`; `TF-03.json`: `"openedProjection": "ok"`, `"openedFileChanges": "ok"` |
+| IMP-21 | `node tickets/…/probes/team-follows-ui-probe.mjs --output-dir <dir>` (rendered app; TFU-04 with a real signed-in Codex member via a throwaway `CODEX_HOME`) | IR-003 | built server, Nuxt dev, Chromium | rows, Leaving tag, opening a Leaving row, its approval, release, copy rows, stop while leaving | AC-003, AC-009, DEC-002 | Pass | `IMP-21-tfu-probe.log`, `IMP-21-tfu/` | `TFU-04 Pass`; `"approvalShown": true`, `"rowText": "C coder Leaving now"`; `TFU-04-c-leaving-coder-opened.png` shows the `run_bash` request with Deny/Approve |
+
 - Not run, and why:
-  - The rendered-app probe (TFU-03, AC-009) is left to API/E2E's rerun.
   - The real-runtime live suite (Codex/AutoByteus, `team-run-follows-definition-live.e2e.test.ts`) needs provider credentials and is API/E2E's.
   - The remote two-server suite was not run.
 

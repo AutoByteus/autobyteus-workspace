@@ -1,0 +1,7 @@
+# IMP-18 — server typecheck (baseline-gated)
+# Command: pnpm -C autobyteus-server-ts typecheck
+# Commit: 3d8e53cf0c + the CR-003 fix (committed with this evidence); Linux container, Node 22; 2026-11-21
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 17.2s
+[typecheck] server tests (tsconfig.tests.json): 1005 errors, exit 2, 47.7s
+[typecheck] production errors: 0; test-file errors: 1005 in 314 files (baseline 1005 in 314 files)
+[typecheck] PASS

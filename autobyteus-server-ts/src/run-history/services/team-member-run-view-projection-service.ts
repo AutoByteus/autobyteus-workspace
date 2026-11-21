@@ -141,6 +141,12 @@ export class TeamMemberRunViewProjectionService {
   }
 }
 
+/** The member's own stored node: a member's, or a former member's (leaving or stopped; CR-003). */
+const ownNodeOf = (location: LocatedTeamCollaborationAgentExecution) => {
+  const index = new TeamExecutionIndex(location.tree);
+  return (index.getAgent(location.agentRunId) ?? index.formerMemberByRunId(location.agentRunId))?.source ?? null;
+};
+
 const metadataFor = (location: LocatedTeamCollaborationAgentExecution): AgentRunMetadata => {
   // A configured member's placement, or a delegated copy's own recorded source (by execution kind).
   const source = locatedExecutionSource(location)!;
@@ -155,7 +161,7 @@ const metadataFor = (location: LocatedTeamCollaborationAgentExecution): AgentRun
     autoExecuteTools: launch.autoExecuteTools,
     runtimeKind: launch.runtimeKind as AgentRunMetadata["runtimeKind"],
     // The execution's own runtime session: a copy never shows its placement's.
-    platformAgentRunId: new TeamExecutionIndex(location.tree).getAgent(location.agentRunId)?.source.platformAgentRunId ?? null,
+    platformAgentRunId: ownNodeOf(location)?.platformAgentRunId ?? null,
   };
 };
 

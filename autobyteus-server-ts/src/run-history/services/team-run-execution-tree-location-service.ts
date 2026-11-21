@@ -6,7 +6,7 @@ import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.
 import type { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { AgentTeamRunManager as DefaultManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { TeamExecutionIndex, type AgentExecutionKind } from "../../agent-team-execution/services/team-execution-index.js";
-import type { ConfiguredAgentExecutionNode, TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
+import type { ConfiguredAgentExecutionNode, FormerMemberExecutionNode, TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { TeamRunExecutionTreeStore } from "../store/team-run-execution-tree-store.js";
 import { TeamRunPackageCatalog } from "./team-run-package-catalog.js";
@@ -183,8 +183,9 @@ export class TeamRunExecutionTreeLocationService {
     isActive: boolean,
   ): LocatedTeamAgentExecution {
     const scope = index.getTeamRunPhysicalScope(agent.containingTeamRunId);
-    const configured = index.getConfiguredPlacement(agent.address);
-    const configuredPlacement = configured && "agentRunId" in configured && configured.agentRunId === agent.agentRunId ? configured : null;
+    // Its own stored node, by run ID: a member's, or a former member's (leaving or stopped, CR-003), never another run's
+    // at the same address. It is the launch and provider binding the member's views and history read.
+    const { leaving: _leaving, ...configuredPlacement } = agent.source as FormerMemberExecutionNode;
     const groupPath = [...index.listContainingTeamAncestorsForAgent(agent.agentRunId)].reverse().slice(1)
       .map((team): LocatedExecutionGroup => Object.freeze({
         teamRunId: team.teamRunId,
