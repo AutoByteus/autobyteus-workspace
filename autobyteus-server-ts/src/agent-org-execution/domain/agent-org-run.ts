@@ -96,7 +96,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       teams: options.teams,
       publisher: options.publisher,
       remoteLinks: this.remoteLinks,
-      remoteSend: new RemoteMessageSend({ engine: () => this.communication, links: this.remoteLinks, outgoing: options.remoteFiles.outgoing }),
+      remoteSend: new RemoteMessageSend({ engine: () => this.communication, links: this.remoteLinks }),
       authorizeIdentity: (identity) => this.authorizeIdentity(identity),
     });
     this.communication = new RootCommunicationEngine(createAgentOrgCommunicationPort({
@@ -159,6 +159,8 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   }
   /** Run-ID routing: an Org's agents never leave it. */
   ownsAgentRun(agentRunId: string): boolean { return this.hasAgentExecution(agentRunId); }
+  /** autobyteus-587 RF-14: the peer node this root links the run on (`PeerRunNodes`). */
+  remoteNodeOf(agentRunId: string): string | null { return this.remoteLinks.endpointFor(agentRunId.trim())?.reference.nodeId ?? null; }
   getExecutionCheckpoint(): Readonly<{
     orgRunId: string;
     changeSequence: number;
@@ -200,7 +202,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   }
 
   deliverExactAgentMessage(input: ExactAgentMessageInput): Promise<AgentOperationResult> {
-    return this.operationGate.run(() => this.delivery.deliverExact(input));
+    return this.operationGate.run(() => this.delivery.deliverToRunId(input));
   }
 
   /** A message from a linked run on a peer node, admitted by its peer gateway (DS-003). */

@@ -52,6 +52,7 @@ import { deliverMessageToPeerRun } from "../../../src/agent-communication/servic
 import { GlobalAgentRunMessageRouter } from "../../../src/agent-communication/services/global-agent-run-message-router.js";
 import { CrossRunMessageDelivery } from "../../../src/agent-collaboration/communication/cross-run-message-delivery.js";
 import { buildAgentRunMessageSenderContext } from "../../../src/agent-communication/domain/agent-run-message-sender.js";
+import { PeerRunNodes } from "../../../src/agent-collaboration/execution/remote/peer-run-nodes.js";
 
 /**
  * autobyteus-247 in one process (change sequence steps 2 … 5): a standalone run on node A delegates to a shared
@@ -125,7 +126,7 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
   releases.push(() => notices.close());
   const peerFiles = inProcessPeerFiles({ dataDir: dir, memoryDir: dir, channel: () => client, workspaceOf: (runId) => metadata.get(runId)?.workspaceRootPath ?? null });
   const taskSide = testTaskSide(resources, () => client, { outgoing: peerFiles.remoteFiles.outgoing, peerRuns: { peerNotices: notices,
-    deliverToPeerRun: (message) => deliverMessageToPeerRun({ activeRoots }, message) } });
+    deliverToPeerRun: (message) => deliverMessageToPeerRun({ activeRoots }, message) }, activeRoots });
   const manager = new StandaloneAgentRunRootManager({
     memoryDir: dir, activeRootDirectory: activeRoots,
     definitions: { getAgentDefinitionById: async (id) => new AgentDefinition({ id, name: "Assistant", description: "x", instructions: "x" }) },
@@ -161,17 +162,19 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
   // delegate_task on the tool path (SR-049): the root answers for its own run, the delegation goes on outside it.
   const delegate = async (input: Record<string, unknown> = {}) => taskSide.delegate(await root(), { identity },
     { recipient_address: "/studio_team", description: "Draft the episode.", node: "docker", ...input } as never);
-  // send_message_to with node (autobyteus-587 RF-14): to an agent of B.
-  const send = async (target: string, content: string, referenceFiles: string[] = []) => (await root()).deliverToPeerRun({
-    sender: { kind: "agent", identity, displayName: "assistant" } as never, nodeId: B_ID, targetAgentRunId: target, content, referenceFiles });
+  // send_message_to with node (autobyteus-587 RF-14), through A's router (below): the node rule, the files, the admission.
+  const send = async (target: string, content: string, referenceFiles: string[] = []) => message(target, content, "docker", referenceFiles);
   // autobyteus-261: this node's discovery of its peers, over the same client.
   const discovery = new PeerNodeDiscovery({ capability: { isEnabled: () => true }, peers: { list: async () => A_PEERS }, client });
   // A follow-up Task by run ID (DN-8), on the tool path.
-  const assign = async (taskId: string) => taskSide.assign(await root(), { identity }, { delegatedRun: { teamRunId: "studio_team_b" }, taskId });
+  // autobyteus-587 RF-14 (SR-011): the Team on B is named with its node ("docker"); `null`: without it.
+  const assign = async (taskId: string, node: string | null = "docker") => taskSide.assign(await root(), { identity },
+    { delegatedRun: { teamRunId: "studio_team_b" }, taskId, ...(node === null ? {} : { node }) });
   // autobyteus-591 DN-9: send_message_to(run ID) through A's router, whose first step is the peer-run admission.
   const router = new GlobalAgentRunMessageRouter({ activeRootDirectory: activeRoots, channel: () => client, coordinators: taskSide.tree,
     agentRunManager: { getActiveRun: () => null },
-    crossRun: new CrossRunMessageDelivery({ tree: () => taskSide.tree, tasks: () => resources, peerNotices: notices, peerName: async (nodeId) => client.peerName(nodeId),
+    outgoing: peerFiles.remoteFiles.outgoing, nodes: new PeerRunNodes({ activeRoots, tree: () => taskSide.tree, channel: () => client }),
+    crossRun: new CrossRunMessageDelivery({ tree: () => taskSide.tree, tasks: () => resources, peerNotices: notices,
       senderRoot: () => null, receiverRoot: async () => null, activeReceiverRoot: () => null, runningAgents: { rootOf: () => null },
       senderAddress: async () => null, runFiles: { delegationOfAgent: async () => null }, restorability: { refusal: async () => null } }) });
   // autobyteus-587 RF-14: a run on another node is named with its node.
@@ -304,10 +307,15 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
   const member = (address: string, agentRunId: string) => createCollaborationMemberExecutionIdentity({
     root: createTeamRootExecutionIdentity("studio_team_b"), memberAddress: address as never, agentRunId });
   // send_message_to with node (autobyteus-587 RF-14): from a member to an agent of A.
-  const send = async (from: { address: string; agentRunId: string }, target: string, content: string, referenceFiles: string[] = []) =>
-    (await teamRuns.resolveManagedTeamRun("studio_team_b"))!.deliverToPeerRun({
+  // send_message_to with node from a member to an agent of A, as the router's node path does it on B (autobyteus-587 SR-010
+  // R1; B holds no Task of A's runs, so no admission): the files go to A first, then the root sends the message with them.
+  const send = async (from: { address: string; agentRunId: string }, target: string, content: string, referenceFiles: string[] = []) => {
+    const sent = await peerFiles.remoteFiles.outgoing.send({ senderAgentRunId: from.agentRunId, nodeId: A_ID, peerName: "desktop", referenceFiles });
+    if (!sent.ok) return sent.refusal;
+    return (await teamRuns.resolveManagedTeamRun("studio_team_b"))!.deliverToPeerRun({
       sender: { kind: "agent", identity: member(from.address, from.agentRunId), displayName: from.address.slice(1) } as never,
-      nodeId: A_ID, targetAgentRunId: target, content, referenceFiles });
+      nodeId: A_ID, targetAgentRunId: target, content, referenceFiles, files: sent.files });
+  };
   return { dir, team, teamRuns, teamManager, started, inbox, busy, live, emit, send, client, state, titles, peerFiles, closed };
 };
 
@@ -376,6 +384,31 @@ describe("remote delegation to a shared Agent Team, in process (autobyteus-247)"
     const onA = path.join(a.dir, "agents", DELEGATOR, "received_files", WRITER.agentRunId, "intro.md");
     expect(a.received.at(-1)).toContain(onA);
     await expect(fs.readFile(onA, "utf8")).resolves.toBe("Intro.");
+  });
+
+  it("autobyteus-587 AC-012 (DEC-009): a saved Task with a context file to a new Team copy on B (task_id + node) lands with the coordinator; another saved Task with a file to the existing copy (node, SR-011) too", async () => {
+    const { a, b } = await twoNodes();
+    const contextFile = path.join(a.dir, "project-files", "outline.md");
+    await fs.mkdir(path.dirname(contextFile), { recursive: true });
+    await fs.writeFile(contextFile, "Outline");
+    a.resources.addTask("task-S", "Draft the saved episode.", "abc-8");
+    a.resources.tasks.get("task-S")!.referenceFiles = [contextFile];
+    await expect(a.taskSide.delegate(await a.root(), { identity: createCollaborationMemberExecutionIdentity({ root: createAgentRootExecutionIdentity(DELEGATOR), memberAddress: "/assistant" as never, agentRunId: DELEGATOR }) },
+      { recipient_address: "/studio_team", task_id: "abc-8", node: "docker" } as never)).resolves.toMatchObject({ delegated: true, filesSent: 1 });
+    const packet = b.inbox.get(LEAD.agentRunId)![0]!;
+    const onLead = packet.match(/(\/\S+\/received_files\/assistant_a1\/outline\.md)/)?.[1];
+    expect(onLead).toContain(LEAD.agentRunId);
+    expect(packet).toContain("Draft the saved episode.");
+    await expect(fs.readFile(onLead!, "utf8")).resolves.toBe("Outline");
+    // The existing copy: another saved Task with a file, named with its node.
+    const second = path.join(a.dir, "project-files", "script.md");
+    await fs.writeFile(second, "Script");
+    a.resources.addTask("task-T", "Write the script.");
+    a.resources.tasks.get("task-T")!.referenceFiles = [second];
+    await expect(a.assign("task-T", null)).resolves.toMatchObject({ delegated: false, message: expect.stringContaining('pass node: "docker"') });
+    await expect(a.assign("task-T")).resolves.toMatchObject({ delegated: true, filesSent: 1 });
+    const onLeadSecond = b.inbox.get(LEAD.agentRunId)!.at(-1)!.match(/(\/\S+\/received_files\/assistant_a1\/script\.md)/)?.[1];
+    await expect(fs.readFile(onLeadSecond!, "utf8")).resolves.toBe("Script");
   });
 
   it("AC-303: the delegator and any member message each other by run ID; a never-started member starts; others are refused", async () => {

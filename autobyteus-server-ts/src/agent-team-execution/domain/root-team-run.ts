@@ -175,7 +175,7 @@ export class RootTeamRun {
       authorizeIdentity: (identity) => this.authorizeIdentity(identity),
       isLiveAgent: (agentRunId) => this.members.isLiveAgent(agentRunId),
       remoteLinks: this.remoteLinks,
-      remoteSend: new RemoteMessageSend({ engine: () => this.communication, links: this.remoteLinks, outgoing: options.remoteFiles.outgoing }),
+      remoteSend: new RemoteMessageSend({ engine: () => this.communication, links: this.remoteLinks }),
       receivedFiles: options.remoteFiles.received,
       memberFolderOf: (agentRunId) => this.memberFolderOf(agentRunId),
     });
@@ -236,6 +236,8 @@ export class RootTeamRun {
   }
   /** Run-ID routing (CR-001): also a member that left (leaving or former), so this root answers it by name. */
   ownsAgentRun(agentRunId: string): boolean { return this.hasAgentExecution(agentRunId) || this.index.formerMemberByRunId(agentRunId.trim()) !== null; }
+  /** autobyteus-587 RF-14: the peer node this root links the run on (`PeerRunNodes`). */
+  remoteNodeOf(agentRunId: string): string | null { return this.remoteLinks.endpointFor(agentRunId.trim())?.reference.nodeId ?? null; }
   getCommunicationSnapshot(): TeamCommunicationMessagesSnapshot {
     return Object.freeze({ schemaVersion: 1, rootTeamRunId: this.teamRunId, messages: this.communication.getMessages() });
   }
@@ -317,7 +319,7 @@ export class RootTeamRun {
   }
 
   deliverExactAgentMessage(input: ExactTeamAgentMessageInput): Promise<AgentOperationResult> {
-    return this.materializationGate.run(() => this.delivery.deliverExact(input, () => this.delivery.deliverToRunId(input)));
+    return this.materializationGate.run(() => this.delivery.deliverToRunId(input));
   }
 
   /** autobyteus-492 DS-004: to an agent of a peer node by its run ID. */

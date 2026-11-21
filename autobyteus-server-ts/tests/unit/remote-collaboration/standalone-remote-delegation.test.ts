@@ -44,6 +44,7 @@ import { GlobalAgentRunMessageRouter } from "../../../src/agent-communication/se
 import { CrossRunMessageDelivery } from "../../../src/agent-collaboration/communication/cross-run-message-delivery.js";
 import { buildAgentRunMessageSenderContext } from "../../../src/agent-communication/domain/agent-run-message-sender.js";
 import { projectAgentCollaborationView } from "../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
+import { PeerRunNodes } from "../../../src/agent-collaboration/execution/remote/peer-run-nodes.js";
 
 /**
  * The first end to end of slice 1 (design Change Sequence step 5), in one process: a standalone run on node A
@@ -180,7 +181,7 @@ const buildNode = async (input: Readonly<{
   releases.push(() => notices.close());
   const peerFiles = inProcessPeerFiles({ dataDir: memoryDir, memoryDir, channel: () => client, workspaceOf: (runId) => metadata.get(runId)?.workspaceRootPath ?? null });
   const taskSide = testTaskSide(resources, () => client, { outgoing: peerFiles.remoteFiles.outgoing, peerRuns: { peerNotices: notices,
-    deliverToPeerRun: (message) => deliverMessageToPeerRun({ activeRoots }, message) } });
+    deliverToPeerRun: (message) => deliverMessageToPeerRun({ activeRoots }, message) }, activeRoots });
   // autobyteus-591: the runs a peer started here and then closed (DN-5), in this node's folder.
   const closed = ClosedDelegations.inAppDataDir(memoryDir);
   await closed.load();
@@ -264,11 +265,12 @@ const buildNode = async (input: Readonly<{
     }),
   });
   input.network.set(input.nodeId, gateway);
-  // autobyteus-591 DN-9: this node's send_message_to(run ID) router, whose first step is the peer-run admission. Only that
-  // admission's collaborators are real here: a peer run never takes the local route.
+  // This node's send_message_to(run ID) router: the node rule (autobyteus-587 PeerRunNodes), the files (OutgoingFiles), then
+  // the peer-run admission (autobyteus-591 DN-9), as the composition builds it. A peer run never takes the local route.
   const router = new GlobalAgentRunMessageRouter({ activeRootDirectory: activeRoots, channel: () => client, coordinators: taskSide.tree,
-    agentRunManager: { getActiveRun: () => null },
-    crossRun: new CrossRunMessageDelivery({ tree: () => taskSide.tree, tasks: () => resources, peerNotices: notices, peerName: async (nodeId) => client.peerName(nodeId),
+    agentRunManager: { getActiveRun: () => null }, outgoing: peerFiles.remoteFiles.outgoing,
+    nodes: new PeerRunNodes({ activeRoots, tree: () => taskSide.tree, channel: () => client }),
+    crossRun: new CrossRunMessageDelivery({ tree: () => taskSide.tree, tasks: () => resources, peerNotices: notices,
       senderRoot: () => null, receiverRoot: async () => null, activeReceiverRoot: () => null, runningAgents: { rootOf: () => null },
       senderAddress: async () => null, runFiles: { delegationOfAgent: async () => null }, restorability: { refusal: async () => null } }) });
   return { nodeId: input.nodeId, memoryDir, metadata, runs, runOf, resources, manager, models, titles, taskSide, channel: () => client, notices, closed, router, peerFiles };
@@ -277,12 +279,10 @@ const buildNode = async (input: Readonly<{
 const agentIdentity = (runId: string, address: string) => createCollaborationMemberExecutionIdentity({
   root: createAgentRootExecutionIdentity(runId), memberAddress: address, agentRunId: runId,
 });
-// send_message_to with node (autobyteus-587 RF-14: a message to another node always names it): to the other node of the pair.
-const send = async (node: Node, from: { runId: string; address: string }, target: string, content: string, referenceFiles: string[] = []) => {
-  const root = (await node.manager.resolveRoot(from.runId))!;
-  return root.deliverToPeerRun({ sender: { kind: "agent", identity: agentIdentity(from.runId, from.address), displayName: "agent" } as never,
-    nodeId: node.nodeId === A_ID ? B_ID : A_ID, targetAgentRunId: target, content, referenceFiles });
-};
+// send_message_to with node (autobyteus-587 RF-14: a message to another node always names it), through the node's router:
+// to the other node of the pair, by this node's name for it.
+const send = async (node: Node, from: { runId: string; address: string }, target: string, content: string, referenceFiles: string[] = []) =>
+  message(node, from, target, content, node.nodeId === A_ID ? "docker" : "desktop", referenceFiles);
 const logLines = async (file: string) => (await fs.readFile(file, "utf8")).split("\n").filter(Boolean).map((line) => JSON.parse(line));
 
 const twoNodes = async (options: { bEnabled?: () => boolean } = {}) => {
@@ -310,8 +310,9 @@ const message = async (node: Node, from: { runId: string; address: string }, tar
       memberExecutionContext: { identity: agentIdentity(from.runId, from.address) } as never }) });
 };
 // delegate_task with a run ID and a saved Task (DN-8), on the tool path.
-const assign = async (a: Node, taskId: string, runId = "publisher_r1") => a.taskSide.assign((await a.manager.resolveRoot(DELEGATOR))!,
-  { identity: agentIdentity(DELEGATOR, "/assistant") }, { delegatedRun: { agentRunId: runId }, taskId });
+// autobyteus-587 RF-14 (SR-011): a copy on another node is named with its node ("docker", A's name for B); `null`: without it.
+const assign = async (a: Node, taskId: string, runId = "publisher_r1", node: string | null = "docker") => a.taskSide.assign((await a.manager.resolveRoot(DELEGATOR))!,
+  { identity: agentIdentity(DELEGATOR, "/assistant") }, { delegatedRun: { agentRunId: runId }, taskId, ...(node === null ? {} : { node }) });
 // delegate_task on the tool path (SR-049): the delegator's root answers for its own run, the delegation goes on outside it.
 const delegate = async (a: Node, input: Record<string, unknown> = {}) => a.taskSide.delegate((await a.manager.resolveRoot(DELEGATOR))!,
   { identity: agentIdentity(DELEGATOR, "/assistant") }, { recipient_address: "/publisher", description: "Publish the video draft.", node: "docker", ...input } as never);
@@ -420,18 +421,31 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     await expect(fs.readFile(onA, "utf8")).resolves.toBe("cut v1");
   });
 
-  it("autobyteus-587 AC-010 (RF-14): a message to the delegated run without node, or with another node, is refused with the node to pass; with it, delivered", async () => {
+  it("autobyteus-587 AC-010 (RF-14): a message to the delegated run without node is refused with the node to pass, a node not paired with the peer's refusal; with the right node, delivered", async () => {
     const { a, b } = await twoNodes();
     await delegate(a);
-    const rootA = (await a.manager.resolveRoot(DELEGATOR))!;
-    const sender = { kind: "agent", identity: agentIdentity(DELEGATOR, "/assistant"), displayName: "agent" } as never;
-    await expect(rootA.deliverExactAgentMessage({ sender, targetAgentRunId: "publisher_r1", content: "no node", referenceFiles: [] }))
+    await expect(message(a, delegator, "publisher_r1", "no node"))
       .resolves.toEqual({ accepted: false, code: "NODE_REQUIRED", message: 'This agent runs on node "docker"; pass node: "docker" with its run id.' });
-    await expect(rootA.deliverToPeerRun({ sender, nodeId: "srv_node_c", targetAgentRunId: "publisher_r1", content: "wrong node" }))
-      .resolves.toMatchObject({ accepted: false, code: "NODE_MISMATCH", message: expect.stringContaining('This agent runs on node "docker"') });
+    await expect(message(a, delegator, "publisher_r1", "unknown node", "nas")).resolves.toMatchObject({ accepted: false, code: "PEER_NOT_REGISTERED" });
     expect(b.runOf("publisher_r1").received).toEqual([]);
     await expect(send(a, delegator, "publisher_r1", "right node")).resolves.toMatchObject({ accepted: true });
     expect(b.runOf("publisher_r1").received).toHaveLength(1);
+  });
+
+  it("autobyteus-587 AC-012 (DEC-009): a saved Task with a context file outside the workspace goes to a new copy on B with node (task_id + node); B's work packet has the Task's text and the received path", async () => {
+    const { a, b } = await twoNodes();
+    const contextFile = path.join(a.memoryDir, "project-files", "brief.md");
+    await fs.mkdir(path.dirname(contextFile), { recursive: true });
+    await fs.writeFile(contextFile, "# Saved brief");
+    a.resources.addTask("task-S", "Publish the saved draft.", "abc-7");
+    a.resources.tasks.get("task-S")!.referenceFiles = [contextFile];
+    await expect(a.taskSide.delegate((await a.manager.resolveRoot(DELEGATOR))!, { identity: agentIdentity(DELEGATOR, "/assistant") },
+      { recipient_address: "/publisher", task_id: "abc-7", node: "docker" } as never)).resolves.toMatchObject({ delegated: true, node: "docker", filesSent: 1 });
+    const onB = path.join(b.memoryDir, "agents", "publisher_r1", "received_files", DELEGATOR, "brief.md");
+    await expect(fs.readFile(onB, "utf8")).resolves.toBe("# Saved brief");
+    expect(b.runOf("publisher_r1").posted[0]).toContain("Publish the saved draft.");
+    expect(b.runOf("publisher_r1").posted[0]).toContain(onB);
+    expect(a.resources.entry({ agentRunId: "publisher_r1" })).toMatchObject({ taskId: "task-S", nodeId: B_ID });
   });
 
   it("keeps working after both nodes restart: A restores the link from its tree and B the back-link from run_metadata.json (REQ-108)", async () => {
@@ -480,21 +494,26 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     await expect(fs.access(path.join(a.memoryDir, "agents", DELEGATOR, "collaboration"))).rejects.toThrow();
   });
 
-  it("refuses a file outside the workspace on a follow-up, a saved Task for the remote run, and messages from a run that is not linked (AC-107, AC-108, AR-003)", async () => {
+  it("refuses a file outside the workspace on a follow-up and messages from a run that is not linked (AC-107, AR-003); a saved Task goes to the remote run with node, its own context file with it (DEC-009, SR-011)", async () => {
     const { a, b } = await twoNodes();
     await delegate(a);
     const outside = path.join(a.memoryDir, "x.mp4");
     await fs.writeFile(outside, "video");
     await expect(send(a, delegator, "publisher_r1", "see file", [outside])).resolves.toMatchObject({ accepted: false, code: "REFERENCE_FILE_OUTSIDE_WORKSPACE" });
     expect(b.runOf("publisher_r1").received).toEqual([]);
-    // autobyteus-591 DN-8: a saved Task may go to the remote run, but its files can't, so it is refused before anything changes.
+    // autobyteus-591 DN-8 with 587 DEC-009: a saved Task goes to the remote run with its own context file, which may lie outside
+    // the workspace; without node (RF-14, SR-011) it is refused before anything changes.
     const file = path.join(a.memoryDir, "brief.txt");
     await fs.writeFile(file, "brief");
     a.resources.addTask("task-B");
     a.resources.tasks.get("task-B")!.referenceFiles = [file];
-    await expect(assign(a, "task-B")).resolves.toEqual({ delegated: false,
-      message: "A saved Task with reference files can't be given to an agent on another node, so nothing was given. Give it a Task without files, and send the files with send_message_to and node." });
+    await expect(assign(a, "task-B", "publisher_r1", null)).resolves.toEqual({ delegated: false,
+      message: 'This agent runs on node "docker"; pass node: "docker" with its run id.' });
     expect(a.resources.assignments).toEqual([]);
+    await expect(assign(a, "task-B")).resolves.toMatchObject({ delegated: true, filesSent: 1 });
+    const onB = path.join(b.memoryDir, "agents", "publisher_r1", "received_files", DELEGATOR, "brief.txt");
+    await expect(fs.readFile(onB, "utf8")).resolves.toBe("brief");
+    expect(b.runOf("publisher_r1").received.at(-1)).toContain(onB);
     // A message that claims to be from a run B never linked with A's delegator is refused by A's link check.
     const forged = await (await a.manager.resolveRoot(DELEGATOR))!.acceptRemoteMessage({ fromNodeId: B_ID, fromNodeName: "docker",
       message: { messageId: "collabmsg_forged", senderAgentRunId: "other_run", receiverAgentRunId: DELEGATOR, content: "hi",
@@ -646,7 +665,10 @@ describe("autobyteus-591: a closed Task's remote agent run stops on its node; a 
     await delegate(a);
     await closeOnA(a);
     a.resources.setTaskOpen("ad_hoc_task_1");
-    await expect(send(a, delegator, RUN.runId, "more?")).resolves.toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
+    // The root's own path (its link check): the entry is still closed; the assigner's continuation is the router's (DN-9).
+    const rootA = (await a.manager.resolveRoot(DELEGATOR))!;
+    await expect(rootA.deliverToPeerRun({ sender: { kind: "agent", identity: agentIdentity(DELEGATOR, "/assistant"), displayName: "agent" } as never,
+      nodeId: B_ID, targetAgentRunId: RUN.runId, content: "more?", files: [] })).resolves.toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
     expect(b.closed.has(RUN)).toBe(true);
     expect(b.runOf(RUN.runId).active).toBe(false);
   });
@@ -749,26 +771,44 @@ describe("autobyteus-591 DN-9: the assigner's message continues a closed remote 
     expect(b.runOf(RUN.runId).received.at(-1)).toContain("Still there?");
   });
 
-  it("autobyteus-587 x 591: the assigner continues a closed remote run with a file: reopened, B told open, the file copied, then delivered; B's run gets the received path; another sender's file is refused CLOSED before any upload", async () => {
+  it("autobyteus-587 x 591 (SR-010 R1): the assigner continues a closed remote run with a file: the file first, then reopened and B told open, then delivered; a refusal after the upload delivers nothing (the bytes wait for the cleanup)", async () => {
     const { a, b } = await twoNodes();
     await delegate(a);
     await expect(closeOnA(a)).resolves.toEqual({ confirmed: true });
     const brief = path.join(a.memoryDir, "work", "brief-v2.md");
     await fs.writeFile(brief, "# Brief v2");
     const status = vi.spyOn(a.channel(), "receivedFilesStatus");
-    // Before the reopen: closed for every sender; nothing is uploaded.
+    // Before the reopen (the Task still DONE): the file is uploaded first (R1), then the admission refuses; nothing delivered.
     await expect(message(a, delegator, RUN.runId, "Continue with this.", "docker", [brief])).resolves.toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
-    expect(status).not.toHaveBeenCalled();
+    expect(status).toHaveBeenCalledOnce();
+    expect(b.runOf(RUN.runId).received.join("\n")).not.toContain("Continue with this.");
     a.resources.setTaskOpen("ad_hoc_task_1");
     const opened = vi.spyOn(a.channel(), "deliveredRunState");
     await expect(message(a, delegator, RUN.runId, "Continue with this.", "docker", [brief])).resolves.toMatchObject({ accepted: true, filesSent: 1 });
-    // B is told open first (591's admission), then the file goes (587's send), then the message.
+    // The file goes first (587's send; the node holds it now, so only its status is asked), then B is told open (591's
+    // admission), then the message.
     expect(opened).toHaveBeenCalledExactlyOnceWith(B_ID, RUN, true);
-    expect(opened.mock.invocationCallOrder[0]).toBeLessThan(status.mock.invocationCallOrder[0]!);
+    expect(status.mock.invocationCallOrder[1]).toBeLessThan(opened.mock.invocationCallOrder[0]!);
     const onB = path.join(b.memoryDir, "agents", RUN.runId, "received_files", DELEGATOR, "brief-v2.md");
     await expect(fs.readFile(onB, "utf8")).resolves.toBe("# Brief v2");
     expect(b.runOf(RUN.runId).active).toBe(true);
     expect(b.runOf(RUN.runId).received.at(-1)).toContain(onB);
+  });
+
+  it("autobyteus-587 SR-010 R1 (CR-587-01): the assigner continues a closed remote run with a file it may not send: refused before anything changes; the Task's entry stays closed and B is told nothing", async () => {
+    const { a, b } = await twoNodes();
+    await delegate(a);
+    await expect(closeOnA(a)).resolves.toEqual({ confirmed: true });
+    a.resources.setTaskOpen("ad_hoc_task_1");
+    const outside = path.join(a.memoryDir, "secret.txt");
+    await fs.writeFile(outside, "not for B");
+    const opened = vi.spyOn(a.channel(), "deliveredRunState");
+    const status = vi.spyOn(a.channel(), "receivedFilesStatus");
+    await expect(message(a, delegator, RUN.runId, "Continue.", "docker", [outside])).resolves.toMatchObject({ accepted: false, code: "REFERENCE_FILE_OUTSIDE_WORKSPACE" });
+    expect(a.resources.entry({ agentRunId: RUN.runId })).toMatchObject({ open: false });
+    expect(opened).not.toHaveBeenCalled();
+    expect(status).not.toHaveBeenCalled();
+    expect(b.closed.has(RUN)).toBe(true);
   });
 
   it("the same continuation with node: reopened, open confirmed, then sent to that node", async () => {

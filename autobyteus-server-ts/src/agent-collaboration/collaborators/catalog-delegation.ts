@@ -50,7 +50,6 @@ export type RemoteAgentPlacement = Readonly<{
   kind: "remote_agent";
   address: AgentTeamAddress;
   peer: PeerNodeRef;
-  description: string;
   /** The work and its Task, sent with the start request: the peer's Model Router is told it (DS-002). */
   work: DelegationWork;
   launchNotes?: never;

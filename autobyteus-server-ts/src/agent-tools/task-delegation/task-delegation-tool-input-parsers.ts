@@ -10,7 +10,7 @@ export type DelegateTaskToolInput =
 const nonEmptyString = (fieldName: string) =>
   z.string({ error: `${fieldName} is required` }).trim().min(1, `${fieldName} is required`);
 
-/** `node` (DEC-111): a registered peer's name; the root refuses it with a saved Task or files (REQ-110). */
+/** `node` (DEC-111): a registered peer's name: where a new task agent starts, or (autobyteus-587 SR-011) where an existing one runs. */
 const PeerNodeSchema = nonEmptyString("node").optional();
 
 const DescribedTaskInputSchema = z.object({
@@ -24,11 +24,13 @@ const LinkedTaskInputSchema = z.object({ recipient_address: z.string(), task_id:
 
 const EXISTING_DELEGATED_RUN_TASK_ID = "task_id (the saved Task to give)";
 const ExistingTeamDelegatedRunInputSchema = z.object({
-  target_team_run_id: nonEmptyString("target_team_run_id"), task_id: nonEmptyString(EXISTING_DELEGATED_RUN_TASK_ID),
+  target_team_run_id: nonEmptyString("target_team_run_id"), task_id: nonEmptyString(EXISTING_DELEGATED_RUN_TASK_ID), node: PeerNodeSchema,
 }).strict();
 const ExistingAgentDelegatedRunInputSchema = z.object({
-  target_agent_run_id: nonEmptyString("target_agent_run_id"), task_id: nonEmptyString(EXISTING_DELEGATED_RUN_TASK_ID),
+  target_agent_run_id: nonEmptyString("target_agent_run_id"), task_id: nonEmptyString(EXISTING_DELEGATED_RUN_TASK_ID), node: PeerNodeSchema,
 }).strict();
+/** `node` passes on only when given (a task agent on another node, RF-14). */
+const withNode = <T extends object>(input: T, node: string | undefined): T => node === undefined ? input : { ...input, node };
 
 const parseZodIssues = (error: z.ZodError): string =>
   error.issues.map((issue) => issue.message).join("; ");
@@ -37,18 +39,18 @@ const parseExistingDelegatedRunInput = (rawArguments: Record<string, unknown>): 
   if (Object.hasOwn(rawArguments, "target_team_run_id") && Object.hasOwn(rawArguments, "target_agent_run_id")) {
     throw new Error("Invalid delegate_task input: supply exactly one of target_team_run_id (a task agent team) or target_agent_run_id (a task agent).");
   }
-  const extra = Object.keys(rawArguments).filter(key => !["target_team_run_id", "target_agent_run_id", "task_id"].includes(key));
+  const extra = Object.keys(rawArguments).filter(key => !["target_team_run_id", "target_agent_run_id", "task_id", "node"].includes(key));
   if (extra.length) {
-    throw new Error(`Invalid delegate_task input: with target_team_run_id or target_agent_run_id, supply only that run id and task_id (not ${extra.join(", ")}).`);
+    throw new Error(`Invalid delegate_task input: with target_team_run_id or target_agent_run_id, supply only that run id, task_id and, for a task agent on another node, node (not ${extra.join(", ")}).`);
   }
   if (Object.hasOwn(rawArguments, "target_team_run_id")) {
     const result = ExistingTeamDelegatedRunInputSchema.safeParse(rawArguments);
     if (!result.success) throw new Error(`Invalid delegate_task input: ${parseZodIssues(result.error)}`);
-    return { subject: "existing_delegated_run", input: { delegatedRun: { teamRunId: result.data.target_team_run_id }, taskId: result.data.task_id } };
+    return { subject: "existing_delegated_run", input: withNode({ delegatedRun: { teamRunId: result.data.target_team_run_id }, taskId: result.data.task_id }, result.data.node) };
   }
   const result = ExistingAgentDelegatedRunInputSchema.safeParse(rawArguments);
   if (!result.success) throw new Error(`Invalid delegate_task input: ${parseZodIssues(result.error)}`);
-  return { subject: "existing_delegated_run", input: { delegatedRun: { agentRunId: result.data.target_agent_run_id }, taskId: result.data.task_id } };
+  return { subject: "existing_delegated_run", input: withNode({ delegatedRun: { agentRunId: result.data.target_agent_run_id }, taskId: result.data.task_id }, result.data.node) };
 };
 
 export const parseDelegateTaskInput = (

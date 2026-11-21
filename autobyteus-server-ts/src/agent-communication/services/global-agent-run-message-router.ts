@@ -12,7 +12,9 @@ import {
   getActiveCollaborationRootDirectory,
 } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { sameRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import type { CrossRunMessageDelivery } from "../../agent-collaboration/communication/cross-run-message-delivery.js";
+import { notDeliveredAfterReopen, type CrossRunMessageDelivery } from "../../agent-collaboration/communication/cross-run-message-delivery.js";
+import type { OutgoingFiles } from "../../agent-collaboration/execution/remote/outgoing-files.js";
+import type { PeerRunNodes } from "../../agent-collaboration/execution/remote/peer-run-nodes.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { PeerNodeRef, RemoteRunChannel } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import { deliverMessageToPeerRun } from "./peer-run-message-delivery.js";
@@ -60,19 +62,23 @@ const notRunning = (targetAgentRunId: string): AgentOperationResult =>
  * `send_message_to(target_agent_run_id)`: the order of target resolution for a run-ID message (autobyteus-492: the run ID
  * is the address, CM-13). Without `node`: the sender's own root; another run of this node (`CrossRunMessageDelivery`:
  * Task-related, or any running agent); a team run's ID (refused with its coordinator's); a live run without a
- * collaboration root (a direct post); else "not running". With `node`: the peer, then the sender's root, which sends it
- * to that node. Before any of these, a target on a peer node that this node's Task entries name is checked twice: its
- * node (autobyteus-587 RF-14: a run on another node is always named with `node`; the wrong node is refused with the
- * right one), then its Task admission once (`admitPeerRun`, autobyteus-591 DN-9: the assigner's message continues a
- * closed one; others are refused). The node check comes first: it reads only, the admission can reopen a Task. A run
- * the sender's root links on another node without `node` is refused by that root with the node to pass.
+ * collaboration root (a direct post); else "not running". Before any path, `PeerRunNodes` checks the target's node
+ * (autobyteus-587 RF-14: a run on another node is always named with `node`; the wrong one, or a node no longer paired,
+ * is refused). With `node` the router owns one order (SR-010 R1), so nothing changes before every file is on that node:
+ * the peer → the node rule → `OutgoingFiles.send` (every local check, then the whole upload) → the Task admission
+ * (`admitPeerRun`, autobyteus-591 DN-9: the assigner's message continues a closed run; others are refused) → the
+ * sender's root sends it with the files' descriptors → after a reopen, a refusal says the Task is open again.
  */
 export class GlobalAgentRunMessageRouter {
   constructor(private readonly deps: {
     agentRunManager?: ActiveRunLookup;
     activeRootDirectory?: ActiveCollaborationRootDirectory;
     /** Messages between two runs of this node (DS-2, DS-003) and the closed-Task admission of a peer run; the composition root's. */
-    crossRun: Pick<CrossRunMessageDelivery, "route" | "admitPeerRun" | "peerRunNodeRefusal">;
+    crossRun: Pick<CrossRunMessageDelivery, "route" | "admitPeerRun">;
+    /** autobyteus-587 RF-14: the node a target is on, checked before any path (its one owner). */
+    nodes: Pick<PeerRunNodes, "check">;
+    /** autobyteus-587: a message's reference files, uploaded to the peer before anything else changes (SR-010 R1). */
+    outgoing: Pick<OutgoingFiles, "send">;
     /** A team run's coordinator when the team does not run (R-12, SR-071): the tree, its one owner. */
     coordinators: Pick<DelegationIndex, "teamCoordinatorOf">;
     /** This node's channel to its peers (`null` where it has none): `findPeer` for `node` (DS-004). */
@@ -91,14 +97,10 @@ export class GlobalAgentRunMessageRouter {
       if ("accepted" in found) return found;
       peer = found;
     }
-    // autobyteus-587 RF-14: a run on a peer node that this node's Tasks name is named with its node; read only, so before
-    // the Task admission, which can reopen a Task.
-    const senderAgentRunId = input.sender.memberExecutionContext?.identity.agentRunId ?? null;
-    const wrongNode = await this.deps.crossRun.peerRunNodeRefusal({ agentRunId: targetAgentRunId, senderAgentRunId, node: peer });
+    // autobyteus-587 RF-14: the target's node, read only, before any path. Without `node` a run known on a peer stops here,
+    // so the paths below never reach one (nor need 591's admission).
+    const wrongNode = await this.deps.nodes.check({ sender: input.sender.memberExecutionContext?.identity ?? null, targetAgentRunId, node: peer });
     if (wrongNode) return wrongNode;
-    // DN-9: one Task admission for a run on a peer node, whichever path below reaches it, outside any root's gate.
-    const peerRun = await this.deps.crossRun.admitPeerRun({ agentRunId: targetAgentRunId, senderAgentRunId });
-    if (peerRun !== "not_peer" && peerRun !== "admitted") return peerRun;
     if (peer) return this.deliverToPeer(input, peer, targetAgentRunId, content, messageType, referenceFiles);
 
     // A sender inside a collaboration root reaches every AgentRun of that root
@@ -210,14 +212,21 @@ export class GlobalAgentRunMessageRouter {
   }
 
   /**
-   * DS-004: `send_message_to(node, run ID)`: the sender's root sends it to that node (the node rule and the Task admission
-   * were `deliver`'s first steps).
+   * DS-004: `send_message_to(node, run ID)`, after the node rule (SR-010 R1): the files go first (a refused file or a failed
+   * upload changes nothing), then the Task admission of a peer run (DN-9: it may reopen it and tell its node), then the
+   * sender's root sends the message with the files' descriptors. After a reopen, a refusal says the Task is open again.
    */
   private async deliverToPeer(input: GlobalAgentRunMessageDeliveryInput, peer: PeerNodeRef, targetAgentRunId: string, content: string,
     messageType: string, referenceFiles: string[]): Promise<AgentOperationResult> {
-    return deliverMessageToPeerRun({ activeRoots: this.activeRootDirectory }, {
-      sender: input.sender.memberExecutionContext!.identity, senderDisplayName: input.sender.senderName, nodeId: peer.nodeId, targetAgentRunId, content, messageType, referenceFiles,
+    const sender = input.sender.memberExecutionContext!.identity;
+    const sent = await this.deps.outgoing.send({ senderAgentRunId: sender.agentRunId, nodeId: peer.nodeId, peerName: peer.name, referenceFiles });
+    if (!sent.ok) return sent.refusal;
+    const admission = await this.deps.crossRun.admitPeerRun({ agentRunId: targetAgentRunId, senderAgentRunId: sender.agentRunId });
+    if (typeof admission !== "string") return admission;
+    const result = await deliverMessageToPeerRun({ activeRoots: this.activeRootDirectory }, {
+      sender, senderDisplayName: input.sender.senderName, nodeId: peer.nodeId, targetAgentRunId, content, messageType, referenceFiles, files: sent.files,
     });
+    return admission === "reopened" && !result.accepted ? notDeliveredAfterReopen(result, targetAgentRunId) : result;
   }
 
   private get agentRunManager(): ActiveRunLookup {

@@ -166,20 +166,24 @@ autobyteus-492 (CM-13): the run ID is the address across nodes too.
   node. An agent that does not run is `REMOTE_TARGET_NOT_RUNNING`; a team run's ID that runs there is
   `TARGET_IS_TEAM_RUN` with its coordinator's run ID (`RunningAgents.teamCoordinatorOf`, from the team's own
   root). The sending node words both with its name for the peer, the second saying to keep `node`.
-- **Who sends it.** `send_message_to(target_agent_run_id, node)` from any agent of this node: the router finds the
-  peer, applies this node's rules for a run its Tasks hold on a peer: its node first
-  (`CrossRunMessageDelivery.peerRunNodeRefusal`: `NODE_MISMATCH` when `node` names another node than its Task entries),
-  then its Task admission (`CrossRunMessageDelivery.admitPeerRun`, autobyteus-591 DN-9; see
-  [below](#a-remote-runs-delegation-state)), then the sender's root sends it (`deliverToPeerRun`). `RemoteMessageSend`
-  refuses a run the root links on another node (`NODE_MISMATCH`), uploads the files (below), and chooses the endpoint:
-  the root's link when the sender is paired with that run, else `unlinked_run`. A root's linked run ID messaged by an
-  agent the link does not pair (a teammate of the delegator) goes unlinked too, to the same node. The sender's log gets
-  the message once the peer accepted it, as for a linked message.
-- **Without `node` (autobyteus-587 RF-14).** A message to a run on another node always names its node: the router
-  refuses a run ID this node's Tasks hold on a peer (`peerRunNodeRefusal`, before the Task admission, so nothing is
-  reopened), and the sender's root one it links (`deliverExact`), with `NODE_REQUIRED` and the node to pass. A closed
-  run stays closed for every sender but its assigner, with or without `node` (DEC-011); its assigner is told to pass
-  `node`, and continues it with `node` (autobyteus-591 DN-9).
+- **Who sends it.** `send_message_to(target_agent_run_id, node)` from any agent of this node. The router owns one order
+  (autobyteus-587 SR-010 R1), so nothing changes before every file is on that node: the peer by this node's name for it
+  → the node rule (`PeerRunNodes`, below) → the files (`OutgoingFiles`: every local check, then the whole upload; a
+  refusal changes nothing) → the Task admission of a run this node's Tasks hold on a peer
+  (`CrossRunMessageDelivery.admitPeerRun`, autobyteus-591 DN-9; see [below](#a-remote-runs-delegation-state)) → the
+  sender's root sends it with the files' descriptors (`deliverToPeerRun`; `RemoteMessageSend` chooses the endpoint: the
+  root's link when the sender is paired with that run on that node, else `unlinked_run`). A refusal after the admission
+  reopened the run says its Task is open again. Files uploaded before a refusal wait unlinked for the cleanup (24 h). A
+  root's linked run ID messaged by an agent the link does not pair (a teammate of the delegator) goes unlinked too, to
+  the same node. The sender's log gets the message once the peer accepted it, as for a linked message.
+- **The node rule (autobyteus-587 RF-14, `PeerRunNodes`, `agent-collaboration/execution/remote/peer-run-nodes.ts`).**
+  One owner of "which node a run is on, as this node knows it": the sender root's links (a run it delegated to a peer,
+  or a peer-started root's delegator; `remoteNodeOf` through the root boundary), then the tree's Task entries (any
+  sender). A run known on a peer without `node` is `NODE_REQUIRED` with the node to pass; with another `node`,
+  `NODE_MISMATCH` with the right one; on a node that is no longer a paired peer, `NODE_NOT_PAIRED`, with no node to pass.
+  It reads only. The router asks it before any path (so no root ever routes a remote run itself), and so does
+  `TaskDelegation` before giving a saved Task to an existing copy (`node` required there too; a local copy given `node`
+  is `NODE_MISMATCH` naming this node, SR-011).
 - **`running-agents`**: the envelope only; the answer `{accepted: true, nodeId, agents: [entry]}` is the called
   node's `RunningAgentsListing` with no caller (the entries `list_running_agents` lists, without `node`). The
   asking node's `PeerClient` reads it strictly (each kind's fields only; anything else is a malformed answer,
@@ -209,8 +213,11 @@ to the receiving node, which owns its copy.
   `{receivedBytes, complete}`. `messages`, `run-messages` and the work packet carry `files: [{sha256, size, name}]`, each
   already complete there; a request that names one that is not is refused `REFERENCE_FILE_CHECK_FAILED`.
 - **Sending node (`OutgoingFiles`, `agent-collaboration/execution/remote/outgoing-files.ts`), for both tools.** Each file
-  must be inside the sending agent's workspace once links are resolved and be a regular file; it is opened once, and its
-  SHA-256 and every piece are read from that opening. One call carries at most 4 GiB; the status names the receiving
+  must be a regular file inside the sending agent's workspace once links are resolved; only a saved Task's own context
+  files (the paths the Task service resolved for it) may lie outside (DEC-009). It is opened once at the path given; the
+  opened file must be the very file its resolved path names (same device and inode) before the containment check, and
+  its SHA-256 and every piece are read from that opening. A piece refused as unpaired right after the same call's status
+  succeeded is reported as damaged or refused in transit ("try again"). One call carries at most 4 GiB; the status names the receiving
   node's per-file limit, checked before any piece. A file it holds complete is skipped; one it holds in part resumes
   there; after each piece the upload goes on from the bytes the node answers it holds (another sender of the same content
   may be uploading it too). Two different files of one name in one call are refused (`REFERENCE_FILE_NAME_REPEATED`:
@@ -258,9 +265,10 @@ each offers, then delegates with `delegate_task` without being told an address.
 
 ## In the roots
 
-- **Delegating node.** `delegate_task({node, recipient_address, description, reference_files?})`: `RemoteDelegation`
-  refuses `task_id` first, resolves the peer by this owner's label, then calls `TaskDelegation.toPeerRun`, the one
-  caller of `startDelegatedRun`. It uploads the files first (`OutgoingFiles`; a refusal starts nothing on the peer),
+- **Delegating node.** `delegate_task({node, recipient_address, description, reference_files?})` or
+  `delegate_task({node, recipient_address, task_id})` (a saved Task, with its own context files, DEC-009):
+  `RemoteDelegation` resolves the peer by this owner's label, then calls `TaskDelegation.toPeerRun`, the one caller of
+  `startDelegatedRun`. It uploads the files first (`OutgoingFiles`; a refusal starts nothing on the peer),
   then the peer creates the run, so its run ID is
   known before the Task link; the Task entry is then written with `nodeId` (and for a Team, `members` by run ID
   and their own address, and the coordinator as `teamCoordinatorAgentRunId`), and the work packet is sent to the

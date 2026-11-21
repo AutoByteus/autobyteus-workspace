@@ -1,5 +1,6 @@
 import type { EpisodicCatalog } from "../agent-episodic-catalog/services/episodic-catalog.js";
 import type { RemoteFiles } from "../agent-collaboration/execution/remote/transferred-files.js";
+import { PeerRunNodes } from "../agent-collaboration/execution/remote/peer-run-nodes.js";
 import { createTeamRootExecutionIdentity, type RootExecutionIdentity } from "../agent-collaboration/execution/domain/root-execution-identity.js";
 import { DelegatorCatalog } from "../agent-collaboration/execution/task/delegator-catalog.js";
 import { RunOwnDelegations } from "../agent-collaboration/execution/task/run-own-delegation.js";
@@ -232,7 +233,6 @@ export const composeCollaboration = async (input: Readonly<{
     const crossRun = new CrossRunMessageDelivery({
       runFiles,
       restorability,
-      peerName: async (nodeId) => (await input.remoteChannel()?.peerName(nodeId)) ?? nodeId,
       // autobyteus-591 DN-9: the assigner's message continues a closed peer run once its node confirmed "open".
       peerNotices,
       senderAddress: (message) => tree.collaborationTreeOf(message.receiverRun).reachingAddressOf(message.sender),
@@ -248,7 +248,10 @@ export const composeCollaboration = async (input: Readonly<{
       runningAgents: input.running.runningAgents,
       activeReceiverRoot: (run) => input.rootResolver.resolveActive(run)?.root ?? null,
     });
+    // autobyteus-587 RF-14 (SR-010 R2, SR-011): which node a run is on, and the refusals; read by the router and the delegation.
+    const nodes = new PeerRunNodes({ activeRoots: input.activeRoots, tree: () => tree, channel: input.remoteChannel });
     const delegation = new TaskDelegation({
+      nodes,
       deliverToRun: (message) => crossRun.route(message),
       tasks: () => tasks,
       tree: () => tree,
@@ -299,7 +302,7 @@ export const composeCollaboration = async (input: Readonly<{
     releases.push(setProcessTaskDelegationToolService(new TaskDelegationToolService({ delegation,
       remote: new RemoteDelegation({ delegation, tree, channel: input.remoteChannel }) })));
     releases.push(SendMessageToDispatcher.setProcessInstance(new SendMessageToDispatcher({
-      globalRouter: new GlobalAgentRunMessageRouter({ crossRun, coordinators: tree, channel: input.remoteChannel }), tree })));
+      globalRouter: new GlobalAgentRunMessageRouter({ crossRun, nodes, outgoing: input.remoteFiles.outgoing, coordinators: tree, channel: input.remoteChannel }), tree })));
     // autobyteus-492: `list_running_agents` without `node`, on every runtime (bound before any run starts).
     releases.push(bindProcessRunningAgentsListing(input.running.listing));
     releases.push(setProcessStandaloneRootMemberViewProjectionService(new StandaloneRootMemberViewProjectionService({ peerRunOf })));

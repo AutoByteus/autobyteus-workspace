@@ -1375,7 +1375,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     record("RC-08", { otherRoot: textOf(otherRoot), fromBystander: textOf(fromBystander), forged: { toBystander, toR1FromOther, toSoloFromBystander } });
   }, 240_000);
 
-  it("RC-09 AC-108, 587 AC-004, 591 REQ-006: a saved Task to a new remote run and a saved Task with files to an existing remote run are refused; a file outside the workspace, a link leading out of it and a folder are refused before anything is sent", async () => {
+  it("RC-09 AC-108, 587 AC-004 / SR-011: a saved Task to an existing remote run without node, a file outside the workspace, a link leading out of it and a folder are refused before anything is sent", async () => {
     const solo = standaloneActor(alpha, ids.solo, "alpha standalone delegator");
     // autobyteus-587 RF-3: only files inside the sending agent's workspace go to another node (links resolved); a folder never.
     const outside = path.join(root, "alpha", "outside-secret.txt");
@@ -1401,7 +1401,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const withOutside = await delegateRemote(solo, "With a file from outside.", { reference_files: [outside] });
     const withLinkOut = await calls(solo, "send_message_to", { node: LABEL.beta, target_agent_run_id: ids.r1, content: "WITH-LINK-OUT", reference_files: [linkOut] });
     const withFolder = await calls(solo, "send_message_to", { node: LABEL.beta, target_agent_run_id: ids.r1, content: "WITH-FOLDER", reference_files: [folder] });
-    const savedTask = await calls(solo, "delegate_task", { node: LABEL.beta, recipient_address: "/publisher", task_id: taskId });
+    // autobyteus-587 SR-011: a saved Task given to the copy on beta without node is refused with the node to pass, before
+    // anything is sent (with node it goes, with its files: AC-012). A saved Task to a new copy with node goes too (DEC-009).
     const existingCopy = await calls(solo, "delegate_task", { target_agent_run_id: ids.r1, task_id: taskWithFileId });
     expect(withOutside.delegated, JSON.stringify(withOutside)).toBe(false);
     expect(textOf(withOutside)).toBe(`${outside} is outside your workspace, so nothing was sent. Only files in your workspace (${alpha.workspace}) can go to another node; copy the file there first.`);
@@ -1409,17 +1410,15 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(textOf(withLinkOut)).toContain("is outside your workspace, so nothing was sent.");
     expect(withFolder, JSON.stringify(withFolder)).toMatchObject({ accepted: false, code: "REFERENCE_FILE_NOT_A_FILE" });
     expect(textOf(withFolder)).toBe(`${folder} is a folder, so nothing was sent. Send files, not folders (zip it first).`);
-    expect(textOf(savedTask)).toBe("A saved Task (task_id) can't be given to an agent on another node yet, so nothing was started. Delegate with a description instead.");
-    // 591 DN-8 with 587: a saved Task may go to the existing run on beta, but its files are the Task's, not the sender's workspace's.
-    expect(textOf(existingCopy), "the Task's file can't go to the run on beta").toBe("A saved Task with reference files can't be given to an agent on another node, so nothing was given. Give it a Task without files, and send the files with send_message_to and node.");
-    for (const result of [savedTask, existingCopy]) expect(result.delegated, JSON.stringify(result)).toBe(false);
+    expect(textOf(existingCopy), "the copy on beta is named with its node").toBe(`This agent runs on node "${LABEL.beta}"; pass node: "${LABEL.beta}" with its run id.`);
+    expect(existingCopy.delegated, JSON.stringify(existingCopy)).toBe(false);
     expect(remoteRequests(sentBefore).filter((entry) => entry.path !== PATHS.runSummaries), "nothing sent, not even a file status").toEqual([]);
     expect(await remoteRunDirs(), "nothing started").toEqual(runsBefore);
     await neverReceives(composeOnBeta(ids.r1), "WITH-", 1_000);
     const tasks = (await alpha.gql(`query($id:String!){projectTasks(projectId:$id){taskId status root{kind}}}`, { id: projectId })).projectTasks as Rec[];
     for (const id of [taskId, taskWithFileId]) expect(tasks.find((entry) => entry.taskId === id), "the saved Tasks are unchanged (no assignment)").toMatchObject({ status: "TODO", root: null });
     expect((await taskResourcesWith(alpha, ids.r1)).length, "r1 got no new Task entry").toBe(r1EntriesBefore);
-    record("RC-09", { withOutside: textOf(withOutside), withLinkOut: textOf(withLinkOut), withFolder: textOf(withFolder), savedTask: textOf(savedTask), existingCopy: textOf(existingCopy) });
+    record("RC-09", { withOutside: textOf(withOutside), withLinkOut: textOf(withLinkOut), withFolder: textOf(withFolder), existingCopy: textOf(existingCopy) });
   }, 240_000);
 
   it("RC-10 AC-109, 591 REQ-001: a task agent on a Project Task delegates remotely; the remote run is a run of that Task; after DONE beta stops it and its messages are not delivered", async () => {
@@ -1547,7 +1546,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     // A saved Task to the stopped, closed run (REQ-006, another Task): it wakes on beta with the work.
     const packetsBefore = stringsOf(await remote.conversation()).filter((value) => value.includes("FOLLOWUP-PACKET")).length;
     const sentBeforeGive = captured.length;
-    const given = await calls(solo, "delegate_task", { target_agent_run_id: r4, task_id: saved.taskId });
+    const given = await calls(solo, "delegate_task", { node: LABEL.beta, target_agent_run_id: r4, task_id: saved.taskId });
     expect(given, JSON.stringify(given)).toMatchObject({ delegated: true });
     const first = await reopenedOnBeta("the saved Task", sentBeforeGive, PATHS.messages);
     await until(async () => stringsOf(await remote.conversation()).filter((value) => value.includes("FOLLOWUP-PACKET")).length > packetsBefore, "r4 wakes with the Task's work", 60_000);
@@ -1571,7 +1570,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const byOther = await calls(standaloneActor(alpha, ids.other, "alpha other root"), "send_message_to", { target_agent_run_id: r4, content: "OTHER-AFTER-REOPEN" });
     expect(byOther.accepted, JSON.stringify(byOther)).toBe(false);
     expect(byOther.code, JSON.stringify(byOther)).toBe("TASK_AGENT_RESOURCE_CLOSED");
-    const sameTask = await calls(solo, "delegate_task", { target_agent_run_id: r4, task_id: saved.taskId });
+    const sameTask = await calls(solo, "delegate_task", { node: LABEL.beta, target_agent_run_id: r4, task_id: saved.taskId });
     expect(sameTask.delegated, JSON.stringify(sameTask)).toBe(false);
     expect(textOf(sameTask)).toMatch(/^This task agent already has Task \S+\. To continue it, set Task \S+ to TODO or IN_PROGRESS, then message the task agent's run id/);
     expect(remoteRequests(sentBeforeReopen).filter((entry) => entry.path === PATHS.runStates || entry.path === PATHS.messages), "nothing sent").toEqual([]);
@@ -2038,7 +2037,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       expect(await processLive(r6), "not woken").toBe(false);
       await neverReceives(fenced, "ROW14-", 0);
 
-      // Row 13: every sender on alpha, in any root, with and without node: CLOSED from alpha's Task record, before any send.
+      // Row 13: every sender on alpha, in any root, with node: CLOSED from alpha's Task record, before any send; without node,
+      // NODE_REQUIRED from the node rule first (autobyteus-587 SR-010 R2), so the closed run is never reached without it.
       const sentBefore = captured.length;
       const senders: Array<[string, Actor, Rec]> = [
         ["delegator with node", fenceDelegator, { node: LABEL.beta }],
@@ -2052,6 +2052,11 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       for (const [label, actor, extra] of senders) {
         const result = await calls(actor, "send_message_to", { ...extra, target_agent_run_id: r6, content: `ROW13-${label.replace(/ /g, "-").toUpperCase()}` });
         expect(result.accepted, `${label}: ${JSON.stringify(result)}`).toBe(false);
+        if (!("node" in extra)) {
+          expect(result.code, label).toBe("NODE_REQUIRED");
+          closed[label] = textOf(result);
+          continue;
+        }
         expect(result.code, label).toBe("TASK_AGENT_RESOURCE_CLOSED");
         // 591 SR-010: its delegator gets the local reopen text; every other sender the closed refusal.
         if (actor === fenceDelegator) expect(textOf(result), label).toBe(closedForDelegator("DONE"));
@@ -2598,15 +2603,13 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await receives(coordinator, "CLOSURE-PACKET");
     const checker = Object.fromEntries(flattenE2eConfiguredAgentExecutions((await beta.gql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`,
       { id: teamRunId })).getTeamRunResumeConfig.executionTree).map((member) => [member.memberAddress, member.agentRunId]))["/checker"]!;
-    // A saved Project Task: to a new remote Team, refused (unchanged); to the running remote Team, given (591 REQ-006).
+    // A saved Project Task to the running remote Team, given with its node (591 REQ-006, 587 SR-011). (To a new remote Team
+    // with task_id and node it starts one since autobyteus-587 DEC-009: AC-012, not this case.)
     const projectId = (await alpha.gql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`, { input: { name: "RC-23 project" } })).createProject.projectId as string;
     const savedTaskId = (await alpha.gql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`, { input: { projectId, title: "Saved Team work.",
       description: "Saved Team work. Marker SAVED-TEAM-PACKET." } })).createProjectTask.taskId as string;
     const teamRunsBefore = await betaTeamRunDirs();
-    const savedNew = await calls(solo, "delegate_task", { node: LABEL.beta, recipient_address: "/studio_team", task_id: savedTaskId });
-    expect(savedNew.delegated, JSON.stringify(savedNew)).toBe(false);
-    expect(textOf(savedNew)).toBe("A saved Task (task_id) can't be given to an agent on another node yet, so nothing was started. Delegate with a description instead.");
-    const saved = await calls(solo, "delegate_task", { target_team_run_id: teamRunId, task_id: savedTaskId });
+    const saved = await calls(solo, "delegate_task", { node: LABEL.beta, target_team_run_id: teamRunId, task_id: savedTaskId });
     expect(saved, JSON.stringify(saved)).toMatchObject({ delegated: true });
     await receives(coordinator, "SAVED-TEAM-PACKET");
     expect(await betaTeamRunDirs(), "no Team run started for the saved Task").toEqual(teamRunsBefore);
@@ -2651,7 +2654,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await neverReceives(solo, "AFTER-DONE-FROM-STUDIO", 3_000);
     teamStatus.socket.close();
     ids.closureTeam = { teamRunId, coord, checker, projectId, savedTaskId };
-    record("RC-23", { delegated, savedNew: textOf(savedNew), saved, statusesAtCancel: teamStatus.statusesOf(coord), stoppedMs, confirmed,
+    record("RC-23", { delegated, saved, statusesAtCancel: teamStatus.statusesOf(coord), stoppedMs, confirmed,
       closedRecord: (await closedOnBeta()).find((entry) => entry.runId === teamRunId), toRemote: textOf(toRemote), fromRemote: textOf(fromRemote) });
   }, 300_000);
 
@@ -2664,7 +2667,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await wait(3_000);
     expect(remoteRequests(sentBeforeReopen).filter((entry) => entry.path === PATHS.runStates), "a reopen sends nothing").toEqual([]);
     expect(await betaListed(teamRunId), "still off beta's list").toBe(false);
-    const sameTask = await calls(solo, "delegate_task", { target_team_run_id: teamRunId, task_id: savedTaskId });
+    const sameTask = await calls(solo, "delegate_task", { node: LABEL.beta, target_team_run_id: teamRunId, task_id: savedTaskId });
     expect(sameTask.delegated, JSON.stringify(sameTask)).toBe(false);
     expect(textOf(sameTask)).toMatch(/^This task agent already has Task \S+\. To continue it, set Task \S+ to TODO or IN_PROGRESS, then message the task agent's run id/);
     const sentBefore = captured.length;
@@ -3962,7 +3965,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       await remoteRun("OWED-F-PACKET"), await remoteRun("OWED-G-PACKET")];
     // rg holds a saved Task, so its assigner can continue it by message after a reopen (SR-010).
     const rgSaved = await savedTaskOnAlpha("Owed, then continued. Marker OWED-G-SAVED.");
-    expect(await calls(solo, "delegate_task", { target_agent_run_id: rg.runId, task_id: rgSaved.taskId })).toMatchObject({ delegated: true });
+    expect(await calls(solo, "delegate_task", { node: LABEL.beta, target_agent_run_id: rg.runId, task_id: rgSaved.taskId })).toMatchObject({ delegated: true });
     await receives(composeOnBeta(rg.runId), "OWED-G-SAVED");
     await busy(rb.runId, "OWED-B-HOLD");
     await beta.stop();

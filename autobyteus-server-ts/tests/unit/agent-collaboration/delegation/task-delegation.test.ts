@@ -14,6 +14,7 @@ import { createCollaborationMemberExecutionIdentity, type RootExecutionIdentity 
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import { NO_PEER_RUN_PORTS, NO_REMOTE_FILES } from "../../../helpers/explicit-host-collaborators.js";
+import { PeerRunNodes } from "../../../../src/agent-collaboration/execution/remote/peer-run-nodes.js";
 
 /** autobyteus-461 design DS-1 (`TaskDelegation`), contract §13.1 D1, D2, D5: a delegation creates an ordinary run and its Task entry. */
 const M: RootExecutionIdentity = { rootSubjectKind: "agent", rootRunId: "project_task_manager_7c8d" };
@@ -310,6 +311,84 @@ describe("TaskDelegation.toNewRun", () => {
       const goneFailed = vi.spyOn(gone.tasks, "markFailed");
       await expect(gone.delegate()).resolves.toMatchObject({ outcome: { delegated: false, message: 'Node "Studio B" could not be reached (fetch failed).' } });
       expect(goneFailed).toHaveBeenCalledWith({ agentRunId: "remote_agent_2" }, { code: "TASK_DISPATCH_FAILED", message: 'Node "Studio B" could not be reached (fetch failed).' });
+    });
+  });
+
+  describe("toExistingRun to a copy on another node (autobyteus-587 SR-010 R3, SR-011; DEC-009)", () => {
+    const REMOTE = { agentRunId: "remote_agent_1" };
+    const peerB = { nodeId: "node-b", name: "studio" };
+    const remoteCopy = async (options: { upload?: "refused" } = {}) => {
+      const folder = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "task-files-")));
+      const contextFile = path.join(folder, "notes.md");
+      await fs.writeFile(contextFile, "Task notes");
+      const tasks = new InMemoryTaskExecutionResources();
+      const tree = new DelegationIndex(() => tasks, NO_RUN_PARTS);
+      tree.build();
+      tasks.setEntriesListener(tree);
+      tasks.addTask("T1", "Research it", "abc-1"); tasks.addTask("T2", "Polish it", "abc-2");
+      tasks.tasks.get("T2")!.referenceFiles = [contextFile];
+      await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/researcher",
+        delegatedFrom: { delegatingRun: M, delegatorAgentRunId: M.rootRunId }, execution: REMOTE, nodeId: peerB.nodeId });
+      await tasks.markStarted(REMOTE);
+      await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/software_engineering_team",
+        delegatedFrom: { delegatingRun: M, delegatorAgentRunId: M.rootRunId }, execution: { teamRunId: E.rootRunId }, teamCoordinatorAgentRunId: "solution_designer_65a9" });
+      const calls: string[] = [];
+      const FILES = [{ sha256: "c".repeat(64), size: 10, name: "notes.md" }];
+      const channel = {
+        findPeer: vi.fn(async (name: string) => name === "studio" ? peerB : name === "mac-studio" ? { nodeId: "node-c", name } : { accepted: false as const, code: "PEER_NOT_REGISTERED", message: `No peer node named "${name}".` }),
+        registeredPeerName: vi.fn(async (nodeId: string) => nodeId === peerB.nodeId ? peerB.name : nodeId === "node-c" ? "mac-studio" : null),
+        peerName: vi.fn(async (nodeId: string) => nodeId === peerB.nodeId ? peerB.name : nodeId),
+      };
+      const realNodes = new PeerRunNodes({ activeRoots: { resolve: () => null }, tree: () => tree, channel: () => channel as never });
+      const nodes = { check: vi.fn(async (input: Parameters<PeerRunNodes["check"]>[0]) => { calls.push("node"); return realNodes.check(input); }) };
+      const outgoing = { send: vi.fn(async () => { calls.push("files"); return options.upload === "refused"
+        ? { ok: false as const, refusal: { accepted: false as const, code: "REFERENCE_FILE_TRANSFER_FAILED", message: "notes.md could not be sent." } }
+        : { ok: true as const, files: FILES }; }) };
+      const assign = vi.spyOn(tasks, "assignExistingTaskExecution");
+      assign.mockImplementation(async function (this: unknown, ...args) { calls.push("assign"); return InMemoryTaskExecutionResources.prototype.assignExistingTaskExecution.apply(tasks, args as never); });
+      const peerNotices = { changed: vi.fn(async () => { calls.push("open"); return { confirmed: true as const }; }) };
+      const deliverToPeerRun = vi.fn(async () => { calls.push("deliver"); return { accepted: true }; });
+      const delegation = new TaskDelegation({ outgoing, nodes, tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(),
+        deliverToRun: vi.fn(async () => ({ accepted: true })), channel: () => channel as never, deliverToPeerRun, peerNotices,
+        recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null, ownDelegations: { of: async () => null },
+        delegatorCatalog: { placementAt: async () => null }, conversationOf: vi.fn(async () => ({ entryAddress: "/solution_designer", activity: { kind: "present" as const } })) });
+      const give = (copy: Record<string, string>, node?: string, sender = M.rootRunId) => delegation.toExistingRun({
+        sender: createCollaborationMemberExecutionIdentity({ root: M, memberAddress: `/${sender}` as never, agentRunId: sender }), senderRun: M,
+        assign: { delegatedRun: copy as never, taskId: "abc-2", ...(node === undefined ? {} : { node }) } });
+      return { tasks, give, calls, outgoing, nodes, deliverToPeerRun, contextFile, FILES, folder };
+    };
+
+    it("with node: the node checked, the Task's context file uploaded (outside any workspace), then assigned, its node told open, then the work with the files", async () => {
+      const h = await remoteCopy();
+      await expect(h.give(REMOTE, "studio")).resolves.toEqual({ delegated: true, delegatedRun: { kind: "agent", agentRunId: REMOTE.agentRunId }, filesSent: 1 });
+      expect(h.calls).toEqual(["node", "files", "assign", "open", "deliver"]);
+      expect(h.outgoing.send).toHaveBeenCalledWith({ senderAgentRunId: M.rootRunId, nodeId: peerB.nodeId, peerName: "studio",
+        referenceFiles: [h.contextFile], taskContextFiles: [h.contextFile] });
+      expect(h.deliverToPeerRun).toHaveBeenCalledWith(expect.objectContaining({ nodeId: peerB.nodeId, targetAgentRunId: REMOTE.agentRunId,
+        messageType: "task_assignment", referenceFiles: [h.contextFile], files: h.FILES }));
+      await fs.rm(h.folder, { recursive: true, force: true });
+    });
+
+    it("RF-14: without node NODE_REQUIRED, another node NODE_MISMATCH, an unknown name the peer refusal; a local copy given node NODE_MISMATCH naming this node; nothing is uploaded or assigned", async () => {
+      const h = await remoteCopy();
+      await expect(h.give(REMOTE)).resolves.toEqual({ delegated: false, message: 'This agent runs on node "studio"; pass node: "studio" with its run id.' });
+      await expect(h.give(REMOTE, "mac-studio")).resolves.toEqual({ delegated: false, message: 'This agent runs on node "studio", not "mac-studio"; pass node: "studio".' });
+      await expect(h.give(REMOTE, "nas")).resolves.toEqual({ delegated: false, message: 'No peer node named "nas".' });
+      await expect(h.give({ teamRunId: E.rootRunId }, "studio")).resolves.toEqual({ delegated: false, message: 'This agent runs on this node, not "studio"; leave out node.' });
+      expect(h.outgoing.send).not.toHaveBeenCalled();
+      expect(h.tasks.assignments).toEqual([]);
+      await fs.rm(h.folder, { recursive: true, force: true });
+    });
+
+    it("a refusal of the Task side costs no upload; a refused upload changes nothing (no assignment, no notice, nothing sent)", async () => {
+      const notAssigner = await remoteCopy();
+      await expect(notAssigner.give(REMOTE, "studio", "someone_else")).resolves.toMatchObject({ delegated: false, message: expect.stringContaining("Only the agent that gave this task agent") });
+      expect(notAssigner.outgoing.send).not.toHaveBeenCalled();
+      const refused = await remoteCopy({ upload: "refused" });
+      await expect(refused.give(REMOTE, "studio")).resolves.toEqual({ delegated: false, message: "notes.md could not be sent." });
+      expect(refused.calls).toEqual(["node", "files"]);
+      expect(refused.tasks.assignments).toEqual([]);
+      for (const h of [notAssigner, refused]) await fs.rm(h.folder, { recursive: true, force: true });
     });
   });
 

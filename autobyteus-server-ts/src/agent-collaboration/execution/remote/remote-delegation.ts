@@ -36,11 +36,10 @@ export class RemoteDelegation {
   }>) {}
 
   /**
-   * `delegate_task` with `node` (DEC-111): refuses a saved Task before anything is sent (REQ-110; its files go with it,
-   * autobyteus-587), resolves the peer by this owner's label, and returns the remote placement for the root's lifecycle.
+   * `delegate_task` with `node` (DEC-111): resolves the peer by this owner's label and returns the remote placement for the
+   * root's lifecycle. A saved Task (`task_id`) goes too, with its context files (autobyteus-587 DEC-009: `toPeerRun`).
    */
   async delegationPlacement(input: SpawnTaskInput & Readonly<{ node: string }>): Promise<RemotePlacementTarget | TaskDelegationOutcome> {
-    if (input.task_id !== undefined) return { delegated: false, message: REMOTE_ROOT_REFUSAL_TEXT.savedTask };
     const channel = this.channel();
     if (!channel) return { delegated: false, message: REMOTE_ROOT_REFUSAL_TEXT.off };
     const peer = await channel.findPeer(input.node);
@@ -48,7 +47,7 @@ export class RemoteDelegation {
     let address;
     try { address = assertAgentTeamAddress(input.recipient_address.trim()); }
     catch { return { delegated: false, message: `"${input.recipient_address}" is not an address: an Agent's address begins with '/'.` }; }
-    return Object.freeze({ kind: "remote_agent", address, peer, description: input.description });
+    return Object.freeze({ kind: "remote_agent", address, peer });
   }
 
   /**

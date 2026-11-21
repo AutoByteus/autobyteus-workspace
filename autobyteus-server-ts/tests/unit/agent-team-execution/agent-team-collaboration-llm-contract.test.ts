@@ -52,20 +52,21 @@ describe("approved collaboration tool descriptions", () => {
       // `node` (DEC-111, autobyteus-191): a new task agent on a registered peer node; "agent or agent team" (autobyteus-261 DEC-406).
       // task-agent-several-tasks (autobyteus-275): mode (3) also while the task agent holds other open Tasks.
       // autobyteus-587 (CM-14, RF-14): reference_files go to another node as copies; follow-ups name the node.
-      delegateTool: "6ddf2a9e9db9e0fcb3c6816c1782d6a9eeb4d66fc48b36579b7747ea8c761400",
+      // autobyteus-587 SR-010/011 (DEC-009): a saved Task goes to another node with its own files; mode (3) takes node there.
+      delegateTool: "e89d25a0d97beed2c41bb9b1f0f62e34d18d6e515b76f5894cfad7d4cfd509ad",
       delegateRecipient: "501c11b0aa0cf1eeb1c64e9d9c0b852356c5d55f45e8288ecbb16c4e60d18c7b",
-      delegateTeamId: "2a50c7b86ae6fda3c7f5ad890631ad9d191bbd97fb99bf20bd9c7cca0ded0f6b",
-      delegateAgentId: "c6da81bc36fb30aa339f71451a2b0559fb251aad28030b305611c4fe3492f970",
+      delegateTeamId: "a5c42d384ae1876a854104fcfe807ceb52a35c5777c76a527a2a3c13fededbcf",
+      delegateAgentId: "488eb077b10da8ede5e3b91386bd4a2b90f1c1f09c14ee3548085486ea352319",
       delegateTaskId: "758d12d753234f54a47324aee40fbd746044ed150ece92d0d2c69abbd9f83017",
       delegateDescription: "e4b27c311d0bbe3a2a28745f12ecf495e9b4437d4c6ff36f95f7edda99993bb5",
       delegateReferences: "b793e2600ab5da95c1050176e15403f52299166af5e752b9eff19b1ca3eb2481",
-      delegateNode: "273dcd2db56feb22cc02888dd961101ab5752f462765b028c5458fb406dacf0b",
+      delegateNode: "2258cf7371e060f2ca6e527efa3d9dc7918e746cb3179a91e876704f2da1a458",
     });
   });
 
-  it("autobyteus-261 DEC-406: a peer node's agent or agent team (the approved new wording)", () => {
-    expect(DELEGATE_TASK_NODE_DESCRIPTION).toBe("Optional, only with recipient_address and description: the name of a peer node registered on this node. The new task agent then runs on that node, and recipient_address is the address of an agent or agent team on that node.");
-    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("With node in mode (1), the task agent starts on that peer node, from the agent or agent team at recipient_address there; the result also gives node: message it by its run id with that node. Its reference_files are copied to that node (only files in your workspace; files_sent in the result says how many). A saved Task can't go to another node.");
+  it("autobyteus-261 DEC-406: a peer node's agent or agent team; autobyteus-587 SR-011: node also for a task agent on another node (the approved new wording)", () => {
+    expect(DELEGATE_TASK_NODE_DESCRIPTION).toBe("Optional: the name of a peer node registered on this node. With recipient_address, the new task agent runs on that node, and recipient_address is the address of an agent or agent team on that node. With target_agent_run_id or target_team_run_id, required when that task agent runs on another node: its node, as the delegation result named it.");
+    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("With node in mode (1) or (2), the task agent starts on that peer node, from the agent or agent team at recipient_address there; the result also gives node: message it by its run id with that node. In mode (3), a task agent on another node takes node too: the node the delegation result named. The files go to that node: reference_files only from your workspace, a saved Task's own files with it; files_sent in the result says how many.");
   });
 
   it("states how each tool works, each fact once: messaging never creates an agent, a delegation with an address always creates one", () => {

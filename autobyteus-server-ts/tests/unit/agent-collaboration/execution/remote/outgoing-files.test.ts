@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -39,7 +40,8 @@ const setup = async (options: { maxFileBytes?: number; workspace?: "none" } = {}
     workspaces: { getWorkspaceRootPathForHistory: async (id: string) => id === "ws_1" ? workspace : null },
     channel: () => channel as unknown as RemoteRunChannel,
   });
-  const send = (referenceFiles: readonly string[]) => outgoing.send({ senderAgentRunId: "pm", nodeId: "srv_studio", peerName: "studio", referenceFiles });
+  const send = (referenceFiles: readonly string[], taskContextFiles?: readonly string[]) =>
+    outgoing.send({ senderAgentRunId: "pm", nodeId: "srv_studio", peerName: "studio", referenceFiles, ...(taskContextFiles ? { taskContextFiles } : {}) });
   const write = async (name: string, bytes: Buffer) => { const file = path.join(workspace, name); await fs.mkdir(path.dirname(file), { recursive: true }); await fs.writeFile(file, bytes); return file; };
   return { base, workspace, receiving, channel, pieces, send, write };
 };
@@ -130,5 +132,46 @@ describe("OutgoingFiles", () => {
     t.channel.putReceivedFilePiece.mockResolvedValueOnce({ accepted: false, code: "REFERENCE_FILE_CHECK_FAILED", message: "mismatch" } as never);
     expect(await t.send([file])).toEqual({ ok: false, refusal: { accepted: false, code: "REFERENCE_FILE_CHECK_FAILED",
       message: 'report.pdf arrived damaged on node "studio", so nothing was delivered. Try again.' } });
+  });
+
+  it("DEC-009 (RF-3's one exception): a saved Task's own context files may lie outside the workspace; every other file there is refused; only Task files need no workspace", async () => {
+    const t = await setup();
+    const context = path.join(t.base, "project", "notes.md");
+    await fs.mkdir(path.dirname(context), { recursive: true });
+    await fs.writeFile(context, "Task notes");
+    const other = path.join(t.base, "project", "secret.md");
+    await fs.writeFile(other, "not the Task's");
+    expect(await t.send([context], [context])).toMatchObject({ ok: true, files: [{ name: "notes.md", size: 10 }] });
+    expect(await t.send([context, other], [context])).toMatchObject({ ok: false, refusal: { code: "REFERENCE_FILE_OUTSIDE_WORKSPACE" } });
+    // The other checks still apply to a Task's own file.
+    await fs.mkdir(path.join(t.base, "project", "folder"));
+    expect(await t.send([path.join(t.base, "project", "folder")], [path.join(t.base, "project", "folder")])).toMatchObject({ ok: false, refusal: { code: "REFERENCE_FILE_NOT_A_FILE" } });
+    // A sender with no workspace may still send the Task's own files.
+    const noWorkspace = await setup({ workspace: "none" });
+    expect(await noWorkspace.send([context], [context])).toMatchObject({ ok: true });
+    expect(await noWorkspace.send([context])).toMatchObject({ ok: false, refusal: { code: "NO_WORKSPACE" } });
+  });
+
+  it("CR-587-04: the file is opened once at the path given and must be the file its resolved path names (same device and inode); a FIFO never holds the call", async () => {
+    const t = await setup();
+    const file = await t.write("report.txt", Buffer.from("report"));
+    const decoy = await t.write("decoy.txt", Buffer.from("decoy"));
+    // The resolved path names another file than the one opened (a component swapped in between): refused, nothing sent.
+    const realpath = fs.realpath;
+    const spy = vi.spyOn(fs, "realpath").mockImplementation((async (target: string) => target === file ? decoy : realpath(target)) as never);
+    expect(await t.send([file])).toMatchObject({ ok: false, refusal: { code: "REFERENCE_FILE_NOT_A_FILE" } });
+    spy.mockRestore();
+    expect(t.channel.receivedFilesStatus).not.toHaveBeenCalled();
+    const fifo = path.join(t.workspace, "pipe");
+    execFileSync("mkfifo", [fifo]);
+    expect(await t.send([fifo])).toMatchObject({ ok: false, refusal: { code: "REFERENCE_FILE_NOT_A_FILE" } });
+  });
+
+  it("CR-587-02: a piece the node refuses as unpaired right after this call's status succeeded was damaged or refused in transit: try again (not re-pair)", async () => {
+    const t = await setup();
+    const file = await t.write("report.pdf", Buffer.from("report"));
+    t.channel.putReceivedFilePiece.mockResolvedValueOnce({ accepted: false, code: "PEER_NOT_PAIRED", message: "This node and node \"studio\" are not paired." } as never);
+    expect(await t.send([file])).toEqual({ ok: false, refusal: { accepted: false, code: "REFERENCE_FILE_TRANSFER_FAILED",
+      message: 'report.pdf was damaged or refused in transit to node "studio", so nothing was delivered. Try again.' } });
   });
 });

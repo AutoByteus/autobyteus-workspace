@@ -184,7 +184,11 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe, PeerPair
   }
 
   async peerName(nodeId: string): Promise<string> {
-    return (await this.dependencies.peers.findByNodeId(nodeId))?.name ?? nodeId;
+    return (await this.registeredPeerName(nodeId)) ?? nodeId;
+  }
+
+  async registeredPeerName(nodeId: string): Promise<string | null> {
+    return (await this.dependencies.peers.findByNodeId(nodeId))?.name ?? null;
   }
 
   async startDelegatedRun(input: Readonly<{

@@ -17,7 +17,6 @@ import {
   type TaskExecutionResourcePort,
 } from "../execution/task/task-execution-resource-port.js";
 import type { RunningAgents } from "../running/running-agents.js";
-import { nodeMismatch, nodeRequired } from "../execution/remote/remote-refusal-codes.js";
 import type { PeerRunStateNotices } from "../execution/remote/peer-run-state-notices.js";
 import type { CrossRunAcceptInput } from "./cross-run-accept-input.js";
 
@@ -48,7 +47,8 @@ export type CrossRunMessageInput = Readonly<{
 export const DELETED_TASK_REFUSAL = "The Task was deleted, so its task agent cannot continue.";
 const refusal = (code: string, message: string): AgentOperationResult => ({ accepted: false, code, message });
 /** A refusal after this call reopened the receiver's assignment: its Task is open again, the message was not delivered. */
-const notDeliveredAfterReopen = (refused: AgentOperationResult, targetAgentRunId: string): AgentOperationResult => ({ ...refused,
+/** A refusal after this call reopened the receiver's assignment (local, or a peer run on the router's `node` path, SR-010 R1). */
+export const notDeliveredAfterReopen = (refused: AgentOperationResult, targetAgentRunId: string): AgentOperationResult => ({ ...refused,
   message: `${refused.message ?? "The message was not delivered."} ${targetAgentRunId} continues with its conversation (its Task is open again) but did not receive this message; send it again.` });
 const errorMessage = (error: unknown): string => error instanceof Error ? error.message : String(error);
 const sameRun = (a: RootExecutionIdentity, b: RootExecutionIdentity): boolean => rootExecutionIdentityKey(a) === rootExecutionIdentityKey(b);
@@ -63,7 +63,8 @@ type Admission = "related" | "reopened" | "unrelated";
  * The admission of a message to a run on a peer node (autobyteus-591 DN-9): `not_peer` when no Task entry here names the
  * target's run on a peer, `admitted`, or the refusal to answer.
  */
-export type PeerRunAdmission = "not_peer" | "admitted" | AgentOperationResult;
+/** `reopened`: admitted after this call reopened the run's assignment and its node confirmed "open" (a later refusal says so). */
+export type PeerRunAdmission = "not_peer" | "admitted" | "reopened" | AgentOperationResult;
 const byLinkedAt = <T extends Readonly<{ linkedAt: string }>>(a: T, b: T): number => a.linkedAt.localeCompare(b.linkedAt);
 
 /**
@@ -98,9 +99,8 @@ const taskRefusal = (error: unknown): AgentOperationResult => {
  * it runs (`RunningAgents`), in its live root, and is never woken (DEC-003): otherwise `null`, and the router answers
  * "not running". An agent no Task names is unrelated, except an agent of a delegated run whose Task was deleted, messaged
  * by the delegator its run's own file names: base's `TASK_NOT_FOUND` (CR-461-058, CR-461-065, SR-071: base's texts).
- * A run on a peer node is reached with `node` only (autobyteus-587 RF-14): the router checks its node first
- * (`peerRunNodeRefusal`), then its Task admission (`admitPeerRun`, autobyteus-591 DN-9), before any path; this route
- * refuses one without `node` with the node to pass.
+ * A run on a peer node is not this route's (`null`): the router checked its node (`PeerRunNodes`, autobyteus-587 RF-14) and
+ * its Task admission (`admitPeerRun`, autobyteus-591 DN-9) first, and reaches it with `node` only.
  */
 export class CrossRunMessageDelivery {
   constructor(private readonly dependencies: Readonly<{
@@ -120,8 +120,6 @@ export class CrossRunMessageDelivery {
     runFiles: Pick<RunOwnAgentsReader, "delegationOfAgent">;
     /** Whether a delegated run can be restored (CR-461-070): asked before the receiver's root is resolved or restored. */
     restorability: Pick<DelegatedRunRestorability, "refusal">;
-    /** This node's name for a peer by its node ID (the refusals of RF-14 name it). */
-    peerName(nodeId: string): Promise<string>;
     /** What a peer run's node is told of its delegation state, in the run's order (autobyteus-591 DN-1b, DN-9). */
     peerNotices: Pick<PeerRunStateNotices, "changed">;
   }>) {}
@@ -132,9 +130,9 @@ export class CrossRunMessageDelivery {
     const senderRun = input.sender.root;
     if (!receiverRun) return await this.deletedTaskRefusal(input) ?? this.deliverUnrelated(input);
     if (sameRun(receiverRun, senderRun)) return null;
-    // A run on a peer node is reached with `node` only (autobyteus-587 RF-14): without it, refused with the node to pass.
-    const peerRun = await this.peerRunNodeRefusal({ agentRunId: input.targetAgentRunId, senderAgentRunId: input.sender.agentRunId, node: null });
-    if (peerRun) return peerRun;
+    // A run on a peer node is the router's `node` path (its node checked by `PeerRunNodes` before any path), not this route's.
+    const receiverReference = runReferenceOf(receiverRun);
+    if (receiverReference && tree.tasksOf(receiverReference).some((entry) => entry.nodeId !== undefined)) return null;
     let admission: Admission;
     try {
       admission = await this.admit(tree, senderRun, receiverRun, input.sender.agentRunId);
@@ -161,37 +159,13 @@ export class CrossRunMessageDelivery {
   }
 
   /**
-   * autobyteus-587 RF-14: the node rule of a message to a run on a peer node that this node's Task entries name (they name
-   * its node), for any sender here, asked before the Task admission (`admitPeerRun`, which can reopen a Task), so a call
-   * without the right node changes nothing:
-   * - `node` names another node: `NODE_MISMATCH`, with the node the run is on;
-   * - no `node`, every entry closed, and the sender is not the assigner who may continue it: `TASK_AGENT_RESOURCE_CLOSED`
-   *   (DEC-011: a closed remote run is closed for every other sender, with or without `node`);
-   * - no `node` otherwise: `NODE_REQUIRED`, with the node to pass (the assigner continues it with `node`);
-   * - otherwise (no entry: a run this node did not delegate; or the right `node`): `null`. Reads only.
-   */
-  async peerRunNodeRefusal(target: Readonly<{ agentRunId: string; senderAgentRunId: string | null; node: Readonly<{ nodeId: string; name: string }> | null }>): Promise<AgentOperationResult | null> {
-    const tree = this.dependencies.tree();
-    const run = await tree.runOfAgent(target.agentRunId);
-    const reference = run ? runReferenceOf(run) : null;
-    const entries = reference ? tree.tasksOf(reference).filter((entry) => entry.nodeId !== undefined).sort(byLinkedAt) : [];
-    if (!entries.length) return null;
-    const nodeId = entries[0]!.nodeId!;
-    if (target.node) return target.node.nodeId === nodeId ? null : nodeMismatch(await this.dependencies.peerName(nodeId), target.node.name);
-    if (entries.every((entry) => !entry.open) && !continuesClosedPeerRun(entries, target.senderAgentRunId)) {
-      return refusal("TASK_AGENT_RESOURCE_CLOSED", ASSIGNER_ONLY_REACTIVATION_MESSAGE);
-    }
-    return nodeRequired(await this.dependencies.peerName(nodeId));
-  }
-
-  /**
    * autobyteus-591 DN-9: the Task admission of every message to a run on a peer node that this node's Task entries name,
-   * asked once by the router before any path (the sender root's peer endpoint, `node`, or this route). As `admit`'s rule
-   * for a local run:
+   * asked once by the router on its `node` path, after the files are on that node (autobyteus-587 SR-010 R1), so nothing is
+   * reopened for a call whose files are refused. As `admit`'s rule for a local run:
    * 1. some entry of the run is open: admitted;
    * 2. its last entry is `assigned`, closed, and the sender is its delegator: the assigner's continuation. The Task side
    *    checks and reopens the entry (no local restorability check: the run is its node's, CM-10), then its node is told
-   *    it is open, after any notice in flight (DN-1b); admitted once its node confirmed. Not confirmed: the entry stays
+   *    it is open, after any notice in flight (DN-1b); `reopened` once its node confirmed. Not confirmed: the entry stays
    *    open, "open" stays owed, and the answer is the notice's refusal (for an unreachable node, `PEER_UNREACHABLE`);
    * 3. otherwise `TASK_AGENT_RESOURCE_CLOSED`, whoever sends (DEC-011).
    * Runs outside any root's gate, so waiting for the node never holds one.
@@ -213,7 +187,7 @@ export class CrossRunMessageDelivery {
       return taskRefusal(error);
     }
     const noticed = await this.dependencies.peerNotices.changed({ run: reference, nodeId: last.nodeId! });
-    return noticed.confirmed ? "admitted" : notDeliveredAfterReopen(refusal(noticed.code, noticed.message), input.agentRunId);
+    return noticed.confirmed ? "reopened" : notDeliveredAfterReopen(refusal(noticed.code, noticed.message), input.agentRunId);
   }
 
   /**

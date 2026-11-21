@@ -55,8 +55,12 @@ export const NO_FILES_RECEIVED: Pick<ReceivedFiles, "status" | "appendPiece" | "
     ? Object.freeze({ ok: false as const, name: files[0]!.name }) : Object.freeze({ ok: true as const }),
 });
 
-/** A `TaskDelegation`'s peer-run ports on a node without peers (autobyteus-591): nothing is sent to a peer run. */
+/**
+ * A `TaskDelegation`'s peer-run ports on a node without peers (autobyteus-591): nothing is sent to a peer run, and no run
+ * is known on another node (autobyteus-587 `PeerRunNodes`).
+ */
 export const NO_PEER_RUN_PORTS = Object.freeze({
+  nodes: { check: async () => null },
   deliverToPeerRun: async () => ({ accepted: false as const, code: "REMOTE_COLLABORATION_OFF", message: "This test has no peer nodes." }),
   peerNotices: { changed: async () => ({ confirmed: false as const, code: "REMOTE_COLLABORATION_OFF", message: "This test has no peer nodes." }) },
 });

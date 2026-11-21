@@ -24,7 +24,7 @@ import type { TeamExecutionIndex } from "./team-execution-index.js";
 import { TeamRecipientResolver } from "./team-recipient-resolver.js";
 import type { TeamDelegationPlacement } from "./resolved-team-recipient.js";
 import type { TeamRunCollaborators } from "./team-run-collaborators.js";
-import { nodeRequired, REFERENCE_FILE_REFUSAL_TEXT, REMOTE_REFUSAL, remoteTargetNotRunning } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
+import { REFERENCE_FILE_REFUSAL_TEXT, REMOTE_REFUSAL, remoteTargetNotRunning } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
 import type { ReceivedFilesPlacement } from "../../agent-collaboration/execution/remote/transferred-files.js";
 import { unlinkedRunEndpoint } from "../../agent-collaboration/execution/remote/remote-endpoint.js";
 import type { PeerRunMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
@@ -65,18 +65,6 @@ export class TeamRunMessageDelivery {
     memberFolderOf(agentRunId: string): Promise<string>;
   }>) {}
 
-  /**
-   * `send_message_to(run ID)` from an agent of this Team: the routing decision only. A remote endpoint is always named
-   * with its node (autobyteus-587 RF-14), so it is refused with the node to pass; any other run ID goes through
-   * today's exact delivery (`local`).
-   */
-  async deliverExact(input: ExactTeamAgentMessageInput, local: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
-    const endpoint = this.options.remoteLinks.endpointFor(input.targetAgentRunId);
-    if (!endpoint) return local();
-    this.options.authorizeIdentity(input.sender.identity);
-    return nodeRequired(await this.options.remoteLinks.peerName(endpoint.reference.nodeId));
-  }
-
   /** DS-2: a message from another run of this node, for a member of this team run; the member is woken or restored first. */
   acceptFromRun(input: CrossRunAcceptInput): Promise<AgentOperationResult> {
     const receiver = this.options.getIndex().getAgent(input.message.receiverAgentRunId);
@@ -91,7 +79,7 @@ export class TeamRunMessageDelivery {
     const sender = input.sender.identity;
     this.options.authorizeIdentity(sender);
     return this.options.remoteSend.sendToPeerRun({ sender, nodeId: input.nodeId, targetAgentRunId: input.targetAgentRunId,
-      content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles });
+      content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles, files: input.files });
   }
 
   /** DS-004 on the receiving node: a peer agent's message by run ID only, for a member while it runs (never woken, DEC-003). */

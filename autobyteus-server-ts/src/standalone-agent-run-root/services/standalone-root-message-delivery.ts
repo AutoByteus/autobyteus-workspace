@@ -17,7 +17,7 @@ import type { TaskDelegationContext } from "../../agent-collaboration/execution/
 import { localPlacement } from "../../agent-collaboration/execution/task/task-delegation.js";
 import type { DelegationSource } from "../../agent-collaboration/execution/task/member-task-capability.js";
 import { buildTaskAssigneeWorkPacket } from "../../agent-collaboration/execution/task/task-execution-input.js";
-import { nodeRequired, REFERENCE_FILE_REFUSAL_TEXT, REMOTE_REFUSAL, remoteTargetNotRunning } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
+import { REFERENCE_FILE_REFUSAL_TEXT, REMOTE_REFUSAL, remoteTargetNotRunning } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
 import { receivingAgentFolder, type ReceivedFilesPlacement } from "../../agent-collaboration/execution/remote/transferred-files.js";
 import type { RemoteInboundMessage, RemoteInboundWorkPacket, RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import type { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
@@ -109,18 +109,13 @@ export class StandaloneRootMessageDelivery {
   }
 
   /**
-   * `send_message_to(run ID)` without `node` to one of this run's peer endpoints (the run's own agent is the sender): a run
-   * on another node is always named with its node (autobyteus-587 RF-14), so it is refused with the node to pass.
+   * `send_message_to(run ID)` without `node` from the run's own agent to an agent of this run: the run holds no other
+   * agent (another run's is the router's; a run on another node is refused by `PeerRunNodes` first, autobyteus-587 RF-14).
    */
   async deliverExact(input: ExactAgentMessageInput): Promise<AgentOperationResult> {
-    const sender = input.sender.identity;
-    this.options.authorizeIdentity(sender);
-    const endpoint = this.options.remoteLinks.endpointFor(input.targetAgentRunId);
-    if (!endpoint) {
-      return this.options.getIndex().isRunAgent(input.targetAgentRunId) ? SELF
-        : { accepted: false, code: "TARGET_AGENT_RUN_NOT_FOUND", message: `AgentRun '${input.targetAgentRunId}' is not in this Agent run.` };
-    }
-    return nodeRequired(await this.options.remoteLinks.peerName(endpoint.reference.nodeId));
+    this.options.authorizeIdentity(input.sender.identity);
+    return this.options.getIndex().isRunAgent(input.targetAgentRunId) ? SELF
+      : { accepted: false, code: "TARGET_AGENT_RUN_NOT_FOUND", message: `AgentRun '${input.targetAgentRunId}' is not in this Agent run.` };
   }
 
   /** DS-004: `send_message_to(node, run ID)` from the run's agent to an agent of a peer node (`RemoteMessageSend` chooses the endpoint). */
@@ -128,7 +123,7 @@ export class StandaloneRootMessageDelivery {
     const sender = input.sender.identity;
     this.options.authorizeIdentity(sender);
     return this.options.remoteSend.sendToPeerRun({ sender, nodeId: input.nodeId, targetAgentRunId: input.targetAgentRunId,
-      content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles });
+      content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles, files: input.files });
   }
 
   /**

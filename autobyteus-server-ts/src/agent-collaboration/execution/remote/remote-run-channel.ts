@@ -136,6 +136,8 @@ export interface RemoteRunChannel {
   findPeer(name: string): Promise<PeerNodeRef | RemoteChannelRefusal>;
   /** This owner's label for a peer, for headers and texts; the node ID itself when it is no longer registered. */
   peerName(nodeId: string): Promise<string>;
+  /** autobyteus-587 CR-587-03: this owner's label for a peer that is still registered; null when it is no longer one. */
+  registeredPeerName(nodeId: string): Promise<string | null>;
   startDelegatedRun(input: Readonly<{
     nodeId: string;
     /** The target's catalog address on that node. */

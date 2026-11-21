@@ -29,7 +29,7 @@ import type { AgentOrgExecutionIndex, AgentOrgIndexedAgentExecution } from "./ag
 import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
 import type { AgentOrgRecipientResolver } from "./agent-org-recipient-resolver.js";
 import type { AgentOrgRunCollaborators } from "./agent-org-run-collaborators.js";
-import { nodeRequired, REMOTE_REFUSAL, remoteTargetNotRunning } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
+import { REMOTE_REFUSAL, remoteTargetNotRunning } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
 import { unlinkedRunEndpoint } from "../../agent-collaboration/execution/remote/remote-endpoint.js";
 import type { RemoteInboundMessage, RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import type { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
@@ -55,18 +55,6 @@ export class AgentOrgRunMessageDelivery {
     authorizeIdentity(identity: CollaborationMemberExecutionIdentity): void;
   }>) {}
 
-  /**
-   * `send_message_to(run ID)` from an agent of this Org: the routing decision only. A remote endpoint is always named
-   * with its node (autobyteus-587 RF-14), so it is refused with the node to pass; any other run ID goes through today's
-   * exact delivery.
-   */
-  async deliverExact(input: ExactAgentMessageInput): Promise<AgentOperationResult> {
-    const endpoint = this.options.remoteLinks.endpointFor(input.targetAgentRunId);
-    if (!endpoint) return this.deliverToRunId(input);
-    this.options.authorizeIdentity(input.sender.identity);
-    return nodeRequired(await this.options.remoteLinks.peerName(endpoint.reference.nodeId));
-  }
-
   /** DS-2: a message from another run of this node, for an agent of this org run; it is woken or restored first. */
   acceptFromRun(input: CrossRunAcceptInput): Promise<AgentOperationResult> {
     const receiver = this.options.getIndex().getAgent(input.message.receiverAgentRunId);
@@ -81,7 +69,7 @@ export class AgentOrgRunMessageDelivery {
     const sender = input.sender.identity;
     this.options.authorizeIdentity(sender);
     return this.options.remoteSend.sendToPeerRun({ sender, nodeId: input.nodeId, targetAgentRunId: input.targetAgentRunId,
-      content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles });
+      content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles, files: input.files });
   }
 
   /** DS-004 on the receiving node: a peer agent's message by run ID only, for an agent of this org while it runs (never woken). */

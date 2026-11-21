@@ -126,7 +126,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       recipients: new StandaloneRootRecipientResolver({ getIndex: () => this.index, collaborators: this.collaborators }),
       collaborators: this.collaborators, getCommunication: () => this.communication, agent: options.agentHandle,
       remoteLinks: this.remoteLinks,
-      remoteSend: new RemoteMessageSend({ engine: () => this.communication, links: this.remoteLinks, outgoing: options.remoteFiles.outgoing }),
+      remoteSend: new RemoteMessageSend({ engine: () => this.communication, links: this.remoteLinks }),
       receivedFiles: options.remoteFiles.received,
       onAgentReady: (run) => { this.delegatedIdle?.watch(run); this.workerStatus?.watch(run); this.agentReadyListeners.forEach((listener) => listener(run)); },
       authorizeIdentity: (identity) => this.authorizeIdentity(identity),
@@ -165,6 +165,8 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   }
   /** Run-ID routing: the run's own agent never leaves it. */
   ownsAgentRun(agentRunId: string): boolean { return this.hasAgentExecution(agentRunId); }
+  /** autobyteus-587 RF-14: the peer node this root links the run on (`PeerRunNodes`). */
+  remoteNodeOf(agentRunId: string): string | null { return this.remoteLinks.endpointFor(agentRunId.trim())?.reference.nodeId ?? null; }
 
   /** The run's agent's real live state (the view's `isActive`). */
   isAgentLive(): boolean { return this.options.agentHandle.readiness === "live"; }

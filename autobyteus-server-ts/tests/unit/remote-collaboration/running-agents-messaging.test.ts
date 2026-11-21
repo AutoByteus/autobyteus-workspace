@@ -28,6 +28,7 @@ import { buildAgentRunMessageSenderContext } from "../../../src/agent-communicat
 import { RunningAgents } from "../../../src/agent-collaboration/running/running-agents.js";
 import { RunningAgentsListing } from "../../../src/agent-collaboration/running/running-agents-listing.js";
 import { listRunningAgentsFor } from "../../../src/agent-tools/agent-discovery/list-running-agents-contract.js";
+import { PeerRunNodes } from "../../../src/agent-collaboration/execution/remote/peer-run-nodes.js";
 
 /**
  * autobyteus-492 in one process, two nodes (only HTTP and the runtimes replaced): real standalone roots and their logs,
@@ -147,9 +148,9 @@ const buildNode = async (input: Readonly<{ nodeId: string; peers: PeerNode[]; ne
     senderRoot: (run) => activeRoot(run),
     receiverRoot: async (run) => manager.resolveRoot(run.rootRunId),
     runningAgents, activeReceiverRoot: (run) => activeRoot(run),
-    peerName: async (nodeId) => client.peerName(nodeId),
   });
   const router = new GlobalAgentRunMessageRouter({ crossRun, coordinators: taskSide.tree, channel: () => client, activeRootDirectory: directory,
+    nodes: new PeerRunNodes({ activeRoots: directory, tree: () => taskSide.tree, channel: () => client }), outgoing: peerFiles.remoteFiles.outgoing,
     agentRunManager: { getActiveRun: () => null } });
   input.network.set(input.nodeId, new PeerGateway({
     ownNodeId: async () => input.nodeId, capability: { isEnabled: () => true }, peers: peerDirectory, receivedFiles: peerFiles.receivedFiles,

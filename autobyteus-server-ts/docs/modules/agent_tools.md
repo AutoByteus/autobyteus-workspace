@@ -164,9 +164,10 @@ send-message wrappers/handlers.
   ids, posts direct input to the active target run, and emits a direct
   `INTER_AGENT_MESSAGE` without Team Communication projection fields.
 - `node` with `target_agent_run_id`: the agent runs on that registered peer node. Every message to an agent on another
-  node names it (autobyteus-587 RF-14), linked or not: without it, a run on another node is refused `NODE_REQUIRED`
-  with the node to pass, and a `node` it is not on is refused `NODE_MISMATCH` with the right one. Its `reference_files`
-  are copied to that node (below), and an accepted result adds `files_sent`.
+  node names it (autobyteus-587 RF-14, one owner: `PeerRunNodes`), linked or not: without it, a run on another node is
+  refused `NODE_REQUIRED` with the node to pass, a `node` it is not on `NODE_MISMATCH` with the right one, and a run on
+  a node no longer paired `NODE_NOT_PAIRED`. Its `reference_files` are copied to that node (below) before anything else
+  changes (a Task's reopen included, SR-010 R1), and an accepted result adds `files_sent`.
 
 Explicitly configured standalone runs can use `target_agent_run_id` without team context.
 They cannot use `recipient_address` unless the run is actually executing as a team
@@ -387,19 +388,21 @@ work are delegated through additional `delegate_task` calls.
 
 `delegate_task` has three strict input modes: `{recipient_address, task_id}` and
 `{recipient_address, description, reference_files?}` spawn a new copy;
-`{target_team_run_id | target_agent_run_id, task_id}` gives a saved Task to an
-existing copy (see [Follow-up Task to an existing copy](projects.md#follow-up-task-to-an-existing-copy)).
+`{target_team_run_id | target_agent_run_id, task_id, node?}` gives a saved Task to an
+existing copy (see [Follow-up Task to an existing copy](projects.md#follow-up-task-to-an-existing-copy)); `node` is
+required for a copy on another node and refused for one on this node (autobyteus-587 SR-011, RF-14).
 A Project Task's `task_id` is its key (any letter case) or its long ID; a Task
 with no Project uses its ID (see [Task keys](projects.md#task-keys-depends-on-and-part-of)).
 `recipient_address` is therefore not required by the parameter schema; the
 parser requires exactly one mode.
 
-With `node` (the name of a registered peer node), the described mode starts the
+With `node` (the name of a registered peer node), the described mode and the saved-Task mode start the
 task agent (or task agent team) on that node from the Agent or Agent Team at the catalog
 address `recipient_address` there (any shared Agent or shared Agent Team of that node; each
 agent runs with its own default runtime and model, a team member without one with its
-team's default); a `task_id` with `node` is refused before anything is sent, and its
-`reference_files` are copied to that node first (below). The success result is the local copy's
+team's default); the files are copied to that node first (below): `reference_files` only from the sender's
+workspace, a saved Task's own context files with it (DEC-009). A saved Task given to an existing copy on another node
+takes its context files too: after the node rule and the Task-side checks, before the assignment. The success result is the local copy's
 shape plus `node` (and `files_sent` when files went): for a Team,
 `{delegated: true, target_kind: "team", target_team_run_id,
 target_team_coordinator_agent_run_id, node}`. Follow-ups use `send_message_to` by the

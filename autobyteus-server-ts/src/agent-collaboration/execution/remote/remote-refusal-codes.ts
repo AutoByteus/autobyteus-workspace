@@ -36,12 +36,13 @@ export const REMOTE_REFUSAL = Object.freeze({
   /** autobyteus-587 RF-14: every send to an agent on another node names the node. */
   NODE_REQUIRED: "NODE_REQUIRED",
   NODE_MISMATCH: "NODE_MISMATCH",
+  /** autobyteus-587 CR-587-03: the run's node is no longer a paired peer, so there is no node to pass. */
+  NODE_NOT_PAIRED: "NODE_NOT_PAIRED",
 } as const);
 
 /** Texts of refusals a root decides before anything is sent, and of its results for remote runs. */
 export const REMOTE_ROOT_REFUSAL_TEXT = Object.freeze({
   off: "Remote collaboration is turned off on this node, so nothing was sent to another node.",
-  savedTask: "A saved Task (task_id) can't be given to an agent on another node yet, so nothing was started. Delegate with a description instead.",
 });
 
 /**
@@ -59,6 +60,16 @@ export const remoteDeliveredText = (agentRunId: string, peerName: string): strin
 export const nodeRequired = (nodeName: string): Readonly<{ accepted: false; code: string; message: string }> => Object.freeze({
   accepted: false as const, code: REMOTE_REFUSAL.NODE_REQUIRED,
   message: `This agent runs on node "${nodeName}"; pass node: "${nodeName}" with its run id.` });
+
+/** autobyteus-587 RF-14 (SR-011): `node` given for an agent of this node's own run (a local copy). */
+export const localNodeMismatch = (givenNodeName: string): Readonly<{ accepted: false; code: string; message: string }> => Object.freeze({
+  accepted: false as const, code: REMOTE_REFUSAL.NODE_MISMATCH,
+  message: `This agent runs on this node, not "${givenNodeName}"; leave out node.` });
+
+/** autobyteus-587 CR-587-03: the run is on a node that is no longer a paired peer (no node a call could name). */
+export const nodeNotPaired = (): Readonly<{ accepted: false; code: string; message: string }> => Object.freeze({
+  accepted: false as const, code: REMOTE_REFUSAL.NODE_NOT_PAIRED,
+  message: "This agent runs on a node that is no longer paired with this node, so nothing was sent. The user can pair them again on the Nodes page." });
 
 /** autobyteus-587 RF-14: `node` names a node the run is not on; `nodeName` is the node it runs on. */
 export const nodeMismatch = (nodeName: string, givenNodeName: string): Readonly<{ accepted: false; code: string; message: string }> => Object.freeze({
@@ -90,11 +101,8 @@ export const REFERENCE_FILE_REFUSAL_TEXT = Object.freeze({
   transferFailed: (name: string, nodeName: string, reason: string) =>
     `${name} could not be sent to node "${nodeName}" (${reason.replace(/\.$/, "")}), so nothing was delivered. Try again.`,
   damaged: (name: string, nodeName: string) => `${name} arrived damaged on node "${nodeName}", so nothing was delivered. Try again.`,
+  /** CR-587-02: a piece refused right after the node answered this call's status (pairing just proven): damaged on the way. */
+  inTransit: (name: string, nodeName: string) => `${name} was damaged or refused in transit to node "${nodeName}", so nothing was delivered. Try again.`,
   /** The receiving node's own refusal: a file the message names is not complete there. */
   notReceived: (name: string) => `The file ${name} has not been received complete on this node, so the message was not delivered.`,
-  /**
-   * A saved Task given to a run on another node (autobyteus-591 DN-8) carries no files: its reference files are the Task's,
-   * not files of the sender's workspace (RF-3); send them with send_message_to and node instead.
-   */
-  savedTaskFiles: "A saved Task with reference files can't be given to an agent on another node, so nothing was given. Give it a Task without files, and send the files with send_message_to and node.",
 });

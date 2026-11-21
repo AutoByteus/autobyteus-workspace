@@ -580,7 +580,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
   it("routes mixed AutoByteus send_message_to through server delivery and reports rejected delivery", async () => {
     // SR-047: the composition root creates the process dispatcher; here, one with no Task relations.
     const releaseDispatcher = SendMessageToDispatcher.setProcessInstance(new SendMessageToDispatcher({
-      globalRouter: new GlobalAgentRunMessageRouter({ crossRun: { route: async () => null, admitPeerRun: async () => "not_peer" as const, peerRunNodeRefusal: async () => null }, coordinators: { teamCoordinatorOf: async () => null }, channel: () => null }), tree: { collaborationTreeOf: () => ({ resolve: async () => null }) } as never }));
+      globalRouter: new GlobalAgentRunMessageRouter({ crossRun: { route: async () => null, admitPeerRun: async () => "not_peer" as const }, nodes: { check: async () => null }, outgoing: { send: async () => ({ ok: true as const, files: [] }) }, coordinators: { teamCoordinatorOf: async () => null }, channel: () => null }), tree: { collaborationTreeOf: () => ({ resolve: async () => null }) } as never }));
     onTestFinished(releaseDispatcher);
     const deliverInterAgentMessage = vi.fn().mockResolvedValue({
       accepted: false,

@@ -21,7 +21,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { testAgentNode, testMemberExecutionContext, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { testViewStreams } from "../../helpers/view-streams.js";
-import { NO_PEER_CHANNEL, NO_REMOTE_FILES } from "../../helpers/explicit-host-collaborators.js";
+import { NO_PEER_CHANNEL, NO_PEER_RUN_PORTS, NO_REMOTE_FILES } from "../../helpers/explicit-host-collaborators.js";
 import { GlobalAgentRunMessageRouter } from "../../../src/agent-communication/services/global-agent-run-message-router.js";
 import { buildAgentRunMessageSenderContext } from "../../../src/agent-communication/domain/agent-run-message-sender.js";
 
@@ -131,7 +131,7 @@ describe("A live Team run follows its definition (reproduction)", () => {
     expect(root.getExecutionTreeSnapshot().rootTeam.formerMembers).toEqual([expect.objectContaining({ agentRunId: "writer_1", leaving: true })]);
     expect(membership().stateOf("writer_1")).toBe("leaving");
     const leadContext = testMemberExecutionContext({ rootTeamRunId: "team_1", memberAddress: "/lead", agentRunId: "lead_1" });
-    const router = new GlobalAgentRunMessageRouter({ crossRun: { route: async () => null, admitPeerRun: async () => "not_peer" as const, peerRunNodeRefusal: async () => null }, channel: () => null,
+    const router = new GlobalAgentRunMessageRouter({ crossRun: { route: async () => null, admitPeerRun: async () => "not_peer" as const }, nodes: NO_PEER_RUN_PORTS.nodes, outgoing: NO_REMOTE_FILES.outgoing, channel: () => null,
       coordinators: { teamCoordinatorOf: async () => null }, agentRunManager: { getActiveRun: () => null } as never, activeRootDirectory });
     const sender = buildAgentRunMessageSenderContext({ senderRunId: "lead_1", senderName: "lead", runtimeKind: RuntimeKind.AUTOBYTEUS, memberExecutionContext: leadContext });
     const refusal = { accepted: false, code: "COLLABORATION_TARGET_NOT_FOUND",
