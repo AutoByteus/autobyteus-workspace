@@ -1,6 +1,6 @@
 # Delivery / Release / Deployment Report — cross-node-file-transfer-587 (autobyteus-587)
 
-Status of this document: **delivery is blocked** (round 2). It records the integration refreshes and the reroutes; the verification, finalization and cleanup sections are completed when delivery resumes.
+Status of this document: **delivery is blocked** (round 3). It records the integration refreshes and the reroutes; the verification, finalization and cleanup sections are completed when delivery resumes.
 
 ## Release / Publication / Deployment Scope
 
@@ -73,12 +73,23 @@ Status of this document: **delivery is blocked** (round 2). It records the integ
 - Recommended recipient: `/implementation_engineer`.
 - Why final handoff could not complete: the branch cannot be finalized onto `personal` without this integration, and a stale branch would merge the same conflicts into `personal`.
 
+## Delivery Round 3 — Third Base Refresh (Blocked On Conflicts With autobyteus-591)
+
+- Trigger: the code reviewer returned the package after the round-2 reroute. The round-2 blocker is resolved: IR-003 merged autobyteus-22 as `575c4ec9ed`, and CRR-006 (source), API-REV-004 (95%: whole `test:integration` 517/517, whole `pnpm test:e2e` 574/574, two-server suite 55/55, whole unit suite 8764), CRR-007 (test code) all passed. HEAD `ab7195a342`.
+- Base check: `origin/personal` had moved from `6533d7be04` to `9f6add773b`, 38 more commits. They are autobyteus-591 (`cross-node-task-close`: a closed Task's remote run stops on its node; a follow-up Task brings it back; the assigner's message continues a closed remote run, DN-9), which changes the same remote-messaging core as this ticket.
+- Integration: `git merge origin/personal` conflicts in 29 files. Nine are production code: `cross-run-message-delivery.ts` (6 hunks), `global-agent-run-message-router.ts` (4), `remote-message-receiver.ts` (3), `task-delegation.ts` (2), `build-studio-server.ts` (2), `collaboration-composition.ts` (2), `remote-collaboration-composition.ts` (2), `peer-gateway.ts` (1), `start-standalone-application-host.ts` (1). Three are docs the ticket also updated (`collaboration_model.md` 3 hunks, `agent_communication.md` 2, `remote_collaboration.md` 1). Seventeen are test files, among them the two-server E2E suite (both tickets added cases there; 591 also named its cases RC-51…RC-55 and RC-54, which this ticket renumbered to RC-55…RC-58 in round 2).
+- Action: `git merge --abort`. The ticket branch is unchanged at `ab7195a342` and clean; nothing was pushed.
+- Classification: `Local Fix` (integrating a second Large change into the same production code). The reasons are the ones of round 2, and stronger here: the conflicts are in this ticket's own message path (`CrossRunMessageDelivery`, the router, the receiver, the composition), where 591's closed-Task continuation and this ticket's RF-14 node rule and file transfer have to agree.
+- Recommended recipient: `/implementation_engineer`.
+- Why final handoff could not complete: the branch cannot be finalized onto `personal` without this integration.
+- Churn note: this is the third time in a row that the base moved by tens of commits during the review gates. Each merge needs source review and API/E2E on the merged code. The merge should be handed back for delivery as soon as its gates pass.
+
 ## Final Status
 
 - Verification complete: `No` (blocked, see above)
 - Repository finalization complete: `No`
 - Applicable release/deployment/rollout complete or not required: `Yes` (none requested)
 - Applicable safe cleanup complete or not required: `No` (the worktree stays for the fix)
-- Unresolved blocker: round 1 resolved (the ten stale unit tests); round 2: conflicts with autobyteus-22 in 22 files, three of them production code (`Local Fix`, implementation)
+- Unresolved blocker: rounds 1 and 2 resolved; round 3: conflicts with autobyteus-591 in 29 files, nine of them production code (`Local Fix`, implementation)
 - Successful terminal package eligible for return: `No`
 - Terminal package sent to the Solution Designer: `No`
