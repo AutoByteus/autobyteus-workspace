@@ -521,6 +521,24 @@ describe("autobyteus-591: a closed Task's remote agent run stops on its node; a 
     expect(a.resources.peerNoticesOwed.size).toBe(0);
   });
 
+  it("AC-004's alternate: given a Task again before B is reachable, the owed notice is sent as open; B never stops the run", async () => {
+    const { network, a, b } = await twoNodes();
+    await delegate(a);
+    const gatewayB = network.get(B_ID)!;
+    network.delete(B_ID);
+    await expect(closeOnA(a)).resolves.toMatchObject({ confirmed: false });
+    a.resources.addTask("task-B", "Edit the video.");
+    await expect(assign(a, "task-B")).resolves.toMatchObject({ delegated: false, message: expect.stringContaining("the message with its work was not delivered") });
+    // The new entry is open (its work failed): the run's state is open, owed.
+    expect(a.resources.entry({ agentRunId: RUN.runId })).toMatchObject({ taskId: "task-B", open: true, start: "failed" });
+    network.set(B_ID, gatewayB);
+    const sent = vi.spyOn(a.channel(), "deliveredRunState");
+    await expect(a.notices.changed({ run: { agentRunId: RUN.runId }, nodeId: B_ID })).resolves.toEqual({ confirmed: true });
+    expect(sent).toHaveBeenCalledExactlyOnceWith(B_ID, RUN, true);
+    expect(b.closed.has(RUN)).toBe(false);
+    expect(b.runOf(RUN.runId).active).toBe(true);
+  });
+
   it("AC-007: a follow-up Task for the stopped run: B lists it again, and it wakes with the work over the link", async () => {
     const { a, b } = await twoNodes();
     await delegate(a);
