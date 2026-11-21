@@ -28,6 +28,7 @@ import {
   summarizeTeamDraft,
 } from '~/stores/runHistoryTeamHelpers';
 import { flattenWorkspaceTeamRuns } from '~/stores/runHistoryStoreSupport';
+import { isRunnableWorkspaceKind } from '~/utils/workspace/runnableWorkspaceKind';
 
 export const UNASSIGNED_TEAM_WORKSPACE_KEY = 'unassigned-team-workspace';
 export const UNASSIGNED_TEAM_WORKSPACE_LABEL = 'Unassigned Team Workspace';
@@ -128,9 +129,8 @@ const resolveVisibleRunWorkspaceDescriptor = (workspace: {
 
   const isFixedTempWorkspace = workspaceId === TEMP_WORKSPACE_ID;
   const isTempWorkspace = workspace.kind === 'temp' || workspace.isTemp === true || isFixedTempWorkspace;
-  const isFilesystemWorkspace = !workspace.kind || workspace.kind === 'filesystem';
-
-  if (!isFilesystemWorkspace && !isTempWorkspace) {
+  // A descriptor without a kind is a folder workspace, as the workspace store reads it.
+  if (!isTempWorkspace && !isRunnableWorkspaceKind(workspace.kind || 'filesystem')) {
     return null;
   }
 

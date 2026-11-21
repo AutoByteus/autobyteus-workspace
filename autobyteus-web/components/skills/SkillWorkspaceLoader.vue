@@ -24,6 +24,8 @@ const workspaceStore = useWorkspaceStore();
 const isLoading = ref(true);
 const error = ref<string | null>(null);
 const workspaceId = ref<string>('');
+/** Set on unmount: a registration that resolves afterwards is released at once, never left in the store (FU-003). */
+let disposed = false;
 
 const register = async () => {
   if (!props.skillId) return;
@@ -33,6 +35,10 @@ const register = async () => {
     // Register the transient workspace.
     // The action returns the workspaceId (e.g. "skill:my_skill")
     const id = await workspaceStore.registerSkillWorkspace(props.skillId);
+    if (disposed) {
+      workspaceStore.unregisterTransientWorkspace(id);
+      return;
+    }
     workspaceId.value = id;
   } catch (e: any) {
     console.error('Failed to register skill workspace:', e);
@@ -58,6 +64,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+  disposed = true;
   unregister();
 });
 

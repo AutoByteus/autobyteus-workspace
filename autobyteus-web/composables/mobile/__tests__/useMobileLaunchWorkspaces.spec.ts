@@ -38,6 +38,17 @@ describe('useMobileLaunchWorkspaces', () => {
     ])
   })
 
+  it('offers no skill or semantic memory workspace, only places to run (autobyteus-576 AC-003, DEC-003)', () => {
+    const workspaceStore = useWorkspaceStore()
+    workspaceStore.workspaces = {
+      'workspace-active': makeWorkspace('workspace-active', 'Active Workspace', '/Users/normy/active'),
+      temp_ws_default: { ...makeWorkspace('temp_ws_default', 'Temp', '/Users/normy/.autobyteus/temp_workspace'), kind: 'temp', isTemp: true },
+    }
+    workspaceStore.registerSkillWorkspace('writer')
+    workspaceStore.registerSemanticMemoryWorkspace('semantic_ws_researcher', 'Researcher', '/m/semantic/researcher')
+    expect(useMobileLaunchWorkspaces().workspaceItems.value.map((item) => item.id)).toEqual(['workspace-active', 'temp_ws_default'])
+  })
+
   it('loads an unlisted server-side path through workspaceStore.createWorkspace', async () => {
     const workspaceStore = useWorkspaceStore()
     const createSpy = vi.spyOn(workspaceStore, 'createWorkspace').mockImplementation(async (config: { root_path: string }) => {

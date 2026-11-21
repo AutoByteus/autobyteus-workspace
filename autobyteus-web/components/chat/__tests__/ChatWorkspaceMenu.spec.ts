@@ -47,6 +47,18 @@ afterEach(() => {
 })
 
 describe('ChatWorkspaceMenu search', () => {
+  it('offers no skill or semantic memory workspace, only places to run (autobyteus-576 AC-003, DEC-003)', async () => {
+    const store = useWorkspaceStore()
+    store.registerSkillWorkspace('writer')
+    store.registerSemanticMemoryWorkspace('semantic_ws_researcher', 'Researcher', '/m/semantic/researcher')
+    expect(Object.keys(store.workspaces)).toEqual(expect.arrayContaining(['skill_ws_writer', 'semantic_ws_researcher']))
+    const menu = mountMenu()
+    await openMenu(menu)
+    expect(optionTests(menu)).toEqual(['chat-workspace-option-temp', 'chat-workspace-option-ws_mcps', 'chat-workspace-option-ws_notes', 'chat-workspace-option-ws_tools'])
+    expect(menu.text()).not.toContain('writer')
+    expect(menu.text()).not.toContain('Researcher')
+  })
+
   it('focuses a labelled search box on open and lists every workspace for an empty query', async () => {
     const menu = mountMenu()
     await openMenu(menu)
