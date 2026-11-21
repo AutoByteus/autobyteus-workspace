@@ -1,0 +1,6 @@
+Check: IMP-01
+Command: vitest run tests/agent-work-journal/rendering/antigravity-read-file-and-spills.test.ts against the BASE renderer (new test file only)
+Commit: a07767f4d0 (base) + test
+Date: 2026-11-21
+
+Tests  9 failed | 3 passed (12): the 9 failures are the read_file conversion (AC-001, AC-002), the spill marker (AC-003, AC-004 preview and error text) and the later reads (AC-005); the 3 'unchanged' cases pass on the base.

@@ -1,0 +1,8 @@
+# DEL-03 run 44881140728 read directly from GitHub by delivery, 2026-11-21T08:07:21Z
+{"conclusion":"success","event":"workflow_dispatch","headBranch":"codex/ios-demo-operation-coverage","headSha":"929976f818d7be8ab7c74b541b3eb456ff6a2ad1","status":"completed","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/44881140728","workflowName":"iOS App Store Connect Release"}
+Resolve iOS Release Metadata: success
+Build And Test iOS App: success
+Validate iOS Publish Secrets: skipped
+Archive And Upload To App Store Connect: skipped
+--- tag check: git ls-remote origin refs/tags/v1.5.14-beta.5
+       0

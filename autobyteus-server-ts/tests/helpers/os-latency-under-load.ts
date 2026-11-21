@@ -14,7 +14,10 @@
 /** The longest a test waits for one OS file event to reach the code under test (about 2× the slowest measured). */
 export const OS_FILE_EVENT_WAIT_MS = 30_000;
 
-/** vitest hook timeout for a hook that starts or closes an in-process server or its folder watchers. */
+/**
+ * vitest hook timeout for a hook that starts or closes an in-process server or its folder watchers. Every file that imports
+ * `tests/e2e/helpers/studio-runtime-test-server.ts` gets it from that helper, which owns it; a file may still pass it explicitly.
+ */
 export const IN_PROCESS_SERVER_HOOK_TIMEOUT_MS = 60_000;
 
 /** vitest test timeout for a test that waits for one or more OS file events. */

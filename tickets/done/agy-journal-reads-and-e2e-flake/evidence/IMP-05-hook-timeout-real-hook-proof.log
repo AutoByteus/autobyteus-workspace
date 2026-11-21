@@ -1,0 +1,8 @@
+Check: IMP-05 (D-4 proof, scratch, not committed)
+Command: a scratch test file with an afterAll that waits 12 s, once importing tests/e2e/helpers/studio-runtime-test-server.ts and once not
+Commit: 806cb45831
+Date: 2026-11-21
+
+with the helper import: passed (hook limit 60 s)
+without the helper import: FAIL 'Error: Hook timed out in 10000ms.' (vitest default)
+Committed proof of the effective value: tests/unit/e2e-helpers/in-process-server-hook-timeout.test.ts (60000) and -default.test.ts (10000), read from the worker's runner config.

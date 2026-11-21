@@ -1,0 +1,10 @@
+# IMP-04 the iOS release workflow's demo step, locally
+# command: autobyteus-ios/scripts/prepare-demo-web.sh --build
+# commit: 0d197a73b9 (run before committing; same files)
+# env: macOS, Node v22.23.1
+# date: 2026-11-21
+# result: Pass (the base fails here with the CI message: evidence/reproduction/prepare-demo-web-build-base.log)
+
+The demo answers all 252 compiled operations (handled or listed as unreachable).
+Demo web assets written to <worktree>/autobyteus-web/dist-mobile-demo/public
+Demo web content copied to <worktree>/autobyteus-ios/DemoWeb ( 13M).

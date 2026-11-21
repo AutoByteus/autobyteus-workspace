@@ -1,0 +1,11 @@
+# Case: API-01
+# Command: cd autobyteus-server-ts && env -i PATH HOME=<fresh> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts --no-watch (four passes: the first plus three consecutive)
+# Commit: 209e029e5a (code = 806cb45831; the new e2e file and the fixture case are committed with this round)
+# Environment: macOS arm64, Node v22.23.1, in-process real server, owned temp data dir, private HOME, scripted Antigravity CLI; host load average 63-78
+# Date: 2026-11-21
+
+ ✓ tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts (1 test) 7298ms
+     ✓ JR-01..02: read_file reads like view_file, a spilled output shows the preview and the marker, the later read is ordinary, an old-revision journal is re-rendered  948ms
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+(runs 2 and 3: Tests  1 passed (1))

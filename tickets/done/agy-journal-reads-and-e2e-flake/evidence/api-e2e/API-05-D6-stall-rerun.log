@@ -1,0 +1,21 @@
+# Case: API-05
+# Command: the implementer's scratch file evidence/D6-stall-reproduction.scratch.e2e.test.ts.txt copied to tests/e2e/runtime/zz-d6-stall-scratch.e2e.test.ts, run once, deleted
+# Commit: 209e029e5a (code = 806cb45831; the new e2e file and the fixture case are committed with this round)
+# Environment: macOS arm64, Node v22.23.1, in-process real server, owned temp data dir, private HOME, scripted Antigravity CLI; host load average 64-70
+# Date: 2026-11-21
+
+ ✓ tests/e2e/runtime/zz-d6-stall-scratch.e2e.test.ts (6 tests) 65732ms
+     ✓ stall 5s from the start of the --help probe  8842ms
+     ✓ stall 5s from the start of the models probe  6651ms
+     ✓ stall 9s from the start of the --help probe  10828ms
+     ✓ stall 9s from the start of the models probe  10991ms
+     ✓ stall 12s from the start of the --help probe  13460ms
+     ✓ stall 12s from the start of the models probe  13513ms
+      Tests  6 passed (6)
+## recorded lines of this run (the last six lines of /tmp/d6-stall-results.jsonl; the file also held the implementer's six)
+5 s stall at --help probe: run start {'success': True, 'message': 'Agent run created successfully.'} after 8837 ms; RUNTIME_PROBE_TIMED_OUT lines: 0
+5 s stall at models probe: run start {'success': True, 'message': 'Agent run created successfully.'} after 6650 ms; RUNTIME_PROBE_TIMED_OUT lines: 0
+9 s stall at --help probe: run start {'success': True, 'message': 'Agent run created successfully.'} after 10826 ms; RUNTIME_PROBE_TIMED_OUT lines: 0
+9 s stall at models probe: run start {'success': True, 'message': 'Agent run created successfully.'} after 10990 ms; RUNTIME_PROBE_TIMED_OUT lines: 0
+12 s stall at --help probe: run start {'success': True, 'message': 'Agent run created successfully.'} after 13460 ms; RUNTIME_PROBE_TIMED_OUT lines: 0
+12 s stall at models probe: run start {'success': True, 'message': 'Agent run created successfully.'} after 13512 ms; RUNTIME_PROBE_TIMED_OUT lines: 0

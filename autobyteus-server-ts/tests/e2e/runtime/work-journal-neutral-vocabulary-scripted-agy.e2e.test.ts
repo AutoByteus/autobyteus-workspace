@@ -11,6 +11,7 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { agentStreamFramesOf } from "../helpers/agent-stream-frames.js";
+import { recordProbeTimeouts, withProbeEvidence } from "../helpers/probe-timeout-evidence.js";
 
 // Neutral vocabulary on a real runtime path, with no model (autobyteus-331: REQ-001, REQ-004; AC-001, AC-004).
 // The scripted AGY CLI tests/fixtures/agy-failure-cli.mjs makes the agent call the platform's real tools
@@ -49,11 +50,13 @@ suite("Work Journal neutral vocabulary on a real (scripted) runtime", () => {
   let definitionId = "";
   let runId = "";
   const sockets: WebSocket[] = [];
+  const probes = recordProbeTimeouts();
   const graphql = async <T>(query: string, variables?: Record<string, unknown>): Promise<T> => {
     const response = await fetch(new URL("/graphql", url), { method: "POST",
       headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }) });
     const body = await response.json() as { data?: T; errors?: Array<{ message: string }> };
-    if (!response.ok || !body.data || body.errors?.length) throw new Error(JSON.stringify(body.errors ?? body));
+    // A discovery time-out says which probe and bound ended it (autobyteus-561, D-6).
+    if (!response.ok || !body.data || body.errors?.length) throw new Error(withProbeEvidence(JSON.stringify(body.errors ?? body), probes));
     return body.data;
   };
 
@@ -82,6 +85,7 @@ suite("Work Journal neutral vocabulary on a real (scripted) runtime", () => {
         { id: definitionId }).catch(() => undefined);
     }
     if (app) await app.close();
+    probes.stop();
     if (dataDir) await fs.rm(dataDir, { recursive: true, force: true });
     delete process.env["AGY_FAKE_CASE"];
   });

@@ -1,0 +1,10 @@
+Check: IMP-03
+Command: node scripts/typecheck.mjs; pnpm test:unit
+Commit: 806cb45831
+Date: 2026-11-21
+
+typecheck: production errors: 0; test-file errors: 1006 in 315 files (baseline 1006 in 315 files)  PASS
+ FAIL  tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > enables AGY availability using capabilities rather than release text
+ Test Files  1 failed | 1043 passed | 5 skipped (1049)
+      Tests  1 failed | 8643 passed | 9 skipped (8653)
+The one failure (antigravity-cli-capability.test.ts, 'enables AGY availability using capabilities rather than release text') is vitest's 5000 ms test timeout under load average ~70; it passed alone twice (Tests  51 passed (51)). The file is not touched by this change.
