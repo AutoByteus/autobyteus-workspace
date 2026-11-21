@@ -3,7 +3,7 @@
 - Package: `managed-ubuntu-auto-restart`; Project Task autobyteus-15, Project `project_de48ed0e-f4a2-43d7-b22a-4c162c9b1dda`; requested by `/project_task_manager` on the user's clarification of 2026-11-21.
 - Classification: `Architecture Design Complete`; task_size `Medium`; architectural_risk `High`.
 - Route (handoff rules, 2026-11-21): rule 1, task_size=Large or architectural_risk=High → `/architecture_reviewer`.
-- Worktree: `/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/managed-ubuntu-auto-restart`, branch `feature/managed-ubuntu-auto-restart`, base `origin/personal` at `7591aa307fac13c7ca8d2bdf8059054e22cf597a`; ticket documents committed on the branch (see `git log -1`). Finalization target `origin/personal`. No release; never the user's installation.
+- Worktree: `/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/managed-ubuntu-auto-restart`, branch `feature/managed-ubuntu-auto-restart`, base `origin/personal` at `7591aa307fac13c7ca8d2bdf8059054e22cf597a`; ticket documents committed at `3c8cb6ffff`. Finalization target `origin/personal`. No release; never the user's installation.
 - Ticket folder: `/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/managed-ubuntu-auto-restart/tickets/in-progress/managed-ubuntu-auto-restart/`
 
 ## Original request
@@ -40,3 +40,7 @@ Requirements SR-001 approved by the Solution Designer within the direction (the 
 ## Expected next action
 
 Independent architecture review of SR-002. Requirement or design findings return to the Solution Designer.
+
+## Route record
+
+Sent to `/architecture_reviewer` (handoff rule 1) on 2026-11-21 with this file and the four solution documents plus `follow-ups.md`.
