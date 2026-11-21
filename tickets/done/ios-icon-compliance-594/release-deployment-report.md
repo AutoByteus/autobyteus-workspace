@@ -75,3 +75,19 @@
 ## Release / Publication / Deployment
 
 - Applicable: `No`
+
+## Finalization Result
+
+- Ticket branch `codex/ios-icon-compliance-594` @ `87c748a9a5` pushed; hygiene exit 0; Secret Gate PASS over `origin/personal..codex/ios-icon-compliance-594` and over the merge.
+- Merge commit **`1fca01a941`** (`--no-ff`, from `finalize/ios-icon-compliance-594` on `origin/personal` @ `9aeaf46aa9`) pushed to `origin/personal` at 11:25Z (2026-11-21); this record commit follows it.
+- Repository finalization status: `Completed`.
+- The user's checkout (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`): fast-forwarded with `git merge --ff-only origin/personal` only (the result in the Delivery Completed message).
+
+## Post-Finalization Cleanup
+
+- AC-005: `codex/autobyteus-592-ios-product-icon` (one commit, `7ec960320a`, the hand-made PNGs that DEC-003 did not adopt) deleted from origin; `git ls-remote origin refs/heads/codex/autobyteus-592-ios-product-icon` → empty.
+- Then: the worktree, local and remote `codex/ios-icon-compliance-594`, local `finalize/ios-icon-compliance-594`, `/tmp/dlv-594-*`; the record copy in `autobyteus-delivery-records/ios-icon-compliance-594-autobyteus-594-20261121/`.
+
+## Release Notes Summary
+
+- `release-notes.md`: the iPhone and iPad icon is the product mark, for the next release's notes.
