@@ -2,6 +2,7 @@
 
 | SR | Date | Kind | Summary | Status after |
 | --- | --- | --- | --- | --- |
+| SR-007 | 2026-11-21 | Design Impact (ARCH-REV-001 AR-001, notes 1-2) | DN-1b: one ordered sequence per remote run (one notice in flight; the re-delegated work after `open` is confirmed; B answers after its Stop); DN-5: round-trip fields; DN-8: the local `deliverToRun` path, not `work_packet` | Design `Ready` |
 | SR-006 | 2026-11-21 | Design | DN-1's trigger is the run's entries (close, re-delegation), not the Task's reopen; DN-8 adds the remote re-delegation (the `:370` refusal removed; the work through the link) | Design `Ready`, Medium / High |
 | SR-005 | 2026-11-21 | Requirements (the PM's new comment; a correction) | Local reopen read: it reopens no run; the run returns when given the Task again. SR-003's "reopen lists the run" corrected to that. REQ-006 / DEC-007: giving a saved or reopened Task to an existing remote run, as locally (the PM's stuck case) | Approved; design to revise |
 | SR-004 | 2026-11-21 | Design | Delegation-state notices from the delegating node (closed / open), owed and retried; the peer records, stops and lists by them; Medium / High | Design `Ready` |
@@ -51,3 +52,10 @@
 
 - **Change:** DN-1, S-4, the walks and the scope follow SR-005, and DN-8 is added.
 - **Next:** architecture review (SR-004 wasn't sent yet; this package replaces it).
+
+### SR-007
+
+- **Trigger:** ARCH-REV-001, Fail, AR-001, plus notes 1-2.
+- **Premise read:** `task-delegation.ts:398-401` (`deliverToRun`, `TASK_ASSIGNMENT_MESSAGE_TYPE`) and `collaboration-composition.ts:236` (`crossRun.route`).
+- **Change:** DN-1b, DN-5's round-trip, DN-8's path, S-4 and the walks.
+- **Next:** architecture review.

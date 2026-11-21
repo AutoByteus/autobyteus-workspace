@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-006` (this design, on requirements SR-005).
+- Current solution revision ID: `SR-007` (this design, on requirements SR-005).
 - Approved requirements: `requirements-doc.md` at SR-005. The user decided DEC-004 (SR-002, SR-003); the rest was decided within the direction, and the user was informed.
 - User approval of the design: `Not required`.
 - Design status: `Ready`.
@@ -74,6 +74,17 @@
 - After a confirmed send, A re-reads `isOpen`. If the state changed in flight, the notice stays owed and is sent again.
 - One owner sends both states, so there's no second rule for remote runs.
 
+**DN-1b: one ordered sequence per remote run (SR-007, ARCH-REV-001 AR-001).**
+- `PeerRunStateNotices` serializes everything it sends about one remote run:
+  - at most one notice in flight per run;
+  - the state computed from `isOpen` when the notice is sent;
+  - the next notice sent only after the previous answer.
+- **Why:** this is the cross-node counterpart of CR-461-001's `kept_open`. B can't re-check A's state, so A orders.
+- Without it, a stale "closed" (in flight, or held while B stops a team) could be applied after the re-delegated work woke the run, stopping it mid-work.
+- **The re-delegation's work joins the same sequence (DN-8):** `TaskDelegation` awaits `notices.settled(run)` before delivering. That call resolves once the latest notice B confirmed is `open`, sending one if needed. If the notice can't be delivered (peer unreachable), the delegation's delivery fails as today's delivery failure does (`TASK_WORK_NOT_DELIVERED`), and the "open" notice stays owed.
+- **On B,** the handler answers `open: false` only after the run's Stop completed (team or agent).
+- **A's transport time-out** while B is still stopping keeps the notice owed. The next attempt is idempotent on B (already recorded, already stopped), and arrives after B's earlier stop has settled.
+
 **DN-2: the link request and B's handler.**
 - **The request:** `POST /rest/remote/delegated-run-states`, with body `{ run: { kind: "agent" | "agent_team", runId }, open: boolean }`.
   - It goes through `PeerGateway.admit` (pairing, signature, node identity) and the stored link check (`storedRemoteLinkCheck` with an owner query: the run's back-link must name the caller's node).
@@ -107,6 +118,7 @@
 **DN-5: B's persisted delegation state.**
 - In the run's own file, an optional `delegationClosedAt: string`: `run_metadata.json` for an agent run, `team_run_execution_tree.json` for a team run.
 - Set only on a run with `delegatedFrom.nodeId` (a peer-started run), meaning its delegating node closed every Task naming it.
+- **Round-trip, not just tolerated** (ARCH-REV-001 note 1): the run_metadata parser builds from known fields only (`agent-run-metadata-store.ts:40-64`), and `writeMetadata` (`:135`) writes the parsed object. A tolerated unknown field would be dropped by the next rewrite (a Settings save, a runtime switch, a restore), and the run would return to B's list. So `delegationClosedAt` is a field of `AgentRunMetadata` and of its parser and writer, and likewise of the team tree's type, parser and writer, with a round-trip test each (read, rewrite, read).
 - Absence means open. A local delegated run derives its state from its Task entries and never carries the field.
 - **To verify:** both readers tolerate unknown keys (`agent-run-metadata-store.ts:55-70`; the team tree reader). A strict one is converted in this change (guideline §3, "Convert strict readers when you touch them").
 - **Glossary:** "Closed delegated run" gains: "on the node that runs a peer-started run, recorded in its own file as `delegationClosedAt`".
@@ -119,7 +131,12 @@
 **DN-8: giving a saved Task to an existing remote run (REQ-006).**
 - In `TaskDelegation.toExistingRun` (`task-delegation.ts:357-…`), the refusal of a run with a `nodeId` entry (`:370`, `REMOTE_ROOT_REFUSAL_TEXT.savedTask`) goes. The local checks hold unchanged: the sender is the run's last assigner, and the reopen rules (`assertReopenable`).
 - The entry is reopened or appended with the same `nodeId` (and `members` for a team), as the local path does.
-- The Task's work goes to the run through the link, as `toNewRun`'s remote path sends a new run's work (`task-delegation.ts:186`, `channel.deliverMessage` with `kind: "work_packet"`), addressed to the existing run's entry agent (an agent run, or a team's coordinator). **To verify:** B's inbound `work_packet` handler accepts it for an existing, possibly stopped, peer-started run and wakes it, as it wakes a run for a linked `message`. If it only serves a just-started run, the same delivery uses `kind: "message"` with the Task's assignment text, as the local path's `task_assignment` message.
+- The Task's work goes through **the local path, unchanged**: `deliverToRun` with `TASK_ASSIGNMENT_MESSAGE_TYPE` (`task-delegation.ts:398-401`), which the composition wires to `crossRun.route` (`collaboration-composition.ts:236`), the message routing that reaches a remote run through the link (CM-11). Not `work_packet`: it is admitted only from the back-link's delegator endpoint and treated as a run's first message (`remote-run-links.ts:137-140`; `remote-message-receiver.ts:117-125`; ARCH-REV-001 note 2).
+- **To verify by the implementation:**
+  - `crossRun.route` routes a remote target with a reopened entry through the link;
+  - the conversation check before it (`taskExecutionConversationUnavailable`, `:381-385`) holds for a remote run (it may need the remote run's conversation answer through the link, or a remote branch);
+  - if either doesn't hold, the gap returns as a Design Impact.
+- **Before the delivery,** `toExistingRun` awaits `notices.settled(run)` (DN-1b) for a run with a `nodeId` entry.
 - Reference files travel as in `toNewRun`'s remote path (paths only; transfer is autobyteus-587).
 - `REMOTE_ROOT_REFUSAL_TEXT.savedTask` is removed if nothing else uses it.
 - A refused delivery (peer unreachable) gives the same result as a new remote delegation's delivery failure (`:189`). The entry stays as committed, and the sender can retry, as for a local delivery failure.
@@ -146,7 +163,7 @@
 | S-1 close | `update_task` DONE / CANCELLED (A) → `ProjectTaskService` → `TaskExecutionResourceRelease` → `PeerRunStateNotices.changed(run)` → owed mark → `isOpen` = false → `PeerClient.deliveredRunState(open=false)` → B `PeerGateway.admit` → link check → `DelegatedRunStateHandler`: record, publish, ordinary Stop → answer → A clears the owed mark | A: `PeerRunStateNotices`; B: the handler |
 | S-2 unreachable | S-1 until the send; the transport fails → stays owed → the peer's 30 s timer → S-1's send … | `PeerRunStateNotices` |
 | S-3 A restart | Start-up → the delegation index loads the entries → owed runs → per-peer timers → S-1's send | the same |
-| S-4 re-delegation | Reopen (A, no effect on B) → the assigner's `delegate_task(run ID, task_id)` → `TaskDelegation.toExistingRun` (the local checks; the `:370` refusal removed for remote runs) → `reopenAssignment` / appended entry → `PeerRunStateNotices.changed(run)` → `open=true` → B clears and publishes → the work is delivered through the link (DN-8) → B wakes the run | `TaskDelegation`; `PeerRunStateNotices`; B: the handler and the inbound delivery |
+| S-4 re-delegation | Reopen (A, no effect on B) → the assigner's `delegate_task(run ID, task_id)` → `TaskDelegation.toExistingRun` (the local checks; the `:370` refusal removed for remote runs) → the entry committed → `notices.settled(run)`: the run's sequence finishes any in-flight notice, then sends `open` and awaits B's confirmation → `deliverToRun` (`crossRun.route`, through the link) → B wakes the run | `TaskDelegation`; `PeerRunStateNotices`; B: the handler and the inbound delivery |
 | S-5 wake | A's message or delegation → existing link delivery → B clears `delegationClosedAt` if set → the run wakes (CM-7) | B's inbound delivery |
 | S-6 refused | A third node sends the notice → `admit` (paired) → link check `not_linked` → refused | B's gateway |
 
@@ -156,7 +173,8 @@
 - B offline, then back: the 30 s retry (AC-004).
 - A restarted while a notice is owed: S-3.
 - B restarted while a notice is owed: the run resumes, then the next retry stops it.
-- A re-delegation before the close notice was delivered: the owed notice is sent as "open". B never stopped the run, and the listing is unchanged.
+- A re-delegation while "closed" is in flight, or while B is stopping a team: the sequence waits for that answer, then sends "open", then delivers the work. The run ends up working (AR-001's tests).
+- A re-delegation before the close notice was sent: the owed notice is sent as "open". B never stopped the run, and the listing is unchanged.
 - A re-delegation after delivery: S-4. The run returns to B's list and wakes with the work.
 - A reopen alone: nothing on either side. A message is refused on A (`TASK_AGENT_RESOURCE_CLOSED`), as locally (AC-007).
 - The work delivered before the open notice arrived: S-5 clears the mark.
