@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-009` (ARCH-REV-001 AR-001 … AR-006 and residuals; AR-001 decided by the founder, DEC-007 (a))
+- Current solution revision ID: `SR-010` (code review CRR-008: CR-587-01 … 05 and the founder's DEC-009; see § Revision SR-010, which governs where it differs from earlier sections)
 - Approved requirements: `requirements-doc.md` SR-005 with its behavior-defining supplement `reference-files-contract.md` (RFC-001), approved by the founder 2026-11-21 (DEC-001 … DEC-003, DEC-006 and the contract in his words; DEC-004, DEC-005 by the Solution Designer, confirmed by him).
 - User approval of the design: the founder, 2026-11-21, delegated it: "validate each use case based on your data flow spine … which follows the design principles, and then you just send for review by yourself". Validation: § Design Validation Walkthrough; then independent architecture review.
 - Design status: `Ready`
@@ -186,6 +186,52 @@ Each use case along its spine, every premise read at the committed base `fbe714f
 | RF-6 | Tool-call limits | Claude `timeout` (`sdk.d.ts:565-568`); Codex `tool_timeout_sec`; AutoByteus none; AGY/Grok/ACP unknown | Holds; risk recorded |
 
 Principles: P1 (entry forms, table above), P2/P13 (one owner per sequence; `OutgoingFiles` for both tools; no callbacks), P4 (Memory Sync pattern, `hashFile` reused), P5 (new data only), P7/P8 (removals listed), P10 (explicit descriptors and results), P11 (derived consumers listed), P15 (vocabulary from RFC-001; `received_files` at two levels, one meaning), P16 (owners built in the composition with their collaborators: `OutgoingFiles` ← workspace manager, run manager, channel; `ReceivedFiles` ← data folder, layout).
+
+## Revision SR-010 (code review CRR-008, merge with autobyteus-591)
+
+This section governs where it differs from the sections above. Code read at `10f019d6de` (merge `bcd05494cb`).
+
+### R1. One order on the `node` path (CR-587-01)
+
+The router's `node` step owns the whole order; nothing changes state before every file is on the other node:
+
+```text
+Router.deliver(node, target, files)
+  1. peer = findPeer(node)                                   (refusals as today)
+  2. PeerRunNodes.check(sender, target, peer)                 RF-14, reads only (R2)
+  3. sent = OutgoingFiles.send(sender, peer, files)           every local check (RF-3, RF-4, names), then the whole upload
+  4. admission = crossRun.admitPeerRun(target, sender)        591: may reopen the run's assignment (its entry on the Task) and tell the peer "open"
+  5. result = senderRoot.deliverToPeerRun(…, files: sent.files) → RemoteMessageSend.sendToPeerRun (no upload of its own)
+  6. if 4 reopened and 5 refused → the refusal + "its Task is open again" (the local wording, `notDeliveredAfterReopen`)
+```
+
+- A file refused or an upload failed at 3: nothing is reopened, nothing delivered (the agent reads the file and the reason).
+- Files uploaded and then 4 or 5 refuse: the bytes sit unlinked in the other node's `<data>/received_files/` and the cleanup removes them after 24 h (RF-10).
+- `RemoteMessageSend.sendToPeerRun` takes the descriptors; its `outgoing` dependency and its own upload are removed.
+- The same principle for a saved Task given to an existing remote copy (R3): files first, then the Task-side change (`assignExistingTaskExecution`), then the message.
+
+### R2. One owner of RF-14 (the code reviewer's recommendation, accepted)
+
+- **`PeerRunNodes`** (new, `agent-collaboration/execution/remote/peer-run-nodes.ts`): `nodeOf(sender, targetAgentRunId)` → the node a run is on, as this node knows it: the sender root's remote links (`RemoteRunLinks.endpointFor`, through the root boundary; includes a peer-started run's back-link to its delegator), then the tree's Task entries (`tasksOf … nodeId`); `null` when unknown. `check(sender, target, node?)` → `NODE_REQUIRED` (known on another node, no `node`), `NODE_MISMATCH` (known on another node, another `node`), `NODE_NOT_PAIRED` (known node no longer a registered peer: "that node is no longer paired", no node to pass; CR-587-03), or pass. Built in the composition with the active root directory, the tree and the channel's peer registry.
+- The router calls it once, before any path (with or without `node`). Removed: the roots' `deliverExact` remote branches (the router never routes a remote run there), the mismatch check in `sendToPeerRun`, the RF-14 part of `CrossRunMessageDelivery.route`'s peer-run branch, and `peerRunNodeRefusal` (folded into `PeerRunNodes`). `admitPeerRun` (591) stays the one owner of the closed-Task admission.
+
+### R3. A saved Task's files travel (DEC-009, founder)
+
+- `delegate_task` with `task_id` and `node` (a new copy from a saved Task): the refusal `remote-delegation.ts:43` is removed. `TaskDelegation.toPeerRun` already resolves a saved Task's work and files (`prepareWork`); its files go through `OutgoingFiles` before `startDelegatedRun`, as for described work.
+- A saved Task given to an existing remote copy (591): the refusal `task-delegation.ts:401` (`savedTaskFiles`) is removed. Order: resolve the Task and its files → `OutgoingFiles.send` → `assignExistingTaskExecution` → the message with the descriptors.
+- RF-3 exception: `OutgoingFiles.send` takes `taskContextFiles`, the exact paths the Task service resolved for that saved Task (`validateTaskReferenceFiles`); only those may lie outside the workspace. Every other check applies to them (regular file, one open with matching `dev`/`ino`, limits, checksum).
+- On the receiving node nothing changes: the work packet or message places them for its entry agent (a Team: the coordinator).
+
+### R4. Local fixes (CR-587-02 … 04) and API/E2E (CR-587-05)
+
+- CR-587-02: a piece refused 401 after the same call's successful `status` is reported as "damaged or refused in transit, try again" (`REFERENCE_FILE_TRANSFER_FAILED`); the gate's codes (NA-9) unchanged.
+- CR-587-03: covered by `PeerRunNodes`' `NODE_NOT_PAIRED`.
+- CR-587-04: `OutgoingFiles` opens the given path once, `fstat`s the handle, `realpath`s and `stat`s the path, requires the same `dev`/`ino`, then checks containment; hashing and pieces read from that handle.
+- CR-587-05 (scope confirmed): the 461 contract model gains autobyteus-565's `counterpart` and autobyteus-22's `copiedFrom`; regenerate, `--check`, rerun the gated contract stories including this ticket's S18/S19.
+
+### R5. Tests added by this revision
+
+The R1 order (a refused file with an assigner continuing a closed peer run: nothing reopened; delivery refused after a reopen: the "open again" text); `PeerRunNodes` (each refusal, from a linking root and from another root; a removed peer); AC-012 (saved Task with context files, new copy and existing copy, Agent and Team); the three local fixes.
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 

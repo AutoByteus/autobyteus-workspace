@@ -73,3 +73,10 @@
 
 - ARCH-REV-002: Pass for SR-008 (`eac8cf3814`); the reviewer handed off to `/implementation_engineer`.
 - AR-007 (Low): DS-001 and DS-002 spine lines now show the receiving order of § Ownership Map; DS-005 names `peerRunAdmission`; entry form 6b (wrong `node` from a non-linking root) added. No design change.
+
+### SR-010 — Code review CRR-008 (full re-audit after the autobyteus-591 merge)
+
+- Trigger: CRR-008 (Fail): CR-587-01 (Design Impact), CR-587-02 … 04 (Local Fix), CR-587-05 (scope), FU-007 (Requirement Gap), AC-002/AC-007 wording; recommendation: one owner of RF-14.
+- Founder (2026-11-21): FU-007 → DEC-009 (a saved Task's files travel to another node, to the Agent or a Team's coordinator, as a new copy or to an existing copy; RF-3 exception for the Task's own context files); confirmed the R1 order after the explanation of the run's assignment ("you already figured out the correct order").
+- Changes: design § Revision SR-010 (R1 order; R2 `PeerRunNodes`; R3 saved Tasks; R4 fixes; R5 tests); requirements DEC-009, AC-012, AC-002 and AC-007 wording; RFC-001 RF-3 exception, route rows 4b, 4c; follow-ups FU-002/3/4/6/7 resolved into this ticket.
+- Classification unchanged (`Large` / `High`). Next: architecture review of the revision, then implementation and API/E2E.

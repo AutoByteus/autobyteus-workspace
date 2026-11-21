@@ -11,3 +11,4 @@
 - Documents: this file, `requirements-doc.md`, `reference-files-contract.md`, `investigation-notes.md`, `solution-revision-record.md`, `design-spec.md`, `follow-ups.md` (none).
 - Route: `get_handoff_rules` 2026-11-21 → `/architecture_reviewer` (Large or High).
 - ARCH-REV-002, 2026-11-21: Pass for SR-008 (eac8cf3814); handed off to `/implementation_engineer` by the reviewer. AR-007 wording fixed in SR-009.
+- SR-010, 2026-11-21: revision after code review CRR-008 (design § Revision SR-010); sent for architecture review.
