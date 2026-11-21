@@ -1,0 +1,843 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-handover-journal-read-583/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-handover-journal-read-583/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:22422) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-handover-journal-read-583/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-handover-journal-read-583/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-bW59ji
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-bW59ji/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-bW59ji/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-bW59ji/.env // tip: ⌁ auth for agents [www.vestauth.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-handover-journal-read-583/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-handover-journal-read-583/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-bW59ji
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-bW59ji/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-bW59ji/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-bW59ji/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-bW59ji/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mNode access: local control socket not opened. The node's local control socket path is 111 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-bW59ji/node-access/local-control.sock. Use a shorter data folder path.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-bW59ji/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-bW59ji/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-bW59ji/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mAgent Definition created successfully with ID: work-journal-neutral-4f2f21f5-595a-4d2c-812a-98382c275cee
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-bW59ji/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-bW59ji/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mCreated and registered workspace ID: agent_ws_b077216f1f03b7712f2cf1f5a5acf4e6f50321db20fd6b730749219eaf57cc63
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-bW59ji/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-bW59ji/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mReusing registered workspace ID: agent_ws_b077216f1f03b7712f2cf1f5a5acf4e6f50321db20fd6b730749219eaf57cc63
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mAGY compaction detection off for run work_journal_neutral_4f2f21f5_595a_4d2c_812a_983_c1c4855560114d49b8d6966c58ecc868: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-bW59ji/memory/agents/work_journal_neutral_4f2f21f5_595a_4d2c_812a_983_c1c4855560114d49b8d6966c58ecc868/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mAgent websocket attached for run work_journal_neutral_4f2f21f5_595a_4d2c_812a_983_c1c4855560114d49b8d6966c58ecc868
+Created agent session bca9b672-d090-48d7-942b-da882fd9ea9a for run work_journal_neutral_4f2f21f5_595a_4d2c_812a_983_c1c4855560114d49b8d6966c58ecc868
+Agent WebSocket connected: session=bca9b672-d090-48d7-942b-da882fd9ea9a, run=work_journal_neutral_4f2f21f5_595a_4d2c_812a_983_c1c4855560114d49b8d6966c58ecc868
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-bW59ji/memory/agents/work_journal_neutral_4f2f21f5_595a_4d2c_812a_983_c1c4855560114d49b8d6966c58ecc868/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-bW59ji/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-bW59ji/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mReusing registered workspace ID: agent_ws_b077216f1f03b7712f2cf1f5a5acf4e6f50321db20fd6b730749219eaf57cc63
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-bW59ji/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-bW59ji/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mReusing registered workspace ID: agent_ws_b077216f1f03b7712f2cf1f5a5acf4e6f50321db20fd6b730749219eaf57cc63
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mAGY compaction detection off for run work_journal_neutral_4f2f21f5_595a_4d2c_812a_983_08b09e4909cb4e21831e82a42b0abb41: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-bW59ji/memory/agents/work_journal_neutral_4f2f21f5_595a_4d2c_812a_983_08b09e4909cb4e21831e82a42b0abb41/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mAgent websocket attached for run work_journal_neutral_4f2f21f5_595a_4d2c_812a_983_08b09e4909cb4e21831e82a42b0abb41
+Created agent session 4118da24-2757-4abb-9150-f7b275a54fc3 for run work_journal_neutral_4f2f21f5_595a_4d2c_812a_983_08b09e4909cb4e21831e82a42b0abb41
+Agent WebSocket connected: session=4118da24-2757-4abb-9150-f7b275a54fc3, run=work_journal_neutral_4f2f21f5_595a_4d2c_812a_983_08b09e4909cb4e21831e82a42b0abb41
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-bW59ji/memory/agents/work_journal_neutral_4f2f21f5_595a_4d2c_812a_983_08b09e4909cb4e21831e82a42b0abb41/raw_traces_manifest.json
+
+ [32m✓[39m tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22mJS-01..03: a real-shaped schema read is omitted and the raw trace keeps it; another path is kept; an old-revision journal is re-rendered[33m 621[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mClosed agent session 4118da24-2757-4abb-9150-f7b275a54fc3
+Agent WebSocket disconnected: 4118da24-2757-4abb-9150-f7b275a54fc3
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mClosed agent session bca9b672-d090-48d7-942b-da882fd9ea9a
+Agent WebSocket disconnected: bca9b672-d090-48d7-942b-da882fd9ea9a
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mAgent Definition with ID work-journal-neutral-4f2f21f5-595a-4d2c-812a-98382c275cee deleted successfully.
+
+(node:22553) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-handover-journal-read-583/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-handover-journal-read-583/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-hi3ZoR
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-hi3ZoR/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-hi3ZoR/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-hi3ZoR/.env // tip: ⌘ override existing { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-handover-journal-read-583/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-handover-journal-read-583/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-hi3ZoR
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-hi3ZoR/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-hi3ZoR/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-hi3ZoR/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-hi3ZoR/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mNode access: local control socket not opened. The node's local control socket path is 111 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-hi3ZoR/node-access/local-control.sock. Use a shorter data folder path.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-hi3ZoR/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-hi3ZoR/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-hi3ZoR/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mSuccessfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mAgent Definition created successfully with ID: work-journal-restore-2844b9d7-c114-4e9f-9f0a-813c6a4a93e1
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore[2m > [22m[2mupdates the open file per turn, writes the closed file once, and regenerates both after restore
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-hi3ZoR/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-hi3ZoR/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore[2m > [22m[2mupdates the open file per turn, writes the closed file once, and regenerates both after restore
+[22m[39mCreated and registered workspace ID: agent_ws_3706fb673bb168dd496cb86d1829a5df73b2ab2da1d9068c347adb9fef1b6b88
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore[2m > [22m[2mupdates the open file per turn, writes the closed file once, and regenerates both after restore
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-hi3ZoR/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-hi3ZoR/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore[2m > [22m[2mupdates the open file per turn, writes the closed file once, and regenerates both after restore
+[22m[39mReusing registered workspace ID: agent_ws_3706fb673bb168dd496cb86d1829a5df73b2ab2da1d9068c347adb9fef1b6b88
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore[2m > [22m[2mupdates the open file per turn, writes the closed file once, and regenerates both after restore
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-hi3ZoR/memory/agents/work_journal_restore_2844b9d7_c114_4e9f_9f0a_813_8863552adfe84afb8eb88a2819284d2e/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore[2m > [22m[2mupdates the open file per turn, writes the closed file once, and regenerates both after restore
+[22m[39mAgent websocket attached for run work_journal_restore_2844b9d7_c114_4e9f_9f0a_813_8863552adfe84afb8eb88a2819284d2e
+Created agent session f65f82df-5e29-4980-a6a8-512fe0eedbc8 for run work_journal_restore_2844b9d7_c114_4e9f_9f0a_813_8863552adfe84afb8eb88a2819284d2e
+Agent WebSocket connected: session=f65f82df-5e29-4980-a6a8-512fe0eedbc8, run=work_journal_restore_2844b9d7_c114_4e9f_9f0a_813_8863552adfe84afb8eb88a2819284d2e
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore[2m > [22m[2mupdates the open file per turn, writes the closed file once, and regenerates both after restore
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-hi3ZoR/memory/agents/work_journal_restore_2844b9d7_c114_4e9f_9f0a_813_8863552adfe84afb8eb88a2819284d2e/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore[2m > [22m[2mupdates the open file per turn, writes the closed file once, and regenerates both after restore
+[22m[39mClosed agent session f65f82df-5e29-4980-a6a8-512fe0eedbc8
+Agent WebSocket disconnected: f65f82df-5e29-4980-a6a8-512fe0eedbc8
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore[2m > [22m[2mupdates the open file per turn, writes the closed file once, and regenerates both after restore
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-hi3ZoR/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-restore-e2e-hi3ZoR/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore[2m > [22m[2mupdates the open file per turn, writes the closed file once, and regenerates both after restore
+[22m[39mReusing registered workspace ID: agent_ws_3706fb673bb168dd496cb86d1829a5df73b2ab2da1d9068c347adb9fef1b6b88
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore[2m > [22m[2mupdates the open file per turn, writes the closed file once, and regenerates both after restore
+[22m[39mAgent websocket attached for run work_journal_restore_2844b9d7_c114_4e9f_9f0a_813_8863552adfe84afb8eb88a2819284d2e
+Created agent session 5c6f7397-6012-4268-b005-410acf947ae7 for run work_journal_restore_2844b9d7_c114_4e9f_9f0a_813_8863552adfe84afb8eb88a2819284d2e
+Agent WebSocket connected: session=5c6f7397-6012-4268-b005-410acf947ae7, run=work_journal_restore_2844b9d7_c114_4e9f_9f0a_813_8863552adfe84afb8eb88a2819284d2e
+
+ [32m✓[39m tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22mWork Journal kept current, closed files written once, and rebuilt for an older run on restore[2m > [22mupdates the open file per turn, writes the closed file once, and regenerates both after restore[33m 895[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mClosed agent session 5c6f7397-6012-4268-b005-410acf947ae7
+Agent WebSocket disconnected: 5c6f7397-6012-4268-b005-410acf947ae7
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts[2m > [22m[2mWork Journal kept current, closed files written once, and rebuilt for an older run on restore
+[22m[39mAgent Definition with ID work-journal-restore-2844b9d7-c114-4e9f-9f0a-813c6a4a93e1 deleted successfully.
+
+(node:22687) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-handover-journal-read-583/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-handover-journal-read-583/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-BJraAE
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-BJraAE/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-BJraAE/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-BJraAE/.env // tip: ◈ secrets for agents [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-handover-journal-read-583/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-handover-journal-read-583/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-BJraAE
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-BJraAE/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-BJraAE/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-BJraAE/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-BJraAE/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mNode access: local control socket not opened. The node's local control socket path is 111 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-BJraAE/node-access/local-control.sock. Use a shorter data folder path.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-BJraAE/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-BJraAE/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-BJraAE/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mAgent Definition created successfully with ID: work-journal-neutral-190db7b7-6e0c-4a2a-878e-a55b2505bb0f
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJR-01..02: read_file reads like view_file, a spilled output shows the preview and the marker, the later read is ordinary, an old-revision journal is re-rendered
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-BJraAE/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-BJraAE/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJR-01..02: read_file reads like view_file, a spilled output shows the preview and the marker, the later read is ordinary, an old-revision journal is re-rendered
+[22m[39mCreated and registered workspace ID: agent_ws_0ee316fd4e51083ba1eeea8a20bf348d84855d625da242a937fa0379402f0999
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJR-01..02: read_file reads like view_file, a spilled output shows the preview and the marker, the later read is ordinary, an old-revision journal is re-rendered
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-BJraAE/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-BJraAE/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJR-01..02: read_file reads like view_file, a spilled output shows the preview and the marker, the later read is ordinary, an old-revision journal is re-rendered
+[22m[39mReusing registered workspace ID: agent_ws_0ee316fd4e51083ba1eeea8a20bf348d84855d625da242a937fa0379402f0999
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJR-01..02: read_file reads like view_file, a spilled output shows the preview and the marker, the later read is ordinary, an old-revision journal is re-rendered
+[22m[39mAGY compaction detection off for run work_journal_neutral_190db7b7_6e0c_4a2a_878e_a55_46abd102d0f44804a9e1e4c74a459ed3: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJR-01..02: read_file reads like view_file, a spilled output shows the preview and the marker, the later read is ordinary, an old-revision journal is re-rendered
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-BJraAE/memory/agents/work_journal_neutral_190db7b7_6e0c_4a2a_878e_a55_46abd102d0f44804a9e1e4c74a459ed3/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJR-01..02: read_file reads like view_file, a spilled output shows the preview and the marker, the later read is ordinary, an old-revision journal is re-rendered
+[22m[39mAgent websocket attached for run work_journal_neutral_190db7b7_6e0c_4a2a_878e_a55_46abd102d0f44804a9e1e4c74a459ed3
+Created agent session 36af018a-eb27-4c2c-821d-7d667874bd4a for run work_journal_neutral_190db7b7_6e0c_4a2a_878e_a55_46abd102d0f44804a9e1e4c74a459ed3
+Agent WebSocket connected: session=36af018a-eb27-4c2c-821d-7d667874bd4a, run=work_journal_neutral_190db7b7_6e0c_4a2a_878e_a55_46abd102d0f44804a9e1e4c74a459ed3
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22m[2mJR-01..02: read_file reads like view_file, a spilled output shows the preview and the marker, the later read is ordinary, an old-revision journal is re-rendered
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-BJraAE/memory/agents/work_journal_neutral_190db7b7_6e0c_4a2a_878e_a55_46abd102d0f44804a9e1e4c74a459ed3/raw_traces_manifest.json
+
+ [32m✓[39m tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime[2m > [22mJR-01..02: read_file reads like view_file, a spilled output shows the preview and the marker, the later read is ordinary, an old-revision journal is re-rendered[33m 5634[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mClosed agent session 36af018a-eb27-4c2c-821d-7d667874bd4a
+Agent WebSocket disconnected: 36af018a-eb27-4c2c-821d-7d667874bd4a
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts[2m > [22m[2mAntigravity MCP schema reads in the Work Journal on a real (scripted) runtime
+[22m[39mAgent Definition with ID work-journal-neutral-190db7b7-6e0c-4a2a-878e-a55b2505bb0f deleted successfully.
+
+(node:23074) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-handover-journal-read-583/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-handover-journal-read-583/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-HkI40N
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-HkI40N/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-HkI40N/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-HkI40N/.env // tip: ⌘ override existing { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-handover-journal-read-583/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-handover-journal-read-583/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-HkI40N
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-HkI40N/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-HkI40N/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-HkI40N/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-HkI40N/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mNode access: local control socket not opened. The node's local control socket path is 111 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-HkI40N/node-access/local-control.sock. Use a shorter data folder path.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-HkI40N/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-HkI40N/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-HkI40N/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mAgent Definition created successfully with ID: work-journal-neutral-bcaa9d1f-9b0f-4e36-8bfe-b73aba92eaad
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime[2m > [22m[2mthe platform and server-qualified tools of AGY call steps are journalled in neutral words
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-HkI40N/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-HkI40N/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime[2m > [22m[2mthe platform and server-qualified tools of AGY call steps are journalled in neutral words
+[22m[39mCreated and registered workspace ID: agent_ws_811df002be01dc2454ec3abee29c365859cad2d7044bffea5d2fe75a782febc0
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime[2m > [22m[2mthe platform and server-qualified tools of AGY call steps are journalled in neutral words
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-HkI40N/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-HkI40N/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime[2m > [22m[2mthe platform and server-qualified tools of AGY call steps are journalled in neutral words
+[22m[39mReusing registered workspace ID: agent_ws_811df002be01dc2454ec3abee29c365859cad2d7044bffea5d2fe75a782febc0
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime[2m > [22m[2mthe platform and server-qualified tools of AGY call steps are journalled in neutral words
+[22m[39mAGY compaction detection off for run work_journal_neutral_bcaa9d1f_9b0f_4e36_8bfe_b73_eca44f0dfb264dd8a634e2ec6fc71536: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime[2m > [22m[2mthe platform and server-qualified tools of AGY call steps are journalled in neutral words
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-HkI40N/memory/agents/work_journal_neutral_bcaa9d1f_9b0f_4e36_8bfe_b73_eca44f0dfb264dd8a634e2ec6fc71536/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime[2m > [22m[2mthe platform and server-qualified tools of AGY call steps are journalled in neutral words
+[22m[39mAgent websocket attached for run work_journal_neutral_bcaa9d1f_9b0f_4e36_8bfe_b73_eca44f0dfb264dd8a634e2ec6fc71536
+Created agent session 1b963f28-21a1-4dfa-980a-16dc95ea42c7 for run work_journal_neutral_bcaa9d1f_9b0f_4e36_8bfe_b73_eca44f0dfb264dd8a634e2ec6fc71536
+Agent WebSocket connected: session=1b963f28-21a1-4dfa-980a-16dc95ea42c7, run=work_journal_neutral_bcaa9d1f_9b0f_4e36_8bfe_b73_eca44f0dfb264dd8a634e2ec6fc71536
+
+[90mstderr[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime[2m > [22m[2mthe platform and server-qualified tools of AGY call steps are journalled in neutral words
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-neutral-e2e-HkI40N/memory/agents/work_journal_neutral_bcaa9d1f_9b0f_4e36_8bfe_b73_eca44f0dfb264dd8a634e2ec6fc71536/raw_traces_manifest.json
+
+ [32m✓[39m tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22mWork Journal neutral vocabulary on a real (scripted) runtime[2m > [22mthe platform and server-qualified tools of AGY call steps are journalled in neutral words[33m 4573[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mClosed agent session 1b963f28-21a1-4dfa-980a-16dc95ea42c7
+Agent WebSocket disconnected: 1b963f28-21a1-4dfa-980a-16dc95ea42c7
+
+[90mstdout[2m | tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary on a real (scripted) runtime
+[22m[39mAgent Definition with ID work-journal-neutral-bcaa9d1f-9b0f-4e36-8bfe-b73aba92eaad deleted successfully.
+
+
+[2m Test Files [22m [1m[32m4 passed[39m[22m[90m (4)[39m
+[2m      Tests [22m [1m[32m4 passed[39m[22m[90m (4)[39m
+[2m   Start at [22m 10:58:03
+[2m   Duration [22m 72.81s[2m (transform 12.37s, setup 186ms, import 26.69s, tests 44.96s, environment 0ms)[22m
+
+=== DEL-07-e2e-journal-agy-family exit 0

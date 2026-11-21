@@ -1,0 +1,689 @@
+# IMP-02-unit-notice-and-journal.log
+# Check: IMP-02
+# Command: env -i HOME PATH TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-handover-notices tests/agent-work-journal; then tests/unit/runtime-handover-notices with the transition test; then both against the old source
+# Commit tested: working tree committed as 014e281990
+# Environment: macOS (Darwin 25.5), Node v22.23.1, pnpm; env -i; synthetic run folders only
+# Date: 2026-11-21
+# Note: 242 tests pass, then 20; the old source fails 9 (every new notice case and the workEntryCount listing; the before-work case holds on both)
+# ----------------------------------------------------------------------
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-handover-journal-read-583/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-handover-journal-read-583/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/agent-work-journal/rendering/platform-completeness.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:29853) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/agent-work-journal/rendering/platform-completeness.test.ts > platform tool converters > cover every platform tool the registry offers
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-handover-journal-read-583/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-handover-journal-read-583/autobyteus-server-ts
+
+ ✓ tests/agent-work-journal/rendering/platform-completeness.test.ts (3 tests) 6ms
+stdout | tests/agent-work-journal/services/work-journal-run-updater.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:31630) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/agent-work-journal/services/work-journal-run-updater.test.ts > WorkJournalRunUpdater (DS-001) > a burst of events is merged into at most one more update; other events do not update
+[AgentSegmentLifecycleRejected] {
+  runtimeKind: 'codex_app_server',
+  runId: 'run-1',
+  turnId: 'turn-1',
+  eventType: 'SEGMENT_CONTENT',
+  segmentId: 's',
+  reason: 'PAYLOAD_INVALID'
+}
+
+ ✓ tests/agent-work-journal/services/work-journal-run-updater.test.ts (6 tests) 163ms
+stdout | tests/agent-work-journal/services/work-journal-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/agent-work-journal/services/work-journal-service.test.ts (15 tests) 148ms
+stdout | tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > a journal manifest written by the previous release (one runtime for the run, none per file) is read once and rewritten without changing any journal text
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > a journal manifest written by the previous release (one runtime for the run, none per file) is read once and rewritten without changing any journal text
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > claude: archived segments and the open file render exactly as the run's one runtime renders them
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > claude: archived segments and the open file render exactly as the run's one runtime renders them
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > codex: archived segments and the open file render exactly as the run's one runtime renders them
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > codex: archived segments and the open file render exactly as the run's one runtime renders them
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > antigravity: archived segments and the open file render exactly as the run's one runtime renders them
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > antigravity: archived segments and the open file render exactly as the run's one runtime renders them
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > grok: archived segments and the open file render exactly as the run's one runtime renders them
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > grok: archived segments and the open file render exactly as the run's one runtime renders them
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > autobyteus: archived segments and the open file render exactly as the run's one runtime renders them
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > autobyteus: archived segments and the open file render exactly as the run's one runtime renders them
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+ ✓ tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts (6 tests) 146ms
+stdout | tests/agent-work-journal/services/work-journal-reading.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/agent-work-journal/services/work-journal-reading.test.ts (10 tests) 127ms
+stdout | tests/agent-work-journal/services/work-journal-agy-schema-reads.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/agent-work-journal/services/work-journal-agy-schema-reads.test.ts (2 tests) 40ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts (36 tests) 27ms
+ ✓ tests/agent-work-journal/rendering/unchanged-lines.test.ts (5 tests) 11ms
+ ✓ tests/agent-work-journal/rendering/work-journal-file-renderer.test.ts (23 tests) 30ms
+ ✓ tests/agent-work-journal/rendering/antigravity-mcp-schema-reads.test.ts (36 tests) 16ms
+ ✓ tests/agent-work-journal/rendering/platform-tool-converters.test.ts (14 tests) 11ms
+ ✓ tests/agent-work-journal/rendering/neutral-vocabulary.test.ts (15 tests) 9ms
+ ✓ tests/unit/runtime-handover-notices/runtime-handover-notice-service.test.ts (10 tests) 7ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts (37 tests) 6ms
+ ✓ tests/agent-work-journal/rendering/tool-call-line.test.ts (7 tests) 4ms
+ ✓ tests/agent-work-journal/rendering/rendering-building-blocks.test.ts (10 tests) 5ms
+ ✓ tests/unit/runtime-handover-notices/runtime-handover-notice-builder.test.ts (7 tests) 5ms
+stdout | tests/agent-work-journal/perf/work-journal-open-file-cost.perf.test.ts
+AgentFactory (Singleton) initialized.
+
+ ↓ tests/agent-work-journal/perf/work-journal-open-file-cost.perf.test.ts (2 tests | 2 skipped)
+
+ Test Files  17 passed | 1 skipped (18)
+      Tests  242 passed | 2 skipped (244)
+   Start at  08:14:20
+   Duration  22.21s (transform 6.34s, setup 618ms, import 17.07s, tests 761ms, environment 1ms)
+
+
+===== runtime-handover-notices with the new transition test =====
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-handover-journal-read-583/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-handover-journal-read-583/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+ ✓ tests/unit/runtime-handover-notices/runtime-handover-notice-service.test.ts (10 tests) 7ms
+ ✓ tests/unit/runtime-handover-notices/runtime-handover-notice-builder.test.ts (7 tests) 4ms
+stdout | tests/unit/runtime-handover-notices/runtime-handover-notice-transition.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-handover-notices/runtime-handover-notice-transition.test.ts (3 tests) 200ms
+
+ Test Files  3 passed (3)
+      Tests  20 passed (20)
+   Start at  08:15:15
+   Duration  5.21s (transform 2.25s, setup 144ms, import 3.63s, tests 211ms, environment 0ms)
+
+
+===== negative control: builder, summary model and journal service as at 90c4958a35 =====
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-handover-journal-read-583/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-handover-journal-read-583/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/unit/runtime-handover-notices/runtime-handover-notice-transition.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/runtime-handover-notices/runtime-handover-notice-transition.test.ts (3 tests | 2 failed) 387ms
+     × names the closed file with the previous agent's work, not the open file that holds only the hand-over (AC-001) 104ms
+     × skips the notice-only file a second switch before any input leaves behind (AC-002) 243ms
+     ✓ has no read instruction after a switch before any work (AC-004) 25ms
+stdout | tests/agent-work-journal/services/work-journal-reading.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/agent-work-journal/services/work-journal-reading.test.ts (10 tests | 1 failed) 156ms
+     ✓ reads entries with kinds, line ranges and days; days list the first line of each day 2ms
+     ✓ has no days for a file that records no time 0ms
+     ✓ reads the header's range with the date on both sides, also for a range within one day 0ms
+     ✓ has no range for a file whose records have no time, or a text that is not a journal header 0ms
+     ✓ renders a file whose runtime is not recorded with the generic rule, stores null for it, and reuses its closed files 71ms
+     ✓ tells listeners only when a journal file was written or removed; a failing listener never fails the call 28ms
+     ✓ reads each manifest file's path, size and header time range without rendering; null without a journal 16ms
+     ✓ reads the spans of files an older manifest lists, whose entries record no runtime of their own, without rendering them 9ms
+     ✓ tells a manifest that cannot be read from no journal at all (API-15) 11ms
+     × lists journal files with versions, sizes, lines, work entries and days, and reads lines of manifest files only 17ms
+ ✓ tests/unit/runtime-handover-notices/runtime-handover-notice-service.test.ts (10 tests) 7ms
+ ❯ tests/unit/runtime-handover-notices/runtime-handover-notice-builder.test.ts (7 tests | 6 failed) 22ms
+     × names the previous agent's most recent work and asks for a complete read before replying (AC-001) 10ms
+     × does not present the open file as the recent work: it starts with this hand-over (AC-001, REQ-003) 5ms
+     × skips a newer closed file that holds only a hand-over notice (AC-002, two switches with no input between them) 2ms
+     × lists every file oldest first with period, size and lines, after the instruction (AC-003, REQ-004) 2ms
+     × has no read instruction when no closed file holds work: a switch before any work (AC-004, REQ-005) 1ms
+     × leaves out the open-file sentence when there is no open file 1ms
+     ✓ names no agent runtime or model and repeats no request (AC-003, REQ-006) 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/agent-work-journal/services/work-journal-reading.test.ts > WorkJournalService reads, notification and unrecorded runtime > lists journal files with versions, sizes, lines, work entries and days, and reads lines of manifest files only
+AssertionError: expected { …(5) } to deeply equal { …(6) }
+
+- Expected
++ Received
+
+@@ -7,7 +7,6 @@
+    ],
+    "journalFile": "work_journal_active.md",
+    "lineCount": 8,
+    "sizeBytes": 513,
+    "state": "open",
+-   "workEntryCount": 3,
+  }
+
+ ❯ tests/agent-work-journal/services/work-journal-reading.test.ts:201:23
+    199|     const activeText = fs.readFileSync(path.join(runDir, "work_journal…
+    200|     // A turn (user, command, reply) is three work entries (autobyteus…
+    201|     expect(files![1]).toEqual({
+       |                       ^
+    202|       journalFile: "work_journal_active.md", state: "open", sizeBytes:…
+    203|       lineCount: activeText.split("\n").length - 1, workEntryCount: 3,…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  tests/unit/runtime-handover-notices/runtime-handover-notice-builder.test.ts > the hand-over notice text (autobyteus-583; contract 3.6) > names the previous agent's most recent work and asks for a complete read before replying (AC-001)
+AssertionError: expected '[System: runtime hand-over]\nAnother …' to contain 'The journals are in /mem/agents/run-1…'
+
+- Expected
++ Received
+
+- The journals are in /mem/agents/run-1/work_journal/. The previous agent's most recent work is in work_journal_000002.md.
++ [System: runtime hand-over]
++ Another agent worked on this run before you and kept a work journal as it went. You are taking over.
++
++ The journals are in /mem/agents/run-1/work_journal/. The latest one, work_journal_active.md, shows what was done most recently, so it is a good place to start. The earlier ones are there too, oldest first, if you want to look further back:
++   work_journal_000001.md | 2026-10-28 to 2026-10-29 | 512 B, 40 lines
++   work_journal_000002.md | 2026-10-29 | 3.0 MB, 2400 lines
++   work_journal_active.md | 2026-10-30 | 444 B, 5 lines
++
++ Each entry is one line, such as "[HH:MM:SS] User: …", "Agent: …" or "Command: … → ok", and ends with a
++ link to the full record. Long output is shortened.
+
+ ❯ tests/unit/runtime-handover-notices/runtime-handover-notice-builder.test.ts:30:18
+     28|     expect(text.split("\n")[0]).toBe("[System: runtime hand-over]");
+     29|     expect(text).toContain("Another agent worked on this run before yo…
+     30|     expect(text).toContain(`The journals are in ${DIR}/. The previous …
+       |                  ^
+     31|     expect(text).toContain(`Before you reply or continue the work, rea…
+     32|     expect(text).toContain("If it is long, read it in parts until you …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  tests/unit/runtime-handover-notices/runtime-handover-notice-builder.test.ts > the hand-over notice text (autobyteus-583; contract 3.6) > does not present the open file as the recent work: it starts with this hand-over (AC-001, REQ-003)
+AssertionError: expected '[System: runtime hand-over]\nAnother …' to contain 'work_journal_active.md starts with th…'
+
+- Expected
++ Received
+
+- work_journal_active.md starts with this hand-over; your own work is recorded there from now on.
++ [System: runtime hand-over]
++ Another agent worked on this run before you and kept a work journal as it went. You are taking over.
++
++ The journals are in /mem/agents/run-1/work_journal/. The latest one, work_journal_active.md, shows what was done most recently, so it is a good place to start. The earlier ones are there too, oldest first, if you want to look further back:
++   work_journal_000001.md | 2026-10-28 to 2026-10-29 | 512 B, 40 lines
++   work_journal_000002.md | 2026-10-29 | 3.0 MB, 2400 lines
++   work_journal_active.md | 2026-10-30 | 444 B, 5 lines
++
++ Each entry is one line, such as "[HH:MM:SS] User: …", "Agent: …" or "Command: … → ok", and ends with a
++ link to the full record. Long output is shortened.
+
+ ❯ tests/unit/runtime-handover-notices/runtime-handover-notice-builder.test.ts:37:18
+     35|   it("does not present the open file as the recent work: it starts wit…
+     36|     const text = buildRuntimeHandoverNoticeText(facts);
+     37|     expect(text).toContain("work_journal_active.md starts with this ha…
+       |                  ^
+     38|     expect(text).not.toMatch(/good place to start|The latest one/);
+     39|     expect(text).not.toContain(`read ${DIR}/work_journal_active.md`);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  tests/unit/runtime-handover-notices/runtime-handover-notice-builder.test.ts > the hand-over notice text (autobyteus-583; contract 3.6) > skips a newer closed file that holds only a hand-over notice (AC-002, two switches with no input between them)
+AssertionError: expected '[System: runtime hand-over]\nAnother …' to contain 'The previous agent\'s most recent wor…'
+
+- Expected
++ Received
+
+- The previous agent's most recent work is in work_journal_000001.md.
++ [System: runtime hand-over]
++ Another agent worked on this run before you and kept a work journal as it went. You are taking over.
++
++ The journals are in /mem/agents/run-1/work_journal/. The latest one, work_journal_active.md, shows what was done most recently, so it is a good place to start. The earlier ones are there too, oldest first, if you want to look further back:
++   work_journal_000001.md | 2026-09-22 | 2.0 KB, 40 lines
++   work_journal_000002.md | 2026-11-21 | 2.0 KB, 5 lines
++   work_journal_active.md | 2026-10-30 | 444 B, 5 lines
++
++ Each entry is one line, such as "[HH:MM:SS] User: …", "Agent: …" or "Command: … → ok", and ends with a
++ link to the full record. Long output is shortened.
+
+ ❯ tests/unit/runtime-handover-notices/runtime-handover-notice-builder.test.ts:47:18
+     45|       files: [file("work_journal_000001.md", "2026-09-22"), file("work…
+     46|     });
+     47|     expect(text).toContain("The previous agent's most recent work is i…
+       |                  ^
+     48|     expect(text).toContain(`read ${DIR}/work_journal_000001.md complet…
+     49|     expect(text).not.toContain(`read ${DIR}/work_journal_000002.md`);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  tests/unit/runtime-handover-notices/runtime-handover-notice-builder.test.ts > the hand-over notice text (autobyteus-583; contract 3.6) > lists every file oldest first with period, size and lines, after the instruction (AC-003, REQ-004)
+AssertionError: expected '[System: runtime hand-over]\nAnother …' to contain 'All journal files, oldest first (the …'
+
+- Expected
++ Received
+
+- All journal files, oldest first (the earlier ones are there if you need to look further back):
++ [System: runtime hand-over]
++ Another agent worked on this run before you and kept a work journal as it went. You are taking over.
++
++ The journals are in /mem/agents/run-1/work_journal/. The latest one, work_journal_active.md, shows what was done most recently, so it is a good place to start. The earlier ones are there too, oldest first, if you want to look further back:
++   work_journal_000001.md | 2026-10-28 to 2026-10-29 | 512 B, 40 lines
++   work_journal_000002.md | 2026-10-29 | 3.0 MB, 2400 lines
++   work_journal_active.md | 2026-10-30 | 444 B, 5 lines
++
++ Each entry is one line, such as "[HH:MM:SS] User: …", "Agent: …" or "Command: … → ok", and ends with a
++ link to the full record. Long output is shortened.
+
+ ❯ tests/unit/runtime-handover-notices/runtime-handover-notice-builder.test.ts:54:18
+     52|   it("lists every file oldest first with period, size and lines, after…
+     53|     const text = buildRuntimeHandoverNoticeText(facts);
+     54|     expect(text).toContain("All journal files, oldest first (the earli…
+       |                  ^
+     55|     expect(listed(text)).toEqual([
+     56|       "  work_journal_000001.md | 2026-10-28 to 2026-10-29 | 512 B, 40…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  tests/unit/runtime-handover-notices/runtime-handover-notice-builder.test.ts > the hand-over notice text (autobyteus-583; contract 3.6) > has no read instruction when no closed file holds work: a switch before any work (AC-004, REQ-005)
+AssertionError: expected '[System: runtime hand-over]\nAnother …' to contain 'The journals are in /mem/agents/run-1…'
+
+- Expected
++ Received
+
+- The journals are in /mem/agents/run-1/work_journal/:
++ [System: runtime hand-over]
++ Another agent worked on this run before you and kept a work journal as it went. You are taking over.
++
++ The journals are in /mem/agents/run-1/work_journal/. The latest one, work_journal_active.md, shows what was done most recently, so it is a good place to start.
++   work_journal_active.md | 2026-10-30 | 444 B, 5 lines
++
++ Each entry is one line, such as "[HH:MM:SS] User: …", "Agent: …" or "Command: … → ok", and ends with a
++ link to the full record. Long output is shortened.
+
+ ❯ tests/unit/runtime-handover-notices/runtime-handover-notice-builder.test.ts:66:22
+     64|   it("has no read instruction when no closed file holds work: a switch…
+     65|     const onlyOpen = buildRuntimeHandoverNoticeText({ journalFolder: D…
+     66|     expect(onlyOpen).toContain(`The journals are in ${DIR}/:`);
+       |                      ^
+     67|     expect(listed(onlyOpen)).toEqual(["  work_journal_active.md | 2026…
+     68|     expect(onlyOpen).not.toMatch(/completely|most recent work|starts w…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  tests/unit/runtime-handover-notices/runtime-handover-notice-builder.test.ts > the hand-over notice text (autobyteus-583; contract 3.6) > leaves out the open-file sentence when there is no open file
+AssertionError: expected '[System: runtime hand-over]\nAnother …' to contain 'read /mem/agents/run-1/work_journal/w…'
+
+- Expected
++ Received
+
+- read /mem/agents/run-1/work_journal/work_journal_000001.md completely
++ [System: runtime hand-over]
++ Another agent worked on this run before you and kept a work journal as it went. You are taking over.
++
++ The journals are in /mem/agents/run-1/work_journal/. The latest one, work_journal_000001.md, shows what was done most recently, so it is a good place to start.
++   work_journal_000001.md | 2026-10-28 | 2.0 KB, 40 lines
++
++ Each entry is one line, such as "[HH:MM:SS] User: …", "Agent: …" or "Command: … → ok", and ends with a
++ link to the full record. Long output is shortened.
+
+ ❯ tests/unit/runtime-handover-notices/runtime-handover-notice-builder.test.ts:79:18
+     77|   it("leaves out the open-file sentence when there is no open file", (…
+     78|     const text = buildRuntimeHandoverNoticeText({ journalFolder: DIR, …
+     79|     expect(text).toContain(`read ${DIR}/work_journal_000001.md complet…
+       |                  ^
+     80|     expect(text).not.toContain("starts with this hand-over");
+     81|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+ FAIL  tests/unit/runtime-handover-notices/runtime-handover-notice-transition.test.ts > the hand-over notice on a real switch rotation (autobyteus-583) > names the closed file with the previous agent's work, not the open file that holds only the hand-over (AC-001)
+AssertionError: expected '[System: runtime hand-over]\nAnother …' to contain 'The previous agent\'s most recent wor…'
+
+- Expected
++ Received
+
+- The previous agent's most recent work is in work_journal_000001.md.
++ [System: runtime hand-over]
++ Another agent worked on this run before you and kept a work journal as it went. You are taking over.
++
++ The journals are in /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-5smIHI/agents/run_a/work_journal/. The latest one, work_journal_active.md, shows what was done most recently, so it is a good place to start. The earlier ones are there too, oldest first, if you want to look further back:
++   work_journal_000001.md | 2026-09-22 | 1010 B, 16 lines
++   work_journal_active.md | 2026-11-21 | 444 B, 5 lines
++
++ Each entry is one line, such as "[HH:MM:SS] User: …", "Agent: …" or "Command: … → ok", and ends with a
++ link to the full record. Long output is shortened.
+
+ ❯ tests/unit/runtime-handover-notices/runtime-handover-notice-transition.test.ts:46:18
+     44|     const text = await noticeOf(runDir, RuntimeKind.CODEX_APP_SERVER);
+     45|     const dir = path.join(runDir, "work_journal");
+     46|     expect(text).toContain("The previous agent's most recent work is i…
+       |                  ^
+     47|     expect(text).toContain(`Before you reply or continue the work, rea…
+     48|     expect(text).toContain("work_journal_active.md starts with this ha…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯
+
+ FAIL  tests/unit/runtime-handover-notices/runtime-handover-notice-transition.test.ts > the hand-over notice on a real switch rotation (autobyteus-583) > skips the notice-only file a second switch before any input leaves behind (AC-002)
+AssertionError: expected '[System: runtime hand-over]\nAnother …' to contain 'The previous agent\'s most recent wor…'
+
+- Expected
++ Received
+
+- The previous agent's most recent work is in work_journal_000001.md.
++ [System: runtime hand-over]
++ Another agent worked on this run before you and kept a work journal as it went. You are taking over.
++
++ The journals are in /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-GnWwqJ/agents/run_b/work_journal/. The latest one, work_journal_active.md, shows what was done most recently, so it is a good place to start. The earlier ones are there too, oldest first, if you want to look further back:
++   work_journal_000001.md | 2026-09-22 | 770 B, 12 lines
++   work_journal_000002.md | 2026-11-21 | 446 B, 5 lines
++   work_journal_active.md | 2026-11-21 | 444 B, 5 lines
++
++ Each entry is one line, such as "[HH:MM:SS] User: …", "Agent: …" or "Command: … → ok", and ends with a
++ link to the full record. Long output is shortened.
+
+ ❯ tests/unit/runtime-handover-notices/runtime-handover-notice-transition.test.ts:62:18
+     60|     const text = await noticeOf(runDir, RuntimeKind.CLAUDE_AGENT_SDK);
+     61|     expect(text).toContain("  work_journal_000002.md |");
+     62|     expect(text).toContain("The previous agent's most recent work is i…
+       |                  ^
+     63|     expect(text).not.toContain("read " + path.join(runDir, "work_journ…
+     64|     expect(journalText(runDir, "work_journal_000002.md")).not.toContai…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/9]⎯
+
+
+ Test Files  3 failed | 1 passed (4)
+      Tests  9 failed | 21 passed (30)
+   Start at  08:15:30
+   Duration  16.11s (transform 7.04s, setup 352ms, import 12.77s, tests 571ms, environment 0ms)
+

@@ -1,0 +1,69 @@
+{
+  "target": "autobyteus",
+  "model": "claude-haiku-5-5",
+  "code": "2d941f65",
+  "namedFile": {
+    "lines": 2405,
+    "bytes": 178309,
+    "lastLine": "[08:33:31] Agent: Ran echo step 599. END-2d941f65 [↗](../raw_traces_000001.jsonl#rt_syn_2d941f65_2402)"
+  },
+  "noticeNamesFile": true,
+  "noticeHasReadInstruction": true,
+  "markers": [
+    "MARK-2d941f65-0",
+    "MARK-2d941f65-1",
+    "MARK-2d941f65-2",
+    "MARK-2d941f65-3",
+    "MARK-2d941f65-4",
+    "MARK-2d941f65-5",
+    "END-2d941f65"
+  ],
+  "seenBeforeFirstText": [
+    "MARK-2d941f65-0",
+    "MARK-2d941f65-1",
+    "MARK-2d941f65-2",
+    "MARK-2d941f65-3",
+    "MARK-2d941f65-4",
+    "MARK-2d941f65-5",
+    "END-2d941f65"
+  ],
+  "seenBeforeLastText": [
+    "MARK-2d941f65-0",
+    "MARK-2d941f65-1",
+    "MARK-2d941f65-2",
+    "MARK-2d941f65-3",
+    "MARK-2d941f65-4",
+    "MARK-2d941f65-5",
+    "END-2d941f65"
+  ],
+  "seenInAllResults": [
+    "MARK-2d941f65-0",
+    "MARK-2d941f65-1",
+    "MARK-2d941f65-2",
+    "MARK-2d941f65-3",
+    "MARK-2d941f65-4",
+    "MARK-2d941f65-5",
+    "END-2d941f65"
+  ],
+  "toolCalls": [
+    "read_file {\"path\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/handover-read-probe-MBQ4AS/memory/agents/handover_read_1f89cd33_bb95_4344_854f_a033c9c718_36ae4468c1ef46469fcac258625038de/work_journal/work_journal_000001.md\",\"start_line\":1,\"end_line\":400}",
+    "read_file {\"path\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/handover-read-probe-MBQ4AS/memory/agents/handover_read_1f89cd33_bb95_4344_854f_a033c9c718_36ae4468c1ef46469fcac258625038de/work_journal/work_journal_active.md\"}",
+    "read_file {\"path\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/handover-read-probe-MBQ4AS/memory/agents/handover_read_1f89cd33_bb95_4344_854f_a033c9c718_36ae4468c1ef46469fcac258625038de/work_journal/work_journal_000001.md\",\"start_line\":401,\"end_line\":1000}",
+    "read_file {\"path\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/handover-read-probe-MBQ4AS/memory/agents/handover_read_1f89cd33_bb95_4344_854f_a033c9c718_36ae4468c1ef46469fcac258625038de/work_journal/work_journal_000001.md\",\"start_line\":1001,\"end_line\":1700}",
+    "read_file {\"path\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/handover-read-probe-MBQ4AS/memory/agents/handover_read_1f89cd33_bb95_4344_854f_a033c9c718_36ae4468c1ef46469fcac258625038de/work_journal/work_journal_000001.md\",\"start_line\":1701,\"end_line\":2406}"
+  ],
+  "texts": [
+    "",
+    "",
+    "",
+    "",
+    "I read the full hand-over journal (`work_journal_000001.md`, 2,406 lines). The previous run did only a long series of trivial `echo` commands: \"step 1\" through \"step 599\", with checkpoint markers MARK-2d941f65-0 through -5. It ends with \"END-2d941f65\". It did not start or leave any real task, and it"
+  ],
+  "resultSizes": [
+    30243,
+    539,
+    46101,
+    55003,
+    55480
+  ]
+}

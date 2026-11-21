@@ -97,7 +97,7 @@ export class WorkJournalService {
     return (manifest?.files ?? []).map((file) => ({ journalFile: file.journal_file, state: file.state, contentSha256: file.content_sha256 }));
   }
 
-  /** The run's journal files with size, line count and days; null when the run has no journal yet. */
+  /** The run's journal files with size, line count, work entry count and days; null when the run has no journal yet. */
   async listJournalFiles(memoryDir: string): Promise<WorkJournalFileSummary[] | null> {
     const dir = path.resolve(memoryDir);
     const manifest = await this.store.readManifest(dir);
@@ -112,6 +112,7 @@ export class WorkJournalService {
         state: file.state,
         sizeBytes: Buffer.byteLength(markdown, "utf-8"),
         lineCount: reading.lineCount,
+        workEntryCount: reading.entries.filter((entry) => entry.kind !== "notice").length,
         days: reading.days,
       });
     }
