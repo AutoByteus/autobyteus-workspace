@@ -74,6 +74,7 @@ None.
 | AC-006 | 006 | The peer stops mid-transfer | The call fails with the file and reason; the recipient gets nothing | E2E with a stopped peer |
 | AC-007 | 007 | The same file sent twice to two runs | Uploaded once (second call skips); both runs have it; deleting one run keeps the other's file; deleting both reclaims the space; partial uploads older than the window are removed | Server tests |
 | AC-008 | — | Local `reference_files` | Unchanged | Existing suites |
+| AC-009 | 006 | A transfer that takes longer than a runtime's default tool-call limit (DEC-003 (a)) | The call still completes on each runtime we configure (Codex, Claude, AutoByteus); the limit we set is stated | Feasibility of the proof (updated requirements standard): needs signed-in Codex and Claude runtimes; the founder's machine has them, but tests may not use his accounts (TESTING.md). Measure each runtime's limit in design with a slow stub tool; if a signed-in run is not safely available, decide the evidence before approval as an evidence decision |
 
 ## Decisions
 
