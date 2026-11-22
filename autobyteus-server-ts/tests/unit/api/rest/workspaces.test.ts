@@ -5,7 +5,7 @@ import fastify from "fastify";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const mockWorkspaceManager = vi.hoisted(() => ({
-  getWorkspaceById: vi.fn(),
+  getOrCreateWorkspace: vi.fn(),
 }));
 
 vi.mock("../../../../src/workspaces/workspace-manager.js", () => ({
@@ -16,7 +16,7 @@ import { registerWorkspaceRoutes } from "../../../../src/api/rest/workspaces.js"
 
 describe("REST workspaces routes", () => {
   beforeEach(() => {
-    mockWorkspaceManager.getWorkspaceById.mockReset();
+    mockWorkspaceManager.getOrCreateWorkspace.mockReset();
   });
 
   it("serves workspace file content", async () => {
@@ -27,7 +27,7 @@ describe("REST workspaces routes", () => {
     const workspace = {
       resolveReadablePath: vi.fn().mockResolvedValue(filePath),
     };
-    mockWorkspaceManager.getWorkspaceById.mockReturnValue(workspace);
+    mockWorkspaceManager.getOrCreateWorkspace.mockResolvedValue(workspace);
 
     const app = fastify();
     await registerWorkspaceRoutes(app);
@@ -45,7 +45,8 @@ describe("REST workspaces routes", () => {
   });
 
   it("returns 404 when workspace is missing", async () => {
-    mockWorkspaceManager.getWorkspaceById.mockReturnValue(undefined);
+    // The restoring lookup throws for an ID that is neither in memory nor registered (autobyteus-609 D-J).
+    mockWorkspaceManager.getOrCreateWorkspace.mockRejectedValue(new Error("Workspace 'missing' not found"));
 
     const app = fastify();
     await registerWorkspaceRoutes(app);
@@ -69,7 +70,7 @@ describe("REST workspaces routes", () => {
     const workspace = {
       resolveReadablePath: vi.fn().mockResolvedValue(assetPath),
     };
-    mockWorkspaceManager.getWorkspaceById.mockReturnValue(workspace);
+    mockWorkspaceManager.getOrCreateWorkspace.mockResolvedValue(workspace);
 
     const app = fastify();
     await registerWorkspaceRoutes(app);
@@ -90,7 +91,7 @@ describe("REST workspaces routes", () => {
     const workspace = {
       resolveReadablePath: vi.fn().mockRejectedValue(new Error("Access denied: Path resolves outside the workspace boundary.")),
     };
-    mockWorkspaceManager.getWorkspaceById.mockReturnValue(workspace);
+    mockWorkspaceManager.getOrCreateWorkspace.mockResolvedValue(workspace);
 
     const app = fastify();
     await registerWorkspaceRoutes(app);
@@ -118,7 +119,7 @@ describe("REST workspaces routes", () => {
         '<!doctype html><link rel="stylesheet" href="style.css"><script src="app.js"></script><h1>Synthetic</h1>',
       );
       fs.writeFileSync(path.join(root, "site", "style.css"), "h1 { color: teal; }");
-      mockWorkspaceManager.getWorkspaceById.mockReturnValue({
+      mockWorkspaceManager.getOrCreateWorkspace.mockResolvedValue({
         resolveReadablePath: async (relative: string) => {
           if (relative === "escape/secret.html") {
             throw new Error("Access denied: Path resolves outside the workspace boundary.");
@@ -164,7 +165,8 @@ describe("REST workspaces routes", () => {
         const outside = await app.inject({ method: "GET", url: "/workspaces/ws1/static/escape/secret.html" });
         expect(outside.statusCode).toBe(400);
 
-        mockWorkspaceManager.getWorkspaceById.mockReturnValue(undefined);
+        // The restoring lookup throws for an ID that is neither in memory nor registered (autobyteus-609 D-J).
+    mockWorkspaceManager.getOrCreateWorkspace.mockRejectedValue(new Error("Workspace 'missing' not found"));
         const missingWorkspace = await app.inject({ method: "GET", url: "/workspaces/gone/static/site/index.html" });
         expect(missingWorkspace.statusCode).toBe(404);
 
@@ -194,7 +196,7 @@ it("preserves healthy media bytes, encoded paths, HTML and relative static asset
       fs.mkdirSync(path.dirname(path.join(root, relative)), { recursive: true });
       fs.writeFileSync(path.join(root, relative), fixture.bytes);
     }
-    mockWorkspaceManager.getWorkspaceById.mockReturnValue({ resolveReadablePath: async (relative: string) => path.join(root, relative) });
+    mockWorkspaceManager.getOrCreateWorkspace.mockResolvedValue({ resolveReadablePath: async (relative: string) => path.join(root, relative) });
     await registerWorkspaceRoutes(app);
     for (const [relative, fixture] of files) {
       for (const url of [

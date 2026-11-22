@@ -10,6 +10,20 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
+/**
+ * The workspace a read names, through the manager's restoring lookup, as the GraphQL Files path finds it (autobyteus-609
+ * D-J): one in memory, else a registered folder restored from the registry (right after a node restart), else an on-demand
+ * skill or semantic-memory workspace. Any failure (an unknown ID among them) is null: the route answers 404.
+ */
+const findWorkspace = async (workspaceId: string) => {
+  try {
+    return await getWorkspaceManager().getOrCreateWorkspace(workspaceId);
+  } catch (error) {
+    logger.warn(`Attempted to access non-existent workspace: ${workspaceId} (${error instanceof Error ? error.message : String(error)})`);
+    return null;
+  }
+};
+
 export async function registerWorkspaceRoutes(app: FastifyInstance): Promise<void> {
   app.get<{
     Params: { workspaceId: string };
@@ -22,11 +36,8 @@ export async function registerWorkspaceRoutes(app: FastifyInstance): Promise<voi
       return reply.code(400).send({ detail: "Missing required query parameter: path" });
     }
 
-    const workspace = getWorkspaceManager().getWorkspaceById(workspaceId);
-    if (!workspace) {
-      logger.warn(`Attempted to access non-existent workspace: ${workspaceId}`);
-      return reply.code(404).send({ detail: "Workspace not found" });
-    }
+    const workspace = await findWorkspace(workspaceId);
+    if (!workspace) return reply.code(404).send({ detail: "Workspace not found" });
 
     try {
       const absolutePath = await workspace.resolveReadablePath(filePath);
@@ -76,11 +87,8 @@ export async function registerWorkspaceRoutes(app: FastifyInstance): Promise<voi
       return reply.code(400).send({ detail: "Missing file path." });
     }
 
-    const workspace = getWorkspaceManager().getWorkspaceById(workspaceId);
-    if (!workspace) {
-      logger.warn(`Attempted to access non-existent workspace: ${workspaceId}`);
-      return reply.code(404).send({ detail: "Workspace not found" });
-    }
+    const workspace = await findWorkspace(workspaceId);
+    if (!workspace) return reply.code(404).send({ detail: "Workspace not found" });
 
     try {
       const absolutePath = await workspace.resolveReadablePath(filePath);
