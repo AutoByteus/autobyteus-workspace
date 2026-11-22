@@ -97,7 +97,7 @@ None (no release).
 - Bootstrap context source: the Solution Designer's bootstrap (worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-activity-details`, branch `codex/phone-activity-details`, base `origin/personal`) and `RELEASE.md` "Finalization Target".
 - Ticket branch: `codex/phone-activity-details` (its configured upstream is `origin/personal`; delivery pushes only with explicit refspecs, never a bare `git push`, as API/E2E warned).
 - Finalization target remote / branch: `origin` / `personal`, `--no-ff` merge from a `finalize/phone-activity-details` branch (RELEASE.md).
-- The outcome (commits, push, the user's checkout, cleanup) is in the "Finalization Record" at the end of this report, written after the push.
+- The outcome (commits, push, the user's checkout, cleanup) is in the "Finalization Record" at the end of this report, written after the push. Merge `d57433289c` on `origin/personal`.
 
 ## Release / Publication / Deployment
 
@@ -124,10 +124,23 @@ Revert the merge commit on `personal` (`git revert -m 1 <merge>`). Nothing persi
 ## Final Status
 
 - Verification complete (from the evidence, or the user's check where needed): `Yes`
-- Repository finalization complete: see the Finalization Record
+- Repository finalization complete: `Yes` (Finalization Record below)
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: see the Finalization Record
+- Applicable safe cleanup complete or not required: run after the record commit's push (Finalization Record, last two bullets); its result is in the terminal message
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: after the Finalization Record
-- Terminal package sent to the Solution Designer: see the Finalization Record
-- Terminal message/reference: see the Finalization Record
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: by `send_message_to` after the record commit's push and the cleanup
+- Terminal message/reference: the `send_message_to` message to the Solution Designer, address from `get_handoff_rules`
+
+## Finalization Record
+
+Written after the push of the merge, the way earlier tickets recorded theirs.
+
+- Ticket branch `codex/phone-activity-details`: committed (tip `89c758fc20`) and pushed to `origin` with the explicit refspec `HEAD:refs/heads/codex/phone-activity-details` (`648a8e0299..89c758fc20`, a fast-forward of the tip API/E2E had pushed for the build-only run). The branch's configured upstream is `origin/personal`, so no bare `git push` was used. Secret Gate on `origin/personal..codex/phone-activity-details`: `PASS`, 19 commits.
+- Target refreshed before the merge and again before the push: `git fetch origin personal` showed `20b627960c` both times, which the ticket branch already contained (merge `e08e5c1939`); no re-integration and no re-verification were needed.
+- Merge: on `finalize/phone-activity-details` (from `origin/personal` `20b627960c`), `git merge --no-ff codex/phone-activity-details` = `d57433289c` (parents `20b627960c` and `89c758fc20`; the merged tree equals the ticket branch's tree). Secret Gate on the merged state: `PASS`, 20 commits. Hygiene check on the archived tree: passed (103 382 tracked files).
+- Push: `git push origin HEAD:personal` `20b627960c..d57433289c`; `origin/personal` = `d57433289c` afterwards.
+- Release: none (no tag, no version bump, no pipeline).
+- This record: committed on `finalize/phone-activity-details` and pushed to `origin/personal` as the commit that follows `d57433289c`.
+- The user's checkout (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`, on `personal`): `git fetch`, then `git merge --ff-only origin/personal` after this record's push, only if it is on `personal` with no local commits and git accepts it; nothing is stashed, reset or checked out there. The result (commit, or why not) is in the terminal message.
+- Cleanup, after this record's push: `git worktree remove --force /Users/normy/autobyteus_org/autobyteus-worktrees/phone-activity-details` (only git-ignored and untracked build output remains), `git worktree prune`, delete the local branches `finalize/phone-activity-details` and `codex/phone-activity-details`. Remote branch: `Not required` (the repository keeps pushed `codex/*` branches). The result is in the terminal message.
