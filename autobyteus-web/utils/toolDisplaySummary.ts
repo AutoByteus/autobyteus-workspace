@@ -11,8 +11,10 @@ interface ToolDisplaySummaryOptions {
   preferCompactPath?: boolean;
 }
 
-const FILE_ARG_KEYS = ['path', 'file_path', 'filepath', 'filename', 'target_path'];
-const COMMAND_ARG_KEYS = ['command', 'cmd', 'script'];
+// Antigravity's own tools name their arguments in PascalCase (`run_command`'s `CommandLine`, `read_file`'s `Path`,
+// `view_file`'s `AbsolutePath`), and the node passes them through as they are (autobyteus-590).
+const FILE_ARG_KEYS = ['path', 'file_path', 'filepath', 'filename', 'target_path', 'Path', 'AbsolutePath'];
+const COMMAND_ARG_KEYS = ['command', 'cmd', 'script', 'CommandLine'];
 // The platform's agent tools (autobyteus-590 DEC-006): whom a message or a delegation addresses, and which Task a Task tool
 // reads or changes. After the command and file keys, before the generic text keys.
 const RECIPIENT_ARG_KEYS = ['recipient_address'];

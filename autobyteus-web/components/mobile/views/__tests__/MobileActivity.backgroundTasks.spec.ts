@@ -128,5 +128,17 @@ describe('the phone Activity: background tasks (autobyteus-473)', () => {
     await wrapper.get('[data-testid="mobile-background-task-toggle"]').trigger('click');
     expect(commandLine().classes()).toContain('line-clamp-2');
   });
+
+  it('a task whose title is its command (Antigravity, native) unfolds its title on tap', async () => {
+    const command = `sleep 4 # background step 51 ${'pnpm --filter autobyteus-web exec vitest run --reporter=verbose '.repeat(3)}`.trim();
+    io.query.mockResolvedValue(eventStream([{ ...running, description: '', command }]));
+    const wrapper = await open();
+    const title = () => wrapper.get('[data-testid="mobile-background-task-title"]');
+    expect(title().text()).toBe(command);
+    expect(wrapper.find('[data-testid="mobile-background-task-command"]').exists()).toBe(false);
+    expect(title().classes()).toContain('line-clamp-2');
+    await wrapper.get('[data-testid="mobile-background-task-toggle"]').trigger('click');
+    expect(title().classes()).not.toContain('line-clamp-2');
+  });
 });
 

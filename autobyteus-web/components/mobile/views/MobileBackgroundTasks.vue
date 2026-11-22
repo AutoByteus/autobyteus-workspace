@@ -22,7 +22,12 @@
           @click="toggle(task)"
         >
           <span class="flex items-start justify-between gap-3">
-            <span class="min-w-0 line-clamp-2 break-words text-[0.9375rem] font-semibold text-slate-900">{{ titleOf(task) }}</span>
+            <!-- The title is often the command itself (Antigravity, native): it unfolds too. -->
+            <span
+              class="min-w-0 break-words text-[0.9375rem] font-semibold text-slate-900"
+              :class="isExpanded(task) ? 'whitespace-pre-wrap' : 'line-clamp-2'"
+              data-testid="mobile-background-task-title"
+            >{{ titleOf(task) }}</span>
             <span class="shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold" :class="STATUS_CLASS[task.status]">{{ STATUS_LABEL[task.status] }}</span>
           </span>
           <span

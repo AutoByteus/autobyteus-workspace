@@ -11,7 +11,7 @@
   >
     <span class="flex items-start justify-between gap-3">
       <span class="min-w-0">
-        <span class="line-clamp-1 break-words text-[0.9375rem] font-semibold text-slate-900">{{ activity.toolName }}</span>
+        <span class="line-clamp-1 break-words text-[0.9375rem] font-semibold text-slate-900" data-testid="mobile-run-activity-name">{{ activity.toolName }}</span>
         <span
           v-if="summary"
           class="mt-1 line-clamp-2 break-words text-sm text-slate-600"
@@ -51,7 +51,7 @@
   >
     <span class="flex items-start justify-between gap-3">
       <span class="min-w-0">
-        <span class="line-clamp-1 break-words text-[0.9375rem] font-semibold text-slate-900">{{ $t('workspace.components.progress.CompactionActivityItem.memory_compaction') }}</span>
+        <span class="line-clamp-1 break-words text-[0.9375rem] font-semibold text-slate-900" data-testid="mobile-run-activity-name">{{ $t('workspace.components.progress.CompactionActivityItem.memory_compaction') }}</span>
         <span class="mt-1 line-clamp-2 break-words text-sm text-slate-600">{{ compactionSummary }}</span>
       </span>
       <span class="shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold" :class="compactionStatusClass">

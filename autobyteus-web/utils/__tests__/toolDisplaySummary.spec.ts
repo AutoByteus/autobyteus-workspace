@@ -87,5 +87,13 @@ describe('getToolDisplaySummary', () => {
       });
     });
   });
+
+  it.each([
+    ['run_command', { CommandLine: 'cd /home/user/project && ls -R', IsDaemon: false }, 'command', 'ls -R'],
+    ['read_file', { Path: '/home/user/project/src/index.ts', StartLine: 1 }, 'file', 'src/index.ts'],
+    ['view_file', { AbsolutePath: '/home/user/project/docs/plan.md' }, 'file', 'docs/plan.md'],
+  ] as const)('Antigravity\'s %s: its PascalCase argument is the summary', (toolName, args, kind, text) => {
+    expect(getToolDisplaySummary(toolName, args, { preferCompactPath: true })).toMatchObject({ kind, text });
+  });
 });
 
