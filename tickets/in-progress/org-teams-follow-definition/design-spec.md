@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-006` (revises SR-005 after `ARCH-REV-001`; see § SR-006 Revision, which supersedes conflicting lines)
+- Current solution revision ID: `SR-007` (SR-006 revised SR-005 after `ARCH-REV-001`, § SR-006 Revision supersedes conflicting lines; SR-007 applies the user's DEC-006)
 - Approved requirements: `requirements-doc.md` at SR-004 (REQ-001..REQ-009, AC-001..AC-008, DEC-001..DEC-005), approved by the User on 2026-11-21 (quotes in the requirements' Document Status); direction SR-002 (Org as a container of runs).
 - Behavior-defining supplements: autobyteus-22's approved behavior and texts (archived `tickets/done/team-run-follows-definition/`), reused unchanged.
 - User approval of the design: `Not required`.
@@ -184,7 +184,7 @@ Team roots, standalone agent roots, autobyteus-22 membership (planner, committer
 ### R-2 Delivery reuses `CrossRunMessageDelivery` (AR-003)
 
 - A message from one unit run to another goes through `agent-collaboration/communication/cross-run-message-delivery.ts` (prepare → the receiver root accepts in its gate and writes its log, restored when admitted for restore → the sender's log commit; `counterpart`, closed-Task refusals unchanged).
-- Its admission gains one rule: `same_container` — sender and receiver runs carry `containedIn` with the same `orgRunId` — evaluated before the Task rule. A `same_container` receiver that is not yet restored (after an Org reopen or idle shutdown) is restored; a receiver the user stopped follows DEC-006.
+- Its admission gains one rule: `same_container` — sender and receiver runs carry `containedIn` with the same `orgRunId` — evaluated before the Task rule. A `same_container` receiver that is not live is restored, whether it was never restored after an Org reopen, idle-shut-down, or stopped by the user on its own (DEC-006, the user 2026-11-22: a message wakes it).
 - `OrgContainerPort` answers only `placementAt(orgAddress) → { runRef, agentRunId, memberAddress }`, `sameContainer(runA, runB)`, `orgRulesFrom(orgAddress)`. It delivers nothing. `deliverFromContainedUnit` is dropped.
 - A unit root gets its port from the composition root's container directory by `containedIn.orgRunId` when it is created or restored, including a single Team unit restored by the Team manager (ARCH-REV-001 note).
 
@@ -195,7 +195,7 @@ Owner: `OrgViewComposition` (one per live container; `agent-org-execution/contai
 - Relay: while the container is live it subscribes to each **live** unit root's view events and republishes each into the Org stream (projected into today's Org frame shapes; the stream assigns the Org sequence). A message between two units is relayed once: only the **receiver** unit's publication is relayed (the sender's is dropped when the receiver is a unit of the same container); a message to or from outside the Org is relayed from the unit that has it.
 - Snapshot: the Org view session opens the container stream's snapshot connection. The snapshot is built inside the composition's gate, which pauses the relay: for each unit, a live unit's current own snapshot, a not-restored or stopped unit's stored package snapshot; composed into today's `TEAM`/Org execution snapshot shape (Org addresses, every member's status). The base is the container stream's sequence at that moment; every relayed frame after it is newer, so nothing is lost or doubled.
 - In-band Org snapshot triggers: a unit root registered/unregistered (restored, stopped, idle-shut-down), a unit joining or leaving (DS-006), a contained Team's `team_membership_changed`. The composition publishes `org_composition_changed`; the Org view session re-opens the snapshot connection (in-band snapshot; the web already accepts one after the first, SR-046).
-- Commands from the Org view: `SEND_MESSAGE` to a member of a not-restored unit → the container restores the unit root, the composition switches to it and the in-band snapshot is sent **before** the message is posted (the `whileRestoring` order, SR-048); to a unit stopped by the user → DEC-006. `INTERRUPT_GENERATION`, `APPROVE_TOOL`, `DENY_TOOL` are active-only: a not-live unit answers `RUN_NOT_ACTIVE` (as today).
+- Commands from the Org view: `SEND_MESSAGE` to a member of a not-restored unit → the container restores the unit root, the composition switches to it and the in-band snapshot is sent **before** the message is posted (the `whileRestoring` order, SR-048); to a unit stopped by the user → the same: restored, then the message posted (DEC-006). `INTERRUPT_GENERATION`, `APPROVE_TOOL`, `DENY_TOOL` are active-only: a not-live unit answers `RUN_NOT_ACTIVE` (as today).
 - Reconnect: a reconnecting client gets a new snapshot of the container stream at a new base (as for any view).
 - A stored (not live) Org: the stored-mode snapshot composes the units' stored snapshots; no relay (as today's stored mode).
 - Example: open the Org (snapshot base 40: all units stored/Offline) → the user sends to `/software_engineering_team/solution_designer` → container restores the Team unit → composition subscribes to it → `org_composition_changed` → in-band snapshot base 41 (Team live, member Offline) → message posted → the member's events relayed as 42, 43, …

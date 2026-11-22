@@ -2,8 +2,8 @@
 
 ## Document Status
 
-- Status: `Ready for Approval` (SR-006: Requirement Gap AR-004 from ARCH-REV-001 — DEC-006 needs the user; everything else stays as approved at SR-004)
-- Current solution revision ID: `SR-006`
+- Status: `Approved`
+- Current solution revision ID: `SR-007`
 - Package identifier: `org-teams-follow-definition`
 - Request / ticket: Project Task `autobyteus-29` (FU-002, FU-003 of autobyteus-22)
 - Requested by: `/project_task_manager` (run `project_task_manager_2f41a1df4e464bf2aa8970327d9d7ad0`), on the user's "work on the follow-up immediately" (2026-11-21)
@@ -11,7 +11,7 @@
 - Date: 2026-11-21
 - Direction: the user, 2026-11-21 (SR-002): an Org is a container; each mounted Team is its own Team run and each direct Org agent its own agent run ("let's go with the second option").
 - Approved by and reference: `User`, 2026-11-21, in the Solution Designer conversation: DEC-001 (a) (quoted in its row); then "I think you should contain both", answering whether FU-003 stays in this ticket and whether the Org also follows its Org definition. Recorded as: both fixes stay in this ticket (DEC-003) and the Org follows its Org definition (DEC-002), with that reading told to the user for correction.
-- Exact approved requirements baseline: this document at SR-004 (REQ-001..REQ-009, AC-001..AC-008, DEC-001..DEC-005)
+- Exact approved requirements baseline: this document at SR-007 (REQ-001..REQ-009, AC-001..AC-008, DEC-001..DEC-006); DEC-006 decided by the User 2026-11-22
 - Behavior-defining supplements: autobyteus-22's approved behavior (archived `tickets/done/team-run-follows-definition/` on `personal`: requirements SR-005/SR-006, design § Exact Texts, § Member States) applies unchanged to every Team run, including those inside an Org
 
 ## Problem And Desired Outcome
@@ -67,7 +67,7 @@ None found.
 | REQ-002 | Each Team run inside an Org is a Team run in every respect: it follows its Team definition with every autobyteus-22 behavior (join, leave, Leaving, notices, refusal, rules, live rows, reopen). | FU-002 |
 | REQ-003 | Org units reach each other by the same addresses as today (`/concierge`, `/software_engineering_team`, `/software_engineering_team/code_reviewer`), across their runs; a message between two units is stored in both runs' logs; the Org view's messages show them as today. | CM-3, CM-9 |
 | REQ-004 | The Org container keeps the Org-level handoff rules. A unit's `get_handoff_rules` returns its own run's rules plus the Org rules from it; an Org rule from or to a member no longer in its Team is left out until it returns, and the members whose rules changed get the autobyteus-22 notice line. | Consistency |
-| REQ-005 | Stopping the Org stops all its runs; reopening the Org reopens the container and restores its runs as they are needed (Offline until work), each following its definition on reopen. | Preserved |
+| REQ-005 | Stopping the Org stops all its runs; reopening the Org reopens the container and restores its runs as they are needed (Offline until work), each following its definition on reopen. A unit the user stopped on its own is woken by a message from another unit or from the user (DEC-006). | Preserved |
 | REQ-006 | The Org view, run tree rows (`org_agent`, `org_team`, members), Memory page and run history show the Org and its units as today; a unit row's commands, Stop and Settings go to that unit's own run. | Preserved |
 | REQ-007 | Existing Org runs are handled as DEC-001 decides, keeping every conversation, message, memory folder, Task link and history entry. | DEC-001 |
 | REQ-008 | (FU-003, in this ticket per DEC-003) The delegating node's record of a peer Team copy (members, coordinator) is updated after the copy's membership changes; if the delegating node is unreachable then, at the next contact. | FU-003 |
@@ -99,7 +99,7 @@ Isolated server instances from the ticket worktree with their own data directori
 | DEC-003 | FU-003 (peer Team copy members) in this ticket or its own | FU-003 is small and independent of the restructuring; in this ticket it waits for the large change to finish. **Recommend: split FU-003 into its own Task** (I ask the Project Task Manager) so it ships soon; this ticket becomes the Org container. **Decided by the user (2026-11-21): keep both in this ticket** ("I think you should contain both"). | User (2026-11-21) | Decided |
 | DEC-004 | How an Org looks after the change | Unchanged for the user (REQ-006); the container is an internal shape. **Decided.** | Solution Designer | Decided |
 | DEC-005 | Org-level rules | Kept by the container; merged into a unit's rules; left out while a named member is gone (REQ-004). **Decided.** | Solution Designer | Decided |
-| DEC-006 | A unit the user stopped (Stop on its row, REQ-006): should a message from another unit of the same Org wake it? | Today a stopped run is woken only by its assigner, and messages from others are refused (cross-run admission); inside an Org every member starts on its first message, but the user cannot stop one member alone. Waking it would undo the user's explicit Stop with any handoff (for example a costly team). Refusing keeps the user in control; the sending agent gets a clear refusal and can tell the user, and the user resumes the unit by messaging it or opening it. A unit that is only not yet restored (after the Org is reopened, or idle) is always woken by a message. **Recommend: refuse while stopped by the user; wake when merely not restored.** | User | Needs user |
+| DEC-006 | A unit the user stopped (Stop on its row, REQ-006): should a message from another unit of the same Org wake it? | Today a stopped run is woken only by its assigner, and messages from others are refused (cross-run admission); inside an Org every member starts on its first message, but the user cannot stop one member alone. Waking it would undo the user's explicit Stop with any handoff (for example a costly team). Refusing keeps the user in control; the sending agent gets a clear refusal and can tell the user, and the user resumes the unit by messaging it or opening it. A unit that is only not yet restored (after the Org is reopened, or idle) is always woken by a message. **Recommend: refuse while stopped by the user; wake when merely not restored.** **Decided by the user (2026-11-22): a message wakes it**, also when the user stopped it (units are independent): "To be honest I think since it's a team right and there are also independent in general what do you mean by any handoff if I stop a team but I think a message you can wick it up right". | User (2026-11-22) | Decided |
 
 ## Readiness Check
 

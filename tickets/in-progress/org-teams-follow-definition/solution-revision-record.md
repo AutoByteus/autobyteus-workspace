@@ -4,6 +4,7 @@
 
 | Revision ID | Phase | Trigger | Finding IDs | Prior Status | Current Status | Affected IDs | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| SR-007 | Requirements | The user's DEC-006, 2026-11-22 | AR-004 | Ready for Approval | Approved | DEC-006, REQ-005; design R-2, R-3 | A message wakes a unit the user stopped |
 | SR-006 | Mixed | Architecture review ARCH-REV-001 Fail | AR-001..AR-006 (AR-004 Requirement Gap) | Approved; design Ready (reviewed Fail) | Ready for Approval (DEC-006); design revised | REQ-003, REQ-005, REQ-006, REQ-007; DEC-006 new | Address rule, delivery reuse, Org view spine, migration input map, Org inventory; DEC-006 to the user |
 | SR-005 | Design | Architecture design | AF-01..AF-09 | Approved; design N/A | Approved; design Ready | REQ-001..REQ-009 (realized) | design-spec.md; Large / High |
 | SR-004 | Requirements | The user's decisions 2026-11-21 | N/A | Ready for Approval | Approved | DEC-001..DEC-003, REQ-008, REQ-009 | Approved: convert existing Org runs, follow the Org definition, keep FU-003 in this ticket |
@@ -59,3 +60,9 @@
 - Requirement Gap: DEC-006 (a unit the user stopped: wake on another unit's message or refuse) needs the user; recommendation: refuse while user-stopped, wake when merely not restored.
 - FU-001 recorded (memory sync of Org units).
 - Next action: the user's DEC-006, then architecture re-review.
+
+### SR-007 — DEC-006 decided by the user
+
+- Trigger: the user, 2026-11-22: "To be honest I think since it's a team right and there are also independent in general what do you mean by any handoff if I stop a team but I think a message you can wick it up right".
+- Decision: a message from another unit (or the user) wakes a unit the user stopped on its own; units are independent. REQ-005 extended; design R-2 (admission restores any not-live `same_container` receiver) and R-3 (command routing) updated.
+- Status: requirements `Approved` (SR-007). Next action: architecture re-review of SR-006/SR-007.
