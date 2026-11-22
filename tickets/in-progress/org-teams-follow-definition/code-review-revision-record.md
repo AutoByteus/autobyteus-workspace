@@ -12,6 +12,7 @@
 | CRR-006 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-002 failed | Pass | Fail | F-5 |
 | CRR-007 | `code-review-report.md` | Implementation Review / IR-005 complete | Fail | Pass | F-5 |
 | CRR-008 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-003 passed | N/A | Pass | None |
+| CRR-009 | `code-review-report.md` | Implementation Review / IR-006 complete | Pass (CRR-007) | Fail | CR-008, CR-009 |
 
 ## Revision Entries
 
@@ -273,3 +274,34 @@ None (first test review).
 - Material score or classification changes: N/A (no scorecard for test review); Large/High preserved
 - Recommended recipient: Delivery engineer
 - Remaining risks or uncertainty: macOS file events and the macOS/x64 release jobs not run (API/E2E residual); FU-001.
+
+### CRR-009: Targeted delta review of IR-006
+
+- Canonical review report updated: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/code-review-report.md`
+- Review entry point and round: Implementation Review, round 9
+- Review scope: `Targeted Delta Review`: this ticket's side of the merges `21622d75e9` and `b933110420`, and all new code of `dd310a30eb`
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` § IR-006; SR-016..SR-018 (DR-001, AR-011, AR-012; ARCH-REV-013)
+- Relevant solution revision IDs: SR-016, SR-017, SR-018
+- Relevant architecture-review revision IDs: ARCH-REV-011, ARCH-REV-012, ARCH-REV-013
+- Relevant implementation revision IDs: IR-006
+- Relevant API/E2E revision IDs: API-REV-003 (before IR-006)
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: Pass (CRR-007 implementation review; CRR-008 test review)
+- Current authoritative result: Fail
+- What changed in the review result and why:
+  - CR-008 (Read; measured): the node pass's byte pre-check is POSIX-only. On Windows (a release platform) no candidate is parsed, no path moves, and the container file is written anyway, so the Org is marked done with broken references.
+  - CR-009: SR-016's agent-unit cross-node file test is missing.
+  - The merges are clean on this ticket's side, and SR-018's order and retry are correct.
+  - Gate: typecheck PASS (973); 4244 tests pass, 0 product failures. The GraphQL check needed `pnpm` restored after the platform restart.
+- Supported product scenario / material-premise basis changes: S-14, S-15 added; MP-CR-03 new.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Classification | Resolution | Evidence |
+| --- | --- | --- | --- |
+| CR-001..CR-007, N-1, F-1..F-5, A-1 | — | Still resolved | Gate green after the merges |
+
+- New or remaining finding IDs: CR-008, CR-009
+- Material score or classification changes: average 9.2; Runtime Correctness 8.6, API/E2E Readiness 8.8; Large/High preserved
+- Recommended recipient: Implementation engineer
+- Remaining risks or uncertainty: cost measured with assumed node sizes; FU-001.
