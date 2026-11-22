@@ -17,6 +17,7 @@
 | CRR-011 | `code-review-report.md` | Implementation Review / IR-008 complete | Fail | Pass | CR-008 |
 | CRR-012 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-004 passed | Pass (CRR-008) | Fail | T-1 |
 | CRR-013 | `code-review-report.md` | Implementation Review / IR-009 complete | Fail (CRR-012) | Pass | T-1 |
+| CRR-014 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-005 passed | Fail (CRR-012) | Pass | T-1 |
 
 ## Revision Entries
 
@@ -429,3 +430,30 @@ None open before this round.
 - Material score or classification changes: every category at least 9.4; Large/High preserved
 - Recommended recipient: API/E2E engineer (then an informational note to the implementation engineer)
 - Remaining risks or uncertainty: COST-01 rerun pending; cost sizes remain assumptions.
+
+### CRR-014: Proportional test-code review after API-REV-005 (T-1 recheck)
+
+- Canonical review report updated: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/api-e2e-test-review-report.md`
+- Review entry point and round: Successful API/E2E test-code review, round 3
+- Review scope: T-1 recheck. API/E2E's durable tests are unchanged since `a3ed1a587c`; IR-009's test change was reviewed in CRR-013
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-005, commit `43b063f249`); T-1
+- Relevant solution revision IDs: SR-018
+- Relevant architecture-review revision IDs: ARCH-REV-013
+- Relevant implementation revision IDs: IR-009
+- Relevant API/E2E revision IDs: API-REV-004, API-REV-005
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: Fail (CRR-012)
+- Current authoritative result: Pass
+- What changed in the review result and why: COST-01 on the same layout shows one node pass. The follow-ups take 2.1 s in total (36.8 s before), and the first start is ready after 8.7 s (44.1 s before). T-1 is resolved.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Classification | Resolution | Evidence |
+| --- | --- | --- | --- |
+| T-1 | Local Fix (implementation) | Resolved | IR-009 (CRR-013 Pass); `round-5/COST-01/COST-01.json` |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A (test review); Large/High preserved
+- Recommended recipient: Delivery engineer
+- Remaining risks or uncertainty: cost sizes are assumptions (stated in the receipt); macOS file events and the macOS/x64 release jobs, and the fresh-start job's Docker clean-image step, were not run on this host (API/E2E residual); FU-001.
