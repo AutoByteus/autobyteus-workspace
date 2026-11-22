@@ -58,7 +58,12 @@
 
 ## Repository Finalization
 
-FINALIZATION
+- Ticket branch `codex/restart-notice-continue`: commit `c6cc54ad15`, pushed after the Secret Gate (PASS); artifact hygiene PASS.
+- Target `origin` / `personal`; not advanced after verification (`a07d6fbac8` at every fetch).
+- `finalize/restart-notice-continue` from `origin/personal`; `--no-ff` merge `19eecddbc8`, whose tree equals the ticket branch. Secret Gate on the merged state: PASS.
+- Push: `a07d6fbac8..19eecddbc8  HEAD -> personal`.
+- User's checkout (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`): fast-forwarded after this record's push, when it is on `personal` with no local commits (terminal message).
+- Status: `Completed`
 
 ## Release / Publication / Deployment
 
@@ -66,7 +71,7 @@ FINALIZATION
 
 ## Post-Finalization Cleanup
 
-CLEANUP
+- After this record's push: `git worktree remove --force` (only untracked `*/dist/` remains), `git worktree prune`, and deletion of the local branches `codex/restart-notice-continue` and `finalize/restart-notice-continue`. Remote branch: `Not required` (the repository keeps pushed `codex/*` branches). The result is in the terminal message.
 
 ## Rollback Criteria
 
@@ -74,4 +79,5 @@ CLEANUP
 
 ## Final Status
 
-FINAL
+- Verification complete: `Yes`. Finalization complete: `Yes` (`19eecddbc8`; this record follows). Release: `Not required`. Cleanup: after this record's push.
+- Unresolved blocker: `None`. Terminal package: sent after the cleanup.

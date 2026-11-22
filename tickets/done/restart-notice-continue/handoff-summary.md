@@ -6,7 +6,7 @@
 - Date: `2026-11-22`
 - Classification: `task_size: Small`, `architectural_risk: Low`, direct route. Architecture review, code review and test-code review: `Not Applicable`.
 - Current Status: `Verified from evidence / finalized on personal; no release`
-- Branch: `codex/restart-notice-continue`, base `origin/personal` @ `0da6bfbfc1`. Integrated by merge of `a07d6fbac8` (77 commits) as `f2330b7f4e`. Code `75e085d889`; test fix `b42a45e4aa`.
+- Branch: `codex/restart-notice-continue`, base `origin/personal` @ `0da6bfbfc1`. Integrated by merge of `a07d6fbac8` (77 commits) as `f2330b7f4e`. Code `75e085d889`; test fix `b42a45e4aa`. Finalized: `--no-ff` merge `19eecddbc8` pushed to `origin/personal`.
 
 ## Delivery Summary
 
