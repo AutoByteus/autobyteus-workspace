@@ -1,0 +1,8 @@
+# Follow-ups — autobyteus-585
+
+Problems found during this ticket that are outside its scope. The Solution Designer sends them on when the ticket leaves the team.
+
+| ID | Found by, where | Finding | Evidence | Why not this ticket |
+| --- | --- | --- | --- | --- |
+| FU-001 | API/E2E engineer, `api-e2e-execution-coverage-report.md` V-05 | `autobyteus-web` phone suite: MSP-44 and MSP-45 (`mobile-heading-links-cases.mjs`, heading links in the desktop Files panel, the phone viewer and the Skills page) fail every time with `locator.scrollIntoViewIfNeeded: Timeout 30000ms exceeded` waiting for `#contentViewer … a[href="other.md#x"]`. MSP-46 passes | `evidence/api-e2e/phone-full/results.log`: whole suite on head, alone on head, alone on base `0da6bfbfc1`, identical | The same failure on base; this ticket touches no file viewer or Skills page |
+| FU-002 | API/E2E engineer, V-07 | In the system's dark mode, the app's pages stay light (no dark theme), but some conversation components follow `prefers-color-scheme: dark` through `dark:` classes and `@media (prefers-color-scheme: dark)`. A platform notice's body then becomes pale on white: slate-300, 1.48:1 contrast; on base, slate-100, nearly invisible. Electron and the phone WebView follow the operating system's setting. Other `dark:` uses: `InterAgentMessageSegment`, `ErrorSegment`, `MarkdownRenderer`, `MermaidDiagram*`, `FileDisplay`, `ToolCallRejectionModal` | `evidence/api-e2e/desktop-zh-dark/` (head), `evidence/api-e2e/desktop-base-dark/` (base) | It exists on base, and is slightly better with this change. Whether the app gets a dark theme, or its components stop following the system's dark mode, is a product decision |
