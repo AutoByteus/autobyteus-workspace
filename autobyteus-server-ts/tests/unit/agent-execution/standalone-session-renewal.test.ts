@@ -61,9 +61,10 @@ describe("a standalone run whose saved runtime session is lost", () => {
     options: { commit?: Array<"ok" | "fail">; switching?: boolean } = {}) => {
     let stored = metadata();
     const commits = options.commit ?? [];
+    const newPreparation = vi.fn(async () => script.fresh!.shift()!());
     const manager = testActivationManager({
       getActiveRun: vi.fn(() => null),
-      newPreparation: vi.fn(async () => script.fresh!.shift()!()),
+      newPreparation,
       platformPreparation: vi.fn(async () => script.restore.shift()!()),
       restorePreparation: vi.fn(),
     });
@@ -81,7 +82,7 @@ describe("a standalone run whose saved runtime session is lost", () => {
       modelSelectionValidator: { validate: vi.fn() } as never,
       switching: options.switching === false ? null : { memory: new RuntimeSwitchRecorder() },
     });
-    return { service, manager, getStored: () => stored };
+    return { service, manager, newPreparation, getStored: () => stored };
   };
 
   it("continues in a fresh session of the same runtime and model behind the lost-session marker (AC-001, REQ-007)", async () => {
@@ -102,7 +103,7 @@ describe("a standalone run whose saved runtime session is lost", () => {
       content: "The saved Claude Agent SDK session of this run was no longer available, so a new session continues from the work journal." })]);
     // The hand-over notice is pending for the triggering input (derived from the marker, as after a switch).
     expect(readPendingRuntimeHandover(runDir)).toEqual({ markerTraceId: RENEWAL.markerTraceId, markerText: RENEWAL.markerText });
-    expect(warn.mock.calls.filter(([code]) => code === "RUNTIME_SESSION_LOST")).toEqual([
+    expect(warn.mock.calls.filter((call: unknown[]) => call[0] === "RUNTIME_SESSION_LOST")).toEqual([
       ["RUNTIME_SESSION_LOST", { runId: RUN_ID, runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, lostPlatformAgentRunId: LOST }]]);
   });
 
@@ -114,20 +115,20 @@ describe("a standalone run whose saved runtime session is lost", () => {
   ])("fails as today for %s: no fresh session, no marker, the metadata unchanged (AC-003)", async (_label, makeError) => {
     const error = makeError();
     const before = fs.readFileSync(activePath(), "utf8");
-    const { service, manager, getStored } = lifecycle({ restore: [async () => { throw error; }] });
+    const { service, newPreparation, getStored } = lifecycle({ restore: [async () => { throw error; }] });
     await expect(service.activateRunAgent(RUN_ID, HOST)).rejects.toBe(error);
-    expect(manager.newPreparation).not.toHaveBeenCalled();
+    expect(newPreparation).not.toHaveBeenCalled();
     expect(fs.readFileSync(activePath(), "utf8")).toBe(before);
     expect(fs.existsSync(manifestPath())).toBe(false);
     expect(getStored()).toEqual(metadata());
-    expect(warn.mock.calls.some(([code]) => code === "RUNTIME_SESSION_LOST")).toBe(false);
+    expect(warn.mock.calls.some((call: unknown[]) => call[0] === "RUNTIME_SESSION_LOST")).toBe(false);
   });
 
   it("keeps the error for a lifecycle built without the switch port: nothing changes", async () => {
     const before = fs.readFileSync(activePath(), "utf8");
-    const { service, manager } = lifecycle({ restore: [lostSession()] }, { switching: false });
+    const { service, newPreparation } = lifecycle({ restore: [lostSession()] }, { switching: false });
     await expect(service.activateRunAgent(RUN_ID, HOST)).rejects.toBeInstanceOf(SavedRuntimeSessionMissingError);
-    expect(manager.newPreparation).not.toHaveBeenCalled();
+    expect(newPreparation).not.toHaveBeenCalled();
     expect(fs.readFileSync(activePath(), "utf8")).toBe(before);
   });
 
