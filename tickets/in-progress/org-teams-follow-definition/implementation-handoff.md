@@ -28,17 +28,27 @@ The work was done in the eight slices of the design's Change Sequence; each kept
 
 - Implementation cycle: `Rework` (IR-002: design revisions SR-013/SR-014 after CRR-001 CR-001, and CRR-001's Local Fixes)
 - Implementation revision record: `tickets/in-progress/org-teams-follow-definition/implementation-revision-record.md`
-- Current implementation revision ID: `IR-007` (IR-001 baseline, IR-002 SR-013/SR-014 and CRR-001, IR-003 CRR-002, IR-004 CRR-004 and SR-015, IR-005 CRR-006, IR-006 SR-016..SR-018 after DR-001, IR-007 CRR-009)
+- Current implementation revision ID: `IR-008` (IR-001 baseline, IR-002 SR-013/SR-014 and CRR-001, IR-003 CRR-002, IR-004 CRR-004 and SR-015, IR-005 CRR-006, IR-006 SR-016..SR-018 after DR-001, IR-007 CRR-009, IR-008 CRR-010)
 - Related solution revision IDs: `SR-010` … `SR-018`
 - Related architecture-review revision IDs: `ARCH-REV-005`, `ARCH-REV-007`, `ARCH-REV-009`, `ARCH-REV-010`, `ARCH-REV-011` … `ARCH-REV-013`
-- Related code-review revision IDs: `CRR-001` … `CRR-009`
+- Related code-review revision IDs: `CRR-001` … `CRR-010`
 - Related API/E2E revision IDs: `API-REV-001` (the failure CRR-004 reviewed), `API-REV-002` (the failure CRR-006 reviewed)
 - Related delivery revision IDs: `DR-001` (integration refresh blocked; resolved here)
-- Triggering finding IDs: IR-007: `CR-008`, `CR-009` (CRR-009 Local Fix). IR-006: DR-001 (via SR-016), AR-011 (via SR-017), AR-012 (via SR-018), passed by ARCH-REV-013. IR-005: `F-5` (CRR-006 Local Fix). IR-004: `F-1`, `F-2`, `F-3`, `F-4` (CRR-004 Local Fix) and SR-015 (CRR-004 A-1, passed by ARCH-REV-010). IR-003: `CR-005`, `CR-006`, `CR-007`, `CR-002` (remaining), all Local Fix. IR-002: `CR-001` (Design Impact, realized through SR-013 R-8 and SR-014), `CR-002`, `CR-003`, `CR-004` (Local Fix), `N-1` (deviations recorded below). IR-001: N/A (ARCH-REV-005 residual notes and ARCH-REV-007 items addressed below).
+- Triggering finding IDs: IR-008: `CR-008` (remaining, CRR-010 Local Fix). IR-007: `CR-008`, `CR-009` (CRR-009 Local Fix). IR-006: DR-001 (via SR-016), AR-011 (via SR-017), AR-012 (via SR-018), passed by ARCH-REV-013. IR-005: `F-5` (CRR-006 Local Fix). IR-004: `F-1`, `F-2`, `F-3`, `F-4` (CRR-004 Local Fix) and SR-015 (CRR-004 A-1, passed by ARCH-REV-010). IR-003: `CR-005`, `CR-006`, `CR-007`, `CR-002` (remaining), all Local Fix. IR-002: `CR-001` (Design Impact, realized through SR-013 R-8 and SR-014), `CR-002`, `CR-003`, `CR-004` (Local Fix), `N-1` (deviations recorded below). IR-001: N/A (ARCH-REV-005 residual notes and ARCH-REV-007 items addressed below).
 - Commits on `codex/org-teams-follow-definition` (base `origin/personal` `9f6add773b`; since IR-006 merged with `f2c0d2a902` in `21622d75e9` and `a07d6fbac8` in `b933110420`):
   - `1c77d18f56` slice 1 part 1; `7f37435ebc` slice 2; `a3a6b227b1`, `8755ed6343`, `254c5a3a4b`, `ac0825d43a` slice 3 parts 1 … 4; `b324211623` slice 4;
   - `f69004e722` slices 5 … 7: migration, Org follow (with the web Leaving tag and the Org follows e2e), FU-003, the stored-Org reader fixes, and the existing tests moved to the container end state;
   - the slice 8 commit that follows it: docs, release notes draft, this handoff, the revision record and the evidence.
+
+## IR-008 (CRR-010: CR-008 remaining, the forward-slash Windows form)
+
+- `moveNeedles` also gives each move's resolved old folder with forward slashes (`from.replace(/\\/g, "/")`; JSON encodes it as the same text). On Windows the app stores agent-named reference files that way (`normalizeAgentRunFilePathDisplay`), for example a member forwarding its own folder file to a delegated run.
+- `movedPath` keeps such a value's form: a Windows path stored with forward slashes is written back with forward slashes.
+- A lower-case drive letter stays unmatched, consistent with the app's case-sensitive path comparison (as CRR-010 notes).
+- Test (`agent-org-units-path-rewrite.test.ts`, "CRR-010"), with `path.win32`: a log line holding `C:/…/agent_orgs/org1/team1/reviewer_1/notes.md` is parsed and moved to `C:/…/agent_teams/team1/reviewer_1/notes.md`, and a second pass changes nothing. It fails without the new needle.
+- Validation:
+  - typecheck: production 0 errors, tests at the 973 baseline;
+  - `tests/architecture`, `tests/app-data-migrations`, `tests/unit/agent-org-execution`, `tests/unit/remote-collaboration`: 132 files / 1031 tests pass.
 
 ## IR-007 (CRR-009 Local Fixes CR-008, CR-009)
 

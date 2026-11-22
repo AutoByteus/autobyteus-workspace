@@ -73,9 +73,13 @@ export const containerMovesOf = (memoryDir: string, container: Json): FolderMove
 export const movedPath = (value: string, moves: readonly FolderMove[], paths: PathSemantics = path): string => {
   if (!paths.isAbsolute(value)) return value;
   const resolved = paths.resolve(value);
+  // A Windows path the app stored with forward slashes (agent-named reference files are normalized that way, CRR-010)
+  // stays in that form.
+  const slashes = paths.sep === "\\" && value.includes("/") && !value.includes("\\");
+  const kept = (moved: string) => slashes ? moved.replace(/\\/g, "/") : moved;
   for (const move of moves) {
-    if (resolved === move.from) return move.to;
-    if (resolved.startsWith(`${move.from}${paths.sep}`)) return `${move.to}${resolved.slice(move.from.length)}`;
+    if (resolved === move.from) return kept(move.to);
+    if (resolved.startsWith(`${move.from}${paths.sep}`)) return kept(`${move.to}${resolved.slice(move.from.length)}`);
   }
   return value;
 };
@@ -84,8 +88,10 @@ export const movedPath = (value: string, moves: readonly FolderMove[], paths: Pa
 export type PathSemantics = Pick<typeof path, "isAbsolute" | "resolve" | "sep">;
 
 /**
- * The byte pre-check's needles (CR-008): each move's resolved old folder, as stored raw and as JSON encodes it (a Windows
- * path's backslashes escaped). A file holding none of them names no moved path and is not parsed.
+ * The byte pre-check's needles (CR-008): each move's resolved old folder, as stored raw, as JSON encodes it (a Windows
+ * path's backslashes escaped), and with forward slashes (on Windows the app stores agent-named reference files that way:
+ * `normalizeAgentRunFilePathDisplay`, CRR-010; its JSON encoding is the same text). A file holding none of them names no
+ * moved path and is not parsed.
  */
 export const moveNeedles = (moves: readonly FolderMove[]): ReadonlyArray<Readonly<{ orgRunId: string; bytes: readonly Buffer[] }>> => {
   const byOrg = new Map<string, Set<string>>();
@@ -93,6 +99,7 @@ export const moveNeedles = (moves: readonly FolderMove[]): ReadonlyArray<Readonl
     const set = byOrg.get(move.orgRunId) ?? new Set<string>();
     set.add(move.from);
     set.add(JSON.stringify(move.from).slice(1, -1));
+    set.add(move.from.replace(/\\/g, "/"));
     byOrg.set(move.orgRunId, set);
   }
   return [...byOrg].map(([orgRunId, texts]) => Object.freeze({ orgRunId, bytes: [...texts].map((text) => Buffer.from(text)) }));

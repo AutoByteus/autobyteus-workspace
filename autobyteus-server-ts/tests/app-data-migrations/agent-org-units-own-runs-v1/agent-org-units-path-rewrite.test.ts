@@ -310,6 +310,21 @@ describe("CRR-009 CR-008: stored Windows paths (the desktop .exe) are found and 
     // A second pass finds nothing left to move.
     await expect(rewriteMovedFolderPaths({ appDataDir: w.appData, memoryDir: w.memory, moves, paths: path.win32 })).resolves.toMatchObject({ filesRewritten: 0 });
   });
+
+  it("CRR-010: a Windows path the app stored with forward slashes (an agent-named reference file) is found and moved, in its form", async () => {
+    const w = await world();
+    const run = path.join(w.memory, "agents", "delegated_2");
+    await fs.mkdir(run, { recursive: true });
+    const forwarded = "C:/Users/u/.autobyteus/memory/agent_orgs/org1/team1/reviewer_1/notes.md";
+    await fs.writeFile(path.join(run, "communication_messages_active.jsonl"), `${JSON.stringify({ messageId: "m2", senderAgentRunId: "reviewer_1",
+      receiverAgentRunId: "delegated_2", content: "Notes attached.", messageType: "agent_message", referenceFiles: [forwarded], createdAt: "2026-11-22T00:00:00.000Z" })}\n`);
+    const text = await fs.readFile(path.join(run, "communication_messages_active.jsonl"));
+    expect(moveNeedles(moves)[0]!.bytes.some((bytes) => text.includes(bytes))).toBe(true);
+    await expect(rewriteMovedFolderPaths({ appDataDir: w.appData, memoryDir: w.memory, moves, paths: path.win32 })).resolves.toMatchObject({ filesParsed: 1, filesRewritten: 1 });
+    expect((await lines(path.join(run, "communication_messages_active.jsonl")))[0]!.referenceFiles)
+      .toEqual(["C:/Users/u/.autobyteus/memory/agent_teams/team1/reviewer_1/notes.md"]);
+    await expect(rewriteMovedFolderPaths({ appDataDir: w.appData, memoryDir: w.memory, moves, paths: path.win32 })).resolves.toMatchObject({ filesRewritten: 0 });
+  });
 });
 
 describe("SR-018 cost: one node pass", () => {

@@ -13,6 +13,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | IR-005 | Code Reviewer, `code-review-report.md` CRR-006 (failure-origin review of API-REV-002) | F-5 | `Local Fix` | CRR-006, API-REV-002 | Implemented; handed to Code Review |
 | IR-006 | Architecture Reviewer, `design-review-report.md` ARCH-REV-013 (pass on SR-016..SR-018, after delivery DR-001) | DR-001, AR-011, AR-012 | `Design Impact` realization | SR-016, SR-017, SR-018, ARCH-REV-011..013, DR-001 | Implemented; handed to Code Review |
 | IR-007 | Code Reviewer, `code-review-report.md` CRR-009 (review of IR-006) | CR-008, CR-009 | `Local Fix` | CRR-009 | Implemented; handed to Code Review |
+| IR-008 | Code Reviewer, `code-review-report.md` CRR-010 (delta review of IR-007) | CR-008 (remaining) | `Local Fix` | CRR-010 | Implemented; handed to Code Review |
 
 ## Revision Entries
 
@@ -145,3 +146,12 @@ The current code and `implementation-handoff.md` are authoritative. This record 
   - the path rules are injectable for tests (`path.win32`);
   - an agent unit's cross-node file test is added.
 - Validation: see `implementation-handoff.md` § IR-007 and `evidence/implementation/ir-007/`.
+
+### IR-008 — CRR-010: CR-008 remaining
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md` CRR-010 (§ IR-007 Delta).
+- Triggering finding IDs: CR-008 (remaining: the forward-slash Windows form).
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-007 (`d2fb8782bd`). Current authoritative result: the IR-008 commit.
+- Implementation delta: the pre-check also looks for each moved folder with forward slashes, and the rewrite keeps a forward-slash value's form; a `path.win32` pass test is added.
+- Validation: see `implementation-handoff.md` § IR-008.
