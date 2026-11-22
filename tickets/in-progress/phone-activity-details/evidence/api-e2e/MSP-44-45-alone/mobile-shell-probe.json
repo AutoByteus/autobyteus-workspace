@@ -1,0 +1,92 @@
+{
+  "startedAt": "2026-11-22T12:20:05.753Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 55993,
+      "nodeId": "srv_jWcBq0eFiyW87BudAWmZlZy4Cs6CXbWR",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 55992,
+      "nodeId": "srv_dvHsQ6F67sevc31wsiTQw7XS8JRsPjmq",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_207eeebf15a3475aac682fe153ff454b",
+    "writerRun": "release_notes_writer_fa2a5a45b3d044fea111361caa168256",
+    "squadRun": "docs_review_team_41ff035a50a043748d830744e122d058",
+    "reviewer": "release_notes_writer_016c36697b894d5f8f02e11162d1d7f4",
+    "memberDelegated": "fact_checker_b4ab31e9274d46a6998fafc5b79f31cf",
+    "remoteAgentRun": "publisher_88fba85cbf4b43888a8b7af17ed428a5",
+    "remoteTeamRun": "studio_team_5e32538c1e1947de8632640559b8de4d",
+    "plain": [
+      "fact_checker_f3353bc46e5f41cabfe5dd4b06b9aaa1",
+      "fact_checker_10e0bd70e435483f93af8618c9a9b1ab",
+      "fact_checker_318ff40946df4552a7095afa7dd93cfd"
+    ],
+    "org": "delivery_org_d1092e1c93b34382ae123fc9dd8480c1",
+    "orgPlanner": "release_notes_writer_1454a148534149478d8862a0a3320273",
+    "reviewOrg": "review_org_97628a53fa1d446b88884db4ad841a25",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_7de26718856a4fa5aa11b19c80d0b64e",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_7d2f8d3d9feb4771afdd4c9fc4fee4a2",
+    "deliveryLead": "fact_checker_8283303bf60242b192c8c4a0016f4a1a",
+    "deliveryMate": "release_notes_writer_cb4fdae7d72c462ab9f0f06a9b02f52a",
+    "leadDelegated": "changelog_helper_5e8414eb5c9849528816e0cce97b29ef",
+    "approver": "approver_6e953e3891b14e98904b4c70682a3543",
+    "taskA": "launch-51c303-1",
+    "taskB": "launch-51c303-2"
+  },
+  "cases": {
+    "MSP-44": {
+      "result": "Fail",
+      "seconds": 45.5,
+      "error": "locator.scrollIntoViewIfNeeded: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('#contentViewer:visible').first().locator('a[href=\"other.md#x\"]').first()\n",
+      "details": null
+    },
+    "MSP-45": {
+      "result": "Fail",
+      "seconds": 45.6,
+      "error": "locator.scrollIntoViewIfNeeded: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('.skill-detail').locator('#contentViewer:visible').first().locator('a[href=\"other.md#x\"]').first()\n",
+      "details": null
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "headingLinks": {
+    "filesRun": "fact_checker_f74287d92ea44528b8cbd5023c9da98a",
+    "host": "project_task_manager_0a395b1faab143b292ff1d54c580d290",
+    "talkRun": "release_notes_writer_f1d7fb3b57fa4e8ba2fe9e5b1113fa92",
+    "skill": "heading-links-480",
+    "contentsEntries": 25
+  },
+  "summary": {
+    "cases": {
+      "MSP-44": "Fail",
+      "MSP-45": "Fail"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-22T12:22:27.188Z"
+}
