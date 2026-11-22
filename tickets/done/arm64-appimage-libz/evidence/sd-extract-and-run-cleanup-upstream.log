@@ -1,0 +1,15 @@
+# Solution Designer check for AE-11, 2026-11-22, host aarch64 (Ubuntu 24.04 container, root)
+# Minimal AppImage = runtime + squashfs{AppRun: sh script} (mksquashfs from appimage-12.0.1/linux-arm64), TMPDIR per runtime
+runtime 20251108 (https://github.com/AppImage/type2-runtime/releases/download/20251108/runtime-aarch64)
+  sha256 00cbdfcf917cc6c0ff6d3347d59e0ca1f7f45a6df1a428a0d6d8a78664d87444 (= the pinned runtime-arm64)
+  --appimage-version: commit/dd6cebe
+  --appimage-extract-and-run: "AppRun ran in .../appimage_extracted_e09dbedfe402d7f12e2bbab59525c1e8", exit=0, left: appimage_extracted_e09dbedfe402d7f12e2bbab59525c1e8
+runtime continuous (https://github.com/AppImage/type2-runtime/releases/download/continuous/runtime-aarch64, published 2026-10-19)
+  sha256 9a72a744d221576c9347ec074243acc5c3c7568896b12714e0e82e9f0bf47900
+  --appimage-version: commit/fedfad5
+  --appimage-extract-and-run: "AppRun ran in .../appimage_extracted_7dd500d34c2f17a121a4698eaf0f1a29", exit=0, left: appimage_extracted_7dd500d34c2f17a121a4698eaf0f1a29
+# Upstream source (type2-runtime dd6cebe src/runtime/runtime.c):
+#  - 1580: extract-and-run runs only for --appimage-extract-and-run or env APPIMAGE_EXTRACT_AND_RUN
+#  - 1661-1667: cleanup via rm_recursive(prefix) unless NO_CLEANUP is set (present in source; not effective in the released binaries, see AE-11 strace)
+#  - 1770-1779: a failed FUSE mount prints "Cannot mount AppImage..." and suggests --appimage-extract; no automatic extract-and-run fallback
+# type2-runtime issues searched (clean|extract-and-run|extracted): none about the missing cleanup (#64, #65 docs, #144 unrelated)

@@ -1,0 +1,13 @@
+# AE-06 app.log excerpt (attempt 5, NEW image, fresh HOME /home/tester)
+19:[2026-11-22T00:31:55.495Z] [INFO] [electron] Starting server with port: 29695
+202:[2026-11-22T00:31:57.583Z] [ERROR] [electron.embedded-server.stderr] Overwriting existing tool definition for name: 'search_web'
+205:[2026-11-22T00:31:57.599Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1795307517599,"pid":149,"hostname":"8abfa09513cd","msg":"Server listening at http://127.0.0.1:46303"}
+206:[2026-11-22T00:31:57.621Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1795307517621,"pid":149,"hostname":"8abfa09513cd","msg":"Server listening at http://127.0.0.1:29695"}
+207:[2026-11-22T00:31:57.621Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1795307517621,"pid":149,"hostname":"8abfa09513cd","msg":"Server listening at http://172.17.0.2:29695"}
+208:[2026-11-22T00:31:57.621Z] [INFO] [electron.embedded-server.stdout] [2026-11-22T00:31:57.621Z] [INFO] [server.runtime] Server listening on 0.0.0.0:29695
+230:[2026-11-22T00:31:57.774Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+231:[2026-11-22T00:31:57.775Z] [INFO] [electron] ServerStatusManager: Server is ready
+... ERROR/FATAL line count: 1
+
+# attempt 6A quit lines
+255:[2026-11-22T00:34:11.348Z] [INFO] [electron.server.base-server-manager] Server process exited with code 0

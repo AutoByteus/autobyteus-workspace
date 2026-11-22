@@ -3,7 +3,7 @@
 # The chrome-vnc base image, pinned by digest. system-level.json lists the digest of each base
 # variant; the zh release passes its digest, and check-system-level.mjs keeps this default equal
 # to baseImages.default.
-ARG BASE_IMAGE_DIGEST=sha256:b2fde77f3bd7c73d412ea59d42e3b65290bae9f39d1ce85b5aaaac5d869596f4
+ARG BASE_IMAGE_DIGEST=sha256:86b7891d3d1d74e1b3bd42c44df9729d56343127b6f745f1f3fda8d6a6e6a50b
 ARG CODEX_CLI_VERSION=latest
 ARG CLAUDE_CODE_VERSION=latest
 

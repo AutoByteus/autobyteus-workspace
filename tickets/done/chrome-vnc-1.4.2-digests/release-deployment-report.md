@@ -1,0 +1,26 @@
+# Release Record — chrome-vnc 1.4.2 base pins (autobyteus-598)
+
+- Release request: the founder's word, "Release for browser docker please" (2026-11-21), through the Solution Designer. The full release record is in `AutoByteus/browser-docker`: `tickets/done/release-1.4.2/release-deployment-report.md`.
+- Change here: the server image's chrome-vnc base pins move to the published 1.4.2 index digests. This is `browser_docker/RELEASE.md` "Watching The Rollout", step 1.
+  - `autobyteus-server-ts/docker/system-level.json`:
+    - `baseImages.default` = `sha256:86b7891d3d1d74e1b3bd42c44df9729d56343127b6f745f1f3fda8d6a6e6a50b` (`1.4.2` / `latest`);
+    - `baseImages.zh` = `sha256:c381f2e82fc0f0da9a74367e1c4e5029e195c90016e0dd187f9269768dd68783` (`1.4.2-zh` / `zh`);
+    - `level` 1 → 2;
+    - `systemInputsSha256` `61cd87f9a8cca3c3df207db0d7b36807f3dace192b9288b00102ff9c809725b7`.
+  - `autobyteus-server-ts/docker/Dockerfile.monorepo`: `ARG BASE_IMAGE_DIGEST` default = the default index digest.
+- Why level 2: RELEASE.md ("Server Docker system level") and `check-system-level.mjs` require a new level whenever the pinned base digests change.
+- Consequences of level 2:
+  - Server packages built from `personal` from now on need level 2.
+  - A node on a level-1 server image refuses them until it is recreated on a server image built from this change (`autobyteus-docker upgrade`). That is also how nodes get the fixed base.
+- Checks:
+  - `node scripts/server-package/check-system-level.mjs`: "System level 2: the system part is unchanged (61cd87f9…)" (`evidence/check-system-level.log`).
+  - TESTING.md "Server Docker Release workflow steps" set: `Ran 73 tests … OK` (`evidence/server-docker-release-unittests.log`).
+  - Secret Gate on the ticket commits and the merged state.
+- Not done here, by the request:
+  - no AutoByteus release tag;
+  - no server-image rebuild or re-publish;
+  - `autobyteus-server-0/1/2` not touched.
+- Remaining rollout steps:
+  - rebuild and publish the server image from `personal` (the next beta or stable, or a server re-publish), on the founder's word;
+  - then recreate the nodes.
+- Rollback: revert this change on `personal` (level 1 and the 1.4.1 digests). No server image was built from it yet.

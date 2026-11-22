@@ -1,0 +1,92 @@
+# AE-05 release outputs of build-only run 44956618584 vs published v1.5.14-beta.6 — 2026-11-21T23:40:33Z
+## run artifacts (gh api …/runs/44956618584/artifacts)
+  linux-arm64	349739838
+  linux-x64	359383873
+  macos-arm64	789577690
+  macos-x64	837844746
+  windows-x64	274079912
+## artifact names of the v1.5.14-beta.6 tag run 44901757001 (same five desktop + linux-authenticated-sidecars, which only the publishing sign job makes)
+  linux-arm64
+  linux-authenticated-sidecars
+  linux-x64
+  macos-arm64
+  macos-x64
+  windows-x64
+## desktop file names built in run 44956618584 (from its log)
+  AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage
+  AutoByteus_personal_linux-x64-1.5.14-beta.6.AppImage
+  AutoByteus_personal_macos-arm64-1.5.14-beta.6.dmg
+  AutoByteus_personal_macos-arm64-1.5.14-beta.6.dmg.blockmap
+  AutoByteus_personal_macos-arm64-1.5.14-beta.6.zip
+  AutoByteus_personal_macos-arm64-1.5.14-beta.6.zip.blockmap
+  AutoByteus_personal_macos-x64-1.5.14-beta.6.dmg
+  AutoByteus_personal_macos-x64-1.5.14-beta.6.dmg.blockmap
+  AutoByteus_personal_macos-x64-1.5.14-beta.6.zip
+  AutoByteus_personal_macos-x64-1.5.14-beta.6.zip.blockmap
+  AutoByteus_personal_windows-1.5.14-beta.6.exe
+## published v1.5.14-beta.6 desktop asset names
+  AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage
+  AutoByteus_personal_linux-x64-1.5.14-beta.6.AppImage
+  AutoByteus_personal_macos-arm64-1.5.14-beta.6.dmg
+  AutoByteus_personal_macos-arm64-1.5.14-beta.6.dmg.blockmap
+  AutoByteus_personal_macos-arm64-1.5.14-beta.6.zip
+  AutoByteus_personal_macos-arm64-1.5.14-beta.6.zip.blockmap
+  AutoByteus_personal_macos-x64-1.5.14-beta.6.dmg
+  AutoByteus_personal_macos-x64-1.5.14-beta.6.dmg.blockmap
+  AutoByteus_personal_macos-x64-1.5.14-beta.6.zip
+  AutoByteus_personal_macos-x64-1.5.14-beta.6.zip.blockmap
+  AutoByteus_personal_windows-1.5.14-beta.6.exe
+## names equal (built vs published, excluding release records/android): yes
+
+## latest-linux-arm64.yml: CI
+version: 1.5.14-beta.6
+files:
+  - url: AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage
+    sha512: yRVwjv2DL9PP+T3jsDpNdm6eYgSQQD0qHeMTtYtTUjd8+UzcsWE90m7qSC15hgtQnfckkkuIfLpi030I72Kc2g==
+    size: 351223217
+    blockMapSize: 365477
+path: AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage
+sha512: yRVwjv2DL9PP+T3jsDpNdm6eYgSQQD0qHeMTtYtTUjd8+UzcsWE90m7qSC15hgtQnfckkkuIfLpi030I72Kc2g==
+releaseDate: '2026-11-21T22:33:54.593Z'
+## latest-linux-arm64.yml: published
+version: 1.5.14-beta.6
+files:
+  - url: AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage
+    sha512: LEBoyvSwgpE7yYPU26dfBIno784WqYzOHi+H0uTPo0D4FW8BvzdwfQEquNuTyF8N5tS7HrbonITLFFjrAOUJCw==
+    size: 350431026
+    blockMapSize: 365182
+path: AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage
+sha512: LEBoyvSwgpE7yYPU26dfBIno784WqYzOHi+H0uTPo0D4FW8BvzdwfQEquNuTyF8N5tS7HrbonITLFFjrAOUJCw==
+releaseDate: '2026-11-21T12:09:41.423Z'
+## key structure equal: yes
+
+## latest-linux.yml: CI
+version: 1.5.14-beta.6
+files:
+  - url: AutoByteus_personal_linux-x64-1.5.14-beta.6.AppImage
+    sha512: lD0kb8ulTd60aUT3xqK16Xm0ugRYGd8YZKQKKp+IIkmKV6A99hMjAmDI7A1R9mwLEPq88fojWoNrklDA2M69Ng==
+    size: 360523609
+    blockMapSize: 374637
+path: AutoByteus_personal_linux-x64-1.5.14-beta.6.AppImage
+sha512: lD0kb8ulTd60aUT3xqK16Xm0ugRYGd8YZKQKKp+IIkmKV6A99hMjAmDI7A1R9mwLEPq88fojWoNrklDA2M69Ng==
+releaseDate: '2026-11-21T22:31:48.323Z'
+## latest-linux.yml: published
+version: 1.5.14-beta.6
+files:
+  - url: AutoByteus_personal_linux-x64-1.5.14-beta.6.AppImage
+    sha512: eqA8kza4gzj2x92J3Ph6tuz9+OfE1ziUAmxwE5fTR2cZqhgOrRUU5Rp0aVMk/mUsY+gUugHbkDt0YBuejW9b5Q==
+    size: 360470600
+    blockMapSize: 374876
+path: AutoByteus_personal_linux-x64-1.5.14-beta.6.AppImage
+sha512: eqA8kza4gzj2x92J3Ph6tuz9+OfE1ziUAmxwE5fTR2cZqhgOrRUU5Rp0aVMk/mUsY+gUugHbkDt0YBuejW9b5Q==
+releaseDate: '2026-11-21T12:07:55.708Z'
+## key structure equal: yes
+
+## latest-linux-arm64.yml matches the CI arm64 AppImage
+files[0].sha512 == sha512(AppImage): True
+files[0].size == file size: True 351223217
+top-level sha512 == files[0].sha512: True
+## release record of the CI arm64 AppImage names its sha256
+{"format":1,"product":"autobyteus-personal-desktop","artifact":"AppImage","os":"linux","arch":"arm64","version":"1.5.14-beta.6","channel":"beta","size":351223217,"sha256":"02525c59e3edb7dab346dc6530f7396ad0c17456b2dd042c53002ff5e08b5f42","minWriter":1}
+
+02525c59e3edb7dab346dc6530f7396ad0c17456b2dd042c53002ff5e08b5f42  /tmp/ae28/dl/ci/linux-arm64/AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage

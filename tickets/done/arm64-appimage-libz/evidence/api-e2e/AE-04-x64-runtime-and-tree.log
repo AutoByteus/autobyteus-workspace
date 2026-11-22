@@ -1,0 +1,146 @@
+# AE-04 x64 AppImage: CI artifact (run 44956618584) vs legacy appimage-12.0.1 runtime-x64 and published v1.5.14-beta.6 x64 — 2026-11-21T23:39:20Z
+6cebbab5ea455bdffdcd92c79080b6cfdd9bf793059a9af458d09d120421a038  /tmp/ae28/dl/ci/linux-x64/AutoByteus_personal_linux-x64-1.5.14-beta.6.AppImage
+e66ac657e61cca8bb3cca7cb09cd588079a94cac16d1cfba4f83fd83b61664a7  /tmp/ae28/dl/published/AutoByteus_personal_linux-x64-1.5.14-beta.6.AppImage
+24da8e0e149b7211cbfb00a545189a1101cb18d1f27d4cfc1895837d2c30bc30  /tmp/ae28/dl/upstream/legacy/runtime-x64
+
+## NEW prefix length 188392, prefix sha256 24da8e0e149b7211cbfb00a545189a1101cb18d1f27d4cfc1895837d2c30bc30
+ 0x0000000000000001 (NEEDED)             Shared library: [libdl.so.2]
+ 0x0000000000000001 (NEEDED)             Shared library: [libpthread.so.0]
+ 0x0000000000000001 (NEEDED)             Shared library: [libz.so.1]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+
+## PUB prefix length 188392, prefix sha256 24da8e0e149b7211cbfb00a545189a1101cb18d1f27d4cfc1895837d2c30bc30
+ 0x0000000000000001 (NEEDED)             Shared library: [libdl.so.2]
+ 0x0000000000000001 (NEEDED)             Shared library: [libpthread.so.0]
+ 0x0000000000000001 (NEEDED)             Shared library: [libz.so.1]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+
+## legacy runtime-x64 (from pinned appimage-12.0.1.7z): size 188392, sha256 24da8e0e149b7211cbfb00a545189a1101cb18d1f27d4cfc1895837d2c30bc30
+
+## image trees: unsquashfs -o <offset> -lls, paths+modes (no sizes/times)
+NEW entries: 31377
+PUB entries: 31343
+### diff (published → new), paths+modes:
+188a189,191
+> -rw-r--r-- /resources/server/dist/agent-collaboration/delegation/run-parts.d.ts
+> -rw-r--r-- /resources/server/dist/agent-collaboration/delegation/run-parts.d.ts.map
+> -rw-r--r-- /resources/server/dist/agent-collaboration/delegation/run-parts.js
+343a347,349
+> -rw-r--r-- /resources/server/dist/agent-collaboration/execution/remote/peer-run-state-notices.d.ts
+> -rw-r--r-- /resources/server/dist/agent-collaboration/execution/remote/peer-run-state-notices.d.ts.map
+> -rw-r--r-- /resources/server/dist/agent-collaboration/execution/remote/peer-run-state-notices.js
+476a483,485
+> -rw-r--r-- /resources/server/dist/agent-communication/services/peer-run-message-delivery.d.ts
+> -rw-r--r-- /resources/server/dist/agent-communication/services/peer-run-message-delivery.d.ts.map
+> -rw-r--r-- /resources/server/dist/agent-communication/services/peer-run-message-delivery.js
+1867a1877,1882
+> -rw-r--r-- /resources/server/dist/agent-team-execution/domain/team-run-member-authority.d.ts
+> -rw-r--r-- /resources/server/dist/agent-team-execution/domain/team-run-member-authority.d.ts.map
+> -rw-r--r-- /resources/server/dist/agent-team-execution/domain/team-run-member-authority.js
+> -rw-r--r-- /resources/server/dist/agent-team-execution/domain/team-run-membership.d.ts
+> -rw-r--r-- /resources/server/dist/agent-team-execution/domain/team-run-membership.d.ts.map
+> -rw-r--r-- /resources/server/dist/agent-team-execution/domain/team-run-membership.js
+1908a1924,1939
+> drwxr-xr-x /resources/server/dist/agent-team-execution/membership
+> -rw-r--r-- /resources/server/dist/agent-team-execution/membership/team-change-notice-source.d.ts
+> -rw-r--r-- /resources/server/dist/agent-team-execution/membership/team-change-notice-source.d.ts.map
+> -rw-r--r-- /resources/server/dist/agent-team-execution/membership/team-change-notice-source.js
+> -rw-r--r-- /resources/server/dist/agent-team-execution/membership/team-definition-change-listener.d.ts
+> -rw-r--r-- /resources/server/dist/agent-team-execution/membership/team-definition-change-listener.d.ts.map
+> -rw-r--r-- /resources/server/dist/agent-team-execution/membership/team-definition-change-listener.js
+> -rw-r--r-- /resources/server/dist/agent-team-execution/membership/team-membership-change.d.ts
+> -rw-r--r-- /resources/server/dist/agent-team-execution/membership/team-membership-change.d.ts.map
+> -rw-r--r-- /resources/server/dist/agent-team-execution/membership/team-membership-change.js
+> -rw-r--r-- /resources/server/dist/agent-team-execution/membership/team-membership-committer.d.ts
+> -rw-r--r-- /resources/server/dist/agent-team-execution/membership/team-membership-committer.d.ts.map
+> -rw-r--r-- /resources/server/dist/agent-team-execution/membership/team-membership-committer.js
+> -rw-r--r-- /resources/server/dist/agent-team-execution/membership/team-membership-planner.d.ts
+> -rw-r--r-- /resources/server/dist/agent-team-execution/membership/team-membership-planner.d.ts.map
+> -rw-r--r-- /resources/server/dist/agent-team-execution/membership/team-membership-planner.js
+1954a1986,1988
+> -rw-r--r-- /resources/server/dist/agent-team-execution/services/team-model-config-update-result.d.ts
+> -rw-r--r-- /resources/server/dist/agent-team-execution/services/team-model-config-update-result.d.ts.map
+> -rw-r--r-- /resources/server/dist/agent-team-execution/services/team-model-config-update-result.js
+2743,2745d2776
+< -rw-r--r-- /resources/server/dist/api/rest/busy-runs.d.ts
+< -rw-r--r-- /resources/server/dist/api/rest/busy-runs.d.ts.map
+< -rw-r--r-- /resources/server/dist/api/rest/busy-runs.js
+4358,4360d4388
+< -rw-r--r-- /resources/server/dist/compositions/busy-run-count-composition.d.ts
+< -rw-r--r-- /resources/server/dist/compositions/busy-run-count-composition.d.ts.map
+< -rw-r--r-- /resources/server/dist/compositions/busy-run-count-composition.js
+5485a5514,5519
+> -rw-r--r-- /resources/server/dist/remote-collaboration/inbound/closed-delegations.d.ts
+> -rw-r--r-- /resources/server/dist/remote-collaboration/inbound/closed-delegations.d.ts.map
+> -rw-r--r-- /resources/server/dist/remote-collaboration/inbound/closed-delegations.js
+> -rw-r--r-- /resources/server/dist/remote-collaboration/inbound/delegated-run-state-handler.d.ts
+> -rw-r--r-- /resources/server/dist/remote-collaboration/inbound/delegated-run-state-handler.d.ts.map
+> -rw-r--r-- /resources/server/dist/remote-collaboration/inbound/delegated-run-state-handler.js
+6921d6954
+< -rw-r--r-- /resources/server/mobile-web/_nuxt/B49J_NgI.js
+6954,6955c6987
+< -rw-r--r-- /resources/server/mobile-web/_nuxt/builds/meta/3021c9b1-cbf9-45ff-9969-e7850c86643e.json
+< -rw-r--r-- /resources/server/mobile-web/_nuxt/BUKHm51v.js
+diff lines: 56
+### top-level / launcher entries in NEW:
+-rwxr-xr-x /autobyteus
+-rw-r--r-- /autobyteus.desktop
+-rwxr-xr-x /autobyteus-install-client
+-rwxr-xr-x /autobyteus-provision
+-rwxr-xr-x /chrome-sandbox
+-rwxr-xr-x /managed-restart.node
+
+### AppRun / top-level entries (NEW, PUB):
+NEW:
+-rw-r--r-- /autobyteus.desktop
+lrwxrwxrwx /autobyteus.png
+drwxr-xr-x /locales
+drwxr-xr-x /resources
+PUB:
+-rw-r--r-- /autobyteus.desktop
+lrwxrwxrwx /autobyteus.png
+drwxr-xr-x /locales
+drwxr-xr-x /resources
+
+### diff restricted to entries outside resources/server/dist, resources/server/mobile-web, resources/server/node_modules (packaging-level):
+packaging-level diff lines: 0
+node_modules diff lines: 0
+(the 56 differing entries are server dist / mobile-web source-build files that changed between v1.5.14-beta.6 and the ticket base 9f6add773b, none under packaging)
+
+## CORRECTED tree listing (the listing above skipped the first 3 entries of both images: '/', '/.DirIcon', '/AppRun'; regenerated without the skip)
+NEW entries: 31380
+PUB entries: 31346
+### top-level entries NEW:
+-rwxr-xr-x /AppRun
+-rwxr-xr-x /autobyteus
+-rw-r--r-- /autobyteus.desktop
+-rwxr-xr-x /autobyteus-install-client
+lrwxrwxrwx /autobyteus.png
+-rwxr-xr-x /autobyteus-provision
+-rw-r--r-- /chrome_100_percent.pak
+-rw-r--r-- /chrome_200_percent.pak
+-rwxr-xr-x /chrome_crashpad_handler
+-rwxr-xr-x /chrome-sandbox
+lrwxrwxrwx /.DirIcon
+-rw-r--r-- /icudtl.dat
+-rwxr-xr-x /libEGL.so
+-rwxr-xr-x /libffmpeg.so
+-rwxr-xr-x /libGLESv2.so
+-rwxr-xr-x /libvk_swiftshader.so
+-rwxr-xr-x /libvulkan.so.1
+-rw-r--r-- /LICENSE.electron.txt
+-rw-r--r-- /LICENSES.chromium.html
+drwxr-xr-x /locales
+-rwxr-xr-x /managed-restart.node
+drwxr-xr-x /resources
+-rw-r--r-- /resources.pak
+-rw-r--r-- /snapshot_blob.bin
+drwxr-xr-x /usr
+-rw-r--r-- /v8_context_snapshot.bin
+-rw-r--r-- /vk_swiftshader_icd.json
+### AppRun sizes (NEW / PUB, x64 native launcher, rebuilt per version):
+-rwxr-xr-x root/root          10541073 2026-11-21 22:31 /AppRun
+-rwxr-xr-x root/root          10541073 2026-11-21 12:07 /AppRun
+### full diff lines (paths+modes): 56
+### packaging-level diff (outside resources/server/{dist,mobile-web,node_modules}):
+packaging-level diff lines: 0

@@ -1,0 +1,30 @@
+# AE-06 clean desktop root precondition — 2026-11-21T23:42:15Z
+root: /tmp/ae28/desktop-root = official ubuntu-base-24.04.5-base-arm64.tar.gz (sha256 a91d5a93…14f2) + apt-get install --no-install-recommends (Ubuntu 24.04 archive):
+  libgtk-3-0t64 libnss3 libnspr4 libasound2t64 libgbm1 libxss1 libxtst6 libatk1.0-0t64 libatk-bridge2.0-0t64 libcups2t64 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libpango-1.0-0 libcairo2 libdbus-1-3 libexpat1 libx11-xcb1 libsecret-1-0 xvfb xauth x11-utils imagemagick curl ca-certificates procps
+packages installed: 276
+
+## zlib / fuse packages in the root (dpkg -l)
+ii  zlib1g:arm64                   1:1.3.dfsg-3.1ubuntu2.2           arm64        compression library - runtime
+zlib1g-dev installed: 0
+
+## files named libz.so* / libfuse.so* anywhere in the root
+usr/lib/aarch64-linux-gnu/libz.so.1
+usr/lib/aarch64-linux-gnu/libz.so.1.3
+unversioned libz.so present: 0   libfuse.so.2 present: 0   /dev/fuse on host: no
+
+## ldd of the CI image's Electron ELF and bundled libraries inside the root (missing => 'not found')
+/bin/bash: warning: setlocale: LC_ALL: cannot change locale (en_US.UTF-8)
+-- autobyteus: 0 not found
+/bin/bash: warning: setlocale: LC_ALL: cannot change locale (en_US.UTF-8)
+-- chrome_crashpad_handler: 0 not found
+/bin/bash: warning: setlocale: LC_ALL: cannot change locale (en_US.UTF-8)
+-- libEGL.so: 0 not found
+/bin/bash: warning: setlocale: LC_ALL: cannot change locale (en_US.UTF-8)
+-- libGLESv2.so: 0 not found
+/bin/bash: warning: setlocale: LC_ALL: cannot change locale (en_US.UTF-8)
+-- libffmpeg.so: 0 not found
+/bin/bash: warning: setlocale: LC_ALL: cannot change locale (en_US.UTF-8)
+-- libvk_swiftshader.so: 0 not found
+/bin/bash: warning: setlocale: LC_ALL: cannot change locale (en_US.UTF-8)
+	libz.so.1 => /lib/aarch64-linux-gnu/libz.so.1 (0x0000ffff86240000)
+	libzstd.so.1 => /lib/aarch64-linux-gnu/libzstd.so.1 (0x0000ffff84a10000)

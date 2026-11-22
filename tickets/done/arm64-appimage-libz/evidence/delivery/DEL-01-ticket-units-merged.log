@@ -1,0 +1,25 @@
+# DEL-01 ticket unit checks on merged state fa87a5d289
+$ node --test scripts/desktop-package/verify-clean-image-runtime.test.mjs
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 177.68375
+exit=0
+$ python3 -m unittest scripts/tests/test_desktop_release_clean_image_step.py scripts/tests/test_desktop_release_server_package_wait.py -v
+test_waits_until_all_six_files_are_there (scripts.tests.test_desktop_release_server_package_wait.ServerPackageWaitTest.test_waits_until_all_six_files_are_there) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 1.606s
+
+OK
+$ (autobyteus-web) NUXT_TEST=true pnpm exec vitest run scripts/__tests__/linuxAppImageBuild.spec.ts
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  00:49:18
+   Duration  874ms (transform 126ms, setup 251ms, collect 45ms, tests 33ms, environment 0ms, prepare 137ms)
+

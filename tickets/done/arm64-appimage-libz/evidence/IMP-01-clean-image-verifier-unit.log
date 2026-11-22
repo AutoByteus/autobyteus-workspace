@@ -1,0 +1,12 @@
+# IMP-01
+# Command: node --test scripts/desktop-package/verify-clean-image-runtime.test.mjs
+# Commit: 7ad305aeb0
+# Environment: Linux aarch64 container (Ubuntu 24.04, root), Node v22.23.3
+# Date: 2026-11-21T20:49:04Z
+
+ok 1 - runs the image read-only in a networkless stock ubuntu:24.04 container after asserting libz.so is absent
+ok 2 - a container failure fails the check with the container message
+ok 3 - a missing IMAGE argument or a missing docker fails loudly
+# tests 3
+# pass 3
+# fail 0

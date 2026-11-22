@@ -1,0 +1,40 @@
+# AE-08 durable workflow test, commit cd687a31e6 + uncommitted test file, 2026-11-21T23:37:13Z
+## clean run: python3 -m unittest scripts/tests/test_desktop_release_clean_image_step.py -v
+test_a_clean_image_that_ships_libz_so_fails_the_job (scripts.tests.test_desktop_release_clean_image_step.CleanImageStepRunTest.test_a_clean_image_that_ships_libz_so_fails_the_job) ... ok
+test_a_job_without_its_appimage_fails_before_docker_runs (scripts.tests.test_desktop_release_clean_image_step.CleanImageStepRunTest.test_a_job_without_its_appimage_fails_before_docker_runs) ... ok
+test_a_runtime_that_needs_libz_so_fails_the_job_naming_the_library (scripts.tests.test_desktop_release_clean_image_step.CleanImageStepRunTest.test_a_runtime_that_needs_libz_so_fails_the_job_naming_the_library) ... ok
+test_each_job_runs_its_own_architecture_image_in_a_networkless_stock_ubuntu_image (scripts.tests.test_desktop_release_clean_image_step.CleanImageStepRunTest.test_each_job_runs_its_own_architecture_image_in_a_networkless_stock_ubuntu_image) ... ok
+test_each_linux_job_runs_the_gate_unconditionally_after_its_layout_check_and_before_upload (scripts.tests.test_desktop_release_clean_image_step.CleanImageStepStructureTest.test_each_linux_job_runs_the_gate_unconditionally_after_its_layout_check_and_before_upload) ... ok
+test_no_job_continues_past_a_failed_step (scripts.tests.test_desktop_release_clean_image_step.CleanImageStepStructureTest.test_no_job_continues_past_a_failed_step) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.240s
+
+OK
+
+## mutation 1: arm64 gate gets 'if: false'
+FAIL: test_each_linux_job_runs_the_gate_unconditionally_after_its_layout_check_and_before_upload (scripts.tests.test_desktop_release_clean_image_step.CleanImageStepStructureTest.test_each_linux_job_runs_the_gate_unconditionally_after_its_layout_check_and_before_upload) (job='build-linux-arm64')
+AssertionError: Lists differ: ['run'] != ['if', 'run']
+Ran 6 tests in 0.236s
+FAILED (failures=1)
+
+## mutation 2: arm64 gate verifies the x64 image
+FAIL: test_a_job_without_its_appimage_fails_before_docker_runs (scripts.tests.test_desktop_release_clean_image_step.CleanImageStepRunTest.test_a_job_without_its_appimage_fails_before_docker_runs) (job='build-linux-arm64')
+AssertionError: 0 == 0
+FAIL: test_each_job_runs_its_own_architecture_image_in_a_networkless_stock_ubuntu_image (scripts.tests.test_desktop_release_clean_image_step.CleanImageStepRunTest.test_each_job_runs_its_own_architecture_image_in_a_networkless_stock_ubuntu_image) (job='build-linux-arm64')
+AssertionError: 'type[109 chars]inux-arm64-1.5.14-beta.6.AppImage,target=/auto[20 chars]only' != 'type[109 chars]inux-x64-1.5.14-beta.6.AppImage,target=/autoby[18 chars]only'
+Ran 6 tests in 0.273s
+FAILED (failures=2)
+
+## mutation 3: x64 gate step removed
+ERROR: test_a_clean_image_that_ships_libz_so_fails_the_job (scripts.tests.test_desktop_release_clean_image_step.CleanImageStepRunTest.test_a_clean_image_that_ships_libz_so_fails_the_job) (job='build-linux-x64')
+ERROR: test_a_job_without_its_appimage_fails_before_docker_runs (scripts.tests.test_desktop_release_clean_image_step.CleanImageStepRunTest.test_a_job_without_its_appimage_fails_before_docker_runs) (job='build-linux-x64')
+ERROR: test_a_runtime_that_needs_libz_so_fails_the_job_naming_the_library (scripts.tests.test_desktop_release_clean_image_step.CleanImageStepRunTest.test_a_runtime_that_needs_libz_so_fails_the_job_naming_the_library) (job='build-linux-x64')
+ERROR: test_each_job_runs_its_own_architecture_image_in_a_networkless_stock_ubuntu_image (scripts.tests.test_desktop_release_clean_image_step.CleanImageStepRunTest.test_each_job_runs_its_own_architecture_image_in_a_networkless_stock_ubuntu_image) (job='build-linux-x64')
+FAIL: test_each_linux_job_runs_the_gate_unconditionally_after_its_layout_check_and_before_upload (scripts.tests.test_desktop_release_clean_image_step.CleanImageStepStructureTest.test_each_linux_job_runs_the_gate_unconditionally_after_its_layout_check_and_before_upload) (job='build-linux-x64')
+AssertionError: 'Verify Linux x64 AppImage runs in a clean Ubuntu image' not found in ['Checkout workspace + submodules', 'Setup pnpm', 'Setup Node', 'Install Linux build deps', 'Install workspace dependencies', 'Setup pinned native toolchain', 'Prepare desktop public trust or disposable build-only identity', 'Check native and signed-record units', 'Build Electron Linux x64', 'Sign build-only final bytes with disposable trust', 'Verify Linux x64 AppImage and updater metadata', 'Verify Linux x64 Prisma engines', 'Verify Linux x64 packaged server startup', 'Upload Linux x64 artifacts']
+Ran 6 tests in 0.120s
+FAILED (failures=1, errors=4)
+
+## workflow restored:
+(empty = restored)
