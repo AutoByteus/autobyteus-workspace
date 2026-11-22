@@ -4,7 +4,7 @@ import { TeamAgentPlatformBindingError, createTeamAgentPlatformBinding } from ".
 import {
   adoptAgentPlatformBindingInTree,
   commitRuntimeSwitchInTree,
-  replaceAgentPlatformBindingWithoutConversationInTree,
+  replaceAgentPlatformBindingInTree,
 } from "./team-run-execution-tree-mutator.js";
 import type { TeamRunPersistenceCoordinator } from "./team-run-persistence-coordinator.js";
 
@@ -35,7 +35,7 @@ export class TeamAgentPlatformBindingCommitter {
             ? { outcome: "adopted" as const, tree: commitRuntimeSwitchInTree({ tree, commit: change }) }
             : change.kind === "adopt_or_retain"
               ? adoptAgentPlatformBindingInTree({ tree, binding: createTeamAgentPlatformBinding(change.binding) })
-              : { outcome: "adopted" as const, tree: replaceAgentPlatformBindingWithoutConversationInTree({
+              : { outcome: "adopted" as const, tree: replaceAgentPlatformBindingInTree({
                   tree, replacement: { ...change.replacement, binding: createTeamAgentPlatformBinding(change.replacement.binding) },
                 }) };
           return {

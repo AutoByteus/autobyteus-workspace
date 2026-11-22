@@ -179,7 +179,7 @@ export class FlatTeamAgentExecutionHandle implements RetainedAgentExecutionContr
           }
           const previous = this.context.getPlatformAgentRunId();
           if (change.kind === "runtime_switch" ? previous !== null
-            : change.kind === "replace_without_conversation"
+            : change.kind === "replace_without_conversation" || change.kind === "replace_lost_session"
               ? previous !== change.replacement.expectedPreviousPlatformAgentRunId
               : previous !== null && previous !== change.binding.platformAgentRunId) {
             throw new Error("Flat Team Agent execution has a conflicting provider binding.");
@@ -191,10 +191,14 @@ export class FlatTeamAgentExecutionHandle implements RetainedAgentExecutionContr
               this.context.refreshSelection({ runtimeKind: this.context.runtimeKind, platformAgentRunId: change.platformAgentRunId });
               const { pendingRuntimeSwitch: _pending, ...rest } = this.config;
               this.config = Object.freeze({ ...rest, platformAgentRunId: change.platformAgentRunId });
-            } else if (change.kind === "replace_without_conversation") {
+            } else if (change.kind === "replace_without_conversation" || change.kind === "replace_lost_session") {
               this.context.replaceCommittedPlatformAgentRunId(
                 change.replacement.expectedPreviousPlatformAgentRunId, change.replacement.binding.platformAgentRunId,
               );
+              // autobyteus-599: a renewal's new session is the one a later re-created configured handle restores.
+              if (change.kind === "replace_lost_session") {
+                this.config = Object.freeze({ ...this.config, platformAgentRunId: change.replacement.binding.platformAgentRunId });
+              }
             } else this.context.adoptPlatformAgentRunId(change.binding.platformAgentRunId);
           } catch (cause) {
             throw new CollaborationAgentActivationError(

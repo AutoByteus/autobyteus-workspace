@@ -47,6 +47,7 @@ import type { PreparedLocalExecutionTermination } from "../domain/prepared-local
 import type { AgentRunActivationOperation } from "../../../agent-execution/services/agent-run-activation-operation.js";
 import type { ConfiguredAgentActivationOperation } from "./configured-agent-activation-planner.js";
 import { ConfiguredAgentActivationPlanner } from "./configured-agent-activation-planner.js";
+import { beginMemberSessionRenewal } from "./configured-agent-session-renewal.js";
 import { ConfiguredAgentStatusOverlay } from "./configured-agent-status-overlay.js";
 
 /** Root-neutral owner of one configured or task AgentRun's provider/local mechanics. */
@@ -337,7 +338,7 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
         await this.options.callbacks.commitPlatformBindingChange(change);
         durabilityCommitted = true;
         this.platformAgentRunId = platformBindingChangeSessionId(change);
-        if (change.kind === "runtime_switch") { // M-7: this handle takes the committed binding, so a later re-activation restores
+        if (change.kind === "runtime_switch" || change.kind === "replace_lost_session") { // M-7: this handle takes the committed binding, so a later re-activation restores
           const { pendingRuntimeSwitch: _pending, ...rest } = this.execution;
           this.execution = Object.freeze({ ...rest, platformAgentRunId: this.platformAgentRunId });
           this.switchAttempt = null;
@@ -393,7 +394,13 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
       const begun = this.planner.begin(config, this.platformAgentRunId, this.activationMode, this.execution.pendingRuntimeSwitch);
       this.activationOperation = begun.operation;
       this.switchAttempt = begun.switching;
-      return await begun.prepare();
+      try { return await begun.prepare(); } catch (failure) {
+        // autobyteus-599: a lost saved session continues in a fresh one; anything else is rethrown unchanged.
+        const renewal = await beginMemberSessionRenewal({ failure, failed: begun, planner: this.planner, config, runId: this.identity.agentRunId });
+        this.activationOperation = renewal.operation;
+        this.switchAttempt = renewal.switching;
+        return await renewal.prepare();
+      }
     } finally { this.configurationPreparing = false; }
   }
 

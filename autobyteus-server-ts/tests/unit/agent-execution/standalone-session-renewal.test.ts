@@ -58,8 +58,8 @@ describe("a standalone run whose saved runtime session is lost", () => {
 
   /** A lifecycle whose manager runs one script entry per attempt of each kind; the real recorder is the memory port. */
   const lifecycle = (script: { restore: Array<() => Promise<unknown>>; fresh?: Array<() => Promise<unknown>> },
-    options: { commit?: Array<"ok" | "fail">; switching?: boolean } = {}) => {
-    let stored = metadata();
+    options: { commit?: Array<"ok" | "fail">; switching?: boolean; initial?: AgentRunMetadata } = {}) => {
+    let stored = options.initial ?? metadata();
     const commits = options.commit ?? [];
     const newPreparation = vi.fn(async () => script.fresh!.shift()!());
     const manager = testActivationManager({
@@ -105,6 +105,18 @@ describe("a standalone run whose saved runtime session is lost", () => {
     expect(readPendingRuntimeHandover(runDir)).toEqual({ markerTraceId: RENEWAL.markerTraceId, markerText: RENEWAL.markerText });
     expect(warn.mock.calls.filter((call: unknown[]) => call[0] === "RUNTIME_SESSION_LOST")).toEqual([
       ["RUNTIME_SESSION_LOST", { runId: RUN_ID, runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, lostPlatformAgentRunId: LOST }]]);
+  });
+
+  it("a delegated copy takes the same path with its member context (N-2, AC-005)", async () => {
+    const delegated: AgentRunMetadata = { ...metadata(), delegatedFrom: { delegatingRun: { kind: "agent_team", runId: "team-1" }, delegatorAgentRunId: "lead" } };
+    const memberContext = { identity: { agentRunId: RUN_ID }, teamScoped: false, delegated: true } as never;
+    const { service, newPreparation, getStored } = lifecycle({ restore: [lostSession()], fresh: [async () => freshCandidate()] }, { initial: delegated });
+
+    await service.activateRunAgent(RUN_ID, { memberExecutionContext: memberContext });
+
+    expect(newPreparation).toHaveBeenCalledWith(expect.objectContaining({ config: expect.objectContaining({ memberExecutionContext: memberContext }) }));
+    expect(getStored()).toMatchObject({ platformAgentRunId: FRESH, delegatedFrom: delegated.delegatedFrom });
+    expect(lines(activePath())[0]).toMatchObject({ id: RENEWAL.markerTraceId, sender_id: "system.runtime_handover" });
   });
 
   it.each([
