@@ -8,6 +8,7 @@
 | CRR-002 | `code-review-report.md` | Implementation Review / IR-002 complete | Fail | Fail | CR-001, CR-002, CR-003, CR-004, CR-005, CR-006, CR-007 |
 | CRR-003 | `code-review-report.md` | Implementation Review / IR-003 complete | Fail | Pass | CR-002, CR-005, CR-006, CR-007 |
 | CRR-004 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-001 failed | Pass | Fail | F-1, F-2, F-3, F-4, A-1 |
+| CRR-005 | `code-review-report.md` | Implementation Review / IR-004 complete | Fail | Pass | F-1, F-2, F-3, F-4, A-1 |
 
 ## Revision Entries
 
@@ -148,3 +149,38 @@ None.
 - Material score or classification changes: not rescored; Large/High preserved
 - Recommended recipient: Implementation engineer (F-1..F-4); Solution Designer (A-1)
 - Remaining risks or uncertainty: restore errors on a peer node are swallowed silently (logging recommended).
+
+### CRR-005: Targeted delta review of IR-004
+
+- Canonical review report updated: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/code-review-report.md`
+- Review entry point and round: Implementation Review, round 5
+- Review scope: `Targeted Delta Review`. IR-004 (`1357635a64..cd6a777b24`) changes only the CRR-004 paths and SR-015.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` § IR-004; F-1..F-4, A-1 (SR-015 / DEC-007)
+- Relevant solution revision IDs: SR-015
+- Relevant architecture-review revision IDs: ARCH-REV-010
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail (CRR-004)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - Every CRR-004 item is fixed at its owner and tested.
+  - Gate run by me: typecheck PASS (974 in 300); 527 files and 4315 tests pass, 0 failures, `tests/architecture` included.
+  - Controls: the F-1 and F-4 cases fail with their fixes reverted.
+  - Every category is at least 9.4.
+- Supported product scenario / material-premise basis changes: S-10, S-11, S-12 added and confirmed.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Classification | Resolution | Evidence |
+| --- | --- | --- | --- |
+| F-1 | Local Fix | Resolved | `teamUnitMembersInOrg` (one owner) in rows and composition, live-only leaving members; `RunTreeView` uses `teamMemberRowsOf`; composition test (control fails without it) |
+| F-2 | Local Fix | Resolved | `listingFactsOf`: `!delegatedFrom && !containedIn`, both kinds; test |
+| F-3 | Local Fix | Resolved | `withLaunch`/`writeAgent` write `launchSource`; `orgAgentNodeOf` composes it; readback-equals test |
+| F-4 | Local Fix | Resolved | Validator and records source count former members as own endpoints; validator test (control fails without it); `REMOTE_TARGET_ROOT_UNAVAILABLE` logged |
+| A-1 | Requirement Gap | Resolved | DEC-007 / SR-015 (ARCH-REV-010); `formerMemberAt` port method; 3 cases + OF-04 exact text |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: every category at least 9.4 (average 9.45); Large/High preserved
+- Recommended recipient: API/E2E engineer (then an informational note to the implementation engineer)
+- Remaining risks or uncertainty: API/E2E reruns pending (plus the recommended AC-005-shape OC case); C-28 residual (delegated runs get the generic text, outside DEC-007).
