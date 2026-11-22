@@ -45,7 +45,7 @@ export const lostSessionClaudeFactory = (options: { restoresBeforeLoss?: number 
         };
         stops.push(() => { active = false; });
         return {
-          runId: request.runId, runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+          runId: context.runId, runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
           compactionRecovery: { kind: "unsupported" },
           backgroundTaskInspection: { kind: "event-stream", current: () => [] },
           backgroundTaskNotices: { kind: "unsupported" },
