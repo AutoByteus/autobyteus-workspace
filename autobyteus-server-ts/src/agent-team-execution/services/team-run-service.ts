@@ -1,5 +1,6 @@
 import type { PeerRunOf } from "../../agent-collaboration/execution/remote/peer-runs.js";
 import type { TeamRunCopiedFrom } from "../domain/team-run-execution-tree.js";
+import type { ContainedIn } from "../../agent-collaboration/domain/contained-in.js";
 import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import type { RemoteInboundQuery, StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
@@ -70,6 +71,8 @@ export interface CreateTeamRunInput {
   delegatedFrom?: DelegatedFrom;
   /** A delegated Team run's origin (only with `delegatedFrom`): only a Team definition's copy follows that definition. */
   copiedFrom?: TeamRunCopiedFrom;
+  /** A Team mounted in an Org (org-teams-follow-definition): its container back-link, kept on the tree. Not with `delegatedFrom`. */
+  containedIn?: ContainedIn;
   /**
    * A delegated Team run's handoff rules as its members have them in the delegating run, in the team's own space (a
    * `to` outside the team as written; CR-461-009). Only with `delegatedFrom`; without them the definition's are used.
@@ -135,6 +138,7 @@ export class TeamRunService {
   async createTeamRun(input: CreateTeamRunInput): Promise<RootTeamRun> {
     this.tokenUsageReadiness.assertCurrentSchemaReady();
     if (input.handoffs && !input.delegatedFrom) throw new Error("Handoff rules are given only for a delegated Team run.");
+    if (input.containedIn && input.delegatedFrom) throw new Error("A Team run is either delegated or contained in an Org, not both.");
     const admission = await this.admission.requireAvailable("agent_team", required(input.teamDefinitionId, "teamDefinitionId"));
     if (!("nodes" in admission.definition)) throw new Error(`Admitted definition '${input.teamDefinitionId}' is not an AgentTeam.`);
     const projectId = input.projectId?.trim() || undefined;
@@ -181,6 +185,7 @@ export class TeamRunService {
     });
     const root = await this.manager.createTeamRun({ config: plan.config, teamDefinitionName: plan.teamDefinitionName,
       ...(input.delegatedFrom ? { delegatedFrom: input.delegatedFrom, ...(input.copiedFrom ? { copiedFrom: input.copiedFrom } : {}) } : {}),
+      ...(input.containedIn ? { containedIn: input.containedIn } : {}),
       ...(projectId ? { projectId } : {}) });
     try {
       await this.catalog.recordTeamRunCreated({ tree: root.getExecutionTreeSnapshot(), summary: "" });

@@ -2,6 +2,7 @@ import type { ApplicationExecutionContext } from "../../application-orchestratio
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
+import type { ContainedIn } from "../../agent-collaboration/domain/contained-in.js";
 
 export type AgentRunMetadata = {
   runId: string;
@@ -19,6 +20,11 @@ export type AgentRunMetadata = {
   applicationExecutionContext?: ApplicationExecutionContext | null;
   /** Present only on a delegated run (contract §2.2): its origin, written once; absent means the user (or an application) started it. */
   delegatedFrom?: DelegatedFrom;
+  /**
+   * A direct Org agent (org-teams-follow-definition): its Org container and its address there, written once when it is
+   * created; its `address` is the same Org address. Absent: a run outside any Org.
+   */
+  containedIn?: ContainedIn;
   /**
    * The run's own address (contract §2.3): written when it is first fixed (a delegated run: at the delegation; a run the
    * user started: when it first collaborates). Absent means "not fixed yet": the address is derived from the definition.

@@ -117,6 +117,15 @@ describe("removeEmptyNeverStartedRuns", () => {
     expect(logs.warn.some((line) => line.startsWith("Kept run 'run-unreadable': its record could not be read"))).toBe(true);
   });
 
+  it("org-teams-follow-definition: keeps an Org's never-started agent unit (its container keeps it until its first work)", async () => {
+    await catalog.recordPreparedRun({ runId: "concierge_1", summary: "", createdAt: "2026-10-30T10:00:00.000Z",
+      metadata: metadataFor("concierge_1", { address: "/concierge" as never, containedIn: { orgRunId: "org_1", address: "/concierge" as never } }) });
+
+    await expect(buildService().removeEmptyNeverStartedRuns()).resolves.toEqual([]);
+
+    expect(await exists(runDir("concierge_1"))).toBe(true);
+  });
+
   it("keeps a never-started run whose folder holds a symbolic link (not followed)", async () => {
     await seedPrepared("run-link-file");
     await writeFile("outside/target.txt", "not ours");

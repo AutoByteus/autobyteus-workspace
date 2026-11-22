@@ -8,6 +8,9 @@
 | ARCH-REV-002 | Round 2 / SR-006, SR-007 resubmission | SR-006, SR-007 | Fail | Fail (Design Impact) | AR-001, AR-002 (narrowed), AR-007 (new); AR-003..AR-006 resolved |
 | ARCH-REV-003 | Round 3 / SR-008 resubmission | SR-008 | Fail | Fail (Design Impact) | AR-001 (narrowed); AR-002, AR-007 resolved |
 | ARCH-REV-004 | Round 4 / SR-009 resubmission | SR-009 | Fail | Fail (Design Impact) | AR-001 (one mapping: `P` itself) |
+| ARCH-REV-005 | Round 5 / SR-010 resubmission | SR-010 | Fail | Pass | AR-001 (resolved) |
+| ARCH-REV-006 | Round 6 / SR-011 storage contract | SR-011 | Pass | Fail (Design Impact) | AR-008, AR-009 (new) |
+| ARCH-REV-007 | Round 7 / SR-012 contract alignment | SR-012 | Fail | Pass | AR-008, AR-009 (resolved) |
 
 ## Revision Entries
 
@@ -109,3 +112,74 @@ None.
 - Material classification changes: None (Large / High)
 - Recommended recipient: Solution Designer
 - Remaining risks or uncertainty: none beyond earlier notes
+
+### ARCH-REV-005 — Re-review of SR-010
+
+- Canonical design review report: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/design-review-report.md`
+- Review round and trigger: round 5; Solution Designer resubmission at SR-010 (commit `d1f6b157f7`) after ARCH-REV-004
+- Triggering role, report path, and finding IDs: Solution Designer, `handoff-architecture-design.md`; AR-001
+- Relevant solution revision IDs: SR-010
+- Prior authoritative decision: Fail
+- Current authoritative decision: Pass
+- What changed: `P` gets its meaning per surface, as today. Messages go to the coordinator (result `agentAddress` `P`, matching `memberOfInstance`'s `agent_team` placement at `team-execution-index.ts:161-169`). Delegation gets the CM-1 refusal before the root check. Mentions and `list_available_agents` show `P`.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001 | Open (Medium) | Resolved | R-1''' | Per-surface table; example with `send_message_to(P)`, `delegate_task(P)` and `delegate_task(P/x)` (exact CM-1 text, `collaborator-errors.ts:81-82`), another unit allowed; tests named |
+
+- New or remaining finding IDs: None
+- Material classification changes: None (Large / High)
+- Recommended recipient: implementation, per the handoff rules
+- Remaining risks or uncertainty: implementation notes in the report (self target, migration §9 fixtures and registry classification, exactly-once composition test, release-note lines, FU-001)
+
+### ARCH-REV-006 — Review of the SR-011 storage contract
+
+- Canonical design review report: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/design-review-report.md`
+- Review round and trigger: round 6; SR-011 (commit `cacc98e99c`) adds the normative `org-container-storage-contract.md` and `contract-validation.md` at the user's request; the design structure is unchanged from SR-010
+- Triggering role, report path, and finding IDs: Solution Designer, `handoff-architecture-design.md`; none
+- Relevant solution revision IDs: SR-011
+- Prior authoritative decision: Pass (ARCH-REV-005)
+- Current authoritative decision: Fail (Design Impact)
+- What changed:
+  - Most of the contract is consistent and validated; V-5's counts were re-checked read-only.
+  - New AR-008: the cross-unit `counterpart` in contract §5/§9 differs from the reused writer (recorded only for unrelated pairs; the receiver line's address comes from `senderIdentity.memberAddress`, in team space; `cross-run-message-delivery.ts:214`, `root-communication-engine.ts:315`).
+  - New AR-009: `applicationBinding` is on Team units but not agent units, while the design keeps it on the container; the task-records file is residue in the contract but "converted, then removed" in the design.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001..AR-007 | Resolved (ARCH-REV-005) | Resolved; the contract matches them | SR-011 contract §2–§10 | V-1..V-6; read-only re-count |
+
+- New or remaining finding IDs: AR-008 (Medium), AR-009 (Low)
+- Material classification changes: None (Large / High)
+- Recommended recipient: Solution Designer; on the next pass the contract goes to implementation
+- Remaining risks or uncertainty: none beyond the report's notes
+
+### ARCH-REV-007 — Re-review of the SR-012 contract alignment
+
+- Canonical design review report: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/design-review-report.md`
+- Review round and trigger: round 7; SR-012 (commit `cbee164d55`) aligns `org-container-storage-contract.md` and the design after ARCH-REV-006
+- Triggering role, report path, and finding IDs: Solution Designer, `handoff-architecture-design.md`; AR-008, AR-009
+- Relevant solution revision IDs: SR-012
+- Prior authoritative decision: Fail
+- Current authoritative decision: Pass
+- What changed:
+  - Contract §5 pins `counterpart` recording for `same_container` at both code points, with Org addresses and a live-vs-converted test.
+  - §11 gives one application-ownership rule for both unit kinds; the design's Change Scope agrees.
+  - The task-records residue is consistent with the design's Removal Plan.
+  - New premise MP-09 (application-bound Org agent units would be collaboration-ineligible) rejected as Not Reachable: no surface creates application-bound Orgs (`api/graphql/types/agent-org-run.ts:40-45`; no application orchestration path). Kept as a residual note.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-008 | Open (Medium) | Resolved | Contract §5, §9 | Recording rule at `cross-run-message-delivery.ts:214` and `root-communication-engine.ts:315`; receiver address from the boundary's `toOrg`; test named |
+| AR-009 | Open (Low) | Resolved | Contract §9, §11; design Change Scope, Removal Plan | One rule (Team unit `applicationBinding`, agent unit `applicationExecutionContext`); records file left as residue in both documents |
+
+- New or remaining finding IDs: None
+- Material classification changes: None (Large / High)
+- Recommended recipient: implementation, per the handoff rules, with the contract
+- Remaining risks or uncertainty: MP-09 note; earlier implementation notes

@@ -4,23 +4,23 @@
 
 - Upstream Requirements Doc: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/requirements-doc.md` (Approved SR-007)
 - Upstream Investigation Notes: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/investigation-notes.md`
-- Upstream Solution Revision Record: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/solution-revision-record.md` (SR-001..SR-009)
-- Reviewed Design Spec: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/design-spec.md` (SR-009, commit `ba4fb98497`; § SR-009 Revision R-1'' supersedes R-1's point list)
-- Supplemental Task Artifacts Reviewed: `follow-ups.md` (FU-001); autobyteus-22 behavior
-- Relevant Solution Revision IDs: SR-009
+- Upstream Solution Revision Record: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/solution-revision-record.md` (SR-001..SR-012)
+- Reviewed Design Spec: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/design-spec.md` (SR-012, commit `cbee164d55`; structure as passed at SR-010; Change Scope and Removal Plan rows aligned)
+- Supplemental Task Artifacts Reviewed: `org-container-storage-contract.md` (normative, SR-011, aligned at SR-012: §5 recording rule, §9, new §11), `contract-validation.md`, `follow-ups.md`
+- Relevant Solution Revision IDs: SR-011, SR-012
 - Architecture Review Revision Record: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-004`
-- Current Review Round: `4`
-- Trigger: SR-009 resubmission after ARCH-REV-003 Fail (AR-001)
-- Prior Review Round Reviewed: 3 (`ARCH-REV-003`, Fail)
-- Latest Authoritative Round: 4
-- Current-State Evidence Basis: base `9f6add773b`. Newly opened:
-  - `agent-team-execution/services/team-execution-index.ts:158-176`: `memberOfInstance`, "Inside one Team instance: its coordinator for its own address";
-  - `agent-collaboration/collaborators/message-recipient-resolution.ts:51-52`: `isWithinTeamInstance` includes the instance address itself;
-  - `agent-team-execution/services/team-recipient-resolver.ts:31-48`: `requireNonRootAddress` refuses `/` with `COLLABORATION_ADDRESS_INVALID`, "The root AgentTeam is not a collaboration recipient…";
-  - `agent-collaboration/collaborators/collaborator-errors.ts:81-82`: the CM-1 text "… is in your own team; you can't delegate to it. Talk with it using send_message_to."
+- Current Architecture Review Revision ID: `ARCH-REV-007`
+- Current Review Round: `7`
+- Trigger: SR-012 contract alignment after ARCH-REV-006 Fail (AR-008, AR-009)
+- Prior Review Round Reviewed: 6 (`ARCH-REV-006`, Fail)
+- Latest Authoritative Round: 7
+- Current-State Evidence Basis: base `9f6add773b`. Opened for this round:
+  - `agent-execution/services/standalone-agent-run-eligibility.ts:1-16`: an agent run with `applicationExecutionContext` is not collaboration-eligible;
+  - `agent-execution/services/standalone-run-ports.ts:70-85` (`APPLICATION_HOST_STANDALONE_RUNS`);
+  - `run-history/store/agent-run-metadata-types.ts:20` (`applicationExecutionContext` is a metadata field);
+  - who can create an application-bound Org: `agent-org-run-service.ts:48,126` takes an optional `applicationBinding`. Its only creation caller is GraphQL `createAgentOrgRun` (`api/graphql/types/agent-org-run.ts:213-217`), whose `CreateAgentOrgRunInput` (`:40-45`) has no binding field. `application-orchestration/` and `application-platform/` never create Org runs (grep).
   
-  All other evidence from earlier rounds stands.
+  ARCH-REV-006 evidence for `cross-run-message-delivery.ts:205-223` and `root-communication-engine.ts:286-289,315` still applies.
 
 ## Routing Classification Review
 
@@ -28,109 +28,46 @@
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Overall Basis Status: `Confirmed`.
-- Statements about existing code the design relies on: the R-1'' surface table's citations match. One claim does not hold: "`P` itself → the agent's own Team (team instance `/`), so the existing own-Team checks refuse it where they refuse own-Team targets today (CM-1)".
-  - Today, inside an Org, the Team's own address does two different things. With `send_message_to` it resolves to the Team's coordinator (`memberOfInstance`, `team-execution-index.ts:161-169`; `isWithinTeamInstance` includes the instance address, `message-recipient-resolution.ts:51-52`). With `delegate_task` it is refused with the CM-1 own-team text.
-  - Mapped to `/`, neither holds. Both tools hit `requireNonRootAddress` (`team-recipient-resolver.ts:42-46`): `COLLABORATION_ADDRESS_INVALID`, "The root AgentTeam is not a collaboration recipient". The existing own-team check does not catch `/`, because `teamInstancesOf` excludes the root and `configuredByAddress` holds members only (`team-execution-index.ts:147-153`).
+- Overall Basis Status: `Confirmed`. The requirements are unchanged (SR-007).
+- The contract now matches the reused code and the design:
+  - §5 pins the recording rule for `same_container` pairs at the two code points. `counterpart` goes on both lines with Org addresses; the receiver line takes the boundary's `toOrg` sender address, never `senderIdentity.memberAddress`. There is a test comparing live and converted lines.
+  - §11 gives one application-ownership rule for both unit kinds.
+  - §9 and the design's Removal Plan agree that the task-records file stays as inert residue.
 
-| Behavior ID | Design Alignment | Trigger / Evidence | Target Path / Spine | Status | Required Action |
-| --- | --- | --- | --- | --- | --- |
-| BEH-001, BEH-002, BEH-004, BEH-005, BEH-006, REQ-006, REQ-009, DEC-006 | Pass | Pass | Pass | Confirmed | — |
-| BEH-003 addresses (REQ-003) | Pass | Pass | Fail on one input: the Team's own Org address `P` (AR-001) | Needs Correction | AR-001 |
+| Behavior ID | Status | Notes |
+| --- | --- | --- |
+| BEH-001..BEH-006, REQ-006, REQ-009, DEC-006 | Confirmed | As ARCH-REV-005; the contract matches |
+| BEH-003 both logs, naming after reload (REQ-003, CM-9) | Confirmed | Contract §5 (AR-008 resolved) |
+| Application-bound Orgs (Out of Scope) | Confirmed | Contract §11 and design Change Scope agree. See MP-09 |
 
 ## Supplemental Artifact Coherence Verdict
 
-Pass.
+| Artifact | Purpose And Scope | Linked | Internally Complete | Consistent With Core Artifacts | Status And Approval | Required Action |
+| --- | --- | --- | --- | --- | --- | --- |
+| `org-container-storage-contract.md` | Pass | Pass | Pass | Pass | Pass (normative) | — |
+| `contract-validation.md` | Pass | Pass | Pass | Pass | Pass | — |
 
-## Task Design Health Assessment Verdict
+## Structural Verdicts
 
-Pass.
+Every structural section of ARCH-REV-005 stands unchanged, because the design structure did not change: spines, boundaries, dependencies (Principle 16), interfaces (empty indirection Pass), reuse, allocation, structures, file mapping, placement, removal (task-records residue now consistent), legacy, persisted-data transition, change safety and examples. The two rows ARCH-REV-006 failed now pass:
 
-## Spine Inventory Verdict
-
-| Spine ID | Verdict | Notes |
-| --- | --- | --- |
-| DS-001..DS-007, R-3'' composition | Pass | Unchanged since ARCH-REV-003 |
-| `ContainedTeamAddressSpace` boundary (R-1'') | Fail on one mapping | Now one tool-facing boundary with an inventoried surface table (in and out), which resolves the ARCH-REV-003 gaps (`delegate_task` normalization, `reachingAddressOf`, `agentAddress`, mentions, `list_available_agents`). Only the mapping of `P` itself is wrong (AR-001) |
-
-## Boundary Encapsulation Verdict
-
-Pass, except the `P` mapping (AR-001).
-
-## Dependency Direction / Forbidden Shortcut Verdict
-
-Pass. Principle 16: Pass.
-
-## Interface Boundary Verdict
-
-| Interface | Verdict | Notes |
-| --- | --- | --- |
-| `fromOrgInput` | Fail on one input | `P` must not become `/` for both tools (AR-001) |
-| `toOrg` and all other interfaces | Pass | — |
-
-Empty indirection check: `Pass`.
-
-## Existing Capability / Subsystem Reuse Verdict
-
-Pass.
-
-## Subsystem / Capability-Area Allocation Verdict
-
-Pass.
-
-## Reusable Owned Structures Verdict
-
-Pass.
-
-## Shared Structure / Data Model Tightness Verdict
-
-Pass. Derived consumers: Pass (the R-1'' surface table). One vocabulary: Pass.
-
-## File Responsibility Mapping Verdict
-
-Pass.
-
-## Subsystem / Folder / File Placement Verdict
-
-Pass.
-
-## Removal / Decommission Completeness Verdict
-
-Pass.
-
-## Legacy / Backward-Compatibility Verdict
-
-Pass.
-
-## Persisted-Data Transition Verdict
-
-Pass (unchanged since ARCH-REV-003).
-
-## Change / Refactor Safety Verdict
-
-Pass.
-
-## Example Adequacy Verdict
-
-| Topic | Verdict | Notes |
-| --- | --- | --- |
-| R-1'' example | Fail on one line | `delegate_task('/software_engineering_team')` "refused by CM-1, as today" is refused, but with the root-address error, not the CM-1 text. `send_message_to('/software_engineering_team')` from inside the Team is missing; today it reaches the coordinator |
+| Section | Row | Verdict | Notes |
+| --- | --- | --- | --- |
+| Shared Structure / Data Model Tightness | Cross-unit log line `counterpart` | Pass | One stored shape for live and converted lines (contract §5, §9) |
+| Shared Structure / Data Model Tightness | Unit application ownership | Pass | One rule for both kinds (contract §11) |
 
 ## Material Premise Validation
 
-- `MP-05` (`delegate_task` to the own Team or a teammate): no copy is started any more, so it is resolved in substance. The own-Team case gives the wrong refusal (AR-001).
-- `MP-06` (teammate header): resolved by `reachingAddressOf` resolving in team space and then translating.
+- `MP-08` (cross-unit naming after reload): resolved by contract §5.
 
-### `MP-07` — A contained Team member messages its own Team's Org address
+### `MP-09` — An application-bound Org whose agent units carry `applicationExecutionContext`
 
-- Related requirement: REQ-003 (lists `/software_engineering_team` among the addresses units reach as today)
-- Initiating basis kind: `User`/`System`. A member, e.g. `/software_engineering_team/code_reviewer`, sends to `/software_engineering_team` to reach its coordinator. It may have been told to by an Org rule (a Team destination resolves to its coordinator, `agent_orgs.md` § Addresses), or it uses the address from its conversation.
-- Forward path:
-  - Today: step 1, `isWithinTeamInstance` (instance address included) → `memberOfInstance` → the coordinator.
-  - After R-1'': `fromOrgInput('/software_engineering_team')` = `/` → `requireNonRootAddress` → `COLLABORATION_ADDRESS_INVALID` "The root AgentTeam is not a collaboration recipient".
-- Consequence: a message that reaches the coordinator today is refused, with a refusal that names team-space internals.
-- Reachability: `Reachable`
-- Review consequence: AR-001.
+- Related contract: Out of Scope ("application-bound runs keep their current behavior"); contract §11
+- Initiating basis kind: `User`/`Operational`. An application, or the user, starts an Org bound to an application.
+- Forward path: no supported surface does this. `AgentOrgRunService.create` accepts a binding (`agent-org-run-service.ts:48,126`), but its creation caller, GraphQL `createAgentOrgRun`, passes `CreateAgentOrgRunInput`, which has no binding field (`api/graphql/types/agent-org-run.ts:40-45`). Application orchestration never creates Org runs.
+- Lifecycle consequence if it were reachable: an agent unit with `applicationExecutionContext` is not collaboration-eligible (`standalone-agent-run-eligibility.ts:7-8`), so it would lose `send_message_to` and `get_handoff_rules` across the Org.
+- Reachability: `Not Reachable` today.
+- Review consequence: no finding; a residual note for implementation.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
@@ -138,43 +75,31 @@ None.
 
 ## Review Decision
 
-`Fail`
+`Pass`
 
 ## Findings
 
-### AR-001 — `P` itself maps to `/`, which neither tool handles as today
-
-- Type: `Design Impact`; severity Medium (one mapping; the boundary itself is resolved)
-- Protects: REQ-003 (`/software_engineering_team` reachable as today), the preserved CM-1 refusal (delegation from Org units as today)
-- Problem: `fromOrgInput(P) = /` (the root) leads to these outcomes:
-  - **`send_message_to(P)`** from inside the Team: refused with `COLLABORATION_ADDRESS_INVALID` (root not a recipient). Today it reaches the Team's coordinator (MP-07).
-  - **`delegate_task(P)`**: refused, but with that same root-address error instead of the CM-1 text "`P` is in your own team; you can't delegate to it. Talk with it using send_message_to." The existing own-team check never sees `/` (`team-execution-index.ts:147-153`).
-- Required update: define the meaning of `P` per surface, as today:
-  - for message resolution, `P` is the Team's own instance address → its coordinator, i.e. map to the coordinator's team-space address, or let resolution treat `P` as the instance;
-  - for `delegate_task`, `P` → own Team, refused with `ownTeamDelegationRefusedMessage(P)` before `requireNonRootAddress`;
-  - for mentions, as the mention path treats an own-team address today.
-  
-  Fix the example line, and add `send_message_to(P)` to the example and the tests.
-- Proportionate: one mapping rule.
-- Recipient: Solution Designer
+None. AR-008 and AR-009 are resolved, and AR-001..AR-007 stay resolved.
 
 ## Classification
 
-`Design Impact` (AR-001).
+N/A (Pass).
 
 ## Recommended Recipient
 
-Solution Designer.
+Implementation, per the handoff rules, together with the storage contract. Implementation is in progress on SR-010.
 
 ## Residual Risks
 
-None beyond earlier notes (FU-001; FU-003 release-note line).
+Notes for implementation:
+
+- **Live and converted lines:** implement contract §5's two code points (`cross-run-message-delivery.ts:214` treats `same_container` as not related for recording; `root-communication-engine.ts:315` takes the boundary's sender Org address). Add the reload test comparing a live line with the converted line for the same pair.
+- **MP-09 (not reachable today):** if application-bound Orgs ever become reachable, `isCollaborationEligibleStandaloneRun` would exclude their agent units from collaboration. It would then need a contained-run exception. Not in scope now.
+- **Contract examples:** the §2–§4 examples are normative fixtures. The released `skillAccessMode` key (F-1) belongs in the §9 migration fixtures.
+- **Earlier notes (ARCH-REV-005) still apply:** coordinator self-target; migration registry classification and §9 fixtures, never run on real data; the exactly-once composition test; the release-note lines; FU-001.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Material-Premise Gate: `Pass` (MP-07 reachable; MP-05, MP-06 resolved in substance)
-- Notes:
-  - SR-009 makes `ContainedTeamAddressSpace` the one tool-facing boundary with a complete in/out surface inventory. Everything else in the design passes.
-  - Only the Team's own Org address needs its per-tool meaning: coordinator for messages, CM-1 refusal for delegation.
-  - Classification is Large / High.
+- Review Decision: `Pass`
+- Material-Premise Gate: `Pass` (MP-08 resolved; MP-09 Not Reachable)
+- Notes: the storage contract is aligned with the reused writer and the design, and is ready to be normative for implementation. Classification is Large / High.

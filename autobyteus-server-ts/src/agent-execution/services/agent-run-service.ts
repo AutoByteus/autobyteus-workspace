@@ -1,3 +1,4 @@
+import type { ContainedIn } from "../../agent-collaboration/domain/contained-in.js";
 import type { PeerRunOf } from "../../agent-collaboration/execution/remote/peer-runs.js";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
@@ -46,6 +47,8 @@ export interface CreateAgentRunInput {
   delegatedFrom?: DelegatedFrom;
   /** The run's own address when it is fixed at creation (a delegated run: its delegation address, contract §2.3). */
   address?: AgentTeamAddress;
+  /** A direct Org agent (org-teams-follow-definition): its container back-link; `address` is its Org address. */
+  containedIn?: ContainedIn;
   /** How the run's launch was resolved (a delegated run's resolved launch, contract §2.2). */
   launchSource?: LaunchConfigurationSource;
   /** autobyteus-32: the server service that owns the run (never a collaboration member). */

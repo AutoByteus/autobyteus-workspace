@@ -128,6 +128,7 @@ export class AgentRunProvisioningService {
       ...(input.address ? { address: input.address } : {}),
       ...(input.launchSource ? { launchSource: input.launchSource } : {}),
       ...(input.delegatedFrom ? { delegatedFrom: input.delegatedFrom } : {}),
+      ...(input.containedIn ? { containedIn: input.containedIn } : {}),
       ...(input.systemRunOwner ? { systemRunOwner: input.systemRunOwner } : {}),
     };
 
@@ -184,7 +185,8 @@ export class AgentRunProvisioningService {
           continue;
         }
         const { metadata } = record;
-        if (!metadata.preparedAt || metadata.startedAt) continue;
+        // An Org's agent unit stays prepared until its first work: its container keeps it (org-teams-follow-definition).
+        if (!metadata.preparedAt || metadata.startedAt || metadata.containedIn) continue;
         try {
           if (!(await holdsOnlyItsRecord(this.memoryLayout.getStandaloneRunDirPath(runId)))) continue;
         } catch (error) {
