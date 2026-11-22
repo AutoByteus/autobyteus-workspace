@@ -61,7 +61,7 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 
 ## Project Execution Discovery
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-interrupt-ack-602`
+- Worktree: `~/autobyteus_org/autobyteus-worktrees/team-interrupt-ack-602`
 - Testing guideline: `TESTING.md` (root): the OS-latency limits from `tests/helpers/os-latency-under-load.ts`; clean environment for E2E; the Linux container from the worktree as the run where the OS delivers events promptly.
 - Changed build-input paths: none (one test file); no fresh-start build case.
 - Secrets: none (scripted AGY).
