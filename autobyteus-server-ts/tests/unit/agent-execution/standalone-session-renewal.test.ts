@@ -136,6 +136,21 @@ describe("a standalone run whose saved runtime session is lost", () => {
     expect(warn.mock.calls.some((call: unknown[]) => call[0] === "RUNTIME_SESSION_LOST")).toBe(false);
   });
 
+  it("keeps the error when the failed restore's release is not confirmed: no fresh session, nothing written", async () => {
+    const before = fs.readFileSync(activePath(), "utf8");
+    const { service, manager, newPreparation, getStored } = lifecycle({ restore: [lostSession()] });
+    const begin = manager.beginActivation.getMockImplementation()!;
+    manager.beginActivation.mockImplementation((request: any) => {
+      const operation = begin(request);
+      return request.kind === "platform_restore" ? { ...operation, releasePrivate: async () => ({ kind: "pending" as const }) } : operation;
+    });
+    await expect(service.activateRunAgent(RUN_ID, HOST)).rejects.toBeInstanceOf(SavedRuntimeSessionMissingError);
+    expect(newPreparation).not.toHaveBeenCalled();
+    expect(fs.readFileSync(activePath(), "utf8")).toBe(before);
+    expect(fs.existsSync(manifestPath())).toBe(false);
+    expect(getStored()).toEqual(metadata());
+  });
+
   it("keeps the error for a lifecycle built without the switch port: nothing changes", async () => {
     const before = fs.readFileSync(activePath(), "utf8");
     const { service, newPreparation } = lifecycle({ restore: [lostSession()] }, { switching: false });

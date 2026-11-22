@@ -140,6 +140,24 @@ for (const placement of placements) describe(`${placement}: a member whose saved
     expect(f.members()[1]!.platformAgentRunId).toBe(LOST);
   });
 
+  it("keeps the error when the failed restore's release is not confirmed: no fresh session, nothing written", async () => {
+    const f = await setup();
+    const before = fs.readFileSync(activeFile(f), "utf8");
+    loseSessionOnce(f);
+    const begin = f.manager.beginActivation.getMockImplementation()!;
+    f.manager.beginActivation.mockImplementation((request: any) => {
+      const operation = begin(request);
+      return request.kind === "platform_restore" ? { ...operation, releasePrivate: async () => ({ kind: "pending" as const }) } : operation;
+    });
+
+    expect(await f.send()).toMatchObject({ accepted: false });
+    expect(f.manager.newPreparation).not.toHaveBeenCalled();
+    expect(fs.readFileSync(activeFile(f), "utf8")).toBe(before);
+    expect(manifest(f).segments).toEqual([]);
+    expect(f.write).not.toHaveBeenCalled();
+    expect(f.members()[1]!.platformAgentRunId).toBe(LOST);
+  });
+
   it("a commit that does not land after the marker publishes nothing; the next input completes it with one marker and one segment (AC-004)", async () => {
     const f = await setup();
     vi.spyOn(console, "warn").mockImplementation(() => undefined);
