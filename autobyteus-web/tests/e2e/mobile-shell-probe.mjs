@@ -227,6 +227,7 @@ import { runClosedDelegationCases } from './mobile-closed-delegation-cases.mjs';
 import { runFileZoomCases } from './mobile-file-zoom-cases.mjs';
 import { runLiveFileRefreshCases } from './mobile-live-file-refresh-cases.mjs';
 import { runBackgroundTaskCases } from './mobile-background-tasks-cases.mjs';
+import { runActivityDetailsCases } from './mobile-activity-details-cases.mjs';
 import { runHeadingLinksCases } from './mobile-heading-links-cases.mjs';
 import { runCodeWrapCases } from './mobile-code-wrap-cases.mjs';
 import { runRunSettingsCases } from './mobile-run-settings-cases.mjs';
@@ -1827,6 +1828,7 @@ const runCases = async () => {
 
   // autobyteus-473: background tasks on the phone's Activity and after a desktop reload (`mobile-background-tasks-cases.mjs`).
   await runBackgroundTaskCases({ runCase, page, stack, alpha, browser, sel, toList, openRow, menuOpen, shot, waitFor, sleep, assert, desktopRunsView, outputDir });
+  await runActivityDetailsCases({ runCase, page, stack, alpha, sel, toList, openRow, menuOpen, shot, waitFor, sleep, assert, serverAt, freePort, chromium, executablePath, selected });
 
   await runCase('MSP-14', async () => {
     await toList(page);
