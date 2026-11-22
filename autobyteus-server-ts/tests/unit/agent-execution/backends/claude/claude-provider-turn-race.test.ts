@@ -27,7 +27,7 @@ import { buildRuntimeAgentToolExposure } from "../../../../../src/agent-executio
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import { RuntimeMemoryEventAccumulator } from "../../../../../src/agent-memory/services/runtime-memory-event-accumulator.js";
 import { ExternalRuntimeMemoryWriter } from "../../../../../src/agent-memory/store/external-runtime-memory-writer.js";
-import { createFakeClaudeSdkClient, flushClaudeSession } from "../../../../helpers/fake-claude-streaming-sdk.js";
+import { createFakeClaudeSdkClient } from "../../../../helpers/fake-claude-streaming-sdk.js";
 import { createAgentToolMcpRunSessionsStub } from "../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
 import { createTestRunWorkspaceSkills } from "../../../../fixtures/run-workspace-skills-fixtures.js";
 
@@ -80,23 +80,32 @@ const createHarness = () => {
   return { sdkClient, run, observed, recordedAssistantText };
 };
 
-const settle = async () => {
-  for (let index = 0; index < 20; index += 1) {
-    await flushClaudeSession();
-    await new Promise((resolve) => setTimeout(resolve, 1));
-  }
-};
+/**
+ * Waits until `condition` holds (autobyteus-579 I-4: on what each step asserts, not a fixed budget). The bound is only a hang
+ * guard: a passing step ends as soon as its condition holds, so a loaded machine does not fail it.
+ */
+const UNTIL_GUARD_MS = 10_000;
+const until = (condition: () => void) => vi.waitFor(condition, { timeout: UNTIL_GUARD_MS, interval: 5 });
+/** Above the guard, so a wait that never holds reports its own assertion rather than vitest's time-out. */
+const TEST_TIMEOUT_MS = UNTIL_GUARD_MS + 5_000;
 
 const lifecycleNotices = (events: AgentRunEvent[]) => events.filter((event) =>
   event.eventType === AgentRunEventType.ERROR && event.payload.code === "AGENT_SEGMENT_LIFECYCLE_INVALID");
 const deliveredText = (events: AgentRunEvent[]) => events
   .filter((event) => event.eventType === AgentRunEventType.SEGMENT_CONTENT)
   .map((event) => String(event.payload.delta));
+/** The run delivered `text` to its subscribers. */
+const delivered = (harness: ReturnType<typeof createHarness>, text: string) => until(() => expect(deliveredText(harness.observed)).toContain(text));
+/** Every turn has ended: the run is idle and its memory holds `texts`. */
+const finished = (harness: ReturnType<typeof createHarness>, texts: string[]) => until(() => {
+  expect(harness.run.getStatusSnapshot().status).toBe("idle");
+  expect(harness.recordedAssistantText()).toEqual(texts);
+});
 
 /** An input turn starts a background task and completes; then the task completes. */
 const finishInputTurnWithBackgroundTask = async (harness: ReturnType<typeof createHarness>) => {
   await harness.run.postUserMessage(new AgentInputUserMessage("start the dev stack in the background"));
-  await settle();
+  await until(() => expect(harness.sdkClient.current.sent.length).toBeGreaterThanOrEqual(1));
   const fake = harness.sdkClient.current;
   fake.init();
   fake.emit(
@@ -105,7 +114,7 @@ const finishInputTurnWithBackgroundTask = async (harness: ReturnType<typeof crea
   );
   fake.assistantText("I'll wait for the readiness notification.");
   fake.result([fake.sent[0]!.uuid]);
-  await settle();
+  await finished(harness, ["I'll wait for the readiness notification."]);
   fake.emit(
     { type: "system", subtype: "background_tasks_changed", session_id: SID, tasks: [] },
     { type: "system", subtype: "task_notification", session_id: SID, task_id: "bg-1", status: "completed", output_file: "/tmp/bg-1.out", summary: "done" },
@@ -124,11 +133,15 @@ describe("Claude provider-initiated turns back to back", () => {
     fake.result([], { origin: { kind: "task-notification" } });
     fake.init();
     fake.assistantText("The stack is ready; continuing the rendered board check.");
-    await settle();
+    await delivered(harness, "The stack is ready; continuing the rendered board check.");
     const statusMidTurn = harness.run.getStatusSnapshot().status;
     fake.assistantText("Seeding the test Project now.");
     fake.result([]);
-    await settle();
+    await finished(harness, [
+      "I'll wait for the readiness notification.",
+      "The stack is ready; continuing the rendered board check.",
+      "Seeding the test Project now.",
+    ]);
 
     expect(lifecycleNotices(harness.observed)).toEqual([]);
     expect(deliveredText(harness.observed)).toEqual([
@@ -143,7 +156,7 @@ describe("Claude provider-initiated turns back to back", () => {
       "The stack is ready; continuing the rendered board check.",
       "Seeding the test Project now.",
     ]);
-  });
+  }, TEST_TIMEOUT_MS);
 
   it("keeps the first provider turn's queued text when the runtime has already moved on (AC-002)", async () => {
     const harness = createHarness();
@@ -154,10 +167,14 @@ describe("Claude provider-initiated turns back to back", () => {
     fake.result([], { origin: { kind: "task-notification" } });
     fake.init();
     fake.assistantText("Turn two text.");
-    await settle();
+    await delivered(harness, "Turn two text.");
     const statusMidTurn = harness.run.getStatusSnapshot().status;
     fake.result([]);
-    await settle();
+    await finished(harness, [
+      "I'll wait for the readiness notification.",
+      "Background task finished; checking.",
+      "Turn two text.",
+    ]);
 
     expect(lifecycleNotices(harness.observed)).toEqual([]);
     expect(deliveredText(harness.observed)).toEqual([
@@ -171,5 +188,5 @@ describe("Claude provider-initiated turns back to back", () => {
       "Background task finished; checking.",
       "Turn two text.",
     ]);
-  });
+  }, TEST_TIMEOUT_MS);
 });
