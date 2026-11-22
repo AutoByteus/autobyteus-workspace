@@ -1,7 +1,7 @@
 # Handoff — Architecture Design Complete (org-teams-follow-definition)
 
 - Package: `org-teams-follow-definition`; Project Task `autobyteus-29` (FU-002, FU-003 of autobyteus-22), requested by `/project_task_manager` on the user's "work on the follow-up immediately".
-- Result: `Architecture Design Complete`, revision `SR-008` (SR-006 after ARCH-REV-001; SR-007 the user's DEC-006; SR-008 after ARCH-REV-002); task_size `Large`, architectural_risk `High` (migration of every stored Org run; collaboration-contract change; runtime ownership moves; cross-run wake inside a container; peer protocol addition).
+- Result: `Architecture Design Complete`, revision `SR-009` (SR-009 after ARCH-REV-003; SR-006 after ARCH-REV-001; SR-007 the user's DEC-006; SR-008 after ARCH-REV-002); task_size `Large`, architectural_risk `High` (migration of every stored Org run; collaboration-contract change; runtime ownership moves; cross-run wake inside a container; peer protocol addition).
 - Route: independent architecture review.
 
 ## Request and approval
@@ -30,3 +30,4 @@ The user chose (SR-002) to restructure Org runs as containers: each mounted Team
 - 2026-11-21: rule "task_size=Large or architectural_risk=High" matched; sent to `/architecture_reviewer` (run `architecture_reviewer_10c7315fd51048c3873b8b6fffa6924c`), delivered.
 - 2026-11-22: SR-006/SR-007 sent to `/architecture_reviewer` for re-review.
 - 2026-11-22: SR-008 sent to `/architecture_reviewer` for re-review.
+- 2026-11-22: SR-009 sent to `/architecture_reviewer` for re-review.

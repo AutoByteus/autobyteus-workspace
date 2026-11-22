@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-008` (SR-006 revised SR-005 after `ARCH-REV-001`; SR-007 applied the user's DEC-006; SR-008 revises after `ARCH-REV-002`: § SR-008 Revision supersedes R-1, R-3's snapshot paragraph and R-4 (a))
+- Current solution revision ID: `SR-009` (SR-009 revises after `ARCH-REV-003`: § SR-009 Revision supersedes R-1's list of points; SR-006 revised SR-005 after `ARCH-REV-001`; SR-007 applied the user's DEC-006; SR-008 revises after `ARCH-REV-002`: § SR-008 Revision supersedes R-1, R-3's snapshot paragraph and R-4 (a))
 - Approved requirements: `requirements-doc.md` at SR-004 (REQ-001..REQ-009, AC-001..AC-008, DEC-001..DEC-005), approved by the User on 2026-11-21 (quotes in the requirements' Document Status); direction SR-002 (Org as a container of runs).
 - Behavior-defining supplements: autobyteus-22's approved behavior and texts (archived `tickets/done/team-run-follows-definition/`), reused unchanged.
 - User approval of the design: `Not required`.
@@ -273,3 +273,35 @@ Decision (a) for all three routes; the web stays unchanged (DEC-004 holds):
 
 - N-1: "same container" is one fact, answered by the container directory (`sameContainer(runA, runB)` from `containedIn`); the `same_container` admission calls it; nothing else derives it.
 - N-2: the Org Stop fan-out (DS-003, stop every unit root) stays separate from a unit's interrupt (`RUN_NOT_ACTIVE` when not live).
+
+## SR-009 Revision (after ARCH-REV-003: AR-001 narrowed; supersedes R-1' item list "exactly these four points … nowhere else")
+
+### R-1'' One tool-facing address boundary for a contained Team root
+
+`ContainedTeamAddressSpace` (prefix `P` = `containedIn.address`) is the contained Team root's **one tool-facing address boundary**: every address an agent of that Team gives is normalized on the way in, and every address it is shown is translated on the way out. Inside the boundary everything stays in team space (Team tree, index, autobyteus-22 planner, committer, stored texts, logs of intra-Team messages).
+
+- In (`fromOrgInput`): an address under `P/` → team space (`P/x` → `/x`); `P` itself → **the agent's own Team** (team instance `/`), so the existing own-Team checks refuse it where they refuse own-Team targets today (CM-1); any other address → Org space, answered by the container (step 2 / in-run placement through `OrgContainerPort.placementAt`). A bare `/x` is Org space (as in an Org today).
+- Out (`toOrg`): `/x` → `P/x`; the own Team instance `/` → `P`; Org-space addresses unchanged.
+
+Surfaces (each named, each with tests):
+
+| Surface | Code (base `9f6add773b`) | In / Out |
+| --- | --- | --- |
+| `send_message_to(recipient_address)` | `message-recipient-resolution.ts` `resolveMessageRecipient` (step 1 / step 2) | In |
+| `send_message_to` result `agentAddress` | `root-communication-engine.ts:370` | Out |
+| `delegate_task(recipient_address)`: self check, own-Team check, in-run placement | `catalog-delegation.ts:104-111` (`agentAddressOf`, `isOwnTeamAddress`), `team-execution-index.ts:147-153`, `team-recipient-resolver.ts` `resolveInRunDelegationPlacement` | In (normalized before the self and own-Team checks, so `delegate_task('P')` and `delegate_task('P/teammate')` are refused as own Team, MP-05) |
+| Received-message sender address (header) | `reachingAddressOf` (`message-recipient-resolution.ts:96-115`) → `inter-agent-message-runtime-builders.ts:33` | Out: a teammate's stored `/code_reviewer` is shown as `P/code_reviewer` (resolved in team space first, then translated), MP-06; an Org-unit sender keeps its Org address |
+| Cross-run sender/receiver addresses | `CrossRunMessageDelivery` inputs | Out (sender) / In (receiver) |
+| `get_handoff_rules`, Handoffs prompt section | `get-handoff-rules-service.ts`, `collaboration-prompt-sections.ts` | Out (Team rules; Org rules already Org space) |
+| autobyteus-22 notices and refusals | `team-change-notice-source.ts`, former-member refusal | Out |
+| Mentions (`@`) from the Org view | `RootTeamRun.resolveCollaboratorMentions` (`root-team-run.ts:261`) | In |
+| `list_available_agents` addresses | `collaborator-candidate-policy.ts:47-59` (`address`) | Out |
+| Org view and Org rows | R-3'', `run-tree-view.ts` Org path | Out |
+
+Example (extends R-1'): from `/software_engineering_team/code_reviewer` (stored `/code_reviewer`), `P = /software_engineering_team`:
+- `send_message_to('/software_engineering_team/solution_designer')` → `/solution_designer` in team space → teammate; the result's `agentAddress` is shown as `/software_engineering_team/solution_designer`.
+- `send_message_to('/solution_designer')` → Org space → the Org agent's run.
+- `delegate_task('/software_engineering_team')` → own Team → refused by CM-1, as today; `delegate_task('/software_engineering_team/architecture_reviewer')` → teammate → refused by CM-1, as today; `delegate_task('/product_design_prototyping_team')` → Org space → in-run placement of the other unit → allowed, as today.
+- A message from the teammate `/solution_designer` shows its sender as `/software_engineering_team/solution_designer`, as today.
+
+Tests: MP-05 (`delegate_task` to `P` and to `P/teammate` refused), MP-06 (received teammate header shows `P/x`), each surface above in and out.

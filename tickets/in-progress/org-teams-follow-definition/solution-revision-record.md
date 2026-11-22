@@ -4,6 +4,7 @@
 
 | Revision ID | Phase | Trigger | Finding IDs | Prior Status | Current Status | Affected IDs | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| SR-009 | Design | Architecture re-review ARCH-REV-003 Fail | AR-001 (narrowed) | Approved; design Ready (reviewed Fail) | Approved; design Ready (revised) | REQ-003 | Translator as the contained Team root's one tool-facing boundary, all surfaces inventoried |
 | SR-008 | Design | Architecture re-review ARCH-REV-002 Fail | AR-001 (narrowed), AR-002 (narrowed), AR-007, N-1, N-2 | Approved; design Ready (reviewed Fail) | Approved; design Ready (revised) | REQ-002, REQ-003, REQ-006, REQ-007; DEC-004 kept | Team space + one translator; per-unit snapshot connections; Org routes as container edges; no trace rewrite |
 | SR-007 | Requirements | The user's DEC-006, 2026-11-22 | AR-004 | Ready for Approval | Approved | DEC-006, REQ-005; design R-2, R-3 | A message wakes a unit the user stopped |
 | SR-006 | Mixed | Architecture review ARCH-REV-001 Fail | AR-001..AR-006 (AR-004 Requirement Gap) | Approved; design Ready (reviewed Fail) | Ready for Approval (DEC-006); design revised | REQ-003, REQ-005, REQ-006, REQ-007; DEC-006 new | Address rule, delivery reuse, Org view spine, migration input map, Org inventory; DEC-006 to the user |
@@ -76,3 +77,9 @@
 - R-7: all three Org routes kept as container edges; web unchanged (DEC-004 holds); saved references keep the Org owner form; no trace rewriting (frozen visitor dropped).
 - N-1 one fact (`sameContainer` from the container directory); N-2 Stop fan-out separate from interrupts.
 - Intended behavior changed: No. Classification: Large / High. Next action: architecture re-review.
+
+### SR-009 — One tool-facing address boundary
+
+- Trigger: ARCH-REV-003 (Fail): AR-002 and AR-007 resolved; AR-001 narrowed: `delegate_task` self/own-Team checks (MP-05), received sender address (MP-06), `send_message_to` result address.
+- R-1'': `ContainedTeamAddressSpace` is the contained Team root's one tool-facing boundary: every incoming address normalized (`P/x` → team space; `P` → own Team, CM-1 refusal; else Org space via the container), every shown address translated; ten surfaces inventoried with code; example extended with `delegate_task`; tests for MP-05/MP-06.
+- Intended behavior changed: No. Next action: architecture re-review.

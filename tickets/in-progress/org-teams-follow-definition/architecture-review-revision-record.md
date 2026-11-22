@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / Architecture Design Complete (SR-005) | SR-002, SR-004, SR-005 | N/A | Fail (Design Impact; one Requirement Gap) | AR-001..AR-006 |
 | ARCH-REV-002 | Round 2 / SR-006, SR-007 resubmission | SR-006, SR-007 | Fail | Fail (Design Impact) | AR-001, AR-002 (narrowed), AR-007 (new); AR-003..AR-006 resolved |
+| ARCH-REV-003 | Round 3 / SR-008 resubmission | SR-008 | Fail | Fail (Design Impact) | AR-001 (narrowed); AR-002, AR-007 resolved |
 
 ## Revision Entries
 
@@ -59,3 +60,28 @@ None.
 - Material classification changes: None (Large / High)
 - Recommended recipient: Solution Designer
 - Remaining risks or uncertainty: N-1 (one derivation of same-container), N-2
+
+### ARCH-REV-003 — Re-review of SR-008
+
+- Canonical design review report: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/design-review-report.md`
+- Review round and trigger: round 3; Solution Designer resubmission at SR-008 (commit `c89b409455`) after ARCH-REV-002
+- Triggering role, report path, and finding IDs: Solution Designer, `handoff-architecture-design.md`; AR-001, AR-002, AR-007
+- Relevant solution revision IDs: SR-008
+- Prior authoritative decision: Fail
+- Current authoritative decision: Fail (Design Impact)
+- What changed:
+  - AR-002 and AR-007 resolved.
+  - AR-001's realization is now right (option (i), team-space trees, IF-06 withdrawn), but the translator's application is stated as four call sites. `delegate_task` (CM-1 refusal escapes), the received-message sender address (`reachingAddressOf`) and the send result's `agentAddress` are untranslated (MP-05, MP-06).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001 | Open (High) | Still open (narrowed, Medium) | R-1' | Team-space trees match `team-run-execution-tree-schema.ts:47,54-55`; translator correct; missing surfaces at `catalog-delegation.ts:104-111` with `team-execution-index.ts:147-153`, `message-recipient-resolution.ts:96-115`, `root-communication-engine.ts:370` |
+| AR-002 | Open (Medium) | Resolved | R-3'' | Per-unit `openViewSnapshotConnection`s, post-base relay queued per connection, re-open on in-band snapshot, exactly-once test |
+| AR-007 | Open (High) | Resolved | R-7, R-4 (a) revised, R-5 rows | All three Org routes kept as container edges; files move with folders; saved references keep the Org owner form; no trace rewriting |
+
+- New or remaining finding IDs: AR-001 (Medium)
+- Material classification changes: None (Large / High)
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: none beyond the report's notes
