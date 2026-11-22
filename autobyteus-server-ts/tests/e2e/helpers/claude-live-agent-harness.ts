@@ -122,6 +122,9 @@ export const createClaudeLiveAgentHarness = async (input: {
   const session = input.restoreSessionId
     ? await sessionManager.restoreRunSession(runContext, input.restoreSessionId, ownSession)
     : await sessionManager.createRunSession(runContext, ownSession);
+  // As ClaudeAgentRunBackendFactory does: a restore opens its process now and checks the CLI still has the session
+  // (autobyteus-599 DS-003); a new session still opens lazily on its first input.
+  if (input.restoreSessionId) await session.verifyResumable();
   const agentRun = new AgentRun({
     providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
     context: runContext,
