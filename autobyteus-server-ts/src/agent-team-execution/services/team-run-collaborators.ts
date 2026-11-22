@@ -12,20 +12,28 @@ import { getCollaboratorAdmission } from "../../agent-collaboration/collaborator
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { DelegationPlacement } from "../../agent-collaboration/collaborators/catalog-delegation.js";
+import { ContainedTeamAddressSpace } from "../container/contained-team-address-space.js";
 
-/** Catalog facts of one Team tree: the root Team and its configured Agents are in the run, with what it reaches by step 2. */
-export const teamCollaboratorPortFor = (tree: TeamRunExecutionTreeSnapshot, reached: ReachedPlacements): CollaboratorRootPort => Object.freeze({
-  isApplicationBound: tree.applicationBinding !== null,
-  launchBase: () => Object.freeze({ kind: "inherited", launch: tree.rootTeam.defaultLaunchConfiguration }),
-  ownDefinition: () => Object.freeze({ kind: "agent_team", definitionId: tree.rootTeam.teamDefinitionId }),
-  inRunPlacementsByDefinition: async () => buildInRunPlacements({
-    configured: tree.rootTeam.members.map((member) => ({
-      ref: { kind: "agent", definitionId: member.agentDefinitionId }, address: member.address,
-    })),
-    configuredStep: 1, reached: await reached(),
-  }),
-  addressesInUse: async () => addressesInUseOf(tree.rootTeam.members.map((member) => member.address), await reached()),
-});
+/**
+ * Catalog facts of one Team tree: the root Team and its configured Agents are in the run, with what it reaches by step 2.
+ * A Team unit's members are shown at their Org addresses (`P/x`, its address boundary, design R-1'').
+ */
+export const teamCollaboratorPortFor = (tree: TeamRunExecutionTreeSnapshot, reached: ReachedPlacements): CollaboratorRootPort => {
+  const space = ContainedTeamAddressSpace.of(tree.containedIn);
+  const shown = (address: AgentTeamAddress): AgentTeamAddress => space ? space.toOrg(address) : address;
+  return Object.freeze({
+    isApplicationBound: tree.applicationBinding !== null,
+    launchBase: () => Object.freeze({ kind: "inherited", launch: tree.rootTeam.defaultLaunchConfiguration }),
+    ownDefinition: () => Object.freeze({ kind: "agent_team", definitionId: tree.rootTeam.teamDefinitionId }),
+    inRunPlacementsByDefinition: async () => buildInRunPlacements({
+      configured: tree.rootTeam.members.map((member) => ({
+        ref: { kind: "agent", definitionId: member.agentDefinitionId }, address: shown(member.address),
+      })),
+      configuredStep: 1, reached: await reached(),
+    }),
+    addressesInUse: async () => addressesInUseOf(tree.rootTeam.members.map((member) => shown(member.address)), await reached()),
+  });
+};
 
 /**
  * Team-root catalog questions. `@` only resolves the mentioned definitions' addresses and

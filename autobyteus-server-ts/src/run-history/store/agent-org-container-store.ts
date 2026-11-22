@@ -1,4 +1,4 @@
-import type { AgentOrgContainerFile } from "../../agent-org-execution/domain/agent-org-container-file.js";
+import { isAgentOrgContainerPayload, type AgentOrgContainerFile } from "../../agent-org-execution/domain/agent-org-container-file.js";
 import { getAgentOrgRunFileCommitWriter, type AgentOrgRunFileCommitWriter } from "./agent-org-run-file-commit-writer.js";
 import type { RunPackageFileWriteResult } from "./atomic-run-package-file-commit-writer.js";
 import { getAgentOrgRunExecutionTreePath } from "./agent-org-run-execution-tree-path.js";
@@ -12,6 +12,12 @@ export class AgentOrgContainerStore {
   async read(orgMemoryDir: string, orgRunId: string): Promise<AgentOrgContainerFile | null> {
     const raw = await readRawTreeFile(getAgentOrgRunExecutionTreePath(orgMemoryDir));
     return raw ? validateAgentOrgContainerPayload(raw, orgRunId) : null;
+  }
+
+  /** The stored container file; `null` when absent or still a released Org tree (not converted to a container yet). */
+  async readIfContainer(orgMemoryDir: string, orgRunId: string): Promise<AgentOrgContainerFile | null> {
+    const raw = await readRawTreeFile(getAgentOrgRunExecutionTreePath(orgMemoryDir));
+    return raw && isAgentOrgContainerPayload(raw) ? validateAgentOrgContainerPayload(raw, orgRunId) : null;
   }
 
   readSync(orgMemoryDir: string, orgRunId: string): AgentOrgContainerFile | null {

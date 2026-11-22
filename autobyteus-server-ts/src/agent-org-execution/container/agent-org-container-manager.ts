@@ -105,8 +105,8 @@ export class AgentOrgContainerManager {
   listLive(): readonly AgentOrgContainer[] { return Object.freeze([...this.live.values()].filter((container) => container.isLive())); }
 
   /** The stored container file, or null when the Org is absent or stored as a released Org tree v1. */
-  async readStored(orgRunId: string): Promise<AgentOrgContainerFile | null> {
-    return (await this.isStored(orgRunId)) ? this.store.read(this.layout.getOrgDirPath(orgRunId), orgRunId) : null;
+  readStored(orgRunId: string): Promise<AgentOrgContainerFile | null> {
+    return this.store.readIfContainer(this.layout.getOrgDirPath(orgRunId), orgRunId);
   }
 
   /** Whether the Org run's file is a container (not a released Org tree v1). */

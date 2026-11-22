@@ -80,9 +80,10 @@ export type RunAcceptInput = Readonly<{
   assertAllowed(): void;
   /**
    * How the two runs relate, as `CrossRunMessageDelivery` admitted the message: a Task relates them, or not (autobyteus-492
-   * CM-13). `MessageViewScope` decides from it which views show the message; an unrelated line records its sender.
+   * CM-13), or two units of one Org (`same_container`). `MessageViewScope` decides from it which views show the message;
+   * an unrelated or `same_container` line records its sender.
    */
-  relation: "related" | "unrelated";
+  relation: "related" | "unrelated" | "same_container";
 }>;
 
 /** A message a peer node accepted from its run, for a local agent of this root: linked (CM-11), or by run ID (CM-13). */
@@ -311,8 +312,11 @@ export class RootCommunicationEngine {
       return { accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED", message: NOT_HERE };
     }
     const accepted = validateCollaborationCommunicationMessage(input.message);
-    // A line with an unrelated run records its sender (autobyteus-565); a related run is in a Task's tree.
-    const message = input.relation === "unrelated" ? withCounterpart(accepted, { address: input.senderIdentity.memberAddress, nodeId: null }) : accepted;
+    // A line with an unrelated run records its sender (autobyteus-565); a related run is in a Task's tree. A line from another
+    // unit of the same Org records the sender's Org address, as the sender's run's boundary gives it (contract §5): never its
+    // address in its own run (team space for a Team unit's member).
+    const message = input.relation === "related" ? accepted : withCounterpart(accepted, { nodeId: null,
+      address: input.relation === "same_container" ? input.senderAddress : input.senderIdentity.memberAddress });
     const scope = this.refuseOutsideTaskScope(input.assertAllowed);
     if (scope) return scope;
     const inputMessage = this.port.buildRecipientInput({ delivery: { senderIdentity: input.senderIdentity, senderDisplayName: input.senderDisplayName,

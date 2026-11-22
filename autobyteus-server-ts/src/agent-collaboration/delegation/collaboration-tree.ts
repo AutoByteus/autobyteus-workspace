@@ -4,7 +4,14 @@ import { configuredPlacementSource } from "../collaborators/collaborator-source-
 import type { AgentTeamAddress } from "../domain/agent-team-address.js";
 import { CollaborationContractError } from "../domain/collaboration-contract-error.js";
 import type { CollaborationHandoff } from "../domain/collaboration-handoff.js";
-import { rootExecutionIdentityKey, type CollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../execution/domain/root-execution-identity.js";
+import {
+  createAgentOrgRootExecutionIdentity,
+  rootExecutionIdentityKey,
+  type CollaborationMemberExecutionIdentity,
+  type RootExecutionIdentity,
+} from "../execution/domain/root-execution-identity.js";
+import type { OrgContainerPort } from "../domain/org-container-port.js";
+import type { ContainedIn } from "../domain/contained-in.js";
 import { runIdentityOf, runReferenceOf } from "../execution/task/task-execution-resource-port.js";
 import type { ConfiguredAgentExecutionNode, ConfiguredTeamExecutionNode } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { DelegatedChild, DelegationIndex } from "./delegation-index.js";
@@ -32,7 +39,7 @@ export interface RunFilesReader extends RunPartsReader {
  * One agent or team a run reaches by address step 2 (contract §2.3): at its address in an assigner's run, the agent
  * run that receives a message there, its definition (`null` when unknown), and its rank, as at base for a hosted copy:
  * an agent run's own agent (an agent the user started) is `run_agent`; a team's or org's configured placement is
- * `configured`.
+ * `configured`. For a unit run of an Org container, `assigner` is its container and every unit is `configured`.
  */
 export type ReachedPlacement = Readonly<{
   address: AgentTeamAddress;
@@ -44,16 +51,31 @@ export type ReachedPlacement = Readonly<{
 
 /** What an agent run's own agent is for the prompt it reads, and what a copy of an org's configured agent inherits. */
 export type AgentRunCollaboration = Readonly<{
-  /** `task_agent`: another run delegated this run (its `delegatedFrom`); `standalone_agent`: the user started it. */
-  role: "standalone_agent" | "task_agent";
-  /** A copy of an org's configured agent: that address's handoff rules and the org definition whose instruction it reads. */
-  placement: Readonly<{ handoffs: readonly CollaborationHandoff[]; orgDefinitionId: string }> | null;
+  /**
+   * `task_agent`: another run delegated this run (its `delegatedFrom`); `standalone_agent`: the user started it; `org_agent`:
+   * a direct Org agent (an agent unit of an Org container, org-teams-follow-definition).
+   */
+  role: "standalone_agent" | "task_agent" | "org_agent";
+  /**
+   * A copy of an org's configured agent, or a direct Org agent: that address's handoff rules (read at each call: an Org's
+   * rules follow its definition) and the org definition whose instruction it reads.
+   */
+  placement: Readonly<{ handoffs(): readonly CollaborationHandoff[]; orgDefinitionId: string }> | null;
+  /** The organization line: a direct Org agent's (as in the Org before); a task agent's never was. */
+  inOrganization: boolean;
   /**
    * Team-scoped (`get_handoff_rules`), as base's hosted copy was (CR-461-114, REQ-009): the run at the top of its tree, the
    * run base hosted the copy in, is a Team or an Org run. A copy whose tree starts at an Agent run is not, as base's task
    * agent under an Agent root was not.
    */
   teamScoped: boolean;
+}>;
+
+/** A unit run's Org, as its collaboration tree answers it (`orgUnit`). */
+export type OrgUnitOfRun = Readonly<{
+  containedIn: ContainedIn;
+  orgDefinitionId: string;
+  orgRulesFrom(address: string): readonly CollaborationHandoff[];
 }>;
 
 /** One row under a run (its open subtree, CR-461-033): the delegated run, and the run that delegated it. */
@@ -124,7 +146,9 @@ export const runDisplayNameOf = async (index: Pick<DelegationIndex, "currentTask
  * about a run's own parts (its members, its own addresses, steps 1 and 3) stay with its own index.
  */
 export class CollaborationTree {
-  constructor(private readonly tree: MapTree, private readonly files: Pick<RunFilesReader, "orgPlacementsOf" | "configuredPlacementOf">, readonly run: RootExecutionIdentity) {}
+  constructor(private readonly tree: MapTree, private readonly files: Pick<RunFilesReader, "orgPlacementsOf" | "configuredPlacementOf">, readonly run: RootExecutionIdentity,
+    /** The Org container directory: a unit run's step 2 is its container's other units (org-teams-follow-definition). */
+    private readonly containers: OrgContainerPort | null = null) {}
 
   /**
    * The runs that assigned this run's Tasks, in step 2's order (contract §2.3, `model.py` `resolve`): its open Tasks in
@@ -144,10 +168,11 @@ export class CollaborationTree {
   /**
    * Reach by step 2, by address, in its order (the first assigner with an address wins it); `null` when the run works
    * on no Task (step 2 does not apply). The one enumeration: the message route, the `@` note, `list_available_agents`,
-   * `delegate_task`'s in-run placements and the addresses in use all read it.
+   * `delegate_task`'s in-run placements and the addresses in use all read it. A unit run of an Org container (never
+   * delegated) reaches its container's other units by their Org addresses (design R-1, R-2).
    */
   async stepTwo(): Promise<ReadonlyMap<string, ReachedPlacement> | null> {
-    if (!this.entries().length) return null;
+    if (!this.entries().length) return this.containerStepTwo();
     const reached = new Map<string, ReachedPlacement>();
     for (const assigner of this.assigners()) {
       const standing = await this.tree.standingOf(assigner);
@@ -195,6 +220,8 @@ export class CollaborationTree {
    * has never reaches another run.
    */
   async reachingAddressOf(sender: CollaborationMemberExecutionIdentity): Promise<string | null> {
+    // Two units of one container: the sender's Org address, which reaches it from every other unit (step 2, R-1'').
+    if (this.containers && await this.containers.sameContainer(sender.root, this.run)) return this.containers.orgAddressOf(sender);
     const own = sender.memberAddress as string;
     if (await this.ownReceiverOf(own)) return null;
     return (await this.stepTwo())?.get(own)?.agentRunId === sender.agentRunId ? own : null;
@@ -206,6 +233,12 @@ export class CollaborationTree {
    */
   async delegationPlacementAt(address: AgentTeamAddress): Promise<DelegationPlacement | null> {
     const reached = (await this.stepTwo())?.get(address);
+    const containedIn = reached && !this.entries().length ? await this.containedIn(this.run) : null;
+    if (containedIn) {
+      // Another unit of the unit run's container, as the Org's configured placement answered before.
+      const source = await this.containers!.delegationSourceAt(containedIn.orgRunId, address);
+      return source ? sourcedPlacement(address, source, "configured_placement") : null;
+    }
     const found = reached?.rank === "configured" ? await this.files.configuredPlacementOf(reached.assigner, address) : null;
     return found ? sourcedPlacement(address, configuredPlacementSource(found.node, found.handoffs), "configured_placement") : null;
   }
@@ -215,21 +248,38 @@ export class CollaborationTree {
    * of an org's configured agent keeps that address's handoff rules and reads the org's instruction.
    */
   async agentCollaboration(): Promise<AgentRunCollaboration> {
+    const unit = await this.orgUnit();
+    if (unit) {
+      // A direct Org agent: the Org's rules from its Org address and the Org's instruction, team-scoped, as in the Org before.
+      return Object.freeze({ role: "org_agent", teamScoped: true, inOrganization: true,
+        placement: Object.freeze({ handoffs: () => unit.orgRulesFrom(unit.containedIn.address), orgDefinitionId: unit.orgDefinitionId }) });
+    }
     const reference = runReferenceOf(this.run);
     const entry = reference ? this.tree.currentTaskOf(reference) : null;
-    if (!entry) return Object.freeze({ role: "standalone_agent", placement: null, teamScoped: false });
+    if (!entry) return Object.freeze({ role: "standalone_agent", placement: null, teamScoped: false, inOrganization: false });
+    // The Org is the delegating run (an older entry) or the container of the unit run that delegated it.
     const delegatingRun = entry.delegatedFrom.delegatingRun;
-    const org = delegatingRun.rootSubjectKind === "agent_org" ? await this.files.orgPlacementsOf(delegatingRun.rootRunId) : null;
     const address = entry.recipientAddress;
-    const top = this.tree.topOf(this.run).rootSubjectKind;
-    return Object.freeze({ role: "task_agent", placement: org && org.agentAddresses.includes(address)
-      ? Object.freeze({ handoffs: Object.freeze(org.handoffs.filter((handoff) => handoff.from === address)), orgDefinitionId: org.orgDefinitionId })
-      : null, teamScoped: top === "agent_team" || top === "agent_org" });
+    const org = delegatingRun.rootSubjectKind === "agent_org" ? await this.files.orgPlacementsOf(delegatingRun.rootRunId)
+      : await this.containerPlacementsOf(delegatingRun, address);
+    const handoffs = Object.freeze((org?.handoffs ?? []).filter((handoff) => handoff.from === address));
+    const topRun = this.tree.topOf(this.run);
+    const top = topRun.rootSubjectKind;
+    return Object.freeze({ role: "task_agent", inOrganization: false, placement: org && org.agentAddresses.includes(address)
+      ? Object.freeze({ handoffs: () => handoffs, orgDefinitionId: org.orgDefinitionId }) : null,
+    teamScoped: top === "agent_team" || top === "agent_org" || Boolean(await this.containedIn(topRun)) });
   }
 
-  /** The organization line: the run works on a Task an org assigned, exactly when step 2 reaches the org. */
-  inOrganization(): boolean {
-    return this.assigners().some((assigner) => assigner.rootSubjectKind === "agent_org");
+  /**
+   * The organization line: the run is a unit of an Org container, or works on a Task an org (or one of its units)
+   * assigned, exactly when step 2 reaches the org.
+   */
+  async inOrganization(): Promise<boolean> {
+    if (await this.containedIn(this.run)) return true;
+    for (const assigner of this.assigners()) {
+      if (assigner.rootSubjectKind === "agent_org" || await this.containedIn(assigner)) return true;
+    }
+    return false;
   }
 
   /**
@@ -261,6 +311,46 @@ export class CollaborationTree {
   private entries() {
     const reference = runReferenceOf(this.run);
     return reference ? this.tree.tasksOf(reference) : [];
+  }
+
+  /**
+   * A unit run's Org (org-teams-follow-definition): its fixed back-link, the Org's definition, and the container's Org
+   * rules from an Org address, read at each call (they follow the Org's definition). `null` for a run outside any Org.
+   */
+  async orgUnit(): Promise<OrgUnitOfRun | null> {
+    const containedIn = await this.containedIn(this.run);
+    const org = containedIn ? await this.containers!.loadContainer(containedIn.orgRunId) : null;
+    if (!containedIn || !org) return null;
+    return Object.freeze({ containedIn, orgDefinitionId: org.orgDefinitionId,
+      orgRulesFrom: (address: string) => this.containers!.orgRulesFrom(containedIn.orgRunId, address) });
+  }
+
+  private async containedIn(run: RootExecutionIdentity) {
+    return this.containers ? this.containers.containedInOf(run) : null;
+  }
+
+  /** A unit run's Org as an Org's placements were read for a copy: its direct agents' addresses and its Org rules from `address`. */
+  private async containerPlacementsOf(unitRun: RootExecutionIdentity, address: string): Promise<OrgPlacements | null> {
+    const containedIn = await this.containedIn(unitRun);
+    const org = containedIn ? await this.containers!.loadContainer(containedIn.orgRunId) : null;
+    if (!containedIn || !org) return null;
+    const agentAddresses = (await this.containers!.placementsOf(containedIn.orgRunId))
+      .flatMap((placement) => placement.run.rootSubjectKind === "agent" ? [placement.orgAddress as string] : []);
+    return Object.freeze({ orgDefinitionId: org.orgDefinitionId, agentAddresses, handoffs: this.containers!.orgRulesFrom(containedIn.orgRunId, address) });
+  }
+
+  /** Step 2 of a unit run: every Org address its container's other units answer; `null` for a run outside any Org. */
+  private async containerStepTwo(): Promise<ReadonlyMap<string, ReachedPlacement> | null> {
+    const containedIn = await this.containedIn(this.run);
+    if (!containedIn) return null;
+    const container = createAgentOrgRootExecutionIdentity(containedIn.orgRunId);
+    const reached = new Map<string, ReachedPlacement>();
+    for (const placement of await this.containers!.placementsOf(containedIn.orgRunId)) {
+      if (rootExecutionIdentityKey(placement.run) === rootExecutionIdentityKey(this.run) || reached.has(placement.orgAddress)) continue;
+      reached.set(placement.orgAddress, Object.freeze({ address: placement.orgAddress, agentRunId: placement.agentRunId, ref: placement.ref,
+        rank: "configured" as const, assigner: container }));
+    }
+    return reached;
   }
 
   /** A mounted team's definition, from its org's own file. */

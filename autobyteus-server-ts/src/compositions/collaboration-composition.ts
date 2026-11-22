@@ -59,6 +59,7 @@ import { setProcessTeamMemberRunViewProjectionService, TeamMemberRunViewProjecti
 import { setProcessTeamRunHistoryService } from "../run-history/services/team-run-history-service.js";
 import { setProcessWorkspaceRunHistoryService, WorkspaceRunHistoryService } from "../run-history/services/workspace-run-history-service.js";
 import { RunOwnAgentsReader } from "../run-history/store/run-own-agents-reader.js";
+import { createOrgContainerDirectory, type OrgContainerDirectory } from "../agent-org-execution/container/org-container-directory.js";
 import { createChildRowProjection } from "../agent-collaboration/delegation/run-tree-records.js";
 import { AgentOrgAgentStatuses } from "../agent-org-execution/services/agent-org-agent-statuses.js";
 import { peerNodeNames } from "../agent-collaboration/execution/remote/remote-run-observation.js";
@@ -102,6 +103,8 @@ export type TaskSide = Readonly<{
   closedTasks: ClosedTaskEntryFence;
   projectsLayout: ProjectsLayout;
   adHocTasksLayout: AdHocTasksLayout;
+  /** The Org container directory (org-teams-follow-definition, design R-2, N-1): what a unit run asks its container. */
+  containers: OrgContainerDirectory;
 }>;
 
 /**
@@ -119,7 +122,9 @@ export const composeTaskSide = async (input: Readonly<{ appDataDir: string; memo
   // (AR-017). A run's agents are read from its own parts on the first need, never at startup (469 D-11).
   // The tree reads each run's own files (its parts, once; an org's and a configured placement, at use), and derives
   // each run's collaboration tree from them (SR-060).
-  const tree = new DelegationIndex(() => resources, new RunOwnAgentsReader(input.memoryDir));
+  // A unit run of an Org container reaches its container's other units by step 2 (design R-1, R-2).
+  const containers = createOrgContainerDirectory(input.memoryDir);
+  const tree = new DelegationIndex(() => resources, new RunOwnAgentsReader(input.memoryDir), containers);
   tree.build();
   // A run the Task records name whose own files are gone was deleted: the tree skips it (SR-067 G-2).
   await tree.skipUnstored();
@@ -131,7 +136,7 @@ export const composeTaskSide = async (input: Readonly<{ appDataDir: string; memo
     viewStreams: new RunViewStreams({ agent: isStandaloneRootMessageEvent, agent_team: isTeamRunMessageEvent, agent_org: isAgentOrgMessageEvent },
       { tree, scope: messageScope, events: { agent: standaloneRootMessageEvent, agent_team: teamRunMessageEvent, agent_org: agentOrgMessageEvent } }), taskRecords,
     closedTasks: new ClosedTaskEntryFence({ fence: new ClosedTaskFence({ tree, tasks: taskRecords }), tasks: taskRecords, files: new RunOwnAgentsReader(input.memoryDir) }),
-    projectsLayout, adHocTasksLayout });
+    projectsLayout, adHocTasksLayout, containers });
 };
 
 /** What steps 4–8 create that the host passes on: the view streams' sources and the GraphQL reads. */
@@ -243,6 +248,8 @@ export const composeCollaboration = async (input: Readonly<{
       // autobyteus-492 DS-003: a message by run ID alone reaches only a running agent, in its live root, never restored.
       runningAgents: input.running.runningAgents,
       activeReceiverRoot: (run) => input.rootResolver.resolveActive(run)?.root ?? null,
+      // Two units of one Org container (design R-2): admitted before the Task rule; a receiver not live is restored.
+      containers: input.taskSide.containers,
     });
     const delegation = new TaskDelegation({
       deliverToRun: (message) => crossRun.route(message),

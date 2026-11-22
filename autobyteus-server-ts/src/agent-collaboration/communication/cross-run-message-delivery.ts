@@ -19,6 +19,7 @@ import {
 import type { RunningAgents } from "../running/running-agents.js";
 import type { PeerRunStateNotices } from "../execution/remote/peer-run-state-notices.js";
 import type { CrossRunAcceptInput } from "./cross-run-accept-input.js";
+import type { OrgContainerPort } from "../domain/org-container-port.js";
 
 /** The sender's root: it prepares a message to another run and records it in its own log once delivered. */
 export type CrossRunSenderRoot = Readonly<{
@@ -58,6 +59,9 @@ const sameRun = (a: RootExecutionIdentity, b: RootExecutionIdentity): boolean =>
  * receiver runs (CM-13). A run whose Tasks are all closed throws `TASK_AGENT_RESOURCE_CLOSED`, whoever sends.
  */
 type Admission = "related" | "reopened" | "unrelated";
+/** How a delivered message relates the two runs, for both logs and the views (`same_container`: two units of one Org). */
+type ExchangeRelation = CrossRunAcceptInput["relation"];
+type ContainerUnit = Readonly<{ run: RootExecutionIdentity; orgAddress: string }>;
 /**
  * The admission of a message to a run on a peer node (autobyteus-591 DN-9): `not_peer` when no Task entry here names the
  * target's run on a peer, `admitted`, or the refusal to answer.
@@ -110,9 +114,15 @@ export class CrossRunMessageDelivery {
     restorability: Pick<DelegatedRunRestorability, "refusal">;
     /** What a peer run's node is told of its delegation state, in the run's order (autobyteus-591 DN-1b, DN-9). */
     peerNotices: Pick<PeerRunStateNotices, "changed">;
+    /** The Org container directory: the `same_container` admission (design R-2, N-1); absent: no run is a unit. */
+    containers?: Pick<OrgContainerPort, "containedInOf" | "unitOfAgent" | "sameContainer">;
   }>) {}
 
   async route(input: CrossRunMessageInput): Promise<AgentOperationResult | null> {
+    // `same_container`, before the Task rule (design R-2): two units of one Org message each other; a receiver that is not
+    // live is restored (DEC-006: a message wakes it, whether never restored, shut down or stopped on its own).
+    const unit = await this.sameContainerUnitOf(input.sender.root, input.targetAgentRunId);
+    if (unit) return this.deliverInContainer(input, unit);
     const tree = this.dependencies.tree();
     const receiverRun = await tree.runOfAgent(input.targetAgentRunId);
     const senderRun = input.sender.root;
@@ -144,7 +154,31 @@ export class CrossRunMessageDelivery {
     catch (error) { return refusal("TARGET_RUN_NOT_AVAILABLE", `The run of ${input.targetAgentRunId} could not be resumed: ${errorMessage(error)}`); }
     // A run with no files (deleted while this message was past the tree): R-11, as for any unknown run ID (SR-067).
     if (!receiver) return refusal("TARGET_AGENT_RUN_NOT_ACTIVE", `No running agent has the run id '${input.targetAgentRunId}', so the message was not sent.`);
-    return this.exchange(input, sender, prepared.message, receiverRun, receiver, { reactivated, related: true });
+    return this.exchange(input, sender, prepared.message, receiverRun, receiver, { reactivated, relation: "related" });
+  }
+
+  /** The unit of the sender's Org container that has the target agent (its run and the agent's Org address), when it is another unit. */
+  private async sameContainerUnitOf(senderRun: RootExecutionIdentity, targetAgentRunId: string): Promise<ContainerUnit | null> {
+    const containers = this.dependencies.containers;
+    const containedIn = containers ? await containers.containedInOf(senderRun) : null;
+    if (!containedIn) return null;
+    const unit = await containers!.unitOfAgent(containedIn.orgRunId, targetAgentRunId);
+    return unit && await containers!.sameContainer(senderRun, unit.run) ? unit : null;
+  }
+
+  /** A message between two units of one Org: the receiving unit's root is restored when it is not live (DEC-006). */
+  private async deliverInContainer(input: CrossRunMessageInput, unit: ContainerUnit): Promise<AgentOperationResult> {
+    const receiverRun = unit.run;
+    const sender = this.dependencies.senderRoot(input.sender.root);
+    if (!sender) return refusal("COLLABORATION_ROOT_NOT_ACTIVE", ROOT_NOT_ACTIVE_MESSAGE);
+    const prepared = sender.prepareSendToRun({ senderIdentity: input.sender, receiverAgentRunId: input.targetAgentRunId, content: input.content,
+      messageType: input.messageType, referenceFiles: input.referenceFiles });
+    if (!prepared.ok) return prepared.refusal;
+    let receiver: CrossRunReceiverRoot | null;
+    try { receiver = await this.dependencies.receiverRoot(receiverRun); }
+    catch (error) { return refusal("TARGET_RUN_NOT_AVAILABLE", `The run of ${input.targetAgentRunId} could not be resumed: ${errorMessage(error)}`); }
+    if (!receiver) return refusal("TARGET_AGENT_RUN_NOT_ACTIVE", `No running agent has the run id '${input.targetAgentRunId}', so the message was not sent.`);
+    return this.exchange(input, sender, prepared.message, receiverRun, receiver, { reactivated: false, relation: "same_container", receiverOrgAddress: unit.orgAddress });
   }
 
   /**
@@ -195,23 +229,27 @@ export class CrossRunMessageDelivery {
     const prepared = sender.prepareSendToRun({ senderIdentity: input.sender, receiverAgentRunId: input.targetAgentRunId, content: input.content,
       messageType: input.messageType, referenceFiles: input.referenceFiles });
     if (!prepared.ok) return prepared.refusal;
-    return this.exchange(input, sender, prepared.message, running.root, receiver, { reactivated: false, related: false });
+    return this.exchange(input, sender, prepared.message, running.root, receiver, { reactivated: false, relation: "unrelated" });
   }
 
   /**
    * Step 3: the receiver's root accepts in its gate (its log first), then the sender's root records it (CM-9). The message's
    * relation (related or unrelated) goes with it: `MessageViewScope` decides from it which views show it (autobyteus-565).
    * An unrelated message records the other agent on each side's line: the sender's address on the receiver's (from its
-   * identity), the receiver's on the sender's (from the receiving run's answer).
+   * identity), the receiver's on the sender's (from the receiving run's answer). A message between two units of one Org
+   * records each side's Org address on the other's line (contract §5): the receiver's line the sender's (the
+   * `senderAddress` its collaboration tree gives), the sender's line the receiver's (from the container directory).
    */
   private async exchange(input: CrossRunMessageInput, sender: CrossRunSenderRoot, message: CollaborationCommunicationMessage,
-    receiverRun: RootExecutionIdentity, receiver: CrossRunReceiverRoot, kind: Readonly<{ reactivated: boolean; related: boolean }>): Promise<AgentOperationResult> {
+    receiverRun: RootExecutionIdentity, receiver: CrossRunReceiverRoot,
+    kind: Readonly<{ reactivated: boolean; relation: ExchangeRelation; receiverOrgAddress?: string }>): Promise<AgentOperationResult> {
     const { reactivated } = kind;
     const senderAddress = await this.dependencies.senderAddress({ sender: input.sender, receiverRun, receiverAgentRunId: input.targetAgentRunId });
     const accepted = await receiver.acceptFromRun({ message, senderIdentity: input.sender, senderDisplayName: input.senderDisplayName,
-      senderAddress, assertAllowed: () => this.assertStillOpen(receiverRun), relation: kind.related ? "related" : "unrelated" });
+      senderAddress, assertAllowed: () => this.assertStillOpen(receiverRun), relation: kind.relation });
     const receiverAddress = accepted.accepted ? accepted.agentAddress ?? null : null;
-    const counterpart: MessageCounterpart | null = kind.related ? null : { address: receiverAddress, nodeId: null };
+    const counterpart: MessageCounterpart | null = kind.relation === "related" ? null
+      : { address: kind.relation === "same_container" ? kind.receiverOrgAddress ?? null : receiverAddress, nodeId: null };
     if (!accepted.accepted) {
       let refused: AgentOperationResult = accepted;
       if (isRecordedRunRefusal(accepted)) {

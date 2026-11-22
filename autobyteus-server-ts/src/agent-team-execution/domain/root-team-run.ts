@@ -3,7 +3,7 @@ import type { RemoteRunChannelAccess } from "../../agent-collaboration/execution
 import type { ClosedTaskFence } from "../../agent-collaboration/execution/task/closed-task-fence.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { acceptWorkPacketIfAllowed } from "../../agent-collaboration/execution/task/task-delegation.js";
-import { mentionViewerOf } from "../../agent-collaboration/collaborators/mention-viewer.js";
+import { teamMentionViewerOf } from "../container/contained-team-mention-viewer.js";
 import { ASSIGNER_ONLY_REACTIVATION_MESSAGE, type RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { runOwnTaskOf } from "../../agent-collaboration/delegation/run-own-task.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
@@ -262,7 +262,7 @@ export class RootTeamRun {
     return this.materializationGate.run(async () => {
       this.assertAdmitting();
       return this.index.getAgent(input.focusedAgentRunId)
-        ? this.collaborators.resolveMentions(input.mentions, mentionViewerOf(this.index, input.focusedAgentRunId))
+        ? this.collaborators.resolveMentions(input.mentions, teamMentionViewerOf(this.index, input.focusedAgentRunId))
         : { admitted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${input.focusedAgentRunId}' is not in root '${this.teamRunId}'.` };
     });
   }

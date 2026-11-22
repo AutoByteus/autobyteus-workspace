@@ -3,10 +3,11 @@ import type { CollaborationCommunicationMessage } from "./collaboration-communic
 
 /**
  * How a committed message relates to the run that commits it (autobyteus-565), stated by its delivering owner:
- * `same_run` (between the run's own agents), `related` (a Task relates the two runs), `unrelated` (any other local run,
- * autobyteus-492 CM-13) or `remote` (an agent on another node). `MessageViewScope` decides from it which views show it.
+ * `same_run` (between the run's own agents), `related` (a Task relates the two runs), `same_container` (two units of one
+ * Org container, org-teams-follow-definition), `unrelated` (any other local run, autobyteus-492 CM-13) or `remote` (an
+ * agent on another node). `MessageViewScope` decides from it which views show it.
  */
-export type MessageRelation = "same_run" | "related" | "unrelated" | "remote";
+export type MessageRelation = "same_run" | "related" | "same_container" | "unrelated" | "remote";
 
 /** One side of a message: a run of this node, or an agent on another node (by its node ID). */
 export type MessageSide = Readonly<{ run: RootExecutionIdentity }> | Readonly<{ nodeId: string }>;

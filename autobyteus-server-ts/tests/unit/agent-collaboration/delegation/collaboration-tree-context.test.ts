@@ -23,7 +23,11 @@ const harness = () => {
   const tree = new DelegationIndex(() => tasks, readerOfAgents(async () => null, { orgPlacementsOf }));
   tree.build(); tasks.setEntriesListener(tree);
   const context = {
-    ofAgentRun: (agentRunId: string) => tree.collaborationTreeOf({ rootSubjectKind: "agent", rootRunId: agentRunId }).agentCollaboration(),
+    // The placement's rules are read at each call (a direct Org agent's follow its Org): compared as read now.
+    ofAgentRun: async (agentRunId: string) => {
+      const collaboration = await tree.collaborationTreeOf({ rootSubjectKind: "agent", rootRunId: agentRunId }).agentCollaboration();
+      return { ...collaboration, placement: collaboration.placement ? { ...collaboration.placement, handoffs: collaboration.placement.handoffs() } : null };
+    },
     inOrganization: (run: RootExecutionIdentity) => tree.collaborationTreeOf(run).inOrganization(),
   };
   const added = new Set<string>();
@@ -38,27 +42,27 @@ const harness = () => {
 describe("RunCollaborationContext", () => {
   it("a run the user started keeps its own role: no Task names it", async () => {
     const h = harness();
-    await expect(h.context.ofAgentRun("mine")).resolves.toEqual({ role: "standalone_agent", placement: null, teamScoped: false });
-    expect(h.context.inOrganization({ rootSubjectKind: "agent_team", rootRunId: "mine" })).toBe(false);
+    await expect(h.context.ofAgentRun("mine")).resolves.toEqual({ role: "standalone_agent", placement: null, teamScoped: false, inOrganization: false });
+    expect(await h.context.inOrganization({ rootSubjectKind: "agent_team", rootRunId: "mine" })).toBe(false);
   });
 
   it("an agent of a delegated agent run is a task agent; an outside agent's copy inherits nothing", async () => {
     const h = harness();
     await h.delegate("T1", AGENT, "/outsider", { agentRunId: "outsider" });
     await h.delegate("T2", ORG, "/outsider", { agentRunId: "org-outsider" });
-    await expect(h.context.ofAgentRun("outsider")).resolves.toEqual({ role: "task_agent", placement: null, teamScoped: false });
-    await expect(h.context.ofAgentRun("org-outsider")).resolves.toEqual({ role: "task_agent", placement: null, teamScoped: true });
+    await expect(h.context.ofAgentRun("outsider")).resolves.toEqual({ role: "task_agent", placement: null, teamScoped: false, inOrganization: false });
+    await expect(h.context.ofAgentRun("org-outsider")).resolves.toEqual({ role: "task_agent", placement: null, teamScoped: true, inOrganization: false });
   });
 
   it("a copy of an org's configured agent keeps that address's handoff rules and reads the org's instruction, read at use", async () => {
     const h = harness();
     await h.delegate("T1", ORG, "/sibling", { agentRunId: "sibling-copy" });
     await expect(h.context.ofAgentRun("sibling-copy")).resolves.toEqual({ role: "task_agent",
-      placement: { handoffs: [handoffs[0]], orgDefinitionId: "org-def" }, teamScoped: true });
+      placement: { handoffs: [handoffs[0]], orgDefinitionId: "org-def" }, teamScoped: true, inOrganization: false });
     expect(h.orgPlacementsOf).toHaveBeenCalledWith("org");
     // The same address delegated by an agent run is not a placement of an org.
     await h.delegate("T2", AGENT, "/sibling", { agentRunId: "agent-sibling" });
-    await expect(h.context.ofAgentRun("agent-sibling")).resolves.toEqual({ role: "task_agent", placement: null, teamScoped: false });
+    await expect(h.context.ofAgentRun("agent-sibling")).resolves.toEqual({ role: "task_agent", placement: null, teamScoped: false, inOrganization: false });
   });
 
   // CR-461-114 (F-90, REQ-009): `get_handoff_rules` where base's hosted copy had it: its tree starts at a Team or an Org run
@@ -85,10 +89,10 @@ describe("RunCollaborationContext", () => {
     const h = harness();
     await h.delegate("T1", ORG, "/squad", { teamRunId: "squad" });
     await h.delegate("T2", AGENT, "/squad", { teamRunId: "agent-squad" });
-    expect(h.context.inOrganization({ rootSubjectKind: "agent_team", rootRunId: "squad" })).toBe(true);
-    expect(h.context.inOrganization({ rootSubjectKind: "agent_team", rootRunId: "agent-squad" })).toBe(false);
+    expect(await h.context.inOrganization({ rootSubjectKind: "agent_team", rootRunId: "squad" })).toBe(true);
+    expect(await h.context.inOrganization({ rootSubjectKind: "agent_team", rootRunId: "agent-squad" })).toBe(false);
     // Sub-work joins its creator's Task, which the org assigned (E-4): step 2 reaches the org, and so does the line.
     await h.delegate("T1", { rootSubjectKind: "agent_team", rootRunId: "squad" }, "/helpers", { teamRunId: "helpers" }, "subWork");
-    expect(h.context.inOrganization({ rootSubjectKind: "agent_team", rootRunId: "helpers" })).toBe(true);
+    expect(await h.context.inOrganization({ rootSubjectKind: "agent_team", rootRunId: "helpers" })).toBe(true);
   });
 });

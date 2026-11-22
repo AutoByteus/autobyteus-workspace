@@ -6,6 +6,7 @@ import type { AgentRunPreface } from "../../agent-execution/domain/agent-run-inp
 import type { AgentRunPlatformNoticeSource } from "../../agent-execution/domain/agent-run-platform-notices.js";
 import { TEAM_CHANGE_NOTICE_SENDER_ID } from "../../agent-execution/domain/system-task-notification-senders.js";
 import type { TeamMemberRef, TeamMembershipChange } from "./team-membership-change.js";
+import { ContainedTeamAddressSpace } from "../container/contained-team-address-space.js";
 
 type Rules = readonly Readonly<{ to: string; rules: readonly string[] }>[];
 
@@ -44,9 +45,14 @@ export const teamChangeNoticeText = (input: Readonly<{
 export class TeamChangeNoticeSource implements AgentRunPlatformNoticeSource {
   private readonly pending = new Map<string, Pending>();
 
-  /** A committed change: each remaining member's notice is merged into its pending one. */
+  /**
+   * A committed change: each remaining member's notice is merged into its pending one. A Team unit's members are told the
+   * joined and left members' Org addresses (its address boundary, design R-1'').
+   */
   recordChange(change: TeamMembershipChange): void {
     const joinedIds = new Set(change.joined.map((member) => member.agentRunId));
+    const space = ContainedTeamAddressSpace.of(change.tree.containedIn);
+    const shown = (member: TeamMemberRef): TeamMemberRef => space ? Object.freeze({ ...member, address: space.toOrg(member.address) }) : member;
     for (const member of change.tree.rootTeam.members) {
       if (joinedIds.has(member.agentRunId)) continue;
       const pending = this.pending.get(member.agentRunId) ?? (() => {
@@ -57,10 +63,10 @@ export class TeamChangeNoticeSource implements AgentRunPlatformNoticeSource {
       })();
       // Net change; a member named in the notice on its way was told, so its next move is news again.
       for (const joined of change.joined) {
-        if (!pending.left.delete(joined.agentRunId) || pending.inFlight?.left.includes(joined.agentRunId)) pending.joined.set(joined.agentRunId, joined);
+        if (!pending.left.delete(joined.agentRunId) || pending.inFlight?.left.includes(joined.agentRunId)) pending.joined.set(joined.agentRunId, shown(joined));
       }
       for (const left of change.left) {
-        if (!pending.joined.delete(left.agentRunId) || pending.inFlight?.joined.includes(left.agentRunId)) pending.left.set(left.agentRunId, left);
+        if (!pending.joined.delete(left.agentRunId) || pending.inFlight?.joined.includes(left.agentRunId)) pending.left.set(left.agentRunId, shown(left));
       }
       pending.rules = rulesOf(change.tree.handoffs, member.address);
     }
