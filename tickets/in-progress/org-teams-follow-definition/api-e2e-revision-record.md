@@ -7,6 +7,7 @@
 | API-REV-001 | Code reviewer, CRR-003 pass, round 1 | IR-001..IR-003, CRR-001..CRR-003, SR-014 | N/A | Fail / 83% |
 | API-REV-002 | Code reviewer, CRR-005 pass (IR-004), round 2 | IR-004, CRR-004, CRR-005, SR-015 (DEC-007) | Fail / 83% | Fail / 91% |
 | API-REV-003 | Code reviewer, CRR-007 pass (IR-005), round 3 | IR-005, CRR-006, CRR-007 | Fail / 91% | Pass / 95% |
+| API-REV-004 | Code reviewer, CRR-011 pass (IR-008), round 4 | IR-006..IR-008, CRR-008..CRR-011, SR-016..SR-018 | Pass / 95% | Pass / 95% |
 
 ## Revision Entries
 
@@ -95,3 +96,36 @@ None.
 - New or remaining failure IDs: none
 - Recommended owner: code reviewer (proportional test-code review)
 - Remaining risks, blocked evidence, or untested scope: macOS file events and macOS/x64 release jobs not run here; FU-001 follow-up
+
+### API-REV-004: full rerun after the merges and the typed path rewrite; Pass, with observation C-1
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md` (CRR-011), round 4
+- Triggering finding or case IDs: none (package changed since API-REV-003)
+- Related revision IDs: IR-006 (SR-016 merges, SR-017/SR-018), IR-007, IR-008, CRR-008..CRR-011
+- Why this revision was recorded: the package changed. Two `origin/personal` merges changed build inputs, runtime, web and remote code; the conversion gained the typed path rewrite.
+- Coverage decisions or durable test paths changed:
+  - OC-14 added (the beta.7 cross-node Org converted on the built server);
+  - `agent-org-units-conversion-cost.e2e.test.ts` added (COST-01, opt-in);
+  - FSB-01 regenerated from the current workflow by a job-parsing generator.
+- Cases added, changed, removed, or rechecked:
+  - rechecked, all passing: BLD-01, TC-01 (both typechecks), FSB-01, MIG (75/649), OF, AOML, ORG-E2E, TF, OC-01..13, RC (62), OCL, OCU;
+  - added: OC-14, COST-01.
+- Commands, environment, fixture, or broader-validation delta:
+  - `pnpm install --frozen-lockfile` (the lockfile changed);
+  - the new release step needs Docker (not on this host);
+  - COST-01 writes about 1.3 GB under `/root/.autobyteus-e2e/cost`.
+
+#### Prior Failure Resolution
+
+None open (API-REV-003 passed).
+
+- Canonical artifacts and sections updated: `api-e2e-execution-coverage-report.md` (round 4), `api-e2e-coverage-investigation.md`, `api-e2e-test-progress.md`, `evidence/api-e2e/round-4/`
+- Prior result and confidence: Pass, 95%
+- Current result and confidence: Pass, 95%
+- New or remaining failure IDs: none.
+- Observation C-1, open for decision: the upgrade start on a 1,347 MiB node takes 44.1 s against 4.6 s for the second start. The conversion itself is 2.2 s; the 23 follow-ups each re-run the node pass (1.4–2.2 s each).
+- Recommended owner: code reviewer (test-code review; C-1 to the reviewer or designer for a decision)
+- Remaining risks, blocked evidence, or untested scope:
+  - the clean-image AppImage step (Docker), and the macOS, x64 and Windows jobs need the release runner;
+  - Windows paths are proven only in the migration suites;
+  - FU-001 is a follow-up.

@@ -3,7 +3,7 @@ import fs from "node:fs";
 import fsp from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { DatabaseSync } from "node:sqlite";
 import { spawn, spawnSync, type ChildProcess } from "node:child_process";
 import WebSocket from "ws";
@@ -15,6 +15,8 @@ import { readRunTree } from "../helpers/run-tree-delegated.js";
 import { FILE_EVENT_TEST_TIMEOUT_MS, OS_FILE_EVENT_WAIT_MS } from "../../helpers/os-latency-under-load.js";
 import { AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/agent-org-units-own-runs-v1/agent-org-units-own-runs-v1-app-data-migration.js";
 import { ORG_UNITS_FOLLOW_UPS } from "../../../src/app-data-migrations/migrations/agent-org-units-own-runs-v1/agent-org-units-follow-ups.js";
+import { BETA7, ORG, SET, writeBeta7CrossNodeOrg } from "../../fixtures/app-data-migrations/released-org-tree-v1-fixtures.js";
+import { readRootMessages, agentRunIdsOfViewTree } from "../../helpers/collaboration-participant-messages.js";
 
 /**
  * org-teams-follow-definition (Task autobyteus-29), API/E2E round 1: an Org of a local agent package, run by the built server
@@ -57,6 +59,13 @@ import { ORG_UNITS_FOLLOW_UPS } from "../../../src/app-data-migrations/migration
  * A second Org (own server and data root):
  *  - OC-11 (AC-006, REQ-007): a hand-built pre-change Org run (released Org tree v1: an agent, a Team, a cross-unit message) is
  *    converted at startup by this build; it opens and is messaged; its Team unit then follows a `team-config.json` edit.
+ * A third suite (own server and data root):
+ *  - OC-14 (AC-006, REQ-007, design SR-017/SR-018): a hand-built released Org of the beta.7 cross-node shape
+ *    (`writeBeta7CrossNodeOrg`: a Team member and the agent unit received files from another node; the member forwarded its
+ *    own file to a delegated run, active and sealed log files; an ad-hoc Task names a member file; traces name the files in
+ *    `file_attachments`, `media` and prose; one path under another data directory) is converted at startup by this build:
+ *    every typed path names the moved folder where the file is; the Org route, the Team unit's and the agent unit's own
+ *    reference routes serve the bytes; prose and the foreign path are unchanged; a second start changes no byte.
  * Prerequisites: `pnpm -C autobyteus-server-ts build` for the current worktree.
  * Run: env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
  *   ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
@@ -727,3 +736,114 @@ suite("A pre-change Org run converted at startup opens and its Team unit follows
 });
 
 function okCount(conversation: unknown) { return stringsOf(conversation).filter((text) => text.trim() === "OK").length; }
+
+suite("A released Org with cross-node files is converted at startup with its stored paths moved (built server, hand-built beta.7 fixture)", () => {
+  let root = "";
+  const outputs: string[] = [];
+  let server: Server | null = null;
+
+  afterAll(async () => {
+    await server?.stop().catch(() => undefined);
+    await keep("cross-node-server-output.log", outputs.join("\n"));
+    if (root) await fsp.rm(root, { recursive: true, force: true });
+  }, 120_000);
+
+  it("OC-14 (AC-006, SR-017/SR-018): every typed path names the moved folder; the Org, Team and agent routes serve the files; prose and foreign paths stay; a second start changes nothing", async () => {
+    root = fs.realpathSync(await fsp.mkdtemp(path.join(os.tmpdir(), "oc-paths-e2e-")));
+    const memory = path.join(root, "memory");
+    for (const dir of [path.join(root, "home"), path.join(root, "db")]) await fsp.mkdir(dir, { recursive: true });
+    await fsp.writeFile(path.join(root, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n");
+    // An install upgraded from the release: this build's first start records every migration; the conversion and every
+    // migration registered after it never ran on the data written next.
+    server = await startServer(root, "first start (ledger)", outputs);
+    const recorded = ((await server.graphql("{getAppDataMigrations{migrationId}}")).getAppDataMigrations as Rec[]).map((entry) => String(entry.migrationId));
+    await server.stop();
+    const neverRan = recorded.slice(recorded.indexOf(AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID));
+    expect(neverRan).toEqual(expect.arrayContaining([AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID, ...ORG_UNITS_FOLLOW_UPS.map((followUp) => followUp.id)]));
+    const db = new DatabaseSync(path.join(root, "db", "production.db"));
+    for (const id of neverRan) db.prepare("DELETE FROM app_data_migration_records WHERE migration_id = ?").run(id);
+    db.close();
+    const old = await writeBeta7CrossNodeOrg(root, memory);
+    const moved = (file: string) => file.replace(path.join(memory, "agent_orgs", ORG, SET) + path.sep, path.join(memory, "agent_teams", SET) + path.sep)
+      .replace(path.join(memory, "agent_orgs", ORG) + path.sep, path.join(memory, "agents") + path.sep);
+    const now = { spec: moved(old.spec), notes: moved(old.notes), brief: moved(old.brief), picture: moved(old.picture) };
+    expect(now.spec).toBe(path.join(memory, "agent_teams", SET, "code_reviewer_1", "received_files", "peer_lead_1", "spec.md"));
+    expect(now.brief).toBe(path.join(memory, "agents", "concierge_1", "received_files", "peer_lead_2", "brief.pdf"));
+
+    server = await startServer(root, "upgrade start", outputs);
+    const migrations = ((await server.graphql("{getAppDataMigrations{migrationId status summary startedAt completedAt}}")).getAppDataMigrations as Rec[])
+      .filter((entry) => neverRan.includes(String(entry.migrationId)));
+    const conversion = migrations.find((entry) => entry.migrationId === AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID)!;
+    const lines = (file: string) => fs.readFileSync(file, "utf8").split("\n").filter(Boolean).map((line) => JSON.parse(line) as Rec);
+    const logOf = (dir: string, base: string) => fs.readdirSync(dir).filter((name) => name.startsWith(`${base}_`)).flatMap((name) => lines(path.join(dir, name)));
+    const teamLog = logOf(path.join(memory, "agent_teams", SET), "team_communication_messages");
+    const conciergeLog = logOf(path.join(memory, "agents", "concierge_1"), "communication_messages");
+    const byId = (log: Rec[], id: string) => log.find((line) => line.messageId === id) ?? null;
+    const delegated = path.join(memory, "agents", "delegated_writer_1");
+    const sealedForward = lines(path.join(delegated, "communication_messages_000001.jsonl"))[0]!;
+    const activeForward = lines(path.join(delegated, "communication_messages_active.jsonl"))[0]!;
+    const task = JSON.parse(fs.readFileSync(path.join(root, "ad-hoc-tasks", "task_cross", "task.json"), "utf8")) as Rec;
+    const reviewerTraces = lines(path.join(memory, "agent_teams", SET, "code_reviewer_1", "raw_traces_active.jsonl"));
+    const reviewerSealed = lines(path.join(memory, "agent_teams", SET, "code_reviewer_1", "raw_traces_000001.jsonl"))[0]!;
+    const conciergeTrace = lines(path.join(memory, "agents", "concierge_1", "raw_traces_active.jsonl"))[0]!;
+    // The app's reads: the Org view's messages, and each message's reference by its id (the renderer's hash of id and path).
+    const referenceId = (messageId: string, file: string) => createHash("sha256").update(`${messageId}\0${file}`).digest("hex");
+    const tree = await readRunTree(server.graphql, "agent_org", ORG);
+    const orgMessages = (await readRootMessages(server.graphql, { rootKind: "agent_org", rootRunId: ORG, agentRunIds: agentRunIdsOfViewTree(tree) })) as unknown as Rec[];
+    // The units' own views (a Team unit's and the agent unit's Messages), as the app reads them.
+    const teamTree = await readRunTree(server.graphql, "agent_team", SET);
+    const conciergeTree = await readRunTree(server.graphql, "agent", "concierge_1");
+    const unitViews = {
+      team: ((await readRootMessages(server.graphql, { rootKind: "agent_team", rootRunId: SET, agentRunIds: agentRunIdsOfViewTree(teamTree) })) as unknown as Rec[])
+        .map((entry) => ({ messageId: entry.messageId, referenceFiles: entry.referenceFiles })),
+      concierge: ((await readRootMessages(server.graphql, { rootKind: "agent", rootRunId: "concierge_1", agentRunIds: agentRunIdsOfViewTree(conciergeTree) })) as unknown as Rec[])
+        .map((entry) => ({ messageId: entry.messageId, referenceFiles: entry.referenceFiles })),
+    };
+    const served = async (route: string) => { const response = await fetch(`${server!.url}/rest/${route}`); return { status: response.status, text: await response.text() }; };
+    const reads = {
+      orgSpec: await served(`agent-org-runs/${ORG}/communication/messages/m_peer_member/references/${referenceId("m_peer_member", now.spec)}/content`),
+      orgBrief: await served(`agent-org-runs/${ORG}/communication/messages/m_peer_agent/references/${referenceId("m_peer_agent", now.brief)}/content`),
+      teamSpec: await served(`team-runs/${SET}/team-communication/messages/m_peer_member/references/${referenceId("m_peer_member", now.spec)}/content`),
+      agentBrief: await served(`agent-collaborations/concierge_1/communication/messages/m_peer_agent/references/${referenceId("m_peer_agent", now.brief)}/content`),
+    };
+    const hashOf = (file: string) => createHash("sha256").update(fs.readFileSync(file)).digest("hex");
+    const watched = [...fs.readdirSync(path.join(memory, "agent_teams", SET)).filter((name) => name.endsWith(".jsonl")).map((name) => path.join(memory, "agent_teams", SET, name)),
+      ...fs.readdirSync(path.join(memory, "agents", "concierge_1")).filter((name) => name.endsWith(".jsonl")).map((name) => path.join(memory, "agents", "concierge_1", name)),
+      path.join(delegated, "communication_messages_000001.jsonl"), path.join(delegated, "communication_messages_active.jsonl"),
+      path.join(root, "ad-hoc-tasks", "task_cross", "task.json"), path.join(memory, "agent_teams", SET, "code_reviewer_1", "raw_traces_active.jsonl"),
+      path.join(memory, "agent_teams", SET, "code_reviewer_1", "raw_traces_000001.jsonl"), path.join(memory, "agents", "concierge_1", "raw_traces_active.jsonl"),
+      path.join(memory, "agent_orgs", ORG, "agent_org_run_execution_tree.json")];
+    const before = Object.fromEntries(watched.map((file) => [path.relative(root, file), hashOf(file)]));
+    await server.stop();
+    server = await startServer(root, "second start", outputs);
+    const after = Object.fromEntries(watched.map((file) => [path.relative(root, file), hashOf(file)]));
+    await keep("OC-14.json", { migrations, old, now, teamLine: byId(teamLog, "m_peer_member"), conciergeLine: byId(conciergeLog, "m_peer_agent"), foreignLine: byId(conciergeLog, "m_foreign"),
+      sealedForward, activeForward, task, reviewerTraces, reviewerSealed, conciergeTrace, orgMessages: orgMessages.filter((entry) => String(entry.messageId).startsWith("m_peer")), orgMessageIds: orgMessages.map((entry) => entry.messageId),
+      orgViewAgents: agentRunIdsOfViewTree(tree), unitViews, reads,
+      secondStartUnchanged: JSON.stringify(before) === JSON.stringify(after) });
+    expect(conversion).toMatchObject({ status: "SUCCEEDED" });
+    expect(migrations.filter((entry) => entry.status === "FAILED"), JSON.stringify(migrations)).toEqual([]);
+    for (const file of Object.values(now)) expect(fs.existsSync(file), file).toBe(true);
+    expect(fs.existsSync(path.join(memory, "agent_orgs", ORG, SET)), "the Team member folders moved").toBe(false);
+    expect(byId(teamLog, "m_peer_member")).toMatchObject({ referenceFiles: [now.spec], counterpart: { nodeId: BETA7.peerNode } });
+    expect(byId(conciergeLog, "m_peer_agent")).toMatchObject({ referenceFiles: [now.brief, now.picture], counterpart: { nodeId: BETA7.peerNode } });
+    expect(byId(conciergeLog, "m_foreign"), "a path under another data directory is not this conversion's").toMatchObject({ referenceFiles: [BETA7.foreign] });
+    expect(sealedForward.referenceFiles).toEqual([now.notes]);
+    expect(activeForward.referenceFiles).toEqual([now.notes, now.spec]);
+    expect(task.referenceFiles).toEqual([now.spec]);
+    expect(reviewerTraces[0]).toMatchObject({ file_attachments: [{ uri: now.spec }], content: `Message from peer_lead.\nReference files:\n- ${old.spec}` });
+    expect(reviewerTraces[1]!.content, "assistant prose unchanged").toBe(`I read ${old.spec}.`);
+    expect(reviewerSealed.file_attachments).toEqual([{ uri: now.notes, file_type: "text", file_name: "notes.md" }]);
+    expect(conciergeTrace).toMatchObject({ media: { images: [now.picture] }, file_attachments: [{ uri: now.brief }], content: `Message from peer_lead.\nReference files:\n- ${old.brief}` });
+    // MessageViewScope (autobyteus-565, 492 DEC-014; unchanged): a message with another node shows only in the view of an Agent
+    // root that is one of its runs, never in a Team or Org view. The Org's own cross-unit lines are listed; the agent unit's
+    // reader lists its peer message with the moved paths; every reference opens through its route (above).
+    expect(orgMessages.filter((entry) => String(entry.messageId).startsWith("m_peer")).map((entry) => entry.messageId),
+      "the Org view lists no message with another node (as before the change)").toEqual([]);
+    expect(orgMessages.map((entry) => entry.messageId)).toEqual(expect.arrayContaining(["m_intra", "m_cross", "m_cross_back", "m_foreign"]));
+    expect(unitViews.concierge.find((entry) => entry.messageId === "m_peer_agent")).toEqual({ messageId: "m_peer_agent", referenceFiles: [now.brief, now.picture] });
+    expect(reads).toEqual({ orgSpec: { status: 200, text: "SPEC BYTES" }, orgBrief: { status: 200, text: "BRIEF BYTES" },
+      teamSpec: { status: 200, text: "SPEC BYTES" }, agentBrief: { status: 200, text: "BRIEF BYTES" } });
+    expect(after, "a second start changes no byte").toEqual(before);
+  }, 420_000);
+});

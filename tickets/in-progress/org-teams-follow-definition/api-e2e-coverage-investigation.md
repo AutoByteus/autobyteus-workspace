@@ -18,8 +18,8 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-003`
-- Current Investigation Round: 3 (round-2 additions: OC-12, OC-13; OC-04 asserts DEC-007; round 3 reruns OC, OF, OCU on IR-005, the rest reused)
+- Current API/E2E Revision ID: `API-REV-004`
+- Current Investigation Round: 4 (after CRR-011 on IR-008: two `origin/personal` merges (SR-016), the typed path rewrite (SR-017/SR-018), Windows path forms (IR-007/IR-008))
 - Trigger: code reviewer, CRR-003 pass on implementation head `1f0aad498b` (review records `818e950d53`)
 - Prior Investigation Reviewed: none (first round)
 - Latest Authoritative Investigation: this file
@@ -142,6 +142,9 @@ An Org run is now a container (`agent_orgs/<orgRunId>/agent_org_run_execution_tr
 | RC-56 | AC-007, REQ-008 | beta's Team copy (delegated by alpha's Team member) gains a member: alpha's Task-entry members and rows follow, alpha messages the new member by run ID; it loses it: alpha follows; alpha down while beta's copy changes, alpha restarted: reconciled at next contact | Durable | `remote-delegation-two-server.e2e.test.ts` new case after RC-51; whole file run | real two-node proof of FU-003 |
 | OC-12 | AC-005, AC-002 | a Team-unit member that took a hand-off from another unit is removed; the Org is stopped and reopened and its Team unit messaged | Durable | same OC file | round 2: F-4 in its Org form (CRR-005 recommendation) |
 | OC-13 | REQ-009, DEC-005 | an `org-config.json` edit while an Org rule names a removed Team member | Durable | same OC file | round 2: found while building OC-12 |
+| OC-14 | AC-006, REQ-007, SR-017/SR-018 | released Org of the beta.7 cross-node shape converted by the built server: typed paths moved, references served by the Org, Team and agent routes, prose and foreign paths kept, second start unchanged | Durable | same OC file (third suite) | round 4: SR-017 on the built server (CRR-011 suggestion) |
+| COST-01 | SR-018 cost | the conversion's node pass on a heavy synthetic node (~1.3 GB), timed from the migration record on the built server's startup | Durable (opt-in) | `tests/e2e/app-data-migrations/agent-org-units-conversion-cost.e2e.test.ts` (`RUN_ORG_CONVERSION_COST_E2E=1`) | round 4: the reviewer's residual (the 838 ms in-process figure used assumed sizes) |
+| FSB-01 | build | fresh-start build of the current workflow's `build-linux-arm64` job (it gained a clean-image Docker step) | Journey | `gen-arm64-job.py` (parses the job) → `oc-job4.sh` | round 4: the merges changed build inputs (workflow, lockfile, web build scripts, Docker files, baseline) |
 | OCL-01 | AC-003 (real runtimes) | Org with a Codex agent unit and a native AutoByteus Team; each hands off by Org address to the other; both logs | Durable (live-gated) | new `tests/e2e/runtime/org-container-live.e2e.test.ts` | real models choose the Org addresses |
 | OCL-02 | AC-002 (real runtime) | a Codex Team member waiting on a tool approval is removed by a package edit: Leaving; the approval is answered; it finishes and is released | Durable (live-gated) | same | approval while leaving |
 | OCU-01..04 | AC-001, AC-002, AC-003, AC-008, REQ-006 | the Org view in the web app: unit rows, a new member Offline, Leaving tag on a busy leaving unit and member, messages in the Org view | Temporary Probe | ticket probe `probes/org-container-ui-probe.mjs` (Nuxt dev + built backend + Chromium) | the web needs a running Nuxt + backend; the probe keeps the journey and screenshots |

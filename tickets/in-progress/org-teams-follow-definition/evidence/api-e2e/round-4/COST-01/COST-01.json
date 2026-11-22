@@ -1,0 +1,150 @@
+{
+  "layout": {
+    "largeOrgTeams": 4,
+    "largeOrgTeamSize": 5,
+    "largeOrgAgents": 2,
+    "orgLogLines": 30000,
+    "orgActiveTraceBytes": 2097152,
+    "orgSealedSegments": 2,
+    "orgSealedBytes": 4194304,
+    "nodeAgentRuns": 300,
+    "nodeTeamRuns": 60,
+    "nodeTeamSize": 4,
+    "nodeTraceBytes": 1048576,
+    "nodeSealedBytes": 1048576,
+    "nodeLogBytes": 65536,
+    "namingEvery": 25,
+    "adHocTasks": 200
+  },
+  "syntheticBytes": 1411994328,
+  "syntheticMiB": 1347,
+  "writtenMs": 7940,
+  "conversion": {
+    "migrationId": "20261122_agent_org_units_own_runs_v1",
+    "status": "SUCCEEDED",
+    "summary": "Scanned 2; migrated 2; skipped 0; failed 0.",
+    "startedAt": "2026-11-22T21:34:10.645Z",
+    "completedAt": "2026-11-22T21:34:12.865Z",
+    "durationMs": 2220
+  },
+  "followUps": [
+    {
+      "id": "20261122_agent_org_units_after_org_flat_team_families_v1",
+      "status": "SUCCEEDED",
+      "durationMs": 1621
+    },
+    {
+      "id": "20261122_agent_org_units_after_run_history_index_v2",
+      "status": "SUCCEEDED",
+      "durationMs": 1799
+    },
+    {
+      "id": "20261122_agent_org_units_after_append_only_message_logs_v1",
+      "status": "SUCCEEDED",
+      "durationMs": 1660
+    },
+    {
+      "id": "20261122_agent_org_units_after_delegated_runs_own_runs_v1",
+      "status": "SUCCEEDED",
+      "durationMs": 1706
+    },
+    {
+      "id": "20261122_agent_org_units_after_preserved_items_after_task_agent_own_run_v1",
+      "status": "SUCCEEDED",
+      "durationMs": 1659
+    },
+    {
+      "id": "20261122_agent_org_units_after_preserved_items_after_own_file_complete_v1",
+      "status": "SUCCEEDED",
+      "durationMs": 1768
+    },
+    {
+      "id": "20261122_agent_org_units_after_preserved_items_after_append_only_logs_v1",
+      "status": "SUCCEEDED",
+      "durationMs": 1674
+    },
+    {
+      "id": "20261122_agent_org_units_after_preserved_items_after_team_run_execution_tree_v1",
+      "status": "SUCCEEDED",
+      "durationMs": 1545
+    },
+    {
+      "id": "20261122_agent_org_units_after_preserved_items_after_team_run_execution_tree_v2",
+      "status": "SUCCEEDED",
+      "durationMs": 1631
+    },
+    {
+      "id": "20261122_agent_org_units_after_preserved_items_after_org_flat_team_families_v1",
+      "status": "SUCCEEDED",
+      "durationMs": 2203
+    },
+    {
+      "id": "20261122_agent_org_units_after_preserved_items_after_collaborators_to_delegated_runs_v1",
+      "status": "SUCCEEDED",
+      "durationMs": 1485
+    },
+    {
+      "id": "20261122_agent_org_units_after_preserved_items_after_team_run_history_index_v2",
+      "status": "SUCCEEDED",
+      "durationMs": 1583
+    },
+    {
+      "id": "20261122_agent_org_units_after_preserved_items_after_remove_skill_improvement_data",
+      "status": "SUCCEEDED",
+      "durationMs": 1515
+    },
+    {
+      "id": "20261122_agent_org_units_after_raw_trace_rotation_layout",
+      "status": "SUCCEEDED",
+      "durationMs": 1450
+    },
+    {
+      "id": "20261122_agent_org_units_after_team_communication_projection_addresses",
+      "status": "SUCCEEDED",
+      "durationMs": 1478
+    },
+    {
+      "id": "20261122_agent_org_units_after_raw_trace_active_file_name",
+      "status": "SUCCEEDED",
+      "durationMs": 1508
+    },
+    {
+      "id": "20261122_agent_org_units_after_delegated_run_own_attachment_links",
+      "status": "SUCCEEDED",
+      "durationMs": 1637
+    },
+    {
+      "id": "20261122_agent_org_units_after_delegated_run_own_attachment_links_after_task_agent_own_run",
+      "status": "SUCCEEDED",
+      "durationMs": 1598
+    },
+    {
+      "id": "20261122_agent_org_units_after_agent_org_history_first_message_summary_v1",
+      "status": "SUCCEEDED",
+      "durationMs": 1535
+    },
+    {
+      "id": "20261122_agent_org_units_after_team_context_file_execution_locators_v1",
+      "status": "SUCCEEDED",
+      "durationMs": 1577
+    },
+    {
+      "id": "20261122_agent_org_units_after_collaborators_to_delegated_runs_v1",
+      "status": "SUCCEEDED",
+      "durationMs": 1349
+    },
+    {
+      "id": "20261122_agent_org_units_after_task_agent_own_run_v1",
+      "status": "SUCCEEDED",
+      "durationMs": 1393
+    },
+    {
+      "id": "20261122_agent_org_units_after_delegated_copy_own_file_complete_v1",
+      "status": "SUCCEEDED",
+      "durationMs": 1427
+    }
+  ],
+  "firstStartReadyMs": 44069,
+  "secondStartReadyMs": 4643,
+  "firstMovedAttachment": "/root/.autobyteus-e2e/cost/org-conversion-cost-hig8Qn/memory/agent_teams/large_org_team_0/large_org_agent_0_0/received_files/peer/f.md"
+}

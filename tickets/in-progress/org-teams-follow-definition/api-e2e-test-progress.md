@@ -44,3 +44,15 @@
 | 2026-11-22T18:24:38Z | TC-01 | Finished | Pass | baseline 974 in 300 |
 | 2026-11-22T18:24:38Z | 2026-11-22T18:26:47Z | OF-01..06, OCU-01..05 | Finished | Pass | 6/6; probe 5/5 (follow path rechecked on IR-005) |
 | 2026-11-22T18:26:47Z | Round 3 | Finished | Pass | all criteria proven |
+| 2026-11-22T21:03:48Z | Round 4 | Started | | IR-008 26c6240f33 (HEAD 29a1bf23a8); pnpm install --frozen-lockfile; BLD-01 exit 0; TC-01 server 973 baseline |
+| 2026-11-22T21:03:48Z | FSB-01 | Finished | Pass | regenerated from the current workflow; units step 27 root-limited; clean-image step needs docker (not here); packaged server startup passed. First attempt: my generator ignored working-directory (fixed) |
+| 2026-11-22T21:10:57Z | MIG | Finished | Pass | tests/app-data-migrations 75 files, 649 tests |
+| 2026-11-22T21:10:57Z | OC-01..14 | Finished | Pass | 14/14 (OC-14 new). Attempt 1: my OC-14 asserted the Org view lists a cross-node line, which the unchanged MessageViewScope never shows (test fixed) |
+| 2026-11-22T21:14:57Z | OF, AOML, ORG-E2E, TF | Finished | Pass | 6/6, 2/2, 3/3, 12/12 |
+| 2026-11-22T21:14:57Z | RC (whole file, 62) | Started | | |
+| 2026-11-22T21:29:55Z | RC (whole file) | Finished | Pass | 62/62 |
+| 2026-11-22T21:30:59Z | OCL-01/02 | Finished | Pass | 2/2; OCL-02 3 approvals, delivered, released |
+| 2026-11-22T21:32:43Z | OCU-01..05 | Finished | Pass | 5/5 |
+| 2026-11-22T21:32:43Z | COST-01 | Started | | opt-in cost measurement |
+| 2026-11-22T21:37:04Z | COST-01 | Finished | Pass (measured) | 1,347 MiB: conversion 2,220 ms; 23 follow-ups 1.3-2.2 s each; upgrade start 44.1 s vs 4.6 s (C-1). Attempt 1: my unprobed listener URL (test fixed) |
+| 2026-11-22T21:37:04Z | Round 4 | Finished | Pass | all criteria proven; C-1 observation for decision |
