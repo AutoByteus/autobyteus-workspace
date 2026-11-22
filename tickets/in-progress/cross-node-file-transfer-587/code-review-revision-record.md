@@ -15,6 +15,7 @@ The latest `code-review-report.md` is authoritative for its current result.
 | CRR-007 | `api-e2e-test-review-report.md` | Test-code review round 4 (API-REV-004, IR-003 tests, RC renumbering `d112f58c9a`) | Pass (CRR-005) | Pass | None |
 | CRR-008 | `code-review-report.md` | Implementation Review round 4, Full Re-Audit (IR-004, merge with autobyteus-591, `bcd05494cb`) | Pass (CRR-006) | Fail (Design Impact + Local Fixes) | CR-587-01 … CR-587-05 |
 | CRR-009 | `code-review-report.md` | Implementation Review round 5, Full Re-Audit (IR-005, SR-010/SR-011, `07b4b83cef`) | Fail (CRR-008) | Fail (Requirement Gap + Local Fixes) | CR-587-01…04 resolved; CR-587-05 open; CR-587-06 … 08 new |
+| CRR-010 | `code-review-report.md` | Implementation Review round 6, Full Re-Audit (IR-006, SR-012, `a0c233492b`) | Fail (CRR-009) | Fail (Local Fix) | CR-587-06, -07 resolved; -08 closed by DEC-010; -05 open; CR-587-09 new |
 
 ## Revision Entries
 
@@ -279,3 +280,33 @@ None.
 - Material score or classification changes: overall 9.2 → 9.3. Runtime Correctness 8.8 → 9.1. Classification: `Requirement Gap` (security) with `Local Fix` items.
 - Recommended recipient: Solution Designer
 - Remaining risks or uncertainty: the hard-link residual; upload before the closed check for non-assigners (recommendation); `task-delegation.ts` at 498 lines.
+
+### CRR-010 — Source review round 6: full re-audit at IR-006
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/tickets/in-progress/cross-node-file-transfer-587/code-review-report.md`
+- Review entry point and round: Implementation Review, round 6
+- Review scope: `Full Re-Audit`, per the user's direction for this ticket. The only production change since CRR-009 is `a0c233492b`.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, IR-006; CR-587-06, -07
+- Relevant solution revision IDs: SR-012
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-006
+- Relevant API/E2E revision IDs: API-REV-004
+- Relevant delivery revision IDs: none recorded yet
+- Prior authoritative result: Fail (CRR-009)
+- Current authoritative result: Fail (`Local Fix`)
+- What changed in the review result and why: CR-587-06 and -07 are resolved, and CR-587-08 is closed by DEC-010. New: CR-587-09, left by CR-587-07's fix. `RemoteFiles.received` now has no production reader (DESIGN.md rule 11), so the bundle only wraps `outgoing`.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-587-06 | Open (Local Fix) | Resolved | IR-006 `a0c233492b` | Required method; `reserve` check; no `?.`/`??` in `PeerRunNodes` |
+| CR-587-07 | Open (Local Fix) | Resolved | IR-006 `a0c233492b` | Roots, materializer, manager, Org scope builder, platform runtime/kernel take `ReceivedFilesPlacement`; supervisor's guard kept |
+| CR-587-08 | Open (Requirement Gap) | Closed by decision | SR-012 DEC-010 (c), founder confirmed (`ced5541c43`) | `requirements-doc.md` DEC-010 |
+| CR-587-05 | Open (API/E2E) | Open | SR-010 R4 | Unchanged |
+
+- New or remaining finding IDs: CR-587-05, CR-587-09
+- Material score or classification changes: overall 9.3 → 9.4. Runtime Correctness 9.4. Classification: `Local Fix` (implementation).
+- Recommended recipient: implementation engineer
+- Remaining risks or uncertainty: the DEC-010 accepted risk; the hard-link residual; `task-delegation.ts` at 498 lines.

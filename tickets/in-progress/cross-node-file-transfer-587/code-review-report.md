@@ -14,10 +14,10 @@
 - Relevant Architecture Review Revision IDs: ARCH-REV-001, ARCH-REV-002
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001 … IR-005
+- Relevant Implementation Revision IDs: IR-001 … IR-006
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-009`
-- Current Review Round: `5`
+- Current Code Review Revision ID: `CRR-010`
+- Current Review Round: `6`
 - Review Scope: `Targeted Delta Review`
 - Review Scope Evidence (round 2): `ef53fadd52..e295b74b81` changes six test files only. Delivery's merge `3be417f8df` brought six `src` files from `origin/personal`; none is a file this ticket changed (the two change sets do not intersect). No production source of this ticket changed since `e327ba2467`, so round 1's structural checks and scores carry forward
 - Trigger: IR-002 (delivery's DEL-03 Local Fix, items 1–3 in `release-deployment-report.md` § Escalation / Reroute): test fix `e295b74b81`, handoff and evidence `20866c8847`, on delivery's `ef53fadd52`. Round 1: IR-001, code `e327ba2467`, base `fbe714f8bb`
@@ -366,16 +366,56 @@ Not promoted:
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | — |
 | 10 | Cleanup Completeness | 9.3 | The remote branches, the duplicate rule and the saved-Task refusals are removed |
 
+## Round 6 (CRR-010): Full Re-Audit at IR-006 (SR-012)
+
+Scope: `Full Re-Audit`, as the user asked for this ticket. Since CRR-009 the only production change is `a0c233492b` (18 files: owner signatures and the root boundary); `1d0a036bf4`, `ced5541c43` and `8294b67f53` are documents. Every structural check and score from round 5 was revisited against that change. Everything else in `src` is byte-identical to what round 5 audited.
+
+### Prior findings
+
+| ID | Status | Verification |
+| --- | --- | --- |
+| CR-587-06 | Resolved | `ActiveRootMessageBoundary.remoteNodeOf` is required; `ActiveCollaborationRootDirectory.reserve` refuses a boundary without it (beside `ownsAgentRun`); `PeerRunNodes.nodeOf` calls it with no `?.`/`??`. Test doubles declare `remoteNodeOf: () => null` |
+| CR-587-07 | Resolved | The standalone root and builder, `RootTeamRun`, the Team materializer and manager, `AgentOrgRun`'s options, the Org scope builder and the application platform's runtime/kernel take `receivedFiles: ReceivedFilesPlacement`. The supervisor's input is `ReceivedFilesPlacement & { sweep }`, one owner, still refused loudly when missing (`general-process-run-supervisor-input.ts:118`); its `remoteFiles` input is gone |
+| CR-587-08 | Closed by decision | DEC-010 (c), the Solution Designer within the founder's delegation, confirmed by the founder (`requirements-doc.md`, SR-012). Nothing to build; the route is an accepted, recorded risk |
+| CR-587-05 | Open, API/E2E's | Unchanged |
+
+### New finding
+
+| ID | Finding | Evidence | Ticket scope | Classification / owner |
+| --- | --- | --- | --- | --- |
+| CR-587-09 | **`RemoteFiles.received` is read only by a test.** After CR-587-07 the `RemoteFiles` bundle (`transferred-files.ts:46`) has one production consumer, `composeCollaboration`, which reads only `remoteFiles.outgoing` (`collaboration-composition.ts:259, 305`). No production code reads `remoteFiles.received`. The standalone host lifecycle test asserts it (`standalone-application-host-lifecycle.test.ts:359`). DESIGN.md rule 11: production code keeps no field that only tests read. The bundle now only wraps `outgoing` | grep of `src` for `RemoteFiles`/`.received` | This ticket: left by CR-587-07's fix, in touched files; a project rule | `Local Fix` (implementation). `composeRemoteFiles` returns `{ receivedFiles, outgoingFiles }`. `composeCollaboration` takes `outgoingFiles: Pick<OutgoingFiles, "send">`. Remove the `RemoteFiles` type. The host test asserts what production passes (the same `receivedFiles` object to the supervisor and the platform runtime; `outgoingFiles` to the collaboration) |
+
+### Re-audit of the rest (round 5's checks against IR-006)
+
+- **Spine and ownership.** Unchanged and sound: the router's one order on the `node` path, `PeerRunNodes` as RF-14's one owner, `admitPeerRun` as the closed rule's one owner (SR-012 keeps the order), the engine's plan → reserve → place → commit.
+- **Visible dependencies (P16).** Improved: each owner now names only what it uses, except CR-587-09's bundle. `OutgoingFiles`' process lookup of the run manager is unchanged (accepted at CRR-001).
+- **Sizes.** All under 500: `task-delegation.ts` 498 (untouched), `peer-client.ts` 480, `root-team-run.ts` 477, `agent-team-run-manager.ts` 470.
+- **Evidence (I read it; reran nothing).** IMP-24: typechecks at baseline. IMP-25: the whole unit suite, 8821 tests. IMP-26: integration, 116. IMP-27: rebuilt two-server, 59/59.
+
+### Scorecard (full re-audit)
+
+- Overall score: 9.4/10
+
+| Priority | Category | Score | Why / what holds it down |
+| --- | --- | --- | --- |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.5 | One order, one owner each |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.5 | `remoteNodeOf` required; roots take only what they use |
+| 3 | API / Interface / Query / Command Clarity | 9.4 | — |
+| 4 | Separation of Concerns and File Placement | 9.3 | `task-delegation.ts` at 498 lines |
+| 5 | Shared-Structure / Data-Model Tightness | 9.2 | `RemoteFiles` keeps a field only a test reads (CR-587-09) |
+| 6 | Naming Quality and Local Readability | 9.3 | — |
+| 7 | API/E2E Readiness | 9.2 | CR-587-05 and AC-012 over real HTTP still API/E2E's |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.4 | CR-587-08 decided (DEC-010); no behavior change in IR-006 |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | — |
+| 10 | Cleanup Completeness | 9.2 | CR-587-09 |
+
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (round 5, CRR-009, full re-audit)
+- Review Decision: `Fail` (round 6, CRR-010, full re-audit)
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.3/10. Runtime Correctness and API/E2E Readiness 9.1.
-- Classification:
-  - `Requirement Gap`: CR-587-08, security;
-  - `Local Fix` (implementation): CR-587-06, -07;
-  - `Local Fix` (API/E2E, already scoped): CR-587-05.
-- Recommended Recipient: Solution Designer for CR-587-08. The two Local Fixes ride in the same revision.
-- Notes: IR-005 resolves CR-587-01 … 04 and the RF-14 consolidation cleanly.
+- Score Summary: 9.4/10. Shared-Structure, API/E2E Readiness and Cleanup 9.2.
+- Classification: `Local Fix` (implementation): CR-587-09. `Local Fix` (API/E2E, scoped): CR-587-05.
+- Recommended Recipient: implementation engineer
+- Notes: CR-587-06 and -07 resolved; CR-587-08 closed by DEC-010. CR-587-09 is the last code item I found.
