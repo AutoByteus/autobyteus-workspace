@@ -1,4 +1,3 @@
-import type { InitializeResponse } from "@agentclientprotocol/sdk";
 import { ParameterDefinition, ParameterSchema, ParameterType } from "autobyteus-ts";
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
@@ -22,6 +21,18 @@ export const GROK_BUILD_DISABLED_TOOL_ENV: Readonly<Record<string, string>> = Ob
   GROK_SUBAGENTS: "0",
   GROK_WORKFLOWS: "0",
   GROK_ASK_USER_QUESTION: "0",
+});
+
+/**
+ * Workspace trust for a Grok run (autobyteus-551, DEC-003): Grok loads a folder's own `.grok/skills` (the skills
+ * AutoByteus links into a run's workspace among them) only in a trusted folder. `GROK_FOLDER_TRUST=0` turns Grok's
+ * trust gate off for this process alone and writes nothing to the user's Grok settings (`--trust` would save the folder
+ * in `~/.grok/trusted_folders.toml`). A trusted Grok also loads the workspace's Grok hooks, MCP/LSP servers, project
+ * instructions and permission rules, as Claude runs load the workspace's project settings. Runs only: discovery and
+ * extension-request processes stay untrusted.
+ */
+const GROK_BUILD_RUN_TRUST_ENV: Readonly<Record<string, string>> = Object.freeze({
+  GROK_FOLDER_TRUST: "0",
 });
 
 export const grokBuildCommand = (): string => process.env.GROK_BUILD_COMMAND?.trim() || "grok";
@@ -48,10 +59,13 @@ const buildReasoningSchema = (meta: Record<string, unknown>): Record<string, unk
   })]).toJsonSchemaDict();
 };
 
-/** Models reported in `initialize._meta.modelState.availableModels` (Grok extension). */
-export const normalizeGrokBuildModels = (initialize: InitializeResponse): ModelInfo[] => {
-  const modelState = isRecord(initialize._meta) && isRecord(initialize._meta.modelState) ? initialize._meta.modelState : null;
-  const available = Array.isArray(modelState?.availableModels) ? modelState.availableModels.filter(isRecord) : [];
+/**
+ * Models of a Grok model state `{ availableModels }` (Grok extension): the one in `initialize._meta.modelState`, or the
+ * params of Grok's `_x.ai/models/update` announcement, which have the same shape.
+ */
+export const normalizeGrokBuildModels = (modelState: unknown): ModelInfo[] => {
+  const available = isRecord(modelState) && Array.isArray(modelState.availableModels)
+    ? modelState.availableModels.filter(isRecord) : [];
   const models: ModelInfo[] = [];
   for (const entry of available) {
     const id = nonEmpty(entry.modelId);
@@ -79,8 +93,11 @@ export const normalizeGrokBuildModels = (initialize: InitializeResponse): ModelI
   return models;
 };
 
-/** One Grok process: model and effort as arguments (both absent for discovery), the server environment plus the switches. */
-const grokLaunch = (model: string | null, reasoningEffort: string | null): AcpLaunch => Object.freeze({
+/**
+ * One Grok process: model and effort as arguments (both absent for discovery), the server environment plus the switches,
+ * and workspace trust for a run.
+ */
+const grokLaunch = (model: string | null, reasoningEffort: string | null, trustWorkspace: boolean): AcpLaunch => Object.freeze({
   // One process per run: `--no-leader` overrides a user config that enables the shared leader.
   args: [
     "agent", "--no-leader",
@@ -88,7 +105,7 @@ const grokLaunch = (model: string | null, reasoningEffort: string | null): AcpLa
     ...(reasoningEffort ? ["--reasoning-effort", reasoningEffort] : []),
     "stdio",
   ],
-  env: { ...process.env, ...GROK_BUILD_DISABLED_TOOL_ENV },
+  env: { ...process.env, ...GROK_BUILD_DISABLED_TOOL_ENV, ...(trustWorkspace ? GROK_BUILD_RUN_TRUST_ENV : {}) },
   release: releaseNothing,
 });
 
@@ -97,6 +114,6 @@ export const grokBuildLaunchProfile: AcpAgentLaunchProfile = Object.freeze({
   agentLabel: GROK_BUILD_AGENT_LABEL,
   providerRelayId: null,
   command: grokBuildCommand,
-  runLaunch: async (request: AcpRunLaunchRequest) => grokLaunch(request.model, request.reasoningEffort),
-  discoveryLaunch: async () => grokLaunch(null, null),
+  runLaunch: async (request: AcpRunLaunchRequest) => grokLaunch(request.model, request.reasoningEffort, true),
+  discoveryLaunch: async () => grokLaunch(null, null, false),
 });

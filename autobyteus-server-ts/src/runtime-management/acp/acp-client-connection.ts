@@ -25,7 +25,13 @@ import {
 } from "@agentclientprotocol/sdk";
 import type { AcpAgentProcess, AcpAgentProcessExit } from "./acp-agent-process.js";
 
-const INITIALIZE_TIMEOUT_MS = 30_000;
+/**
+ * How long an agent may take to answer `initialize`, its start-up (autobyteus-551): an agent's own start-up was seen
+ * at up to 34.6 s on a loaded machine; 90 s keeps a margin of about 2.5x while a hung agent still fails.
+ */
+const AGENT_START_TIMEOUT_MS = 90_000;
+/** The bound of every other request with a time-out except the session opens (extension requests, config, list, close). */
+const REQUEST_TIMEOUT_MS = 30_000;
 const SESSION_OPEN_TIMEOUT_MS = 120_000;
 const MAX_BUFFERED_FRAMES = 2_000;
 
@@ -94,16 +100,21 @@ const isSessionNotification = (params: Record<string, unknown>): boolean =>
 /** JSON-RPC protocol notifications (`$/cancel_request`) stay the SDK's to handle. */
 const isProtocolNotification = (method: string): boolean => method.startsWith("$/");
 
+/** Receives the notifications of one connection that carry no `sessionId`. */
+export type AcpConnectionNotificationListener = (method: string, params: Record<string, unknown>) => void;
+
 /**
  * One SDK client connection over one agent process. Routes agent-to-client frames to the
  * registered session by `sessionId`, buffering frames for a session that is still being
- * opened until it registers, and answers client methods AutoByteus does not offer.
+ * opened until it registers; hands notifications without a `sessionId` (connection-wide) to
+ * its connection listeners; and answers client methods AutoByteus does not offer.
  */
 export class AcpClientConnection {
   private readonly sdk: ClientSideConnection;
   private readonly handlers = new Map<string, AcpSessionFrameHandler>();
   private readonly buffered = new Map<string, BufferedFrame[]>();
   private readonly closeListeners = new Set<(close: AcpConnectionClose) => void>();
+  private readonly connectionListeners = new Set<AcpConnectionNotificationListener>();
   private bufferedCount = 0;
   private closeInfo: AcpConnectionClose | null = null;
 
@@ -140,16 +151,25 @@ export class AcpClientConnection {
     return () => this.closeListeners.delete(listener);
   }
 
+  /**
+   * Listens to the connection-wide notifications (no `sessionId`), in wire order. A listener's failure is logged and
+   * contained; the other listeners and the stream go on. Returns the unsubscribe.
+   */
+  onConnectionNotification(listener: AcpConnectionNotificationListener): () => void {
+    this.connectionListeners.add(listener);
+    return () => this.connectionListeners.delete(listener);
+  }
+
   async initialize(): Promise<InitializeResponse> {
     return this.guard("initialize", withTimeout(this.sdk.initialize({
       protocolVersion: PROTOCOL_VERSION,
       clientCapabilities: { fs: { readTextFile: false, writeTextFile: false }, terminal: false },
       clientInfo: CLIENT_INFO,
-    }), INITIALIZE_TIMEOUT_MS, "initialize"));
+    }), AGENT_START_TIMEOUT_MS, "initialize"));
   }
 
   extension(method: string, params: Record<string, unknown>): Promise<Record<string, unknown>> {
-    return this.guard(method, withTimeout(this.sdk.extMethod(method, params), INITIALIZE_TIMEOUT_MS, method));
+    return this.guard(method, withTimeout(this.sdk.extMethod(method, params), REQUEST_TIMEOUT_MS, method));
   }
 
   newSession(request: NewSessionRequest): Promise<NewSessionResponse> {
@@ -170,17 +190,17 @@ export class AcpClientConnection {
 
   setSessionConfigOption(request: SetSessionConfigOptionRequest): Promise<SetSessionConfigOptionResponse> {
     return this.guard("session/set_config_option",
-      withTimeout(this.sdk.setSessionConfigOption(request), INITIALIZE_TIMEOUT_MS, "session/set_config_option"));
+      withTimeout(this.sdk.setSessionConfigOption(request), REQUEST_TIMEOUT_MS, "session/set_config_option"));
   }
 
   listSessions(request: ListSessionsRequest): Promise<ListSessionsResponse> {
     return this.guard("session/list",
-      withTimeout(this.sdk.listSessions(request), INITIALIZE_TIMEOUT_MS, "session/list"));
+      withTimeout(this.sdk.listSessions(request), REQUEST_TIMEOUT_MS, "session/list"));
   }
 
   async closeSession(sessionId: string): Promise<void> {
     await this.guard("session/close",
-      withTimeout(this.sdk.closeSession({ sessionId }), INITIALIZE_TIMEOUT_MS, "session/close"));
+      withTimeout(this.sdk.closeSession({ sessionId }), REQUEST_TIMEOUT_MS, "session/close"));
   }
 
   /** No request timeout: turn liveness is owned by the session's idle timer. */
@@ -257,8 +277,19 @@ export class AcpClientConnection {
 
   private routeExt(method: string, params: Record<string, unknown>): void {
     const sessionId = sessionIdOf(params);
-    // Connection-wide extension notifications carry no session and serve no run.
     if (sessionId) this.route(sessionId, { kind: "ext", method, params });
+    else this.notifyConnectionListeners(method, params);
+  }
+
+  /** Connection-wide notifications serve no run; runs register no listener, so they are dropped there as before. */
+  private notifyConnectionListeners(method: string, params: Record<string, unknown>): void {
+    for (const listener of this.connectionListeners) {
+      try {
+        listener(method, params);
+      } catch (error: unknown) {
+        logger.warn(`ACP_FRAME_HANDLER_FAILED: ${this.agentLabel} method=${method} connection listener: ${String(error)}`);
+      }
+    }
   }
 
   private routePermission(request: RequestPermissionRequest): Promise<RequestPermissionResponse> {

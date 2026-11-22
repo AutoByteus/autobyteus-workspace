@@ -1,0 +1,115 @@
+# IMP-01 unit tests of the change, and the same new tests against base source
+# commit: 5054f97a17. Run 1 ran on its content minus the last edit before the commit (GROK_BUILD_RUN_TRUST_ENV made
+#   module-private), which was then rechecked with tsc and grok-build-launch-profile.test.ts 6/6; runs 2-3 ran with it.
+#   node v22.23.1; macOS 26.5.2; 2026-11-22
+# run 1: pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-management tests/unit/agent-execution/backends/acp
+#        tests/unit/agent-execution/backends/grok tests/unit/agent-execution/backends/deepseek tests/unit/llm-management --no-watch
+# run 2 (control): `git stash push -- autobyteus-server-ts/src` (base df00f97aaa source, new tests), then
+#        vitest run grok/grok-build-capability.test.ts acp/acp-discovery-handshake.test.ts grok/grok-build-launch-profile.test.ts
+#        --reporter=verbose; `git stash pop` after.
+# run 3 (control): base acp-client-connection.ts (git show df00f97aaa:...) swapped in, acp-client-connection.test.ts, restored after:
+#   x takes an initialize answer that comes after 40 s (AC-001, AC-002)
+#   x fails an agent that never answers initialize after 90 s, not before (AC-001, AC-002 failure)
+#   x hands notifications without a sessionId to the listeners in wire order, session frames to the session only
+#   x contains a listener that throws: the other listeners and later frames go on; unsubscribe stops delivery
+#   Tests  4 failed | 10 passed (14)   (the "keeps 30 s for the other bounded requests" case passes on both: preserved)
+## run 1
+ Test Files  65 passed (65)
+      Tests  554 passed (554)
+   Duration  95.17s (transform 4.10s, setup 1.59s, import 25.40s, tests 61.95s, environment 3ms)
+
+## run 2 (base source, new tests)
+
+
+
+
+
+
+
+
+ ✓ grok/grok-build-capability.test.ts > Grok Build capability > ends a hanging CLI in the time-out diagnostic once the bound passes, logging the command and the bound 106ms
+ ✓ grok/grok-build-capability.test.ts > Grok Build capability > reads the real result of a command that exited before its bound but whose close comes after it 4396ms
+ ✓ grok/grok-build-capability.test.ts > Grok Build capability > is available for a supported CLI with ACP agent mode (AC-001) 343ms
+ ✓ grok/grok-build-capability.test.ts > Grok Build capability > reports a missing command safely 1ms
+ ✓ grok/grok-build-capability.test.ts > Grok Build capability > rejects versions below the minimum and CLIs without agent-mode flags 280ms
+ × grok/grok-build-capability.test.ts > Grok Build capability > discovers models through an initialize-only handshake (no session, no prompt), keeping the answer's list when Grok announces none 252ms
+ × grok/grok-build-capability.test.ts > Grok Build capability > Grok's models announcement > offers the announced list over the built-in one in the answer 250ms
+ × grok/grok-build-capability.test.ts > Grok Build capability > Grok's models announcement > offers the announced list when the announcement comes before the answer 252ms
+ ✓ grok/grok-build-capability.test.ts > Grok Build capability > Grok's models announcement > offers the built-in list when Grok announces nothing 249ms
+ ✓ grok/grok-build-capability.test.ts > Grok Build capability > classifies an empty catalog and a failed handshake without provider output 359ms
+ × acp/acp-discovery-handshake.test.ts > runAcpDiscoveryHandshake follow-up > returns the follow-up that comes after the answer, ending the wait when it comes 40ms
+ × acp/acp-discovery-handshake.test.ts > runAcpDiscoveryHandshake follow-up > keeps a follow-up that comes before the answer and returns at once 38ms
+ × acp/acp-discovery-handshake.test.ts > runAcpDiscoveryHandshake follow-up > returns the answer alone after the window when no follow-up comes; other notifications do not count 36ms
+ × acp/acp-discovery-handshake.test.ts > runAcpDiscoveryHandshake follow-up > ends the wait shortly before the process's bound: the answer is returned, never a time-out 34ms
+ × acp/acp-discovery-handshake.test.ts > runAcpDiscoveryHandshake follow-up > waits up to 90 s for an agent's answer, then fails with the time-out kind 303ms
+
+ ✓ grok/grok-build-launch-profile.test.ts > grokBuildLaunchProfile > launches one non-leader ACP stdio agent with the selected model and effort, and needs no relay 1ms
+ ✓ grok/grok-build-launch-profile.test.ts > grokBuildLaunchProfile > disables task subagents, workflows and ask_user_question per process without touching the server env (AC-013) 1ms
+ × grok/grok-build-launch-profile.test.ts > grokBuildLaunchProfile > trusts the run workspace per process with GROK_FOLDER_TRUST=0 in run launches only, never with --trust 2ms
+ × grok/grok-build-launch-profile.test.ts > grokBuildLaunchProfile > offers the agent-reported models with context capacity and the reasoning-effort schema (AC-002) 3ms
+ × grok/grok-build-launch-profile.test.ts > grokBuildLaunchProfile > reads the same model state shape from Grok's models announcement 1ms
+ × grok/grok-build-launch-profile.test.ts > grokBuildLaunchProfile > returns no models for a malformed catalog 1ms
+
+
+
+
+AssertionError: expected undefined to deeply equal { n: 1 }
+
+
+
+
+
+
+
+AssertionError: expected undefined to be null
+
+
+
+
+
+AssertionError: expected Error: ACP exact process exit could not b… to be 'pending' // Object.is equality
+
+
+
+
+
+AssertionError: expected 250.17183399999976 to be greater than or equal to 2900
+
+
+AssertionError: expected [ 'grok-4.6', 'grok-4.5' ] to deeply equal [ 'grok-4.7' ]
+
+
+
+
+
+AssertionError: expected [ 'grok-4.6', 'grok-4.5' ] to deeply equal [ 'grok-4.7' ]
+
+
+
+
+
+AssertionError: expected undefined to be '0' // Object.is equality
+
+
+
+
+
+AssertionError: expected [] to deeply equal [ ObjectContaining{…} ]
+
+
+
+
+
+AssertionError: expected [] to deeply equal [ [ 'grok-4.7', 500000 ] ]
+
+
+
+
+
+
+
+
+ Test Files  3 failed (3)
+      Tests  12 failed | 9 passed (21)
+   Duration  11.06s (transform 1.56s, setup 104ms, import 3.31s, tests 6.96s, environment 0ms)
+

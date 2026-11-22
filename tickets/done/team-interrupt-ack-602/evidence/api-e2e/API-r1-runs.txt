@@ -1,0 +1,21 @@
+API/E2E round 1 — autobyteus-602 (direct route; head 7245345fbb, change 51b49e22e3). The header's gated command:
+env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
+  ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs TEAM_FOLLOWS_E2E_EVIDENCE_DIR=<dir> \
+  pnpm -C autobyteus-server-ts exec vitest run tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts --no-watch
+No source change against the base; the worktree's dist was built after the last src commit.
+
+§1 macOS 26 (Darwin 25.5.0) arm64, Node 22; three runs in a row (11:11–11:14):
+   MAC-1 load at start 31.25 34.15 32.68 -> "Tests  12 passed (12)"; TF-04 acknowledged true, released true
+   MAC-2 load at start 33.54 34.43 32.88 -> "Tests  12 passed (12)"; acknowledged true, released true
+   MAC-3 load at start 38.25 35.42 33.35 -> "Tests  12 passed (12)"; acknowledged true, released true
+   Each TF-04 receipt (MAC-n-TF-04.json): interruptAck {state:"accepted", command_type:"INTERRUPT_GENERATION"}; the writer's
+   frames after the interrupt in the order RUN_TREE_CHANGED, then AGENT_COMMAND_ACK (587's order, AC-002).
+
+§2 Linux: docker run --rm node:22-bookworm (Linux 6.12.54-linuxkit aarch64), a git archive of HEAD, pnpm install
+   --frozen-lockfile, autobyteus-ts and server build, the same command -> "Tests  12 passed (12)", exit 0;
+   LINUX-1-TF-04.json: acknowledged true, released true, ack accepted; order RUN_TREE_CHANGED, AGENT_COMMAND_ACK.
+
+§3 Reused: IMP-01 (typecheck), IMP-02 (one run at load 53), IMP-03 (a missing ack fails after the 30 s limit, "expected null")
+   on 51b49e22e3; 7245345fbb adds only ticket docs.
+
+Cleanup: the container (--rm), the archive copy and the logs under /tmp/api602 (removed at the end of this round).
