@@ -3,7 +3,7 @@ import type { ToolSummaryArgumentKey } from "@autobyteus/agent-presentation-cont
 
 export type EventMonitorToolCardKind = "tool_call" | "write_file" | "edit_file" | "terminal_command";
 export type EventMonitorToolStatusKey =
-  | "running" | "success" | "error" | "approved" | "awaiting-approval" | "denied" | "default";
+  | "running" | "success" | "error" | "approved" | "awaiting-approval" | "denied" | "interrupted" | "default";
 export type EventMonitorMediaType = "image" | "audio" | "video";
 
 export interface EventMonitorActiveTraceAttachment {

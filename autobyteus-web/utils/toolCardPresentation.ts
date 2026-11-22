@@ -19,6 +19,7 @@ export type ToolCardStatusPresentationKey =
   | 'approved'
   | 'awaiting-approval'
   | 'denied'
+  | 'interrupted'
   | 'default';
 
 export type ToolCardPresentationPrimitive = string | number | boolean | null;
@@ -45,7 +46,7 @@ export const getToolCardStatusPresentationKey = (
 ): ToolCardStatusPresentationKey => {
   if (status === 'parsing' || status === 'executing') return 'running';
   if (status === 'success' || status === 'error' || status === 'approved'
-    || status === 'awaiting-approval' || status === 'denied') return status;
+    || status === 'awaiting-approval' || status === 'denied' || status === 'interrupted') return status;
   return 'default';
 };
 

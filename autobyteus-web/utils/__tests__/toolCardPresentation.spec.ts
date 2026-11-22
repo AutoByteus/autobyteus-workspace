@@ -30,7 +30,8 @@ describe('toolCardPresentation', () => {
     expect(parsing.statusKey).toBe('running');
     expect(executing.statusKey).toBe('running');
     expect(parsed.statusKey).toBe('default');
-    expect(interrupted.statusKey).toBe('default');
+    // autobyteus-609 D-D: a call the run's stop interrupted has its own key (the card shows the stop icon).
+    expect(interrupted.statusKey).toBe('interrupted');
   });
 
   it('uses the terminal command fallback without hiding other argument summaries when the fallback is empty', () => {

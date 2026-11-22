@@ -102,6 +102,12 @@ describe('ToolCallIndicator.vue', () => {
       forbiddenLabel: 'denied',
       icon: 'heroicons:x-circle-solid',
     },
+    // autobyteus-609 D-D: a call the run's stop interrupted shows the Activity's "Stopped" icon, not the wrench.
+    {
+      status: 'interrupted',
+      forbiddenLabel: 'stopped',
+      icon: 'heroicons:stop-circle-solid',
+    },
   ])('omits the center status label for $status while preserving the status icon', ({ status, forbiddenLabel, icon }) => {
     const wrapper = mountIndicator({ status });
 

@@ -5,7 +5,7 @@ import type { ToolInvocationStatus } from '~/types/segments';
  * How a tool activity is presented, one owner for the desktop Activity panel and the phone's Activity (autobyteus-590 D-3):
  * its status's label, tone and icon, and the sections of its details. Each surface maps the tone to its own classes.
  */
-/** `gray` is a denied call; `neutral` a status the presentation does not name (shown as "Unknown"). */
+/** `gray` is a denied call; `neutral` a call the run's stop interrupted ("Stopped"). */
 export type ToolActivityTone = 'green' | 'red' | 'cyan' | 'slate' | 'blue' | 'amber' | 'gray' | 'neutral';
 
 export interface ToolActivityStatusPresentation {
@@ -26,7 +26,8 @@ export const toolActivityStatusPresentation = (status: ToolInvocationStatus): To
     case 'parsing': return { label: 'Running', tone: 'blue', icon: 'heroicons:clock-solid', isRunning: true };
     case 'awaiting-approval': return { label: 'Review', tone: 'amber', icon: 'heroicons:hand-raised-solid', isRunning: false };
     case 'denied': return { label: 'Denied', tone: 'gray', icon: 'heroicons:no-symbol-solid', isRunning: false };
-    default: return { label: 'Unknown', tone: 'neutral', icon: 'heroicons:wrench-screwdriver-solid', isRunning: false };
+    // The product's word for a stop the run caused (autobyteus-609 D-D; DEC-005); the conversation's cards show its icon.
+    case 'interrupted': return { label: 'Stopped', tone: 'neutral', icon: 'heroicons:stop-circle-solid', isRunning: false };
   }
 };
 

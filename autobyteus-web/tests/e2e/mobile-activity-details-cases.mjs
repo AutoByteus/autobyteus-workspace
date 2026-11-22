@@ -16,7 +16,8 @@
 // MSP-96 runs on alpha (scripted AGY, `linked_skills`) and the probe's paired phone:
 //   - AC-005 a background task whose command is long shows it in full on tap (aria-expanded); its `run_command` row's
 //     summary is the command (AGY's `CommandLine`);
-//   - AC-003 a running call (HOLD_TURN) updates live while its details are open: the run is stopped, the status changes.
+//   - AC-003 a running call (HOLD_TURN) updates live while its details are open: the run is stopped, Running becomes
+//     Stopped with its stop icon (autobyteus-609 AC-D).
 // MSP-97 runs on its own node (scripted AGY, `native_arguments`: one turn of Antigravity's own tools with their PascalCase
 // arguments, as `agy-native-arguments-turn.mjs` records them) and its own paired phone:
 //   - AC-001 an Antigravity file tool's row shows its file: `write_to_file` and `replace_file_content` (`TargetFile`) as
@@ -263,7 +264,7 @@ export const runActivityDetailsCases = async (probe) => {
       [Boolean(commandRow?.summary) && commandRow.summary.startsWith('sleep 4 # background step') && commandRow.summary.includes('MobileActivityDetail'), 'AC-001 an Antigravity run_command row shows its command (CommandLine)'],
       [titleBefore.clamped && expanded === 'true' && !titleAfter.clamped && titleAfter.text.includes(label) && titleAfter.height > titleBefore.height,
         'AC-005 a background task whose command is long shows it in full on tap (clamped before, unclamped after)'],
-      [runningShown?.status === 'Running' && stopped?.success === true && Boolean(liveShown) && liveShown.status !== 'Running', 'AC-003 the details of a running call update live while open'],
+      [runningShown?.status === 'Running' && stopped?.success === true && liveShown?.status === 'Stopped', 'AC-003 the details of a running call update live while open: Running, then Stopped (autobyteus-609 AC-D)'],
     ].filter(([ok]) => !ok).map(([, text]) => text);
     assert(failures.length === 0, failures.join('; '), details);
     return details;

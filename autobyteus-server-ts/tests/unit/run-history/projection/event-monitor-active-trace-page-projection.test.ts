@@ -135,5 +135,10 @@ describe("event monitor active trace page projection", () => {
     expect(projected.visuals[0]).toMatchObject({ kind: "tool_card", toolName });
     expect((projected.visuals[0] as { summaryArgs: unknown }).summaryArgs).toEqual(summaryArgs);
   });
+
+  it("a call the run's stop interrupted keeps its own status key (autobyteus-609 D-D)", () => {
+    expect(buildEventMonitorActiveTracePageEvent({ ...tool(null), status: "interrupted" }).visuals[0]).toMatchObject({ kind: "tool_card", statusKey: "interrupted" });
+    expect(buildEventMonitorActiveTracePageEvent({ ...tool(null), status: "parsed" }).visuals[0]).toMatchObject({ statusKey: "default" });
+  });
 });
 

@@ -45,7 +45,7 @@ const summaryArgs = (event: HistoricalReplayToolEvent): EventMonitorToolSummaryA
 
 const statusKey = (status: HistoricalReplayToolEvent["status"]): EventMonitorToolStatusKey => {
   if (status === "parsing" || status === "executing") return "running";
-  if (["success", "error", "approved", "awaiting-approval", "denied"].includes(status)) {
+  if (["success", "error", "approved", "awaiting-approval", "denied", "interrupted"].includes(status)) {
     return status as EventMonitorToolStatusKey;
   }
   return "default";

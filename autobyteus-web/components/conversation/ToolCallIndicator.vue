@@ -17,6 +17,8 @@
           <Icon v-else-if="presentation.statusKey === 'approved'" icon="heroicons:check-badge-solid" class="w-5 h-5 text-cyan-500 flex-shrink-0" />
           <Icon v-else-if="isAwaiting" icon="heroicons:hand-raised-solid" class="w-5 h-5 text-amber-500 animate-pulse flex-shrink-0" />
           <Icon v-else-if="presentation.statusKey === 'denied'" icon="heroicons:x-circle-solid" class="w-5 h-5 text-gray-400 flex-shrink-0" />
+          <!-- A call the run's stop interrupted: the Activity's "Stopped" icon (autobyteus-609 D-D). -->
+          <Icon v-else-if="presentation.statusKey === 'interrupted'" :icon="STOPPED_ICON" class="w-5 h-5 text-gray-500 flex-shrink-0" data-testid="tool-call-status-stopped" />
           <Icon v-else icon="heroicons:wrench-screwdriver-solid" class="w-5 h-5 text-gray-500 flex-shrink-0" />
 
           <div class="min-w-0 flex flex-1 items-baseline gap-2 overflow-hidden">
@@ -71,6 +73,7 @@ import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useRightSideTabs } from '~/composables/useRightSideTabs';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import type { ToolCardPresentation } from '~/utils/toolCardPresentation';
+import { toolActivityStatusPresentation } from '~/utils/activity/toolActivityPresentation';
 
 const props = defineProps<{
   presentation: ToolCardPresentation;
@@ -79,6 +82,9 @@ const props = defineProps<{
 const activeContextStore = useActiveContextStore();
 const { setActiveTab } = useRightSideTabs();
 const activityStore = useAgentActivityStore();
+
+/** The stop icon has one source: the Activity's presentation of an interrupted call. */
+const STOPPED_ICON = toolActivityStatusPresentation('interrupted').icon;
 
 const isProcessing = ref(false);
 const isExecuting = computed(() => props.presentation.statusKey === 'running');
@@ -99,6 +105,7 @@ const statusClasses = computed(() => {
       return 'bg-white border-amber-200';
     case 'denied':
       return 'bg-white border-gray-200 opacity-75';
+    case 'interrupted':
     default:
       return 'bg-white border-gray-200';
   }
