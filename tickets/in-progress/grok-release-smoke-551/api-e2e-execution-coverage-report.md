@@ -51,36 +51,36 @@
 | AC-003 | Yes | API-R1, API-R3 (fresh), API-04 run 1 (stale, live) | Proven | — |
 | AC-004 | Yes | API-04 runs 1 and 2 (`grok-4.7` offered and every Grok run started) | Proven | — |
 | AC-005 | Yes | API-R1, API-R2, API-04 runs 1 and 2 (AC-104 "different same-named skill" PASS), API-05 | Proven | — |
-| AC-006 | Yes | API-04 run 2 (load 42–172); run 1 passed but mostly below load 40 | Not Proven (pending evidence decision) | one of the two runs lacks the load condition; a third run needs a fresh Grok free-tier day (quota) — evidence decision requested from the Solution Designer |
-| REQ-001 live > 30 s start-up | — | — | per DEC-004 (accepted untested scope) | did not occur: start-ups 186–441 ms in both runs, even at load 172 |
+| AC-006 | Yes | API-04 run 2 (exit 0, 13/13, load 42–172), API-04 run 1 (exit 0, 13/13, partly loaded), API-01 (35 s scripted start-up through the real server) | Proven, with the remaining part `Accepted Unverified Risk (DEC-006)` | a second smoke run held at load ≥ 40 throughout: run 1's load was 10.5 when its Grok part started and 39–51 at its end; a third run needs a fresh Grok free-tier day. DEC-006 (Solution Designer, 2026-11-22, user informed) accepts run 1's load as a bounded gap; the next release smoke runs the same check at release load |
+| REQ-001 live > 30 s start-up | — | API-01 (scripted) | `Accepted Unverified Risk (DEC-004, DEC-006)` | did not occur: start-ups 186–441 ms in both runs, even at load 172; Grok's slow step cannot be produced on demand |
 
 ## Validation Confidence Scorecard (Mandatory)
 
 | Confidence Category | Post-Repository Score | Final Score | What Supports It | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 85% | 90% | AC-001..005 proven; AC-006 one full run | AC-006's second loaded run | a third smoke at load |
+| Requirement and acceptance-criteria proof | 85% | 96% | AC-001..006 proven over what DEC-006 did not accept as unverified risk | the accepted gaps (DEC-004, DEC-006) | — |
 | Changed-boundary execution directness | 90% | 97% | scripted late `initialize` through the real server with a base control; the stale catalog live | — | — |
 | Cross-boundary integration realism and mock gap | 85% | 96% | real Grok in two smoke runs; real dsh | a live > 30 s start-up (DEC-004) | — |
-| Environment, configuration, identity, and fixture fidelity | 85% | 92% | host sign-ins as users have them; load 42–172 in run 2 | run 1 mostly at low load | a third loaded run |
+| Environment, configuration, identity, and fixture fidelity | 85% | 94% | host sign-ins as users have them; load 42–172 in run 2; the live stale catalog | run 1's load (accepted, DEC-006) | the next release smoke at release load |
 | Failure, edge-case, lifecycle, and recovery evidence | 90% | 95% | never-answering agent (unit), late answer (E2E), base failures reproduced | — | — |
 | User-surface, browser, and desktop-shell confidence | N/A | N/A | no UI change | — | — |
 | Durable regression coverage quality and relevance | 90% | 95% | units + the new E2E case that fails on base | — | — |
 
 - Overall post-repository confidence: 87.5%
-- Overall final confidence: 94.2%
+- Overall final confidence: 95.5%
 - Calculation method: simple average of the six applicable final scores.
-- Every critical acceptance criterion directly proven, apart from parts only the user can check or accepted as unverified risk: `No` (AC-006 pending)
+- Every critical acceptance criterion directly proven, apart from parts only the user can check or accepted as unverified risk: `Yes` (accepted: DEC-004, DEC-006)
 - Any final applicable category below `90%`: `No`
-- Default final confidence target of `95%` met: `No` (pending the AC-006 decision)
-- Confidence-limiting residual risks: AC-006's second loaded run; RSK-001 (announcement later than 3 s under load: not seen, the stale announcement came within the same second at low load).
+- Default final confidence target of `95%` met: `Yes`
+- Confidence-limiting residual risks: the accepted gaps (a second fully loaded smoke run, DEC-006; a live > 30 s start-up, DEC-004); RSK-001 (announcement later than 3 s under load: not seen, the stale announcement came within the same second at low load).
 
 ## Broader Validation Decision (Mandatory)
 
-- Decision: `Required` (executed; one condition pending)
+- Decision: `Required` (executed)
 - Execution mode: `Live API` (release smoke with the real CLIs), `Other` (scripted Grok through the real server)
 - Gap addressed: the release smoke's Grok failures (time-outs, stale models, workspace skills) under release-like load.
 - Browser validation needed: No (no UI change).
-- If `Blocked`: the missing evidence is a second smoke run fully at load ≥ 40; Grok's free tier allows about two runs per 24 h and both were used today (runs 1 and 2, plus IMP-03's three prompts). A third run now would most likely be refused (429). Evidence decision requested.
+- Environment limit: a second smoke run fully at load ≥ 40 needed another Grok free-tier day; the evidence decision DEC-006 accepted run 1's load as a bounded gap (no third run).
 
 ## Compatibility / Legacy Scope Check
 
@@ -113,9 +113,9 @@
 
 ## Latest Authoritative Result
 
-- Result: `Blocked` (waiting for an evidence decision)
-- Criteria not proven, parts only the user can check, or accepted as unverified risk: AC-006 (pending)
-- Evidence decisions requested: AC-006 second loaded smoke run, sent to `/solution_designer` 2026-11-22
+- Result: `Pass`
+- Criteria not proven, parts only the user can check, or accepted as unverified risk: AC-006's second run held at load ≥ 40 throughout — `Accepted Unverified Risk (DEC-006)`; a live Grok start-up above 30 s — `Accepted Unverified Risk (DEC-004)`
+- Evidence decisions requested: AC-006, sent to `/solution_designer` 2026-11-22 → DEC-006 (decided 2026-11-22: use runs 1 and 2 and API-01; accept the bounded gap; no third run, no follow-up)
 - Preliminary classification and recommended owner: N/A
-- Next recipient from `get_handoff_rules`: none until the decision arrives (then `/code_reviewer` for the test-code review on Pass)
-- Notes: resumes with either a third smoke run at load ≥ 40 once Grok's quota allows (≈ 24 h after today's runs), or the decision's alternative.
+- Next recipient from `get_handoff_rules`: `/code_reviewer` (Medium/High: proportional test-code review of the added test)
+- Notes: DEC-006 and SR-003 (Solution Designer's edits to `requirements-doc.md` and `solution-revision-record.md`) are committed with this round.

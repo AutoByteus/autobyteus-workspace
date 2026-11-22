@@ -6,7 +6,7 @@ The latest coverage investigation and execution coverage report remain authorita
 
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
-| API-REV-001 | Code reviewer, `code-review-report.md` (CRR-001 Pass), round 1 | SR-001, SR-002, ARCH-REV-001, IR-001, CRR-001 | N/A | Blocked (AC-006 evidence decision) / 94.2% |
+| API-REV-001 | Code reviewer, `code-review-report.md` (CRR-001 Pass), round 1 | SR-001, SR-002, ARCH-REV-001, IR-001, CRR-001 | N/A | Pass (with DEC-006) / 95.5% |
 
 ## Revision Entries
 
@@ -26,7 +26,7 @@ None.
 
 - Canonical artifacts updated: coverage investigation, execution report, test progress log.
 - Prior result and confidence: N/A
-- Current result and confidence: Blocked (waiting for the Solution Designer's evidence decision on AC-006), 94.2%
+- Current result and confidence: Pass, 95.5%. The round was Blocked on an evidence decision (requested 2026-11-22); DEC-006 (SR-003) accepted runs 1 and 2 plus API-01 as AC-006's evidence, with run 1's partial load as an accepted unverified risk.
 - New or remaining failure IDs: None
-- Recommended owner: Solution Designer (evidence decision), then code reviewer (test-code review)
-- Remaining risks: AC-006's second loaded run; RSK-001; a live > 30 s Grok start-up (DEC-004).
+- Recommended owner: code reviewer (test-code review), then delivery
+- Remaining risks: accepted gaps DEC-006 (a second fully loaded smoke run) and DEC-004 (a live > 30 s Grok start-up); RSK-001.

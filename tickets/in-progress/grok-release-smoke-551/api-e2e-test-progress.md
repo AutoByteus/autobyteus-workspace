@@ -17,3 +17,4 @@ Read this first whenever the run is picked back up. Only add rows. Grok idle win
 | 2026-11-22 14:34 | API-04 run 2 | Completed | Pass | 13/13, load 42–172, Grok start-ups ≤ 441 ms |
 | 2026-11-22 14:34 | API-05 | Completed | Pass | trust list hash unchanged; evidence allow-listed |
 | 2026-11-22 14:34 | — | Checkpoint | Blocked | AC-006: run 1 mostly below load 40; Grok quota used for today; evidence decision requested from /solution_designer |
+| 2026-11-22 14:36 | — | Completed | Pass | DEC-006 received: AC-006 proven with run 1's load as Accepted Unverified Risk (DEC-006); handoff to /code_reviewer |
