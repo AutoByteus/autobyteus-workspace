@@ -355,7 +355,7 @@ const runLatest100 = () => {
     retentionContext.conversation,
     activityStore.getCompactionActivities(retentionContext.state.runId),
   );
-  const visualCount = presentation.reduce((count, item) => count + (item.kind === 'compaction'
+  const visualCount = presentation.reduce((count, item) => count + (item.kind !== 'message'
     ? 1 : item.message.type === 'user' ? 1 : item.message.segments.length), 0);
   return {
     visualCount, segmentCount: segments.length,

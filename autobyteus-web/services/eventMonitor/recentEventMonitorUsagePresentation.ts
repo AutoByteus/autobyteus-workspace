@@ -24,7 +24,8 @@ export const getRecentEventMonitorTotalUsageText = (
   let totalTokens = 0;
   let totalCost = 0;
   for (const item of items) {
-    if (item.kind !== 'message') continue;
+    // a message split into several rows is counted once, on the row that shows its usage
+    if (item.kind !== 'message' || !item.showsUsage) continue;
     const message = item.message;
     if (message.type === 'user') {
       if (message.promptTokens) totalTokens += message.promptTokens;

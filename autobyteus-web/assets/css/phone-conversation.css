@@ -77,7 +77,9 @@
 /* ---- the other segments ---- */
 .phone-conversation .conv-feed .mb-4 { margin-bottom: 0.7em; } /* TextSegment's spacing */
 .phone-conversation .conv-feed .error-segment { margin: 0.6em 0; padding: 0.7em 0.8em; }
-.phone-conversation .conv-feed .system-task-notification { margin-bottom: 0.7em; }
+/* a platform notice is its own row (autobyteus-585): its label is the speaker line, so the desktop's label above the
+   body is not repeated; the row's padding spaces it */
+.phone-conversation .conv-feed .system-task-notification-label { display: none; }
 .phone-conversation .conv-feed .think-segment { margin: 0.4em 0; }
 .phone-conversation .conv-feed .think-content { padding: 0.7em 0.8em; font-size: 0.95em; }
 .phone-conversation .conv-feed .media-segment-container { margin: 0.6em 0; }

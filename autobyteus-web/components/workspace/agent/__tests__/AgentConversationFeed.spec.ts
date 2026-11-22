@@ -828,4 +828,49 @@ describe('AgentConversationFeed', () => {
     expect(wrapper.find('[data-event-monitor-visual-key="visual:newer"]').exists()).toBe(false);
   });
 
+
+  // autobyteus-585 AC-001, AC-007: a platform notice is its own row between the agent's rows; usage shows once.
+  it('draws a wake notice as its own system row between two agent rows, with the message usage once under its last row', () => {
+    const conversation = {
+      id: 'run-notice',
+      createdAt: '2026-11-21T00:00:00.000Z',
+      updatedAt: '2026-11-21T00:00:00.000Z',
+      messages: [{
+        type: 'ai', text: '', timestamp: new Date(1), isComplete: true, completionTokens: 120, completionCost: 0.0012,
+        segments: [
+          { type: 'text', content: 'Starting the build.' },
+          {
+            type: 'terminal_command', invocationId: 'bash-1', toolName: 'run_bash', arguments: {}, status: 'success',
+            logs: [], result: 'ok', error: null, command: 'pnpm build', description: '',
+          },
+          {
+            type: 'system_task_notification', senderId: 'system.restart_resume', messageId: 'n1',
+            content: '[Platform notice — application restarted]\n\nThe application restarted at 2026-11-21 07:32 UTC. Continue your task.',
+          },
+          { type: 'text', content: 'I have stopped and am waiting.' },
+        ],
+      }],
+    } as any;
+    const wrapper = mount(AgentConversationFeed, {
+      props: { conversation, agentName: 'Builder' },
+      global: { stubs: { TerminalCommandSegment: { template: '<div data-test="terminal-card" />' }, Icon: iconStub } },
+    });
+
+    const rows = wrapper.findAll('.conv-row');
+    expect(rows.map((row) => row.attributes('data-speaker'))).toEqual(['agent', 'system', 'agent']);
+    expect(rows[0]!.text()).toContain('Starting the build.');
+    expect(rows[0]!.find('[data-test="terminal-card"]').exists()).toBe(true);
+    expect(rows[0]!.find('[data-testid="system-task-notification-segment"]').exists()).toBe(false);
+    const notice = rows[1]!.get('[data-testid="system-task-notification-segment"]');
+    expect(notice.get('[data-testid="system-task-notification-label"]').text()).toBe('Application restarted');
+    expect(notice.text()).not.toContain('[Platform notice');
+    expect(rows[1]!.text()).not.toContain('Builder');
+    expect(rows[2]!.text()).toContain('I have stopped and am waiting.');
+    expect(rows[2]!.text()).toContain('Builder');
+
+    expect(wrapper.findAll('span').filter((span) => span.text() === '120 tokens / $0.0012')).toHaveLength(1);
+    expect(rows[2]!.text()).toContain('120 tokens / $0.0012');
+    expect(wrapper.text()).toContain('Total: 120 tokens / $0.0012');
+  });
 });
+

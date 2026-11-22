@@ -1,6 +1,6 @@
 import { isCompleteCompactionPhase } from '~/types/activity/compactionPhase';
 import type { AIMessage, Conversation } from '~/types/conversation';
-import type { AIResponseSegment } from '~/types/segments';
+import type { AIResponseSegment, SystemTaskNotificationSegment } from '~/types/segments';
 import type { CompactionActivity } from '~/types/activity/RunActivity';
 import { getStreamSegmentIdentity } from '~/services/agentStreaming/handlers/segmentIdentity';
 import {
@@ -26,6 +26,18 @@ export type RecentEventMonitorPresentationItem =
     kind: 'message';
     key: string;
     message: Conversation['messages'][number];
+    messageIndex: number;
+    /**
+     * Whether this row shows and counts the message's usage: true on the message's last row only, since a message
+     * split by notice or compaction rows copies its usage into every part (autobyteus-585).
+     */
+    showsUsage: boolean;
+  }
+  | {
+    /** A platform notice: its own row, never part of the agent's message (autobyteus-585). */
+    kind: 'notice';
+    key: string;
+    segment: SystemTaskNotificationSegment;
     messageIndex: number;
   }
   | {
@@ -141,6 +153,21 @@ const collectText = (message: AIMessage, type: 'text' | 'think'): string =>
     .filter((content) => content.trim().length > 0)
     .join('\n\n');
 
+const isNoticeSegment = (segment: AIResponseSegment | null): segment is SystemTaskNotificationSegment =>
+  segment?.type === 'system_task_notification';
+
+/** Marks each message's last row as the one that shows and counts its usage. */
+const markUsageRows = (items: RecentEventMonitorPresentationItem[]): RecentEventMonitorPresentationItem[] => {
+  const messagesWithUsageRow = new Set<number>();
+  for (let index = items.length - 1; index >= 0; index -= 1) {
+    const item = items[index]!;
+    if (item.kind !== 'message') continue;
+    item.showsUsage = !messagesWithUsageRow.has(item.messageIndex);
+    messagesWithUsageRow.add(item.messageIndex);
+  }
+  return items;
+};
+
 const buildRetainedAIMessage = (
   message: AIMessage,
   segments: AIResponseSegment[],
@@ -181,13 +208,25 @@ export const buildRecentEventMonitorPresentation = (
       continue;
     }
     if (descriptor.message.type === 'user') {
-      items.push({ kind: 'message', key: `message-${descriptor.messageIndex}`, message: descriptor.message, messageIndex: descriptor.messageIndex });
+      items.push({
+        kind: 'message', key: `message-${descriptor.messageIndex}`, message: descriptor.message,
+        messageIndex: descriptor.messageIndex, showsUsage: true,
+      });
+      continue;
+    }
+    // Something the agent did not write never appears in the agent's row: a notice ends the agent's run of segments.
+    if (isNoticeSegment(descriptor.segment)) {
+      items.push({
+        kind: 'notice', key: `notice-${descriptor.messageIndex}-${descriptor.segmentIndex}`,
+        segment: descriptor.segment, messageIndex: descriptor.messageIndex,
+      });
       continue;
     }
     const segments: AIResponseSegment[] = [descriptor.segment!];
     while (index + 1 < retained.length) {
       const next = retained[index + 1]!;
-      if (next.source !== 'message' || next.message !== descriptor.message || !next.segment) break;
+      if (next.source !== 'message' || next.message !== descriptor.message || !next.segment
+        || isNoticeSegment(next.segment)) break;
       segments.push(next.segment);
       index += 1;
     }
@@ -196,7 +235,8 @@ export const buildRecentEventMonitorPresentation = (
       key: `message-${descriptor.messageIndex}-${descriptor.segmentIndex}`,
       message: buildRetainedAIMessage(descriptor.message, segments),
       messageIndex: descriptor.messageIndex,
+      showsUsage: true,
     });
   }
-  return items;
+  return markUsageRows(items);
 };
