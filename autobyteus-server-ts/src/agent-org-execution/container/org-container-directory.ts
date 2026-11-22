@@ -13,6 +13,7 @@ import {
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { ContainedTeamAddressSpace } from "../../agent-team-execution/container/contained-team-address-space.js";
 import type { TeamRunExecutionTreeFile } from "../../agent-team-execution/domain/team-run-execution-tree.js";
+import { TeamExecutionIndex } from "../../agent-team-execution/services/team-execution-index.js";
 import type { TaskExecutionSource } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
 import type { AgentOrgContainerFile, AgentOrgUnit } from "../domain/agent-org-container-file.js";
@@ -163,6 +164,16 @@ export class OrgContainerDirectory implements OrgContainerPort {
     const file = this.liveContainer(orgRunId) ?? this.loaded.get(orgRunId) ?? null;
     if (!file || file.rootOrg.units.some((unit) => within(unit, orgAddress))) return null;
     return file.rootOrg.formerUnits.find((unit) => within(unit, orgAddress)) ?? null;
+  }
+
+  async formerMemberAt(orgRunId: string, orgAddress: string): Promise<Readonly<{ address: AgentTeamAddress }> | null> {
+    const unit = (await this.container(orgRunId))?.rootOrg.units.find((candidate) => candidate.kind === "agent_team" && orgAddress.startsWith(`${candidate.address}/`));
+    const space = unit ? ContainedTeamAddressSpace.of({ orgRunId, address: unit.address })! : null;
+    const memberAddress = space?.fromOrg(orgAddress) ?? null;
+    // The Team's own answer from its tree (live, else stored; never restored): a leaving marker outside a live run reads as former.
+    const tree = unit && memberAddress ? await this.teamTreeOf(unit) : null;
+    const former = tree && memberAddress ? new TeamExecutionIndex(tree).formerMemberAt(memberAddress) : null;
+    return former && space ? Object.freeze({ address: space.toOrg(former.address) }) : null;
   }
 
   /**

@@ -24,7 +24,8 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
  *  - OF-02 (REQ-003, AC-003): the direct agent messages a Team member by its Org address across the two runs; both logs.
  *  - OF-03 (REQ-002, AC-002): the Team's definition gains a member: the Team unit follows; the Org's tree shows it.
  *  - OF-04 (REQ-004, AC-004): an Org rule to a Team member: the member is removed (the rule is left out, its sender is told),
- *    then added back (the rule is back, told again).
+ *    then added back (the rule is back, told again). While it is gone, the direct agent's message to it at `/team/writer`
+ *    is refused by name (SR-015).
  *  - OF-06 (design R-8, SR-014): a copy the Team unit's lead delegated (`delegate_task` to `/concierge`) messages the Team
  *    unit's writer by its Org address `/team/writer` (not its delegator): reached through step 2's container placements,
  *    delivered as related runs' message (both logs, no `counterpart`).
@@ -228,13 +229,17 @@ suite("An Org is a container whose units follow their definitions (built server,
     const without = await calls("/concierge", callTool("get_handoff_rules", {}));
     expect(JSON.stringify(without)).not.toContain("Hand every draft to the writer.");
     expect(JSON.stringify(without)).toContain("Send software requests to the team.");
+    // SR-015: another unit's message to the removed member at its Org address is refused by name, as its teammates are.
+    const refusedMember = await calls("/concierge", callTool("send_message_to", { recipient_address: "/team/writer", content: "Are you there?" }));
+    expect(refusedMember.isError, JSON.stringify(refusedMember)).toBe(true);
+    expect(JSON.stringify(refusedMember)).toContain(refusal("writer", "/team/writer"));
     await saveTeam(["lead", "writer", "reviewer"]);
     await until(() => (teamTree().rootTeam.members as Rec[]).some((member) => member.address === "/writer"), "the writer came back", 60_000);
     const toldAgain = await echo("/concierge");
     expect(toldAgain).toContain(RULES_CHANGED);
     const back = await calls("/concierge", callTool("get_handoff_rules", {}));
     expect(JSON.stringify(back)).toContain("Hand every draft to the writer.");
-    await keep("OF-04.json", { before, told, without, toldAgain, back });
+    await keep("OF-04.json", { before, told, without, refusedMember, toldAgain, back });
   }, 300_000);
 
   it("OF-06 (design R-8, SR-014): a run a Team unit's member delegated reaches another unit's member by its Org address; related runs' message, no counterpart", async () => {

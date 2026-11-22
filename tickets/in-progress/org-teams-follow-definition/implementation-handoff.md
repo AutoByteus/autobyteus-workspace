@@ -28,17 +28,62 @@ The work was done in the eight slices of the design's Change Sequence; each kept
 
 - Implementation cycle: `Rework` (IR-002: design revisions SR-013/SR-014 after CRR-001 CR-001, and CRR-001's Local Fixes)
 - Implementation revision record: `tickets/in-progress/org-teams-follow-definition/implementation-revision-record.md`
-- Current implementation revision ID: `IR-003` (IR-001 baseline, IR-002 SR-013/SR-014 and CRR-001, IR-003 CRR-002)
-- Related solution revision IDs: `SR-010`, `SR-011`, `SR-012`, `SR-013`, `SR-014`
-- Related architecture-review revision IDs: `ARCH-REV-005`, `ARCH-REV-007`, `ARCH-REV-009`
-- Related code-review revision IDs: `CRR-001`, `CRR-002`
-- Related API/E2E revision IDs: `N/A`
+- Current implementation revision ID: `IR-004` (IR-001 baseline, IR-002 SR-013/SR-014 and CRR-001, IR-003 CRR-002, IR-004 CRR-004 and SR-015)
+- Related solution revision IDs: `SR-010`, `SR-011`, `SR-012`, `SR-013`, `SR-014`, `SR-015`
+- Related architecture-review revision IDs: `ARCH-REV-005`, `ARCH-REV-007`, `ARCH-REV-009`, `ARCH-REV-010`
+- Related code-review revision IDs: `CRR-001`, `CRR-002`, `CRR-003`, `CRR-004`
+- Related API/E2E revision IDs: `API-REV-001` (the failure CRR-004 reviewed)
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: IR-003: `CR-005`, `CR-006`, `CR-007`, `CR-002` (remaining), all Local Fix. IR-002: `CR-001` (Design Impact, realized through SR-013 R-8 and SR-014), `CR-002`, `CR-003`, `CR-004` (Local Fix), `N-1` (deviations recorded below). IR-001: N/A (ARCH-REV-005 residual notes and ARCH-REV-007 items addressed below).
+- Triggering finding IDs: IR-004: `F-1`, `F-2`, `F-3`, `F-4` (CRR-004 Local Fix) and SR-015 (CRR-004 A-1, passed by ARCH-REV-010). IR-003: `CR-005`, `CR-006`, `CR-007`, `CR-002` (remaining), all Local Fix. IR-002: `CR-001` (Design Impact, realized through SR-013 R-8 and SR-014), `CR-002`, `CR-003`, `CR-004` (Local Fix), `N-1` (deviations recorded below). IR-001: N/A (ARCH-REV-005 residual notes and ARCH-REV-007 items addressed below).
 - Commits on `codex/org-teams-follow-definition` (base `origin/personal` `9f6add773b`):
   - `1c77d18f56` slice 1 part 1; `7f37435ebc` slice 2; `a3a6b227b1`, `8755ed6343`, `254c5a3a4b`, `ac0825d43a` slice 3 parts 1 … 4; `b324211623` slice 4;
   - `f69004e722` slices 5 … 7: migration, Org follow (with the web Leaving tag and the Org follows e2e), FU-003, the stored-Org reader fixes, and the existing tests moved to the container end state;
   - the slice 8 commit that follows it: docs, release notes draft, this handoff, the revision record and the evidence.
+
+## IR-004 (CRR-004 Local Fixes F-1 … F-4; SR-015)
+
+- **F-1 (AC-002): a Team unit's leaving member stays in the Org's view, rows and composition until it stops.**
+  - One owner: `teamUnitMembersInOrg(tree, space, withLeaving)` in `org-execution-tree-composition.ts`. It gives the current members, plus the `leaving` former members, at their Org addresses. Leaving members are included only for a live Team unit; outside a live run a leaving marker reads as former (autobyteus-22).
+  - Its readers:
+    - `composeOrgExecutionTree`: a Team unit file read from a live unit carries `live: true`. Both `OrgViewComposition`'s snapshot and `learnAgents` mark it.
+    - `RunOwnAgentsReader.containerTreeOf`: the Team part's members, with `leaving` kept.
+  - `RunTreeView` builds the Org's Team member rows with `teamMemberRowsOf(part.members, isLiveTeamRun(teamRunId))`, the same rule as a Team's own rows. So a leaving member is tagged only while its Team run is live.
+  - The leaving member's frames and status are relayed until it is released; then it is gone from the snapshot.
+- **F-2: `list_running_agents` no longer lists Org units.**
+  - `RunOwnAgentsReader.listingFactsOf` counts a run as started by a person only without `delegatedFrom` and without `containedIn`, for both agent and Team runs.
+- **F-3: a stopped Org's mixed save keeps `launchSource`.**
+  - `container-config-trees.ts` writes an agent unit's `launchSource` in both `writeAgent` and `withLaunch` (it was dropped before).
+  - `orgAgentNodeOf` composes it back, so a reread returns what was saved, for agent units and Team unit members.
+- **F-4: a Team run restores after a member change.**
+  - `validateTeamRunStatePackage` counts a former member as an endpoint of the run. Its lines with an outside endpoint (another Org unit, a peer run) no longer make the package invalid.
+  - The run's records source (`run-records-source.ts`, Team `isOwnAgent`) uses the same rule, so the run's view keeps those lines.
+  - Other Team-log readers I checked:
+    - the log writer (`RootTeamRun.messageLogOwnerOf`) already counted former members as its own, which is why it wrote lines the validator then refused;
+    - `team-communication-projection-service.ts` and the package loader go through the validator;
+    - the frozen validator serves only packages from before task-agent-own-run, which have no former members, so it stays frozen;
+    - the member-view projections' `ownAddressOf` is presentation only.
+  - `RemoteMessageReceiver.resolve` now logs why a target root could not be found, checked or restored: `REMOTE_TARGET_ROOT_UNAVAILABLE` with the error text. The sender still reads "not found".
+- **SR-015 (CRR-004 A-1, ARCH-REV-010): another unit's message to a Team unit's former or leaving member at `P/x` is refused by name.**
+  - New port method `OrgContainerPort.formerMemberAt(orgRunId, orgAddress)`, answered by `OrgContainerDirectory`:
+    - it finds the current Team unit `P` above the address and translates `P/x` to `/x` through `ContainedTeamAddressSpace`;
+    - it asks the Team's own `TeamExecutionIndex.formerMemberAt('/x')` over its tree: the live tree when the Team run is live, else its stored file. A stopped unit is never restored to answer;
+    - it names the member at its Org address.
+  - `CollaborationTree.resolve` checks `formerUnitAt` first (as before), then `formerMemberAt`. Either throws `formerMemberRefusal`: code `COLLABORATION_TARGET_NOT_FOUND`, autobyteus-22's exact text.
+  - `agent_orgs.md` says so.
+- Tests (each fails without its fix):
+  - F-1: `org-view-composition.test.ts` ("F-1 (AC-002)") and `org-container-stored.integration.test.ts` (rows tagged leaving only while live).
+  - F-2 and F-3: `org-container-stored.integration.test.ts` (`listingFactsOf` false for both kinds; `launchSource` reads back equal for both kinds).
+  - F-4:
+    - `team-run-current-package-schema.test.ts`: a former member's lines with another unit load in both directions; a line with no own endpoint is still refused;
+    - `remote-message-receiver.test.ts`: the log line.
+  - SR-015: `org-follows-definition.test.ts`, three cases:
+    - idle (former), stopped Team unit;
+    - leaving, stopped Team unit;
+    - leaving, live Team unit, with the stored file left unread.
+
+    Each case covers an agent unit (`/concierge`) and another Team unit's member (`pdp_team_1`) messaging `/software_engineering_team/architecture_reviewer` and getting the exact text. A current member is still reached; an address no member had is not refused by name.
+  - Built server: the Org follows e2e's OF-04 now also has the direct agent message the removed writer at `/team/writer` and get the exact refusal.
+- Validation: see `evidence/implementation/ir-004/test-summary.md`.
 
 ## IR-003 (CRR-002 Local Fixes)
 

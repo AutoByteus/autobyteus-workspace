@@ -42,6 +42,33 @@ describe("TeamRun current (tree + messages) state package", () => {
     }).index.rootTeamRunId).toBe(executionTree.rootTeam.teamRunId);
   });
 
+  it("keeps a removed member's line with an outside endpoint, and still refuses a line with no own endpoint (CRR-004 F-4)", () => {
+    const tree = currentTree();
+    const executionTree = validateTeamRunExecutionTreePayload({
+      ...tree,
+      rootTeam: {
+        ...tree.rootTeam,
+        members: tree.rootTeam.members.filter((member) => member.address !== "/reviewer"),
+        formerMembers: tree.rootTeam.members.filter((member) => member.address === "/reviewer"),
+      },
+    });
+    const line = (messageId: string, senderAgentRunId: string, receiverAgentRunId: string) => Object.freeze({
+      messageId, senderAgentRunId, receiverAgentRunId, content: "hello", messageType: "message", referenceFiles: [],
+      createdAt: "2026-11-22T00:00:00.000Z", counterpart: { address: "/other-unit", nodeId: null },
+    });
+    const pack = (messages: ReturnType<typeof line>[]) => ({
+      executionTree,
+      communicationMessages: { schemaVersion: 1 as const, rootTeamRunId: executionTree.rootTeam.teamRunId, messages },
+    });
+    // Another Org unit's agent messaged the reviewer before the reviewer was removed: both directions still load.
+    expect(validateTeamRunStatePackage(pack([
+      line("m-1", "agent-run-other-unit", "agent-run-reviewer"),
+      line("m-2", "agent-run-reviewer", "agent-run-other-unit"),
+    ])).index.formerMemberByRunId("agent-run-reviewer")).not.toBeNull();
+    expect(() => validateTeamRunStatePackage(pack([line("m-3", "agent-run-other-unit", "agent-run-elsewhere")])))
+      .toThrow("Message 'm-3' has no endpoint that is an agent of this run.");
+  });
+
   it("still rejects a preserved released V1 tree without any version check (retired runtime kinds)", async () => {
     const payload = await readJson(path.join(
       historicalScenarioRoot,

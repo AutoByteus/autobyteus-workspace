@@ -45,6 +45,12 @@ export interface OrgContainerPort {
   /** A unit removed from the Org (REQ-009) at or above an Org address, while no current unit has it; read after `loadContainer`. */
   formerUnitAt(orgRunId: string, orgAddress: string): Readonly<{ address: string }> | null;
   /**
+   * A current Team unit's former (or leaving) member at an Org address `P/x` (SR-015): the Team's own team-space answer
+   * (`formerMemberAt('/x')`), named at its Org address. Read from a live Team run's tree, else its stored file: a stopped
+   * unit is never restored to answer. `null`: no Team unit at `P`, or a current member has the address.
+   */
+  formerMemberAt(orgRunId: string, orgAddress: string): Promise<Readonly<{ address: AgentTeamAddress }> | null>;
+  /**
    * Reads the container file so `orgRulesFrom` answers (a unit's agent context is built after this): the Org's definition,
    * whose instruction its direct agents read; `null` when the container file is absent.
    */

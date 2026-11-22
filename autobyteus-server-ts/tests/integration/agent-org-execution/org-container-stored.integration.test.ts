@@ -101,6 +101,30 @@ describe("A stored Org container (contract §1–§4, §8; design R-5)", () => {
     expect(reader.openRunsBelow(org)).toEqual([writer]);
   });
 
+  it("F-2 (RC-47): a unit of an Org, of either kind, is not a run a person started (list_running_agents lists its Org's units nowhere)", async () => {
+    const { memoryDir } = await storedOrg();
+    const reader = new RunOwnAgentsReader(memoryDir);
+    expect(await reader.listingFactsOf({ rootSubjectKind: "agent", rootRunId: "concierge_1" })).toMatchObject({ kind: "agent", startedByPerson: false });
+    expect(await reader.listingFactsOf({ rootSubjectKind: "agent_team", rootRunId: "set_team_1" })).toMatchObject({ kind: "agent_team", startedByPerson: false });
+  });
+
+  it("F-1: a Team unit's member leaving its Team is its row, tagged leaving, only while that Team unit runs (as a Team's own rows)", async () => {
+    const { memoryDir, layout } = await storedOrg();
+    const setDir = layout.getTeamDirPath({ rootTeamRunId: "set_team_1", ancestorTeamRunIds: [] });
+    const setTree = (await new TeamRunExecutionTreeStore().read(setDir, "set_team_1"))!;
+    const [designer, reviewer] = setTree.rootTeam.members;
+    await new TeamRunExecutionTreeStore().write(setDir, { ...setTree, rootTeam: { ...setTree.rootTeam, members: [designer!], formerMembers: [{ ...reviewer!, leaving: true }] } } as never);
+    const reader = new RunOwnAgentsReader(memoryDir);
+    expect(await reader.ownTreeOf({ rootSubjectKind: "agent_org", rootRunId: "sdd_org_1" })).toMatchObject({ parts: expect.arrayContaining([
+      expect.objectContaining({ teamRunId: "set_team_1", members: [{ address: `${P}/solution_designer`, agentRunId: "solution_designer_1" },
+        { address: `${P}/architecture_reviewer`, agentRunId: "architecture_reviewer_1", leaving: true }] })]) });
+    const rows = async (live: boolean) => (await new RunTreeView({ tree: { collaborationTreeOf: () => ({ rows: () => [] }) } as never, ownTreeOf: (run) => reader.ownTreeOf(run),
+      projection: {} as never, isLiveTeamRun: () => live }).rowsOf({ rootSubjectKind: "agent_org", rootRunId: "sdd_org_1" }))
+      .filter((row) => row.kind === "team_member" && row.openTarget?.agentRunId === "architecture_reviewer_1");
+    expect(await rows(true)).toEqual([expect.objectContaining({ leaving: true, address: `${P}/architecture_reviewer` })]);
+    expect(await rows(false)).toEqual([]);
+  });
+
   it("its members' memory is in their unit runs (context files and member reads find it there)", async () => {
     const { memoryDir, layout } = await storedOrg();
     const locations = new AgentOrgExecutionTreeLocationService({ memoryDir });
@@ -125,6 +149,20 @@ describe("A stored Org container (contract §1–§4, §8; design R-5)", () => {
     expect(teamTree?.rootTeam.members.find((member) => member.agentRunId === "architecture_reviewer_1")).toMatchObject({ address: "/architecture_reviewer",
       launchConfiguration: { llmModelIdentifier: "reviewer-model" } });
     expect((await new AgentRunMetadataStore(memoryDir).readMetadata("concierge_1"))?.llmModelIdentifier).toBe("concierge-model");
+  });
+
+  it("F-3 (ORG-E2E): a model patch records its source (settings) on a Team unit member and a direct agent; the readback equals the saved tree", async () => {
+    const { memoryDir } = await storedOrg();
+    const config = new ContainerConfigTrees(memoryDir);
+    const tree = (await config.read("sdd_org_1"))!;
+    const settings = { origin: "settings" as const, fallbacks: [] };
+    const edited = { ...tree, rootOrg: { ...tree.rootOrg, members: tree.rootOrg.members.map((member) => "agentRunId" in member
+      ? { ...member, launchSource: settings, launchConfiguration: { ...member.launchConfiguration, llmModelIdentifier: "concierge-model" } }
+      : member.teamRunId === "set_team_1" ? { ...member, members: member.members.map((agent) => agent.agentRunId === "architecture_reviewer_1"
+        ? { ...agent, launchSource: settings, launchConfiguration: { ...agent.launchConfiguration, llmModelIdentifier: "reviewer-model" } } : agent) } : member) } };
+    await expect(config.write("sdd_org_1", edited as never)).resolves.toBe("committed");
+    expect(await config.read("sdd_org_1")).toEqual(edited);
+    expect((await new AgentRunMetadataStore(memoryDir).readMetadata("concierge_1"))?.launchSource).toEqual(settings);
   });
 
   it("archive marks its own file; delete removes its history row, every unit run's folder and its own", async () => {

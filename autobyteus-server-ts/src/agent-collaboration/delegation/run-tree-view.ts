@@ -209,7 +209,8 @@ export class RunTreeView {
       drafts.push(Object.freeze({ key: teamKey, parentKey: null, kind: "org_team", name: rowNameOf(part.address, part.teamRunId), address: part.address,
         openTarget: coordinator ? inOrg(coordinator.agentRunId) : null, statusIds: Object.freeze(part.members.map((member) => member.agentRunId)),
         ...(part.leaving ? { leaving: true as const } : {}) }));
-      for (const member of part.members) {
+      // A member leaving its Team unit is a row tagged leaving only while that Team unit runs (SR-010, as a Team's own rows).
+      for (const member of teamMemberRowsOf(part.members, this.sources.isLiveTeamRun(part.teamRunId))) {
         const memberKey = runTreeRowKey("team_member", part.teamRunId, member.agentRunId);
         drafts.push(Object.freeze({ key: memberKey, parentKey: teamKey, kind: "team_member", name: rowNameOf(member.address, member.agentRunId), address: member.address,
           openTarget: inOrg(member.agentRunId), statusIds: Object.freeze([member.agentRunId]), ...(part.leaving || member.leaving ? { leaving: true as const } : {}) }));

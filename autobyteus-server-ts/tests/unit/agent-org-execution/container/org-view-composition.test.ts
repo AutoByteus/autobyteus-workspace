@@ -145,3 +145,42 @@ describe("OrgViewComposition (R-3, R-3'')", () => {
     expect(h.events.filter(({ event }) => event.kind === "agent_presentation")).toHaveLength(n);
   });
 });
+
+describe("F-1 (AC-002): a Team unit's member removed while working stays in the Org view until it is released", () => {
+  it("its row and its frames and status are the Org view's while it is leaving; after its release they are gone", async () => {
+    const stream = new RunViewStream<AgentOrgRunEvent>({ isMessageEvent: (event) => event.kind === "communication" });
+    let tree = setTree;
+    const listeners = new Set<(frame: UnitViewFrame) => void>();
+    const publish = (frame: UnitViewFrame) => { for (const listener of [...listeners]) listener(frame); };
+    const shown = () => [...tree.rootTeam.members, ...(tree.rootTeam.formerMembers ?? []).filter((member) => member.leaving)];
+    const view: LiveUnitView = { file: () => ({ kind: "agent_team", tree }), inputStates: () => [], hasOpenWork: () => true,
+      statuses: () => shown().map((member) => ({ agentRunId: member.agentRunId, status: "running" as const, backgroundTasksRunning: 0 })),
+      subscribe: (listener) => { listeners.add(listener); return () => listeners.delete(listener); } };
+    const composition = new OrgViewComposition({ stream, file: () => file, units: {
+      live: (unit) => unit.runId === "set_team_1" ? view : null,
+      stored: async (unit) => unit.kind === "agent" ? { kind: "agent", metadata: concierge } : { kind: "agent_team", tree: unit.runId === "pdp_team_1" ? pdpTree : setTree },
+      onLivenessChanged: () => () => undefined,
+    } });
+    const relayed: string[] = [];
+    stream.subscribe(({ event }) => { if (event.kind === "agent_presentation") relayed.push(`${event.execution.memberAddress}:${(event.message as unknown as { payload: { n: number } }).payload.n}`); });
+    await composition.start();
+    const [designer, reviewer] = setTree.rootTeam.members as [typeof setTree.rootTeam.members[0], typeof setTree.rootTeam.members[0]];
+    // The reviewer is removed while working (autobyteus-22: a former member marked leaving), then asks for an approval.
+    tree = validateTeamRunExecutionTreePayload({ ...setTree, rootTeam: { ...setTree.rootTeam, members: [designer], formerMembers: [{ ...reviewer, leaving: true }] } }, "set_team_1");
+    publish({ kind: "parts_changed" });
+    publish({ kind: "presentation", agentRunId: "architecture_reviewer_1", message: presentation(1) });
+    expect(relayed).toEqual([`${P}/architecture_reviewer:1`]);
+    expect(composition.liveStatuses().map((status) => status.execution.agentRunId)).toContain("architecture_reviewer_1");
+    const leaving = await composition.snapshot();
+    expect((leaving.tree.rootOrg.members[0] as { members: readonly { address: string }[] }).members.map((member) => member.address))
+      .toEqual([`${P}/solution_designer`, `${P}/architecture_reviewer`]);
+    // Released (it stopped): a former member only; no longer shown, its frames no longer relayed.
+    tree = validateTeamRunExecutionTreePayload({ ...setTree, rootTeam: { ...setTree.rootTeam, members: [designer], formerMembers: [{ ...reviewer }] } }, "set_team_1");
+    publish({ kind: "parts_changed" });
+    publish({ kind: "presentation", agentRunId: "architecture_reviewer_1", message: presentation(2) });
+    expect(relayed).toEqual([`${P}/architecture_reviewer:1`]);
+    expect(composition.liveStatuses().map((status) => status.execution.agentRunId)).not.toContain("architecture_reviewer_1");
+    expect(((await composition.snapshot()).tree.rootOrg.members[0] as { members: readonly { address: string }[] }).members.map((member) => member.address))
+      .toEqual([`${P}/solution_designer`]);
+  });
+});

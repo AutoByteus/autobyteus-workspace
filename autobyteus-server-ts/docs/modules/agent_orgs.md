@@ -59,7 +59,10 @@ contract of the ticket (`org-container-storage-contract.md`).
   Org rules from its Org address. An Org rule to a member that is not currently
   in its Team is left out until it returns (derived at each read); the sender
   hears the autobyteus-22 notice line, merged into one net notice with any Team
-  change (`TeamChangeNoticeSource`).
+  change (`TeamChangeNoticeSource`). A Team unit's member that left its Team
+  (idle, or still finishing) is refused by name at its Org address `P/x` to
+  every other unit, with the text its teammates get; the container asks the
+  Team's own tree (live, else stored; a stopped unit is not restored to answer).
 - **Following**: every Team unit follows its Team definition (team-run-follows-
   definition). The Org follows its Org definition on every definition change and
   when it reopens (`OrgDefinitionChangeListener`, `OrgMembershipPlanner`,

@@ -152,7 +152,10 @@ export class OrgViewComposition {
     });
     return (async () => {
       const files = new Map<string, OrgUnitFile>();
-      for (const { unit, read } of live) files.set(unit.runId, read?.file ?? await this.input.units.stored(unit));
+      for (const { unit, read } of live) {
+        const own = read?.file?.kind === "agent_team" ? { ...read.file, live: true } : read?.file;
+        files.set(unit.runId, own ?? await this.input.units.stored(unit));
+      }
       const tree = composeOrgExecutionTree(file, files);
       this.agents = agentsOf(tree);
       const reported = new Map(live.flatMap(({ read }) => read?.statuses ?? []).map((status) => [status.agentRunId, status]));
@@ -234,7 +237,9 @@ export class OrgViewComposition {
   private learnAgents(unit: AgentOrgUnit, own: OrgUnitFile | null): void {
     if (unit.kind === "agent") { this.agents.set(unit.runId, { address: unit.address, unitRunId: unit.runId }); return; }
     if (!own) return;
-    const tree = composeOrgExecutionTree({ ...this.input.file(), rootOrg: { ...this.input.file().rootOrg, units: [unit] } }, new Map([[unit.runId, own]]));
+    // A live unit's file (its members still leaving included: their frames are relayed until they are released).
+    const live: OrgUnitFile = own.kind === "agent_team" ? { ...own, live: true } : own;
+    const tree = composeOrgExecutionTree({ ...this.input.file(), rootOrg: { ...this.input.file().rootOrg, units: [unit] } }, new Map([[unit.runId, live]]));
     for (const [agentRunId, agent] of [...this.agents]) if (agent.unitRunId === unit.runId) this.agents.delete(agentRunId);
     for (const [agentRunId, agent] of agentsOf(tree)) this.agents.set(agentRunId, agent);
   }

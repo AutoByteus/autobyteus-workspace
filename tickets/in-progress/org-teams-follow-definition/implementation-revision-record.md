@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | IR-001 | Architecture Reviewer, `design-review-report.md` (ARCH-REV-005 pass on SR-010; ARCH-REV-007 pass on the storage contract, SR-011/SR-012) | N/A (residual notes addressed) | `Initial Baseline` | SR-010, SR-011, SR-012, ARCH-REV-005, ARCH-REV-007 | Implemented; handed to Code Review |
 | IR-002 | Architecture Reviewer, `design-review-report.md` ARCH-REV-009 (pass on SR-013/SR-014, after CRR-001) | CR-001 (Design Impact via SR-013 R-8, SR-014), CR-002, CR-003, CR-004 (Local Fix), N-1 | `Design Impact` realization + `Local Fix` | SR-013, SR-014, ARCH-REV-009, CRR-001 | Implemented; handed to Code Review |
 | IR-003 | Code Reviewer, `code-review-report.md` CRR-002 (review of IR-002) | CR-005, CR-006, CR-007, CR-002 (remaining) | `Local Fix` | CRR-002 | Implemented; handed to Code Review |
+| IR-004 | Code Reviewer, `code-review-report.md` CRR-004 (failure-origin review of API-REV-001); Architecture Reviewer ARCH-REV-010 (pass on SR-015) | F-1, F-2, F-3, F-4 (Local Fix); A-1 (via SR-015) | `Local Fix` + `Design Impact` realization | CRR-004, API-REV-001, SR-015, ARCH-REV-010 | Implemented; handed to Code Review |
 
 ## Revision Entries
 
@@ -82,3 +83,19 @@ The current code and `implementation-handoff.md` are authoritative. This record 
   - the FU-003 receiver has its own Task-side port (the projects boundary holds);
   - the unused live Org tree store is deleted, with its test imports and store-only cases, which now check through the schema.
 - Validation: see `implementation-handoff.md` § IR-003.
+
+### IR-004 — CRR-004 Local Fixes; SR-015 former-member refusal for other units
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md` CRR-004 (failure-origin review of API/E2E's API-REV-001), with Local Fixes F-1 … F-4; its A-1 went to the Solution Designer, became SR-015 (DEC-007) and was passed by ARCH-REV-010 (`design-review-report.md`).
+- Triggering finding IDs: F-1, F-2, F-3, F-4; A-1 (SR-015).
+- Classification: `Local Fix` + `Design Impact` (realized as designed).
+- Prior authoritative result: IR-003 (`1f0aad498b`). Current authoritative result: the IR-004 commit (see `implementation-handoff.md` § IR-004).
+- Related solution revision IDs: SR-015. Related architecture-review revision IDs: ARCH-REV-010. Related code-review revision IDs: CRR-004. Related API/E2E revision IDs: API-REV-001.
+- Approved behavior or requirement IDs affected: AC-002 (leaving member shown), REQ-006 (rows, view, listing), REQ-005 (stopped-Org settings, restore), REQ-009 / DEC-007 (refusal by name).
+- Implementation delta:
+  - a Team unit's leaving member stays in the Org view, rows and composition while its run is live: one owner, `teamUnitMembersInOrg`;
+  - Org units are not listed as started by a person;
+  - `launchSource` survives a stopped Org's mixed save;
+  - a Team package with a former member's cross-unit lines validates, and its records source keeps them; the remote receiver logs why a root was unavailable;
+  - `OrgContainerPort.formerMemberAt` lets `CollaborationTree.resolve` refuse `P/x` by name, answered from the Team's live or stored tree without a restore.
+- Validation: see `implementation-handoff.md` § IR-004 and `evidence/implementation/ir-004/`.

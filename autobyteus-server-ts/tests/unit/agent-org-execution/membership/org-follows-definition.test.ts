@@ -259,4 +259,38 @@ describe("REQ-009: a unit that left is refused by name, as a Team's former membe
     await expect(tree.resolve("/nobody")).resolves.toBeNull();
     await expect(index.collaborationTreeOf(createAgentRootExecutionIdentity("concierge_1")).resolve(`${PDP}/product_prototyper`)).resolves.toBe("product_prototyper_1");
   });
+
+  /**
+   * SR-015 (CRR-004 A-1, DEC-007): a Team unit's member removed from its Team, idle (former) or still finishing (leaving),
+   * is refused by name at its Org address `P/x` to every other unit, with the text its teammates get. The stopped Team
+   * unit answers from its stored tree (it is not restored); a live one from its live tree.
+   */
+  it.each([
+    ["idle (former), the Team unit stopped: from its stored tree", false, false],
+    ["leaving, the Team unit stopped: a leaving marker outside a live run reads as former", true, false],
+    ["leaving, the Team unit live: from its live tree, the stored file unread", true, true],
+  ])("SR-015: a Team unit's removed member at P/x, %s, is refused to an agent unit and to another Team unit's member", async (_case, leaving, live) => {
+    const tree = setWithoutReviewer();
+    const removed = validateTeamRunExecutionTreePayload({ ...tree, rootTeam: { ...tree.rootTeam,
+      formerMembers: tree.rootTeam.formerMembers!.map((member) => leaving ? { ...member, leaving: true } : member) } }, "set_team_1");
+    const teamTree = vi.fn(async (id: string) => id === "set_team_1" ? removed : id === "pdp_team_1" ? pdpTree() : null);
+    const directory = new OrgContainerDirectory({ storedContainer: async (id) => id === "sdd_org_1" ? containerFile() : null,
+      teamTree, agentMetadata: async (id) => id === "concierge_1" ? concierge() : null });
+    if (live) directory.bindLiveTeams((id) => id === "set_team_1" ? removed : null);
+    const tasks = new InMemoryTaskExecutionResources();
+    const index = new DelegationIndex(() => tasks, readerOfAgents(async () => null), directory);
+    index.build();
+    await directory.loadContainer("sdd_org_1");
+    teamTree.mockClear();
+    const address = `${P}/architecture_reviewer`;
+    const text = `architecture_reviewer (${address}) is no longer a member of your team: it was removed from the team definition. Call get_handoff_rules for your current handoff rules.`;
+    for (const sender of [createAgentRootExecutionIdentity("concierge_1"), createTeamRootExecutionIdentity("pdp_team_1")]) {
+      const refused = await index.collaborationTreeOf(sender).resolve(address).then(() => null, (error: unknown) => error);
+      expect(refused).toMatchObject({ code: "COLLABORATION_TARGET_NOT_FOUND", message: text });
+      // A current member of the same Team unit is still reached; an address no member ever had is not refused by name.
+      await expect(index.collaborationTreeOf(sender).resolve(`${P}/solution_designer`)).resolves.toBe("solution_designer_1");
+      await expect(index.collaborationTreeOf(sender).resolve(`${P}/nobody`)).resolves.toBeNull();
+    }
+    expect(teamTree.mock.calls.some(([id]) => id === "set_team_1")).toBe(!live);
+  });
 });

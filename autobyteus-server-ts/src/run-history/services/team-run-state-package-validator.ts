@@ -31,13 +31,16 @@ export const validateTeamRunStatePackage = (
     throw new Error(`TeamRun package '${rootTeamRunId}' has contradictory root IDs.`);
   }
   const index = validateTeamRunExecutionTree(state.executionTree, rootTeamRunId);
-  // At least one endpoint is an agent of this tree (the index stays local-only). The other may be an agent of a
-  // delegated run that left the tree (D-5): the view keeps an own agent's messages with it.
+  // At least one endpoint is an agent of this tree, a current member or a former one (the index stays local-only): a member
+  // removed by a definition change keeps its messages, also those with an outside endpoint (another Org unit, a peer run,
+  // CRR-004 F-4). The other may be an agent of a delegated run that left the tree (D-5): the view keeps an own agent's
+  // messages with it.
+  const ownAgent = (agentRunId: string): boolean => Boolean(index.getAgent(agentRunId) ?? index.formerMemberByRunId(agentRunId));
   for (const message of state.communicationMessages.messages) {
     if (message.senderAgentRunId === message.receiverAgentRunId) {
       throw new Error(`Message '${message.messageId}' must use distinct AgentRun endpoints.`);
     }
-    if (!index.getAgent(message.senderAgentRunId) && !index.getAgent(message.receiverAgentRunId)) {
+    if (!ownAgent(message.senderAgentRunId) && !ownAgent(message.receiverAgentRunId)) {
       throw new Error(`Message '${message.messageId}' has no endpoint that is an agent of this run.`);
     }
   }

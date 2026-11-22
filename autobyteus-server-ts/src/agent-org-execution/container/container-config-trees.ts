@@ -58,10 +58,12 @@ export class ContainerConfigTrees {
     const metadata = await this.agents.readMetadata(node.agentRunId);
     if (!metadata) return ["not_committed"];
     const launch = node.launchConfiguration;
-    const { pendingRuntimeSwitch: _pending, ...rest } = metadata;
+    const { pendingRuntimeSwitch: _pending, launchSource: _source, ...rest } = metadata;
+    // The launch, where it came from (a settings edit records `settings`), and a pending runtime switch: as the edit gives them.
     const next = { ...rest, runtimeKind: launch.runtimeKind, llmModelIdentifier: launch.llmModelIdentifier,
       llmConfig: launch.llmConfig as Record<string, unknown> | null, autoExecuteTools: launch.autoExecuteTools,
       workspaceRootPath: launch.workspaceRootPath ?? metadata.workspaceRootPath,
+      ...(node.launchSource ? { launchSource: node.launchSource } : {}),
       ...(node.pendingRuntimeSwitch ? { pendingRuntimeSwitch: node.pendingRuntimeSwitch } : {}) };
     if (isDeepStrictEqual(next, metadata)) return [];
     await this.agents.writeMetadata(node.agentRunId, next);
@@ -69,10 +71,11 @@ export class ContainerConfigTrees {
   }
 }
 
-/** A Team unit member with the launch (and pending runtime switch) its Org settings now give it (its address unchanged). */
+/** A Team unit member with the launch, its source and a pending runtime switch as its Org settings now give them (its address unchanged). */
 const withLaunch = (member: ConfiguredAgentExecutionNode, edited: ConfiguredAgentExecutionNode | undefined): ConfiguredAgentExecutionNode => {
   if (!edited) return member;
-  const { pendingRuntimeSwitch: _pending, ...rest } = member;
+  const { pendingRuntimeSwitch: _pending, launchSource: _source, ...rest } = member;
   return Object.freeze({ ...rest, launchConfiguration: edited.launchConfiguration,
+    ...(edited.launchSource ? { launchSource: edited.launchSource } : {}),
     ...(edited.pendingRuntimeSwitch ? { pendingRuntimeSwitch: edited.pendingRuntimeSwitch } : {}) });
 };

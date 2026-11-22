@@ -23,7 +23,8 @@ export const runRecordsOfRootOwners: RunRecordsSource = Object.freeze({
       case "agent_team": {
         const records = await getTeamCommunicationProjectionService().getCollaborationRecordsSnapshot(rootRunId);
         const index = new TeamExecutionIndex(records.executionTree);
-        return { messages: records.messages.messages, isOwnAgent: (id) => index.getAgent(id) !== null };
+        // A former member (removed by a definition change) is still the run's agent: its messages stay the run's (CRR-004 F-4).
+        return { messages: records.messages.messages, isOwnAgent: (id) => index.getAgent(id) !== null || index.formerMemberByRunId(id) !== null };
       }
       case "agent_org": {
         // An Org container keeps no log: its messages are its units' (CM-9), each message once (a message between two

@@ -1,16 +1,31 @@
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import { ContainedTeamAddressSpace } from "../../agent-team-execution/container/contained-team-address-space.js";
-import type { TeamRunExecutionTreeFile } from "../../agent-team-execution/domain/team-run-execution-tree.js";
+import type { FormerMemberExecutionNode, TeamRunExecutionTreeFile } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import type { ConfiguredAgentExecutionNode, ConfiguredExecutionNode } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
 import type { AgentOrgContainerFile } from "../domain/agent-org-container-file.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../domain/agent-org-run-execution-tree.js";
 
-/** One unit's own file as the composition reads it (`null`: absent or unreadable; the unit is left out). */
+/**
+ * One unit's own file as the composition reads it (`null`: absent or unreadable; the unit is left out). `live`: a Team unit's
+ * tree as its live root has it now (only then is a former member leaving, autobyteus-22 SR-010).
+ */
 export type OrgUnitFile =
   | Readonly<{ kind: "agent"; metadata: AgentRunMetadata | null }>
-  | Readonly<{ kind: "agent_team"; tree: TeamRunExecutionTreeFile | null }>;
+  | Readonly<{ kind: "agent_team"; tree: TeamRunExecutionTreeFile | null; live?: boolean }>;
+
+/**
+ * The one owner of a Team unit's members as the Org shows them (rows and view alike): its current members, then its former
+ * members still leaving (removed while working, autobyteus-22 SR-010: they finish, then are released), tagged `leaving`, each
+ * at its Org address (`P/x`). `withLeaving`: whether leaving members count (only while the Team unit runs).
+ */
+export const teamUnitMembersInOrg = (tree: TeamRunExecutionTreeFile, space: ContainedTeamAddressSpace, withLeaving: boolean): readonly FormerMemberExecutionNode[] =>
+  Object.freeze([
+    ...tree.rootTeam.members.map((member) => Object.freeze({ ...member, address: space.toOrg(member.address) })),
+    ...(withLeaving ? (tree.rootTeam.formerMembers ?? []).filter((member) => member.leaving)
+      .map((member) => Object.freeze({ ...member, address: space.toOrg(member.address), leaving: true as const })) : []),
+  ]);
 
 /** A direct Org agent as the Org view shows it: its unit run's own agent at its Org address. */
 export const orgAgentNodeOf = (address: AgentTeamAddress, metadata: AgentRunMetadata): ConfiguredAgentExecutionNode => Object.freeze({
@@ -18,6 +33,7 @@ export const orgAgentNodeOf = (address: AgentTeamAddress, metadata: AgentRunMeta
   platformAgentRunId: metadata.platformAgentRunId ?? null,
   launchConfiguration: Object.freeze({ runtimeKind: metadata.runtimeKind, llmModelIdentifier: metadata.llmModelIdentifier,
     llmConfig: metadata.llmConfig, autoExecuteTools: metadata.autoExecuteTools, workspaceRootPath: metadata.workspaceRootPath || null }),
+  ...(metadata.launchSource ? { launchSource: metadata.launchSource } : {}),
   ...(metadata.pendingRuntimeSwitch ? { pendingRuntimeSwitch: metadata.pendingRuntimeSwitch } : {}),
 });
 
@@ -42,7 +58,8 @@ export const composeOrgExecutionTree = (file: AgentOrgContainerFile, units: Read
     members.push(Object.freeze({ address: unit.address, teamDefinitionId: tree.rootTeam.teamDefinitionId, role: null, description: null,
       teamRunId: unit.runId, coordinatorAddress: space.toOrg(tree.rootTeam.coordinatorAddress),
       defaultLaunchConfiguration: tree.rootTeam.defaultLaunchConfiguration,
-      members: Object.freeze(tree.rootTeam.members.map((member) => Object.freeze({ ...member, address: space.toOrg(member.address) }))) }));
+      // Its members, and its members still leaving while it runs (the view relays their frames and statuses until released).
+      members: Object.freeze(teamUnitMembersInOrg(tree, space, own.live === true).map(({ leaving: _leaving, ...member }) => Object.freeze(member))) }));
     teamRules.push(...space.rulesToOrg(tree.handoffs));
   }
   return Object.freeze({

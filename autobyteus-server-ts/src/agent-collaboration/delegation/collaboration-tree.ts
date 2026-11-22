@@ -224,9 +224,13 @@ export class CollaborationTree {
     if (this.run.rootSubjectKind === "agent_team") await this.correct(address);
     const receiver = reached.get(address)?.agentRunId ?? null;
     if (receiver || this.entries().length) return receiver;
-    // A unit removed from the Org (REQ-009) is refused by name, as a Team's former member is (autobyteus-22 § Exact Texts).
+    // A unit removed from the Org (REQ-009), and a Team unit's former or leaving member at `P/x` (SR-015), are refused by
+    // name, as a Team's former member is to a teammate (autobyteus-22 § Exact Texts).
     const containedIn = await this.containedIn(this.run);
-    if (containedIn && this.containers!.formerUnitAt(containedIn.orgRunId, address)) throw formerMemberRefusal(address as AgentTeamAddress);
+    if (!containedIn) return null;
+    if (this.containers!.formerUnitAt(containedIn.orgRunId, address)) throw formerMemberRefusal(address as AgentTeamAddress);
+    const formerMember = await this.containers!.formerMemberAt(containedIn.orgRunId, address);
+    if (formerMember) throw formerMemberRefusal(formerMember.address);
     return null;
   }
 

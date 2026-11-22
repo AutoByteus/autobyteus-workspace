@@ -11,6 +11,7 @@ import { TeamRunExecutionTreeStore } from "./team-run-execution-tree-store.js";
 import { AgentRunMetadataStore } from "./agent-run-metadata-store.js";
 import { AgentOrgContainerStore } from "./agent-org-container-store.js";
 import type { AgentOrgContainerFile } from "../../agent-org-execution/domain/agent-org-container-file.js";
+import { teamUnitMembersInOrg } from "../../agent-org-execution/container/org-execution-tree-composition.js";
 import { ContainedTeamAddressSpace } from "../../agent-team-execution/container/contained-team-address-space.js";
 
 /**
@@ -105,7 +106,9 @@ export class RunOwnAgentsReader implements RunFilesReader {
       if (!tree) { console.warn(`Org unit ${unit.address} (Team run '${unit.runId}') has no row: its file cannot be read.`); continue; }
       const space = ContainedTeamAddressSpace.of({ orgRunId: file.rootOrg.orgRunId, address: unit.address })!;
       parts.push({ kind: "team", address: unit.address, teamRunId: unit.runId, coordinatorAddress: space.toOrg(tree.rootTeam.coordinatorAddress),
-        members: membersOf(tree.rootTeam.members as readonly MemberNode[]).map((member) => ({ ...member, address: space.toOrg(member.address) })), ...tag });
+        // Its members as the Org shows them (the one owner): current, then still leaving (rows decide by the unit's liveness).
+        members: teamUnitMembersInOrg(tree, space, true).map((member) => Object.freeze({ address: member.address as string, agentRunId: member.agentRunId,
+          ...(member.leaving ? { leaving: true as const } : {}) })), ...tag });
     }
     return { kind: "agent_org", orgRunId: file.rootOrg.orgRunId, parts, container: true };
   }
@@ -159,13 +162,14 @@ export class RunOwnAgentsReader implements RunFilesReader {
   async listingFactsOf(run: RootExecutionIdentity): Promise<RunListingFacts | null> {
     if (run.rootSubjectKind === "agent") {
       const metadata = await this.stores.agents.readMetadata(run.rootRunId);
-      return metadata ? { kind: "agent", startedByPerson: !metadata.delegatedFrom, definitionId: metadata.agentDefinitionId,
+      // A unit of an Org container (`containedIn`) is not a run a person started: its Org is (org-teams-follow-definition).
+      return metadata ? { kind: "agent", startedByPerson: !metadata.delegatedFrom && !metadata.containedIn, definitionId: metadata.agentDefinitionId,
         startedAt: metadata.startedAt ?? null, workspace: metadata.workspaceRootPath || null } : null;
     }
     if (run.rootSubjectKind !== "agent_team") return null;
     const tree = await this.stores.team.read(this.layout.getTeamDirPath({ rootTeamRunId: run.rootRunId, ancestorTeamRunIds: [] }), run.rootRunId);
     const coordinator = tree?.rootTeam.members.find((member) => member.address === tree.rootTeam.coordinatorAddress);
-    return tree && coordinator?.agentRunId ? { kind: "agent_team", startedByPerson: !tree.delegatedFrom, definitionId: tree.rootTeam.teamDefinitionId,
+    return tree && coordinator?.agentRunId ? { kind: "agent_team", startedByPerson: !tree.delegatedFrom && !tree.containedIn, definitionId: tree.rootTeam.teamDefinitionId,
       definitionName: tree.rootTeam.teamDefinitionName, startedAt: tree.createdAt, workspace: coordinator.launchConfiguration.workspaceRootPath || null,
       coordinatorAgentRunId: coordinator.agentRunId } : null;
   }

@@ -46,7 +46,7 @@ const sender = (root: RootExecutionIdentity, memberAddress: string, agentRunId: 
  * its standing: an address whose agent also stands under it is a mounted Team, answered by its coordinator).
  */
 const containers = {
-  containedInOf: async () => null, sameContainer: async () => false, orgAddressOf: async () => null, formerUnitAt: () => null,
+  containedInOf: async () => null, sameContainer: async () => false, orgAddressOf: async () => null, formerUnitAt: () => null, formerMemberAt: async () => null,
   placementsOf: async (orgRunId: string) => orgRunId !== "org" ? [] : [...STANDING.org!.agents].map(([orgAddress, agentRunId]) => ({
     orgAddress, agentRunId, run: run("agent", agentRunId), memberAddress: orgAddress, ref: { kind: "agent" as const, definitionId: agentRunId } })),
 } as never;

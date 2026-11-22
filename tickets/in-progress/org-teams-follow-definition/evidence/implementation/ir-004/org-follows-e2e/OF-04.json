@@ -1,0 +1,45 @@
+{
+  "before": {
+    "handoffs": [
+      {
+        "when": "Send software requests to the team.",
+        "recipient_address": "/team"
+      },
+      {
+        "when": "Hand every draft to the writer.",
+        "recipient_address": "/team/writer"
+      }
+    ],
+    "isError": false
+  },
+  "told": "Your team changed: its definition was updated.\nYour handoff rules changed; call get_handoff_rules to read them.\n\nECHO_INPUT",
+  "without": {
+    "handoffs": [
+      {
+        "when": "Send software requests to the team.",
+        "recipient_address": "/team"
+      }
+    ],
+    "isError": false
+  },
+  "refusedMember": {
+    "accepted": false,
+    "code": "COLLABORATION_TARGET_NOT_FOUND",
+    "message": "writer (/team/writer) is no longer a member of your team: it was removed from the team definition. Call get_handoff_rules for your current handoff rules.",
+    "isError": true
+  },
+  "toldAgain": "Your team changed: its definition was updated.\nYour handoff rules changed; call get_handoff_rules to read them.\n\nECHO_INPUT",
+  "back": {
+    "handoffs": [
+      {
+        "when": "Send software requests to the team.",
+        "recipient_address": "/team"
+      },
+      {
+        "when": "Hand every draft to the writer.",
+        "recipient_address": "/team/writer"
+      }
+    ],
+    "isError": false
+  }
+}
