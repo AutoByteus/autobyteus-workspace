@@ -1,5 +1,63 @@
 # Code Review Report
 
+## Latest Round: Implementation Review Round 2 (CRR-002)
+
+- Review Entry Point: `Implementation Review`
+- Current Code Review Revision ID: `CRR-002` (prior: CRR-001 `Fail`, CR-001, CR-002)
+- Current Review Round: 2
+- Trigger: IR-002, the rework for CRR-001, following SR-003 (REQ-006 extended to every composition, AC-008, DEC-007 (a)) and ARCH-REV-003 (`Pass`, N-5).
+- Code reviewed: HEAD `edd1501ae8`. Round-2 delta `c419bb4b36..edd1501ae8`: `a2db91def8`, `f79773703d`, `132471ccd9`, `1df7771aac`, then records.
+- Review Scope: `Full Re-Audit`.
+  - Why: the delta changes a shared domain type (`RuntimeSwitch` loses `cause`), a provider error's shape (`CodexAppServerRpcError`), and two composition roots.
+  - Every structural check was rerun against the changed files and the spines they complete (DS-001 and DS-002 in all three compositions). Results for code unchanged since CRR-001 (the recognitions, the lifecycle and handle branches, the binding consumers) are carried forward, with their evidence still valid.
+- Checks not rerun (they ran on the round-2 code):
+  - IMP-10: typecheck PASS at baseline.
+  - IMP-11: `tests/unit` + `tests/architecture`, 8,043 passed.
+  - IMP-12: focused tests and 10 negative controls. Each fails a test; NC-R2-02a/02b are covered together by NC-R2-02c.
+  - IMP-13: built-server E2E LS-01..03 with the notice checks, plus a negative control without the notice: 2 failed.
+  - IMP-14: sizes, every file ≤ 497.
+
+### CR-002: resolved
+
+Every composition now gives a renewal both parts, as DEC-007 (a) and REQ-006 require.
+
+- **Application execution scope** (`application-execution-scope-kernel-builder.ts`):
+  - `AgentRunPlatformNotices([new RuntimeHandoverNoticeService({ journals: getWorkJournalService(), readPending: readPendingRuntimeHandover })])`, constructed exactly as the studio does (`build-studio-server.ts:283-286`).
+  - It is the scope's `AgentRunManager` `inputPreface` and the `lifecycleObserver` of both the run manager and the resource manager, as `general-process-run-supervisor.ts:163, 189-190` wires them.
+  - The lifecycle's switch memory stays.
+  - The scope's members use the same run manager, so they get the notice too.
+- **Standalone application host** (`start-standalone-application-host.ts`):
+  - the supervisor gets `runtimeSwitching: { memory: new RuntimeSwitchRecorder() }`, the studio's form;
+  - `RuntimeHandoverNoticeService` comes first in its `AgentRunPlatformNotices`, the studio's order.
+  - So its standalone lifecycle (delegated copies) renews, and its members get the notice.
+- **The input comment** (`general-process-run-supervisor-input.ts`) states the corrected reason from N-5: the host serves no run-selection surface, so no switch is saved there. `canSwitchRuntime` is cited only for application-owned runs, in the kernel builder.
+- **AC-008, one test per composition with its real wiring:**
+  - studio standalone and member: the built-server E2E checks the notice on the first input and none on the next, with a negative control (IMP-13);
+  - application scope: through the real kernel builder (`application-scope-session-renewal.test.ts`, two cases);
+  - application host delegated copy and member: through the real general supervisor built with the host's wiring (`host-session-renewal-wiring.test.ts`). `standalone-application-host-lifecycle.test.ts` pins that the real host start passes exactly that wiring: the switch recorder, and the notice first and only once.
+  - The negative controls fail on each removed wire, including the notice's order.
+- **Docs:** `GLOSSARY.md` (renewal in all three compositions), `run_history.md` (the Compositions rule), `docs/design-cases.md` Case 27.
+
+### CR-001: resolved
+
+- `RuntimeSwitch.cause` and `RuntimeSwitchCause` are removed. The builders, the key prefixes (`runtime_switch:` / `session_renewal:`) and the marker text keep the triggers apart, so D-1's reason still holds (ARCH-REV-003).
+- `CodexAppServerRpcError.rpcCode` is removed. `rpcMessage` (read by `isMissingCodexThread`) stays, as a constructor field.
+- The glossary line now names the builders instead of `cause`.
+
+### Deviations 6 and 7
+
+- **6:** the host test builds the real supervisor with the host's wiring rather than the whole host start, and does not close it. `Pass — deviation recorded, reason holds.` The host start's wiring is pinned separately by the lifecycle test, so together they prove the real host path. The host serves no run API for a built-host E2E.
+- **7:** `configuredRootFixture` accepts a real `agentRunManager`. A test fixture extension, so the member goes through a real Team root on the supervisor's run manager.
+
+### Re-audit observations (CRR-002)
+
+| Candidate | Observation | Disposition | Reason |
+| --- | --- | --- | --- |
+| CF-09 | The host's supervisor uses `new RuntimeSwitchRecorder()`, while its members and the application scope use `getDefaultRuntimeSwitchMemory()` | Reject | The same split the studio already has (`build-studio-server.ts:306` vs the planner's default). A run belongs to one lifecycle, so one recorder handles a given run. |
+| CF-10 | Each scope lifecycle observer alone clears the notice cache (NC-R2-02a/02b pass alone) | Reject | Both are wired as the general supervisor wires them (the established pattern). NC-R2-02c shows the pair is needed. |
+
+## Prior Round: Implementation Review Round 1 (CRR-001)
+
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
@@ -99,12 +157,12 @@
 | --- | --- | --- | --- |
 | Task design health assessment preserved | Pass | `activateSwitched` → `activateInFreshSession`; `beginSwitch` → `beginFreshSession`; the compare-and-set renamed; AR-002 removal | — |
 | Matches behavior-defining supplemental artifacts | N/A | None | — |
-| Data-flow spine clarity | **Fail** | DS-001 and DS-002 are complete in the studio. On the application execution scope and the standalone application host, the spine's last nodes (the notice preface, and for the host's standalone lifecycle the switch port) are missing. | CR-002 |
+| Data-flow spine clarity | Pass (CRR-002; CRR-001 Fail) | DS-001 and DS-002 are complete in all three compositions | — |
 | Ownership boundary preservation | Pass | Backends recognize and never decide; the two activation owners decide and sequence; `runtime-switch.ts` owns key and text | — |
 | Off-spine concern clarity | Pass | `RUNTIME_SESSION_LOST` warning in both owners | — |
 | Existing capability reuse | Pass | The switch steps, the recorder and the notice are reused, not duplicated | — |
 | Reusable owned structures | Pass | `CollaborationAgentBindingReplacement` is shared by two kinds | — |
-| Shared-structure tightness | **Fail** | `RuntimeSwitch.cause` and `CodexAppServerRpcError.rpcCode` are fields no production code reads (CF-01) | CR-001 |
+| Shared-structure tightness | Pass (CRR-002; CRR-001 Fail) | `cause` and `rpcCode` removed | — |
 | Repeated coordination ownership | Pass | Each owner calls its own steps | — |
 | Empty indirection check (Core Principle 13) | Pass | `configured-agent-session-renewal.ts` owns the member renewal decision (exactness, release, log); `codex-missing-thread.ts` and `claude-session-resume-check.ts` own matchers | — |
 | Separation of concerns and file responsibility | Pass | — | — |
@@ -117,11 +175,11 @@
 | Naming and one vocabulary (Core Principle 15) | Pass — deviation recorded, reason holds | D-1 (stored `runtime_switch`), defined once in the glossary | — |
 | No unjustified duplication | Pass | — | — |
 | Patch-on-patch complexity | Pass | — | — |
-| Dead code removed in touched files (Core Principle 7) | **Fail** | The staged activation is removed (AR-002), but two new unread fields were added (CF-01) | CR-001 |
+| Dead code removed in touched files (Core Principle 7) | Pass (CRR-002; CRR-001 Fail) | AR-002 removal; the two unread fields removed | — |
 | Test scenarios requirement-aligned | Pass | Per-backend positive and negative cases on the probed shapes; real roots for Team, Org and delegated copy; built-server Team member; 16 negative controls (IMP-03) | — |
 | Test fixtures and structure | Pass | `AGY_FAKE_LOST_CONVERSATIONS_FILE` opt-in; isolated homes | — |
 | No stale or compatibility-only tests | Pass | The staged-activation tests removed or rewritten | — |
-| API/E2E readiness | **Fail** | CR-002 must be decided first; otherwise application runs "recover" without context | — |
+| API/E2E readiness | Pass (CRR-002; CRR-001 Fail) | Every composition proven by a test with its real wiring | — |
 
 ## Source File Size And Structure Audit
 
@@ -138,7 +196,7 @@
 | --- | --- | --- |
 | No backward-compatibility mechanisms | Pass | — |
 | No legacy retention | Pass | — |
-| Dead code removed | **Fail** | CR-001 (new unread fields) |
+| Dead code removed | Pass (CRR-002; CRR-001 Fail) | CR-001 resolved |
 | Persisted-data decision followed | Pass | `Not Affected`; existing shapes written on a new trigger (D-1) |
 | No version-specific dual reads | Pass | — |
 | Transition mechanics | N/A | — |
@@ -171,24 +229,24 @@
 
 ## Review Scorecard (Mandatory)
 
-- Overall score: `9.0/10` (simple average for trend only)
+- Overall score: `9.4/10` (CRR-002; CRR-001 9.0; simple average for trend only)
 
 | Priority | Category | Score | Why | Weak | Improve |
 | --- | --- | --- | --- | --- | --- |
-| 1 | Data-Flow Spine Inventory and Clarity | 8.6 | DS-001/002 are clean and reuse the switch steps | The spine is incomplete on two compositions (CR-002) | Decide and wire the notice and switch port per host |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.4 (CRR-002; CRR-001 8.6) | DS-001/002 complete in all three compositions, each with both parts | — | — |
 | 2 | Ownership Clarity and Boundary Encapsulation | 9.4 | Recognition in backends; decision in owners | — | — |
 | 3 | API / Interface / Query / Command Clarity | 9.3 | Exact, subject-explicit interfaces | — | — |
 | 4 | Separation of Concerns and File Placement | 9.4 | Small owned files where size required | — | — |
-| 5 | Shared-Structure / Data-Model Tightness | 8.8 | `CollaborationAgentBindingReplacement` shared cleanly | `cause`, `rpcCode` unread (CR-001) | Remove them |
+| 5 | Shared-Structure / Data-Model Tightness | 9.4 (CRR-002; CRR-001 8.8) | `CollaborationAgentBindingReplacement` shared cleanly; unread fields removed | — | — |
 | 6 | Naming Quality and Local Readability | 9.3 | Glossary terms; D-1 documented | — | — |
-| 7 | API/E2E Readiness | 8.6 | Strong negative controls, real CLI, built-server E2E | Application paths would "recover" without context (CR-002) | Fix first |
-| 8 | Runtime Correctness And Behavioral Fidelity | 8.7 | Exact recognition; release confirmed; retry by key | REQ-003 / REQ-006 fail on application paths (CR-002) | As above |
+| 7 | API/E2E Readiness | 9.3 (CRR-002; CRR-001 8.6) | One test per composition with real wiring and negative controls; a built-server notice check | No built-host E2E (the host serves no run API) | — |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.4 (CRR-002; CRR-001 8.7) | Exact recognition; release confirmed; retry by key; the notice arrives on every path | RSK-003 residual | — |
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.5 | D-1 avoids a migration with a recorded reason | — | — |
-| 10 | Cleanup Completeness | 9.0 | AR-002 removal done | Two new dead fields (CR-001) | Remove |
+| 10 | Cleanup Completeness | 9.5 (CRR-002; CRR-001 9.0) | AR-002 removal; the two dead fields removed | — | — |
 
 ## Findings
 
-### CR-001 — Two fields this change adds are never read in production (`DESIGN.md` rule 11)
+### CR-001 (resolved in CRR-002) — Two fields this change adds are never read in production (`DESIGN.md` rule 11)
 
 - **Evidence:**
   - `RuntimeSwitch.cause` (`runtime-switch.ts`) is set by `buildRuntimeSwitchBetween` and `buildSessionRenewal`. No production code reads it; only `runtime-switch-session-renewal.test.ts` asserts it. The two triggers already differ where they must: in the key prefix and the marker text, which the builders compute directly.
@@ -197,7 +255,7 @@
 - **Note:** the design prescribed `cause` (the "Vocabulary drift" response and "`cause` is required on both builders"), so removing it also changes the design's wording and the glossary line "`RuntimeSwitch.cause = "lost_session"`". It goes to the Solution Designer with CR-002 rather than as a separate Local Fix.
 - **Required action:** remove `cause` (with its test assertions and the glossary's code mention) unless the design names a production reader, and remove `rpcCode`.
 
-### CR-002 — On the application paths a session renewal continues without the hand-over notice, and the application host's delegated copies cannot renew (REQ-003, REQ-006; DS-001 with N-4)
+### CR-002 (resolved in CRR-002) — On the application paths a session renewal continues without the hand-over notice, and the application host's delegated copies cannot renew (REQ-003, REQ-006; DS-001 with N-4)
 
 - **Evidence:**
   - Only the studio composition wires both renewal ingredients: the switch memory (`runtimeSwitching`, `build-studio-server.ts:306`) and `RuntimeHandoverNoticeService` in the run manager's input preface (`:283, :304`, through `general-process-run-supervisor.ts:189`).
@@ -214,11 +272,11 @@
 
 ## Classification
 
-- `Design Impact` (CR-002), with CR-001 carried in the same revision (the field is design-prescribed).
+- CRR-002: N/A (Pass). CRR-001's `Design Impact` (CR-002) and CR-001 are resolved.
 
 ## Recommended Recipient
 
-`/solution_designer`. Then implementation, a source review, and API/E2E.
+CRR-002: `/api_e2e_engineer` (primary pass rule), with an informational notice to implementation.
 
 ## Residual Risks
 
@@ -229,11 +287,11 @@
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
+- Review Decision: `Pass` (CRR-002, round 2, Full Re-Audit; CR-001 and CR-002 resolved). CRR-001 was a `Fail`.
 - Review Entry Point: `Implementation Review`
-- Supported Product Scenario Gate: `Pass` (SCN-APP is supported, from N-4 and N-2)
-- Material-Premise Gate: `Pass` (SCN-APP reachable)
-- Score Summary: average 9.0; categories below 9.2: Data-Flow Spine 8.6, Shared-Structure 8.8, API/E2E Readiness 8.6, Runtime Correctness 8.7, Cleanup 9.0
-- Failure Origin: N/A (implementation review)
-- Recommended Recipient: Solution Designer (`Design Impact`, CR-002; CR-001 with it)
+- Supported Product Scenario Gate: `Pass`
+- Material-Premise Gate: `Pass` (SCN-APP now served in every composition)
+- Score Summary: average 9.4; every category ≥ 9.3
+- Failure Origin: N/A
+- Recommended Recipient: API/E2E
 - Notes: the studio path is sound: exact recognition on all five runtimes, the release confirmed before a renewal, retry by key, all five binding consumers. Deviations 2–5 hold. Deviation 1 (N-4) is incomplete without the notice: CR-002.
