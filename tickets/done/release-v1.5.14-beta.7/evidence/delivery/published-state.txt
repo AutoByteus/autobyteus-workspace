@@ -1,0 +1,77 @@
+# v1.5.14-beta.7 published state, 2026-11-22T08:26Z
+Desktop Release success a1
+  Resolve Release Metadata: success
+  Build macOS ARM64: success
+  Build Windows x64: success
+  Build Linux x64: success
+  Build macOS Intel x64: success
+  Build Linux ARM64: success
+  Sign authenticated Linux desktop releases: success
+  Publish GitHub Release: success
+Server Docker Release success a1
+  Resolve Release Metadata: success
+  Build Server Image (linux/amd64): success
+  Build Server Image (linux/arm64): success
+  Publish Server Image: success
+  Publish Server Package (linux/arm64): success
+  Publish Server Package (linux/amd64): success
+Android APK Release success a1
+  Resolve Android Release Metadata: success
+  Build Android APK: success
+  Publish Android APK To GitHub Release: success
+iOS App Store Connect Release success a2
+  Build And Test iOS App: success
+  Resolve iOS Release Metadata: success
+  Validate iOS Publish Secrets: success
+  Archive And Upload To App Store Connect: success
+## iOS (run 44998542061, attempt 2)
+2026-11-22T07:53:23.2189160Z Selected Xcode app: /Applications/Xcode_27.2.app
+2026-11-22T07:53:23.2308290Z Selected iPhoneOS SDK: 27.2
+2026-11-22T07:54:28.5946720Z [ios-icon] all 18 slots match the logo (on #1E3A8A).
+2026-11-22T07:55:24.4485230Z The demo answers all 252 compiled operations (handled or listed as unreachable).
+2026-11-22T08:13:28.3072640Z iOS build number: 353
+2026-11-22T08:18:23.4753500Z Selected Xcode app: /Applications/Xcode_27.2.app
+2026-11-22T08:18:23.4786350Z Selected iPhoneOS SDK: 27.2
+2026-11-22T08:21:01.1812490Z The demo answers all 252 compiled operations (handled or listed as unreachable).
+2026-11-22T08:23:29.8788340Z UPLOAD SUCCEEDED with no errors
+2026-11-22T08:23:29.8924790Z Delivery UUID: ce799514-184f-4c8e-8bc8-3829d60f5657
+ITMS lines in the iOS log: 0
+## release
+prerelease true draft false
+GitHub Latest: v1.5.13
+2026-11-22T07:36:58Z	AutoByteus_personal_android-1.5.14-beta.7-release.apk
+2026-11-22T07:36:58Z	AutoByteus_personal_android-1.5.14-beta.7-release.apk.sha256
+2026-11-22T07:39:38Z	autobyteus-server-1.5.14-beta.7-linux-x64.tar.gz
+2026-11-22T07:39:39Z	autobyteus-server-1.5.14-beta.7-linux-arm64.tar.gz
+2026-11-22T07:39:44Z	autobyteus-server-1.5.14-beta.7-linux-arm64.json
+2026-11-22T07:39:44Z	autobyteus-server-1.5.14-beta.7-linux-x64.json
+2026-11-22T07:39:45Z	autobyteus-server-1.5.14-beta.7-linux-arm64.json.sig
+2026-11-22T07:39:45Z	autobyteus-server-1.5.14-beta.7-linux-x64.json.sig
+2026-11-22T07:55:12Z	AutoByteus_personal_linux-x64-1.5.14-beta.7.AppImage.release.json
+2026-11-22T07:55:12Z	AutoByteus_personal_macos-arm64-1.5.14-beta.7.dmg
+2026-11-22T07:55:12Z	AutoByteus_personal_macos-arm64-1.5.14-beta.7.dmg.blockmap
+2026-11-22T07:55:12Z	AutoByteus_personal_macos-arm64-1.5.14-beta.7.zip
+2026-11-22T07:55:12Z	AutoByteus_personal_macos-arm64-1.5.14-beta.7.zip.blockmap
+2026-11-22T07:55:12Z	AutoByteus_personal_macos-x64-1.5.14-beta.7.dmg
+2026-11-22T07:55:12Z	AutoByteus_personal_macos-x64-1.5.14-beta.7.dmg.blockmap
+2026-11-22T07:55:12Z	AutoByteus_personal_windows-1.5.14-beta.7.exe
+2026-11-22T07:55:13Z	AutoByteus_personal_linux-arm64-1.5.14-beta.7.AppImage
+2026-11-22T07:55:13Z	AutoByteus_personal_linux-arm64-1.5.14-beta.7.AppImage.release.json
+2026-11-22T07:55:13Z	AutoByteus_personal_linux-arm64-1.5.14-beta.7.AppImage.release.json.sig
+2026-11-22T07:55:13Z	AutoByteus_personal_linux-x64-1.5.14-beta.7.AppImage
+2026-11-22T07:55:13Z	AutoByteus_personal_linux-x64-1.5.14-beta.7.AppImage.release.json.sig
+2026-11-22T07:55:13Z	AutoByteus_personal_macos-x64-1.5.14-beta.7.zip
+2026-11-22T07:55:13Z	AutoByteus_personal_macos-x64-1.5.14-beta.7.zip.blockmap
+2026-11-22T07:55:34Z	latest-linux-arm64.yml
+2026-11-22T07:55:34Z	latest-linux.yml
+2026-11-22T07:55:34Z	latest-mac.yml
+2026-11-22T07:55:34Z	latest.yml
+## Docker (registry API)
+1.5.14-beta.7 = beta = sha256:8c29c938dec13e8e19fcd8ae5a0382920871332a92467c85f76cc608d19a17aa (linux/amd64 sha256:8f03af02587e6b8cd3d55ca01268b384e126b59646c53095bde2f707c0b6d146, linux/arm64 sha256:49bbd55082f3a08348b49d2a875427bc2cec2a910a41be73ea404d5932de2b6b = the two Publish Server Package jobs' digests)
+latest = 1.5.13 = sha256:13df73db926a646237143db070bec31cc2a9742a94069cb71814cd6a730a20de (unchanged)
+## System level
+2026-11-22T07:32:05.4830883Z System level 2: the system part is unchanged (61cd87f9a8cca3c3df207db0d7b36807f3dace192b9288b00102ff9c809725b7)
+2026-11-22T07:32:18.7369307Z System level 2: the system part is unchanged (61cd87f9a8cca3c3df207db0d7b36807f3dace192b9288b00102ff9c809725b7)
+2026-11-22T07:35:03.7262463Z #46 21.15 Wrote server-package.json: 1.5.14-beta.7 linux-arm64, Node modules 127, system level 2, 65 migrations
+2026-11-22T07:35:35.1664013Z #46 19.53 Wrote server-package.json: 1.5.14-beta.7 linux-x64, Node modules 127, system level 2, 65 migrations
+server package description (linux-x64.json): {'version': '1.5.14-beta.7', 'systemLevel': 2}
