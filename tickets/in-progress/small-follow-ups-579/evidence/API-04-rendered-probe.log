@@ -1,0 +1,6 @@
+# API-04 semantic-memory-view-probe (SMV-104: a link to a missing file) | commit b6b8020bf5 | 2026-11-22T19:24:34Z | load { 8.10 9.36 15.80 }
+semantic memory view probe: Fail (36/36 checks) → /Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/tickets/in-progress/small-follow-ups-579/evidence/API-04-probe
+exit 1
+## rerun (warm Vite cache) | 2026-11-22T19:33:03Z | load { 42.66 37.80 27.56 }
+semantic memory view probe: Pass (41/41 checks) → /Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/tickets/in-progress/small-follow-ups-579/evidence/API-04-probe-rerun
+exit 0

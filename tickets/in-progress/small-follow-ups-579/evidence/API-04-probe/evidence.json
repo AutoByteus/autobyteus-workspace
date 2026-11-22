@@ -1,0 +1,412 @@
+{
+  "startedAt": "2026-11-22T19:24:34.680Z",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "checks": [
+    {
+      "id": "SMV-000",
+      "pass": true,
+      "message": "Built server entry exists (run pnpm -C autobyteus-server-ts build first)"
+    },
+    {
+      "id": "SMV-001",
+      "pass": true,
+      "message": "A Chrome executable is available"
+    },
+    {
+      "id": "SMV-010",
+      "pass": true,
+      "message": "Browse tabs in order",
+      "details": [
+        "Global",
+        "Agents",
+        "Agent Teams",
+        "Agent Orgs"
+      ]
+    },
+    {
+      "id": "SMV-011",
+      "pass": true,
+      "message": "No list filter on Browse"
+    },
+    {
+      "id": "SMV-012",
+      "pass": true,
+      "message": "An agent card shows no run count"
+    },
+    {
+      "id": "SMV-020",
+      "pass": true,
+      "message": "The agent page heading"
+    },
+    {
+      "id": "SMV-021",
+      "pass": true,
+      "message": "Back to Memory"
+    },
+    {
+      "id": "SMV-022",
+      "pass": true,
+      "message": "Two episodes"
+    },
+    {
+      "id": "SMV-023",
+      "pass": true,
+      "message": "The Episodic tab counts the episodes"
+    },
+    {
+      "id": "SMV-030",
+      "pass": true,
+      "message": "The folder path",
+      "details": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-2JgAbH/server-data/memory/semantic/probe-researcher"
+    },
+    {
+      "id": "SMV-031",
+      "pass": true,
+      "message": "The tab is in the address"
+    },
+    {
+      "id": "SMV-032",
+      "pass": true,
+      "message": "Two link rows \"Link · not opened\""
+    },
+    {
+      "id": "SMV-039",
+      "pass": true,
+      "message": "Folders first, then files and links by name",
+      "details": [
+        "sites",
+        "research-method.md",
+        "secret-link.md",
+        "shared"
+      ]
+    },
+    {
+      "id": "SMV-033",
+      "pass": true,
+      "message": "The read-only empty tab copy"
+    },
+    {
+      "id": "SMV-034",
+      "pass": true,
+      "message": "A link row asks nothing of the node",
+      "details": []
+    },
+    {
+      "id": "SMV-035",
+      "pass": true,
+      "message": "No context menu on a link row"
+    },
+    {
+      "id": "SMV-036",
+      "pass": true,
+      "message": "Preview only: no Edit mode"
+    },
+    {
+      "id": "SMV-037",
+      "pass": true,
+      "message": "No context menu on a file"
+    },
+    {
+      "id": "SMV-038",
+      "pass": true,
+      "message": "Search finds nothing through a link"
+    },
+    {
+      "id": "SMV-040",
+      "pass": true,
+      "message": "The workspaces query lists no semantic memory workspace",
+      "details": {
+        "data": {
+          "workspaces": [
+            {
+              "workspaceId": "temp_ws_default",
+              "kind": "temp"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "SMV-041",
+      "pass": true,
+      "message": "A write is refused",
+      "details": {
+        "data": null,
+        "errors": [
+          {
+            "message": "WORKSPACE_READ_ONLY: Workspace 'semantic_ws_probe-researcher' is read-only.",
+            "locations": [
+              {
+                "line": 1,
+                "column": 12
+              }
+            ],
+            "path": [
+              "writeFileContent"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "SMV-042",
+      "pass": true,
+      "message": "The content route serves a regular file of the folder",
+      "details": 200
+    },
+    {
+      "id": "SMV-043",
+      "pass": true,
+      "message": "A path through a link is refused by the content route",
+      "details": 403
+    },
+    {
+      "id": "SMV-050",
+      "pass": true,
+      "message": "Short tab labels below 640 px",
+      "details": [
+        "Episodic 2",
+        "Semantic"
+      ]
+    },
+    {
+      "id": "SMV-060",
+      "pass": true,
+      "message": "The team card counts its members"
+    },
+    {
+      "id": "SMV-061",
+      "pass": true,
+      "message": "Members: a team-local agent and a shared agent",
+      "details": [
+        "Reviewerteam-local-agent:probe-product-team:reviewer",
+        "Research Assistantprobe-researcherShared agent"
+      ]
+    },
+    {
+      "id": "SMV-062",
+      "pass": true,
+      "message": "Back to the team"
+    },
+    {
+      "id": "SMV-063",
+      "pass": true,
+      "message": "The missing folder state"
+    },
+    {
+      "id": "SMV-064",
+      "pass": true,
+      "message": "The view created no folder"
+    },
+    {
+      "id": "SMV-100",
+      "pass": true,
+      "message": "A long ID's folder has the shortened name",
+      "details": {
+        "encodedBytes": 274,
+        "folderName": "team-local-agent%3Aprobe-long-archive-team-long-archive-team-long-archive-team-long-archive-team-long-archive-team-long-#cb8c76738ea0a6cc"
+      }
+    },
+    {
+      "id": "SMV-101",
+      "pass": true,
+      "message": "The Semantic tab finds the shortened folder",
+      "details": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-2JgAbH/server-data/memory/semantic/team-local-agent%3Aprobe-long-archive-team-long-archive-team-long-archive-team-long-archive-team-long-archive-team-long-#cb8c76738ea0a6cc"
+    },
+    {
+      "id": "SMV-102",
+      "pass": true,
+      "message": "A file inside the shortened folder opens in the preview (the `#` never reaches a URL unencoded)"
+    },
+    {
+      "id": "SMV-103",
+      "pass": true,
+      "message": "A relative link opens the linked file as a preview tab of the same folder, nothing editable"
+    },
+    {
+      "id": "SMV-104",
+      "pass": true,
+      "message": "A link to a missing file opens its tab with the viewer's message",
+      "details": "archive\nnotes.md\nnotes.md\n2026.md\nold-page.md\nError!File not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-semantic-memory-view-probe-2JgAbH/server-data/memory/semantic/team-local-agent%3Aprobe-long-archive-team-long-archive-team-long-archive-team-long-archive-team-long-archive-team-long-#cb8c76738ea0a6cc/old-page.md"
+    },
+    {
+      "id": "SMV-105",
+      "pass": true,
+      "message": "A link out of the folder opens nothing",
+      "details": {
+        "before": 145,
+        "after": 145
+      }
+    },
+    {
+      "id": "SMV-090",
+      "pass": true,
+      "message": "The Semantic tab shows \"Loading the folder…\" while its first listing is held",
+      "details": "semantic_ws_probe-researcher"
+    }
+  ],
+  "screenshots": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/tickets/in-progress/small-follow-ups-579/evidence/API-04-probe/VIS-001-browse-agents-cards-1440x900.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/tickets/in-progress/small-follow-ups-579/evidence/API-04-probe/VIS-004-agent-episodic-1440x900.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/tickets/in-progress/small-follow-ups-579/evidence/API-04-probe/VIS-005-agent-semantic-links-file-open-1440x900.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/tickets/in-progress/small-follow-ups-579/evidence/API-04-probe/VIS-018-agent-semantic-narrow-390x844.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/tickets/in-progress/small-follow-ups-579/evidence/API-04-probe/VIS-008-browse-teams-cards-1440x900.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/tickets/in-progress/small-follow-ups-579/evidence/API-04-probe/VIS-009-team-members-1440x900.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/tickets/in-progress/small-follow-ups-579/evidence/API-04-probe/VIS-007-agent-semantic-missing-1440x900.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/tickets/in-progress/small-follow-ups-579/evidence/API-04-probe/SR-009-long-id-semantic-file-open-1440x900.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/tickets/in-progress/small-follow-ups-579/evidence/API-04-probe/FU-002-relative-link-opened-1440x900.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/tickets/in-progress/small-follow-ups-579/evidence/API-04-probe/FU-002-relative-link-missing-file-1440x900.png"
+  ],
+  "operations": [
+    "GetUpdateNotifications",
+    "GetUpdateAutomationSettings",
+    "ListMemoryExplorerSources",
+    "ListAgentsWithMemory",
+    "ListAgentTeamsWithMemory",
+    "ListAgentOrgsWithMemory",
+    "MemoryIndexStatus",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetAllWorkspaces",
+    "GetAgentDefinitions",
+    "GetAgentTeamDefinitions",
+    "GetAgentOrgDefinitions",
+    "GetApplicationsCapability",
+    "ListMemoryExplorerSources",
+    "ListMemoryGroupMembers",
+    "ListMemoryGroupMembers",
+    "ListAgentEpisodes",
+    "ListMemoryExplorerSources",
+    "AgentSemanticMemoryFolder",
+    "ListAgentEpisodes",
+    "GetFolderChildren",
+    "GetFolderChildren",
+    "GetFileContent",
+    "GetFolderChildren",
+    "GetFolderChildren",
+    "GetFileContent",
+    "SearchFiles",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "SearchFiles",
+    "GetUpdateNotifications",
+    "GetUpdateAutomationSettings",
+    "ListMemoryExplorerSources",
+    "ListAgentsWithMemory",
+    "ListAgentTeamsWithMemory",
+    "ListAgentOrgsWithMemory",
+    "MemoryIndexStatus",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetAllWorkspaces",
+    "GetApplicationsCapability",
+    "GetAgentTeamDefinitions",
+    "GetAgentOrgDefinitions",
+    "GetAgentDefinitions",
+    "ListMemoryExplorerSources",
+    "ListMemoryGroupMembers",
+    "ListMemoryExplorerSources",
+    "ListMemoryGroupMembers",
+    "ListAgentEpisodes",
+    "ListMemoryExplorerSources",
+    "AgentSemanticMemoryFolder",
+    "ListAgentEpisodes",
+    "GetUpdateNotifications",
+    "GetUpdateAutomationSettings",
+    "ListMemoryExplorerSources",
+    "ListAgentsWithMemory",
+    "ListAgentTeamsWithMemory",
+    "ListAgentOrgsWithMemory",
+    "MemoryIndexStatus",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetAllWorkspaces",
+    "GetApplicationsCapability",
+    "GetAgentTeamDefinitions",
+    "GetAgentOrgDefinitions",
+    "GetAgentDefinitions",
+    "ListMemoryExplorerSources",
+    "ListMemoryGroupMembers",
+    "ListMemoryExplorerSources",
+    "ListMemoryGroupMembers",
+    "ListAgentEpisodes",
+    "ListMemoryExplorerSources",
+    "AgentSemanticMemoryFolder",
+    "ListAgentEpisodes",
+    "GetFolderChildren",
+    "GetFolderChildren",
+    "GetFileContent",
+    "GetFileContent",
+    "GetFileContent",
+    "GetFileContent",
+    "GetFileContent",
+    "GetUpdateNotifications",
+    "GetUpdateAutomationSettings",
+    "ListMemoryExplorerSources",
+    "ListAgentsWithMemory",
+    "ListAgentTeamsWithMemory",
+    "ListAgentOrgsWithMemory",
+    "MemoryIndexStatus",
+    "GetApplicationsCapability",
+    "GetAgentDefinitions",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetAllWorkspaces",
+    "GetAgentTeamDefinitions",
+    "GetAgentOrgDefinitions",
+    "ListMemoryExplorerSources",
+    "ListMemoryGroupMembers",
+    "ListMemoryGroupMembers",
+    "ListAgentEpisodes",
+    "ListMemoryExplorerSources",
+    "AgentSemanticMemoryFolder",
+    "ListAgentEpisodes",
+    "GetFolderChildren",
+    "GetRuntimeAvailabilityKinds",
+    "GetRuntimeAvailability",
+    "GetRuntimeAvailability",
+    "GetRuntimeAvailability",
+    "GetRuntimeAvailability",
+    "GetRuntimeAvailability",
+    "GetRuntimeAvailability",
+    "GetProviderModelCatalogSnapshots",
+    "GetUpdateNotifications",
+    "GetUpdateAutomationSettings",
+    "ListMemoryExplorerSources",
+    "ListAgentsWithMemory",
+    "ListAgentTeamsWithMemory",
+    "ListAgentOrgsWithMemory",
+    "MemoryIndexStatus",
+    "AgentSemanticMemoryFolder",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetAllWorkspaces",
+    "GetAgentDefinitions",
+    "GetApplicationsCapability",
+    "GetAgentTeamDefinitions",
+    "GetAgentOrgDefinitions",
+    "ListMemoryGroupMembers",
+    "ListMemoryGroupMembers",
+    "ListAgentEpisodes",
+    "GetFolderChildren",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory"
+  ],
+  "pageErrors": [],
+  "failures": [
+    {
+      "message": "page.waitForURL: Timeout 30000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n  navigated to \"http://127.0.0.1:57974/memory?view=home&section=browse&node=agents/agent:probe-researcher&pane=semantic\"\n  navigated to \"http://127.0.0.1:57974/memory?view=home&section=browse&node=agents/agent:probe-researcher&pane=semantic\"\n  navigated to \"http://127.0.0.1:57974/memory?view=home&section=browse&node=agents/agent:probe-researcher&pane=semantic\"\n  navigated to \"http://127.0.0.1:57974/memory?view=home&section=browse&node=agents/agent:probe-researcher&pane=semantic\"\n============================================================"
+    }
+  ],
+  "result": "Fail",
+  "finishedAt": "2026-11-22T19:25:32.682Z"
+}
