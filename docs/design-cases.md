@@ -375,3 +375,15 @@ Principle 11 (derived consumers of a changed structure).
 - **The fix (SR-002):** the design lists all five consumers with a decision for each. The new kind carries the same `replacement` payload, so each writer reuses its compare-and-set, under a neutral name the two kinds share. AC-005 is verified through the real Team and Org roots.
 - **Why it mattered:** the renewal would have worked for standalone runs and failed for exactly the observed member.
 - **Notice it by:** a design that adds a kind, variant or enum value and names "its writer" or "the handler". Search every `kind ===`, `switch` and ternary chain on that union, and list each with a decision. A fallthrough `else` that treats unknown kinds as one known kind is where the new one goes wrong.
+
+### Case 27: A Capability That Needs Two Collaborators, Wired In Only One Composition (autobyteus-599, CRR-001 CR-002)
+
+Principle 1 (several kinds: trace each composition root) and Principle 16 (one composition root, visible dependencies).
+
+- **The design said:** a lost runtime session renews through the runtime-switch steps, and the hand-over notice follows "unchanged". It adopted the reviewer's note that application-scope runs reach the same owners.
+- **What the code does:** the renewal needs two collaborators: the switch memory and the hand-over notice in the run manager's input preface. Only the studio composition wires both.
+  - The application execution scope got the switch memory (the implementation followed the note) but has no input preface, so it renewed without the notice. The fresh agent got no journal context.
+  - The standalone application host wires neither in its supervisor, so its standalone lifecycle kept the dead end. Its members renewed through the planner's default memory, again without the notice.
+- **The fix (SR-003):** a Compositions table, with the rule that every composition that runs external-runtime agents wires both parts or offers no renewal. All three now wire both, and each composition gets a test that the notice arrives after a renewal.
+- **Why it mattered:** a renewal without the notice looks like success but hands the user an agent with no memory of the work.
+- **Notice it by:** a design that reuses a mechanism "unchanged" when that mechanism is assembled in a composition root. List every composition root that builds the owners involved: studio, application scope, standalone host, tests' harnesses. Check each wires every collaborator the behavior needs. A default lookup (`getDefault…()`) can make one part work where the other is missing.

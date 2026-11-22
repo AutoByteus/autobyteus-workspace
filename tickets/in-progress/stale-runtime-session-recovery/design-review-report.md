@@ -5,12 +5,12 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/stale-runtime-session-recovery-599/tickets/in-progress/stale-runtime-session-recovery/requirements-doc.md` (SR-001, Approved within the direction; founder informed)
 - Upstream Investigation Notes: `…/stale-runtime-session-recovery/investigation-notes.md`
 - Upstream Solution Revision Record: `…/stale-runtime-session-recovery/solution-revision-record.md`
-- Reviewed Design Spec: `…/stale-runtime-session-recovery/design-spec.md` (SR-002, Ready)
+- Reviewed Design Spec: `…/stale-runtime-session-recovery/design-spec.md` (SR-003, Ready)
 - Supplemental Task Artifacts Reviewed: `probes/README.md` and the probe scripts (evidence); `follow-ups.md` (FU-001); `solution-designer-handoff.md`
-- Relevant Solution Revision IDs: SR-001, SR-002
+- Relevant Solution Revision IDs: SR-001, SR-002, SR-003
 - Architecture Review Revision Record: `…/stale-runtime-session-recovery/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: 2
+- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Review Round: 3
 - Trigger: SR-002, the Solution Designer's response to ARCH-REV-001 (handoff "Round 2" section)
 - Prior Review Round Reviewed: 1 (ARCH-REV-001, `Fail`: AR-001, AR-002)
 - Round 2 evidence:
@@ -18,7 +18,17 @@
   - a search of `src` and `tests` for the staged activation: `src` has only the handle and the flat-team wrapper; `tests` has `configured-agent-switch-activation.test.ts`, `configured-agent-execution-handle.test.ts`, `task-publication-handles.ts` and `root-recovery-command.test.ts`;
   - the users of the renamed replacement type and mutators (7 `src` files, all in the mapping).
 - Correction to round 1: AR-002's evidence said "no caller in `src` or `tests`". Tests do call the staged activation; my search was cut short by an output limit. The finding stands under Principle 7's "code that only its own tests call", as SR-002 records.
-- Latest Authoritative Round: 2
+- Round 3 trigger: SR-003 after the source review CRR-001: CR-002 (Design Impact: only the studio wired both renewal parts) and CR-001 (unread `RuntimeSwitch.cause` and `CodexAppServerRpcError.rpcCode`). DEC-007 (a); REQ-006 extended; AC-008 added.
+- Round 3 evidence, read on the branch at `c419bb4b36`:
+  - `general-process-run-supervisor.ts:155-190` (one `AgentRunManager` with `inputPreface` and `lifecycleObserver` = `platformInputNotices`, and the resource manager's observer);
+  - `general-process-run-supervisor-input.ts:68-77`;
+  - `runtime-switch-memory-port.ts:27` (`RuntimeSwitching = { memory }`);
+  - `application-execution-scope-kernel-builder.ts:105-155, 286` (no `inputPreface` or observer; the lifecycle's `switching` uses `getDefaultRuntimeSwitchMemory()`);
+  - `start-standalone-application-host.ts:258-296` (no `runtimeSwitching`; notices without the hand-over);
+  - `standalone-agent-run-eligibility.ts:7-16` and `standalone-stopped-run-selection-updater.ts:126` (`canSwitchRuntime`);
+  - `standalone-application-host/api/register-standalone-application-rest.ts:92` (the host serves only the application backend proxy, no run-selection mutation);
+  - `runtime-handover-notice-service.ts:29-30`, `agent-run-platform-notices.ts:21-23` (per-run state, nothing to close).
+- Latest Authoritative Round: 3
 - Current-State Evidence Basis: worktree `codex/stale-runtime-session-recovery-599` at `0da6bfbfc1`. Files read:
   - Switch domain and memory: `agent-execution/domain/runtime-switch.ts` (whole); `agent-memory/services/runtime-switch-recorder.ts` (whole); `agent-memory/services/runtime-handover-reader.ts:5, 23`; `runtime-handover-notices/services/runtime-handover-notice-service.ts:22, 78`; `runtime-handover-notice-builder.ts:20-47`.
   - Activation: `agent-execution/services/agent-run-activation-operation.ts:65-85`; `standalone-agent-run-lifecycle-service.ts:205-232, 321-334`.
@@ -59,8 +69,8 @@
 | BEH-001 | User | Pass | Pass (PRB-002, PRB-007) | Pass (DS-001, DS-003) | Confirmed | — |
 | BEH-002…004 | User | Pass | Pass (PRB-003…005, 008) | Pass (DS-004) | Confirmed | N-1 (Grok exactness) |
 | BEH-005 | System | Pass | Pass | Pass (typed error only; `AggregateError` never renewed) | Confirmed | — |
-| BEH-006 | Contract | Pass | Pass | Pass (stored marker text; key-idempotent recorder; runtime-neutral notice) | Confirmed | — |
-| BEH-007 | User | Pass | Pass | Pass (`replace_lost_session` decided in all five consumers; AC-005 through the real Team and Org roots; delegated copies on DS-001) | Confirmed | — |
+| BEH-006 | Contract | Pass | Pass | Pass (stored marker text; key-idempotent recorder; runtime-neutral notice; SR-003: every composition that renews also prefaces the notice) | Confirmed | — |
+| BEH-007 | User | Pass | Pass | Pass (all five consumers; real roots; SR-003 Compositions table covers the studio, the application scope and the standalone application host; AC-008 per composition) | Confirmed | — |
 
 ## Supplemental Artifact Coherence Verdict
 
@@ -255,9 +265,14 @@ Implementation Engineer (`/implementation_engineer`); informational notice to th
 - **N-2.** Adopted: delegated copies are on DS-001.
 - **N-3.** RSK-002 (DeepSeek "not resumable") is accepted as recorded. A session that exists but cannot be resumed is a dead end either way.
 - **N-4.** Adopted: application-scope runs are on DS-001.
+- **N-5 (round 3).** The Compositions note says `canSwitchRuntime` keeps switches unoffered on the application paths.
+  - That holds for application-owned runs: `canSwitchRuntime` excludes them (`standalone-agent-run-eligibility.ts:7-16`).
+  - On the standalone application host, the protection is that the host serves no run-selection surface: only the application backend proxy (`register-standalone-application-rest.ts:92`). Its own standalone runs would otherwise pass `canSwitchRuntime`.
+  - Correct the citation in the design spec and the rewritten supervisor-input comment. Behavior is as claimed: giving the host `runtimeSwitching` makes renewals work, and no product surface can store a switch there.
+- **CR-001 (round 3).** Removing `RuntimeSwitch.cause` and `rpcCode` is right under Principle 7. D-1's reason still holds without `cause`: the builders, the key prefixes (`runtime_switch:` / `session_renewal:`) and the stored marker text keep the triggers apart.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass` (ARCH-REV-002, SR-002)
-- Material-Premise Gate: `Pass` (MP-001 resolved)
-- Notes: the member renewal now reaches all five binding-change consumers through one shared replacement payload, and the dead staged activation is removed first. D-1, the Claude check and the recognition rules stand as judged in round 1.
+- Review Decision: `Pass` (ARCH-REV-003, SR-003)
+- Material-Premise Gate: `Pass`
+- Notes: the rule "a composition wires both the switch memory and the hand-over notice, or offers no renewal" is the right invariant. All three compositions now wire both, the same way the studio does. Switches remain unoffered where they were. Rounds 1 and 2 stand.

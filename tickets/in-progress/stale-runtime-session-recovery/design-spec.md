@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-002` (revised for ARCH-REV-001: AR-001, AR-002, N-1, N-2)
+- Current solution revision ID: `SR-003` (revised for CRR-001: CR-002 composition wiring, CR-001 unread fields; earlier: SR-002 for ARCH-REV-001)
 - Approved requirements baseline: `requirements-doc.md` at SR-001 (SR-002 clarified AC-005's verification paths only), approved by the Solution Designer within the direction; the founder was informed in this conversation on 2026-11-22.
 - Behavior-defining supplements: none.
 - User approval of the design: `Not required` (the Task does not ask for it).
@@ -104,6 +104,17 @@ When a runtime reports, by its own exact signal, that the run's saved session no
   | Run history row | The session ID changes, as after a switch; unchanged |
   | GraphQL | No change |
 
+- **Compositions (CRR-001 CR-002; REQ-006, AC-008).** A renewal needs two parts in the composition that runs the agent: the switch memory, for the fresh-session steps, and `RuntimeHandoverNoticeService` in the run manager's input preface, so the fresh session gets the notice. Rule: every composition that runs external-runtime agents wires both, or offers no renewal. Decision (DEC-007): all three wire both.
+
+  | Composition | Switch memory | Hand-over notice | Change |
+  | --- | --- | --- | --- |
+  | Studio (`compositions/build-studio-server.ts:283-306`) | `runtimeSwitching: { memory: new RuntimeSwitchRecorder() }` | First source of `platformInputNotices` | None (already both) |
+  | Application execution scope (`application-platform/execution/application-execution-scope-kernel-builder.ts`) | The lifecycle's `switching` (commit `2acd842c95`, kept) | None today: its `AgentRunManager` (`:144-170`) has no `inputPreface` | Give its `AgentRunManager` an `inputPreface`, and the same lifecycle observer wiring the general supervisor uses (`general-process-run-supervisor.ts:163, 189-190`): an `AgentRunPlatformNotices` holding only a `RuntimeHandoverNoticeService` (journals, `readPendingRuntimeHandover`). Application runs get no other platform notice, as today. |
+  | Standalone application host (`standalone-application-host/start-standalone-application-host.ts:262-293`) | None: the supervisor gets no `runtimeSwitching`, so its standalone lifecycle (and the delegated copies through it) rethrows the typed error. Its members renew through the planner's default memory. | None in `platformInputNotices` (`:290`) | Pass `runtimeSwitching: { memory: new RuntimeSwitchRecorder() }`, and put a `RuntimeHandoverNoticeService` first in its `AgentRunPlatformNotices` (as the studio orders it) |
+
+  Runtime switches stay unoffered where they are today, so on the application paths the port serves only renewals:
+  - in the application execution scope, `canSwitchRuntime` refuses a switch save for application-owned runs (`standalone-agent-run-eligibility.ts:7-16`; `standalone-stopped-run-selection-updater.ts:126`);
+  - on the standalone application host, no run-selection surface is served, only the application backend proxy (`register-standalone-application-rest.ts:92`). Its own standalone runs would pass `canSwitchRuntime`, but nothing there can save a switch (ARCH-REV-003 N-5, factual correction). The supervisor input's comment (`general-process-run-supervisor-input.ts:72-77`, "None (the application host): … fails closed on a pending switch") is rewritten: every composition now gives the port, which is used for switches where they are offered and for renewals everywhere.
 - **Derived consumers of the member binding change** (`CollaborationAgentPlatformBindingChange` gains `replace_lost_session`; AR-001). Each consumer switches on the kind; the decision for each:
 
   | # | Consumer | Decision for `replace_lost_session` |
@@ -158,8 +169,9 @@ When a runtime reports, by its own exact signal, that the run's saved session no
     - the Claude process open has two forms: a new session (unchanged, lazy) and a restore (eager, checked).
   - **Behavior by absence** checked: the renewal is triggered by an explicit typed error from the runtime's positive "not found" signal, never by a failed lookup in general, and never by "any restore error". A session file that is absent from a scan does not start a renewal.
   - **Vocabulary drift** fires: a renewal is carried by the switch mechanism. Response:
-    - `RuntimeSwitch` gains a `cause` field: `"runtime_change"` or `"lost_session"`;
-    - the glossary adds "Lost runtime session" and widens "Switch marker" to name both lines;
+    - the two triggers differ only where the code needs them to: in their builder (`buildRuntimeSwitchBetween` or `buildSessionRenewal`), their key prefix (`runtime_switch:` or `session_renewal:`) and their marker text;
+    - no `cause` field, because no production code reads one (CRR-001 CR-001, DESIGN.md rule 11; SR-003 removed it from SR-001's design);
+    - the glossary adds "Lost runtime session" and "Session renewal" (by key and marker) and widens "Switch marker" to name both lines;
     - the stored boundary type stays `runtime_switch` (D-1).
   - **Persisted-data transition** fires: no schema change. Existing shapes are written on a new trigger. Decision below.
   - **Empty indirection** checked: no port or wrapper is added. The typed error is a value, and the renewal builder is a function beside the switch builder.
@@ -168,7 +180,7 @@ When a runtime reports, by its own exact signal, that the run's saved session no
   - **D-1, Principle 15 (stored names):** the renewal's archived segment keeps `boundary_type: "runtime_switch"`, and its marker keeps sender `system.runtime_handover`.
     - Why: both mean "the run continues in a new runtime session here; the earlier records are handed over". Every reader (§3.7 chat, §3.6 notice, the journal) must treat a renewal exactly as a switch.
     - The alternative cost: renaming the stored type to a neutral name would need a sealed migration of every switched run's raw-trace manifest (DESIGN.md rule 10), and reader changes, for no behavioral difference.
-    - The meaning is defined once in the glossary. The `cause` field in code keeps the two triggers distinct where they differ: the marker text and the key.
+    - The meaning is defined once in the glossary. The two builders keep the triggers distinct where they differ: the marker text and the key.
 - **Root cause classification:** `Missing Invariant`. The activation owners must enforce "a lost runtime session is continued from the journal, never a dead end", and today nothing does.
 - **Refactor needed now:** `Yes`, small:
   - `activateSwitched` is split so its fresh-session steps take a `RuntimeSwitch` from either trigger, and `beginSwitch` is split the same way;
@@ -181,7 +193,7 @@ When a runtime reports, by its own exact signal, that the run's saved session no
 ## Terminology
 
 - **Lost runtime session:** a run's saved external runtime session that its runtime reports as not existing (PRB-001…008). Added to `GLOSSARY.md`.
-- **Session renewal:** continuing a run whose runtime session was lost, in a fresh session of the same runtime and model, through the runtime-switch steps (`RuntimeSwitch.cause = "lost_session"`). Added to `GLOSSARY.md` under "Agent runtime switch".
+- **Session renewal:** continuing a run whose runtime session was lost, in a fresh session of the same runtime and model, through the runtime-switch steps (its key `session_renewal:<runId>:<lost ID>` and its marker line). Added to `GLOSSARY.md` under "Agent runtime switch"; its reference to `RuntimeSwitch.cause` is removed (CR-001).
 - **Switch marker:** widened. It reads "Agent runtime changed from … to …" for a runtime change, or the REQ-004 line for a lost session.
 
 ## Legacy Removal Policy (Mandatory)
@@ -223,7 +235,7 @@ When a runtime reports, by its own exact signal, that the run's saved session no
 
 | Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
 | --- | --- | --- | --- | --- |
-| DS-001 | The restore tries the saved session. On the runtime's exact "not found", the lifecycle continues the same activation as a switch, with `from = to` and the lost-session marker. A failure part-way leaves what a switch failure leaves, and the next message completes it: the key comes from the lost ID, so the retry finds its segment and marker. | lifecycle, run manager, backend, switch memory, metadata | `StandaloneAgentRunLifecycleService` | Warning log `RUNTIME_SESSION_LOST` |
+| DS-001 | In every composition (studio, application scope, application host), each wiring both parts. The restore tries the saved session. On the runtime's exact "not found", the lifecycle continues the same activation as a switch, with `from = to` and the lost-session marker. A failure part-way leaves what a switch failure leaves, and the next message completes it: the key comes from the lost ID, so the retry finds its segment and marker. | lifecycle, run manager, backend, switch memory, metadata | `StandaloneAgentRunLifecycleService` | Warning log `RUNTIME_SESSION_LOST` |
 | DS-002 | As DS-001 inside the member handle, for Team and Org members. The commit is `replace_lost_session`, a compare-and-set in the Team or Org tree, and every consumer of the binding change takes it (Change Scope table). Delegated copies take DS-001 (N-2). | handle, planner, switch attempt, tree | `ConfiguredAgentExecutionHandle` | same |
 | DS-003 | Claude restore: the session is created with the restored lifecycle, then `verifyResumable()` opens the process and awaits the SDK's `initializationResult()`. The exact missing-session text (the same ID) becomes the typed error, and the process generation is released. Any other failure is thrown as today. | Claude factory, session, process, SDK | Claude backend | — |
 | DS-004 | Each backend catches its own exact signal (table below) and throws the typed error, after releasing what it started (AGY's new conversation process). | backends | each backend | — |
@@ -296,7 +308,7 @@ The frames the CLI emits before it exits (one error `result`, then the exit) mus
 | Interface / API / Query / Command / Method | Subject Owned | Responsibility | Accepted Identity Shape(s) | Notes |
 | --- | --- | --- | --- | --- |
 | `class SavedRuntimeSessionMissingError extends AgentRunActivationError` (code `SAVED_RUNTIME_SESSION_MISSING`; fields `runtimeKind`, `platformAgentRunId`) | one restore attempt | "this runtime reports this session does not exist" | the lost ID | A value; added to the activation error codes |
-| `buildSessionRenewal({ runId, side, lostPlatformAgentRunId }): RuntimeSwitch` | one renewal | key `session_renewal:<runId>:<lostId>`, `markerTraceId` from the key, `from = to = side`, `cause: "lost_session"`, marker text REQ-004 using `agentRuntimeName(side.runtimeKind)` | run ID + lost ID | Beside `buildRuntimeSwitchBetween`, which sets `cause: "runtime_change"` |
+| `buildSessionRenewal({ runId, side, lostPlatformAgentRunId }): RuntimeSwitch` | one renewal | key `session_renewal:<runId>:<lostId>`, `markerTraceId` from the key, `from = to = side`, marker text REQ-004 using `agentRuntimeName(side.runtimeKind)` | run ID + lost ID | Beside `buildRuntimeSwitchBetween`. The `RuntimeSwitch` type is unchanged: no `cause` field (CR-001). |
 | `ClaudeSession.verifyResumable(): Promise<void>` | one restored Claude session | open and await initialization; translate the exact text | — | Called only by the Claude restore preparation |
 | `AcpAgentSessionProfile.isMissingSession(error, sessionId): boolean` | one ACP agent | its exact not-found shape | session ID | Grok: JSON-RPC error with `data.code === "FS_NOT_FOUND"`. DeepSeek: code `-32602` and message `Invalid params: session is not resumable: <sessionId>`. The other ACP agents: `false` |
 | `ConfiguredAgentActivationPlanner.beginSessionRenewal(config, lostPlatformAgentRunId)` | one member renewal | an operation with a renewal `switching` attempt and the renewal binding change | lost ID | Mirrors `beginSwitch` (shared private steps) |
@@ -316,7 +328,7 @@ The frames the CLI emits before it exits (one error `result`, then the exit) mus
 | Node / Subject | Current / Proposed Name | Name Is Natural And Self-Descriptive? | Same Meaning And Name Everywhere? | Naming Drift Risk | Corrective Action |
 | --- | --- | --- | --- | --- | --- |
 | Missing session | `SavedRuntimeSessionMissingError`, glossary "Lost runtime session" | Yes | Yes, with the glossary line | Low | Glossary |
-| Renewal | `buildSessionRenewal`, `cause: "lost_session"` | Yes | Yes | Medium (D-1) | Glossary widens "Switch marker"; D-1 recorded |
+| Renewal | `buildSessionRenewal`, key prefix `session_renewal:` | Yes | Yes | Medium (D-1) | Glossary widens "Switch marker"; D-1 recorded |
 
 ## Existing Capability / Subsystem Reuse Check
 
@@ -351,7 +363,7 @@ See Final File Responsibility Mapping.
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Parallel / Overlapping Representation Risk | Corrective Action |
 | --- | --- | --- | --- | --- |
-| `RuntimeSwitch` + `cause` | Yes | Yes | Low | `cause` is required on both builders |
+| `RuntimeSwitch` (unchanged) | Yes | Yes | Low | No `cause` (CR-001) |
 
 ## Final File Responsibility Mapping
 
@@ -360,7 +372,7 @@ All paths under `autobyteus-server-ts/src/` unless noted.
 | File | Change | Concern |
 | --- | --- | --- |
 | `agent-execution/errors.ts` | Modify | `SavedRuntimeSessionMissingError`; code added to `AgentRunActivationErrorCode` |
-| `agent-execution/domain/runtime-switch.ts` | Modify | `cause`; `buildSessionRenewal` |
+| `agent-execution/domain/runtime-switch.ts` | Modify | `buildSessionRenewal` (no `cause` field, CR-001) |
 | `agent-execution/services/standalone-agent-run-lifecycle-service.ts` | Modify | `restoreStarted` catches the typed error, waits until the failed operation is `released` (otherwise rethrows), logs, builds the renewal and calls `activateInFreshSession` (the extracted body of `activateSwitched`). If the file passes 500 lines, the fresh-session steps move to their own file in the same folder. |
 | `agent-collaboration/execution/backends/configured-agent-activation-planner.ts` | Modify | `beginSessionRenewal` (shares the private steps of `beginSwitch`) |
 | `agent-collaboration/execution/backends/configured-agent-execution-handle.ts` | Modify | `prepareActivation`: on the typed error from a `restore_external` prepare, confirm release, then use `planner.beginSessionRenewal` and set `switchAttempt`. Above 500 lines already (529): put the branch in a small owned function or file (`configured-agent-session-renewal.ts`) so the handle does not grow |
@@ -373,6 +385,10 @@ All paths under `autobyteus-server-ts/src/` unless noted.
 | `agent-execution/backends/codex/thread/codex-thread-manager.ts` | Modify | `resumeRemoteThread`: JSON-RPC error message `no rollout found for thread id <id>` with the requested ID → typed error |
 | `agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts`, `antigravity/stream/agy-stream-process.ts` | Modify | When the ID differs and stderr holds `conversation "<expectedId>" not found`: stop the process, then throw the typed error. Otherwise conflict as today. |
 | `agent-execution/backends/acp/session/*` and `runtime-management/grok/*`, `runtime-management/deepseek-harness/*` profiles | Modify | `isMissingSession` per profile; the ACP restore throws the typed error |
+| `application-platform/execution/application-execution-scope-kernel-builder.ts` | Modify | Hand-over notice in its run manager's input preface, with the observer wiring (Compositions table) |
+| `standalone-application-host/start-standalone-application-host.ts` | Modify | `runtimeSwitching` and the hand-over notice first in its notice slot |
+| `agent-execution/runtime/general-process-run-supervisor-input.ts` | Modify | The `runtimeSwitching` comment (Compositions table) |
+| `runtime-management/codex/client/codex-app-server-client.ts` | Modify | Remove the unread `CodexAppServerRpcError.rpcCode` field (CR-001); the message text keeps the code |
 | `GLOSSARY.md` (root) | Modify | "Lost runtime session", "Session renewal", widened "Switch marker" |
 | `autobyteus-server-ts/docs/modules/run_history.md` (and `agent_execution.md` where activation is described) | Modify | The renewal paragraph |
 | Tests | Add/Modify | See Guidance |
@@ -411,7 +427,7 @@ N/A.
 
 ## Change / Refactor Sequence
 
-1. Add the typed error and `buildSessionRenewal` (`cause` on both builders), with unit tests.
+1. Add the typed error and `buildSessionRenewal` (no `cause` field; remove the one the first implementation added, and `CodexAppServerRpcError.rpcCode`, per CR-001), with unit tests.
 2. Recognition per backend with unit tests on the probed shapes, including the negative cases (AC-003).
 3. Claude `verifyResumable` (DS-003). Start from PRB-007: a unit test with a fake SDK for both outcomes, and an integration test with the real CLI on an isolated `CLAUDE_CONFIG_DIR` (no model call).
 4. Standalone: extract `activateInFreshSession`, add the renewal branch, and add tests (AC-001, AC-003, AC-004 on real switch memory with synthetic folders).
@@ -425,6 +441,7 @@ N/A.
    - an Antigravity case through the scripted `agy-failure-cli.mjs` with a not-found case added.
    The answer needs a model for Claude: run it behind the live gate, or use the scripted path where it exists (AC-001, AC-005, AC-006).
 7. Glossary and docs.
+8. Compositions (SR-003, CR-002): wire the hand-over notice into the application scope's run manager, and the switch memory and notice into the application host. Rewrite the supervisor input's comment. Add the AC-008 tests.
 
 ## Key Tradeoffs
 
@@ -454,6 +471,11 @@ N/A.
   - an Org member through a real Org root (`AgentOrgRun`);
   - a delegated copy through the path it takes (the standalone lifecycle with a member context).
   Built-server E2E for the Team member; unit or integration tests with the real roots for the Org member and the delegated copy.
+- **AC-008, one test per composition:** after a renewal, the fresh session's first input begins with the hand-over notice:
+  - studio standalone and member (existing built-server E2E);
+  - the application execution scope, with its real kernel builder;
+  - the application host's standalone lifecycle, covering delegated copies, and a host member, with the host's real composition or its supervisor wiring.
+  Also assert that the host's standalone lifecycle no longer rethrows the typed error.
 - **Retry tests (AC-004):** fail after `record` (the commit throws), then a second activation. Assert one marker with the renewal key, one segment, and earlier segments byte-unchanged.
 - **Negative tests (AC-003), one per runtime:**
   - an auth error;

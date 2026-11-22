@@ -86,3 +86,18 @@ Constraints: `DESIGN.md`, `TESTING.md`; private data read-only; synthetic fixtur
 - **Design case:** Case 26 added to `docs/design-cases.md`.
 - Sent to `/architecture_reviewer` for round 2.
 - 2026-11-22: ARCH-REV-002 **Pass** on SR-002 (AR-001 and AR-002 resolved). The reviewer delivered the package to `/implementation_engineer`. Informational, so no forwarding by the Solution Designer. The reviewer corrected their round-1 AR-002 evidence in their revision record: four test files do call the staged activation, and the Principle 7 basis stands.
+
+## Round 3 (SR-003), 2026-11-22: response to CRR-001
+
+- **CR-002, Design Impact, resolved in design** (REQ-006 extended, AC-008, DEC-007 (a), approved within the direction, founder informed):
+  - the Compositions table in the design spec's Change Scope. The rule: a composition wires both the switch memory and the hand-over notice, or offers no renewal;
+  - the studio already wires both;
+  - the application execution scope gains the hand-over notice in its run manager's input preface, with observer wiring; it gets no other platform notice;
+  - the standalone application host gains `runtimeSwitching` and the hand-over notice first in its notice slot;
+  - switches stay unoffered there (`canSwitchRuntime`);
+  - the supervisor input comment is rewritten;
+  - AC-008 tests per composition.
+- **CR-001, resolved in design:** `RuntimeSwitch.cause` is removed from the design and glossary, and `CodexAppServerRpcError.rpcCode` is to be removed. No production reader exists for either.
+- **Design case:** Case 27 added.
+- **Route:** Large / High, so `/architecture_reviewer`, because ARCH-REV-002 covered SR-002 only. Then implementation, source review and API/E2E.
+- 2026-11-22: ARCH-REV-003 **Pass** on SR-003. The reviewer delivered to `/implementation_engineer`; informational, so no forwarding by the Solution Designer. The N-5 citation is corrected in the design spec.

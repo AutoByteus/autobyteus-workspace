@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-002` (AC-005's verification paths clarified; intended behavior unchanged)
+- Current solution revision ID: `SR-003` (REQ-006 extended to the application paths, AC-008 added, DEC-007; approved within the direction, founder informed 2026-11-22)
 - Package identifier: `stale-runtime-session-recovery` (autobyteus-599)
 - Request / ticket: Project Task `autobyteus-599` in Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`: "Resuming an older run fails with `CLAUDE_PROCESS_EXITED: No conversation found with session ID` — investigate and recover cleanly via fresh session + work journal"
 - Requested by: `/project_task_manager` (`project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), from the founder's live observation (2026-11-21)
@@ -111,7 +111,7 @@ None.
 | REQ-003 | The fresh session receives the hand-over notice with its first input, from the run's journals, as after a runtime switch. The previous records are kept as a closed segment and stay in the chat. | BEH-006 | Must | The journal is the context | autobyteus-316/583 contract | Task direction 2 |
 | REQ-004 | The chat and the journal show one line instead of "Agent runtime changed": `The saved <runtime name> session of this run was no longer available, so a new session continues from the work journal.` | BEH-006 | Must | The user must see why the agent restarted | N/A | DEC-003 |
 | REQ-005 | The recovery is safe to repeat. A failure part-way leaves the run so that the next message completes it, with one marker and one segment for that lost session, and never loses or duplicates records. | BEH-006 | Must | Same guarantees as a switch (I-3, I-5, I-7) | contract | DEC-004 |
-| REQ-006 | The recovery applies to standalone runs, Team and Org members, and delegated copies, on Claude Agent SDK, Codex App Server, Antigravity CLI, Grok Build and DeepSeek Harness | BEH-007 | Must | Every activation path and runtime has the dead end | PRB-001…005 | Task direction 1 |
+| REQ-006 | The recovery applies to every composition that runs external-runtime agents: the studio server (standalone runs, Team and Org members, delegated copies), application-scope runs, and the standalone application host (its standalone runs, delegated copies and members). It applies on Claude Agent SDK, Codex App Server, Antigravity CLI, Grok Build and DeepSeek Harness. A composition offers the recovery only with both of its parts, the fresh-session steps and the hand-over notice (DEC-007). | BEH-007 | Must | Every activation path and runtime has the dead end. A fresh session without the notice would continue without its context. | PRB-001…005; CRR-001 CR-002 | Task direction 1; DEC-007 |
 | REQ-007 | The server log records each recovery with the run, the runtime and the lost session ID (one warning) | BEH-001…004 | Should | Operability | N/A | — |
 
 ## Acceptance Criteria
@@ -125,6 +125,7 @@ None.
 | AC-005 | REQ-006 | BEH-007, SCN-005 | A Team member, an Org member and a delegated copy, each with a lost session, receive a message, each through the path it really takes: the Team root, the Org root, and for a delegated copy the standalone lifecycle with a member context | Recovers as AC-001; other members unchanged; the Team or Org tree holds the new session ID; a later re-activation restores the new session | — | Built-server E2E (Team member); real-root tests (Org member, delegated copy) |
 | AC-006 | REQ-003 | BEH-006 | After recovery, the next messages | Go to the new session with no second notice; reopening the chat shows the earlier conversation, the line, and the new conversation | — | E2E |
 | AC-007 | REQ-001 | SCN-001 | A real Claude session made unavailable on an isolated test data root (a synthetic run whose session ID was never created, or whose test-owned session file is removed) | Live: the run recovers and answers | — | Live check by API/E2E, gated, isolated HOME/`CLAUDE_CONFIG_DIR`; never the founder's sessions |
+| AC-008 | REQ-003, REQ-006 | BEH-006, BEH-007 | A renewal on each composition: studio standalone, studio member, application-scope run, application host standalone or delegated copy, application host member | The fresh session's first input begins with the hand-over notice on every path; no path renews without it, and none is left with the dead end | — | One test per composition with its real wiring (CRR-001 CR-002) |
 
 ## Relevant Scenarios And Journeys
 
@@ -191,6 +192,7 @@ None.
 | DEC-004 | Safe to repeat? | A crash mid-recovery | The switch's idempotency by key | Key the recovery by the lost session ID, so a retry finds its own marker and segment | Solution Designer | Decided |
 | DEC-005 | Prevent the Claude cleanup too? | Fewer recoveries | Setting `cleanupPeriodDays` affects the founder's whole `~/.claude` and his own Claude | Out of scope; recorded as FU-001 for his decision. Recovery is needed anyway: his own Claude also cleans up. | Solution Designer | Decided (follow-up) |
 | DEC-006 | N-1 evidence: how to probe Grok's `FS_NOT_FOUND` for a present session whose cwd was removed? The implementation engineer asked 2026-11-22. | Grok cannot create a session in an isolated home without credentials (`Authentication required`), and the founder's `~/.grok` must not be written | (A) isolated home plus the test vault's `provider.grok.api-key` as `XAI_API_KEY`; `session/new` and `session/resume` make no model call. (B) no probe, and rely on the safety argument (no marker before a valid fresh session). | (A): it gives real evidence at nil cost and touches nothing of the founder's. The test vault is the repository's sanctioned source of provider keys for tests and investigation (AGENTS.md, TESTING.md#test-vault). The key is read through the vault, never from `.env` or the environment, and is passed only to the probe's child process. It is not a new credential, and no host or security setting changes. Criterion: REQ-002 / AC-003 (Grok exactness). If a removed cwd also gives `FS_NOT_FOUND` while `session/new` would succeed, narrow the matcher; pin the result either way. | Solution Designer | Decided: (A) |
+| DEC-007 | The application paths: offer the renewal there, or keep today's error? | CRR-001 CR-002: the application scope renewed without the notice; the application host's standalone lifecycle could not renew, and its members renewed without the notice | (a) wire both parts in every composition; (b) not offered on the application paths, which then needs a gate that also stops the host's members | Application runs on Claude lose their session after 30 days exactly like studio runs, and the Task's direction covers any run. Wiring the hand-over notice and the switch memory is the same two pieces the studio already has. Switches stay unoffered where they are today (`canSwitchRuntime`), so only renewals use them there. Option (b) leaves a dead end and needs its own gate. Recommend (a). | Solution Designer | Decided: (a) |
 
 ## Traceability
 
@@ -198,10 +200,10 @@ None.
 | --- | --- | --- | --- | --- | --- |
 | REQ-001 | UC-001 | BEH-001…004 | AC-001, AC-002, AC-007 | SCN-001…004 | PRB-001…005 |
 | REQ-002 | UC-001 | BEH-005 | AC-003 | SCN-001…004 | PRB-001…005 |
-| REQ-003 | UC-001 | BEH-006 | AC-001, AC-006 | SCN-001 | contract |
+| REQ-003 | UC-001 | BEH-006 | AC-001, AC-006, AC-008 | SCN-001 | contract |
 | REQ-004 | UC-001 | BEH-006 | AC-001 | SCN-001 | — |
 | REQ-005 | UC-001 | BEH-006 | AC-004 | SCN-001 | contract |
-| REQ-006 | UC-001 | BEH-007 | AC-002, AC-005 | SCN-002…005 | — |
+| REQ-006 | UC-001 | BEH-007 | AC-002, AC-005, AC-008 | SCN-002…005 | CRR-001 CR-002 |
 | REQ-007 | UC-001 | BEH-001…004 | AC-001 | SCN-001 | — |
 
 ## Architecture Phase Input

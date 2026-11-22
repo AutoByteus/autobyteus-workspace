@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1: initial review of the Solution Designer's handoff (2026-11-22) | SR-001 | N/A | Fail (Design Impact) | AR-001, AR-002 |
 | ARCH-REV-002 | Round 2: SR-002 resubmission (2026-11-22) | SR-002 | Fail | Pass | AR-001, AR-002 resolved |
+| ARCH-REV-003 | Round 3: SR-003 after CRR-001 (CR-001, CR-002) (2026-11-22) | SR-003 | Pass | Pass | none (note N-5) |
 
 ## Revision Entries
 
@@ -58,3 +59,28 @@ None.
 - Material classification changes: none (`Large` / `High`)
 - Recommended recipient: Implementation Engineer; informational notice to the Solution Designer
 - Remaining risks or uncertainty: N-1 (the Grok probe result), N-3 (RSK-002)
+
+### ARCH-REV-003 — SR-003: every composition wires both renewal parts; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/stale-runtime-session-recovery-599/tickets/in-progress/stale-runtime-session-recovery/design-review-report.md`
+- Review round and trigger: round 3; the Solution Designer's SR-003 (`solution-designer-handoff.md`, "Round 3") after the source review CRR-001 (CR-002 Design Impact, CR-001)
+- Triggering role, report path, and finding IDs: Code Reviewer, then the Solution Designer; `code-review-report.md`; CR-001, CR-002 (code review)
+- Relevant solution revision IDs: SR-003
+- Prior authoritative decision: `Pass` (ARCH-REV-002)
+- Current authoritative decision: `Pass`
+- What changed:
+  - The Compositions table and rule: the application scope gains the hand-over notice as `inputPreface` and observer; the standalone application host gains `runtimeSwitching` and the notice first in its slot. DEC-007 (a); REQ-006 extended; AC-008 added.
+  - CR-001: the unread `cause` and `rpcCode` are removed, and D-1 is reworded.
+  - Verified in code; nothing in the notices needs closing.
+- New note N-5: on the host, switches stay unoffered because no run-selection surface is served, not because of `canSwitchRuntime`.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001, AR-002 | Resolved | Resolved (unchanged) | ARCH-REV-002 | SR-003 adds compositions; the member consumers and removals stand |
+
+- New or remaining finding IDs: none (N-5 is a citation correction)
+- Material classification changes: none (`Large` / `High`)
+- Recommended recipient: Implementation Engineer; informational notice to the Solution Designer
+- Remaining risks or uncertainty: N-1 (the Grok probe), N-3
