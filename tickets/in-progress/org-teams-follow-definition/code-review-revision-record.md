@@ -10,6 +10,7 @@
 | CRR-004 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-001 failed | Pass | Fail | F-1, F-2, F-3, F-4, A-1 |
 | CRR-005 | `code-review-report.md` | Implementation Review / IR-004 complete | Fail | Pass | F-1, F-2, F-3, F-4, A-1 |
 | CRR-006 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-002 failed | Pass | Fail | F-5 |
+| CRR-007 | `code-review-report.md` | Implementation Review / IR-005 complete | Fail | Pass | F-5 |
 
 ## Revision Entries
 
@@ -215,3 +216,34 @@ None.
 - Material score or classification changes: not rescored; Large/High preserved
 - Recommended recipient: Implementation engineer
 - Remaining risks or uncertainty: launch from such a definition stays refused (today's rule, outside REQ-004).
+
+### CRR-007: Targeted delta review of IR-005
+
+- Canonical review report updated: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/code-review-report.md`
+- Review entry point and round: Implementation Review, round 7
+- Review scope: `Targeted Delta Review` (IR-005 `26f976f91b..cfc4bc67f2`, the F-5 path only)
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` § IR-005; F-5
+- Relevant solution revision IDs: SR-015
+- Relevant architecture-review revision IDs: ARCH-REV-010
+- Relevant implementation revision IDs: IR-005
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail (CRR-006)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - An opt-in `running_org` Org-rule compilation keeps an absent mounted-Team member endpoint as written. Only `viewFor` uses it, and every other caller stays strict.
+  - Gate: typecheck PASS. Affected suites green apart from the two package-watcher files on IR-001's environment list.
+  - Control: both F-5 cases fail without the opt-in.
+  - Every category is at least 9.4.
+- Supported product scenario / material-premise basis changes: S-13 added and confirmed.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Classification | Resolution | Evidence |
+| --- | --- | --- | --- |
+| F-5 | Local Fix | Resolved | `CollaborationHandoffCompiler.compileOrg(…, { kind: "running_org" })` from `viewFor` only; positive, negative and reopen tests; control |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: every category at least 9.4 (average 9.45); Large/High preserved
+- Recommended recipient: API/E2E engineer (then an informational note to the implementation engineer)
+- Remaining risks or uncertainty: OC-13 built-server rerun pending.
