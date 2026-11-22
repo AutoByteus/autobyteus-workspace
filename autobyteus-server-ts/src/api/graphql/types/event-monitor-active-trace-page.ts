@@ -1,4 +1,5 @@
 import { createUnionType, Field, Float, ID, Int, ObjectType } from "type-graphql";
+import { GraphQLJSON } from "graphql-scalars";
 
 @ObjectType("EventMonitorActiveTraceAttachment")
 class EventMonitorActiveTraceAttachmentObject {
@@ -6,26 +7,6 @@ class EventMonitorActiveTraceAttachmentObject {
   @Field(() => String) fileType!: string;
   @Field(() => String, { nullable: true }) fileName!: string | null;
   @Field(() => String) locator!: string;
-}
-
-@ObjectType("EventMonitorToolSummaryArgs")
-class EventMonitorToolSummaryArgsObject {
-  @Field(() => String, { nullable: true }) path?: string | null;
-  @Field(() => String, { nullable: true }) file_path?: string | null;
-  @Field(() => String, { nullable: true }) filepath?: string | null;
-  @Field(() => String, { nullable: true }) filename?: string | null;
-  @Field(() => String, { nullable: true }) target_path?: string | null;
-  @Field(() => String, { nullable: true }) command?: string | null;
-  @Field(() => String, { nullable: true }) cmd?: string | null;
-  @Field(() => String, { nullable: true }) script?: string | null;
-  @Field(() => String, { nullable: true }) query?: string | null;
-  @Field(() => String, { nullable: true }) prompt?: string | null;
-  @Field(() => String, { nullable: true }) url?: string | null;
-  @Field(() => String, { nullable: true }) message?: string | null;
-  @Field(() => String, { nullable: true }) text?: string | null;
-  @Field(() => String, { nullable: true }) title?: string | null;
-  @Field(() => String, { nullable: true }) name?: string | null;
-  @Field(() => String, { nullable: true }) raw?: string | null;
 }
 
 @ObjectType("EventMonitorApprovalTarget")
@@ -73,7 +54,8 @@ class ToolCardVisualObject {
   @Field(() => String) cardKind!: string;
   @Field(() => String) toolName!: string;
   @Field(() => String) statusKey!: string;
-  @Field(() => EventMonitorToolSummaryArgsObject) summaryArgs!: EventMonitorToolSummaryArgsObject;
+  // The string values of the call's summary argument keys (TOOL_SUMMARY_ARGUMENT_KEYS), key → string (autobyteus-609 D-E).
+  @Field(() => GraphQLJSON) summaryArgs!: Record<string, string>;
   @Field(() => String, { nullable: true }) errorMessage?: string | null;
   @Field(() => EventMonitorApprovalTargetObject, { nullable: true }) approvalTarget?: EventMonitorApprovalTargetObject | null;
 }

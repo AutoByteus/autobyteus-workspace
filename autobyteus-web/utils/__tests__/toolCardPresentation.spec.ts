@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { TOOL_SUMMARY_ARGUMENT_KEYS } from '@autobyteus/agent-presentation-contracts';
 import {
   buildEventMonitorPageToolCardPresentation,
   buildToolCardPresentation,
@@ -96,5 +97,21 @@ describe('toolCardPresentation', () => {
     const card = buildEventMonitorPageToolCardPresentation({ invocationId: 'i-1', toolName: 'run_bash', statusKey: 'success', summaryArgs: { command: 'cd /w && make build' }, approvalTarget: null });
     expect(card.summary).toEqual({ kind: 'command', text: 'make build', title: 'cd /w && make build' });
   });
-});
 
+  // autobyteus-609 D-E (AC-E): an earlier page's card gets the node's summary arguments, the call's values for the shared
+  // keys (TOOL_SUMMARY_ARGUMENT_KEYS); it shows the live card's summary for the same call.
+  it.each([
+    ['send_message_to', { recipient_address: '/architecture_reviewer', content: 'Review it.' }],
+    ['get_project_task', { task_id: 'autobyteus-609' }],
+    ['run_command', { CommandLine: 'cd /w && pnpm test', Cwd: '/w' }],
+    ['view_file', { AbsolutePath: '/w/docs/plan.md', StartLine: 1 }],
+    ['search_web', { query: 'cats', hidden: { deep: true } }],
+    ['list_tabs', { limit: 3 }],
+  ] as const)('%s: the page card shows the live card\'s summary', (toolName, args) => {
+    const sharedKeys = new Set<string>(Object.values(TOOL_SUMMARY_ARGUMENT_KEYS).flat());
+    const summaryArgs = Object.fromEntries(Object.entries(args).filter(([key, value]) => sharedKeys.has(key) && typeof value === 'string')) as Record<string, string>;
+    const live = buildToolCardPresentation(toolSegment({ toolName, arguments: args }));
+    const page = buildEventMonitorPageToolCardPresentation({ invocationId: 'i-1', toolName, statusKey: 'success', summaryArgs, approvalTarget: null });
+    expect(page.summary).toEqual(live.summary);
+  });
+});

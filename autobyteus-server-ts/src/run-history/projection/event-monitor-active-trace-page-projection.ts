@@ -1,6 +1,7 @@
 import type { ContextFileReference } from "autobyteus-ts/agent/message/context-file-reference.js";
 import { ContextFileType } from "autobyteus-ts/agent/message/context-file-type.js";
 import { Buffer } from "node:buffer";
+import { TOOL_SUMMARY_ARGUMENT_KEYS, type ToolSummaryArgumentKey } from "@autobyteus/agent-presentation-contracts";
 import type { RawTraceMedia } from "autobyteus-ts/memory/models/raw-trace-item.js";
 import type { EventMonitorReplayEvent, HistoricalReplayToolEvent } from "./historical-replay-event-types.js";
 import type {
@@ -13,12 +14,8 @@ import type {
   EventMonitorToolSummaryArgs,
 } from "./event-monitor-active-trace-page-types.js";
 
-const SUMMARY_KEYS = [
-  "path", "file_path", "filepath", "filename", "target_path", "command", "cmd", "script",
-  "query", "prompt", "url", "message", "text", "title", "name", "raw",
-] as const;
-const FILE_KEYS = new Set(["path", "file_path", "filepath", "filename", "target_path"]);
-const COMMAND_KEYS = new Set(["command", "cmd", "script"]);
+// Which argument keys summarize a call: the one list the web's summary reads too (autobyteus-609 D-E).
+const ALL_SUMMARY_KEYS: readonly ToolSummaryArgumentKey[] = Object.values(TOOL_SUMMARY_ARGUMENT_KEYS).flat();
 
 const visualId = (eventId: string, kind: string, ordinal: number): string =>
   `active-trace-visual:v1:${Buffer.from(eventId, "utf8").toString("base64url")}:${kind}:${ordinal}`;
@@ -32,11 +29,12 @@ const ownString = (record: Record<string, unknown> | null, key: string): string 
 };
 
 const summaryArgs = (event: HistoricalReplayToolEvent): EventMonitorToolSummaryArgs => {
-  const allowed = event.activityType === "write_file" || event.activityType === "edit_file"
-    ? SUMMARY_KEYS.filter((key) => FILE_KEYS.has(key))
+  // A file write or edit travels with its file keys, a terminal command with its command keys, any other call with all.
+  const allowed: readonly ToolSummaryArgumentKey[] = event.activityType === "write_file" || event.activityType === "edit_file"
+    ? TOOL_SUMMARY_ARGUMENT_KEYS.file
     : event.activityType === "terminal_command"
-      ? SUMMARY_KEYS.filter((key) => COMMAND_KEYS.has(key))
-      : SUMMARY_KEYS;
+      ? TOOL_SUMMARY_ARGUMENT_KEYS.command
+      : ALL_SUMMARY_KEYS;
   const output: EventMonitorToolSummaryArgs = {};
   for (const key of allowed) {
     const value = ownString(event.toolArgs, key);
