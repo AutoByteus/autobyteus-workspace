@@ -81,4 +81,35 @@ describe("an application-scope run whose saved Claude session is lost", () => {
     expect(claude.inputs[0]!.endsWith("Continue the report.")).toBe(true);
     kernel.abortConstruction();
   });
+
+  it("a run that already took an input in this scope still gets the notice after its later renewal (the lifecycle observers)", async () => {
+    seedEarlierWork(runDir);
+    await new AgentRunMetadataService(memoryDir).writeMetadata(RUN_ID, {
+      runId: RUN_ID, agentDefinitionId: "agent-1", workspaceRootPath: memoryDir, memoryDir: runDir, llmModelIdentifier: "opus", llmConfig: null,
+      autoExecuteTools: false, runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, platformAgentRunId: LOST_SESSION, startedAt: "2026-10-14T09:00:00.000Z",
+      applicationExecutionContext: { applicationId: "app-1", bindingId: "binding-1", producer: { agentRunId: RUN_ID, displayName: "Agent" } },
+    });
+    vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const claude = lostSessionClaudeFactory({ restoresBeforeLoss: 1 });
+    const kernel = buildKernel(claude.factory);
+    const lifecycle = (kernel.agentRunService as unknown as { lifecycleService: {
+      activateRunAgent(runId: string, input: unknown): Promise<any> } }).lifecycleService;
+
+    // The saved session is still there: an ordinary restore and an input without a notice (the scope now knows "none").
+    const first = await lifecycle.activateRunAgent(RUN_ID, { memberExecutionContext: null });
+    await first.run.postUserMessage(new AgentInputUserMessage("First question.", SenderType.USER, null, {}));
+    await vi.waitFor(() => expect(claude.inputs).toHaveLength(1));
+    expect(claude.inputs[0]!.startsWith(HANDOVER_NOTICE_START)).toBe(false);
+    claude.endLatest(); // its process ends; the next activation releases it (the observers hear it) and restores
+
+    // Later the runtime has lost it: the renewal's first input carries the notice.
+    const renewed = await lifecycle.activateRunAgent(RUN_ID, { memberExecutionContext: null });
+    await renewed.run.postUserMessage(new AgentInputUserMessage("Continue the report.", SenderType.USER, null, {}));
+    await vi.waitFor(() => expect(claude.inputs).toHaveLength(2));
+
+    expect(claude.restores).toEqual([LOST_SESSION, LOST_SESSION]);
+    expect(renewed.metadata.platformAgentRunId).toBe(FRESH_SESSION);
+    expect(claude.inputs[1]!.startsWith(HANDOVER_NOTICE_START)).toBe(true);
+    kernel.abortConstruction();
+  });
 });
