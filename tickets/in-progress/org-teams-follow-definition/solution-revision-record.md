@@ -90,3 +90,7 @@
 - Trigger: ARCH-REV-004 (Fail): only AR-001's mapping `fromOrgInput(P) = /` remains (MP-07: `send_message_to(P)` would hit the root-address refusal; `delegate_task(P)` the wrong refusal text).
 - R-1''': `P` never maps to `/`: messages → the coordinator's team-space address (result shown as `P`); `delegate_task(P | P/x)` → own-Team CM-1 refusal before `requireNonRootAddress`; mentions and `list_available_agents` show `P`. Example fixed; tests added.
 - Intended behavior changed: No. Next action: architecture re-review.
+
+#### Review note on SR-010 (no new revision)
+
+- 2026-11-22: architecture review `ARCH-REV-005` — Pass on SR-010 (requirements SR-007), AR-001..AR-007 resolved, Large / High confirmed; the reviewer routed the package to `/implementation_engineer`. Informational for the Solution Designer.
