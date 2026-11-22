@@ -4,6 +4,7 @@
 
 | Revision ID | Phase | Trigger | Finding IDs | Prior Status | Current Status | Affected IDs | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| SR-018 | Design | Architecture review ARCH-REV-012 Fail | AR-012 (+ notes) | Approved; design Ready (reviewed Fail) | Approved; design Ready (revised) | REQ-007, AC-006 (realization only) | Path rewrite as one node pass re-run every attempt; container file written last; pass-touched files' writers classified with wait + follow-up |
 | SR-017 | Design | Architecture review ARCH-REV-011 Fail | AR-011 | Approved; design Ready (reviewed Fail) | Approved; design Ready (revised) | REQ-007, AC-006, DEC-001 (realization only) | Conversion rewrites typed paths under renamed member folders (587's received files included); prose and provider history kept |
 | SR-016 | Design | Delivery DR-001 Blocked (integration conflicts with autobyteus-587 and -599) | DR-001 | Approved; design Ready (implemented, validated at 46d7da4d35) | Approved; design Ready (revised) | REQ-001, REQ-005, REQ-007 (realization only) | 587 file transfer and 599 session renewal live in the units' own roots; container `remoteNodeOf` null; Org-hosting extensions not ported |
 | SR-015 | Mixed | Failure-origin review CRR-004 A-1 (minor Requirement Gap) | A-1 | Approved | Approved (DEC-007 by the Solution Designer within the direction, user informed) | REQ-002, DEC-007 | Same former-member refusal for other units at `P/x` |
@@ -165,4 +166,17 @@
 - Contract: §1 rule, §7, §9 path row, §10 row. contract-validation.md has an SR-017 note (values only, no shape change).
 - Tests: a beta.7 cross-node fixture whose references open after conversion; a re-run changes no byte; a foreign prefix is unchanged.
 - Next action: architecture re-review of SR-016 and SR-017 together.
+
+### SR-018 — The path rewrite always completes
+
+- Trigger: `ARCH-REV-012` Fail, AR-012 (Medium). After a crash between a unit's rename and the end of the node-wide rewrite, the per-unit "done" recognition or step 1 could skip the rewrite, leaving old paths for good (MP-12). There were also two non-blocking notes: one node pass for several Orgs, and the classification of migrations that write the files the pass touches.
+- Decisions:
+  - Only the container file marks an Org done, and step 6 writes it last.
+  - Each attempt runs one node pass with the maps of all pending Orgs. The maps are derived from the still-present tree v1 and include every committed rename, so the pass is re-run on every attempt until the Org is done. Per-unit recognition skips only the rename and the unit file.
+  - The pass also rewrites the unit logs written by step 4. There is one mapping place.
+  - The writers of pass-touched files (message logs, traces, Tasks, attachment links) join R-4 (c), with `waiting_for_<id>` and parameterized follow-ups. Those follow-ups use maps derived from the container files.
+- Requirements: unchanged.
+- Contract: §10 UC-004 row.
+- Tests: interrupt-and-retry at two points; a third start changes no byte; a pending writer predecessor and its late output.
+- Next action: architecture re-review of SR-016..SR-018.
 

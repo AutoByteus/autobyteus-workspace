@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-017` (SR-017: the conversion moves stored file paths into renamed member folders with them, after ARCH-REV-011 AR-011; SR-016: the base's autobyteus-587 file transfer and autobyteus-599 session renewal in the container model, after delivery DR-001; SR-015: former-member refusal for other units, CRR-004 A-1; SR-014: the delegation-chain case is `related`, after ARCH-REV-008; SR-013: step 2 of runs delegated by an Org unit, after CRR-001 CR-001; SR-012 aligns the contract after `ARCH-REV-006`: cross-unit `counterpart` on both lines with Org addresses, one application-ownership rule, delegation-records residue; SR-011 adds the storage contract and its validation, at the user's request; SR-010 revises after `ARCH-REV-004`: § SR-010 Revision fixes the meaning of `P`; SR-009 revises after `ARCH-REV-003`: § SR-009 Revision supersedes R-1's list of points; SR-006 revised SR-005 after `ARCH-REV-001`; SR-007 applied the user's DEC-006; SR-008 revises after `ARCH-REV-002`: § SR-008 Revision supersedes R-1, R-3's snapshot paragraph and R-4 (a))
+- Current solution revision ID: `SR-018` (SR-018: the path rewrite is gated so a retry always completes it, after ARCH-REV-012 AR-012; SR-017: the conversion moves stored file paths into renamed member folders with them, after ARCH-REV-011 AR-011; SR-016: the base's autobyteus-587 file transfer and autobyteus-599 session renewal in the container model, after delivery DR-001; SR-015: former-member refusal for other units, CRR-004 A-1; SR-014: the delegation-chain case is `related`, after ARCH-REV-008; SR-013: step 2 of runs delegated by an Org unit, after CRR-001 CR-001; SR-012 aligns the contract after `ARCH-REV-006`: cross-unit `counterpart` on both lines with Org addresses, one application-ownership rule, delegation-records residue; SR-011 adds the storage contract and its validation, at the user's request; SR-010 revises after `ARCH-REV-004`: § SR-010 Revision fixes the meaning of `P`; SR-009 revises after `ARCH-REV-003`: § SR-009 Revision supersedes R-1's list of points; SR-006 revised SR-005 after `ARCH-REV-001`; SR-007 applied the user's DEC-006; SR-008 revises after `ARCH-REV-002`: § SR-008 Revision supersedes R-1, R-3's snapshot paragraph and R-4 (a))
 - Approved requirements: `requirements-doc.md` at SR-004 (REQ-001..REQ-009, AC-001..AC-008, DEC-001..DEC-005), approved by the User on 2026-11-21 (quotes in the requirements' Document Status); direction SR-002 (Org as a container of runs).
 - Behavior-defining supplements: autobyteus-22's approved behavior and texts (archived `tickets/done/team-run-follows-definition/`), reused unchanged; **`org-container-storage-contract.md` (SR-011): the normative on-disk contract (every file, the conversion field by field, use cases), validated in `contract-validation.md`**.
 - User approval of the design: `Not required`.
@@ -80,7 +80,7 @@ The Org run becomes a container. Each mounted Team is a Team run (`agent_teams/<
   5. Delegations: Task entries and delegated runs' `delegatedFrom` that name `{ agent_org, orgRunId }` with a `delegatorAgentRunId` → the delegator's unit run (`agent` run, or `agent_team` run whose member it is); old entries with no delegator (contract E6: 4 old runs) → the container keeps them as preserved history (warning).
   6. Rewrite the container file: `rootOrg.units` (address, kind, runId, definitionId), launch, Org-level rules (the Org definition's own rules as stored: handoffs not wholly inside one Team), `formerUnits: []`; the Org run history index entry stays; contained runs are not added to the top-level run indexes.
 - Earlier migrations classified (§4): implementation lists every registry entry as writer / reader / rebuilder / none against code; at least `agent-org-flat-team-families-v1` (writer of Org trees), `delegated-runs-own-runs-v1` (writer/reader of Task entries and delegated runs), `agent-org-*` context-file locators (writer of Org-scoped locators) need follow-ups (prerequisites: predecessor + this; idempotent by structure).
-- Interruption: on retry, a unit whose target folder exists with a valid target file and `containedIn` is recognized as done; the remaining units continue; no journal (§7 retry example).
+- Interruption: on retry, a unit whose target folder exists with a valid target file and `containedIn` is recognized as done; the remaining units continue; no journal (§7 retry example). (SR-018: this recognition skips only the rename and unit file; the node-wide path rewrite re-runs on every attempt until the container file, written last, exists.)
 - Dispositions and status: `SUCCEEDED` / `SUCCEEDED_WITH_WARNINGS` (preserved skips) / `FAILED` per guideline §6; a failed Org run is isolated (excluded from lists and restore), never a startup lockout (§1).
 - Rollback: not possible (older builds can't read containers); release notes say so (§4 "Rolling back").
 - Acceptance (§9): released-shape fixtures above, retry/partial, repeat startup, all-Org-runs-excluded with new work usable, cost measured on a synthetic large Org.
@@ -447,4 +447,44 @@ Tests:
   - trace prose is unchanged.
 - Re-running the conversion on the converted fixture changes no byte.
 - An entry under a different data-directory prefix is unchanged.
+
+
+## SR-018 Revision (after ARCH-REV-012 AR-012: the path rewrite always completes; supersedes SR-017's "in the same per-Org step as the renames" and the Migration Plan's step order and Interruption rule where they conflict)
+
+**The container file stays the one completion marker.** An Org is converted only when its tree file is the container shape (has `units`). Until then its released Org tree v1 is still on disk, and every attempt treats the Org as unfinished. One attempt runs these steps in order:
+
+1. **Classify** each Org, as before: container → done (not visited again); tree v1 → pending; missing or unreadable → preserved skip. A pending Org waits, untouched, with disposition `waiting_for_<migrationId>`, while any reader or writer predecessor is not terminal. That is R-4 (c), with the writers added below.
+2. **Steps 2–5 for each pending Org** (renames, unit files, log split, delegations), unchanged. A unit already renamed with a valid target file is recognized and skipped, as before. That recognition skips only the rename and the unit file, never the path rewrite.
+3. **One node pass for the typed path rewrite** (SR-017's fields and visitor), over every candidate file on the node, with the union of the prefix maps of all pending Orgs:
+   - Each map is derived from the Org's tree v1 (`rootOrg.members`), not from what this attempt did. It includes only units whose rename is committed (target folder present, source gone), so no path is pointed at a folder that does not exist.
+   - Units recognized as renamed in an earlier attempt are therefore in the map again, and the pass is re-run on every attempt until the Org is done. The byte pre-check (`agent_orgs/<orgRunId>/` for any pending Org) and idempotency by structure keep a re-run cheap and harmless.
+   - The pass also covers the unit logs that step 4 wrote: they carry the released lines and are rewritten by the same mechanism, so there is one place that maps paths.
+   - The Org's own released log is inert residue removed by the migration (§6 Residue) and is not visited.
+   - An Org whose steps 2–5 failed in this attempt is isolated as before. Its committed renames are still in the map, so their paths point at the moved folders.
+4. **Step 6, last, per Org** whose steps 2–5 and whose part of the node pass succeeded: write the container file. Its existence means every candidate file was visited with that Org's full map. A crash anywhere before it leaves tree v1 in place, and the next attempt repeats steps 2–5 (recognizing finished units) and the whole node pass.
+
+**Cost.** With several pending Orgs there is still one node pass, with all their maps. The cost is measured on the synthetic large Org together with a node holding the user's real layout sizes as synthetic data (never a copy of user data), as the Migration Plan's acceptance already requires.
+
+**Predecessors whose files the pass writes** (R-4 (c) extended; the guideline's "An earlier migration can run after yours"). The pass now writes files outside the Org folder, so every earlier migration that writes or moves those files is a writer for this classification:
+- message logs: `append-only-message-logs-v1`, `team-communication-projection-address`;
+- traces: the `raw-trace-*` layout and rotation migrations;
+- Task records and ad-hoc Tasks: `project-task-*`, `delegated-copy-own-file-complete-v1`;
+- attachment links: `delegated-run-own-attachment-links`;
+- and any other the registry test finds.
+
+Each gets R-4 (c)'s treatment:
+- the `waiting_for_<id>` wait in step 1 while it is not terminal;
+- one parameterized follow-up (prerequisites: that predecessor and this migration; `requiredOnStartup`; idempotent by structure). The follow-up re-runs the node pass for converted Orgs, with maps derived from their container files (`units` with `runId` and `kind` give `agent_orgs/<orgRunId>/<runId>/` → `agent_teams/<runId>/` or `agents/<runId>/`). That converts files the predecessor produced when it finished late.
+
+Implementation confirms the exact list against the registry (the registry test fails on an unclassified entry) and records each classification in the migration's header.
+
+Tests (in addition to SR-017's):
+- Interrupt after a unit's rename and before the node pass finishes, both with and without step 4 done. Retry, then check:
+  - every typed path names the new folder;
+  - the container file appears only after the pass;
+  - a third start changes no byte.
+- Interrupt after the node pass and before step 6. Retry, then check:
+  - the pass re-runs and changes nothing (pre-check plus idempotency);
+  - step 6 completes.
+- A writer predecessor is pending: the Org stays tree v1 with `waiting_for_<id>`. The predecessor finishing late (simulated by its fixture output naming an old prefix) is converted by that predecessor's follow-up.
 

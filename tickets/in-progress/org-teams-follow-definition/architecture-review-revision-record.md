@@ -15,6 +15,7 @@
 | ARCH-REV-009 | Round 9 / SR-014 resubmission | SR-014 | Fail | Pass | AR-010 (resolved) |
 | ARCH-REV-010 | Round 10 / SR-015 after CRR-004 A-1 | SR-015 | Pass | Pass | None |
 | ARCH-REV-011 | Round 11 / SR-016 after delivery DR-001 | SR-016 | Pass | Fail (Design Impact) | AR-011 (new) |
+| ARCH-REV-012 | Round 12 / SR-016 + SR-017 | SR-016, SR-017 | Fail | Fail (Design Impact) | AR-011 (resolved in substance); AR-012 (new) |
 
 ## Revision Entries
 
@@ -279,3 +280,26 @@ None open.
 - Material classification changes: None (Large / High)
 - Recommended recipient: Solution Designer
 - Remaining risks or uncertainty: check 599 for stored paths under Org member folders outside `work_journal/`
+
+### ARCH-REV-012 — Re-review of SR-016 and SR-017
+
+- Canonical design review report: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/design-review-report.md`
+- Review round and trigger: round 12; SR-017 (commit `bc43dbc88b`) after ARCH-REV-011; SR-016 and SR-017 reviewed together
+- Triggering role, report path, and finding IDs: Solution Designer, `handoff-architecture-design.md`; AR-011
+- Relevant solution revision IDs: SR-016, SR-017
+- Prior authoritative decision: Fail
+- Current authoritative decision: Fail (Design Impact)
+- What changed:
+  - AR-011 is resolved in substance by option (a): an exact prefix map, a typed-field node-wide rewrite with the frozen visitor, prose left with a reason, readers unchanged, a byte pre-check; 599 unreleased.
+  - New AR-012: the rewrite's completion gating across a retry is unstated. The per-unit "done" recognition and step 1's "container has `units` → done" can skip it after a crash between a rename and the end of the rewrite.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-011 | Open (Medium) | Resolved in substance (interruption carried by AR-012) | § SR-017; contract §1, §7, §9, §10 | Prefix map, field list, frozen visitor rule, fixture tests named |
+
+- New or remaining finding IDs: AR-012 (Medium)
+- Material classification changes: None (Large / High)
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: one node pass for all Orgs; classify predecessors of the newly touched files (logs, traces, Task records, ad-hoc Tasks)

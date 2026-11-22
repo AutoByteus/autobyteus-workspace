@@ -262,7 +262,7 @@ The current standalone agent metadata, plus `containedIn`; `address` is its Org 
 | UC-002 an Org rule naming a removed member | container `handoffs` + Team file `members` | the rule is left out while the member is absent (derived, not stored) |
 | UC-006 Org mounts/unmounts a Team or agent | container `units` / `formerUnits`; new unit file | unit moves between lists; run ID kept |
 | UC-005 peer Team copy changes | delegating node's Task entry `members` | updated by the peer notice or the next contact |
-| UC-004 conversion retry | per unit: target folder + target file with `containedIn` | recognized as converted; the rest continues |
+| UC-004 conversion retry | the Org's tree file: tree v1 = unfinished, container (`units`) = done; per unit: target folder + target file with `containedIn` | a renamed unit's rename and file are skipped; the node-wide path rewrite (§9 path row) re-runs with every committed rename until the container file is written, last (design SR-018) |
 | Org view, rows, history | container + unit files | composed; contained runs under their Org (§8) |
 | Context file from the Org view | container `units` + unit Team file members | `{orgRunId, agentRunId}` → unit folder (§7) |
 | Delegation from an Org member | Task entry, child `delegatedFrom` | delegating run = the unit run (§6) |
