@@ -27,7 +27,7 @@ TEAM_RUN_ID = lambda r, c: (f"{r} is a task agent team's run id, and send_messag
 NODE_REQUIRED = lambda n: f'This agent runs on node "{n}"; pass node: "{n}" with its run id.'
 NODE_MISMATCH = lambda n, given: f'This agent runs on node "{n}", not "{given}"; pass node: "{n}".'
 
-SAVED_TASK_TO_PEER ="A saved Task (task_id) can't be given to an agent on another node yet, so nothing was started. Delegate with a description instead."
+# A saved Task (task_id) goes to another node too since autobyteus-587 DEC-009 (the refusal REQ-009 kept is gone).
 
 class Refused(Exception):
     """A refusal. `tool` decides its shape: send_message_to answers {accepted, code, message}; delegate_task {delegated, message}."""
@@ -303,12 +303,20 @@ class World:
 
     # ---------- messages
     def _log(self, run, line): self.disk.setdefault(self.log_path(*run), []).append(line)
-    def _deliver(self, sender, receiver, content, message_type, message_id, at, shown_as, wake=True):
+    def _deliver(self, sender, receiver, content, message_type, message_id, at, shown_as, wake=True, unrelated=False):
         a, b = self.run_of(sender), self.run_of(receiver)
         line = {"messageId": message_id, "senderAgentRunId": sender, "receiverAgentRunId": receiver, "content": content,
                 "messageType": message_type, "referenceFiles": [], "createdAt": at}
-        self._log(a, dict(line))
-        if b != a: self._log(b, dict(line))
+        # autobyteus-565 (REQ-007): a line with an agent outside its run's Task tree records that agent: across nodes always
+        # (its address as its node answers it, and its node), on one node when no Task relates the two runs (its address,
+        # no node). Each side's line names the other side; a line between related runs on one node has none.
+        cross = a[0] != b[0]
+        if cross or unrelated:
+            self._log(a, dict(line, counterpart={"address": self.agent_info(receiver)[0], "nodeId": self.node_ids[b[0]] if cross else None}))
+            if b != a: self._log(b, dict(line, counterpart={"address": self.agent_info(sender)[0], "nodeId": self.node_ids[a[0]] if cross else None}))
+        else:
+            self._log(a, dict(line))
+            if b != a: self._log(b, dict(line))
         if wake: self.activate(receiver)
         addr = self.reaching_address(receiver, sender)
         if a[0] != b[0]:
@@ -336,6 +344,17 @@ class World:
                 if a[0] == local[0] and entry and all(e["closedAt"] is not None for e in entry):
                     raise Refused("TASK_AGENT_RESOURCE_CLOSED", CLOSED)
                 return "unrelated"
+            if entry and entry[-1]["closedAt"] is not None and a == local and entry[-1]["role"] == "assigned" \
+                    and entry[-1]["delegatedFrom"]["delegatorAgentRunId"] == sender:
+                # autobyteus-591 SR-010 (DN-9, `admitPeerRun`): the assigner's message continues its closed peer run as on
+                # one node (§5.4.2 R-6): the Task side checks and reopens the entry (its node is told "open" first, not
+                # modelled), or answers with the Task's status. Reached only with `node` (autobyteus-587 RF-14).
+                t = next(t for t, e in self.entries(local[0]) if e is entry[-1])
+                status = self.tasks(local[0])[t][1]["status"] if t in self.tasks(local[0]) else None
+                if status in ("TODO", "IN_PROGRESS"): entry[-1]["closedAt"] = None; return
+                if status is not None:
+                    raise Refused("TASK_AGENT_RESOURCE_CLOSED", f"This Task is {status}. The agent that assigned it can set the Task to TODO or "
+                                  "IN_PROGRESS and then message this run id again.")
             if not entry or entry[-1]["closedAt"] is not None:
                 raise Refused("TASK_AGENT_RESOURCE_CLOSED", CLOSED)
             return
@@ -364,7 +383,7 @@ class World:
         if self._admit(sender, receiver) == "unrelated":
             r = self.row(*self.run_of(receiver))
             if r is None or r["terminatedAt"] is not None: raise Refused("TARGET_AGENT_RUN_NOT_ACTIVE", NOT_RUNNING(receiver))
-            return self._deliver(sender, receiver, content, message_type, message_id, at, shown_as, wake=False)
+            return self._deliver(sender, receiver, content, message_type, message_id, at, shown_as, wake=False, unrelated=True)
         self._deliver(sender, receiver, content, message_type, message_id, at, shown_as)
     def send_by_address(self, sender, address, content, message_id, at, message_type="agent_message"):
         receiver, step = self.resolve(sender, address)
@@ -374,11 +393,10 @@ class World:
         calls it. Across nodes, the sender's node decides first:
         - `node` names another node: NODE_MISMATCH, with the node the run is on (it names a registered peer; an unknown
           name is refused before this rule and is not modelled);
-        - no `node`, and the sender's own run links the run: it delegated it (the run's newest Task entry, open or
-          closed, names the sender's run as its delegating run) or it is the run that delegated to the sender's run (its peer `delegatedFrom`):
-          NODE_REQUIRED (the sender's root answers first, `deliverExact`);
-        - no `node`, and only the sender's node holds Task entries for the run: if they are all closed, CLOSED;
-          otherwise NODE_REQUIRED (`CrossRunMessageDelivery.peerRunAdmission`);
+        - no `node`, and the sender's node knows the run on a peer: through the sender root's own link (it delegated
+          the run, or the run delegated to it: its peer `delegatedFrom`), or through this node's Task entries naming it:
+          NODE_REQUIRED, whether its Tasks are open or closed (`PeerRunNodes`, autobyteus-587 IR-005: without `node` no
+          admission is asked; with it, a closed Task answers CLOSED, DEC-011);
         - no `node` otherwise: the run is not on this node, so "not running".
         With the right `node`, the admission that follows is unchanged (`_admit`).
         On one node, `node` is not part of the contract (the model has no such call)."""
@@ -391,12 +409,8 @@ class World:
             if node != there: raise Refused("NODE_MISMATCH", NODE_MISMATCH(there, node))
             return
         entries = [e for t, e in self.entries(a[0]) if "nodeId" in e and self.run_key_of_entry(e) == (b[1], b[2])]
-        # the root's link to a peer run is its newest Task entry, open or closed (`DelegationIndex.peerChildrenOf`)
-        links = bool(entries) and entries[-1]["delegatedFrom"]["delegatingRun"]["runId"] == a[2] \
-            or self.file_of(a).get("delegatedFrom", {}).get("delegatorAgentRunId") == receiver
-        if links: raise Refused("NODE_REQUIRED", NODE_REQUIRED(there))
-        if entries and all(e["closedAt"] is not None for e in entries): raise Refused("TASK_AGENT_RESOURCE_CLOSED", CLOSED)
-        if entries: raise Refused("NODE_REQUIRED", NODE_REQUIRED(there))
+        if entries or self.file_of(a).get("delegatedFrom", {}).get("delegatorAgentRunId") == receiver:
+            raise Refused("NODE_REQUIRED", NODE_REQUIRED(there))
         raise Refused("TARGET_AGENT_RUN_NOT_ACTIVE", NOT_RUNNING(receiver))
     def send_by_run_id(self, sender, receiver, content, message_id, at, message_type="agent_message", node=None):
         """`send_message_to(target_agent_run_id, node?)`."""
@@ -434,8 +448,6 @@ class World:
         if address == own: raise Refused("COLLABORATION_SELF_TARGET_REJECTED", f"{address} is your own address; you can't delegate to yourself. Do the work yourself, or delegate it to another agent or agent team.")
         if (skind == "agent_team" and address in team) or (prefix and (address == prefix or address.startswith(prefix + "/"))):
             raise Refused("COLLABORATION_SELF_TARGET_REJECTED", f"{address} is in your own team; you can't delegate to it. Talk with it using send_message_to.")
-        if peer_run_node and task_key:
-            raise Refused("SAVED_TASK_TO_PEER", SAVED_TASK_TO_PEER)
         placement = self._placement_of(srun_key, address)
         def_id = placement[0] if placement else next((d for d in list(self.defs.agents) + list(self.defs.teams) if addr_of_def(d) == address), None)
         f = self.file_of(srun_key)
@@ -483,6 +495,9 @@ class World:
         else:
             for i in members.values(): self.runs[i] = (rnode, "agent_team", run_id)
             tf = self._team_file(run_id, def_id, members, at); tf["delegatedFrom"] = own_df
+            # autobyteus-22: a Team copy records what it was copied from: an in-run configured placement, else the Team
+            # definition (a catalog copy, and every copy a peer starts); it follows that definition unless a placement
+            tf["copiedFrom"] = "configured_placement" if placement else "team_definition"
             if placement:
                 # a copy of an org's in-run placement carries the org's handoffs from its members, team-local; a `to`
                 # outside the team is kept as written, an external target (contract §3.2)

@@ -331,7 +331,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -648,7 +649,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -976,7 +978,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -1325,7 +1328,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -1688,7 +1692,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -1852,7 +1857,8 @@
          "runId": "software_engineering_team_0218"
         },
         "delegatorAgentRunId": "solution_designer_65a9"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/agent_teams/product_team_e03d/product_designer_1a2b/ (memory)": "created"
      },
@@ -2174,7 +2180,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -2356,7 +2363,8 @@
          "runId": "software_engineering_team_0218"
         },
         "delegatorAgentRunId": "solution_designer_65a9"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/agent_teams/product_team_e03d/product_designer_1a2b/ (memory)": "created",
       "A:memory/agents/image_maker_33f0/run_metadata.json": {
@@ -2757,7 +2765,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -2966,7 +2975,8 @@
          "runId": "software_engineering_team_0218"
         },
         "delegatorAgentRunId": "solution_designer_65a9"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/agent_teams/product_team_e03d/product_designer_1a2b/ (memory)": "created",
       "A:memory/agents/image_maker_33f0/run_metadata.json": {
@@ -3370,7 +3380,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -3579,7 +3590,8 @@
          "runId": "software_engineering_team_0218"
         },
         "delegatorAgentRunId": "solution_designer_65a9"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/agent_teams/product_team_e03d/product_designer_1a2b/ (memory)": "created",
       "A:memory/agents/image_maker_33f0/run_metadata.json": {
@@ -3993,7 +4005,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -4211,7 +4224,8 @@
          "runId": "software_engineering_team_0218"
         },
         "delegatorAgentRunId": "solution_designer_65a9"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/agent_teams/product_team_e03d/product_designer_1a2b/ (memory)": "created",
       "A:memory/agents/image_maker_33f0/run_metadata.json": {
@@ -4633,7 +4647,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -4851,7 +4866,8 @@
          "runId": "software_engineering_team_0218"
         },
         "delegatorAgentRunId": "solution_designer_65a9"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/agent_teams/product_team_e03d/product_designer_1a2b/ (memory)": "created",
       "A:memory/agents/image_maker_33f0/run_metadata.json": {
@@ -5274,7 +5290,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -5510,7 +5527,8 @@
          "runId": "software_engineering_team_0218"
         },
         "delegatorAgentRunId": "solution_designer_65a9"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/agent_teams/product_team_e03d/product_designer_1a2b/ (memory)": "created",
       "A:memory/agents/image_maker_33f0/run_metadata.json": {
@@ -5930,7 +5948,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -6184,7 +6203,8 @@
          "runId": "software_engineering_team_0218"
         },
         "delegatorAgentRunId": "solution_designer_65a9"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/agent_teams/product_team_e03d/product_designer_1a2b/ (memory)": "created",
       "A:memory/agents/image_maker_33f0/run_metadata.json": {
@@ -6646,7 +6666,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -6900,7 +6921,8 @@
          "runId": "software_engineering_team_0218"
         },
         "delegatorAgentRunId": "solution_designer_65a9"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/agent_teams/product_team_e03d/product_designer_1a2b/ (memory)": "created",
       "A:memory/agents/image_maker_33f0/run_metadata.json": {
@@ -7439,7 +7461,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -7693,7 +7716,8 @@
          "runId": "software_engineering_team_0218"
         },
         "delegatorAgentRunId": "solution_designer_65a9"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/agent_teams/product_team_e03d/product_designer_1a2b/ (memory)": "created",
       "A:memory/agents/image_maker_33f0/run_metadata.json": {
@@ -8242,7 +8266,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -8514,7 +8539,8 @@
          "runId": "software_engineering_team_0218"
         },
         "delegatorAgentRunId": "solution_designer_65a9"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/agent_teams/product_team_e03d/product_designer_1a2b/ (memory)": "created",
       "A:memory/agents/image_maker_33f0/run_metadata.json": {
@@ -9119,7 +9145,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -9391,7 +9418,8 @@
          "runId": "software_engineering_team_0218"
         },
         "delegatorAgentRunId": "solution_designer_65a9"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/agent_teams/product_team_e03d/product_designer_1a2b/ (memory)": "created",
       "A:memory/agents/image_maker_33f0/run_metadata.json": {
@@ -9997,7 +10025,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -10269,7 +10298,8 @@
          "runId": "software_engineering_team_0218"
         },
         "delegatorAgentRunId": "solution_designer_65a9"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/agent_teams/product_team_e03d/product_designer_1a2b/ (memory)": "created",
       "A:memory/agents/image_maker_33f0/run_metadata.json": {
@@ -10858,7 +10888,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -11051,7 +11082,8 @@
          "runId": "software_engineering_team_0218"
         },
         "delegatorAgentRunId": "solution_designer_65a9"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/agent_teams/product_team_e03d/product_designer_1a2b/ (memory)": "created",
       "A:memory/agents/image_maker_33f0/run_metadata.json": {
@@ -11324,7 +11356,7 @@
       "DL-10",
       "DL-8"
      ],
-     "call": "`delegate_task(recipient_address: \"/research_team\", node: \"node-b\", description: \"Market study …\")`, by M on node A. (`/research_team` is in node B's list for node A: `list_available_agents(node: \"node-b\")`. A saved Task cannot go to a peer: S25.)",
+     "call": "`delegate_task(recipient_address: \"/research_team\", node: \"node-b\", description: \"Market study …\")`, by M on node A. (`/research_team` is in node B's list for node A: `list_available_agents(node: \"node-b\")`. A saved Task goes to a peer too: S25.)",
      "results": [
       {
        "delegated": true,
@@ -11541,7 +11573,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -11734,7 +11767,8 @@
          "runId": "software_engineering_team_0218"
         },
         "delegatorAgentRunId": "solution_designer_65a9"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/agent_teams/product_team_e03d/product_designer_1a2b/ (memory)": "created",
       "A:memory/agents/image_maker_33f0/run_metadata.json": {
@@ -11954,7 +11988,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "B:memory/team_run_history_index.json": [
        {
@@ -12365,7 +12400,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -12518,7 +12554,11 @@
         "content": "Findings …",
         "messageType": "agent_message",
         "referenceFiles": [],
-        "createdAt": "2026-11-10T18:30:00.000Z"
+        "createdAt": "2026-11-10T18:30:00.000Z",
+        "counterpart": {
+         "address": "/lead",
+         "nodeId": "node-b-1f0e"
+        }
        }
       ],
       "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json": {
@@ -12567,7 +12607,8 @@
          "runId": "software_engineering_team_0218"
         },
         "delegatorAgentRunId": "solution_designer_65a9"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/agent_teams/product_team_e03d/product_designer_1a2b/ (memory)": "created",
       "A:memory/agents/image_maker_33f0/run_metadata.json": {
@@ -12787,7 +12828,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "B:memory/team_run_history_index.json": [
        {
@@ -12845,7 +12887,11 @@
         "content": "Findings …",
         "messageType": "agent_message",
         "referenceFiles": [],
-        "createdAt": "2026-11-10T18:30:00.000Z"
+        "createdAt": "2026-11-10T18:30:00.000Z",
+        "counterpart": {
+         "address": "/project_task_manager",
+         "nodeId": "node-a-77d2"
+        }
        }
       ]
      },
@@ -13210,7 +13256,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -13363,7 +13410,11 @@
         "content": "Findings …",
         "messageType": "agent_message",
         "referenceFiles": [],
-        "createdAt": "2026-11-10T18:30:00.000Z"
+        "createdAt": "2026-11-10T18:30:00.000Z",
+        "counterpart": {
+         "address": "/lead",
+         "nodeId": "node-b-1f0e"
+        }
        }
       ],
       "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json": {
@@ -13412,7 +13463,8 @@
          "runId": "software_engineering_team_0218"
         },
         "delegatorAgentRunId": "solution_designer_65a9"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/agent_teams/product_team_e03d/product_designer_1a2b/ (memory)": "created",
       "A:memory/agents/image_maker_33f0/run_metadata.json": {
@@ -13632,7 +13684,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "B:memory/team_run_history_index.json": [
        {
@@ -13690,7 +13743,11 @@
         "content": "Findings …",
         "messageType": "agent_message",
         "referenceFiles": [],
-        "createdAt": "2026-11-10T18:30:00.000Z"
+        "createdAt": "2026-11-10T18:30:00.000Z",
+        "counterpart": {
+         "address": "/project_task_manager",
+         "nodeId": "node-a-77d2"
+        }
        }
       ]
      },
@@ -14065,7 +14122,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -14218,7 +14276,11 @@
         "content": "Findings …",
         "messageType": "agent_message",
         "referenceFiles": [],
-        "createdAt": "2026-11-10T18:30:00.000Z"
+        "createdAt": "2026-11-10T18:30:00.000Z",
+        "counterpart": {
+         "address": "/lead",
+         "nodeId": "node-b-1f0e"
+        }
        }
       ],
       "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json": {
@@ -14267,7 +14329,8 @@
          "runId": "software_engineering_team_0218"
         },
         "delegatorAgentRunId": "solution_designer_65a9"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/agent_teams/product_team_e03d/product_designer_1a2b/ (memory)": "created",
       "A:memory/agents/image_maker_33f0/run_metadata.json": {
@@ -14487,7 +14550,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "B:memory/team_run_history_index.json": [
        {
@@ -14545,7 +14609,11 @@
         "content": "Findings …",
         "messageType": "agent_message",
         "referenceFiles": [],
-        "createdAt": "2026-11-10T18:30:00.000Z"
+        "createdAt": "2026-11-10T18:30:00.000Z",
+        "counterpart": {
+         "address": "/project_task_manager",
+         "nodeId": "node-a-77d2"
+        }
        }
       ],
       "A:memory/agents/research_agent_9b10/run_metadata.json": {
@@ -14995,7 +15063,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -15148,7 +15217,11 @@
         "content": "Findings …",
         "messageType": "agent_message",
         "referenceFiles": [],
-        "createdAt": "2026-11-10T18:30:00.000Z"
+        "createdAt": "2026-11-10T18:30:00.000Z",
+        "counterpart": {
+         "address": "/lead",
+         "nodeId": "node-b-1f0e"
+        }
        }
       ],
       "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json": {
@@ -15197,7 +15270,8 @@
          "runId": "software_engineering_team_0218"
         },
         "delegatorAgentRunId": "solution_designer_65a9"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/agent_teams/product_team_e03d/product_designer_1a2b/ (memory)": "created",
       "A:memory/agents/image_maker_33f0/run_metadata.json": {
@@ -15417,7 +15491,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "B:memory/team_run_history_index.json": [
        {
@@ -15475,7 +15550,11 @@
         "content": "Findings …",
         "messageType": "agent_message",
         "referenceFiles": [],
-        "createdAt": "2026-11-10T18:30:00.000Z"
+        "createdAt": "2026-11-10T18:30:00.000Z",
+        "counterpart": {
+         "address": "/project_task_manager",
+         "nodeId": "node-a-77d2"
+        }
        }
       ],
       "A:memory/agents/research_agent_9b10/run_metadata.json": {
@@ -15926,7 +16005,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -16079,7 +16159,11 @@
         "content": "Findings …",
         "messageType": "agent_message",
         "referenceFiles": [],
-        "createdAt": "2026-11-10T18:30:00.000Z"
+        "createdAt": "2026-11-10T18:30:00.000Z",
+        "counterpart": {
+         "address": "/lead",
+         "nodeId": "node-b-1f0e"
+        }
        }
       ],
       "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json": {
@@ -16128,7 +16212,8 @@
          "runId": "software_engineering_team_0218"
         },
         "delegatorAgentRunId": "solution_designer_65a9"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/agent_teams/product_team_e03d/product_designer_1a2b/ (memory)": "created",
       "A:memory/agents/image_maker_33f0/run_metadata.json": {
@@ -16348,7 +16433,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "B:memory/team_run_history_index.json": [
        {
@@ -16406,7 +16492,11 @@
         "content": "Findings …",
         "messageType": "agent_message",
         "referenceFiles": [],
-        "createdAt": "2026-11-10T18:30:00.000Z"
+        "createdAt": "2026-11-10T18:30:00.000Z",
+        "counterpart": {
+         "address": "/project_task_manager",
+         "nodeId": "node-a-77d2"
+        }
        }
       ],
       "A:memory/agents/research_agent_9b10/run_metadata.json": {
@@ -16631,17 +16721,22 @@
     },
     {
      "id": "S25",
-     "title": "Refused: a saved Task to a peer node",
+     "title": "M gives a saved Task to a new team on the peer node (T8); node B's user stops that team",
      "cases": [
       "DL-9",
       "DL-11"
      ],
-     "call": "`delegate_task(recipient_address: \"/research_team\", node: \"node-b\", task_id: \"demo-7\")`, by M",
-     "results": [],
-     "refused": {
-      "code": "SAVED_TASK_TO_PEER",
-      "message": "A saved Task (task_id) can't be given to an agent on another node yet, so nothing was started. Delegate with a description instead."
-     },
+     "call": "`delegate_task(recipient_address: \"/research_team\", node: \"node-b\", task_id: \"demo-7\")`, by M. Then node B's user stops the new team run there",
+     "results": [
+      {
+       "delegated": true,
+       "target_kind": "team",
+       "node": "node-b",
+       "target_team_run_id": "research_team_5c5c",
+       "target_team_coordinator_agent_run_id": "lead_6d6d"
+      }
+     ],
+     "refused": null,
      "receiverSees": [],
      "disk": {
       "A:memory/agents/project_task_manager_7c8d/run_metadata.json": {
@@ -16857,7 +16952,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -17010,7 +17106,11 @@
         "content": "Findings …",
         "messageType": "agent_message",
         "referenceFiles": [],
-        "createdAt": "2026-11-10T18:30:00.000Z"
+        "createdAt": "2026-11-10T18:30:00.000Z",
+        "counterpart": {
+         "address": "/lead",
+         "nodeId": "node-b-1f0e"
+        }
        }
       ],
       "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json": {
@@ -17059,7 +17159,8 @@
          "runId": "software_engineering_team_0218"
         },
         "delegatorAgentRunId": "solution_designer_65a9"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/agent_teams/product_team_e03d/product_designer_1a2b/ (memory)": "created",
       "A:memory/agents/image_maker_33f0/run_metadata.json": {
@@ -17279,7 +17380,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "B:memory/team_run_history_index.json": [
        {
@@ -17291,6 +17393,16 @@
         "createdAt": "2026-11-10T18:00:00.000Z",
         "archivedAt": null,
         "terminatedAt": null
+       },
+       {
+        "teamRunId": "research_team_5c5c",
+        "teamDefinitionId": "research-team",
+        "teamDefinitionName": "Research Team",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-10T20:20:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": "2026-11-10T20:21:00.000Z"
        }
       ],
       "A:ad-hoc-tasks/adhoc_task_7c7c/agent_run_resources.json": {
@@ -17337,7 +17449,11 @@
         "content": "Findings …",
         "messageType": "agent_message",
         "referenceFiles": [],
-        "createdAt": "2026-11-10T18:30:00.000Z"
+        "createdAt": "2026-11-10T18:30:00.000Z",
+        "counterpart": {
+         "address": "/project_task_manager",
+         "nodeId": "node-a-77d2"
+        }
        }
       ],
       "A:memory/agents/research_agent_9b10/run_metadata.json": {
@@ -17389,7 +17505,93 @@
         }
        ]
       },
-      "A:memory/agents/research_agent_9b10/ (memory)": "created"
+      "A:memory/agents/research_agent_9b10/ (memory)": "created",
+      "B:memory/agent_teams/research_team_5c5c/team_run_execution_tree.json": {
+       "schemaVersion": 1,
+       "createdAt": "2026-11-10T20:20:00.000Z",
+       "archivedAt": null,
+       "applicationBinding": null,
+       "handoffs": [],
+       "rootTeam": {
+        "address": "/",
+        "teamDefinitionId": "research-team",
+        "teamDefinitionName": "Research Team",
+        "teamRunId": "research_team_5c5c",
+        "coordinatorAddress": "/lead",
+        "defaultLaunchConfiguration": {
+         "…": "…"
+        },
+        "members": [
+         {
+          "address": "/lead",
+          "agentDefinitionId": "lead",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "lead_6d6d",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         },
+         {
+          "address": "/analyst",
+          "agentDefinitionId": "analyst",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "analyst_7e7e",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         }
+        ]
+       },
+       "delegatedFrom": {
+        "nodeId": "node-a-77d2",
+        "delegatingRun": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
+        "delegatorAgentRunId": "project_task_manager_7c8d"
+       },
+       "copiedFrom": "team_definition"
+      },
+      "A:projects/project_8f21/tasks/project_task_7c7c/agent_run_resources.json": {
+       "taskId": "project_task_7c7c",
+       "agentRunResources": [
+        {
+         "role": "assigned",
+         "delegatedFrom": {
+          "delegatingRun": {
+           "kind": "agent",
+           "runId": "project_task_manager_7c8d"
+          },
+          "delegatorAgentRunId": "project_task_manager_7c8d"
+         },
+         "recipientAddress": "/research_team",
+         "agentRun": {
+          "kind": "team",
+          "teamRunId": "research_team_5c5c",
+          "coordinatorAgentRunId": "lead_6d6d"
+         },
+         "nodeId": "node-b-1f0e",
+         "members": [
+          {
+           "address": "/lead",
+           "agentRunId": "lead_6d6d"
+          },
+          {
+           "address": "/analyst",
+           "agentRunId": "analyst_7e7e"
+          }
+         ],
+         "linkedAt": "2026-11-10T20:20:00.000Z",
+         "start": "started",
+         "closedAt": null
+        }
+       ]
+      },
+      "B:memory/agent_teams/research_team_5c5c/lead_6d6d/ (memory)": "created"
      },
      "trees": {
       "A": [
@@ -17553,6 +17755,43 @@
          {
           "agentRunId": "research_agent_9b10",
           "address": "/research_agent"
+         }
+        ]
+       },
+       {
+        "run": {
+         "kind": "agent_team",
+         "runId": "research_team_5c5c"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
+        "parent": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
+        "delegatorAgentRunId": "project_task_manager_7c8d",
+        "node": "node-b-1f0e",
+        "tasks": [
+         {
+          "taskId": "project_task_7c7c",
+          "role": "assigned",
+          "open": true,
+          "assigner": {
+           "kind": "agent",
+           "runId": "project_task_manager_7c8d"
+          }
+         }
+        ],
+        "agents": [
+         {
+          "agentRunId": "lead_6d6d",
+          "address": "/lead"
+         },
+         {
+          "agentRunId": "analyst_7e7e",
+          "address": "/analyst"
          }
         ]
        }
@@ -17787,7 +18026,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -17940,7 +18180,11 @@
         "content": "Findings …",
         "messageType": "agent_message",
         "referenceFiles": [],
-        "createdAt": "2026-11-10T18:30:00.000Z"
+        "createdAt": "2026-11-10T18:30:00.000Z",
+        "counterpart": {
+         "address": "/lead",
+         "nodeId": "node-b-1f0e"
+        }
        }
       ],
       "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json": {
@@ -17989,7 +18233,8 @@
          "runId": "software_engineering_team_0218"
         },
         "delegatorAgentRunId": "solution_designer_65a9"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/agent_teams/product_team_e03d/product_designer_1a2b/ (memory)": "created",
       "A:memory/agents/image_maker_33f0/run_metadata.json": {
@@ -18209,7 +18454,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "B:memory/team_run_history_index.json": [
        {
@@ -18221,6 +18467,16 @@
         "createdAt": "2026-11-10T18:00:00.000Z",
         "archivedAt": null,
         "terminatedAt": null
+       },
+       {
+        "teamRunId": "research_team_5c5c",
+        "teamDefinitionId": "research-team",
+        "teamDefinitionName": "Research Team",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-10T20:20:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": "2026-11-10T20:21:00.000Z"
        }
       ],
       "A:ad-hoc-tasks/adhoc_task_7c7c/agent_run_resources.json": {
@@ -18267,7 +18523,11 @@
         "content": "Findings …",
         "messageType": "agent_message",
         "referenceFiles": [],
-        "createdAt": "2026-11-10T18:30:00.000Z"
+        "createdAt": "2026-11-10T18:30:00.000Z",
+        "counterpart": {
+         "address": "/project_task_manager",
+         "nodeId": "node-a-77d2"
+        }
        }
       ],
       "A:memory/agents/research_agent_9b10/run_metadata.json": {
@@ -18319,7 +18579,93 @@
         }
        ]
       },
-      "A:memory/agents/research_agent_9b10/ (memory)": "created"
+      "A:memory/agents/research_agent_9b10/ (memory)": "created",
+      "B:memory/agent_teams/research_team_5c5c/team_run_execution_tree.json": {
+       "schemaVersion": 1,
+       "createdAt": "2026-11-10T20:20:00.000Z",
+       "archivedAt": null,
+       "applicationBinding": null,
+       "handoffs": [],
+       "rootTeam": {
+        "address": "/",
+        "teamDefinitionId": "research-team",
+        "teamDefinitionName": "Research Team",
+        "teamRunId": "research_team_5c5c",
+        "coordinatorAddress": "/lead",
+        "defaultLaunchConfiguration": {
+         "…": "…"
+        },
+        "members": [
+         {
+          "address": "/lead",
+          "agentDefinitionId": "lead",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "lead_6d6d",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         },
+         {
+          "address": "/analyst",
+          "agentDefinitionId": "analyst",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "analyst_7e7e",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         }
+        ]
+       },
+       "delegatedFrom": {
+        "nodeId": "node-a-77d2",
+        "delegatingRun": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
+        "delegatorAgentRunId": "project_task_manager_7c8d"
+       },
+       "copiedFrom": "team_definition"
+      },
+      "A:projects/project_8f21/tasks/project_task_7c7c/agent_run_resources.json": {
+       "taskId": "project_task_7c7c",
+       "agentRunResources": [
+        {
+         "role": "assigned",
+         "delegatedFrom": {
+          "delegatingRun": {
+           "kind": "agent",
+           "runId": "project_task_manager_7c8d"
+          },
+          "delegatorAgentRunId": "project_task_manager_7c8d"
+         },
+         "recipientAddress": "/research_team",
+         "agentRun": {
+          "kind": "team",
+          "teamRunId": "research_team_5c5c",
+          "coordinatorAgentRunId": "lead_6d6d"
+         },
+         "nodeId": "node-b-1f0e",
+         "members": [
+          {
+           "address": "/lead",
+           "agentRunId": "lead_6d6d"
+          },
+          {
+           "address": "/analyst",
+           "agentRunId": "analyst_7e7e"
+          }
+         ],
+         "linkedAt": "2026-11-10T20:20:00.000Z",
+         "start": "started",
+         "closedAt": null
+        }
+       ]
+      },
+      "B:memory/agent_teams/research_team_5c5c/lead_6d6d/ (memory)": "created"
      },
      "trees": {
       "A": [
@@ -18483,6 +18829,43 @@
          {
           "agentRunId": "research_agent_9b10",
           "address": "/research_agent"
+         }
+        ]
+       },
+       {
+        "run": {
+         "kind": "agent_team",
+         "runId": "research_team_5c5c"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
+        "parent": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
+        "delegatorAgentRunId": "project_task_manager_7c8d",
+        "node": "node-b-1f0e",
+        "tasks": [
+         {
+          "taskId": "project_task_7c7c",
+          "role": "assigned",
+          "open": true,
+          "assigner": {
+           "kind": "agent",
+           "runId": "project_task_manager_7c8d"
+          }
+         }
+        ],
+        "agents": [
+         {
+          "agentRunId": "lead_6d6d",
+          "address": "/lead"
+         },
+         {
+          "agentRunId": "analyst_7e7e",
+          "address": "/analyst"
          }
         ]
        }
@@ -18692,7 +19075,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -18829,7 +19213,8 @@
          "runId": "software_engineering_team_0218"
         },
         "delegatorAgentRunId": "solution_designer_65a9"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "A:memory/agent_teams/product_team_e03d/product_designer_1a2b/ (memory)": "created",
       "A:memory/agents/image_maker_33f0/run_metadata.json": {
@@ -19040,7 +19425,8 @@
          "runId": "project_task_manager_7c8d"
         },
         "delegatorAgentRunId": "project_task_manager_7c8d"
-       }
+       },
+       "copiedFrom": "team_definition"
       },
       "B:memory/team_run_history_index.json": [
        {
@@ -19052,6 +19438,16 @@
         "createdAt": "2026-11-10T18:00:00.000Z",
         "archivedAt": null,
         "terminatedAt": null
+       },
+       {
+        "teamRunId": "research_team_5c5c",
+        "teamDefinitionId": "research-team",
+        "teamDefinitionName": "Research Team",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-10T20:20:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": "2026-11-10T20:21:00.000Z"
        }
       ],
       "B:memory/agent_teams/research_team_77aa/lead_0c11/ (memory)": "created",
@@ -19063,7 +19459,11 @@
         "content": "Findings …",
         "messageType": "agent_message",
         "referenceFiles": [],
-        "createdAt": "2026-11-10T18:30:00.000Z"
+        "createdAt": "2026-11-10T18:30:00.000Z",
+        "counterpart": {
+         "address": "/project_task_manager",
+         "nodeId": "node-a-77d2"
+        }
        }
       ],
       "A:memory/agents/research_agent_9b10/run_metadata.json": {
@@ -19115,7 +19515,93 @@
         }
        ]
       },
-      "A:memory/agents/research_agent_9b10/ (memory)": "created"
+      "A:memory/agents/research_agent_9b10/ (memory)": "created",
+      "B:memory/agent_teams/research_team_5c5c/team_run_execution_tree.json": {
+       "schemaVersion": 1,
+       "createdAt": "2026-11-10T20:20:00.000Z",
+       "archivedAt": null,
+       "applicationBinding": null,
+       "handoffs": [],
+       "rootTeam": {
+        "address": "/",
+        "teamDefinitionId": "research-team",
+        "teamDefinitionName": "Research Team",
+        "teamRunId": "research_team_5c5c",
+        "coordinatorAddress": "/lead",
+        "defaultLaunchConfiguration": {
+         "…": "…"
+        },
+        "members": [
+         {
+          "address": "/lead",
+          "agentDefinitionId": "lead",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "lead_6d6d",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         },
+         {
+          "address": "/analyst",
+          "agentDefinitionId": "analyst",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "analyst_7e7e",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         }
+        ]
+       },
+       "delegatedFrom": {
+        "nodeId": "node-a-77d2",
+        "delegatingRun": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
+        "delegatorAgentRunId": "project_task_manager_7c8d"
+       },
+       "copiedFrom": "team_definition"
+      },
+      "A:projects/project_8f21/tasks/project_task_7c7c/agent_run_resources.json": {
+       "taskId": "project_task_7c7c",
+       "agentRunResources": [
+        {
+         "role": "assigned",
+         "delegatedFrom": {
+          "delegatingRun": {
+           "kind": "agent",
+           "runId": "project_task_manager_7c8d"
+          },
+          "delegatorAgentRunId": "project_task_manager_7c8d"
+         },
+         "recipientAddress": "/research_team",
+         "agentRun": {
+          "kind": "team",
+          "teamRunId": "research_team_5c5c",
+          "coordinatorAgentRunId": "lead_6d6d"
+         },
+         "nodeId": "node-b-1f0e",
+         "members": [
+          {
+           "address": "/lead",
+           "agentRunId": "lead_6d6d"
+          },
+          {
+           "address": "/analyst",
+           "agentRunId": "analyst_7e7e"
+          }
+         ],
+         "linkedAt": "2026-11-10T20:20:00.000Z",
+         "start": "started",
+         "closedAt": null
+        }
+       ]
+      },
+      "B:memory/agent_teams/research_team_5c5c/lead_6d6d/ (memory)": "created"
      },
      "trees": {
       "A": [
@@ -19207,6 +19693,36 @@
          {
           "agentRunId": "research_agent_9b10",
           "address": "/research_agent"
+         }
+        ]
+       },
+       {
+        "run": {
+         "kind": "agent_team",
+         "runId": "research_team_5c5c"
+        },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "research_team_5c5c"
+        },
+        "parent": null,
+        "node": "node-b-1f0e",
+        "tasks": [
+         {
+          "taskId": "project_task_7c7c",
+          "role": "assigned",
+          "open": true,
+          "assigner": null
+         }
+        ],
+        "agents": [
+         {
+          "agentRunId": "lead_6d6d",
+          "address": "/lead"
+         },
+         {
+          "agentRunId": "analyst_7e7e",
+          "address": "/analyst"
          }
         ]
        }
@@ -22317,7 +22833,11 @@
         "content": "…",
         "messageType": "agent_message",
         "referenceFiles": [],
-        "createdAt": "2026-11-01T14:50:00.000Z"
+        "createdAt": "2026-11-01T14:50:00.000Z",
+        "counterpart": {
+         "address": "/research_agent",
+         "nodeId": null
+        }
        }
       ],
       "A:memory/agent_teams/software_engineering_team_73d7/solution_designer_7a33/ (memory)": "created",
@@ -22415,7 +22935,11 @@
         "content": "…",
         "messageType": "agent_message",
         "referenceFiles": [],
-        "createdAt": "2026-11-01T14:50:00.000Z"
+        "createdAt": "2026-11-01T14:50:00.000Z",
+        "counterpart": {
+         "address": "/image_maker",
+         "nodeId": null
+        }
        }
       ]
      },
@@ -22838,7 +23362,11 @@
         "content": "…",
         "messageType": "agent_message",
         "referenceFiles": [],
-        "createdAt": "2026-11-01T14:50:00.000Z"
+        "createdAt": "2026-11-01T14:50:00.000Z",
+        "counterpart": {
+         "address": "/research_agent",
+         "nodeId": null
+        }
        }
       ],
       "A:memory/agent_teams/software_engineering_team_73d7/solution_designer_7a33/ (memory)": "created",
@@ -22936,7 +23464,11 @@
         "content": "…",
         "messageType": "agent_message",
         "referenceFiles": [],
-        "createdAt": "2026-11-01T14:50:00.000Z"
+        "createdAt": "2026-11-01T14:50:00.000Z",
+        "counterpart": {
+         "address": "/image_maker",
+         "nodeId": null
+        }
        }
       ]
      },
@@ -23317,7 +23849,11 @@
         "content": "…",
         "messageType": "agent_message",
         "referenceFiles": [],
-        "createdAt": "2026-11-01T14:50:00.000Z"
+        "createdAt": "2026-11-01T14:50:00.000Z",
+        "counterpart": {
+         "address": "/research_agent",
+         "nodeId": null
+        }
        },
        {
         "messageId": "collabmsg_U4",
@@ -23424,7 +23960,11 @@
         "content": "…",
         "messageType": "agent_message",
         "referenceFiles": [],
-        "createdAt": "2026-11-01T14:50:00.000Z"
+        "createdAt": "2026-11-01T14:50:00.000Z",
+        "counterpart": {
+         "address": "/image_maker",
+         "nodeId": null
+        }
        }
       ],
       "A:projects/project_8f21/tasks/project_task_8d8d/agent_run_resources.json": {
@@ -24563,7 +25103,8 @@
          "runId": "company_org_9d00"
         },
         "delegatorAgentRunId": "ceo_agent_1f2e"
-       }
+       },
+       "copiedFrom": "configured_placement"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -24907,7 +25448,8 @@
          "runId": "company_org_9d00"
         },
         "delegatorAgentRunId": "ceo_agent_1f2e"
-       }
+       },
+       "copiedFrom": "configured_placement"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -25272,7 +25814,8 @@
          "runId": "company_org_9d00"
         },
         "delegatorAgentRunId": "ceo_agent_1f2e"
-       }
+       },
+       "copiedFrom": "configured_placement"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -25644,7 +26187,8 @@
          "runId": "company_org_9d00"
         },
         "delegatorAgentRunId": "ceo_agent_1f2e"
-       }
+       },
+       "copiedFrom": "configured_placement"
       },
       "A:memory/team_run_history_index.json": [
        {
@@ -26108,7 +26652,8 @@
          "runId": "company_org_9d00"
         },
         "delegatorAgentRunId": "ceo_agent_1f2e"
-       }
+       },
+       "copiedFrom": "configured_placement"
       },
       "A:memory/team_run_history_index.json": [
        {

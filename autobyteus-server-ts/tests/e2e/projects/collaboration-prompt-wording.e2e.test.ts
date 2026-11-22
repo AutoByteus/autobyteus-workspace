@@ -331,7 +331,8 @@ suite("Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/sco
     await check("M-25", root.managerRunId, "delegate_task", { target_agent_run_id: agentId, target_team_run_id: teamRunId, task_id: "task_x" },
       ["Invalid delegate_task input: supply exactly one of target_team_run_id (a task agent team) or target_agent_run_id (a task agent)."]);
     await check("M-26", root.managerRunId, "delegate_task", { target_agent_run_id: agentId, task_id: "task_x", description: "x" },
-      ["Invalid delegate_task input: with target_team_run_id or target_agent_run_id, supply only that run id and task_id (not description)."]);
+      // autobyteus-587 SR-011: the existing-copy form takes node for a task agent on another node.
+      ["Invalid delegate_task input: with target_team_run_id or target_agent_run_id, supply only that run id, task_id and, for a task agent on another node, node (not description)."]);
     await check("M-27", root.managerRunId, "delegate_task", { recipient_address: "/x", description: "" }, // Catalogue M-27 ends the text with a period; the product text does not (observation, recorded in the execution report).
       ["Invalid delegate_task input: description is required"]);
     await check("M-28", agentId, "delegate_task", { recipient_address: `/${segment(names.stranger)}`, task_id: "task_x" },
