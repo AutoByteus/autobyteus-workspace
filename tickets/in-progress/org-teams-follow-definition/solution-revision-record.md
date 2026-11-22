@@ -111,3 +111,7 @@
 - AR-008: contract §5 pins that `same_container` records `counterpart` on both lines (as for unrelated pairs), with Org addresses: sender line at `cross-run-message-delivery.ts:214`, receiver line at `root-communication-engine.ts:315` using the boundary's `toOrg` sender address (the passed `senderAddress`), not `senderIdentity.memberAddress`; test added; live and converted lines identical.
 - AR-009 (a): contract §11 + design Change Scope: every unit of an application-owned Org carries the same ownership (Team `applicationBinding`, agent `applicationExecutionContext`), written once → not followed, Settings blocked, as today. (b): the delegation-records file stays as inert residue; design Removal Plan aligned.
 - Intended behavior changed: No. Next action: architecture re-review; then forward the contract to implementation.
+
+#### Review note on SR-012 (no new revision)
+
+- 2026-11-22: architecture review `ARCH-REV-007` — Pass on SR-012 (contract aligned), AR-008 and AR-009 resolved, Large / High; the reviewer forwarded the storage contract and its validation to `/implementation_engineer`. Not-reachable note recorded by the reviewer: agent units of an application-bound Org would be collaboration-ineligible if such Orgs are ever created (none exist).
