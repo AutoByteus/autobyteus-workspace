@@ -1,0 +1,51 @@
+# AE-01 arm64 runtime: CI artifact (run 44956618584, commit 05996bd715) vs published v1.5.14-beta.6 — 2026-11-21T23:38:26Z, host aarch64
+## inputs (sha256)
+a91d5a93010193712d346d761372b7c9db6dfcf093893161c64ca107f05914f2  /tmp/fu004-dl/ubuntu-base/ubuntu-base-24.04.5-base-arm64.tar.gz
+02525c59e3edb7dab346dc6530f7396ad0c17456b2dd042c53002ff5e08b5f42  /tmp/ae28/dl/ci/linux-arm64/AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage
+64382b420271add4774997be42d8d1e585a938cf9854dbd4bd2e225fb4ecf337  /tmp/ae28/dl/published/AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage
+84021a78ee214ae6fd33a2d62a92ba25542dd10bc86bf117a9b2d0bba44e7665  /tmp/ae28/dl/upstream/appimage-tools-runtime-20251108.tar.gz
+d12ff7eb8f1d1ec4652ca5237a7fbdca33acc0c758045636feca62dc6ecb8ec4  /tmp/ae28/dl/upstream/appimage-12.0.1.7z
+00cbdfcf917cc6c0ff6d3347d59e0ca1f7f45a6df1a428a0d6d8a78664d87444  /tmp/ae28/dl/upstream/static/runtimes/runtime-arm64
+207f8955500cfe8dd5b824ca7514787c023975e083b0269fc14600c380111d85  /tmp/ae28/dl/upstream/legacy/runtime-arm64
+## clean root content (ubuntu-base 24.04.5 arm64): zlib/fuse libraries present
+usr/lib/aarch64-linux-gnu/libz.so.1
+usr/lib/aarch64-linux-gnu/libz.so.1.3
+libz.so (unversioned) in tarball: 0  libfuse.so.2: 0
+
+## NEW: /tmp/ae28/dl/ci/linux-arm64/AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage
+### file
+ELF 64-bit LSB pie executable, ARM aarch64, version 1 (SYSV), static-pie linked, BuildID[sha1]=2cb1b8138bf851234c2ae571903cf7f089fe5ee5, stripped
+### readelf -d (NEEDED)
+NEEDED count: 0
+### readelf -l (INTERP)
+(no INTERP line = no dynamic loader requested)
+### ELF prefix length: 936456; sha256 of prefix: 00cbdfcf917cc6c0ff6d3347d59e0ca1f7f45a6df1a428a0d6d8a78664d87444
+### clean-root probe --appimage-version
+AppImage runtime version: https://github.com/AppImage/type2-runtime/commit/dd6cebe
+exit=0
+### clean-root probe --appimage-extract AppRun
+exit=0
+
+## OLD: /tmp/ae28/dl/published/AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage
+### file
+ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, for GNU/Linux 3.7.0, BuildID[sha1]=4b12022a0a60af0d4b7920deac219fcbd1d92080, stripped
+### readelf -d (NEEDED)
+ 0x0000000000000001 (NEEDED)             Shared library: [libdl.so.2]
+ 0x0000000000000001 (NEEDED)             Shared library: [libpthread.so.0]
+ 0x0000000000000001 (NEEDED)             Shared library: [libz.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [ld-linux-aarch64.so.1]
+NEEDED count: 5
+### readelf -l (INTERP)
+  INTERP         0x0000000000000200 0x0000000000400200 0x0000000000400200
+                 0x000000000000001b 0x000000000000001b  R      0x1
+(no INTERP line = no dynamic loader requested)
+### ELF prefix length: 197808; sha256 of prefix: 207f8955500cfe8dd5b824ca7514787c023975e083b0269fc14600c380111d85
+### clean-root probe --appimage-version
+/image: error while loading shared libraries: libz.so: cannot open shared object file: No such file or directory
+exit=127
+### clean-root probe --appimage-extract AppRun
+/image: error while loading shared libraries: libz.so: cannot open shared object file: No such file or directory
+exit=127
+
+## expected: static runtime-arm64 sha256 00cbdfcf917cc6c0ff6d3347d59e0ca1f7f45a6df1a428a0d6d8a78664d87444 size 936456 (pinned; equals upstream file above); legacy runtime-arm64 207f8955…
