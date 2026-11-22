@@ -88,3 +88,25 @@ RFC-001: a file attached to a cross-node `delegate_task` or `send_message_to` is
 ## Investigation Decision
 
 - Proceed: `Yes`. Durable coverage added/updated: `Yes`. Reroute: `No`.
+
+## Round 5 (CRR-011 Pass at IR-007; HEAD `05ffe64554`)
+
+- Trigger: the code reviewer's CRR-011 (a full re-audit at IR-007). Since round 4 the branch has:
+  - IR-004, the merge with autobyteus-591;
+  - IR-005 (SR-010/SR-011): one order on the node path; `PeerRunNodes` as RF-14's one owner with `NODE_NOT_PAIRED`; the in-transit wording; files opened once; DEC-009, a saved Task's context files travel and `node` is required on the existing-copy form;
+  - IR-006 and IR-007: owner signatures, no behavior change.
+- New and changed basis: AC-012 (DEC-009), DEC-010 (c) (accepted risk), RF-3's one exception, RF-14 rows 4b/4c, `NODE_NOT_PAIRED`.
+
+| Surface | Change | Existing coverage | Gap | Plan |
+| --- | --- | --- | --- | --- |
+| Saved Task to another node, new copy (4b) and existing copy (4c) | DEC-009 | unit and in-process (IMP-20) | real HTTP: the upload, the work packet's received paths, a Team's coordinator folder | RC-60 (new) |
+| RF-3's exception | a Task's own context files only | unit | over HTTP: a context file outside the workspace travels; the same file as a reference file is refused | RC-60 |
+| RF-14 on the existing-copy form | `node` required (SR-011) | RC-09 (without node) | the wrong node; with node, delivered with its files | RC-60, with a fourth node, kappa |
+| Router order (R1) | refused file or failed upload reopens nothing; a delivery refused after a confirmed reopen says "open again" | unit; 591's RC-52 covers only the unconfirmed notice | over HTTP, the confirmed-notice branch | RC-61 (new) |
+| `NODE_NOT_PAIRED` | replaces the raw node ID (CR-587-03, FU-004) | RC-19 asserts only `accepted: false` | the exact code and text, on both sides | RC-19 tightened |
+| In-transit wording (CR-587-02, FU-003) | a piece the gate refuses | RC-57 accepted either code | the exact code and text | RC-57 tightened (as RC-56/57 of round 1, the test review's soft spot) |
+| The 461 contract model (CR-587-05) | autobyteus-565 `counterpart`, autobyteus-22 `copiedFrom`, IR-005's no-node rule, DEC-009 (S25) | the fixture (rounds 1–2) | the stories stop at S1 | the model updated, fixture regenerated, gated stories without known exceptions |
+| Owner signatures (IR-006/007) | required inputs | IMP-29 whole unit | whole integration (TESTING.md row) | API-04 whole |
+
+- Rerun by impact (TESTING.md): the merge touched the contract packages, the typecheck baseline and shared server code, so everything is Rerun. Whole unit IMP-29 (`11b7ed5444`, documents only since) and typechecks IMP-28 are reused.
+- Planned: the two-server suite (RC-60, RC-61 and the tightened cases), the contract stories, whole integration, whole `pnpm test:e2e`, CPW, MSP-08 and MSP-93 (591's case continues a closed run on the node path), autobyteus-22's TF suite (FU-005), tracked imports, fresh-clone typechecks.

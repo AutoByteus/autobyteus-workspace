@@ -8,6 +8,7 @@
 | API-REV-002 | Code reviewer, `api-e2e-test-review-report.md` CRR-002 Fail (T-001), round 2 | CRR-002 | Pass / 95% | Pass / 95% |
 | API-REV-003 | Code reviewer, `code-review-report.md` CRR-004 Pass of IR-002 (delivery DEL-03), round 3 | DEL-03, IR-002, CRR-004 | Pass / 95% | Pass / 95% |
 | API-REV-004 | Code reviewer, `code-review-report.md` CRR-006 Pass of IR-003 (merge with autobyteus-22), round 4 | IR-003, CRR-006 | Pass / 95% | Pass / 95% |
+| API-REV-005 | Code reviewer, `code-review-report.md` CRR-011 Pass at IR-007, round 5 | IR-004 … IR-007, CRR-008 … CRR-011 (CR-587-05) | Pass / 95% | Pass / 96% |
 
 ## Revision Entries
 
@@ -120,3 +121,36 @@ None for this ticket.
 - New or remaining failure IDs: none for this ticket. On the base: FU-005 (TF-04), and FU-002/FU-006 (contract stories).
 - Recommended owner: code reviewer (test-code review), then delivery. The Solution Designer routes FU-005 and FU-006.
 - Remaining risks, blocked evidence, or untested scope: as API-REV-001. §5.1's cross-node steps are not reached while FU-006 stands; RF-14 is proven on the merged code by the two-server suite.
+
+### API-REV-005 — Round 5: the contract model complete (CR-587-05), AC-012 and the node path's order over real HTTP
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md` (CRR-011 Pass, a full re-audit at IR-007), round 5; code `11b7ed5444`, HEAD `05ffe64554`.
+- Triggering finding or case IDs: CR-587-05 (`Local Fix`, API/E2E); AC-012 (DEC-009) over real HTTP; IR-005's behaviour changes (R1 order, `NODE_NOT_PAIRED`, the in-transit wording).
+- Related revision IDs: IR-004 … IR-007, SR-010 … SR-012, CRR-008 … CRR-011.
+- Why recorded: new behaviour and a merge since round 4.
+- Coverage decisions or durable test paths changed:
+  - **The 461 model** (`model.py`, `stories.py`) now states autobyteus-565's `counterpart`, autobyteus-22's `copiedFrom`, IR-005's no-node rule (no `node`: `NODE_REQUIRED` for any run the sender's node knows on a peer), autobyteus-591's assigner continuation across nodes, and DEC-009's S25 (a saved Task to a new peer copy, then stopped on node B, so S26/S27 keep their meaning). `contract-states.json` is regenerated. Before the change, one run that continued past differences listed every server difference, and each is one the model now states (API-07a).
+  - **Two-server suite:** RC-60 (AC-012), RC-61 (R1) new; RC-19, RC-57 tightened; RC-23's title.
+  - **Stale tests rewritten:** the stories' S25 driver, CPW M-26, MSP-93.
+- Cases added, changed, removed, or rechecked:
+  - every case Rerun (shared foundations changed);
+  - reused: IMP-29 (whole unit) and IMP-28 (typechecks), on the same code;
+  - new: RC-60, RC-61, API-07a, API-11b.
+- Commands, environment, fixture, or broader-validation delta: two lanes, server suites in sequence; a fourth node (kappa) paired with alpha for `NODE_MISMATCH` on the existing-copy form; the proxy's `tamper` on a message body for the reopen-then-refused branch.
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| FU-002, FU-006 (contract stories red since 565 and 22) | follow-ups, then CR-587-05 in this ticket | the model states both fields; the stories pass | API-07, API-11b |
+| CR-587-05 | Local Fix (API/E2E) | done | API-07, API-11b |
+
+- Canonical artifacts and sections updated: the coverage investigation (Round 5), the execution report (Round, AC-012, Durable Coverage, Result), `api-e2e-test-progress.md`, `evidence/API-R5/`.
+- Prior result and confidence: Pass / 95%.
+- Current result and confidence: Pass / 96% (AC-012 and the R1 order now over real HTTP; the contract stories prove this ticket's steps).
+- New or remaining failure IDs: none for this ticket. FU-005 (autobyteus-22's TF-04) is still red on the base.
+- Recommended owner: code reviewer (test-code review), then delivery.
+- Remaining risks:
+  - as API-REV-001;
+  - a refused message after a reopen still names the older 401 reason ("not paired") when its body was damaged in transit (RC-61; FU-003's class, the generic mapping);
+  - DEC-010 (c) accepted.

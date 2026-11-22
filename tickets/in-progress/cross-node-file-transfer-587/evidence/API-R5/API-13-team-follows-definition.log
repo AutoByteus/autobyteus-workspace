@@ -1,0 +1,7 @@
+# API-13 round 5: autobyteus-22's gated Team suite
+# Code HEAD 05ffe64554 (server rebuilt); Node 22.23.1; macOS 26; 2026-11-22
+     × TF-04 (DEC-007, AC-003): a removed member added back keeps its run and conversation; its interrupt works while leaving 5408ms
+AssertionError: the leaving member's interrupt is accepted: expected null to match object { state: 'accepted', …(1) }
+      Tests  1 failed | 11 passed (12)
+EXIT 1
+TF-04.json: interruptAck null, released true: the same as round 4 on the base (FU-005)

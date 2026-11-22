@@ -1,0 +1,11 @@
+# API-08 round 5: gated collaboration-prompt-wording
+# Code HEAD 05ffe64554 (server rebuilt); Node 22.23.1; macOS 26; 2026-11-22
+## run 1
+     × CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate 1233ms
+AssertionError: M-26: expected "Invalid delegate_task input: with target_team_run_id or target_agent_run_id, supply only that run id and task_id (not description)." but the agent read [{"type":"text","text":"{\"error\":{\"code\":\"TASK_DELEGATION_ERROR\",\"message\":\"Invalid delegate_task input: with target_team_run_id or target_agent_run_id, supply only that run id, task_id and, for a task agent
++   "M-26: expected \"Invalid delegate_task input: with target_team_run_id or target_agent_run_id, supply only that run id and task_id (not description).\" but the agent read [{\"type\":\"text\",\"text\":\"{\\\"error\\\":{\\\"code\\\":\\\"TASK_DELEGATION_ERROR\\\",\\\"message\\\":\\\"Invalid delegate_task input: with target_team_run_id or target_agent_run_id, supply only that run id, task_id and, 
+      Tests  1 failed | 13 passed (14)
+EXIT 1
+## run 2, after M-26's expected text follows SR-011 (node on the existing-copy form)
+      Tests  14 passed (14)
+EXIT 0

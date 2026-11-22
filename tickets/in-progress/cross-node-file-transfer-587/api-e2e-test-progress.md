@@ -34,3 +34,15 @@
 | 2026-11-21T17:52:41Z | API-08 | Completed (R3) | Pass | 14/14 |
 | 2026-11-21T17:52:41Z | API-10 | Completed (R3) | Pass | 102566 files |
 | 2026-11-21T19:18:24Z | R4 | Completed | Pass | merge 575c4ec9ed: integration 517, E2E 574, two-server 55 (cases renumbered RC-55..58), CPW 14, MSP-08, imports, fresh start; contract stories red (FU-002, FU-006); autobyteus-22 TF-04 red also on the base (FU-005) |
+| 2026-11-22T06:38:07Z | R5 | Started | — | CRR-011 at IR-007: plan in the investigation's Round 5 |
+| 2026-11-22T06:38:07Z | API-07a | Completed | diagnostic | stories with CONTINUE against the old fixture: copiedFrom, counterpart, S25 only |
+| 2026-11-22T06:38:07Z | API-11b | Completed | Pass | model: counterpart, copiedFrom, no-node rule, 591 continuation, DEC-009 S25; --check; probe |
+| 2026-11-22T06:38:07Z | API-06 | Completed | Pass | 61/61 with RC-60, RC-61 new, RC-19/RC-57 tightened |
+| 2026-11-22T06:38:07Z | API-07 | Checkpoint | §5.2 ✓ §5.3 ✓ §5.1 S25 | B temp workspace for S25's team: the documented peer-start note extended |
+| 2026-11-22T06:38:07Z | API-07 | Completed | Pass | §5.1 rerun ✓, 0 differences |
+| 2026-11-22T06:38:07Z | API-04 | Completed | Pass | 517 |
+| 2026-11-22T06:38:07Z | API-05 | Completed | Pass | 574 |
+| 2026-11-22T06:38:07Z | API-08 | Completed | Pass after fix | M-26 stale (SR-011 text); rerun 14/14 |
+| 2026-11-22T06:38:07Z | API-09 | Completed | Pass after fix | MSP-93 stale (RF-14 node); rerun Pass; MSP-08 Pass |
+| 2026-11-22T06:38:07Z | API-10, API-12 | Completed | Pass | imports; fresh clone typechecks |
+| 2026-11-22T06:38:07Z | API-13 | Completed | Fail (base, FU-005) | TF-04 as round 4 |

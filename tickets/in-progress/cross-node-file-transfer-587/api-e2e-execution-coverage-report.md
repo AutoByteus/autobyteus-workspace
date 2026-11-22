@@ -3,8 +3,26 @@
 ## Round
 
 - Coverage investigation: `tickets/in-progress/cross-node-file-transfer-587/api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-004`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-005`
 - Test progress log: `api-e2e-test-progress.md`
+- **Round 5 and trigger:** the code reviewer's CRR-011 Pass, a full re-audit at IR-007. HEAD `05ffe64554` (the code is `11b7ed5444`, documents only after). Since round 4: IR-004 (merge with autobyteus-591), IR-005 (SR-010/SR-011, DEC-009), IR-006/IR-007 (owner signatures). Plan and gaps: the investigation's "Round 5" section. Evidence: `evidence/API-R5/`.
+
+  | Case | Decision | Result (`evidence/API-R5/` unless named) |
+  | --- | --- | --- |
+  | Whole server unit suite | Reused: IMP-29 on `11b7ed5444` (only documents since) | `Tests  8821 passed` |
+  | API-02 typechecks | Reused: IMP-28; the server rerun after my test edits | server `1000 in 313 files (baseline 1000 in 313 files)` PASS (`API-02-server-typecheck.log`) |
+  | API-12 fresh start | Rerun | fresh clone of `05ffe64554`: `install exit 0`; both typechecks PASS |
+  | API-04 whole `test:integration` | Rerun (TESTING.md row: required owner inputs changed) | `Tests  517 passed`, 0 failed |
+  | API-05 whole `pnpm test:e2e` | Rerun | `Test Files  128 passed`; `Tests  574 passed`, 0 failed |
+  | API-06 two-server suite | Rerun, with RC-60 and RC-61 new, RC-19 and RC-57 tightened, RC-23's stale title fixed | `Tests  61 passed (61)` on the first run (`API-06/`) |
+  | API-07 contract stories | Rerun after CR-587-05 (API-11b) | run 1: §5.2 ✓, §5.3 ✓; §5.1 differed only at S25 (B's temp workspace, the documented peer-start note, extended to S25's team). Run 2, §5.1: ✓, 0 differences in every step, S18/S19/S25 included (`stories/`) |
+  | API-07a (diagnostic) | contract stories with `CONTRACT_STORIES_CONTINUE=1` against the old fixture, before the model change | every server difference: `copiedFrom` (S1, S5, S17, O5), `counterpart` (S18, U9), and S25 (DEC-009) with its S26/S27 effects. Exactly what the updated model now states (`stories-before/`) |
+  | API-11b model | New | fixture regenerated, `--check` matches, walkthrough exit 0; probe after S18/S19 and after the assigner sets T7 to TODO (`model/`) |
+  | API-08 CPW | Rerun | run 1: M-26 expected the pre-SR-011 text (stale); run 2: 14/14 |
+  | API-09 MSP-08, MSP-93 | Rerun (MSP-93 continues a closed run on the node path) | MSP-08 Pass. MSP-93 run 1 Fail: its send lacked `node`, so `NODE_REQUIRED` (RF-14, stale test). After the fix, run 2 Pass (`msp/`) |
+  | API-10 tracked imports | Rerun | passed, 103006 files |
+  | API-13 autobyteus-22's Team suite | Rerun | 11/12; TF-04 as round 4 (`interruptAck` null, released), FU-005, base |
+
 - Round 4 and trigger: the code reviewer's CRR-006 Pass of IR-003, the merge with `origin/personal` `6533d7be04` (autobyteus-22, team-run-follows-definition) as `575c4ec9ed`. HEAD `72b84f3c33` (documents only after the merge).
 - **Case IDs from round 4:** autobyteus-22 added its own `RC-51` to the two-server suite, which the base already holds; this ticket's RC-51 … RC-54 are now **RC-55 … RC-58**. Round 1–3 records and evidence keep the old IDs: RC-51 → RC-55, RC-52 → RC-56, RC-53 → RC-57, RC-54 → RC-58. Both cases had called `record("RC-51", …)`, so the receipt kept only one of them (IMP-13's run included).
 - Round 4 rerun plan, following TESTING.md § Rerun by impact. `git diff --name-only a3e86ad971 72b84f3c33` includes both contract packages (`autobyteus-team-stream-contracts`, `autobyteus-collaboration-stream-contracts`, `src` and `dist`) and `typecheck-baseline.json`. That is a shared foundation, so every case is Rerun. Runs already made on `575c4ec9ed` count:
@@ -85,6 +103,7 @@
 | AC-008 | Yes | API-01, API-04, API-05 (local `reference_files` suites unchanged and passing) | Proven | — |
 | AC-009 | No | API-01 (Codex `tool_timeout_sec`, Claude `timeout` in materialized configs; API-04's Claude config test) | Proven for Codex/Claude/AutoByteus by DEC-008 (b); `Accepted Unverified Risk (DEC-008)` for AGY/Grok/ACP | Signed-in runtimes may not be used by tests (TESTING.md); FU-001. |
 | AC-010 | Yes | API-06 (RC-51 `noNode`, `wrongNode` with theta, then delivered), API-01 | Proven | — |
+| AC-012 (round 5) | Yes | API-06 (RC-60) | Proven | — (a new Agent copy and a new Team copy from a saved Task, the files in the entry agent's folder; the existing copy with `node`, refused without or with the wrong node and nothing sent; a context file outside the workspace travels, the same file as a reference file is refused) |
 | AC-011 | No | API-01 (path policy and scanner unit tests) | Proven by unit (planned evidence) | A Memory Hub export end to end was not run (planned, low risk). |
 
 ## Observations For Review (not acceptance failures)
@@ -143,6 +162,11 @@
 | `autobyteus-server-ts/tests/integration/agent-execution/claude-session-manager.integration.test.ts` | Updated (`timeout: 3_600_000`) | API-04 |
 | `autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts` | Updated (node description) | API-04 |
 | `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` | Updated (MSP-08 names the node) | API-09 |
+| Round 5: `remote-delegation-two-server.e2e.test.ts` | Added RC-60 (AC-012), RC-61 (R1 order); RC-19 asserts `NODE_NOT_PAIRED` on both sides; RC-57 asserts the in-transit code and text exactly; RC-23's title no longer claims the DEC-009-replaced refusal; header | API-06 |
+| Round 5: `collaboration-contract-stories.e2e.test.ts` | S25's driver: a saved Task to a new peer copy, bound, then stopped on node B; the peer-start known note names S25's team | API-07 |
+| Round 5: `collaboration-prompt-wording.e2e.test.ts` | M-26's expected text follows SR-011 | API-08 |
+| Round 5: `autobyteus-web/tests/e2e/mobile-closed-delegation-cases.mjs` | MSP-93's continuation names its node (RF-14) | API-09 |
+| Round 5: the 461 model `model.py`, `stories.py`; `contract-states.json` regenerated | `counterpart`, `copiedFrom`, the no-node rule, 591's cross-node continuation, DEC-009's S25 (CR-587-05) | API-11b, API-07 |
 | Round 2: `tickets/done/delegated-copies-outlive-delegator-461/evidence/collaboration-model/model.py` (the contract stories' authority) | Updated (T-001): `send_by_run_id(…, node=None)`; `_node_rule` with the RF-14 rule; texts `NODE_REQUIRED`, `NODE_MISMATCH` | API-11 |
 | Round 2: `…/collaboration-model/stories.py` | Updated: S18's and S19's operations and call texts pass `node: "node-a"` | API-11, API-07 |
 | Round 2: `autobyteus-server-ts/tests/fixtures/collaboration-contract/contract-states.json` | Regenerated (S18/S19 call texts) | API-11, API-07 |
@@ -169,7 +193,13 @@
 - Result: `Pass`.
 - Criteria not proven, user-only, or accepted risk: AC-009 for AGY/Grok/ACP, `Accepted Unverified Risk (DEC-008)`.
 - Evidence decisions requested: `None`.
-- Next recipient from `get_handoff_rules`: `/code_reviewer` (test-code review of IR-003's merged test files and my RC-55 … RC-58 renumbering, round 4).
+- Round 5 result: **Pass.**
+  - CR-587-05 is done: the 461 model states 565's `counterpart`, 22's `copiedFrom`, IR-005's no-node rule, 591's cross-node continuation and DEC-009's S25. The gated contract stories pass in all three sections, and this ticket's S18/S19/S25 run there with zero differences.
+  - AC-012 and the R1 order are proven over real HTTP (RC-60, RC-61); NODE_NOT_PAIRED and the in-transit wording are pinned exactly (RC-19, RC-57).
+  - Three stale tests were rewritten to the approved behaviour: CPW M-26 (SR-011 text), MSP-93 (RF-14 `node`), and the stories' S25 driver (DEC-009).
+  - Still red on the base only: autobyteus-22's TF-04 (FU-005).
+  - Next recipient from `get_handoff_rules`: `/code_reviewer` (test-code review of round 5's test changes).
+- Next recipient (round 4) from `get_handoff_rules`: `/code_reviewer` (test-code review of IR-003's merged test files and my RC-55 … RC-58 renumbering, round 4).
 - Round 4 result: Pass. Every case this ticket's code reaches passes on `575c4ec9ed`. Two gated suites are red on the base itself:
   - the contract stories: FU-002 and FU-006, the 461 model lacks fields from 565 and autobyteus-22;
   - autobyteus-22's TF-04: FU-005, which fails identically on `6533d7be04` without 587.
