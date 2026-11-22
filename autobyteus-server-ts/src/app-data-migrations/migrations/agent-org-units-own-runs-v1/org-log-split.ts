@@ -120,7 +120,10 @@ export const writeUnitLogs = async (plan: SplitPlan): Promise<void> => {
   }
 };
 
-/** Removes the Org log once every unit log is written and the container file is in place (it has no log, contract §5). */
+/**
+ * Removes the Org log once every unit log is written (a container has no log, contract §5). It runs before the container
+ * file is written: a retry then finds no Org log, skips the split and keeps the unit logs (the node pass still visits them).
+ */
 export const removeOrgLog = async (orgDir: string): Promise<void> => {
   for (const file of await orgLogFiles(orgDir)) await fs.rm(file, { force: true });
 };

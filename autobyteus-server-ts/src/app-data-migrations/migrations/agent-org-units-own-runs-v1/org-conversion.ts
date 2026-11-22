@@ -47,13 +47,17 @@ const unitAgentsOf = (tree: ReleasedOrgTreeV1, memoryDir: string): Map<string, U
 };
 
 /**
- * Converts one released Org run (design DS-005 steps 2–6; storage contract §1–§5, §9, §11), each step atomic per file and
- * recognized when done (a retry continues; no journal, guideline §7):
+ * Converts one released Org run's units (design DS-005 steps 2–4; storage contract §1–§5, §9, §11), each step atomic per
+ * file and recognized when done (a retry continues; no journal, guideline §7):
  * 1. its log is planned into its units' logs (read while every source is in place);
  * 2. each mounted Team's folder becomes `agent_teams/<teamRunId>/` with its tree (team space, its own rules, `containedIn`);
  * 3. each direct agent's folder becomes `agents/<agentRunId>/` with its run file (`containedIn`, its Org address);
- * 4. the units' logs are written, then the Org log is removed (a line no unit has keeps it as residue);
- * 5. the container file replaces the released tree (last: until then a retry reads the released tree again).
+ * 4. the units' logs are written, then the Org log is removed (a line no unit has keeps it as residue).
+ *
+ * A unit already moved with its target file in place is recognized: only its rename and its file are skipped. The paths
+ * into its folder are moved by the node pass on every attempt (SR-018, `org-path-rewrite.ts`), and the container file is
+ * written last (`writeConvertedContainer`), only after this Org's part of that pass succeeded: it is the one completion
+ * marker, so until then every attempt reads the released tree again and repeats these steps and the pass.
  */
 export const convertReleasedOrg = async (input: Readonly<{ memoryDir: string; orgRunId: string; raw: unknown; names: DefinitionNameLookup }>): Promise<OrgConversionResult> => {
   const layout = memoryLayout(input.memoryDir);
@@ -64,7 +68,7 @@ export const convertReleasedOrg = async (input: Readonly<{ memoryDir: string; or
   const agents = unitAgentsOf(tree, input.memoryDir);
   const hadLog = (await orgLogFiles(orgDir).catch((error: Error) => { throw WAITS_FOR.test(error.message) ? new OrgConversionWaits(error.message) : error; })).length > 0;
   const split = hadLog ? await planLogSplit(orgDir, agents) : null;
-  const { org: orgRules, teams: teamRules } = splitHandoffs(tree);
+  const { teams: teamRules } = splitHandoffs(tree);
   const units = plannedUnits(tree);
   for (const member of tree.rootOrg.members) {
     if (isReleasedTeamNode(member)) {
@@ -89,9 +93,17 @@ export const convertReleasedOrg = async (input: Readonly<{ memoryDir: string; or
     const log = path.join(layout.teamDir(member.teamRunId), `${TEAM_LOG}_active.jsonl`);
     if (!await exists(log)) await writeFileAtomic(log, "");
   }
-  await writeJsonAtomic(path.join(orgDir, ORG_TREE_FILE), containerFile(tree, units, orgRules));
   return { unitOf: unitRunsByAgent(tree), unitRuns: units.map((unit) => ({ kind: unit.kind, runId: unit.runId })),
     logKeptAsResidue: Boolean(split?.unrouted), unroutedLines: split?.unrouted ?? 0 };
+};
+
+/**
+ * SR-018 step 6: the container file replaces the released tree, last, once this Org's units are converted and its part of
+ * the node pass succeeded (its existence means every candidate file was visited with this Org's moves).
+ */
+export const writeConvertedContainer = async (memoryDir: string, orgRunId: string, raw: unknown): Promise<void> => {
+  const tree = parseReleasedOrgTreeV1(raw, orgRunId);
+  await writeJsonAtomic(path.join(memoryLayout(memoryDir).orgDir(orgRunId), ORG_TREE_FILE), containerFile(tree, plannedUnits(tree), splitHandoffs(tree).org));
 };
 
 const unitRunsByAgent = (tree: ReleasedOrgTreeV1): Map<string, UnitRunRef> => {

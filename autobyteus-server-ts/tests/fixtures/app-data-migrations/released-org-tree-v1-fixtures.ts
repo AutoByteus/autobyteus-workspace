@@ -84,6 +84,54 @@ export const writeReleasedOrg = async (memoryDir: string, options: ReleasedOrgOp
   }
 };
 
+/**
+ * The released Org as `v1.5.14-beta.7` (autobyteus-587) left it after files came from another node (SR-017): a Team member
+ * (`code_reviewer_1`) and the direct agent (`concierge_1`) each received a file (the line only in the Org log, with
+ * `counterpart.nodeId`; the bytes linked under the member's `received_files/<sender>/`); the member forwarded a file of
+ * its own folder to a delegated run (that run's log, an active and a sealed file); an ad-hoc Task names a member file;
+ * traces name received files in `file_attachments` and `media` and in their prose. One entry is under another data
+ * directory's `agent_orgs/` (unreachable before the conversion; never this conversion's).
+ */
+export const BETA7 = Object.freeze({ peerNode: "srv_peer_node", foreign: "/srv/other-data/memory/agent_orgs/sdd_org_1/concierge_1/received_files/x/old.md" });
+export const writeBeta7CrossNodeOrg = async (appDataDir: string, memoryDir: string) => {
+  const orgDir = path.join(memoryDir, "agent_orgs", ORG);
+  const reviewerDir = path.join(orgDir, SET, "code_reviewer_1");
+  const conciergeDir = path.join(orgDir, "concierge_1");
+  const files = {
+    spec: path.join(reviewerDir, "received_files", "peer_lead_1", "spec.md"),
+    notes: path.join(reviewerDir, "notes.md"),
+    brief: path.join(conciergeDir, "received_files", "peer_lead_2", "brief.pdf"),
+    picture: path.join(conciergeDir, "received_files", "peer_lead_2", "picture.png"),
+  };
+  const fromPeer = { counterpart: { address: null, nodeId: BETA7.peerNode } };
+  await writeReleasedOrg(memoryDir, { log: [
+    ...releasedOrgLog(),
+    message("m_peer_member", "peer_lead_1", "code_reviewer_1", { ...fromPeer, referenceFiles: [files.spec] }),
+    message("m_peer_agent", "peer_lead_2", "concierge_1", { ...fromPeer, referenceFiles: [files.brief, files.picture] }),
+    message("m_foreign", "concierge_1", "solution_designer_1", { referenceFiles: [BETA7.foreign] }),
+  ] });
+  await write(files.spec, "SPEC BYTES");
+  await write(files.notes, "NOTES BYTES");
+  await write(files.brief, "BRIEF BYTES");
+  await write(files.picture, "PNG BYTES");
+  // The member forwarded its own file to a delegated run of the Org (that run's own log: one sealed, one active file).
+  const delegated = path.join(memoryDir, "agents", "delegated_writer_1");
+  await write(path.join(delegated, "communication_messages_000001.jsonl"), `${JSON.stringify(message("m_fwd_old", "code_reviewer_1", "delegated_writer_1", { referenceFiles: [files.notes] }))}\n`);
+  await write(path.join(delegated, "communication_messages_active.jsonl"), `${JSON.stringify(message("m_fwd", "code_reviewer_1", "delegated_writer_1", { referenceFiles: [files.notes, files.spec] }))}\n`);
+  await write(path.join(appDataDir, "ad-hoc-tasks", "task_cross", "task.json"), `${JSON.stringify({ taskId: "task_cross", description: "Review the spec.",
+    referenceFiles: [files.spec], status: "IN_PROGRESS", createdAt: CREATED, updatedAt: CREATED }, null, 2)}\n`);
+  const prose = (file: string) => `Message from peer_lead.\nReference files:\n- ${file}`;
+  await write(path.join(reviewerDir, "raw_traces_active.jsonl"), [
+    { id: "t1", trace_type: "user", content: prose(files.spec), file_attachments: [{ uri: files.spec, file_type: "text", file_name: "spec.md" }] },
+    { id: "t2", trace_type: "assistant", content: `I read ${files.spec}.` },
+  ].map((line) => `${JSON.stringify(line)}\n`).join(""));
+  await write(path.join(reviewerDir, "raw_traces_000001.jsonl"), `${JSON.stringify({ id: "t0", trace_type: "user", content: "Earlier.",
+    file_attachments: [{ uri: files.notes, file_type: "text", file_name: "notes.md" }] })}\n`);
+  await write(path.join(conciergeDir, "raw_traces_active.jsonl"), `${JSON.stringify({ id: "c1", trace_type: "user", content: prose(files.brief),
+    media: { images: [files.picture] }, file_attachments: [{ uri: files.brief, file_type: "pdf", file_name: "brief.pdf" }] })}\n`);
+  return files;
+};
+
 /** A Task (ad-hoc) whose entries name the Org as delegating run: one by the agent unit, one by a Team member, one old (no delegator). */
 export const writeTaskNamingOrg = async (appDataDir: string, orgRunId = ORG): Promise<string> => {
   const file = path.join(appDataDir, "ad-hoc-tasks", "task_1", "agent_run_resources.json");

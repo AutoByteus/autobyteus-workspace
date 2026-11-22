@@ -11,6 +11,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | IR-003 | Code Reviewer, `code-review-report.md` CRR-002 (review of IR-002) | CR-005, CR-006, CR-007, CR-002 (remaining) | `Local Fix` | CRR-002 | Implemented; handed to Code Review |
 | IR-004 | Code Reviewer, `code-review-report.md` CRR-004 (failure-origin review of API-REV-001); Architecture Reviewer ARCH-REV-010 (pass on SR-015) | F-1, F-2, F-3, F-4 (Local Fix); A-1 (via SR-015) | `Local Fix` + `Design Impact` realization | CRR-004, API-REV-001, SR-015, ARCH-REV-010 | Implemented; handed to Code Review |
 | IR-005 | Code Reviewer, `code-review-report.md` CRR-006 (failure-origin review of API-REV-002) | F-5 | `Local Fix` | CRR-006, API-REV-002 | Implemented; handed to Code Review |
+| IR-006 | Architecture Reviewer, `design-review-report.md` ARCH-REV-013 (pass on SR-016..SR-018, after delivery DR-001) | DR-001, AR-011, AR-012 | `Design Impact` realization | SR-016, SR-017, SR-018, ARCH-REV-011..013, DR-001 | Implemented; handed to Code Review |
 
 ## Revision Entries
 
@@ -114,3 +115,19 @@ The current code and `implementation-handoff.md` are authoritative. This record 
   - only the Org-follow planner (`viewFor`, and so the follow on reopen) uses it;
   - launches and every other caller stay strict.
 - Validation: see `implementation-handoff.md` § IR-005 and `evidence/implementation/ir-005/`.
+
+### IR-006 — SR-016 re-integration with the base; SR-017 typed path rewrite; SR-018 gating
+
+- Triggering role, report path, and round: Architecture Reviewer, `design-review-report.md` ARCH-REV-013 (pass on SR-016, SR-017, SR-018), after delivery `release-deployment-report.md` DR-001 (integration blocked by autobyteus-587 and -599).
+- Triggering finding IDs: DR-001 (SR-016), AR-011 (SR-017), AR-012 (SR-018).
+- Classification: `Design Impact` (realized as designed).
+- Prior authoritative result: IR-005 (`cfc4bc67f2`). Current authoritative result: merge `21622d75e9` and the IR-006 commit (see `implementation-handoff.md` § IR-006).
+- Related solution revision IDs: SR-016, SR-017, SR-018. Related architecture-review revision IDs: ARCH-REV-011, ARCH-REV-012, ARCH-REV-013. Related delivery revision IDs: DR-001.
+- Approved behavior or requirement IDs affected: BEH-001..BEH-006, REQ-007 / AC-006 (conversion, including 587's received-file references); contract §1, §7, §9, §10.
+- Implementation delta:
+  - `origin/personal` `f2c0d2a902` merged: the base's 587/599 behavior reaches units through their own roots, and the Org-hosting additions are not ported;
+  - `LiveAgentOrgContainer.remoteNodeOf()` returns null;
+  - the conversion moves stored typed paths into renamed folders with one node pass (`org-path-rewrite.ts`);
+  - the container file is written last, after that pass;
+  - the path writer predecessors wait and have follow-ups whose pass also covers converted Orgs.
+- Validation: see `implementation-handoff.md` § IR-006 and `evidence/implementation/ir-006/`.

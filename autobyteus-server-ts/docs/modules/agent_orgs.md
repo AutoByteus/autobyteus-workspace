@@ -83,8 +83,13 @@ contract of the ticket (`org-container-storage-contract.md`).
 - **Upgrade**: startup migration `20261122_agent_org_units_own_runs_v1` converts
   each stored Org run (folders renamed, not copied; the Org log split into the
   units' logs; delegations rewritten to the unit run; one follow-up per earlier
-  writer or reader migration). An older build cannot read a container: rolling
-  back is not possible.
+  writer or reader migration). One pass over the node's files then moves stored
+  absolute paths into a renamed folder (message logs' and ad-hoc Tasks'
+  `referenceFiles`, traces' `media` and `file_attachments`; never prose, journals
+  or provider sessions), so a file received from another node still opens. The
+  container file is written last, as the one sign an Org is converted: an
+  interrupted start repeats the steps and the pass. An older build cannot read a
+  container: rolling back is not possible.
 
 Sections below that describe member hosting inside the Org root, the Org's own
 message log or the Org as delegating run describe the released shape that the

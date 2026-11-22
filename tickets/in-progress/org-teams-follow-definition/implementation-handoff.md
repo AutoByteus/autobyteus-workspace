@@ -28,17 +28,77 @@ The work was done in the eight slices of the design's Change Sequence; each kept
 
 - Implementation cycle: `Rework` (IR-002: design revisions SR-013/SR-014 after CRR-001 CR-001, and CRR-001's Local Fixes)
 - Implementation revision record: `tickets/in-progress/org-teams-follow-definition/implementation-revision-record.md`
-- Current implementation revision ID: `IR-005` (IR-001 baseline, IR-002 SR-013/SR-014 and CRR-001, IR-003 CRR-002, IR-004 CRR-004 and SR-015, IR-005 CRR-006)
-- Related solution revision IDs: `SR-010`, `SR-011`, `SR-012`, `SR-013`, `SR-014`, `SR-015`
-- Related architecture-review revision IDs: `ARCH-REV-005`, `ARCH-REV-007`, `ARCH-REV-009`, `ARCH-REV-010`
-- Related code-review revision IDs: `CRR-001` … `CRR-006`
+- Current implementation revision ID: `IR-006` (IR-001 baseline, IR-002 SR-013/SR-014 and CRR-001, IR-003 CRR-002, IR-004 CRR-004 and SR-015, IR-005 CRR-006, IR-006 SR-016..SR-018 after DR-001)
+- Related solution revision IDs: `SR-010` … `SR-018`
+- Related architecture-review revision IDs: `ARCH-REV-005`, `ARCH-REV-007`, `ARCH-REV-009`, `ARCH-REV-010`, `ARCH-REV-011` … `ARCH-REV-013`
+- Related code-review revision IDs: `CRR-001` … `CRR-008`
 - Related API/E2E revision IDs: `API-REV-001` (the failure CRR-004 reviewed), `API-REV-002` (the failure CRR-006 reviewed)
-- Related delivery revision IDs: `N/A`
-- Triggering finding IDs: IR-005: `F-5` (CRR-006 Local Fix). IR-004: `F-1`, `F-2`, `F-3`, `F-4` (CRR-004 Local Fix) and SR-015 (CRR-004 A-1, passed by ARCH-REV-010). IR-003: `CR-005`, `CR-006`, `CR-007`, `CR-002` (remaining), all Local Fix. IR-002: `CR-001` (Design Impact, realized through SR-013 R-8 and SR-014), `CR-002`, `CR-003`, `CR-004` (Local Fix), `N-1` (deviations recorded below). IR-001: N/A (ARCH-REV-005 residual notes and ARCH-REV-007 items addressed below).
-- Commits on `codex/org-teams-follow-definition` (base `origin/personal` `9f6add773b`):
+- Related delivery revision IDs: `DR-001` (integration refresh blocked; resolved here)
+- Triggering finding IDs: IR-006: DR-001 (via SR-016), AR-011 (via SR-017), AR-012 (via SR-018), passed by ARCH-REV-013. IR-005: `F-5` (CRR-006 Local Fix). IR-004: `F-1`, `F-2`, `F-3`, `F-4` (CRR-004 Local Fix) and SR-015 (CRR-004 A-1, passed by ARCH-REV-010). IR-003: `CR-005`, `CR-006`, `CR-007`, `CR-002` (remaining), all Local Fix. IR-002: `CR-001` (Design Impact, realized through SR-013 R-8 and SR-014), `CR-002`, `CR-003`, `CR-004` (Local Fix), `N-1` (deviations recorded below). IR-001: N/A (ARCH-REV-005 residual notes and ARCH-REV-007 items addressed below).
+- Commits on `codex/org-teams-follow-definition` (base `origin/personal` `9f6add773b`; since IR-006 merged with `f2c0d2a902` in `21622d75e9`):
   - `1c77d18f56` slice 1 part 1; `7f37435ebc` slice 2; `a3a6b227b1`, `8755ed6343`, `254c5a3a4b`, `ac0825d43a` slice 3 parts 1 … 4; `b324211623` slice 4;
   - `f69004e722` slices 5 … 7: migration, Org follow (with the web Leaving tag and the Org follows e2e), FU-003, the stored-Org reader fixes, and the existing tests moved to the container end state;
   - the slice 8 commit that follows it: docs, release notes draft, this handoff, the revision record and the evidence.
+
+## IR-006 (SR-016 re-integration with the base; SR-017 typed path rewrite; SR-018 gating)
+
+- **SR-016: `origin/personal` `f2c0d2a902` is merged** (merge commit `21622d75e9`; `git merge` worked here). Org units are ordinary Team and agent runs, so autobyteus-587 (cross-node files) and autobyteus-599 (lost-session renewal) reach them through their own roots.
+  - The 20 Org-hosting files the base extended stay deleted, and so does `tests/helpers/org-migration-continuation-fixtures.ts`.
+  - The line conflicts take both sides, minus the Org-hosting code:
+    - the `AgentOrgExecutionScopeBuilder` wiring in the supervisor;
+    - `TeamRunMessageDelivery.deliverExact`, which the base removed (run-ID routing now goes through `sendToPeerRun` with `node`); this ticket's `addressSpace()` stays;
+    - the Org root cases in `remote-message-view-sequence` and `org-owned-team-local-agent`;
+    - the Org placements of `configured-root-first-work-fixture`;
+    - `collaboration_model.md`: the base's CM-10 row, plus this ticket's CM-3 row.
+  - FU-003's handler and the `peerRunMembers` path sit on the base's node path (`peer-gateway.ts`, `remote-collaboration-composition.ts`). The gateway tests and the two-server e2e list the path next to the base's received-files paths. RC-56's run-ID send now passes `node`, which 587 requires.
+  - `remote-message-routing.test.ts` is dropped. This ticket's edit to it only removed the Org root case, and the base's replacement tests have none.
+  - `LiveAgentOrgContainer.remoteNodeOf()` returns `null`.
+  - `receivedFiles`: every unit run is created through the shared `TeamRunService.createTeamRun` and `AgentRunService.prepareAgentRun` (`agent-org-unit-runs.ts`), so nothing bypasses the base's wiring.
+  - This ticket's tests take the base's new required inputs (`receivedFiles`, `nodes`, `outgoing`). The base's renewal test drops its unreachable Org branches.
+- **SR-017: the typed path rewrite**, `org-path-rewrite.ts`, frozen with the migration.
+  - An exact prefix map, compared after `path.resolve`: `<memoryDir>/agent_orgs/<org>/<runId>/` becomes `agent_teams/<runId>/` or `agents/<runId>/`. A path under another data directory is unchanged.
+  - Fields rewritten, through the frozen visitor (`listContextFileRecordSources` / `transformContextFileRecordLocators`):
+    - message lines' `referenceFiles` in every run's logs, active and sealed;
+    - the released JSON logs and Task delegation records (`updates[]` too);
+    - traces' `media.*` and `file_attachments[].uri` in every agent folder (active, rotated and archived).
+  - This module adds what the visitor does not cover:
+    - agent runs' own `communication_messages_*` logs;
+    - ad-hoc `task.json` (`referenceFiles`, and a comment's if present), written in the store's shape;
+    - a trace's unterminated last line, kept as it is.
+  - Prose, journals, provider sessions and the Org folders' residue are not visited.
+  - A byte pre-check (`agent_orgs/<orgRunId>/`) skips every other file. Changed files are written whole (a temporary file, then a rename).
+  - Reference IDs: none is stored. The Org route and the Team projection hash `messageId` and path when they read, so the rewritten path opens.
+  - The SR-017 predecessor check is recorded in the migration header.
+- **SR-018: gating.**
+  - One attempt runs: classify; steps 2–5 per pending Org; one node pass with the union of the pending Orgs' committed moves; then the container file per Org whose steps and pass part succeeded (`writeConvertedContainer`, last).
+  - The moves come from tree v1: a unit counts when its target folder is present and its source is gone. They are joined even when the Org's own step failed.
+  - The pass sits after `writeUnitLogs`, not in the per-unit loop. A file that fails fails each Org whose prefix it names.
+  - The writers of touched files join R-4 (c): `PATH_WRITER_PREDECESSORS` gives them a wait and a follow-up each:
+    - `raw_trace_rotation_layout`, `team_communication_projection_addresses`, `raw_trace_active_file_name`;
+    - `append_only_message_logs_v1`, whose follow-up already existed;
+    - `delegated_run_own_attachment_links` and its follow-up.
+
+    Every follow-up's pass also covers converted Orgs, with moves from their container files.
+  - Not writers, with the evidence in the header and the registry test:
+    - the project-task migrations write Project `task.json`, which has no path field;
+    - `raw_trace_manifest_runtime_names` writes manifests only;
+    - no migration writes an ad-hoc `task.json`.
+  - `removeOrgLog`'s doc comment now matches the code.
+- Tests:
+  - `agent-org-units-path-rewrite.test.ts`, with the fixture `writeBeta7CrossNodeOrg`:
+    - SR-017: every typed field moves and the file exists; the Org route opens it for both units, as do the Team projection and the agent run's records; prose and the foreign prefix stay; a re-run and a follow-up change no byte; an unparseable trace of an unrelated run is never parsed;
+    - SR-018: an interrupt before the pass, without and with step 4, then a retry and a third start that changes no byte; a pass that fails leaves tree v1, and the retry completes; an interrupt after the pass changes only the container file on retry; an Org whose step fails is isolated while its real moves still apply; a writer predecessor pending (`waiting_for_…`), whose late output its follow-up converts; a writer's follow-up over a converted Org;
+    - cost.
+
+    All but the interrupt-after-pass case fail with the migration source at HEAD.
+  - `org-units-remote-files-and-renewal.test.ts`, SR-016:
+    - the container is registered, answers `remoteNodeOf` null and hosts no agent;
+    - a file from another node to a Team unit's member lands in `agent_teams/<team>/<member>/received_files/<sender>/`;
+    - an agent unit and a Team unit's member renew through the real supervisor, each first input beginning with the hand-over notice.
+  - `running-agents-messaging.test.ts`: an agent unit gets a file by run ID with `node` over the node path, in `agents/<unit>/received_files/`.
+  - `agent-org-units-late-predecessors.test.ts`: the classification is updated.
+- **Cost:** one node pass on the synthetic large Org (10 Teams, 40 agents, 40,000 log lines), plus 200 agent runs and 120 Team members, about 140 MB, takes **838 ms** for the whole conversion. The user's real layout sizes were not read: no user data is touched (standing rule). The node's size here is an assumption, recorded as such.
+- Validation: see `evidence/implementation/ir-006/test-summary.md`.
 
 ## IR-005 (CRR-006 Local Fix F-5)
 

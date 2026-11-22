@@ -44,6 +44,10 @@ export const configuredRootFixture = async (placement: Placement, options: {
   pendingSwitch?: PendingRuntimeSwitch;
   /** autobyteus-599 (AC-008): a real run manager (as a composition wires it) instead of the controlled preparations. */
   agentRunManager?: unknown;
+  /** org-teams-follow-definition SR-016: the Team run is a unit of an Org (its tree's `containedIn`), as a container creates it. */
+  containedIn?: Readonly<{ orgRunId: string; address: string }>;
+  /** autobyteus-587: the node's received files (a real store) instead of none. */
+  receivedFiles?: unknown;
 } = {}) => {
   const memoryDir = mkdtempSync(join(tmpdir(), "configured-first-work-"));
   const mode = options.mode ?? "restore";
@@ -127,17 +131,18 @@ export const configuredRootFixture = async (placement: Placement, options: {
         ...(i === 1 && options.pendingSwitch ? { pendingRuntimeSwitch: options.pendingSwitch } : {}),
       })),
     });
-    const tree = buildInitialTeamRunExecutionTree({ config, teamDefinitionName: "Test Team" });
+    const built = buildInitialTeamRunExecutionTree({ config, teamDefinitionName: "Test Team" });
+    const tree = options.containedIn ? { ...built, containedIn: options.containedIn } : built;
     await actualStore.write(memoryDir, tree as never);
-    const root = await materializeTeamRoot({ changeNotices: new TeamChangeNoticeSource(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, memoryLocator: new AgentRunMemoryLocator({ memoryDir }), delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
-      config, tree,
+    const root = await materializeTeamRoot({ changeNotices: new TeamChangeNoticeSource(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: (options.receivedFiles ?? NO_FILES_RECEIVED) as never, memoryLocator: new AgentRunMemoryLocator({ memoryDir }), delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+      config, tree: tree as never,
       messages: { schemaVersion: 1, rootTeamRunId: rootId, messages: [] },
       teamMemoryDir: memoryDir, mode, persistInitialPackage: false, factory,
       memberExecutionContextBuilder: new MemberExecutionContextBuilder(definitions as never, NOT_DELEGATED), executionTreeStore: { write } as never,
       communicationStore: { write: sidecarWrite, appendMessage: sidecarWrite } as never,
       onTerminated: vi.fn(),
     });
-    return { ...common, root,
+    return { ...common, root, memoryDir,
       send: (id: string = ids[1]) => root.postMessage(new AgentInputUserMessage("Continue this conversation"), id),
       statuses: () => root.getLeafAgentStatusSnapshots(),
       members: () => root.getExecutionTreeSnapshot().rootTeam.members,

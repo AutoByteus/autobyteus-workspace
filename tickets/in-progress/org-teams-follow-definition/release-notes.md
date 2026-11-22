@@ -1,5 +1,5 @@
 ## What you need to do
-- Nothing to do before upgrading. On the first start, your saved organization runs are converted to the new shape (their conversations, messages, memory, Tasks and history are kept). This conversion cannot be undone: after upgrading, do not install an older version. If you need to go back, contact support instead.
+- Nothing to do before upgrading. On the first start, your saved organization runs are converted to the new shape (their conversations, messages, memory, Tasks and history are kept; files an organization's agent received from another node, or attached to messages and Tasks, still open from where they now are). This conversion cannot be undone: after upgrading, do not install an older version. If you need to go back, contact support instead.
 - If you work with a paired node, upgrade both nodes. A node on an older version refuses the new team-membership update between nodes; the other node then catches up the next time it reads that team's status.
 
 ## What's New

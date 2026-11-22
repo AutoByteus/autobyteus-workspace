@@ -40,25 +40,23 @@ const NOT_FOLLOWED: Readonly<Record<string, "rebuilder" | "none">> = {
   // A tree today's validator accepts is SKIPPED_ALREADY_CURRENT (team-run-execution-tree-v2-app-data-migration.ts:270); a
   // Team unit's tree is today's (checked below).
   "20260824_team_run_execution_tree_v2": "none",
-  // Released Team JSON logs by exact address; a Team unit's log is append-only, never JSON.
-  "20260701_team_communication_projection_addresses": "none",
   // Renames manifest runtimes at every family's depth (raw-trace-manifest-runtime-names-files.ts:25): agents/1,
-  // agent_teams/2, agent_orgs/3; a unit member's folder is found at its new place.
+  // agent_teams/2, agent_orgs/3; a unit member's folder is found at its new place. It writes manifests only, no trace
+  // record, so no path the node pass moves (SR-018).
   "20261030_raw_trace_manifest_runtime_names": "none",
-  // Rewrites delegated runs' links in agents/* and Team member folders (attachment-link-folders.ts:26,45), never
-  // agent_orgs (no link names an Org member): a unit's folder is an ordinary run folder at its new place.
-  "20261119_delegated_run_own_attachment_links": "none",
-  "20261119_delegated_run_own_attachment_links_after_task_agent_own_run": "none",
   // Deletes two built-in definitions' folders under agents/ (the definitions root), never memory.
   "20261118_remove_retired_built_in_agents": "none",
   // The rest: the search finds none of the Org's storage in them, and none writes run trees, run files or logs.
   ...Object.fromEntries([
     "20260727_custom_provider_v1_secret_migration", "20260706_remove_global_skill_discovery_mode", "20260517_team_run_metadata_member_tree",
     "20260730_token_usage_custom_provider_model_value_backfill", "20260730_token_usage_provider_name_snapshot_backfill", "20260819_token_usage_run_records_v1",
-    "20260731_remove_external_runtime_working_context_snapshots", "20260617_raw_trace_rotation_layout", "20260707_raw_trace_active_file_name",
+    "20260731_remove_external_runtime_working_context_snapshots",
     "20260731_migrate_native_working_context_snapshots_v5", "20260623_remove_self_evolution_run_metadata",
-    "20260803_custom_provider_readable_identity", "20260924_remove_external_messaging_data", "20261005_projects_per_folder_v1",
-    "20261017_project_task_keys_v1", "20261025_project_task_titles", "20261006_remove_built_in_project_task_manager", "20261019_remove_work_trace_exports",
+    "20260803_custom_provider_readable_identity", "20260924_remove_external_messaging_data",
+    // SR-018: they write Project task.json files, which carry no path the node pass moves (contextFiles are names in the
+    // Task's own context/ folder); no migration writes an ad-hoc task.json.
+    "20261005_projects_per_folder_v1", "20261017_project_task_keys_v1", "20261025_project_task_titles",
+    "20261006_remove_built_in_project_task_manager", "20261019_remove_work_trace_exports",
     "20261020_remove_skill_improvement_data", "20261024_node_identity_file_name", "20261024_memory_sync_source_id_names",
   ].map((id) => [id, "none" as const])),
 };
