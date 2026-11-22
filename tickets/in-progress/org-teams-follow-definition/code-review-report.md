@@ -2,208 +2,111 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `requirements-doc.md` (Approved, SR-015; DEC-007 added for CRR-004 A-1)
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Requirements Doc Reviewed As Context: `requirements-doc.md` (Approved, SR-015; REQ-004, REQ-009, AC-004, AC-008, DEC-002, DEC-005)
 - Investigation Notes Reviewed As Context: through the design's citations
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (through SR-015)
-- Design Spec Reviewed As Context: `design-spec.md` (§ SR-015 Revision; DS-004/R-3''/R-7; R-5)
-- Supplemental Task Artifacts Reviewed As Context: `org-container-storage-contract.md`, `follow-ups.md`; autobyteus-22's approved behavior and § Exact Texts
-- Relevant Solution Revision IDs: SR-007, SR-014, SR-015
-- Design Review Report Reviewed As Context: `design-review-report.md` (ARCH-REV-010 Pass for SR-015)
+- Design Spec Reviewed As Context: `design-spec.md` (DS-006: "Org planner (pure: stored container + Org definition view + units' current members) → locked container write (units, formerUnits, Org rules)"; R-6)
+- Supplemental Task Artifacts Reviewed As Context: `org-container-storage-contract.md` (the container keeps the Org rules; presence is derived at each read)
+- Relevant Solution Revision IDs: SR-007, SR-015
+- Design Review Report Reviewed As Context: `design-review-report.md` (ARCH-REV-010)
 - Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: ARCH-REV-009, ARCH-REV-010
+- Relevant Architecture Review Revision IDs: ARCH-REV-005, ARCH-REV-010
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md` (§ IR-004)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-003, IR-004
+- Relevant Implementation Revision IDs: IR-004 (`cd6a777b24`)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-005`
-- Current Review Round: `5`
-- Review Scope: `Targeted Delta Review`
-- Review Scope Evidence (round >1): IR-004 (`1357635a64..cd6a777b24`, 11 source files, +60 effective lines) changes only the CRR-004 paths:
-  - F-1: Team-unit members in the Org rows and composition;
-  - F-2: the listing facts;
-  - F-3: the stopped-settings write;
-  - F-4: the Team package validator, the Team records source, and logging in the receiver;
-  - SR-015: one read-only port method and its use in `CollaborationTree.resolve`.
-  - CRR-002's full re-audit and CRR-003's delta cover everything else. I read the whole delta, re-traced each changed path from its trigger, and ran the gate.
-- Trigger: IR-004 ready for source review (implementation engineer)
-- Prior Review Round Reviewed: CRR-004 (failure-origin review, Fail)
-- Latest Authoritative Round: 5
-- API/E2E and delivery records: API-REV-001 (Fail, analyzed in CRR-004)
+- Current Code Review Revision ID: `CRR-006`
+- Current Review Round: `6`
+- Review Scope: `N/A` (failure-origin round)
+- Trigger: API/E2E round 2 (API-REV-002, commit `9cd1e8d191`) failed on F-5 only; every round-1 finding is resolved and AC-001..AC-008 are otherwise proven
+- Prior Review Round Reviewed: CRR-005 (implementation review, Pass)
+- Latest Authoritative Round: 6
+- Coverage Investigation Reviewed (failure-origin entry point): `api-e2e-coverage-investigation.md`
+- Execution Coverage Report Reviewed (failure-origin entry point): `api-e2e-execution-coverage-report.md`
+- API/E2E Revision Record Reviewed (failure-origin entry point): `api-e2e-revision-record.md`
+- Relevant API/E2E Revision IDs: API-REV-002
+- Failing Scenario IDs: OC-13 (and the same warning observed in OC-04)
+- Exact Failing Commands / Execution Mode: `tests/e2e/agent-org-runs/org-container-package.e2e.test.ts` (built server, package files edited on disk)
+- Failure Evidence Paths: `evidence/api-e2e/round-2/OC-01-13/OC-13.json` (`AGENT_ORG_DEFINITION_NOT_FOLLOWED: AgentOrg 'oc_org_6dcd80_…' keeps its units: Org definition 'oc-org-6dcd80' cannot be used (AgentOrg endpoint '/team/writer' was not found.).`)
 
-Code reviewed: worktree `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition`, branch `codex/org-teams-follow-definition`, commit `cd6a777b24` (IR-004; cumulative base `9f6add773b`).
+Implementation reviewed against: `cd6a777b24` (unchanged since CRR-005).
 
 ## Routing Classification Review
 
 - Task size: `Large`
 - Architectural risk: `High`
-- Selected route: `Implementation Review`
+- Selected route: `Implementation Review` (this round: API/E2E failure-origin review)
 - Independent source review required by the classification: `Yes`
 - Classification evidence or correction required: None (unchanged from CRR-001).
 
 ## Review Scope
 
-- Paths re-traced from their real triggers:
-  - **F-1:**
-    - A Team unit's busy member is removed. The Team root's `parts_changed` reaches `OrgViewComposition.relay`, then `learnAgents` (file marked `live: true`), then `composeOrgExecutionTree` → `teamUnitMembersInOrg(tree, space, true)`. The leaving member stays in `agents`, so its frames are relayed and its status is in `liveStatuses`/`snapshot`.
-    - After its release write, the next `parts_changed` drops it.
-    - Rows: `containerTreeOf` → `teamUnitMembersInOrg(…, true)` tagged `leaving`; `RunTreeView` → `teamMemberRowsOf(part.members, isLiveTeamRun(teamRunId))`, the Team's own row rule. The `org_team` row's `statusIds` include the leaving member, so the Team row no longer reads Offline while it works.
-    - A stored (not live) unit's file never shows leaving members.
-  - **F-2:** `RunningAgentsListing.entryOf` → `listingFactsOf`: `startedByPerson = !delegatedFrom && !containedIn` for both kinds. One rule, in the facts.
-  - **F-3:** `AgentOrgRunManager` stopped save → `ContainerConfigTrees.write`: `withLaunch` (Team-unit member) and `writeAgent` (agent unit) now write `launchSource` as the edit gives it. `orgAgentNodeOf` composes it back from the metadata, so the readback equals `expected`, and the composed tree carries the agent unit's provenance it had lost.
-  - **F-4:**
-    - `TeamRunService.restoreTeamRun` → `TeamRunStatePackageLoader.load` → `validateTeamRunStatePackage`: an endpoint counts as the run's own when it is a current or a former member (`formerMemberByRunId`). A line with neither endpoint is still refused.
-    - `runRecordsOfRootOwners` (agent_team) uses the same rule, so the restored run's views keep those lines.
-    - `rg` of the remaining endpoint checks: `root-team-run.ts:151` routes the log owner; the two `ownAddressOf` lookups only name senders. None refuses or drops a former member's line.
-    - `RemoteMessageReceiver.resolve` now logs `REMOTE_TARGET_ROOT_UNAVAILABLE` with the error.
-  - **SR-015:** a unit's `send_message_to('P/x')` → own-root miss → `CollaborationTree.resolve` → step 2 misses → `containedIn` → `formerUnitAt` (as before), then `OrgContainerPort.formerMemberAt`. That finds the current Team unit at `P`, maps `P/x` → `/x` through `ContainedTeamAddressSpace`, and calls `TeamExecutionIndex(tree).formerMemberAt('/x')` over the live tree, or the stored file (`teamTreeOf`; never restored; `null` when a current member has the address). It throws autobyteus-22's `formerMemberRefusal` naming `P/x` (code `COLLABORATION_TARGET_NOT_FOUND`).
-- Gate run by me (with `pnpm` on PATH):
-  - `node scripts/typecheck.mjs`: production 0 errors; tests 974 in 300 files, equal to the baseline. PASS.
-  - `vitest run tests/unit/agent-org-execution tests/unit/agent-collaboration tests/unit/run-history tests/unit/remote-collaboration tests/unit/agent-communication tests/unit/agent-team-execution tests/unit/agent-execution tests/unit/agent-memory tests/unit/api tests/app-data-migrations tests/architecture tests/integration/agent-org-execution`: **527 files passed, 4 skipped; 4315 tests passed, 9 skipped; 0 failures**.
-  - Controls: with F-1's `live` condition forced off and F-4's former-member clause removed, the F-1 composition case and the F-4 validator case fail (2 failed / 344). Restored, they pass. Worktree clean.
-- Explicit exclusions: built-server, two-node, real-runtime and rendered proof are API/E2E's next rerun (the implementation engineer reran org-follows-definition 6/6 with OF-04's exact SR-015 refusal, and AOML 2/2).
+- Confirmed that OC-13 represents approved behavior, then traced only the Org-follow planning path. No general test review, no full audit; CRR-005's result stands for everything else.
+- Established by `Read`, confirmed by API/E2E's runtime evidence (the exact warning text above, produced by the code path below).
 
-## Upstream Behavior And Production-Path Basis Confirmation
+## Failure-Origin Findings
 
-- Approved requirements basis understood: as before, plus DEC-007 (SR-015): another unit gets the teammate's former-member refusal, naming `P/x`.
-- Design-spec behavior map verified against the implementation: Yes (§ SR-015 Revision; F-1..F-4 restore approved behavior without design change).
-- Design review report and round confirmed: ARCH-REV-010.
-- Behavior-basis status: `Confirmed`.
-- Remaining material ambiguity: None.
+### F-5 — a running Org stops following its Org definition while an Org rule names a member removed from its Team (OC-13)
 
-| Behavior ID | Status | Current Implementation Path And Lifecycle Evidence | Contradicting Evidence |
-| --- | --- | --- | --- |
-| AC-002 in the Org view (F-1) | Confirmed | Traced above; test "its row and its frames and status are the Org view's while it is leaving; after its release they are gone"; rows test "only while that Team unit runs" | — |
-| REQ-006 / R-5 listing (F-2) | Confirmed | Test "a unit of an Org, of either kind, is not a run a person started" | — |
-| REQ-006 stopped settings (F-3) | Confirmed | Test "a model patch records its source … the readback equals the saved tree" (Team-unit member and direct agent) | — |
-| REQ-002/REQ-005 reopen, AC-007 follow-up (F-4) | Confirmed | Validator test with an outside sender to a former member, and a line with no own endpoint still refused; records source consistent | — |
-| DEC-007 / SR-015 | Confirmed | 3 cases (idle/stopped, leaving/stopped, leaving/live with the stored file unread), each from an agent unit and another Team unit's member; OF-04 exact text | — |
-
-## Supported Product Scenario And Reachability Gate (Mandatory)
-
-| Scenario ID | Related IDs | Kind | Actor / Initiator | Goal / Event | Entry Surface | Shape | Forward Path | Outcome | Evidence | Validity | Use |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| S-01..S-09 | As CRR-003 | — | — | — | — | Normal | Unchanged apart from the paths below | As CRR-003 | Gate green | Supported Normal Scenario | Use |
-| S-10 a busy Team-unit member removed, seen and answered in the Org view | AC-002, REQ-002 | User/System | Team definition change | The member finishes in view; the user answers its approval | Definition change; Org view | Normal | F-1 path | Leaving row, frames, status; gone after release | F-1 tests | Supported Normal Scenario | Use |
-| S-11 reopen a Team (unit or peer copy) whose removed member had an outside correspondent | REQ-002/REQ-005, AC-005, AC-007 | User/System | Stop/idle, then message or open | Restore | Restore | Normal | F-4 path | Restored with the lines kept | Validator test; API/E2E rerun pending | Supported Normal Scenario | Use |
-| S-12 another unit addresses a Team unit's removed member | DEC-007, SR-015 | System | Unit agent | Clear refusal | `send_message_to('P/x')` | Normal | SR-015 path | Former-member refusal naming `P/x` | 3 cases + OF-04 | Supported Normal Scenario | Use |
-
-### Candidate Finding And Mechanism Gate
-
-| Candidate ID | Observation Or Mechanism | Scenario / Contract ID | Independent Trigger | Forward Path / Lifecycle / Consequence | Evidence | Disposition | Scope, if promoted | Reason / Proportionate Response |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| C-25 | The composed Org tree strips the `leaving` tag from a live Team unit's leaving member (the node type has none) | F-1 | — | Its consumers (agents map, statuses, snapshot) need the agent, not the tag. The Leaving tag on screen comes from the rows, which keep it | Code read; web `AgentOrgRunMemberTree.vue` reads `row.leaving` | Reject | — | Correct split |
-| C-26 | `containerTreeOf` always lists leaving members; a stale marker of a stopped unit is filtered by `teamMemberRowsOf(…, isLiveTeamRun)` | F-1 | — | Same as a Team's own `ownTreeOf` + rows | Code read | Reject | — | Consistent with autobyteus-22 |
-| C-27 | `formerMemberAt` reads the stored Team file on each address miss | SR-015 | — | One small read, only on a miss, never a restore | Code read | Reject | — | Proportionate |
-| C-28 | A run delegated by a unit (R-8 reach, not contained) that addresses a removed member or unit gets the generic not-found (the `!containedIn` early return) | SR-015 / DEC-007 scope ("another unit") | — | Behaves as designed: DEC-007 covers units. The same held for removed units since IR-002 | Design text | Reject (outside DEC-007) | — | Recorded as a residual note, not a defect against the approved basis |
-| C-29 | CRR-004 asked for a restore test of the AC-005 shape too; IR-004 has the validator test only | F-4 | — | Restore goes through the validator, and the validator test reproduces the exact refusal. The end-to-end shape belongs to API/E2E's rerun | Code read | Reject as a defect | — | Asked of API/E2E in the handoff (an OC case: removed member that took a cross-unit hand-off, Org stop/reopen) |
-| C-30 | `REMOTE_TARGET_ROOT_UNAVAILABLE` logs the error message only, not the root ID | Readability | — | The error text names the run (the validator's message names the message; restore errors name the run). Adequate for finding the cause | Code read | Reject | — | — |
-
-## Structural / Design Checks
-
-| Check | Result (`Pass`/`Pass — deviation recorded, reason holds`/`Fail`) | Evidence | Required Action |
-| --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | — | — |
-| Implementation matches approved behavior-defining supplemental artifacts | Pass | autobyteus-22 texts reused for SR-015 | — |
-| Data-flow spine inventory clarity and preservation | Pass | F-1 restores the existing relay spine for leaving members | — |
-| Ownership boundary preservation and clarity | Pass | One owner `teamUnitMembersInOrg` for rows and view; the Team's own `TeamExecutionIndex.formerMemberAt` answers SR-015 through the container port | — |
-| Off-spine concern clarity | Pass | — | — |
-| Existing capability/subsystem reuse check | Pass | `teamMemberRowsOf`, `formerMemberRefusal`, `ContainedTeamAddressSpace`, `TeamExecutionIndex` reused | — |
-| Reusable owned structures check | Pass | — | — |
-| Shared-structure/data-model tightness check | Pass | `OrgUnitFile.live` is an explicit read-side flag; no persisted change | — |
-| Repeated coordination ownership check | Pass | One endpoint rule in the validator and the records source | — |
-| Empty indirection check | Pass | — | — |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | All touched files ≤ 382 effective lines | — |
-| Ownership-driven dependency check | Pass | `run-own-agents-reader` imports the composition's owner function; no cycle (typecheck, architecture tests green) | — |
-| Authoritative Boundary Rule check | Pass | Readers ask the container port; the directory reads the Team's own tree | — |
-| File placement check | Pass | — | — |
-| Flat-vs-over-split layout judgment | Pass | — | — |
-| Interface/API/query/command/service-method boundary clarity | Pass — deviation recorded, reason holds | `OrgContainerPort` now has ten read-only, single-subject methods; `formerMemberAt` is the one SR-015 names | — |
-| Naming quality and naming-to-responsibility alignment (Principle 15) | Pass | — | — |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | The former inline member mapping in `containerTreeOf` and the composition is replaced by the one owner | — |
-| Patch-on-patch complexity control | Pass | Each fix is at its owner, not a caller-side special case | — |
-| Dead code removed in the touched files and modules (Core Principle 7) | Pass | — | — |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | One case per fix through the owning path; each fails with its fix reverted (two checked by me) | — |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | — | — |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | — | — |
-| API/E2E readiness for the next workflow stage | Pass | Gate green; reruns named | — |
-
-## Source File Size And Structure Audit (If Applicable)
-
-Effective non-empty lines, `1357635a64` → `cd6a777b24`: `collaboration-tree.ts` 378 → 382; `run-tree-view.ts` 273 → 274; `org-container-port.ts` 52 → 58; `container-config-trees.ts` 71 → 74; `org-container-directory.ts` 286 → 296; `org-execution-tree-composition.ts` 51 → 67; `org-view-composition.ts` 215 → 220; `remote-message-receiver.ts` 168 → 174; `run-records-source.ts` 38 → 39; `team-run-state-package-validator.ts` 41 → 44; `run-own-agents-reader.ts` 206 → 210. All pass the 500 limit and the delta check.
-
-## Legacy / Backward-Compatibility Verdict
-
-| Check | Result | Notes |
-| --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | — |
-| No legacy old-behavior retention in changed scope | Pass | The frozen validator stays frozen (migrations only) |
-| Dead code removed in the touched files and modules (Core Principle 7) | Pass | — |
-| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | No stored shape changed |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | — |
-| Approved transition mechanics match the reviewed design | Pass | — |
-
-## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
-
-None.
-
-## Docs-Impact Verdict
-
-- Docs impact: `Yes`, done: `agent_orgs.md` (SR-015 refusal). F-1..F-4 restore documented behavior; no further docs change needed. Delivery verifies the docs set.
-
-## Additional Material Premise Validation (When Required)
-
-| Premise ID | Current Status | Changed Evidence / Reason |
-| --- | --- | --- |
-| MP-CR-01, MP-CR-02 | Confirmed resolved | Unchanged |
-| CRR-004 F-1..F-4 premises | Confirmed resolved | Traced above; two controls run by me |
+- Scenario still approved: **Yes**.
+  - REQ-004 / DEC-005: "an Org rule from or to a member no longer in its Team is left out until it returns". AC-004's trigger is exactly this state (the rule stays in the Org definition while the Team definition drops the member).
+  - REQ-009 / DEC-002: the Org follows its Org definition (mount/unmount Teams, add/remove agents, Org rules).
+  - Design DS-006: the Org planner works from the stored container, the Org definition view and **the units' current members**.
+  - So the state is a supported, temporary one, not an invalid definition. Every other Org change must still be followed, and the rule kept for when the member returns.
+- Production path (`Read`):
+  - An Org definition change (or reopen) reaches `AgentOrgContainers.followDefinition` (`agent-org-containers.ts:58`), then `OrgMembershipPlanner.viewFor` (`org-membership-planner.ts:46-55`).
+  - That calls `AgentOrgRunPlanner.resolveConfiguration`, the launch page's resolution, which compiles every Org handoff strictly (`CollaborationHandoffCompiler.compileOrg` → `resolveOrgEndpoint`, `collaboration-handoff-compiler.ts:153-179`).
+  - `/team/writer` is checked against the mounted Team's **current definition**, which no longer has `writer`, and throws `AgentOrg endpoint '/team/writer' was not found.`
+  - The catch turns the throw into `notFollowed`, so the Org keeps its units and rules and ignores every other change while the rule names the absent member.
+  - `planAgentOrgContainer` compiles the Org rules a second time the same way (`agent-org-container-plan.ts:79`).
+  - Only the read side (`OrgContainerDirectory.orgRulesFrom`) filters by presence, as DS-006 and DEC-005 intend.
+- Origin: **implementation defect**, and an **earlier review gap** (mine). In CRR-001 I traced DS-006's follow path as sound but did not check that it reuses the launch page's strict compile, which REQ-004's own state fails. AC-004's tests (OF-04, OC-04's rule parts) pass because they make no Org change during the gap.
+- Classification: `Local Fix` (implementation). The behavior is already decided (DEC-005, DS-006): the container keeps the Org rules as the Org definition writes them, and presence is derived at each read.
+- Required action:
+  - In the Org-follow planning (`viewFor` and `planAgentOrgContainer`'s Org-rule compile), accept an Org rule endpoint `P/x` when `P` is a mounted Team and `x` is not in its current definition (the member is gone from its Team). Keep the rule as written in the container's Org rules, so `orgRulesFrom` leaves it out until `x` returns and puts it back then, with the notices as today.
+  - Keep refusing every other invalid rule as now (unknown direct placement, an Agent as an intermediate segment, more than two segments, empty or untrimmed rules).
+  - One rule in one place. Do not loosen the shared compiler for other callers.
+  - Tests:
+    - a unit test of `OrgMembershipPlanner.viewFor` with such a definition: a view is returned, the rule is kept in the plan, a new unit or agent is planned, and a genuinely invalid endpoint is still not followed;
+    - the reopen path (follow on reopen) with the same definition.
+  - OC-13 then reruns.
+- Launching a **new** Org from such a definition: the launch page's strict refusal is today's behavior, and REQ-004 speaks of a running Org's rules. Unchanged; not part of this fix. A new launch whose rule names a member its Team lacks was refused before this ticket as well.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score: `9.45/10` (simple average; not the decision rule). Pass bar: at least 9.4 in every category (user's standing instruction).
-
-| Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
-| --- | --- | --- | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.5 | The relay spine now carries a leaving member to its release, as the Team's own view does | — | — |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.4 | One owner for Team-unit members in the Org; the Team answers its own former members through the port | — | — |
-| `3` | `API / Interface / Query / Command Clarity` | 9.4 | One read-only port method, named by the design | — | — |
-| `4` | `Separation of Concerns and File Placement` | 9.4 | Each fix at its owner; small deltas | — | — |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.4 | No persisted change; `live` read flag explicit | — | — |
-| `6` | `Naming Quality and Local Readability` | 9.4 | Comments say why (liveness, provenance, former endpoints) | — | — |
-| `7` | `API/E2E Readiness` | 9.4 | Gate green; every fix tested with a control; reruns named | The AC-005 shape and the two-node file still need API/E2E's rerun | — |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.4 | F-1..F-4 fixed at their causes; the swallowed restore error is now logged; SR-015 per DEC-007 | — | — |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.6 | — | — | — |
-| `10` | `Cleanup Completeness` | 9.6 | Inline member mappings replaced by the owner | — | — |
+Not repeated for a failure-origin round. Affected rationale: CRR-005's `Runtime Correctness And Behavioral Fidelity` 9.4 does not hold while F-5 stands (a REQ-009 behavior is blocked in a REQ-004 state). The bar of at least 9.4 in every category applies again at the next implementation review.
 
 ## Findings
 
-No open findings. CRR-004's F-1..F-4 and A-1 are resolved (revision record CRR-005).
+| ID | Finding | Evidence | Required Action | Classification | Owner |
+| --- | --- | --- | --- | --- | --- |
+| F-5 | A running Org ignores every Org-definition change while an Org rule names a member removed from its Team: the follow planner compiles Org rules strictly, as the launch page does | Read; OC-13 runtime warning | Accept a mounted Team's absent member as a kept Org-rule endpoint in the follow planning only; other invalid rules still refused; tests (planner, reopen); OC-13 rerun | `Local Fix` | Implementation engineer |
 
 ## Follow-ups
 
-- Follow-ups this review added: None. FU-001 unchanged.
+- Follow-ups this review added: None.
 
 ## Classification
 
-- N/A (Pass).
+- F-5: `Local Fix`, implementation-owned. Large/High preserved.
 
 ## Recommended Recipient
 
-API/E2E engineer (implementation review passes), then the informational note to the implementation engineer.
+Implementation engineer (`get_handoff_rules`: failure-origin review confirms an implementation defect). After the fix: source review (targeted delta), then API/E2E reruns the OC file. Launches are unchanged, so OF, `stopped-org-workspace` and OCU-05 need no rerun unless the fix touches the launch path.
 
 ## Residual Risks
 
-- API/E2E reruns, per CRR-004: the OC file (with OC-04), OCL-02, the OCU probe, the whole two-server file (RC-56 then RC-12/13/24) and `stopped-org-workspace-graphql`. Also recommended: one OC case of the AC-005 shape, where a removed Team-unit member that took a cross-unit hand-off is followed by an Org stop/reopen (C-29).
-- C-28: a run delegated by a unit gets the generic not-found for a removed unit or member (outside DEC-007, unchanged since IR-002).
+- A user cannot launch a new Org from a definition whose Org rule names a member its Team lacks, while a running Org follows it. This is today's launch rule, outside REQ-004.
 - FU-001 remains.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
-- Review Entry Point: `Implementation Review`
-- Supported Product Scenario Gate: `Pass`
-- Material-Premise Gate: `Pass`
-- Score Summary: 9.45/10 average; every category at least 9.4
-- Failure Origin: N/A
-- Recommended Recipient: API/E2E engineer
-- Notes: Large/High preserved. CR-001..CR-007, N-1, F-1..F-4 and A-1 are resolved.
+- Review Decision: `Fail` (API/E2E failure confirmed as implementation-owned)
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Supported Product Scenario Gate: `Fail` (REQ-009 Org follow blocked in a REQ-004 state)
+- Material-Premise Gate: `Pass` (the failing scenario is approved behavior)
+- Score Summary: not rescored (failure-origin round)
+- Failure Origin: F-5: implementation defect, also my earlier review gap
+- Recommended Recipient: Implementation engineer
+- Notes: The round-2 test changes (OC-04 asserts DEC-007; OC-12 and OC-13 added) match the approved behavior; no test-owned cause.

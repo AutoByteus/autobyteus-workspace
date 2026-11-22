@@ -9,6 +9,7 @@
 | CRR-003 | `code-review-report.md` | Implementation Review / IR-003 complete | Fail | Pass | CR-002, CR-005, CR-006, CR-007 |
 | CRR-004 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-001 failed | Pass | Fail | F-1, F-2, F-3, F-4, A-1 |
 | CRR-005 | `code-review-report.md` | Implementation Review / IR-004 complete | Fail | Pass | F-1, F-2, F-3, F-4, A-1 |
+| CRR-006 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-002 failed | Pass | Fail | F-5 |
 
 ## Revision Entries
 
@@ -184,3 +185,33 @@ None.
 - Material score or classification changes: every category at least 9.4 (average 9.45); Large/High preserved
 - Recommended recipient: API/E2E engineer (then an informational note to the implementation engineer)
 - Remaining risks or uncertainty: API/E2E reruns pending (plus the recommended AC-005-shape OC case); C-28 residual (delegated runs get the generic text, outside DEC-007).
+
+### CRR-006: Failure-origin review of API-REV-002
+
+- Canonical review report updated: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/code-review-report.md`
+- Review entry point and round: API/E2E Failure-Origin Review, round 6
+- Review scope: `N/A` (failure-origin round)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-002, commit `9cd1e8d191`); F-5 (OC-13)
+- Relevant solution revision IDs: SR-007, SR-015
+- Relevant architecture-review revision IDs: ARCH-REV-010
+- Relevant implementation revision IDs: IR-004 (`cd6a777b24`)
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-005)
+- Current authoritative result: Fail (implementation-owned)
+- What changed in the review result and why:
+  - F-5 (Read; runtime warning from API/E2E): `OrgMembershipPlanner.viewFor` plans with the launch page's strict Org-rule compile. An Org rule naming a member removed from its Team, a state REQ-004 / DEC-005 treat as normal, makes the whole definition "not followed", so REQ-009 changes are ignored.
+  - Local Fix: accept an absent mounted-Team member as a kept rule endpoint in the follow planning only.
+  - An earlier review gap of mine (CRR-001 traced DS-006 without checking the compile it reuses).
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Classification | Resolution | Evidence |
+| --- | --- | --- | --- |
+| F-1..F-4, A-1 | Local Fix / Requirement Gap | Still resolved | API-REV-002 reruns pass (OC-04, OCL-02, OCU-04, two-server 56/56, stopped-org-workspace) and OC-12 |
+
+- New or remaining finding IDs: F-5
+- Material score or classification changes: not rescored; Large/High preserved
+- Recommended recipient: Implementation engineer
+- Remaining risks or uncertainty: launch from such a definition stays refused (today's rule, outside REQ-004).
