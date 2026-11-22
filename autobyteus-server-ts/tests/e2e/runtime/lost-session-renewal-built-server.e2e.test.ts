@@ -14,7 +14,7 @@ import {
 } from "../../../../test-support/live-e2e/test-runtime-bootstrap.mjs";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
-// A lost runtime session on the BUILT server (autobyteus-599, API surface; AC-001, AC-003, AC-005, AC-006): a standalone run and
+// A lost runtime session on the BUILT server (autobyteus-599, API surface; AC-001, AC-003, AC-005, AC-006, AC-008 for the studio): a standalone run and
 // a Team member on Antigravity whose saved conversation the CLI no longer has. Test-owned data root, private HOME; the CLI is
 // scripted (tests/fixtures/agy-failure-cli.mjs `linked_skills`, with AGY_FAKE_LOST_CONVERSATIONS_FILE giving PRB-004's shape).
 //   LS-01 Standalone run: era 1, Stop, the conversation is lost; the next message is answered in a fresh session behind the
@@ -31,6 +31,8 @@ const ENABLED = process.env.RUN_AGY_FAILURE_E2E === "1" && path.isAbsolute(FAKE_
 const AGY = "antigravity_cli";
 const AGY_MODEL = "gemini-3.8-flash-low";
 const MARKER_TEXT = "The saved Antigravity CLI session of this run was no longer available, so a new session continues from the work journal.";
+/** The start of the hand-over notice the fresh session's first input carries (AC-008). */
+const HANDOVER_NOTICE_START = "[System: runtime hand-over]";
 
 type Json = Record<string, any>;
 type Wire = { type: string; payload: Json };
@@ -178,6 +180,7 @@ describe.runIf(ENABLED)("a lost runtime session on the built server: standalone 
     expect(renewed).not.toBe(lost);
     expect((await runMetadata(dir())).runtimeKind).toBe(AGY);
     expect(echoed(dir()).at(-1), "the agent answered the message").toContain("ECHO_INPUT after the loss");
+    expect(echoed(dir()).at(-1)!.startsWith(HANDOVER_NOTICE_START), "the first input begins with the hand-over notice (AC-008)").toBe(true);
 
     await terminate(runId);
     await stop();
@@ -185,6 +188,7 @@ describe.runIf(ENABLED)("a lost runtime session on the built server: standalone 
     const resumes = resumedWith(renewed);
     await talk(agentStream(runId), runId, "ECHO_INPUT after the restart", "after the restart");
     expect(resumedWith(renewed), "the renewed session was resumed").toBe(resumes + 1);
+    expect(echoed(dir()).at(-1)!.startsWith(HANDOVER_NOTICE_START), "no second notice (AC-006)").toBe(false);
     expect((await runMetadata(dir())).platformAgentRunId).toBe(renewed);
     expect(markers(dir()), "no second marker").toHaveLength(1);
     expect(completeSegments(dir()), "no second segment").toHaveLength(1);
@@ -227,11 +231,13 @@ describe.runIf(ENABLED)("a lost runtime session on the built server: standalone 
     expect(renewed).not.toBe(lost);
     expect((await node("/lead")).platformAgentRunId, "the other member is untouched").toBe(lead);
     expect(echoed(dir()).at(-1)).toContain("ECHO_INPUT after the loss");
+    expect(echoed(dir()).at(-1)!.startsWith(HANDOVER_NOTICE_START), "the first input begins with the hand-over notice (AC-008)").toBe(true);
 
     await stopTeam();
     const resumes = resumedWith(renewed);
     await talk(teamStream(teamRunId), worker, "ECHO_INPUT again", "worker again");
     expect(resumedWith(renewed), "the renewed session was resumed").toBe(resumes + 1);
+    expect(echoed(dir()).at(-1)!.startsWith(HANDOVER_NOTICE_START), "no second notice (AC-006)").toBe(false);
     expect((await node("/worker")).platformAgentRunId).toBe(renewed);
     expect(markers(dir())).toHaveLength(1);
     expect(completeSegments(dir())).toHaveLength(1);

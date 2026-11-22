@@ -448,9 +448,10 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   fresh session of the same agent runtime and model, through the steps of an
   agent runtime switch: the earlier records are kept as a closed segment, the
   switch marker starts the new file and the hand-over notice goes with the input
-  (`RuntimeSwitch.cause = "lost_session"`; a user's switch is `"runtime_change"`).
+  (`buildSessionRenewal` in code; a user's switch is `buildRuntimeSwitchBetween`).
   It happens at activation, for a standalone run, a Team or Org member and a
-  delegated run alike; the user sees the marker, not an error.
+  delegated run alike, in the studio, in application-scope runs and on the
+  standalone application host; the user sees the marker, not an error.
 - **Pending agent runtime switch:** the user's saved choice of another agent
   runtime, held in the Agent's record (`pendingRuntimeSwitch`: a standalone run's metadata,
   a member's node in the run's execution tree) until that input.

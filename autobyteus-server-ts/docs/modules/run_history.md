@@ -219,8 +219,13 @@ General lifecycle owners:
   aborts the candidate, and only when its release is confirmed `discard` removes the records written after the watermark, so a
   failed attempt leaves the previous agent's file as it was. A failure after the marker leaves the metadata pending; sending
   again finds the marker and the segment (the watermark is then ignored) and completes with one marker and one segment.
-  A lifecycle built without the port fails closed on a pending switch. Application-scope lifecycles have the port for session
-  renewals only: an application run never has a pending switch.
+  A lifecycle built without the port fails closed on a pending switch.
+- Every composition that runs external-runtime agents gives both parts of a switch or renewal (autobyteus-599, DEC-007): the
+  switch memory, and a `RuntimeHandoverNoticeService` first in the run manager's input preface, so the fresh session's first
+  input carries the notice. The studio (`build-studio-server.ts`) uses them for switches and renewals. The application execution
+  scope (`application-execution-scope-kernel-builder.ts`, the notice as its only platform notice) and the standalone application
+  host (`start-standalone-application-host.ts`, `runtimeSwitching` to the supervisor) use them only for renewals: an application
+  run never has a pending switch (`canSwitchRuntime`), and the host serves no run-selection surface, so no switch is saved there.
 - A session renewal (autobyteus-599; GLOSSARY "Lost runtime session", "Session renewal") takes the same steps without a
   pending field. When the restore of the saved session fails with that runtime's own not-found answer
   (`SavedRuntimeSessionMissingError` for exactly the saved session) and the failed restore's release is confirmed,

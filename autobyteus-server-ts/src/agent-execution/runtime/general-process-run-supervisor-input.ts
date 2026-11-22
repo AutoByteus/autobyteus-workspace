@@ -71,8 +71,12 @@ export type GeneralProcessRunSupervisorInput = Readonly<{
    */
   platformInputNotices?: (AgentRunInputPreface & AgentRunLifecycleObserver) | null;
   /**
-   * The memory and hand-over notice ports of an agent runtime switch (autobyteus-316), forwarded to the standalone lifecycle.
-   * None (the application host): a lifecycle without them fails closed on a pending switch.
+   * The memory port of an agent runtime switch (autobyteus-316), forwarded to the standalone lifecycle. It takes the
+   * fresh-session steps of a switch and of a session renewal (autobyteus-599); its hand-over notice comes from a
+   * `RuntimeHandoverNoticeService` in `platformInputNotices`, so a composition gives both. Every composition gives it: the
+   * studio uses it for switches and renewals; the standalone application host only for renewals, since it serves no
+   * run-selection surface (only the application backend proxy), so no switch is ever saved there. Without it, a lifecycle
+   * fails closed on a pending switch and rethrows a lost session.
    */
   runtimeSwitching?: RuntimeSwitching | null;
 }>;
