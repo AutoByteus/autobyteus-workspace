@@ -1,6 +1,6 @@
 # IR-006 validation summary (implementation engineer, 2026-11-22)
 
-State: merge `21622d75e9` (`origin/personal` `f2c0d2a902`) plus the IR-006 commit.
+State: merge `21622d75e9` (`origin/personal` `f2c0d2a902`), the IR-006 commit `dd310a30eb`, then merge `b933110420` (`a07d6fbac8`, clean).
 
 - Server typecheck: production 0 errors; test files 973 in 300 files (= the merged baseline). PASS.
 - Full suite on the merged state, before SR-017/SR-018 (`tests/unit tests/integration tests/architecture tests/app-data-migrations`): 1166 files, 9117 tests pass. 10 tests fail:
@@ -14,3 +14,4 @@ State: merge `21622d75e9` (`origin/personal` `f2c0d2a902`) plus the IR-006 commi
   - `append-only-message-logs-startup`: 2/2;
   - `remote-delegation-two-server`: 62/62, RC-56 (FU-003 on the base's node path) included;
   - `org-container-package` and `stopped-org-workspace-graphql`: 14/14.
+- After the `a07d6fbac8` merge: typecheck PASS (production 0; tests 973 = baseline). `tests/architecture`, `tests/unit/api`, `tests/unit/workspaces`, the migration's tests and `tests/unit/agent-org-execution` pass. In the combined run, four architecture tests and, run alone, `tracked-imports` timed out at 5 s under load; all 35 pass when run on their own.

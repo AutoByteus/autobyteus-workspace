@@ -35,14 +35,14 @@ The work was done in the eight slices of the design's Change Sequence; each kept
 - Related API/E2E revision IDs: `API-REV-001` (the failure CRR-004 reviewed), `API-REV-002` (the failure CRR-006 reviewed)
 - Related delivery revision IDs: `DR-001` (integration refresh blocked; resolved here)
 - Triggering finding IDs: IR-006: DR-001 (via SR-016), AR-011 (via SR-017), AR-012 (via SR-018), passed by ARCH-REV-013. IR-005: `F-5` (CRR-006 Local Fix). IR-004: `F-1`, `F-2`, `F-3`, `F-4` (CRR-004 Local Fix) and SR-015 (CRR-004 A-1, passed by ARCH-REV-010). IR-003: `CR-005`, `CR-006`, `CR-007`, `CR-002` (remaining), all Local Fix. IR-002: `CR-001` (Design Impact, realized through SR-013 R-8 and SR-014), `CR-002`, `CR-003`, `CR-004` (Local Fix), `N-1` (deviations recorded below). IR-001: N/A (ARCH-REV-005 residual notes and ARCH-REV-007 items addressed below).
-- Commits on `codex/org-teams-follow-definition` (base `origin/personal` `9f6add773b`; since IR-006 merged with `f2c0d2a902` in `21622d75e9`):
+- Commits on `codex/org-teams-follow-definition` (base `origin/personal` `9f6add773b`; since IR-006 merged with `f2c0d2a902` in `21622d75e9` and `a07d6fbac8` in `b933110420`):
   - `1c77d18f56` slice 1 part 1; `7f37435ebc` slice 2; `a3a6b227b1`, `8755ed6343`, `254c5a3a4b`, `ac0825d43a` slice 3 parts 1 … 4; `b324211623` slice 4;
   - `f69004e722` slices 5 … 7: migration, Org follow (with the web Leaving tag and the Org follows e2e), FU-003, the stored-Org reader fixes, and the existing tests moved to the container end state;
   - the slice 8 commit that follows it: docs, release notes draft, this handoff, the revision record and the evidence.
 
 ## IR-006 (SR-016 re-integration with the base; SR-017 typed path rewrite; SR-018 gating)
 
-- **SR-016: `origin/personal` `f2c0d2a902` is merged** (merge commit `21622d75e9`; `git merge` worked here). Org units are ordinary Team and agent runs, so autobyteus-587 (cross-node files) and autobyteus-599 (lost-session renewal) reach them through their own roots.
+- **SR-016: `origin/personal` is merged**: `f2c0d2a902` in merge commit `21622d75e9` (`git merge` worked here), then the newer `a07d6fbac8` (14 commits, autobyteus-579 and others; clean, one server file, `file-explorer.ts`) in `b933110420`. Org units are ordinary Team and agent runs, so autobyteus-587 (cross-node files) and autobyteus-599 (lost-session renewal) reach them through their own roots.
   - The 20 Org-hosting files the base extended stay deleted, and so does `tests/helpers/org-migration-continuation-fixtures.ts`.
   - The line conflicts take both sides, minus the Org-hosting code:
     - the `AgentOrgExecutionScopeBuilder` wiring in the supervisor;
