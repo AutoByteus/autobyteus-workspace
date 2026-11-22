@@ -2,18 +2,18 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `tickets/in-progress/cross-node-file-transfer-587/requirements-doc.md` (Approved; status SR-008 with DEC-005 corrected, DEC-007, DEC-008, AC-011)
+- Upstream Requirements Doc: `tickets/in-progress/cross-node-file-transfer-587/requirements-doc.md` (Approved; status SR-010: DEC-009, AC-012, AC-002/AC-007 wording)
 - Upstream Investigation Notes: `tickets/in-progress/cross-node-file-transfer-587/investigation-notes.md`
-- Upstream Solution Revision Record: `tickets/in-progress/cross-node-file-transfer-587/solution-revision-record.md` (SR-001 … SR-008)
-- Reviewed Design Spec: `tickets/in-progress/cross-node-file-transfer-587/design-spec.md` (Ready, SR-008)
+- Upstream Solution Revision Record: `tickets/in-progress/cross-node-file-transfer-587/solution-revision-record.md` (SR-001 … SR-010)
+- Reviewed Design Spec: `tickets/in-progress/cross-node-file-transfer-587/design-spec.md` (Ready, SR-010; § Revision SR-010 governs)
 - Supplemental Task Artifacts Reviewed: `reference-files-contract.md` (RFC-001, Approved, behavior-defining); `handoff-architecture-review.md`; `follow-ups.md` (none)
-- Relevant Solution Revision IDs: SR-001 … SR-008
+- Relevant Solution Revision IDs: SR-001 … SR-010
 - Architecture Review Revision Record: `tickets/in-progress/cross-node-file-transfer-587/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: 2
-- Trigger: SR-008 (commit `eac8cf3814`), which revises the design for ARCH-REV-001 and records the founder's DEC-007. Round 1 reviewed SR-007 (`08f8e18c31`). The founder delegated design approval to the Solution Designer's walkthrough plus this review, so design approval is not `Pending`.
-- Prior Review Round Reviewed: 1 (ARCH-REV-001, `Fail`)
-- Latest Authoritative Round: 2
+- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Review Round: 3
+- Trigger: SR-010 (commit `beb161d299`): the Solution Designer's revision after code review CRR-008 (CR-587-01 Design Impact, CR-587-02 … 05, FU-007) and the autobyteus-591 merge (IR-004). Round 2 reviewed SR-008 (`eac8cf3814`).
+- Prior Review Round Reviewed: 2 (ARCH-REV-002, `Pass`, on SR-008); round 1 (ARCH-REV-001, `Fail`)
+- Latest Authoritative Round: 3
 - Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587`, branch `codex/cross-node-file-transfer-587` at `eac8cf3814` (round 2 also checked `closedPeerRunRefusal` at base: `cross-run-message-delivery.ts:109,142`, router `:70,196`); all code read at the committed base `fbe714f8bb` with `git show`. Files opened:
   - Memory Sync: `local-memory-export-scanner.ts`, `memory-sync-path-policy.ts`, `memory-sync-transfer-limits.ts`.
   - Run folders: `root-run-package-current-validator.ts`.
@@ -92,50 +92,77 @@ Round 1's verdicts that passed still hold, and the ones that failed now pass:
 - `MP-002` (replacement before a refusal): handled. Every admission refusal of `acceptFromRemote` and `readyHost` for a work packet now comes before placement. The only case left is an I/O failure of the log append after placement, recorded in the design's Risks. It is not a supported product scenario (infrastructure failure, Principle 6) and needs no machinery.
 - `MP-003` (the sweep removes a completed file still in use): handled by the 24 h grace period and the touch on `status`/completion. A call lasts at most about 27 minutes.
 
+## SR-010 Delta Review (Round 3)
+
+Code read at `beb161d299`, the merged implementation at IR-004: `global-agent-run-message-router.ts:85-130`, `cross-run-message-delivery.ts:51, 165-216`, `remote-message-send.ts:25-50`, `task-delegation.ts:132-173, 380-445`, `task-execution-input.ts:17-29`, `project-task-tool-contract.ts:19-21, 59-68`, `context-file-upload-policy.ts:5-39`, `agent-team-collaboration-llm-contract.ts:55-75`.
+
+| Item | Claim | Evidence | Verdict |
+| --- | --- | --- | --- |
+| R1 order (CR-587-01) | The router's `node` step owns one order: peer → `PeerRunNodes.check` (reads only) → `OutgoingFiles.send` (all local checks, then the whole upload) → `admitPeerRun` (may reopen and notify the peer) → `deliverToPeerRun` with descriptors → after a reopen, a refusal gets "its Task is open again" | Today the router runs `admitPeerRun` (`:100`) before the path, and `RemoteMessageSend.sendToPeerRun` uploads (`remote-message-send.ts:50`), so a file refusal can follow a reopen (CR-587-01 confirmed). In R1 nothing changes Task state before every file is on the other node. `notDeliveredAfterReopen` exists (`cross-run-message-delivery.ts:51`) for the wording. The founder confirmed the order | Pass. One driver (the router); `RemoteMessageSend` loses `outgoing` and its upload; `OutgoingFiles` has two callers (router, `TaskDelegation`), one owner of the upload |
+| R2 `PeerRunNodes` (one owner of RF-14) | Reads the sender root's links (including a peer-started run's back-link) through the root boundary, then the tree's Task entries; refuses `NODE_REQUIRED` / `NODE_MISMATCH` / `NODE_NOT_PAIRED`; the router calls it once before any path | Replaces `peerRunNodeRefusal` (`:173`), the roots' `deliverExact` remote branches, `sendToPeerRun`'s check and `route`'s RF-14 part, four places today | Pass. One owner for a rule that was in four places (Principle 13). `NODE_NOT_PAIRED` closes CR-587-03 without a raw node ID |
+| R3 saved Task files (DEC-009, founder) | 4b: `task_id` + `node` (new copy): files through `OutgoingFiles` before `startDelegatedRun`. 4c: existing remote copy: files before `assignExistingTaskExecution`. RF-3 exception for the Task's resolved context files | The existing-copy path is one sequence owned by `TaskDelegation` (`task-delegation.ts:380-445`: resolve → checks → assign → notice → deliver), so the upload slots in before the assignment without a callback. The exception is the founder's decision, with the same "visible step" model as DEC-001 (see Residual Risks) | Pass. AR-008 (non-blocking): RF-14's "for both tools" against row 4c |
+| R4 local fixes | CR-587-02 wording; CR-587-04 one open with matching `dev`/`ino`; CR-587-05 model fields | Within the approved contracts; the gate's codes are unchanged (NA-9) | Pass |
+| R5 tests | R1 order (refused file after an assigner continuation: nothing reopened; refusal after a reopen: wording), `PeerRunNodes` (each refusal, linking and non-linking root, removed peer), AC-012, the three fixes | — | Pass |
+| Classification | `Large` / `High` | Unchanged surfaces plus Task-state ordering | Pass |
+
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
-None.
+None blocking. AR-008 is a wording scope of RF-14 (below).
 
 ## Review Decision
 
-`Pass` (round 2). The upstream behavior basis is confirmed, the design is ready for implementation, and no in-scope machinery or finding depends on an unsupported material premise.
+`Pass` (round 3). The upstream behavior basis (DEC-009, AC-012) is confirmed, the SR-010 revision is ready for implementation, and no in-scope machinery or finding depends on an unsupported material premise.
 
 ## Findings
 
-No blocking finding. AR-001 … AR-006 are resolved (see ARCH-REV-002 in the revision record).
+No blocking finding. AR-001 … AR-006 stay resolved.
 
-### AR-007 — Primary spine lines still show the old order and name (non-blocking)
+### AR-007 — Spine lines still show the old order (non-blocking, carried)
 
-- Type: `Design Impact`; severity: Low; blocking: No.
-- Protects: Principle 14 (the spine is the reading order); the AR-002 order.
+- Status: Open, non-blocking, carried from ARCH-REV-002.
+- DS-001, DS-002 and DS-005 still show the SR-007/008 shapes: placement before the engine, the upload inside `RemoteMessageSend`, and the RF-14 refusals in the roots and CrossRun.
+- § Revision SR-010 R1 and R2 and § Ownership Map "Order on the receiving node" govern, as the design states. Redraw the spine lines at the next revision.
+
+### AR-008 — RF-14 says "for both tools"; row 4c gives a remote copy work without `node` (non-blocking)
+
+- Type: `Requirement Gap` (contract wording); severity: Low; blocking: No.
+- Protects: RFC-001 RF-14 and route row 4c; AC-010, AC-012.
 - Problem:
-  - DS-002 still reads `root.acceptRemoteMessage | acceptPeerRunMessage → ReceivedFiles.placeFor → engine.acceptFromRemote`, and DS-001 reads `root.acceptRemoteWorkPacket → ReceivedFiles.placeFor → work packet`. Both contradict § Ownership Map "Order on the receiving node", which is correct: verify in the root, then the engine's checks, then placement through the port.
-  - DS-005's no-`node` branch still names `closedPeerRunRefusal`, which SR-008 renames `peerRunAdmission`.
-  - The entry-form table has no row for a wrong `node` from a non-linking sender.
-- Why not blocking: the explicit order section and the AR-005 sentence in DS-005 are unambiguous, and the implementer follows them.
-- Required update: at the next revision, redraw DS-001/DS-002 in the AR-002 order, rename the method in DS-005's no-`node` branch, and add the entry-form row. Until then, the Ownership Map's order section governs.
-- Recipient: Solution Designer (correction); implementation engineer (follow the Ownership Map order).
+  - RF-14 reads "every call whose recipient is on another node names it with `node`, for both tools".
+  - Row 4c (`delegate_task` with `task_id` and a target run ID of a copy on another node, added at SR-010) names no `node`, and `delegate_task` accepts `node` only with `recipient_address` (`agent-team-collaboration-llm-contract.ts`, `DELEGATE_TASK_NODE_DESCRIPTION`).
+  - `PeerRunNodes` is called by the router only, so 4c never reaches it.
+  - Row 4c matches the 591 behavior already merged: the node comes from the run's Task entry.
+- Why not blocking: row 4c is the more specific, founder-approved form, it is today's shipped 591 behavior, and nothing in it hides the node (the Task entry holds it). Build 4c as the row reads.
+- Required update: at the next revision, scope RF-14's sentence: either "for `send_message_to`, and `delegate_task` to a new copy; a Task given to an existing copy goes to the node its Task entry names", or, if the founder wants `node` there too, a new decision.
+- Recipient: Solution Designer.
 
 ## Classification
 
-N/A (Pass). AR-007 is a non-blocking `Design Impact`.
+N/A (Pass). AR-007 and AR-008 are non-blocking.
 
 ## Recommended Recipient
 
-Implementation engineer (primary). Solution Designer (informational, with AR-007).
+Implementation engineer (primary). Solution Designer (informational, with AR-007 and AR-008).
 
 ## Residual Risks
 
-These are for implementation and validation; none blocks.
-
-- A log-append I/O failure after placement leaves a placed file without its message (design Risks). This is infrastructure failure, so no machinery is required.
-- AGY/Grok/ACP tool-call limits accepted unverified (DEC-008, FU-001). A long transfer there fails cleanly.
-- Concurrent uploads of one content: an offset mismatch answers `{receivedBytes}`, and the sender resumes. Test two senders of the same file at once.
-- The copy fallback (no hard link) loses deduplication on that node (RF-7).
-- Two-node behavior stays unverified until the two-server E2E runs (AC-001 … AC-007, AC-010).
+- **Upload before a predictable CLOSED refusal.** With R1, a sender that is not the assigner, messaging a peer run whose Tasks this node holds closed, uploads every file before `admitPeerRun` refuses CLOSED. Up to 4 GiB is wasted, and the bytes are swept after 24 h. Correctness holds. A read-only preview of the admission before the upload would avoid the waste, but it would split 591's owner; this is a suggestion, not a finding.
+- **Existing-copy path (R3).** Put the upload after the path's read-only checks (`assertAssignable`, the conversation check) and immediately before `assignExistingTaskExecution`, so a refusal costs no upload.
+- **RF-3 exception (DEC-009).** An agent can attach a file of any app-accepted type to a Task itself (`create_task` / `update_task` `context_files`, "absolute local file paths on this node … copied into the new Task"; types in `context-file-upload-policy.ts:5-39`, e.g. `.json`, `.pdf`, images, video). With the exception, that file can then go to another node. This is the same visible-step model as DEC-001 (an agent may copy a file into its workspace and send it). It is recorded here for the founder's awareness, not as a new threat model.
+- A log-append I/O failure after placement leaves a placed file without its message (unchanged).
+- AGY/Grok/ACP tool-call limits accepted unverified (DEC-008, FU-001).
+- Two-node behavior stays unverified until the two-server E2E runs (AC-001 … AC-007, AC-010, AC-012).
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass` (ARCH-REV-002)
-- Material-Premise Gate: `Pass`. MP-001 … MP-003 are handled.
-- Notes: `task_size=Large`, `architectural_risk=High`. The package is ready for implementation at SR-008 (`eac8cf3814`). AR-007 is a non-blocking wording correction.
+- Review Decision: `Pass` (ARCH-REV-003)
+- Material-Premise Gate: `Pass`. CR-587-01's premise (an assigner continues a closed peer run with a file from outside its workspace) is reachable and handled by R1.
+- Notes: `task_size=Large`, `architectural_risk=High`. SR-010 at `beb161d299` is ready for implementation. § Revision SR-010 governs.
+
+## SR-011 Delta Review (Round 4)
+
+- Trigger: SR-011 (commit `74abb1a886`), the Solution Designer's answer to AR-008 and AR-007.
+- AR-008: resolved. The Solution Designer applies the founder's RF-14 as stated, with no exception: row 4c takes `node`. `delegate_task` accepts `node` with `target_agent_run_id`/`target_team_run_id` + `task_id`. `TaskDelegation`'s existing-copy path calls `PeerRunNodes.check(sender, the copy's entry agent, node)` before anything else, so no Task-side change or upload precedes the node check. A local copy given `node` gets `NODE_MISMATCH` naming this node. `PeerRunNodes` stays the one read-only owner of RF-14, with two callers (the router and this path). RF-14, row 4c, AC-012 and DEC-006 are consistent. No new behavior beyond the founder's approved rule.
+- AR-007: resolved. DS-001 notes R3, DS-002 is redrawn in the R1 order with the AR-002 receiving order, and DS-005 names `PeerRunNodes` and its two callers.
+- Consequence for implementation: the existing-copy form without `node`, which 591 shipped, now refuses `NODE_REQUIRED`. 591's tests and fixtures for that form change with it (DESIGN.md rule 11).
+- Round 4 decision: `Pass` (ARCH-REV-004). No open findings.
