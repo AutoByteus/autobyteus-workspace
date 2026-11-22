@@ -89,7 +89,19 @@ None (no release).
 
 ## Repository Finalization
 
-Recorded after finalization.
+- Bootstrap context source: the code reviewer's handoff (branch `codex/org-teams-follow-definition`, base `origin/personal`) and `RELEASE.md` Finalization Target
+- Ticket branch: `codex/org-teams-follow-definition`
+- Secret Gate before the first push: `scripts/check_secrets.sh origin/personal..HEAD` PASS (68 commits). Artifact hygiene PASS (exit 0).
+- Ticket branch commit result: `087ec594a1` (docs sync, delivery records, evidence, FU-002, ticket archived), on top of base merge `3045cf52e6` and checkpoint `ab8c942fef`
+- Ticket branch push result: pushed `origin/codex/org-teams-follow-definition` (new branch)
+- Finalization target: `origin`, `personal`
+- Target advanced after verification: `No` (`cb5e1c80f3` at every fetch)
+- Delivery-owned edits protected before re-integration / re-integration: `Not needed`
+- Target branch update result: `finalize/org-teams-follow-definition` created from `origin/personal` @ `cb5e1c80f3`
+- Merge into target result: `--no-ff` merge `dc9df13941` (message ends with the attribution trailer); its tree equals the ticket branch's `087ec594a1`. Secret Gate on the merged state: PASS
+- Push target branch result: `cb5e1c80f3..dc9df13941  HEAD -> personal`
+- User's checkout of the target branch (`/home/autobyteus/workspace/autobyteus-workspace`): `Not updated`. It is on `personal` at `a07767f4d0` with no local commits, but `.git/index.lock` (empty, dated 2026-11-21T06:48:50Z, no git process running) still blocks `git merge --ff-only`, as at autobyteus-22's delivery. Following the delivery rules, the checkout and the lock were left untouched; the user is asked to remove the lock (then `git fetch && git merge --ff-only origin/personal`).
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
@@ -112,7 +124,8 @@ None. This repository deploys no hosted service.
 
 ## Verification Checks
 
-Recorded with finalization.
+- Secret Gate on the ticket branch (68 commits) and on the merged state: PASS
+- `python3 scripts/check_repository_artifact_hygiene.py`: PASS (exit 0); the ticket's file names have no `:` or other Windows-hostile characters
 
 ## Rollback Criteria
 
@@ -125,6 +138,24 @@ Recorded with finalization.
 3. The conversion's cost is measured on a synthetic node; real sizes may differ.
 4. A paired node on an older version refuses the new team-membership update until it is upgraded.
 
+## Post-Finalization Cleanup
+
+- Dedicated ticket worktree: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition`
+- Plan, run after the record commit's push:
+  - extract the archived ticket (`git archive`) to `/home/autobyteus/workspace/.codex/delivery-packages/org-teams-follow-definition-<record commit>/`, because the user's checkout cannot show it yet;
+  - `git worktree remove --force` (only untracked `*/dist/` build output remains), then `git worktree prune`;
+  - delete the local branches `codex/org-teams-follow-definition` and `finalize/org-teams-follow-definition`;
+  - remove the temp files `/tmp/otf2`, `/tmp/otf2-bin`, `/tmp/otf2-*.txt`.
+  
+  The remote branch is kept, as for earlier tickets. The result is in the terminal message.
+- Test servers and runtimes: every suite stopped its own servers when it ended; none was left running.
+
 ## Final Status
 
-Recorded after finalization.
+- Verification complete: `Yes` (from the evidence and the post-integration reruns)
+- Repository finalization complete: `Yes` (`dc9df13941` on `personal`; this record commit follows it)
+- Applicable release/deployment/rollout complete or not required: `Yes` (not required)
+- Applicable safe cleanup complete or not required: run after this record's push; result in the terminal message
+- Unresolved blocker: `None` for delivery. The user's checkout stays behind until the stale lock is removed.
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: by `send_message_to` after this record's push

@@ -34,8 +34,8 @@ The latest release/publication/deployment report remains authoritative.
 - Handoff summary: `handoff-summary.md`
 - Release/publication/deployment report: `release-deployment-report.md`
 - Integration and post-integration verification: `evidence/DEL-post-integration/`
-- Verification and finalization state: evidence judged sufficient; finalization on `origin/personal` follows this commit.
-- Terminal return to the Solution Designer: `Not yet eligible` (finalization and cleanup pending)
+- Verification and finalization state: evidence judged sufficient; ticket branch `087ec594a1` pushed; `--no-ff` merge `dc9df13941` pushed to `origin/personal` (`cb5e1c80f3..dc9df13941`); Secret Gate PASS on the ticket commits and the merged state. User's checkout not updated: the stale `.git/index.lock` (2026-11-21T06:48:50Z) blocks it; left untouched.
+- Terminal return to the Solution Designer: `Sent` after this record's push and cleanup
 - Why recorded: second delivery round.
-- Next action: Secret Gate, push the ticket branch, merge `--no-ff` into `personal`, push, record, user's checkout, cleanup.
+- Next action: extract the archived ticket for the terminal message, remove the worktree, local branches and temp files, return Delivery Completed.
 - Remaining blockers, rollback concerns, or untested scope: none blocking; rollback is not possible (DEC-001; release notes); residual risks in the report.
