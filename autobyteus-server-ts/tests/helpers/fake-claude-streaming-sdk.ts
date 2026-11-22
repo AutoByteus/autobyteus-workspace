@@ -46,6 +46,9 @@ export class FakeClaudeStreamingSession implements ClaudeSdkStreamingSession {
   private failure: Error | null = null;
   private capabilitySnapshot: ReadonlySet<string> | null = null;
 
+  /** The SDK's initialization: resolved unless a test sets it (autobyteus-599: a resume of a missing session rejects it). */
+  initialized: Promise<unknown> = Promise.resolve({});
+
   constructor(readonly sessionId: string, private readonly advertisedCapabilities = DEFAULT_FAKE_CAPABILITIES) {
     this.messages = { [Symbol.asyncIterator]: () => this.read() };
   }

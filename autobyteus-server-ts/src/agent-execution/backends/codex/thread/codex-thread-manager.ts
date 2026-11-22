@@ -10,6 +10,9 @@ import {
   type CodexClientThreadRouter,
 } from "./codex-client-thread-router.js";
 import { resolveThreadId } from "./codex-thread-id-resolver.js";
+import { isMissingCodexThread } from "./codex-missing-thread.js";
+import { SavedRuntimeSessionMissingError } from "../../../errors.js";
+import { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
 import { createCodexThreadStartupGate } from "./codex-thread-startup-gate.js";
 import { CodexThread } from "./codex-thread.js";
 import type { CodexThreadConfig } from "./codex-thread-config.js";
@@ -175,11 +178,13 @@ export class CodexThreadManager {
     thread.addUnbindHandler(unbind);
       const suppliedAt = Date.now() / 1000;
       const threadId = resumeThreadId
-        ? await this.resumeRemoteThread(
-            client,
-            resumeThreadId,
-            config,
-          )
+        ? await this.resumeRemoteThread(client, resumeThreadId, config).catch((error: unknown) => {
+            // A lost runtime session (autobyteus-599, PRB-003): Codex's own answer for this exact thread, nothing else.
+            if (isMissingCodexThread(error, resumeThreadId)) {
+              throw new SavedRuntimeSessionMissingError(RuntimeKind.CODEX_APP_SERVER, resumeThreadId, { cause: error });
+            }
+            throw error;
+          })
         : await this.startRemoteThread(
             client,
             config,

@@ -30,6 +30,11 @@ import { ANTIGRAVITY_LONG_RUNNING_COMMAND_SECTION } from "../../../prompt/long-r
 import { getAgentSemanticMemory, type AgentSemanticMemory } from "../../../../agent-memory/services/agent-semantic-memory.js";
 import { buildAgentRunMessageSenderContext } from "../../../../agent-communication/domain/agent-run-message-sender.js";
 import { getAgentTeamAddressBasename } from "../../../../agent-collaboration/domain/agent-team-address.js";
+import { SavedRuntimeSessionMissingError } from "../../../errors.js";
+import { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
+
+/** How long a restore whose conversation came back different waits for AGY's not-found warning on stderr. */
+const AGY_NOT_FOUND_WARNING_WAIT_MS = 1_000;
 
 export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
   constructor(
@@ -112,7 +117,13 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
         conversationId: expectedId,
         // Without integration variables the process inherits the server's environment, as before.
         ...(Object.keys(integrationVariables).length > 0 ? { env: { ...globalThis.process.env, ...integrationVariables } } : {}) });
-      if (expectedId && init.conversation_id !== expectedId) throw new Error("AGY_CONVERSATION_ID_CONFLICT: exact restore returned a different conversation.");
+      if (expectedId && init.conversation_id !== expectedId) {
+        // A lost runtime session (autobyteus-599, PRB-004): AGY warns that this exact conversation is not found and opens a new
+        // one. The preparation's release stops that process. Any other mismatch is still a conflict.
+        if (await process.stderrShows(`conversation "${expectedId}" not found`, AGY_NOT_FOUND_WARNING_WAIT_MS))
+          throw new SavedRuntimeSessionMissingError(RuntimeKind.ANTIGRAVITY_CLI, expectedId);
+        throw new Error("AGY_CONVERSATION_ID_CONFLICT: exact restore returned a different conversation.");
+      }
       if (init.init.agent !== capsule.manifest.agentName) throw new Error("AGY_AGENT_NOT_LOADED: CLI did not select the generated main agent.");
       if (init.init.model !== config.llmModelIdentifier) throw new Error("AGY_MODEL_MISMATCH: CLI selected another model.");
       const cwd = await fs.realpath(String(init.init.cwd));

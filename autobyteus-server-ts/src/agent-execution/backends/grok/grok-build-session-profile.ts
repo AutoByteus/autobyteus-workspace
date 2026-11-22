@@ -1,4 +1,4 @@
-import type { McpServer } from "@agentclientprotocol/sdk";
+import { RequestError, type McpServer } from "@agentclientprotocol/sdk";
 import type { AgentToolMcpDescriptor } from "../../../agent-tools/mcp/agent-tool-mcp-session.js";
 import type {
   AcpAgentSessionProfile,
@@ -88,4 +88,9 @@ export const grokBuildSessionProfile: AcpAgentSessionProfile = Object.freeze({
   configSelection: () => [],
 
   buildCompactionStatusPayload: buildGrokBuildCompactionStatusPayload,
+
+  // Grok CLI 1.0.92 (PRB-005): `session/resume` of a session it has no file for answers `data.code` `FS_NOT_FOUND`. A present
+  // session whose workspace folder was removed resumes normally (PRB-009), so the code alone is exact.
+  isMissingSession: (error: unknown, _sessionId: string): boolean =>
+    error instanceof RequestError && (error.data as { code?: unknown } | undefined)?.code === "FS_NOT_FOUND",
 });

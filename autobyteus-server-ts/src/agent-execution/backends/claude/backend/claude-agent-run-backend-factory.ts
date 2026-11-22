@@ -40,11 +40,15 @@ export class ClaudeAgentRunBackendFactory implements AgentRunBackendFactory {
           : await this.sessionBootstrapper.bootstrapForRestore(request.context as AgentRunContext<any>, guard);
         assertAccepting();
         const ownSession = (value: ClaudeSession) => { session = value; };
-        session = platformAgentRunId
+        const opened = platformAgentRunId
           ? await this.sessionManager.restoreRunSession(runContext, platformAgentRunId, ownSession)
           : await this.sessionManager.createRunSession(runContext, ownSession);
+        session = opened;
         assertAccepting();
-        return new ClaudeAgentRunBackend(runContext, session);
+        // A restore opens its process now: the CLI says at initialization whether it has the session (autobyteus-599).
+        if (platformAgentRunId) await opened.verifyResumable();
+        assertAccepting();
+        return new ClaudeAgentRunBackend(runContext, opened);
       },
       releaseResources: async () => {
         const errors: unknown[] = [];

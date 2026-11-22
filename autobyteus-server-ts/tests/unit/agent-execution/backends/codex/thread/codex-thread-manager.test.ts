@@ -6,7 +6,8 @@ import { CodexAgentRunContext } from "../../../../../../src/agent-execution/back
 import { CodexThreadManager } from "../../../../../../src/agent-execution/backends/codex/thread/codex-thread-manager.js";
 import { CodexApprovalPolicy } from "../../../../../../src/agent-execution/backends/codex/thread/codex-thread-config.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
-import type { CodexAppServerClient } from "../../../../../../src/runtime-management/codex/client/codex-app-server-client.js";
+import { CodexAppServerRpcError, type CodexAppServerClient } from "../../../../../../src/runtime-management/codex/client/codex-app-server-client.js";
+import { SavedRuntimeSessionMissingError } from "../../../../../../src/agent-execution/errors.js";
 import type { CodexAppServerClientManager } from "../../../../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import type { CodexClientThreadRouter } from "../../../../../../src/agent-execution/backends/codex/thread/codex-client-thread-router.js";
 import { MemberExecutionContext } from "../../../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
@@ -417,6 +418,44 @@ describe("CodexThreadManager", () => {
     );
     expect(request).not.toHaveBeenCalledWith("thread/start", expect.anything());
     expect(releaseClient).toHaveBeenCalledWith("/tmp/workspace");
+  });
+
+  // autobyteus-599 (REQ-002, AC-002, AC-003): a lost runtime session is Codex's own answer for exactly this thread (PRB-003).
+  describe("a resume of a thread Codex has no rollout for", () => {
+    const managerAnswering = (resumeError: unknown) => {
+      const request = vi.fn(async (method: string) => {
+        if (method === "thread/resume") throw resumeError;
+        return { thread: { id: "replacement-must-not-start" } };
+      });
+      const client = { request, onNotification: vi.fn(() => () => {}), onServerRequest: vi.fn(() => () => {}), onClose: vi.fn(() => () => {}) } as unknown as CodexAppServerClient;
+      const manager = new CodexThreadManager(
+        testCodexLeaseManager({ acquireClient: vi.fn(async () => client), releaseClient: vi.fn(async () => undefined) }) as unknown as CodexAppServerClientManager,
+        { registerThread: vi.fn(() => () => {}) } as unknown as CodexClientThreadRouter,
+      );
+      return { manager, request };
+    };
+    const rpc = (code: number, message: string) => new CodexAppServerRpcError(`Codex app server RPC error ${code}: ${message}`, { rpcCode: code, rpcMessage: message });
+
+    it("is a lost runtime session: the typed error with the thread, and no replacement thread", async () => {
+      const { manager, request } = managerAnswering(rpc(-32600, "no rollout found for thread id thread-gone"));
+      const error = await manager.restoreThread(createRunContext("run-lost", "/tmp/workspace", { threadId: "thread-gone" }), () => undefined)
+        .catch((cause: unknown) => cause);
+      expect(error).toBeInstanceOf(SavedRuntimeSessionMissingError);
+      expect(error).toMatchObject({ runtimeKind: RuntimeKind.CODEX_APP_SERVER, platformAgentRunId: "thread-gone" });
+      expect(request).not.toHaveBeenCalledWith("thread/start", expect.anything());
+    });
+
+    it.each([
+      ["the same answer for another thread", rpc(-32600, "no rollout found for thread id thread-other")],
+      ["an auth error", rpc(-32001, "unauthorized: please sign in")],
+      ["a network error", new Error("connect ECONNREFUSED 127.0.0.1:443")],
+      ["a plain error with the same words", new Error("no rollout found for thread id thread-gone")],
+    ])("is not a lost session for %s: the original error", async (_label, resumeError) => {
+      const { manager } = managerAnswering(resumeError);
+      const error = await manager.restoreThread(createRunContext("run-not-lost", "/tmp/workspace", { threadId: "thread-gone" }), () => undefined)
+        .catch((cause: unknown) => cause);
+      expect(error).toBe(resumeError);
+    });
   });
 
   it("writes one summary per pending rejection account when the thread is released (AC-005)", async () => {

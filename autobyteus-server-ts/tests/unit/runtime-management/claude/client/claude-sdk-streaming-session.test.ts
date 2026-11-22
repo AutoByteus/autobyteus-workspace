@@ -49,7 +49,7 @@ describe("ClaudeSdkStreamingSession", () => {
       { type: "result", subtype: "success" },
       { type: "system", subtype: "init", capabilities: [] },
     ];
-    const session = createClaudeSdkStreamingSession(createQuery(frames), new ClaudeSdkInputChannel(), () => undefined);
+    const session = createClaudeSdkStreamingSession(createQuery(frames), new ClaudeSdkInputChannel(), () => undefined, Promise.resolve({}));
     expect(session.capabilities).toBeNull();
 
     const seen: unknown[] = [];
@@ -61,19 +61,19 @@ describe("ClaudeSdkStreamingSession", () => {
 
   it("interrupts with cancelQueued through the single adapter and normalizes the response (RSK-006)", async () => {
     const query = createQuery([], { still_queued: [], cancelled: ["b-uuid"] });
-    const session = createClaudeSdkStreamingSession(query, new ClaudeSdkInputChannel(), () => undefined);
+    const session = createClaudeSdkStreamingSession(query, new ClaudeSdkInputChannel(), () => undefined, Promise.resolve({}));
 
     await expect(session.interruptAndCancelQueued()).resolves.toEqual({ stillQueued: [], cancelled: ["b-uuid"] });
     expect(query.interrupt).toHaveBeenCalledWith({ cancelQueued: true });
 
-    const olderCli = createClaudeSdkStreamingSession(createQuery([], undefined), new ClaudeSdkInputChannel(), () => undefined);
+    const olderCli = createClaudeSdkStreamingSession(createQuery([], undefined), new ClaudeSdkInputChannel(), () => undefined, Promise.resolve({}));
     await expect(olderCli.interruptAndCancelQueued()).resolves.toEqual({ stillQueued: [], cancelled: [] });
   });
 
   it("writes sends into the input channel and close ends the channel and closes the query", async () => {
     const query = createQuery([]);
     const channel = new ClaudeSdkInputChannel();
-    const session = createClaudeSdkStreamingSession(query, channel, () => undefined);
+    const session = createClaudeSdkStreamingSession(query, channel, () => undefined, Promise.resolve({}));
     const received: string[] = [];
     const reader = (async () => {
       for await (const next of channel) received.push(next.uuid);

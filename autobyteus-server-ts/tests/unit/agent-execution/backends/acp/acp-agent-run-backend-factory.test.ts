@@ -9,7 +9,7 @@ import { AgentRunConfig } from "../../../../../src/agent-execution/domain/agent-
 import { AgentRunContext } from "../../../../../src/agent-execution/domain/agent-run-context.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../../../src/agent-execution/domain/agent-run-event.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
-import { AgentCreationError } from "../../../../../src/agent-execution/errors.js";
+import { AgentCreationError, SavedRuntimeSessionMissingError } from "../../../../../src/agent-execution/errors.js";
 import type { AcpAgentLaunchProfile } from "../../../../../src/runtime-management/acp/acp-agent-launch-profile.js";
 import { AcpAgentRunBackendFactory } from "../../../../../src/agent-execution/backends/acp/backend/acp-agent-run-backend-factory.js";
 import type { AcpAgentRunBackend } from "../../../../../src/agent-execution/backends/acp/backend/acp-agent-run-backend.js";
@@ -245,6 +245,31 @@ describe("AcpAgentRunBackendFactory", () => {
     await expect(factory.beginPreparation({ kind: "restore", context: new AgentRunContext({
       runId: "run-1", config: config(), runtimeContext: new AcpAgentRunContext(fixtureSessionId("load")),
     }) }).prepare()).rejects.toThrow(new AgentCreationError("Fake Agent: Path not found."));
+  });
+
+  // autobyteus-599 (REQ-002, AC-002, AC-003): the agent's own answer that the session does not exist, through the real launcher.
+  describe("a restore of a session the agent does not have", () => {
+    const answeringLoad = (error: Record<string, unknown>) => {
+      const rows = readFixture("load");
+      const loadIndex = rows.findIndex((row) => row.dir === "out" && row.msg.method === "session/load");
+      return writeCustomFixture([...rows.slice(0, loadIndex + 1), { dir: "in", msg: { jsonrpc: "2.0", id: rows[loadIndex]!.msg.id, error } }]);
+    };
+    const restore = (fixture: string) => createFactory(fixture).factory.beginPreparation({ kind: "restore", context: new AgentRunContext({
+      runId: "run-1", config: config(), runtimeContext: new AcpAgentRunContext(fixtureSessionId("load")),
+    }) }).prepare();
+
+    it("is a lost runtime session for Grok's FS_NOT_FOUND (PRB-005)", async () => {
+      const error = await restore(answeringLoad({ code: -32603, message: "Path not found.",
+        data: { detail: "No such file or directory (os error 2)", code: "FS_NOT_FOUND" } })).catch((cause: unknown) => cause);
+      expect(error).toBeInstanceOf(SavedRuntimeSessionMissingError);
+      expect(error).toMatchObject({ runtimeKind: RuntimeKind.GROK_BUILD, platformAgentRunId: fixtureSessionId("load") });
+    });
+
+    it("keeps an auth error what it was: no lost session", async () => {
+      const error = await restore(answeringLoad({ code: -32000, message: "Authentication required" })).catch((cause: unknown) => cause);
+      expect(error).not.toBeInstanceOf(SavedRuntimeSessionMissingError);
+      expect(error).toEqual(new AgentCreationError("Fake Agent: Authentication required"));
+    });
   });
 
   it("reports an interrupted turn on terminate and becomes inactive", async () => {
