@@ -12,8 +12,7 @@ export type TeamMemberState = "current" | "leaving" | "former";
  * handoff rules, the members still finishing their turn after a removal (leaving), and each member's runtime context
  * (runtime kind, provider binding), which it alone creates. A retained member keeps its context object across a change.
  * It changes only by `replace(committedTree)` (SR-010): a member is leaving while the tree marks it so, and its context
- * goes when the release write makes it former. A team mounted in an Org run is built from its fixed node and never
- * changes.
+ * goes when the release write makes it former.
  */
 export class TeamRunMembership {
   private current: TeamRunAgentTeamNode;

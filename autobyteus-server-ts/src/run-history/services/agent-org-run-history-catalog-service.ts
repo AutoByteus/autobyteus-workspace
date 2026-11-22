@@ -6,7 +6,6 @@ import type { AgentOrgRunExecutionTreeSnapshot } from "../../agent-org-execution
 import type { AgentOrgRunManager } from "../../agent-org-execution/services/agent-org-run-manager.js";
 import type { AgentOrgRunIndexRowRecord } from "../store/agent-org-run-history-index-record-types.js";
 import { AgentOrgRunHistoryIndexStore } from "../store/agent-org-run-history-index-store.js";
-import { AgentOrgRunExecutionTreeStore } from "../store/agent-org-run-execution-tree-store.js";
 import { AgentOrgRunPackageCatalog } from "./agent-org-run-package-catalog.js";
 import { CollaborationRunHistoryCatalogCore } from "./collaboration-run-history-catalog-core.js";
 import { projectAgentOrgRunHistoryRow } from "./agent-org-run-history-row-projector.js";
@@ -35,7 +34,6 @@ type AgentOrgRunIdentity = Readonly<{ orgRunId: string; orgDirPath: string }>;
 export class AgentOrgRunHistoryCatalogService {
   private readonly layout: AgentMemoryLayout;
   private readonly index: AgentOrgRunHistoryIndexStore;
-  private readonly trees: AgentOrgRunExecutionTreeStore;
   private readonly packages: AgentOrgRunPackageCatalog;
   private readonly core: CollaborationRunHistoryCatalogCore<AgentOrgRunIndexRowRecord>;
   private readonly removePackage: (orgDirPath: string) => Promise<void>;
@@ -46,14 +44,12 @@ export class AgentOrgRunHistoryCatalogService {
     private readonly manager: InactiveHistoryManager,
     options: {
       indexStore?: AgentOrgRunHistoryIndexStore;
-      treeStore?: AgentOrgRunExecutionTreeStore;
       packageCatalog?: AgentOrgRunPackageCatalog;
       removePackage?: (orgDirPath: string) => Promise<void>;
     } = {},
   ) {
     this.layout = new AgentMemoryLayout(memoryDir);
     this.index = options.indexStore ?? new AgentOrgRunHistoryIndexStore(memoryDir);
-    this.trees = options.treeStore ?? new AgentOrgRunExecutionTreeStore();
     this.packages = options.packageCatalog ?? new AgentOrgRunPackageCatalog(memoryDir);
     this.core = new CollaborationRunHistoryCatalogCore(memoryDir, "agent_org", {
       idOf: (row) => row.orgRunId,
@@ -94,35 +90,9 @@ export class AgentOrgRunHistoryCatalogService {
         const originalRow = originalRows.get(identity.orgRunId) ?? null;
         if (!originalRow) return { success: false, message: `AgentOrg run '${identity.orgRunId}' was not found.` };
         const container = await this.containers.readIfContainer(identity.orgDirPath, identity.orgRunId);
-        if (container) return this.archiveContainer(identity, container, originalRows, originalRow);
-        const originalTree = await this.trees.read(identity.orgDirPath, identity.orgRunId);
-        if (!originalTree) {
-          return { success: false, message: `AgentOrg run execution tree not found for '${identity.orgRunId}'.` };
-        }
-        const archivedAt = originalTree.archivedAt ?? new Date().toISOString();
-        const archivedTree = Object.freeze({ ...originalTree, archivedAt });
-        const treeWrite = await this.writeTree(identity, archivedTree);
-        if (treeWrite !== "committed") {
-          await this.restoreArchiveSnapshot(identity, originalTree, originalRows, originalRow);
-          return { success: false, message: `AgentOrg archive change did not commit (${treeWrite}).` };
-        }
-        const treeReadback = await this.trees.read(identity.orgDirPath, identity.orgRunId).catch(() => null);
-        if (!treeReadback || !isDeepStrictEqual(treeReadback, archivedTree)) {
-          await this.restoreArchiveSnapshot(identity, originalTree, originalRows, originalRow);
-          return { success: false, message: "AgentOrg archive tree readback failed; the prior state was restored." };
-        }
-        const candidateRows = new Map(originalRows);
-        candidateRows.set(identity.orgRunId, projectAgentOrgRunHistoryRow(archivedTree, originalRow));
-        try {
-          await this.flush(candidateRows);
-          const durableRows = await this.index.readIndex();
-          if (!this.sameRows(durableRows, candidateRows)) throw new Error("AgentOrg archive index readback mismatch.");
-        } catch (error) {
-          await this.restoreArchiveSnapshot(identity, originalTree, originalRows, originalRow);
-          return { success: false, message: `AgentOrg archive index update failed: ${String(error)}` };
-        }
-        this.core.publishInQueue(candidateRows);
-        return { success: true, message: `AgentOrg run '${identity.orgRunId}' archived.` };
+        // Readiness admits only containers: an Org file that is not one never reaches history (org-teams-follow-definition).
+        if (!container) return { success: false, message: `AgentOrg run execution tree not found for '${identity.orgRunId}'.` };
+        return this.archiveContainer(identity, container, originalRows, originalRow);
       });
       return transition.kind === "managed"
         ? { success: false, message: "AgentOrg run is active or managed. Terminate it before archiving history." }
@@ -139,44 +109,8 @@ export class AgentOrgRunHistoryCatalogService {
         const originalRow = originalRows.get(identity.orgRunId) ?? null;
         if (!originalRow) return { success: false, message: `AgentOrg run '${identity.orgRunId}' was not found.` };
         const container = await this.containers.readIfContainer(identity.orgDirPath, identity.orgRunId);
-        if (container) return this.deleteContainer(identity, container, originalRows);
-        const originalTree = await this.trees.read(identity.orgDirPath, identity.orgRunId);
-        if (!originalTree) {
-          return { success: false, message: `AgentOrg run execution tree not found for '${identity.orgRunId}'.` };
-        }
-        const candidateRows = new Map(originalRows);
-        candidateRows.delete(identity.orgRunId);
-        try {
-          await this.flush(candidateRows);
-          const durableRows = await this.index.readIndex();
-          if (!this.sameRows(durableRows, candidateRows)) throw new Error("AgentOrg delete index readback mismatch.");
-        } catch (error) {
-          await this.restoreDeleteIndex(identity, originalTree, originalRows, originalRow);
-          return { success: false, message: `AgentOrg history index removal failed: ${String(error)}` };
-        }
-        try {
-          await this.removePackage(identity.orgDirPath);
-        } catch (error) {
-          const retainedTree = await this.trees.read(identity.orgDirPath, identity.orgRunId).catch(() => null);
-          if (!retainedTree || !isDeepStrictEqual(retainedTree, originalTree)) {
-            throw new Error(`AgentOrg run '${identity.orgRunId}' package removal outcome is indeterminate: ${String(error)}`);
-          }
-          await this.restoreDeleteIndex(identity, originalTree, originalRows, originalRow);
-          return { success: false, message: `AgentOrg run package removal failed: ${String(error)}` };
-        }
-        const deletedTree = await this.trees.read(identity.orgDirPath, identity.orgRunId).catch((error) => {
-          throw new Error(`AgentOrg run '${identity.orgRunId}' package deletion readback is indeterminate: ${String(error)}`);
-        });
-        if (deletedTree) {
-          await this.restoreDeleteIndex(identity, originalTree, originalRows, originalRow);
-          return { success: false, message: `AgentOrg run '${identity.orgRunId}' package still exists after deletion.` };
-        }
-        try { this.packages.exclude(identity.orgRunId, "AgentOrg run history was deleted permanently."); }
-        catch (error) {
-          throw new Error(`AgentOrg run '${identity.orgRunId}' was deleted, but readiness retirement is indeterminate: ${String(error)}`);
-        }
-        this.core.publishInQueue(candidateRows);
-        return { success: true, message: `AgentOrg run '${identity.orgRunId}' deleted permanently.` };
+        if (!container) return { success: false, message: `AgentOrg run execution tree not found for '${identity.orgRunId}'.` };
+        return this.deleteContainer(identity, container, originalRows);
       });
       return transition.kind === "managed"
         ? { success: false, message: "AgentOrg run is active or managed. Terminate it before deleting history." }
@@ -210,56 +144,6 @@ export class AgentOrgRunHistoryCatalogService {
   }
   private sameRows(actual: readonly AgentOrgRunIndexRowRecord[], expected: Map<string, AgentOrgRunIndexRowRecord>): boolean {
     return isDeepStrictEqual(this.sorted(new Map(actual.map((row) => [row.orgRunId, row]))), this.sorted(expected));
-  }
-  private async writeTree(
-    identity: AgentOrgRunIdentity,
-    tree: AgentOrgRunExecutionTreeSnapshot,
-  ): Promise<"committed" | "not_committed" | "finalization_indeterminate" | "threw"> {
-    try { return (await this.trees.write(identity.orgDirPath, tree)).outcome; }
-    catch { return "threw"; }
-  }
-  private async restoreArchiveSnapshot(
-    identity: AgentOrgRunIdentity,
-    originalTree: AgentOrgRunExecutionTreeSnapshot,
-    originalRows: Map<string, AgentOrgRunIndexRowRecord>,
-    originalRow: AgentOrgRunIndexRowRecord,
-  ): Promise<void> {
-    try {
-      await this.trees.write(identity.orgDirPath, originalTree);
-      await this.flush(originalRows);
-      const [tree, rows] = await Promise.all([
-        this.trees.read(identity.orgDirPath, identity.orgRunId),
-        this.index.readIndex(),
-      ]);
-      const row = rows.find((candidate) => candidate.orgRunId === identity.orgRunId) ?? null;
-      if (!tree || !isDeepStrictEqual(tree, originalTree) || !row || !isDeepStrictEqual(row, originalRow)
-        || !this.sameRows(rows, originalRows)) {
-        throw new Error("restored AgentOrg archive snapshot did not match the prior state");
-      }
-    } catch (error) {
-      throw new Error(`AgentOrg run '${identity.orgRunId}' archive compensation is indeterminate: ${String(error)}`);
-    }
-  }
-  private async restoreDeleteIndex(
-    identity: AgentOrgRunIdentity,
-    originalTree: AgentOrgRunExecutionTreeSnapshot,
-    originalRows: Map<string, AgentOrgRunIndexRowRecord>,
-    originalRow: AgentOrgRunIndexRowRecord,
-  ): Promise<void> {
-    try {
-      await this.flush(originalRows);
-      const [tree, rows] = await Promise.all([
-        this.trees.read(identity.orgDirPath, identity.orgRunId),
-        this.index.readIndex(),
-      ]);
-      const row = rows.find((candidate) => candidate.orgRunId === identity.orgRunId) ?? null;
-      if (!tree || !isDeepStrictEqual(tree, originalTree) || !row || !isDeepStrictEqual(row, originalRow)
-        || !this.sameRows(rows, originalRows)) {
-        throw new Error("restored AgentOrg delete index did not match the prior state");
-      }
-    } catch (error) {
-      throw new Error(`AgentOrg run '${identity.orgRunId}' delete compensation is indeterminate: ${String(error)}`);
-    }
   }
   /** An Org container's archive (org-teams-follow-definition): its own file marked archived; its row from its composed tree. */
   private async archiveContainer(identity: AgentOrgRunIdentity, original: AgentOrgContainerFile,

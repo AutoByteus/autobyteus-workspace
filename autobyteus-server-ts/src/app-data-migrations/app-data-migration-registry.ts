@@ -5,7 +5,7 @@ import path from "node:path";
 import { appConfigProvider } from "../config/app-config-provider.js";
 import { getSecretVaultRuntime } from "../secret-management/secret-vault-runtime.js";
 import { getBuiltInLlmProviderCatalog } from "../llm-management/llm-providers/builtins/built-in-llm-provider-catalog.js";
-import { resetAgentRunHistoryCatalogState } from "../run-history/services/agent-run-history-catalog-service.js";
+import { resetAgentRunHistoryCatalogState } from "../run-history/services/agent-run-history-catalog-state.js";
 import { resetCollaborationRunHistoryCatalogState } from "../run-history/services/collaboration-run-history-catalog-core.js";
 import { getAppDataMigrationRecordRepository } from "./repositories/app-data-migration-record-repository.js";
 import type { DefinitionNameLookup } from "./domain/definition-name-lookup.js";

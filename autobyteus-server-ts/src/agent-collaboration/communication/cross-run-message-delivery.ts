@@ -96,7 +96,7 @@ const taskRefusal = (error: unknown): AgentOperationResult => {
  */
 export class CrossRunMessageDelivery {
   constructor(private readonly dependencies: Readonly<{
-    tree(): Pick<DelegationIndex, "runOfAgent" | "canMessage" | "tasksOf">;
+    tree(): Pick<DelegationIndex, "runOfAgent" | "canMessage" | "tasksOf" | "chainContainerOf" | "relatedThroughContainer">;
     tasks(): Pick<TaskExecutionResourcePort, "isOpen" | "assertReopenable" | "reopenAssignment">;
     /** The sender's root (it is running: its agent is sending). */
     senderRoot(run: RootExecutionIdentity): CrossRunSenderRoot | null;
@@ -122,8 +122,12 @@ export class CrossRunMessageDelivery {
     // `same_container`, before the Task rule (design R-2): two units of one Org message each other; a receiver that is not
     // live is restored (DEC-006: a message wakes it, whether never restored, shut down or stopped on its own).
     const unit = await this.sameContainerUnitOf(input.sender.root, input.targetAgentRunId);
-    if (unit) return this.deliverInContainer(input, unit);
+    if (unit) return this.deliverToUnit(input, unit, "same_container");
     const tree = this.dependencies.tree();
+    // Then the Task relation extended along the chain (design SR-014): a run delegated (at any depth) by a unit of an Org
+    // container messages that container's units as related runs: restored when stopped, no `counterpart` on either line.
+    const chained = await this.chainedUnitOf(tree, input.sender.root, input.targetAgentRunId);
+    if (chained) return this.deliverToUnit(input, chained, "related");
     const receiverRun = await tree.runOfAgent(input.targetAgentRunId);
     const senderRun = input.sender.root;
     if (!receiverRun) return await this.deletedTaskRefusal(input) ?? this.deliverUnrelated(input);
@@ -166,8 +170,18 @@ export class CrossRunMessageDelivery {
     return unit && await containers!.sameContainer(senderRun, unit.run) ? unit : null;
   }
 
-  /** A message between two units of one Org: the receiving unit's root is restored when it is not live (DEC-006). */
-  private async deliverInContainer(input: CrossRunMessageInput, unit: ContainerUnit): Promise<AgentOperationResult> {
+  /** The unit of the Org container in the sender's delegation chain that has the target agent (design SR-014). */
+  private async chainedUnitOf(tree: Pick<DelegationIndex, "chainContainerOf">, senderRun: RootExecutionIdentity, targetAgentRunId: string): Promise<ContainerUnit | null> {
+    const containers = this.dependencies.containers;
+    const orgRunId = containers ? await tree.chainContainerOf(senderRun) : null;
+    return orgRunId ? containers!.unitOfAgent(orgRunId, targetAgentRunId) : null;
+  }
+
+  /**
+   * A message to a unit of an Org container: between two units of it (`same_container`), or from a run a unit of it delegated
+   * (`related`, SR-014). The receiving unit's root is restored when it is not live (DEC-006; autobyteus-461 DEC-001).
+   */
+  private async deliverToUnit(input: CrossRunMessageInput, unit: ContainerUnit, relation: "same_container" | "related"): Promise<AgentOperationResult> {
     const receiverRun = unit.run;
     const sender = this.dependencies.senderRoot(input.sender.root);
     if (!sender) return refusal("COLLABORATION_ROOT_NOT_ACTIVE", ROOT_NOT_ACTIVE_MESSAGE);
@@ -178,7 +192,8 @@ export class CrossRunMessageDelivery {
     try { receiver = await this.dependencies.receiverRoot(receiverRun); }
     catch (error) { return refusal("TARGET_RUN_NOT_AVAILABLE", `The run of ${input.targetAgentRunId} could not be resumed: ${errorMessage(error)}`); }
     if (!receiver) return refusal("TARGET_AGENT_RUN_NOT_ACTIVE", `No running agent has the run id '${input.targetAgentRunId}', so the message was not sent.`);
-    return this.exchange(input, sender, prepared.message, receiverRun, receiver, { reactivated: false, relation: "same_container", receiverOrgAddress: unit.orgAddress });
+    return this.exchange(input, sender, prepared.message, receiverRun, receiver, relation === "same_container"
+      ? { reactivated: false, relation, receiverOrgAddress: unit.orgAddress } : { reactivated: false, relation });
   }
 
   /**
@@ -272,9 +287,10 @@ export class CrossRunMessageDelivery {
   }
 
   /** Step 2 (`model.py` `_admit`). Refusals throw. */
-  private async admit(tree: Pick<DelegationIndex, "canMessage" | "tasksOf">, senderRun: RootExecutionIdentity, receiverRun: RootExecutionIdentity,
-    senderAgentRunId: string): Promise<Admission> {
-    if (tree.canMessage(senderRun, receiverRun)) return "related";
+  private async admit(tree: Pick<DelegationIndex, "canMessage" | "tasksOf" | "relatedThroughContainer">, senderRun: RootExecutionIdentity,
+    receiverRun: RootExecutionIdentity, senderAgentRunId: string): Promise<Admission> {
+    // A unit's message to a run a unit of its container delegated is related too (SR-014: as when the Org was its assigner).
+    if (tree.canMessage(senderRun, receiverRun) || await tree.relatedThroughContainer(senderRun, receiverRun)) return "related";
     const receiverReference = runReferenceOf(receiverRun);
     const receiverEntries = receiverReference ? [...tree.tasksOf(receiverReference)].sort((a, b) => a.linkedAt.localeCompare(b.linkedAt)) : [];
     // The assigner's continuation: the receiver's last entry only.

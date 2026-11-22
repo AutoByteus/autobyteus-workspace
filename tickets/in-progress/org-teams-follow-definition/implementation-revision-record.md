@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer, `design-review-report.md` (ARCH-REV-005 pass on SR-010; ARCH-REV-007 pass on the storage contract, SR-011/SR-012) | N/A (residual notes addressed) | `Initial Baseline` | SR-010, SR-011, SR-012, ARCH-REV-005, ARCH-REV-007 | Implemented; handed to Code Review |
+| IR-002 | Architecture Reviewer, `design-review-report.md` ARCH-REV-009 (pass on SR-013/SR-014, after CRR-001) | CR-001 (Design Impact via SR-013 R-8, SR-014), CR-002, CR-003, CR-004 (Local Fix), N-1 | `Design Impact` realization + `Local Fix` | SR-013, SR-014, ARCH-REV-009, CRR-001 | Implemented; handed to Code Review |
 
 ## Revision Entries
 
@@ -48,3 +49,21 @@ The current code and `implementation-handoff.md` are authoritative. This record 
   8. Docs (collaboration model, agent_orgs, agent_memory, agent_team_execution, glossary), the release notes draft, and the built-server Org follows e2e.
 - Decisions recorded for review: the agent unit's activation state (contract §4), rotated unit logs (contract §5), the leaving unit's lifecycle, and the unchanged notice header for Org agents (see the handoff).
 - Validation: see `implementation-handoff.md` § Validation Evidence and `evidence/implementation/ir-001/`.
+
+### IR-002 — Step 2 and relation of runs delegated by an Org unit; CRR-001 Local Fixes
+
+- Triggering role, report path, and round: Architecture Reviewer, `design-review-report.md` ARCH-REV-009 (pass on SR-013 R-8 and SR-014), which resolves the code reviewer's `code-review-report.md` CRR-001 CR-001; CRR-001's Local Fixes CR-002 … CR-004 and note N-1 in the same round.
+- Triggering finding IDs: CR-001, CR-002, CR-003, CR-004, N-1.
+- Classification: `Design Impact` (realized as designed) + `Local Fix`.
+- Prior authoritative result: IR-001 (commits `1c77d18f56` … `46e53e9ed0`).
+- Current authoritative result: the IR-002 commit on `codex/org-teams-follow-definition` (see `implementation-handoff.md` § IR-002).
+- Related solution revision IDs: SR-013, SR-014. Related architecture-review revision IDs: ARCH-REV-009. Related code-review revision IDs: CRR-001.
+- Approved behavior or requirement IDs affected: preserved boundary "delegation from Org units" (BEH-001, S-08); contract §2.3 step 2, §5, §6, §9, §10.
+- Implementation delta:
+  - step 2 of a run whose assigner is a unit run (or the container itself) is that container's placements at Org addresses;
+  - a delegated run's messages to its container's units, and a unit's to such a run, are related (restored when stopped, no `counterpart`), decided after `same_container` and before the Task rule;
+  - dead released-tree history branches and two orphaned hosting modules are removed (tests moved to stored containers; M-15 withdrawn);
+  - the agent catalog's state moved to its own file (≤ 500 effective lines);
+  - a doc comment is moved back;
+  - two deviations are recorded with their reasons.
+- Validation: see `implementation-handoff.md` § IR-002 and `evidence/implementation/ir-002/`.

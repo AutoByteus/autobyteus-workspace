@@ -170,12 +170,22 @@ export class CollaborationTree {
    * Reach by step 2, by address, in its order (the first assigner with an address wins it); `null` when the run works
    * on no Task (step 2 does not apply). The one enumeration: the message route, the `@` note, `list_available_agents`,
    * `delegate_task`'s in-run placements and the addresses in use all read it. A unit run of an Org container (never
-   * delegated) reaches its container's other units by their Org addresses (design R-1, R-2).
+   * delegated) reaches its container's other units by their Org addresses (design R-1, R-2). An assigner that is a unit run
+   * contributes its container's placements at Org addresses, never its own team-space standing (design R-8): a run an Org
+   * member delegated reaches the Org's agents and mounted Teams by their Org addresses, as when the Org was its assigner.
    */
   async stepTwo(): Promise<ReadonlyMap<string, ReachedPlacement> | null> {
     if (!this.entries().length) return this.containerStepTwo();
     const reached = new Map<string, ReachedPlacement>();
     for (const assigner of this.assigners()) {
+      // A unit run assigner; or the container itself (a converted delegation that named no delegator stays with it, contract §6).
+      const containedIn = await this.containedIn(assigner);
+      const placed = containedIn ? await this.containerReach(containedIn.orgRunId, null)
+        : assigner.rootSubjectKind === "agent_org" && this.containers ? await this.containerReach(assigner.rootRunId, null) : [];
+      if (containedIn || placed.length) {
+        for (const placement of placed) if (!reached.has(placement.address)) reached.set(placement.address, placement);
+        continue;
+      }
       const standing = await this.tree.standingOf(assigner);
       if (!standing) continue;
       const agents = new Map((await this.tree.agentsOf(assigner)).map((agent) => [agent.agentRunId, agent]));
@@ -228,7 +238,8 @@ export class CollaborationTree {
   async reachingAddressOf(sender: CollaborationMemberExecutionIdentity): Promise<string | null> {
     // Two units of one container: the sender's Org address, which reaches it from every other unit (step 2, R-1'').
     if (this.containers && await this.containers.sameContainer(sender.root, this.run)) return this.containers.orgAddressOf(sender);
-    const own = sender.memberAddress as string;
+    // A unit's agent is reached from a run its container's unit delegated by its Org address (design R-8).
+    const own = (this.containers ? await this.containers.orgAddressOf(sender) : null) ?? sender.memberAddress as string;
     if (await this.ownReceiverOf(own)) return null;
     return (await this.stepTwo())?.get(own)?.agentRunId === sender.agentRunId ? own : null;
   }
@@ -249,10 +260,9 @@ export class CollaborationTree {
    */
   async delegationPlacementAt(address: AgentTeamAddress): Promise<DelegationPlacement | null> {
     const reached = (await this.stepTwo())?.get(address);
-    const containedIn = reached && !this.entries().length ? await this.containedIn(this.run) : null;
-    if (containedIn) {
-      // Another unit of the unit run's container, as the Org's configured placement answered before.
-      const source = await this.containers!.delegationSourceAt(containedIn.orgRunId, address);
+    if (reached && this.containers && reached.assigner.rootSubjectKind === "agent_org") {
+      // A unit of an Org container (reached by a unit, or by a run a unit delegated, R-8), as the Org's configured placement answered before.
+      const source = await this.containers.delegationSourceAt(reached.assigner.rootRunId, address);
       return source ? sourcedPlacement(address, source, "configured_placement") : null;
     }
     const found = reached?.rank === "configured" ? await this.files.configuredPlacementOf(reached.assigner, address) : null;
@@ -359,14 +369,23 @@ export class CollaborationTree {
   private async containerStepTwo(): Promise<ReadonlyMap<string, ReachedPlacement> | null> {
     const containedIn = await this.containedIn(this.run);
     if (!containedIn) return null;
-    const container = createAgentOrgRootExecutionIdentity(containedIn.orgRunId);
+    return new Map((await this.containerReach(containedIn.orgRunId, this.run)).map((placed) => [placed.address, placed]));
+  }
+
+  /**
+   * One container's placements at Org addresses, as step 2 reaches them (the container is their assigner, rank `configured`):
+   * every unit's agents (a Team unit's members as `P/x`), each Team unit's address answered by its coordinator, every agent
+   * unit at its address; the first placement at an address wins. `except`: a unit run whose own agents step 1 answers.
+   */
+  private async containerReach(orgRunId: string, except: RootExecutionIdentity | null): Promise<ReachedPlacement[]> {
+    const container = createAgentOrgRootExecutionIdentity(orgRunId);
     const reached = new Map<string, ReachedPlacement>();
-    for (const placement of await this.containers!.placementsOf(containedIn.orgRunId)) {
-      if (rootExecutionIdentityKey(placement.run) === rootExecutionIdentityKey(this.run) || reached.has(placement.orgAddress)) continue;
+    for (const placement of await this.containers!.placementsOf(orgRunId)) {
+      if ((except && rootExecutionIdentityKey(placement.run) === rootExecutionIdentityKey(except)) || reached.has(placement.orgAddress)) continue;
       reached.set(placement.orgAddress, Object.freeze({ address: placement.orgAddress, agentRunId: placement.agentRunId, ref: placement.ref,
         rank: "configured" as const, assigner: container }));
     }
-    return reached;
+    return [...reached.values()];
   }
 
   /** A mounted team's definition, from its org's own file. */

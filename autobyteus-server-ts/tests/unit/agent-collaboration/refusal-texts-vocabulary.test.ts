@@ -23,7 +23,6 @@ const REFUSAL_SITES = [
   "src/agent-communication/domain/send-message-target-selector.ts",
   "src/agent-communication/services/global-agent-run-message-router.ts",
   "src/agent-collaboration/execution/communication/root-communication-engine.ts",
-  "src/agent-collaboration/execution/backends/root-agent-execution-registry.ts",
   "src/agent-collaboration/domain/agent-team-address.ts",
   "src/agent-collaboration/collaborators/collaborator-errors.ts",
   "src/agent-collaboration/collaborators/message-recipient-resolution.ts",

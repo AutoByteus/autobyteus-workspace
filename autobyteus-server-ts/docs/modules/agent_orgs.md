@@ -220,8 +220,19 @@ unrelated roots.
 **A Team instance is one unit (REQ-007).** A message from inside a Team instance
 to an address inside that Team resolves within that same instance. A delegated
 team run is rooted at `/` and its members reach each other by their own
-addresses; a member reaches the org's standing agents (the run that assigned its
-Task) by their org addresses (contract §2.3 step 2). Reaching another run is
+addresses. Since org-teams-follow-definition the run that assigned its Task is an
+Org member's unit run (design R-8): a unit run as assigner contributes its
+container's placements at Org addresses (every unit's agents, a Team unit's
+members as `P/x`, a Team unit's `P` answered by its coordinator), never its own
+team-space standing; so a run an Org member delegated reaches the Org's agents and
+mounted Teams by their Org addresses, as when the Org was its assigner (contract
+§2.3 step 2). An older delegation that named no delegator stays with the
+container, which contributes the same placements. Its messages to the container's
+units are related runs' messages (design SR-014: the Task relation extended along
+its delegation chain): a stopped unit is restored, neither line records
+`counterpart`, and the message shows as a related line (in the two runs' views
+and the Org view; the delegating unit's view only when it is a party). A unit's
+message to such a run, by run ID, is related the same way. Reaching another run is
 possible only by run ID.
 
 ## Launch Configuration And Admission

@@ -8,7 +8,8 @@
 - Solution revision record: `tickets/in-progress/org-teams-follow-definition/solution-revision-record.md` (through SR-012)
 - Design spec (required on every route): `tickets/in-progress/org-teams-follow-definition/design-spec.md` (SR-010 and its R-sections)
 - Supplemental task artifacts: `org-container-storage-contract.md` (normative on-disk contract, §1 … §12), `contract-validation.md`, `follow-ups.md`, `handoff-architecture-design.md`, `release-notes.md` (draft written in slice 8)
-- Design review report: `tickets/in-progress/org-teams-follow-definition/design-review-report.md` (ARCH-REV-005, ARCH-REV-007)
+- Design review report: `tickets/in-progress/org-teams-follow-definition/design-review-report.md` (ARCH-REV-005, ARCH-REV-007, ARCH-REV-009 on SR-013/SR-014)
+- Triggering code review: `code-review-report.md` CRR-001 (CR-001 Design Impact; CR-002 … CR-004 Local Fix; N-1)
 - Architecture review revision record: `tickets/in-progress/org-teams-follow-definition/architecture-review-revision-record.md`
 - Working notes kept during the implementation: `implementation-progress.md` (slice plan and every decision taken)
 
@@ -25,19 +26,63 @@ An Org run is now a **container of runs**. Each mounted Team is a Team run of it
 
 The work was done in the eight slices of the design's Change Sequence; each kept the server build green.
 
-- Implementation cycle: `Initial Implementation`
+- Implementation cycle: `Rework` (IR-002: design revisions SR-013/SR-014 after CRR-001 CR-001, and CRR-001's Local Fixes)
 - Implementation revision record: `tickets/in-progress/org-teams-follow-definition/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-010`, `SR-011`, `SR-012`
-- Related architecture-review revision IDs: `ARCH-REV-005`, `ARCH-REV-007`
-- Related code-review revision IDs: `N/A`
+- Current implementation revision ID: `IR-002` (IR-001 baseline)
+- Related solution revision IDs: `SR-010`, `SR-011`, `SR-012`, `SR-013`, `SR-014`
+- Related architecture-review revision IDs: `ARCH-REV-005`, `ARCH-REV-007`, `ARCH-REV-009`
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A` (ARCH-REV-005 residual notes and ARCH-REV-007 items are addressed below)
+- Triggering finding IDs: IR-002: `CR-001` (Design Impact, realized through SR-013 R-8 and SR-014), `CR-002`, `CR-003`, `CR-004` (Local Fix), `N-1` (deviations recorded below). IR-001: N/A (ARCH-REV-005 residual notes and ARCH-REV-007 items addressed below).
 - Commits on `codex/org-teams-follow-definition` (base `origin/personal` `9f6add773b`):
   - `1c77d18f56` slice 1 part 1; `7f37435ebc` slice 2; `a3a6b227b1`, `8755ed6343`, `254c5a3a4b`, `ac0825d43a` slice 3 parts 1 … 4; `b324211623` slice 4;
   - `f69004e722` slices 5 … 7: migration, Org follow (with the web Leaving tag and the Org follows e2e), FU-003, the stored-Org reader fixes, and the existing tests moved to the container end state;
   - the slice 8 commit that follows it: docs, release notes draft, this handoff, the revision record and the evidence.
+
+## IR-002 (this round)
+
+- **R-8 reach** (`agent-collaboration/delegation/collaboration-tree.ts`):
+  - In `stepTwo`, an assigner that is a unit run contributes its container's placements at Org addresses (`containerReach`, shared with `containerStepTwo`): every unit's agents, a Team unit's members as `P/x`, a Team unit's `P` answered by its coordinator, and every agent unit at its address. A Team unit's team-space standing is never exposed. Assigner order and first-wins are unchanged; the contribution has rank `configured`.
+  - An assigner that is the container itself gets the same contribution. That covers a converted delegation that named no delegator (contract §6), since a container's own parts are empty.
+  - `delegationPlacementAt` answers a container-reached address from the container's delegation source.
+  - `reachingAddressOf` names a unit sender by its Org address.
+- **SR-014 delivery**:
+  - `DelegationIndex.chainContainerOf` and `relatedThroughContainer` hold the one fact: two runs are related through a container when one is a unit of the container of a unit (or the container itself) in the other's delegation chain.
+  - `CrossRunMessageDelivery.route` decides `same_container` first, then the extended related, then the Task rule.
+  - A delegated run's message to a unit agent (`chainedUnitOf`) is delivered as `related` (`deliverToUnit`): the receiver unit is restored when stopped, and neither line records `counterpart`.
+  - A unit's message to such a run by run ID is related through `admit`. The fact is symmetric, as when every Org member was part of the assigner run (design: "a unit's message to such a delegated run by run ID is related as today").
+  - The converted line equals the live line; tested through the conversion's split.
+- **CR-002**:
+  - The released-tree branches and `AgentOrgRunExecutionTreeStore` use are removed from `agent-org-run-history-catalog-service.ts` (archive/delete of a non-container answers "not found") and `collaboration-root-history-service.ts`.
+  - The orphaned `root-agent-execution-registry.ts` and `root-team-execution-directory.ts` and the `team-run-membership.ts` comment are removed.
+  - Tests that drove the removed branches now use stored containers: the Org catalog service test, and the history public-projection and scoped tests. The catalog test's package-removal-failure case covered only the removed branch and is dropped. Container delete removes the history row first, then the folders; that is unchanged from IR-001.
+  - The refusal catalogue's M-15 ("The agent '<run id>' is not running, so the message was not sent.") is withdrawn. Only the orphaned registry produced it, unreachable since slice 4.
+- **CR-003**: the catalog's per-memory-folder state (type, map, `getState`, reset, `cloneRows`) moved to `run-history/services/agent-run-history-catalog-state.ts`. `agent-run-history-catalog-service.ts` is now 470 effective lines (507 raw); the registry imports the reset from the new file.
+- **CR-004**: `DelegatedRunStatesHandler`'s doc comment is back above its type.
+- **Docs**: `agent_orgs.md` § Addresses And Handoffs (unit runs as assigners, related chain messages) and `collaboration_model.md` CM-5 (container rule, chain relation).
+- Typecheck baseline shrunk to 974 in 300 files (the rewritten catalog test lost an old error).
+- **IR-002 validation** (`evidence/implementation/ir-002/`):
+  - New `tests/unit/agent-org-execution/container/org-delegated-run-messaging.test.ts` (7), entering through `send_message_to` (the real `SendMessageToDispatcher` and `GlobalAgentRunMessageRouter`):
+    - from runs delegated by an agent unit, by a Team unit member, and by the container itself (converted, no delegator), reaching (a) an agent unit, (b) `P/x` and (c) `P`, each with the receiver stopped (restored) and live;
+    - a unit's message to another unit's delegated run, by run ID (related);
+    - `same_container` unchanged;
+    - view rule;
+    - the live-vs-converted identity of a delegation-chain line.
+
+    The file fails without the change (verified by stashing the source).
+  - B-4 updated to the container rule (the harness's Org is a container with empty parts); it fails without R-8.
+  - Built-server e2e OF-06 (`delegate_task` by the Team unit's lead to `/concierge`, then the copy's `send_message_to('/team/writer')`): delivered, no `counterpart` on either line. OF-01 … OF-05 and AOML-1/2 pass.
+  - Server suites: every failure outside the environment list was rerun alone and passes. One concurrent e2e run had broken the shared test database (`tests/.tmp`), which was recreated.
+
+## Recorded Deviations (CRR-001 N-1)
+
+- **`OrgContainerPort` has nine read-only methods** where design R-2 named three (`placementAt`, `sameContainer`, `orgRulesFrom`): `containedInOf`, `sameContainer`, `unitOfAgent`, `placementsOf`, `delegationSourceAt`, `orgRulesFrom`, `formerUnitAt`, `loadContainer`, `orgAddressOf`.
+  - Reason: each has one subject (one container or one unit run) and serves one named need, each read where today's code asks the same question: a unit's step 2 and the address boundary; the same-container admission; view commands; a copy's snapshot; the former-unit refusal; Org address presentation. None changes state.
+  - Keeping one answerer (N-1) is what the design asked for; splitting the answers over callers would duplicate reads of the container file.
+- **The view composition uses a synchronous relay with the live units' parts read at the base**, where design R-3'' asked for per-unit `openViewSnapshotConnection` with queued events.
+  - Reason: unit roots publish synchronously to their subscribers (`org-unit-views.ts` subscribes to `root.subscribeToEvents` / `run.subscribeToEvents`), and `OrgViewComposition.snapshot` reads the live parts before its first await, in the base's synchronous step. So every frame relayed before the base is in the parts and every later one follows the base: exactly once, without per-unit connections or queues.
+  - Tested in `org-view-composition.test.ts` with continuous publishing while two views open.
 
 ## Routing Classification (Mandatory)
 

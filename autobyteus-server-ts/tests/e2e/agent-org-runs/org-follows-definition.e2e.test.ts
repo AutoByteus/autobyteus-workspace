@@ -10,6 +10,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { callTool, calledResults, stringsOf, toolResult, type Rec } from "../helpers/collaboration-root-harness.js";
 import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
+import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
 /**
  * org-teams-follow-definition (Task autobyteus-29) through the built server (`dist/app.js`) in its own process on a
@@ -24,6 +25,9 @@ import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-cre
  *  - OF-03 (REQ-002, AC-002): the Team's definition gains a member: the Team unit follows; the Org's tree shows it.
  *  - OF-04 (REQ-004, AC-004): an Org rule to a Team member: the member is removed (the rule is left out, its sender is told),
  *    then added back (the rule is back, told again).
+ *  - OF-06 (design R-8, SR-014): a copy the Team unit's lead delegated (`delegate_task` to `/concierge`) messages the Team
+ *    unit's writer by its Org address `/team/writer` (not its delegator): reached through step 2's container placements,
+ *    delivered as related runs' message (both logs, no `counterpart`).
  *  - OF-05 (REQ-009, AC-008): the Org definition adds an agent (a new unit run, Offline) and unmounts the Team (a former unit;
  *    a message to its address is refused by name); the remaining agent hears who joined and left.
  * Prerequisites: `pnpm -C autobyteus-server-ts build` for the current worktree.
@@ -231,6 +235,37 @@ suite("An Org is a container whose units follow their definitions (built server,
     const back = await calls("/concierge", callTool("get_handoff_rules", {}));
     expect(JSON.stringify(back)).toContain("Hand every draft to the writer.");
     await keep("OF-04.json", { before, told, without, toldAgain, back });
+  }, 300_000);
+
+  it("OF-06 (design R-8, SR-014): a run a Team unit's member delegated reaches another unit's member by its Org address; related runs' message, no counterpart", async () => {
+    // The Team unit's lead delegates a copy of the direct agent (another unit, design R-1), which then messages /team/writer.
+    const delegated = await calls("/team/lead", callTool("delegate_task", { recipient_address: "/concierge", description: "Reply OK." }));
+    expect(delegated.delegated, JSON.stringify(delegated)).toBe(true);
+    const copy = String(delegated.target_agent_run_id);
+    const stream = new WebSocket(`ws://${new URL(url).host}/ws/agent/${copy}`);
+    const copyFrames: Array<{ type: string }> = [];
+    stream.on("message", (raw: unknown) => copyFrames.push(JSON.parse(String(raw))));
+    await new Promise<void>((resolve, reject) => { stream.once("open", () => resolve()); stream.once("error", reject); });
+    try {
+      await until(() => copyFrames.some((frame) => frame.type === "CONNECTED"), "the copy's stream", 30_000);
+      const copyConversation = async () => (await graphql(`query($id:String!){getRunProjection(runId:$id){conversation}}`, { id: copy })).getRunProjection?.conversation;
+      const before = calledResults(await copyConversation()).length;
+      sendE2eSendMessageCommand(stream, { agent_run_id: copy, content: callTool("send_message_to", { recipient_address: "/team/writer", content: "From the copy." }) });
+      let results: string[] = [];
+      await until(async () => (results = calledResults(await copyConversation())).length > before, "the copy's send_message_to result", 90_000);
+      const sent = toolResult(results[before]!);
+      expect(sent.isError, JSON.stringify(sent)).toBe(false);
+      const lines = (dir: string, base: string) => fs.readdirSync(dir).filter((name) => name.startsWith(`${base}_`)).flatMap((name) =>
+        fs.readFileSync(path.join(dir, name), "utf8").split("\n").filter(Boolean).map((line) => JSON.parse(line) as Rec));
+      const writer = await agentAt("/team/writer");
+      const received = lines(memory("agent_teams", unitRun("/team")!), "team_communication_messages")
+        .find((line) => line.senderAgentRunId === copy && line.content === "From the copy.")!;
+      expect(received).toMatchObject({ receiverAgentRunId: writer });
+      expect(received).not.toHaveProperty("counterpart");
+      const copyLine = lines(memory("agents", copy), "communication_messages").find((line) => line.messageId === received.messageId)!;
+      expect(copyLine).toEqual(received);
+      await keep("OF-06.json", { delegated, sent, received, copyLine });
+    } finally { stream.terminate(); }
   }, 300_000);
 
   it("OF-05 (REQ-009, AC-008): the Org definition adds an agent (a new unit, Offline) and unmounts the Team (a former unit, refused by name)", async () => {

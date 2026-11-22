@@ -95,15 +95,15 @@ export type RemoteRunViewHandler = Readonly<{
   observeAgentStream(opening: RunObservationOpening & Readonly<{ agentRunId: string }>, from: PeerNode, sink: RunObservationSink): Promise<Readonly<{ accepted: true; observation: RunAgentObservation }> | PeerHandlerRefusal>;
 }>;
 
-/**
- * autobyteus-591 DN-2: the delegating node's Task state of a run its delegation started here (one owner,
- * `DelegatedRunStateHandler`): closed is recorded and the run stopped before the answer; open clears the record.
- */
 /** FU-003: a Team run the caller started for this node's delegation changed its members (`PeerRunMembersReceiver`). */
 export type PeerRunMembersHandler = Readonly<{
   apply(request: PeerRunMembersRequest, from: PeerNode): Promise<Readonly<{ accepted: true }> | PeerHandlerRefusal>;
 }>;
 
+/**
+ * autobyteus-591 DN-2: the delegating node's Task state of a run its delegation started here (one owner,
+ * `DelegatedRunStateHandler`): closed is recorded and the run stopped before the answer; open clears the record.
+ */
 export type DelegatedRunStatesHandler = Readonly<{
   apply(request: DelegatedRunStateRequest, from: PeerNode): Promise<Readonly<{ accepted: true; open: boolean }> | PeerHandlerRefusal>;
 }>;

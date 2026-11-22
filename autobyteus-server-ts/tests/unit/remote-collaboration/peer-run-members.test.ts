@@ -38,9 +38,9 @@ const entry = (extra: Record<string, unknown> = {}) => ({
 
 let appData: string;
 let layout: ProjectsLayout;
-let entriesChanged: ReturnType<typeof vi.fn>;
+let entriesChanged = vi.fn((_taskId: string): void => undefined);
 const boot = async (): Promise<TaskExecutionResourceService> => {
-  entriesChanged = vi.fn();
+  entriesChanged = vi.fn((_taskId: string): void => undefined);
   const service = taskRunResources(new TaskExecutionResourceStore(layout, new AdHocTasksLayout(path.join(appData, "ad-hoc-tasks"))), undefined, { entriesChanged });
   await service.load();
   return service;

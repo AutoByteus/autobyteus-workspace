@@ -262,7 +262,6 @@
   "tests/unit/run-history/projection/local-memory-run-view-projection-provider.test.ts": 1,
   "tests/unit/run-history/projection/raw-trace-to-historical-replay-events.test.ts": 32,
   "tests/unit/run-history/projection/recent-run-projection-policy.test.ts": 1,
-  "tests/unit/run-history/services/agent-org-run-history-catalog-service.test.ts": 1,
   "tests/unit/run-history/services/agent-run-view-projection-service.test.ts": 7,
   "tests/unit/run-history/services/root-run-package-readiness-index.test.ts": 1,
   "tests/unit/run-history/services/studio-run-model-config-service.test.ts": 6,
