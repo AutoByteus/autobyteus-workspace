@@ -25,7 +25,7 @@ runtime".
 
 | Path (`src/`) | Layer | Owns |
 | --- | --- | --- |
-| `runtime-management/acp/` | ACP (neutral) | `AcpAgentProcess` (child spawn, Node↔Web stream bridge, stderr drain, exit, stop), `AcpClientConnection` (one `@agentclientprotocol/sdk` `ClientSideConnection` per process, `initialize`, request timeouts, per-`sessionId` callback routing, buffering for sessions still being opened; an inbound stage hands every notification to its session synchronously and in wire order, before a later frame, a response included, reaches the SDK: a `session/prompt` response can no longer overtake the notifications that preceded it), `AcpAgentCapabilities` (standard `initialize` fields + `requiredFor({restore, mcp})`), launch-profile contract, initialize-only discovery handshake, `acp-error-message.ts` |
+| `runtime-management/acp/` | ACP (neutral) | `AcpAgentProcess` (child spawn, Node↔Web stream bridge, stderr drain, exit, stop), `AcpClientConnection` (one `@agentclientprotocol/sdk` `ClientSideConnection` per process, `initialize` (90 s, `AGENT_START_TIMEOUT_MS`, the one start-up bound of every ACP agent) and the other short requests (30 s, `REQUEST_TIMEOUT_MS`; session opens keep 120 s, prompts have none), per-`sessionId` callback routing, an optional listener for notifications that carry no session (`onConnectionNotification`, used only by the discovery handshake; a run registers none, so connection-wide notifications stay dropped there), buffering for sessions still being opened; an inbound stage hands every notification to its session synchronously and in wire order, before a later frame, a response included, reaches the SDK: a `session/prompt` response can no longer overtake the notifications that preceded it), `AcpAgentCapabilities` (standard `initialize` fields + `requiredFor({restore, mcp})`), launch-profile contract, initialize-only discovery handshake, `acp-error-message.ts` |
 | `agent-execution/backends/acp/` | ACP (neutral) | `AcpAgentRunBackendFactory` (create/restore sequencing, rollback, start-time error conversion), `AcpAgentRunBackend`, `AcpAgentSession` (session state machine), `AcpPermissionBridge`, `AcpSessionUpdateConverter`, `AcpPromptBuilder`, session-profile contract |
 | `runtime-management/grok/` | Grok profile | Launch profile (command; run and discovery launches with the args and env below; no provider relay), model normalization, and `GrokBuildCapability` (version/agent-mode probe, safe diagnostics) |
 | `agent-execution/backends/grok/` | Grok profile | Session profile (`_meta`, MCP entry, extension notifications), prompt signals (`grok-build-prompt-signals.ts`), tool projection, per-call usage, MCP readiness, `.grok/skills` materializer, factory binding |
@@ -46,7 +46,8 @@ modules.
 - **Availability probe.** The probe runs `--version`, which must report
   **1.0.41** or later by SemVer precedence (a prerelease such as
   `1.0.41-rc.1` is below it), then checks `agent --help` for the required
-  agent-mode flags. It is bounded to 3 s, is asynchronous, and opens no ACP
+  agent-mode flags. Each command is bounded to 10 s (it starts Grok's binary, slow on a loaded machine), is
+  asynchronous, and opens no ACP
   session. A probe that runs past its bound is a time-out,
   `GROK_MODEL_DISCOVERY_TIMEOUT`, never `GROK_CLI_UNSUPPORTED`, and the log line
   `RUNTIME_PROBE_TIMED_OUT { runtime, command, boundMs }` names the command and the bound. A child that has already
@@ -61,8 +62,16 @@ modules.
   reach GraphQL or the browser.
 - **Model catalog.** Models come from the connected agent, with no
   hard-coded Grok Build list. For each catalog request, the catalog spawns a
-  short-lived process and runs `initialize` only (15 s bound; no session and
-  no prompt). It normalizes `initialize._meta.modelState` into `ModelInfo`,
+  short-lived process and runs `initialize` only (no session and no prompt). The process is bounded to 90 s,
+  the bound of every agent's start-up (`initialize`) over ACP, run starts included: Grok's own start-up has taken up to
+  34.6 s on a loaded machine. After the answer it waits up to 3 s for Grok's `_x.ai/models/update`: while Grok's
+  sign-in is expired (its first start after about 6 h unused) it answers with its built-in list (`grok-4.6`,
+  `grok-4.5`) and announces xAI's list about 0.2-0.5 s later, after its own refresh. The announced list wins; without
+  one the answer's list is used. Grok gives no sign that no refresh is coming, so with a fresh sign-in every catalog
+  read pays the whole 3 s, and so does every Grok run start, which validates its model against a full, uncached catalog
+  read (`run-model-selection-service.ts`). The wait never turns an answer into a time-out: it ends 250 ms before the
+  process's bound, which an 8 s read step (the runtimes report) cuts. Both lists have the same shape, so one
+  normalizer turns either into `ModelInfo`,
   including context capacity and a `reasoning_effort` enum schema with the
   agent's advertised default (for example `grok-4.7`, 500000 tokens,
   `xhigh/high/medium/low`, default `high`). There is no process-global cache.
@@ -96,6 +105,14 @@ the interactive `ask_user_question` tool. AutoByteus
 has no question-card bridge. AutoByteus never writes to the user's Grok
 configuration. The `--no-leader` flag stops a user config from attaching
 AutoByteus runs to Grok's shared leader process.
+
+A run's process also gets `GROK_FOLDER_TRUST=0`, which turns Grok's folder-trust gate off for that process alone.
+Grok loads a folder's own skills (`<workspace>/.grok/skills`, the skills AutoByteus links into a run's workspace
+among them) only in a trusted folder; this gives Grok the trust Claude and Codex runs already have in the workspace the
+user chose. Trusted, Grok also loads that workspace's Grok hooks, MCP and LSP servers, project instructions and
+permission rules, and the user's own Grok and Claude hooks, so a hook or an `ask` rule there can change a run's
+behaviour. Nothing is written: `--trust`, which would save the folder in `~/.grok/trusted_folders.toml`, is never
+used. Discovery and extension-request processes (models, billing) stay untrusted.
 
 **Create path.**
 
@@ -369,7 +386,10 @@ collision, repair, and release rules as `.codex/skills` and `.claude/skills`.
 The symlinks are removed on terminate or failure. A skill added to the agent's
 definition while the run is going is linked there too, through the run's
 `RunWorkspaceSkills` (see [Agent Execution](./agent_execution.md#skills-added-to-a-running-agents-definition)),
-and released with the others.
+and released with the others. Grok loads a folder's own skills only in a trusted
+folder, so a run's process is started with the run-only workspace trust described
+under [Process, session, and identity](#process-session-and-identity): without it
+the linked skills are invisible at session start.
 
 ## Persistence
 
@@ -395,9 +415,13 @@ migrated.
   a future ticket.
 - **Web search.** Grok web search runs on the provider side and is not a
   function tool, so its live use depends on the user's plan.
-- **Protocol drift.** Grok CLI updates can change `_x.ai/*` shapes. Those
-  shapes are handled only in the Grok profile, behind the minimum-version
-  gate, and unknown traffic is ignored.
+- **Protocol drift.** Grok CLI updates can change `_x.ai/*` shapes (the
+  `_x.ai/models/update` announcement, the queue and turn signals) and Grok's own
+  names (`GROK_FOLDER_TRUST`). Those shapes are handled only in the Grok
+  profile, behind the minimum-version gate, and unknown traffic is ignored. The
+  live suites (the AC-104 case, the release smoke) would show such a change: a run
+  that no longer sees its workspace skills, or a model list that stays on Grok's
+  built-in start-up list.
 - **Out of scope.** Grok leader mode, headless `grok -p`, `grok agent serve`,
   Grok sandbox/permission-rule settings, and CLI provisioning in Docker or
   Electron are outside this runtime.

@@ -1,0 +1,28 @@
+# API-04-smoke-run2: python3 scripts/release_smoke.py at 83488cecb9; concurrent load: pnpm -C autobyteus-server-ts test:unit + pnpm -C autobyteus-web test:nuxt (run 2 on; run 1 had test:unit only)
+# start 2026-11-22T13:29:03Z; grok log offset 4180014; last grok log entry before: 2026-11-22T13:27:13.227Z
+# load before smoke: 41.56 31.96 32.51; fseventsd 3.5%
+running live (claude, codex, grok): tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts
+running antigravity (antigravity): tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts
+running autobyteus (autobyteus): tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts
+
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      PASS
+claude      brand-new team member                    PASS
+claude      different same-named skill               PASS
+codex       new run + restore, linked workspace      PASS
+codex       brand-new team member                    PASS
+codex       different same-named skill               PASS
+grok        new run + restore, linked workspace      PASS
+grok        brand-new team member                    PASS
+grok        different same-named skill               PASS
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+
+commit    83488cecb9bd148faa0afb227f56d4950f07c91b
+models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.7"}
+duration  live 133s, antigravity 54s, autobyteus 32s
+result    PASS
+# smoke exit: 0; end 2026-11-22T13:33:00Z; load after: 163.01 84.73 53.87

@@ -1,0 +1,16 @@
+# API-02: (1) pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts; (2) env -i PATH HOME=<temp> TMPDIR RUN_DEEPSEEK_HARNESS_SCRIPTED_E2E=1 vitest run tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts; HEAD ab1eaf376b (code 5054f97a17); dsh 0.2.2-rc.5; 2026-11-22T08:32:41Z; load 33.10 32.22 33.11
+## (1) grok compaction replay
+      Tests  3 passed (3)
+## (2) deepseek scripted provider
+Error in createAgentRun: AgentCreationError: RELAY_KEY_NOT_SET: The DeepSeek API key is not set in AutoByteus. Save it in Settings → API Keys.
+DSH_SCRIPTED NO_KEY {"success":false,"message":"AgentCreationError: RELAY_KEY_NOT_SET: The DeepSeek API key is not set in AutoByteus. Save it in Settings → API Keys.","runId":null}
+Error restoring agent run with ID dsh_scripted_key_change_838db21e_3d8f_426d_aab1_f00b59b0d3584b83b551c4d9ce000498: AgentCreationError: RELAY_KEY_NOT_SET: The DeepSeek API key is not set in AutoByteus. Save it in Settings → API Keys.
+DSH_SCRIPTED RESTORE_NO_KEY {"success":false,"message":"AgentCreationError: RELAY_KEY_NOT_SET: The DeepSeek API key is not set in AutoByteus. Save it in Settings → API Keys."}
+ ✓ tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts (6 tests) 41449ms
+     ✓ uses the key the vault holds at each call: a changed key is used by the next call, a removed key fails the next turn with the relay's text, and a restore without it fails (AC-009)  7402ms
+     ✓ records each dsh compaction as a completed provider compaction boundary that archives the raw traces, and the conversation continues (AC-010, AC-011)  2401ms
+     ✓ records a refused compaction call as a failed compaction with no rotation (AC-010 failure)  1790ms
+     ✓ keeps a turn alive while the model streams only keep-alive events for longer than the idle timeout, and fails a stalled stream with ACP_TURN_IDLE_TIMEOUT (AC-012)  22585ms
+     ✓ measures the memory of several concurrent dsh processes (RSK-004)  6809ms
+      Tests  6 passed (6)
+grok log bytes before 4035226 after 4035226

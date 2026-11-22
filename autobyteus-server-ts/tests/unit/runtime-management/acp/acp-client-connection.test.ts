@@ -152,3 +152,119 @@ describe("AcpClientConnection wire-order delivery", () => {
     expect(errors.mock.calls.flat().join(" ")).not.toContain("unknown request");
   });
 });
+
+/** Real time with the timers faked: lets the agent process and the stream run (I/O is not faked). */
+const realWait = async (ms: number): Promise<void> => {
+  const until = performance.now() + ms;
+  while (performance.now() < until) await new Promise((resolve) => setImmediate(resolve));
+};
+
+/**
+ * Request bounds (autobyteus-551 REQ-001): an agent's start-up (`initialize`) may take up to 90 s, as Grok's own start-up
+ * took up to 34.6 s on a loaded machine; every other bounded request keeps 30 s.
+ */
+describe("AcpClientConnection request bounds", () => {
+  const INITIALIZE_REQUEST = readFixture("handshake")[0]!;
+  const INITIALIZE_ANSWER = readFixture("handshake")[1]!;
+  const outcomeOf = <T>(promise: Promise<T>) => {
+    const state: { value: "pending" | "resolved" | Error } = { value: "pending" };
+    promise.then(() => { state.value = "resolved"; }, (error: Error) => { state.value = error; });
+    return state;
+  };
+  afterEach(() => { vi.useRealTimers(); });
+
+  it("takes an initialize answer that comes after 40 s (AC-001, AC-002)", async () => {
+    // The agent answers `initialize` only once the client has sent `session/cancel`, which the test sends after 40 s.
+    const connection = new AcpClientConnection(spawnFakeAgent({ fixture: writeCustomFixture([
+      INITIALIZE_REQUEST, { dir: "out", msg: { jsonrpc: "2.0", method: "session/cancel" } }, INITIALIZE_ANSWER,
+    ]) }), "Fake Agent");
+    connections.push(connection);
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    const initialize = connection.initialize();
+    const outcome = outcomeOf(initialize);
+    await realWait(200);
+    await vi.advanceTimersByTimeAsync(40_000);
+    expect(outcome.value).toBe("pending");
+    await connection.cancel("start-up-release");
+    await expect(initialize).resolves.toMatchObject({ agentCapabilities: { loadSession: true } });
+  });
+
+  it("fails an agent that never answers initialize after 90 s, not before (AC-001, AC-002 failure)", async () => {
+    const connection = new AcpClientConnection(spawnFakeAgent({ fixture: writeCustomFixture([INITIALIZE_REQUEST]) }), "Fake Agent");
+    connections.push(connection);
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    const outcome = outcomeOf(connection.initialize());
+    await realWait(200);
+    await vi.advanceTimersByTimeAsync(89_999);
+    expect(outcome.value).toBe("pending");
+    await vi.advanceTimersByTimeAsync(1);
+    expect(outcome.value).toBeInstanceOf(Error);
+    expect((outcome.value as Error).message).toBe("ACP_REQUEST_TIMEOUT: initialize did not respond in time.");
+  });
+
+  it("keeps 30 s for the other bounded requests", async () => {
+    const connection = new AcpClientConnection(spawnFakeAgent({ fixture: writeCustomFixture([INITIALIZE_REQUEST, INITIALIZE_ANSWER]) }), "Fake Agent");
+    connections.push(connection);
+    await connection.initialize();
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    const outcome = outcomeOf(connection.extension("agent/never_answered", {}));
+    await realWait(100);
+    await vi.advanceTimersByTimeAsync(29_999);
+    expect(outcome.value).toBe("pending");
+    await vi.advanceTimersByTimeAsync(1);
+    expect((outcome.value as Error).message).toBe("ACP_REQUEST_TIMEOUT: agent/never_answered did not respond in time.");
+  });
+});
+
+/**
+ * Connection-wide notifications (autobyteus-551 REQ-002): a notification without a `sessionId` goes to the connection's
+ * listeners in wire order (discovery reads an agent's catalog announcement this way); session-scoped frames still go to
+ * their session. Runs register no listener.
+ */
+describe("AcpClientConnection connection-wide notifications", () => {
+  const SID = fixtureSessionId("handshake");
+  const connectionWide = (method: string, n: number): FixtureRow => ({ dir: "in", msg: { jsonrpc: "2.0", method, params: { n } } });
+  const sessionScoped: FixtureRow = { dir: "in", msg: { jsonrpc: "2.0", method: "agent/session_note", params: { sessionId: SID, n: 0 } } };
+  const open = (rows: FixtureRow[]) => {
+    const connection = new AcpClientConnection(spawnFakeAgent({ fixture: writeCustomFixture([
+      ...readFixture("handshake").slice(0, 2), ...rows,
+    ]) }), "Fake Agent");
+    connections.push(connection);
+    return connection;
+  };
+
+  it("hands notifications without a sessionId to the listeners in wire order, session frames to the session only", async () => {
+    const connection = open([connectionWide("agent/catalog_update", 1), sessionScoped, connectionWide("agent/other", 2)]);
+    const seen: string[] = [];
+    connection.onConnectionNotification((method, params) => { seen.push(`${method}:${String(params.n)}`); });
+    await connection.initialize();
+    await waitFor(() => seen.length === 2);
+    expect(seen).toEqual(["agent/catalog_update:1", "agent/other:2"]);
+    const sessionFrames: string[] = [];
+    connection.registerSession(SID, {
+      onSessionUpdate: () => undefined,
+      onPermissionRequest: async () => ({ outcome: { outcome: "cancelled" } }),
+      onExtNotification: (method) => { sessionFrames.push(method); },
+    });
+    expect(sessionFrames).toEqual(["agent/session_note"]);
+  });
+
+  it("contains a listener that throws: the other listeners and later frames go on; unsubscribe stops delivery", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const connection = open([connectionWide("agent/catalog_update", 1), connectionWide("agent/catalog_update", 2)]);
+    const seen: number[] = [];
+    connection.onConnectionNotification(() => { throw new Error("listener broke"); });
+    const unsubscribe = connection.onConnectionNotification((_method, params) => {
+      seen.push(Number(params.n));
+      unsubscribe();
+    });
+    const after: number[] = [];
+    connection.onConnectionNotification((_method, params) => { after.push(Number(params.n)); });
+    await connection.initialize();
+    await waitFor(() => after.length === 2);
+    expect(seen).toEqual([1]);
+    expect(after).toEqual([1, 2]);
+    expect(connection.closed).toBeNull();
+    expect(warn.mock.calls.flat().join(" ")).toContain("ACP_FRAME_HANDLER_FAILED: Fake Agent method=agent/catalog_update connection listener: Error: listener broke");
+  });
+});
