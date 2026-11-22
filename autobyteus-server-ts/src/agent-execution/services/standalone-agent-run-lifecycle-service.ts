@@ -15,6 +15,7 @@ import type { AgentRunActivationOperation } from "./agent-run-activation-operati
 import {
   AgentRunActivationError,
   PreviousRuntimeReleasePendingError,
+  SavedRuntimeSessionMissingError,
   isAgentRunActivationQuarantineError,
 } from "../errors.js";
 import { TokenUsageCapability } from "../../token-usage/providers/token-usage-capability.js";
@@ -22,7 +23,7 @@ import type { RunModelSelectionValidator } from "../../llm-management/services/r
 import type { RunModelConfigUpdateResult } from "../../run-history/domain/run-model-config.js";
 import type { MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import { isCollaborationEligibleStandaloneRun } from "./standalone-agent-run-eligibility.js";
-import { buildRuntimeSwitch } from "../domain/runtime-switch.js";
+import { buildRuntimeSwitch, buildSessionRenewal, type RuntimeSwitch } from "../domain/runtime-switch.js";
 import type { RuntimeSwitchTicket, RuntimeSwitching } from "../domain/runtime-switch-memory-port.js";
 import type { StandaloneRunAgentTerminationResult } from "./standalone-run-ports.js";
 import {
@@ -265,7 +266,27 @@ export class StandaloneAgentRunLifecycleService {
       // Fails closed before anything changes; the save of a switch is rejected for runs built without the port.
       throw new Error(`Run '${metadata.runId}' has a pending agent runtime switch that this activation cannot make.`);
     }
-    const memory = this.switching.memory;
+    return this.activateInFreshSession(metadata, input, runtimeSwitch);
+  }
+
+  /**
+   * A session renewal (autobyteus-599): the run's runtime reported that its saved session no longer exists. Only once the
+   * failed restore is confirmed released, the run continues in a fresh session of the same runtime and model through the
+   * switch steps, with the lost-session marker; the key holds the lost session, so a retry after a failure part-way finds its
+   * marker and segment. A release that is not confirmed, or a lifecycle built without the switch port, keeps the error.
+   */
+  private async renewLostSession(metadata: AgentRunMetadata, input: StandaloneRunAgentActivationInput,
+    failed: AgentRunActivationOperation, lost: SavedRuntimeSessionMissingError): Promise<StandaloneAgentRunActivationResult> {
+    if (!this.switching || (await failed.releasePrivate()).kind !== "released") throw lost;
+    console.warn("RUNTIME_SESSION_LOST", { runId: metadata.runId, runtimeKind: metadata.runtimeKind, lostPlatformAgentRunId: lost.platformAgentRunId });
+    return this.activateInFreshSession(metadata, input, buildSessionRenewal({ runId: metadata.runId,
+      side: { runtimeKind: metadata.runtimeKind, llmModelIdentifier: metadata.llmModelIdentifier }, lostPlatformAgentRunId: lost.platformAgentRunId }));
+  }
+
+  /** The fresh-session steps of a switch or a renewal (the order and failure rules above); needs the switch port. */
+  private async activateInFreshSession(metadata: AgentRunMetadata, input: StandaloneRunAgentActivationInput,
+    runtimeSwitch: RuntimeSwitch): Promise<StandaloneAgentRunActivationResult> {
+    const memory = this.switching!.memory;
     this.tokenUsageReadiness.assertExistingRunRestoreReady();
     const config = await this.buildConfig(metadata, input);
     const ticket = memory.begin(metadata.memoryDir, runtimeSwitch);
@@ -331,11 +352,18 @@ export class StandaloneAgentRunLifecycleService {
           "The persisted provider conversation identity is missing or invalid.",
         );
       }
-      candidate = await this.agentRunManager.beginActivation({ kind: "platform_restore",
+      const operation = this.agentRunManager.beginActivation({ kind: "platform_restore",
         runId: metadata.runId,
         config,
         platformAgentRunId,
-      }).prepare();
+      });
+      try {
+        candidate = await operation.prepare();
+      } catch (error) {
+        // Only the runtime's own "this session does not exist" renews; an AggregateError (a quarantined cleanup) never does.
+        if (error instanceof SavedRuntimeSessionMissingError) return this.renewLostSession(metadata, input, operation, error);
+        throw error;
+      }
     } else {
       candidate = await this.agentRunManager.beginActivation({ kind: "restore", context: new AgentRunContext({
         runId: metadata.runId,
