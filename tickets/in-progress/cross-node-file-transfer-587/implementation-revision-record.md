@@ -12,6 +12,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-004 | Delivery Engineer, `release-deployment-report.md` § Delivery Round 3 (merge with origin/personal 9f6add773b conflicts, autobyteus-591) | Round-3 merge conflict (9 production, 3 docs, 17 test files) | `Local Fix` | CRR-006, API-REV-004, CRR-007; DR: N/A | Merged and resolved (bcd05494cb, f86a45d99f, RC-19 test fix cc6a9f2f60); typechecks, whole unit suite (8812 tests), integration (116) and two-server E2E (59) Pass; next: Code Review |
 | IR-005 | Code Reviewer `code-review-report.md` CRR-008 (Fail, full re-audit at IR-004) → Solution Designer SR-010 / SR-011, Architecture Reviewer ARCH-REV-003 / ARCH-REV-004 | CR-587-01 … 04 (CR-587-05 is API/E2E's); DEC-009; AR-007, AR-008 | `Design Impact` (CR-587-01, DEC-009) + `Local Fix` (CR-587-02 … 04) | CRR-008, SR-010, SR-011, ARCH-REV-003, ARCH-REV-004 | Implemented (07b4b83cef, e2a95cfc39); typechecks, whole unit suite (8821), integration (116), two-server E2E (59) Pass; next: Code Review |
 | IR-006 | Code Reviewer `code-review-report.md` CRR-009 (Fail, full re-audit at IR-005), decided by the Solution Designer (SR-012) | CR-587-06, CR-587-07 (CR-587-08 decided as DEC-010 (c): nothing to build) | `Local Fix` | CRR-009, SR-012 | Implemented (a0c233492b); typechecks, whole unit suite (8821), integration (116), two-server E2E (59) Pass; next: Code Review |
+| IR-007 | Code Reviewer `code-review-report.md` CRR-010 (Fail, full re-audit at IR-006) | CR-587-09 | `Local Fix` | CRR-010 | Implemented (11b7ed5444); typechecks, whole unit suite (8821), integration (116), two-server E2E (59) Pass; next: Code Review |
 
 ## Revision Entries
 
@@ -173,3 +174,23 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result (all Pass, on a0c233492b): IMP-24 both typechecks at baseline (server 1000 in 313 files, web 86 in 36); IMP-25 whole server unit suite (`Test Files  1060 passed | 5 skipped (1065)`, `Tests  8821 passed | 9 skipped (8830)`); IMP-26 integration (18 files, 116 tests); IMP-27 rebuild and the gated two-server E2E (59/59).
 - Next recipient or routing: Code Review (Large / High).
 - Remaining limitations or risks: unchanged from IR-005 (known upload-before-CLOSED cost; `task-delegation.ts` at 498 non-empty lines, untouched here).
+
+### IR-007 — Retire the `RemoteFiles` bundle (CRR-010 CR-587-09)
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md` CRR-010 (Fail, round 6, full re-audit at IR-006; documents 842b39de0e, 42968684e1).
+- Triggering finding IDs: CR-587-09 (left by CR-587-07's fix: the bundle's `received` side had no production reader; DESIGN.md rule 11).
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-006 with CRR-010 Fail (CR-587-06, -07, -08 resolved there).
+- Current authoritative result: CR-587-09 fixed (11b7ed5444), no behavior change; both typechecks, the whole server unit suite, the integration set and the gated two-server E2E on a rebuilt server pass.
+- Related solution revision IDs: N/A
+- Related architecture-review revision IDs: N/A
+- Related code-review revision IDs: CRR-010
+- Related API/E2E revision IDs: N/A
+- Related delivery revision IDs: N/A
+- Why this implementation revision is recorded: one local finding on IR-006's structure.
+- Approved behavior or requirement IDs affected: none (no behavior change).
+- Implementation delta: `composeRemoteFiles` returns `{ receivedFiles, outgoingFiles }`; `composeCollaboration` takes `outgoingFiles: Pick<OutgoingFiles, "send">` (the router's `node` path and `TaskDelegation`); the hosts (studio, standalone application host) pass `files.outgoingFiles`; the `RemoteFiles` type is removed from `transferred-files.ts`. Tests: `NO_OUTGOING_FILES` and `NO_FILES_RECEIVED` replace `NO_REMOTE_FILES`; `inProcessPeerFiles` returns `outgoingFiles`; `testTaskSide`'s `outgoing` is `Pick<OutgoingFiles, "send">`; the standalone host lifecycle test asserts what production passes (the same received files to the supervisor and the platform runtime; an `OutgoingFiles` to the collaboration).
+- Changed files or areas: 11b7ed5444.
+- Local validation and result (all Pass, on 11b7ed5444): IMP-28 both typechecks at baseline (server 1000 in 313 files, web 86 in 36); IMP-29 whole server unit suite (`Test Files  1060 passed | 5 skipped (1065)`, `Tests  8821 passed | 9 skipped (8830)`); IMP-30 integration (18 files, 116 tests); IMP-31 rebuild and the gated two-server E2E (59/59).
+- Next recipient or routing: Code Review (Large / High), then API/E2E (CR-587-05 stays there).
+- Remaining limitations or risks: unchanged from IR-005.
