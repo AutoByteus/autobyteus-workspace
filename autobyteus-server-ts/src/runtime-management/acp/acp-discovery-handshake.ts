@@ -5,7 +5,13 @@ import type { AcpAgentLaunchProfile, AcpLaunch } from "./acp-agent-launch-profil
 import { AcpAgentProcess } from "./acp-agent-process.js";
 import { AcpClientConnection } from "./acp-client-connection.js";
 
-const DISCOVERY_TIMEOUT_MS = 15_000;
+/**
+ * The bound of one short agent process (autobyteus-551): an agent's start-up alone may take as long as a run's
+ * (`AGENT_START_TIMEOUT_MS` in the connection, 90 s), so its short processes get the same.
+ */
+const DISCOVERY_TIMEOUT_MS = 90_000;
+/** A follow-up wait ends this long before the short process's bound, so it never turns the answer into a time-out. */
+const FOLLOW_UP_BOUND_MARGIN_MS = 250;
 
 export type AcpDiscoveryFailureKind = "unavailable" | "timeout" | "failed";
 
@@ -18,7 +24,7 @@ export class AcpDiscoveryError extends Error {
   }
 }
 
-/** `deadline`: the end time of the whole read step this short process belongs to; without it, the usual 15 s. */
+/** `deadline`: the end time of the whole read step this short process belongs to; without it, the usual 90 s. */
 export type AcpShortProcessOptions = Readonly<{ deadline?: ReadDeadline }>;
 
 /** Where a short process runs and the provider relay address it gets (without a pass). */
@@ -28,13 +34,13 @@ const TEMPORARY_PLACE: AcpShortProcessPlace = Object.freeze({ cwd: os.tmpdir(), 
 
 /**
  * Runs a short-lived agent process for `use` (no session, no prompt, so no inference), bounded by the usual time-out
- * cut to the step's deadline. The process is always stopped.
+ * cut to the step's deadline. `use` gets the time the bound ends (`Date.now()` scale). The process is always stopped.
  */
 const withShortAcpProcess = async <T>(
   profile: AcpAgentLaunchProfile,
   place: AcpShortProcessPlace,
   options: AcpShortProcessOptions,
-  use: (connection: AcpClientConnection) => Promise<T>,
+  use: (connection: AcpClientConnection, boundEndsAt: number) => Promise<T>,
 ): Promise<T> => {
   const bound = commandBound(options.deadline, DISCOVERY_TIMEOUT_MS);
   const timedOut = () => new AcpDiscoveryError("timeout", profile.agentLabel, deadlineCause(bound));
@@ -53,10 +59,11 @@ const withShortAcpProcess = async <T>(
   try {
     const closed = new Promise<never>((_, reject) => connection.onClose((close) => reject(
       new AcpDiscoveryError(close.exit?.spawnErrorCode === "ENOENT" ? "unavailable" : "failed", profile.agentLabel))));
+    const boundEndsAt = Date.now() + bound.timeoutMs;
     const timeout = new Promise<never>((_, reject) => {
       timer = setTimeout(() => reject(timedOut()), bound.timeoutMs);
     });
-    return await Promise.race([use(connection), closed, timeout]);
+    return await Promise.race([use(connection, boundEndsAt), closed, timeout]);
   } catch (error) {
     throw error instanceof AcpDiscoveryError ? error : new AcpDiscoveryError("failed", profile.agentLabel);
   } finally {
@@ -66,12 +73,46 @@ const withShortAcpProcess = async <T>(
   }
 };
 
-/** The agent's `initialize` result from a short-lived process (catalog discovery). */
+/**
+ * A connection-wide notification an agent may send shortly after `initialize` that replaces part of its answer (e.g. a
+ * catalog it refreshed during start-up): its method, and how long after the answer to wait for it.
+ */
+export type AcpFollowUpNotification = Readonly<{ method: string; withinMs: number }>;
+
+/** `followUp`: the params of the first follow-up notification, or `null` when none came within the wait. */
+export type AcpDiscoveryHandshake = Readonly<{ initialize: InitializeResponse; followUp: Record<string, unknown> | null }>;
+
+/**
+ * The agent's `initialize` result from a short-lived process (catalog discovery), with its follow-up notification. The
+ * listener is attached before `initialize`, so a notification that comes before the answer is kept. After the answer
+ * the wait ends at the first matching notification, `withinMs` after the answer, or shortly before the process's bound
+ * ends, whichever is first; it never times out itself: without a notification the answer is returned alone.
+ */
 export const runAcpDiscoveryHandshake = (
   profile: AcpAgentLaunchProfile,
+  followUp: AcpFollowUpNotification,
   options: AcpShortProcessOptions = {},
-): Promise<InitializeResponse> =>
-  withShortAcpProcess(profile, TEMPORARY_PLACE, options, (connection) => connection.initialize());
+): Promise<AcpDiscoveryHandshake> => withShortAcpProcess(profile, TEMPORARY_PLACE, options, async (connection, boundEndsAt) => {
+  const seen: { params: Record<string, unknown> | null; arrived: (() => void) | null } = { params: null, arrived: null };
+  const unsubscribe = connection.onConnectionNotification((method, params) => {
+    if (method !== followUp.method || seen.params) return;
+    seen.params = params;
+    seen.arrived?.();
+  });
+  try {
+    const initialize = await connection.initialize();
+    const waitMs = Math.min(followUp.withinMs, boundEndsAt - FOLLOW_UP_BOUND_MARGIN_MS - Date.now());
+    if (!seen.params && waitMs > 0) {
+      await new Promise<void>((resolve) => {
+        const timer = setTimeout(resolve, waitMs);
+        seen.arrived = () => { clearTimeout(timer); resolve(); };
+      });
+    }
+    return { initialize, followUp: seen.params };
+  } finally {
+    unsubscribe();
+  }
+});
 
 /**
  * One agent extension request (an agent's own method, e.g. its billing) after `initialize`, on a short-lived process within the

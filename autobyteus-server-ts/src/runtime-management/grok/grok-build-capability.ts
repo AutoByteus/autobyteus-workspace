@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import type { InitializeResponse } from "@agentclientprotocol/sdk";
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
 import { AcpDiscoveryError, runAcpDiscoveryHandshake } from "../acp/acp-discovery-handshake.js";
 import { commandBound, deadlineCause, type CommandBound, type ReadDeadline } from "../read-deadline.js";
@@ -8,7 +9,8 @@ import { grokBuildCommand, grokBuildLaunchProfile, normalizeGrokBuildModels } fr
 
 export const GROK_BUILD_MINIMUM_VERSION = "1.0.41";
 const REQUIRED_AGENT_HELP_TOKENS = ["stdio", "--model", "--reasoning-effort", "--no-leader"];
-const PROBE_TIMEOUT_MS = 3_000;
+/** Each CLI probe's bound (autobyteus-551): the probes start Grok's binary too, slow on a loaded machine. */
+const PROBE_TIMEOUT_MS = 10_000;
 const PROBE_OUTPUT_LIMIT = 64 * 1024;
 
 /**
@@ -104,15 +106,32 @@ export const probeGrokBuildCli = async (
 };
 
 /**
- * Offered Grok Build models from a fresh `initialize` handshake (no session, no prompt). With a deadline, the probes
- * and the handshake share it.
+ * Grok announces the catalog it fetched during start-up with this connection-wide notification, the same model state
+ * shape as `initialize._meta.modelState` (Grok Build 1.0.92, autobyteus-551 probe P16).
+ */
+const GROK_MODELS_UPDATE_METHOD = "_x.ai/models/update";
+/**
+ * How long after `initialize` discovery waits for that announcement. Grok answers `initialize` with its cached or
+ * built-in list while its sign-in is expired and announces xAI's list about 0.2-0.5 s later (P15, P16); it gives no sign
+ * that no refresh is coming, so a fresh cache costs the whole wait.
+ */
+const GROK_MODELS_UPDATE_WAIT_MS = 3_000;
+
+const modelStateOf = (initialize: InitializeResponse): unknown =>
+  initialize._meta && typeof initialize._meta === "object" ? (initialize._meta as Record<string, unknown>).modelState : undefined;
+
+/**
+ * Offered Grok Build models from a fresh `initialize` handshake (no session, no prompt): the catalog Grok announces after
+ * its own refresh when it comes within the wait, otherwise the one in its answer. With a deadline, the probes and the
+ * handshake share it.
  */
 export const discoverGrokBuildModels = async (options: GrokBuildProbeOptions = {}): Promise<ModelInfo[]> => {
   await assertGrokBuildCliSupported(options);
   let models: ModelInfo[];
   try {
-    models = normalizeGrokBuildModels(
-      await runAcpDiscoveryHandshake(grokBuildLaunchProfile, { deadline: options.deadline }));
+    const { initialize, followUp } = await runAcpDiscoveryHandshake(grokBuildLaunchProfile,
+      { method: GROK_MODELS_UPDATE_METHOD, withinMs: GROK_MODELS_UPDATE_WAIT_MS }, { deadline: options.deadline });
+    models = normalizeGrokBuildModels(followUp ?? modelStateOf(initialize));
   } catch (error) {
     if (error instanceof AcpDiscoveryError) {
       throw new GrokBuildDiscoveryError(error.kind === "timeout" ? "GROK_MODEL_DISCOVERY_TIMEOUT"

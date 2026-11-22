@@ -1,0 +1,8 @@
+
+> autobyteus@1.5.14-beta.7 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/phone-activity-details/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/tmp/api590/msp-98 --cases=MSP-98
+
+[mobile-shell] MSP-98 …
+[mobile-shell] MSP-98 Pass
+mobile-shell probe: Pass
+exit 0

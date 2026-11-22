@@ -115,16 +115,16 @@ export const showcaseEntries = (at: number, projectTaskManager: string): Entry[]
 
 /** The showcase's Activity: its conversation's tool calls (the same invocations), as the projection's activities carry them. */
 export const showcaseActivities = (at: number): Entry[] => {
-  const tool = (n: number, toolName: string, type: string, contextText: string, args: Record<string, unknown>, extra: Record<string, unknown> = {}): Entry => ({
-    kind: 'tool', invocationId: `demo-rich-t${n}`, toolName, type, status: 'success', contextText, arguments: args, logs: [],
+  const tool = (n: number, toolName: string, type: string, args: Record<string, unknown>, extra: Record<string, unknown> = {}): Entry => ({
+    kind: 'tool', invocationId: `demo-rich-t${n}`, toolName, type, status: 'success', arguments: args, logs: [],
     result: 'ok', error: null, ts: Math.floor((at + n * 20_000) / 1000), ...extra,
   });
   return [
-    tool(1, 'read_file', 'tool_call', 'docs/release-notes-1.6.md', { path: 'docs/release-notes-1.6.md' }),
-    tool(3, 'run_terminal_command', 'terminal_command', 'git log --oneline -5', { command: 'git log --oneline -5' }, { logs: TERMINAL_LOG, result: { stdout: TERMINAL_LOG.join('\n'), exit_code: 0 } }),
-    tool(4, 'edit_file', 'edit_file', 'docs/release-notes-1.6.md', { path: 'docs/release-notes-1.6.md' }),
-    tool(5, 'write_file', 'write_file', 'docs/pilot-summary.md', { path: 'docs/pilot-summary.md' }),
-    tool(6, 'run_terminal_command', 'terminal_command', 'pnpm run upgrade:check --target 1.6', { command: 'pnpm run upgrade:check --target 1.6' },
+    tool(1, 'read_file', 'tool_call', { path: 'docs/release-notes-1.6.md' }),
+    tool(3, 'run_terminal_command', 'terminal_command', { command: 'git log --oneline -5' }, { logs: TERMINAL_LOG, result: { stdout: TERMINAL_LOG.join('\n'), exit_code: 0 } }),
+    tool(4, 'edit_file', 'edit_file', { path: 'docs/release-notes-1.6.md' }),
+    tool(5, 'write_file', 'write_file', { path: 'docs/pilot-summary.md' }),
+    tool(6, 'run_terminal_command', 'terminal_command', { command: 'pnpm run upgrade:check --target 1.6' },
       { logs: ['Checking connector version…', UPGRADE_CHECK], result: { stdout: UPGRADE_CHECK, exit_code: 0 } }),
   ];
 };

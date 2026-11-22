@@ -1,0 +1,13 @@
+run 45029500186 https://github.com/AutoByteus/autobyteus-workspace/actions/runs/45029500186
+event workflow_dispatch (pnpm release:test --ref codex/phone-activity-details), head 648a8e0299aec1bfc0a076861da2c14a798e388c
+created 2026-11-22T13:49:28Z updated 2026-11-22T14:16:07Z (UTC)
+conclusion: success
+Resolve Release Metadata: success
+Build macOS Intel x64: success
+Build macOS ARM64: success
+Build Linux ARM64: success
+Build Windows x64: success
+Build Linux x64: success
+Sign authenticated Linux desktop releases: skipped
+Publish GitHub Release: skipped
+

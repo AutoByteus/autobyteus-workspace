@@ -36,7 +36,7 @@
 import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
 import type { CompactionActivity } from '~/types/activity/RunActivity';
-import { getCompactionPhasePresentation } from '~/utils/compactionActivityPresentation';
+import { compactionActivityDetailRows, getCompactionPhasePresentation } from '~/utils/compactionActivityPresentation';
 
 const props = defineProps<{
   activity: CompactionActivity;
@@ -88,32 +88,6 @@ const iconClasses = computed(() => [
 const statusChipClasses = computed(() => currentTone.value.chip);
 const containerClasses = computed(() => props.isHighlighted ? currentTone.value.highlight : `hover:shadow-md ${currentTone.value.border}`);
 
-const formatNumber = (value: number | null | undefined): string | null =>
-  typeof value === 'number' && Number.isFinite(value) ? String(value) : null;
-
-const detailRows = computed(() => {
-  const rows: Array<{ label: string; value: string }> = [];
-  const add = (label: string, value: string | null | undefined) => {
-    if (value) rows.push({ label, value });
-  };
-
-  add('Turn', props.activity.turnId ?? null);
-  add('Task', props.activity.compactionTaskId ?? null);
-  add('Provider', props.activity.provider ?? null);
-  add('Boundary', props.activity.boundaryKey ?? null);
-  add('Source', props.activity.sourceSurface ?? null);
-  add('Run', props.activity.compactionRunId ?? null);
-  add('Agent', props.activity.compactionAgentName ?? null);
-  add('Model', props.activity.compactionModelIdentifier);
-  add('Summarizer provider', props.activity.summarizerProvider);
-  add('Completion', props.activity.completionStatus);
-  add('Summary characters', formatNumber(props.activity.summaryCharCount));
-  add('Summary tokens (estimated)', formatNumber(props.activity.summaryTokenCount));
-  add('Raw traces', formatNumber(props.activity.rawTraceCount));
-  add('Compacted blocks', formatNumber(props.activity.compactedBlockCount));
-  add('Facts', formatNumber(props.activity.semanticFactCount));
-  add('Error', props.activity.errorMessage ?? null);
-
-  return rows;
-});
+// The detail rows' one owner, shared with the phone's detail screen (autobyteus-590 D-4).
+const detailRows = computed(() => compactionActivityDetailRows(props.activity));
 </script>

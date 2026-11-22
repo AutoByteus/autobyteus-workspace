@@ -1,0 +1,602 @@
+{
+  "startedAt": "2026-11-22T11:28:27.811Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 60583,
+      "nodeId": "srv_7UbjmkQuR6gfoS5bxQ2DjfMCuetUq4at",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 60582,
+      "nodeId": "srv_5fgwRBiFI7rqnWE_yst177znusCoaAOV",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "iota": {
+      "port": 60763,
+      "nodeId": "srv_Ybz1OH8i6YBhxCZiNIucK8OYaN3T2kI-",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "theta": {
+      "port": 60811,
+      "nodeId": "srv_21r-4uNZjfA-YM_LPVrNtx-2jtyW-vvZ",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "kappa": {
+      "port": 60859,
+      "nodeId": "srv_j93biT4ie1lmLlo9GQSvJmWqiiFALqyD",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "lambda": {
+      "port": 60895,
+      "nodeId": "srv_tx9DwvDAgt8WqXXmGJ8lL-Kshp098Wha",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_48bed3a9da574fb6acad2199acc947b1",
+    "writerRun": "release_notes_writer_66db23bdd31a473bb73450849a837872",
+    "squadRun": "docs_review_team_4139ef53ba51464994a1c90f7b973182",
+    "reviewer": "release_notes_writer_af7d3e80231e45cbb51900ffd134a352",
+    "memberDelegated": "fact_checker_05c58b98021a44739aef4397058b0439",
+    "remoteAgentRun": "publisher_0507fd55197a4694b77f0a585c93116a",
+    "remoteTeamRun": "studio_team_f6f65782c5c045b090fb33fae1d6bb22",
+    "plain": [
+      "fact_checker_0a9839345d474fa4a42a87f16aaa5677",
+      "fact_checker_fd7cd4c86461429aadf891936acd428d",
+      "fact_checker_c4774ba6ae4a45d99e6d51bc0c0aca3d"
+    ],
+    "org": "delivery_org_59b344616cbc4ad986536d1db925f7e8",
+    "orgPlanner": "release_notes_writer_0b97cc5d152a4ca797f4cfb2a6f6f566",
+    "reviewOrg": "review_org_15e46141920b4d47863dd12954355614",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_26683f03be7047b29d9a340d82563171",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_f04bdb9164ec4779b366312d86bdfa54",
+    "deliveryLead": "fact_checker_a07334add8584b969d1cf0c55dfc0d49",
+    "deliveryMate": "release_notes_writer_b86311be5f4b4d0f9e8274ac27b40c05",
+    "leadDelegated": "changelog_helper_6d615cbd55294be7893539ef822b1d8d",
+    "approver": "approver_4c087f8be9f24778a3ed5ddb54bb5566",
+    "taskA": "launch-e026ed-1",
+    "taskB": "launch-e026ed-2"
+  },
+  "cases": {
+    "MSP-94": {
+      "result": "Pass",
+      "seconds": 11,
+      "run": "activity_probe_d036f0b6204247a3aac6a2abd2166ea0",
+      "rows": [
+        {
+          "text": "view_fileautobyteus_agent_tools/delegate_task.json",
+          "name": "view_file",
+          "summary": "autobyteus_agent_tools/delegate_task.json",
+          "summaryTitle": "/agy/mcp/autobyteus_agent_tools/delegate_task.json",
+          "status": "success",
+          "statusWord": "",
+          "statusLabel": "Success",
+          "error": null,
+          "height": 72
+        },
+        {
+          "text": "delegate_task→ /researcher",
+          "name": "delegate_task",
+          "summary": "→ /researcher",
+          "summaryTitle": "→ /researcher",
+          "status": "success",
+          "statusWord": "",
+          "statusLabel": "Success",
+          "error": null,
+          "height": 72
+        },
+        {
+          "text": "mcp__shape-test__echo_args",
+          "name": "mcp__shape-test__echo_args",
+          "summary": null,
+          "summaryTitle": null,
+          "status": "success",
+          "statusWord": "",
+          "statusLabel": "Success",
+          "error": null,
+          "height": 48
+        },
+        {
+          "text": "mcp__shape-test__json_result",
+          "name": "mcp__shape-test__json_result",
+          "summary": null,
+          "summaryTitle": null,
+          "status": "success",
+          "statusWord": "",
+          "statusLabel": "Success",
+          "error": null,
+          "height": 48
+        },
+        {
+          "text": "mcp__shape-test__always_failsFailedPROBE-FAILURE-9920: deliberate failure",
+          "name": "mcp__shape-test__always_fails",
+          "summary": null,
+          "summaryTitle": null,
+          "status": "error",
+          "statusWord": "Failed",
+          "statusLabel": null,
+          "error": "PROBE-FAILURE-9920: deliberate failure",
+          "height": 76
+        },
+        {
+          "text": "call_mcp_tool",
+          "name": "call_mcp_tool",
+          "summary": null,
+          "summaryTitle": null,
+          "status": "success",
+          "statusWord": "",
+          "statusLabel": "Success",
+          "error": null,
+          "height": 48
+        },
+        {
+          "text": "open_tababout:blank",
+          "name": "open_tab",
+          "summary": "about:blank",
+          "summaryTitle": "about:blank",
+          "status": "success",
+          "statusWord": "",
+          "statusLabel": "Success",
+          "error": null,
+          "height": 72
+        },
+        {
+          "text": "open_tababout:blank",
+          "name": "open_tab",
+          "summary": "about:blank",
+          "summaryTitle": "about:blank",
+          "status": "success",
+          "statusWord": "",
+          "statusLabel": "Success",
+          "error": null,
+          "height": 72
+        },
+        {
+          "text": "mcp__shape-test__open_tababout:blank",
+          "name": "mcp__shape-test__open_tab",
+          "summary": "about:blank",
+          "summaryTitle": "about:blank",
+          "status": "success",
+          "statusWord": "",
+          "statusLabel": "Success",
+          "error": null,
+          "height": 72
+        },
+        {
+          "text": "open_tababout:blank",
+          "name": "open_tab",
+          "summary": "about:blank",
+          "summaryTitle": "about:blank",
+          "status": "success",
+          "statusWord": "",
+          "statusLabel": "Success",
+          "error": null,
+          "height": 72
+        },
+        {
+          "text": "list_tabs",
+          "name": "list_tabs",
+          "summary": null,
+          "summaryTitle": null,
+          "status": "success",
+          "statusWord": "",
+          "statusLabel": "Success",
+          "error": null,
+          "height": 48
+        },
+        {
+          "text": "open_tababout:blankFailedBROWSER-PROBE: navigation failed",
+          "name": "open_tab",
+          "summary": "about:blank",
+          "summaryTitle": "about:blank",
+          "status": "error",
+          "statusWord": "Failed",
+          "statusLabel": null,
+          "error": "BROWSER-PROBE: navigation failed",
+          "height": 100
+        },
+        {
+          "text": "open_tababout:blank",
+          "name": "open_tab",
+          "summary": "about:blank",
+          "summaryTitle": "about:blank",
+          "status": "success",
+          "statusWord": "",
+          "statusLabel": "Success",
+          "error": null,
+          "height": 72
+        }
+      ],
+      "scrollBefore": {
+        "top": 70,
+        "height": 866,
+        "client": 796
+      },
+      "scrollAfter": 70,
+      "failedDetails": {
+        "title": "mcp__shape-test__always_fails",
+        "status": "Failed",
+        "summary": null,
+        "sections": [
+          {
+            "key": "arguments",
+            "title": "Arguments",
+            "open": true,
+            "text": "{\n  \"reason\": \"probe\"\n}"
+          },
+          {
+            "key": "result",
+            "title": "Result",
+            "open": true,
+            "text": "{\n  \"provider_state\": \"ERROR\",\n  \"output\": \"PROBE-FAILURE-9920: deliberate failure\"\n}"
+          },
+          {
+            "key": "error",
+            "title": "Error",
+            "open": true,
+            "text": "PROBE-FAILURE-9920: deliberate failure"
+          }
+        ],
+        "rows": null,
+        "overflowX": 0
+      },
+      "jsonDetails": {
+        "title": "mcp__shape-test__json_result",
+        "status": "Success",
+        "summary": null,
+        "sections": [
+          {
+            "key": "result",
+            "title": "Result",
+            "open": true,
+            "text": "{\n  \"provider_state\": \"DONE\",\n  \"output\": {\n    \"marker\": \"JSON-MARKER-4471\",\n    \"nested\": {\n      \"ok\": true\n    }\n  }\n}"
+          }
+        ],
+        "rows": null,
+        "overflowX": 0
+      },
+      "zh": {
+        "failed": {
+          "title": "mcp__shape-test__always_fails",
+          "status": "Failed",
+          "summary": null,
+          "sections": [
+            {
+              "key": "arguments",
+              "title": "参数",
+              "open": true,
+              "text": "{\n  \"reason\": \"probe\"\n}"
+            },
+            {
+              "key": "result",
+              "title": "结果",
+              "open": true,
+              "text": "{\n  \"provider_state\": \"ERROR\",\n  \"output\": \"PROBE-FAILURE-9920: deliberate failure\"\n}"
+            },
+            {
+              "key": "error",
+              "title": "错误",
+              "open": true,
+              "text": "PROBE-FAILURE-9920: deliberate failure"
+            }
+          ],
+          "rows": null,
+          "overflowX": 0
+        },
+        "json": {
+          "title": "mcp__shape-test__json_result",
+          "status": "Success",
+          "summary": null,
+          "sections": [
+            {
+              "key": "result",
+              "title": "结果",
+              "open": true,
+              "text": "{\n  \"provider_state\": \"DONE\",\n  \"output\": {\n    \"marker\": \"JSON-MARKER-4471\",\n    \"nested\": {\n      \"ok\": true\n    }\n  }\n}"
+            }
+          ],
+          "rows": null,
+          "overflowX": 0
+        }
+      }
+    },
+    "MSP-95": {
+      "result": "Pass",
+      "seconds": 7.1,
+      "run": "activity_probe_b3818a59dba4413cbb01411aa1729361",
+      "rows": [
+        {
+          "text": "Memory compactionProvider context compaction boundary recorded · antigravity · turn 283034ac-c851-4792-bf2a-1247cedddd15completed",
+          "name": "Memory compaction",
+          "summary": null,
+          "summaryTitle": null,
+          "status": "completed",
+          "statusWord": "",
+          "statusLabel": null,
+          "error": null
+        }
+      ],
+      "shown": {
+        "title": "Memory compaction",
+        "status": "Completed",
+        "summary": null,
+        "sections": [],
+        "rows": "Turn283034ac-c851-4792-bf2a-1247cedddd15ProviderantigravityBoundaryagy:068cdcaf-3ce0-4735-ab06-b09a6c560f37:checkpoint:4Sourceantigravity.checkpoint",
+        "overflowX": 0
+      }
+    },
+    "MSP-96": {
+      "result": "Pass",
+      "seconds": 7.7,
+      "run": "fact_checker_2b0b0d12de77445f86a2b00110f0e161",
+      "label": "pnpm --filter autobyteus-web exec vitest run components/mobile/views/__tests__/MobileActivityDetail.spec.ts --reporter=verbose --coverage",
+      "commandRow": {
+        "text": "run_commandsleep 4 # background step 11 pnpm --filter autobyteus-web exec vitest run components/mobile/views/__tests__/MobileActivityDetail.spec.ts --reporter=verbose --coverage",
+        "name": "run_command",
+        "summary": "sleep 4 # background step 11 pnpm --filter autobyteus-web exec vitest run components/mobile/views/__tests__/MobileActivityDetail.spec.ts --reporter=verbose --coverage",
+        "summaryTitle": "sleep 4 # background step 11 pnpm --filter autobyteus-web exec vitest run components/mobile/views/__tests__/MobileActivityDetail.spec.ts --reporter=verbose --coverage",
+        "status": "success",
+        "statusWord": "",
+        "statusLabel": "Success",
+        "error": null,
+        "height": 91.5
+      },
+      "titleBefore": {
+        "clamped": true,
+        "text": "sleep 4 # background step 11 pnpm --filter autobyteus-web exec vitest run components/mobile/views/__tests__/MobileActivityDetail.spec.ts --reporter=verbose --coverage",
+        "height": 45
+      },
+      "expanded": "true",
+      "titleAfter": {
+        "clamped": false,
+        "text": "sleep 4 # background step 11 pnpm --filter autobyteus-web exec vitest run components/mobile/views/__tests__/MobileActivityDetail.spec.ts --reporter=verbose --coverage",
+        "height": 113
+      },
+      "running": {
+        "runningShown": {
+          "title": "run_command",
+          "status": "Running",
+          "summary": "sleep 600 # HOLD_TURN",
+          "sections": [
+            {
+              "key": "arguments",
+              "title": "Arguments",
+              "open": true,
+              "text": "{\n  \"CommandLine\": \"sleep 600 # HOLD_TURN\"\n}"
+            }
+          ],
+          "rows": null,
+          "overflowX": 0
+        },
+        "stopped": {
+          "success": true
+        },
+        "liveShown": {
+          "title": "run_command",
+          "status": "Unknown",
+          "summary": "sleep 600 # HOLD_TURN",
+          "sections": [
+            {
+              "key": "arguments",
+              "title": "Arguments",
+              "open": true,
+              "text": "{\n  \"CommandLine\": \"sleep 600 # HOLD_TURN\"\n}"
+            },
+            {
+              "key": "error",
+              "title": "Error",
+              "open": true,
+              "text": "interrupted"
+            }
+          ],
+          "rows": null,
+          "overflowX": 0
+        }
+      }
+    },
+    "MSP-97": {
+      "result": "Fail",
+      "seconds": 6.5,
+      "error": "AC-001 an Antigravity write_to_file row shows its file (TargetFile); AC-001 an Antigravity replace_file_content row shows its file (TargetFile)",
+      "details": {
+        "run": "activity_probe_baf6978a774b4f6fa60bc2d01a8027e1",
+        "workspace": "/private/tmp/api590/tmp/mobile-shell-probe-hvNvDI/kappa/workspace",
+        "rows": [
+          {
+            "text": "write_to_file",
+            "name": "write_to_file",
+            "summary": null,
+            "summaryTitle": null,
+            "status": "success",
+            "statusWord": "",
+            "statusLabel": "Success",
+            "error": null
+          },
+          {
+            "text": "replace_file_content",
+            "name": "replace_file_content",
+            "summary": null,
+            "summaryTitle": null,
+            "status": "success",
+            "statusWord": "",
+            "statusLabel": "Success",
+            "error": null
+          },
+          {
+            "text": "replace_file_content",
+            "name": "replace_file_content",
+            "summary": null,
+            "summaryTitle": null,
+            "status": "success",
+            "statusWord": "",
+            "statusLabel": "Success",
+            "error": null
+          },
+          {
+            "text": "view_fileworkspace/marker.txt",
+            "name": "view_file",
+            "summary": "workspace/marker.txt",
+            "summaryTitle": "/private/tmp/api590/tmp/mobile-shell-probe-hvNvDI/kappa/workspace/marker.txt",
+            "status": "success",
+            "statusWord": "",
+            "statusLabel": "Success",
+            "error": null
+          },
+          {
+            "text": "grep_search",
+            "name": "grep_search",
+            "summary": null,
+            "summaryTitle": null,
+            "status": "success",
+            "statusWord": "",
+            "statusLabel": "Success",
+            "error": null
+          },
+          {
+            "text": "find_by_name",
+            "name": "find_by_name",
+            "summary": null,
+            "summaryTitle": null,
+            "status": "success",
+            "statusWord": "",
+            "statusLabel": "Success",
+            "error": null
+          },
+          {
+            "text": "list_dir",
+            "name": "list_dir",
+            "summary": null,
+            "summaryTitle": null,
+            "status": "success",
+            "statusWord": "",
+            "statusLabel": "Success",
+            "error": null
+          },
+          {
+            "text": "run_commandprintf NATIVE_ARGUMENTS_PREFIX_VERIFIED",
+            "name": "run_command",
+            "summary": "printf NATIVE_ARGUMENTS_PREFIX_VERIFIED",
+            "summaryTitle": "printf NATIVE_ARGUMENTS_PREFIX_VERIFIED",
+            "status": "success",
+            "statusWord": "",
+            "statusLabel": "Success",
+            "error": null
+          },
+          {
+            "text": "run_commandfixture-background-command",
+            "name": "run_command",
+            "summary": "fixture-background-command",
+            "summaryTitle": "fixture-background-command",
+            "status": "success",
+            "statusWord": "",
+            "statusLabel": "Success",
+            "error": null
+          }
+        ]
+      }
+    },
+    "MSP-98": {
+      "result": "Fail",
+      "seconds": 24.5,
+      "error": "AC-003 a running tool's Logs grow while its details are open (the result log arrives; the status changes to Success)",
+      "details": {
+        "run": "activity_probe_dbe0f297476a4291a691a9386ce4143f",
+        "model": "gpt-5.4-mini",
+        "runningStatus": "Running",
+        "linesWhileRunning": [
+          "[TOOL_CALL] Agent_ID: activity_probe_dbe0f297476a4291a691a9386ce4143f, Tool: run_bash, Invocation_ID: call_0953c9b2f64b427c9322a9d5fd1ad556, Arguments: command: for i in 1 2 3 4 5 6 7 8 9 10; do echo tick $i; sleep 1; done; echo LOGS-590-DONE",
+          "timeout_seconds: 20"
+        ],
+        "endStatus": "Success",
+        "linesAfter": [
+          "[TOOL_CALL] Agent_ID: activity_probe_dbe0f297476a4291a691a9386ce4143f, Tool: run_bash, Invocation_ID: call_0953c9b2f64b427c9322a9d5fd1ad556, Arguments: command: for i in 1 2 3 4 5 6 7 8 9 10; do echo tick $i; sleep 1; done; echo LOGS-590-DONE",
+          "timeout_seconds: 20",
+          "[TOOL_RESULT] exitCode: 0",
+          "effectiveCwd: /private/tmp/api590/tmp/mobile-shell-probe-hvNvDI/lambda/workspace",
+          "stdout:",
+          "  tick 1",
+          "  tick 2",
+          "  tick 3",
+          "  tick 4",
+          "  tick 5",
+          "  tick 6",
+          "  tick 7",
+          "  tick 8",
+          "  tick 9",
+          "  tick 10",
+          "  LOGS-590-DONE",
+          "[TOOL_RESULT_SUCCESS_PROCESSED] Agent_ID: activity_probe_dbe0f297476a4291a691a9386ce4143f, Tool: run_bash, Invocation_ID: call_0953c9b2f64b427c9322a9d5fd1ad556, Result: exitCode: 0",
+          "effectiveCwd: /private/tmp/api590/tmp/mobile-shell-probe-hvNvDI/lambda/workspace",
+          "stdout:",
+          "  tick 1",
+          "  tick 2",
+          "  tick 3",
+          "  tick 4",
+          "  tick 5",
+          "  tick 6",
+          "  tick 7",
+          "  tick 8",
+          "  tick 9",
+          "  tick 10",
+          "  LOGS-590-DONE"
+        ],
+        "summary": "for i in 1 2 3 4 5 6 7 8 9 10; do echo tick $i; sleep 1; done; echo LOGS-590-DONE",
+        "sections": [
+          "arguments",
+          "logs",
+          "result"
+        ]
+      }
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-94": "Pass",
+      "MSP-95": "Pass",
+      "MSP-96": "Pass",
+      "MSP-97": "Fail",
+      "MSP-98": "Fail"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-22T11:30:00.404Z"
+}

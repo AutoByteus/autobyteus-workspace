@@ -141,7 +141,6 @@ const activityFor = (): ToolActivity => ({
   toolName: 'run_bash',
   type: 'terminal_command',
   status: 'error',
-  contextText: command,
   arguments: { command, cwd },
   logs: ['normal output before failure'],
   result: null,

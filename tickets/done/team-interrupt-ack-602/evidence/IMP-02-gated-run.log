@@ -1,0 +1,23 @@
+# IMP-02 gated team-run-follows-definition E2E (whole file), loaded macOS
+# command: env -i PATH="$PATH" HOME="$(mktemp -d)" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs TEAM_FOLLOWS_E2E_EVIDENCE_DIR=<evidence>/IMP-02-receipts pnpm -C autobyteus-server-ts exec vitest run tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts --no-watch
+# commit: 51b49e22e3
+# env: macOS Darwin 25.5.0, pnpm 10.28.2; load before the run: 53.54 41.65 33.96
+# date: 2026-11-22 11:05 CET
+
+ ✓ tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts (12 tests) 44195ms
+     ✓ TF-01 (AC-001, AC-006): an added member and rule reach the running team; the lead is told, the new member starts on its first message  1809ms
+     ✓ TF-02 (AC-002, AC-010, AC-006): a removed idle member is refused by address and run ID, leaves the view, keeps its history  1483ms
+     ✓ TF-03 (AC-003, DEC-002): a member removed mid-turn is leaving, refused at once, its send is delivered, then it is released  1570ms
+     ✓ TF-04 (DEC-007, AC-003): a removed member added back keeps its run and conversation; its interrupt works while leaving  6559ms
+     ✓ TF-05 (DEC-006): another agent at a busy member's address: the old one finishes, the new one is reached at the address  3222ms
+     ✓ TF-06 (AC-008): a new coordinator is the run's coordinator in the stored tree and the open view  2181ms
+     ✓ TF-07 (AC-007): an unusable Team definition leaves the run unchanged; the problem is reported  8569ms
+     ✓ TF-08 (AC-004): a change made while the run is stopped is applied when it is reopened, also after a server restart  4419ms
+     ✓ TF-09 (AC-005): a Team copy started by an agent's delegate_task follows the same edits  2606ms
+     ✓ TF-10 (AC-001 by the app's editor): a user's own Team saved through updateAgentTeamDefinition: its run follows  861ms
+     ✓ TF-11 (AC-003, SR-010): a Stop while a member is leaving shows no leaving row; reopening clears the marker  1912ms
+     ✓ TF-12 (AC-003, AC-004, SR-010): a server restart while a member is leaving shows no leaving row; reopening clears the marker  5135ms
+ Test Files  1 passed (1)
+   Duration  54.75s (transform 7.12s, setup 66ms, import 9.97s, tests 44.19s, environment 0ms)
+
+# load after the run: 38.43 40.00 33.86

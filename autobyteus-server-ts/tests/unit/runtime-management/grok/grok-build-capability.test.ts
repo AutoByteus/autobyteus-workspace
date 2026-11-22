@@ -3,10 +3,10 @@ import os from "node:os";
 import path from "node:path";
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { discoverGrokBuildModels, probeGrokBuildCli } from "../../../../src/runtime-management/grok/grok-build-capability.js";
-import { FAKE_GROK_CLI, fixturePath, makeTestTempDir, readFixture, removeTestTempDirs, writeCustomFixture } from "../../agent-execution/backends/acp/acp-fake-agent-harness.js";
+import { FAKE_GROK_CLI, fixturePath, makeTestTempDir, readFixture, removeTestTempDirs, writeCustomFixture, type FixtureRow } from "../../agent-execution/backends/acp/acp-fake-agent-harness.js";
 
-// The cases spawn the real fake-CLI wrapper (a shell, then node): a loaded host can exceed the 3 s production bound.
-// They pass a long bound; the last case proves a short one still ends in the diagnostic.
+// The cases spawn the real fake-CLI wrapper (a shell, then node): a loaded host can exceed the 10 s production bound.
+// They pass a long bound; the first case proves a short one still ends in the diagnostic.
 const LOADED_HOST = { timeoutMs: 30_000 };
 const ENV_KEYS = ["GROK_BUILD_COMMAND", "FAKE_GROK_VERSION", "FAKE_GROK_AGENT_HELP", "FAKE_ACP_FIXTURE", "FAKE_ACP_EXIT_AT_END"] as const;
 let saved: Partial<Record<(typeof ENV_KEYS)[number], string | undefined>> = {};
@@ -99,12 +99,51 @@ describe("Grok Build capability", () => {
     expect((await probeGrokBuildCli(LOADED_HOST)).diagnostic?.code).toBe("GROK_CLI_UNSUPPORTED");
   });
 
-  it("discovers models through an initialize-only handshake (no session, no prompt)", async () => {
+  // autobyteus-551 REQ-002: with a fresh cache Grok announces nothing, so discovery waits the whole 3 s for it (the real
+  // window) and keeps the list in Grok's answer.
+  it("discovers models through an initialize-only handshake (no session, no prompt), keeping the answer's list when Grok announces none", async () => {
+    const started = performance.now();
     const models = await discoverGrokBuildModels(LOADED_HOST);
     expect(models.map((model) => model.model_identifier)).toEqual(["grok-4.7"]);
+    expect(performance.now() - started).toBeGreaterThanOrEqual(2_900);
+  }, 20_000);
+
+  // autobyteus-551 REQ-002 (AC-003): while its sign-in is expired Grok answers `initialize` with its built-in list and
+  // announces xAI's list right after its refresh (`_x.ai/models/update`, P15/P16); discovery offers the announced list,
+  // also when the announcement comes before the answer.
+  describe("Grok's models announcement", () => {
+    const BUILT_IN = { currentModelId: "grok-4.6", availableModels: [
+      { modelId: "grok-4.6", name: "Grok 4.6" }, { modelId: "grok-4.5", name: "Grok 4.5" }] };
+    const [initializeRequest, initializeAnswer] = readFixture("handshake").slice(0, 2);
+    const builtInAnswer = { ...initializeAnswer!, msg: { ...initializeAnswer!.msg, result: { ...initializeAnswer!.msg.result,
+      _meta: { ...initializeAnswer!.msg.result._meta, modelState: BUILT_IN } } } };
+    const announced = { jsonrpc: "2.0", method: "_x.ai/models/update",
+      params: initializeAnswer!.msg.result._meta.modelState as Record<string, unknown> };
+    const pause = (ms: number) => ({ dir: "pause", ms }) as unknown as FixtureRow;
+
+    it("offers the announced list over the built-in one in the answer", async () => {
+      process.env.FAKE_ACP_FIXTURE = writeCustomFixture([initializeRequest!, builtInAnswer, pause(200), { dir: "in", msg: announced }]);
+      const started = performance.now();
+      const models = await discoverGrokBuildModels(LOADED_HOST);
+      expect(models.map((model) => model.model_identifier)).toEqual(["grok-4.7"]);
+      expect(models[0]).toMatchObject({ max_context_tokens: 500000, config_schema: expect.any(Object) });
+      expect(performance.now() - started).toBeLessThan(2_900); // the announcement ended the wait
+    }, 20_000);
+
+    it("offers the announced list when the announcement comes before the answer", async () => {
+      process.env.FAKE_ACP_FIXTURE = writeCustomFixture([initializeRequest!, { dir: "in", msg: announced }, builtInAnswer]);
+      const models = await discoverGrokBuildModels(LOADED_HOST);
+      expect(models.map((model) => model.model_identifier)).toEqual(["grok-4.7"]);
+    }, 20_000);
+
+    it("offers the built-in list when Grok announces nothing", async () => {
+      process.env.FAKE_ACP_FIXTURE = writeCustomFixture([initializeRequest!, builtInAnswer]);
+      const models = await discoverGrokBuildModels(LOADED_HOST);
+      expect(models.map((model) => model.model_identifier)).toEqual(["grok-4.6", "grok-4.5"]);
+    }, 20_000);
   });
 
-  it("classifies an empty catalog and a failed handshake without provider output", async () => {
+  it("classifies an empty catalog and a failed handshake without provider output", { timeout: 20_000 }, async () => {
     const rows = readFixture("handshake").map((row) => row.dir === "in" && row.msg.result?.agentCapabilities
       ? { ...row, msg: { ...row.msg, result: { ...row.msg.result, _meta: {} } } } : row);
     process.env.FAKE_ACP_FIXTURE = writeCustomFixture(rows);

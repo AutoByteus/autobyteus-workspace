@@ -16,7 +16,6 @@ const activity: ToolActivity = {
   toolName: 'ReadFile',
   type: 'tool_call',
   status: 'success',
-  contextText: '',
   arguments: {},
   logs: [],
   result: null,

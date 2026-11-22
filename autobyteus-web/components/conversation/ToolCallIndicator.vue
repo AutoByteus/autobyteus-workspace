@@ -25,7 +25,7 @@
               v-if="contextSummary"
               data-test="tool-context-summary"
               class="min-w-0 flex-1 truncate text-xs text-gray-500"
-              :class="contextTextClasses"
+              :class="summaryTextClasses"
               :title="contextSummaryTitle"
             >
               · {{ contextSummary }}
@@ -106,7 +106,7 @@ const statusClasses = computed(() => {
 
 const contextSummary = computed(() => props.presentation.summary?.text ?? '');
 const contextSummaryTitle = computed(() => props.presentation.summary?.title ?? '');
-const contextTextClasses = computed(() => (
+const summaryTextClasses = computed(() => (
   props.presentation.summary?.kind === 'command' || props.presentation.summary?.kind === 'file'
     ? 'font-mono'
     : ''

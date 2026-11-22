@@ -253,12 +253,16 @@ const baseConfig: NuxtConfig = {
         '../services/runHydration/__tests__/acceptedInputIdentity.spec.ts',
         '../tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts',
         '../tests/integration/novnc-node-desktop-filter-contract.integration.test.ts',
-        // Build outputs inside the package, not app source; they stay after a desktop or mobile build (and the release
-        // job reruns the chain), and would otherwise enter the project (allowJs): prepare-server's bundled server,
-        // electron-builder's packages, the mobile web build and `nuxt generate`'s output.
+        // Build outputs inside the package, not app source; they stay after a desktop, mobile or demo build (and the
+        // release job reruns the chain), and would otherwise enter the project (allowJs): prepare-server's bundled
+        // server and, on Windows, its staging folder (prepare-server.mjs leaves it), electron-builder's packages, the
+        // phone web build, the iOS demo build (autobyteus-586: its 13 MB bundle ran the compiler out of heap) and
+        // `nuxt generate`'s output. Nuxt itself excludes ../dist (Electron main's tsc output) and ../.data.
         '../resources/**',
+        '../.server-packaging-stage/**',
         '../electron-dist/**',
         '../dist-mobile/**',
+        '../dist-mobile-demo/**',
         '../.output/**',
       ],
     },

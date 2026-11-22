@@ -1,0 +1,131 @@
+{
+  "startedAt": "2026-11-22T11:30:13.877Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 60969,
+      "nodeId": "srv_r7kdQ8Tc2tS2Z3mVDwK1Z4O9pV1VAbxV",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 60970,
+      "nodeId": "srv_SobySKfwDH9CX57XqIsTjfBFBq9DzM1N",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "lambda": {
+      "port": 61118,
+      "nodeId": "srv_jffWDlGImpM3tvSwPwS81pazwcrRzxIW",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_d97faf539f2c409ba393e2c7d0f85d7b",
+    "writerRun": "release_notes_writer_e1f51a100eb54e41a346f0e478274336",
+    "squadRun": "docs_review_team_ccf1535ac6994f8b8f82a396bdba4400",
+    "reviewer": "release_notes_writer_f9de8c513a6a49ad85d1aa001d6e600a",
+    "memberDelegated": "fact_checker_82e8de0a72664b3dabc5a4ca6c4199bc",
+    "remoteAgentRun": "publisher_13686f80745d47c4ae2635ed6b4948dc",
+    "remoteTeamRun": "studio_team_b818dd5931444932a53006c562346378",
+    "plain": [
+      "fact_checker_0e26e23ba74a46e1afe0dc9c51993e71",
+      "fact_checker_6e5100e6fead4607977e13da66cc364f",
+      "fact_checker_ce52c38b609241f09e76a217e2100b54"
+    ],
+    "org": "delivery_org_f82a2a2305b646d38a488177c1251089",
+    "orgPlanner": "release_notes_writer_44b82df9e403435bb4483d4211045fc5",
+    "reviewOrg": "review_org_390a00f23a2041ec941b7d9a6071ffa9",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_d2cbe98817794962bb814e25484011cf",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_e0e4e7e1829b49cc8f7ffd98e069d56a",
+    "deliveryLead": "fact_checker_909d588161954c6d8e1f09fcf41b39a2",
+    "deliveryMate": "release_notes_writer_41fabd388502425dbfe6ff9aa8ecd4b9",
+    "leadDelegated": "changelog_helper_b028bfc68bdf45f584ec63e30cbe761c",
+    "approver": "approver_411dcda72d00464185c2a523173edd0c",
+    "taskA": "launch-69465f-1",
+    "taskB": "launch-69465f-2"
+  },
+  "cases": {
+    "MSP-98": {
+      "result": "Pass",
+      "seconds": 19.6,
+      "run": "activity_probe_115080a107d64903bcde8a34c3d5af59",
+      "model": "gpt-5.4-mini",
+      "runningStatus": "Running",
+      "linesWhileRunning": [
+        "[TOOL_CALL] Agent_ID: activity_probe_115080a107d64903bcde8a34c3d5af59, Tool: run_bash, Invocation_ID: call_2b6731af5cf74d42bfcb67c5a4fec7be, Arguments: command: for i in 1 2 3 4 5 6 7 8 9 10; do echo tick $i; sleep 1; done; echo LOGS-590-DONE",
+        "timeout_seconds: 20"
+      ],
+      "endStatus": "Success",
+      "linesAfter": [
+        "[TOOL_CALL] Agent_ID: activity_probe_115080a107d64903bcde8a34c3d5af59, Tool: run_bash, Invocation_ID: call_2b6731af5cf74d42bfcb67c5a4fec7be, Arguments: command: for i in 1 2 3 4 5 6 7 8 9 10; do echo tick $i; sleep 1; done; echo LOGS-590-DONE",
+        "timeout_seconds: 20",
+        "[TOOL_RESULT] exitCode: 0",
+        "effectiveCwd: /private/tmp/api590/tmp/mobile-shell-probe-hecK7L/lambda/workspace",
+        "stdout:",
+        "  tick 1",
+        "  tick 2",
+        "  tick 3",
+        "  tick 4",
+        "  tick 5",
+        "  tick 6",
+        "  tick 7",
+        "  tick 8",
+        "  tick 9",
+        "  tick 10",
+        "  LOGS-590-DONE",
+        "[TOOL_RESULT_SUCCESS_PROCESSED] Agent_ID: activity_probe_115080a107d64903bcde8a34c3d5af59, Tool: run_bash, Invocation_ID: call_2b6731af5cf74d42bfcb67c5a4fec7be, Result: exitCode: 0",
+        "effectiveCwd: /private/tmp/api590/tmp/mobile-shell-probe-hecK7L/lambda/workspace",
+        "stdout:",
+        "  tick 1",
+        "  tick 2",
+        "  tick 3",
+        "  tick 4",
+        "  tick 5",
+        "  tick 6",
+        "  tick 7",
+        "  tick 8",
+        "  tick 9",
+        "  tick 10",
+        "  LOGS-590-DONE"
+      ],
+      "summary": "for i in 1 2 3 4 5 6 7 8 9 10; do echo tick $i; sleep 1; done; echo LOGS-590-DONE",
+      "sections": [
+        "arguments",
+        "logs",
+        "result"
+      ]
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-98": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-22T11:31:06.727Z"
+}

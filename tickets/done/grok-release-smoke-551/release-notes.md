@@ -1,0 +1,6 @@
+## Grok starts reliably and offers the right models
+
+- Grok agents now start on a busy computer. AutoByteus waits up to 90 seconds for Grok to start, before it reported "model discovery timed out" or failed the run after 15 to 30 seconds.
+- The Grok model list is correct on the first start after you have not used Grok for a few hours. Before, AutoByteus could offer Grok's older built-in models (for example grok-4.6) instead of the models xAI really offers (for example grok-4.7), and a run started with one of them was refused. AutoByteus now waits up to 3 seconds for Grok to announce its real list, so reading the Grok model list and starting a Grok run take about 3 seconds longer.
+- Grok agents now see the skills in their workspace (`.grok/skills`), including the skills AutoByteus links there, the same as Claude and Codex agents. For this, AutoByteus starts each Grok run with the run's workspace trusted, for that run only; nothing is saved in your Grok settings. As with trusted folders in Grok itself, Grok then also loads that workspace's own Grok hooks, MCP and LSP servers, instructions and permission rules, so a hook or an "ask" rule in a workspace can change how a run behaves.
+- A DeepSeek agent that never starts now fails after 90 seconds instead of 15.

@@ -124,7 +124,7 @@ export function demoAgentEntries(node: { id: string; name: string; summary: stri
 export const asActivities = (entries: Entry[]): Entry[] => entries.filter((entry) => entry.kind === 'tool_call').map((entry) => ({
   kind: 'tool', invocationId: entry.invocationId, toolName: entry.toolName,
   type: entry.toolName === 'write_file' ? 'write_file' : entry.toolName === 'edit_file' ? 'edit_file' : entry.toolName === 'run_terminal_command' ? 'terminal_command' : 'tool_call',
-  status: 'success', contextText: Object.values(entry.toolArgs as Record<string, unknown>)[0], arguments: entry.toolArgs, logs: [], result: entry.toolResult, error: null, ts: entry.ts,
+  status: 'success', arguments: entry.toolArgs, logs: [], result: entry.toolResult, error: null, ts: entry.ts,
 }))
 export const demoAgentActivities = (node: { id: string; name: string; summary: string }, at: number): Entry[] | null => {
   const entries = demoAgentEntries(node, at)

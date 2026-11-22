@@ -1,0 +1,17 @@
+
+> autobyteus@1.5.14-beta.7 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/phone-activity-details/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/tmp/api590/msp-44-45 --cases=MSP-44,MSP-45
+
+[mobile-shell] MSP-44 …
+[mobile-shell] MSP-44 Fail: locator.scrollIntoViewIfNeeded: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('#contentViewer:visible').first().locator('a[href="other.md#x"]').first()
+
+[mobile-shell] MSP-45 …
+[mobile-shell] MSP-45 Fail: locator.scrollIntoViewIfNeeded: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('.skill-detail').locator('#contentViewer:visible').first().locator('a[href="other.md#x"]').first()
+
+mobile-shell probe: Fail
+ ELIFECYCLE  Command failed with exit code 1.
+exit 1
