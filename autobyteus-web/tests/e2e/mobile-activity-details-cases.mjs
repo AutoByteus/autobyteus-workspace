@@ -21,7 +21,7 @@
 // arguments, as `agy-native-arguments-turn.mjs` records them) and its own paired phone:
 //   - AC-001 an Antigravity file tool's row shows its file: `write_to_file` and `replace_file_content` (`TargetFile`) as
 //     `view_file` (`AbsolutePath`) does; `run_command` (`CommandLine`) shows its command; no row shows its name twice.
-//     What the search and listing tools' rows show (`grep_search`, `find_by_name`, `list_dir`) is recorded.
+//     `grep_search` shows its query (`Query`), `find_by_name` its pattern (`Pattern`), `list_dir` its folder (`DirectoryPath`).
 // The scripted AGY CLI does not stream tool logs (only the Codex and native runtimes send TOOL_LOG), so a Logs section and
 // its growth while open are covered by the web unit tests (MobileActivityDetail.spec), not here.
 import path from 'node:path';
@@ -287,6 +287,9 @@ export const runActivityDetailsCases = async (probe) => {
         [named('write_to_file').length === 1 && showsFile(named('write_to_file')[0]), 'AC-001 an Antigravity write_to_file row shows its file (TargetFile)'],
         [named('replace_file_content').length === 2 && named('replace_file_content').every(showsFile), 'AC-001 an Antigravity replace_file_content row shows its file (TargetFile)'],
         [named('run_command').some((row) => row.summary === 'printf NATIVE_ARGUMENTS_PREFIX_VERIFIED'), 'AC-001 an Antigravity run_command row shows its command (CommandLine)'],
+        [named('grep_search').length === 1 && named('grep_search')[0].summary === 'AFTER', 'AC-001 an Antigravity grep_search row shows its query (Query)'],
+        [named('find_by_name').length === 1 && named('find_by_name')[0].summary === '*.txt', 'AC-001 an Antigravity find_by_name row shows its pattern (Pattern)'],
+        [named('list_dir').length === 1 && named('list_dir')[0].summaryTitle === workspace, 'AC-001 an Antigravity list_dir row shows its folder (DirectoryPath)'],
         [twice.length === 0, 'AC-001 no row shows the tool name twice'],
       ].filter(([ok]) => !ok).map(([, text]) => text);
       assert(failures.length === 0, failures.join('; '), details);
