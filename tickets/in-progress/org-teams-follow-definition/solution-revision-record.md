@@ -130,3 +130,7 @@
 - Trigger: ARCH-REV-008 (Fail): AR-010 — R-8 gave the chain case only an admission; in the implemented code the relation also decides `counterpart` recording and `MessageViewScope`, so `same_container` would change today's related lines (MP-10). Non-blocking: contract §9 wording on outside-party lines.
 - Decision: the chain case is `related` (Task rule extended through the delegation chain): restored when stopped (461 DEC-001, covers DEC-006), no `counterpart`, `MessageViewScope` rule 1; `same_container` only between two units; relation decided once (same_container, then extended related, then unrelated). Contract §5 gains the delegation-chain line with an example; §9 and §10 fixed; test added.
 - Intended behavior changed: No. Next action: architecture re-review; CR-002..CR-004 and N-1 forwarded with the pass.
+
+#### Review note on SR-014 (no new revision)
+
+- 2026-11-22: architecture review `ARCH-REV-009` — Pass on SR-014, AR-010 resolved, Large / High; forwarded to `/implementation_engineer` with CRR-001's CR-002..CR-004 and N-1. Its test-wording note applied to the SR-014 test line (the delegating unit's view shows the message only when that unit is a party).
