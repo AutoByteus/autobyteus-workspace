@@ -37,10 +37,19 @@ if (arg === "--version") {
   const interruptResend = process.env.AGY_FAKE_CASE === "interrupt_resend";
   const contextFiles = process.env.AGY_FAKE_CASE === "context_files";
   const usageReport = process.env.AGY_FAKE_CASE === "usage_report";
+  // AGY_FAKE_LOST_CONVERSATIONS_FILE (autobyteus-599): one conversation ID per line that this "AGY" no longer has. Resuming
+  // one answers as AGY 1.5.14 does (PRB-004): the warning on stderr, then a NEW conversation and exit 0 at the end. A line
+  // `silent:<id>` opens a new conversation WITHOUT the warning (a conflict that is not a lost session, AC-003).
+  const requested = argValue("--conversation");
+  const lostFile = process.env.AGY_FAKE_LOST_CONVERSATIONS_FILE;
+  const lostLines = lostFile && existsSync(lostFile) ? readFileSync(lostFile, "utf8").split("\n").filter(Boolean) : [];
+  const lostConversation = Boolean(requested) && lostLines.includes(requested);
+  const replaced = lostConversation || (Boolean(requested) && lostLines.includes(`silent:${requested}`));
+  if (lostConversation) process.stderr.write(`warning: conversation "${requested}" not found\n`);
   // These independent fixtures all model exact conversation binding on resume.
   const conversation_id = runtimeError || linkedSkills || nativeArguments || autoCompaction || interruptResend || contextFiles
     || usageReport
-    ? argValue("--conversation") || randomUUID()
+    ? (replaced ? randomUUID() : requested || randomUUID())
     : imageDone ? process.env.AGY_FAKE_CONVERSATION_ID || randomUUID() : "controlled-failure-conversation";
   // AGY_FAKE_PROCESS_LOG: this process's lifecycle on its own clock, one JSON line per event in time order:
   // `launch` (with the cwd, which names the run), `turn_end` (logged before the turn's final `result` line is
